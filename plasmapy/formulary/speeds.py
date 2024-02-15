@@ -10,18 +10,16 @@ __all__ = [
 __aliases__ = ["cs_", "va_", "vth_", "vth_kappa_"]
 __lite_funcs__ = ["thermal_speed_lite"]
 
-import astropy.units as u
-import numbers
-import numpy as np
 import warnings
+from numbers import Integral, Real
 
+import astropy.units as u
+import numpy as np
 from astropy.constants.si import k_B, mu0
 from numba import njit
-from typing import Optional
 
-from plasmapy.formulary import lengths, misc
-from plasmapy.particles import Particle, particle_input, particle_mass, ParticleLike
-from plasmapy.particles.exceptions import ChargeError
+from plasmapy.formulary import lengths
+from plasmapy.particles import ParticleLike, electron, particle_input, particle_mass
 from plasmapy.utils.decorators import (
     bind_lite_func,
     check_relativistic,
@@ -35,28 +33,31 @@ __all__ += __aliases__ + __lite_funcs__
 k_B_si_unitless = k_B.value
 
 
+@particle_input
 @check_relativistic
 @validate_quantities(density={"can_be_negative": False})
 def Alfven_speed(
-    B: u.T,
+    B: u.Quantity[u.T],
     density: (u.m**-3, u.kg / u.m**3),
-    ion: Optional[ParticleLike] = None,
-    z_mean: Optional[numbers.Real] = None,
-) -> u.m / u.s:
-    r"""
-    Calculate the Alfvén speed.
+    ion: ParticleLike | None = None,
+    *,
+    mass_numb: Integral | None = None,
+    Z: Real | None = None,
+) -> u.Quantity[u.m / u.s]:
+    r"""Calculate the Alfvén speed.
 
-    The Alfvén speed :math:`V_A` is the typical propagation speed of magnetic
-    disturbances in a plasma, and is given by:
+    The Alfvén speed :math:`V_A` is the typical propagation speed of
+    magnetic disturbances in a quasineutral plasma, and is given by:
 
     .. math::
 
         V_A = \frac{B}{\sqrt{μ_0 ρ}}
 
-    where :math:`B` is the magnetic field and :math:`ρ = n_i m_i + n_e m_e`
-    is the total mass density (:math:`n_i` is the ion number density,
-    :math:`n_e` is the electron number density, :math:`m_i` is the ion mass,
-    and :math:`m_e` is the electron mass) :cite:p:`alfven:1942`.
+    where :math:`B` is the magnetic field and :math:`ρ = n_i m_i + n_e
+    m_e` is the total mass density (:math:`n_i` is the ion number
+    density, :math:`n_e ≡ Z n_i` is the electron number density
+    assuming quasineutrality, :math:`m_i` is the ion mass, and
+    :math:`m_e` is the electron mass) :cite:p:`alfven:1942`.
 
     **Aliases:** `va_`
 
@@ -66,41 +67,41 @@ def Alfven_speed(
         The magnetic field magnitude in units convertible to tesla.
 
     density : `~astropy.units.Quantity`
-        Either the ion number density :math:`n_i` in units convertible to
-        m\ :sup:`-3` or the total mass density :math:`ρ` in units
+        Either the ion number density :math:`n_i` in units convertible
+        to m\ :sup:`-3` or the total mass density :math:`ρ` in units
         convertible to kg m\ :sup:`-3`\ .
 
     ion : `~plasmapy.particles.particle_class.Particle`, optional
-        Representation of the ion species (e.g., ``'p'`` for protons, ``'D+'`` for
-        deuterium, ``'He-4 +1'`` for singly ionized helium-4, etc.). If no charge
-        state information is provided, then the ions are assumed to be singly
-        ionized. If the density is an ion number density, then this parameter
-        is required in order to convert to mass density.
+        Representation of the ion species (e.g., ``'p+'`` for protons,
+        ``'D+'`` for deuterium, ``'He-4 1+'`` for singly ionized
+        helium-4, etc.). If the density is an ion number density, then
+        this parameter is required in order to convert to mass
+        density.
 
-    z_mean : `~numbers.Real`, optional
-        The average ionization state (arithmetic mean) of the ``ion`` composing
-        the plasma.  This is used in calculating the mass density
-        :math:`ρ = n_i (m_i + Z_{mean} m_e)`.  ``z_mean`` is ignored if
-        ``density`` is passed as a mass density and overrides any charge state
-        info provided by ``ion``.
+    mass_numb : integer, |keyword-only|, optional
+        The mass number corresponding to ``ion``.
+
+    Z : `~numbers.Real`, |keyword-only|, optional
+        The charge number corresponding to ``ion``. Note that the
+        value of ``Z`` does not impact the Alfvén speed.
 
     Returns
     -------
     V_A : `~astropy.units.Quantity`
-        The Alfvén speed in units of m s\ :sup:`-1`.
+        The Alfvén speed in units of m/s.
 
     Raises
     ------
     `~plasmapy.utils.exceptions.RelativityError`
-        If the Alfvén velocity is greater than or equal to the speed of light.
+        If the Alfvén velocity is greater than or equal to the speed
+        of light.
 
     `TypeError`
-        If ``B`` and/or ``density`` are not of type `~astropy.units.Quantity`,
-        or convertible.
+        If ``B`` and/or ``density`` are not of type
+        `~astropy.units.Quantity`, or convertible.
 
     `TypeError`
-        If ``ion`` is not of type or convertible to
-        `~plasmapy.particles.particle_class.Particle`.
+        If ``ion`` is not |particle-like|.
 
     `TypeError`
         If ``z_mean`` is not of type `int` or `float`.
@@ -110,8 +111,8 @@ def Alfven_speed(
         tesla.
 
     `~astropy.units.UnitTypeError`
-        If the ``density`` does not have units equivalent to a number density
-        or mass density.
+        If the ``density`` does not have units equivalent to a number
+        density or mass density.
 
     `ValueError`
         If ``density`` is negative.
@@ -122,8 +123,8 @@ def Alfven_speed(
         If the Alfvén velocity exceeds 5% of the speed of light.
 
     : `~astropy.units.UnitsWarning`
-        If units are not provided for the magnetic field ``B``, units of
-        tesla are assumed.
+        If units are not provided for the magnetic field ``B``, units
+        of tesla are assumed.
 
     Notes
     -----
@@ -133,47 +134,41 @@ def Alfven_speed(
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> from astropy.constants.si import m_p, m_e
-    >>> B = 0.014*u.T
-    >>> n = 5e19*u.m**-3
-    >>> rho = n*(m_p+m_e)
-    >>> ion = 'p'
-    >>> Alfven_speed(B, n, ion=ion)
+    >>> B = 0.014 * u.T
+    >>> n = 5e19 * u.m**-3
+    >>> ion = "p+"
+    >>> rho = n * (m_p + m_e)
+    >>> Alfven_speed(B=B, density=n, ion=ion)
     <Quantity 43173.870... m / s>
-    >>> Alfven_speed(B, rho)
+    >>> Alfven_speed(B=B, density=rho)
     <Quantity 43173.870... m / s>
-    >>> Alfven_speed(B, rho).to(u.cm/u.us)
+    >>> Alfven_speed(B=B, density=rho).to(u.cm / u.us)
     <Quantity 4.317387 cm / us>
-    >>> Alfven_speed(B, n, ion="He +2")
+    >>> Alfven_speed(B=B, density=n, ion="He-4 2+")
     <Quantity 21664.18... m / s>
-    >>> Alfven_speed(B, n, ion="He++")
+    >>> Alfven_speed(B=B, density=n, ion="He", Z=1.8)
     <Quantity 21664.18... m / s>
-    >>> Alfven_speed(B, n, ion="He", z_mean=1.8)
-    <Quantity 21661.51... m / s>
     """
 
-    if density.unit.is_equivalent(u.kg / u.m**3):
+    if density.unit.physical_type == u.physical.mass_density and ion is not None:
+        raise ValueError(
+            "When calculating the Alfvén speed, an ion cannot be specified "
+            "when the 'density' parameter is provided an argument with a "
+            "physical type of mass density."
+        )
+
+    if density.unit.physical_type == u.physical.number_density and ion is None:
+        raise ValueError(
+            "When calculating the Alfvén speed, the ion must be specified "
+            "when 'density' has a physical type of number density."
+        )
+
+    if density.unit.physical_type == u.physical.mass_density:
         rho = density
     else:
-        if not isinstance(ion, Particle):
-            try:
-                ion = Particle(ion)
-            except TypeError as ex:
-                raise TypeError(
-                    f"If passing a number density, you must pass a plasmapy Particle "
-                    f"(not type {type(ion)}) to calculate the mass density!"
-                ) from ex
-        if z_mean is None:
-            try:
-                z_mean = abs(ion.charge_number)
-            except ChargeError:
-                z_mean = 1
-
-        z_mean = abs(z_mean)
-        rho = misc.mass_density(density, ion) + misc.mass_density(
-            density, "e", z_ratio=z_mean
-        )
+        rho = (ion.mass + ion.charge_number * electron.mass) * density
 
     return np.abs(B) / np.sqrt(mu0 * rho)
 
@@ -189,16 +184,17 @@ va_ = Alfven_speed
     n_e={"can_be_negative": False, "none_shall_pass": True},
     k={"can_be_negative": False, "none_shall_pass": True},
 )
+@particle_input
 def ion_sound_speed(
-    T_e: u.K,
-    T_i: u.K,
+    T_e: u.Quantity[u.K],
+    T_i: u.Quantity[u.K],
     ion: ParticleLike,
-    n_e: u.m**-3 = None,
-    k: u.m**-1 = None,
+    n_e: u.Quantity[u.m**-3] = None,
+    k: u.Quantity[u.m**-1] = None,
     gamma_e=1,
     gamma_i=3,
-    z_mean=None,
-) -> u.m / u.s:
+    Z=None,
+) -> u.Quantity[u.m / u.s]:
     r"""
     Return the ion sound speed for an electron-ion plasma.
 
@@ -216,11 +212,10 @@ def ion_sound_speed(
         particle.  If this is not given, then the ion temperature is
         assumed to be zero.
 
-    ion : `~plasmapy.particles.particle_class.Particle`
-        Representation of the ion species (e.g., ``'p'`` for protons,
+    ion : |particle-like|
+        Representation of the ion species (e.g., ``'p+'`` for protons,
         ``'D+'`` for deuterium, or ``'He-4 +1'`` for singly ionized
-        helium-4). If no charge state information is provided, then the
-        ions are assumed to be singly charged.
+        helium-4).
 
     n_e : `~astropy.units.Quantity`
         Electron number density. If this is not given, then ion_sound_speed
@@ -245,12 +240,15 @@ def ion_sound_speed(
         assumes that ion motion has only one degree of freedom, namely
         along magnetic field lines.
 
-    z_mean : `~astropy.units.Quantity`, optional
+    Z : `~astropy.units.Quantity`, optional
         The average ionization (arithmetic mean) for a plasma where
         a macroscopic description is valid. If this quantity is not
         given then the charge number of the ion
         is used. This is effectively an average ion sound speed for the
         plasma where multiple charge states are present.
+
+    mass_numb : positive integer, optional
+        The mass number of an isotope corresponding to ``ion``.
 
     Returns
     -------
@@ -311,57 +309,54 @@ def ion_sound_speed(
 
     Examples
     --------
-    >>> from astropy import units as u
-    >>> n = 5e19*u.m**-3
-    >>> k_1 = 3e1*u.m**-1
-    >>> k_2 = 3e7*u.m**-1
+    >>> import astropy.units as u
+    >>> n = 5e19 * u.m**-3
+    >>> k_1 = 3e1 * u.m**-1
+    >>> k_2 = 3e7 * u.m**-1
     >>> ion_sound_speed(
-    ...     T_e=5e6*u.K,
-    ...     T_i=0*u.K,
-    ...     ion='p',
+    ...     T_e=5e6 * u.K,
+    ...     T_i=0 * u.K,
+    ...     ion="p+",
     ...     gamma_e=1,
     ...     gamma_i=3,
     ... )
     <Quantity 203155... m / s>
     >>> ion_sound_speed(
-    ...     T_e=5e6*u.K,
-    ...     T_i=0*u.K,
+    ...     T_e=5e6 * u.K,
+    ...     T_i=0 * u.K,
     ...     n_e=n,
     ...     k=k_1,
-    ...     ion='p',
+    ...     ion="p+",
     ...     gamma_e=1,
     ...     gamma_i=3,
     ... )
     <Quantity 203155... m / s>
     >>> ion_sound_speed(
-    ...     T_e=5e6*u.K,
-    ...     T_i=0*u.K,
+    ...     T_e=5e6 * u.K,
+    ...     T_i=0 * u.K,
     ...     n_e=n,
     ...     k=k_2,
-    ...     ion='p',
+    ...     ion="p+",
     ...     gamma_e=1,
     ...     gamma_i=3,
     ... )
     <Quantity 310.31... m / s>
-    >>> ion_sound_speed(T_e=5e6*u.K, T_i=0*u.K, n_e=n, k=k_1, ion='p')
+    >>> ion_sound_speed(T_e=5e6 * u.K, T_i=0 * u.K, n_e=n, k=k_1, ion="p+")
     <Quantity 203155... m / s>
-    >>> ion_sound_speed(T_e=500*u.eV, T_i=200*u.eV, n_e=n, k=k_1, ion='D+')
+    >>> ion_sound_speed(T_e=500 * u.eV, T_i=200 * u.eV, n_e=n, k=k_1, ion="D+")
     <Quantity 229585... m / s>
 
     """
-
-    m_i = particle_mass(ion)
-    Z = misc._grab_charge(ion, z_mean)
-
-    for gamma, species in zip([gamma_e, gamma_i], ["electrons", "ions"]):
-        if not isinstance(gamma, (numbers.Real, numbers.Integral)):
+    for gamma, species in zip([gamma_e, gamma_i], ["electrons", "ions"], strict=False):
+        if not isinstance(gamma, Real):
             raise TypeError(
-                f"The adiabatic index gamma for {species} must be a float or int"
+                f"The adiabatic index gamma for {species} must be a positive "
+                f"number greater than one."
             )
         if gamma < 1:
             raise PhysicsError(
-                f"The adiabatic index for {species} must be between "
-                f"one and infinity"
+                f"The adiabatic index for {species} must be a positive "
+                f"number greater than one."
             )
 
     # Assume non-dispersive limit if values for n_e (or k) are not specified
@@ -369,7 +364,7 @@ def ion_sound_speed(
     if (n_e is None) ^ (k is None):
         warnings.warn(
             "The non-dispersive limit has been assumed for "
-            "this calculation. To prevent this, values must "
+            "ion_sound_speed. To prevent this, values must "
             "be specified for both n_e and k.",
             PhysicsWarning,
         )
@@ -378,9 +373,9 @@ def ion_sound_speed(
         klD2 = (k * lambda_D) ** 2
 
     try:
-        V_S_squared = (gamma_e * Z * k_B * T_e + gamma_i * k_B * T_i) / (
-            m_i * (1 + klD2)
-        )
+        V_S_squared = (
+            gamma_e * ion.charge_number * k_B * T_e + gamma_i * k_B * T_i
+        ) / (ion.mass * (1 + klD2))
         V_S = np.sqrt(V_S_squared).to(u.m / u.s)
     except ValueError as ex:
         raise ValueError("Unable to find ion sound speed.") from ex
@@ -477,9 +472,7 @@ def thermal_speed_coefficients(method: str, ndim: int) -> float:
 
 @preserve_signature
 @njit
-def thermal_speed_lite(
-    T: numbers.Real, mass: numbers.Real, coeff: numbers.Real
-) -> numbers.Real:
+def thermal_speed_lite(T: Real, mass: Real, coeff: Real) -> Real:
     r"""
     The :term:`lite-function` for
     `~plasmapy.formulary.speeds.thermal_speed`.  Performs the same
@@ -539,16 +532,16 @@ def thermal_speed_lite(
 )
 @particle_input
 def thermal_speed(
-    T: u.K,
+    T: u.Quantity[u.K],
     particle: ParticleLike,
     method="most_probable",
-    mass: u.kg = None,
+    mass: u.Quantity[u.kg] = None,
     ndim=3,
-) -> u.m / u.s:
+) -> u.Quantity[u.m / u.s]:
     r"""
     Calculate the speed of thermal motion for particles with a Maxwellian
     distribution.  (See the :ref:`Notes <thermal-speed-notes>` section for
-    details.)
+    details.).
 
     **Aliases:** `~plasmapy.formulary.speeds.vth_`
 
@@ -563,8 +556,6 @@ def thermal_speed(
     particle : `~plasmapy.particles.particle_class.Particle`
         Representation of the particle species (e.g., ``"p"`` for protons,
         ``"D+"`` for deuterium, or ``"He-4 +1"`` for singly ionized helium-4).
-        If no charge state information is provided, then the particles are
-        assumed to be singly charged.
 
     method : `str`, optional
         (Default ``"most_probable"``) Method to be used for calculating the
@@ -610,7 +601,6 @@ def thermal_speed(
 
     Notes
     -----
-
     There are multiple methods (or definitions) for calculating the thermal
     speed, all of which give the expression
 
@@ -703,10 +693,10 @@ def thermal_speed(
 
     Examples
     --------
-    >>> from astropy import units as u
-    >>> thermal_speed(5*u.eV, 'p')
+    >>> import astropy.units as u
+    >>> thermal_speed(5*u.eV, 'p+')
     <Quantity 30949.6... m / s>
-    >>> thermal_speed(1e6*u.K, particle='p')
+    >>> thermal_speed(1e6*u.K, particle='p+')
     <Quantity 128486... m / s>
     >>> thermal_speed(5*u.eV, particle='e-')
     <Quantity 132620... m / s>
@@ -744,10 +734,18 @@ vth_ = thermal_speed
 @validate_quantities(
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()}
 )
+@particle_input
 def kappa_thermal_speed(
-    T: u.K, kappa, particle: ParticleLike, method="most_probable"
-) -> u.m / u.s:
-    r"""Return the most probable speed for a particle within a Kappa
+    T: u.Quantity[u.K],
+    kappa,
+    particle: ParticleLike,
+    method="most_probable",
+    *,
+    mass_numb: Real | None = None,
+    Z: Real | None = None,
+) -> u.Quantity[u.m / u.s]:
+    r"""
+    Return the most probable speed for a particle within a kappa
     distribution.
 
     **Aliases:** `vth_kappa_`
@@ -760,18 +758,22 @@ def kappa_thermal_speed(
     kappa: `float`
         The ``kappa`` parameter is a dimensionless number which sets the slope
         of the energy spectrum of suprathermal particles forming the tail
-        of the Kappa velocity distribution function. ``kappa`` must be greater
+        of the kappa velocity distribution function. ``kappa`` must be greater
         than 3/2.
 
-    particle : `~plasmapy.particles.particle_class.Particle`
-        Representation of the particle species (e.g., 'p' for protons, 'D+'
-        for deuterium, or 'He-4 +1' for singly ionized helium-4). If no
-        charge state information is provided, then the particles are
-        assumed to be singly charged.
+    particle : |particle-like|
+        Representation of the particle species (e.g., ``'p+'`` for protons,
+        ``'D+'`` for deuterium, or 'He-4 +1' for singly ionized helium-4).
 
     method : `str`, optional
         Method to be used for calculating the thermal speed. Options are
         ``'most_probable'`` (default), ``'rms'``, and ``'mean_magnitude'``.
+
+    mass_numb : integer, optional
+        The mass number corresponding to ``particle``.
+
+    Z : real number, optional
+        The charge number corresponding to ``particle``.
 
     Returns
     -------
@@ -812,12 +814,12 @@ def kappa_thermal_speed(
 
     Examples
     --------
-    >>> from astropy import units as u
-    >>> kappa_thermal_speed(5*u.eV, 4, 'p') # defaults to most probable
+    >>> import astropy.units as u
+    >>> kappa_thermal_speed(5 * u.eV, 4, "p")  # defaults to most probable
     <Quantity 24467.87... m / s>
-    >>> kappa_thermal_speed(5*u.eV, 4, 'p', 'rms')
+    >>> kappa_thermal_speed(5 * u.eV, 4, "p", "rms")
     <Quantity 37905.47... m / s>
-    >>> kappa_thermal_speed(5*u.eV, 4, 'p', 'mean_magnitude')
+    >>> kappa_thermal_speed(5 * u.eV, 4, "p", "mean_magnitude")
     <Quantity 34922.98... m / s>
 
     See Also
@@ -834,14 +836,7 @@ def kappa_thermal_speed(
     # different methods, as per https://en.wikipedia.org/wiki/Thermal_velocity
     vth = thermal_speed(T=T, particle=particle, method=method)
 
-    if method == "most_probable":
-        # thermal velocity of Kappa distribution function is just Maxwellian
-        # thermal speed modulated by the following factor.
-        # This is only true for "most probable" case. RMS and mean
-        # magnitude velocities are same as Maxwellian.
-        coeff = np.sqrt((kappa - 3 / 2) / kappa)
-    else:
-        coeff = 1
+    coeff = np.sqrt((kappa - 3 / 2) / kappa) if method == "most_probable" else 1
     return vth * coeff
 
 

@@ -1,11 +1,14 @@
+"""Functionality for reading in HDF5 files following the OpenPMD standard."""
+from types import TracebackType
+
 __all__ = ["HDF5Reader"]
+
+from pathlib import Path
 
 import astropy.units as u
 import h5py
 import numpy as np
-
 from packaging.version import Version
-from pathlib import Path
 
 from plasmapy.plasma.exceptions import DataStandardError
 from plasmapy.plasma.plasma_base import GenericPlasma
@@ -22,7 +25,7 @@ def _fetch_units(openPMD_dims):
     """Converts a collection of OpenPMD dimensions to astropy.units."""
 
     units = u.dimensionless_unscaled
-    for factor, unit in zip(openPMD_dims, _UNITS):
+    for factor, unit in zip(openPMD_dims, _UNITS, strict=False):
         units *= unit**factor
     units, *_ = units.compose()
     return units
@@ -40,7 +43,7 @@ def _valid_version(openPMD_version, outdated=_OUTDATED_VERSION, newer=_NEWER_VER
 class HDF5Reader(GenericPlasma):
     """
     Core class for accessing various attributes on HDF5 files that
-    are based on OpenPMD_ standards.
+    are based on `OpenPMD <https://www.openpmd.org>`__ standards.
 
     Parameters
     ----------
@@ -49,10 +52,9 @@ class HDF5Reader(GenericPlasma):
 
     **kwargs
         Any keyword accepted by `~plasmapy.plasma.plasma_base.GenericPlasma`.
-
     """
 
-    def __init__(self, hdf5, **kwargs):
+    def __init__(self, hdf5, **kwargs) -> None:
         super().__init__(**kwargs)
 
         if not Path(hdf5).is_file():
@@ -63,24 +65,29 @@ class HDF5Reader(GenericPlasma):
 
         self._check_valid_openpmd_version()
 
-        self.subname = tuple(self.h5["data"])[0]
+        self.subname = next(iter(self.h5["data"]))
 
     def __enter__(self):
         return self.h5
 
-    def close(self):
+    def close(self) -> None:
         self.h5.close()
 
-    def __exit__(self):
+    def __exit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_value: BaseException | None,
+        traceback: TracebackType | None,
+    ):
         self.h5.close()
 
-    def _check_valid_openpmd_version(self):
+    def _check_valid_openpmd_version(self) -> bool:
         try:
             openPMD_version = self.h5.attrs["openPMD"].decode("utf-8")
             if _valid_version(openPMD_version):
                 return True
             else:
-                raise DataStandardError(  # noqa: TC301
+                raise DataStandardError(
                     f"We currently only support HDF5 versions"
                     f"starting from v{_OUTDATED_VERSION} and "
                     f"lower than v{_NEWER_VERSION}. You can "
@@ -96,8 +103,11 @@ class HDF5Reader(GenericPlasma):
     @property
     def electric_field(self):
         """
-        An (x, y, z) array containing electric field data.  (Returned as an astropy
-        `~astropy.units.Quantity`.)
+        An :math:`(x, y, z)` array containing electric field data.
+
+        Returns
+        -------
+        `~astropy.units.Quantity`
         """
         path = f"data/{self.subname}/fields/E"
         if path in self.h5:
@@ -110,8 +120,11 @@ class HDF5Reader(GenericPlasma):
     @property
     def charge_density(self):
         """
-        An array containing charge density data.  (Returned as an astropy
-        `~astropy.units.Quantity`.)
+        An array containing charge density data.
+
+        Returns
+        -------
+        `~astropy.units.Quantity`
         """
         path = f"data/{self.subname}/fields/rho"
         if path in self.h5:
@@ -122,6 +135,13 @@ class HDF5Reader(GenericPlasma):
 
     @property
     def magnetic_field(self):
+        """
+        An array containing magnetic field data.
+
+        Returns
+        -------
+        `~astropy.units.Quantity`
+        """
         path = f"data/{self.subname}/fields/B"
         if path in self.h5:
             units = _fetch_units(self.h5[path].attrs["unitDimension"])
@@ -132,6 +152,13 @@ class HDF5Reader(GenericPlasma):
 
     @property
     def electric_current(self):
+        """
+        An array containing electric current data.
+
+        Returns
+        -------
+        `~astropy.units.Quantity`
+        """
         path = f"data/{self.subname}/fields/J"
         if path in self.h5:
             units = _fetch_units(self.h5[path].attrs["unitDimension"])
@@ -152,7 +179,6 @@ class HDF5Reader(GenericPlasma):
             raise FileNotFoundError(f"Could not find file: '{hdf5}'")
 
         if "openPMD" not in kwargs:
-
             h5 = h5py.File(hdf5, "r")
             try:
                 openPMD = h5.attrs["openPMD"]

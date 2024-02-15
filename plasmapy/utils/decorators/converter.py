@@ -1,19 +1,17 @@
-"""
-Decorator to convert units of functions in /physics methods
-"""
+"""Decorators to convert units."""
+
 __all__ = ["angular_freq_to_hz"]
 
-import astropy.units as u
-import functools
 import inspect
 
-from plasmapy.utils.decorators.helpers import preserve_signature
+import astropy.units as u
+import wrapt
 
 
 def angular_freq_to_hz(fn):
-    """A decorator that adds to a function the ability to convert the
-    function's return from angular frequency (rad/s) to frequency
-    (Hz).
+    """
+    A decorator that enables a function to convert its return
+    value from angular frequency (rad/s) to frequency (Hz).
 
     A kwarg ``to_hz`` is added to the function's signature, with a
     default value of `False`.  The keyword is also added to the
@@ -22,21 +20,20 @@ def angular_freq_to_hz(fn):
     Parameters
     ----------
     fn : function
-        The function to be decorated
+        The function to be decorated.
 
     Raises
     ------
     ValueError
-        If ``fn`` has already defined a kwarg ``to_hz``
+        If ``fn`` has already defined a kwarg ``to_hz``.
 
     Returns
     -------
     callable
-        The decorated function
+        The decorated function.
 
     Notes
     -----
-
     * If `~plasmapy.utils.decorators.converter.angular_freq_to_hz` is
       used with decorator
       :func:`~plasmapy.utils.decorators.validators.validate_quantities`,
@@ -49,7 +46,7 @@ def angular_freq_to_hz(fn):
         from plasmapy.utils.decorators.converter import angular_freq_to_hz
         from plasmapy.utils.decorators.validators import validate_quantities
 
-        @validate_quantities(validations_on_return={'units': [u.rad / u.s, u.Hz]})
+        @validate_quantities(validations_on_return={"units": [u.rad / u.s, u.Hz]})
         @angular_freq_to_hz
         def foo(x: u.rad / u.s) -> u.rad / u.s
             return x
@@ -59,7 +56,6 @@ def angular_freq_to_hz(fn):
 
     Examples
     --------
-
         >>> import astropy.units as u
         >>> from plasmapy.utils.decorators.converter import angular_freq_to_hz
         >>>
@@ -88,7 +84,6 @@ def angular_freq_to_hz(fn):
         <Quantity 0.07957747 Hz>
 
     """
-    # raise exception if fn uses the 'to_hz' kwarg
     sig = inspect.signature(fn)
     if "to_hz" in sig.parameters:
         raise ValueError(
@@ -97,32 +92,45 @@ def angular_freq_to_hz(fn):
         )
 
     # make new signature for fn
-    new_params = sig.parameters.copy()
-    new_params["to_hz"] = inspect.Parameter(
-        "to_hz", inspect.Parameter.POSITIONAL_OR_KEYWORD, default=False
+    new_params = []
+    var_keyword_param = None
+    for param in sig.parameters.values():
+        if param.kind == param.VAR_KEYWORD:
+            var_keyword_param = param
+        else:
+            new_params.append(param)
+
+    new_params.append(
+        inspect.Parameter("to_hz", inspect.Parameter.KEYWORD_ONLY, default=False)
     )
+
+    if var_keyword_param:
+        new_params.append(var_keyword_param)
+
     new_sig = inspect.Signature(
-        parameters=new_params.values(), return_annotation=sig.return_annotation
+        parameters=new_params, return_annotation=sig.return_annotation
     )
     fn.__signature__ = new_sig
 
-    @preserve_signature
-    @functools.wraps(fn)
-    def wrapper(*args, to_hz=False, **kwargs):
+    @wrapt.decorator
+    def wrapper(fn, instance, args, kwargs):  # noqa: ARG001
+        to_hz = kwargs.pop("to_hz", False)
         _result = fn(*args, **kwargs)
         if to_hz:
             return _result.to(u.Hz, equivalencies=[(u.cy / u.s, u.Hz)])
         return _result
 
+    fn = wrapper(fn)
+
     added_doc_bit = """
     Other Parameters
     ----------------
     to_hz: bool
-        Set `True` to to convert function output from angular frequency to Hz
+        Set `True` to convert function output from angular frequency to Hz
     """
-    if wrapper.__doc__ is not None:
-        wrapper.__doc__ += added_doc_bit
+    if fn.__doc__ is not None:
+        fn.__doc__ += added_doc_bit
     else:
-        wrapper.__doc__ = added_doc_bit
+        fn.__doc__ = added_doc_bit
 
-    return wrapper
+    return fn

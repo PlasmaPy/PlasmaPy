@@ -1,10 +1,15 @@
-"""Particle movement integrators, for particle simulations.
+"""
+Particle movement integrators, for particle simulations.
 
 These do not have `astropy.units` support, choosing instead to
 limit overhead and increase performance.
 
 They act in-place on position and velocity arrays to reduce
 memory allocation.
+
+.. attention::
+
+   |expect-api-changes|
 """
 
 __all__ = ["boris_push"]
@@ -15,6 +20,10 @@ import numpy as np
 def boris_push(x, v, B, E, q, m, dt, inplace: bool = True):
     r"""
     The explicit Boris pusher.
+
+    .. attention::
+
+       |expect-api-changes|
 
     Parameters
     ----------
@@ -58,12 +67,14 @@ def boris_push(x, v, B, E, q, m, dt, inplace: bool = True):
     >>> E = np.array([[0.0, 0.0, 0.0]])
     >>> x_t0 = np.array([[0.0, 0.0, 0.0]])
     >>> v_t0 = np.array([[5.0, 0.0, 0.0]])
-    >>> x_t1, v_t1 = boris_push(x = x_t0, v = v_t0, B = B, E = E, q = 1.0, m = 1.0, dt = 0.01, inplace=False)
+    >>> x_t1, v_t1 = boris_push(
+    ...     x=x_t0, v=v_t0, B=B, E=E, q=1.0, m=1.0, dt=0.01, inplace=False
+    ... )
     >>> x_t1
     array([[ 0.04993754, -0.00249844,  0.        ]])
     >>> v_t1
     array([[ 4.9937539 , -0.24984385,  0.        ]])
-    >>> boris_push(x = x_t0, v = v_t0, B = B, E = E, q = 1.0, m = 1.0, dt = 0.01, inplace = True)
+    >>> boris_push(x=x_t0, v=v_t0, B=B, E=E, q=1.0, m=1.0, dt=0.01, inplace=True)
     >>> x_t0
     array([[ 0.04993754, -0.00249844,  0.        ]])
     >>> v_t0
@@ -72,7 +83,7 @@ def boris_push(x, v, B, E, q, m, dt, inplace: bool = True):
     >>> B = np.array([[0.0, 0.0, 5.0]])
     >>> v_t0 = np.array([[0.0, 0.0, 5.0]])
     >>> x_t0 = np.array([[0.0, 0.0, 0.0]])
-    >>> boris_push(x = x_t0, v = v_t0, B = B, E = E, q = 1.0, m = 1.0, dt = 0.01, inplace = True)
+    >>> boris_push(x=x_t0, v=v_t0, B=B, E=E, q=1.0, m=1.0, dt=0.01, inplace=True)
     >>> # no rotation of vector v
     >>> v_t0
     array([[0., 0., 5.]])
@@ -82,7 +93,7 @@ def boris_push(x, v, B, E, q, m, dt, inplace: bool = True):
     >>> B = np.array([[5.0, 0.0, 0.0]])
     >>> v_t0 = np.array([[0.0, 5.0, 0.0]])
     >>> x_t0 = np.array([[0.0, 0.0, 0.0]])
-    >>> boris_push(x = x_t0, v = v_t0, B = B, E = E, q = 1.0, m = 1.0, dt = 0.01, inplace = True)
+    >>> boris_push(x=x_t0, v=v_t0, B=B, E=E, q=1.0, m=1.0, dt=0.01, inplace=True)
     >>> # rotation of vector v
     >>> v_t0
     array([[ 0.        ,  4.9937539 , -0.24984385]])
@@ -93,19 +104,19 @@ def boris_push(x, v, B, E, q, m, dt, inplace: bool = True):
     >>> B = np.array([[0.0, 0.0, 0.0]])
     >>> v_t0 = np.array([[0.0, 0.0, 5.0]])
     >>> x_t0 = np.array([[0.0, 0.0, 0.0]])
-    >>> boris_push(x = x_t0, v = v_t0, B = B, E = E, q = 1.0, m = 1.0, dt = 0.01, inplace = True)
+    >>> boris_push(x=x_t0, v=v_t0, B=B, E=E, q=1.0, m=1.0, dt=0.01, inplace=True)
     >>> v_t0
     array([[0.01, 0.01, 5.01]])
     >>> x_t0
     array([[0.0001, 0.0001, 0.0501]])
-    >>> boris_push(x = x_t0, v = v_t0, B = B, E = E, q = 1.0, m = 1.0, dt = 0.01, inplace = True)
+    >>> boris_push(x=x_t0, v=v_t0, B=B, E=E, q=1.0, m=1.0, dt=0.01, inplace=True)
     >>> v_t0
     array([[0.02, 0.02, 5.02]])
     >>> x_t0
     array([[0.0003, 0.0003, 0.1003]])
 
     Notes
-    ----------
+    -----
     The Boris algorithm :cite:p:`boris:1970` is the standard energy
     conserving algorithm for particle movement in plasma physics. See
     :cite:t:`birdsall:2004` for more details, and this `page on the
@@ -135,6 +146,7 @@ def boris_push(x, v, B, E, q, m, dt, inplace: bool = True):
     if inplace:
         v[...] = vplus + hqmdt * E
         x += v * dt
+        return None
     else:
         v = vplus + hqmdt * E
         return x + v * dt, v

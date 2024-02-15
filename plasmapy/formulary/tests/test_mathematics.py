@@ -4,13 +4,13 @@
 import numpy as np
 import pytest
 
-from plasmapy.formulary import mathematics as mathematics
+from plasmapy.formulary import mathematics
 
 # TODO: Move the Fermi integral tests over to this file?
 
 
 @pytest.mark.parametrize(
-    "a, b, correct",
+    ("a", "b", "correct"),
     [
         # Test one rotation
         (
@@ -24,13 +24,13 @@ from plasmapy.formulary import mathematics as mathematics
         (np.array([1, 0, 0]), np.array([-1, 0, 0]), -np.identity(3)),
     ],
 )
-def test_rot_a_to_b(a, b, correct):
+def test_rot_a_to_b(a, b, correct) -> None:
     R = mathematics.rot_a_to_b(a, b)
     np.testing.assert_allclose(R, correct, atol=1e-6)
 
 
 @pytest.mark.parametrize(
-    "a, b, _raises",
+    ("a", "b", "_raises"),
     [
         # a is the wrong length
         (np.array([1, 0]), np.array([1, 0, 0]), ValueError),
@@ -40,6 +40,6 @@ def test_rot_a_to_b(a, b, correct):
         (np.array([1, 0]), np.array([1, 0]), ValueError),
     ],
 )
-def test_rot_a_to_b_raises(a, b, _raises):
+def test_rot_a_to_b_raises(a, b, _raises) -> None:
     with pytest.raises(_raises):
         mathematics.rot_a_to_b(a, b)

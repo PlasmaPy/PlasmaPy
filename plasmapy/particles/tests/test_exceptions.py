@@ -1,8 +1,8 @@
 import itertools
+
+import astropy.units as u
 import numpy as np
 import pytest
-
-from astropy import units as u
 
 from plasmapy.particles import IonizationState, IonizationStateCollection
 from plasmapy.particles.atomic import (
@@ -198,11 +198,13 @@ tests_for_exceptions = {
 
 
 @pytest.mark.parametrize(
-    ["tested_object", "args", "kwargs", "expected_exception"],
+    ("tested_object", "args", "kwargs", "expected_exception"),
     list(tests_for_exceptions.values()),
     ids=list(tests_for_exceptions.keys()),
 )
-def test_named_tests_for_exceptions(tested_object, args, kwargs, expected_exception):
+def test_named_tests_for_exceptions(
+    tested_object, args, kwargs, expected_exception
+) -> None:
     """
     Test that appropriate exceptions are raised for inappropriate inputs
     to `IonizationState` or `IonizationStateCollection`
@@ -924,7 +926,6 @@ tests_from_atomic = [
     [isotope_symbol, ("h-3",), {}, pytest.raises(InvalidParticleError)],
     [isotope_symbol, ("h",), {}, pytest.raises(InvalidParticleError)],
     [isotope_symbol, ("d+",), {}, pytest.raises(InvalidParticleError)],
-    [particle_mass, ["Fe-56"], {"Z": 1.4}, pytest.raises(TypeError)],
     [particle_mass, ["H-1 +1"], {"Z": 0}, pytest.raises(InvalidParticleError)],
     [particle_mass, [26], {"Z": 1, "mass_numb": "a"}, pytest.raises(TypeError)],
     [
@@ -943,7 +944,6 @@ tests_from_atomic = [
     [particle_mass, ["fe-56 1+"], {}, pytest.raises(InvalidParticleError)],
     [is_stable, ["hydrogen-444444"], {}, pytest.raises(InvalidParticleError)],
     [is_stable, ["hydrogen", 0], {}, pytest.raises(InvalidParticleError)],
-    [is_stable, [""], {}, pytest.raises(ParticleError)],
     [is_stable, ["pb-209"], {}, pytest.raises(InvalidParticleError)],
     [is_stable, ["h"], {}, pytest.raises(InvalidParticleError)],
     [is_stable, ["He"], {}, pytest.raises(InvalidIsotopeError)],
@@ -955,7 +955,6 @@ tests_from_atomic = [
     [isotope_symbol, ("Li-6",), {"mass_numb": 6}, pytest.warns(ParticleWarning)],
     [isotope_symbol, ("lithium-6",), {"mass_numb": 6}, pytest.warns(ParticleWarning)],
     [isotope_symbol, ("alpha",), {"mass_numb": 4}, pytest.warns(ParticleWarning)],
-    [isotope_symbol, ("p",), {"mass_numb": 1}, pytest.warns(ParticleWarning)],
 ]
 
 
@@ -1026,10 +1025,10 @@ type_error_tests = [
 
 
 @pytest.mark.parametrize(
-    ["tested_object", "args", "kwargs", "expected"],
+    ("tested_object", "args", "kwargs", "expected"),
     tests_from_nuclear + tests_from_atomic + particle_error_tests + type_error_tests,
 )
-def test_unnamed_tests_exceptions(tested_object, args, kwargs, expected):
+def test_unnamed_tests_exceptions(tested_object, args, kwargs, expected) -> None:
     """
     Test that appropriate exceptions are raised for inappropriate inputs
     to different functions.
@@ -1042,6 +1041,6 @@ def test_unnamed_tests_exceptions(tested_object, args, kwargs, expected):
 
     if hasattr(expected, "expected_warning"):
         for expected_warning, recorded_warning in zip(
-            exc_info.expected_warning, exc_info.list
+            exc_info.expected_warning, exc_info.list, strict=False
         ):
             assert expected_warning == recorded_warning.category

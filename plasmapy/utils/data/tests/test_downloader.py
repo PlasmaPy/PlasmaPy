@@ -18,8 +18,8 @@ test_files = [
 ]
 
 
-@pytest.mark.parametrize("filename,expected", test_files)
-def test_get_file(filename, expected, tmp_path):
+@pytest.mark.parametrize(("filename", "expected"), test_files)
+def test_get_file(filename, expected, tmp_path) -> None:
     """
     Test the get_file function
 
@@ -41,7 +41,7 @@ def test_get_file(filename, expected, tmp_path):
         downloader.get_file(filename, directory=tmp_path)
 
 
-def test_get_file_NIST_PSTAR_datafile(tmp_path):
+def test_get_file_NIST_PSTAR_datafile(tmp_path) -> None:
     """
     Test the get_file function on a NIST PSTAR datafile
 

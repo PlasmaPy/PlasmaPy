@@ -17,11 +17,10 @@ __all__ = [
     "is_roman_numeral",
 ]
 
-import numpy as np
 import re
-
 from numbers import Integral
-from typing import Union
+
+import numpy as np
 
 from plasmapy.utils.exceptions import InvalidRomanNumeralError, OutOfRangeError
 
@@ -59,7 +58,7 @@ _romanNumeralPattern = re.compile(
 )
 
 
-def to_roman(n: Union[Integral, np.integer]) -> str:
+def to_roman(n: Integral | np.integer) -> str:
     """
     Convert an integer to a Roman numeral.
 
@@ -94,7 +93,7 @@ def to_roman(n: Union[Integral, np.integer]) -> str:
     'MMDXXV'
 
     """
-    if not isinstance(n, (Integral, np.integer)):
+    if not isinstance(n, Integral | np.integer):
         raise TypeError(f"{n} cannot be converted to a Roman numeral.")
     if not (0 < n < 5000):
         raise OutOfRangeError("Number is out of range (need 0 < n < 5000)")
@@ -135,9 +134,9 @@ def from_roman(s: str) -> Integral:
 
     Examples
     --------
-    >>> from_roman('V')
+    >>> from_roman("V")
     5
-    >>> from_roman('MMMMCCCLXVII')
+    >>> from_roman("MMMMCCCLXVII")
     4367
 
     """

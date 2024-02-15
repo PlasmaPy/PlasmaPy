@@ -1,3 +1,5 @@
+"""Functionality implementing the plasma class factory."""
+
 # SunPy is released under a BSD-style open source license:
 
 # Copyright (c) 2013-2018 The SunPy developers
@@ -48,9 +50,12 @@ class BasicRegistrationFactory:
     specified by the registered factory, which validates the input and returns
     a instance of the class that best matches the inputs.
 
+    .. attention::
+
+       |expect-api-changes|
+
     Attributes
     ----------
-
     registry : `dict`
         Dictionary mapping classes (key) to function (value) which validates
         input.
@@ -63,7 +68,6 @@ class BasicRegistrationFactory:
 
     Parameters
     ----------
-
     default_widget_type : `type`, optional
 
     additional_validation_functions : `list` of `str`, optional
@@ -81,8 +85,7 @@ class BasicRegistrationFactory:
         default_widget_type=None,
         additional_validation_functions=None,
         registry=None,
-    ):
-
+    ) -> None:
         self.registry = {} if registry is None else registry
         if additional_validation_functions is None:
             additional_validation_functions = []
@@ -90,8 +93,9 @@ class BasicRegistrationFactory:
         self.default_widget_type = default_widget_type
 
         self.validation_functions = [
-            "_factory_validation_function"
-        ] + additional_validation_functions
+            "_factory_validation_function",
+            *additional_validation_functions,
+        ]
 
     def __call__(self, *args, **kwargs):
         """
@@ -106,7 +110,6 @@ class BasicRegistrationFactory:
         return self._check_registered_widget(*args, **kwargs)
 
     def _check_registered_widget(self, *args, **kwargs):
-
         candidate_widget_types = [
             key for key in self.registry if self.registry[key](*args, **kwargs)
         ]
@@ -121,7 +124,8 @@ class BasicRegistrationFactory:
             else:
                 candidate_widget_types = [self.default_widget_type]
         elif n_matches > 1:
-            print(candidate_widget_types)
+            # We'll need to switch from print() to using logging library
+            print(candidate_widget_types)  # noqa: T201
             raise MultipleMatchError(
                 f"Too many candidate types identified ({n_matches}). "
                 "Specify enough keywords to guarantee unique type "
@@ -133,7 +137,7 @@ class BasicRegistrationFactory:
 
         return WidgetType(*args, **kwargs)
 
-    def register(self, WidgetType, validation_function=None, is_default=False):
+    def register(self, WidgetType, validation_function=None, is_default: bool = False):
         """Register a widget with the factory.
 
         If ``validation_function`` is not specified, tests ``WidgetType`` for
@@ -187,7 +191,7 @@ class BasicRegistrationFactory:
                     f"{WidgetType.__name__} found."
                 )
 
-    def unregister(self, WidgetType):
+    def unregister(self, WidgetType) -> None:
         """Remove a widget from the factory's registry."""
         self.registry.pop(WidgetType)
 

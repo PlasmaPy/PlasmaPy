@@ -1,29 +1,27 @@
+import astropy.units as u
 import numpy as np
 import pytest
 
-from astropy import units as u
-
 from plasmapy.formulary.collisions import coulomb, lengths
-from plasmapy.utils import exceptions
-from plasmapy.utils.exceptions import CouplingWarning
-from plasmapy.utils.pytest_helpers import assert_can_handle_nparray
+from plasmapy.utils._pytest_helpers import assert_can_handle_nparray
+from plasmapy.utils.exceptions import CouplingWarning, PhysicsWarning
 
 
 class Test_impact_parameter_perp:
     @classmethod
-    def setup_class(cls):
-        """initializing parameters for tests"""
+    def setup_class(cls) -> None:
+        """Initializing parameters for tests"""
         cls.T = 11604 * u.K
         cls.particles = ("e", "p")
         cls.V = 1e4 * u.km / u.s
         cls.True1 = 7.200146594293746e-10
 
-    def test_symmetry(self):
+    def test_symmetry(self) -> None:
         result = lengths.impact_parameter_perp(self.T, self.particles)
         resultRev = lengths.impact_parameter_perp(self.T, self.particles[::-1])
         assert result == resultRev
 
-    def test_known1(self):
+    def test_known1(self) -> None:
         """
         Test for known value.
         """
@@ -38,7 +36,7 @@ class Test_impact_parameter_perp:
         )
         assert testTrue, errStr
 
-    def test_fail1(self):
+    def test_fail1(self) -> None:
         """
         Tests if test_known1() would fail if we slightly adjusted the
         value comparison by some quantity close to numerical error.
@@ -56,7 +54,7 @@ class Test_impact_parameter_perp:
 
     @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
     @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
-    def test_handle_nparrays(self, insert_some_nans, insert_all_nans):
+    def test_handle_nparrays(self, insert_some_nans, insert_all_nans) -> None:
         """Test for ability to handle numpy array quantities"""
         assert_can_handle_nparray(
             lengths.impact_parameter_perp, insert_some_nans, insert_all_nans, {}
@@ -70,8 +68,8 @@ class Test_impact_parameter_perp:
 
 class Test_impact_parameter:
     @classmethod
-    def setup_class(cls):
-        """initializing parameters for tests"""
+    def setup_class(cls) -> None:
+        """Initializing parameters for tests"""
         cls.T = 11604 * u.K
         cls.T_arr = np.array([1, 2]) * u.eV
         cls.n_e = 1e17 * u.cm**-3
@@ -81,12 +79,12 @@ class Test_impact_parameter:
         cls.V = 1e4 * u.km / u.s
         cls.True1 = np.array([7.200146594293746e-10, 2.3507660003984624e-08])
 
-    def test_symmetry(self):
+    def test_symmetry(self) -> None:
         result = lengths.impact_parameter(self.T, self.n_e, self.particles)
         resultRev = lengths.impact_parameter(self.T, self.n_e, self.particles[::-1])
         assert result == resultRev
 
-    def test_known1(self):
+    def test_known1(self) -> None:
         """
         Test for known value.
         """
@@ -104,7 +102,7 @@ class Test_impact_parameter:
         errStr = f"Impact parameters should be {self.True1} and not {methodVal}."
         assert testTrue, errStr
 
-    def test_fail1(self):
+    def test_fail1(self) -> None:
         """
         Tests if test_known1() would fail if we slightly adjusted the
         value comparison by some quantity close to numerical error.
@@ -127,7 +125,7 @@ class Test_impact_parameter:
         )
         assert testTrue, errStr
 
-    def test_bad_method(self):
+    def test_bad_method(self) -> None:
         """Testing failure when invalid method is passed."""
         with pytest.raises(ValueError):
             lengths.impact_parameter(
@@ -153,14 +151,14 @@ class Test_impact_parameter:
             {"method": "GMS-6", "z_mean": 1.0 * u.dimensionless_unscaled},
         ],
     )
-    def test_handle_nparrays(self, insert_some_nans, insert_all_nans, kwargs):
+    def test_handle_nparrays(self, insert_some_nans, insert_all_nans, kwargs) -> None:
         """Test for ability to handle numpy array quantities"""
         assert_can_handle_nparray(
             lengths.impact_parameter, insert_some_nans, insert_all_nans, kwargs
         )
 
     @pytest.mark.parametrize(
-        "n_e_shape,T_shape",
+        ("n_e_shape", "T_shape"),
         # Scalar T
         [
             ((2, 3, 5), (1,)),
@@ -172,7 +170,7 @@ class Test_impact_parameter:
             ((2, 3, 5, 4, 2), (2, 3, 5, 4, 2)),
         ],
     )
-    def test_extend_output_for_array_input(self, n_e_shape, T_shape):
+    def test_extend_output_for_array_input(self, n_e_shape, T_shape) -> None:
         """
         Test to verify that if either/or T and n_e are arrays, the
         resulting bmin and bmax have the correct shapes.
@@ -196,8 +194,8 @@ class Test_impact_parameter:
 
 class Test_mean_free_path:
     @classmethod
-    def setup_class(cls):
-        """initializing parameters for tests"""
+    def setup_class(cls) -> None:
+        """Initializing parameters for tests"""
         cls.T = 11604 * u.K
         cls.n_e = 1e17 * u.cm**-3
         cls.particles = ("e", "p")
@@ -205,17 +203,17 @@ class Test_mean_free_path:
         cls.V = 1e4 * u.km / u.s
         cls.True1 = 4.4047571877932046e-07
 
-    def test_symmetry(self):
+    def test_symmetry(self) -> None:
         with pytest.warns(CouplingWarning):
             result = lengths.mean_free_path(self.T, self.n_e, self.particles)
             resultRev = lengths.mean_free_path(self.T, self.n_e, self.particles[::-1])
         assert result == resultRev
 
-    def test_known1(self):
+    def test_known1(self) -> None:
         """
         Test for known value.
         """
-        with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
+        with pytest.warns(PhysicsWarning, match="strong coupling effects"):
             methodVal = lengths.mean_free_path(
                 self.T,
                 self.n_e,
@@ -228,13 +226,13 @@ class Test_mean_free_path:
         errStr = f"Mean free path should be {self.True1} and not {methodVal}."
         assert testTrue, errStr
 
-    def test_fail1(self):
+    def test_fail1(self) -> None:
         """
         Tests if test_known1() would fail if we slightly adjusted the
         value comparison by some quantity close to numerical error.
         """
         fail1 = self.True1 * (1 + 1e-15)
-        with pytest.warns(exceptions.PhysicsWarning, match="strong coupling effects"):
+        with pytest.warns(PhysicsWarning, match="strong coupling effects"):
             methodVal = lengths.mean_free_path(
                 self.T,
                 self.n_e,
@@ -252,7 +250,7 @@ class Test_mean_free_path:
 
     @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
     @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
-    def test_handle_nparrays(self, insert_some_nans, insert_all_nans):
+    def test_handle_nparrays(self, insert_some_nans, insert_all_nans) -> None:
         """Test for ability to handle numpy array quantities"""
         assert_can_handle_nparray(
             lengths.mean_free_path, insert_some_nans, insert_all_nans, {}

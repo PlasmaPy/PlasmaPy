@@ -17,7 +17,12 @@ from plasmapy.utils.decorators import validate_quantities
 
 
 @validate_quantities
-def diamagnetic_drift(dp: u.Pa / u.m, B: u.T, n: u.m ** (-3), q: u.C) -> u.m / u.s:
+def diamagnetic_drift(
+    dp: u.Quantity[u.Pa / u.m],
+    B: u.Quantity[u.T],
+    n: u.Quantity[u.m**-3],
+    q: u.Quantity[u.C],
+) -> u.Quantity[u.m / u.s]:
     r"""
     Calculate the diamagnetic fluid perpendicular drift.
 
@@ -45,7 +50,7 @@ def diamagnetic_drift(dp: u.Pa / u.m, B: u.T, n: u.m ** (-3), q: u.C) -> u.m / u
     >>> import numpy as np
     >>> dp = np.array([0, -1, 0]) * u.Pa / u.m
     >>> b = np.array([0, 0, 1]) * u.T
-    >>> n = 1 / u.m ** 3
+    >>> n = 1 / u.m**3
     >>> q = 1 * u.C
     >>> diamagnetic_drift(dp, b, n, q)
     <Quantity [ 1., -0., -0.] m / s>
@@ -70,7 +75,7 @@ vd_ = diamagnetic_drift
 
 
 @validate_quantities
-def ExB_drift(E: u.V / u.m, B: u.T) -> u.m / u.s:
+def ExB_drift(E: u.Quantity[u.V / u.m], B: u.Quantity[u.T]) -> u.Quantity[u.m / u.s]:
     r"""
     Calculate the "electric cross magnetic" particle drift.
 
@@ -93,11 +98,11 @@ def ExB_drift(E: u.V / u.m, B: u.T) -> u.m / u.s:
     >>> import astropy.units as u
     >>> ex = np.array([1, 0, 0])
     >>> ey = np.array([0, 1, 0])
-    >>> ExB_drift(ex * u.V/u.m, ey * u.T)
+    >>> ExB_drift(ex * u.V / u.m, ey * u.T)
     <Quantity [0., 0., 1.] m / s>
-    >>> ExB_drift(ex * u.V/u.m, ex * u.T)
+    >>> ExB_drift(ex * u.V / u.m, ex * u.T)
     <Quantity [0., 0., 0.] m / s>
-    >>> ExB_drift(ex * u.V/u.m, 100 * ey * u.T)
+    >>> ExB_drift(ex * u.V / u.m, 100 * ey * u.T)
     <Quantity [0.  , 0.  , 0.01] m / s>
 
     Notes
@@ -122,7 +127,9 @@ veb_ = ExB_drift
 
 
 @validate_quantities
-def force_drift(F: u.N, B: u.T, q: u.C) -> u.m / u.s:
+def force_drift(
+    F: u.Quantity[u.N], B: u.Quantity[u.T], q: u.Quantity[u.C]
+) -> u.Quantity[u.m / u.s]:
     r"""
     Calculate the general force drift for a particle in a magnetic field.
 
@@ -143,11 +150,11 @@ def force_drift(F: u.N, B: u.T, q: u.C) -> u.m / u.s:
     >>> from astropy.constants.si import g0, e, m_e
     >>> ex = np.array([1, 0, 0])
     >>> ez = np.array([0, 0, 1])
-    >>> force_drift(-ez*g0*m_e, ex*0.01*u.T, e)
+    >>> force_drift(-ez * g0 * m_e, ex * 0.01 * u.T, e)
     <Quantity [ 0.0000000e+00, -5.5756984e-09,  0.0000000e+00] m / s>
-    >>> force_drift(-ez*g0*m_e, ez*0.01*u.T, e)
+    >>> force_drift(-ez * g0 * m_e, ez * 0.01 * u.T, e)
     <Quantity [ 0., -0.,  0.] m / s>
-    >>> force_drift(-ez*g0*m_e, ex*u.T, e)
+    >>> force_drift(-ez * g0 * m_e, ex * u.T, e)
     <Quantity [ 0.0000000e+00, -5.5756984e-11,  0.0000000e+00] m / s>
 
     Returns

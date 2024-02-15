@@ -3,23 +3,19 @@ Tests for 'validate` decorators (i.e. decorators that check objects and change t
 when possible).
 """
 import inspect
-import pytest
-
-from astropy import units as u
-from functools import cached_property
 from unittest import mock
+
+import astropy.units as u
+import pytest
 
 from plasmapy.utils.decorators.checks import CheckUnits, CheckValues
 from plasmapy.utils.decorators.validators import (
+    ValidateQuantities,
     validate_class_attributes,
     validate_quantities,
-    ValidateQuantities,
 )
 
 
-# ----------------------------------------------------------------------------------------
-# Test Decorator class `ValidateQuantities` and decorator `validate_quantities`
-# ----------------------------------------------------------------------------------------
 class TestValidateQuantities:
     """
     Test for decorator
@@ -28,9 +24,7 @@ class TestValidateQuantities:
     """
 
     unit_check_defaults = CheckUnits._CheckUnits__check_defaults  # type: Dict[str, Any]
-    value_check_defaults = (
-        CheckValues._CheckValues__check_defaults
-    )  # type: Dict[str, Any]
+    value_check_defaults = CheckValues._CheckValues__check_defaults  # type: Dict[str, Any]
     check_defaults = {**unit_check_defaults, **value_check_defaults}
 
     @staticmethod
@@ -38,14 +32,14 @@ class TestValidateQuantities:
         return x
 
     @staticmethod
-    def foo_anno(x: u.cm):
+    def foo_anno(x: u.cm):  # noqa: ANN205
         return x
 
-    def test_inheritance(self):
+    def test_inheritance(self) -> None:
         assert issubclass(ValidateQuantities, CheckUnits)
         assert issubclass(ValidateQuantities, CheckValues)
 
-    def test_vq_method__get_validations(self):
+    def test_vq_method__get_validations(self) -> None:
         # method must exist
         assert hasattr(ValidateQuantities, "validations")
         assert hasattr(ValidateQuantities, "_get_validations")
@@ -61,7 +55,7 @@ class TestValidateQuantities:
         # 'output' = expected return from `_get_validations`
         # 'raises' = if `_get_validations` raises an Exception
         # 'warns' = if `_get_validations` issues a warning
-        #
+
         _cases = [
             {
                 "descr": "typical call...using 'can_be_negative'",
@@ -190,15 +184,12 @@ class TestValidateQuantities:
             assert sorted(validations.keys()) == sorted(case["output"].keys())
 
             # if validation key-value not specified then default is assumed
-            for arg_name in case["output"].keys():
+            for arg_name in case["output"]:
                 arg_validations = validations[arg_name]
 
-                for key in default_validations.keys():
+                for key, val in default_validations.items():
                     if key in case["output"][arg_name]:
-                        val = case["output"][arg_name][key]
-                    else:
-                        val = default_validations[key]
-
+                        val = case["output"][arg_name][key]  # noqa: PLW2901
                     assert arg_validations[key] == val
 
         # method calls `_get_unit_checks` and `_get_value_checks`
@@ -216,8 +207,7 @@ class TestValidateQuantities:
             assert mock_cu_get.called
             assert mock_cv_get.called
 
-    def test_vq_method__validate_quantity(self):
-
+    def test_vq_method__validate_quantity(self) -> None:
         # method must exist
         assert hasattr(ValidateQuantities, "_validate_quantity")
 
@@ -232,7 +222,7 @@ class TestValidateQuantities:
         # 'output' = expected return from `_get_validations`
         # 'raises' = if `_get_validations` raises an Exception
         # 'warns' = if `_get_validations` issues a warning
-        #
+
         _cases = [
             # typical call
             {
@@ -301,12 +291,12 @@ class TestValidateQuantities:
             },
         ]
 
-        # setup wrapped function
+        # set up wrapped function
         vq = ValidateQuantities()
         vq.f = self.foo
 
         # perform tests
-        for ii, case in enumerate(_cases):
+        for _ii, case in enumerate(_cases):  # noqa: B007
             arg, arg_name = case["input"]["args"]
             validations = case["input"]["validations"]
 
@@ -327,13 +317,17 @@ class TestValidateQuantities:
             "input": (5.0 * u.cm, u.cm, {**default_validations, "units": [u.cm]}),
             "output": 5.0 * u.cm,
         }
-        with mock.patch.object(
-            CheckUnits, "_check_unit_core", return_value=(5 * u.cm, u.cm, None, None)
-        ) as mock_cu_checks, mock.patch.object(
-            CheckValues, "_check_value", return_value=None
-        ) as mock_cv_checks:
-
-            args = case["input"][0:2]
+        with (
+            mock.patch.object(
+                CheckUnits,
+                "_check_unit_core",
+                return_value=(5 * u.cm, u.cm, None, None),
+            ) as mock_cu_checks,
+            mock.patch.object(
+                CheckValues, "_check_value", return_value=None
+            ) as mock_cv_checks,
+        ):
+            args = case["input"][:2]
             validations = case["input"][2]
 
             vq = ValidateQuantities(**validations)
@@ -343,15 +337,13 @@ class TestValidateQuantities:
             assert mock_cu_checks.called
             assert mock_cv_checks.called
 
-    def test_vq_preserves_signature(self):
+    def test_vq_preserves_signature(self) -> None:
         """Test `ValidateQuantities` preserves signature of wrapped function."""
-        # I'd like to directly test the @preserve_signature is used (??)
-
         wfoo = ValidateQuantities()(self.foo_anno)
         assert hasattr(wfoo, "__signature__")
         assert wfoo.__signature__ == inspect.signature(self.foo_anno)
 
-    def test_vq_called_as_decorator(self):
+    def test_vq_called_as_decorator(self) -> None:
         """
         Test behavior of `ValidateQuantities.__call__` (i.e. used as a decorator).
         """
@@ -360,7 +352,7 @@ class TestValidateQuantities:
         # 'output' = expected return from wrapped function
         # 'raises' = if an Exception is expected to be raised
         # 'warns' = if a warning is expected to be issued
-        #
+
         _cases = [
             {
                 "descr": "clean execution",
@@ -451,7 +443,6 @@ class TestValidateQuantities:
         ) as mock_vq_get, mock.patch.object(
             ValidateQuantities, "_validate_quantity", return_value=5 * u.cm
         ) as mock_vq_validate:
-
             wfoo = ValidateQuantities(**validations)(self.foo)
             assert wfoo(5 * u.cm) == 5 * u.cm
             assert mock_vq_get.call_count == 1
@@ -464,7 +455,7 @@ class TestValidateQuantities:
         # test on class method
         class Foo:
             @ValidateQuantities()
-            def __init__(self, y: u.cm):
+            def __init__(self, y: u.cm) -> None:
                 self.y = y
 
             @ValidateQuantities(validations_on_return={"can_be_negative": False})
@@ -477,11 +468,11 @@ class TestValidateQuantities:
             foo.bar(5 * u.cm)
 
     @mock.patch(
-        ValidateQuantities.__module__ + "." + ValidateQuantities.__qualname__,
+        f"{ValidateQuantities.__module__}.{ValidateQuantities.__qualname__}",
         side_effect=ValidateQuantities,
         autospec=True,
     )
-    def test_decorator_func_def(self, mock_vq_class):
+    def test_decorator_func_def(self, mock_vq_class) -> None:
         """
         Test that :func:`~plasmapy.utils.decorators.validators.validate_quantities` is
         properly defined.
@@ -496,7 +487,7 @@ class TestValidateQuantities:
         # 'output' = expected return from wrapped function
         # 'raises' = a raised Exception is expected
         # 'warns' = an issued warning is expected
-        #
+
         _cases = [
             # only argument checks
             {
@@ -535,12 +526,10 @@ class TestValidateQuantities:
                     #  @validate_quantities(x=check)
                     #      def foo(x):
                     #          return x
-                    #
                     wfoo = validate_quantities(**case["setup"]["validations"])(mock_foo)
                 else:
                     continue
 
-                # test
                 args = case["setup"]["args"]
                 kwargs = case["setup"]["kwargs"]
                 assert wfoo(*args, **kwargs) == case["output"]
@@ -556,43 +545,47 @@ class TestValidateQuantities:
                 for arg_name, validations in case["setup"]["validations"].items():
                     assert mock_vq_class.call_args[1][arg_name] == validations
 
-                # reset
                 mock_vq_class.reset_mock()
                 mock_foo.reset_mock()
 
 
 class TestValidateClassAttributes:
-    class SampleCase:
-        def __init__(self, x: int = None, y: int = None, z: int = None):
+    class SampleCase:  # noqa: D106
+        def __init__(
+            self,
+            x: int | None = None,
+            y: int | None = None,
+            z: int | None = None,
+        ) -> None:
             self.x = x
             self.y = y
             self.z = z
 
-        @cached_property
+        @property
         @validate_class_attributes(expected_attributes=["x"])
-        def require_x(self):
+        def require_x(self) -> int:
             return 0
 
-        @cached_property
+        @property
         @validate_class_attributes(expected_attributes=["x", "y"])
-        def require_x_and_y(self):
+        def require_x_and_y(self) -> int:
             return 0
 
-        @cached_property
+        @property
         @validate_class_attributes(both_or_either_attributes=[("x", "y")])
-        def require_x_or_y(self):
+        def require_x_or_y(self) -> int:
             return 0
 
-        @cached_property
+        @property
         @validate_class_attributes(
             expected_attributes=["x"], both_or_either_attributes=[("y", "z")]
         )
-        def require_x_and_either_y_or_z(self):
+        def require_x_and_either_y_or_z(self) -> int:
             return 0
 
-        @cached_property
+        @property
         @validate_class_attributes(mutually_exclusive_attributes=[("x", "y")])
-        def require_only_either_x_or_y(self):
+        def require_only_either_x_or_y(self) -> int:
             return 0
 
     @pytest.mark.parametrize(
@@ -606,16 +599,16 @@ class TestValidateClassAttributes:
             {"y": 0, "z": 0},
         ],
     )
-    def test_method_errors(self, test_case_constructor_keyword_arguments):
+    def test_method_errors(self, test_case_constructor_keyword_arguments) -> None:
         """
         Test errors raised by the validate_class_attributes decorator.
         """
 
         test_case = self.SampleCase(**test_case_constructor_keyword_arguments)
 
-        has_x = "x" in test_case_constructor_keyword_arguments.keys()
-        has_y = "y" in test_case_constructor_keyword_arguments.keys()
-        has_z = "z" in test_case_constructor_keyword_arguments.keys()
+        has_x = "x" in test_case_constructor_keyword_arguments
+        has_y = "y" in test_case_constructor_keyword_arguments
+        has_z = "z" in test_case_constructor_keyword_arguments
 
         method_return_dictionary = {
             "require_x": has_x,
@@ -632,3 +625,39 @@ class TestValidateClassAttributes:
             else:
                 with pytest.raises(ValueError):
                     getattr(test_case, method)
+
+
+def test_validate_quantities_argument_type_annotation() -> None:
+    """
+    Test that |validate_quantities| works with type hint annotations of
+    the form ``u.Quantity[u.m]`` on a function argument.
+    """
+
+    @validate_quantities
+    def f(x: u.Quantity[u.m]):
+        return x
+
+    argument = 100 * u.cm
+    expected = 1 * u.m
+    actual = f(argument)
+
+    assert u.isclose(actual, expected)
+    assert actual.unit == expected.unit
+
+
+def test_validate_quantities_return_type_annotation() -> None:
+    """
+    Test that |validate_quantities| works with type hint annotations of
+    the form ``u.Quantity[u.m]`` as a return argument.
+    """
+
+    @validate_quantities
+    def f(x) -> u.Quantity[u.m]:
+        return x
+
+    argument = 100 * u.cm
+    expected = 1 * u.m
+    actual = f(argument)
+
+    assert u.isclose(actual, expected)
+    assert actual.unit == expected.unit

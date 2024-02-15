@@ -6,14 +6,14 @@ from plasmapy.plasma.sources import plasma3d
 
 
 @pytest.mark.parametrize(
-    "grid_dimensions, expected_size",
+    ("grid_dimensions", "expected_size"),
     [
         pytest.param((100, 1, 1), 100, marks=pytest.mark.slow),  # Test 1D setup
         pytest.param((128, 128, 1), 16384, marks=pytest.mark.slow),  # 2D
         pytest.param((64, 64, 64), 262144, marks=pytest.mark.slow),  # 3D
     ],
 )
-def test_Plasma3D_setup(grid_dimensions, expected_size):
+def test_Plasma3D_setup(grid_dimensions, expected_size: int) -> None:
     r"""Function to test basic setup of the Plasma3D object.
 
     Tests that a Plasma3D object initiated with a particular
@@ -60,8 +60,8 @@ def test_Plasma3D_setup(grid_dimensions, expected_size):
     assert test_plasma.electric_field.si.unit == u.V / u.m
 
 
-@pytest.mark.slow
-def test_Plasma3D_derived_vars():
+@pytest.mark.slow()
+def test_Plasma3D_derived_vars() -> None:
     r"""Function to test derived variables of the Plasma3D class.
 
     Tests the shapes, units and values of variables derived from core

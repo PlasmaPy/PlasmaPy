@@ -1,4 +1,4 @@
-"""Functions to calculate plasma dielectric parameters"""
+"""Functions to calculate plasma dielectric parameters."""
 __all__ = [
     "cold_plasma_permittivity_SDP",
     "cold_plasma_permittivity_LRP",
@@ -6,12 +6,12 @@ __all__ = [
 ]
 __lite_funcs__ = ["permittivity_1D_Maxwellian_lite"]
 
-import numpy as np
-
-from astropy import units as u
 from collections import namedtuple
 
-from plasmapy.dispersion.dispersionfunction import plasma_dispersion_func_deriv_lite
+import astropy.units as u
+import numpy as np
+
+from plasmapy.dispersion.dispersion_functions import plasma_dispersion_func_deriv
 from plasmapy.formulary.frequencies import gyrofrequency, plasma_frequency
 from plasmapy.formulary.speeds import thermal_speed
 from plasmapy.utils.decorators import (
@@ -33,7 +33,9 @@ RotatingTensorElements = namedtuple(
 
 
 @validate_quantities(B={"can_be_negative": False}, omega={"can_be_negative": False})
-def cold_plasma_permittivity_SDP(B: u.T, species, n, omega: u.rad / u.s):
+def cold_plasma_permittivity_SDP(
+    B: u.Quantity[u.T], species, n, omega: u.Quantity[u.rad / u.s]
+):
     r"""
     Magnetized cold plasma dielectric permittivity tensor elements.
 
@@ -49,7 +51,7 @@ def cold_plasma_permittivity_SDP(B: u.T, species, n, omega: u.rad / u.s):
 
     species : `list` of `str`
         List of the plasma particle species,
-        e.g.: ``['e', 'D+']`` or ``['e', 'D+', 'He+']``.
+        e.g.: ``['e-', 'D+']`` or ``['e-', 'D+', 'He+']``.
 
     n : `list` of `~astropy.units.Quantity`
         `list` of species density in units convertible to per cubic meter
@@ -97,10 +99,10 @@ def cold_plasma_permittivity_SDP(B: u.T, species, n, omega: u.rad / u.s):
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> from numpy import pi
     >>> B = 2*u.T
-    >>> species = ['e', 'D+']
+    >>> species = ['e-', 'D+']
     >>> n = [1e18*u.m**-3, 1e18*u.m**-3]
     >>> omega = 3.7e9*(2*pi)*(u.rad/u.s)
     >>> permittivity = S, D, P = cold_plasma_permittivity_SDP(B, species, n, omega)
@@ -115,7 +117,7 @@ def cold_plasma_permittivity_SDP(B: u.T, species, n, omega: u.rad / u.s):
     """
     S, D, P = 1, 0, 1
 
-    for s, n_s in zip(species, n):
+    for s, n_s in zip(species, n, strict=False):
         omega_c = gyrofrequency(B=B, particle=s, signed=True)
         omega_p = plasma_frequency(n=n_s, particle=s)
 
@@ -126,7 +128,9 @@ def cold_plasma_permittivity_SDP(B: u.T, species, n, omega: u.rad / u.s):
 
 
 @validate_quantities(B={"can_be_negative": False}, omega={"can_be_negative": False})
-def cold_plasma_permittivity_LRP(B: u.T, species, n, omega: u.rad / u.s):
+def cold_plasma_permittivity_LRP(
+    B: u.Quantity[u.T], species, n, omega: u.Quantity[u.rad / u.s]
+):
     r"""
     Magnetized cold plasma dielectric permittivity tensor elements.
 
@@ -142,8 +146,8 @@ def cold_plasma_permittivity_LRP(B: u.T, species, n, omega: u.rad / u.s):
         Magnetic field magnitude in units convertible to tesla.
 
     species : `list` of `str`
-        The plasma particle species (e.g.: ``['e', 'D+']`` or
-        ``['e', 'D+', 'He+']``.
+        The plasma particle species (e.g.: ``['e-', 'D+']`` or
+        ``['e-', 'D+', 'He+']``.
 
     n : `list` of `~astropy.units.Quantity`
         `list` of species density in units convertible to per cubic meter.
@@ -185,16 +189,16 @@ def cold_plasma_permittivity_LRP(B: u.T, species, n, omega: u.rad / u.s):
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> from numpy import pi
-    >>> B = 2*u.T
-    >>> species = ['e', 'D+']
-    >>> n = [1e18*u.m**-3, 1e18*u.m**-3]
-    >>> omega = 3.7e9*(2*pi)*(u.rad/u.s)
+    >>> B = 2 * u.T
+    >>> species = ["e-", "D+"]
+    >>> n = [1e18 * u.m**-3, 1e18 * u.m**-3]
+    >>> omega = 3.7e9 * (2 * pi) * (u.rad / u.s)
     >>> L, R, P = permittivity = cold_plasma_permittivity_LRP(B, species, n, omega)
     >>> L
     <Quantity 0.63333...>
-    >>> permittivity.left    # namedtuple-style access
+    >>> permittivity.left  # namedtuple-style access
     <Quantity 0.63333...>
     >>> R
     <Quantity 1.41512...>
@@ -203,7 +207,7 @@ def cold_plasma_permittivity_LRP(B: u.T, species, n, omega: u.rad / u.s):
     """
     L, R, P = 1, 1, 1
 
-    for s, n_s in zip(species, n):
+    for s, n_s in zip(species, n, strict=False):
         omega_c = gyrofrequency(B=B, particle=s, signed=True)
         omega_p = plasma_frequency(n=n_s, particle=s)
 
@@ -258,13 +262,13 @@ def permittivity_1D_Maxwellian_lite(omega, kWave, vth, wp):
     >>> T = 30 * u.eV
     >>> n = 1e18 * u.cm**-3
     >>> particle = "Ne"
-    >>> z_mean = 8
+    >>> Z = 8
     >>> omega = 3.541e15  # in rad/s
     >>> vth = thermal_speed(T=T, particle=particle).value
-    >>> wp = plasma_frequency(n=n, particle=particle, z_mean=z_mean).value
+    >>> wp = plasma_frequency(n=n, particle=particle, Z=Z).value
     >>> k_wave = omega / vth
     >>> permittivity_1D_Maxwellian_lite(omega, k_wave, vth=vth, wp=wp)
-    (-6.72647...e-08+5.75899...e-07j)
+    (-6.72794...e-08+5.76024...e-07j)
     """
 
     # scattering parameter alpha.
@@ -272,7 +276,7 @@ def permittivity_1D_Maxwellian_lite(omega, kWave, vth, wp):
     alpha = np.sqrt(2) * wp / (kWave * vth)
     # The dimensionless phase velocity of the propagating EM wave.
     zeta = omega / (kWave * vth)
-    return -0.5 * (alpha**2) * plasma_dispersion_func_deriv_lite(zeta)
+    return -0.5 * (alpha**2) * plasma_dispersion_func_deriv(zeta)
 
 
 @bind_lite_func(permittivity_1D_Maxwellian_lite)
@@ -280,13 +284,13 @@ def permittivity_1D_Maxwellian_lite(omega, kWave, vth, wp):
     kWave={"none_shall_pass": True}, validations_on_return={"can_be_complex": True}
 )
 def permittivity_1D_Maxwellian(
-    omega: u.rad / u.s,
-    kWave: u.rad / u.m,
-    T: u.K,
-    n: u.m**-3,
+    omega: u.Quantity[u.rad / u.s],
+    kWave: u.Quantity[u.rad / u.m],
+    T: u.Quantity[u.K],
+    n: u.Quantity[u.m**-3],
     particle,
-    z_mean: u.dimensionless_unscaled = None,
-) -> u.dimensionless_unscaled:
+    z_mean=None,
+) -> u.Quantity[u.dimensionless_unscaled]:
     r"""
     Compute the classical dielectric permittivity for a 1D Maxwellian
     plasma.
@@ -350,32 +354,32 @@ def permittivity_1D_Maxwellian(
 
     Examples
     --------
-    >>> from astropy import units as u
+    >>> import astropy.units as u
     >>> from numpy import pi
     >>> from plasmapy.formulary import thermal_speed
     >>> T = 30 * 11600 * u.K
     >>> n = 1e18 * u.cm**-3
-    >>> particle = 'Ne'
-    >>> z_mean = 8 * u.dimensionless_unscaled
+    >>> particle = "Ne"
+    >>> Z = 8
     >>> vth = thermal_speed(T, particle, method="most_probable")
     >>> omega = 5.635e14 * 2 * pi * u.rad / u.s
     >>> k_wave = omega / vth
-    >>> permittivity_1D_Maxwellian(omega, k_wave, T, n, particle, z_mean)
-    <Quantity -6.72809...e-08+5.76037...e-07j>
+    >>> permittivity_1D_Maxwellian(omega, k_wave, T, n, particle, Z)
+    <Quantity -6.72955...e-08+5.76163...e-07j>
 
     For user convenience
     `~plasmapy.formulary.dielectric.permittivity_1D_Maxwellian_lite`
     is bound to this function and can be used as follows:
 
     >>> from plasmapy.formulary import plasma_frequency
-    >>> wp = plasma_frequency(n, particle, z_mean=z_mean)
+    >>> wp = plasma_frequency(n, particle, Z=Z)
     >>> permittivity_1D_Maxwellian.lite(
     ...     omega.value, k_wave.value, vth=vth.value, wp=wp.value
     ... )
-    (-6.72809...e-08+5.76037...e-07j)
+    (-6.72955...e-08+5.76163...e-07j)
     """
     vth = thermal_speed(T=T, particle=particle, method="most_probable").value
-    wp = plasma_frequency(n=n, particle=particle, z_mean=z_mean).value
+    wp = plasma_frequency(n=n, particle=particle, Z=z_mean).value
 
     chi = permittivity_1D_Maxwellian_lite(
         omega.value,

@@ -1,0 +1,44 @@
+name: Label PR
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened, edited]
+
+jobs:
+  no-changelog:
+    name: Add no changelog label
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+
+    - name: Add no changelog label
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          // Regular expression to match the PR title pattern "Bump * from * to *"
+          const bumpPattern = /^Bump .* from .* to .*/;
+
+          // Fetch the PR
+          const { data: pullRequest } = await github.rest.pulls.get({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            pull_number: context.issue.number,
+          });
+
+          if (
+            pullRequest.title.includes('Update pinned requirements') ||
+            pullRequest.title.includes('autoupdate') ||
+            bumpPattern.test(pullRequest.title)
+          ) {
+            // If yes, then apply the label "No changelog entry needed"
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              labels: ['No changelog entry needed'],
+            });
+          }

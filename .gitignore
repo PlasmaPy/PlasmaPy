@@ -117,7 +117,7 @@ ENV/
 *.#
 .#*
 
-# Auxilliary files associated with vim
+# Auxiliary files associated with vim
 *.swp
 VIRTUAL/
 
@@ -127,6 +127,18 @@ VIRTUAL/
 *.bbl
 *.blg
 
+# Configuration files for autotyping
+.libcst.codemod.yaml
+
+# Documentation files
+auto_examples
+docs/about/_authors.rst
+docs/notebooks/*.md
+
+# Version file
+plasmapy/_version.py
+tags
+
 # Miscellaneous files
 .idea/
 Untitled*
@@ -135,11 +147,6 @@ untitled*
 .DS_Store
 */cython_version.py
 .mypy_cache
-
-# Documentation files
-auto_examples
-
-# Version file
-plasmapy/_version.py
-tags
-docs/notebooks/*.md
+node_modules
+package-lock.json
+monkeytype.sqlite3

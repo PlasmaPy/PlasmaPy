@@ -3,15 +3,14 @@
 __all__ = ["Fermi_integral", "rot_a_to_b"]
 
 import numbers
-import numpy as np
 
+import numpy as np
 from mpmath import polylog
-from typing import Union
 
 
 def Fermi_integral(
-    x: Union[float, int, complex, np.ndarray], j: Union[float, int, complex, np.ndarray]
-) -> Union[float, complex, np.ndarray]:
+    x: complex | np.ndarray, j: complex | np.ndarray
+) -> complex | np.ndarray:
     r"""
     Calculate the complete Fermi-Dirac integral.
 
@@ -71,7 +70,7 @@ def Fermi_integral(
     >>> Fermi_integral(1, 1)
     (1.8062860704447743-0j)
     """
-    if isinstance(x, (numbers.Integral, numbers.Real, numbers.Complex)):
+    if isinstance(x, numbers.Integral | numbers.Real | numbers.Complex):
         arg = -np.exp(x)
         return -1 * complex(polylog(j + 1, arg))
     elif isinstance(x, np.ndarray):
@@ -86,8 +85,9 @@ def Fermi_integral(
 def rot_a_to_b(a: np.ndarray, b: np.ndarray) -> np.ndarray:
     r"""
     Calculates the 3D rotation matrix that will rotate vector ``a`` to
-    be aligned with vector ``b``. The rotation matrix is calculated as
-    follows. Let
+    be aligned with vector ``b``.
+
+    The rotation matrix is calculated as follows. Let
 
     .. math::
         \vec v = \vec a \times \vec b

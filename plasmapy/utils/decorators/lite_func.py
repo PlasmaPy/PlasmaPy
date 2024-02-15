@@ -6,9 +6,9 @@ __all__ = ["bind_lite_func"]
 
 import functools
 import inspect
+from collections.abc import Callable
 
 from numba.extending import is_jitted
-from typing import Callable, Dict
 
 
 class _LiteFuncDict(dict):
@@ -23,7 +23,7 @@ class _LiteFuncDict(dict):
     # This is only to give __bound_lite_func__ a docstring.
 
 
-def bind_lite_func(lite_func, attrs: Dict[str, Callable] = None):
+def bind_lite_func(lite_func, attrs: dict[str, Callable] | None = None):
     """
     Decorator to bind a lightweight "lite" version of a formulary
     function to the full formulary function, as well as any supporting
@@ -41,7 +41,6 @@ def bind_lite_func(lite_func, attrs: Dict[str, Callable] = None):
 
     Examples
     --------
-
     .. code-block:: python
 
         def foo_lite(x):
@@ -117,7 +116,7 @@ def bind_lite_func(lite_func, attrs: Dict[str, Callable] = None):
             # build origin name
             if hasattr(attr, "__module__"):
                 modname = attr.__module__
-            else:  # coverage: ignore
+            else:
                 # assume attr is defined in the module the function being
                 # decorated in
                 modname = wrapper.__module__
@@ -127,7 +126,7 @@ def bind_lite_func(lite_func, attrs: Dict[str, Callable] = None):
             # bind
             setattr(wrapper, bound_name, attr)
 
-        setattr(wrapper, "__bound_lite_func__", __bound_lite_func__)
+        wrapper.__bound_lite_func__ = __bound_lite_func__
 
         return wrapper
 

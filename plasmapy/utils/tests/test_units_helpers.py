@@ -1,15 +1,15 @@
 """Tests of `plasmapy.utils._units_helpers`."""
 
+from collections import namedtuple
+
 import astropy.units as u
 import pytest
-
 from astropy.constants import c, m_e
-from collections import namedtuple
 
 from plasmapy.utils._units_helpers import _get_physical_type_dict
 
 
-def test_get_physical_type_dict_specific_example():
+def test_get_physical_type_dict_specific_example() -> None:
     units = [u.m, u.m**-3, u.m * u.s]
     quantities = [5 * unit for unit in units]
     expected = {quantity.unit.physical_type: quantity for quantity in quantities}
@@ -58,8 +58,8 @@ test_cases = [
 ]
 
 
-@pytest.mark.parametrize("collection, kwargs, expected", test_cases)
-def test_get_physical_type_dict(collection, kwargs, expected):
+@pytest.mark.parametrize(("collection", "kwargs", "expected"), test_cases)
+def test_get_physical_type_dict(collection, kwargs, expected) -> None:
     physical_type_dict = _get_physical_type_dict(collection, **kwargs)
     assert physical_type_dict == expected
 
@@ -70,10 +70,25 @@ test_cases_exceptions = [
         kwargs={},
         expected=ValueError,
     ),
+    test_case(
+        collection=(5 * u.kg, 6 * u.T, 7 * u.m / u.s),
+        kwargs={"allowed_physical_types": {mass, velocity}},
+        expected=ValueError,
+    ),
+    test_case(
+        collection=(6 * u.m, u.kg),
+        kwargs={"strict": True, "only_quantities": True},
+        expected=TypeError,
+    ),
+    test_case(
+        collection=(6 * u.m, "not a Quantity"),
+        kwargs={"strict": True, "only_quantities": False},
+        expected=TypeError,
+    ),
 ]
 
 
-@pytest.mark.parametrize("collection, kwargs, expected", test_cases_exceptions)
-def test_get_physical_type_dict_exceptions(collection, kwargs, expected):
+@pytest.mark.parametrize(("collection", "kwargs", "expected"), test_cases_exceptions)
+def test_get_physical_type_dict_exceptions(collection, kwargs, expected) -> None:
     with pytest.raises(expected):
         _get_physical_type_dict(collection, **kwargs)

@@ -207,10 +207,11 @@ __all__ = [
 
 import os
 
+from collections.abc import Callable
 from importlib import import_module
 from sphinx.ext.autosummary import Autosummary
 from sphinx.util import logging
-from typing import Any, Callable, Dict, List, Tuple, Union
+from typing import Any, Dict, List, Tuple, Union
 
 from ..automodsumm.generate import GenDocsFromAutomodsumm
 from ..utils import default_grouping_info, find_mod_objs, get_custom_grouping_info
@@ -503,7 +504,6 @@ class AutomodsummOptions:
 
         # filter out skipped objects
         for group in list(mod_objs.keys()):
-
             names = mod_objs[group]["names"]
             qualnames = mod_objs[group]["qualnames"]
             objs = mod_objs[group]["objs"]

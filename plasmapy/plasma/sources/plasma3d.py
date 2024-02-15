@@ -3,10 +3,10 @@ Defines the core Plasma class used by PlasmaPy to represent plasma properties.
 """
 __all__ = ["Plasma3D"]
 
-import astropy.units as u
 import itertools
-import numpy as np
 
+import astropy.units as u
+import numpy as np
 from astropy.constants import mu0
 
 from plasmapy.formulary.magnetostatics import MagnetoStatics
@@ -38,7 +38,7 @@ class Plasma3D(GenericPlasma):
     """
 
     @validate_quantities(domain_x=u.m, domain_y=u.m, domain_z=u.m)
-    def __init__(self, domain_x, domain_y, domain_z, **kwargs):
+    def __init__(self, domain_x, domain_y, domain_z, **kwargs) -> None:
         super().__init__(**kwargs)
 
         # Define domain sizes
@@ -143,11 +143,11 @@ class Plasma3D(GenericPlasma):
 
     @property
     def magnetic_field_strength(self):
-        """
+        r"""
         Total field strength.
 
         .. math::
-            \\sqrt{ \\sum{ B^2 }}
+            \sqrt{ \sum{ B^2 }}
 
         """
         B = self.magnetic_field
@@ -155,12 +155,11 @@ class Plasma3D(GenericPlasma):
 
     @property
     def electric_field_strength(self):
-        """
+        r"""
         Total field strength.
 
         .. math::
-            \\sqrt{ \\sum{ E^2 }}
-
+            \sqrt{ \sum{ E^2 }}
         """
         E = self.electric_field
         return np.sqrt(np.sum(E * E, axis=0))
@@ -183,15 +182,15 @@ class Plasma3D(GenericPlasma):
             else False
         )
 
-    def add_magnetostatic(self, *mstats: MagnetoStatics):
+    def add_magnetostatic(self, *mstats: MagnetoStatics) -> None:
         # for each MagnetoStatic argument
         prod = itertools.product(*[list(range(n)) for n in self.domain_shape])
         for mstat in mstats:
             # loop over 3D-index (ix,iy,iz)
             for point_index in prod:
                 # get coordinate
-                p = self.grid[(slice(None),) + point_index]  # function as [:, *index]
+                p = self.grid[(slice(None), *point_index)]  # function as [:, *index]
                 # calculate magnetic field at this point and add back
                 self.magnetic_field[
-                    (slice(None),) + point_index
+                    (slice(None), *point_index)
                 ] += mstat.magnetic_field(p)

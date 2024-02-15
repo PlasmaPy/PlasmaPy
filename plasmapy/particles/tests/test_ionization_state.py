@@ -1,9 +1,9 @@
-import astropy.units as u
 import collections
 import itertools
+
+import astropy.units as u
 import numpy as np
 import pytest
-
 from astropy.tests.helper import assert_quantity_allclose
 
 from plasmapy.particles import (
@@ -26,9 +26,10 @@ ionic_fraction_table = [
 ]
 
 
-@pytest.mark.parametrize("ion, ionic_fraction, number_density", ionic_fraction_table)
-def test_ionic_level_attributes(ion, ionic_fraction, number_density):
-
+@pytest.mark.parametrize(
+    ("ion", "ionic_fraction", "number_density"), ionic_fraction_table
+)
+def test_ionic_level_attributes(ion, ionic_fraction, number_density) -> None:
     instance = IonicLevel(
         ion=ion, ionic_fraction=ionic_fraction, number_density=number_density
     )
@@ -47,10 +48,10 @@ def test_ionic_level_attributes(ion, ionic_fraction, number_density):
 
 
 @pytest.mark.parametrize(
-    "invalid_fraction, expected_exception",
+    ("invalid_fraction", "expected_exception"),
     [(-1e-9, ParticleError), (1.00000000001, ParticleError), ("...", ParticleError)],
 )
-def test_ionic_level_invalid_inputs(invalid_fraction, expected_exception):
+def test_ionic_level_invalid_inputs(invalid_fraction, expected_exception) -> None:
     """
     Test that IonicLevel raises exceptions when the ionic fraction
     is out of the interval [0,1] or otherwise invalid.
@@ -60,7 +61,7 @@ def test_ionic_level_invalid_inputs(invalid_fraction, expected_exception):
 
 
 @pytest.mark.parametrize("invalid_particle", ["H", "e-", "Fe-56"])
-def test_ionic_level_invalid_particles(invalid_particle):
+def test_ionic_level_invalid_particles(invalid_particle) -> None:
     """
     Test that `~plasmapy.particles.IonicLevel` raises the appropriate
     exception when passed a particle that isn't a neutral or ion.
@@ -69,8 +70,8 @@ def test_ionic_level_invalid_particles(invalid_particle):
         IonicLevel(invalid_particle, ionic_fraction=0)
 
 
-@pytest.mark.parametrize("ion1, ion2", [("Fe-56 6+", "Fe-56 5+"), ("H 1+", "D 1+")])
-def test_ionic_level_comparison_with_different_ions(ion1, ion2):
+@pytest.mark.parametrize(("ion1", "ion2"), [("Fe-56 6+", "Fe-56 5+"), ("H 1+", "D 1+")])
+def test_ionic_level_comparison_with_different_ions(ion1, ion2) -> None:
     """
     Test that a `TypeError` is raised when an `IonicLevel` object
     is compared to an `IonicLevel` object of a different ion.
@@ -83,12 +84,12 @@ def test_ionic_level_comparison_with_different_ions(ion1, ion2):
     assert ionic_fraction_1 != ionic_fraction_2
 
 
-def test_ionic_level_inequality_with_different_type():
+def test_ionic_level_inequality_with_different_type() -> None:
     instance = IonicLevel("H 1+", 0.3)
     assert instance != "different type"
 
 
-def test_ionization_state_ion_input_error():
+def test_ionization_state_ion_input_error() -> None:
     """
     Test that `~plasmapy.particles.IonizationState` raises the appropriate
     exception when an ion is the base particle and ionic fractions are
@@ -136,322 +137,244 @@ test_cases = {
     },
 }
 
-test_names = test_cases.keys()
+
+@pytest.fixture(params=list(test_cases.values()), ids=list(test_cases.keys()))
+def test_ionization_state(request):
+    return IonizationState(**request.param)
 
 
-# TODO: Refactor these tests using fixtures
+def test_charge_numbers(test_ionization_state) -> None:
+    """
+    Test that an `IonizationState` instance has the correct charge
+    numbers.
+    """
+    expected_charge_numbers = np.arange(test_ionization_state.atomic_number + 1)
+    assert np.allclose(test_ionization_state.charge_numbers, expected_charge_numbers)
 
 
-class Test_IonizationState:
-    """Test instances of IonizationState."""
+def test_equal_to_itself(He_ionization_state) -> None:
+    """
+    Test that `IonizationState.__eq__` returns `True for two identical
+    `IonizationState` instances.
+    """
+    assert He_ionization_state == He_ionization_state  # noqa: PLR0124
 
-    @classmethod
-    def setup_class(cls):
-        cls.instances = {}
 
-    @pytest.mark.parametrize("test_name", test_names)
-    def test_instantiation(self, test_name):
-        """
-        Test that each IonizationState test case can be instantiated.
-        """
-        self.instances[test_name] = IonizationState(**test_cases[test_name])
-
-    @pytest.mark.parametrize("test_name", test_names)
-    def test_charge_numbers(self, test_name):
-        """
-        Test that an `IonizationState` instance has the correct charge
-        numbers.
-        """
-        instance = self.instances[test_name]
-        expected_charge_numbers = np.arange(instance.atomic_number + 1)
-        assert np.allclose(instance.charge_numbers, expected_charge_numbers)
-
-    @pytest.mark.parametrize(
-        "test_name",
-        [name for name in test_names if "ionic_fractions" in test_cases[name]],
+@pytest.mark.parametrize(("tolerance", "output"), [(1e-8, True), (1e-9001, False)])
+def test_equal_to_within_tolerance(tolerance: float, output) -> None:
+    """
+    Test that `IonizationState.__eq__` returns `True` for two
+    `IonizationState` instances that differ within the inputted
+    tolerance.
+    """
+    H = IonizationState(particle="H", ionic_fractions=[0.6, 0.4], tol=tolerance)
+    H_acceptable_error = IonizationState(
+        particle="H", ionic_fractions=[0.6, 0.400_000_001], tol=1e-8
     )
-    def test_ionic_fractions(self, test_name):
-        """
-        Test that each `IonizationState` instance has the expected
-        ionic fractions.
-        """
-        instance = self.instances[test_name]
-        inputted_fractions = test_cases[test_name]["ionic_fractions"]
-        if isinstance(inputted_fractions, u.Quantity):
-            inputted_fractions = inputted_fractions.to(u.m**-3)
-            inputted_fractions = (inputted_fractions / inputted_fractions.sum()).value
-        if not np.allclose(instance.ionic_fractions, inputted_fractions):
-            pytest.fail(f"Mismatch in ionic fractions for test {test_name}.")
+    assert (H == H_acceptable_error) == output
 
-    def test_equal_to_itself(self):
-        """
-        Test that `IonizationState.__eq__` returns `True for two identical
-        `IonizationState` instances.
-        """
-        assert (
-            self.instances["Li"] == self.instances["Li"]
-        ), "Identical IonizationState instances are not equal."
 
-    def test_equal_to_within_tolerance(self):
-        """
-        Test that `IonizationState.__eq__` returns `True` for two
-        `IonizationState` instances that differ within the inputted
-        tolerance.
-        """
-        assert self.instances["H"] == self.instances["H acceptable error"], (
-            "Two IonizationState instances that are approximately the "
-            "same to within the tolerance are not testing as equal."
+def test_equality_no_more_exception(test_ionization_state, He_ionization_state) -> None:
+    """
+    Test that comparisons of `IonizationState` instances for
+    different elements does not fail.
+    """
+    if test_ionization_state == He_ionization_state:
+        return
+    assert test_ionization_state != He_ionization_state
+
+
+def test_iteration(test_ionization_state) -> None:
+    """Test that `IonizationState` instances iterate impeccably."""
+    states = list(test_ionization_state)
+
+    charge_numbers = [state.charge_number for state in states]
+    ionic_symbols = [state.ionic_symbol for state in states]
+
+    try:
+        base_symbol = isotope_symbol(ionic_symbols[0])
+    except InvalidIsotopeError:
+        base_symbol = atomic_symbol(ionic_symbols[0])
+    finally:
+        atomic_numb = atomic_number(ionic_symbols[1])
+
+    errors = []
+
+    expected_charges = np.arange(atomic_numb + 1)
+    if not np.all(charge_numbers == expected_charges):
+        errors.append(
+            f"The resulting charge numbers are {charge_numbers}, "
+            f"which are not equal to the expected charge numbers, "
+            f"which are {expected_charges}."
         )
 
-    def test_inequality(self):
-        """
-        Test that instances with different ionic fractions are not equal
-        to each other.
-        """
-        assert (
-            self.instances["Li ground state"] != self.instances["Li"]
-        ), "Different IonizationState instances are equal."
+    np.testing.assert_allclose(sum(test_ionization_state.ionic_fractions), 1)
 
-    def test_inequality_with_different_type(self):
-        assert self.instances["Li ground state"] != "different type"
-
-    def test_equality_no_more_exception(self):
-        """
-        Test that comparisons of `IonizationState` instances for
-        different elements does not fail.
-        """
-        assert self.instances["Li"] != self.instances["H"]
-
-    @pytest.mark.parametrize("test_name", test_names)
-    def test_iteration(self, test_name: str):
-        """Test that `IonizationState` instances iterate impeccably."""
-        states = list(self.instances[test_name])
-
-        charge_numbers = [state.charge_number for state in states]
-        ionic_fractions = np.array([state.ionic_fraction for state in states])
-        ionic_symbols = [state.ionic_symbol for state in states]
-
-        try:
-            base_symbol = isotope_symbol(ionic_symbols[0])
-        except InvalidIsotopeError:
-            base_symbol = atomic_symbol(ionic_symbols[0])
-        finally:
-            atomic_numb = atomic_number(ionic_symbols[1])
-
-        errors = []
-
-        expected_charges = np.arange(atomic_numb + 1)
-        if not np.all(charge_numbers == expected_charges):
-            errors.append(
-                f"The resulting charge numbers are {charge_numbers}, "
-                f"which are not equal to the expected charge numbers, "
-                f"which are {expected_charges}."
-            )
-
-        expected_fracs = test_cases[test_name]["ionic_fractions"]
-        if isinstance(expected_fracs, u.Quantity):
-            expected_fracs = (expected_fracs / expected_fracs.sum()).value
-
-        if not np.allclose(ionic_fractions, expected_fracs):
-            errors.append(
-                f"The resulting ionic fractions are {ionic_fractions}, "
-                f"which are not equal to the expected ionic fractions "
-                f"of {expected_fracs}."
-            )
-
-        expected_particles = [
-            Particle(base_symbol, Z=charge) for charge in charge_numbers
-        ]
-        expected_symbols = [particle.ionic_symbol for particle in expected_particles]
-        if ionic_symbols != expected_symbols:
-            errors.append(
-                f"The resulting ionic symbols are {ionic_symbols}, "
-                f"which are not equal to the expected ionic symbols of "
-                f"{expected_symbols}."
-            )
-
-        if errors:
-            errors.insert(
-                0,
-                (
-                    f"The test of IonizationState named '{test_name}' has "
-                    f"resulted in the following errors when attempting to "
-                    f"iterate."
-                ),
-            )
-            errmsg = " ".join(errors)
-            pytest.fail(errmsg)
-
-    @pytest.mark.parametrize("index", [-1, 4, "Li"])
-    def test_indexing_error(self, index):
-        """
-        Test that an `IonizationState` instance cannot be indexed
-        outside of the bounds of allowed charge numbers.
-        """
-        with pytest.raises(ParticleError):
-            self.instances["Li"][index]
-
-    def test_normalization(self):
-        """
-        Test that `_is_normalized` returns `False` when there is an
-        error greater than the tolerance, and `True` after normalizing.
-        """
-        H = self.instances["H acceptable error"]
-        assert not H._is_normalized(tol=1e-15)
-        H.normalize()
-        assert H._is_normalized(tol=1e-15)
-
-    @pytest.mark.parametrize("test_name", test_names)
-    def test_identifications(self, test_name):
-        """
-        Test that the identification attributes for test
-        `IonizationState` instances match the expected values from the
-        `Particle` instance.
-        """
-
-        Identifications = collections.namedtuple(
-            "Identifications", ["element", "isotope", "atomic_number"]
+    expected_particles = [Particle(base_symbol, Z=charge) for charge in charge_numbers]
+    expected_symbols = [particle.ionic_symbol for particle in expected_particles]
+    if ionic_symbols != expected_symbols:
+        errors.append(
+            f"The resulting ionic symbols are {ionic_symbols}, "
+            f"which are not equal to the expected ionic symbols of "
+            f"{expected_symbols}."
         )
 
-        expected_identifications = Identifications(
-            self.instances[test_name].element,
-            self.instances[test_name].isotope,
-            self.instances[test_name].atomic_number,
+    if errors:
+        errors.insert(
+            0,
+            (
+                f"The test of {test_ionization_state} has "
+                f"resulted in the following errors when attempting to "
+                f"iterate."
+            ),
         )
+        errmsg = " ".join(errors)
+        pytest.fail(errmsg)
 
-        expected_element = self.instances[test_name]._particle.element
-        expected_isotope = self.instances[test_name]._particle.isotope
-        expected_atomic_number = self.instances[test_name]._particle.atomic_number
 
-        resulting_identifications = Identifications(
-            expected_element, expected_isotope, expected_atomic_number
-        )
+def test_normalization() -> None:
+    """
+    Test that `_is_normalized` returns `False` when there is an
+    error greater than the tolerance, and `True` after normalizing.
+    """
+    H = IonizationState(particle="H", ionic_fractions=[0.6, 0.400_000_001], tol=1e-8)
+    assert not H._is_normalized(tol=1e-15)
+    H.normalize()
+    assert H._is_normalized(tol=1e-15)
 
-        assert resulting_identifications == expected_identifications, (
-            f"For IonizationState test {test_name}, the resulting "
-            f"identifications of {resulting_identifications} differ "
-            f"from the expected identifications of "
-            f"{expected_identifications}."
-        )
 
-    @pytest.mark.parametrize("tol", [-1e-16, 1.0000001])
-    def test_invalid_tolerances(self, tol):
-        """Test that invalid tolerances raise appropriate errors."""
-        test_name = "Li"
-        instance = self.instances[test_name]
-        with pytest.raises(ValueError):
-            instance.tol = tol
+def test_identifications(test_ionization_state) -> None:
+    """
+    Test that the identification attributes for test
+    `IonizationState` instances match the expected values from the
+    `Particle` instance.
+    """
 
-    @pytest.mark.parametrize("test_name", test_cases.keys())
-    def test_as_particle_list(self, test_name):
-        """
-        Test that `IonizationState` returns the correct `Particle`
-        instances.
-        """
-        instance = self.instances[test_name]
-        atom = instance.base_particle
-        nstates = instance.atomic_number + 1
-        expected_particles = [Particle(atom, Z=Z) for Z in range(nstates)]
-        actual_particles = instance.to_list()
-        assert expected_particles == actual_particles, (
-            f"The expected Particle instances of {expected_particles} "
-            f"are not all equal to the IonizationState particles of "
-            f"{actual_particles} for test {test_name}."
-        )
-
-    @pytest.mark.parametrize(
-        "test_name",
-        [name for name in test_names if "n_elem" in test_cases[name]],
+    Identifications = collections.namedtuple(
+        "Identifications", ["element", "isotope", "atomic_number"]
     )
-    def test_electron_density_from_n_elem_ionic_fractions(self, test_name):
-        instance = self.instances[test_name]
-        n_elem = test_cases[test_name]["n_elem"]
-        ionic_fractions = test_cases[test_name]["ionic_fractions"]
-        assert (
-            instance.n_elem == n_elem
-        ), f"n_elem is not being stored correctly for test {test_name}"
-        assert np.isclose(
-            instance.n_e,
-            np.sum(n_elem * ionic_fractions * np.arange(instance.atomic_number + 1)),
-            rtol=1e-12,
-            atol=0 * u.m**-3,
-        ), "n_e is not the expected value."
 
-    @pytest.mark.parametrize("test_name", test_names)
-    def test_getitem(self, test_name):
-        """
-        Test that `IonizationState.__getitem__` returns the same value
-        when using equivalent keys (charge number, particle symbol, and
-        `Particle` instance).
-
-        For example, if we create
-
-        >>> He_states = IonizationState('He', [0.2, 0.3, 0.5])
-
-        then this checks to make sure that `He_states[2]`,
-        `He_states['He 2+']`, and `He_states[Particle('He 2+')]` all
-        return the same result.
-
-        """
-        instance = self.instances[test_name]
-        particle_name = instance.base_particle
-
-        charge_numbers = np.arange(instance.atomic_number + 1)
-        symbols = [particle_symbol(particle_name, Z=Z) for Z in charge_numbers]
-        particles = instance.to_list()
-
-        errors = []
-
-        # In the following loop, instance[key] will return a namedtuple
-        # or class which may contain Quantity objects with values of
-        # numpy.nan.  Because of the difficulty of comparing nans in
-        # these objects, we compare the string representations instead
-        # (see Astropy issue #7901 on GitHub).
-
-        for keys in zip(charge_numbers, symbols, particles):
-
-            set_of_str_values = {str(instance[key]) for key in keys}
-            if len(set_of_str_values) != 1:
-                errors.append(
-                    f"\n\n"
-                    f"The following keys in test '{test_name}' did not "
-                    f"produce identical outputs as required: {keys}. "
-                    f"The set containing string representations of"
-                    f"the values is:\n\n{set_of_str_values}"
-                )
-
-        if errors:
-            pytest.fail(str.join("", errors))
-
-    @pytest.mark.parametrize(
-        "attr", ["charge_number", "ionic_fraction", "ionic_symbol"]
+    expected_identifications = Identifications(
+        test_ionization_state.element,
+        test_ionization_state.isotope,
+        test_ionization_state.atomic_number,
     )
-    def test_State_attrs(self, attr):
-        """
-        Test that an IonizationState instance returns something with the
-        correct attributes (be it a `collections.namedtuple` or a
-        `class`).
-        """
-        test_name = "He"
-        state = self.instances[test_name][1]
-        assert hasattr(state, attr)
 
-    def test_State_equality_and_getitem(self):
-        test_name = "He"
-        instance = self.instances[test_name]
-        charge = 2
-        symbol = "He 2+"
-        result_from_charge = instance[charge]
-        result_from_symbol = instance[symbol]
-        assert result_from_charge == result_from_symbol
+    expected_element = test_ionization_state._particle.element
+    expected_isotope = test_ionization_state._particle.isotope
+    expected_atomic_number = test_ionization_state._particle.atomic_number
+
+    resulting_identifications = Identifications(
+        expected_element, expected_isotope, expected_atomic_number
+    )
+
+    assert resulting_identifications == expected_identifications, (
+        f"For {test_ionization_state}, the resulting "
+        f"identifications of {resulting_identifications} differ "
+        f"from the expected identifications of "
+        f"{expected_identifications}."
+    )
+
+
+def test_as_particle_list(test_ionization_state) -> None:
+    """
+    Test that `IonizationState` returns the correct `Particle`
+    instances.
+    """
+    atom = test_ionization_state.base_particle
+    nstates = test_ionization_state.atomic_number + 1
+    expected_particles = [Particle(atom, Z=Z) for Z in range(nstates)]
+    actual_particles = test_ionization_state.to_list()
+    assert expected_particles == actual_particles
+
+
+def test_getitem(test_ionization_state) -> None:
+    """
+    Test that `IonizationState.__getitem__` returns the same value
+    when using equivalent keys (charge number, particle symbol, and
+    `Particle` instance).
+
+    For example, if we create
+
+    >>> He_states = IonizationState("He", [0.2, 0.3, 0.5])
+
+    then this checks to make sure that `He_states[2]`,
+    `He_states['He 2+']`, and `He_states[Particle('He 2+')]` all
+    return the same result.
+
+    """
+    particle_name = test_ionization_state.base_particle
+
+    charge_numbers = np.arange(test_ionization_state.atomic_number + 1)
+    symbols = [particle_symbol(particle_name, Z=Z) for Z in charge_numbers]
+    particles = test_ionization_state.to_list()
+
+    errors = []
+
+    # In the following loop, instance[key] will return a namedtuple
+    # or class which may contain Quantity objects with values of
+    # numpy.nan.  Because of the difficulty of comparing nans in
+    # these objects, we compare the string representations instead
+    # (see Astropy issue #7901 on GitHub).
+
+    for keys in zip(charge_numbers, symbols, particles, strict=False):
+        set_of_str_values = {str(test_ionization_state[key]) for key in keys}
+        if len(set_of_str_values) != 1:
+            errors.append(
+                f"\n\n"
+                f"The following keys for {test_ionization_state} did not "
+                f"produce identical outputs as required: {keys}. "
+                f"The set containing string representations of"
+                f"the values is:\n\n{set_of_str_values}"
+            )
+
+    if errors:
+        pytest.fail(str.join("", errors))
+
+
+@pytest.fixture()
+def He_ionization_state():
+    return IonizationState(
+        particle="He",
+        ionic_fractions=[0.5, 0.3, 0.2],
+        n_elem=1e20 * u.m**-3,
+    )
+
+
+@pytest.mark.parametrize("index", [-1, 4, "Li"])
+def test_indexing_error(He_ionization_state, index) -> None:
+    """
+    Test that an `IonizationState` instance cannot be indexed
+    outside of the bounds of allowed charge numbers.
+    """
+    with pytest.raises(ParticleError):
+        He_ionization_state[index]
+
+
+def test_inequality_with_different_type(He_ionization_state) -> None:
+    assert He_ionization_state != "different type"
+
+
+@pytest.mark.parametrize("tol", [-1e-16, 1.0000001])
+def test_invalid_tolerances(He_ionization_state, tol: float) -> None:
+    """Test that invalid tolerances raise appropriate errors."""
+    with pytest.raises(ValueError):
+        He_ionization_state.tol = tol
+
+
+def test_State_equality_and_getitem(He_ionization_state) -> None:
+    charge = 2
+    symbol = "He 2+"
+    result_from_charge = He_ionization_state[charge]
+    result_from_symbol = He_ionization_state[symbol]
+    assert result_from_charge == result_from_symbol
 
 
 ions = ["Fe 6+", "p", "He-4 0+", "triton", "alpha", "Ne +0"]
 
 
 @pytest.mark.parametrize("ion", ions)
-def test_IonizationState_ionfracs_from_ion_input(ion):
-
+def test_IonizationState_ionfracs_from_ion_input(ion) -> None:
     ionization_state = IonizationState(ion)
     ion_particle = Particle(ion)
     actual_ionic_fractions = ionization_state.ionic_fractions
@@ -470,7 +393,7 @@ def test_IonizationState_ionfracs_from_ion_input(ion):
 
 
 @pytest.mark.parametrize("ion", ions)
-def test_IonizationState_base_particles_from_ion_input(ion):
+def test_IonizationState_base_particles_from_ion_input(ion) -> None:
     """
     Test that supplying an ion to IonizationState will result in the
     base particle being the corresponding isotope or ion and that the
@@ -505,7 +428,7 @@ expected_properties = {
 }
 
 
-@pytest.fixture
+@pytest.fixture()
 def instance():
     kwargs = {
         "particle": "He-4",
@@ -519,7 +442,7 @@ def instance():
 
 
 @pytest.mark.parametrize("key", expected_properties)
-def test_IonizationState_attributes(instance, key):
+def test_IonizationState_attributes(instance, key) -> None:
     """
     Test a specific case that the `IonizationState` attributes are
     working as expected.
@@ -539,12 +462,12 @@ def test_IonizationState_attributes(instance, key):
             assert np.allclose(expected, actual)
 
 
-def test_IonizationState_methods(instance):
+def test_IonizationState_methods(instance) -> None:
     assert instance._is_normalized()
     assert str(instance) == "<IonizationState instance for He-4>"
 
 
-def test_IonizationState_ion_temperatures(instance):
+def test_IonizationState_ion_temperatures(instance) -> None:
     for ionic_level in instance:
         assert instance.T_e == ionic_level.T_i
 
@@ -552,7 +475,7 @@ def test_IonizationState_ion_temperatures(instance):
 @pytest.mark.xfail(
     reason="IonizationState currently does not store IonicLevels, but generates them on the fly!"
 )
-def test_IonizationState_ion_temperature_persistence(instance):
+def test_IonizationState_ion_temperature_persistence(instance) -> None:
     instance[0].T_i += 1 * u.K
     assert instance[0].T_i - instance.T_e == (1 * u.K)
 
@@ -567,18 +490,18 @@ def test_IonizationState_ion_temperature_persistence(instance):
         u.Quantity([1000, 1000, 10000], u.K),
     ],
 )
-def test_set_T_i(instance, T_i):
+def test_set_T_i(instance, T_i) -> None:
     instance.T_i = T_i
 
 
-def test_default_T_i_is_T_e(instance):
+def test_default_T_i_is_T_e(instance) -> None:
     T_i = instance.T_i
     assert_quantity_allclose(T_i, instance.T_e)
     assert len(T_i) == 3
 
 
 @pytest.mark.parametrize(
-    ["T_i", "expectation"],
+    ("T_i", "expectation"),
     [
         (10 * u.m, pytest.raises(u.UnitTypeError)),
         (
@@ -594,20 +517,20 @@ def test_default_T_i_is_T_e(instance):
         ),
     ],
 )
-def test_set_T_i_with_errors(instance, T_i, expectation):
+def test_set_T_i_with_errors(instance, T_i, expectation) -> None:
     with expectation:
         instance.T_i = T_i
 
 
-def test_slicing(instance):
+def test_slicing(instance) -> None:
     instance[1:]
 
 
-def test_len(instance):
+def test_len(instance) -> None:
     assert len(instance) == 3
 
 
-def test_nans():
+def test_nans() -> None:
     """
     Test that when no ionic fractions or temperature are inputted,
     the result is an array full of `~numpy.nan` of the right size.
@@ -624,7 +547,7 @@ def test_nans():
     )
 
 
-def test_setting_ionic_fractions():
+def test_setting_ionic_fractions() -> None:
     """
     Test the setter for the ``ionic_fractions`` attribute on
     `~plasmapy.particles.IonizationState`.
@@ -638,7 +561,7 @@ def test_setting_ionic_fractions():
 class Test_IonizationStateNumberDensitiesSetter:
     """Test that setting IonizationState.number_densities works correctly."""
 
-    def setup_class(self):
+    def setup_class(self) -> None:
         self.element = "H"
         self.valid_number_densities = u.Quantity([0.1, 0.2], unit=u.m**-3)
         self.expected_n_elem = np.sum(self.valid_number_densities)
@@ -647,15 +570,15 @@ class Test_IonizationStateNumberDensitiesSetter:
         )
         try:
             self.instance = IonizationState(self.element)
-        except Exception:
+        except Exception:  # noqa: BLE001
             pytest.fail(
                 "Unable to instantiate IonizationState with no ionic fractions."
             )
 
-    def test_setting_number_densities(self):
+    def test_setting_number_densities(self) -> None:
         try:
             self.instance.number_densities = self.valid_number_densities
-        except Exception:
+        except Exception:  # noqa: BLE001
             pytest.fail(
                 f"Unable to set number densities of {self.element} to "
                 f"{self.valid_number_densities}."
@@ -669,7 +592,7 @@ class Test_IonizationStateNumberDensitiesSetter:
             f"value of {self.valid_number_densities}."
         )
 
-    def test_ionic_fractions(self):
+    def test_ionic_fractions(self) -> None:
         assert np.allclose(
             self.instance.ionic_fractions, self.expected_ionic_fractions
         ), (
@@ -677,47 +600,47 @@ class Test_IonizationStateNumberDensitiesSetter:
             "correctly after the number densities were set."
         )
 
-    def test_n_elem(self):
+    def test_n_elem(self) -> None:
         assert u.quantity.allclose(self.instance.n_elem, self.expected_n_elem), (
             "IonizationState.n_elem not set correctly after "
             "number_densities was set."
         )
 
-    def test_n_e(self):
+    def test_n_e(self) -> None:
         assert u.quantity.allclose(
             self.instance.n_e, self.valid_number_densities[1]
         ), "IonizationState.n_e not set correctly after number_densities was set."
 
-    def test_that_negative_density_raises_error(self):
+    def test_that_negative_density_raises_error(self) -> None:
         with pytest.raises(ParticleError, match="cannot be negative"):
             self.instance.number_densities = u.Quantity([-0.1, 0.2], unit=u.m**-3)
 
-    def test_incorrect_number_of_charge_states_error(self):
+    def test_incorrect_number_of_charge_states_error(self) -> None:
         with pytest.raises(ParticleError, match="Incorrect number of charge states"):
             self.instance.number_densities = u.Quantity([0.1, 0.2, 0.3], unit=u.m**-3)
 
-    def test_incorrect_units_error(self):
+    def test_incorrect_units_error(self) -> None:
         with pytest.raises(u.UnitsError):
             self.instance.number_densities = u.Quantity([0.1, 0.2], unit=u.kg)
 
     # The following two tests are not related to setting the
     # number_densities attribute, but are helpful to test anyway.
 
-    def test_T_e_isnan_when_not_set(self):
+    def test_T_e_isnan_when_not_set(self) -> None:
         assert np.isnan(self.instance.T_e)
 
-    def test_kappa_isinf_when_not_set(self):
+    def test_kappa_isinf_when_not_set(self) -> None:
         assert np.isinf(self.instance.kappa)
 
 
-def test_iteration_with_nested_iterator():
+def test_iteration_with_nested_iterator() -> None:
     hydrogen = IonizationState("p+", n_elem=1e20 * u.m**-3, T_e=10 * u.eV)
 
     i = sum(1 for _, __ in itertools.product(hydrogen, hydrogen))
     assert i == 4
 
 
-def test_ionization_state_inequality_and_identity():
+def test_ionization_state_inequality_and_identity() -> None:
     deuterium_states = IonizationState("D+", n_elem=1e20 * u.m**-3, T_e=10 * u.eV)
     tritium_states = IonizationState("T+", n_elem=1e20 * u.m**-3, T_e=10 * u.eV)
     assert deuterium_states != tritium_states
@@ -735,8 +658,8 @@ particles_and_ionfracs = [
 
 
 @pytest.mark.parametrize("physical_property", physical_properties)
-@pytest.mark.parametrize("base_particle, ionic_fractions", particles_and_ionfracs)
-def test_weighted_mean_ion(base_particle, ionic_fractions, physical_property):
+@pytest.mark.parametrize(("base_particle", "ionic_fractions"), particles_and_ionfracs)
+def test_weighted_mean_ion(base_particle, ionic_fractions, physical_property) -> None:
     """
     Test that `IonizationState.average_ion` gives a |CustomParticle|
     instance with the expected mass or charge when calculating the
@@ -752,8 +675,8 @@ def test_weighted_mean_ion(base_particle, ionic_fractions, physical_property):
 
 
 @pytest.mark.parametrize("physical_property", physical_properties)
-@pytest.mark.parametrize("base_particle, ionic_fractions", particles_and_ionfracs)
-def test_weighted_rms_ion(base_particle, ionic_fractions, physical_property):
+@pytest.mark.parametrize(("base_particle", "ionic_fractions"), particles_and_ionfracs)
+def test_weighted_rms_ion(base_particle, ionic_fractions, physical_property) -> None:
     """
     Test that `IonizationState.average_ion` gives a |CustomParticle|
     instances with the expected mass or charge when calculating the
@@ -771,7 +694,7 @@ def test_weighted_rms_ion(base_particle, ionic_fractions, physical_property):
     assert_quantity_allclose(actual_rms_quantity, expected_rms_quantity)
 
 
-def test_exclude_neutrals_from_average_ion():
+def test_exclude_neutrals_from_average_ion() -> None:
     """
     Test that the `IonizationState.average_ion` method returns a
     |CustomParticle| that does not include neutrals in the averaging
@@ -788,8 +711,7 @@ def test_exclude_neutrals_from_average_ion():
 
 
 @pytest.mark.parametrize("physical_property", physical_properties)
-@pytest.mark.parametrize("use_rms", [True, False])
-def test_comparison_to_equivalent_particle_list(physical_property, use_rms):
+def test_comparison_to_equivalent_particle_list(physical_property) -> None:
     """
     Test that `IonizationState.average_ion` gives consistent results with
     `ParticleList.average_particle` when the ratios of different particles

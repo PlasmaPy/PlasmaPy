@@ -5,6 +5,10 @@ Functions to calculate classical transport coefficients.
 
     /notebooks/formulary/braginskii
 
+.. attention::
+
+   |expect-api-changes|
+
 Introduction
 ============
 
@@ -39,6 +43,7 @@ bound on the losses / transport encountered in a plasma.
 
 Transport Variables
 ===================
+
 For documentation on the individual transport variables, please take
 the following links to documentation of methods of |ClassicalTransport|.
 
@@ -51,6 +56,7 @@ the following links to documentation of methods of |ClassicalTransport|.
 
 Using the module
 ================
+
 Given that many of the transport variables share a lot of the same computation
 and many are often needed to be calculated simultaneously, this module provides
 a |ClassicalTransport| class that can be initialized once with all of the
@@ -68,6 +74,7 @@ in the Functions section).
 
 Classical transport models
 ==========================
+
 In this section, we present a broad overview of classical transport models
 implemented within this module.
 
@@ -109,6 +116,7 @@ notably the asymptotic behavior of alpha-cross and beta_perp as Hall →
 terms, which all other treatments have not. To neglect electron-electron
 collisions, leave :math:`μ = 0`\ . To consider them, specify mu and theta.
 """
+
 __all__ = [
     "ClassicalTransport",
     "resistivity",
@@ -119,13 +127,13 @@ __all__ = [
     "electron_viscosity",
 ]
 
-import numpy as np
 import warnings
 
-from astropy import units as u
+import astropy.units as u
+import numpy as np
 from astropy.constants.si import e, k_B, m_e
 
-from plasmapy import particles, utils
+from plasmapy import particles
 from plasmapy.formulary.collisions import (
     Coulomb_logarithm,
     fundamental_electron_collision_freq,
@@ -135,13 +143,17 @@ from plasmapy.formulary.dimensionless import Hall_parameter
 from plasmapy.formulary.misc import _grab_charge
 from plasmapy.particles.atomic import _is_electron
 from plasmapy.particles.exceptions import InvalidParticleError
-from plasmapy.utils import PhysicsError
 from plasmapy.utils.decorators import validate_quantities
+from plasmapy.utils.exceptions import CouplingWarning, PhysicsError
 
 
 class ClassicalTransport:
     r"""
     Classical transport coefficients (e.g. Braginskii, 1965).
+
+    .. attention::
+
+       |expect-api-changes|
 
     Notes
     -----
@@ -169,7 +181,7 @@ class ClassicalTransport:
 
     ion : `str`
         Representation of the ion species (e.g., ``'p'`` for protons,
-        ``'e'`` for electrons, ``'D+'`` for deuterium, or ``'He-4 +1'``
+        ``'e-'`` for electrons, ``'D+'`` for deuterium, or ``'He-4 +1'``
         for singly ionized helium-4). If no charge state information is
         provided, then the particles are assumed to be singly charged.
 
@@ -276,11 +288,10 @@ class ClassicalTransport:
 
     Examples
     --------
-    >>> from astropy import units as u
-    >>> t = ClassicalTransport(1*u.eV, 1e20/u.m**3,
-    ...                         1*u.eV, 1e20/u.m**3, 'p')
-    >>> t.resistivity
-    <Quantity 0.0003670... m Ohm>
+    >>> import astropy.units as u
+    >>> t = ClassicalTransport(1 * u.eV, 1e20 / u.m**3, 1 * u.eV, 1e20 / u.m**3, "p")
+    >>> t.resistivity  # doctest: +SKIP
+    <Quantity 0.0003670... Ohm m>
     >>> t.thermoelectric_conductivity
     <Quantity 0.71108...>
     >>> t.ion_thermal_conductivity
@@ -300,16 +311,16 @@ class ClassicalTransport:
         T_i={"can_be_negative": False, "equivalencies": u.temperature_energy()},
         m_i={"can_be_negative": False},
     )
-    def __init__(
+    def __init__(  # noqa: PLR0912, PLR0915
         self,
-        T_e: u.K,
-        n_e: u.m**-3,
-        T_i: u.K,
-        n_i: u.m**-3,
+        T_e: u.Quantity[u.K],
+        n_e: u.Quantity[u.m**-3],
+        T_i: u.Quantity[u.K],
+        n_i: u.Quantity[u.m**-3],
         ion,
-        m_i: u.kg = None,
+        m_i: u.Quantity[u.kg] = None,
         Z=None,
-        B: u.T = 0.0 * u.T,
+        B: u.Quantity[u.T] = 0.0 * u.T,
         model="Braginskii",
         field_orientation="parallel",
         coulomb_log_ei=None,
@@ -319,9 +330,9 @@ class ClassicalTransport:
         hall_e=None,
         hall_i=None,
         mu=None,
-        theta=None,
+        theta: float | None = None,
         coulomb_log_method="classical",
-    ):
+    ) -> None:
         # check the model
         self.model = model.lower()  # string inputs should be case-insensitive
         valid_models = ["braginskii", "spitzer", "spitzer-harm", "ji-held"]
@@ -353,10 +364,10 @@ class ClassicalTransport:
             self.m_i = m_i
         self.Z = _grab_charge(ion, Z) * u.dimensionless_unscaled
         if self.Z < 0:
-            raise ValueError("Z is not allowed to be negative!")  # TODO remove?
+            raise ValueError("Z is not allowed to be negative!")  # TODO: remove?
 
         # decide on the particle string for the electrons
-        self.e_particle = "e"
+        self.e_particle = "e-"
         self.ion = ion
 
         # save other arguments
@@ -373,7 +384,7 @@ class ClassicalTransport:
             )
 
         if self.coulomb_log_ei < 1:
-            # TODO discuss whether this is not too strict
+            # TODO: discuss whether this is not too strict
             raise PhysicsError(
                 f"Coulomb logarithm is {coulomb_log_ei} (below 1),"
                 "this is probably not physical!"
@@ -382,7 +393,7 @@ class ClassicalTransport:
             warnings.warn(
                 f"Coulomb logarithm is {coulomb_log_ei},"
                 f" you might have strong coupling effects",
-                utils.CouplingWarning,
+                CouplingWarning,
             )
 
         if coulomb_log_ii is not None:
@@ -397,7 +408,7 @@ class ClassicalTransport:
             )
 
         if self.coulomb_log_ii < 1:
-            # TODO discuss whether this is not too strict
+            # TODO: discuss whether this is not too strict
             raise PhysicsError(
                 f"Coulomb logarithm is {coulomb_log_ii} (below 1),"
                 "this is probably not physical!"
@@ -406,7 +417,7 @@ class ClassicalTransport:
             warnings.warn(
                 f"Coulomb logarithm is {coulomb_log_ii},"
                 f" you might have strong coupling effects",
-                utils.CouplingWarning,
+                CouplingWarning,
             )
 
         # calculate Hall parameters if not forced in input
@@ -443,7 +454,7 @@ class ClassicalTransport:
 
     @property
     @validate_quantities
-    def resistivity(self) -> u.Ohm * u.m:
+    def resistivity(self) -> u.Quantity[u.Ohm * u.m]:
         r"""
         Calculate the resistivity.
 
@@ -513,7 +524,7 @@ class ClassicalTransport:
 
     @property
     @validate_quantities
-    def ion_thermal_conductivity(self) -> u.W / u.m / u.K:
+    def ion_thermal_conductivity(self) -> u.Quantity[u.W / u.m / u.K]:
         r"""
         Calculate the thermal conductivity for ions.
 
@@ -547,7 +558,7 @@ class ClassicalTransport:
 
         See Also
         --------
-        ion_thermal_conductivity
+        electron_thermal_conductivity
 
         """
         kappa_hat = _nondim_thermal_conductivity(
@@ -567,7 +578,7 @@ class ClassicalTransport:
 
     @property
     @validate_quantities
-    def electron_thermal_conductivity(self) -> u.W / u.m / u.K:
+    def electron_thermal_conductivity(self) -> u.Quantity[u.W / u.m / u.K]:
         r"""
         Calculate the thermal conductivity for electrons.
 
@@ -633,7 +644,7 @@ class ClassicalTransport:
 
     @property
     @validate_quantities
-    def ion_viscosity(self) -> u.Pa * u.s:
+    def ion_viscosity(self) -> u.Quantity[u.Pa * u.s]:
         r"""
         Calculate the ion viscosity.
 
@@ -681,7 +692,7 @@ class ClassicalTransport:
 
     @property
     @validate_quantities
-    def electron_viscosity(self) -> u.Pa * u.s:
+    def electron_viscosity(self) -> u.Quantity[u.Pa * u.s]:
         r"""
         Calculate the electron viscosity.
 
@@ -781,13 +792,13 @@ def resistivity(
     ion,
     m_i=None,
     Z=None,
-    B: u.T = 0.0 * u.T,
+    B: u.Quantity[u.T] = 0.0 * u.T,
     model="Braginskii",
     field_orientation="parallel",
     mu=None,
-    theta=None,
+    theta: float | None = None,
     coulomb_log_method="classical",
-) -> u.Ohm * u.m:
+) -> u.Quantity[u.Ohm * u.m]:
     r"""
     Calculate the resistivity.
 
@@ -850,11 +861,11 @@ def thermoelectric_conductivity(
     ion,
     m_i=None,
     Z=None,
-    B: u.T = 0.0 * u.T,
+    B: u.Quantity[u.T] = 0.0 * u.T,
     model="Braginskii",
     field_orientation="parallel",
     mu=None,
-    theta=None,
+    theta: float | None = None,
     coulomb_log_method="classical",
 ):
     r"""
@@ -892,13 +903,13 @@ def ion_thermal_conductivity(
     ion,
     m_i=None,
     Z=None,
-    B: u.T = 0.0 * u.T,
+    B: u.Quantity[u.T] = 0.0 * u.T,
     model="Braginskii",
     field_orientation="parallel",
     mu=None,
-    theta=None,
+    theta: float | None = None,
     coulomb_log_method="classical",
-) -> u.W / u.m / u.K:
+) -> u.Quantity[u.W / u.m / u.K]:
     r"""
     Calculate the thermal conductivity for ions.
 
@@ -933,7 +944,7 @@ def ion_thermal_conductivity(
 
     See Also
     --------
-    ion_thermal_conductivity
+    electron_thermal_conductivity
 
     """
     ct = ClassicalTransport(
@@ -963,13 +974,13 @@ def electron_thermal_conductivity(
     ion,
     m_i=None,
     Z=None,
-    B: u.T = 0.0 * u.T,
+    B: u.Quantity[u.T] = 0.0 * u.T,
     model="Braginskii",
     field_orientation="parallel",
     mu=None,
-    theta=None,
+    theta: float | None = None,
     coulomb_log_method="classical",
-) -> u.W / u.m / u.K:
+) -> u.Quantity[u.W / u.m / u.K]:
     r"""
     Calculate the thermal conductivity for electrons.
 
@@ -1045,13 +1056,13 @@ def ion_viscosity(
     ion,
     m_i=None,
     Z=None,
-    B: u.T = 0.0 * u.T,
+    B: u.Quantity[u.T] = 0.0 * u.T,
     model="Braginskii",
     field_orientation="parallel",
     mu=None,
-    theta=None,
+    theta: float | None = None,
     coulomb_log_method="classical",
-) -> u.Pa * u.s:
+) -> u.Quantity[u.Pa * u.s]:
     r"""
     Calculate the ion viscosity.
 
@@ -1102,13 +1113,13 @@ def electron_viscosity(
     ion,
     m_i=None,
     Z=None,
-    B: u.T = 0.0 * u.T,
+    B: u.Quantity[u.T] = 0.0 * u.T,
     model="Braginskii",
     field_orientation="parallel",
     mu=None,
-    theta=None,
+    theta: float | None = None,
     coulomb_log_method="classical",
-) -> u.Pa * u.s:
+) -> u.Quantity[u.Pa * u.s]:
     r"""
     Calculate the electron viscosity.
 
@@ -1151,7 +1162,7 @@ def electron_viscosity(
 
 
 def _nondim_thermal_conductivity(
-    hall, Z, particle, model, field_orientation, mu=None, theta=None
+    hall, Z, particle, model, field_orientation, mu=None, theta: float | None = None
 ):
     """
     Calculate dimensionless classical thermal conductivity coefficients.
@@ -1187,7 +1198,15 @@ def _nondim_thermal_conductivity(
     return kappa_hat
 
 
-def _nondim_viscosity(hall, Z, particle, model, field_orientation, mu=None, theta=None):
+def _nondim_viscosity(
+    hall,
+    Z,
+    particle,
+    model,
+    field_orientation,  # noqa: ARG001
+    mu=None,
+    theta: float | None = None,
+):
     """
     Calculate dimensionless classical viscosity coefficients.
 
@@ -1216,7 +1235,7 @@ def _nondim_viscosity(hall, Z, particle, model, field_orientation, mu=None, thet
     return eta_hat
 
 
-def _nondim_resistivity(hall, Z, particle, model, field_orientation):
+def _nondim_resistivity(hall, Z, particle, model, field_orientation):  # noqa: ARG001
     """
     Calculate dimensionless classical resistivity coefficients.
 
@@ -1234,7 +1253,13 @@ def _nondim_resistivity(hall, Z, particle, model, field_orientation):
     return alpha_hat
 
 
-def _nondim_te_conductivity(hall, Z, particle, model, field_orientation):
+def _nondim_te_conductivity(
+    hall,
+    Z,
+    particle,  # noqa: ARG001
+    model,
+    field_orientation,
+):
     """
     Calculate dimensionless classical thermoelectric coefficients.
 
@@ -1273,7 +1298,7 @@ def _check_Z(allowed_Z, Z):
             # return a Z_idx pointing to the 'arbitrary'
             Z_idx = the_arbitrary_idx
         else:
-            raise utils.PhysicsError(f"{Z} is not an allowed Z value")
+            raise PhysicsError(f"{Z} is not an allowed Z value")
     # we have got the Z_idx we want. return
     return Z_idx
 
@@ -1539,9 +1564,7 @@ def _nondim_resist_braginskii(hall, Z, field_orientation):
         return alpha_par
 
     if field_orientation in ("perpendicular", "perp"):
-        alpha_perp = (
-            1 - (alpha_1_prime[Z_idx] * hall**2 + alpha_0_prime[Z_idx]) / Delta
-        )
+        alpha_perp = 1 - (alpha_1_prime[Z_idx] * hall**2 + alpha_0_prime[Z_idx]) / Delta
         return alpha_perp
 
     if field_orientation == "cross":
@@ -1553,9 +1576,7 @@ def _nondim_resist_braginskii(hall, Z, field_orientation):
     if field_orientation == "all":
         alpha_par = alpha_0
 
-        alpha_perp = (
-            1 - (alpha_1_prime[Z_idx] * hall**2 + alpha_0_prime[Z_idx]) / Delta
-        )
+        alpha_perp = 1 - (alpha_1_prime[Z_idx] * hall**2 + alpha_0_prime[Z_idx]) / Delta
 
         alpha_cross = (
             alpha_1_doubleprime[Z_idx] * hall**3 + alpha_0_doubleprime[Z_idx] * hall
@@ -1617,7 +1638,7 @@ def _nondim_tec_braginskii(hall, Z, field_orientation):
 #
 
 
-def _nondim_tc_e_ji_held(hall, Z, field_orientation):
+def _nondim_tc_e_ji_held(hall, Z, field_orientation):  # noqa: PLR0915
     """
     Dimensionless electron thermal conductivity — Ji-Held.
 
@@ -2048,7 +2069,7 @@ def _nondim_visc_e_ji_held(hall, Z):
     return np.array((eta_0, eta_1, eta_2, eta_3, eta_4))
 
 
-def _nondim_tc_i_ji_held(hall, Z, mu, theta, field_orientation, K=3):
+def _nondim_tc_i_ji_held(hall, Z, mu, theta: float, field_orientation, K=3):
     """
     Dimensionless ion thermal conductivity — Ji-Held.
 
@@ -2077,13 +2098,7 @@ def _nondim_tc_i_ji_held(hall, Z, mu, theta, field_orientation, K=3):
         Delta_perp_i1 = (
             r**6
             + (3.635 + 29.15 * zeta + 83 * zeta**2) * r**4
-            + (
-                1.395
-                + 35.64 * zeta
-                + 344.9 * zeta**2
-                + 1345 * zeta**3
-                + 1891 * zeta**4
-            )
+            + (1.395 + 35.64 * zeta + 344.9 * zeta**2 + 1345 * zeta**3 + 1891 * zeta**4)
             * r**2
             + 0.09163 * Delta_par_i1**2
         )
@@ -2099,17 +2114,14 @@ def _nondim_tc_i_ji_held(hall, Z, mu, theta, field_orientation, K=3):
             + 0.1693 * Delta_par_i1**2
         )
         kappa_perp_i = (
-            (np.sqrt(2) + 15 / 2 * zeta) * r**2
-            + 0.1693 * kappa_par_i * Delta_par_i1**2
+            (np.sqrt(2) + 15 / 2 * zeta) * r**2 + 0.1693 * kappa_par_i * Delta_par_i1**2
         ) / Delta_perp_i1
     if field_orientation in ("perpendicular", "perp"):
         return kappa_perp_i / np.sqrt(2)
 
     if K == 2:
         kappa_cross_i = (
-            r
-            * (5 / 2 * r**2 + 2.323 + 22.73 * zeta + 62.5 * zeta**2)
-            / Delta_perp_i1
+            r * (5 / 2 * r**2 + 2.323 + 22.73 * zeta + 62.5 * zeta**2) / Delta_perp_i1
         )
     elif K == 3:
         kappa_cross_i = (
@@ -2138,7 +2150,7 @@ def _nondim_tc_i_ji_held(hall, Z, mu, theta, field_orientation, K=3):
         )
 
 
-def _nondim_visc_i_ji_held(hall, Z, mu, theta, K=3):
+def _nondim_visc_i_ji_held(hall, Z, mu, theta: float, K=3):
     """
     Dimensionless ion viscosity — Ji-Held.
 
@@ -2236,9 +2248,7 @@ def _nondim_visc_i_ji_held(hall, Z, mu, theta, K=3):
                 + (2.023 + 11.68 * zeta + 20 * zeta**2) * r**2
                 + 0.5820 * Delta_par_i2**2
             )
-            eta_4_i = (
-                r * (r**2 + 1.188 + 8.283 * zeta + 16 * zeta**2) / Delta_perp_i2
-            )
+            eta_4_i = r * (r**2 + 1.188 + 8.283 * zeta + 16 * zeta**2) / Delta_perp_i2
             return eta_4_i
 
         eta_4_i = f_eta_4(r, zeta, Delta_perp_i2_24)

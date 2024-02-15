@@ -1,0 +1,71 @@
+name: Mint release 🍬
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag 🏷️
+        required: true
+        default: 2024.5.0rc1
+      DOI:
+        description: Reserved DOI from Zenodo
+        required: true
+        default: 10.5281/zenodo.1238132
+
+
+jobs:
+
+  tag:
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+
+    - name: Install dependencies
+      run: |
+        pip install towncrier pre-commit ruamel.yaml
+
+    - name: Configure git
+      run: |
+        git config --global user.email "team@plasmapy.org"
+        git config --global user.name "PlasmaPy Release Bot"
+
+    - name: Create or checkout branch
+      run: |
+        VERSION="v${{ github.event.inputs.tag }}"
+        BRANCH=$(echo $VERSION | awk 'BEGIN{FS=OFS="."} {$3="x"} 1' | cut -f1,2,3 -d'.' | awk -F'rc' '{print $1 ORS $2}')
+        git checkout $BRANCH 2>/dev/null || git checkout -b $BRANCH
+
+    - name: Update CITATION.cff, docs/about/citation.rst with the DOI for the new version.
+      run: |
+        python .github/scripts/citation_updater.py CITATION.cff docs/about/citation.rst docs/changelog/index.rst --version=${{ github.event.inputs.tag}} --doi=${{ github.event.inputs.doi}}
+        git add .
+        git commit -m "Update citation and changelog index entry"
+
+    - name: Create changelog
+      run: |
+        towncrier build --yes --version ${{ github.event.inputs.tag }} --draft | tee docs/changelog/${{ github.event.inputs.tag }}.rst
+        sed -i -e :a -e '/^\n*$/{$d;N;ba' -e '}' docs/changelog/${{ github.event.inputs.tag }}.rst   # strip empty lines
+        git add .
+        towncrier build --yes --version ${{ github.event.inputs.tag }}
+        git commit --allow-empty -nm "Add changelog entries for v${{ github.event.inputs.tag }}"
+
+    - name: Tag the release
+      run: |
+        git tag "v${{ github.event.inputs.tag }}" -m "Version v${{ github.event.inputs.tag }}"
+        git tag
+
+    - name: Push tag, branch state
+      run: |
+        VERSION="v${{ github.event.inputs.tag }}"
+        BRANCH=$(echo $VERSION | awk 'BEGIN{FS=OFS="."} {$3="x"} 1' | cut -f1,2,3 -d'.' | awk -F'rc' '{print $1 ORS $2}')
+        git push -u origin $VERSION $BRANCH

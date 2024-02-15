@@ -1,8 +1,7 @@
 """Test functionality of Stix in `plasmapy.dispersion.analytical.stix_`."""
+import astropy.units as u
 import numpy as np
 import pytest
-
-from astropy import units as u
 from astropy.constants.si import c
 
 from plasmapy.dispersion.analytical.stix_ import stix
@@ -27,7 +26,7 @@ class TestStix:
         w = w.to(u.rad / u.s).value
         n_i = n_i.to(u.m**-3).value
 
-        species = ions + [Particle("e-")]
+        species = [*ions, Particle("e-")]
         densities = np.zeros(n_i.size + 1)
         densities[:-1] = n_i
         densities[-1] = np.sum(n_i * ions.charge_number)
@@ -35,7 +34,7 @@ class TestStix:
         # Generate the plasma parameters needed
         wps = []
         wcs = []
-        for par, dens in zip(species, densities):
+        for par, dens in zip(species, densities, strict=False):
             wps.append(plasma_frequency(n=dens * u.m**-3, particle=par).value)
             wcs.append(gyrofrequency(B=B, particle=par, signed=True).value)
 
@@ -43,7 +42,7 @@ class TestStix:
         S = np.ones_like(w, dtype=np.float64)
         P = np.ones_like(S)
         D = np.zeros_like(S)
-        for wc, wp in zip(wcs, wps):
+        for wc, wp in zip(wcs, wps, strict=False):
             S -= (wp**2) / (w**2 - wc**2)
             P -= (wp / w) ** 2
             D += ((wp**2) / (w**2 - wc**2)) * (wc / w)
@@ -51,7 +50,7 @@ class TestStix:
         return S, P, D
 
     @pytest.mark.parametrize(
-        "kwargs, _error",
+        ("kwargs", "_error"),
         [
             ({**_kwargs_single_valued, "B": "wrong type"}, TypeError),
             ({**_kwargs_single_valued, "B": [8e-9, 8.5e-9] * u.T}, ValueError),
@@ -80,12 +79,12 @@ class TestStix:
             ),
         ],
     )
-    def test_raises(self, kwargs, _error):
+    def test_raises(self, kwargs, _error) -> None:
         with pytest.raises(_error):
             stix(**kwargs)
 
     @pytest.mark.parametrize(
-        "kwargs, expected",
+        ("kwargs", "expected"),
         [
             ({**_kwargs_single_valued, "w": 2 * u.rad / u.s}, {"shape": (4,)}),
             (
@@ -105,7 +104,6 @@ class TestStix:
                 },
                 {"shape": (4,)},
             ),
-            ({**_kwargs_single_valued, "ions": ["He+", "H+"]}, {"shape": (4,)}),
             (
                 {
                     **_kwargs_single_valued,
@@ -133,7 +131,8 @@ class TestStix:
             ),
         ],
     )
-    def test_return_structure(self, kwargs, expected):
+    @pytest.mark.filterwarnings("ignore::astropy.units.UnitsWarning")
+    def test_return_structure(self, kwargs, expected) -> None:
         k = stix(**kwargs)
 
         assert isinstance(k, u.Quantity)
@@ -141,7 +140,7 @@ class TestStix:
         assert k.unit == u.rad / u.m
 
     @pytest.mark.parametrize(
-        "kwargs, expected",
+        ("kwargs", "expected"),
         [
             # case taken from Stix figure 1-1
             # Note: ns = [n = k * c / w, ]
@@ -234,7 +233,7 @@ class TestStix:
             ),
         ],
     )
-    def test_vals_stix_figs(self, kwargs, expected):
+    def test_vals_stix_figs(self, kwargs, expected) -> None:
         ion = kwargs["ions"][0]
 
         mu = ion.mass / Particle("e-").mass
@@ -301,7 +300,7 @@ class TestStix:
             },
         ],
     )
-    def test_vals_theta_zero(self, kwargs):
+    def test_vals_theta_zero(self, kwargs) -> None:
         """
         Test on the known solutions for theta = 0,
         see Stix ch. 1 eqn 37.
@@ -354,7 +353,7 @@ class TestStix:
             },
         ],
     )
-    def test_vals_theta_90deg(self, kwargs):
+    def test_vals_theta_90deg(self, kwargs) -> None:
         """
         Test on the known solutions for theta = pi/2,
         see Stix ch. 1 eqn 38.

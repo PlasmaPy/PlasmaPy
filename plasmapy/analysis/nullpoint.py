@@ -1,10 +1,9 @@
 """
 Functionality to find and analyze 3D magnetic null points.
 
-.. note::
+.. attention::
 
-   This module is still under development and the API may change in
-   future releases.
+   |expect-api-changes|
 """
 
 __all__ = [
@@ -19,10 +18,10 @@ __all__ = [
     "uniform_null_point_find",
 ]
 
-import numpy as np
 import warnings
+from collections.abc import Callable
 
-from typing import Callable
+import numpy as np
 
 # Declare Constants & global variables
 _EQUALITY_ATOL = 1e-10
@@ -42,8 +41,6 @@ class NullPointError(Exception):
        change in future releases.
     """
 
-    pass
-
 
 class NullPointWarning(UserWarning):
     """
@@ -56,10 +53,8 @@ class NullPointWarning(UserWarning):
        change in future releases.
     """
 
-    pass
 
-
-class NonZeroDivergence(NullPointError):
+class NonZeroDivergence(NullPointError):  # noqa: N818
     """
     A class for handling the exception raised by passing in a magnetic
     field that violates the zero divergence constraint.
@@ -70,7 +65,7 @@ class NonZeroDivergence(NullPointError):
        change in future releases.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(
             "The divergence constraint does not hold for the provided magnetic field."
         )
@@ -88,8 +83,6 @@ class MultipleNullPointWarning(NullPointWarning):
        change in future releases.
     """
 
-    pass
-
 
 class Point:
     """
@@ -101,7 +94,7 @@ class Point:
        change in future releases.
     """
 
-    def __init__(self, loc):
+    def __init__(self, loc) -> None:
         self._loc = loc
 
     def get_loc(self):
@@ -123,7 +116,7 @@ class NullPoint(Point):
        change in future releases.
     """
 
-    def __init__(self, null_loc, classification):
+    def __init__(self, null_loc, classification) -> None:
         super().__init__(null_loc)
         self._classification = classification
 
@@ -152,14 +145,14 @@ def _vector_space(
     x_arr=None,
     y_arr=None,
     z_arr=None,
-    x_range=[0, 1],
-    y_range=[0, 1],
-    z_range=[0, 1],
+    x_range=(0, 1),
+    y_range=(0, 1),
+    z_range=(0, 1),
     u_arr=None,
     v_arr=None,
     w_arr=None,
     func=(lambda x, y, z: [x, y, z]),
-    precision=[0.05, 0.05, 0.05],
+    precision=(0.05, 0.05, 0.05),
 ):
     r"""
     Returns a vector space in the form of a multi-dimensional array.
@@ -257,7 +250,7 @@ def _vector_space(
         w = w_arr
     else:
         u, v, w = func(x, y, z)
-    return np.array([x, y, z]), np.array([u, v, w]), np.array([dx, dy, dz])
+    return np.array([x, y, z]), np.array([u, v, w]), [dx, dy, dz]
 
 
 def _trilinear_coeff_cal(vspace, cell):
@@ -267,7 +260,6 @@ def _trilinear_coeff_cal(vspace, cell):
 
     Parameters
     ----------
-
     vspace: |array_like|
         The vector space as constructed by the vector_space function
         which is a 1 by 3 array with the first element containing the
@@ -381,7 +373,6 @@ def trilinear_approx(vspace, cell):
 
     Parameters
     ----------
-
     vspace: |array_like|
         The vector space as constructed by the vector_space function
         which is a 1 by 3 array with the first element containing the
@@ -450,7 +441,6 @@ def _trilinear_jacobian(vspace, cell):
 
     Parameters
     ----------
-
     vspace: |array_like|
         The vector space as constructed by the vector_space function
         which is a 1 by 3 array with the first element containing the
@@ -483,7 +473,7 @@ def _trilinear_jacobian(vspace, cell):
         dBzdx = bz + ez * yInput + fz * zInput + hz * yInput * zInput
         dBzdy = cz + ez * xInput + gz * zInput + hz * xInput * yInput
         dBzdz = dz + fz * xInput + gz * yInput + hz * xInput * yInput
-        jmatrix = np.array(
+        return np.array(
             [
                 float(dBxdx),
                 float(dBxdy),
@@ -496,7 +486,6 @@ def _trilinear_jacobian(vspace, cell):
                 float(dBzdz),
             ]
         ).reshape(3, 3)
-        return jmatrix
 
     return jacobian_func
 
@@ -564,12 +553,10 @@ def _reduction(vspace, cell):
         ):
             passZ = True
 
-    doesPassReduction = passX and passY and passZ
-
-    return doesPassReduction
+    return passX and passY and passZ
 
 
-def _bilinear_root(a1, b1, c1, d1, a2, b2, c2, d2):
+def _bilinear_root(a1, b1, c1, d1, a2, b2, c2, d2):  # noqa: C901, PLR0911, PLR0912
     r"""
     Return the roots of a pair of bilinear equations of the following
     format.
@@ -606,16 +593,14 @@ def _bilinear_root(a1, b1, c1, d1, a2, b2, c2, d2):
     if np.isclose(a, 0, atol=_EQUALITY_ATOL):
         if np.isclose(b, 0, atol=_EQUALITY_ATOL):
             return np.array([])
-        else:
-            x1 = (-1.0 * c) / b
-            x2 = (-1.0 * c) / b
+        x1 = (-1.0 * c) / b
+        x2 = (-1.0 * c) / b
 
     else:
         if (b**2 - 4.0 * a * c) < 0:
             return np.array([])
-        else:
-            x1 = (-1.0 * b + (b**2 - 4.0 * a * c) ** 0.5) / (2.0 * a)
-            x2 = (-1.0 * b - (b**2 - 4.0 * a * c) ** 0.5) / (2.0 * a)
+        x1 = (-1.0 * b + (b**2 - 4.0 * a * c) ** 0.5) / (2.0 * a)
+        x2 = (-1.0 * b - (b**2 - 4.0 * a * c) ** 0.5) / (2.0 * a)
 
     y1 = None
     y2 = None
@@ -642,7 +627,7 @@ def _bilinear_root(a1, b1, c1, d1, a2, b2, c2, d2):
             return np.array([(x1, y1), (x2, y2)])
 
 
-def _trilinear_analysis(vspace, cell):
+def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0915
     r"""
     Return a true or false value based on whether a grid cell which has
     passed the reduction step, contains a null point, using trilinear
@@ -702,7 +687,7 @@ def _trilinear_analysis(vspace, cell):
     ByBzEndpoints = []
 
     # Check if the null point already exists in root list
-    def is_root_in_list(root, arr):
+    def is_root_in_list(root, arr) -> bool:
         for r in arr:
             x_close = np.isclose(root[0], r[0], atol=_EQUALITY_ATOL)
             y_close = np.isclose(root[1], r[1], atol=_EQUALITY_ATOL)
@@ -727,9 +712,14 @@ def _trilinear_analysis(vspace, cell):
         dy + gy * yConst1,
         fy + hy * yConst1,
     )
-    for root in root_list:
-        if not is_root_in_list((root[0], yConst1, root[1]), BxByEndpoints):
-            BxByEndpoints.append((root[0], yConst1, root[1]))
+
+    BxByEndpoints.extend(
+        [
+            (root[0], yConst1, root[1])
+            for root in root_list
+            if not is_root_in_list((root[0], yConst1, root[1]), BxByEndpoints)
+        ]
+    )
 
     # Bx=Bz=0 Curve Endpoint
     root_list = _bilinear_root(
@@ -743,9 +733,13 @@ def _trilinear_analysis(vspace, cell):
         fz + hz * yConst1,
     )
 
-    for root in root_list:
-        if not is_root_in_list((root[0], yConst1, root[1]), BxBzEndpoints):
-            BxBzEndpoints.append((root[0], yConst1, root[1]))
+    BxBzEndpoints.extend(
+        [
+            (root[0], yConst1, root[1])
+            for root in root_list
+            if not is_root_in_list((root[0], yConst1, root[1]), BxBzEndpoints)
+        ]
+    )
 
     # By=Bz=0 Curve Endpoint
     root_list = _bilinear_root(
@@ -759,9 +753,13 @@ def _trilinear_analysis(vspace, cell):
         fz + hz * yConst1,
     )
 
-    for root in root_list:
-        if not is_root_in_list((root[0], yConst1, root[1]), ByBzEndpoints):
-            ByBzEndpoints.append((root[0], yConst1, root[1]))
+    ByBzEndpoints.extend(
+        [
+            (root[0], yConst1, root[1])
+            for root in root_list
+            if not is_root_in_list((root[0], yConst1, root[1]), ByBzEndpoints)
+        ]
+    )
 
     # Back Surface
     yConst2 = vspace[0][1][f111[0]][f111[1]][
@@ -779,9 +777,13 @@ def _trilinear_analysis(vspace, cell):
         fy + hy * yConst2,
     )
 
-    for root in root_list:
-        if not is_root_in_list((root[0], yConst2, root[1]), BxByEndpoints):
-            BxByEndpoints.append((root[0], yConst2, root[1]))
+    BxByEndpoints.extend(
+        [
+            (root[0], yConst2, root[1])
+            for root in root_list
+            if not is_root_in_list((root[0], yConst2, root[1]), BxByEndpoints)
+        ]
+    )
 
     # Bx=Bz=0 Curve Endpoint
     root_list = _bilinear_root(
@@ -795,9 +797,13 @@ def _trilinear_analysis(vspace, cell):
         fz + hz * yConst2,
     )
 
-    for root in root_list:
-        if not is_root_in_list((root[0], yConst2, root[1]), BxBzEndpoints):
-            BxBzEndpoints.append((root[0], yConst2, root[1]))
+    BxBzEndpoints.extend(
+        [
+            (root[0], yConst2, root[1])
+            for root in root_list
+            if not is_root_in_list((root[0], yConst2, root[1]), BxBzEndpoints)
+        ]
+    )
 
     # By=Bz=0 Curve Endpoint
     root_list = _bilinear_root(
@@ -811,9 +817,13 @@ def _trilinear_analysis(vspace, cell):
         fz + hz * yConst2,
     )
 
-    for root in root_list:
-        if not is_root_in_list((root[0], yConst2, root[1]), ByBzEndpoints):
-            ByBzEndpoints.append((root[0], yConst2, root[1]))
+    ByBzEndpoints.extend(
+        [
+            (root[0], yConst2, root[1])
+            for root in root_list
+            if not is_root_in_list((root[0], yConst2, root[1]), ByBzEndpoints)
+        ]
+    )
 
     # Right Surface
     xConst1 = vspace[0][0][f111[0]][f111[1]][f111[2]]
@@ -829,9 +839,13 @@ def _trilinear_analysis(vspace, cell):
         gy + hy * xConst1,
     )
 
-    for root in root_list:
-        if not is_root_in_list((xConst1, root[0], root[1]), BxByEndpoints):
-            BxByEndpoints.append((xConst1, root[0], root[1]))
+    BxByEndpoints.extend(
+        [
+            (xConst1, root[0], root[1])
+            for root in root_list
+            if not is_root_in_list((xConst1, root[0], root[1]), BxByEndpoints)
+        ]
+    )
 
     # Bx=BZ=0 Curve Endpoint
     root_list = _bilinear_root(
@@ -845,9 +859,13 @@ def _trilinear_analysis(vspace, cell):
         gz + hz * xConst1,
     )
 
-    for root in root_list:
-        if not is_root_in_list((xConst1, root[0], root[1]), BxBzEndpoints):
-            BxBzEndpoints.append((xConst1, root[0], root[1]))
+    BxBzEndpoints.extend(
+        [
+            (xConst1, root[0], root[1])
+            for root in root_list
+            if not is_root_in_list((xConst1, root[0], root[1]), BxBzEndpoints)
+        ]
+    )
 
     # By=Bz=0 Curve Endpoint
     root_list = _bilinear_root(
@@ -861,9 +879,13 @@ def _trilinear_analysis(vspace, cell):
         gz + hz * xConst1,
     )
 
-    for root in root_list:
-        if not is_root_in_list((xConst1, root[0], root[1]), ByBzEndpoints):
-            ByBzEndpoints.append((xConst1, root[0], root[1]))
+    ByBzEndpoints.extend(
+        [
+            (xConst1, root[0], root[1])
+            for root in root_list
+            if not is_root_in_list((xConst1, root[0], root[1]), ByBzEndpoints)
+        ]
+    )
 
     # Left Surface
     xConst2 = vspace[0][0][f000[0]][f000[1]][f000[2]]
@@ -879,9 +901,13 @@ def _trilinear_analysis(vspace, cell):
         gy + hy * xConst2,
     )
 
-    for root in root_list:
-        if not is_root_in_list((xConst2, root[0], root[1]), BxByEndpoints):
-            BxByEndpoints.append((xConst2, root[0], root[1]))
+    BxByEndpoints.extend(
+        [
+            (xConst2, root[0], root[1])
+            for root in root_list
+            if not is_root_in_list((xConst2, root[0], root[1]), BxByEndpoints)
+        ]
+    )
 
     # Bx=BZ=0 Curve Endpoint
     root_list = _bilinear_root(
@@ -895,9 +921,13 @@ def _trilinear_analysis(vspace, cell):
         gz + hz * xConst2,
     )
 
-    for root in root_list:
-        if not is_root_in_list((xConst2, root[0], root[1]), BxBzEndpoints):
-            BxBzEndpoints.append((xConst2, root[0], root[1]))
+    BxBzEndpoints.extend(
+        [
+            (xConst2, root[0], root[1])
+            for root in root_list
+            if not is_root_in_list((xConst2, root[0], root[1]), BxBzEndpoints)
+        ]
+    )
 
     # By=Bz=0 Curve Endpoint
     root_list = _bilinear_root(
@@ -911,9 +941,13 @@ def _trilinear_analysis(vspace, cell):
         gz + hz * xConst2,
     )
 
-    for root in root_list:
-        if not is_root_in_list((xConst2, root[0], root[1]), ByBzEndpoints):
-            ByBzEndpoints.append((xConst2, root[0], root[1]))
+    ByBzEndpoints.extend(
+        [
+            (xConst2, root[0], root[1])
+            for root in root_list
+            if not is_root_in_list((xConst2, root[0], root[1]), ByBzEndpoints)
+        ]
+    )
 
     # Up Surface
     zConst1 = vspace[0][2][f111[0]][f111[1]][f111[2]]
@@ -929,9 +963,13 @@ def _trilinear_analysis(vspace, cell):
         ey + hy * zConst1,
     )
 
-    for root in root_list:
-        if not is_root_in_list((root[0], root[1], zConst1), BxByEndpoints):
-            BxByEndpoints.append((root[0], root[1], zConst1))
+    BxByEndpoints.extend(
+        [
+            (root[0], root[1], zConst1)
+            for root in root_list
+            if not is_root_in_list((root[0], root[1], zConst1), BxByEndpoints)
+        ]
+    )
 
     # Bx=Bz=0 Curve Endpoint
     root_list = _bilinear_root(
@@ -945,9 +983,13 @@ def _trilinear_analysis(vspace, cell):
         ez + hz * zConst1,
     )
 
-    for root in root_list:
-        if not is_root_in_list((root[0], root[1], zConst1), BxBzEndpoints):
-            BxBzEndpoints.append((root[0], root[1], zConst1))
+    BxBzEndpoints.extend(
+        [
+            (root[0], root[1], zConst1)
+            for root in root_list
+            if not is_root_in_list((root[0], root[1], zConst1), BxBzEndpoints)
+        ]
+    )
 
     # By=Bz=0 Curve Endpoint
     root_list = _bilinear_root(
@@ -961,9 +1003,13 @@ def _trilinear_analysis(vspace, cell):
         ez + hz * zConst1,
     )
 
-    for root in root_list:
-        if not is_root_in_list((root[0], root[1], zConst1), ByBzEndpoints):
-            ByBzEndpoints.append((root[0], root[1], zConst1))
+    ByBzEndpoints.extend(
+        [
+            (root[0], root[1], zConst1)
+            for root in root_list
+            if not is_root_in_list((root[0], root[1], zConst1), ByBzEndpoints)
+        ]
+    )
 
     # Down Surface
     zConst2 = vspace[0][2][f000[0]][f000[1]][f000[2]]
@@ -979,9 +1025,13 @@ def _trilinear_analysis(vspace, cell):
         ey + hy * zConst2,
     )
 
-    for root in root_list:
-        if not is_root_in_list((root[0], root[1], zConst2), BxByEndpoints):
-            BxByEndpoints.append((root[0], root[1], zConst2))
+    BxByEndpoints.extend(
+        [
+            (root[0], root[1], zConst2)
+            for root in root_list
+            if not is_root_in_list((root[0], root[1], zConst2), BxByEndpoints)
+        ]
+    )
 
     # Bx=Bz=0 Curve Endpoint
     root_list = _bilinear_root(
@@ -995,9 +1045,13 @@ def _trilinear_analysis(vspace, cell):
         ez + hz * zConst2,
     )
 
-    for root in root_list:
-        if not is_root_in_list((root[0], root[1], zConst2), BxBzEndpoints):
-            BxBzEndpoints.append((root[0], root[1], zConst2))
+    BxBzEndpoints.extend(
+        [
+            (root[0], root[1], zConst2)
+            for root in root_list
+            if not is_root_in_list((root[0], root[1], zConst2), BxBzEndpoints)
+        ]
+    )
 
     # By=Bz=0 Curve Endpoint
     root_list = _bilinear_root(
@@ -1011,9 +1065,13 @@ def _trilinear_analysis(vspace, cell):
         ez + hz * zConst2,
     )
 
-    for root in root_list:
-        if not is_root_in_list((root[0], root[1], zConst2), ByBzEndpoints):
-            ByBzEndpoints.append((root[0], root[1], zConst2))
+    ByBzEndpoints.extend(
+        [
+            (root[0], root[1], zConst2)
+            for root in root_list
+            if not is_root_in_list((root[0], root[1], zConst2), ByBzEndpoints)
+        ]
+    )
 
     xbound = vspace[0][0][f111[0]][f111[1]][f111[2]]
     ybound = vspace[0][1][f111[0]][f111[1]][f111[2]]
@@ -1070,7 +1128,7 @@ def _trilinear_analysis(vspace, cell):
     if len(BxByEndpoints) != 2 or len(BxBzEndpoints) != 2 or len(ByBzEndpoints) != 2:
         return False
 
-    def endpoint_sign_check(curve_endpoints, curve_name):
+    def endpoint_sign_check(curve_endpoints, curve_name: str):
         if curve_name == "x":
             index = 0
         elif curve_name == "y":
@@ -1088,18 +1146,12 @@ def _trilinear_analysis(vspace, cell):
             second_endpoint, 0, atol=_EQUALITY_ATOL
         ):
             return True
-        if np.sign(first_endpoint) * np.sign(second_endpoint) > 0:
-            return False
-
-        return True
+        return np.sign(first_endpoint) * np.sign(second_endpoint) <= 0
 
     opposite_sign_z = endpoint_sign_check(BxByEndpoints, "z")
     opposite_sign_y = endpoint_sign_check(BxBzEndpoints, "y")
     opposite_sign_x = endpoint_sign_check(ByBzEndpoints, "x")
-    if opposite_sign_x and opposite_sign_y and opposite_sign_z:
-        return True
-
-    return False
+    return bool(opposite_sign_x and opposite_sign_y and opposite_sign_z)
 
 
 def _locate_null_point(vspace, cell, n, err):
@@ -1151,7 +1203,7 @@ def _locate_null_point(vspace, cell, n, err):
         If the maximum number of iteration has been reached, but
         convergence has not occurred.
     """
-    global _recursion_level
+    global _recursion_level  # noqa: PLW0602
     # Calculating the Jacobian and trilinear approximation functions for the cell
     tlApprox = trilinear_approx(vspace, cell)
     jcb = _trilinear_jacobian(vspace, cell)
@@ -1209,16 +1261,16 @@ def _locate_null_point(vspace, cell, n, err):
         )
         return is_x_in_bound and is_y_in_bound and is_z_in_bound
 
-    starting_pos = []  # noqa: FURB138
+    starting_pos = []
     # Adding the Corners
-    for point in corners:
-        starting_pos.append(
-            [
-                vspace[0][0][point[0]][point[1]][point[2]],
-                vspace[0][1][point[0]][point[1]][point[2]],
-                vspace[0][2][point[0]][point[1]][point[2]],
-            ]
-        )
+    starting_pos = [
+        [
+            vspace[0][0][point[0]][point[1]][point[2]],
+            vspace[0][1][point[0]][point[1]][point[2]],
+            vspace[0][2][point[0]][point[1]][point[2]],
+        ]
+        for point in corners
+    ]
     # Adding the Mid Point
     starting_pos.append(
         [
@@ -1229,9 +1281,9 @@ def _locate_null_point(vspace, cell, n, err):
     )
     # Newton Iteration
     for x0 in starting_pos:
-        x0 = np.array(x0)
-        x0 = x0.reshape(3, 1)
-        for i in range(n):
+        x0 = np.array(x0)  # noqa: PLW2901
+        x0 = x0.reshape(3, 1)  # noqa: PLW2901
+        for _i in range(n):  # noqa: B007
             locx = tlApprox(x0[0], x0[1], x0[2])[0]
             locy = tlApprox(x0[0], x0[1], x0[2])[1]
             locz = tlApprox(x0[0], x0[1], x0[2])[2]
@@ -1255,7 +1307,7 @@ def _locate_null_point(vspace, cell, n, err):
                 else:
                     break
             # Adjust position
-            x0 = np.subtract(
+            x0 = np.subtract(  # noqa: PLW2901
                 x0, np.matmul(np.linalg.inv(jcb(x0[0], x0[1], x0[2])), Bx0)
             )
             norm = np.linalg.norm(x0)
@@ -1317,7 +1369,7 @@ def _classify_null_point(vspace, cell, loc):
     jcb = _trilinear_jacobian(vspace, cell)
     M = jcb(loc[0], loc[1], loc[2])
     if not np.isclose(np.trace(M), 0, atol=_EQUALITY_ATOL):
-        raise NonZeroDivergence()
+        raise NonZeroDivergence
     eigen_vals, eigen_vectors = np.linalg.eig(M)
     # using the notation from Parnell et al. (1996)
     R = -1.0 * np.linalg.det(M)
@@ -1329,30 +1381,30 @@ def _classify_null_point(vspace, cell, loc):
         if np.allclose(M, M.T, atol=_EQUALITY_ATOL):  # Checking if M is symmetric
             null_point_type = "Proper radial null"
         else:
-            if np.isclose(determinant, 0, atol=_EQUALITY_ATOL):
-                null_point_type = "Anti-parallel lines with null plane OR Planes of parabolae with null line"
-            else:
-                null_point_type = "Critical spiral null"
+            null_point_type = (
+                "Anti-parallel lines with null plane OR Planes of parabolae with null line"
+                if np.isclose(determinant, 0, atol=_EQUALITY_ATOL)
+                else "Critical spiral null"
+            )
     elif discriminant < 0:
         if np.allclose(M, M.T, atol=_EQUALITY_ATOL):
-            if np.isclose(determinant, 0, atol=_EQUALITY_ATOL):
-                null_point_type = "Continuous potential X-points"
-            else:
-                null_point_type = "Improper radial null"
+            null_point_type = (
+                "Continuous potential X-points"
+                if np.isclose(determinant, 0, atol=_EQUALITY_ATOL)
+                else "Improper radial null"
+            )
+        elif np.isclose(determinant, 0, atol=_EQUALITY_ATOL):
+            null_point_type = "Continuous X-points"
         else:
-            if np.isclose(determinant, 0, atol=_EQUALITY_ATOL):
-                null_point_type = "Continuous X-points"
-            else:
-                null_point_type = "Skewed improper null"
+            null_point_type = "Skewed improper null"
+    elif np.isclose(determinant, 0, atol=_EQUALITY_ATOL):
+        null_point_type = "Continuous concentric ellipses"
     else:
-        if np.isclose(determinant, 0, atol=_EQUALITY_ATOL):
-            null_point_type = "Continuous concentric ellipses"
-        else:
-            null_point_type = "Spiral null"
+        null_point_type = "Spiral null"
     return null_point_type
 
 
-def _vspace_iterator(vspace, maxiter=500, err=1e-10):
+def _vspace_iterator(vspace, maxiter=500, err: float = 1e-10):
     r"""
     Returns an array of null point objects, representing the null points
     of the given vector space.
@@ -1366,9 +1418,8 @@ def _vspace_iterator(vspace, maxiter=500, err=1e-10):
         vector values, and the third element containing the delta values
         for each dimension.
 
-    maxiter : int
-        The maximum iterations of the Newton-Raphson method. Defaults to
-        500.
+    maxiter : int, default: 500
+        The maximum iterations of the Newton-Raphson method.
 
     err : float, default: ``1e-10``
         The threshold/error that determines if convergence has occurred
@@ -1384,14 +1435,15 @@ def _vspace_iterator(vspace, maxiter=500, err=1e-10):
     for i in range(len(vspace[0][0]) - 1):
         for j in range(len(vspace[0][0][0]) - 1):
             for k in range(len(vspace[0][0][0][0]) - 1):
-                if _reduction(vspace, [i, j, k]):
-                    if _trilinear_analysis(vspace, [i, j, k]):
-                        loc = _locate_null_point(vspace, [i, j, k], maxiter, err)
-                        if loc is not None:
-                            null_type = _classify_null_point(vspace, [i, j, k], loc)
-                            p = NullPoint(loc, null_type)
-                            if p not in nullpoints:
-                                nullpoints.append(p)
+                if _reduction(vspace, [i, j, k]) and _trilinear_analysis(
+                    vspace, [i, j, k]
+                ):
+                    loc = _locate_null_point(vspace, [i, j, k], maxiter, err)
+                    if loc is not None:
+                        null_type = _classify_null_point(vspace, [i, j, k], loc)
+                        p = NullPoint(loc, null_type)
+                        if p not in nullpoints:
+                            nullpoints.append(p)
     return nullpoints
 
 
@@ -1403,7 +1455,7 @@ def null_point_find(
     v_arr=None,
     w_arr=None,
     maxiter=500,
-    err=1e-10,
+    err: float = 1e-10,
 ):
     r"""
     Returns an array of `~plasmapy.analysis.nullpoint.NullPoint` object,
@@ -1446,9 +1498,8 @@ def null_point_find(
         the vector space. If not given, the vector values are generated
         over the vector space using the function func.
 
-    maxiter: int
-        The maximum iterations of the Newton-Raphson method. Defaults to
-        500.
+    maxiter: int, default: 500
+        The maximum iterations of the Newton-Raphson method.
 
     err: float, default: ``1e-10``
         The threshold/error that determines if convergence has occurred
@@ -1486,9 +1537,9 @@ def uniform_null_point_find(
     y_range,
     z_range,
     func: Callable,
-    precision=[0.05, 0.05, 0.05],
+    precision=(0.05, 0.05, 0.05),
     maxiter=500,
-    err=1e-10,
+    err: float = 1e-10,
 ):
     r"""
     Return an array of `~plasmapy.analysis.nullpoint.NullPoint` objects,

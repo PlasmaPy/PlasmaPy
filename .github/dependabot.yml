@@ -1,0 +1,13 @@
+version: 2
+
+updates:
+
+- package-ecosystem: github-actions
+  directory: /
+  labels:
+  - GitHub Actions
+  - no changelog entry needed
+  reviewers:
+  - namurphy
+  schedule:
+    interval: daily

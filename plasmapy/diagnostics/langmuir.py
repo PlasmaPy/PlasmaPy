@@ -18,21 +18,21 @@ __all__ = [
     "get_EEDF",
 ]
 
-import astropy.units as u
 import copy
-import numpy as np
+import warnings
 
+import astropy.units as u
+import numpy as np
 from astropy.constants import si as const
 from astropy.visualization import quantity_support
 from scipy.optimize import curve_fit
-from warnings import warn
 
 from plasmapy.particles import Particle
 from plasmapy.utils.decorators import validate_quantities
 
 
 def _langmuir_futurewarning() -> None:
-    warn(
+    warnings.warn(
         "The plasmapy.diagnostics.langmuir module will be deprecated in favor of "
         "the plasmapy.analysis.swept_langmuir sub-package and phased out over "
         "2021.  The plasmapy.analysis package was released in v0.5.0.",
@@ -85,12 +85,12 @@ class Characteristic:
     """
 
     @validate_quantities(bias={"can_be_inf": False}, current={"can_be_inf": False})
-    def __init__(self, bias: u.V, current: u.A):
+    def __init__(self, bias: u.Quantity[u.V], current: u.Quantity[u.A]) -> None:
         _langmuir_futurewarning()
 
         self.bias = bias
         self.current = current
-        self.get_unique_bias(True)
+        self.get_unique_bias(True)  # noqa: FBT003
         self._check_validity()
 
     def __getitem__(self, key):
@@ -102,27 +102,27 @@ class Characteristic:
         return Characteristic(self.bias[key], self.current[key])
 
     def __sub__(self, other):
-        r"""Support current subtraction"""
+        r"""Support current subtraction."""
 
         b = copy.deepcopy(self)
         b.current -= other.current
         return b
 
     def __add__(self, other):
-        r"""Support current addition"""
+        r"""Support current addition."""
 
         b = copy.deepcopy(self)
         b.current += other.current
         return b
 
-    def sort(self):
+    def sort(self) -> None:
         r"""Sort the characteristic by ascending bias."""
 
         _sort = self.bias.argsort()
         self.current = self.current[_sort]
         self.bias = self.bias[_sort]
 
-    def get_unique_bias(self, inplace=False):
+    def get_unique_bias(self, inplace: bool = False):
         r"""Remove any duplicate bias values through averaging."""
 
         if len(self.bias) != len(self.current):
@@ -145,6 +145,7 @@ class Characteristic:
 
         self.bias = bias_unique
         self.current = current_unique
+        return None
 
     def _check_validity(self):
         r"""Check the unit and value validity of the characteristic."""
@@ -165,7 +166,7 @@ class Characteristic:
         if len(np.unique(self.bias)) != len(self.bias):
             raise ValueError("Bias array contains duplicate values.")
 
-    def get_padded_limit(self, padding, log=False):  # coverage: ignore
+    def get_padded_limit(self, padding, log: bool = False):
         r"""Return the limits of the current range for plotting, taking into
         account padding. Matplotlib lacks this functionality.
 
@@ -195,7 +196,7 @@ class Characteristic:
                 ymax + padding * (ymax - ymin),
             ] * u.A
 
-    def plot(self):  # coverage: ignore
+    def plot(self) -> None:
         r"""Plot the characteristic in matplotlib."""
         import matplotlib.pyplot as plt
 
@@ -208,14 +209,14 @@ class Characteristic:
 @validate_quantities(
     probe_area={"can_be_negative": False, "can_be_inf": False, "can_be_nan": False}
 )
-def swept_probe_analysis(
+def swept_probe_analysis(  # noqa: PLR0915
     probe_characteristic,
-    probe_area: u.m**2,
+    probe_area: u.Quantity[u.m**2],
     gas_argument,
-    bimaxwellian=False,
-    visualize=False,
-    plot_electron_fit=False,
-    plot_EEDF=False,
+    bimaxwellian: bool = False,
+    visualize: bool = False,
+    plot_electron_fit: bool = False,
+    plot_EEDF: bool = False,
 ):
     r"""Attempt to perform a basic swept probe analysis based on the provided
     characteristic and probe data. Suitable for single cylindrical probes in
@@ -249,7 +250,6 @@ def swept_probe_analysis(
 
     Returns
     -------
-
     Results are returned as Dictionary
 
     "T_e" : `astropy.units.Quantity`
@@ -303,9 +303,9 @@ def swept_probe_analysis(
 
     if not isinstance(probe_characteristic, Characteristic):
         raise TypeError(
-            f"For 'probe_characteristic' expected type "
-            f"{Characteristic.__module__ + '.' + Characteristic.__qualname__} "
-            f"and got {type(probe_characteristic)}"
+            "For 'probe_characteristic' expected type "
+            f"{Characteristic.__module__}.{Characteristic.__qualname__} "
+            f"and got {type(probe_characteristic)}."
         )
 
     # Obtain the plasma and floating potentials
@@ -362,7 +362,7 @@ def swept_probe_analysis(
         I_es, reduce_bimaxwellian_temperature(T_e, hot_fraction), probe_area
     )
 
-    if visualize:  # coverage: ignore
+    if visualize:
         import matplotlib.pyplot as plt
 
         with quantity_support():
@@ -428,7 +428,7 @@ def swept_probe_analysis(
 
     # Obtain and show the EEDF. This is only useful if the characteristic data
     # has been preprocessed to be sufficiently smooth and noiseless.
-    if plot_EEDF:  # coverage: ignore
+    if plot_EEDF:
         get_EEDF(probe_characteristic, visualize=True)
 
     # Compile the results dictionary
@@ -449,7 +449,7 @@ def swept_probe_analysis(
     return results
 
 
-def get_plasma_potential(probe_characteristic, return_arg=False):
+def get_plasma_potential(probe_characteristic, return_arg: bool = False):
     r"""Implement the simplest but crudest method for obtaining an estimate of
     the plasma potential from the probe characteristic.
 
@@ -480,9 +480,9 @@ def get_plasma_potential(probe_characteristic, return_arg=False):
 
     if not isinstance(probe_characteristic, Characteristic):
         raise TypeError(
-            f"For 'probe_characteristic' expected type "
-            f"{Characteristic.__module__ + '.' + Characteristic.__qualname__} "
-            f"and got {type(probe_characteristic)}"
+            "For 'probe_characteristic' expected type "
+            f"{Characteristic.__module__}.{Characteristic.__qualname__} "
+            f"and got {type(probe_characteristic)}."
         )
 
     # Sort the characteristic prior to differentiation
@@ -502,7 +502,7 @@ def get_plasma_potential(probe_characteristic, return_arg=False):
     return probe_characteristic.bias[arg_V_P]
 
 
-def get_floating_potential(probe_characteristic, return_arg=False):
+def get_floating_potential(probe_characteristic, return_arg: bool = False):
     r"""Implement the simplest but crudest method for obtaining an estimate of
     the floating potential from the probe characteristic.
 
@@ -532,8 +532,8 @@ def get_floating_potential(probe_characteristic, return_arg=False):
 
     if not isinstance(probe_characteristic, Characteristic):
         raise TypeError(
-            f"For 'probe_characteristic' expected type "
-            f"{Characteristic.__module__ + '.' + Characteristic.__qualname__} "
+            "For 'probe_characteristic' expected type "
+            f"{Characteristic.__module__}.{Characteristic.__qualname__} "
             f"and got {type(probe_characteristic)}"
         )
 
@@ -570,9 +570,9 @@ def get_electron_saturation_current(probe_characteristic):
 
     if not isinstance(probe_characteristic, Characteristic):
         raise TypeError(
-            f"For 'probe_characteristic' expected type "
-            f"{Characteristic.__module__ + '.' + Characteristic.__qualname__} "
-            f"and got {type(probe_characteristic)}"
+            "For 'probe_characteristic' expected type "
+            f"{Characteristic.__module__}.{Characteristic.__qualname__} "
+            f"and got {type(probe_characteristic)}."
         )
 
     _, arg_V_P = get_plasma_potential(probe_characteristic, return_arg=True)
@@ -607,9 +607,9 @@ def get_ion_saturation_current(probe_characteristic):
 
     if not isinstance(probe_characteristic, Characteristic):
         raise TypeError(
-            f"For 'probe_characteristic' expected type "
-            f"{Characteristic.__module__ + '.' + Characteristic.__qualname__} "
-            f"and got {type(probe_characteristic)}"
+            "For 'probe_characteristic' expected type "
+            f"{Characteristic.__module__}.{Characteristic.__qualname__} "
+            f"and got {type(probe_characteristic)}."
         )
 
     return np.min(probe_characteristic.current)
@@ -631,8 +631,11 @@ def get_ion_saturation_current(probe_characteristic):
     validations_on_return={"can_be_negative": False},
 )
 def get_ion_density_LM(
-    ion_saturation_current: u.A, T_e: u.eV, probe_area: u.m**2, gas
-) -> u.m**-3:
+    ion_saturation_current: u.Quantity[u.A],
+    T_e: u.Quantity[u.eV],
+    probe_area: u.Quantity[u.m**2],
+    gas,
+) -> u.Quantity[u.m**-3]:
     r"""
     Implement the Langmuir-Mottley (LM) method of obtaining the ion
     density.
@@ -694,8 +697,10 @@ def get_ion_density_LM(
     validations_on_return={"can_be_negative": False},
 )
 def get_electron_density_LM(
-    electron_saturation_current: u.A, T_e: u.eV, probe_area: u.m**2
-) -> u.m**-3:
+    electron_saturation_current: u.Quantity[u.A],
+    T_e: u.Quantity[u.eV],
+    probe_area: u.Quantity[u.m**2],
+) -> u.Quantity[u.m**-3]:
     r"""Implement the Langmuir-Mottley (LM) method of obtaining the electron
     density.
 
@@ -775,9 +780,9 @@ def extract_exponential_section(probe_characteristic, T_e=None, ion_current=None
 
     if not isinstance(probe_characteristic, Characteristic):
         raise TypeError(
-            f"For 'probe_characteristic' expected type "
-            f"{Characteristic.__module__ + '.' + Characteristic.__qualname__} "
-            f"and got {type(probe_characteristic)}"
+            "For 'probe_characteristic' expected type "
+            f"{Characteristic.__module__}.{Characteristic.__qualname__} "
+            f"and got {type(probe_characteristic)}."
         )
 
     V_F = get_floating_potential(probe_characteristic)
@@ -785,7 +790,6 @@ def extract_exponential_section(probe_characteristic, T_e=None, ion_current=None
     V_P = get_plasma_potential(probe_characteristic)
 
     if T_e is not None:
-
         # If a bi-Maxwellian electron temperature is supplied grab the first
         # (cold) temperature
         if np.array(T_e).size > 1:
@@ -831,9 +835,9 @@ def extract_ion_section(probe_characteristic):
 
     if not isinstance(probe_characteristic, Characteristic):
         raise TypeError(
-            f"For 'probe_characteristic' expected type "
-            f"{Characteristic.__module__ + '.' + Characteristic.__qualname__} "
-            f"and got {type(probe_characteristic)}"
+            "For 'probe_characteristic' expected type "
+            f"{Characteristic.__module__}.{Characteristic.__qualname__} "
+            f"and got {type(probe_characteristic)}."
         )
 
     V_F = get_floating_potential(probe_characteristic)
@@ -843,10 +847,10 @@ def extract_ion_section(probe_characteristic):
 
 def get_electron_temperature(
     exponential_section,
-    bimaxwellian=False,
-    visualize=False,
-    return_fit=False,
-    return_hot_fraction=False,
+    bimaxwellian: bool = False,
+    visualize: bool = False,
+    return_fit: bool = False,
+    return_hot_fraction: bool = False,
 ):
     r"""Obtain the Maxwellian or bi-Maxwellian electron temperature using the
     exponential fit method.
@@ -900,9 +904,9 @@ def get_electron_temperature(
 
     if not isinstance(exponential_section, Characteristic):
         raise TypeError(
-            f"For 'probe_characteristic' expected type "
-            f"{Characteristic.__module__ + '.' + Characteristic.__qualname__} "
-            f"and got {type(exponential_section)}"
+            "For 'probe_characteristic' expected type "
+            f"{Characteristic.__module__}.{Characteristic.__qualname__} "
+            f"and got {type(exponential_section)}."
         )
 
     # Remove values in the section with a current equal to or smaller than
@@ -968,7 +972,7 @@ def get_electron_temperature(
         # If bi-Maxwellian, return main temperature first
         T_e = np.array([T0, T0 + Delta_T]) * u.eV
 
-    if visualize:  # coverage: ignore
+    if visualize:
         import matplotlib.pyplot as plt
 
         with quantity_support():
@@ -1021,7 +1025,7 @@ def get_electron_temperature(
 
 
 def extrapolate_electron_current(
-    probe_characteristic, fit, bimaxwellian=False, visualize=False
+    probe_characteristic, fit, bimaxwellian: bool = False, visualize: bool = False
 ):
     r"""Extrapolate the electron current from the Maxwellian electron
     temperature obtained in the exponential growth region.
@@ -1059,27 +1063,24 @@ def extrapolate_electron_current(
 
     if not isinstance(probe_characteristic, Characteristic):
         raise TypeError(
-            f"For 'probe_characteristic' expected type "
-            f"{Characteristic.__module__ + '.' + Characteristic.__qualname__} "
-            f"and got {type(probe_characteristic)}"
+            "For 'probe_characteristic' expected type "
+            f"{Characteristic.__module__}.{Characteristic.__qualname__} "
+            f"and got {type(probe_characteristic)}."
         )
 
-    if bimaxwellian:
-        fit_func = _fit_func_double_lin_inverse
-    else:
-        fit_func = _fit_func_lin_inverse
+    fit_func = _fit_func_double_lin_inverse if bimaxwellian else _fit_func_lin_inverse
 
     electron_current = (
         np.exp(fit_func(probe_characteristic.bias.to(u.V).value, *fit)) * u.A
     )
 
-    electron_current[electron_current > np.max(probe_characteristic.current)] = np.NaN
+    electron_current[electron_current > np.max(probe_characteristic.current)] = np.nan
 
     electron_characteristic = Characteristic(
         probe_characteristic.bias, electron_current
     )
 
-    if visualize:  # coverage: ignore
+    if visualize:
         import matplotlib.pyplot as plt
 
         with quantity_support():
@@ -1110,7 +1111,9 @@ def extrapolate_electron_current(
     },
     validations_on_return={"equivalencies": u.temperature_energy()},
 )
-def reduce_bimaxwellian_temperature(T_e: u.eV, hot_fraction: float) -> u.eV:
+def reduce_bimaxwellian_temperature(
+    T_e: u.Quantity[u.eV], hot_fraction: float
+) -> u.Quantity[u.eV]:
     r"""Reduce a bi-Maxwellian (dual) temperature to a single mean temperature
     for a given fraction.
 
@@ -1155,10 +1158,10 @@ def reduce_bimaxwellian_temperature(T_e: u.eV, hot_fraction: float) -> u.eV:
 )
 def get_ion_density_OML(
     probe_characteristic: Characteristic,
-    probe_area: u.m**2,
+    probe_area: u.Quantity[u.m**2],
     gas,
-    visualize=False,
-    return_fit=False,
+    visualize: bool = False,
+    return_fit: bool = False,
 ):
     r"""Implement the Orbital Motion Limit (OML) method of obtaining an
     estimate of the ion density.
@@ -1209,9 +1212,9 @@ def get_ion_density_OML(
 
     if not isinstance(probe_characteristic, Characteristic):
         raise TypeError(
-            f"For 'probe_characteristic' expected type "
-            f"{Characteristic.__module__ + '.' + Characteristic.__qualname__} "
-            f"and got {type(probe_characteristic)}"
+            "For 'probe_characteristic' expected type "
+            f"{Characteristic.__module__}.{Characteristic.__qualname__} "
+            f"and got {type(probe_characteristic)}."
         )
 
     ion_section = extract_ion_section(probe_characteristic)
@@ -1227,15 +1230,10 @@ def get_ion_density_OML(
     ion = Particle(argument=gas)
 
     n_i_OML = np.sqrt(
-        -slope
-        * u.mA**2
-        / u.V
-        * np.pi**2
-        * ion.mass
-        / (probe_area**2 * const.e**3 * 2)
+        -slope * u.mA**2 / u.V * np.pi**2 * ion.mass / (probe_area**2 * const.e**3 * 2)
     )
 
-    if visualize:  # coverage: ignore
+    if visualize:
         import matplotlib.pyplot as plt
 
         with quantity_support():
@@ -1252,13 +1250,10 @@ def get_ion_density_OML(
             plt.title("OML fit")
             plt.tight_layout()
 
-    if return_fit:
-        return n_i_OML.to(u.m**-3), fit
-
-    return n_i_OML.to(u.m**-3)
+    return (n_i_OML.to(u.m**-3), fit) if return_fit else n_i_OML.to(u.m**-3)
 
 
-def extrapolate_ion_current_OML(probe_characteristic, fit, visualize=False):
+def extrapolate_ion_current_OML(probe_characteristic, fit, visualize: bool = False):
     r"""Extrapolate the ion current from the ion density obtained with the
     OML method.
 
@@ -1291,9 +1286,9 @@ def extrapolate_ion_current_OML(probe_characteristic, fit, visualize=False):
 
     if not isinstance(probe_characteristic, Characteristic):
         raise TypeError(
-            f"For 'probe_characteristic' expected type "
-            f"{Characteristic.__module__ + '.' + Characteristic.__qualname__} "
-            f"and got {type(probe_characteristic)}"
+            "For 'probe_characteristic' expected type "
+            f"{Characteristic.__module__}.{Characteristic.__qualname__} "
+            f"and got {type(probe_characteristic)}."
         )
 
     slope = fit[0] * u.mA**2 / u.V
@@ -1305,7 +1300,7 @@ def extrapolate_ion_current_OML(probe_characteristic, fit, visualize=False):
 
     ion_characteristic = Characteristic(probe_characteristic.bias, ion_current)
 
-    if visualize:  # coverage: ignore
+    if visualize:
         import matplotlib.pyplot as plt
 
         with quantity_support():
@@ -1323,7 +1318,7 @@ def extrapolate_ion_current_OML(probe_characteristic, fit, visualize=False):
     return ion_characteristic
 
 
-def get_EEDF(probe_characteristic, visualize=False):
+def get_EEDF(probe_characteristic, visualize: bool = False):
     r"""Implement the Druyvesteyn method of obtaining the normalized
     Electron Energy Distribution Function (EEDF).
 
@@ -1369,9 +1364,9 @@ def get_EEDF(probe_characteristic, visualize=False):
 
     if not isinstance(probe_characteristic, Characteristic):
         raise TypeError(
-            f"For 'probe_characteristic' expected type "
-            f"{Characteristic.__module__ + '.' + Characteristic.__qualname__} "
-            f"and got {type(probe_characteristic)}"
+            "For 'probe_characteristic' expected type "
+            f"{Characteristic.__module__}.{Characteristic.__qualname__} "
+            f"and got {type(probe_characteristic)}."
         )
 
     probe_characteristic.sort()
@@ -1400,7 +1395,7 @@ def get_EEDF(probe_characteristic, visualize=False):
     integral = np.abs(np.trapz(probability, x=energy.to(u.eV).value))
     probability = probability / integral
 
-    if visualize:  # coverage: ignore
+    if visualize:
         import matplotlib.pyplot as plt
 
         with quantity_support():

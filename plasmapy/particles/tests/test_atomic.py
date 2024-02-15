@@ -1,8 +1,7 @@
+import astropy.constants as const
+import astropy.units as u
 import numpy as np
 import pytest
-
-from astropy import constants as const
-from astropy import units as u
 
 from plasmapy.particles._isotopes import data_about_isotopes
 from plasmapy.particles.atomic import (
@@ -36,7 +35,7 @@ from plasmapy.particles.exceptions import (
 )
 from plasmapy.particles.particle_class import Particle
 from plasmapy.particles.symbols import atomic_symbol, element_name, isotope_symbol
-from plasmapy.utils.pytest_helpers import run_test
+from plasmapy.utils._pytest_helpers import run_test
 
 # function to be tested, argument(s), expected result/outcome
 
@@ -238,27 +237,27 @@ table_functions_args_kwargs_output = [
 
 
 @pytest.mark.parametrize(
-    "tested_function, args, kwargs, expected_output",
+    ("tested_function", "args", "kwargs", "expected_output"),
     table_functions_args_kwargs_output,
 )
-def test_functions_and_values(tested_function, args, kwargs, expected_output):
+def test_functions_and_values(tested_function, args, kwargs, expected_output) -> None:
     run_test(tested_function, args, kwargs, expected_output)
 
 
 class TestInvalidPeriodicElement:
-    def test_periodic_table_period(self):
+    def test_periodic_table_period(self) -> None:
         with pytest.raises(TypeError):
             periodic_table_period(("Ne", "Na"))
 
-    def test_periodic_table_block(self):
+    def test_periodic_table_block(self) -> None:
         with pytest.raises(TypeError):
             periodic_table_block(("N", "C", "F"))
 
-    def test_periodic_table_category(self):
+    def test_periodic_table_category(self) -> None:
         with pytest.raises(TypeError):
             periodic_table_category(["Rb", "He", "Li"])
 
-    def test_periodic_table_group(self):
+    def test_periodic_table_group(self) -> None:
         with pytest.raises(TypeError):
             periodic_table_group(("B", "Ti", "Ge"))
 
@@ -266,7 +265,7 @@ class TestInvalidPeriodicElement:
 # Next we have tests that do not fall nicely into equality comparisons.
 
 
-def test_standard_atomic_weight_value_between():
+def test_standard_atomic_weight_value_between() -> None:
     """Test that `standard_atomic_weight` returns approximately the
     correct value for phosphorus."""
     assert (
@@ -274,14 +273,14 @@ def test_standard_atomic_weight_value_between():
     ), "Incorrect standard atomic weight for phosphorus."
 
 
-def test_particle_mass_berkelium_249():
+def test_particle_mass_berkelium_249() -> None:
     """Test that `particle_mass` returns the correct value for Bk-249."""
     assert np.isclose(
         particle_mass("berkelium-249").to(u.u).value, 249.0749877
     ), "Incorrect isotope mass for berkelium."
 
 
-def test_particle_mass_for_hydrogen_with_no_mass_number():
+def test_particle_mass_for_hydrogen_with_no_mass_number() -> None:
     """Test that `particle_mass` does not return the proton mass when no
     mass number is specified for hydrogen.  In this case, the
     standard atomic weight should be used to account for the small
@@ -290,7 +289,7 @@ def test_particle_mass_for_hydrogen_with_no_mass_number():
     assert particle_mass("hydrogen", Z=1) > const.m_p
 
 
-def test_particle_mass_helium():
+def test_particle_mass_helium() -> None:
     """Test miscellaneous cases for `particle_mass`."""
     assert particle_mass("alpha") > particle_mass("He-3 2+")
 
@@ -320,9 +319,9 @@ equivalent_particle_mass_args = [
 
 
 @pytest.mark.parametrize(
-    "arg1, kwargs1, arg2, kwargs2, expected", equivalent_particle_mass_args
+    ("arg1", "kwargs1", "arg2", "kwargs2", "expected"), equivalent_particle_mass_args
 )
-def test_particle_mass_equivalent_args(arg1, kwargs1, arg2, kwargs2, expected):
+def test_particle_mass_equivalent_args(arg1, kwargs1, arg2, kwargs2, expected) -> None:
     """Test that `particle_mass` returns equivalent results for
     equivalent positional and keyword arguments."""
 
@@ -336,15 +335,17 @@ def test_particle_mass_equivalent_args(arg1, kwargs1, arg2, kwargs2, expected):
     )
 
     if expected is not None:
-        assert u.isclose(result1, result2) and u.isclose(result2, expected), (
+        assert u.isclose(result1, result2) and u.isclose(  # noqa: PT018
+            result2, expected
+        ), (
             f"particle_mass({arg1!r}, **{kwargs1}) = {result1!r} and "
             f"particle_mass({arg2!r}, **{kwargs2}) = {result2!r}, but "
             f"these results are not equal to {expected!r} as expected."
         )
 
 
-@pytest.mark.slow
-def test_known_common_stable_isotopes():
+@pytest.mark.slow()
+def test_known_common_stable_isotopes() -> None:
     """Test that `known_isotopes`, `common_isotopes`, and
     `stable_isotopes` return the correct values for hydrogen."""
 
@@ -368,7 +369,7 @@ def test_known_common_stable_isotopes():
     )
 
 
-def test_half_life():
+def test_half_life() -> None:
     """Test that `half_life` returns the correct values for various
     isotopes."""
     assert np.isclose(
@@ -376,7 +377,7 @@ def test_half_life():
     ), "Incorrect half-life for tritium."
 
 
-def test_half_life_unstable_isotopes():
+def test_half_life_unstable_isotopes() -> None:
     """Test that `half_life` returns `None` and raises an exception for
     all isotopes that do not yet have half-life data."""
     for isotope in data_about_isotopes:
@@ -385,11 +386,10 @@ def test_half_life_unstable_isotopes():
             and not data_about_isotopes[isotope]
         ):
             with pytest.raises(MissingParticleDataError):
-
                 half_life(isotope)
 
 
-def test_half_life_u_220():
+def test_half_life_u_220() -> None:
     """Test that `half_life` returns `None` and issues a warning for an
     isotope without half-life data."""
 
@@ -405,7 +405,7 @@ def test_half_life_u_220():
         )
 
 
-def test_known_common_stable_isotopes_cases():
+def test_known_common_stable_isotopes_cases() -> None:
     """Test that known_isotopes, common_isotopes, and stable_isotopes
     return certain isotopes that fall into these categories."""
     assert "H-1" in known_isotopes("H")
@@ -422,8 +422,8 @@ def test_known_common_stable_isotopes_cases():
     assert "He-4" in common_isotopes("He", most_common_only=True)
 
 
-@pytest.mark.slow
-def test_known_common_stable_isotopes_len():
+@pytest.mark.slow()
+def test_known_common_stable_isotopes_len() -> None:
     """Test that `known_isotopes`, `common_isotopes`, and
     `stable_isotopes` each return a `list` of the expected length.
 
@@ -455,7 +455,7 @@ def test_known_common_stable_isotopes_len():
 
 
 @pytest.mark.parametrize("func", [common_isotopes, stable_isotopes, known_isotopes])
-def test_known_common_stable_isotopes_error(func):
+def test_known_common_stable_isotopes_error(func) -> None:
     """Test that `known_isotopes`, `common_isotopes`, and
     `stable_isotopes` raise an `~plasmapy.utils.InvalidElementError` for
     neutrons."""
@@ -464,7 +464,7 @@ def test_known_common_stable_isotopes_error(func):
         pytest.fail(f"{func} is not raising a ElementError for neutrons.")
 
 
-def test_isotopic_abundance():
+def test_isotopic_abundance() -> None:
     """Test that `isotopic_abundance` returns the appropriate values or
     raises appropriate errors for various isotopes."""
     assert isotopic_abundance("H", 1) == isotopic_abundance("protium")
@@ -494,14 +494,14 @@ isotopic_abundance_isotopes = (
 isotopic_abundance_sum_table = (
     (element, isotopes)
     for element, isotopes in zip(
-        isotopic_abundance_elements, isotopic_abundance_isotopes
+        isotopic_abundance_elements, isotopic_abundance_isotopes, strict=False
     )
     if isotopes
 )
 
 
-@pytest.mark.parametrize("element, isotopes", isotopic_abundance_sum_table)
-def test_isotopic_abundances_sum(element, isotopes):
+@pytest.mark.parametrize(("element", "isotopes"), isotopic_abundance_sum_table)
+def test_isotopic_abundances_sum(element, isotopes) -> None:
     """Test that the sum of isotopic abundances for each element with
     isotopic abundances is one."""
     sum_of_iso_abund = sum(isotopic_abundance(isotope) for isotope in isotopes)
@@ -511,22 +511,22 @@ def test_isotopic_abundances_sum(element, isotopes):
 
 
 class TestReducedMassInput:
-    def test_incorrect_units(self):
-        with pytest.raises(u.UnitConversionError):
+    def test_incorrect_units(self) -> None:
+        with pytest.raises(InvalidParticleError):
             reduced_mass("N", 6e-26 * u.l)
 
-    def test_missing_atomic_data(self):
+    def test_missing_atomic_data(self) -> None:
         assert u.isclose(reduced_mass("Og", "H"), np.nan * u.kg, equal_nan=True)
 
 
-def test_ion_list_example():
+def test_ion_list_example() -> None:
     ions = ionic_levels("He-4")
     np.testing.assert_equal(ions.charge_number, [0, 1, 2])
     assert ions.symbols == ["He-4 0+", "He-4 1+", "He-4 2+"]
 
 
 @pytest.mark.parametrize(
-    "particle, min_charge, max_charge, expected_charge_numbers",
+    ("particle", "min_charge", "max_charge", "expected_charge_numbers"),
     [
         ("H-1", 0, 1, [0, 1]),
         ("p+", 1, 1, [1]),
@@ -534,7 +534,7 @@ def test_ion_list_example():
         ("C", 3, 5, [3, 4, 5]),
     ],
 )
-def test_ion_list(particle, min_charge, max_charge, expected_charge_numbers):
+def test_ion_list(particle, min_charge, max_charge, expected_charge_numbers) -> None:
     """Test that inputs to ionic_levels are interpreted correctly."""
     particle = Particle(particle)
     ions = ionic_levels(particle, min_charge, max_charge)
@@ -545,9 +545,9 @@ def test_ion_list(particle, min_charge, max_charge, expected_charge_numbers):
 
 
 @pytest.mark.parametrize(
-    "element, min_charge, max_charge", [("Li", 0, 4), ("Li", 3, 2)]
+    ("element", "min_charge", "max_charge"), [("Li", 0, 4), ("Li", 3, 2)]
 )
-def test_invalid_inputs_to_ion_list(element, min_charge, max_charge):
+def test_invalid_inputs_to_ion_list(element, min_charge, max_charge) -> None:
     with pytest.raises(ChargeError):
         ionic_levels(element, min_charge, max_charge)
 
@@ -567,12 +567,12 @@ str_electron_table = [
 ]
 
 
-@pytest.mark.parametrize("particle, electron", str_electron_table)
-def test_is_electron(particle, electron):
+@pytest.mark.parametrize(("particle", "electron"), str_electron_table)
+def test_is_electron(particle, electron) -> None:
     assert _is_electron(particle) == electron
 
 
-def test_ionic_levels_example():
+def test_ionic_levels_example() -> None:
     """
     Test that `ionic_levels` can be used to create a |ParticleList|
     containing all the ions for a particular element.
@@ -583,7 +583,7 @@ def test_ionic_levels_example():
 
 
 @pytest.mark.parametrize(
-    "particle, min_charge, max_charge, expected_charge_numbers",
+    ("particle", "min_charge", "max_charge", "expected_charge_numbers"),
     [
         ("H-1", 0, 1, [0, 1]),
         ("p+", 1, 1, [1]),
@@ -591,7 +591,7 @@ def test_ionic_levels_example():
         ("C", 3, 5, [3, 4, 5]),
     ],
 )
-def test_ion_list2(particle, min_charge, max_charge, expected_charge_numbers):
+def test_ion_list2(particle, min_charge, max_charge, expected_charge_numbers) -> None:
     """Test that inputs to ionic_levels are interpreted correctly."""
     particle = Particle(particle)
     ions = ionic_levels(particle, min_charge, max_charge)
@@ -602,8 +602,8 @@ def test_ion_list2(particle, min_charge, max_charge, expected_charge_numbers):
 
 
 @pytest.mark.parametrize(
-    "element, min_charge, max_charge", [("Li", 0, 4), ("Li", 3, 2)]
+    ("element", "min_charge", "max_charge"), [("Li", 0, 4), ("Li", 3, 2)]
 )
-def test_invalid_inputs_to_ion_list2(element, min_charge, max_charge):
+def test_invalid_inputs_to_ion_list2(element, min_charge, max_charge) -> None:
     with pytest.raises(ChargeError):
         ionic_levels(element, min_charge, max_charge)

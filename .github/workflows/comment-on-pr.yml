@@ -1,0 +1,47 @@
+name: Add comment
+
+on:
+  pull_request_target:
+    types: [opened]
+
+jobs:
+  comment:
+    name: Welcome message
+    # Skip posting this comment for frequent contributors
+    if: "!contains(fromJSON('[''namurphy'', ''rocco8773'', ''StanczakDominik'', ''dependabot'', ''plasmapy-requirements-bot'', ''pre-commit-ci'']'), github.event.pull_request.user.login)"
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - uses: actions/github-script@v7
+      with:
+        script: |
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: `Thank you for submitting a pull request (PR) to PlasmaPy! ✨ The future of the project depends on contributors like you, so we deeply appreciate it! 🌱
+
+            Our [**contributor guide**](https://docs.plasmapy.org/en/latest/contributing/index.html) has information on:
+
+             - [Getting ready to contribute](https://docs.plasmapy.org/en/latest/contributing/getting_ready.html#getting-ready-to-contribute) and the [code contribution workflow](https://docs.plasmapy.org/en/latest/contributing/workflow.html#code-contribution-workflow)
+             - Using [\`astropy.units\`](https://docs.plasmapy.org/en/latest/notebooks/getting_started/units.html#Using-Astropy-Units) and [\`plasmapy.particles\`](https://docs.plasmapy.org/en/latest/notebooks/getting_started/particles.html#Using-PlasmaPy-Particles)
+             - [Coding tips and guidelines](https://docs.plasmapy.org/en/latest/contributing/coding_guide.html#coding-guide)
+             - [Writing documentation](https://docs.plasmapy.org/en/latest/contributing/doc_guide.html#writing-documentation) (in [reStructuredText](https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#restructuredtext-primer) with [numpydoc style docstrings](https://numpydoc.readthedocs.io/en/latest/format.html#docstring-standard)).
+             - [Writing tests](https://docs.plasmapy.org/en/latest/contributing/testing_guide.html#testing-guide) using [pytest](https://docs.pytest.org)
+             - [Adding a changelog entry](https://docs.plasmapy.org/en/latest/contributing/changelog_guide.html#adding-a-changelog-entry) (needed except for minor changes)
+
+            The bottom of this page shows several checks that are run for every PR. Don't worry if something broke! We break stuff all the time. 😺 Click on "Details" to learn why a check didn't pass. Please also feel free to ask for help. We do that all the time as well. 🌸 You can find us in our [**chat room**](https://docs.plasmapy.org/en/latest/contributing/coding_guide.html) or weekly [**community meeting**](https://www.plasmapy.org/meetings/weekly) & [**office hours**](https://www.plasmapy.org/meetings/office_hours). Here are some tips:
+
+             - Try fixing **CI / Python 3.12** test failures first.
+             - Most **pre-commit.ci - pr** failures can be automagically fixed by commenting \`pre-commit.ci autofix\` below, followed by a \`git pull\` to bring the changes back to your computer. Please also see our [pre-commit troubleshooting guide](https://docs.plasmapy.org/en/stable/contributing/pre-commit.html#troubleshooting-pre-commit-failures).
+             - If **pre-commit.ci - pr** says that a function is too long or complex, try breaking up that function into multiple short functions that each do one thing. See also these tips on [**writing clean scientific software**](https://doi.org/10.5281/zenodo.3922956).
+             - If the **CI / Documentation** check ends with a cryptic error message, check out our [documentation troubleshooting guide](https://docs.plasmapy.org/en/latest/contributing/doc_guide.html#troubleshooting).
+             - For a documentation preview, click on *Details* next to **docs/readthedocs.org:plasmapy**.
+
+            If this PR is marked as ready for review, someone should stop by to provide a code review and offer suggestions soon. ✅ If you don't get a review within a few days, please feel free to send us a reminder.
+
+            Please also use SI units within PlasmaPy, except when there is strong justification otherwise or in some examples.
+
+            We thank you once again!`
+          })

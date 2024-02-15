@@ -2,7 +2,6 @@
 Test module for `plasmapy.utils.decorators.lite_func.bind_lite_func`.
 """
 import pytest
-
 from numba import jit, njit
 
 from plasmapy.utils.decorators.lite_func import bind_lite_func
@@ -11,7 +10,7 @@ from plasmapy.utils.decorators.lite_func import bind_lite_func
 def foo(x):
     """Test function used for decoration."""
     if not isinstance(x, float):
-        raise ValueError
+        raise ValueError  # noqa: TRY004
     return x
 
 
@@ -20,16 +19,16 @@ def foo_lite(x):
     return x
 
 
-def bar():
+def bar() -> str:
     """
     Test support function for the Lite-Function framework.  To be bound
     to foo.
     """
-    print("I am a helper function that support the Lite-Function 'foo_lite'.")
+    return "I am a helper function that support the Lite-Function 'foo_lite'."
 
 
 @pytest.mark.parametrize(
-    "lite_func, attrs, _error",
+    ("lite_func", "attrs", "_error"),
     [
         # conditions on attrs kwarg
         (foo_lite, "not a dictionary", TypeError),
@@ -41,22 +40,22 @@ def bar():
         (print, None, ValueError),  # can not be builtin
     ],
 )
-def test_raises(lite_func, attrs, _error):
+def test_raises(lite_func, attrs, _error) -> None:
     """Test scenarios that will raise an Exception."""
     with pytest.raises(_error):
         bind_lite_func(lite_func, attrs=attrs)(foo)
 
 
 @pytest.mark.parametrize(
-    "lite_func, attrs",
+    ("lite_func", "attrs"),
     [
         (foo_lite, None),
-        (jit(foo_lite), None),
+        (jit(foo_lite, nopython=True), None),
         (njit(foo_lite), None),
         (foo_lite, {"bar": bar}),
     ],
 )
-def test_binding(lite_func, attrs):
+def test_binding(lite_func, attrs) -> None:
     """Test that the expected members are bound to the decorated function."""
     dfoo = bind_lite_func(lite_func, attrs=attrs)(foo)
 
@@ -79,13 +78,13 @@ def test_binding(lite_func, attrs):
 
 
 @pytest.mark.parametrize(
-    "lite_func, attrs",
+    ("lite_func", "attrs"),
     [
         (foo_lite, None),
         (foo_lite, {"bar": bar}),
     ],
 )
-def test_lite_func_dunder(lite_func, attrs):
+def test_lite_func_dunder(lite_func, attrs) -> None:
     """Test that the ``__bound_lite_func__`` dunder is properly defined."""
     dfoo = bind_lite_func(lite_func, attrs=attrs)(foo)
 

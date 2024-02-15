@@ -7,8 +7,8 @@ import functools
 import inspect
 
 
-def modify_docstring(func=None, prepend: str = None, append: str = None):
-    """
+def modify_docstring(func=None, prepend: str | None = None, append: str | None = None):
+    r"""
     A decorator which programmatically prepends and/or appends the docstring
     of the decorated method/function.  The unmodified/original docstring is
     saved as the ``__original_doc__`` attribute.
@@ -31,7 +31,6 @@ def modify_docstring(func=None, prepend: str = None, append: str = None):
 
     Examples
     --------
-
         >>> @modify_docstring(prepend='''Hello''', append='''World''')
         ... def foo():
         ...     '''Beautiful'''
@@ -39,7 +38,7 @@ def modify_docstring(func=None, prepend: str = None, append: str = None):
         >>> foo.__original_doc__
         'Beautiful'
         >>> foo.__doc__
-        'Hello\\n\\nBeautiful\\n\\nWorld'
+        'Hello\n\nBeautiful\n\nWorld'
 
     """
 
@@ -79,7 +78,7 @@ def modify_docstring(func=None, prepend: str = None, append: str = None):
         # append docstring lines
         if isinstance(append, str):
             appendlines = inspect.cleandoc(append).splitlines()
-            appendlines = [""] + appendlines
+            appendlines = ["", *appendlines]
         elif append is None:
             appendlines = []
         else:
@@ -92,12 +91,10 @@ def modify_docstring(func=None, prepend: str = None, append: str = None):
 
         return wrapper
 
-    if func is not None:
-        # `modify_docstring` called as a function
-        return decorator(func)
+    # func is None: usage like @modify_docstring
+    # func is not None: usage like @modify_docstring()
 
-    # `modify_docstring` called as a decorator "sugar-syntax"
-    return decorator
+    return decorator(func) if func is not None else decorator
 
 
 def preserve_signature(f):

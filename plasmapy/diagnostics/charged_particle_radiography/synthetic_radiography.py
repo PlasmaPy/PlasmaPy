@@ -7,15 +7,15 @@ original fields (under some set of assumptions).
 
 __all__ = ["Tracker", "synthetic_radiograph"]
 
-import astropy.constants as const
-import astropy.units as u
 import collections
-import numpy as np
 import sys
 import warnings
+from collections.abc import Iterable
 
+import astropy.constants as const
+import astropy.units as u
+import numpy as np
 from tqdm import tqdm
-from typing import Iterable, Union
 
 from plasmapy import particles
 from plasmapy.formulary.mathematics import rot_a_to_b
@@ -124,13 +124,12 @@ class Tracker:
 
     def __init__(
         self,
-        grids: Union[AbstractGrid, Iterable[AbstractGrid]],
-        source: u.m,
-        detector: u.m,
+        grids: AbstractGrid | Iterable[AbstractGrid],
+        source: u.Quantity[u.m],
+        detector: u.Quantity[u.m],
         detector_hdir=None,
-        verbose=True,
-    ):
-
+        verbose: bool = True,
+    ) -> None:
         # self.grid is the grid object
         if isinstance(grids, AbstractGrid):
             self.grids = [
@@ -217,7 +216,6 @@ class Tracker:
             grid.require_quantities(req_quantities, replace_with_zeros=True)
 
             for rq in req_quantities:
-
                 # Check that there are no infinite values
                 if not np.isfinite(grid[rq].value).all():
                     raise ValueError(
@@ -259,13 +257,13 @@ class Tracker:
                     )
 
     @property
-    def num_grids(self):
+    def num_grids(self):  # noqa: D102
         return len(self.grids)
 
     def _default_detector_hdir(self):
         """
         Calculates the default horizontal unit vector for the detector plane
-        (see __init__ description for details)
+        (see __init__ description for details).
         """
         # Create unit vectors that define the detector plane
         # Define plane  horizontal axis
@@ -273,8 +271,7 @@ class Tracker:
             nx = np.array([1, 0, 0])
         else:
             nx = np.cross(np.array([0, 0, 1]), self.det_n)
-        nx = nx / np.linalg.norm(nx)
-        return nx
+        return nx / np.linalg.norm(nx)
 
     def _max_theta_hit_grid(self):
         r"""
@@ -284,7 +281,7 @@ class Tracker:
         """
         theta = np.zeros([8, self.num_grids])
 
-        for i, grid in enumerate(self.grids):
+        for i, _grid in enumerate(self.grids):  # noqa: B007
             ind = 0
             for x in (0, -1):
                 for y in (0, -1):
@@ -303,9 +300,10 @@ class Tracker:
 
         return np.max(theta)
 
-    def _log(self, msg):
+    def _log(self, msg) -> None:
         if self.verbose:
-            print(msg)
+            # We'll need to switch from print() to using logging library
+            print(msg)  # noqa: T201
 
     # Define some constants so they don't get constantly re-evaluated
     _c = const.c.si.value
@@ -452,7 +450,7 @@ class Tracker:
         mesh_vdir=None,
     ):
         """
-        Apply wire meshes that were added to self.mesh_list
+        Apply wire meshes that were added to ``self.mesh_list``.
         """
         x = self._coast_to_plane(location, mesh_hdir, mesh_vdir)
 
@@ -523,7 +521,7 @@ class Tracker:
     # Particle creation methods
     # *************************************************************************
 
-    def _angles_monte_carlo(self):
+    def _angles_monte_carlo(self, random_seed=None):
         """
         Generates angles for each particle randomly such that the flux
         per solid angle is uniform.
@@ -535,11 +533,14 @@ class Tracker:
         prob = np.sin(arg)
         prob *= 1 / np.sum(prob)
 
+        # Create a numpy random number generator instance
+        rng = np.random.default_rng(seed=random_seed)
+
         # Randomly choose theta's weighted with the sine probabilities
-        theta = np.random.choice(arg, size=self.nparticles, replace=True, p=prob)
+        theta = rng.choice(arg, size=self.nparticles, replace=True, p=prob)
 
         # Also generate a uniform phi distribution
-        phi = np.random.uniform(high=2 * np.pi, size=self.nparticles)
+        phi = rng.uniform(high=2 * np.pi, size=self.nparticles)
 
         return theta, phi
 
@@ -576,9 +577,10 @@ class Tracker:
         nparticles,
         particle_energy,
         max_theta=None,
-        particle: Particle = Particle("p+"),
+        particle: Particle = Particle("p+"),  # noqa: B008
         distribution="monte-carlo",
-    ):
+        random_seed=None,
+    ) -> None:
         r"""
         Generates the angular distributions about the Z-axis, then
         rotates those distributions to align with the source-to-detector axis.
@@ -629,6 +631,10 @@ class Tracker:
             on the image, but will well-sample the field grid with a
             smaller number of particles. The default is ``'monte-carlo'``.
 
+        random_seed : int, optional
+            A random seed to be used when generating random particle
+            distributions, e.g. with the ``monte-carlo`` distribution.
+
 
         """
         self._log("Creating Particles")
@@ -655,7 +661,7 @@ class Tracker:
         v0 = self._c * np.sqrt(1 - 1 / (ER + 1) ** 2)
 
         if distribution == "monte-carlo":
-            theta, phi = self._angles_monte_carlo()
+            theta, phi = self._angles_monte_carlo(random_seed=random_seed)
         elif distribution == "uniform":
             theta, phi = self._angles_uniform()
 
@@ -686,10 +692,10 @@ class Tracker:
         self,
         x,
         v,
-        particle: Particle = Particle("p+"),
+        particle: Particle = Particle("p+"),  # noqa: B008
     ):
         r"""
-        Load arrays of particle positions and velocities
+        Load arrays of particle positions and velocities.
 
         Parameters
         ----------
@@ -755,7 +761,7 @@ class Tracker:
     # Run/push loop methods
     # *************************************************************************
 
-    def _adaptive_dt(self, Ex, Ey, Ez, Bx, By, Bz):
+    def _adaptive_dt(self, Ex, Ey, Ez, Bx, By, Bz):  # noqa: ARG002
         r"""
         Calculate the appropriate dt for each grid based on a number of
         considerations
@@ -776,7 +782,7 @@ class Tracker:
 
         # Wherever a particle is on a grid, include that grid's gridstep
         # in the list of candidate timesteps
-        for i, grid in enumerate(self.grids):
+        for i, _grid in enumerate(self.grids):  # noqa: B007
             candidates[:, i] = np.where(self.on_grid[:, i] > 0, gridstep[i], np.inf)
 
         # If not, compute a number of possible timesteps
@@ -801,11 +807,9 @@ class Tracker:
 
         # dt should never actually be infinite, so replace any infinities
         # with the largest gridstep
-        dt = np.where(dt == np.inf, np.max(gridstep), dt)
+        return np.where(dt == np.inf, np.max(gridstep), dt)
 
-        return dt
-
-    def _coast_to_grid(self):
+    def _coast_to_grid(self) -> None:
         r"""
         Coasts all particles to the timestep when the first particle should
         be entering the grid. Doing in this in one step (rather than pushing
@@ -863,10 +867,10 @@ class Tracker:
 
         return x
 
-    def _remove_deflected_particles(self):
+    def _remove_deflected_particles(self) -> None:
         r"""
         Removes any particles that have been deflected away from the detector
-        plane (eg. those that will never hit the grid)
+        plane (eg. those that will never hit the grid).
         """
         dist_remaining = np.dot(self.x, self.det_n) + np.linalg.norm(self.detector)
 
@@ -899,10 +903,10 @@ class Tracker:
                 RuntimeWarning,
             )
 
-    def _push(self):
+    def _push(self) -> None:
         r"""
         Advance particles using an implementation of the time-centered
-        Boris algorithm
+        Boris algorithm.
         """
         # Get a list of positions (input for interpolator)
         pos = self.x[self.grid_ind, :] * u.m
@@ -1000,7 +1004,7 @@ class Tracker:
         """
         return np.sum(self.on_grid, axis=-1) > 0
 
-    def _stop_condition(self):
+    def _stop_condition(self) -> bool:
         r"""
         The stop condition is that most of the particles have entered the grid
         and almost all have now left it.
@@ -1139,7 +1143,7 @@ class Tracker:
             disable=not self.verbose,
             desc="Particles on grid",
             unit="particles",
-            bar_format="{l_bar}{bar}{n:.1e}/{total:.1e} {unit}",  # noqa: FS003
+            bar_format="{l_bar}{bar}{n:.1e}/{total:.1e} {unit}",
             file=sys.stdout,
         )
 
@@ -1271,28 +1275,27 @@ class Tracker:
         v0[:, 1] = np.dot(self.v_init, self.det_hdir)
         v0[:, 2] = np.dot(self.v_init, self.det_vdir)
 
-        return dict(
-            source=self.source,
-            detector=self.detector,
-            mag=self.mag,
-            nparticles=self.nparticles,
-            max_deflection=self.max_deflection.to(u.rad).value,
-            x=xloc,
-            y=yloc,
-            v=v,
-            x0=x0loc,
-            y0=y0loc,
-            v0=v0,
-        )
+        return {
+            "source": self.source,
+            "detector": self.detector,
+            "mag": self.mag,
+            "nparticles": self.nparticles,
+            "max_deflection": self.max_deflection.to(u.rad).value,
+            "x": xloc,
+            "y": yloc,
+            "v": v,
+            "x0": x0loc,
+            "y0": y0loc,
+            "v0": v0,
+        }
 
-    def save_results(self, path):
+    def save_results(self, path) -> None:
         """
         Save the simulations results :attr:`results_dict` to a `numpy`
         ``.npz`` file format (see `numpy.lib.format`) using `numpy.savez`.
 
         Parameters
         ----------
-
         path : `str` or `os.path`
             Either the filename (string) or an open file (file-like object)
             where the data will be saved. If file is a string or a Path,
@@ -1301,7 +1304,6 @@ class Tracker:
 
         Notes
         -----
-
         Useful for saving the results from a simulation so they can be
         loaded at a later time and passed into
         `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography.synthetic_radiograph`.
@@ -1358,8 +1360,8 @@ class Tracker:
 # *************************************************************************
 
 
-def synthetic_radiograph(
-    obj, size=None, bins=None, ignore_grid=False, optical_density=False
+def synthetic_radiograph(  # noqa: C901
+    obj, size=None, bins=None, ignore_grid: bool = False, optical_density: bool = False
 ):
     r"""
     Calculate a "synthetic radiograph" (particle count histogram in the
