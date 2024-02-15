@@ -163,10 +163,9 @@ class AbstractGrid(ABC):
             of zeros. If false, an exception will be raised instead.
             The default is False.
 
-        warn_on_replace_with_zeros : `bool`, optional
-            If true, warn if a required quantity is replaced with an
-            array of zeros. If false, no warning is shown. The default
-            is true.
+        warn_on_replace_with_zeros : `bool`, default: `True`
+            If `True`, warn if a required quantity is replaced with an
+            array of zeros. If `False`, no warning is shown.
 
         Raises
         ------
