@@ -11,7 +11,7 @@ __aliases__ = ["cs_", "va_", "vth_", "vth_kappa_"]
 __lite_funcs__ = ["thermal_speed_lite"]
 
 import warnings
-from numbers import Integral, Real
+from numbers import Real
 
 import astropy.units as u
 import numpy as np
@@ -41,8 +41,8 @@ def Alfven_speed(
     density: (u.m**-3, u.kg / u.m**3),
     ion: ParticleLike | None = None,
     *,
-    mass_numb: Integral | None = None,
-    Z: Real | None = None,
+    mass_numb: int | None = None,
+    Z: float | None = None,
 ) -> u.Quantity[u.m / u.s]:
     r"""Calculate the Alfvén speed.
 
@@ -472,7 +472,7 @@ def thermal_speed_coefficients(method: str, ndim: int) -> float:
 
 @preserve_signature
 @njit
-def thermal_speed_lite(T: Real, mass: Real, coeff: Real) -> Real:
+def thermal_speed_lite(T: float, mass: float, coeff: float) -> float:
     r"""
     The :term:`lite-function` for
     `~plasmapy.formulary.speeds.thermal_speed`.  Performs the same
@@ -741,8 +741,8 @@ def kappa_thermal_speed(
     particle: ParticleLike,
     method="most_probable",
     *,
-    mass_numb: Real | None = None,
-    Z: Real | None = None,
+    mass_numb: float | None = None,
+    Z: float | None = None,
 ) -> u.Quantity[u.m / u.s]:
     r"""
     Return the most probable speed for a particle within a kappa
