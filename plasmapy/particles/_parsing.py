@@ -128,8 +128,8 @@ def dealias_particle_aliases(alias: str | Integral) -> str:
 
 def invalid_particle_errmsg(
     argument,
-    mass_numb: Integral | None = None,
-    Z: Integral | None = None,
+    mass_numb: int | None = None,
+    Z: int | None = None,
 ):
     """
     Return an appropriate error message for an
@@ -224,8 +224,8 @@ def extract_charge(arg: str):  # noqa: C901, PLR0912
 
 def parse_and_check_atomic_input(  # noqa: C901, PLR0912, PLR0915
     argument: str | Integral,
-    mass_numb: Integral | None = None,
-    Z: Integral | None = None,
+    mass_numb: int | None = None,
+    Z: int | None = None,
 ):
     """
     Parse information about a particle into a dictionary of standard
@@ -271,7 +271,7 @@ def parse_and_check_atomic_input(  # noqa: C901, PLR0912, PLR0915
         correct type.
     """
 
-    def atomic_number_to_symbol(atomic_numb: Integral):
+    def atomic_number_to_symbol(atomic_numb: int):
         """
         Return the atomic symbol associated with an integer representing
         an atomic number, or raises an
@@ -331,7 +331,7 @@ def parse_and_check_atomic_input(  # noqa: C901, PLR0912, PLR0915
             )
         return element
 
-    def reconstruct_isotope_symbol(element: str, mass_numb: Integral) -> str:
+    def reconstruct_isotope_symbol(element: str, mass_numb: int) -> str:
         """
         Receive a `str` representing an atomic symbol and an
         `int` representing a mass number.  Return the isotope symbol
@@ -360,7 +360,7 @@ def parse_and_check_atomic_input(  # noqa: C901, PLR0912, PLR0915
         return isotope
 
     def reconstruct_ion_symbol(
-        element: str, isotope: Integral | None = None, Z: Integral | None = None
+        element: str, isotope: int | None = None, Z: int | None = None
     ):
         """
         Receive a `str` representing an atomic symbol and/or a
@@ -475,7 +475,7 @@ def parse_and_check_atomic_input(  # noqa: C901, PLR0912, PLR0915
     }
 
 
-def parse_and_check_molecule_input(argument: str, Z: Integral | None = None):
+def parse_and_check_molecule_input(argument: str, Z: int | None = None):
     """
     Separate the constitutive elements and charge of a molecule symbol.
 
