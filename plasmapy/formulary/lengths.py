@@ -4,7 +4,6 @@ __all__ = ["Debye_length", "gyroradius", "inertial_length"]
 __aliases__ = ["cwp_", "lambdaD_", "rc_", "rhoc_"]
 
 import warnings
-from numbers import Integral, Real
 
 import astropy.units as u
 import numpy as np
@@ -112,8 +111,8 @@ def gyroradius(  # noqa: C901
     T: u.Quantity[u.K] = None,
     lorentzfactor=np.nan,
     relativistic: bool = True,
-    mass_numb: Integral | None = None,
-    Z: Real | None = None,
+    mass_numb: int | None = None,
+    Z: float | None = None,
 ) -> u.Quantity[u.m]:
     r"""
     Calculate the radius of circular motion for a charged particle in a
@@ -396,8 +395,8 @@ def inertial_length(
     n: u.Quantity[u.m**-3],
     particle: ParticleLike,
     *,
-    mass_numb: Integral | None = None,
-    Z: Real | None = None,
+    mass_numb: int | None = None,
+    Z: float | None = None,
 ) -> u.Quantity[u.m]:
     r"""
     Calculate a charged particle's inertial length.
