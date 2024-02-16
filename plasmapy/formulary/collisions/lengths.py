@@ -3,7 +3,6 @@ Module of length parameters related to collisions.
 """
 __all__ = ["impact_parameter_perp", "impact_parameter", "mean_free_path"]
 
-from numbers import Real
 
 import astropy.units as u
 import numpy as np
@@ -111,7 +110,7 @@ def impact_parameter(  # noqa: C901
     T: u.Quantity[u.K],
     n_e: u.Quantity[u.m**-3],
     species,
-    z_mean: Real = np.nan,
+    z_mean: float = np.nan,
     V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
     method="classical",
 ):
@@ -333,7 +332,7 @@ def mean_free_path(
     T: u.Quantity[u.K],
     n_e: u.Quantity[u.m**-3],
     species,
-    z_mean: Real = np.nan,
+    z_mean: float = np.nan,
     V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
     method="classical",
 ) -> u.Quantity[u.m]:
