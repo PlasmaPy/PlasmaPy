@@ -140,8 +140,8 @@ class IonizationStateCollection:
         abundances: dict[str, Real] | None = None,
         log_abundances: dict[str, Real] | None = None,
         n0: u.Quantity[u.m**-3] = np.nan * u.m**-3,
-        tol: Real = 1e-15,
-        kappa: Real = np.inf,
+        tol: float = 1e-15,
+        kappa: float = np.inf,
     ) -> None:
         set_abundances = True
         if isinstance(inputs, dict) and np.all(
@@ -793,7 +793,7 @@ class IonizationStateCollection:
         return self._pars["kappa"]
 
     @kappa.setter
-    def kappa(self, value: Real):
+    def kappa(self, value: float):
         """
         Set the kappa parameter for a kappa distribution function for
         electrons.  The value must be between ``1.5`` and `~numpy.inf`.
@@ -819,7 +819,7 @@ class IonizationStateCollection:
         return self._tol
 
     @tol.setter
-    def tol(self, atol: Real):
+    def tol(self, atol: float):
         """Set the absolute tolerance for comparisons."""
         if not isinstance(atol, Real):
             raise TypeError("The attribute tol must be a real number.")
@@ -916,7 +916,7 @@ class IonizationStateCollection:
             abundances=all_abundances,
         )
 
-    def summarize(self, minimum_ionic_fraction: Real = 0.01) -> None:
+    def summarize(self, minimum_ionic_fraction: float = 0.01) -> None:
         """
         Print quicklook information.
 

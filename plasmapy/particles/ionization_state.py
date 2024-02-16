@@ -106,12 +106,12 @@ class IonicLevel:
         return self.ion.ionic_symbol
 
     @property
-    def charge_number(self) -> Integral:
+    def charge_number(self) -> int:
         """The charge number of the ion."""
         return self.ion.charge_number
 
     @property
-    def ionic_fraction(self) -> Real:
+    def ionic_fraction(self) -> float:
         r"""
         The fraction of particles of an element that are at this
         ionization level.
@@ -126,7 +126,7 @@ class IonicLevel:
         return self._ionic_fraction
 
     @ionic_fraction.setter
-    def ionic_fraction(self, ionfrac: Real | None):
+    def ionic_fraction(self, ionfrac: float | None):
         if ionfrac is None or np.isnan(ionfrac):
             self._ionic_fraction = np.nan
         else:
@@ -257,7 +257,7 @@ class IonizationState:
         *,
         T_e: u.Quantity[u.K] = np.nan * u.K,
         T_i: u.Quantity[u.K] = None,
-        kappa: Real = np.inf,
+        kappa: float = np.inf,
         n_elem: u.Quantity[u.m**-3] = np.nan * u.m**-3,
         tol: float = 1e-15,
     ) -> None:
@@ -500,7 +500,7 @@ class IonizationState:
                 f"Unable to set ionic fractions of {self.element} to {fractions}."
             ) from exc
 
-    def _is_normalized(self, tol: Real | None = None) -> bool:
+    def _is_normalized(self, tol: float | None = None) -> bool:
         """
         `True` if the sum of the ionization fractions is equal to
         ``1`` within the allowed tolerance, and `False` otherwise.
@@ -632,7 +632,7 @@ class IonizationState:
             raise ParticleError(error_str)
 
     @property
-    def kappa(self) -> Real:
+    def kappa(self) -> float:
         """
         The κ parameter for a kappa distribution function for electrons.
 
@@ -645,7 +645,7 @@ class IonizationState:
         return self._kappa
 
     @kappa.setter
-    def kappa(self, value: Real):
+    def kappa(self, value: float):
         """
         Set the kappa parameter for a kappa distribution function for
         electrons.  The value must be between ``1.5`` and `~numpy.inf`.
@@ -740,7 +740,7 @@ class IonizationState:
         ).tolist()
 
     @property
-    def tol(self) -> Real:
+    def tol(self) -> float:
         """
         The absolute tolerance for comparisons.
 
@@ -752,7 +752,7 @@ class IonizationState:
         return self._tol
 
     @tol.setter
-    def tol(self, atol: Real):
+    def tol(self, atol: float):
         """Set the absolute tolerance for comparisons."""
         if not isinstance(atol, Real):
             raise TypeError("The attribute tol must be a real number.")
@@ -851,7 +851,7 @@ class IonizationState:
             use_rms_mass=use_rms_mass,
         )
 
-    def summarize(self, minimum_ionic_fraction: Real = 0.01) -> None:
+    def summarize(self, minimum_ionic_fraction: float = 0.01) -> None:
         """
         Print quicklook information.
 
