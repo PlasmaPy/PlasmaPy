@@ -630,7 +630,7 @@ that corresponds to :py:`function` as would be defined in
 
    @preserve_signature
    @njit
-   def function_lite(v: Real) -> Real:
+   def function_lite(v: float) -> float:
        """
        The lite-function which accepts and returns real numbers in
        assumed SI units.
