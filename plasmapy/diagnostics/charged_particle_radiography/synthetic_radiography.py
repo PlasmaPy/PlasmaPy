@@ -22,7 +22,7 @@ from plasmapy.particles import Particle
 from plasmapy.plasma.grids import AbstractGrid
 from plasmapy.simulation.particle_tracker import (
     AbstractSaveRoutine,
-    AbstractTerminationCondition,
+    ParticlesPushedThroughGridsTerminationCondition,
     ParticleTracker,
 )
 
@@ -73,61 +73,6 @@ def _coerce_to_cartesian_si(pos):
     return pos_out
 
 
-class _SyntheticRadiographyTerminationCondition(AbstractTerminationCondition):
-    def __init__(self):
-        pass
-
-    @property
-    def require_synchronized_dt(self) -> bool:
-        return False
-
-    @property
-    def progress_description(self) -> str:
-        return "Fraction of particles remaining"
-
-    @property
-    def units_string(self) -> str:
-        return "Particles"
-
-    @property
-    def is_finished(self) -> bool:
-        r"""
-        The stop condition is that most of the particles have entered the grid
-        and almost all have now left it.
-        """
-        # Count the number of particles who have entered, which is the
-        # number of non-zero entries in entered_grid
-        self._particle_tracker.num_entered = np.nonzero(
-            self._particle_tracker.entered_grid
-        )[0].size
-
-        # How many of the particles have entered the grid
-        self._particle_tracker.fract_entered = (
-            np.sum(self._particle_tracker.num_entered)
-            / self._particle_tracker.nparticles_tracked
-        )
-        # Of the particles that have entered the grid, how many are currently
-        # on the grid?
-        # if/else avoids dividing by zero
-        if np.sum(self._particle_tracker.num_entered) > 0:
-            # Normalize to the number that have entered a grid
-            still_on = np.sum(self._particle_tracker.on_any_grid) / np.sum(
-                self._particle_tracker.num_entered
-            )
-        else:
-            still_on = 0.0
-
-        return not (self._particle_tracker.fract_entered <= 0.1 or still_on >= 0.001)
-
-    @property
-    def progress(self) -> float:
-        return self._particle_tracker.on_any_grid.sum()
-
-    @property
-    def total(self) -> float:
-        return self._particle_tracker.nparticles_tracked
-
-
 class _SyntheticRadiographySaveRoutine(AbstractSaveRoutine):
     ARRAY_KEYS = ["x", "y", "v", "x0", "y0", "v0"]
 
@@ -144,13 +89,13 @@ class _SyntheticRadiographySaveRoutine(AbstractSaveRoutine):
     def save_now(self) -> bool:
         return False
 
-    def post_run_hook(self) -> None:
+    def save(self) -> None:
         result_dictionary = self._particle_tracker.results_dict
 
         with h5py.File(self.output_file, "w") as output_file:
             for attribute, value in result_dictionary.items():
                 if attribute in self.ARRAY_KEYS:
-                    output_file[attribute] = value
+                    output_file.create_dataset(attribute, data=value)
                 else:
                     output_file.attrs.create(attribute, value)
 
@@ -229,9 +174,13 @@ class Tracker(ParticleTracker):
             else None
         )
 
+        termination_condition = ParticlesPushedThroughGridsTerminationCondition(
+            fraction_entered_threshold=0.1, fraction_exited_threshold=0.001
+        )
+
         super().__init__(
             grids,
-            _SyntheticRadiographyTerminationCondition(),
+            termination_condition,
             save_routine,
             dt=dt,
             dt_range=dt_range,

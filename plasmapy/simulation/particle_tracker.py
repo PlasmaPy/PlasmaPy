@@ -9,6 +9,7 @@ __all__ = [
     "IntervalSaveRoutine",
     "NoParticlesOnGridsTerminationCondition",
     "ParticleTracker",
+    "ParticlesPushedThroughGridsTerminationCondition",
     "TimeElapsedTerminationCondition",
 ]
 
@@ -169,6 +170,98 @@ class NoParticlesOnGridsTerminationCondition(AbstractTerminationCondition):
         return float(self.tracker.nparticles)
 
 
+class ParticlesPushedThroughGridsTerminationCondition(AbstractTerminationCondition):
+    """Termination condition corresponding to stopping the simulation when a provided
+    proportion of particles have entered and exited the grids.
+
+    Parameters
+    ----------
+    fraction_entered_threshold: float, optional
+        The proportion of particles that must enter the grids to terminate the simulation.
+
+    fraction_exited_threshold: float, optional
+        The proportion of particles that must leave the grids to terminate the simulation.
+        This does not include particles that have never entered the grids.
+    """
+
+    def __init__(
+        self,
+        fraction_entered_threshold: float | None,
+        fraction_exited_threshold: float | None,
+    ):
+        super().__init__()
+
+        self.fraction_entered_threshold = fraction_entered_threshold
+        self.fraction_exited_threshold = fraction_exited_threshold
+
+    @property
+    def require_synchronized_dt(self) -> bool:
+        """The termination condition does not require a synchronized time step."""
+        return False
+
+    @property
+    def progress_description(self) -> str:
+        """The termination condition tracks the number of particles remaining in the grids."""
+        return "Fraction of particles remaining"
+
+    @property
+    def units_string(self) -> str:
+        """The termination condition tracks particles."""
+
+        return "Particles"
+
+    @property
+    def is_finished(self) -> bool:
+        r"""
+        Check to see if the proportion of particles that have entered and exited the grid meet thresholds.
+        """
+        # Count the number of particles who have entered, which is the
+        # number of non-zero entries in entered_grid
+        self._particle_tracker.num_entered = np.nonzero(
+            self._particle_tracker.entered_grid
+        )[0].size
+
+        # How many of the particles have entered the grid
+        self._particle_tracker.fract_entered = (
+            np.sum(self._particle_tracker.num_entered)
+            / self._particle_tracker.nparticles_tracked
+        )
+        # Of the particles that have entered the grid, how many are currently
+        # on the grid?
+        # if/else avoids dividing by zero
+        if np.sum(self._particle_tracker.num_entered) > 0:
+            # Normalize to the number that have entered a grid
+            still_on = np.sum(self._particle_tracker.on_any_grid) / np.sum(
+                self._particle_tracker.num_entered
+            )
+        else:
+            still_on = 0.0
+
+        if (
+            self._particle_tracker.fract_entered is not None
+            and self._particle_tracker.fract_entered > self.fraction_entered_threshold
+        ):
+            return True
+
+        if (
+            self.fraction_exited_threshold is not None
+            and self.fraction_exited_threshold > still_on
+        ):
+            return True
+
+        return False
+
+    @property
+    def progress(self) -> float:
+        """The progress of the simulation is defined in the context of how many particles are on the grids."""
+        return self._particle_tracker.on_any_grid.sum()
+
+    @property
+    def total(self) -> float:
+        """The progress of the simulation is compared to the number of particles tracked."""
+        return self._particle_tracker.nparticles_tracked
+
+
 class AbstractSaveRoutine(ABC):
     """Abstract base class containing the necessary methods for a
     |ParticleTracker| save routine.
@@ -251,10 +344,6 @@ class AbstractSaveRoutine(ABC):
         """
         if self.save_now or force_save:
             self.save()
-
-    def post_run_hook(self) -> None:
-        """Function called after the simulation has finished running."""
-        return
 
 
 class DoNotSaveSaveRoutine(AbstractSaveRoutine):
@@ -767,7 +856,6 @@ class ParticleTracker:
 
         if self.save_routine is not None:
             self.save_routine.post_push_hook(force_save=True)
-            self.save_routine.post_run_hook()
 
         pbar.close()
 
