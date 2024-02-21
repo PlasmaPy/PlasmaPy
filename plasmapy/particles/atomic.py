@@ -493,7 +493,7 @@ def half_life(particle: Particle, mass_numb: int | None = None) -> u.Quantity[u.
     return particle.half_life
 
 
-def known_isotopes(argument: str | Integral | None = None) -> list[str]:
+def known_isotopes(argument: str | int | None = None) -> list[str]:
     """
     Return a list of all known isotopes of an element, or a list of all
     known isotopes of every element if no input is provided.
@@ -586,7 +586,7 @@ def known_isotopes(argument: str | Integral | None = None) -> list[str]:
 
 
 def common_isotopes(
-    argument: str | Integral | None = None, most_common_only: bool = False
+    argument: str | int | None = None, most_common_only: bool = False
 ) -> list[str]:
     """
     Return a list of isotopes of an element with an isotopic abundances
@@ -871,7 +871,7 @@ def reduced_mass(
     )
 
 
-def periodic_table_period(argument: str | Integral) -> int:
+def periodic_table_period(argument: str | int) -> int:
     """
     Return the periodic table period.
 
@@ -914,7 +914,7 @@ def periodic_table_period(argument: str | Integral) -> int:
     return _elements.data_about_elements[symbol]["period"]
 
 
-def periodic_table_group(argument: str | Integral) -> int:
+def periodic_table_group(argument: str | int) -> int:
     """
     Return the periodic table group.
 
@@ -962,7 +962,7 @@ def periodic_table_group(argument: str | Integral) -> int:
     return _elements.data_about_elements[symbol]["group"]
 
 
-def periodic_table_block(argument: str | Integral) -> str:
+def periodic_table_block(argument: str | int) -> str:
     """
     Return the periodic table block.
 
@@ -1013,7 +1013,7 @@ def periodic_table_block(argument: str | Integral) -> str:
     return _elements.data_about_elements[symbol]["block"]
 
 
-def periodic_table_category(argument: str | Integral) -> str:
+def periodic_table_category(argument: str | int) -> str:
     """
     Return the periodic table category.
 
@@ -1074,10 +1074,10 @@ def ionic_levels(
     particle : |atom-like|
         Representation of an element, ion, or isotope.
 
-    min_charge : integer, default: ``0``
+    min_charge : `int`, default: ``0``
         The starting charge number.
 
-    max_charge : integer, optional
+    max_charge : `int`, optional
         The ending charge number, which will be included in the
         |ParticleList|.  Defaults to the atomic number of ``particle``.
 

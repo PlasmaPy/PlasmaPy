@@ -277,8 +277,8 @@ class RelativisticBody:
 
     @staticmethod
     def _get_speed_like_input(
-        velocity_like_arguments: dict[str, u.Quantity | Real],
-    ) -> dict[str, u.Quantity | Real]:
+        velocity_like_arguments: dict[str, u.Quantity | float],
+    ) -> dict[str, u.Quantity | float]:
         not_none_arguments = {
             key: value
             for key, value in velocity_like_arguments.items()
@@ -295,7 +295,7 @@ class RelativisticBody:
         return not_none_arguments or {"velocity": np.nan * u.m / u.s}
 
     def _store_velocity_like_argument(
-        self, speed_like_input: dict[str, u.Quantity | Real]
+        self, speed_like_input: dict[str, u.Quantity | float]
     ) -> None:
         """
         Take the velocity-like argument and store it via the setter for

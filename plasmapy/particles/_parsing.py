@@ -110,7 +110,7 @@ case_sensitive_aliases, case_insensitive_aliases = create_alias_dicts(
 )
 
 
-def dealias_particle_aliases(alias: str | Integral) -> str:
+def dealias_particle_aliases(alias: str | int) -> str:
     """
     Return the standard symbol for a particle or antiparticle
     when the argument is a valid alias.  If the argument is not a
@@ -223,7 +223,7 @@ def extract_charge(arg: str):  # noqa: C901, PLR0912
 
 
 def parse_and_check_atomic_input(  # noqa: C901, PLR0912, PLR0915
-    argument: str | Integral,
+    argument: str | int,
     mass_numb: int | None = None,
     Z: int | None = None,
 ):
@@ -381,7 +381,7 @@ def parse_and_check_atomic_input(  # noqa: C901, PLR0912, PLR0915
 
         return ion
 
-    if not isinstance(argument, str | Integral):
+    if not isinstance(argument, str | int):
         raise TypeError(f"The argument {argument} is not an integer or string.")
 
     arg = dealias_particle_aliases(argument)

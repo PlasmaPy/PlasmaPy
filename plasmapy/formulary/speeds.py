@@ -78,10 +78,10 @@ def Alfven_speed(
         this parameter is required in order to convert to mass
         density.
 
-    mass_numb : integer, |keyword-only|, optional
+    mass_numb : `int`, |keyword-only|, optional
         The mass number corresponding to ``ion``.
 
-    Z : `~numbers.Real`, |keyword-only|, optional
+    Z : `float`, |keyword-only|, optional
         The charge number corresponding to ``ion``. Note that the
         value of ``Z`` does not impact the Alfvén speed.
 
@@ -493,13 +493,13 @@ def thermal_speed_lite(T: float, mass: float, coeff: float) -> float:
 
     Parameters
     ----------
-    T : `~numbers.Real`
+    T : `float`
         The temperature of the particle distribution, in units of kelvin.
 
-    mass : `~numbers.Real`
+    mass : `float`
         Mass of the particle in kg.
 
-    coeff : `~numbers.Real`
+    coeff : `float`
         The coefficient :math:`C_o` associated with the method used for
         calculating the thermal speed, see
         :ref:`Notes <thermal-speed-notes>` section in the
@@ -507,7 +507,7 @@ def thermal_speed_lite(T: float, mass: float, coeff: float) -> float:
 
     Returns
     -------
-    vth : `~numbers.Real`
+    vth : `float`
         Thermal speed of the Maxwellian distribution in units of m/s.
 
     Examples

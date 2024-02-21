@@ -137,8 +137,8 @@ class IonizationStateCollection:
         inputs: dict[str, np.ndarray] | list | tuple,
         *,
         T_e: u.Quantity[u.K] = np.nan * u.K,
-        abundances: dict[str, Real] | None = None,
-        log_abundances: dict[str, Real] | None = None,
+        abundances: dict[str, float] | None = None,
+        log_abundances: dict[str, float] | None = None,
         n0: u.Quantity[u.m**-3] = np.nan * u.m**-3,
         tol: float = 1e-15,
         kappa: float = np.inf,
@@ -675,12 +675,12 @@ class IonizationStateCollection:
         }
 
     @property
-    def abundances(self) -> dict[ParticleLike, Real] | None:
+    def abundances(self) -> dict[ParticleLike, float] | None:
         """The elemental abundances."""
         return self._pars["abundances"]
 
     @abundances.setter
-    def abundances(self, abundances_dict: dict[ParticleLike, Real] | None):
+    def abundances(self, abundances_dict: dict[ParticleLike, float] | None):
         """
         Set the elemental (or isotopic) abundances.  The elements and
         isotopes must be the same as or a superset of the elements whose
@@ -737,7 +737,7 @@ class IonizationStateCollection:
             self._pars["abundances"] = new_abundances_dict
 
     @property
-    def log_abundances(self) -> dict[str, Real]:
+    def log_abundances(self) -> dict[str, float]:
         """
         A `dict` with atomic or isotope symbols as keys and the base 10
         logarithms of the relative abundances as the corresponding values.
@@ -747,7 +747,7 @@ class IonizationStateCollection:
         }
 
     @log_abundances.setter
-    def log_abundances(self, value: dict[str, Real] | None):
+    def log_abundances(self, value: dict[str, float] | None):
         """Set the base 10 logarithm of the relative abundances."""
         if value is not None:
             try:
@@ -922,7 +922,7 @@ class IonizationStateCollection:
 
         Parameters
         ----------
-        minimum_ionic_fraction : `Real`, default: ``0.01``
+        minimum_ionic_fraction : `float`, default: ``0.01``
             If the ionic fraction for a particular ionization state is
             below this level, then information for it will not be
             printed.

@@ -36,7 +36,7 @@ class IonicLevel:
     ion : |atom-like|
         The ion for the corresponding ionic fraction.
 
-    ionic_fraction : real number, optional
+    ionic_fraction : `float`, optional
         The fraction of an element or isotope that is at this ionization
         level. Must be between 0 and 1, inclusive.
 
@@ -716,7 +716,7 @@ class IonizationState:
         return np.sqrt(np.sum(self.ionic_fractions * self.charge_numbers**2))
 
     @property
-    def Z_most_abundant(self) -> list[Integral]:
+    def Z_most_abundant(self) -> list[int]:
         """
         A `list` of the charge numbers with the highest ionic fractions.
 
