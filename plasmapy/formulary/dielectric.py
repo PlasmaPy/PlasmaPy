@@ -237,12 +237,12 @@ def permittivity_1D_Maxwellian_lite(omega, kWave, vth, wp):
         The corresponding wavenumber, in rad/m, of the electromagnetic
         wave propagating through the plasma.
 
-    vth : `~numbers.Real`
+    vth : `float`
         The 3D, most probable thermal speed, in m/s. (i.e. it includes
         the factor of :math:`\sqrt{2}`, see
         :ref:`thermal speed notes <thermal-speed-notes>`)
 
-    wp : `~numbers.Real`
+    wp : `float`
         The plasma frequency, in rad/s.
 
     Returns
@@ -289,7 +289,7 @@ def permittivity_1D_Maxwellian(
     T: u.Quantity[u.K],
     n: u.Quantity[u.m**-3],
     particle,
-    z_mean=None,
+    z_mean: float | None = None,
 ) -> u.Quantity[u.dimensionless_unscaled]:
     r"""
     Compute the classical dielectric permittivity for a 1D Maxwellian
@@ -321,7 +321,7 @@ def permittivity_1D_Maxwellian(
     particle : `str`
         The plasma particle species.
 
-    z_mean : `~numbers.Real`
+    z_mean : `float`, optional
         The average ionization of the plasma. This is only required for
         calculating the ion permittivity.
 

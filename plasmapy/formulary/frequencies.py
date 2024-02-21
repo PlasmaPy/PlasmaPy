@@ -9,7 +9,6 @@ __all__ = [
 __aliases__ = ["oc_", "wc_", "wlh_", "wp_", "wuh_"]
 __lite_funcs__ = ["plasma_frequency_lite"]
 
-import numbers
 
 import astropy.units as u
 import numpy as np
@@ -44,8 +43,8 @@ def gyrofrequency(
     B: u.Quantity[u.T],
     particle: ParticleLike,
     signed: bool = False,
-    Z: numbers.Real | None = None,
-    mass_numb: numbers.Integral | None = None,
+    Z: float | None = None,
+    mass_numb: int | None = None,
 ) -> u.Quantity[u.rad / u.s]:
     r"""
     Calculate the particle gyrofrequency in units of radians per second.
@@ -157,11 +156,11 @@ wc_ = gyrofrequency
 @preserve_signature
 @njit
 def plasma_frequency_lite(
-    n: numbers.Real,
-    mass: numbers.Real,
-    Z: numbers.Real,
+    n: float,
+    mass: float,
+    Z: float,
     to_hz: bool = False,
-) -> numbers.Real:
+) -> float:
     r"""
     The :term:`lite-function` for
     `~plasmapy.formulary.frequencies.plasma_frequency`.  Performs the
@@ -172,13 +171,13 @@ def plasma_frequency_lite(
 
     Parameters
     ----------
-    n : `~numbers.Real`
+    n : `float`
         Particle number density, in units of m\ :sup:`-3`.
 
-    mass : `~numbers.Real`
+    mass : `float`
         Mass of the particle, in units of kg.
 
-    Z : `~numbers.Real`
+    Z : `float`
         The average ionization (arithmetic mean) for the particle
         species in the plasma.  For example, a proton would have a value
         of ``Z=1``.
@@ -189,7 +188,7 @@ def plasma_frequency_lite(
 
     Returns
     -------
-    wp : `~numbers.Real`
+    wp : `float`
         The particle plasma frequency in radians per second.  Setting
         keyword ``to_hz=True`` will apply the factor of :math:`1/2π`
         and yield a value in Hz.
@@ -236,8 +235,8 @@ def plasma_frequency(
     n: u.Quantity[u.m**-3],
     particle: ParticleLike,
     *,
-    mass_numb: numbers.Integral | None = None,
-    Z: numbers.Real | None = None,
+    mass_numb: int | None = None,
+    Z: float | None = None,
 ) -> u.Quantity[u.rad / u.s]:
     r"""Calculate the particle plasma frequency.
 
