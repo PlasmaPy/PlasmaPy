@@ -22,14 +22,14 @@ _time = u.get_physical_type(u.s)
 _number_density = u.get_physical_type(u.m**-3)
 _velocity = u.get_physical_type(u.m / u.s)
 
-_allowed_physical_types = (
+_allowed_physical_types = {
     _length,
     _magnetic_field,
     _mass_density,  # allow this?
     _number_density,
     _time,
     _velocity,
-)
+}
 
 
 @particle_input
@@ -59,16 +59,16 @@ class MHDNormalizations(AbstractNormalizations):
 
     Parameters
     ----------
-    *quantities : `tuple` of |Quantity|
+    *quantities : |Quantity|
         Three normalization constants.
 
     ion : |atom-like|
         The ion of the electron-ion plasma.
 
-    Z : integer, optional
+    Z : `int`, optional
         The charge number of the ion. Must be positive.
 
-    mass_numb : integer, optional
+    mass_numb : `int`, optional
         The mass number of the isotope of the ion.
 
     Notes
@@ -160,13 +160,11 @@ class MHDNormalizations(AbstractNormalizations):
 
         self.ion = ion
 
-        include_spatiotemporal = (
-            [
-                _length in self._ptypes_to_quantities,
-                _time in self._ptypes_to_quantities,
-                _velocity in self._ptypes_to_quantities,
-            ],
-        )
+        include_spatiotemporal = [
+            _length in self._ptypes_to_quantities,
+            _time in self._ptypes_to_quantities,
+            _velocity in self._ptypes_to_quantities,
+        ]
 
         if not include_spatiotemporal or all(include_spatiotemporal):
             raise NormalizationError(
