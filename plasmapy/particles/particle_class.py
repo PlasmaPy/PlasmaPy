@@ -14,6 +14,7 @@ __all__ = [
 ]
 
 import json
+import typing
 import warnings
 from abc import ABC, abstractmethod
 from collections import defaultdict, namedtuple
@@ -2492,9 +2493,16 @@ def molecule(symbol: str, Z: int | None = None) -> Particle | CustomParticle:
 # If ParticleLike is renamed or moves out of particle_class.py, check
 # for a link to its doc page in error messages in _factory.py.
 
-ParticleLike: TypeAlias = (
-    str | int | np.integer | Particle | CustomParticle | u.Quantity
-)
+ParticleLike: TypeAlias = typing.Union[  # noqa: UP007
+    str,
+    int,
+    np.integer,
+    Particle,
+    CustomParticle,
+    u.Quantity,
+]
+
+# Using typing.Union in ParticleLike lets us define ParticleLike.__doc__
 
 ParticleLike.__doc__ = r"""
 An `object` is particle-like if it can be identified as an instance of
