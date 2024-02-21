@@ -6,7 +6,7 @@
 #
 alabaster==0.7.16
     # via sphinx
-anyio==4.2.0
+anyio==4.3.0
     # via jupyter-server
 argon2-cffi==23.1.0
     # via jupyter-server
@@ -18,7 +18,7 @@ asteval==0.9.31
     # via lmfit
 astropy==6.0.0
     # via plasmapy (setup.py)
-astropy-iers-data==0.2024.2.12.0.31.0
+astropy-iers-data==0.2024.2.19.0.28.47
     # via astropy
 asttokens==2.4.1
     # via stack-data
@@ -88,7 +88,7 @@ filelock==3.13.1
     # via
     #   tox
     #   virtualenv
-fonttools==4.48.1
+fonttools==4.49.0
     # via matplotlib
 fqdn==1.5.1
     # via jsonschema
@@ -96,9 +96,9 @@ future==0.18.3
     # via uncertainties
 h5py==3.10.0
     # via plasmapy (setup.py)
-hypothesis==6.98.4
+hypothesis==6.98.8
     # via plasmapy (setup.py)
-identify==2.5.34
+identify==2.5.35
     # via pre-commit
 idna==3.6
     # via
@@ -169,7 +169,7 @@ jupyter-server-terminals==0.5.2
     # via jupyter-server
 jupyterlab-pygments==0.3.0
     # via nbconvert
-jupyterlab-server==2.25.2
+jupyterlab-server==2.25.3
     # via voila
 jupyterlab-widgets==3.0.10
     # via ipywidgets
@@ -185,7 +185,7 @@ markupsafe==2.1.5
     # via
     #   jinja2
     #   nbconvert
-matplotlib==3.8.2
+matplotlib==3.8.3
     # via plasmapy (setup.py)
 matplotlib-inline==0.1.6
     # via
@@ -273,9 +273,9 @@ pluggy==1.4.0
     # via
     #   pytest
     #   tox
-pre-commit==3.6.1
+pre-commit==3.6.2
     # via plasmapy (setup.py)
-prometheus-client==0.19.0
+prometheus-client==0.20.0
     # via jupyter-server
 prompt-toolkit==3.0.43
     # via ipython
@@ -360,7 +360,7 @@ rfc3986-validator==0.1.1
     # via
     #   jsonschema
     #   jupyter-events
-rpds-py==0.17.1
+rpds-py==0.18.0
     # via
     #   jsonschema
     #   referencing
@@ -469,7 +469,7 @@ towncrier==23.11.0
     # via
     #   plasmapy (setup.py)
     #   sphinx-changelog
-tox==4.12.1
+tox==4.13.0
     # via plasmapy (setup.py)
 tqdm==4.66.2
     # via plasmapy (setup.py)
@@ -499,7 +499,7 @@ unidecode==1.3.8
     # via plasmapy (setup.py)
 uri-template==1.3.0
     # via jsonschema
-urllib3==2.2.0
+urllib3==2.2.1
     # via requests
 virtualenv==20.25.0
     # via
@@ -523,7 +523,7 @@ widgetsnbextension==4.0.10
     # via ipywidgets
 wrapt==1.16.0
     # via plasmapy (setup.py)
-xarray==2024.1.1
+xarray==2024.2.0
     # via plasmapy (setup.py)
 
 # The following packages are considered to be unsafe in a requirements file:
