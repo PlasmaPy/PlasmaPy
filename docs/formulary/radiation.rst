@@ -8,6 +8,10 @@ Electromagnetic Radiation Functions (`plasmapy.formulary.radiation`)
 
 .. automodapi:: plasmapy.formulary.radiation
 
+See Also
+========
+`astropy.modeling.physical_models.BlackBody`
+
 Examples
 ========
 
