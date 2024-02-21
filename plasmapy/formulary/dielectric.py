@@ -321,7 +321,7 @@ def permittivity_1D_Maxwellian(
     particle : `str`
         The plasma particle species.
 
-    z_mean : `float`, optional
+    z_mean : `float`
         The average ionization of the plasma. This is only required for
         calculating the ion permittivity.
 
