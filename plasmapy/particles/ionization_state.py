@@ -395,7 +395,6 @@ class IonizationState:
         ...     "H", [1, 1e-6], tol=1e-5
         ... )  # noqa: W505
         False
-
         """
         if not isinstance(other, IonizationState):
             return False
@@ -640,7 +639,6 @@ class IonizationState:
         have a valid distribution function.  If ``kappa`` is
         `~numpy.inf`, then the distribution function reduces to a
         Maxwellian.
-
         """
         return self._kappa
 
@@ -655,7 +653,7 @@ class IonizationState:
             raise TypeError(kappa_errmsg)
         if value <= 1.5:
             raise ValueError(kappa_errmsg)
-        self._kappa = np.real(value)
+        self._kappa: float = np.real(value)
 
     @property
     def element(self) -> str:
@@ -757,7 +755,7 @@ class IonizationState:
         if not isinstance(atol, Real):
             raise TypeError("The attribute tol must be a real number.")
         if 0 <= atol < 1:
-            self._tol = atol
+            self._tol: float = atol
         else:
             raise ValueError("Need 0 <= tol < 1.")
 
