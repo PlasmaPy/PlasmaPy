@@ -9,7 +9,6 @@ __all__ = [
 ]
 
 from functools import cached_property
-from numbers import Real
 
 import astropy.units as u
 import numpy as np
@@ -619,7 +618,7 @@ def collision_frequency(
     T: u.Quantity[u.K],
     n: u.Quantity[u.m**-3],
     species,
-    z_mean: Real = np.nan,
+    z_mean: float = np.nan,
     V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
     method="classical",
 ) -> u.Quantity[u.Hz]:

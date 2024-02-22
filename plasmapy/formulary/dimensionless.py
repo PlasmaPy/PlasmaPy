@@ -19,7 +19,6 @@ __all__ = [
 ]
 __aliases__ = ["betaH_", "nD_", "Re_", "Rm_"]
 
-import numbers
 
 import astropy.units as u
 import numpy as np
@@ -448,7 +447,7 @@ def Lundquist_number(
     density: u.Quantity[u.m**-3, u.kg / u.m**3],
     sigma: u.Quantity[u.S / u.m],
     ion: ParticleLike | None = None,
-    z_mean: numbers.Real | None = None,
+    z_mean: float | None = None,
 ) -> u.Quantity[u.dimensionless_unscaled]:
     r"""
     Compute the Lundquist number.
@@ -489,7 +488,7 @@ def Lundquist_number(
         ionized. If the density is an ion number density, then this parameter
         is required in order to convert to mass density.
 
-    z_mean : `~numbers.Real`, optional
+    z_mean : `float`, optional
         The average ionization state (arithmetic mean) of the ``ion`` composing
         the plasma.  This is used in calculating the mass density
         :math:`ρ = n_i (m_i + Z_{mean} m_e)`.  ``z_mean`` is ignored if
