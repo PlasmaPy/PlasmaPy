@@ -55,10 +55,14 @@ def main():
 
     instructions_to_add_author = f"""
 
-To ensure that you get credit for your contribution to PlasmaPy, please
-add the following authors to CITATION.cff: {missing_github_usernames!r}
+To ensure that you get credit for your contribution, please add the
+following authors to CITATION.cff: {", ".join(sorted(missing_github_usernames))!r}
 
-The entry should be of the form:
+This file can be edited directly on GitHub at:
+
+   https://github.com/{REPO}/edit/{branch_name}/CITATION.cff
+
+Each entry should be of the form:
 
 - given-names: <given names>
   family-names: <family names>
@@ -66,10 +70,6 @@ The entry should be of the form:
   orcid: https://orcid.org/<ORCiD number>
   alias: <GitHub username>
   email: <email address>
-
-This file can be edited directly on GitHub at:
-
-https://github.com/{REPO}/edit/{branch_name}/CITATION.cff
 
 All fields are optional except "alias", which is the GitHub username.
 The "affiliation", "orcid", and/or "email" fields are sometimes needed
