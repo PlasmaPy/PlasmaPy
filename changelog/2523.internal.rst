@@ -1,0 +1,1 @@
+Switched from ``pip`` to ``uv`` for dependency resolution.
