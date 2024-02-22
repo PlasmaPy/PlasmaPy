@@ -90,6 +90,9 @@ class _SyntheticRadiographySaveRoutine(AbstractSaveRoutine):
     def save(self) -> None:
         result_dictionary = self._particle_tracker.results_dict
 
+        if self.output_directory is None:
+            return
+
         output_file_path = (
             self.output_directory / f"{self.tracker.iteration_number}.hdf5"
         )
