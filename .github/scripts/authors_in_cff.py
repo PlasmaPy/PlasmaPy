@@ -30,22 +30,19 @@ def get_pr_authors() -> set[str]:
     return authors - excluded_authors
 
 
-def check_citation_file(authors: set[str]) -> tuple[bool, str | None]:
+def find_missing_github_usernames(authors: set[str]) -> set[str]:
     """Verify that all authors of a PR are included in :file:`CITATION.cff`."""
     with pathlib.Path("CITATION.cff").open() as file:
-        contents = file.read()
-        for author in authors:
-            if f"alias: {author}" not in contents:
-                return False, author
-    return True, None
+        lines = file.read()
+        return {author for author in authors if f"alias: {author}" not in lines}
 
 
 def main():
     """Check that all authors are included in CITATION.cff."""
     authors = get_pr_authors()
-    check_passed, missing_github_username = check_citation_file(authors)
+    missing_github_usernames = find_missing_github_usernames(authors)
 
-    if check_passed:
+    if not missing_github_usernames:
         msg = (
             f"The authors of pull request {PR_NUMBER} for {REPO} are: "
             f"{', '.join(sorted(authors))}. No authors need to be "
@@ -58,7 +55,7 @@ def main():
 
     error_message = f"""
 To ensure that you get credit for your contribution to PlasmaPy, please
-add the following authors to CITATION.cff: {missing_github_username!r}
+add the following authors to CITATION.cff: {missing_github_usernames!r}
 
 The entry should be of the form:
 
