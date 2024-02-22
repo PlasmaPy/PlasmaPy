@@ -215,41 +215,32 @@ class ParticlesPushedThroughGridsTerminationCondition(AbstractTerminationConditi
         r"""
         Check to see if the proportion of particles that have entered and exited the grid meet thresholds.
         """
-        # Count the number of particles who have entered, which is the
-        # number of non-zero entries in entered_grid
-        self._particle_tracker.num_entered = np.nonzero(
-            self._particle_tracker.entered_grid
-        )[0].size
 
-        # How many of the particles have entered the grid
-        self._particle_tracker.fract_entered = (
-            np.sum(self._particle_tracker.num_entered)
-            / self._particle_tracker.nparticles_tracked
-        )
         # Of the particles that have entered the grid, how many are currently
         # on the grid?
         # if/else avoids dividing by zero
-        if np.sum(self._particle_tracker.num_entered) > 0:
+        if self._particle_tracker.num_entered > 0:
             # Normalize to the number that have entered a grid
-            still_on = np.sum(self._particle_tracker.on_any_grid) / np.sum(
-                self._particle_tracker.num_entered
+            still_on = (
+                np.sum(self._particle_tracker.on_any_grid)
+                / self._particle_tracker.num_entered
             )
         else:
             still_on = 0.0
 
         if (
-            self._particle_tracker.fract_entered is not None
-            and self._particle_tracker.fract_entered > self.fraction_entered_threshold
+            self.fraction_entered_threshold is not None
+            and self._particle_tracker.fract_entered < self.fraction_entered_threshold
         ):
-            return True
+            return False
 
         if (
             self.fraction_exited_threshold is not None
-            and self.fraction_exited_threshold > still_on
+            and self.fraction_exited_threshold < still_on
         ):
-            return True
+            return False
 
-        return False
+        return True
 
     @property
     def progress(self) -> float:
