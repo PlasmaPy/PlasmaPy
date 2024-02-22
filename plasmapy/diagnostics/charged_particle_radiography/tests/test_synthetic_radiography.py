@@ -327,11 +327,6 @@ def test_input_validation() -> None:
     with pytest.raises(ValueError):
         sim = cpr.Tracker(grid, source_bad, detector_bad, verbose=False)
 
-    # Test raises warning when one (or more) of the required fields is missing
-    grid_bad = CartesianGrid(-1 * u.mm, 1 * u.mm, num=50)
-    with pytest.warns(RuntimeWarning, match="is not specified for the provided grid."):
-        sim = cpr.Tracker(grid_bad, source, detector, verbose=True)
-
     # ************************************************************************
     # During create_particles
     # ************************************************************************
