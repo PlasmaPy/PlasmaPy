@@ -27,12 +27,6 @@ def get_pr_authors() -> set[str]:
         commit["author"]["login"] for commit in response.json() if commit["author"]
     }
 
-    msg = (
-        f"The authors of pull request {PR_NUMBER} for {REPO} are: "
-        f"{', '.join(sorted(authors))}."
-    )
-
-    logging.info(msg)
     return authors - excluded_authors
 
 
@@ -52,7 +46,11 @@ def main():
     check_passed, missing_github_username = check_citation_file(authors)
 
     if check_passed:
-        msg = f"The following authors are present in CITATION.cff: {authors}"
+        msg = (
+            f"The authors of pull request {PR_NUMBER} for {REPO} are: "
+            f"{', '.join(sorted(authors))}. No authors need to be "
+            "added to CITATION.cff."
+        )
         logging.info(msg)
         sys.exit(0)
 
@@ -60,7 +58,7 @@ def main():
 
     error_message = f"""
 To ensure that you get credit for your contribution to PlasmaPy, please
-add {missing_github_username!r} as an author to CITATION.cff.
+add the following authors to CITATION.cff: {missing_github_username!r}
 
 The entry should be of the form:
 
@@ -68,7 +66,7 @@ The entry should be of the form:
   family-names: <family names>
   affiliation: <affiliation>
   orcid: https://orcid.org/<ORCiD number>
-  alias: {missing_github_username}
+  alias: <GitHub username>
   email: <email address>
 
 This file can be edited directly on GitHub at:
