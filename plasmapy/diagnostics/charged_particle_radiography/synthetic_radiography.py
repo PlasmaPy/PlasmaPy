@@ -76,10 +76,8 @@ def _coerce_to_cartesian_si(pos):
 class _SyntheticRadiographySaveRoutine(AbstractSaveRoutine):
     ARRAY_KEYS = ["x", "y", "v", "x0", "y0", "v0"]
 
-    def __init__(self, output_file: Path):
-        super().__init__()
-
-        self.output_file = output_file
+    def __init__(self, output_directory: Path):
+        super().__init__(output_directory=output_directory)
 
     @property
     def require_synchronized_dt(self) -> bool:
@@ -92,7 +90,11 @@ class _SyntheticRadiographySaveRoutine(AbstractSaveRoutine):
     def save(self) -> None:
         result_dictionary = self._particle_tracker.results_dict
 
-        with h5py.File(self.output_file, "w") as output_file:
+        output_file_path = (
+            self.output_directory / f"{self.tracker.iteration_number}.hdf5"
+        )
+
+        with h5py.File(output_file_path, "w") as output_file:
             for attribute, value in result_dictionary.items():
                 if attribute in self.ARRAY_KEYS:
                     output_file.create_dataset(attribute, data=value)
@@ -931,23 +933,6 @@ class Tracker(ParticleTracker):
             "detector plane: "
             f"{self.fract_deflected*100}%"
         )
-
-    @property
-    def num_entered(self):
-        """Count the number of particles that have entered the grids.
-        This number is calculated by summing the number of non-zero entries in the
-        entered grid array.
-        """
-
-        return (self.entered_grid > 0).sum()
-
-    @property
-    def fract_entered(self):
-        """The fraction of particles that have entered the grid.
-        The denominator of this fraction is based off the number of tracked
-        particles, and therefore does not include stopped or removed particles.
-        """
-        return self.num_entered / self.nparticles_tracked
 
     @property
     def max_deflection(self):

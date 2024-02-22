@@ -852,6 +852,23 @@ class ParticleTracker:
 
         self._log("Run completed")
 
+    @property
+    def num_entered(self):
+        """Count the number of particles that have entered the grids.
+        This number is calculated by summing the number of non-zero entries in the
+        entered grid array.
+        """
+
+        return (self.entered_grid > 0).sum()
+
+    @property
+    def fract_entered(self):
+        """The fraction of particles that have entered the grid.
+        The denominator of this fraction is based off the number of tracked
+        particles, and therefore does not include stopped or removed particles.
+        """
+        return self.num_entered / self.nparticles_tracked
+
     def _stop_particles(self, particles_to_stop_mask) -> None:
         """Stop tracking the particles specified by the stop mask.
 
