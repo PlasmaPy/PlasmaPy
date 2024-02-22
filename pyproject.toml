@@ -100,7 +100,6 @@ Chat = "https://plasmapy.org/chat"
 Documentation = "https://docs.plasmapy.org/"
 Issues = "https://github.com/PlasmaPy/plasmapy/issues/"
 Source = "https://github.com/PlasmaPy/plasmapy"
-Twitter = "https://twitter.com/PlasmaPy"
 website = "https://www.plasmapy.org"
 [project.scripts]
 plasma-calculator = "plasmapy.utils.calculator:main"
