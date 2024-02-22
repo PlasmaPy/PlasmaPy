@@ -1,20 +1,23 @@
 """Check that the authors of a PR are included in ``CITATION.cff``."""
 
+import logging
 import os
 import pathlib
 import sys
 
 import requests
 
+logging.basicConfig(level="INFO")
+
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 PR_NUMBER = os.getenv("PR_NUMBER")
 REPO = os.getenv("GITHUB_REPOSITORY")
 
-EXCLUDED_USERS = ["dependabot[bot]", "pre-commit-ci[bot]", "sourcery-ai"]
+excluded_authors = {"dependabot[bot]", "pre-commit-ci[bot]", "sourcery-ai"}
 
 
 def get_pr_authors() -> set[str]:
-    """Get the GitHub usernames of a pull request."""
+    """Get the GitHub usernames of the pull request."""
     url = f"https://api.github.com/repos/{REPO}/pulls/{PR_NUMBER}/commits"
     headers = {"Authorization": f"Bearer {GITHUB_TOKEN}"}
     response = requests.get(url, headers=headers, timeout=15)
@@ -23,7 +26,14 @@ def get_pr_authors() -> set[str]:
     authors = {
         commit["author"]["login"] for commit in response.json() if commit["author"]
     }
-    return authors - set(EXCLUDED_USERS)
+
+    msg = (
+        f"The authors of pull request {PR_NUMBER} for {REPO} are: "
+        f"{', '.join(sorted(authors))}."
+    )
+
+    logging.info(msg)
+    return authors - excluded_authors
 
 
 def check_citation_file(authors: set[str]) -> tuple[bool, str | None]:
@@ -40,10 +50,15 @@ def main():
     """Check that all authors are included in CITATION.cff."""
     authors = get_pr_authors()
     check_passed, missing_github_username = check_citation_file(authors)
-    if not check_passed:
-        branch_name = os.getenv("GITHUB_HEAD_REF")
 
-        error_message = f"""
+    if check_passed:
+        msg = f"The following authors are present in CITATION.cff: {authors}"
+        logging.info(msg)
+        sys.exit(0)
+
+    branch_name = os.getenv("GITHUB_HEAD_REF")
+
+    error_message = f"""
 To ensure that you get credit for your contribution to PlasmaPy, please
 add {missing_github_username!r} as an author to CITATION.cff.
 
@@ -71,8 +86,8 @@ for conference abstract or journal article submissions about PlasmaPy.
 Thank you for contributing!
 """
 
-        print(error_message)  # noqa: T201
-        sys.exit(1)
+    logging.info(error_message)
+    sys.exit(1)
 
 
 if __name__ == "__main__":
