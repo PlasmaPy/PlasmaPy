@@ -30,11 +30,11 @@ def get_pr_authors() -> set[str]:
     return authors - excluded_authors
 
 
-def find_missing_github_usernames(authors: set[str]) -> set[str]:
+def find_missing_github_usernames(authors: set[str]) -> list[str]:
     """Verify that all authors of a PR are included in :file:`CITATION.cff`."""
     with pathlib.Path("CITATION.cff").open() as file:
         lines = file.read()
-        return {author for author in authors if f"alias: {author}" not in lines}
+        return [author for author in authors if f"alias: {author}" not in lines]
 
 
 def main():
@@ -53,14 +53,19 @@ def main():
 
     branch_name = os.getenv("GITHUB_HEAD_REF")
 
+    if len(missing_github_usernames) == 1:
+        alias_field = missing_github_usernames[0]
+    else:
+        alias_field = "<GitHub username>"
+
     instructions_to_add_author = f"""
 
 To ensure that you get credit for your contribution, please add the
-following authors to CITATION.cff: {", ".join(sorted(missing_github_usernames))!r}
+following authors to CITATION.cff: {", ".join(missing_github_usernames)!r}
 
 This file can be edited directly on GitHub at:
 
-   https://github.com/{REPO}/edit/{branch_name}/CITATION.cff
+https://github.com/{REPO}/edit/{branch_name}/CITATION.cff
 
 Each entry should be of the form:
 
@@ -68,7 +73,7 @@ Each entry should be of the form:
   family-names: <family names>
   affiliation: <affiliation>
   orcid: https://orcid.org/<ORCiD number>
-  alias: <GitHub username>
+  alias: {alias_field}
   email: <email address>
 
 All fields are optional except "alias", which is the GitHub username.
