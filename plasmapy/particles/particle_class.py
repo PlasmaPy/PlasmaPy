@@ -1960,7 +1960,6 @@ class DimensionlessParticle(AbstractParticle):
             'date_created': '...',
             '__init__': {'args': (), 'kwargs': {'mass': 1.0, 'charge': -1.0,
             'symbol': 'DimensionlessParticle(mass=1.0, charge=-1.0)'}}}}
-        >>> import pytest
         >>> dimensionless_particle = DimensionlessParticle(mass=1.0)
         >>> dimensionless_particle.json_dict
         {'plasmapy_particle': {'type': 'DimensionlessParticle',
@@ -2224,7 +2223,6 @@ class CustomParticle(AbstractPhysicalParticle):
             'date_created': '...',
             '__init__': {'args': (), 'kwargs': {'mass': '5.12 kg', 'charge': '6.2 C',
             'charge_number': '3.869735626...e+19', 'symbol': 'ξ'}}}}
-        >>> import pytest
         >>> custom_particle = CustomParticle(mass=1.5e-26 * u.kg)
         >>> custom_particle.json_dict
         {'plasmapy_particle': {'type': 'CustomParticle',
