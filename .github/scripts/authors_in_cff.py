@@ -49,8 +49,8 @@ def main():
     if not missing_github_usernames:
         msg = (
             f"The authors of pull request {PR_NUMBER} for {REPO} are: "
-            f"{', '.join(sorted(authors))}. No authors need to be "
-            "added to CITATION.cff."
+            f"{', '.join(sorted(authors))}. All authors are included "
+            "in CITATION.cff. ✔️"
         )
         logging.info(msg)
         sys.exit(0)
