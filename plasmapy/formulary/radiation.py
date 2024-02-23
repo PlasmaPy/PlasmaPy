@@ -32,7 +32,7 @@ def thermal_bremsstrahlung(
     n_i: u.Quantity[u.m**-3] = None,
     ion: ParticleLike = "p+",
     kmax: u.Quantity[u.m] = None,
-) -> np.ndarray:
+) -> u.Quantity[u.kg * u.m**-1 * u.s**-2]:
     r"""
     Calculate the bremsstrahlung emission spectrum for a Maxwellian plasma
     in the Rayleigh-Jeans limit :math:`ℏ ω ≪ k_B T_e`.
