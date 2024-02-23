@@ -95,7 +95,7 @@ def thermal_bremsstrahlung(
     For details, see :cite:t:`bekefi:1966`\ .
     """
 
-    if n_i is None:  # assume quasineutrality
+    if n_i is None:  # default is quasineutrality
         n_i = n_e / ion.charge_number
 
     # Default value of kmax is the electron thermal de Broglie wavelength
