@@ -1,1 +1,1 @@
-Remove references to the twitter account, which is no longer used.
+Removed references to the Twitter account, which is no longer used.
