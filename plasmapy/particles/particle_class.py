@@ -14,12 +14,13 @@ __all__ = [
 ]
 
 import json
+import typing
 import warnings
 from abc import ABC, abstractmethod
 from collections import defaultdict, namedtuple
 from datetime import datetime
 from numbers import Integral, Real
-from typing import TYPE_CHECKING, TypeAlias, Union
+from typing import TYPE_CHECKING, TypeAlias
 
 import astropy.constants as const
 import astropy.units as u
@@ -1111,7 +1112,7 @@ class Particle(AbstractPhysicalParticle):
         return f"{self.element_name}-{self.mass_number}"
 
     @property
-    def charge_number(self) -> Integral:
+    def charge_number(self) -> int:
         """
         The particle's electrical charge in units of the elementary charge.
 
@@ -1368,7 +1369,7 @@ class Particle(AbstractPhysicalParticle):
         return nuclear_binding_energy.to(u.J)
 
     @property
-    def atomic_number(self) -> Integral:
+    def atomic_number(self) -> int:
         """
         The number of protons in an element, isotope, or ion.
 
@@ -1391,7 +1392,7 @@ class Particle(AbstractPhysicalParticle):
         return self._attributes["atomic number"]
 
     @property
-    def mass_number(self) -> Integral:
+    def mass_number(self) -> int:
         """
         The total number of protons and neutrons in an isotope or nuclide.
 
@@ -1411,7 +1412,7 @@ class Particle(AbstractPhysicalParticle):
         return self._attributes["mass number"]
 
     @property
-    def neutron_number(self) -> Integral:
+    def neutron_number(self) -> int:
         """
         The number of neutrons in an isotope or nucleon.
 
@@ -1438,7 +1439,7 @@ class Particle(AbstractPhysicalParticle):
             raise InvalidIsotopeError(_category_errmsg(self, "isotope"))
 
     @property
-    def electron_number(self) -> Integral:
+    def electron_number(self) -> int:
         """
         The number of electrons in an ion.
 
@@ -1500,7 +1501,7 @@ class Particle(AbstractPhysicalParticle):
         return abundance
 
     @property
-    def baryon_number(self) -> Integral:
+    def baryon_number(self) -> int:
         """
         The number of baryons in a particle.
 
@@ -1526,7 +1527,7 @@ class Particle(AbstractPhysicalParticle):
         return self._attributes["baryon number"]
 
     @property
-    def lepton_number(self) -> Integral:
+    def lepton_number(self) -> int:
         """
         ``1`` for leptons, ``-1`` for antileptons, and ``0`` otherwise.
 
@@ -2492,7 +2493,16 @@ def molecule(symbol: str, Z: int | None = None) -> Particle | CustomParticle:
 # If ParticleLike is renamed or moves out of particle_class.py, check
 # for a link to its doc page in error messages in _factory.py.
 
-ParticleLike: TypeAlias = Union[str, Integral, Particle, CustomParticle, u.Quantity]  # noqa: UP007
+ParticleLike: TypeAlias = typing.Union[  # noqa: UP007
+    str,
+    int,
+    np.integer,
+    Particle,
+    CustomParticle,
+    u.Quantity,
+]
+
+# Using typing.Union in ParticleLike lets us define ParticleLike.__doc__
 
 ParticleLike.__doc__ = r"""
 An `object` is particle-like if it can be identified as an instance of

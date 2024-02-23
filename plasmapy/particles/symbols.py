@@ -10,7 +10,6 @@ __all__ = [
     "particle_symbol",
 ]
 
-from numbers import Integral
 
 from plasmapy.particles.decorators import particle_input
 from plasmapy.particles.particle_class import Particle
@@ -93,7 +92,7 @@ def atomic_symbol(element: Particle) -> str:
 
 
 @particle_input
-def isotope_symbol(isotope: Particle, mass_numb: Integral | None = None) -> str:
+def isotope_symbol(isotope: Particle, mass_numb: int | None = None) -> str:
     """
     Return the symbol representing an isotope.
 
@@ -153,8 +152,8 @@ def isotope_symbol(isotope: Particle, mass_numb: Integral | None = None) -> str:
 def ionic_symbol(
     particle: Particle,
     *,
-    mass_numb: Integral | None = None,
-    Z: Integral | None = None,
+    mass_numb: int | None = None,
+    Z: int | None = None,
 ) -> str:
     """
     Return the ionic symbol of an ion or neutral atom.
@@ -219,8 +218,8 @@ def ionic_symbol(
 def particle_symbol(
     particle: Particle,
     *,
-    mass_numb: Integral | None = None,
-    Z: Integral | None = None,
+    mass_numb: int | None = None,
+    Z: int | None = None,
 ) -> str:
     """
     Return the symbol of a particle.

@@ -11,7 +11,7 @@ __aliases__ = ["cs_", "va_", "vth_", "vth_kappa_"]
 __lite_funcs__ = ["thermal_speed_lite"]
 
 import warnings
-from numbers import Integral, Real
+from numbers import Real
 
 import astropy.units as u
 import numpy as np
@@ -41,8 +41,8 @@ def Alfven_speed(
     density: (u.m**-3, u.kg / u.m**3),
     ion: ParticleLike | None = None,
     *,
-    mass_numb: Integral | None = None,
-    Z: Real | None = None,
+    mass_numb: int | None = None,
+    Z: float | None = None,
 ) -> u.Quantity[u.m / u.s]:
     r"""Calculate the Alfvén speed.
 
@@ -78,10 +78,10 @@ def Alfven_speed(
         this parameter is required in order to convert to mass
         density.
 
-    mass_numb : integer, |keyword-only|, optional
+    mass_numb : `int`, |keyword-only|, optional
         The mass number corresponding to ``ion``.
 
-    Z : `~numbers.Real`, |keyword-only|, optional
+    Z : `float`, |keyword-only|, optional
         The charge number corresponding to ``ion``. Note that the
         value of ``Z`` does not impact the Alfvén speed.
 
@@ -472,7 +472,7 @@ def thermal_speed_coefficients(method: str, ndim: int) -> float:
 
 @preserve_signature
 @njit
-def thermal_speed_lite(T: Real, mass: Real, coeff: Real) -> Real:
+def thermal_speed_lite(T: float, mass: float, coeff: float) -> float:
     r"""
     The :term:`lite-function` for
     `~plasmapy.formulary.speeds.thermal_speed`.  Performs the same
@@ -493,13 +493,13 @@ def thermal_speed_lite(T: Real, mass: Real, coeff: Real) -> Real:
 
     Parameters
     ----------
-    T : `~numbers.Real`
+    T : `float`
         The temperature of the particle distribution, in units of kelvin.
 
-    mass : `~numbers.Real`
+    mass : `float`
         Mass of the particle in kg.
 
-    coeff : `~numbers.Real`
+    coeff : `float`
         The coefficient :math:`C_o` associated with the method used for
         calculating the thermal speed, see
         :ref:`Notes <thermal-speed-notes>` section in the
@@ -507,7 +507,7 @@ def thermal_speed_lite(T: Real, mass: Real, coeff: Real) -> Real:
 
     Returns
     -------
-    vth : `~numbers.Real`
+    vth : `float`
         Thermal speed of the Maxwellian distribution in units of m/s.
 
     Examples
@@ -741,8 +741,8 @@ def kappa_thermal_speed(
     particle: ParticleLike,
     method="most_probable",
     *,
-    mass_numb: Real | None = None,
-    Z: Real | None = None,
+    mass_numb: float | None = None,
+    Z: float | None = None,
 ) -> u.Quantity[u.m / u.s]:
     r"""
     Return the most probable speed for a particle within a kappa
