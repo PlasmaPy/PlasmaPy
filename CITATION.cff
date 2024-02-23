@@ -27,14 +27,14 @@ cff-version: 1.2.0
 
 authors:
 
-- alias: namurphy
-  given-names: Nicholas
+- given-names: Nicholas
   family-names: Murphy
   email: namurphy@cfa.harvard.edu
   affiliation: Center for Astrophysics | Harvard & Smithsonian
   orcid: https://orcid.org/0000-0001-6628-8033
+  alias: namurphy
 
-- given-names: Erik
+- given-names: Erik T.
   family-names: Everson
   email: eeverson@ucla.edu
   affiliation: UCLA
@@ -47,13 +47,13 @@ authors:
   orcid: https://orcid.org/0000-0001-6291-8843
   alias: StanczakDominik
 
-- given-names: Peter
+- given-names: Peter V.
   family-names: Heuer
   affiliation: University of Rochester
   orcid: https://orcid.org/0000-0001-5050-6606
   alias: pheuer
 
-- given-names: Pawel
+- given-names: Pawel M.
   family-names: Kozlowski
   affiliation: Los Alamos National Laboratory
   orcid: https://orcid.org/0000-0001-6849-3612
