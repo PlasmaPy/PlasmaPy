@@ -68,7 +68,7 @@ docs = [
   # install setuptools to get pkg_resources for doc build
   "setuptools; python_version >= '3.12'",
   # see issue 2497
-  "sphinx == 7.2.6",
+  "sphinx >= 7.2.6",
   "sphinx-changelog >= 1.5.0",
   "sphinx-codeautolink >= 0.15.0",
   "sphinx-copybutton >= 0.5.2",
