@@ -27,7 +27,8 @@ cff-version: 1.2.0
 
 authors:
 
-- given-names: Nicholas
+- alias: namurphy
+  given-names: Nicholas
   family-names: Murphy
   email: namurphy@cfa.harvard.edu
   affiliation: Center for Astrophysics | Harvard & Smithsonian
