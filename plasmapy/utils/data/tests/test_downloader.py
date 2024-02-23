@@ -19,7 +19,7 @@ test_files = [
 
 
 @pytest.mark.parametrize(("filename", "expected"), test_files)
-@pytest.mark.flaky(reruns=5)
+@pytest.mark.flaky(reruns=5)  # in case of intermittent connection to World Wide Web™
 def test_get_file(filename, expected, tmp_path) -> None:
     """Test the get_file function."""
     # Delete file if it already exists, so the test always downloads it
@@ -39,7 +39,7 @@ def test_get_file(filename, expected, tmp_path) -> None:
         downloader.get_file(filename, directory=tmp_path)
 
 
-@pytest.mark.flaky(reruns=5)
+@pytest.mark.flaky(reruns=5)  # in case of intermittent connection to World Wide Web™
 def test_get_file_NIST_PSTAR_datafile(tmp_path) -> None:
     """Test the get_file function on a NIST PSTAR datafile."""
     filename = "NIST_PSTAR_aluminum.txt"
