@@ -23,11 +23,11 @@ def get_pr_authors() -> list[str]:
     response = requests.get(url, headers=headers, timeout=15)
     response.raise_for_status()
 
-    authors = [
+    authors = {
         commit["author"]["login"] for commit in response.json() if commit["author"]
-    ]
+    }
 
-    return authors - excluded_authors
+    return sorted(authors - excluded_authors)
 
 
 def find_missing_github_usernames(authors: list[str]) -> list[str]:
