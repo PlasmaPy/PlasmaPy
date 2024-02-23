@@ -50,7 +50,7 @@ def main():
         msg = (
             f"The authors of pull request {PR_NUMBER} for {REPO} are: "
             f"{', '.join(sorted(authors))}. All authors are included "
-            "in CITATION.cff. ✔️"
+            "in CITATION.cff. 😸"
         )
         logging.info(msg)
         sys.exit(0)
