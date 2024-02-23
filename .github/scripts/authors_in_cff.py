@@ -34,7 +34,11 @@ def find_missing_github_usernames(authors: list[str]) -> list[str]:
     """Verify that all authors of a PR are included in :file:`CITATION.cff`."""
     with pathlib.Path("CITATION.cff").open() as file:
         lines = file.read()
-        return [author for author in authors if f"alias: {author}" not in lines]
+        return [
+            author
+            for author in authors
+            if f"alias: {author}" not in lines and f"- alias: {author}" not in lines
+        ]
 
 
 def main():
