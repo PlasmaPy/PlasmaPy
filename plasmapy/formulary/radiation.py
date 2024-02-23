@@ -34,8 +34,8 @@ def thermal_bremsstrahlung(
     kmax: u.Quantity[u.m] = None,
 ) -> u.Quantity[u.kg * u.m**-1 * u.s**-2]:
     r"""
-    Calculate the bremsstrahlung emission spectrum for a Maxwellian plasma
-    in the Rayleigh-Jeans limit :math:`ℏ ω ≪ k_B T_e`.
+    Calculate the bremsstrahlung emission spectrum for a Maxwellian
+    plasma in the Rayleigh-Jeans limit :math:`ℏ ω ≪ k_B T_e`.
 
     .. math::
        \frac{dP}{dω} = \frac{8 \sqrt{2}}{3\sqrt{π}}
@@ -56,8 +56,8 @@ def thermal_bremsstrahlung(
         y = \frac{1}{2} \frac{ω^2 m_e}{k_{max}^2 k_B T_e}
 
     where :math:`k_{max}` is a maximum wavenumber approximated here as
-    :math:`k_{max} = 1/λ_B` where  :math:`λ_B` is the electron
-    de Broglie wavelength.
+    :math:`k_{max} = 1/λ_B` where  :math:`λ_B` is the electron de
+    Broglie wavelength.
 
     Parameters
     ----------
@@ -66,14 +66,16 @@ def thermal_bremsstrahlung(
         calculated (convertible to Hz).
 
     n_e : `~astropy.units.Quantity`
-        Electron number density in the plasma (convertible to m\ :sup:`-3`\ ).
+        Electron number density in the plasma (convertible to
+        m\ :sup:`-3`\ ).
 
     T_e : `~astropy.units.Quantity`
         Temperature of the electrons (in K or convertible to eV).
 
     n_i : `~astropy.units.Quantity`, optional
-        Ion number density in the plasma (convertible to m\ :sup:`-3`\ ). Defaults
-        to the quasi-neutral condition :math:`n_i = n_e / Z`\ .
+        Ion number density in the plasma (convertible to
+        m\ :sup:`-3`\ ). Defaults to the quasineutral condition
+        :math:`n_i = n_e / Z`\ .
 
     ion : |particle-like|, default: ``"p+"``
         An instance of `~plasmapy.particles.particle_class.Particle`, or
@@ -93,21 +95,17 @@ def thermal_bremsstrahlung(
     For details, see :cite:t:`bekefi:1966`\ .
     """
 
-    # Default n_i is n_e/Z:
-    if n_i is None:
+    if n_i is None:  # assume quasineutrality
         n_i = n_e / ion.charge_number
 
-    # Default value of kmax is the electrom thermal de Broglie wavelength
+    # Default value of kmax is the electron thermal de Broglie wavelength
     if kmax is None:
         kmax = (np.sqrt(const.m_e.si * const.k_B.si * T_e) / const.hbar.si).to(1 / u.m)
 
-    # Convert frequencies to angular frequencies
     ω = (frequencies * 2 * np.pi * u.rad).to(u.rad / u.s)
-
-    # Calculate the electron plasma frequency
     ω_pe = plasma_frequency(n=n_e, particle="e-")
 
-    # Check that all ω < wpe (this formula is only valid in this limit)
+    # Check that all ω < ω_pe (this formula is only valid in this limit)
     if np.min(ω) < ω_pe:
         raise PhysicsError(
             "Lowest frequency must be larger than the electron "
