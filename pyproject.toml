@@ -48,7 +48,6 @@ dependencies = [
   "numpy >= 1.23.0",
   "packaging >= 22.0",
   "pandas >= 1.4.0",
-  "pytest == 7.4.4",
   "requests >= 2.28.0",
   "scipy >= 1.8.0",
   "setuptools >= 61.2.0",
@@ -68,7 +67,7 @@ docs = [
   # install setuptools to get pkg_resources for doc build
   "setuptools; python_version >= '3.12'",
   # see issue 2497
-  "sphinx == 7.2.6",
+  "sphinx >= 7.2.6",
   "sphinx-changelog >= 1.5.0",
   "sphinx-codeautolink >= 0.15.0",
   "sphinx-copybutton >= 0.5.2",
@@ -89,6 +88,7 @@ docs = [
 tests = [
   "hypothesis >= 6.97.4",
   "pre-commit >= 3.6.0",
+  "pytest >= 8.0.1",
   "pytest-regressions >= 2.5.0",
   "pytest-xdist >= 3.5.0",
   "tomli >= 2.0.1",

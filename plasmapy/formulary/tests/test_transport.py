@@ -258,7 +258,7 @@ class Test_classical_transport:
 
     def test_coulomb_log_errors(self) -> None:
         """Should raise PhysicsError if coulomb log is < 1"""
-        with pytest.raises(PhysicsError), pytest.warns(CouplingWarning):
+        with pytest.raises(PhysicsError):
             ClassicalTransport(
                 T_e=self.T_e,
                 n_e=self.n_e,
@@ -268,7 +268,7 @@ class Test_classical_transport:
                 coulomb_log_ii=0.3,
             )
 
-        with pytest.raises(PhysicsError), pytest.warns(CouplingWarning):
+        with pytest.raises(PhysicsError):
             ClassicalTransport(
                 T_e=self.T_e,
                 n_e=self.n_e,

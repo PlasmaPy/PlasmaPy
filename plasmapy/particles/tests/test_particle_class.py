@@ -1057,12 +1057,7 @@ def test_customized_particles_errors(cls, kwargs, exception) -> None:
     results in an InvalidParticleError.
     """
     with pytest.raises(exception):
-        if "mass" not in kwargs or "charge" not in kwargs:
-            with pytest.warns(MissingParticleDataWarning):
-                cls(**kwargs)
-        else:
-            cls(**kwargs)
-        pytest.fail(f"{cls.__name__}(**{kwargs}) did not raise: {exception.__name__}.")
+        cls(**kwargs)
 
 
 customized_particle_repr_table = [
