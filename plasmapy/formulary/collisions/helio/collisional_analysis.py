@@ -194,12 +194,12 @@ def temp_ratio(  # noqa: C901
     >>> ions = ["p+", "He-4++"]
     >>> helio.temp_ratio(
     ...     r_0=r_0, r_n=r_n, n_1=n_1, n_2=n_2, v_1=v_1, T_1=T_1, T_2=T_2, ions=ions
-    ...     )
+    ... )
     [2.78928645832..., 1.04007368797..., 1.06914450183...]
     """
 
     # Validate ions argument
-    if not isinstance(ions, (list, tuple, ParticleList)):
+    if not isinstance(ions, list | tuple | ParticleList):
         ions = [ions]
     ions = ParticleList(ions)
 

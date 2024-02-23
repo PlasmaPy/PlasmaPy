@@ -34,8 +34,8 @@ class Test_ColdPlasmaPermittivity:
         B = 1 * u.T
         n = [1, 1] * 1 / u.m**3
         omega = 1 * u.rad / u.s
-        omega_ce = gyrofrequency(B, particle="e", signed=True)
-        omega_pe = plasma_frequency(n[0], particle="e")
+        omega_ce = gyrofrequency(B, particle="e-", signed=True)
+        omega_pe = plasma_frequency(n[0], particle="e-")
         omega_cp = abs(omega_ce) / 1860
         omega_pp = omega_pe / 43
 

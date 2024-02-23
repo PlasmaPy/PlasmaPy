@@ -14,12 +14,13 @@ __all__ = [
 ]
 
 import json
+import typing
 import warnings
 from abc import ABC, abstractmethod
 from collections import defaultdict, namedtuple
 from datetime import datetime
 from numbers import Integral, Real
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING, TypeAlias
 
 import astropy.constants as const
 import astropy.units as u
@@ -113,13 +114,13 @@ class AbstractParticle(ABC):
 
     @property
     @abstractmethod
-    def mass(self) -> Union[u.Quantity, Real]:
+    def mass(self) -> u.Quantity | float:
         """Provide the particle's mass."""
         raise NotImplementedError
 
     @property
     @abstractmethod
-    def charge(self) -> Union[u.Quantity, Real]:
+    def charge(self) -> u.Quantity | float:
         """Provide the particle's electric charge."""
         raise NotImplementedError
 
@@ -225,9 +226,9 @@ class AbstractPhysicalParticle(AbstractParticle):
     def is_category(
         self,
         *category_tuple,
-        require: Optional[Union[str, Iterable[str]]] = None,
-        any_of: Optional[Union[str, Iterable[str]]] = None,
-        exclude: Optional[Union[str, Iterable[str]]] = None,
+        require: str | Iterable[str] | None = None,
+        any_of: str | Iterable[str] | None = None,
+        exclude: str | Iterable[str] | None = None,
     ) -> bool:
         """Determine if the particle meets categorization criteria.
 
@@ -317,12 +318,14 @@ class AbstractPhysicalParticle(AbstractParticle):
         then this method will return `True`.
 
         >>> electron.is_category(
-        ...     require="fermion", any_of={'lepton', 'baryon'}, exclude='charged',
+        ...     require="fermion",
+        ...     any_of={"lepton", "baryon"},
+        ...     exclude="charged",
         ... )
         False
         """
 
-        def become_set(arg: Union[str, set, Sequence]) -> set[str]:
+        def become_set(arg: str | set | Sequence) -> set[str]:
             """Change the argument into a `set`."""
             if arg is None:
                 return set()
@@ -330,7 +333,7 @@ class AbstractPhysicalParticle(AbstractParticle):
                 return arg
             if isinstance(arg, str):
                 return {arg}
-            return set(arg[0]) if isinstance(arg[0], (tuple, list, set)) else set(arg)
+            return set(arg[0]) if isinstance(arg[0], tuple | list | set) else set(arg)
 
         if category_tuple and require:
             raise ParticleError(
@@ -393,10 +396,10 @@ class Particle(AbstractPhysicalParticle):
         integer representing the atomic number of an element; or a
         |Particle|.
 
-    mass_numb : integer, |keyword-only|, optional
+    mass_numb : int, |keyword-only|, optional
         The mass number of an isotope.
 
-    Z : integer, |keyword-only|, optional
+    Z : int, |keyword-only|, optional
         The |charge number| of an ion or neutral atom.
 
     Raises
@@ -454,13 +457,13 @@ class Particle(AbstractPhysicalParticle):
     --------
     Particles may be defined using a wide variety of aliases:
 
-    >>> proton = Particle('p+')
-    >>> electron = Particle('e-')
-    >>> neutron = Particle('neutron')
-    >>> deuteron = Particle('D', Z=1)
-    >>> triton = Particle('T+')
-    >>> alpha = Particle('He', mass_numb=4, Z=2)
-    >>> positron = Particle('positron')
+    >>> proton = Particle("p+")
+    >>> electron = Particle("e-")
+    >>> neutron = Particle("neutron")
+    >>> deuteron = Particle("D", Z=1)
+    >>> triton = Particle("T+")
+    >>> alpha = Particle("He", mass_numb=4, Z=2)
+    >>> positron = Particle("positron")
     >>> hydrogen = Particle(1)  # atomic number
 
     The `~plasmapy.particles.particle_class.Particle.symbol` attribute
@@ -501,7 +504,7 @@ class Particle(AbstractPhysicalParticle):
     False
     >>> True if deuterium.isotope else False
     True
-    >>> True if Particle('alpha').is_ion else False
+    >>> True if Particle("alpha").is_ion else False
     True
 
     Many of the attributes provide physical properties of a particle.
@@ -514,13 +517,13 @@ class Particle(AbstractPhysicalParticle):
     2
     >>> deuteron.mass_number
     2
-    >>> deuteron.binding_energy.to('MeV')
+    >>> deuteron.binding_energy.to("MeV")
     <Quantity 2.224... MeV>
     >>> alpha.charge
     <Quantity 3.20435...e-19 C>
     >>> neutron.half_life
     <Quantity 881.5 s>
-    >>> Particle('C-14').half_life.to(u.year)
+    >>> Particle("C-14").half_life.to(u.year)
     <Quantity 5730. yr>
     >>> deuteron.electron_number
     0
@@ -537,7 +540,7 @@ class Particle(AbstractPhysicalParticle):
     A |Particle| instance may be used as the first argument to
     |Particle|.
 
-    >>> iron = Particle('Fe')
+    >>> iron = Particle("Fe")
     >>> iron == Particle(iron)
     True
     >>> Particle(iron, mass_numb=56, Z=6)
@@ -547,7 +550,7 @@ class Particle(AbstractPhysicalParticle):
     element, then the ``Z`` and ``mass_numb`` arguments may be used to
     specify an ion or isotope.
 
-    >>> iron = Particle('Fe')
+    >>> iron = Particle("Fe")
     >>> Particle(iron, Z=1)
     Particle("Fe 1+")
     >>> Particle(iron, mass_numb=56)
@@ -579,8 +582,8 @@ class Particle(AbstractPhysicalParticle):
         self,
         argument: ParticleLike,
         *_,
-        mass_numb: Optional[Integral] = None,
-        Z: Optional[Integral] = None,
+        mass_numb: int | None = None,
+        Z: int | None = None,
     ) -> None:
         # TODO: Remove the following block during or after the 0.9.0 release
 
@@ -619,7 +622,7 @@ class Particle(AbstractPhysicalParticle):
         """Raise appropriate exceptions when inputs are invalid."""
         argument, mass_numb, Z = self.__inputs
 
-        if not isinstance(argument, (Integral, np.integer, str, Particle)):
+        if not isinstance(argument, Integral | np.integer | str | Particle):
             raise TypeError(
                 "The first positional argument when creating a "
                 "Particle object must be either an integer, string, or "
@@ -804,7 +807,7 @@ class Particle(AbstractPhysicalParticle):
 
         Examples
         --------
-        >>> lead = Particle('lead')
+        >>> lead = Particle("lead")
         >>> repr(lead)
         'Particle("Pb")'
         """
@@ -825,11 +828,11 @@ class Particle(AbstractPhysicalParticle):
 
         Examples
         --------
-        >>> electron = Particle('e-')
-        >>> positron = Particle('e+')
+        >>> electron = Particle("e-")
+        >>> positron = Particle("e+")
         >>> electron == positron
         False
-        >>> electron == 'e-'
+        >>> electron == "e-"
         True
         """
         if isinstance(other, str):
@@ -903,13 +906,13 @@ class Particle(AbstractPhysicalParticle):
 
         Examples
         --------
-        >>> lead = Particle('lead')
+        >>> lead = Particle("lead")
         >>> lead.json_dict
         {'plasmapy_particle': {'type': 'Particle',
             'module': 'plasmapy.particles.particle_class',
             'date_created': '...',
             '__init__': {'args': ('Pb',), 'kwargs': {}}}}
-        >>> electron = Particle('e-')
+        >>> electron = Particle("e-")
         >>> electron.json_dict
         {'plasmapy_particle': {'type': 'Particle',
             'module': 'plasmapy.particles.particle_class',
@@ -933,10 +936,10 @@ class Particle(AbstractPhysicalParticle):
 
         Examples
         --------
-        >>> electron = Particle('positron')
+        >>> electron = Particle("positron")
         >>> electron.symbol
         'e+'
-        >>> deuteron = Particle('D 1+')
+        >>> deuteron = Particle("D 1+")
         >>> deuteron.symbol
         'D 1+'
         """
@@ -958,11 +961,11 @@ class Particle(AbstractPhysicalParticle):
 
         Examples
         --------
-        >>> electron = Particle('e-')
+        >>> electron = Particle("e-")
         >>> electron.antiparticle
         Particle("e+")
 
-        >>> antineutron = Particle('antineutron')
+        >>> antineutron = Particle("antineutron")
         >>> ~antineutron
         Particle("n")
         """
@@ -975,52 +978,52 @@ class Particle(AbstractPhysicalParticle):
             )
 
     @property
-    def element(self) -> Optional[str]:
+    def element(self) -> str | None:
         """
         The atomic symbol if the particle corresponds to an element, and
         `None` otherwise.
 
         Examples
         --------
-        >>> alpha = Particle('alpha')
+        >>> alpha = Particle("alpha")
         >>> alpha.element
         'He'
         """
         return self._attributes["element"]
 
     @property
-    def isotope(self) -> Optional[str]:
+    def isotope(self) -> str | None:
         """
         The isotope symbol if the particle corresponds to an isotope,
         and `None` otherwise.
 
         Examples
         --------
-        >>> alpha = Particle('alpha')
+        >>> alpha = Particle("alpha")
         >>> alpha.isotope
         'He-4'
         """
         return self._attributes["isotope"]
 
     @property
-    def ionic_symbol(self) -> Optional[str]:
+    def ionic_symbol(self) -> str | None:
         """
         The ionic symbol if the particle corresponds to an ion or
         neutral atom, and `None` otherwise.
 
         Examples
         --------
-        >>> deuteron = Particle('deuteron')
+        >>> deuteron = Particle("deuteron")
         >>> deuteron.ionic_symbol
         'D 1+'
-        >>> hydrogen_atom = Particle('H', Z=0)
+        >>> hydrogen_atom = Particle("H", Z=0)
         >>> hydrogen_atom.ionic_symbol
         'H 0+'
         """
         return self._attributes["ion"]
 
     @property
-    def roman_symbol(self) -> Optional[str]:
+    def roman_symbol(self) -> str | None:
         """
         The spectral name of the particle (i.e. the ionic symbol in
         Roman numeral notation).
@@ -1034,10 +1037,10 @@ class Particle(AbstractPhysicalParticle):
 
         Examples
         --------
-        >>> proton = Particle('proton')
+        >>> proton = Particle("proton")
         >>> proton.roman_symbol
         'H-1 II'
-        >>> hydrogen_atom = Particle('H', Z=0)
+        >>> hydrogen_atom = Particle("H", Z=0)
         >>> hydrogen_atom.roman_symbol
         'H I'
         """
@@ -1065,7 +1068,7 @@ class Particle(AbstractPhysicalParticle):
 
         Examples
         --------
-        >>> tritium = Particle('T')
+        >>> tritium = Particle("T")
         >>> tritium.element_name
         'hydrogen'
         """
@@ -1074,7 +1077,7 @@ class Particle(AbstractPhysicalParticle):
         return self._attributes["element name"]
 
     @property
-    def isotope_name(self) -> Optional[str]:
+    def isotope_name(self) -> str | None:
         """
         The name of the element along with the isotope symbol if the
         particle corresponds to an isotope, or `None` if it does not.
@@ -1109,7 +1112,7 @@ class Particle(AbstractPhysicalParticle):
         return f"{self.element_name}-{self.mass_number}"
 
     @property
-    def charge_number(self) -> Integral:
+    def charge_number(self) -> int:
         """
         The particle's electrical charge in units of the elementary charge.
 
@@ -1120,7 +1123,7 @@ class Particle(AbstractPhysicalParticle):
 
         Examples
         --------
-        >>> muon = Particle('mu-')
+        >>> muon = Particle("mu-")
         >>> muon.charge_number
         -1
         """
@@ -1139,7 +1142,7 @@ class Particle(AbstractPhysicalParticle):
 
         Examples
         --------
-        >>> electron = Particle('e-')
+        >>> electron = Particle("e-")
         >>> electron.charge
         <Quantity -1.60217662e-19 C>
         """
@@ -1166,7 +1169,7 @@ class Particle(AbstractPhysicalParticle):
 
         Examples
         --------
-        >>> oxygen = Particle('O')
+        >>> oxygen = Particle("O")
         >>> oxygen.standard_atomic_weight
         <Quantity 2.656696...e-26 kg>
         """
@@ -1201,13 +1204,13 @@ class Particle(AbstractPhysicalParticle):
 
         Examples
         --------
-        >>> Particle('He').mass
+        >>> Particle("He").mass
         <Quantity 6.64647...e-27 kg>
-        >>> Particle('He+').mass
+        >>> Particle("He+").mass
         <Quantity 6.64556...e-27 kg>
-        >>> Particle('He-4 +1').mass
+        >>> Particle("He-4 +1").mass
         <Quantity 6.64556...e-27 kg>
-        >>> Particle('alpha').mass
+        >>> Particle("alpha").mass
         <Quantity 6.64465...e-27 kg>
         """
 
@@ -1254,7 +1257,7 @@ class Particle(AbstractPhysicalParticle):
 
         Examples
         --------
-        >>> deuterium = Particle('D')
+        >>> deuterium = Particle("D")
         >>> deuterium.nuclide_mass
         <Quantity 3.34358372e-27 kg>
         """
@@ -1295,16 +1298,16 @@ class Particle(AbstractPhysicalParticle):
 
         Examples
         --------
-        >>> proton = Particle('p+')
+        >>> proton = Particle("p+")
         >>> proton.mass_energy
         <Quantity 1.503277...e-10 J>
 
-        >>> protium = Particle('H-1 0+')
+        >>> protium = Particle("H-1 0+")
         >>> protium.mass_energy
         <Quantity 1.503277...e-10 J>
 
-        >>> electron = Particle('electron')
-        >>> electron.mass_energy.to('MeV')
+        >>> electron = Particle("electron")
+        >>> electron.mass_energy.to("MeV")
         <Quantity 0.510998... MeV>
         """
         try:
@@ -1327,16 +1330,16 @@ class Particle(AbstractPhysicalParticle):
 
         Examples
         --------
-        >>> alpha = Particle('alpha')
+        >>> alpha = Particle("alpha")
         >>> alpha.binding_energy
         <Quantity 4.53346...e-12 J>
-        >>> Particle('T').binding_energy.to('MeV')
+        >>> Particle("T").binding_energy.to("MeV")
         <Quantity 8.481... MeV>
 
         The binding energy of a nucleon equals 0 joules.
 
-        >>> neutron = Particle('n')
-        >>> proton = Particle('p+')
+        >>> neutron = Particle("n")
+        >>> proton = Particle("p+")
         >>> neutron.binding_energy
         <Quantity 0. J>
         >>> proton.binding_energy
@@ -1366,7 +1369,7 @@ class Particle(AbstractPhysicalParticle):
         return nuclear_binding_energy.to(u.J)
 
     @property
-    def atomic_number(self) -> Integral:
+    def atomic_number(self) -> int:
         """
         The number of protons in an element, isotope, or ion.
 
@@ -1377,10 +1380,10 @@ class Particle(AbstractPhysicalParticle):
 
         Examples
         --------
-        >>> proton = Particle('p+')
+        >>> proton = Particle("p+")
         >>> proton.atomic_number
         1
-        >>> curium = Particle('Cm')
+        >>> curium = Particle("Cm")
         >>> curium.atomic_number
         96
         """
@@ -1389,7 +1392,7 @@ class Particle(AbstractPhysicalParticle):
         return self._attributes["atomic number"]
 
     @property
-    def mass_number(self) -> Integral:
+    def mass_number(self) -> int:
         """
         The total number of protons and neutrons in an isotope or nuclide.
 
@@ -1400,7 +1403,7 @@ class Particle(AbstractPhysicalParticle):
 
         Examples
         --------
-        >>> alpha = Particle('helium-4 2+')
+        >>> alpha = Particle("helium-4 2+")
         >>> alpha.mass_number
         4
         """
@@ -1409,7 +1412,7 @@ class Particle(AbstractPhysicalParticle):
         return self._attributes["mass number"]
 
     @property
-    def neutron_number(self) -> Integral:
+    def neutron_number(self) -> int:
         """
         The number of neutrons in an isotope or nucleon.
 
@@ -1422,10 +1425,10 @@ class Particle(AbstractPhysicalParticle):
 
         Examples
         --------
-        >>> alpha = Particle('He-4++')
+        >>> alpha = Particle("He-4++")
         >>> alpha.neutron_number
         2
-        >>> Particle('n').neutron_number
+        >>> Particle("n").neutron_number
         1
         """
         if self.symbol == "n":
@@ -1436,7 +1439,7 @@ class Particle(AbstractPhysicalParticle):
             raise InvalidIsotopeError(_category_errmsg(self, "isotope"))
 
     @property
-    def electron_number(self) -> Integral:
+    def electron_number(self) -> int:
         """
         The number of electrons in an ion.
 
@@ -1450,9 +1453,9 @@ class Particle(AbstractPhysicalParticle):
 
         Examples
         --------
-        >>> Particle('Li 0+').electron_number
+        >>> Particle("Li 0+").electron_number
         3
-        >>> Particle('e-').electron_number
+        >>> Particle("e-").electron_number
         1
         """
         if self.symbol == "e-":
@@ -1463,7 +1466,7 @@ class Particle(AbstractPhysicalParticle):
             raise InvalidIonError(_category_errmsg(self, "ion"))
 
     @property
-    def isotopic_abundance(self) -> Real:
+    def isotopic_abundance(self) -> float:
         """
         The isotopic abundance of an isotope.
 
@@ -1477,7 +1480,7 @@ class Particle(AbstractPhysicalParticle):
 
         Examples
         --------
-        >>> D = Particle('deuterium')
+        >>> D = Particle("deuterium")
         >>> D.isotopic_abundance
         0.000115
         """
@@ -1498,7 +1501,7 @@ class Particle(AbstractPhysicalParticle):
         return abundance
 
     @property
-    def baryon_number(self) -> Integral:
+    def baryon_number(self) -> int:
         """
         The number of baryons in a particle.
 
@@ -1513,7 +1516,7 @@ class Particle(AbstractPhysicalParticle):
 
         Examples
         --------
-        >>> alpha = Particle('alpha')
+        >>> alpha = Particle("alpha")
         >>> alpha.baryon_number
         4
         """
@@ -1524,7 +1527,7 @@ class Particle(AbstractPhysicalParticle):
         return self._attributes["baryon number"]
 
     @property
-    def lepton_number(self) -> Integral:
+    def lepton_number(self) -> int:
         """
         ``1`` for leptons, ``-1`` for antileptons, and ``0`` otherwise.
 
@@ -1538,11 +1541,11 @@ class Particle(AbstractPhysicalParticle):
 
         Examples
         --------
-        >>> Particle('e-').lepton_number
+        >>> Particle("e-").lepton_number
         1
-        >>> Particle('mu+').lepton_number
+        >>> Particle("mu+").lepton_number
         -1
-        >>> Particle('He-4 0+').lepton_number
+        >>> Particle("He-4 0+").lepton_number
         0
         """
         if self._attributes["lepton number"] is None:
@@ -1552,7 +1555,7 @@ class Particle(AbstractPhysicalParticle):
         return self._attributes["lepton number"]
 
     @property
-    def half_life(self) -> Union[u.Quantity, str]:
+    def half_life(self) -> u.Quantity | str:
         """
         The particle's half-life in seconds, or a `str` with half-life
         information.
@@ -1564,7 +1567,7 @@ class Particle(AbstractPhysicalParticle):
 
         Examples
         --------
-        >>> neutron = Particle('n')
+        >>> neutron = Particle("n")
         >>> neutron.half_life
         <Quantity 881.5 s>
         """
@@ -1585,7 +1588,7 @@ class Particle(AbstractPhysicalParticle):
         return self._attributes["half-life"]
 
     @property
-    def spin(self) -> Real:
+    def spin(self) -> float:
         """
         The intrinsic spin of the particle.
 
@@ -1595,7 +1598,7 @@ class Particle(AbstractPhysicalParticle):
 
         Examples
         --------
-        >>> positron = Particle('e+')
+        >>> positron = Particle("e+")
         >>> positron.spin
         0.5
         """
@@ -1619,7 +1622,7 @@ class Particle(AbstractPhysicalParticle):
 
         Examples
         --------
-        >>> gold = Particle('Au')
+        >>> gold = Particle("Au")
         >>> gold.periodic_table.category
         'transition metal'
         >>> gold.periodic_table.period
@@ -1641,10 +1644,10 @@ class Particle(AbstractPhysicalParticle):
 
         Examples
         --------
-        >>> gold = Particle('Au')
-        >>> 'transition metal' in gold.categories
+        >>> gold = Particle("Au")
+        >>> "transition metal" in gold.categories
         True
-        >>> 'antilepton' in gold.categories
+        >>> "antilepton" in gold.categories
         False
 
         """
@@ -1657,9 +1660,9 @@ class Particle(AbstractPhysicalParticle):
 
         Examples
         --------
-        >>> Particle('e-').is_electron
+        >>> Particle("e-").is_electron
         True
-        >>> Particle('e+').is_electron
+        >>> Particle("e+").is_electron
         False
 
         """
@@ -1672,17 +1675,17 @@ class Particle(AbstractPhysicalParticle):
 
         Examples
         --------
-        >>> Particle('D+').is_ion
+        >>> Particle("D+").is_ion
         True
-        >>> Particle('H-1 0+').is_ion
+        >>> Particle("H-1 0+").is_ion
         False
-        >>> Particle('e+').is_ion
+        >>> Particle("e+").is_ion
         False
 
         """
         return self.is_category("ion")
 
-    def ionize(self, n: Integral = 1, inplace: bool = False):
+    def ionize(self, n: int = 1, inplace: bool = False):
         """
         Create a new |Particle| instance corresponding to the current
         |Particle| after being ionized ``n`` times.
@@ -1764,7 +1767,7 @@ class Particle(AbstractPhysicalParticle):
         else:
             return Particle(base_particle, Z=new_charge_number)
 
-    def recombine(self, n: Integral = 1, inplace: bool = False):
+    def recombine(self, n: int = 1, inplace: bool = False):
         """
         Create a new |Particle| instance corresponding to the current
         |Particle| after undergoing recombination ``n`` times.
@@ -1883,9 +1886,9 @@ class DimensionlessParticle(AbstractParticle):
     def __init__(
         self,
         *,
-        mass: Optional[Real] = None,
-        charge: Optional[Real] = None,
-        symbol: Optional[str] = None,
+        mass: float | None = None,
+        charge: float | None = None,
+        symbol: str | None = None,
     ) -> None:
         try:
             self.mass = mass
@@ -1985,7 +1988,7 @@ class DimensionlessParticle(AbstractParticle):
         return self._charge
 
     @mass.setter
-    def mass(self, m: Optional[Union[Real, u.Quantity]]):
+    def mass(self, m: float | u.Quantity | None):
         try:
             self._mass = self._validate_parameter(m, can_be_negative=False)
         except (TypeError, ValueError):
@@ -1995,7 +1998,7 @@ class DimensionlessParticle(AbstractParticle):
             ) from None
 
     @charge.setter
-    def charge(self, q: Optional[Union[Real, u.Quantity]]):
+    def charge(self, q: float | u.Quantity | None):
         try:
             self._charge = self._validate_parameter(q, can_be_negative=True)
         except (TypeError, ValueError):
@@ -2032,20 +2035,20 @@ class CustomParticle(AbstractPhysicalParticle):
 
     Parameters
     ----------
-    mass : ~astropy.units.Quantity, optional
+    mass : `~astropy.units.Quantity`, optional
         The mass of the custom particle in units of mass.  Defaults to
         |nan| kg.
 
-    charge : ~astropy.units.Quantity or ~numbers.Real, optional
+    charge : `~astropy.units.Quantity` | `float`, optional
         The electric charge of the custom particle.  If provided as a
         `~astropy.units.Quantity`, then it must be in units of electric
         charge. Defaults to |nan| C.
 
-    Z : ~numbers.Real, |keyword-only|, optional
+    Z : `float`, |keyword-only|, optional
         The :term:`charge number`, which is equal to the ratio of the
         charge to the elementary charge.
 
-    symbol : str, optional
+    symbol : `str`, optional
         The symbol to be assigned to the custom particle.
 
     Raises
@@ -2078,7 +2081,7 @@ class CustomParticle(AbstractPhysicalParticle):
     <Quantity 9.2e-19 C>
     >>> average_particle = CustomParticle(
     ...     mass=1.5e-26 * u.kg,
-    ...     Z = -1.5,
+    ...     Z=-1.5,
     ...     symbol="Ξ",
     ... )
     >>> average_particle.mass
@@ -2093,9 +2096,9 @@ class CustomParticle(AbstractPhysicalParticle):
         self,
         mass: u.Quantity[u.kg] = None,
         charge: u.Quantity[u.C] = None,
-        symbol: Optional[str] = None,
+        symbol: str | None = None,
         *,
-        Z: Optional[Real] = None,
+        Z: float | None = None,
     ) -> None:
         # TODO: py3.10 replace ifology with structural pattern matching
 
@@ -2122,8 +2125,8 @@ class CustomParticle(AbstractPhysicalParticle):
     def _from_quantities(
         cls,
         *quantities,
-        symbol: Optional[str] = None,
-        Z: Optional[Real] = None,
+        symbol: str | None = None,
+        Z: float | None = None,
     ) -> CustomParticle:
         """
         An alternate constructor for |CustomParticle| objects where the
@@ -2246,7 +2249,7 @@ class CustomParticle(AbstractPhysicalParticle):
         return self._charge
 
     @charge.setter
-    def charge(self, q: Optional[Union[u.Quantity, Real]]):
+    def charge(self, q: u.Quantity | float | None):
         if q is None:
             q = np.nan * u.C
         elif isinstance(q, str):
@@ -2283,7 +2286,7 @@ class CustomParticle(AbstractPhysicalParticle):
             )
 
     @property
-    def charge_number(self) -> Real:
+    def charge_number(self) -> float:
         """The ratio of the charge to the elementary charge."""
         return (self.charge / const.e.si).value
 
@@ -2333,8 +2336,8 @@ class CustomParticle(AbstractPhysicalParticle):
         Examples
         --------
         >>> import astropy.units as u
-        >>> custom_particle = CustomParticle(mass = 2e-25 * u.kg, charge = 0 * u.C)
-        >>> custom_particle.mass_energy.to('GeV')
+        >>> custom_particle = CustomParticle(mass=2e-25 * u.kg, charge=0 * u.C)
+        >>> custom_particle.mass_energy.to("GeV")
         <Quantity 112.19177208 GeV>
         """
         return (self.mass * const.c**2).to(u.J)
@@ -2396,9 +2399,7 @@ class CustomParticle(AbstractPhysicalParticle):
         return hash(self.__repr__())
 
 
-def molecule(
-    symbol: str, Z: Optional[Integral] = None
-) -> Union[Particle, CustomParticle]:
+def molecule(symbol: str, Z: int | None = None) -> Particle | CustomParticle:
     r"""
     Parse a molecule symbol into a |CustomParticle| or |Particle|.
 
@@ -2492,7 +2493,16 @@ def molecule(
 # If ParticleLike is renamed or moves out of particle_class.py, check
 # for a link to its doc page in error messages in _factory.py.
 
-ParticleLike = Union[str, Integral, Particle, CustomParticle, u.Quantity]
+ParticleLike: TypeAlias = typing.Union[  # noqa: UP007
+    str,
+    int,
+    np.integer,
+    Particle,
+    CustomParticle,
+    u.Quantity,
+]
+
+# Using typing.Union in ParticleLike lets us define ParticleLike.__doc__
 
 ParticleLike.__doc__ = r"""
 An `object` is particle-like if it can be identified as an instance of

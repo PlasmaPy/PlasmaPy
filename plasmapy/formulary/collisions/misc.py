@@ -6,7 +6,6 @@ __all__ = [
     "Spitzer_resistivity",
 ]
 
-from numbers import Real
 
 import astropy.units as u
 import numpy as np
@@ -89,7 +88,7 @@ def mobility(
     T: u.Quantity[u.K],
     n_e: u.Quantity[u.m**-3],
     species,
-    z_mean: Real = np.nan,
+    z_mean: float = np.nan,
     V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
     method="classical",
 ) -> u.Quantity[u.m**2 / (u.V * u.s)]:
@@ -190,9 +189,9 @@ def mobility(
     Examples
     --------
     >>> import astropy.units as u
-    >>> n = 1e19 * u.m ** -3
+    >>> n = 1e19 * u.m**-3
     >>> T = 1e6 * u.K
-    >>> species = ('e', 'p')
+    >>> species = ("e", "p")
     >>> mobility(T, n, species)  # doctest: +SKIP
     <Quantity 250505... m2 / (V s)>
     >>> mobility(T, n, species, V=1e6 * u.m / u.s)  # doctest: +SKIP
@@ -217,7 +216,7 @@ def Spitzer_resistivity(
     T: u.Quantity[u.K],
     n: u.Quantity[u.m**-3],
     species,
-    z_mean: Real = np.nan,
+    z_mean: float = np.nan,
     V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
     method="classical",
 ) -> u.Quantity[u.Ohm * u.m]:
@@ -316,9 +315,9 @@ def Spitzer_resistivity(
     Examples
     --------
     >>> import astropy.units as u
-    >>> n = 1e19 * u.m ** -3
+    >>> n = 1e19 * u.m**-3
     >>> T = 1e6 * u.K
-    >>> species = ('e', 'p')
+    >>> species = ("e", "p")
     >>> Spitzer_resistivity(T, n, species)  # doctest: +SKIP
     <Quantity 2.4915...e-06 Ohm m>
     >>> Spitzer_resistivity(T, n, species, V=1e6 * u.m / u.s)  # doctest: +SKIP

@@ -9,7 +9,6 @@ __all__ = [
 ]
 
 from functools import cached_property
-from numbers import Real
 
 import astropy.units as u
 import numpy as np
@@ -516,7 +515,14 @@ class MaxwellianCollisionFrequencies:
         >>> T_b = 1e3 * u.eV
         >>> Coulomb_log = 10 * u.dimensionless_unscaled
         >>> electron_ion_collisions = MaxwellianCollisionFrequencies(
-        ...     "e-", "Na+", v_drift=v_drift, n_a=n_a, T_a=T_a, n_b=n_b, T_b=T_b, Coulomb_log=Coulomb_log
+        ...     "e-",
+        ...     "Na+",
+        ...     v_drift=v_drift,
+        ...     n_a=n_a,
+        ...     T_a=T_a,
+        ...     n_b=n_b,
+        ...     T_b=T_b,
+        ...     Coulomb_log=Coulomb_log,
         ... )
         >>> electron_ion_collisions.Maxwellian_avg_ei_collision_freq
         <Quantity 2.8053078...e+15 Hz>
@@ -573,7 +579,14 @@ class MaxwellianCollisionFrequencies:
         >>> T_b = 1e3 * u.eV
         >>> Coulomb_log = 10 * u.dimensionless_unscaled
         >>> ion_ion_collisions = MaxwellianCollisionFrequencies(
-        ...     "Na+", "Na+", v_drift=v_drift, n_a=n_a, T_a=T_a, n_b=n_b, T_b=T_b, Coulomb_log=Coulomb_log
+        ...     "Na+",
+        ...     "Na+",
+        ...     v_drift=v_drift,
+        ...     n_a=n_a,
+        ...     T_a=T_a,
+        ...     n_b=n_b,
+        ...     T_b=T_b,
+        ...     Coulomb_log=Coulomb_log,
         ... )
         >>> ion_ion_collisions.Maxwellian_avg_ii_collision_freq
         <Quantity 1.1223822...e+08 Hz>
@@ -605,7 +618,7 @@ def collision_frequency(
     T: u.Quantity[u.K],
     n: u.Quantity[u.m**-3],
     species,
-    z_mean: Real = np.nan,
+    z_mean: float = np.nan,
     V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
     method="classical",
 ) -> u.Quantity[u.Hz]:
@@ -713,7 +726,7 @@ def collision_frequency(
     >>> import astropy.units as u
     >>> n = 1e19 * u.m**-3
     >>> T = 1e6 * u.K
-    >>> species = ('e', 'p')
+    >>> species = ("e", "p")
     >>> collision_frequency(T, n, species)
     <Quantity 70249... Hz>
 
@@ -886,17 +899,21 @@ def fundamental_electron_collision_freq(
     --------
     >>> import astropy.units as u
     >>> from astropy.constants import c
-    >>> fundamental_electron_collision_freq(0.1 * u.eV, 1e6 / u.m ** 3, 'p')
+    >>> fundamental_electron_collision_freq(0.1 * u.eV, 1e6 / u.m**3, "p")
     <Quantity 0.001801... 1 / s>
-    >>> fundamental_electron_collision_freq(1e6 * u.K, 1e6 / u.m ** 3, 'p')
+    >>> fundamental_electron_collision_freq(1e6 * u.K, 1e6 / u.m**3, "p")
     <Quantity 1.07221...e-07 1 / s>
-    >>> fundamental_electron_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p')
+    >>> fundamental_electron_collision_freq(100 * u.eV, 1e20 / u.m**3, "p")
     <Quantity 3935958.7... 1 / s>
-    >>> fundamental_electron_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p', coulomb_log_method = 'GMS-1')
+    >>> fundamental_electron_collision_freq(
+    ...     100 * u.eV, 1e20 / u.m**3, "p", coulomb_log_method="GMS-1"
+    ... )
     <Quantity 3872815.5... 1 / s>
-    >>> fundamental_electron_collision_freq(0.1 * u.eV, 1e6 / u.m ** 3, 'p', V = c / 100)
+    >>> fundamental_electron_collision_freq(0.1 * u.eV, 1e6 / u.m**3, "p", V=c / 100)
     <Quantity 5.6589...e-07 1 / s>
-    >>> fundamental_electron_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p', coulomb_log = 20)
+    >>> fundamental_electron_collision_freq(
+    ...     100 * u.eV, 1e20 / u.m**3, "p", coulomb_log=20
+    ... )
     <Quantity 5812633... 1 / s>
 
     See Also
@@ -1048,17 +1065,19 @@ def fundamental_ion_collision_freq(
     --------
     >>> import astropy.units as u
     >>> from astropy.constants import c
-    >>> fundamental_ion_collision_freq(0.1 * u.eV, 1e6 / u.m ** 3, 'p')
+    >>> fundamental_ion_collision_freq(0.1 * u.eV, 1e6 / u.m**3, "p")
     <Quantity 2.868...e-05 1 / s>
-    >>> fundamental_ion_collision_freq(1e6 * u.K, 1e6 / u.m ** 3, 'p')
+    >>> fundamental_ion_collision_freq(1e6 * u.K, 1e6 / u.m**3, "p")
     <Quantity 1.741...e-09 1 / s>
-    >>> fundamental_ion_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p')
+    >>> fundamental_ion_collision_freq(100 * u.eV, 1e20 / u.m**3, "p")
     <Quantity 63087.5... 1 / s>
-    >>> fundamental_ion_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p', coulomb_log_method='GMS-1')
+    >>> fundamental_ion_collision_freq(
+    ...     100 * u.eV, 1e20 / u.m**3, "p", coulomb_log_method="GMS-1"
+    ... )
     <Quantity 63085.1... 1 / s>
-    >>> fundamental_ion_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p', V = c / 100)
+    >>> fundamental_ion_collision_freq(100 * u.eV, 1e20 / u.m**3, "p", V=c / 100)
     <Quantity 9.111... 1 / s>
-    >>> fundamental_ion_collision_freq(100 * u.eV, 1e20 / u.m ** 3, 'p', coulomb_log=20)
+    >>> fundamental_ion_collision_freq(100 * u.eV, 1e20 / u.m**3, "p", coulomb_log=20)
     <Quantity 95918.7... 1 / s>
 
     See Also

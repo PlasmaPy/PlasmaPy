@@ -16,7 +16,7 @@ import inspect
 import warnings
 from functools import reduce
 from operator import add
-from typing import Any, Optional, Union
+from typing import Any
 
 import astropy.units as u
 import numpy as np
@@ -139,7 +139,7 @@ class CheckValues(CheckBase):
 
     def __init__(
         self,
-        checks_on_return: Optional[dict[str, bool]] = None,
+        checks_on_return: dict[str, bool] | None = None,
         **checks: dict[str, bool],
     ) -> None:
         super().__init__(checks_on_return=checks_on_return, **checks)
@@ -397,9 +397,11 @@ class CheckUnits(CheckBase):
         import astropy.units as u
         from plasmapy.utils.decorators import CheckUnits
 
+
         @CheckUnits(arg1={"units": u.cm}, arg2=u.cm, checks_on_return=[u.cm, u.km])
         def foo(arg1, arg2):
             return arg1 + arg2
+
 
         # or on a method
         class Foo:
@@ -466,8 +468,8 @@ class CheckUnits(CheckBase):
 
     def __init__(
         self,
-        checks_on_return: Union[u.Unit, list[u.Unit], dict[str, Any]] = None,
-        **checks: Union[u.Unit, list[u.Unit], dict[str, Any]],
+        checks_on_return: u.Unit | list[u.Unit] | dict[str, Any] = None,
+        **checks: u.Unit | list[u.Unit] | dict[str, Any],
     ) -> None:
         super().__init__(checks_on_return=checks_on_return, **checks)
 
@@ -705,7 +707,7 @@ class CheckUnits(CheckBase):
                 _equivs = None
             elif isinstance(_equivs, Equivalency):
                 pass
-            elif isinstance(_equivs, (list, tuple)):
+            elif isinstance(_equivs, list | tuple):
                 # flatten list to non-list elements
                 if isinstance(_equivs, tuple):
                     _equivs = [_equivs]
@@ -783,10 +785,10 @@ class CheckUnits(CheckBase):
     def _check_unit_core(  # noqa: C901, PLR0912, PLR0915
         self, arg, arg_name: str, arg_checks: dict[str, Any]
     ) -> tuple[
-        Optional[u.Quantity],
-        Optional[u.Unit],
-        Optional[list[Any]],
-        Optional[Exception],
+        u.Quantity | None,
+        u.Unit | None,
+        list[Any] | None,
+        Exception | None,
     ]:
         """
         Determines if `arg` passes unit checks `arg_checks` and if the units of
@@ -899,7 +901,7 @@ class CheckUnits(CheckBase):
 
     @staticmethod
     def _condition_target_units(
-        targets: list[Union[str, u.Unit, u.Quantity]],
+        targets: list[str | u.Unit | u.Quantity],
         from_annotations: bool = False,
     ) -> list:
         """
@@ -1054,7 +1056,7 @@ class CheckUnits(CheckBase):
 
 def check_units(
     func=None,
-    checks_on_return: Optional[dict[str, Any]] = None,
+    checks_on_return: dict[str, Any] | None = None,
     **checks: dict[str, Any],
 ):
     """
@@ -1120,9 +1122,11 @@ def check_units(
         import astropy.units as u
         from plasmapy.utils.decorators import check_units
 
+
         @check_units(arg1={"units": u.cm}, arg2=u.cm, checks_on_return=[u.cm, u.km])
         def foo(arg1, arg2):
             return arg1 + arg2
+
 
         # or on a method
         class Foo:
@@ -1136,6 +1140,7 @@ def check_units(
         def foo(arg1: u.cm, arg2: u.cm) -> u.cm:
             return arg1 + arg2
 
+
         # or on a method
         class Foo:
             @check_units
@@ -1144,7 +1149,7 @@ def check_units(
 
     Allow `None` values to pass::
 
-        @check_units(checks_on_return = [u.cm, None])
+        @check_units(checks_on_return=[u.cm, None])
         def foo(arg1: u.cm = None):
             return arg1
 
@@ -1180,7 +1185,7 @@ def check_units(
 
 def check_values(
     func=None,
-    checks_on_return: Optional[dict[str, bool]] = None,
+    checks_on_return: dict[str, bool] | None = None,
     **checks: dict[str, bool],
 ):
     """
@@ -1370,7 +1375,7 @@ def _check_relativistic(
     Examples
     --------
     >>> import astropy.units as u
-    >>> _check_relativistic(1*u.m/u.s, 'function_calling_this')
+    >>> _check_relativistic(1 * u.m / u.s, "function_calling_this")
 
     """
 

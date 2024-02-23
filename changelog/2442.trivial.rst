@@ -1,1 +1,0 @@
-Added a stub file containing type hint annotations for ``@wrapt.decorator``.

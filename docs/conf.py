@@ -33,7 +33,7 @@ sys.path.insert(0, os.path.abspath("."))  # noqa: PTH100
 from datetime import datetime
 
 import _cff_to_rst
-import pkg_resources  # deprecated
+import pkg_resources  # deprecated; after removal, drop setuptools dependency for docs
 from _global_substitutions import global_substitutions
 from sphinx.application import Sphinx
 

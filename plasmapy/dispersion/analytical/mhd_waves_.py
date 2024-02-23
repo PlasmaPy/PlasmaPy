@@ -12,8 +12,7 @@ __all__ = [
 import warnings
 from abc import ABC, abstractmethod
 from collections import namedtuple
-from numbers import Integral, Real
-from typing import Optional
+from numbers import Real
 
 import astropy.units as u
 import numpy as np
@@ -44,8 +43,8 @@ class AbstractMHDWave(ABC):
         *,
         T: u.Quantity[u.K] = 0 * u.K,
         gamma: float = 5 / 3,
-        mass_numb: Optional[Integral] = None,
-        Z: Optional[Real] = None,
+        mass_numb: int | None = None,
+        Z: float | None = None,
     ) -> None:
         # validate arguments
         for arg_name in ("B", "density", "T"):
@@ -326,7 +325,7 @@ class AlfvenWave(AbstractMHDWave):
         convertible to kg m\ :sup:`-3`\ .
 
     ion : |particle-like|
-        Representation of the ion species (e.g., ``'p'`` for protons,
+        Representation of the ion species (e.g., ``'p+'`` for protons,
         ``'D+'`` for deuterium, ``'He-4 +1'`` for singly ionized
         helium-4, etc.). If no charge state information is provided,
         then the ions are assumed to be singly ionized.
@@ -382,7 +381,7 @@ class AlfvenWave(AbstractMHDWave):
     --------
     >>> import astropy.units as u
     >>> from plasmapy.dispersion.analytical import AlfvenWave
-    >>> alfven = AlfvenWave(1e-3 * u.T, 1e16 * u.m ** -3, "p+")
+    >>> alfven = AlfvenWave(1e-3 * u.T, 1e16 * u.m**-3, "p+")
     >>> alfven.angular_frequency(1e-5 * u.rad / u.m, 0 * u.deg)
     <Quantity 2.18060973 rad / s>
     >>> alfven.phase_velocity(1e-5 * u.rad / u.m, 0 * u.deg)
@@ -448,7 +447,7 @@ class AlfvenWave(AbstractMHDWave):
         --------
         >>> import astropy.units as u
         >>> from plasmapy.dispersion.analytical import AlfvenWave
-        >>> alfven = AlfvenWave(1e-3 * u.T, 1e16 * u.m ** -3, "p+")
+        >>> alfven = AlfvenWave(1e-3 * u.T, 1e16 * u.m**-3, "p+")
         >>> alfven.angular_frequency(1e-5 * u.rad / u.m, 0 * u.deg)
         <Quantity 2.18060973 rad / s>
         >>> alfven.angular_frequency([1e-5, 2e-4] * (u.rad / u.m), 0 * u.deg)
@@ -544,7 +543,7 @@ class FastMagnetosonicWave(AbstractMHDWave):
         convertible to kg m\ :sup:`-3`\ .
 
     ion : |particle-like|
-        Representation of the ion species (e.g., ``'p'`` for protons,
+        Representation of the ion species (e.g., ``'p+'`` for protons,
         ``'D+'`` for deuterium, ``'He-4 +1'`` for singly ionized
         helium-4, etc.). If no charge state information is provided,
         then the ions are assumed to be singly ionized.
@@ -605,7 +604,7 @@ class FastMagnetosonicWave(AbstractMHDWave):
     --------
     >>> import astropy.units as u
     >>> from plasmapy.dispersion.analytical import FastMagnetosonicWave
-    >>> fast = FastMagnetosonicWave(1e-3 * u.T, 1e16 * u.m ** -3, "p+", T=2.5e6 * u.K)
+    >>> fast = FastMagnetosonicWave(1e-3 * u.T, 1e16 * u.m**-3, "p+", T=2.5e6 * u.K)
     >>> fast.angular_frequency(1e-5 * u.rad / u.m, 0 * u.deg)
     <Quantity 2.18060973 rad / s>
     >>> fast.phase_velocity(1e-5 * u.rad / u.m, 0 * u.deg)
@@ -675,7 +674,7 @@ class FastMagnetosonicWave(AbstractMHDWave):
         --------
         >>> import astropy.units as u
         >>> from plasmapy.dispersion.analytical import FastMagnetosonicWave
-        >>> fast = FastMagnetosonicWave(1e-3 * u.T, 1e16 * u.m ** -3, "p+", T=2.5e6 * u.K)
+        >>> fast = FastMagnetosonicWave(1e-3 * u.T, 1e16 * u.m**-3, "p+", T=2.5e6 * u.K)
         >>> fast.angular_frequency(1e-5 * u.rad / u.m, 0 * u.deg)
         <Quantity 2.18060973 rad / s>
         >>> fast.angular_frequency([1e-5, 2e-4] * (u.rad / u.m), 0 * u.deg)
@@ -794,7 +793,7 @@ class SlowMagnetosonicWave(AbstractMHDWave):
         to m\ :sup:`-3` or the total mass density :math:`ρ` in units
         convertible to kg m\ :sup:`-3`\ .
     ion : |particle-like|
-        Representation of the ion species (e.g., ``'p'`` for protons,
+        Representation of the ion species (e.g., ``'p+'`` for protons,
         ``'D+'`` for deuterium, ``'He-4 +1'`` for singly ionized
         helium-4, etc.). If no charge state information is provided,
         then the ions are assumed to be singly ionized.
@@ -851,7 +850,7 @@ class SlowMagnetosonicWave(AbstractMHDWave):
     --------
     >>> import astropy.units as u
     >>> from plasmapy.dispersion.analytical import SlowMagnetosonicWave
-    >>> slow = SlowMagnetosonicWave(1e-3 * u.T, 1e16 * u.m ** -3, "p+", T=2.5e6 * u.K)
+    >>> slow = SlowMagnetosonicWave(1e-3 * u.T, 1e16 * u.m**-3, "p+", T=2.5e6 * u.K)
     >>> slow.angular_frequency(1e-5 * u.rad / u.m, 0 * u.deg)
     <Quantity 1.85454394 rad / s>
     >>> slow.phase_velocity(1e-5 * u.rad / u.m, 0 * u.deg)
@@ -918,7 +917,7 @@ class SlowMagnetosonicWave(AbstractMHDWave):
         --------
         >>> import astropy.units as u
         >>> from plasmapy.dispersion.analytical import SlowMagnetosonicWave
-        >>> slow = SlowMagnetosonicWave(1e-3 * u.T, 1e16 * u.m ** -3, "p+", T=2.5e6 * u.K)
+        >>> slow = SlowMagnetosonicWave(1e-3 * u.T, 1e16 * u.m**-3, "p+", T=2.5e6 * u.K)
         >>> slow.angular_frequency(1e-5 * u.rad / u.m, 0 * u.deg)
         <Quantity 1.85454394 rad / s>
         >>> slow.angular_frequency([1e-5, 2e-4] * (u.rad / u.m), 0 * u.deg)
@@ -1045,7 +1044,7 @@ def mhd_waves(*args, **kwargs):
         convertible to kg m\ :sup:`-3`\ .
 
     ion : |particle-like|
-        Representation of the ion species (e.g., ``'p'`` for protons,
+        Representation of the ion species (e.g., ``'p+'`` for protons,
         ``'D+'`` for deuterium, ``'He-4 +1'`` for singly ionized
         helium-4, etc.). If no charge state information is provided,
         then the ions are assumed to be singly ionized.

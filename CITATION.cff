@@ -1,10 +1,10 @@
 title: PlasmaPy
 type: software
-version: 2023.10.0
+version: 2024.2.0
 identifiers:
 - type: doi
-  value: 10.5281/zenodo.10011217
-date-released: '2023-10-20'
+  value: 10.5281/zenodo.10613904
+date-released: '2024-02-06'
 message: >-
   Please cite the specific version of PlasmaPy used
   during a research project.
@@ -34,7 +34,7 @@ authors:
   orcid: https://orcid.org/0000-0001-6628-8033
   alias: namurphy
 
-- given-names: Erik
+- given-names: Erik T.
   family-names: Everson
   email: eeverson@ucla.edu
   affiliation: UCLA
@@ -47,22 +47,37 @@ authors:
   orcid: https://orcid.org/0000-0001-6291-8843
   alias: StanczakDominik
 
-- given-names: Peter
+- given-names: Peter V.
   family-names: Heuer
   affiliation: University of Rochester
   orcid: https://orcid.org/0000-0001-5050-6606
   alias: pheuer
 
-- given-names: Pawel
+- given-names: Pawel M.
   family-names: Kozlowski
   affiliation: Los Alamos National Laboratory
   orcid: https://orcid.org/0000-0001-6849-3612
   alias: lemmatum
 
+- given-names: Elliot
+  family-names: Johnson
+  affiliation: University of Delaware
+  orcid: https://orcid.org/0000-0003-2892-6924
+  alias: ejohnson-96
+
 - given-names: Ritiek
   family-names: Malhotra
   affiliation: Chandigarh University
   alias: ritiek
+
+- given-names: James
+  family-names: Addison
+  alias: jayaddison
+
+- given-names: Ataf Fazledin
+  family-names: Ahamed
+  affiliation: OpenRefactory Inc.
+  alias: fazledyn-or
 
 - given-names: Christoper
   family-names: Arran
@@ -194,6 +209,11 @@ authors:
   orcid: https://orcid.org/0000-0001-5308-6870
   alias: bryancfoo
 
+- given-names: Heinz-Alexander
+  family-names: Fütterer
+  orcid: https://orcid.org/0000-0003-4397-027X
+  alias: afuetterer
+
 - given-names: Rajagopalan
   family-names: Gangadharan
   alias: RAJAGOPALAN-GANGADHARAN
@@ -214,6 +234,10 @@ authors:
   family-names: Guidoni
   orcid: https://orcid.org/0000-0003-1439-4218
   affiliation: American University
+
+- given-names: Julia
+  family-names: Guimiot
+  alias: JuliaGuimiot
 
 - given-names: Colby
   family-names: Haggerty
@@ -267,11 +291,10 @@ authors:
   orcid: https://orcid.org/0000-0003-2892-6924
   alias: jeandet
 
-- given-names: Elliot
-  family-names: Johnson
-  affiliation: University of Delaware
-  orcid: https://orcid.org/0000-0003-2892-6924
-  alias: ejohnson-96
+- given-names: Evan
+  family-names: Jones
+  orcid: https://orcid.org/0009-0004-6699-4869
+  alias: E-W-Jones
 
 - given-names: Marcin
   family-names: Kastek
@@ -280,6 +303,11 @@ authors:
 - given-names: James
   family-names: Kent
   alias: jdkent
+
+- given-names: Dusan
+  family-names: Klima
+  orcid: https://orcid.org/0009-0008-5134-6171
+  alias: ironwod
 
 - given-names: Siddharth
   family-names: Kulshrestha
@@ -377,6 +405,9 @@ authors:
 
 - alias: nrb1234
 
+- given-names: Oscar
+  alias: 0scvr
+
 - given-names: Mahima
   family-names: Pannala
   alias: mahimapannala
@@ -451,6 +482,10 @@ authors:
   orcid: https://orcid.org/0000-0002-5598-046X
   alias: savcheva
 
+- given-names: Cora
+  family-names: Schneck
+  alias: cyschneck
+
 - given-names: Chengcai
   family-names: Shen
   affiliation: Center for Astrophysics | Harvard & Smithsonian
@@ -493,6 +528,10 @@ authors:
   family-names: Skinner
   affiliation: Phoenix Security Labs
   alias: cskinner74
+
+- given-names: Tomasz Adam
+  family-names: Skrzypczak
+  alias: tomasz-adam-skrzypczak
 
 - given-names: Nikita
   family-names: Smirnov
@@ -568,41 +607,4 @@ authors:
   family-names: Zhang
   alias: carolyz
 
-- given-names: Cora
-  family-names: Schneck
-  alias: cyschneck
-
-- given-names: Julia
-  family-names: Guimiot
-  alias: JuliaGuimiot
-
-- given-names: Evan
-  family-names: Jones
-  orcid: https://orcid.org/0009-0004-6699-4869
-  alias: E-W-Jones
-
-- given-names: Oscar
-  alias: 0scvr
-
-- given-names: Ataf Fazledin
-  family-names: Ahamed
-  affiliation: OpenRefactory Inc.
-  alias: fazledyn-or
-
-- given-names: Tomasz Adam
-  family-names: Skrzypczak
-  alias: tomasz-adam-skrzypczak
-
-- given-names: Dusan
-  family-names: Klima
-  orcid: https://orcid.org/0009-0008-5134-6171
-  alias: ironwod
-
-- given-names: Heinz-Alexander
-  family-names: Fütterer
-  orcid: https://orcid.org/0000-0003-4397-027X
-  alias: afuetterer
-
-- given-names: James
-  family-names: Addison
-  alias: jayaddison
+- alias: Bzero
