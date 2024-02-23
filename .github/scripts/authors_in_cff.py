@@ -82,7 +82,6 @@ persistent identifier used by researchers, authors, and open source
 contributors. Sign up at: https://orcid.org/register
 
 Thank you for contributing!
-
 """
 
     logging.info(instructions_to_add_author)
