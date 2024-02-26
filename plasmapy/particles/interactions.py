@@ -1,12 +1,15 @@
 """Classes to represent particle interactions and reactions."""
 
-__all__ ["AbstractParticleInteraction"]
+__all__["AbstractParticleInteraction"]
 
-from plasmapy.particles import ParticleList, ParticleListLike, ParticleLike, Particle
 from abc import ABC, abstractmethod
+
+from plasmapy.particles import ParticleList, ParticleListLike
+
 
 class AbstractParticleInteraction(ABC):
     """..."""
+
     def __init__(self, reactants: ParticleList, products: ParticleList):
         self.reactants = reactants
         self.products = products
@@ -52,4 +55,6 @@ class AbstractParticleInteraction(ABC):
 
 class NuclearReaction(AbstractParticleInteraction):
     """..."""
+
     def validate_interaction(self) -> None:
+        ...
