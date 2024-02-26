@@ -99,7 +99,7 @@ test_Particle_table = [
         },
     ),
     (
-        "H",
+        "H",  # proton
         {"Z": 1, "mass_numb": 1},
         {
             "symbol": "p+",
@@ -136,6 +136,31 @@ test_Particle_table = [
             "periodic_table.category": "nonmetal",
             "binding_energy": 0 * u.J,
             "recombine()": "H-1 0+",
+        },
+    ),
+    (
+        "H",  # without charge or mass number information
+        {},
+        {
+            "symbol": "H",
+            "element": "H",
+            "isotope": None,
+            "isotope_name": InvalidIsotopeError,
+            "ionic_symbol": None,
+            "roman_symbol": ChargeError,
+            "is_ion": False,
+            "charge": np.nan * u.C,
+            "charge_number": ChargeError,
+            "mass_number": InvalidIsotopeError,
+            "baryon_number": ParticleError,
+            "lepton_number": 0,
+            "half_life": InvalidIsotopeError,
+            "standard_atomic_weight": (1.008 * u.u).to(u.kg),
+            "mass": (1.008 * u.u).to(u.kg),
+            "nuclide_mass": InvalidIsotopeError,
+            'is_category("charged")': False,
+            'is_category("nonmetal")': True,
+            'is_category("proton")': False,
         },
     ),
     (
