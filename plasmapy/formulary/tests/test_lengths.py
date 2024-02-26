@@ -295,7 +295,6 @@ class TestGyroradius:
         if atol is None:
             atol = 1e-8
 
-        # note allclose() checks values and units
         rc = gyroradius(*args, **kwargs)
         assert np.allclose(rc, expected, atol=atol)
         assert rc.unit == u.m
