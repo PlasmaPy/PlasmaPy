@@ -1006,9 +1006,9 @@ class Particle(AbstractPhysicalParticle):
         return self._attributes["isotope"]
 
     @property
-    def nuclide(self) -> Particle:
+    def nucleus(self) -> Particle:
         """
-        Return the nuclide of the particle.
+        Return the nucleus of an atom.
 
         Returns
         -------
@@ -1017,7 +1017,7 @@ class Particle(AbstractPhysicalParticle):
         """
         if not self.element:
             errmsg = (
-                f"Unable to return the nuclide of {self.symbol} because "
+                f"Unable to return the nucleus of {self.symbol} because "
                 "it is not an element or isotope."
             )
             raise InvalidElementError(errmsg)
