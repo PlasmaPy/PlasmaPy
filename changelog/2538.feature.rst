@@ -1,0 +1,2 @@
+Added the `~plasmapy.particles.particle_class.Particle.nuclide` attribute of |Particle|
+to provide easy access to the nuclides of different particles.
