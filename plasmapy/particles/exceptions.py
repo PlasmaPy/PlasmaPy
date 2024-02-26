@@ -8,6 +8,7 @@ __all__ = [
     "InvalidIonError",
     "InvalidIsotopeError",
     "InvalidParticleError",
+    "InvalidReactionError",
     "MissingParticleDataError",
     "MissingParticleDataWarning",
     "UnexpectedParticleError",
@@ -58,6 +59,13 @@ class InvalidElementError(UnexpectedParticleError):
 
 class InvalidParticleError(ParticleError):
     """An exception for when a particle is invalid."""
+
+
+class InvalidReactionError(ParticleError):
+    """
+    An exception for when a reaction does not obey the requisite
+    conservation laws.
+    """
 
 
 class ParticleWarning(PlasmaPyWarning):
