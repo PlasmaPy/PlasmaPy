@@ -18,7 +18,7 @@ asteval==0.9.31
     # via lmfit
 astropy==6.0.0
     # via plasmapy (setup.py)
-astropy-iers-data==0.2024.2.19.0.28.47
+astropy-iers-data==0.2024.2.26.0.28.55
     # via astropy
 asttokens==2.4.1
     # via stack-data
@@ -92,11 +92,11 @@ fonttools==4.49.0
     # via matplotlib
 fqdn==1.5.1
     # via jsonschema
-future==0.18.3
+future==1.0.0
     # via uncertainties
 h5py==3.10.0
     # via plasmapy (setup.py)
-hypothesis==6.98.8
+hypothesis==6.98.12
     # via plasmapy (setup.py)
 identify==2.5.35
     # via pre-commit
@@ -113,7 +113,7 @@ iniconfig==2.0.0
     # via pytest
 ipykernel==6.29.2
     # via plasmapy (setup.py)
-ipython==8.21.0
+ipython==8.22.1
     # via
     #   ipykernel
     #   ipywidgets
@@ -133,7 +133,7 @@ jinja2==3.1.3
     #   plasmapy (setup.py)
     #   sphinx
     #   towncrier
-json5==0.9.14
+json5==0.9.17
     # via jupyterlab-server
 jsonpointer==2.4
     # via jsonschema
@@ -199,7 +199,7 @@ nbclient==0.7.4
     # via
     #   nbconvert
     #   voila
-nbconvert==7.16.0
+nbconvert==7.16.1
     # via
     #   jupyter-server
     #   nbsphinx
@@ -249,7 +249,7 @@ packaging==23.2
     #   sphinx
     #   tox
     #   xarray
-pandas==2.2.0
+pandas==2.2.1
     # via
     #   plasmapy (setup.py)
     #   xarray
@@ -308,7 +308,7 @@ pyparsing==3.1.1
     # via matplotlib
 pyproject-api==1.6.1
     # via tox
-pytest==8.0.1
+pytest==8.0.2
     # via
     #   plasmapy (setup.py)
     #   pytest-datadir
@@ -378,7 +378,7 @@ six==1.16.0
     #   pybtex
     #   python-dateutil
     #   rfc3339-validator
-sniffio==1.3.0
+sniffio==1.3.1
     # via anyio
 snowballstemmer==2.2.0
     # via sphinx
@@ -409,7 +409,7 @@ sphinx-changelog==1.5.0
     # via plasmapy (setup.py)
 sphinx-codeautolink==0.15.0
     # via plasmapy (setup.py)
-sphinx-collapse==0.1.2
+sphinx-collapse==0.1.3
     # via plasmapy (setup.py)
 sphinx-copybutton==0.5.2
     # via plasmapy (setup.py)
@@ -501,7 +501,7 @@ uri-template==1.3.0
     # via jsonschema
 urllib3==2.2.1
     # via requests
-virtualenv==20.25.0
+virtualenv==20.25.1
     # via
     #   pre-commit
     #   tox
