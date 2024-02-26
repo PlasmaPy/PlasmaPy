@@ -4,7 +4,11 @@ __all__ = ["AbstractParticleInteraction"]
 
 from abc import ABC, abstractmethod
 
-from plasmapy.particles import ParticleList, ParticleListLike
+import astropy.units as u
+import numpy as np
+
+from plasmapy.particles.particle_collections import ParticleList, ParticleListLike
+from plasmapy.utils.decorators import validate_quantities
 
 
 class AbstractParticleInteraction(ABC):
@@ -58,3 +62,8 @@ class NuclearReaction(AbstractParticleInteraction):
 
     def validate_interaction(self) -> None:
         """..."""
+
+    @validate_quantities
+    def energy(self) -> u.Quantity[u.J]:
+        """Return the mass energy of the nuclear reaction."""
+        return np.sum(self.reactants.mass_energy) - np.sum(self.products.mass_energy)
