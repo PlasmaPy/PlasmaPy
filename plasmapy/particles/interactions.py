@@ -57,4 +57,4 @@ class NuclearReaction(AbstractParticleInteraction):
     """..."""
 
     def validate_interaction(self) -> None:
-        ...
+        """..."""
