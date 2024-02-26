@@ -1,6 +1,6 @@
 """Classes to represent particle interactions and reactions."""
 
-__all__["AbstractParticleInteraction"]
+__all__ = ["AbstractParticleInteraction"]
 
 from abc import ABC, abstractmethod
 
