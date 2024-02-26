@@ -601,7 +601,7 @@ test_Particle_error_table = [
     (["e+"], {}, ".is_category(require='element', exclude='element')", ParticleError),
     (["H", 1], {}, "", TypeError),
     (["H", 1, 1], {}, "", TypeError),
-    (["e-"], {}, ".nuclide", InvalidElementError),
+    (["e-"], {}, ".nucleus", InvalidElementError),
 ]
 
 
