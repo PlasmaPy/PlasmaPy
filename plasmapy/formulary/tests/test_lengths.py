@@ -282,6 +282,12 @@ class TestGyroradius:
                 4.94949337e-05 * u.m,
                 None,
             ),
+            (
+                (10 * u.uG,),
+                {"particle": ["p+", "e-"], "lorentzfactor": 3},
+                [8.85223812e09, 4821079.55793195] * u.m,
+                None,
+            ),
         ],
     )
     @pytest.mark.filterwarnings("ignore::UserWarning")
