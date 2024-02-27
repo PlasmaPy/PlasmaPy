@@ -103,7 +103,7 @@ lambdaD_ = Debye_length
     validations_on_return={"equivalencies": u.dimensionless_angles()},
 )
 @particle_input(any_of={"charged", "uncharged"})
-def gyroradius(  # noqa: C901
+def gyroradius(  # noqa: C901, PLR0915
     B: u.Quantity[u.T],
     particle: ParticleLike,
     *,
@@ -273,7 +273,13 @@ def gyroradius(  # noqa: C901
         if relativistic and nans_in_both_T_and_Vperp:
             Vperp = np.copy(Vperp)
             rbody = RelativisticBody(particle, lorentz_factor=lorentzfactor)
-            Vperp[~isfinite_Vperp] = rbody.velocity
+            try:
+                Vperp[~isfinite_Vperp] = rbody.velocity
+            except ValueError:
+                # When Vperp is a scalar instead of an array, for example
+                # when a ParticleList is being provided
+                Vperp = rbody.velocity
+
         return Vperp
 
     def _warn_if_lorentz_factor_and_relativistic(
