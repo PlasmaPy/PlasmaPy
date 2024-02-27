@@ -1006,6 +1006,24 @@ class Particle(AbstractPhysicalParticle):
         return self._attributes["isotope"]
 
     @property
+    def nucleus(self) -> Particle:
+        """
+        Return the nucleus of an atom.
+
+        Returns
+        -------
+        `~plasmapy.particles.exceptions.InvalidElementError`
+            If the particle is not an element, isotope, or ion.
+        """
+        if not self.element:
+            errmsg = (
+                f"Unable to return the nucleus of {self.symbol} because "
+                "it is not an element or isotope."
+            )
+            raise InvalidElementError(errmsg)
+        return Particle(self.isotope or self.element, Z=self.atomic_number)
+
+    @property
     def ionic_symbol(self) -> str | None:
         """
         The ionic symbol if the particle corresponds to an ion or
