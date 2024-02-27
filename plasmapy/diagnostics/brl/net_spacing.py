@@ -177,7 +177,7 @@ def get_x_and_dx_ds(
     Notes
     -----
     Laframboise gives no explanation as to why these functions are chosen nor
-    the boundary values on small, medium, and large probes.
+    the boundary values on small, medium, and large probes. Also, :math:`x = 1 / r`.
     """
     if (normalized_probe_radius > 2.6 or zero_T_repelled_particles) and np.max(
         s_points
