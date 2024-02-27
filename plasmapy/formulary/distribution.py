@@ -1041,11 +1041,11 @@ def kappa_velocity_3D(
     Z=None,
 ):
     r"""
-    Return the probability density function for finding a particle with
-    velocity components ``v_x``, ``v_y``, and ``v_z``in m/s in a suprathermal
-    plasma of temperature ``T`` and parameter ``kappa`` which follows the
-    3D Kappa distribution function. This function assumes Cartesian
-    coordinates.
+    Return the probability density function for finding a particle
+    with velocity components ``v_x``, ``v_y``, and ``v_z`` in m/s in a
+    suprathermal plasma of temperature ``T`` and parameter ``kappa``
+    which follows the 3D Kappa distribution function. This function
+    assumes Cartesian coordinates.
 
     Parameters
     ----------
@@ -1157,6 +1157,7 @@ def kappa_velocity_3D(
     ...     vz_drift=0 * u.m / u.s,
     ... )
     <Quantity 3.7833...e-19 s3 / m3>
+
     """
     # must have kappa > 3/2 for distribution function to be valid
     if kappa <= 3 / 2:
