@@ -562,7 +562,6 @@ def Maxwellian_speed_1D(
     >>> v = 1 * u.m / u.s
     >>> Maxwellian_speed_1D(v=v, T=30000 * u.K, particle="e-", v_drift=0 * u.m / u.s)
     <Quantity 1.1832...e-06 s / m>
-
     """
     if units == "units":
         # unit checks and conversions
@@ -694,7 +693,6 @@ def Maxwellian_speed_2D(
     >>> v = 1 * u.m / u.s
     >>> Maxwellian_speed_2D(v=v, T=30000 * u.K, particle="e-", v_drift=0 * u.m / u.s)
     <Quantity 2.199...e-12 s / m>
-
     """
     if v_drift != 0:
         raise NotImplementedError("Non-zero drift speed is work in progress.")
@@ -1157,7 +1155,6 @@ def kappa_velocity_3D(
     ...     vz_drift=0 * u.m / u.s,
     ... )
     <Quantity 3.7833...e-19 s3 / m3>
-
     """
     # must have kappa > 3/2 for distribution function to be valid
     if kappa <= 3 / 2:
