@@ -3,6 +3,8 @@ __all__ = [
     "cold_plasma_permittivity_SDP",
     "cold_plasma_permittivity_LRP",
     "permittivity_1D_Maxwellian",
+    "RotatingTensorElements",
+    "StixTensorElements",
 ]
 __lite_funcs__ = ["permittivity_1D_Maxwellian_lite"]
 
@@ -30,9 +32,13 @@ Values should be returned as a `~astropy.units.Quantity` in SI units.
 """
 
 StixTensorElements = namedtuple("StixTensorElements", ["sum", "difference", "plasma"])
+"""Output type for `~plasmapy.formulary.dielectric.cold_plasma_permittivity_SDP`."""
+
+
 RotatingTensorElements = namedtuple(
     "RotatingTensorElements", ["left", "right", "plasma"]
 )
+"""Output type for `~plasmapy.formulary.dielectric.cold_plasma_permittivity_LRP`."""
 
 
 @validate_quantities(B={"can_be_negative": False}, omega={"can_be_negative": False})
