@@ -562,7 +562,6 @@ def Maxwellian_speed_1D(
     >>> v = 1 * u.m / u.s
     >>> Maxwellian_speed_1D(v=v, T=30000 * u.K, particle="e-", v_drift=0 * u.m / u.s)
     <Quantity 1.1832...e-06 s / m>
-
     """
     if units == "units":
         # unit checks and conversions
@@ -694,7 +693,6 @@ def Maxwellian_speed_2D(
     >>> v = 1 * u.m / u.s
     >>> Maxwellian_speed_2D(v=v, T=30000 * u.K, particle="e-", v_drift=0 * u.m / u.s)
     <Quantity 2.199...e-12 s / m>
-
     """
     if v_drift != 0:
         raise NotImplementedError("Non-zero drift speed is work in progress.")
@@ -1041,11 +1039,11 @@ def kappa_velocity_3D(
     Z=None,
 ):
     r"""
-    Return the probability density function for finding a particle with
-    velocity components ``v_x``, ``v_y``, and ``v_z``in m/s in a suprathermal
-    plasma of temperature ``T`` and parameter ``kappa`` which follows the
-    3D Kappa distribution function. This function assumes Cartesian
-    coordinates.
+    Return the probability density function for finding a particle
+    with velocity components ``v_x``, ``v_y``, and ``v_z`` in m/s in a
+    suprathermal plasma of temperature ``T`` and parameter ``kappa``
+    which follows the 3D Kappa distribution function. This function
+    assumes Cartesian coordinates.
 
     Parameters
     ----------
