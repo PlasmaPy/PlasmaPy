@@ -7,6 +7,7 @@ __all__ = [
 __lite_funcs__ = ["permittivity_1D_Maxwellian_lite"]
 
 from collections import namedtuple
+from collections.abc import Sequence
 
 import astropy.units as u
 import numpy as np
@@ -14,6 +15,8 @@ import numpy as np
 from plasmapy.dispersion.dispersion_functions import plasma_dispersion_func_deriv
 from plasmapy.formulary.frequencies import gyrofrequency, plasma_frequency
 from plasmapy.formulary.speeds import thermal_speed
+from plasmapy.particles.particle_class import ParticleLike
+from plasmapy.particles.particle_collections import ParticleListLike
 from plasmapy.utils.decorators import (
     bind_lite_func,
     preserve_signature,
@@ -34,8 +37,11 @@ RotatingTensorElements = namedtuple(
 
 @validate_quantities(B={"can_be_negative": False}, omega={"can_be_negative": False})
 def cold_plasma_permittivity_SDP(
-    B: u.Quantity[u.T], species, n, omega: u.Quantity[u.rad / u.s]
-):
+    B: u.Quantity[u.T],
+    species: ParticleListLike,
+    n: Sequence[u.Quantity[u.m**-3]] | u.Quantity[u.m**-3],
+    omega: u.Quantity[u.rad / u.s],
+) -> StixTensorElements:
     r"""
     Magnetized cold plasma dielectric permittivity tensor elements.
 
@@ -49,7 +55,7 @@ def cold_plasma_permittivity_SDP(
     B : `~astropy.units.Quantity`
         Magnetic field magnitude in units convertible to tesla.
 
-    species : `list` of `str`
+    species : |particle-list-like|
         List of the plasma particle species,
         e.g.: ``['e-', 'D+']`` or ``['e-', 'D+', 'He+']``.
 
@@ -63,13 +69,13 @@ def cold_plasma_permittivity_SDP(
     Returns
     -------
     sum : `~astropy.units.Quantity`
-        S ("Sum") dielectric tensor element.
+        The "sum" dielectric tensor element, :math:`S`.
 
     difference : `~astropy.units.Quantity`
-        D ("Difference") dielectric tensor element.
+        The "difference" dielectric tensor element, :math:`D`.
 
     plasma : `~astropy.units.Quantity`
-        P ("Plasma") dielectric tensor element.
+        The "plasma" dielectric tensor element, :math:`P`.
 
     Notes
     -----
@@ -129,8 +135,11 @@ def cold_plasma_permittivity_SDP(
 
 @validate_quantities(B={"can_be_negative": False}, omega={"can_be_negative": False})
 def cold_plasma_permittivity_LRP(
-    B: u.Quantity[u.T], species, n, omega: u.Quantity[u.rad / u.s]
-):
+    B: u.Quantity[u.T],
+    species: ParticleListLike,
+    n: list[u.Quantity[u.m**-3]] | u.Quantity[u.m**-3],
+    omega: u.Quantity[u.rad / u.s],
+) -> RotatingTensorElements:
     r"""
     Magnetized cold plasma dielectric permittivity tensor elements.
 
@@ -145,11 +154,11 @@ def cold_plasma_permittivity_LRP(
     B : `~astropy.units.Quantity`
         Magnetic field magnitude in units convertible to tesla.
 
-    species : `list` of `str`
+    species : (k,) |particle-list-like|
         The plasma particle species (e.g.: ``['e-', 'D+']`` or
         ``['e-', 'D+', 'He+']``.
 
-    n : `list` of `~astropy.units.Quantity`
+    n : (k,) `list` of `~astropy.units.Quantity`
         `list` of species density in units convertible to per cubic meter.
         The order of the species densities should follow species.
 
@@ -288,7 +297,7 @@ def permittivity_1D_Maxwellian(
     kWave: u.Quantity[u.rad / u.m],
     T: u.Quantity[u.K],
     n: u.Quantity[u.m**-3],
-    particle,
+    particle: ParticleLike,
     z_mean: float | None = None,
 ) -> u.Quantity[u.dimensionless_unscaled]:
     r"""
@@ -318,7 +327,7 @@ def permittivity_1D_Maxwellian(
         The plasma density — this can be either the electron or the ion
         density, but should be consistent with temperature and particle.
 
-    particle : `str`
+    particle : |particle-like|
         The plasma particle species.
 
     z_mean : `float`
