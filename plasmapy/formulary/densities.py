@@ -9,7 +9,7 @@ import astropy.units as u
 import numpy as np
 from astropy.constants.si import e, eps0, m_e
 
-from plasmapy.particles import Particle, ParticleLike
+from plasmapy.particles.particle_class import Particle, ParticleLike
 from plasmapy.utils.decorators import validate_quantities
 
 __all__ += __aliases__

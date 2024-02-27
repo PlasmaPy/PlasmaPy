@@ -19,7 +19,10 @@ from astropy.constants.si import k_B, mu0
 from numba import njit
 
 from plasmapy.formulary import lengths
-from plasmapy.particles import ParticleLike, electron, particle_input, particle_mass
+from plasmapy.particles import electron
+from plasmapy.particles.atomic import particle_mass
+from plasmapy.particles.decorators import particle_input
+from plasmapy.particles.particle_class import ParticleLike
 from plasmapy.utils.decorators import (
     bind_lite_func,
     check_relativistic,

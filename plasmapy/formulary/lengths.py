@@ -11,7 +11,8 @@ from astropy.constants.si import c, e, eps0, k_B
 
 from plasmapy.formulary import frequencies, speeds
 from plasmapy.formulary.relativity import RelativisticBody
-from plasmapy.particles import ParticleLike, particle_input
+from plasmapy.particles.decorators import particle_input
+from plasmapy.particles.particle_class import ParticleLike
 from plasmapy.utils.decorators import validate_quantities
 
 __all__ += __aliases__

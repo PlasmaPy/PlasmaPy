@@ -16,8 +16,9 @@ from astropy.constants.si import e, eps0
 from numba import njit
 
 from plasmapy import particles
-from plasmapy.particles import ParticleLike, particle_input
+from plasmapy.particles.decorators import particle_input
 from plasmapy.particles.exceptions import InvalidParticleError
+from plasmapy.particles.particle_class import ParticleLike
 from plasmapy.utils.decorators import (
     angular_freq_to_hz,
     bind_lite_func,
