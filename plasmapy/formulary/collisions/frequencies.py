@@ -18,7 +18,7 @@ from astropy.constants.si import e, k_B, m_e
 from plasmapy import particles
 from plasmapy.formulary.collisions import coulomb, lengths, misc
 from plasmapy.formulary.speeds import thermal_speed
-from plasmapy.particles import ParticleLike
+from plasmapy.particles.particle_class import ParticleLike
 from plasmapy.utils.decorators import deprecated, validate_quantities
 from plasmapy.utils.exceptions import PhysicsError, PlasmaPyFutureWarning
 
