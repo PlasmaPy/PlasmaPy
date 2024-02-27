@@ -205,7 +205,7 @@ def eta_4(
     gamma : `float`
         :math:`\gamma = R_p^2 / \lambda_D^2` from equation (9.1).
     omega_G, beta_G : `numpy.ndarray`
-        Normalized angular momentum and energy as functions of `s`.
+        Normalized angular momentum and energy of the locus of extrema as functions of `s`.
     spherical : `bool`, optional
         If `True` the probe will be treated as spherical. If `False` then the probe is cylindrical. Default is `True`.
 
@@ -268,3 +268,188 @@ def eta_4(
         complex_integrand_at_s2,
         ds,
     )
+
+
+def eta_5(A, spherical=True):
+    r"""Calculate the contribution to the charge density across the potential boundary at a specific radius.
+
+    Parameters
+    ----------
+    A : `numpy.ndarray`
+        Lower bound of the integral.
+    spherical : `bool`, optional
+        If `True` the probe will be treated as spherical. If `False` then the probe is cylindrical. Default is `True`.
+    """
+    if spherical:
+        return np.zeros_like(A)
+    else:
+        return np.exp(-A) / 2
+    
+
+def find_beta_M_index(beta_M, beta_G):
+    r"""Find the point at which beta_G crosses beta_M.
+    
+    We assume that `x` is ordered from `1 -> 0`. The returned index is the index 
+    at which `beta_G` is less then `beta_M` for all `x < x_M`, (all `i > beta_M_index`).
+
+    Parameters
+    ----------
+    beta_M : `float`
+        Distribution function energy.
+    beta_G : `numpy.ndarray`
+        Normalized energy of the locus of extrema as functions of `s`.
+
+    Returns
+    -------
+    beta_M_index : `int`
+        Index of the last value of the `beta_G` array at which `beta_M >= beta_G`.
+    """
+    if beta_M > np.max(beta_G):
+        return 0
+    else:
+        return beta_G.size - np.argmax(beta_M < beta_G[::-1])
+    
+
+def estimate_omega_M(beta_M, beta_M_index, beta_G, omega_G):
+    r"""Do some Taylor expansions to find the omega that corresponds to `beta_M`.
+    
+    Parameters
+    ----------
+    beta_M : `float`
+        Distribution function energy.
+    beta_M_index : `int`
+        Index or the `beta_G` array where `beta_M` crosses `beta_G` just before `beta_M_index` or just after.
+    omega_G, beta_G : `numpy.ndarray`
+        Normalized angular momentum and energy of the locus of extrema as functions of `s`.
+
+    Returns
+    -------
+    omega_M : `float`
+        Estimated value of `omega` where the crossing occurred.
+
+    Notes
+    -----
+    We do a second order Taylor expansion of `beta_G` and then solve for the 
+    index where `beta_G(index) \approx beta_M`. Then we do a second order 
+    Taylor expansion of `omega_G` to find the correct `omega`. This only works 
+    if `np.min(beta_G) <= beta_M <= np.max(beta_G)`.
+    """
+    if beta_M == beta_G[beta_M_index]:
+        return omega_G[beta_M_index]
+
+    if beta_M_index == 0:
+        expansion_index = 1
+    else:
+        expansion_index = min(
+            beta_G.size - 2, 
+            beta_M_index + round((beta_M - beta_G[beta_M_index - 1]) / (beta_G[beta_M_index] - beta_G[beta_M_index - 1]))
+        )
+
+    # Second order Taylor expansion of `beta_G`.
+    zeroth_order = beta_G[expansion_index]
+    first_order = (beta_G[expansion_index + 1] - beta_G[expansion_index - 1]) / 2
+    second_order = (beta_G[expansion_index + 1] - 2 * beta_G[expansion_index] + beta_G[expansion_index - 1])
+    # Now solve the quadratic equation.
+    if np.isclose(second_order, 0):
+        # If the second derivative is very small then just use the first derivative.
+        float_index = expansion_index - (zeroth_order - beta_M) / first_order
+    else:
+        # Solve the quadratic formula.
+        quadratic_first_term = -first_order / second_order
+        quadratic_second_term = (first_order**2 - 4 * second_order / 2 * (zeroth_order - beta_M))**0.5 / second_order
+        terms_added = quadratic_first_term + quadratic_second_term
+        terms_subtracted = quadratic_first_term - quadratic_second_term
+
+        # Decide whether to add or subtract the second term.
+        if beta_G[expansion_index] > beta_M:
+            # The float index must be between `[expansion_index, expansion_index + 1]`.
+            float_index = terms_added if 0 <= terms_added <= 1 else terms_subtracted
+        else:
+            # The float index must be between `[expansion_index - 1, expansion_index]`.
+            float_index = terms_added if -1 <= terms_added <= 0 else terms_subtracted
+        float_index += expansion_index
+
+    # Second order Taylor expansion of `omega_G`.
+    zeroth_order = omega_G[expansion_index]
+    first_order = (omega_G[expansion_index + 1] - omega_G[expansion_index - 1]) / 2
+    second_order = (omega_G[expansion_index + 1] - 2 * omega_G[expansion_index] + omega_G[expansion_index - 1])
+    omega_M = zeroth_order + (float_index - expansion_index) * first_order + (float_index - expansion_index)**2 * second_order / 2
+
+    return omega_M
+
+
+def delta_function_charge_density(chi, x, omega_G, beta_G, spherical=True):
+    r"""Calculate the charge density when the distribution function is a delta function.
+    
+    Parameters
+    ----------
+    chi : `numpy.ndarray`
+        The normalized potential.
+    x : `numpy.ndarray`
+        Normalized inverse radius calculated from `~plasmapy.diagnostics.brl.net_spacing.get_x_and_dx_ds`.
+    omega_G, beta_G : `numpy.ndarray`
+        Normalized angular momentum and energy of the locus of extrema as functions of `s`.
+    spherical : `bool`, optional
+        If `True` the probe will be treated as spherical. If `False` then the probe is cylindrical. Default is `True`.
+    """
+    # Equation (13.1).
+    beta_M = 4 / np.pi if spherical else np.pi / 4
+
+    # Create an array that stores the omega corresponding to the boundary of no allowed particles.
+    # Populate the array with the omega using only the local boundary.
+    no_particle_omega_boundary = (beta_M - chi) / x**2
+    # Find the indeces where `beta_G` crosses `beta_M`. These are the indeces 
+    # just before crossing. We only need crossings in which 
+    # `beta_G[index] < beta_M < beta_G[index + 1]`. This is because these 
+    # crossings are the ones that will globally limit omega.
+    crossing_indeces = np.nonzero(np.logical_and(beta_G[:-1] < beta_M, beta_G[1:] > beta_M))[0]
+    # If there are any crossings then find the omega that corresponds to each of these crossings.
+    if crossing_indeces.size > 0:
+        for crossing_index in crossing_indeces:
+            crossed_omega_G = estimate_omega_M(beta_M, crossing_index, beta_G, omega_G)
+            # Apply the global boundary of the extrema.
+            no_particle_omega_boundary[:crossing_index + 1] = np.min(crossed_omega_G, no_particle_omega_boundary[:crossing_index + 1])
+
+    no_particle_omega_boundary = np.max(no_particle_omega_boundary, 0)
+    # Determine the boundary where the probe consumes incoming particles.
+    probe_consumption_omega_boundary = no_particle_omega_boundary[0]
+
+    # Equation (13.1).
+    if spherical:
+        eta = -1 / (2 * beta_M**0.5) * np.sum(
+            -1 * (beta_M - chi)**0.5 +
+            -1 * (beta_M - chi - probe_consumption_omega_boundary * x**2)**0.5 +
+            2 * (beta_M - chi - no_particle_omega_boundary * x**2)**0.5
+        )
+    else:
+        eta = 1 / np.pi * np.sum(
+            # The zero boundary term evaluates to 0.
+            -1 * np.arcsin((probe_consumption_omega_boundary * x**2 / (beta_M - chi))**0.5) +
+            2 * np.arcsin((no_particle_omega_boundary * x**2 / (beta_M - chi))**0.5)
+        )
+    return eta
+
+
+def determine_coefficients_and_integration_points():
+    """Determine the coefficients of all eta and the integration start and end points."""
+    pass
+
+
+def get_charge_density(chi, x, omega_G, beta_G, spherical=True, maxwellian=True):
+    r"""Calculate the charge density at all grid points.
+    
+    Parameters
+    ----------
+    chi : `numpy.ndarray`
+        The normalized potential.
+    x : `numpy.ndarray`
+        Normalized inverse radius calculated from `~plasmapy.diagnostics.brl.net_spacing.get_x_and_dx_ds`.
+    omega_G, beta_G : `numpy.ndarray`
+        Normalized angular momentum and energy of the locus of extrema as functions of `s`.
+    spherical : `bool`, optional
+        If `True` the probe will be treated as spherical. If `False` then the probe is cylindrical. Default is `True`.
+    """
+    if not maxwellian:
+        return delta_function_charge_density(chi, x, omega_G, beta_G, spherical=spherical)
+    else:
+        raise NotImplementedError("The calculation for charge density for a maxwellian distribution has not been implemented.")
