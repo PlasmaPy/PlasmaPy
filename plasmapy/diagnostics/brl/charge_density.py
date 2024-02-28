@@ -445,6 +445,8 @@ def determine_coefficients_and_integration_points():
 
 def get_charge_density(chi, x, omega_G, beta_G, spherical=True, maxwellian=True):
     r"""Calculate the charge density at all grid points.
+
+    Calculate the charge density for a single species of particles.
     
     Parameters
     ----------
@@ -456,6 +458,10 @@ def get_charge_density(chi, x, omega_G, beta_G, spherical=True, maxwellian=True)
         Normalized angular momentum and energy of the locus of extrema as functions of `s`.
     spherical : `bool`, optional
         If `True` the probe will be treated as spherical. If `False` then the probe is cylindrical. Default is `True`.
+    
+    Returns
+    -------
+    eta : `numpy.ndarray`
     """
     if not maxwellian:
         return delta_function_charge_density(chi, x, omega_G, beta_G, spherical=spherical)
