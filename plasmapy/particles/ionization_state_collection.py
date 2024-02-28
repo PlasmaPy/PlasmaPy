@@ -929,6 +929,7 @@ class IonizationStateCollection:
 
         Examples
         --------
+        >>> import astropy.units as u
         >>> states = IonizationStateCollection(
         ...     {"H": [0.1, 0.9], "He": [0.95, 0.05, 0.0]},
         ...     T_e=12000 * u.K,

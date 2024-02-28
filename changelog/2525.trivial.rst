@@ -1,0 +1,1 @@
+Removed |pytest| as a runtime dependency.

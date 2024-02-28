@@ -473,17 +473,29 @@ def _trilinear_jacobian(vspace, cell):
         dBzdx = bz + ez * yInput + fz * zInput + hz * yInput * zInput
         dBzdy = cz + ez * xInput + gz * zInput + hz * xInput * yInput
         dBzdz = dz + fz * xInput + gz * yInput + hz * xInput * yInput
+
+        def get_scalar(v: float | np.ndarray):
+            """
+            If a `float`, return the argument. If a `numpy.ndarray` with
+            a single element, return that element.
+            """
+            if not hasattr(v, "__len__"):
+                return v
+            if len(v) != 1:
+                raise ValueError("Unable to get scalar from multi-element array.")
+            return v[0]  # type: ignore[index]
+
         return np.array(
             [
-                float(dBxdx),
-                float(dBxdy),
-                float(dBxdz),
-                float(dBydx),
-                float(dBydy),
-                float(dBydz),
-                float(dBzdx),
-                float(dBzdy),
-                float(dBzdz),
+                get_scalar(dBxdx),
+                get_scalar(dBxdy),
+                get_scalar(dBxdz),
+                get_scalar(dBydx),
+                get_scalar(dBydy),
+                get_scalar(dBydz),
+                get_scalar(dBzdx),
+                get_scalar(dBzdy),
+                get_scalar(dBzdz),
             ]
         ).reshape(3, 3)
 

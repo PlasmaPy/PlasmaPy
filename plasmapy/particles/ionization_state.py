@@ -214,6 +214,7 @@ class IonizationState:
 
     Examples
     --------
+    >>> import astropy.units as u
     >>> states = IonizationState("H", [0.6, 0.4], n_elem=1 * u.cm**-3, T_e=11000 * u.K)
     >>> states.ionic_fractions[0]  # fraction of hydrogen that is neutral
     0.6
@@ -862,6 +863,7 @@ class IonizationState:
 
         Examples
         --------
+        >>> import astropy.units as u
         >>> He_states = IonizationState(
         ...     "He",
         ...     [0.941, 0.058, 0.001],
