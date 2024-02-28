@@ -120,7 +120,6 @@ namespaces = false
 write_to = "plasmapy/_version.py"
 
 [tool.pytest.ini_options]
-minversion = "7.0.1"
 testpaths = ['plasmapy']
 norecursedirs = ['build', 'docs', 'plasmapy[\/]_dev']
 xfail_strict = true
