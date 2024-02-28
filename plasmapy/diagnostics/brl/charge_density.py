@@ -380,6 +380,8 @@ def estimate_omega_M(beta_M, beta_M_index, beta_G, omega_G):
 
 def delta_function_charge_density(chi, x, omega_G, beta_G, spherical=True):
     r"""Calculate the charge density when the distribution function is a delta function.
+
+    Calculate the charge density for a single species of particles.
     
     Parameters
     ----------
@@ -391,6 +393,10 @@ def delta_function_charge_density(chi, x, omega_G, beta_G, spherical=True):
         Normalized angular momentum and energy of the locus of extrema as functions of `s`.
     spherical : `bool`, optional
         If `True` the probe will be treated as spherical. If `False` then the probe is cylindrical. Default is `True`.
+
+    Returns
+    -------
+    eta : `numpy.ndarray`
     """
     # Equation (13.1).
     beta_M = 4 / np.pi if spherical else np.pi / 4
@@ -410,23 +416,25 @@ def delta_function_charge_density(chi, x, omega_G, beta_G, spherical=True):
             # Apply the global boundary of the extrema.
             no_particle_omega_boundary[:crossing_index + 1] = np.min(crossed_omega_G, no_particle_omega_boundary[:crossing_index + 1])
 
-    no_particle_omega_boundary = np.max(no_particle_omega_boundary, 0)
+    no_particle_omega_boundary[no_particle_omega_boundary < 0] = 0
     # Determine the boundary where the probe consumes incoming particles.
     probe_consumption_omega_boundary = no_particle_omega_boundary[0]
 
+    factors = beta_M > chi
     # Equation (13.1).
     if spherical:
-        eta = -1 / (2 * beta_M**0.5) * np.sum(
-            -1 * (beta_M - chi)**0.5 +
-            -1 * (beta_M - chi - probe_consumption_omega_boundary * x**2)**0.5 +
-            2 * (beta_M - chi - no_particle_omega_boundary * x**2)**0.5
+        eta = -1 / (2 * beta_M**0.5) * (
+            -1 * (factors * (beta_M - chi))**0.5 +
+            -1 * (factors * (beta_M - chi - probe_consumption_omega_boundary * x**2))**0.5 +
+            2 * (factors * (beta_M - chi - no_particle_omega_boundary * x**2))**0.5
         )
     else:
-        eta = 1 / np.pi * np.sum(
+        eta = 1 / np.pi * (
             # The zero boundary term evaluates to 0.
-            -1 * np.arcsin((probe_consumption_omega_boundary * x**2 / (beta_M - chi))**0.5) +
-            2 * np.arcsin((no_particle_omega_boundary * x**2 / (beta_M - chi))**0.5)
+            -1 * np.arcsin((factors * (probe_consumption_omega_boundary * x**2 / (beta_M - chi)))**0.5) +
+            2 * np.arcsin((factors * (no_particle_omega_boundary * x**2 / (beta_M - chi)))**0.5)
         )
+
     return eta
 
 
