@@ -32,12 +32,12 @@ jobs:
         - name: Python 3.11 (macOS), code coverage
           os: macos-latest
           python: '3.11'
-          toxenv: py311-cov-all
+          toxenv: py311-pins-cov-all
 
         - name: Python 3.10 (Ubuntu)
           os: ubuntu-latest
           python: '3.10'
-          toxenv: py310-all
+          toxenv: py310-pins-minimal
 
         - name: mypy
           os: ubuntu-latest
