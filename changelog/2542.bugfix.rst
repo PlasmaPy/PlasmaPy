@@ -1,0 +1,2 @@
+Fixed an error when :py:`lorentzfactor` and multiple particles are provided
+to `~plasmapy.formulary.lengths.gyroradius`.
