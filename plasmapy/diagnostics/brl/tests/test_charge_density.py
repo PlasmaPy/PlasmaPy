@@ -39,3 +39,41 @@ def test_estimate_omega_M(beta_M, beta_M_index, beta_G_func, omega_M, omega_G_fu
     assert np.isclose(charge_density.estimate_omega_M(
         beta_M, beta_M_index, beta_G_func(sample_points), omega_G_func(sample_points)
     ), omega_M)
+
+@pytest.mark.parametrize(
+    ('chi', 'x', 'spherical', 'expected_charge_density'),
+    [
+        (10 * np.ones(10), np.linspace(1, 0.1, num=10), False, np.zeros(10)),
+        (10 * np.ones(10), np.linspace(1, 0.1, num=10), True, np.zeros(10)),
+    ]
+)
+def test_delta_function_charge_density_high_potential(chi, x, spherical, expected_charge_density):
+    """Test that the delta function charge density is correct."""
+    omega_G = -1 / (2 * x) * np.gradient(chi, x)
+    beta_G = chi - x / 2 * np.gradient(chi, x)
+
+    eta = charge_density.delta_function_charge_density(
+        chi, x, omega_G, beta_G, spherical
+    )
+    assert eta.size == chi.size
+    assert np.all(np.isclose(eta, expected_charge_density))
+
+
+@pytest.mark.parametrize(
+    ('chi', 'x', 'spherical'),
+    [
+        (np.zeros(10), np.linspace(1, 0.1, num=10), False),
+        (np.zeros(10), np.linspace(1, 0.1, num=10), True)
+    ]
+)
+def test_delta_function_charge_density_low_potential(chi, x, spherical):
+    """Test that the delta function charge density is greater than 0 and increasing."""
+    omega_G = -1 / (2 * x) * np.gradient(chi, x)
+    beta_G = chi - x / 2 * np.gradient(chi, x)
+
+    eta = charge_density.delta_function_charge_density(
+        chi, x, omega_G, beta_G, spherical
+    )
+    assert eta.size == chi.size
+    assert np.all(eta >= 0)
+    assert np.all(np.diff(eta) >= 0)
