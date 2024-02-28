@@ -113,7 +113,7 @@ def cold_plasma_permittivity_SDP(
     >>> D
     <Quantity 0.39089...>
     >>> P
-    <Quantity -4.8903...>
+    <Quantity -4.8903...> intentional doctest error
     """
     S, D, P = 1, 0, 1
 
