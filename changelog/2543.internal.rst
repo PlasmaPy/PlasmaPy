@@ -1,0 +1,1 @@
+Added and updated type hint annotations across `plasmapy.formulary`.
