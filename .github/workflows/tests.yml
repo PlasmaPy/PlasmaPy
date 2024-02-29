@@ -113,7 +113,7 @@ jobs:
           docs/_build
           docs/api
           docs
-        key: build_docs-${{ runner.os }}-${{ hashFiles('requirements.txt', 'docs/conf.py') }}
+        key: build_docs-${{ runner.os }}-${{ hashFiles('requirements.txt', 'docs/conf.py') }}-${{ github.event.number }}"
 
     - name: Build docs
       run: tox -e build_docs_pins -- -q
