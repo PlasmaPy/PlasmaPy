@@ -112,8 +112,29 @@ jobs:
     - name: Install tox
       run: python -m pip install --progress-bar off --upgrade tox
 
+    - name: Restore cache
+      uses: actions/cache/restore@v3
+      id: restore-doc-cache
+      if: ${{ github.event_name == 'pull_request' }}
+      with:
+        path: |
+          docs/api
+          docs/_build
+          .tox
+        key: ${{ runner.os }}-${{ matrix.toxenv }}-${{ hashFiles('requirements.txt', 'docs/conf.py') }}-${{ github.event.number }}
+
     - name: Build docs
       run: tox -e build_docs_pins -- -q
+
+    - name: Save cache for pull requests
+      uses: actions/cache/save@v3
+      if: ${{ github.event_name == 'pull_request' }}
+      with:
+        path: |
+          docs/api
+          docs/_build
+          .tox
+        key: ${{ steps.restore-doc-cache.outputs.cache-primary-key }}
 
     - name: Print troubleshooting information on failure
       if: ${{ failure() }}
