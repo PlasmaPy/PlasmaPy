@@ -27,7 +27,6 @@ jobs:
           os: ubuntu-latest
           python: '3.12'
           toxenv: py312-pins-doctest
-          toxargs: --develop
 
         - name: Python 3.11 (macOS), code coverage
           os: macos-latest
