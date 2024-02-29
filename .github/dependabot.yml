@@ -10,4 +10,4 @@ updates:
   reviewers:
   - namurphy
   schedule:
-    interval: daily
+    interval: weekly
