@@ -176,9 +176,6 @@ class AllParticlesOffGridTerminationCondition(AbstractTerminationCondition):
 
     Parameters
     ----------
-    fraction_entered_threshold: float, optional
-        The fraction of particles that must enter the grids to terminate the simulation.
-
     fraction_exited_threshold: float, optional
         The fraction of particles that must leave the grids to terminate the simulation.
         This does not include particles that have never entered the grids.
@@ -186,12 +183,10 @@ class AllParticlesOffGridTerminationCondition(AbstractTerminationCondition):
 
     def __init__(
         self,
-        fraction_entered_threshold: float | None,
-        fraction_exited_threshold: float | None,
+        fraction_exited_threshold: float,
     ):
         super().__init__()
 
-        self.fraction_entered_threshold = fraction_entered_threshold
         self.fraction_exited_threshold = fraction_exited_threshold
 
     @property
@@ -228,19 +223,10 @@ class AllParticlesOffGridTerminationCondition(AbstractTerminationCondition):
         else:
             still_on = 0.0
 
-        if (
-            self.fraction_entered_threshold is not None
-            and self._particle_tracker.fract_entered < self.fraction_entered_threshold
-        ):
-            return False
-
-        if (
-            self.fraction_exited_threshold is not None
-            and self.fraction_exited_threshold < still_on
-        ):
-            return False
-
-        return True
+        return (
+            self._particle_tracker.num_entered > 0
+            and self.fraction_exited_threshold > still_on
+        )
 
     @property
     def progress(self) -> float:

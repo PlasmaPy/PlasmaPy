@@ -178,7 +178,7 @@ class Tracker(ParticleTracker):
         )
 
         termination_condition = AllParticlesOffGridTerminationCondition(
-            fraction_entered_threshold=0.1, fraction_exited_threshold=0.001
+            fraction_exited_threshold=0.001
         )
 
         super().__init__(
