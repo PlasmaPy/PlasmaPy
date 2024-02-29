@@ -9,7 +9,6 @@ __all__ = [
 ]
 __lite_funcs__ = ["spectral_density_lite"]
 
-import numbers
 import warnings
 from collections.abc import Callable
 from typing import Any
@@ -51,8 +50,8 @@ m_e_si_unitless = const.m_e.si.value
 @preserve_signature
 def spectral_density_lite(
     wavelengths,
-    probe_wavelength: numbers.Real,
-    n: numbers.Real,
+    probe_wavelength: float,
+    n: float,
     T_e: np.ndarray,
     T_i: np.ndarray,
     efract: np.ndarray,

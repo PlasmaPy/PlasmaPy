@@ -23,14 +23,8 @@ jobs:
       with:
         python-version: 3.12
 
-    - name: Upgrade pip
-      run: python -m pip install --upgrade pip
-
-    - name: Install pip-tools
-      run: python -m pip install pip-tools
-
-    - name: Generate requirements.txt
-      run: pip-compile --output-file=requirements.txt --rebuild --upgrade --all-extras
+    - name: Rebuild requirements
+      run: tox -e requirements
 
     # When a PR is created by a GitHub Action, normally the checks will
     # not be run. While the simplest workaround would have been to open
@@ -52,9 +46,11 @@ jobs:
         commit-message: Regenerate requirements.txt
         title: Update pinned requirements
         body: |
-          This PR regenerates the pinned requirements contained in [requirements.txt](https://github.com/PlasmaPy/PlasmaPy/blob/main/requirements.txt). This file defines a Python environment used by certain CI checks, as well as by IDEs like PyCharm and VS Code.
+          This pull request (PR) regenerates the pinned requirements files used in continuous integration (CI) tests and by integrated development environments (IDEs), including [requirements.txt](https://github.com/PlasmaPy/PlasmaPy/blob/main/requirements.txt) and the files in the[requirements/](https://github.com/PlasmaPy/PlasmaPy/blob/main/requirements) directory.
 
-          If all tests pass, please merge this PR. If any checks fail due to changes in the packages that we depend on, this PR may be used to perform the fixes that are necessary to get the checks to pass again.
+          The purpose of periodically regenerating requirements files is to reduce the probability that tests will spontaneously start failing in other PRs due to a breaking change in a dependency. If all tests pass, please merge this PR. If any checks fail due to changes in the packages that we depend on, please use this PR to perform the fixes that are necessary to get the checks to pass again.
+
+          In some cases, it may be necessary to put a *temporary* upper limit on the allowed versions of a dependency as defined in [pyproject.toml](https://github.com/PlasmaPy/PlasmaPy/blob/main/pyproject.toml). If this is necessary, please [create an issue](https://github.com/PlasmaPy/PlasmaPy/issues/new?title=Remove+upper+limit+on+version+of) that this upper limit should be removed.
         labels: No changelog entry needed, dependencies
         delete-branch: true
         base: main

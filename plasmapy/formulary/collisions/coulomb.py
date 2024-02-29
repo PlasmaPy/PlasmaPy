@@ -18,7 +18,6 @@ __all__ = [
 ]
 
 import warnings
-from numbers import Real
 
 import astropy.units as u
 import numpy as np
@@ -38,7 +37,7 @@ def Coulomb_logarithm(
     T: u.Quantity[u.K],
     n_e: u.Quantity[u.m**-3],
     species: (particles.Particle, particles.Particle),
-    z_mean: Real = np.nan,
+    z_mean: float = np.nan,
     V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
     method="classical",
 ):

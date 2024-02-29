@@ -158,8 +158,8 @@ def stix(  # noqa: C901, PLR0912, PLR0915
     vanish (cutoffs) and :math:`k \to \infty` for perpendicular
     propagation during wave resonance :math:`S \to 0`.
 
-    Example
-    -------
+    Examples
+    --------
     >>> import astropy.units as u
     >>> from plasmapy.particles import Particle
     >>> from plasmapy.dispersion.analytical.stix_ import stix

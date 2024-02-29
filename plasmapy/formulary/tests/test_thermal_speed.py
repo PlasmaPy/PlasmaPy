@@ -23,8 +23,8 @@ from plasmapy.formulary.speeds import (
     vth_,
     vth_kappa_,
 )
-from plasmapy.particles import Particle
 from plasmapy.particles.exceptions import InvalidParticleError
+from plasmapy.particles.particle_class import Particle
 from plasmapy.utils._pytest_helpers import assert_can_handle_nparray
 from plasmapy.utils.exceptions import RelativityError, RelativityWarning
 

@@ -6,7 +6,6 @@ __all__ = [
     "Knudsen_number",
 ]
 
-from numbers import Real
 
 import astropy.units as u
 import numpy as np
@@ -31,7 +30,7 @@ def coupling_parameter(
     T: u.Quantity[u.K],
     n_e: u.Quantity[u.m**-3],
     species,
-    z_mean: Real = np.nan,
+    z_mean: float = np.nan,
     V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
     method="classical",
 ) -> u.Quantity[u.dimensionless_unscaled]:
@@ -177,8 +176,8 @@ def coupling_parameter(
         # using mean charge to get average ion density.
         # If you are running this, you should strongly consider giving
         # a value of z_mean as an argument instead.
-        Z1 = np.abs(particles.charge_number(species[0]))
-        Z2 = np.abs(particles.charge_number(species[1]))
+        Z1 = np.abs(particles.atomic.charge_number(species[0]))
+        Z2 = np.abs(particles.atomic.charge_number(species[1]))
         Z = (Z1 + Z2) / 2
         # getting ion density from electron density
         n_i = n_e / Z
@@ -228,7 +227,7 @@ def Knudsen_number(
     T: u.Quantity[u.K],
     n_e: u.Quantity[u.m**-3],
     species,
-    z_mean: Real = np.nan,
+    z_mean: float = np.nan,
     V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
     method="classical",
 ) -> u.Quantity[u.dimensionless_unscaled]:
