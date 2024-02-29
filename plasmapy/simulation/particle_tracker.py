@@ -171,16 +171,16 @@ class NoParticlesOnGridsTerminationCondition(AbstractTerminationCondition):
 
 
 class AllParticlesOffGridTerminationCondition(AbstractTerminationCondition):
-    """Termination condition corresponding to stopping the simulation when a provided
+    """Termination condition corresponding to stopping the simulation when a specified
     proportion of particles have entered and exited the grids.
 
     Parameters
     ----------
     fraction_entered_threshold: float, optional
-        The proportion of particles that must enter the grids to terminate the simulation.
+        The fraction of particles that must enter the grids to terminate the simulation.
 
     fraction_exited_threshold: float, optional
-        The proportion of particles that must leave the grids to terminate the simulation.
+        The fraction of particles that must leave the grids to terminate the simulation.
         This does not include particles that have never entered the grids.
     """
 
