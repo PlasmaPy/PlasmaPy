@@ -1,0 +1,2 @@
+Applied caching in |GitHub Actions| to speed up continuous integration tests
+and documentation builds in pull requests.
