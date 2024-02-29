@@ -83,6 +83,7 @@ jobs:
 
     - name: Save cache
       uses: actions/cache/save@v3
+      if: steps.restore-cache.outputs.cache-hit != 'true'
       with:
         path: |
           .tox
@@ -115,26 +116,19 @@ jobs:
     - name: Restore cache
       uses: actions/cache/restore@v3
       id: restore-doc-cache
-      if: ${{ github.event_name == 'pull_request' }}
       with:
         path: |
-          docs/api
-          docs/_build
-          docs/about/_authors.rst
           .tox
-        key: ${{ runner.os }}-${{ matrix.toxenv }}-${{ hashFiles('requirements.txt', 'docs/conf.py') }}-${{ github.event.number }}
+        key: ${{ runner.os }}-build_docs_pins-${{ hashFiles('requirements.txt') }}
 
     - name: Build docs
       run: tox -e build_docs_pins -- -q
 
-    - name: Save cache for pull requests
+    - name: Save cache
       uses: actions/cache/save@v3
-      if: ${{ github.event_name == 'pull_request' }}
+      if: steps.restore-doc-cache.outputs.cache-hit != 'true'
       with:
         path: |
-          docs/api
-          docs/_build
-          docs/about/_authors.rst
           .tox
         key: ${{ steps.restore-doc-cache.outputs.cache-primary-key }}
 
