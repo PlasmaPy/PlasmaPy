@@ -1,1 +1,1 @@
-Implement |ParticleTracker| in `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography.Tracker`
+Refactor `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography.Tracker` to use |ParticleTracker|
