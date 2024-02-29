@@ -93,9 +93,7 @@ class _SyntheticRadiographySaveRoutine(AbstractSaveRoutine):
         if self.output_directory is None:
             return
 
-        output_file_path = (
-            self.output_directory / f"{self.tracker.iteration_number}.hdf5"
-        )
+        output_file_path = self.output_directory / "output.hdf5"
 
         with h5py.File(output_file_path, "w") as output_file:
             for attribute, value in result_dictionary.items():
