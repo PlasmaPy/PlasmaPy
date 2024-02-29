@@ -21,7 +21,8 @@ from lmfit import Parameters, minimize
 
 from plasmapy.formulary import mathematics
 from plasmapy.formulary.relativity import Lorentz_factor
-from plasmapy.particles import ParticleLike, particle_input
+from plasmapy.particles.decorators import particle_input
+from plasmapy.particles.particle_class import ParticleLike
 from plasmapy.utils.decorators import validate_quantities
 from plasmapy.utils.exceptions import RelativityError
 

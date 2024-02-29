@@ -26,7 +26,8 @@ from astropy.constants.si import mu0
 
 from plasmapy.formulary import frequencies, lengths, misc, speeds
 from plasmapy.formulary.quantum import quantum_theta
-from plasmapy.particles import Particle, ParticleLike, particle_input
+from plasmapy.particles.decorators import particle_input
+from plasmapy.particles.particle_class import ParticleLike
 from plasmapy.utils.decorators import validate_quantities
 
 __all__ += __aliases__
@@ -118,9 +119,9 @@ def Hall_parameter(
     B: u.Quantity[u.T],
     ion: ParticleLike,
     particle: ParticleLike,
-    coulomb_log=None,
-    V=None,
-    coulomb_log_method="classical",
+    coulomb_log: float | None = None,
+    V: u.Quantity[u.m / u.s] | None = None,
+    coulomb_log_method: str = "classical",
 ):
     r"""
     Calculate the ``particle`` Hall parameter for a plasma.
@@ -215,7 +216,7 @@ def Hall_parameter(
 
     gyro_frequency = frequencies.gyrofrequency(B, particle)
     gyro_frequency = gyro_frequency / u.radian
-    if Particle(particle).symbol == "e-":
+    if particle == "e-":
         coll_rate = fundamental_electron_collision_freq(
             T, n, ion, coulomb_log, V, coulomb_log_method=coulomb_log_method
         )
