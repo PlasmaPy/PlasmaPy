@@ -120,6 +120,7 @@ jobs:
         path: |
           docs/api
           docs/_build
+          docs/about/_authors.rst
           .tox
         key: ${{ runner.os }}-${{ matrix.toxenv }}-${{ hashFiles('requirements.txt', 'docs/conf.py') }}-${{ github.event.number }}
 
@@ -133,6 +134,7 @@ jobs:
         path: |
           docs/api
           docs/_build
+          docs/about/_authors.rst
           .tox
         key: ${{ steps.restore-doc-cache.outputs.cache-primary-key }}
 
