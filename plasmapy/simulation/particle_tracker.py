@@ -9,7 +9,7 @@ __all__ = [
     "IntervalSaveRoutine",
     "NoParticlesOnGridsTerminationCondition",
     "ParticleTracker",
-    "ParticlesPushedThroughGridsTerminationCondition",
+    "AllParticlesOffGridTerminationCondition",
     "TimeElapsedTerminationCondition",
 ]
 
@@ -170,7 +170,7 @@ class NoParticlesOnGridsTerminationCondition(AbstractTerminationCondition):
         return float(self.tracker.nparticles)
 
 
-class ParticlesPushedThroughGridsTerminationCondition(AbstractTerminationCondition):
+class AllParticlesOffGridTerminationCondition(AbstractTerminationCondition):
     """Termination condition corresponding to stopping the simulation when a provided
     proportion of particles have entered and exited the grids.
 

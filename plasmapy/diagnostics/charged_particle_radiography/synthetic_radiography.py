@@ -22,7 +22,7 @@ from plasmapy.particles import Particle
 from plasmapy.plasma.grids import AbstractGrid
 from plasmapy.simulation.particle_tracker import (
     AbstractSaveRoutine,
-    ParticlesPushedThroughGridsTerminationCondition,
+    AllParticlesOffGridTerminationCondition,
     ParticleTracker,
 )
 
@@ -177,7 +177,7 @@ class Tracker(ParticleTracker):
             else None
         )
 
-        termination_condition = ParticlesPushedThroughGridsTerminationCondition(
+        termination_condition = AllParticlesOffGridTerminationCondition(
             fraction_entered_threshold=0.1, fraction_exited_threshold=0.001
         )
 
