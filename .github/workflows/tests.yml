@@ -23,21 +23,21 @@ jobs:
       matrix:
         include:
 
-        - name: Python 3.12 (Ubuntu), pinned dependencies, skip slow tests
+        - name: Python 3.12 (Ubuntu), with doctests, skip slow
           os: ubuntu-latest
           python: '3.12'
-          toxenv: py312-pins
+          toxenv: py312-pins-doctest
           toxargs: --develop
 
         - name: Python 3.11 (macOS), code coverage
           os: macos-latest
           python: '3.11'
-          toxenv: py311-cov-all
+          toxenv: py311-pins-cov-all
 
-        - name: Python 3.10 (Ubuntu)
+        - name: Python 3.10 (Ubuntu), minimal dependencies, skip slow
           os: ubuntu-latest
           python: '3.10'
-          toxenv: py310-all
+          toxenv: py310-pins-minimal
 
         - name: mypy
           os: ubuntu-latest

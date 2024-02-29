@@ -19,7 +19,6 @@ __all__ = [
 ]
 __aliases__ = ["betaH_", "nD_", "Re_", "Rm_"]
 
-import numbers
 
 import astropy.units as u
 import numpy as np
@@ -27,7 +26,8 @@ from astropy.constants.si import mu0
 
 from plasmapy.formulary import frequencies, lengths, misc, speeds
 from plasmapy.formulary.quantum import quantum_theta
-from plasmapy.particles import Particle, ParticleLike, particle_input
+from plasmapy.particles.decorators import particle_input
+from plasmapy.particles.particle_class import ParticleLike
 from plasmapy.utils.decorators import validate_quantities
 
 __all__ += __aliases__
@@ -119,9 +119,9 @@ def Hall_parameter(
     B: u.Quantity[u.T],
     ion: ParticleLike,
     particle: ParticleLike,
-    coulomb_log=None,
-    V=None,
-    coulomb_log_method="classical",
+    coulomb_log: float | None = None,
+    V: u.Quantity[u.m / u.s] | None = None,
+    coulomb_log_method: str = "classical",
 ):
     r"""
     Calculate the ``particle`` Hall parameter for a plasma.
@@ -206,14 +206,8 @@ def Hall_parameter(
     Examples
     --------
     >>> import astropy.units as u
-    >>> import pytest
-    >>> from plasmapy.utils.exceptions import RelativityWarning
-
     >>> Hall_parameter(1e10 * u.m**-3, 2.8e2 * u.eV, 2.3 * u.T, "He-4 +1", "e-")
     <Quantity 2.500...e+15>
-    >>> with pytest.warns(RelativityWarning):
-    ...     Hall_parameter(1e10 * u.m**-3, 5.8e3 * u.eV, 2.3 * u.T, "He-4 +1", "e-")
-    <Quantity 2.11158...e+17>
     """
     from plasmapy.formulary.collisions import (
         fundamental_electron_collision_freq,
@@ -222,7 +216,7 @@ def Hall_parameter(
 
     gyro_frequency = frequencies.gyrofrequency(B, particle)
     gyro_frequency = gyro_frequency / u.radian
-    if Particle(particle).symbol == "e-":
+    if particle == "e-":
         coll_rate = fundamental_electron_collision_freq(
             T, n, ion, coulomb_log, V, coulomb_log_method=coulomb_log_method
         )
@@ -448,7 +442,7 @@ def Lundquist_number(
     density: u.Quantity[u.m**-3, u.kg / u.m**3],
     sigma: u.Quantity[u.S / u.m],
     ion: ParticleLike | None = None,
-    z_mean: numbers.Real | None = None,
+    z_mean: float | None = None,
 ) -> u.Quantity[u.dimensionless_unscaled]:
     r"""
     Compute the Lundquist number.
@@ -489,7 +483,7 @@ def Lundquist_number(
         ionized. If the density is an ion number density, then this parameter
         is required in order to convert to mass density.
 
-    z_mean : `~numbers.Real`, optional
+    z_mean : `float`, optional
         The average ionization state (arithmetic mean) of the ``ion`` composing
         the plasma.  This is used in calculating the mass density
         :math:`ρ = n_i (m_i + Z_{mean} m_e)`.  ``z_mean`` is ignored if

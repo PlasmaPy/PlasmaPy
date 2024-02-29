@@ -44,8 +44,8 @@ def running_mean(signal, radius: int):
     `TypeError`
         If ``radius`` is not of type `int`.
 
-    Example
-    -------
+    Examples
+    --------
     >>> from plasmapy.analysis.time_series.running_moments import running_mean
     >>> running_mean([1, 2, 3, 4], 1)
     array([2., 3.])
@@ -118,8 +118,8 @@ def running_moment(signal, radius: int, moment=1, time=None):
     -----
     The running rms divides by ``window``, not ``(window - 1)``.
 
-    Example
-    -------
+    Examples
+    --------
     >>> from plasmapy.analysis.time_series.running_moments import running_moment
     >>> running_moment([1, 2, 3, 2, 1], 1, 4, [1, 2, 3, 4, 5])
     Running_Moment(run_moment=array([3.]), time=[3])

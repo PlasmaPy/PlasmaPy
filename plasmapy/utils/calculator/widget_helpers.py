@@ -471,10 +471,10 @@ class _FunctionInfo:
         spec_combo: `list`
             List of parameters to be used in the function
 
-        Example
-        -------
-        For plasmapy.formulary.gyroradius the specific combo's are as follows:
-        ["B","particle","Vperp"] and ["B","particle","T"]
+        Examples
+        --------
+        For `plasmapy.formulary.gyroradius` the specific combos are as follows:
+        :py:`["B","particle","Vperp"]` and :py:`["B","particle","T"]`
         """
         if not self.spec_combo:
             self.spec_combo = []

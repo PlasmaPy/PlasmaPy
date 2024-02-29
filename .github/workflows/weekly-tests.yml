@@ -20,17 +20,22 @@ jobs:
         - name: Python 3.12 (macOS)
           os: macos-latest
           python: '3.12'
-          toxenv: py312-all
+          toxenv: py312-pins-all-doctest
 
         - name: Python 3.11 (Ubuntu)
           os: ubuntu-latest
           python: '3.11'
-          toxenv: py311-all
+          toxenv: py311-pins-all
 
         - name: Python 3.10 (Windows)
           os: windows-latest
           python: '3.10'
-          toxenv: py310-all
+          toxenv: py310-pins-all
+
+        - name: Python 3.10 (Windows), minimal dependencies
+          os: windows-latest
+          python: '3.10'
+          toxenv: py310-pins-minimal-all
 
         - name: Python 3.10 with Astropy dev (Ubuntu)
           os: ubuntu-latest
