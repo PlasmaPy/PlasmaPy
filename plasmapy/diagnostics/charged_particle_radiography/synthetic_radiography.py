@@ -167,7 +167,6 @@ class Tracker(ParticleTracker):
         output_file: Path | None = None,
         verbose: bool = True,
     ) -> None:
-        # Instantiate a ParticleTracker object
         # The synthetic radiography class handles logging, so we can disable logging for the particle tracker
         # The particle tracker class ensures that the provided grid argument has the proper type and
         # that the necessary grid quantities are created if they are not already specified
