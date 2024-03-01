@@ -20,42 +20,42 @@ jobs:
         - name: Python 3.12 (macOS)
           os: macos-latest
           python: '3.12'
-          toxenv: py312-pins-all-doctest
+          toxenv: py312-pins-pytest_doctests_all
 
         - name: Python 3.11 (Ubuntu)
           os: ubuntu-latest
           python: '3.11'
-          toxenv: py311-pins-all
+          toxenv: py311-pins-pytest_all
 
         - name: Python 3.10 (Windows)
           os: windows-latest
           python: '3.10'
-          toxenv: py310-pins-all
+          toxenv: py310-pins-pytest_all
 
         - name: Python 3.10 (Windows), minimal dependencies
           os: windows-latest
           python: '3.10'
-          toxenv: py310-pins-minimal-all
+          toxenv: py310-minimal-pytest_all
 
         - name: Python 3.10 with Astropy dev (Ubuntu)
           os: ubuntu-latest
           python: '3.10'
-          toxenv: py310-astropydev-all
+          toxenv: py310-pytest_all-astropydev
 
         - name: Python 3.10 with matplotlib dev (Ubuntu)
           os: ubuntu-latest
           python: '3.10'
-          toxenv: py310-matplotlibdev-all
+          toxenv: py310-pytest_all-matplotlibdev
 
         - name: Python 3.10 with NumPy dev (Ubuntu)
           os: ubuntu-latest
           python: '3.10'
-          toxenv: py310-numpydev-all
+          toxenv: py310-pytest_all-numpydev
 
         - name: Python '3.10' with xarray dev (Ubuntu)
           os: ubuntu-latest
           python: '3.10'
-          toxenv: py310-xarraydev-all
+          toxenv: py310-pytest_all-xarraydev
 
         - name: Documentation with Sphinx dev (Ubuntu)
           os: ubuntu-latest
@@ -70,13 +70,13 @@ jobs:
 
         - name: Import PlasmaPy (macOS)
           os: macos-latest
-          python: '3.11'
-          toxenv: py311-minimal-pypi-import
+          python: '3.10'
+          toxenv: py310-minimal-pypi-import
 
         - name: Import PlasmaPy (Ubuntu)
           os: ubuntu-latest
-          python: '3.12'
-          toxenv: py312-minimal-pypi-import
+          python: '3.10'
+          toxenv: py310-minimal-pypi-import
 
     steps:
 
