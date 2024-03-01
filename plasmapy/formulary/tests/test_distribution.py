@@ -229,7 +229,7 @@ class Test_Maxwellian_speed_1D:
         xData1D = np.arange(0, 10.01, 0.01) * self.vTh
         yData1D = Maxwellian_speed_1D(v=xData1D, T=self.T, particle=self.particle)
         # integrating, this should be close to 1
-        integ = spint.trapz(y=yData1D, x=xData1D)
+        integ = spint.trapezoid(y=yData1D, x=xData1D)
         exceptStr = "Integral of distribution function should be 1."
         assert np.isclose(integ.value, 1), exceptStr
 
@@ -543,7 +543,7 @@ class Test_Maxwellian_speed_2D:
         xData1D = np.arange(0, 10.001, 0.001) * self.vTh
         yData1D = Maxwellian_speed_2D(v=xData1D, T=self.T, particle=self.particle)
         # integrating, this should be close to 1
-        integ = spint.trapz(y=yData1D, x=xData1D)
+        integ = spint.trapezoid(y=yData1D, x=xData1D)
         exceptStr = "Integral of distribution function should be 1."
         assert np.isclose(integ.value, 1), exceptStr
 
@@ -873,7 +873,7 @@ class Test_Maxwellian_speed_3D:
         xData1D = np.arange(0, 10.01, 0.01) * self.vTh
         yData1D = Maxwellian_speed_3D(v=xData1D, T=self.T, particle=self.particle)
         # integrating, this should be close to 1
-        integ = spint.trapz(y=yData1D, x=xData1D)
+        integ = spint.trapezoid(y=yData1D, x=xData1D)
         exceptStr = "Integral of distribution function should be 1."
         assert np.isclose(integ.value, 1), exceptStr
 

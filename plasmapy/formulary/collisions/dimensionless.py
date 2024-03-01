@@ -176,8 +176,8 @@ def coupling_parameter(
         # using mean charge to get average ion density.
         # If you are running this, you should strongly consider giving
         # a value of z_mean as an argument instead.
-        Z1 = np.abs(particles.charge_number(species[0]))
-        Z2 = np.abs(particles.charge_number(species[1]))
+        Z1 = np.abs(particles.atomic.charge_number(species[0]))
+        Z2 = np.abs(particles.atomic.charge_number(species[1]))
         Z = (Z1 + Z2) / 2
         # getting ion density from electron density
         n_i = n_e / Z

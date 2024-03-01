@@ -1,0 +1,1 @@
+Refactored `~plasmapy.formulary.lengths.gyroradius` to reduce the cognitive complexity of the function.

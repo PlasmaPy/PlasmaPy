@@ -13,7 +13,8 @@ import numpy as np
 from scipy.special import exp1
 
 from plasmapy.formulary.frequencies import plasma_frequency
-from plasmapy.particles import ParticleLike, particle_input
+from plasmapy.particles.decorators import particle_input
+from plasmapy.particles.particle_class import ParticleLike
 from plasmapy.utils.decorators import validate_quantities
 from plasmapy.utils.exceptions import PhysicsError
 
