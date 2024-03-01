@@ -26,17 +26,17 @@ jobs:
         - name: Python 3.12 (Ubuntu), with doctests, skip slow
           os: ubuntu-latest
           python: '3.12'
-          toxenv: py312-pins-doctest
+          toxenv: py312-pins-pytest_doctests_skipslow
 
         - name: Python 3.11 (macOS), code coverage
           os: macos-latest
           python: '3.11'
-          toxenv: py311-pins-cov-all
+          toxenv: py311-pins-pytest_cov_all
 
         - name: Python 3.10 (Ubuntu), minimal dependencies, skip slow
           os: ubuntu-latest
           python: '3.10'
-          toxenv: py310-pins-minimal
+          toxenv: py310-minimal-pytest_skipslow
 
         - name: mypy
           os: ubuntu-latest
@@ -61,8 +61,8 @@ jobs:
         python-version: ${{ matrix.python }}
         cache: pip
 
-    - name: Install and upgrade tox
-      run: python -m pip install --progress-bar off --upgrade tox
+    - name: Install and upgrade test tools
+      run: python -m pip install --progress-bar off --upgrade tox pytest-github-actions-annotate-failures
 
     - name: Cache
       uses: actions/cache@v4
