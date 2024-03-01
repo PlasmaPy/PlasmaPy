@@ -1,4 +1,4 @@
-Applied caching through |GitHub Actions| to speed up continuous 
+Applied caching through |GitHub Actions| to speed up continuous
 integration tests and documentation builds. Because the Python environments used
 by |tox| to run tests no longer need to be recreated every time tests are run,
 caching speeds up several continuous integration tests by ∼2–3 minutes.
