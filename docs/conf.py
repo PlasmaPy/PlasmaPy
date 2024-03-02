@@ -84,6 +84,13 @@ extensions = [
     "sphinxcontrib.globalsubs",
 ]
 
+if os.getenv("READTHEDOCS"):
+    # When rebuilding documentation with this extension enabled, there
+    # are some warnings ("Could not match a code example to HTML") that
+    # appear to be related to multiline examples. Hence, we only enable
+    # this extension for RTD builds which are always fresh. See #2554.
+    extensions.append("sphinx_codeautolink")
+
 exclude_patterns = [
     "**.ipynb_checkpoints",
     "**Untitled*",
@@ -214,6 +221,10 @@ bibtex_bibfiles = ["bibliography.bib"]
 bibtex_default_style = "plain"
 bibtex_reference_style = "author_year"
 bibtex_cite_id = "{key}"
+
+# sphinx-codeautolink
+
+codeautolink_concat_default = True
 
 # intersphinx
 
