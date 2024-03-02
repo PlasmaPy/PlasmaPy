@@ -1,0 +1,2 @@
+Using caching via |GitHub Actions| to speed up the documentation build
+during continuous integration.
