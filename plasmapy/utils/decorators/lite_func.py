@@ -41,6 +41,8 @@ def bind_lite_func(lite_func, attrs: dict[str, Callable] | None = None):
 
     Examples
     --------
+    .. autolink-skip:: section
+
     .. code-block:: python
 
         def foo_lite(x):
