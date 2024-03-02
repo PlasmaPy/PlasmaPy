@@ -288,6 +288,8 @@ class ClassicalTransport:
 
     Examples
     --------
+    .. autolink-skip:: section
+
     >>> import astropy.units as u
     >>> t = ClassicalTransport(1 * u.eV, 1e20 / u.m**3, 1 * u.eV, 1e20 / u.m**3, "p")
     >>> t.resistivity  # doctest: +SKIP

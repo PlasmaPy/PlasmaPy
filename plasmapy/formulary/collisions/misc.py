@@ -188,6 +188,8 @@ def mobility(
 
     Examples
     --------
+    .. autolink-skip:: section
+
     >>> import astropy.units as u
     >>> n = 1e19 * u.m**-3
     >>> T = 1e6 * u.K
@@ -314,6 +316,8 @@ def Spitzer_resistivity(
 
     Examples
     --------
+    .. autolink-skip:: section
+
     >>> import astropy.units as u
     >>> n = 1e19 * u.m**-3
     >>> T = 1e6 * u.K
