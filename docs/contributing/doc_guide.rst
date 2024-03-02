@@ -632,8 +632,7 @@ Docstring guidelines
 
 * All functions, classes, and objects that are part of the public
   :wikipedia:`API` must have a docstring that follows the numpydoc_
-  standard. Refer to the numpydoc_ standard for how to write docstrings
-  for classes, class attributes, and constants.
+  standard.
 
 * The short summary statement at the beginning of a docstring should be
   one line long, but may be longer if necessary.
