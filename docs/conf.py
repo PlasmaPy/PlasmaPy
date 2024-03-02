@@ -74,7 +74,6 @@ extensions = [
     "sphinx.ext.todo",
     "sphinx.ext.viewcode",
     "sphinx_changelog",
-    "sphinx_codeautolink",
     "sphinx_copybutton",
     "sphinx_gallery.load_style",
     "sphinx_issues",
@@ -84,6 +83,13 @@ extensions = [
     "sphinxcontrib.bibtex",
     "sphinxcontrib.globalsubs",
 ]
+
+if os.getenv("READTHEDOCS"):
+    # When rebuilding documentation with this extension enabled, there
+    # are some warnings ("Could not match a code example to HTML") that
+    # appear to be related to multiline examples. Hence, we only enable
+    # this extension for RTD builds which are always fresh. See #2554.
+    extensions.append("sphinx_codeautolink")
 
 exclude_patterns = [
     "**.ipynb_checkpoints",
