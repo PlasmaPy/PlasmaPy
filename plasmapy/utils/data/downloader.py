@@ -54,7 +54,7 @@ def get_file(basename, base_url=_BASE_URL, directory=None):
         # Create the .plasmapy/downloads directory if it does not already
         # exist
         if not directory.is_dir():
-            directory.mkdir()
+            directory.mkdir(parents=True)
 
     path = Path(directory, basename)
 
