@@ -674,32 +674,6 @@ class TestSyntheticRadiograph:
         assert np.all(np.isposinf(od_results[2][zero_mask]))
 
 
-# @pytest.mark.slow()
-# def test_saving_output(tmp_path) -> None:
-#     """Test behavior of Tracker.save_results."""
-#
-#     sim = create_tracker_obj(field_weighting="nearest neighbor")
-#
-#     # Test that output cannot be saved prior to running
-#     with pytest.raises(RuntimeError):
-#         sim.results_dict
-#
-#     sim.run()
-#
-#     results_1 = sim.results_dict
-#
-#     # Save result
-#     path = tmp_path / "temp.npz"
-#     sim.save_results(path)
-#
-#     # Load result
-#     results_2 = dict(np.load(path, "r", allow_pickle=True))
-#
-#     assert set(results_1.keys()) == set(results_2.keys())
-#     for key in results_1:
-#         assert np.allclose(results_1[key], results_2[key])
-
-
 @pytest.mark.slow()
 @pytest.mark.parametrize(
     "case",
