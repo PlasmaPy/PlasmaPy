@@ -9,7 +9,7 @@ import numpy as np
 from astropy.constants import c
 from numpy.typing import DTypeLike
 
-from plasmapy.particles import particle_input
+from plasmapy.particles.decorators import particle_input
 from plasmapy.particles.particle_class import CustomParticle, Particle, ParticleLike
 from plasmapy.particles.particle_collections import ParticleList
 from plasmapy.utils.decorators import validate_quantities

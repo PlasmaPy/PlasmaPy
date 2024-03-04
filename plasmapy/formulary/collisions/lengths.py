@@ -8,20 +8,21 @@ import astropy.units as u
 import numpy as np
 from astropy.constants.si import eps0, hbar
 
-from plasmapy import particles
 from plasmapy.formulary.collisions import frequencies, misc
 from plasmapy.formulary.lengths import Debye_length
 from plasmapy.formulary.quantum import Wigner_Seitz_radius
+from plasmapy.particles.decorators import particle_input
+from plasmapy.particles.particle_class import Particle
 from plasmapy.utils.decorators import validate_quantities
 
 
 @validate_quantities(
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()}
 )
-@particles.particle_input
+@particle_input
 def impact_parameter_perp(
     T: u.Quantity[u.K],
-    species: (particles.Particle, particles.Particle),
+    species: (Particle, Particle),
     V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
 ) -> u.Quantity[u.m]:
     r"""
