@@ -38,7 +38,7 @@ class TestPlasmaFrequency:
         ("bound_name", "bound_attr"),
         [("lite", plasma_frequency_lite)],
     )
-    def test_lite_function_binding(self, bound_name, bound_attr) -> None:
+    def test_lite_function_binding(self, bound_name: str, bound_attr) -> None:
         """Test expected attributes are bound correctly."""
         assert hasattr(plasma_frequency, bound_name)
         assert getattr(plasma_frequency, bound_name) is bound_attr

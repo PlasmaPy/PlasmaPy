@@ -23,8 +23,8 @@ from plasmapy.formulary.speeds import (
     vth_,
     vth_kappa_,
 )
-from plasmapy.particles import Particle
 from plasmapy.particles.exceptions import InvalidParticleError
+from plasmapy.particles.particle_class import Particle
 from plasmapy.utils._pytest_helpers import assert_can_handle_nparray
 from plasmapy.utils.exceptions import RelativityError, RelativityWarning
 
@@ -102,7 +102,7 @@ class TestThermalSpeed:
             ("coefficients", thermal_speed_coefficients),
         ],
     )
-    def test_lite_function_binding(self, bound_name, bound_attr) -> None:
+    def test_lite_function_binding(self, bound_name: str, bound_attr) -> None:
         """Test expected attributes are bound correctly."""
         assert hasattr(thermal_speed, bound_name)
         assert getattr(thermal_speed, bound_name) is bound_attr
@@ -341,7 +341,7 @@ class Test_kappa_thermal_speed:
         cls.T_e = 5 * u.eV
         cls.kappaInvalid = 3 / 2
         cls.kappa = 4
-        cls.particle = "p"
+        cls.particle = "p+"
         cls.probable1True = 24467.878463594963
         cls.rms1True = 37905.474322612165
         cls.mean1True = 34922.98563039583

@@ -19,7 +19,7 @@ __all__ = [
 ]
 
 import copy
-from warnings import warn
+import warnings
 
 import astropy.units as u
 import numpy as np
@@ -32,7 +32,7 @@ from plasmapy.utils.decorators import validate_quantities
 
 
 def _langmuir_futurewarning() -> None:
-    warn(
+    warnings.warn(
         "The plasmapy.diagnostics.langmuir module will be deprecated in favor of "
         "the plasmapy.analysis.swept_langmuir sub-package and phased out over "
         "2021.  The plasmapy.analysis package was released in v0.5.0.",
@@ -1074,7 +1074,7 @@ def extrapolate_electron_current(
         np.exp(fit_func(probe_characteristic.bias.to(u.V).value, *fit)) * u.A
     )
 
-    electron_current[electron_current > np.max(probe_characteristic.current)] = np.NaN
+    electron_current[electron_current > np.max(probe_characteristic.current)] = np.nan
 
     electron_characteristic = Characteristic(
         probe_characteristic.bias, electron_current

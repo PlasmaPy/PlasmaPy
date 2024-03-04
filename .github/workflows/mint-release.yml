@@ -6,7 +6,7 @@ on:
       tag:
         description: Release tag 🏷️
         required: true
-        default: 2023.5.0rc1
+        default: 2024.5.0rc1
       DOI:
         description: Reserved DOI from Zenodo
         required: true
@@ -14,8 +14,10 @@ on:
 
 
 jobs:
+
   tag:
     runs-on: ubuntu-latest
+
     steps:
 
     - name: Checkout code
@@ -26,13 +28,13 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.11'
+        python-version: '3.12'
 
     - name: Install dependencies
       run: |
         pip install towncrier pre-commit ruamel.yaml
 
-    - name: Setup git
+    - name: Configure git
       run: |
         git config --global user.email "team@plasmapy.org"
         git config --global user.name "PlasmaPy Release Bot"

@@ -1,5 +1,4 @@
 import inspect
-from typing import Optional
 
 import astropy.units as u
 import numpy as np
@@ -61,7 +60,7 @@ def test_to_hz_stacked_decorators() -> None:
     @particle_input
     @validate_quantities
     @angular_freq_to_hz
-    def func(particle: Optional[ParticleLike] = None):
+    def func(particle: ParticleLike | None = None):
         return 2 * np.pi * u.rad / u.s
 
     assert u.isclose(func(), 2 * np.pi * u.rad / u.s)

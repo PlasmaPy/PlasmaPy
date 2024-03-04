@@ -1251,6 +1251,12 @@ You can alternatively shorten the documentation build by running:
 This command will build the documentation without executing the
 :ref:`example notebooks <example_notebooks>`.
 
+To check hyperlinks, run:
+
+.. code-block:: bash
+
+   tox -e linkcheck
+
 .. tip::
 
    When writing documentation, please make sure to fix any warnings that
@@ -1371,6 +1377,14 @@ documentation for this extension contains `examples
 <https://sphinx-codeautolink.readthedocs.io/en/latest/examples.html>`__
 on how to skip blocks with ``.. autolink-skip::`` and how to do
 invisible imports with ``.. autolink-preface::``.
+
+If this warning occurs in the "Examples" section of a docstring, put
+``.. autolink-skip: section`` at the beginning of that section (see
+:issue:`2554`). These warnings sometimes only show up when rebuilding
+the documentation.
+
+A related warning is "Could not match transformation of _ on source
+lines _-_".
 
 Errors that are unrelated to a pull request
 -------------------------------------------

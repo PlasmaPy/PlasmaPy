@@ -1,6 +1,5 @@
 """Functionality for reading in HDF5 files following the OpenPMD standard."""
 from types import TracebackType
-from typing import Optional
 
 __all__ = ["HDF5Reader"]
 
@@ -26,7 +25,7 @@ def _fetch_units(openPMD_dims):
     """Converts a collection of OpenPMD dimensions to astropy.units."""
 
     units = u.dimensionless_unscaled
-    for factor, unit in zip(openPMD_dims, _UNITS):
+    for factor, unit in zip(openPMD_dims, _UNITS, strict=False):
         units *= unit**factor
     units, *_ = units.compose()
     return units
@@ -76,9 +75,9 @@ class HDF5Reader(GenericPlasma):
 
     def __exit__(
         self,
-        exc_type: Optional[type[BaseException]],
-        exc_value: Optional[BaseException],
-        traceback: Optional[TracebackType],
+        exc_type: type[BaseException] | None,
+        exc_value: BaseException | None,
+        traceback: TracebackType | None,
     ):
         self.h5.close()
 

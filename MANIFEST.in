@@ -1,15 +1,18 @@
 graft docs
 graft licenses
 graft plasmapy
+graft type_stubs
 
 include *.md
 include *.py
+include *.pyi
 include *.rst
 include *.txt
 include *.yaml
 include *.yml
 include changelog/README.rst
 include CITATION.cff
+include plasmapy/py.typed
 include pyproject.toml
 include tox.ini
 

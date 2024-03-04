@@ -258,7 +258,7 @@ def test_AbstractGrid_uniform_attributes(
     if value is not None:
         if isinstance(value, np.ndarray):
             assert np.allclose(attr, value, rtol=0.1)
-        elif isinstance(value, (float, int)):
+        elif isinstance(value, float | int):
             assert np.isclose(attr, value, rtol=0.1)
         else:
             assert attr == value
@@ -299,7 +299,7 @@ def test_AbstractGrid_nonuniform_attributes(
     if value is not None:
         if isinstance(value, np.ndarray):
             assert np.allclose(attr, value, rtol=0.1)
-        elif isinstance(value, (float, int)):
+        elif isinstance(value, float | int):
             assert np.isclose(attr, value, rtol=0.1)
         else:
             assert attr == value
@@ -381,7 +381,7 @@ req_q = [
     ("required", "replace_with_zeros", "error", "warning", "match"), req_q
 )
 def test_AbstractGrid_require_quantities(
-    abstract_grid_uniform, required, replace_with_zeros, error, warning, match
+    abstract_grid_uniform, required: bool, replace_with_zeros, error, warning, match
 ) -> None:
     """
     Tests the AbstractGrid require_quantities method

@@ -1,0 +1,3 @@
+Changed type hint annotations to be consistent with :pep:`604`. Type
+unions are now made using the ``|`` operator rather than with
+`typing.Union`.

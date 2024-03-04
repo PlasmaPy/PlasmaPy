@@ -4,8 +4,6 @@ __all__ = ["Debye_length", "gyroradius", "inertial_length"]
 __aliases__ = ["cwp_", "lambdaD_", "rc_", "rhoc_"]
 
 import warnings
-from numbers import Integral, Real
-from typing import Optional
 
 import astropy.units as u
 import numpy as np
@@ -13,7 +11,8 @@ from astropy.constants.si import c, e, eps0, k_B
 
 from plasmapy.formulary import frequencies, speeds
 from plasmapy.formulary.relativity import RelativisticBody
-from plasmapy.particles import ParticleLike, particle_input
+from plasmapy.particles.decorators import particle_input
+from plasmapy.particles.particle_class import ParticleLike
 from plasmapy.utils.decorators import validate_quantities
 
 __all__ += __aliases__
@@ -85,7 +84,7 @@ def Debye_length(T_e: u.Quantity[u.K], n_e: u.Quantity[u.m**-3]) -> u.Quantity[u
     Examples
     --------
     >>> import astropy.units as u
-    >>> Debye_length(5e6*u.K, 5e15*u.m**-3)
+    >>> Debye_length(5e6 * u.K, 5e15 * u.m**-3)
     <Quantity 0.002182... m>
     """
     return np.sqrt(eps0 * k_B * T_e / (n_e * e**2))
@@ -105,7 +104,7 @@ lambdaD_ = Debye_length
     validations_on_return={"equivalencies": u.dimensionless_angles()},
 )
 @particle_input(any_of={"charged", "uncharged"})
-def gyroradius(  # noqa: C901
+def gyroradius(
     B: u.Quantity[u.T],
     particle: ParticleLike,
     *,
@@ -113,8 +112,8 @@ def gyroradius(  # noqa: C901
     T: u.Quantity[u.K] = None,
     lorentzfactor=np.nan,
     relativistic: bool = True,
-    mass_numb: Optional[Integral] = None,
-    Z: Optional[Real] = None,
+    mass_numb: int | None = None,
+    Z: float | None = None,
 ) -> u.Quantity[u.m]:
     r"""
     Calculate the radius of circular motion for a charged particle in a
@@ -208,7 +207,7 @@ def gyroradius(  # noqa: C901
 
     .. math::
 
-        r_{Ls} = \frac{V_{⟂,s}{ω_{c,s}}
+        r_{Ls} = \frac{V_{⟂,s}}{ω_{c,s}}
 
     where :math:`ω_{c,s}` is the particle gyrofrequency. To turn off
     relativistic effects, set the ``relativistic`` keyword to `False`.
@@ -224,14 +223,14 @@ def gyroradius(  # noqa: C901
 
     Let's estimate the proton gyroradius in the solar corona.
 
-    >>> gyroradius(B = 0.2 * u.T, particle="p+", T = 1e6 * u.K)
+    >>> gyroradius(B=0.2 * u.T, particle="p+", T=1e6 * u.K)
     <Quantity 0.0067... m>
 
     Let's estimate the gyroradius of a deuteron and a triton in ITER by
     providing the characteristic thermal energy per particle,
     :math:`k_B T`, to ``T``.
 
-    >>> gyroradius(B = 5 * u.T, particle=["D+", "T+"], T = 13 * u.keV)
+    >>> gyroradius(B=5 * u.T, particle=["D+", "T+"], T=13 * u.keV)
     <Quantity [0.00465..., 0.00570...] m>
 
     Relativistic effects are included by default, but can be turned
@@ -240,145 +239,79 @@ def gyroradius(  # noqa: C901
     medium (ISM). We will provide the magnetic field in units of
     microgauss (μG).
 
-    >>> gyroradius(B = 10 * u.uG, particle="p+", Vperp = 0.99 * c)
+    >>> gyroradius(B=10 * u.uG, particle="p+", Vperp=0.99 * c)
     <Quantity 2.19642688e+10 m>
-    >>> gyroradius(B = 10 * u.uG, particle="p+", Vperp = 0.99 * c, relativistic=False)
+    >>> gyroradius(B=10 * u.uG, particle="p+", Vperp=0.99 * c, relativistic=False)
     <Quantity 3.09844141e+09 m>
 
     Let's calculate the gyroradius of a much higher energy cosmic ray
     in the ISM using ``lorentzfactor``.
 
-    >>> gyroradius(B = 10 * u.uG, particle="p+", lorentzfactor=3e6).to('pc')
+    >>> gyroradius(B=10 * u.uG, particle="p+", lorentzfactor=3e6).to("pc")
     <Quantity 0.30428378 pc>
     """
-
-    # Define helper functions for input processing and gyroradius calculation
-
-    # check 1: ensure either Vperp or T invalid, keeping in mind that
-    # the underlying values of the astropy quantity may be numpy arrays
-    def _raise_error_if_both_vperp_and_t_are_given(isfinite_Vperp, isfinite_T):
-        if np.any(np.logical_and(isfinite_Vperp, isfinite_T)):
-            raise ValueError(
-                "Must give Vperp or T, but not both, as arguments to gyroradius"
-            )
-
-    def _raise_error_if_lorentzfactor_not_scalar(lorentzfactor):
-        if nans_in_both_T_and_Vperp and not np.isscalar(lorentzfactor):
-            raise ValueError(
-                "Inferring velocity(s) from more than one Lorentz "
-                "factor is not currently supported"
-            )
-
-    def _calculate_vperp_from_lorentzfactor(
-        isfinite_Vperp, Vperp, particle, lorentzfactor, relativistic
-    ):
-        if relativistic and nans_in_both_T_and_Vperp:
-            Vperp = np.copy(Vperp)
-            rbody = RelativisticBody(particle, lorentz_factor=lorentzfactor)
-            Vperp[~isfinite_Vperp] = rbody.velocity
-        return Vperp
-
-    def _warn_if_lorentz_factor_and_relativistic(
-        isfinite_lorentzfactor, relativistic
-    ) -> None:
-        if np.any(isfinite_lorentzfactor) and relativistic:
-            warnings.warn(
-                "lorentzfactor is given along with Vperp or T, will lead "
-                "to inaccurate predictions unless they correspond"
-            )
-
-    # check 2: get Vperp as the thermal speed if is not already a valid input
-    def get_Vperp(T, Vperp, particle, isfinite_T, isfinite_Vperp):
-        is_scalar_Vperp = np.isscalar(Vperp.value)
-        is_scalar_T = np.isscalar(T.value)
-
-        if is_scalar_Vperp and is_scalar_T:
-            # both T and Vperp are scalars
-            # we know exactly one of them is nan from check 1
-            return speeds.thermal_speed(T, particle=particle) if isfinite_T else Vperp
-            # T is valid, so use it to determine Vperp
-            # else: Vperp is already valid, do nothing
-
-        elif is_scalar_Vperp:
-            # this means either Vperp must be nan, or T must be an array of all nan,
-            # or else we couldn't have gotten through check 1
-            return (
-                np.repeat(Vperp, len(T))
-                if isfinite_Vperp
-                # Vperp is valid, T is a vector that is all nan
-                else speeds.thermal_speed(T, particle=particle)
-                # normal case where Vperp is scalar nan and T is valid array
-            )
-
-        elif is_scalar_T:  # only Vperp is an array
-            # this means either T must be nan, or V_perp must be an array of all nan,
-            # or else we couldn't have gotten through check 1
-            return (
-                speeds.thermal_speed(np.repeat(T, len(Vperp)), particle=particle)
-                if isfinite_T
-                # T is valid, V_perp is an array of all nan
-                else Vperp
-                # else: normal case where T is scalar nan and Vperp is already a valid
-                # array so, do nothing
-            )
-        else:  # both T and Vperp are arrays
-            # we know all the elementwise combinations have one nan and one finite,
-            # due to check 1 use the valid Vperps, and replace the others with those
-            # calculated from T
-            Vperp = Vperp.copy()
-            Vperp[isfinite_T] = speeds.thermal_speed(T[isfinite_T], particle=particle)
-            return Vperp
-
-    def get_result(lorentzfactor, isfinite_lorentzfactor, particle, Vperp, omega_ci):
-        if np.all(isfinite_lorentzfactor):
-            return lorentzfactor * np.abs(Vperp) / omega_ci
-
-        elif not np.any(isfinite_lorentzfactor):
-            lorentzfactor = RelativisticBody(particle, V=Vperp).lorentz_factor
-            return lorentzfactor * np.abs(Vperp) / omega_ci
-
-        else:
-            # the lorentzfactor is neither completely valid nor completely invalid,
-            # so we have to correct the missing parts, note that we don't actually
-            # have to check if it is a scalar since scalars cannot be partially valid
-            rbody = RelativisticBody(particle, V=Vperp)
-            lorentzfactor = np.copy(lorentzfactor)
-            lorentzfactor[~isfinite_lorentzfactor] = rbody.lorentz_factor[
-                ~isfinite_lorentzfactor
-            ]
-            return lorentzfactor * np.abs(Vperp) / omega_ci
-
-    # Initial setup and input validation
-    if not relativistic and not np.isnan(lorentzfactor):
-        raise ValueError("Lorentz factor is provided but relativistic is set to false")
-    lorentzfactor = lorentzfactor if relativistic else 1.0
 
     if T is None:
         T = np.nan * u.K
 
+    # Determine output shape and broadcast inputs accordingly
+    target_shape = np.broadcast(T, Vperp, lorentzfactor, particle).shape  # type: ignore[arg-type]
+    lorentzfactor_in = lorentzfactor
+    lorentzfactor = np.array(np.broadcast_to(lorentzfactor, target_shape))
+    Vperp = np.array(np.broadcast_to(Vperp, target_shape, subok=True), subok=True)
+    T = np.array(np.broadcast_to(T, target_shape, subok=True), subok=True)
+
     isfinite_T = np.isfinite(T)
     isfinite_Vperp = np.isfinite(Vperp)
     isfinite_lorentzfactor = np.isfinite(lorentzfactor)
-    nans_in_both_T_and_Vperp = np.any(np.logical_not(isfinite_T)) and np.any(
-        np.logical_not(isfinite_Vperp)
-    )
 
-    # Call defined functions to process inputs
-    _raise_error_if_both_vperp_and_t_are_given(isfinite_Vperp, isfinite_T)
+    # Check if lorentzfactor is given despite relativistic being false
+    if not relativistic and not np.isnan(lorentzfactor):
+        raise ValueError("Lorentz factor is provided but relativistic is set to false")
 
-    if nans_in_both_T_and_Vperp:
-        _raise_error_if_lorentzfactor_not_scalar(lorentzfactor)
-        Vperp = _calculate_vperp_from_lorentzfactor(
-            isfinite_Vperp, Vperp, particle, lorentzfactor, relativistic
+    # Check if V and T are both given at the same time at any position
+    if np.any(isfinite_Vperp & isfinite_T):
+        raise ValueError(
+            "Must give Vperp or T, but not both, as arguments to gyroradius"
         )
 
-    _warn_if_lorentz_factor_and_relativistic(isfinite_lorentzfactor, relativistic)
+    # Check if V or T and lorentzfactor are both given at the same time at any position
+    if np.any(isfinite_lorentzfactor & (isfinite_Vperp | isfinite_T)):
+        warnings.warn(
+            "lorentzfactor is given along with Vperp or T, will lead "
+            "to inaccurate predictions unless they correspond"
+        )
 
-    Vperp = get_Vperp(T, Vperp, particle, isfinite_T, isfinite_Vperp)
+    # Check if V and T are both missing at any position but lorentzfactor is not scalar
+    if np.any(~isfinite_Vperp & ~isfinite_T) and not np.isscalar(lorentzfactor_in):
+        raise ValueError(
+            "Inferring velocity(s) from more than one Lorentz "
+            "factor is not currently supported"
+        )
 
+    # In the positions where Vperp is missing but T is given, calculate the thermal speed
+    if np.any(isfinite_T):
+        Vperp[isfinite_T] = speeds.thermal_speed(T[isfinite_T], particle=particle)
+    isfinite_Vperp = np.isfinite(Vperp)
+
+    # In the positions where Vperp is still missing, calculate Vperp from lorentzfactor
+    if np.any(~isfinite_Vperp):
+        Vperp[~isfinite_Vperp] = RelativisticBody(
+            particle, lorentz_factor=lorentzfactor_in
+        ).velocity
+
+    # Calculate the final lorentzfactor
+    if relativistic:
+        # Fill in missing entries of lorentzfactor by calculating it using Vperp
+        lorentzfactor[~isfinite_lorentzfactor] = RelativisticBody(
+            particle, V=Vperp
+        ).lorentz_factor[~isfinite_lorentzfactor]
+    else:
+        lorentzfactor = 1.0
+
+    # Calculate gyrofrequency and finally the gyroradius
     omega_ci = frequencies.gyrofrequency(B, particle)
-
-    return get_result(lorentzfactor, isfinite_lorentzfactor, particle, Vperp, omega_ci)
+    return lorentzfactor * np.abs(Vperp) / omega_ci
 
 
 rc_ = gyroradius
@@ -397,8 +330,8 @@ def inertial_length(
     n: u.Quantity[u.m**-3],
     particle: ParticleLike,
     *,
-    mass_numb: Optional[Integral] = None,
-    Z: Optional[Real] = None,
+    mass_numb: int | None = None,
+    Z: float | None = None,
 ) -> u.Quantity[u.m]:
     r"""
     Calculate a charged particle's inertial length.
@@ -461,9 +394,9 @@ def inertial_length(
     Examples
     --------
     >>> import astropy.units as u
-    >>> inertial_length(5 * u.m ** -3, 'He+')
+    >>> inertial_length(5 * u.m**-3, "He+")
     <Quantity 2.02985...e+08 m>
-    >>> inertial_length(5 * u.m ** -3, 'e-')
+    >>> inertial_length(5 * u.m**-3, "e-")
     <Quantity 2376534.75... m>
     """
     omega_p = frequencies.plasma_frequency(n, particle=particle)

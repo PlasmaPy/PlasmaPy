@@ -94,7 +94,7 @@ class TestModifyDocstring:
             ),
         ],
     )
-    def test_modification(self, prepend, append, func_name, additions) -> None:
+    def test_modification(self, prepend, append, func_name: str, additions) -> None:
         func = getattr(self, func_name)
 
         expected = "\n".join(

@@ -16,7 +16,7 @@ from plasmapy.utils.exceptions import CouplingWarning
         pytest.param((64, 64, 64), 262144, marks=pytest.mark.slow),  # 3D
     ],
 )
-def test_Plasma3D_setup(grid_dimensions, expected_size) -> None:
+def test_Plasma3D_setup(grid_dimensions, expected_size: int) -> None:
     r"""Function to test basic setup of the Plasma3D object.
 
     Tests that a Plasma3D object initiated with a particular
@@ -143,7 +143,7 @@ class Test_PlasmaBlobRegimes:
         T_e = 25 * 15e3 * u.K
         n_e = 1e26 * u.cm**-3
         Z = 2.0 * u.dimensionless_unscaled
-        particle = "p"
+        particle = "p+"
         blob = plasmablob.PlasmaBlob(T_e=T_e, n_e=n_e, Z=Z, particle=particle)
 
         # expect_regime = 'Intermediate coupling regime: Gamma = 10.585076050938532.'
@@ -168,7 +168,7 @@ class Test_PlasmaBlobRegimes:
         T_e = 5 * 15e3 * u.K
         n_e = 1e26 * u.cm**-3
         Z = 3.0 * u.dimensionless_unscaled
-        particle = "p"
+        particle = "p+"
         blob = plasmablob.PlasmaBlob(T_e=T_e, n_e=n_e, Z=Z, particle=particle)
 
         # expect_regime = 'Strongly coupled regime: Gamma = 104.02780112828943.'
@@ -194,7 +194,7 @@ class Test_PlasmaBlobRegimes:
         T_e = 15 * 11e3 * u.K
         n_e = 1e15 * u.cm**-3
         Z = 2.5 * u.dimensionless_unscaled
-        particle = "p"
+        particle = "p+"
         with pytest.warns(
             CouplingWarning, match="you might have strong coupling effects"
         ):
@@ -220,7 +220,7 @@ class Test_PlasmaBlobRegimes:
         T_e = 10 * 11e3 * u.K
         n_e = 1e20 * u.cm**-3
         Z = 2.5 * u.dimensionless_unscaled
-        particle = "p"
+        particle = "p+"
         blob = plasmablob.PlasmaBlob(T_e=T_e, n_e=n_e, Z=Z, particle=particle)
 
         # expect_regime = 'Thermal kinetic energy dominant: Theta = 120.65958493847927'
@@ -248,7 +248,7 @@ class Test_PlasmaBlobRegimes:
         T_e = 6 * 15e3 * u.K
         n_e = 1e26 * u.cm**-3
         Z = 3.0 * u.dimensionless_unscaled
-        particle = "p"
+        particle = "p+"
         blob = plasmablob.PlasmaBlob(T_e=T_e, n_e=n_e, Z=Z, particle=particle)
 
         # expect_regime = 'Fermi quantum energy dominant: Theta = 0.009872147858602853'
@@ -274,7 +274,7 @@ class Test_PlasmaBlobRegimes:
         T_e = 5 * 15e3 * u.K
         n_e = 1e25 * u.cm**-3
         Z = 2.0 * u.dimensionless_unscaled
-        particle = "p"
+        particle = "p+"
         blob = plasmablob.PlasmaBlob(T_e=T_e, n_e=n_e, Z=Z, particle=particle)
 
         # expect_regime = 'Both Fermi and thermal energy important: Theta = 0.03818537605355442'
@@ -296,7 +296,7 @@ class Test_PlasmaBlob:
         cls.T_e = 5 * 11e3 * u.K
         cls.n_e = 1e23 * u.cm**-3
         cls.Z = 2.5 * u.dimensionless_unscaled
-        cls.particle = "p"
+        cls.particle = "p+"
         cls.blob = plasmablob.PlasmaBlob(
             T_e=cls.T_e, n_e=cls.n_e, Z=cls.Z, particle=cls.particle
         )

@@ -39,3 +39,18 @@
 - search: 'the the '
   replacement: 'the '
   description: Fix common grammar error
+
+- search: 'MacOS'
+  replacement: 'macOS'
+
+- search: 'particle="e"'
+  replacement: 'particle="e-"'
+  description: Use canonical symbol for electron
+
+- search: 'particle="p"'
+  replacement: 'particle="p+"'
+  description: Use canonical symbol for proton
+
+- search: 'ion="p"'
+  replacement: 'ion="p+"'
+  description: Use canonical symbol for proton

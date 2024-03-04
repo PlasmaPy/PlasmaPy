@@ -1,0 +1,5 @@
+Added a flag to `~plasmapy.plasma.grids.AbstractGrid.require_quantities`
+to silence warnings when a quantity is not provided and is assumed to be
+zero everywhere. Modified `~plasmapy.simulation.particle_tracker.ParticleTracker` to
+not display this warning for the E and B field components, since one of these is often
+not explicitly provided.
