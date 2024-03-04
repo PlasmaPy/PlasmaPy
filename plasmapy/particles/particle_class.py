@@ -21,7 +21,6 @@ import warnings
 from abc import ABC, abstractmethod
 from collections import defaultdict, namedtuple
 from datetime import datetime
-from io import StringIO  # noqa: TCH003 (needed for type hint in doc build)
 from numbers import Integral, Real
 from typing import TYPE_CHECKING, TypeAlias
 
@@ -179,7 +178,7 @@ class AbstractParticle(ABC):
         """
         raise ParticleError("The truth value of a particle is not defined.")
 
-    def json_dump(self, fp: StringIO, **kwargs: dict[str, Any]) -> None:
+    def json_dump(self, fp, **kwargs: dict[str, Any]) -> None:
         """
         Write the particle's `json_dict` to the ``fp`` file object using
         `json.dump`.
