@@ -25,6 +25,9 @@ from numbers import Integral
 from typing import Any
 
 import astropy.units as u
+import h5py
+import numpy as np
+from scipy.interpolate import CubicSpline
 
 from plasmapy.particles import _elements, _isotopes
 from plasmapy.particles.decorators import particle_input
@@ -37,6 +40,7 @@ from plasmapy.particles.exceptions import (
 from plasmapy.particles.particle_class import Particle, ParticleLike
 from plasmapy.particles.particle_collections import ParticleList
 from plasmapy.particles.symbols import atomic_symbol
+from plasmapy.utils.data.downloader import get_file
 from plasmapy.utils.decorators import validate_quantities
 
 __all__.sort()
@@ -1124,3 +1128,65 @@ def _is_electron(arg: Any) -> bool:
         if isinstance(arg, str)
         else False
     )
+
+
+@particle_input
+@validate_quantities(energies=u.MeV)
+def stopping_power(
+    incident_particle: Particle,
+    material: str,
+    energies: u.Quantity[u.MeV] | None = None,
+    component="total",
+):
+    nist_data_path = get_file("NIST_STAR.hdf5")
+
+    # Validate particle input. Currently, the only supported particles are protons and electrons.
+    with h5py.File(nist_data_path, "r") as nist_data:
+        if incident_particle == Particle("He-4"):
+            group_name = "helium_ions"
+        elif incident_particle == Particle("e-"):
+            raise NotImplementedError(
+                "Stopping calculations for electrons have not been implemented yet!"
+            )
+        elif incident_particle == Particle("H+"):
+            group_name = "protons"
+        else:
+            raise ValueError(
+                "Please pass a valid particle type for stopping power calculations."
+            )
+
+        group_data = nist_data[group_name]
+
+        if material not in group_data:
+            raise ValueError(
+                f"Please pass a valid material string! Material {material} not found in {group_name}."
+            )
+
+        # Energies are not included in the material data. They must be loaded from a separate data set.
+        # To differentiate from "energies" which refers to the user provided energies, we use "baseline_energies"
+        baseline_energies_data = group_data["energy"]
+        material_data = group_data[material]
+
+        if component == "total":
+            relevant_stopping_data = (
+                material_data["electronic_stopping_power"]
+                + material_data["nuclear_stopping_power"]
+            )
+        elif component == "electronic":
+            relevant_stopping_data = material_data["electronic_stopping_power"]
+        elif component == "nuclear":
+            relevant_stopping_data = material_data["nuclear_stopping_power"]
+        else:
+            raise ValueError(
+                f"Please specify one of: total, electronic, or nuclear for component! (Got {component}.)"
+            )
+
+        if energies is not None:
+            # Interpolate NIST data to the user-provided energy values. Uses log-log scale fed into a cubic spline.
+            cs = CubicSpline(
+                x=np.log(baseline_energies_data), y=np.log(relevant_stopping_data)
+            )
+
+            return np.exp(cs(np.log(energies.to("MeV").value))) * u.MeV * u.cm**2 / u.g
+
+        return relevant_stopping_data * u.MeV * u.cm**2 / u.g
