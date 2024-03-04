@@ -20,7 +20,7 @@ from plasmapy.particles.exceptions import InvalidIsotopeError, ParticleError
 
 
 def check_abundances_consistency(
-    abundances: dict[str, Real], log_abundances: dict[str, Real]
+    abundances: dict[str, float], log_abundances: dict[str, float]
 ) -> None:
     """
     Test that a set of abundances is consistent with a set of the base

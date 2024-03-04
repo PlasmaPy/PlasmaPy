@@ -58,7 +58,7 @@ _romanNumeralPattern = re.compile(
 )
 
 
-def to_roman(n: Integral | np.integer) -> str:
+def to_roman(n: int | np.integer) -> str:
     """
     Convert an integer to a Roman numeral.
 
@@ -106,7 +106,7 @@ def to_roman(n: Integral | np.integer) -> str:
     return result
 
 
-def from_roman(s: str) -> Integral:
+def from_roman(s: str) -> int:
     """
     Convert a Roman numeral to an integer.
 
