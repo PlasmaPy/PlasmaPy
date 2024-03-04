@@ -81,7 +81,7 @@ def atomic_number(element: ParticleLike) -> int:
     >>> atomic_number("oganesson")
     118
     """
-    return element.atomic_number
+    return element.atomic_number  # type: ignore[union-attr]
 
 
 @particle_input
@@ -123,7 +123,7 @@ def mass_number(isotope: ParticleLike) -> int:
     >>> mass_number("alpha")
     4
     """
-    return isotope.mass_number
+    return isotope.mass_number  # type: ignore[union-attr]
 
 
 @particle_input(exclude={"isotope", "ion"})
@@ -180,7 +180,7 @@ def standard_atomic_weight(element: ParticleLike) -> u.Quantity[u.kg]:
     <Quantity 3.440636e-25 kg>
     """
     # TODO: Put in ReST links into above docstring
-    return element.standard_atomic_weight
+    return element.standard_atomic_weight  # type: ignore[union-attr]
 
 
 @particle_input(exclude={"neutrino", "antineutrino"})
@@ -234,7 +234,7 @@ def particle_mass(
     The masses of neutrinos are not available because primarily upper
     limits are presently known.
     """
-    return particle.mass
+    return particle.mass  # type: ignore[union-attr]
 
 
 @particle_input
@@ -281,7 +281,7 @@ def isotopic_abundance(isotope: ParticleLike, mass_numb: int | None = None) -> f
     >>> isotopic_abundance("hydrogen", 1)
     0.999885
     """
-    return isotope.isotopic_abundance
+    return isotope.isotopic_abundance  # type: ignore[union-attr]
 
 
 @particle_input(any_of={"charged", "uncharged"})
@@ -335,7 +335,7 @@ def charge_number(particle: ParticleLike) -> int:
     >>> charge_number("N-14++")
     2
     """
-    return particle.charge_number
+    return particle.charge_number  # type: ignore[union-attr, return-value]
 
 
 @particle_input(any_of={"charged", "uncharged"})
@@ -389,7 +389,7 @@ def electric_charge(particle: ParticleLike) -> u.Quantity[u.C]:
     >>> electric_charge("H-")
     <Quantity -1.60217662e-19 C>
     """
-    return particle.charge
+    return particle.charge  # type: ignore[union-attr]
 
 
 @particle_input
@@ -435,11 +435,11 @@ def is_stable(particle: ParticleLike, mass_numb: int | None = None) -> bool:
     >>> is_stable("tau+")
     False
     """
-    if particle.element and not particle.isotope:
+    if particle.element and not particle.isotope:  # type: ignore[union-attr]
         raise InvalidIsotopeError(
             "The input to is_stable must be either an isotope or a special particle."
         )
-    return particle.is_category("stable")
+    return particle.is_category("stable")  # type: ignore[union-attr]
 
 
 @particle_input(any_of={"stable", "unstable", "isotope"})
@@ -490,10 +490,10 @@ def half_life(particle: ParticleLike, mass_numb: int | None = None) -> u.Quantit
     >>> half_life("H-1")
     <Quantity inf s>
     """
-    return particle.half_life
+    return particle.half_life  # type: ignore[union-attr]
 
 
-def known_isotopes(argument: str | int | None = None) -> list[str]:
+def known_isotopes(argument: ParticleLike | None = None) -> list[Particle]:
     """
     Return a list of all known isotopes of an element, or a list of all
     known isotopes of every element if no input is provided.
@@ -547,8 +547,8 @@ def known_isotopes(argument: str | int | None = None) -> list[str]:
 
     # TODO: Allow Particle objects representing elements to be inputs
 
-    def known_isotopes_for_element(argument):
-        element = atomic_symbol(argument)
+    def known_isotopes_for_element(argument_: ParticleLike) -> list[Particle]:
+        element = atomic_symbol(argument_)
         isotopes = [
             isotope
             for isotope in _isotopes.data_about_isotopes
@@ -586,8 +586,8 @@ def known_isotopes(argument: str | int | None = None) -> list[str]:
 
 
 def common_isotopes(
-    argument: str | int | None = None, most_common_only: bool = False
-) -> list[str]:
+    argument: ParticleLike | None = None, most_common_only: bool = False
+) -> list[Particle]:
     """
     Return a list of isotopes of an element with an isotopic abundances
     greater than zero, or if no input is provided, a list of all such
@@ -657,11 +657,11 @@ def common_isotopes(
     # TODO: Allow Particle objects representing elements to be inputs
 
     def common_isotopes_for_element(
-        argument: str | int, most_common_only: bool | None
-    ) -> list[str]:
+        argument: ParticleLike, most_common_only: bool | None
+    ) -> list[Particle]:
         isotopes = known_isotopes(argument)
 
-        CommonIsotopes = [
+        common_isotopes_ = [
             isotope
             for isotope in isotopes
             if "abundance" in _isotopes.data_about_isotopes[isotope]
@@ -669,13 +669,13 @@ def common_isotopes(
 
         isotopic_abundances = [
             _isotopes.data_about_isotopes[isotope]["abundance"]
-            for isotope in CommonIsotopes
+            for isotope in common_isotopes_
         ]
 
         sorted_isotopes = [
             iso_comp
             for (isotope, iso_comp) in sorted(
-                zip(isotopic_abundances, CommonIsotopes, strict=False)
+                zip(isotopic_abundances, common_isotopes_, strict=False)
             )
         ]
 
@@ -708,7 +708,7 @@ def common_isotopes(
 
 def stable_isotopes(
     argument: ParticleLike | None = None, unstable: bool = False
-) -> list[str]:
+) -> list[Particle]:
     """
     Return a list of all stable isotopes of an element, or if no input is
     provided, a list of all such isotopes for every element.
@@ -778,7 +778,7 @@ def stable_isotopes(
 
     def stable_isotopes_for_element(
         argument: str | int, stable_only: bool | None
-    ) -> list[str]:
+    ) -> list[Particle]:
         KnownIsotopes = known_isotopes(argument)
         return [
             isotope
@@ -806,7 +806,7 @@ def stable_isotopes(
 
 
 @particle_input
-@validate_quantities
+@validate_quantities  # type: ignore[misc]
 def reduced_mass(
     test_particle: ParticleLike,
     target_particle: ParticleLike,
@@ -867,12 +867,12 @@ def reduced_mass(
     >>> reduced_mass(5.4e-27 * u.kg, 8.6e-27 * u.kg)
     <Quantity 3.31714...e-27 kg>
     """
-    return (test_particle.mass * target_particle.mass) / (
-        test_particle.mass + target_particle.mass
+    return (test_particle.mass * target_particle.mass) / (  # type: ignore[union-attr]
+        test_particle.mass + target_particle.mass  # type: ignore[union-attr]
     )
 
 
-def periodic_table_period(argument: str | int) -> int:
+def periodic_table_period(argument: ParticleLike) -> int:
     """
     Return the periodic table period.
 
@@ -912,10 +912,10 @@ def periodic_table_period(argument: str | int) -> int:
             "integer representing its atomic number."
         )
     symbol = atomic_symbol(argument)
-    return _elements.data_about_elements[symbol]["period"]
+    return _elements.data_about_elements[symbol]["period"]  # type: ignore[index, return-value]
 
 
-def periodic_table_group(argument: str | int) -> int:
+def periodic_table_group(argument: ParticleLike) -> int:
     """
     Return the periodic table group.
 
@@ -960,10 +960,10 @@ def periodic_table_group(argument: str | int) -> int:
             "symbol, or an integer representing its atomic number."
         )
     symbol = atomic_symbol(argument)
-    return _elements.data_about_elements[symbol]["group"]
+    return _elements.data_about_elements[symbol]["group"]  # type: ignore[index, return-value]
 
 
-def periodic_table_block(argument: str | int) -> str:
+def periodic_table_block(argument: ParticleLike) -> str:
     """
     Return the periodic table block.
 
@@ -1011,7 +1011,7 @@ def periodic_table_block(argument: str | int) -> str:
             "symbol, or an integer representing its atomic number."
         )
     symbol = atomic_symbol(argument)
-    return _elements.data_about_elements[symbol]["block"]
+    return _elements.data_about_elements[symbol]["block"]  # type: ignore[index]
 
 
 def periodic_table_category(argument: str | int) -> str:
@@ -1057,7 +1057,7 @@ def periodic_table_category(argument: str | int) -> str:
             "symbol, or an integer representing its atomic number."
         )
     symbol = atomic_symbol(argument)
-    return _elements.data_about_elements[symbol]["category"]
+    return _elements.data_about_elements[symbol]["category"]  # type: ignore[index]
 
 
 @particle_input(any_of={"element", "isotope", "ion"})
@@ -1096,12 +1096,12 @@ def ionic_levels(
     >>> ionic_levels("Fe-56", min_charge=13, max_charge=15)
     ParticleList(['Fe-56 13+', 'Fe-56 14+', 'Fe-56 15+'])
     """
-    base_particle = Particle(particle.isotope or particle.element)
+    base_particle = Particle(particle.isotope or particle.element)  # type: ignore[union-attr]
 
     if max_charge is None:
-        max_charge = particle.atomic_number
+        max_charge = particle.atomic_number  # type: ignore[union-attr]
 
-    if not min_charge <= max_charge <= particle.atomic_number:
+    if not min_charge <= max_charge <= particle.atomic_number:  # type: ignore[union-attr]
         raise ChargeError(
             f"Need min_charge ({min_charge}) "
             f"≤ max_charge ({max_charge}) "
