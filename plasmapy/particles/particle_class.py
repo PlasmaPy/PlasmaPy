@@ -21,6 +21,7 @@ import warnings
 from abc import ABC, abstractmethod
 from collections import defaultdict, namedtuple
 from datetime import datetime
+from io import StringIO  # noqa: TCH003 (needed for type hint in doc build)
 from numbers import Integral, Real
 from typing import TYPE_CHECKING, TypeAlias
 
@@ -45,7 +46,6 @@ from plasmapy.utils._units_helpers import _get_physical_type_dict
 
 if TYPE_CHECKING:
     from collections.abc import Iterable, Sequence
-    from io import StringIO
 
     from plasmapy.particles.particle_collections import ParticleList
 
