@@ -5,7 +5,8 @@ on:
     types: [opened, synchronize, reopened, edited]
 
 jobs:
-  labeler:
+  no-changelog:
+    name: Add no changelog label
     runs-on: ubuntu-latest
     permissions:
       contents: read

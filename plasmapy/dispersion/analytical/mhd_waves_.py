@@ -12,8 +12,7 @@ __all__ = [
 import warnings
 from abc import ABC, abstractmethod
 from collections import namedtuple
-from numbers import Integral, Real
-from typing import Optional
+from numbers import Real
 
 import astropy.units as u
 import numpy as np
@@ -44,8 +43,8 @@ class AbstractMHDWave(ABC):
         *,
         T: u.Quantity[u.K] = 0 * u.K,
         gamma: float = 5 / 3,
-        mass_numb: Optional[Integral] = None,
-        Z: Optional[Real] = None,
+        mass_numb: int | None = None,
+        Z: float | None = None,
     ) -> None:
         # validate arguments
         for arg_name in ("B", "density", "T"):
@@ -326,7 +325,7 @@ class AlfvenWave(AbstractMHDWave):
         convertible to kg m\ :sup:`-3`\ .
 
     ion : |particle-like|
-        Representation of the ion species (e.g., ``'p'`` for protons,
+        Representation of the ion species (e.g., ``'p+'`` for protons,
         ``'D+'`` for deuterium, ``'He-4 +1'`` for singly ionized
         helium-4, etc.). If no charge state information is provided,
         then the ions are assumed to be singly ionized.
@@ -544,7 +543,7 @@ class FastMagnetosonicWave(AbstractMHDWave):
         convertible to kg m\ :sup:`-3`\ .
 
     ion : |particle-like|
-        Representation of the ion species (e.g., ``'p'`` for protons,
+        Representation of the ion species (e.g., ``'p+'`` for protons,
         ``'D+'`` for deuterium, ``'He-4 +1'`` for singly ionized
         helium-4, etc.). If no charge state information is provided,
         then the ions are assumed to be singly ionized.
@@ -794,7 +793,7 @@ class SlowMagnetosonicWave(AbstractMHDWave):
         to m\ :sup:`-3` or the total mass density :math:`ρ` in units
         convertible to kg m\ :sup:`-3`\ .
     ion : |particle-like|
-        Representation of the ion species (e.g., ``'p'`` for protons,
+        Representation of the ion species (e.g., ``'p+'`` for protons,
         ``'D+'`` for deuterium, ``'He-4 +1'`` for singly ionized
         helium-4, etc.). If no charge state information is provided,
         then the ions are assumed to be singly ionized.
@@ -1045,7 +1044,7 @@ def mhd_waves(*args, **kwargs):
         convertible to kg m\ :sup:`-3`\ .
 
     ion : |particle-like|
-        Representation of the ion species (e.g., ``'p'`` for protons,
+        Representation of the ion species (e.g., ``'p+'`` for protons,
         ``'D+'`` for deuterium, ``'He-4 +1'`` for singly ionized
         helium-4, etc.). If no charge state information is provided,
         then the ions are assumed to be singly ionized.

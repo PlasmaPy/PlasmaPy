@@ -21,7 +21,7 @@ keywords = [
   "space plasmas",
 ]
 license = {file = "LICENSE.md"}
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 classifiers = [
   "Development Status :: 4 - Beta",
   "Intended Audience :: Education",
@@ -48,7 +48,6 @@ dependencies = [
   "numpy >= 1.23.0",
   "packaging >= 22.0",
   "pandas >= 1.4.0",
-  "pytest == 7.4.4",
   "requests >= 2.28.0",
   "scipy >= 1.8.0",
   "setuptools >= 61.2.0",
@@ -67,7 +66,8 @@ docs = [
   "pygments >= 2.17.2",
   # install setuptools to get pkg_resources for doc build
   "setuptools; python_version >= '3.12'",
-  "sphinx >= 7.2.6",
+  # see issue 2497
+  "sphinx == 7.2.6",
   "sphinx-changelog >= 1.5.0",
   "sphinx-codeautolink >= 0.15.0",
   "sphinx-copybutton >= 0.5.2",
@@ -88,6 +88,7 @@ docs = [
 tests = [
   "hypothesis >= 6.97.4",
   "pre-commit >= 3.6.0",
+  "pytest >= 8.0.2",
   "pytest-regressions >= 2.5.0",
   "pytest-xdist >= 3.5.0",
   "tomli >= 2.0.1",
@@ -99,7 +100,6 @@ Chat = "https://plasmapy.org/chat"
 Documentation = "https://docs.plasmapy.org/"
 Issues = "https://github.com/PlasmaPy/plasmapy/issues/"
 Source = "https://github.com/PlasmaPy/plasmapy"
-Twitter = "https://twitter.com/PlasmaPy"
 website = "https://www.plasmapy.org"
 [project.scripts]
 plasma-calculator = "plasmapy.utils.calculator:main"
@@ -120,7 +120,6 @@ namespaces = false
 write_to = "plasmapy/_version.py"
 
 [tool.pytest.ini_options]
-minversion = "7.0.1"
 testpaths = ['plasmapy']
 norecursedirs = ['build', 'docs', 'plasmapy[\/]_dev']
 xfail_strict = true
@@ -128,7 +127,6 @@ doctest_optionflags = """
 NORMALIZE_WHITESPACE
 ELLIPSIS
 NUMBER"""
-addopts = "--doctest-modules --doctest-continue-on-failure"
 filterwarnings = [
   "ignore:.*deprecated in traitlets 4.2.*:DeprecationWarning",
   "ignore:.*MultiIndex.*:DeprecationWarning",  # https://github.com/PlasmaPy/PlasmaPy/issues/2319
@@ -205,15 +203,15 @@ enabled = true
 changelog_skip_label = "no changelog entry needed"
 help_url = "https://docs.plasmapy.org/en/latest/contributing/changelog_guide.html#adding-a-changelog-entry"
 changelog_missing = "Missing changelog entry (see `changelog/README.rst`)"
-changelog_missing_long = "This pull request needs a changelog entry at `changelog/NUMBER.TYPE.rst`, where `NUMBER` is the pull request number and `TYPE` is one of `feature`, `trivial`, `doc`, `bugfix`, `breaking`, or `removal`.\n\nFor details, see: https://docs.plasmapy.org/en/latest/contributing/changelog_guide.html#adding-a-changelog-entry"
+changelog_missing_long = "Please add a changelog entry at `changelog/NUMBER.TYPE.rst`, where `NUMBER` is the pull request number and `TYPE` is one of `feature`, `trivial`, `doc`, `internal`, `bugfix`, `breaking`, or `removal`.\n\nMinor pull requests, such as typo fixes and hyperlink updates, do not need a changelog entry.\n\nFor details, see: https://docs.plasmapy.org/en/latest/contributing/changelog_guide.html#adding-a-changelog-entry"
 verify_pr_number = true
 number_incorrect = "Changelog entry number ≠ PR number (see `changelog/README.rst`)"
 number_incorrect_long = "The changelog entry number does not match this pull request's number.\n\nWhen purposefully editing the changelog entry for a different pull request, set the 'no changelog entry needed' label to ignore this check."
 type_incorrect = "Incorrect changelog type (see `changelog/README.rst`)"
-type_incorrect_long = "The filename of the changelog entry must be of the form `changelog/NUMBER.TYPE.rst` where `TYPE` is one of `feature`, `trivial`, `doc`, `bugfix`, `breaking`, or `removal`.\n\nFor details, see: https://docs.plasmapy.org/en/latest/contributing/changelog_guide.html#adding-a-changelog-entry"
+type_incorrect_long = "The filename of the changelog entry must be of the form `changelog/NUMBER.TYPE.rst` where `TYPE` is one of `feature`, `trivial`, `doc`, `internal`, `bugfix`, `breaking`, or `removal`.\n\nFor details, see: https://docs.plasmapy.org/en/latest/contributing/changelog_guide.html#adding-a-changelog-entry"
 
 [tool.ruff]
-target-version = "py39"
+target-version = "py310"
 namespace-packages = [".github/workflows", "docs"]
 output-format = "grouped"
 show-fixes = true
@@ -334,8 +332,6 @@ ignore = [
   "TD003", # missing-todo-link
   "TRY003", # raise-vanilla-args
   "TRY301", # raise-within-try
-  "UP006", # non-pep585-annotation
-  "UP007", # non-pep604-annotation
   "UP025", # unicode-kind-prefix
   "W191", # tab-indentation (formatter conflict)
 ]
@@ -420,18 +416,23 @@ issue_format = ":pr:`{issue}`" # Despite the name mismatch, we use this for link
 wrap = true
 
 [[tool.towncrier.type]]
+directory = "feature"
+name = "New Features"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "doc"
+name = "Documentation Improvements"
+showcontent = true
+
+[[tool.towncrier.type]]
 directory = "breaking"
 name = "Backwards Incompatible Changes"
 showcontent = true
 
 [[tool.towncrier.type]]
 directory = "removal"
-name = "Deprecations and Removals"
-showcontent = true
-
-[[tool.towncrier.type]]
-directory = "feature"
-name = "Features"
+name = "Deprecations and Planned Removals"
 showcontent = true
 
 [[tool.towncrier.type]]
@@ -440,11 +441,11 @@ name = "Bug Fixes"
 showcontent = true
 
 [[tool.towncrier.type]]
-directory = "doc"
-name = "Improved Documentation"
+directory = "internal"
+name = "Internal Changes and Refactorings"
 showcontent = true
 
 [[tool.towncrier.type]]
 directory = "trivial"
-name = "Trivial/Internal Changes"
+name = "Additional Changes"
 showcontent = true

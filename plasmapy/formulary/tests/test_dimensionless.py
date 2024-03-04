@@ -16,7 +16,7 @@ from plasmapy.formulary.dimensionless import (
     betaH_,
     nD_,
 )
-from plasmapy.particles import Particle
+from plasmapy.particles.particle_class import Particle
 from plasmapy.utils._pytest_helpers import assert_can_handle_nparray
 from plasmapy.utils.exceptions import RelativityWarning
 

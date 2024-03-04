@@ -14,7 +14,6 @@ import warnings
 from abc import ABC, abstractmethod
 from collections import namedtuple
 from functools import cached_property
-from typing import Union
 
 import astropy.units as u
 import numpy as np
@@ -143,7 +142,12 @@ class AbstractGrid(ABC):
         """
         return self._recognized_quantities
 
-    def require_quantities(self, req_quantities, replace_with_zeros: bool = False):
+    def require_quantities(
+        self,
+        req_quantities,
+        replace_with_zeros: bool = False,
+        warn_on_replace_with_zeros: bool = True,
+    ):
         r"""
         Check to make sure that a list of required quantities are present.
         Optionally, can create missing quantities and fill them with
@@ -158,6 +162,10 @@ class AbstractGrid(ABC):
             If true, missing quantities will be replaced with an array
             of zeros. If false, an exception will be raised instead.
             The default is False.
+
+        warn_on_replace_with_zeros : `bool`, default: `True`
+            If `True`, warn if a required quantity is replaced with an
+            array of zeros. If `False`, no warning is shown.
 
         Raises
         ------
@@ -187,11 +195,12 @@ class AbstractGrid(ABC):
                         "to be zero."
                     )
 
-                warnings.warn(
-                    f"{rq} is not specified for the provided grid."
-                    "This quantity will be assumed to be zero.",
-                    RuntimeWarning,
-                )
+                if warn_on_replace_with_zeros:
+                    warnings.warn(
+                        f"{rq} is not specified for the provided grid."
+                        "This quantity will be assumed to be zero.",
+                        RuntimeWarning,
+                    )
 
                 unit = self.recognized_quantities[rq].unit
                 arg = {rq: np.zeros(self.shape) * unit}
@@ -208,7 +217,7 @@ class AbstractGrid(ABC):
         ax_units = self.units
         ax_dtypes = [self.ds[i].dtype for i in coords]
 
-        coord_lbls = [f"{i}: {j}" for i, j in zip(coords, shape)]
+        coord_lbls = [f"{i}: {j}" for i, j in zip(coords, shape, strict=False)]
 
         s = f"*** Grid Summary ***\n{type(self)}\n"
 
@@ -669,8 +678,8 @@ class AbstractGrid(ABC):
 
     def _make_grid(  # noqa: C901, PLR0912
         self,
-        start: Union[float, u.Quantity],
-        stop: Union[float, u.Quantity],
+        start: float | u.Quantity,
+        stop: float | u.Quantity,
         num: int = 100,
         units=None,
         **kwargs,
@@ -904,7 +913,7 @@ class AbstractGrid(ABC):
 
     @abstractmethod
     def nearest_neighbor_interpolator(
-        self, pos: Union[np.ndarray, u.Quantity], *args, persistent: bool = False
+        self, pos: np.ndarray | u.Quantity, *args, persistent: bool = False
     ):
         r"""
         Interpolate values on the grid using a nearest-neighbor scheme with
@@ -1095,7 +1104,7 @@ class CartesianGrid(AbstractGrid):
 
     @modify_docstring(prepend=AbstractGrid.nearest_neighbor_interpolator.__doc__)
     def nearest_neighbor_interpolator(
-        self, pos: Union[np.ndarray, u.Quantity], *args, persistent: bool = False
+        self, pos: np.ndarray | u.Quantity, *args, persistent: bool = False
     ):
         r""" """  # noqa: D419
 
@@ -1134,7 +1143,7 @@ class CartesianGrid(AbstractGrid):
         return output[0] if len(output) == 1 else tuple(output)
 
     def volume_averaged_interpolator(
-        self, pos: Union[np.ndarray, u.Quantity], *args, persistent: bool = False
+        self, pos: np.ndarray | u.Quantity, *args, persistent: bool = False
     ):
         r"""
         Interpolate values on the grid using a volume-averaged scheme with
@@ -1399,7 +1408,7 @@ class NonUniformCartesianGrid(AbstractGrid):
 
     @modify_docstring(prepend=AbstractGrid.nearest_neighbor_interpolator.__doc__)
     def nearest_neighbor_interpolator(
-        self, pos: Union[np.ndarray, u.Quantity], *args, persistent: bool = False
+        self, pos: np.ndarray | u.Quantity, *args, persistent: bool = False
     ):
         r""" """  # noqa: D419
         # Shared setup

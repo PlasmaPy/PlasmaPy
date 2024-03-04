@@ -11,8 +11,7 @@ __aliases__ = ["cs_", "va_", "vth_", "vth_kappa_"]
 __lite_funcs__ = ["thermal_speed_lite"]
 
 import warnings
-from numbers import Integral, Real
-from typing import Optional
+from numbers import Real
 
 import astropy.units as u
 import numpy as np
@@ -20,7 +19,10 @@ from astropy.constants.si import k_B, mu0
 from numba import njit
 
 from plasmapy.formulary import lengths
-from plasmapy.particles import ParticleLike, electron, particle_input, particle_mass
+from plasmapy.particles import electron
+from plasmapy.particles.atomic import particle_mass
+from plasmapy.particles.decorators import particle_input
+from plasmapy.particles.particle_class import ParticleLike
 from plasmapy.utils.decorators import (
     bind_lite_func,
     check_relativistic,
@@ -40,10 +42,10 @@ k_B_si_unitless = k_B.value
 def Alfven_speed(
     B: u.Quantity[u.T],
     density: (u.m**-3, u.kg / u.m**3),
-    ion: Optional[ParticleLike] = None,
+    ion: ParticleLike | None = None,
     *,
-    mass_numb: Optional[Integral] = None,
-    Z: Optional[Real] = None,
+    mass_numb: int | None = None,
+    Z: float | None = None,
 ) -> u.Quantity[u.m / u.s]:
     r"""Calculate the Alfvén speed.
 
@@ -79,10 +81,10 @@ def Alfven_speed(
         this parameter is required in order to convert to mass
         density.
 
-    mass_numb : integer, |keyword-only|, optional
+    mass_numb : `int`, |keyword-only|, optional
         The mass number corresponding to ``ion``.
 
-    Z : `~numbers.Real`, |keyword-only|, optional
+    Z : `float`, |keyword-only|, optional
         The charge number corresponding to ``ion``. Note that the
         value of ``Z`` does not impact the Alfvén speed.
 
@@ -214,10 +216,9 @@ def ion_sound_speed(
         assumed to be zero.
 
     ion : |particle-like|
-        Representation of the ion species (e.g., ``'p'`` for protons,
+        Representation of the ion species (e.g., ``'p+'`` for protons,
         ``'D+'`` for deuterium, or ``'He-4 +1'`` for singly ionized
-        helium-4). If no charge state information is provided, then the
-        ions are assumed to be singly charged.
+        helium-4).
 
     n_e : `~astropy.units.Quantity`
         Electron number density. If this is not given, then ion_sound_speed
@@ -318,7 +319,7 @@ def ion_sound_speed(
     >>> ion_sound_speed(
     ...     T_e=5e6 * u.K,
     ...     T_i=0 * u.K,
-    ...     ion="p",
+    ...     ion="p+",
     ...     gamma_e=1,
     ...     gamma_i=3,
     ... )
@@ -328,7 +329,7 @@ def ion_sound_speed(
     ...     T_i=0 * u.K,
     ...     n_e=n,
     ...     k=k_1,
-    ...     ion="p",
+    ...     ion="p+",
     ...     gamma_e=1,
     ...     gamma_i=3,
     ... )
@@ -338,18 +339,18 @@ def ion_sound_speed(
     ...     T_i=0 * u.K,
     ...     n_e=n,
     ...     k=k_2,
-    ...     ion="p",
+    ...     ion="p+",
     ...     gamma_e=1,
     ...     gamma_i=3,
     ... )
     <Quantity 310.31... m / s>
-    >>> ion_sound_speed(T_e=5e6 * u.K, T_i=0 * u.K, n_e=n, k=k_1, ion="p")
+    >>> ion_sound_speed(T_e=5e6 * u.K, T_i=0 * u.K, n_e=n, k=k_1, ion="p+")
     <Quantity 203155... m / s>
     >>> ion_sound_speed(T_e=500 * u.eV, T_i=200 * u.eV, n_e=n, k=k_1, ion="D+")
     <Quantity 229585... m / s>
 
     """
-    for gamma, species in zip([gamma_e, gamma_i], ["electrons", "ions"]):
+    for gamma, species in zip([gamma_e, gamma_i], ["electrons", "ions"], strict=False):
         if not isinstance(gamma, Real):
             raise TypeError(
                 f"The adiabatic index gamma for {species} must be a positive "
@@ -474,7 +475,7 @@ def thermal_speed_coefficients(method: str, ndim: int) -> float:
 
 @preserve_signature
 @njit
-def thermal_speed_lite(T: Real, mass: Real, coeff: Real) -> Real:
+def thermal_speed_lite(T: float, mass: float, coeff: float) -> float:
     r"""
     The :term:`lite-function` for
     `~plasmapy.formulary.speeds.thermal_speed`.  Performs the same
@@ -495,13 +496,13 @@ def thermal_speed_lite(T: Real, mass: Real, coeff: Real) -> Real:
 
     Parameters
     ----------
-    T : `~numbers.Real`
+    T : `float`
         The temperature of the particle distribution, in units of kelvin.
 
-    mass : `~numbers.Real`
+    mass : `float`
         Mass of the particle in kg.
 
-    coeff : `~numbers.Real`
+    coeff : `float`
         The coefficient :math:`C_o` associated with the method used for
         calculating the thermal speed, see
         :ref:`Notes <thermal-speed-notes>` section in the
@@ -509,7 +510,7 @@ def thermal_speed_lite(T: Real, mass: Real, coeff: Real) -> Real:
 
     Returns
     -------
-    vth : `~numbers.Real`
+    vth : `float`
         Thermal speed of the Maxwellian distribution in units of m/s.
 
     Examples
@@ -558,8 +559,6 @@ def thermal_speed(
     particle : `~plasmapy.particles.particle_class.Particle`
         Representation of the particle species (e.g., ``"p"`` for protons,
         ``"D+"`` for deuterium, or ``"He-4 +1"`` for singly ionized helium-4).
-        If no charge state information is provided, then the particles are
-        assumed to be singly charged.
 
     method : `str`, optional
         (Default ``"most_probable"``) Method to be used for calculating the
@@ -698,9 +697,9 @@ def thermal_speed(
     Examples
     --------
     >>> import astropy.units as u
-    >>> thermal_speed(5*u.eV, 'p')
+    >>> thermal_speed(5*u.eV, 'p+')
     <Quantity 30949.6... m / s>
-    >>> thermal_speed(1e6*u.K, particle='p')
+    >>> thermal_speed(1e6*u.K, particle='p+')
     <Quantity 128486... m / s>
     >>> thermal_speed(5*u.eV, particle='e-')
     <Quantity 132620... m / s>
@@ -745,8 +744,8 @@ def kappa_thermal_speed(
     particle: ParticleLike,
     method="most_probable",
     *,
-    mass_numb: Optional[Real] = None,
-    Z: Optional[Real] = None,
+    mass_numb: float | None = None,
+    Z: float | None = None,
 ) -> u.Quantity[u.m / u.s]:
     r"""
     Return the most probable speed for a particle within a kappa
@@ -766,10 +765,8 @@ def kappa_thermal_speed(
         than 3/2.
 
     particle : |particle-like|
-        Representation of the particle species (e.g., 'p' for protons, 'D+'
-        for deuterium, or 'He-4 +1' for singly ionized helium-4). If no
-        charge state information is provided, then the particles are
-        assumed to be singly charged.
+        Representation of the particle species (e.g., ``'p+'`` for protons,
+        ``'D+'`` for deuterium, or 'He-4 +1' for singly ionized helium-4).
 
     method : `str`, optional
         Method to be used for calculating the thermal speed. Options are

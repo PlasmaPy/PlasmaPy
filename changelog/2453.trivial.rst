@@ -1,2 +1,0 @@
-Dropped the |pre-commit| hook for ``isort`` and enabled all ``isort``
-rules in |ruff|.

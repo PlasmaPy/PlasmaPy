@@ -199,7 +199,7 @@ def temp_ratio(  # noqa: C901
     """
 
     # Validate ions argument
-    if not isinstance(ions, (list, tuple, ParticleList)):
+    if not isinstance(ions, list | tuple | ParticleList):
         ions = [ions]
     ions = ParticleList(ions)
 

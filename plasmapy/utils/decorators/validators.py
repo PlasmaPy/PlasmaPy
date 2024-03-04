@@ -7,7 +7,7 @@ import functools
 import inspect
 import warnings
 from collections.abc import Iterable
-from typing import Any, Optional
+from typing import Any
 
 import astropy.units as u
 
@@ -543,9 +543,9 @@ def validate_quantities(func=None, validations_on_return=None, **validations):
 
 def get_attributes_not_provided(
     self,
-    expected_attributes: Optional[list[str]] = None,
-    both_or_either_attributes: Optional[list[Iterable[str]]] = None,
-    mutually_exclusive_attributes: Optional[list[Iterable[str]]] = None,
+    expected_attributes: list[str] | None = None,
+    both_or_either_attributes: list[Iterable[str]] | None = None,
+    mutually_exclusive_attributes: list[Iterable[str]] | None = None,
 ):
     """
     Collect attributes that weren't provided during instantiation needed
@@ -584,9 +584,9 @@ def get_attributes_not_provided(
 
 
 def validate_class_attributes(
-    expected_attributes: Optional[list[str]] = None,
-    both_or_either_attributes: Optional[list[Iterable[str]]] = None,
-    mutually_exclusive_attributes: Optional[list[Iterable[str]]] = None,
+    expected_attributes: list[str] | None = None,
+    both_or_either_attributes: list[Iterable[str]] | None = None,
+    mutually_exclusive_attributes: list[Iterable[str]] | None = None,
 ):
     """
     A decorator responsible for raising errors if the expected arguments weren't

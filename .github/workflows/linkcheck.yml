@@ -1,4 +1,4 @@
-name: linkcheck
+name: Check hyperlinks
 
 on:
   schedule:
@@ -12,6 +12,7 @@ on:
 jobs:
 
   linkcheck:
+    name: Documentation linkcheck
     runs-on: ubuntu-latest
     if: github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'perform linkcheck in CI')
 

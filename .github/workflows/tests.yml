@@ -23,26 +23,20 @@ jobs:
       matrix:
         include:
 
-        - name: Python 3.12 (Ubuntu), pinned dependencies, skip slow tests
+        - name: Python 3.12 (Ubuntu), with doctests, skip slow
           os: ubuntu-latest
           python: '3.12'
-          toxenv: py312-pins
-          toxargs: --develop
+          toxenv: py312-pins-pytest_doctests_skipslow
 
         - name: Python 3.11 (macOS), code coverage
           os: macos-latest
           python: '3.11'
-          toxenv: py311-cov-all
+          toxenv: py311-pins-pytest_cov_all
 
-        - name: Python 3.10 (Ubuntu)
+        - name: Python 3.10 (Ubuntu), minimal dependencies, skip slow
           os: ubuntu-latest
           python: '3.10'
-          toxenv: py310-all
-
-        - name: Python 3.9 (Windows), minimal dependencies
-          os: windows-latest
-          python: 3.9
-          toxenv: py39-all-minimal
+          toxenv: py310-minimal-pytest_skipslow
 
         - name: mypy
           os: ubuntu-latest
@@ -67,13 +61,20 @@ jobs:
         python-version: ${{ matrix.python }}
         cache: pip
 
-    - name: Install and upgrade tox
+    - name: Install and upgrade test tools
       run: python -m pip install --progress-bar off --upgrade tox
 
-    - name: Run tests
-      run: tox ${{ matrix.toxargs }} -e ${{ matrix.toxenv }} -- ${{ matrix.toxposargs }}
+    - name: Cache
+      uses: actions/cache@v4
+      with:
+        path: |
+          .tox
+        key: ${{ matrix.toxenv }}-${{ runner.os }}-${{ hashFiles('requirements.txt', 'pyproject.toml') }}
 
-    - name: Upload coverage to codecov if requested
+    - name: Run tests
+      run: tox -e ${{ matrix.toxenv }}
+
+    - name: Upload coverage reports to Codecov
       if: ${{ contains(matrix.toxenv,'-cov') }}
       uses: codecov/codecov-action@v4
       with:
@@ -102,6 +103,13 @@ jobs:
 
     - name: Install tox
       run: python -m pip install --progress-bar off --upgrade tox
+
+    - name: Cache
+      uses: actions/cache@v4
+      with:
+        path: |
+          .tox
+        key: docs-${{ runner.os }}-${{ hashFiles('requirements.txt') }}
 
     - name: Build docs
       run: tox -e build_docs_pins -- -q

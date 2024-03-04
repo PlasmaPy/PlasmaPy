@@ -73,6 +73,7 @@ test_Particle_table = [
             "is_ion": True,
             "mass": m_p,
             "nuclide_mass": m_p,
+            "nucleus": Particle("p+"),
             "charge_number": 1,
             "charge.value": e.si.value,
             "spin": 1 / 2,
@@ -99,7 +100,7 @@ test_Particle_table = [
         },
     ),
     (
-        "H",
+        "H",  # proton
         {"Z": 1, "mass_numb": 1},
         {
             "symbol": "p+",
@@ -112,6 +113,7 @@ test_Particle_table = [
             "is_ion": True,
             "mass": m_p,
             "nuclide_mass": m_p,
+            "nucleus": Particle("p+"),
             "charge_number": 1,
             "charge.value": e.si.value,
             "spin": 1 / 2,
@@ -135,6 +137,31 @@ test_Particle_table = [
             "periodic_table.category": "nonmetal",
             "binding_energy": 0 * u.J,
             "recombine()": "H-1 0+",
+        },
+    ),
+    (
+        "H",  # without charge or mass number information
+        {},
+        {
+            "symbol": "H",
+            "element": "H",
+            "isotope": None,
+            "isotope_name": InvalidIsotopeError,
+            "ionic_symbol": None,
+            "roman_symbol": ChargeError,
+            "is_ion": False,
+            "charge": np.nan * u.C,
+            "charge_number": ChargeError,
+            "mass_number": InvalidIsotopeError,
+            "baryon_number": ParticleError,
+            "lepton_number": 0,
+            "half_life": InvalidIsotopeError,
+            "standard_atomic_weight": (1.008 * u.u).to(u.kg),
+            "mass": (1.008 * u.u).to(u.kg),
+            "nuclide_mass": InvalidIsotopeError,
+            'is_category("charged")': False,
+            'is_category("nonmetal")': True,
+            'is_category("proton")': False,
         },
     ),
     (
@@ -224,31 +251,6 @@ test_Particle_table = [
         },
     ),
     (
-        "H",
-        {},
-        {
-            "symbol": "H",
-            "element": "H",
-            "isotope": None,
-            "isotope_name": InvalidIsotopeError,
-            "ionic_symbol": None,
-            "roman_symbol": ChargeError,
-            "is_ion": False,
-            "charge": np.nan * u.C,
-            "charge_number": ChargeError,
-            "mass_number": InvalidIsotopeError,
-            "baryon_number": ParticleError,
-            "lepton_number": 0,
-            "half_life": InvalidIsotopeError,
-            "standard_atomic_weight": (1.008 * u.u).to(u.kg),
-            "mass": (1.008 * u.u).to(u.kg),
-            "nuclide_mass": InvalidIsotopeError,
-            'is_category("charged")': False,
-            'is_category("nonmetal")': True,
-            'is_category("proton")': False,
-        },
-    ),
-    (
         "H 1-",
         {},
         {
@@ -289,6 +291,7 @@ test_Particle_table = [
             "lepton_number": 0,
             "half_life": np.inf * u.s,
             "nuclide_mass": m_p,
+            "nucleus": Particle("p+"),
             'is_category("charged")': False,
             'is_category("uncharged")': True,
             'is_category("ion")': False,
@@ -314,6 +317,7 @@ test_Particle_table = [
             "baryon_number": 2,
             "lepton_number": 0,
             "neutron_number": 1,
+            "nucleus": Particle("D 1+"),
             'is_category(require=("ion", "isotope"))': True,
             "periodic_table.group": 1,
             "periodic_table.block": "s",
@@ -338,6 +342,7 @@ test_Particle_table = [
             "baryon_number": 3,
             "lepton_number": 0,
             "neutron_number": 2,
+            "nucleus": Particle("T 1+"),
             'is_category("ion", "isotope")': True,
             'is_category(require="uncharged")': False,
             "periodic_table.group": 1,
@@ -385,6 +390,7 @@ test_Particle_table = [
             "mass_number": 4,
             "baryon_number": 4,
             "lepton_number": 0,
+            "nucleus": Particle("He-4 2+"),
             "half_life": np.inf * u.s,
             "recombine()": Particle("He-4 1+"),
         },
@@ -396,6 +402,7 @@ test_Particle_table = [
             "symbol": "He-4 0+",
             "element": "He",
             "isotope": "He-4",
+            "nucleus": Particle("He-4 2+"),
             "mass_energy": 5.971919969131517e-10 * u.J,
         },
     ),
@@ -418,6 +425,7 @@ test_Particle_table = [
             "baryon_number": 7,
             "half_life": np.inf * u.s,
             "nuclide_mass": 1.1647614796180463e-26 * u.kg,
+            "nucleus": Particle("Li-7 3+"),
         },
     ),
     (
@@ -619,6 +627,7 @@ test_Particle_error_table = [
     (["e+"], {}, ".is_category(require='element', exclude='element')", ParticleError),
     (["H", 1], {}, "", TypeError),
     (["H", 1, 1], {}, "", TypeError),
+    (["e-"], {}, ".nucleus", InvalidElementError),
 ]
 
 
@@ -1058,12 +1067,7 @@ def test_customized_particles_errors(cls, kwargs, exception) -> None:
     results in an InvalidParticleError.
     """
     with pytest.raises(exception):
-        if "mass" not in kwargs or "charge" not in kwargs:
-            with pytest.warns(MissingParticleDataWarning):
-                cls(**kwargs)
-        else:
-            cls(**kwargs)
-        pytest.fail(f"{cls.__name__}(**{kwargs}) did not raise: {exception.__name__}.")
+        cls(**kwargs)
 
 
 customized_particle_repr_table = [

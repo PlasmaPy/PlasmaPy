@@ -1041,6 +1041,6 @@ def test_unnamed_tests_exceptions(tested_object, args, kwargs, expected) -> None
 
     if hasattr(expected, "expected_warning"):
         for expected_warning, recorded_warning in zip(
-            exc_info.expected_warning, exc_info.list
+            exc_info.expected_warning, exc_info.list, strict=False
         ):
             assert expected_warning == recorded_warning.category

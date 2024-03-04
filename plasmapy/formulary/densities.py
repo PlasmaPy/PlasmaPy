@@ -4,14 +4,12 @@ __all__ = [
     "mass_density",
 ]
 __aliases__ = ["rho_"]
-import numbers
-from typing import Optional
 
 import astropy.units as u
 import numpy as np
 from astropy.constants.si import e, eps0, m_e
 
-from plasmapy.particles import Particle, ParticleLike
+from plasmapy.particles.particle_class import Particle, ParticleLike
 from plasmapy.utils.decorators import validate_quantities
 
 __all__ += __aliases__
@@ -70,7 +68,7 @@ def critical_density(omega: u.Quantity[u.rad / u.s]) -> u.Quantity[u.m**-3]:
 def mass_density(
     density: (u.m**-3, u.kg / (u.m**3)),
     particle: ParticleLike,
-    z_ratio: Optional[numbers.Real] = 1,
+    z_ratio: float | None = 1,
 ) -> u.Quantity[u.kg / u.m**3]:
     r"""
     Calculate the mass density from a number density.
@@ -97,7 +95,7 @@ def mass_density(
     particle : `~plasmapy.particles.particle_class.Particle`
         The particle for which the mass density is being calculated for.  Must
         be a `~plasmapy.particles.particle_class.Particle` or a value convertible to
-        a `~plasmapy.particles.particle_class.Particle` (e.g., ``'p'`` for protons,
+        a `~plasmapy.particles.particle_class.Particle` (e.g., ``'p+'`` for protons,
         ``'D+'`` for deuterium, or ``'He-4 +1'`` for singly ionized helium-4).
 
     z_ratio : `int`, `float`, optional
@@ -133,7 +131,7 @@ def mass_density(
     Examples
     --------
     >>> import astropy.units as u
-    >>> mass_density(1 * u.m**-3, "p")
+    >>> mass_density(1 * u.m**-3, "p+")
     <Quantity 1.67262...e-27 kg / m3>
     >>> mass_density(4 * u.m**-3, "D+")
     <Quantity 1.33743...e-26 kg / m3>
@@ -156,7 +154,7 @@ def mass_density(
                 f"(not type {type(particle)}) to calculate the mass density!"
             ) from e
 
-    if not isinstance(z_ratio, (float, np.floating, int, np.integer)):
+    if not isinstance(z_ratio, float | np.floating | int | np.integer):
         raise TypeError(
             f"Expected type int or float for keyword z_ratio, got type {type(z_ratio)}."
         )

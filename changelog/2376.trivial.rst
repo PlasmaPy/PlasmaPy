@@ -1,3 +1,0 @@
-Added a GitHub Action that will create an issue containing a release
-checklist, which will largely supersede the release process outlined
-in the |contributor guide|.

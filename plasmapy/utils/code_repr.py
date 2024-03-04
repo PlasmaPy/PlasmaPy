@@ -4,8 +4,7 @@ __all__ = ["call_string", "attribute_call_string", "method_call_string"]
 
 import inspect
 from collections.abc import Callable
-from numbers import Integral
-from typing import Any, Optional, Union
+from typing import Any
 
 import astropy.units as u
 import numpy as np
@@ -30,7 +29,7 @@ def _code_repr_of_ndarray(array: np.ndarray, max_items=np.inf) -> str:
         s = s.replace("inf", "np.inf")
         return s.replace("nan", "np.nan")
 
-    def replace_excess_items_with_ellipsis(s: str, max_items: Integral):
+    def replace_excess_items_with_ellipsis(s: str, max_items: int):
         substrings_between_commas = s.split(",")
         to_comma_before_ellipsis = ",".join(substrings_between_commas[:max_items])
         closing_brackets = "]" * substrings_between_commas[-1].count("]")
@@ -60,7 +59,7 @@ def _code_repr_of_quantity(arg: u.Quantity, max_items=np.inf) -> str:
     if arg.unit == u.dimensionless_unscaled:
         formatted += "*u.dimensionless_unscaled"
     else:
-        for base, power in zip(arg.unit.bases, arg.unit.powers):
+        for base, power in zip(arg.unit.bases, arg.unit.powers, strict=False):
             if power == -1:
                 formatted += f"/u.{base}"
             elif power == 1:
@@ -90,7 +89,7 @@ def _code_repr_of_arg(arg, max_items=np.inf) -> str:
 
 
 def _code_repr_of_args_and_kwargs(
-    args: Any = None, kwargs: Optional[dict] = None, max_items=np.inf
+    args: Any = None, kwargs: dict | None = None, max_items=np.inf
 ) -> str:
     """
     Take positional and keyword arguments, and format them into a
@@ -99,7 +98,7 @@ def _code_repr_of_args_and_kwargs(
     args = () if args is None else args
     kwargs = {} if kwargs is None else kwargs
 
-    args_collection = args if isinstance(args, (tuple, list)) else (args,)
+    args_collection = args if isinstance(args, tuple | list) else (args,)
 
     args_and_kwargs = "".join(
         f"{_code_repr_of_arg(arg, max_items)}, " for arg in args_collection
@@ -181,7 +180,7 @@ def _string_together_warnings_for_printing(
     """
     warnings_with_messages = [
         f"{_object_name(warning, showmodule=False)}: {message}"
-        for warning, message in zip(warning_types, warning_messages)
+        for warning, message in zip(warning_types, warning_messages, strict=False)
     ]
 
     return "\n\n".join(warnings_with_messages)
@@ -190,8 +189,8 @@ def _string_together_warnings_for_printing(
 def call_string(
     f: Callable,
     args: Any = None,
-    kwargs: Optional[dict[str, Any]] = None,
-    max_items: Integral = 12,
+    kwargs: dict[str, Any] | None = None,
+    max_items: int = 12,
 ) -> str:
     """
     Approximate a call of a function or class with positional and
@@ -251,9 +250,9 @@ def call_string(
 def attribute_call_string(
     cls,
     attr: str,
-    args_to_cls: Optional[Union[tuple, Any]] = None,
-    kwargs_to_cls: Optional[dict[str, Any]] = None,
-    max_items: Integral = 12,
+    args_to_cls: tuple | Any | None = None,
+    kwargs_to_cls: dict[str, Any] | None = None,
+    max_items: int = 12,
 ) -> str:
     """
     Approximate the command to instantiate a class, and access an
@@ -326,11 +325,11 @@ def method_call_string(
     cls,
     method: str,
     *,
-    args_to_cls: Optional[Any] = None,
-    kwargs_to_cls: Optional[dict[str, Any]] = None,
-    args_to_method: Optional[Any] = None,
-    kwargs_to_method: Optional[dict[str, Any]] = None,
-    max_items: Integral = 12,
+    args_to_cls: Any | None = None,
+    kwargs_to_cls: dict[str, Any] | None = None,
+    args_to_method: Any | None = None,
+    kwargs_to_method: dict[str, Any] | None = None,
+    max_items: int = 12,
 ) -> str:
     """
     Approximate the command to instantiate a class, and then call a

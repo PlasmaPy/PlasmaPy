@@ -71,6 +71,8 @@ class ConditionalEvents:
 
     Examples
     --------
+    .. autolink-skip:: section
+
     >>> from plasmapy.analysis.time_series.conditional_averaging import (
     ...     ConditionalEvents,
     ... )
@@ -423,13 +425,16 @@ class ConditionalEvents:
 
         if self._reference_signal_provided:
             for event, peak, reference_event in zip(
-                conditional_events, peak_indices, conditional_events_reference_signal
+                conditional_events,
+                peak_indices,
+                conditional_events_reference_signal,
+                strict=False,
             ):
                 if is_middle_value_highest(reference_event):
                     checked_conditional_events.append(event)
                     checked_peak_indices.append(peak)
         else:
-            for event, peak in zip(conditional_events, peak_indices):
+            for event, peak in zip(conditional_events, peak_indices, strict=False):
                 if is_middle_value_highest(event):
                     checked_conditional_events.append(event)
                     checked_peak_indices.append(peak)
