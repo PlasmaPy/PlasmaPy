@@ -842,9 +842,9 @@ def particle_input(
 
     - Because it dynamically changes arguments, functions decorated with
       |particle_input| often do not work well with static type checkers
-      like mypy_. These errors may be silenced by commenting
+      like mypy. These errors may be silenced by commenting
       :py:`# type: ignore[union-attr]` on a line of code, where
-      ``union-attr`` is the name of the mypy_ error code.
+      ``union-attr`` is the name of the mypy error code.
 
     Examples
     --------
