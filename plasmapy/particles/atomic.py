@@ -783,7 +783,7 @@ def stable_isotopes(
         return [
             isotope
             for isotope in KnownIsotopes
-            if _isotopes.data_about_isotopes[isotope.symbol]["stable"] == stable_only
+            if _isotopes.data_about_isotopes[isotope.isotope]["stable"] == stable_only
         ]
 
     if argument is not None:
