@@ -708,7 +708,7 @@ def common_isotopes(
 
 def stable_isotopes(
     argument: ParticleLike | None = None, unstable: bool = False
-) -> list[str]:
+) -> ParticleList:
     """
     Return a list of all stable isotopes of an element, or if no input is
     provided, a list of all such isotopes for every element.
@@ -725,7 +725,7 @@ def stable_isotopes(
 
     Returns
     -------
-    `list` of `str`
+    |ParticleList|
         List of all stable isotopes of an element, sorted from low to
         high mass number.  If an element has no stable isotopes, this
         function returns an empty list.
@@ -758,20 +758,20 @@ def stable_isotopes(
     Examples
     --------
     >>> stable_isotopes("H")
-    ['H-1', 'D']
+    ParticleList(['H-1', 'D'])
     >>> stable_isotopes(44)
-    ['Ru-96', 'Ru-98', 'Ru-99', 'Ru-100', 'Ru-101', 'Ru-102', 'Ru-104']
+    ParticleList(['Ru-96', 'Ru-98', 'Ru-99', 'Ru-100', 'Ru-101', 'Ru-102', 'Ru-104'])
     >>> stable_isotopes("beryllium")
-    ['Be-9']
+    ParticleList(['Be-9'])
     >>> stable_isotopes("Pb-209")
-    ['Pb-204', 'Pb-206', 'Pb-207', 'Pb-208']
+    ParticleList(['Pb-204', 'Pb-206', 'Pb-207', 'Pb-208'])
     >>> stable_isotopes(118)
-    []
+    ParticleList([])
 
     Find unstable isotopes using the ``unstable`` keyword.
 
     >>> stable_isotopes("U", unstable=True)[:5]  # only first five
-    ['U-217', 'U-218', 'U-219', 'U-220', 'U-221']
+    ParticleList(['U-217', 'U-218', 'U-219', 'U-220', 'U-221'])
     """
 
     # TODO: Allow Particle objects representing elements to be inputs
@@ -802,7 +802,7 @@ def stable_isotopes(
         for atomic_numb in range(1, 119):
             isotopes_list += stable_isotopes_for_element(atomic_numb, not unstable)
 
-    return isotopes_list
+    return ParticleList(isotopes_list)
 
 
 @particle_input
