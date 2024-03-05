@@ -770,8 +770,8 @@ def stable_isotopes(
 
     Find unstable isotopes using the ``unstable`` keyword.
 
-    >>> stable_isotopes("U", unstable=True)[:5]  # only first five
-    ParticleList(['U-217', 'U-218', 'U-219', 'U-220', 'U-221'])
+    >>> stable_isotopes("He", unstable=True)
+    ParticleList(['He-5', 'He-6', 'He-7', 'He-8', 'He-9', 'He-10'])
     """
 
     # TODO: Allow Particle objects representing elements to be inputs
