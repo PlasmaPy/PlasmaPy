@@ -493,7 +493,7 @@ def half_life(particle: Particle, mass_numb: int | None = None) -> u.Quantity[u.
     return particle.half_life
 
 
-def known_isotopes(argument: str | int | None = None) -> list[str]:
+def known_isotopes(argument: str | int | None = None) -> ParticleList:
     """
     Return a list of all known isotopes of an element, or a list of all
     known isotopes of every element if no input is provided.
@@ -506,7 +506,7 @@ def known_isotopes(argument: str | int | None = None) -> list[str]:
 
     Returns
     -------
-    `list` of `str`
+    |ParticleList|
         List of all the isotopes of an element that have been
         discovered, sorted from low to high mass number. If no argument
         is provided, then a list of all known isotopes of every element
@@ -536,11 +536,11 @@ def known_isotopes(argument: str | int | None = None) -> list[str]:
     Examples
     --------
     >>> known_isotopes("H")
-    ['H-1', 'D', 'T', 'H-4', 'H-5', 'H-6', 'H-7']
+    ParticleList(['H-1', 'D', 'T', 'H-4', 'H-5', 'H-6', 'H-7'])
     >>> known_isotopes("helium 1+")
-    ['He-3', 'He-4', 'He-5', 'He-6', 'He-7', 'He-8', 'He-9', 'He-10']
+    ParticleList(['He-3', 'He-4', 'He-5', 'He-6', 'He-7', 'He-8', 'He-9', 'He-10'])
     >>> known_isotopes()[0:10]
-    ['H-1', 'D', 'T', 'H-4', 'H-5', 'H-6', 'H-7', 'He-3', 'He-4', 'He-5']
+    ParticleList(['H-1', 'D', 'T', 'H-4', 'H-5', 'H-6', 'H-7', 'He-3', 'He-4', 'He-5'])
     >>> len(known_isotopes())  # the number of known isotopes
     3352
     """
@@ -582,7 +582,7 @@ def known_isotopes(argument: str | int | None = None) -> list[str]:
         for atomic_numb in range(1, len(_elements.data_about_elements) + 1):
             isotopes_list += known_isotopes_for_element(atomic_numb)
 
-    return isotopes_list
+    return ParticleList(isotopes_list)
 
 
 def common_isotopes(
@@ -664,11 +664,11 @@ def common_isotopes(
         CommonIsotopes = [
             isotope
             for isotope in isotopes
-            if "abundance" in _isotopes.data_about_isotopes[isotope]
+            if "abundance" in _isotopes.data_about_isotopes[isotope.isotope]
         ]
 
         isotopic_abundances = [
-            _isotopes.data_about_isotopes[isotope]["abundance"]
+            _isotopes.data_about_isotopes[isotope.isotope]["abundance"]
             for isotope in CommonIsotopes
         ]
 
@@ -783,7 +783,7 @@ def stable_isotopes(
         return [
             isotope
             for isotope in KnownIsotopes
-            if _isotopes.data_about_isotopes[isotope]["stable"] == stable_only
+            if _isotopes.data_about_isotopes[isotope.symbol]["stable"] == stable_only
         ]
 
     if argument is not None:
