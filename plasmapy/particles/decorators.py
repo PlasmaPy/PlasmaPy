@@ -717,7 +717,7 @@ def particle_input(
        When using both |particle_input| and |validate_quantities| to
        decorate an instance :term:`method`, |particle_input| should be
        the outer decorator and |validate_quantities| should be the inner
-       decorator.
+       decorator (see :issue:`2035`).
 
        .. code-block:: python
 
