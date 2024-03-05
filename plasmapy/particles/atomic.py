@@ -587,7 +587,7 @@ def known_isotopes(argument: str | int | None = None) -> list[str]:
 
 def common_isotopes(
     argument: str | int | None = None, most_common_only: bool = False
-) -> list[str]:
+) -> ParticleList:
     """
     Return a list of isotopes of an element with an isotopic abundances
     greater than zero, or if no input is provided, a list of all such
@@ -641,17 +641,17 @@ def common_isotopes(
     Examples
     --------
     >>> common_isotopes("H")
-    ['H-1', 'D']
+    ParticleList(['H-1', 'D'])
     >>> common_isotopes(44)
-    ['Ru-102', 'Ru-104', 'Ru-101', 'Ru-99', 'Ru-100', 'Ru-96', 'Ru-98']
+    ParticleList(['Ru-102', 'Ru-104', 'Ru-101', 'Ru-99', 'Ru-100', 'Ru-96', 'Ru-98'])
     >>> common_isotopes("beryllium 2+")
-    ['Be-9']
+    ParticleList(['Be-9'])
     >>> common_isotopes("Fe")
-    ['Fe-56', 'Fe-54', 'Fe-57', 'Fe-58']
+    ParticleList(['Fe-56', 'Fe-54', 'Fe-57', 'Fe-58'])
     >>> common_isotopes("Fe", most_common_only=True)
-    ['Fe-56']
+    ParticleList(['Fe-56'])
     >>> common_isotopes()[0:7]
-    ['H-1', 'D', 'He-4', 'He-3', 'Li-7', 'Li-6', 'Be-9']
+    ParticleList(['H-1', 'D', 'He-4', 'He-3', 'Li-7', 'Li-6', 'Be-9'])
     """
 
     # TODO: Allow Particle objects representing elements to be inputs
@@ -703,7 +703,7 @@ def common_isotopes(
         for atomic_numb in range(1, 119):
             isotopes_list += common_isotopes_for_element(atomic_numb, most_common_only)
 
-    return isotopes_list
+    return ParticleList(isotopes_list)
 
 
 def stable_isotopes(
