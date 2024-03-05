@@ -34,17 +34,16 @@ def _get_physical_type_dict(
         A iterable that is expected to contain objects with physical
         types.
 
-    only_quantities : `bool`, |keyword-only|, optional
+    only_quantities : `bool`, |keyword-only|, default: `False:
         If `True`, only `~astropy.units.Quantity` instances in
         ``iterable`` will be passed into the resulting `dict`. If
         `False`, then any unit, |PhysicalType|, or object that can be
         converted to a |Quantity| or that has a physical type will be
-        included in the `dict`. Defaults to `False`.
+        included in the `dict`.
 
     numbers_become_quantities : `bool`, |keyword-only|, default: `False`
-        If `True`, `~numbers.Number` objects will be converted into
-        dimensionless |Quantity| instances. If `False`,
-        `~numbers.Number` objects will be skipped. Defaults to `False`.
+        If `True`, numbers will be converted into dimensionless
+        |Quantity| instances. If `False`, numbers will be skipped.
 
     strict : `bool`, |keyword-only|, default: False
         If `True`, raise a `TypeError` if ``iterable`` provides an

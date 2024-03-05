@@ -44,9 +44,9 @@ def _generate_particle_factory_error_message(
 def _make_custom_particle_with_real_charge_number(
     arg: ParticleLike,
     *,
-    mass_numb: Integral | None = None,
+    mass_numb: int | None = None,
     symbol: str | None = None,
-    Z: Real | None = None,
+    Z: float | None = None,
 ):
     """
     Create a |CustomParticle| for mean or composite ions.

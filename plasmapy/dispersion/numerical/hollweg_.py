@@ -5,7 +5,7 @@ two-fluid dispersion relation.
 __all__ = ["hollweg"]
 
 import warnings
-from numbers import Integral, Real
+from numbers import Real
 
 import astropy.units as u
 import numpy as np
@@ -36,10 +36,10 @@ def hollweg(  # noqa: C901, PLR0912, PLR0915
     *,
     T_e: u.Quantity[u.K],
     T_i: u.Quantity[u.K],
-    gamma_e: Real = 1,
-    gamma_i: Real = 3,
-    mass_numb: Integral | None = None,
-    Z: Real | None = None,
+    gamma_e: float = 1,
+    gamma_i: float = 3,
+    mass_numb: int | None = None,
+    Z: float | None = None,
 ):
     r"""
     Calculate the two-fluid dispersion relation presented by

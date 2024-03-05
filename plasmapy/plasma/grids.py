@@ -142,7 +142,12 @@ class AbstractGrid(ABC):
         """
         return self._recognized_quantities
 
-    def require_quantities(self, req_quantities, replace_with_zeros: bool = False):
+    def require_quantities(
+        self,
+        req_quantities,
+        replace_with_zeros: bool = False,
+        warn_on_replace_with_zeros: bool = True,
+    ):
         r"""
         Check to make sure that a list of required quantities are present.
         Optionally, can create missing quantities and fill them with
@@ -157,6 +162,10 @@ class AbstractGrid(ABC):
             If true, missing quantities will be replaced with an array
             of zeros. If false, an exception will be raised instead.
             The default is False.
+
+        warn_on_replace_with_zeros : `bool`, default: `True`
+            If `True`, warn if a required quantity is replaced with an
+            array of zeros. If `False`, no warning is shown.
 
         Raises
         ------
@@ -186,11 +195,12 @@ class AbstractGrid(ABC):
                         "to be zero."
                     )
 
-                warnings.warn(
-                    f"{rq} is not specified for the provided grid."
-                    "This quantity will be assumed to be zero.",
-                    RuntimeWarning,
-                )
+                if warn_on_replace_with_zeros:
+                    warnings.warn(
+                        f"{rq} is not specified for the provided grid."
+                        "This quantity will be assumed to be zero.",
+                        RuntimeWarning,
+                    )
 
                 unit = self.recognized_quantities[rq].unit
                 arg = {rq: np.zeros(self.shape) * unit}

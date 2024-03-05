@@ -4,13 +4,12 @@ __all__ = [
     "mass_density",
 ]
 __aliases__ = ["rho_"]
-import numbers
 
 import astropy.units as u
 import numpy as np
 from astropy.constants.si import e, eps0, m_e
 
-from plasmapy.particles import Particle, ParticleLike
+from plasmapy.particles.particle_class import Particle, ParticleLike
 from plasmapy.utils.decorators import validate_quantities
 
 __all__ += __aliases__
@@ -69,7 +68,7 @@ def critical_density(omega: u.Quantity[u.rad / u.s]) -> u.Quantity[u.m**-3]:
 def mass_density(
     density: (u.m**-3, u.kg / (u.m**3)),
     particle: ParticleLike,
-    z_ratio: numbers.Real | None = 1,
+    z_ratio: float | None = 1,
 ) -> u.Quantity[u.kg / u.m**3]:
     r"""
     Calculate the mass density from a number density.
