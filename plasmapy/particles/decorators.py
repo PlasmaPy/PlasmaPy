@@ -677,8 +677,7 @@ def particle_input(
     allow_custom_particles: bool = True,
     allow_particle_lists: bool = True,
 ) -> Callable[..., Any]:
-    r"""
-    Convert |particle-like| |arguments| into particle objects.
+    r"""Convert |particle-like| |arguments| into particle objects.
 
     When a callable is |decorated| with |particle_input|,
     |particle-like| arguments that are appropriately |annotated| (i.e.,
@@ -687,9 +686,9 @@ def particle_input(
 
     The parameters ``Z`` and ``mass_numb`` may be used to specify the
     |charge number| of an ion and mass number of an isotope,
-    respectively, as long as ``Z`` and/or ``mass_numb`` are |parameters|
-    accepted by the callable and only one parameter is appropriately
-    annotated.
+    respectively, as long as ``Z`` and/or ``mass_numb`` are
+    |parameters| of the callable and only one parameter is
+    annotated with |ParticleLike| or |ParticleListLike|.
 
     To indicate that `None` can be passed to a parameter, annotate it
     with :py:`ParticleLike | None` or :py:`ParticleListLike | None`.
@@ -700,7 +699,7 @@ def particle_input(
 
     If the annotated parameter is named ``element``, ``isotope``, or
     ``ion``, then |particle_input| will raise an exception if the
-    argument provided to the callable is not consistent with the
+    argument provided to the callable is not consistent with
     parameter.
 
     .. note::
@@ -718,7 +717,7 @@ def particle_input(
        When using both |particle_input| and |validate_quantities| to
        decorate an instance :term:`method`, |particle_input| should be
        the outer decorator and |validate_quantities| should be the inner
-       decorator.
+       decorator (see :issue:`2035`).
 
        .. code-block:: python
 
@@ -822,6 +821,31 @@ def particle_input(
     ~plasmapy.particles.particle_collections.ParticleList
     ~plasmapy.utils.decorators.validators.validate_quantities
 
+    Notes
+    -----
+    There are some known limitations to |particle_input|.
+
+    - Particle categorization criteria are not yet applied to
+      arguments that get converted into a |ParticleList| (see
+      :issue:`2048`).
+
+    - This decorator is not compatible with setters (see
+      :issue:`2507`).
+
+    - |particle_input| has limited compatibility with positional-only,
+      variadic positional, and variadic keyword arguments (see
+      :issue:`2150`).
+
+    - When |particle_input| and |validate_quantities| are both
+      used to decorate an instance method on a class, |particle_input|
+      must be the outside decorator (see :issue:`2035`).
+
+    - Because it dynamically changes arguments, functions decorated with
+      |particle_input| often do not work well with static type checkers
+      like mypy. These errors may be silenced by commenting
+      :py:`# type: ignore[union-attr]` on a line of code, where
+      ``union-attr`` is the name of the mypy error code.
+
     Examples
     --------
     The |particle_input| decorator takes appropriately annotated
@@ -921,6 +945,7 @@ def particle_input(
     ...     return isotope.mass_number
     >>> mass_number("D")
     2
+
     """
 
     # The following pattern comes from the docs for wrapt, and requires
