@@ -1,1 +1,1 @@
-Updated the docstring for plasmapy.formulary.lengths.gyroradius to finish an unfinished sentence.
+Updated the docstring for `~plasmapy.formulary.lengths.gyroradius to` finish an unfinished sentence.
