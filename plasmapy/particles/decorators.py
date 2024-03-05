@@ -699,7 +699,7 @@ def particle_input(
 
     If the annotated parameter is named ``element``, ``isotope``, or
     ``ion``, then |particle_input| will raise an exception if the
-    argument provided to the callable is not consistent with 
+    argument provided to the callable is not consistent with
     parameter.
 
     .. note::
@@ -823,7 +823,7 @@ def particle_input(
 
     Notes
     -----
-    There are some known limitations to |particle_input|.  
+    There are some known limitations to |particle_input|.
 
     - Particle categorization criteria are not yet applied to
       arguments that get converted into a |ParticleList| (see
@@ -832,7 +832,19 @@ def particle_input(
     - This decorator is not compatible with setters (see
       :issue:`2507`).
 
-    - 
+    - |particle_input| has limited compatibility with positional-only,
+      variadic positional, and variadic keyword arguments (see
+      :issue:`2150`).
+
+    - When |particle_input| and |validate_quantities| are both
+      used to decorate an instance method on a class, |particle_input|
+      must be the outside decorator (see :issue:`2035`).
+
+    - Because it dynamically changes arguments, functions decorated with
+      |particle_input| often do not work well with static type checkers
+      like mypy_. These errors may be silenced by commenting
+      :py:`# type: ignore[union-attr]` on a line of code, where
+      ``union-attr`` is the name of the mypy_ error code.
 
     Examples
     --------
