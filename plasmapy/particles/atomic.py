@@ -604,7 +604,7 @@ def common_isotopes(
 
     Returns
     -------
-    `list` of `str`
+    |ParticleList|
         List of all isotopes of an element with isotopic abundances
         greater than zero, sorted from most abundant to least
         abundant.  If no isotopes have isotopic abundances greater
