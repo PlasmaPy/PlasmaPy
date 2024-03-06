@@ -493,7 +493,7 @@ def half_life(particle: ParticleLike, mass_numb: int | None = None) -> u.Quantit
     return particle.half_life  # type: ignore[union-attr]
 
 
-def known_isotopes(argument: ParticleLike | None = None) -> list[Particle]:
+def known_isotopes(argument: ParticleLike | None = None) -> ParticleList:
     """
     Return a list of all known isotopes of an element, or a list of all
     known isotopes of every element if no input is provided.
@@ -506,7 +506,7 @@ def known_isotopes(argument: ParticleLike | None = None) -> list[Particle]:
 
     Returns
     -------
-    `list` of `str`
+    |ParticleList|
         List of all the isotopes of an element that have been
         discovered, sorted from low to high mass number. If no argument
         is provided, then a list of all known isotopes of every element
@@ -536,11 +536,11 @@ def known_isotopes(argument: ParticleLike | None = None) -> list[Particle]:
     Examples
     --------
     >>> known_isotopes("H")
-    ['H-1', 'D', 'T', 'H-4', 'H-5', 'H-6', 'H-7']
+    ParticleList(['H-1', 'D', 'T', 'H-4', 'H-5', 'H-6', 'H-7'])
     >>> known_isotopes("helium 1+")
-    ['He-3', 'He-4', 'He-5', 'He-6', 'He-7', 'He-8', 'He-9', 'He-10']
+    ParticleList(['He-3', 'He-4', 'He-5', 'He-6', 'He-7', 'He-8', 'He-9', 'He-10'])
     >>> known_isotopes()[0:10]
-    ['H-1', 'D', 'T', 'H-4', 'H-5', 'H-6', 'H-7', 'He-3', 'He-4', 'He-5']
+    ParticleList(['H-1', 'D', 'T', 'H-4', 'H-5', 'H-6', 'H-7', 'He-3', 'He-4', 'He-5'])
     >>> len(known_isotopes())  # the number of known isotopes
     3352
     """
@@ -582,12 +582,12 @@ def known_isotopes(argument: ParticleLike | None = None) -> list[Particle]:
         for atomic_numb in range(1, len(_elements.data_about_elements) + 1):
             isotopes_list += known_isotopes_for_element(atomic_numb)
 
-    return isotopes_list
+    return ParticleList(isotopes_list)
 
 
 def common_isotopes(
     argument: ParticleLike | None = None, most_common_only: bool = False
-) -> list[Particle]:
+) -> ParticleList:
     """
     Return a list of isotopes of an element with an isotopic abundances
     greater than zero, or if no input is provided, a list of all such
@@ -604,7 +604,7 @@ def common_isotopes(
 
     Returns
     -------
-    `list` of `str`
+    |ParticleList|
         List of all isotopes of an element with isotopic abundances
         greater than zero, sorted from most abundant to least
         abundant.  If no isotopes have isotopic abundances greater
@@ -641,17 +641,17 @@ def common_isotopes(
     Examples
     --------
     >>> common_isotopes("H")
-    ['H-1', 'D']
+    ParticleList(['H-1', 'D'])
     >>> common_isotopes(44)
-    ['Ru-102', 'Ru-104', 'Ru-101', 'Ru-99', 'Ru-100', 'Ru-96', 'Ru-98']
+    ParticleList(['Ru-102', 'Ru-104', 'Ru-101', 'Ru-99', 'Ru-100', 'Ru-96', 'Ru-98'])
     >>> common_isotopes("beryllium 2+")
-    ['Be-9']
+    ParticleList(['Be-9'])
     >>> common_isotopes("Fe")
-    ['Fe-56', 'Fe-54', 'Fe-57', 'Fe-58']
+    ParticleList(['Fe-56', 'Fe-54', 'Fe-57', 'Fe-58'])
     >>> common_isotopes("Fe", most_common_only=True)
-    ['Fe-56']
+    ParticleList(['Fe-56'])
     >>> common_isotopes()[0:7]
-    ['H-1', 'D', 'He-4', 'He-3', 'Li-7', 'Li-6', 'Be-9']
+    ParticleList(['H-1', 'D', 'He-4', 'He-3', 'Li-7', 'Li-6', 'Be-9'])
     """
 
     # TODO: Allow Particle objects representing elements to be inputs
@@ -664,11 +664,11 @@ def common_isotopes(
         common_isotopes_ = [
             isotope
             for isotope in isotopes
-            if "abundance" in _isotopes.data_about_isotopes[isotope]
+            if "abundance" in _isotopes.data_about_isotopes[isotope.isotope]
         ]
 
         isotopic_abundances = [
-            _isotopes.data_about_isotopes[isotope]["abundance"]
+            _isotopes.data_about_isotopes[isotope.isotope]["abundance"]
             for isotope in common_isotopes_
         ]
 
@@ -703,12 +703,12 @@ def common_isotopes(
         for atomic_numb in range(1, 119):
             isotopes_list += common_isotopes_for_element(atomic_numb, most_common_only)
 
-    return isotopes_list
+    return ParticleList(isotopes_list)
 
 
 def stable_isotopes(
     argument: ParticleLike | None = None, unstable: bool = False
-) -> list[Particle]:
+) -> ParticleList:
     """
     Return a list of all stable isotopes of an element, or if no input is
     provided, a list of all such isotopes for every element.
@@ -725,7 +725,7 @@ def stable_isotopes(
 
     Returns
     -------
-    `list` of `str`
+    |ParticleList|
         List of all stable isotopes of an element, sorted from low to
         high mass number.  If an element has no stable isotopes, this
         function returns an empty list.
@@ -758,20 +758,20 @@ def stable_isotopes(
     Examples
     --------
     >>> stable_isotopes("H")
-    ['H-1', 'D']
+    ParticleList(['H-1', 'D'])
     >>> stable_isotopes(44)
-    ['Ru-96', 'Ru-98', 'Ru-99', 'Ru-100', 'Ru-101', 'Ru-102', 'Ru-104']
+    ParticleList(['Ru-96', 'Ru-98', 'Ru-99', 'Ru-100', 'Ru-101', 'Ru-102', 'Ru-104'])
     >>> stable_isotopes("beryllium")
-    ['Be-9']
+    ParticleList(['Be-9'])
     >>> stable_isotopes("Pb-209")
-    ['Pb-204', 'Pb-206', 'Pb-207', 'Pb-208']
+    ParticleList(['Pb-204', 'Pb-206', 'Pb-207', 'Pb-208'])
     >>> stable_isotopes(118)
-    []
+    ParticleList([])
 
     Find unstable isotopes using the ``unstable`` keyword.
 
-    >>> stable_isotopes("U", unstable=True)[:5]  # only first five
-    ['U-217', 'U-218', 'U-219', 'U-220', 'U-221']
+    >>> stable_isotopes("He", unstable=True)
+    ParticleList(['He-5', 'He-6', 'He-7', 'He-8', 'He-9', 'He-10'])
     """
 
     # TODO: Allow Particle objects representing elements to be inputs
@@ -783,7 +783,7 @@ def stable_isotopes(
         return [
             isotope
             for isotope in KnownIsotopes
-            if _isotopes.data_about_isotopes[isotope]["stable"] == stable_only
+            if _isotopes.data_about_isotopes[isotope.isotope]["stable"] == stable_only
         ]
 
     if argument is not None:
@@ -802,7 +802,7 @@ def stable_isotopes(
         for atomic_numb in range(1, 119):
             isotopes_list += stable_isotopes_for_element(atomic_numb, not unstable)
 
-    return isotopes_list
+    return ParticleList(isotopes_list)
 
 
 @particle_input

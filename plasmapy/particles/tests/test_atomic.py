@@ -483,18 +483,14 @@ def test_isotopic_abundance() -> None:
         isotopic_abundance("Og-2")
 
 
-isotopic_abundance_elements = (
-    atomic_number(atomic_numb) for atomic_numb in range(1, 119)
-)
+atomic_numbers = range(1, 119)
 
-isotopic_abundance_isotopes = (
-    common_isotopes(element) for element in isotopic_abundance_elements
-)
+isotopic_abundance_isotopes = (common_isotopes(element) for element in atomic_numbers)
 
 isotopic_abundance_sum_table = (
     (element, isotopes)
     for element, isotopes in zip(
-        isotopic_abundance_elements, isotopic_abundance_isotopes, strict=False
+        atomic_numbers, isotopic_abundance_isotopes, strict=False
     )
     if isotopes
 )
