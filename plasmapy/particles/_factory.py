@@ -7,19 +7,24 @@ appropriate instance of one of those three classes.
 __all__: list[str] = []
 
 import contextlib
+from collections.abc import Callable, Sequence
 from numbers import Integral, Real
-from typing import Any
 
 import astropy.units as u
 from astropy.constants import m_e
 
 from plasmapy.particles.exceptions import ChargeError, InvalidParticleError
-from plasmapy.particles.particle_class import CustomParticle, Particle, ParticleLike
+from plasmapy.particles.particle_class import (
+    CustomParticle,
+    Particle,
+    ParticleLike,
+)
 from plasmapy.particles.particle_collections import ParticleList
 
 
 def _generate_particle_factory_error_message(
-    args: tuple, kwargs: dict[str, Any]
+    args: ParticleLike | u.Quantity | CustomParticle | Sequence[ParticleLike],
+    kwargs: dict[str, object],
 ) -> str:
     """Compose an error message for invalid particles."""
 
@@ -47,7 +52,7 @@ def _make_custom_particle_with_real_charge_number(
     mass_numb: int | None = None,
     symbol: str | None = None,
     Z: float | None = None,
-):
+) -> CustomParticle:
     """
     Create a |CustomParticle| for mean or composite ions.
 
@@ -92,14 +97,21 @@ def _make_custom_particle_with_real_charge_number(
         # Add tests if this function becomes part of public API
         raise InvalidParticleError("Cannot create CustomParticle.")
 
-    if Z > base_particle.atomic_number:
+    if Z is not None and Z > base_particle.atomic_number:
         raise ChargeError("The charge number cannot exceed the atomic number.")
 
     mass = base_particle.mass - m_e * Z
     return CustomParticle(mass=mass, Z=Z, symbol=symbol)
 
 
-_particle_constructors = (
+_particle_constructors: tuple[
+    type
+    | Callable[
+        [ParticleLike | u.Quantity | CustomParticle | Sequence[ParticleLike]],
+        object,
+    ],
+    ...,
+] = (
     Particle,
     CustomParticle,
     CustomParticle._from_quantities,  # noqa: SLF001
@@ -107,11 +119,12 @@ _particle_constructors = (
     _make_custom_particle_with_real_charge_number,
 )
 
-_particle_types = (Particle, CustomParticle, ParticleList)
+_particle_types: tuple[type, ...] = (Particle, CustomParticle, ParticleList)
 
 
 def _physical_particle_factory(
-    *args, **kwargs
+    *args: ParticleLike | u.Quantity | CustomParticle | Sequence[ParticleLike],
+    **kwargs: ParticleLike | u.Quantity | None,
 ) -> Particle | CustomParticle | ParticleList:
     """
     Return a representation of one or more physical particles.
@@ -182,14 +195,14 @@ def _physical_particle_factory(
             kwargs.pop(parameter)
 
     if len(args) == 1 and not kwargs and isinstance(args[0], _particle_types):
-        return args[0]
+        return args[0]  # type: ignore[return-value]
 
     if not args and not kwargs:
         raise TypeError("Particle information has not been provided.")
 
     for constructor in _particle_constructors:
         with contextlib.suppress(ChargeError, InvalidParticleError, TypeError):
-            return constructor(*args, **kwargs)
+            return constructor(*args, **kwargs)  # type: ignore[return-value]
 
     if args and not isinstance(args[0], str | Integral | u.Quantity):
         raise TypeError("Invalid type for particle.")

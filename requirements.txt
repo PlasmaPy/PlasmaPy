@@ -292,6 +292,7 @@ pytest==8.0.2
 pytest-datadir==1.5.0
     # via pytest-regressions
 pytest-regressions==2.5.0
+pytest-rerunfailures==13.0
 pytest-xdist==3.5.0
 python-dateutil==2.9.0.post0
     # via

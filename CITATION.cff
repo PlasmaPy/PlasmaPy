@@ -453,6 +453,12 @@ authors:
   family-names: Rao
   alias: thecasuist
 
+- given-names: Jeffrey
+  family-names: Reep
+  affiliation: University of Hawai'i at Manoa
+  orcid: https://orcid.org/0000-0003-4739-1152
+  alias: jwreep
+
 - alias: seanjunheng2
 
 - given-names: Steve
