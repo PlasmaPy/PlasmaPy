@@ -187,7 +187,7 @@ def gyroradius(
     --------
     The Lorentz factor can be inferred from ``Vperp`` or ``T`` but near
     the speed of light, this can lead to rounding errors. For very high
-    values of the Lo
+    values of the Lorentz factor, its use should be preferred.
 
     Notes
     -----
