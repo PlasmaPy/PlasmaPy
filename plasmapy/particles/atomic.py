@@ -493,7 +493,6 @@ def half_life(particle: ParticleLike, mass_numb: int | None = None) -> u.Quantit
     return particle.half_life  # type: ignore[union-attr]
 
 
-
 def known_isotopes(argument: ParticleLike | None = None) -> ParticleList:
     """
     Return a list of all known isotopes of an element, or a list of all
