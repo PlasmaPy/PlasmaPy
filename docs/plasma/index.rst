@@ -88,7 +88,7 @@ a Plasma3D system, first create an instance of the
 the :attr:`~plasmapy.plasma.sources.plasma3d.Plasma3D.density`,
 :attr:`~plasmapy.plasma.sources.plasma3d.Plasma3D.momentum`,
 :attr:`~plasmapy.plasma.sources.plasma3d.Plasma3D.pressure` and
-attr:`~plasmapy.plasma.sources.plasma3d.Plasma3D.magnetic_field`.
+:attr:`~plasmapy.plasma.sources.plasma3d.Plasma3D.magnetic_field`.
 
 .. note::
 
