@@ -85,6 +85,21 @@ jobs:
     name: Documentation, pinned dependencies
     runs-on: ubuntu-latest
 
+    strategy:
+      fail-fast: false
+
+      matrix:
+        include:
+
+        - name: Full build
+          toxenv: py312-build_docs
+
+        - name: Parallel build
+          toxenv: py312-build_docs_parallel
+
+        - name: Lite build
+          toxenv: py312-build_docs_no_examples
+
     steps:
 
     - name: Checkout code
@@ -112,7 +127,7 @@ jobs:
         key: docs-${{ runner.os }}-${{ hashFiles('requirements.txt') }}
 
     - name: Build docs
-      run: tox -e build_docs_pins -- -q
+      run: tox -e ${{ matrix.toxenv }}
 
     - name: Print troubleshooting information on failure
       if: ${{ failure() }}
