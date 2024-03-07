@@ -97,6 +97,11 @@ repos:
     additional_dependencies:
     - black==24.1.1
 
+- repo: https://github.com/sphinx-contrib/sphinx-lint
+  rev: v0.9.1
+  hooks:
+  - id: sphinx-lint
+
 - repo: https://github.com/nbQA-dev/nbQA
   rev: 1.7.1
   hooks:
