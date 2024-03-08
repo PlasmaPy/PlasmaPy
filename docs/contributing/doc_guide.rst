@@ -1214,7 +1214,7 @@ sphinx-build_. We recommend starting with |tox|.
 
    .. group-tab:: make
 
-      Building documentation with make_ is usually quicker than |tox|,
+      Building documentation with make_ is quicker than with |tox|,
       and is useful for interactively building and rebuilding the
       documentation.
 
@@ -1230,23 +1230,21 @@ sphinx-build_. We recommend starting with |tox|.
       .. code-block:: bash
 
          make clean
-         make clean-api
 
    .. group-tab:: sphinx-build
 
-      Using sphinx-build_ makes it easier to choose different
-      combinations of `options to sphinx-build`_, but the longer commands
-      make it trickier to use interactively.
+      Using sphinx-build_ allows us to choose different `options to
+      sphinx-build`_ than the defaults used by |tox| and make_.
 
-      We can build documentation with sphinx-build_ by going to the top
-      level directory of our clone of PlasmaPy and running:
+      PlasmaPy's documentation can be build by going to the top-level
+      directory of the repository and running:
 
       .. code-block:: bash
 
-         sphinx-build docs docs/_build/_html -b html -n -W -q --keep-going
+         sphinx-build docs docs/_build/_html -b html
 
-We can access the documentation landing page by opening
-:file:`docs/_build/html/index.html` with a web browser.
+The documentation landing page can be opened with a web browser at
+:file:`docs/_build/html/index.html`.
 
 To check hyperlinks locally, run:
 
@@ -1268,7 +1266,7 @@ To check hyperlinks locally, run:
 
       .. code-block::
 
-         sphinx-build docs docs/_build/_html -b linkcheck -n -W -q --keep-going
+         sphinx-build docs docs/_build/_html -b linkcheck
 
 .. tip::
 
