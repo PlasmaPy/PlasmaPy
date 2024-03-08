@@ -1232,8 +1232,7 @@ sphinx-build_. We recommend starting with |tox|.
          make clean
          make clean-api
 
-   ... group-tab:: sphinx-build
-
+   .. group-tab:: sphinx-build
 
       Using sphinx-build_ makes it easier to choose different
       combinations of `options to sphinx-build`_, but the longer commands
