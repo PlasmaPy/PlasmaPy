@@ -1,6 +1,5 @@
 """Tests for the mathematics.py module."""
 
-
 import numpy as np
 import pytest
 

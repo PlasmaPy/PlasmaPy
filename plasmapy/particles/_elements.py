@@ -4,6 +4,7 @@ Module for loading atomic data for elements from
 
 The periodic tabla data is from: https://periodic.lanl.gov/index.shtml
 """
+
 __all__ = [
     "element_obj_hook",
     "data_about_elements",

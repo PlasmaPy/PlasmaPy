@@ -1,4 +1,5 @@
 """Tests for module :mod:`plasmapy.utils.decorators`."""
+
 import inspect
 from unittest import mock
 

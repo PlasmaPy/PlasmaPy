@@ -2,6 +2,7 @@
 Module for loading isotope data from
 :file:`plasmapy/particles/data/isotopes.json`.
 """
+
 __all__ = [
     "isotope_obj_hook",
     "data_about_isotopes",

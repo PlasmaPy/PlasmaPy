@@ -3,6 +3,7 @@ Common distribution functions for plasmas, such as the Maxwellian or
 Kappa distributions. Functionality is intended to include generation,
 fitting and calculation.
 """
+
 __all__ = [
     "Maxwellian_1D",
     "Maxwellian_velocity_2D",

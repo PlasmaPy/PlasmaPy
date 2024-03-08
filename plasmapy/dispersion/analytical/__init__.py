@@ -6,6 +6,7 @@ associated with analytical dispersion solutions.
 
    |expect-api-changes|
 """
+
 __all__ = [
     "two_fluid",
     "stix",
