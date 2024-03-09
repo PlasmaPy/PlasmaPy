@@ -23,7 +23,7 @@ _BASE_URL = "https://raw.githubusercontent.com/PlasmaPy/PlasmaPy-data/main/"
 _default_downloads_folder = Path(Path.home(), ".plasmapy", "downloads")
 
 
-def update_downloads(directory: str | None = None) -> None:
+def update_downloads(directory: str | None = None) -> list:
     r"""
     Updates all downloaded resource files in the provided directory.
 
@@ -33,7 +33,6 @@ def update_downloads(directory: str | None = None) -> None:
         The full path to the desired download location. Defaults to the
         default PlasmaPy data download directory
         :file:`plasmapy/utils/data/downloads/`\ .
-
 
     Returns
     -------
@@ -59,7 +58,12 @@ def update_downloads(directory: str | None = None) -> None:
     return files_updated
 
 
-def get_file(basename, base_url=_BASE_URL, directory=None, force_download=False):
+def get_file(
+    basename: str,
+    base_url: str = _BASE_URL,
+    directory: str | None = None,
+    force_download: bool = False,
+) -> Path:
     r"""
     Download a file from a URL (if the file does not already exist) and
     return the full local path to the file.
