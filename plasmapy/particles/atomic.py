@@ -19,6 +19,7 @@ __all__ = [
     "reduced_mass",
     "stable_isotopes",
     "standard_atomic_weight",
+    "stopping_power",
 ]
 
 from numbers import Integral
