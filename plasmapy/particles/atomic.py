@@ -1153,21 +1153,22 @@ def stopping_power(
     energies : `~astropy.units.Quantity`, default: See notes.
         The particle kinetic energies for which the stopping power is calculated.
 
-    component : `str`, default: `total`
-        The component of the stopping power to be calculated. Supported values are `electronic`,
-        `nuclear`, and `total` for the electronic, nuclear, and total energies, respectively.
+    component : `str`, default: ``total``
+        The component of the stopping power to be calculated. Supported values are ``electronic``,
+        ``nuclear``, and ``total`` for the electronic, nuclear, and total energies, respectively.
 
     Returns
     -------
-    `tuple[u.Quantity[u.MeV], u.Quantity[u.MeV * u.cm**2 / u.g]]`
+    `Tuple[u.Quantity, u.Quantity[u.MeV * u.cm**2 / u.g]]`
         A two-tuple where the first element represents the energy values. The
         second element is an array of the associated stopping powers.
 
     Notes
     -----
     The data for stopping power is taken from the National Institute of
-    Standards and Technology's Stopping-Power and Range Tables:cite:p:`niststar:2005`.
-    Valid materials can be found on the NIST STAR website.
+    Standards and Technology's Stopping-Power and Range Tables :cite:p:`niststar:2005`.
+    Valid materials can be found on the NIST STAR website. The default energies
+    are taken from the data points in the STAR database.
 
     """
 
