@@ -611,6 +611,24 @@ def test_invalid_inputs_to_ion_list2(element, min_charge, max_charge) -> None:
 
 
 @pytest.mark.parametrize(
+    ("incident_particle", "material", "kwargs", "expected_error"),
+    [
+        # ESTAR not implemented
+        (Particle("e-"), "OXYGEN", {}, NotImplementedError),
+        # Invalid incident particle
+        (Particle("O"), "OXYGEN", {}, ValueError),
+        # Invalid material
+        (Particle("H+"), "BENZENE", {}, ValueError),
+        # Invalid component
+        (Particle("H+"), "OXYGEN", {"component": "Lorem Ipsum"}, ValueError),
+    ],
+)
+def test_stopping_power_errors(incident_particle, material, kwargs, expected_error):
+    with pytest.raises(expected_error):
+        stopping_power(incident_particle, material, **kwargs)
+
+
+@pytest.mark.parametrize(
     ("incident_particle", "material", "energies", "expected_stopping_power"),
     [
         # Test ASTAR interpolation
@@ -638,6 +656,7 @@ def test_invalid_inputs_to_ion_list2(element, min_charge, max_charge) -> None:
 def test_stopping_power_interpolation(
     incident_particle, material, energies, expected_stopping_power
 ):
+    """Test the interpolation functionality of the stopping power function against NIST values"""
     _, actual_stopping_power = stopping_power(incident_particle, material, energies)
 
     # NIST data is given to four significant figures: use a tolerance of 1 part in 1000
