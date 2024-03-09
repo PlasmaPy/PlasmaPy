@@ -1137,7 +1137,38 @@ def stopping_power(
     material: str,
     energies: u.Quantity[u.MeV] | None = None,
     component="total",
-):
+) -> tuple[u.Quantity, u.Quantity]:
+    """Calculate stopping powers for a provided particle in a provided material.
+
+    Parameters
+    ----------
+    incident_particle : |Particle|
+        The incident particle. Only protons and alpha particles are currently supported.
+
+    material : `str`
+        The material the particle is being stopped in. See notes for details on supported materials.
+
+    energies : `~astropy.units.Quantity`, default: See notes.
+        The particle kinetic energies for which the stopping power is calculated.
+
+    component : `str`, default: `total`
+        The component of the stopping power to be calculated. Supported values are `electronic`,
+        `nuclear`, and `total` for the electronic, nuclear, and total energies, respectively.
+
+    Returns
+    -------
+    `tuple[u.Quantity[u.MeV], u.Quantity[u.MeV * u.cm**2 / u.g]]`
+        A two-tuple where the first element represents the energy values. The
+        second element is an array of the associated stopping powers.
+
+    Notes
+    -----
+    The data for stopping power is taken from the National Institute of
+    Standards and Technology's Stopping-Power and Range Tables:cite:p:`niststar:2005`.
+    Valid materials can be found on the NIST STAR website.
+
+    """
+
     nist_data_path = get_file("NIST_STAR.hdf5")
 
     # Validate particle input. Currently, the only supported particles are protons and electrons.
