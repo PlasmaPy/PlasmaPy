@@ -1,5 +1,7 @@
 import numpy as np
 import pytest
+import os
+from pathlib import Path
 
 from plasmapy.utils.data import downloader
 
@@ -54,3 +56,45 @@ def test_get_file_NIST_PSTAR_datafile(tmp_path) -> None:
 
     arr = np.loadtxt(path, skiprows=7)
     assert np.allclose(arr[0, :], np.array([1e-3, 1.043e2]))
+    
+    
+    
+def test_update_downloads(tmp_path)->None:
+    """Test the update_downloads function"""
+ 
+    # Create a file with the same name as a file from the data repository
+    # but with different content 
+    invalid_data = "Invalid data"
+    data_path = Path(tmp_path, "NIST_PSTAR_aluminum.txt")
+    with open(data_path, 'w') as f:
+        f.write(invalid_data)
+        
+    # Create another file and directory that shouldn't be touched by the
+    # updating function 
+    folder_path = Path(tmp_path, 'folder')
+    os.makedirs(folder_path, exist_ok=True)
+
+    file_path = Path(tmp_path, 'file1.txt')
+    test_data = 'Test data'
+    with open(file_path, 'w') as f:
+        f.write(test_data)
+    
+    # Update files in the directory
+    files_updated = downloader.update_downloads(directory=tmp_path)
+    
+    # One file should have been updated 
+    assert len(files_updated) == 1
+    
+    # The first line of the updated file should now be different 
+    with open(data_path, 'r') as f:
+       first_line = f.readline()
+    assert first_line != invalid_data
+    
+    # The folder and other file should still be there
+    assert folder_path.is_dir()
+    assert file_path.is_file()
+    
+    with open(file_path, 'r') as f:
+       first_line = f.readline()
+    assert first_line == test_data
+    
