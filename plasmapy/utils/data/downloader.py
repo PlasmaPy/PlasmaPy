@@ -23,7 +23,7 @@ _BASE_URL = "https://raw.githubusercontent.com/PlasmaPy/PlasmaPy-data/main/"
 _default_downloads_folder = Path(Path.home(), ".plasmapy", "downloads")
 
 
-def update_downloads(directory: str | None = None) -> list:
+def update_downloads(directory: Path | str | None = None) -> list[Path]:
     r"""
     Updates all downloaded resource files in the provided directory.
 
@@ -43,6 +43,8 @@ def update_downloads(directory: str | None = None) -> list:
 
     if directory is None:
         directory = _default_downloads_folder
+    elif isinstance(directory, str):
+        directory = Path(directory)
 
     files_updated = []
     for path in directory.glob("**/*"):
@@ -61,7 +63,7 @@ def update_downloads(directory: str | None = None) -> list:
 def get_file(
     basename: str,
     base_url: str = _BASE_URL,
-    directory: str | None = None,
+    directory: Path | str | None = None,
     force_download: bool = False,
 ) -> Path:
     r"""
@@ -105,6 +107,8 @@ def get_file(
 
     if directory is None:
         directory = _default_downloads_folder
+    elif isinstance(directory, str):
+        directory = Path(directory)
 
         # Create the .plasmapy/downloads directory if it does not already
         # exist
