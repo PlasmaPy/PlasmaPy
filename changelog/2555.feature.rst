@@ -1,1 +1,1 @@
-Implemented `~plasmapy.particle.atomic.stopping_power` to calculate stopping powers using the NIST's ASTAR and PSTAR data.
+Implemented `~plasmapy.particles.atomic.stopping_power` to calculate stopping powers using the NIST's ASTAR and PSTAR data.
