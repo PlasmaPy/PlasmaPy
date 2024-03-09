@@ -1187,6 +1187,11 @@ def stopping_power(
                 x=np.log(baseline_energies_data), y=np.log(relevant_stopping_data)
             )
 
-            return np.exp(cs(np.log(energies.to("MeV").value))) * u.MeV * u.cm**2 / u.g
+            return energies, np.exp(
+                cs(np.log(energies.to("MeV").value))
+            ) * u.MeV * u.cm**2 / u.g
 
-        return relevant_stopping_data * u.MeV * u.cm**2 / u.g
+        return (
+            baseline_energies_data * u.MeV,
+            relevant_stopping_data * u.MeV * u.cm**2 / u.g,
+        )

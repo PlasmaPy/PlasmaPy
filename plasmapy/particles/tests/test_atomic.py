@@ -24,6 +24,7 @@ from plasmapy.particles.atomic import (
     reduced_mass,
     stable_isotopes,
     standard_atomic_weight,
+    stopping_power,
 )
 from plasmapy.particles.exceptions import (
     ChargeError,
@@ -607,3 +608,37 @@ def test_ion_list2(particle, min_charge, max_charge, expected_charge_numbers) ->
 def test_invalid_inputs_to_ion_list2(element, min_charge, max_charge) -> None:
     with pytest.raises(ChargeError):
         ionic_levels(element, min_charge, max_charge)
+
+
+@pytest.mark.parametrize(
+    ("incident_particle", "material", "energies", "expected_stopping_power"),
+    [
+        # Test ASTAR interpolation
+        (
+            Particle("He-4"),
+            "OXYGEN",
+            [1.25e-3, 1.25e-2, 1.25e-1, 1.25, 1.25e1, 1.25e2] * u.MeV,
+            [2.383e2, 4.055e2, 1.048e3, 1.669e3, 3.837e2, 6.273e1]
+            * u.MeV
+            * u.cm**2
+            / u.g,
+        ),
+        # Test PSTAR interpolation
+        (
+            Particle("H+"),
+            "HYDROGEN",
+            [1.25e-3, 1.25e-2, 1.25e-1, 1.25, 1.25e1, 1.25e2] * u.MeV,
+            [1.030e3, 2.621e3, 3.188e3, 5.673e2, 8.44e1, 1.295e1]
+            * u.MeV
+            * u.cm**2
+            / u.g,
+        ),
+    ],
+)
+def test_stopping_power_interpolation(
+    incident_particle, material, energies, expected_stopping_power
+):
+    _, actual_stopping_power = stopping_power(incident_particle, material, energies)
+
+    # NIST data is given to four significant figures: use a tolerance of 1 part in 1000
+    assert np.isclose(actual_stopping_power, expected_stopping_power, rtol=0.001).all()
