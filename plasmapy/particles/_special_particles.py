@@ -2,6 +2,7 @@
 Classes, sets, and dictionaries to store data and taxonomy information
 for special particles.
 """
+
 __all__ = [
     "antiparticles",
     "create_particles_dict",
