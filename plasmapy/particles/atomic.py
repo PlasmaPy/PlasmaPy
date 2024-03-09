@@ -1159,7 +1159,7 @@ def stopping_power(
 
     Returns
     -------
-    `Tuple[u.Quantity, u.Quantity[u.MeV * u.cm**2 / u.g]]`
+    ``Tuple[u.Quantity, u.Quantity[u.MeV * u.cm**2 / u.g]]``
         A two-tuple where the first element represents the energy values. The
         second element is an array of the associated stopping powers.
 
