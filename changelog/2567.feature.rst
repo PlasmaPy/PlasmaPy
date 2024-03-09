@@ -1,0 +1,2 @@
+Added a function `~plasmapy.utils.data.downloader.update_files` that will 
+update all downloaded files in the downloads directory. 
