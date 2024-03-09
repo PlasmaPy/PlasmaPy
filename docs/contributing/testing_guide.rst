@@ -471,6 +471,22 @@ balanced with each other rather than absolute principles.
   failing. If a test depends on random numbers, use the same random
   seed for each automated test run.
 
+  .. tip::
+
+     Tests that fail intermittently can be decorated with the
+     :py:`@pytest.mark.flaky` decorator from `pytest-rerunfailures`_
+     to indicate that the test should be rerun in case of failures:
+
+     .. code-block:: python
+
+        @pytest.mark.flaky(reruns=5)  # see issue 1548
+        def test_optical_density_histogram(): ...
+
+     Each usage of this decorator should have a comment that either
+     indicates why the test occasionally fails (for example, if the
+     test must download data from an external source) or refers to an
+     issue describing the intermittent failures.
+
 * **Avoid testing implementation details.** Fine-grained tests help us
   find and fix bugs. However, tests that are too fine-grained become
   brittle and lose resistance to refactoring. Avoid testing
@@ -833,6 +849,7 @@ popular IDEs:
 .. _PyCharm: https://www.jetbrains.com/pycharm
 .. _pytest: https://docs.pytest.org
 .. _`pytest-cov`: https://pytest-cov.readthedocs.io
+.. _`pytest-rerunfailures`: https://github.com/pytest-dev/pytest-rerunfailures
 .. _`Python debugger`: https://docs.python.org/3/library/pdb.html
 .. _refactoring: https://refactoring.guru/refactoring/techniques
 .. _`test discovery conventions`: https://docs.pytest.org/en/latest/goodpractices.html#conventions-for-python-test-discovery

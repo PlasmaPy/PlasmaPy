@@ -1,6 +1,7 @@
 """
 Module containing the Collisional Analysis formulation.
 """
+
 __all__ = ["temp_ratio"]
 
 import logging

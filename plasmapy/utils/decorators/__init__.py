@@ -1,6 +1,7 @@
 """
 A module to contain various decorators used to build readable and useful code.
 """
+
 __all__ = [
     "angular_freq_to_hz",
     "check_relativistic",

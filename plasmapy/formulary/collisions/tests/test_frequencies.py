@@ -43,9 +43,9 @@ class TestSingleParticleCollisionFrequencies:
     )
 
     for argument_to_convert in arguments_to_convert:
-        CGS_unit_conversion_test_constructor_arguments[
-            argument_to_convert
-        ] = CGS_unit_conversion_test_constructor_arguments[argument_to_convert].cgs
+        CGS_unit_conversion_test_constructor_arguments[argument_to_convert] = (
+            CGS_unit_conversion_test_constructor_arguments[argument_to_convert].cgs
+        )
 
     MKS_test_case = SingleParticleCollisionFrequencies(
         **MKS_unit_conversion_test_constructor_arguments

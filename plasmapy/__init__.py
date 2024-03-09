@@ -9,6 +9,7 @@ online documentation <https://docs.plasmapy.org>`__ or use
 For more information about the PlasmaPy community, please check out
 `PlasmaPy's website <https://www.plasmapy.org>`__.
 """
+
 __all__ = [
     "online_help",
     "analysis",
