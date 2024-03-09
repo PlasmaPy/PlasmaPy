@@ -1,4 +1,5 @@
 """Tests for functionality contained in `plasmapy.formulary.lengths`."""
+
 import warnings
 
 import astropy.units as u

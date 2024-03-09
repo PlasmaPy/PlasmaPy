@@ -6,6 +6,7 @@ plasma frequency.
 - `~plasmapy.formulary.frequencies.plasma_frequency_lite`
 - `~plasmapy.formulary.frequencies.wp_`
 """
+
 import astropy.units as u
 import numpy as np
 import pytest

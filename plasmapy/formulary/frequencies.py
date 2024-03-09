@@ -1,4 +1,5 @@
 """Functions to calculate fundamental plasma frequency parameters."""
+
 __all__ = [
     "gyrofrequency",
     "lower_hybrid_frequency",

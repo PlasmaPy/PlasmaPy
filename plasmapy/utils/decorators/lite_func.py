@@ -2,6 +2,7 @@
 Module for defining functionality that marks and handle Lite-Function
 creation.
 """
+
 __all__ = ["bind_lite_func"]
 
 import functools

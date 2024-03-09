@@ -1,4 +1,5 @@
 """Functionality for reading in HDF5 files following the OpenPMD standard."""
+
 from types import TracebackType
 
 __all__ = ["HDF5Reader"]

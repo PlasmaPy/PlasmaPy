@@ -1,6 +1,7 @@
 """
 Module of length parameters related to collisions.
 """
+
 __all__ = ["impact_parameter_perp", "impact_parameter", "mean_free_path"]
 
 
