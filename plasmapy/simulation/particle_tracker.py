@@ -294,12 +294,10 @@ class AbstractSaveRoutine(ABC):
         # """Save the current state of the simulation to disk or memory based on whether the output directory was set."""
         """Save the current state of the simulation to memory."""
 
-        # if self.output_directory is not None:
-        #     self._save_to_disk()
-        # else:
-        #     self._save_to_memory()
-
         self._save_to_memory()
+
+        if self.output_directory is not None:
+            self._save_to_disk()
 
     def _save_to_disk(self) -> None:
         """Save a hdf5 file containing simulation positions and velocities."""
@@ -356,13 +354,9 @@ class AbstractSaveRoutine(ABC):
 
         # Update the result dictionary
         if self.save_now or final_save:
-            self._save_to_memory()
+            self.save()
 
         if final_save:
-            # If this is the final save and an output directory is specified than save to disk
-            if self.output_directory is not None:
-                self._save_to_disk()
-
             self._apply_units_to_results()
 
 
