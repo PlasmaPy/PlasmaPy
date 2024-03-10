@@ -238,7 +238,7 @@ class TestParticleTrackerGyroradius:
 
     def test_gyroradius(self):
         """Test to ensure particles maintain their gyroradius over time"""
-        _, positions, _ = self.save_routine.results()
+        positions = self.save_routine.results["x"]
         distances = np.linalg.norm(positions, axis=-1)
 
         assert np.isclose(distances, self.R_L, rtol=5e-2).all()
@@ -248,7 +248,7 @@ class TestParticleTrackerGyroradius:
 
         initial_kinetic_energies = 0.5 * self.point_particle.mass * self.v_x**2
 
-        _, _, velocities = self.save_routine.results()
+        velocities = self.save_routine.results["v"]
         speeds = np.linalg.norm(velocities, axis=-1)
         simulation_kinetic_energies = 0.5 * self.point_particle.mass * speeds**2
 
@@ -283,12 +283,18 @@ def test_particle_tracker_potential_difference(request, E_strength, L, mass, cha
     )
     save_routine = request.getfixturevalue("memory_interval_save_routine_instantiated")
 
-    simulation = ParticleTracker(grid, termination_condition, save_routine, dt=dt)
+    simulation = ParticleTracker(
+        grid,
+        termination_condition,
+        save_routine,
+        dt=dt,
+        field_weighting="nearest neighbor",
+    )
     simulation.load_particles(x, v, point_particle)
 
     simulation.run()
 
-    _, _, velocities = save_routine.results()
+    velocities = save_routine.results["v"]
     velocities_particle = velocities[:, 0]
 
     speeds = np.linalg.norm(velocities_particle, axis=-1)

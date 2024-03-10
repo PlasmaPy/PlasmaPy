@@ -916,7 +916,7 @@ class Tracker(ParticleTracker):
         # Advance the particles to the image plane
         self._coast_to_plane(self.detector, self.det_hdir, self.det_vdir, x=self.x)
 
-        self.save_routine.post_push_hook(force_save=True)
+        self.save_routine.post_push_hook(final_save=True)
 
         # Log a summary of the run
         self._log("Run completed")

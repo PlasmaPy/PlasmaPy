@@ -263,8 +263,9 @@ class AbstractSaveRoutine(ABC):
     def __init__(self, output_directory: Path | None = None) -> None:
         self.output_directory = output_directory
 
-        self.x_all = []
-        self.v_all = []
+        # self.x_all = []
+        # self.v_all = []
+        self.results = {"x": [], "v": []}
 
         self._particle_tracker: ParticleTracker | None = None
 
@@ -290,28 +291,59 @@ class AbstractSaveRoutine(ABC):
         ...
 
     def save(self) -> None:
-        """Save the current state of the simulation to disk or memory based on whether the output directory was set."""
+        # """Save the current state of the simulation to disk or memory based on whether the output directory was set."""
+        """Save the current state of the simulation to memory."""
 
-        if self.output_directory is not None:
-            self._save_to_disk()
-        else:
-            self._save_to_memory()
+        # if self.output_directory is not None:
+        #     self._save_to_disk()
+        # else:
+        #     self._save_to_memory()
+
+        self._save_to_memory()
 
     def _save_to_disk(self) -> None:
         """Save a hdf5 file containing simulation positions and velocities."""
+        #
+        # path = self.output_directory / f"{self.tracker.iteration_number}.hdf5"
+        #
+        # with h5py.File(path, "w") as output_file:
+        #     output_file["x"] = self.tracker.x
+        #     output_file["v"] = self.tracker.v
 
         path = self.output_directory / f"{self.tracker.iteration_number}.hdf5"
+        attributes = self.results.get("attributes", [])
 
         with h5py.File(path, "w") as output_file:
-            output_file["x"] = self.tracker.x
-            output_file["v"] = self.tracker.v
+            for key, value in self.results.items():
+                if key == "attributes":
+                    continue
 
+                # Should this entry be saved as an attribute (magnification, number of particles)
+                # or a dataset (positions, velocities)
+                if key in attributes:
+                    output_file.attrs.create(key, value)
+                else:
+                    output_file.create_dataset(key, data=value)
+
+    # TODO: Find a better name for this method
     def _save_to_memory(self) -> None:
-        """Append simulation positions and velocities to save routine object."""
-        self.x_all.append(np.copy(self._particle_tracker.x))
-        self.v_all.append(np.copy(self._particle_tracker.v))
+        """Update the results dictionary with the current state of the simulation."""
+        # """Append simulation positions and velocities to save routine object."""
+        # self.x_all.append(np.copy(self._particle_tracker.x))
+        # self.v_all.append(np.copy(self._particle_tracker.v))
 
-    def post_push_hook(self, force_save=False) -> None:
+        self.results["x"].append(np.copy(self._particle_tracker.x))
+        self.results["v"].append(np.copy(self._particle_tracker.v))
+
+    def _apply_units_to_results(self):
+        """Apply units to the results dictionary.
+
+        This function is called once the simulation has concluded.
+        """
+        self.results["x"] = self.results["x"] * u.m
+        self.results["v"] = self.results["v"] * u.m / u.s
+
+    def post_push_hook(self, final_save=False) -> None:
         """Function called after a push step.
 
         This function is responsible for handling two steps of save routine, namely:
@@ -319,8 +351,19 @@ class AbstractSaveRoutine(ABC):
             - How the simulation data is saved (i.e. to disk or memory)
 
         """
-        if self.save_now or force_save:
-            self.save()
+        # if self.save_now or final_save:
+        #     self.save()
+
+        # Update the result dictionary
+        if self.save_now or final_save:
+            self._save_to_memory()
+
+        if final_save:
+            # If this is the final save and an output directory is specified than save to disk
+            if self.output_directory is not None:
+                self._save_to_disk()
+
+            self._apply_units_to_results()
 
 
 class DoNotSaveSaveRoutine(AbstractSaveRoutine):
@@ -348,7 +391,9 @@ class IntervalSaveRoutine(AbstractSaveRoutine):
 
     def __init__(self, interval: u.Quantity, **kwargs) -> None:
         super().__init__(**kwargs)
-        self.t_all: list[float] = []
+        # self.t_all: list[float] = []
+
+        self.results["t"] = []
 
         self.save_interval: float = interval.to(u.s).value
         self.time_of_last_save: float = 0
@@ -371,18 +416,32 @@ class IntervalSaveRoutine(AbstractSaveRoutine):
         super().save()
 
         self.time_of_last_save = self.tracker.time
-        self.t_all.append(self.tracker.time)
+        # self.t_all.append(self.tracker.time)
 
-    def results(self) -> tuple[u.Quantity, u.Quantity, u.Quantity]:
-        """Return the results of the simulation.
-        The quantities returned are the times, positions, and velocities, respectively.
-        """
+    def _apply_units_to_results(self):
+        super()._apply_units_to_results()
 
-        return (
-            np.asarray(self.t_all) * u.s,
-            np.asarray(self.x_all) * u.m,
-            np.asarray(self.v_all) * u.m / u.s,
-        )
+        self.results["t"] = self.results["t"] * u.s
+
+    def _save_to_memory(self) -> None:
+        """Save the positions, velocities, and times of the current state of the simulation."""
+
+        # The base class will handle saving the position and velocities
+        super()._save_to_memory()
+
+        # Update the time list
+        self.results["t"].append(self.tracker.time)
+
+    # def results(self) -> tuple[u.Quantity, u.Quantity, u.Quantity]:
+    #     """Return the results of the simulation.
+    #     The quantities returned are the times, positions, and velocities, respectively.
+    #     """
+    #
+    #     return (
+    #         np.asarray(self.t_all) * u.s,
+    #         np.asarray(self.x_all) * u.m,
+    #         np.asarray(self.v_all) * u.m / u.s,
+    #     )
 
 
 class ParticleTracker:
@@ -832,7 +891,7 @@ class ParticleTracker:
         self._has_run = True
 
         if self.save_routine is not None:
-            self.save_routine.post_push_hook(force_save=True)
+            self.save_routine.post_push_hook(final_save=True)
 
         pbar.close()
 
