@@ -1,0 +1,3 @@
+Replaced `~plasmapy.utils.data.downloader` module with `~plasmapy.utils.data.resources`
+which contains the `~plasmapy.utils.data.resources.Resources` class for downloading
+resource files from |PlasmaPy's data repository|.
