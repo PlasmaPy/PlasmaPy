@@ -172,7 +172,6 @@ class Resources:
         # If online file cannot be found, set the sha hash to None
         except (requests.ConnectionError, FileNotFoundError):
             online_sha = None
-            dl_url = None
 
         # If local sha and online sha are equal, return the local filepath
         if local_sha == online_sha and local_sha is not None:
