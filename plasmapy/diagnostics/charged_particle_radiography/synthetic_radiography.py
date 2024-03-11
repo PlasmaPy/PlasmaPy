@@ -903,8 +903,9 @@ class Tracker(ParticleTracker):
         # This will be used later to calculate the maximum deflection
         self.v_init = np.copy(self.v)
 
-        # Determine which particles should be removed
         # These particles will not be pushed through the fields
+        # but instead will be automatically advanced
+        # to the detector plane
         theta_mask = self.theta >= self.max_theta_hit_grid
         self.x = self._coast_to_plane(
             self.detector, self.det_hdir, self.det_vdir, mask=theta_mask
@@ -937,7 +938,7 @@ class Tracker(ParticleTracker):
         # Advance the particles to the image plane
         self._coast_to_plane(self.detector, self.det_hdir, self.det_vdir, x=self.x)
 
-        self.save_routine.post_push_hook(final_save=True)
+        self.save_routine.save()
 
         # Log a summary of the run
         self._log("Run completed")

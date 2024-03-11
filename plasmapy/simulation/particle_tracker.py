@@ -300,8 +300,11 @@ class AbstractSaveRoutine(ABC):
         return self._apply_units_to_results()
 
     def save(self) -> None:
-        # """Save the current state of the simulation to disk or memory based on whether the output directory was set."""
-        """Save the current state of the simulation to memory."""
+        """Save the current state of the simulation to memory.
+
+        If an output directory is specified then the state will also be saved
+        to the disk.
+        """
 
         self._save_to_memory()
 
@@ -344,7 +347,7 @@ class AbstractSaveRoutine(ABC):
 
         return results_copy
 
-    def post_push_hook(self, final_save=False) -> None:
+    def post_push_hook(self) -> None:
         """Function called after a push step.
 
         This function is responsible for handling two steps of save routine, namely:
@@ -354,7 +357,7 @@ class AbstractSaveRoutine(ABC):
         """
 
         # Update the result dictionary
-        if self.save_now or final_save:
+        if self.save_now:
             self.save()
 
 
@@ -860,7 +863,7 @@ class ParticleTracker:
         self._has_run = True
 
         if self.save_routine is not None:
-            self.save_routine.post_push_hook(final_save=True)
+            self.save_routine.save()
 
         pbar.close()
 
