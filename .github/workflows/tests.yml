@@ -179,10 +179,6 @@ jobs:
       run: |
         pip install --progress-bar off .
 
-    - name: Uninstall PlasmaPy with pip
-      run: |
-        pip uninstall plasmapy
-
     - name: Perform editable installation with tests & docs requirements sets
       run: |
         pip install --progress-bar off -e .[tests,docs]
