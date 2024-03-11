@@ -17,66 +17,71 @@ jobs:
       matrix:
         include:
 
-        - name: Python 3.12 (macOS)
+        - name: Python 3.12, with doctests, all tests (macOS)
           os: macos-latest
           python: '3.12'
           toxenv: py312-pins-pytest_doctests_all
 
-        - name: Python 3.11 (Ubuntu)
+        - name: Python 3.11, all tests (Ubuntu)
           os: ubuntu-latest
           python: '3.11'
           toxenv: py311-pins-pytest_all
 
-        - name: Python 3.10 (Windows)
+        - name: Python 3.10, all tests (Windows)
           os: windows-latest
           python: '3.10'
           toxenv: py310-pins-pytest_all
 
-        - name: Python 3.10 (Windows), lowest direct dependencies
-          os: windows-latest
+        - name: Python 3.10, lowest direct dependencies, all tests (macOS)
+          os: macos-latest
           python: '3.10'
           toxenv: py310-lowest_direct-pytest_all
 
-        - name: Python 3.10 with Astropy dev (Ubuntu)
+        - name: Python 3.10, with Astropy dev, all tests (Ubuntu)
           os: ubuntu-latest
           python: '3.10'
           toxenv: py310-pytest_all-astropydev
 
-        - name: Python 3.10 with matplotlib dev (Ubuntu)
+        - name: Python 3.10, with matplotlib dev, all tests (Ubuntu)
           os: ubuntu-latest
           python: '3.10'
-          toxenv: py310-pytest_all-matplotlibdev
+          toxenv: py312-pytest_all-matplotlibdev
 
-        - name: Python 3.10 with NumPy dev (Ubuntu)
+        - name: Python 3.10, with NumPy dev, all tests (Ubuntu)
           os: ubuntu-latest
           python: '3.10'
-          toxenv: py310-pytest_all-numpydev
+          toxenv: py312-pytest_all-numpydev
 
-        - name: Python '3.10' with xarray dev (Ubuntu)
+        - name: Python 3.12, with NumPy dev, all tests (Windows)
+          os: windows-latest
+          python: '3.12'
+          toxenv: py312-pytest_all-numpydev
+
+        - name: Python 3.10, all tests, xarray dev (Ubuntu)
           os: ubuntu-latest
           python: '3.10'
           toxenv: py310-pytest_all-xarraydev
 
-        - name: Documentation with Sphinx dev (Ubuntu)
+        - name: Documentation, with Sphinx dev, with Sphinx dev (Python 3.12, Ubuntu)
           os: ubuntu-latest
           python: '3.12'
           toxenv: build_docs-sphinxdev
           toxposargs: -q
 
-        - name: Import PlasmaPy (Windows)
+        - name: Import PlasmaPy (Python 3.10, Windows)
           os: windows-latest
           python: '3.10'
           toxenv: py310-lowest_direct-pypi-import
 
-        - name: Import PlasmaPy (macOS)
+        - name: Import PlasmaPy (Python 3.11, macOS)
           os: macos-latest
-          python: '3.10'
-          toxenv: py310-lowest_direct-pypi-import
+          python: '3.11'
+          toxenv: py311-lowest_direct-pypi-import
 
-        - name: Import PlasmaPy (Ubuntu)
+        - name: Import PlasmaPy (Python 3.12, Ubuntu)
           os: ubuntu-latest
-          python: '3.10'
-          toxenv: py310-lowest_direct-pypi-import
+          python: '3.12'
+          toxenv: py312-lowest_direct-pypi-import
 
     steps:
 

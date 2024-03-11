@@ -23,22 +23,22 @@ jobs:
       matrix:
         include:
 
-        - name: Python 3.12 (Ubuntu), with doctests, skip slow
+        - name: Python 3.12, with doctests, skip slow tests (Ubuntu)
           os: ubuntu-latest
           python: '3.12'
           toxenv: py312-pins-pytest_doctests_skipslow
 
-        - name: Python 3.11 (macOS), code coverage
+        - name: Python 3.11, all tests, code coverage (macOS)
           os: macos-latest
           python: '3.11'
           toxenv: py311-pins-pytest_cov_all
 
-        - name: Python 3.10 (Ubuntu), lowest direct dependencies, skip slow
-          os: ubuntu-latest
+        - name: Python 3.10, lowest direct dependencies, skip slow tests (Windows)
+          os: windows-latest
           python: '3.10'
           toxenv: py310-lowest_direct-pytest_skipslow
 
-        - name: mypy
+        - name: Static type checking with mypy (Python 3.12, Ubuntu)
           os: ubuntu-latest
           python: '3.12'
           toxenv: mypy
