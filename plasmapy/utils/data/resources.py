@@ -18,25 +18,39 @@ __all__ = ["Resources"]
 # for the data download folder?
 
 
+
 class Resources():
+    """
+    Accesses the PlasmaPy resource files.
+    
+    Retrieves local paths to resource files, and downloads those files from
+    |PlasmaPy's data repository| if they cannot be found locally. 
+
+    Parameters
+    ----------
+    directory : Path|None, optional
+        DESCRIPTION. The default is None.
+
+    """
 
     _API_BASE_URL = "https://api.github.com/repos/PlasmaPy/PlasmaPy-data/contents/"
 
     _blob_file = 'RESOURCE_BLOB_SHA.json'
     
-    def __init__(self, download_directory:Path|None=None):
-        
-        if download_directory is None:
+    def __init__(self, directory:Path|None=None):
+        if directory is None:
             self._download_directory =  Path(Path.home(), ".plasmapy", "downloads")
         else:
-            self._download_directory = download_directory
+            self._download_directory = directory
         
-        # Create the SHA blob file if it doesn't already exist
+        # Path to the SHA blob file
         self._blob_file_path = Path(self._download_directory, self._blob_file)
         
+        # Create the SHA blob file if it doesn't already exist
         if not self._blob_file_path.is_file():
             self.blob_dict = {}
             self._write_blobfile()
+        # Otherwise, read the SHA blob file
         else:
             self._read_blobfile()
             
@@ -54,19 +68,24 @@ class Resources():
         with open(self._blob_file_path, 'r') as f:
             self.blob_dict = json.load(f)
             
-            
     def _http_request(self, url:str)->requests.Response:
         """
         Issue an HTTP request to the specified URL, handling exceptions. 
         """
-        reply = requests.get(url) # noqa: S113
         
-        if reply.status_code == 404:
-            raise OSError(
-                "The requested URL returned a 404 code, which "
-                "likely indicates that the file does not exist at the "
-                "URL provided."
-            )
+        reply = requests.get(url) # noqa: S113
+ 
+        # Extract the 'message' value if it is there
+        # If the file does not exist on the repository, the GitHub API 
+        # will return `Not Found` in reponse to this but not raise a 404 error
+        try:
+            msg = reply.json()['message']
+        except Exception:
+            msg = None
+            
+        if (reply.status_code == 404 or msg == 'Not Found'):
+            raise FileNotFoundError()
+
         return reply
         
             
@@ -88,7 +107,17 @@ class Resources():
 
         """
         url =  urljoin(self._API_BASE_URL, filename)
-        reply = self._http_request(url)
+        
+        try:
+            reply = self._http_request(url)
+        except FileNotFoundError:
+            raise FileNotFoundError(f"File {filename} not found at {url}")
+   
+        # No test coverage for this exception since we can't test it without
+        # severing the network connectivity in pytest
+        except requests.ConnectionError:   #nocov
+            raise requests.ConnectionError("Unable to connect to data " #nocov
+                                f"repository {self._API_BASE_URL}") #nocov
             
         # Extract the SHA hash and the download URL from the response 
         info = reply.json()
@@ -104,7 +133,7 @@ class Resources():
         """
         
         # Request the contents of the file from the download URL
-        reply = self._http_request(dl_url)
+        reply = self._http_request(dl_url) # noqa: S113
         
         # Write the contents to file
         with filepath.open(mode="wb") as f:
@@ -132,6 +161,8 @@ class Resources():
             The local path to the resource file.
 
         """
+        # Update the memory copy of the blob file
+        self._read_blobfile()
         
         filepath = Path(self._download_directory, filename)
         
@@ -146,7 +177,7 @@ class Resources():
         try:
             online_sha, dl_url = self._repo_file_info(filename)
         # If online file cannot be found, set the sha hash to None
-        except OSError:
+        except (requests.ConnectionError, FileNotFoundError):
             online_sha = None
             dl_url = None
             
@@ -174,9 +205,13 @@ class Resources():
                           "of date.")
             return filepath
         
+       
+       # If neither online file or local file can be found, raise an 
+       # exception
         else:
             raise ValueError("Resource could not be found locally or "
-                             "retrieved from the PlasmPy-data repository.")
+                             "retrieved from the PlasmPy-data repository: "
+                             f"{filename}")
             
             
         
@@ -201,8 +236,12 @@ class Resources():
 if __name__ == '__main__':
 
     obj = Resources()
+    
+    #obj._download_file(Path(Path.home(), ".plasmapy", "downloads", "s.txt"),
+    #                  "https://api.github.com/repos/PlasmaPy/PlasmaPy-data/contents/s.txt")
+
     x = obj.get_resource('NIST_STAR.hdf5')
-    print(x)
+    #print(x)
         
         
         
