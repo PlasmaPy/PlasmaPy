@@ -47,7 +47,7 @@ class Resources:
 
         # Create the SHA blob file if it doesn't already exist
         if not self._blob_file_path.is_file():
-            self.blob_dict: dict = {}
+            self.blob_dict = dict()
             self._write_blobfile()
         # Otherwise, read the SHA blob file
         else:
