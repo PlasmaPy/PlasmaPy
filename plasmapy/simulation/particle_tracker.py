@@ -291,7 +291,7 @@ class AbstractSaveRoutine(ABC):
         ...
 
     @property
-    def results(self) -> dict:
+    def results(self) -> dict[str, u.Quantity]:
         """Return the results of the simulation.
         The quantities returned are the times, positions, and velocities, respectively.
         """
