@@ -10,14 +10,15 @@ from plasmapy.diagnostics.charged_particle_radiography.detector_stacks import (
     Layer,
     Stack,
 )
-from plasmapy.utils.data.downloader import get_file
+from plasmapy.utils.data.resources import Resources
 
 
 @pytest.fixture()
 def hdv2_stack(tmp_path):
+    res = Resources(directory=tmp_path)
     # Fetch stopping power data files from data module
-    tissue_path = get_file("NIST_PSTAR_tissue_equivalent.txt", directory=tmp_path)
-    aluminum_path = get_file("NIST_PSTAR_aluminum.txt", directory=tmp_path)
+    tissue_path = res.get_resource("NIST_PSTAR_tissue_equivalent.txt")
+    aluminum_path = res.get_resource("NIST_PSTAR_aluminum.txt")
 
     arr = np.loadtxt(tissue_path, skiprows=8)
     eaxis = arr[:, 0] * u.MeV
@@ -53,8 +54,8 @@ def test_create_layer_with_different_stopping_powers(tmp_path) -> None:
     Tests the input validation for creating a Layer with either the linear
     stopping power or the mass stopping power.
     """
-
-    aluminum_path = get_file("NIST_PSTAR_aluminum.txt", directory=tmp_path)
+    res = Resources(directory=tmp_path)
+    aluminum_path = res.get_resource("NIST_PSTAR_aluminum.txt")
     arr = np.loadtxt(aluminum_path, skiprows=8)
     eaxis = arr[:, 0] * u.MeV
     mass_stopping_power = arr[:, 1] * u.MeV * u.cm**2 / u.g
