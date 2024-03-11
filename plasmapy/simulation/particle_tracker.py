@@ -263,9 +263,11 @@ class AbstractSaveRoutine(ABC):
     def __init__(self, output_directory: Path | None = None) -> None:
         self.output_directory = output_directory
 
-        # self.x_all = []
-        # self.v_all = []
-        self._results = {"x": [], "v": []}
+        self._results = {}
+        self._quantities = {
+            "x": (u.m, "dataset"),
+            "v": (u.m / u.s, "dataset"),
+        }
 
         self._particle_tracker: ParticleTracker | None = None
 
@@ -308,37 +310,27 @@ class AbstractSaveRoutine(ABC):
 
     def _save_to_disk(self) -> None:
         """Save a hdf5 file containing simulation positions and velocities."""
-        #
-        # path = self.output_directory / f"{self.tracker.iteration_number}.hdf5"
-        #
-        # with h5py.File(path, "w") as output_file:
-        #     output_file["x"] = self.tracker.x
-        #     output_file["v"] = self.tracker.v
 
         path = self.output_directory / f"{self.tracker.iteration_number}.hdf5"
-        attributes = self._results.get("attributes", [])
 
         with h5py.File(path, "w") as output_file:
-            for key, value in self._results.items():
-                if key == "attributes":
-                    continue
-
-                # Should this entry be saved as an attribute (magnification, number of particles)
-                # or a dataset (positions, velocities)
-                if key in attributes:
-                    output_file.attrs.create(key, value)
-                else:
-                    output_file.create_dataset(key, data=value)
+            for key, (_units, data_type) in self._quantities.items():  # noqa: B007
+                match data_type:
+                    case "attribute":
+                        output_file.attrs.create(key, self._results[key])
+                    case "dataset":
+                        output_file.create_dataset(key, data=self._results[key])
 
     # TODO: Find a better name for this method
     def _save_to_memory(self) -> None:
         """Update the results dictionary with the current state of the simulation."""
-        # """Append simulation positions and velocities to save routine object."""
-        # self.x_all.append(np.copy(self._particle_tracker.x))
-        # self.v_all.append(np.copy(self._particle_tracker.v))
 
-        self._results["x"].append(np.copy(self._particle_tracker.x))
-        self._results["v"].append(np.copy(self._particle_tracker.v))
+        for quantity in self._quantities:
+            quantity_history = self._results.get(quantity, [])
+            current_quantity = getattr(self._particle_tracker, quantity, 0)
+
+            quantity_history.append(current_quantity)
+            self._results[quantity] = quantity_history
 
     def _apply_units_to_results(self):
         """Apply units to the results dictionary.
@@ -347,8 +339,8 @@ class AbstractSaveRoutine(ABC):
         """
         results_copy = self._results.copy()
 
-        results_copy["x"] = self._results["x"] * u.m
-        results_copy["v"] = self._results["v"] * u.m / u.s
+        for quantity, (units, _data_type) in self._quantities.items():  # noqa: B007
+            results_copy[quantity] = results_copy[quantity] * units
 
         return results_copy
 
@@ -360,8 +352,6 @@ class AbstractSaveRoutine(ABC):
             - How the simulation data is saved (i.e. to disk or memory)
 
         """
-        # if self.save_now or final_save:
-        #     self.save()
 
         # Update the result dictionary
         if self.save_now or final_save:
@@ -394,7 +384,11 @@ class IntervalSaveRoutine(AbstractSaveRoutine):
     def __init__(self, interval: u.Quantity, **kwargs) -> None:
         super().__init__(**kwargs)
 
-        self._results["t"] = []
+        self._quantities = {
+            "time": (u.s, "dataset"),
+            "x": (u.m, "dataset"),
+            "v": (u.m / u.s, "dataset"),
+        }
 
         self.save_interval: float = interval.to(u.s).value
         self.time_of_last_save: float = 0
@@ -417,33 +411,6 @@ class IntervalSaveRoutine(AbstractSaveRoutine):
         super().save()
 
         self.time_of_last_save = self.tracker.time
-        # self.t_all.append(self.tracker.time)
-
-    def _apply_units_to_results(self):
-        results_copy = super()._apply_units_to_results()
-        results_copy["t"] = self._results["t"] * u.s
-
-        return results_copy
-
-    def _save_to_memory(self) -> None:
-        """Save the positions, velocities, and times of the current state of the simulation."""
-
-        # The base class will handle saving the position and velocities
-        super()._save_to_memory()
-
-        # Update the time list
-        self._results["t"].append(self.tracker.time)
-
-    # def results(self) -> tuple[u.Quantity, u.Quantity, u.Quantity]:
-    #     """Return the results of the simulation.
-    #     The quantities returned are the times, positions, and velocities, respectively.
-    #     """
-    #
-    #     return (
-    #         np.asarray(self.t_all) * u.s,
-    #         np.asarray(self.x_all) * u.m,
-    #         np.asarray(self.v_all) * u.m / u.s,
-    #     )
 
 
 class ParticleTracker:
