@@ -776,6 +776,27 @@ class Tracker(ParticleTracker):
         self._coast_to_plane(self.detector, self.det_hdir, self.det_vdir, x
                              = self.x)
 
+        Parameters
+        ----------
+        center : float
+            The center of the plane towards which the particles are advanced
+
+        hdir : `numpy.ndarray`, shape (3)
+            A unit vector (in Cartesian coordinates) defining the horizontal
+            direction of the plane.
+
+        vdir : `numpy.ndarray`, shape (3)
+            A unit vector (in Cartesian coordinates) defining the vertical
+            direction of the plane.
+
+        x : `numpy.ndarray`, shape (nparticles), optional
+            The array to which the resulting particle positions are stored.
+            By default, the current position array will be used.
+
+        mask : `numpy.ndarray`, shape (nparticles), optional
+            A boolean mask representing the particles to perform the coasting
+            operation. By default, only the tracked particles (i.e. those that
+            are going to hit the grids) will be coasted.
         """
 
         normal = np.cross(hdir, vdir)
