@@ -265,7 +265,7 @@ class AbstractSaveRoutine(ABC):
 
         # self.x_all = []
         # self.v_all = []
-        self.results = {"x": [], "v": []}
+        self._results = {"x": [], "v": []}
 
         self._particle_tracker: ParticleTracker | None = None
 
@@ -290,6 +290,13 @@ class AbstractSaveRoutine(ABC):
         """Determine if to save on the current push step."""
         ...
 
+    @property
+    def results(self) -> dict:
+        """Return the results of the simulation.
+        The quantities returned are the times, positions, and velocities, respectively.
+        """
+        return self._apply_units_to_results()
+
     def save(self) -> None:
         # """Save the current state of the simulation to disk or memory based on whether the output directory was set."""
         """Save the current state of the simulation to memory."""
@@ -309,10 +316,10 @@ class AbstractSaveRoutine(ABC):
         #     output_file["v"] = self.tracker.v
 
         path = self.output_directory / f"{self.tracker.iteration_number}.hdf5"
-        attributes = self.results.get("attributes", [])
+        attributes = self._results.get("attributes", [])
 
         with h5py.File(path, "w") as output_file:
-            for key, value in self.results.items():
+            for key, value in self._results.items():
                 if key == "attributes":
                     continue
 
@@ -330,16 +337,20 @@ class AbstractSaveRoutine(ABC):
         # self.x_all.append(np.copy(self._particle_tracker.x))
         # self.v_all.append(np.copy(self._particle_tracker.v))
 
-        self.results["x"].append(np.copy(self._particle_tracker.x))
-        self.results["v"].append(np.copy(self._particle_tracker.v))
+        self._results["x"].append(np.copy(self._particle_tracker.x))
+        self._results["v"].append(np.copy(self._particle_tracker.v))
 
     def _apply_units_to_results(self):
         """Apply units to the results dictionary.
 
-        This function is called once the simulation has concluded.
+        This function is called anytime the results dictionary is retrieved
         """
-        self.results["x"] = self.results["x"] * u.m
-        self.results["v"] = self.results["v"] * u.m / u.s
+        results_copy = self._results.copy()
+
+        results_copy["x"] = self._results["x"] * u.m
+        results_copy["v"] = self._results["v"] * u.m / u.s
+
+        return results_copy
 
     def post_push_hook(self, final_save=False) -> None:
         """Function called after a push step.
@@ -355,9 +366,6 @@ class AbstractSaveRoutine(ABC):
         # Update the result dictionary
         if self.save_now or final_save:
             self.save()
-
-        if final_save:
-            self._apply_units_to_results()
 
 
 class DoNotSaveSaveRoutine(AbstractSaveRoutine):
@@ -385,9 +393,8 @@ class IntervalSaveRoutine(AbstractSaveRoutine):
 
     def __init__(self, interval: u.Quantity, **kwargs) -> None:
         super().__init__(**kwargs)
-        # self.t_all: list[float] = []
 
-        self.results["t"] = []
+        self._results["t"] = []
 
         self.save_interval: float = interval.to(u.s).value
         self.time_of_last_save: float = 0
@@ -413,9 +420,10 @@ class IntervalSaveRoutine(AbstractSaveRoutine):
         # self.t_all.append(self.tracker.time)
 
     def _apply_units_to_results(self):
-        super()._apply_units_to_results()
+        results_copy = super()._apply_units_to_results()
+        results_copy["t"] = self._results["t"] * u.s
 
-        self.results["t"] = self.results["t"] * u.s
+        return results_copy
 
     def _save_to_memory(self) -> None:
         """Save the positions, velocities, and times of the current state of the simulation."""
@@ -424,7 +432,7 @@ class IntervalSaveRoutine(AbstractSaveRoutine):
         super()._save_to_memory()
 
         # Update the time list
-        self.results["t"].append(self.tracker.time)
+        self._results["t"].append(self.tracker.time)
 
     # def results(self) -> tuple[u.Quantity, u.Quantity, u.Quantity]:
     #     """Return the results of the simulation.
