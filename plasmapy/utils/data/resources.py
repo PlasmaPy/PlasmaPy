@@ -4,27 +4,26 @@ downloading files from |PlasmaPy's data repository|.
 
 """
 
+import json
+import warnings
 from pathlib import Path
 from urllib.parse import urljoin
-import json
+
 import requests
-import warnings
 
 __all__ = ["Resources"]
-
 
 
 # TODO: use a config file variable to allow users to set a location
 # for the data download folder?
 
 
-
-class Resources():
+class Resources:
     """
     Accesses the PlasmaPy resource files.
-    
+
     Retrieves local paths to resource files, and downloads those files from
-    |PlasmaPy's data repository| if they cannot be found locally. 
+    |PlasmaPy's data repository| if they cannot be found locally.
 
     Parameters
     ----------
@@ -35,17 +34,17 @@ class Resources():
 
     _API_BASE_URL = "https://api.github.com/repos/PlasmaPy/PlasmaPy-data/contents/"
 
-    _blob_file = 'RESOURCE_BLOB_SHA.json'
-    
-    def __init__(self, directory:Path|None=None):
+    _blob_file = "RESOURCE_BLOB_SHA.json"
+
+    def __init__(self, directory: Path | None = None):
         if directory is None:
-            self._download_directory =  Path(Path.home(), ".plasmapy", "downloads")
+            self._download_directory = Path(Path.home(), ".plasmapy", "downloads")
         else:
             self._download_directory = directory
-        
+
         # Path to the SHA blob file
         self._blob_file_path = Path(self._download_directory, self._blob_file)
-        
+
         # Create the SHA blob file if it doesn't already exist
         if not self._blob_file_path.is_file():
             self.blob_dict = {}
@@ -53,45 +52,40 @@ class Resources():
         # Otherwise, read the SHA blob file
         else:
             self._read_blobfile()
-            
-    def _write_blobfile(self)->None:
+
+    def _write_blobfile(self) -> None:
         """
         Write the blob_dict to disk.
         """
-        with open(self._blob_file_path, 'w') as f:
+        with self._blob_file_path.open("w") as f:
             json.dump(self.blob_dict, fp=f)
-            
-    def _read_blobfile(self)->None:
+
+    def _read_blobfile(self) -> None:
         """
         Read the blob_dict from disk.
         """
-        with open(self._blob_file_path, 'r') as f:
+        with self._blob_file_path.open("r") as f:
             self.blob_dict = json.load(f)
-            
-    def _http_request(self, url:str)->requests.Response:
+
+    def _http_request(self, url: str) -> requests.Response:
         """
-        Issue an HTTP request to the specified URL, handling exceptions. 
+        Issue an HTTP request to the specified URL, handling exceptions.
         """
-        
-        reply = requests.get(url) # noqa: S113
- 
+
+        reply = requests.get(url)  # noqa: S113
+
         # Extract the 'message' value if it is there
-        # If the file does not exist on the repository, the GitHub API 
-        # will return `Not Found` in reponse to this but not raise a 404 error
-        try:
-            msg = reply.json()['message']
-        except Exception:
-            msg = None
-            
-        if (reply.status_code == 404 or msg == 'Not Found'):
-            raise FileNotFoundError()
+        # If the file does not exist on the repository, the GitHub API
+        # will return `Not Found` in response to this but not raise a 404 error
+
+        if reply.status_code == 404 or b"Not Found" in reply.content:
+            raise FileNotFoundError
 
         return reply
-        
-            
-    def _repo_file_info(self, filename:str)->tuple[str,str]:
+
+    def _repo_file_info(self, filename: str) -> tuple[str, str]:
         """
-        Return file information from github via the API
+        Return file information from github via the API.
 
         Parameters
         ----------
@@ -103,57 +97,56 @@ class Resources():
         sha : str
             SHA hash for the file on GitHub.
         dl_url : str
-            URL from which the file can be downloaded from GitHub. 
+            URL from which the file can be downloaded from GitHub.
 
         """
-        url =  urljoin(self._API_BASE_URL, filename)
-        
+        url = urljoin(self._API_BASE_URL, filename)
+
         try:
             reply = self._http_request(url)
-        except FileNotFoundError:
-            raise FileNotFoundError(f"File {filename} not found at {url}")
-   
+        except FileNotFoundError as err:
+            raise FileNotFoundError(f"File {filename} not found at {url}") from err
+
         # No test coverage for this exception since we can't test it without
         # severing the network connectivity in pytest
-        except requests.ConnectionError:   #nocov
-            raise requests.ConnectionError("Unable to connect to data " #nocov
-                                f"repository {self._API_BASE_URL}") #nocov
-            
-        # Extract the SHA hash and the download URL from the response 
+        except requests.ConnectionError as err:  # nocov
+            raise requests.ConnectionError(
+                "Unable to connect to data "  # nocov
+                f"repository {self._API_BASE_URL}"
+            ) from err  # nocov
+
+        # Extract the SHA hash and the download URL from the response
         info = reply.json()
-        sha = info['sha']
-        dl_url = info['download_url']
-        
+        sha = info["sha"]
+        dl_url = info["download_url"]
+
         return sha, dl_url
-    
-    
-    def _download_file(self, filepath:Path, dl_url:str)->None:
+
+    def _download_file(self, filepath: Path, dl_url: str) -> None:
         """
-        Download a file from a given URL to a specified path. 
+        Download a file from a given URL to a specified path.
         """
-        
+
         # Request the contents of the file from the download URL
-        reply = self._http_request(dl_url) # noqa: S113
-        
+        reply = self._http_request(dl_url)
+
         # Write the contents to file
         with filepath.open(mode="wb") as f:
             f.write(reply.content)
-        
 
-            
-    def get_resource(self, filename:str)->Path:
+    def get_resource(self, filename: str) -> Path:
         """
         Returns a local path to a resource file, downloading it if necessary.
 
         Parameters
         ----------
         filename : str
-            The name of the file in the PlasmaPy-data repository. 
+            The name of the file in the PlasmaPy-data repository.
 
         Raises
         ------
         ValueError
-            If the file cannot be found locally or online. 
+            If the file cannot be found locally or online.
 
         Returns
         -------
@@ -163,16 +156,16 @@ class Resources():
         """
         # Update the memory copy of the blob file
         self._read_blobfile()
-        
+
         filepath = Path(self._download_directory, filename)
-        
+
         # If local file exists and also exists in blob file, get the
         # file sha
-        if filepath.is_file() and filename in self.blob_dict.keys():
+        if filepath.is_file() and filename in self.blob_dict:
             local_sha = self.blob_dict[filename]
         else:
             local_sha = None
-            
+
         # Get the online SHA
         try:
             online_sha, dl_url = self._repo_file_info(filename)
@@ -180,76 +173,49 @@ class Resources():
         except (requests.ConnectionError, FileNotFoundError):
             online_sha = None
             dl_url = None
-            
+
         # If local sha and online sha are equal, return the local filepath
         if local_sha == online_sha and local_sha is not None:
             return filepath
-    
-        # Try downloading from the repository 
+
+        # Try downloading from the repository
         elif online_sha is not None:
             # Download the file
             self._download_file(filepath, dl_url)
-            
+
             # Add SHA to blob dict and update blob file
-            self.blob_dict[filename]=online_sha
+            self.blob_dict[filename] = online_sha
             self._write_blobfile()
-            
+
             local_sha = online_sha
-            return filepath 
-        
-        # If online file cannot be reached but local file is present,
-        # return local file with warning 
-        elif online_sha is None and local_sha is not None:
-            warnings.warn("Request to PlasmaPy-data repository returned 404: "
-                          "proceding with local files only, which may be out "
-                          "of date.")
             return filepath
-        
-       
-       # If neither online file or local file can be found, raise an 
-       # exception
+
+        # If online file cannot be reached but local file is present,
+        # return local file with warning
+        elif online_sha is None and local_sha is not None:
+            warnings.warn(
+                "Request to PlasmaPy-data repository returned 404: "
+                "proceeding with local files only, which may be out "
+                "of date."
+            )
+            return filepath
+
+        # If neither online file or local file can be found, raise an
+        # exception
         else:
-            raise ValueError("Resource could not be found locally or "
-                             "retrieved from the PlasmPy-data repository: "
-                             f"{filename}")
-            
-            
-        
-            
-            
-            
-        
-        
-            
-            
-        
-            
-            
-        
-    
-    
-    
-    
-    
+            raise ValueError(
+                "Resource could not be found locally or "
+                "retrieved from the PlasmPy-data repository: "
+                f"{filename}"
+            )
 
 
-if __name__ == '__main__':
-
+if __name__ == "__main__":
     obj = Resources()
-    
-    #obj._download_file(Path(Path.home(), ".plasmapy", "downloads", "s.txt"),
+
+    # obj._download_file(Path(Path.home(), ".plasmapy", "downloads", "s.txt"),
     #                  "https://api.github.com/repos/PlasmaPy/PlasmaPy-data/contents/s.txt")
 
-    x = obj.get_resource('NIST_STAR.hdf5')
-    #print(x)
-        
-        
-        
-        
-        
-        
-
-
-
-
-
+    # obj._API_BASE_URL = 'https://www.google.com/404'
+    x = obj.get_resource("NIST_STAR2.hdf5")
+    # print(x)

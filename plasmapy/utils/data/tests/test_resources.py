@@ -1,6 +1,8 @@
+from pathlib import Path
+
 import numpy as np
 import pytest
-from pathlib import Path
+
 from plasmapy.utils.data.resources import Resources
 
 test_files = [
@@ -20,7 +22,7 @@ test_files = [
 @pytest.mark.flaky(reruns=5)  # in case of intermittent connection to World Wide Web™
 def test_get_resource(filename, expected, tmp_path) -> None:
     """Test the get_file function."""
-    
+
     res = Resources(directory=tmp_path)
     # Delete file if it already exists, so the test always downloads it
     dl_path = tmp_path / filename
@@ -37,7 +39,7 @@ def test_get_resource(filename, expected, tmp_path) -> None:
 
         # Get the file again, already existing so it doesn't download it again
         res.get_resource(filename)
-        
+
 
 @pytest.mark.flaky(reruns=5)  # in case of intermittent connection to World Wide Web™
 def test_get_resource_NIST_PSTAR_datafile(tmp_path) -> None:
@@ -48,7 +50,7 @@ def test_get_resource_NIST_PSTAR_datafile(tmp_path) -> None:
     dl_path = tmp_path / filename
     if dl_path.exists():
         dl_path.unlink()
-        
+
     res = Resources(directory=tmp_path)
     # Download data (or check that it already exists)
     path = res.get_resource(filename)
@@ -57,36 +59,30 @@ def test_get_resource_NIST_PSTAR_datafile(tmp_path) -> None:
     assert np.allclose(arr[0, :], np.array([1e-3, 1.043e2]))
 
 
-
 def test_multiple_resource_calls(tmp_path):
-    # Create a dummy file 
+    # Create a dummy file
     filename = "NIST_PSTAR_aluminum.txt"
-    
+
     res = Resources(directory=tmp_path)
 
     # Download from repository
     res.get_resource(filename)
-    
+
     # Return local copy, since file now exists
     res.get_resource(filename)
-    
-    # Retrieve a local file that isn't on the remote 
-    # First create the file 
-    filename2 = 'not_on_the_repo.txt'
+
+    # Retrieve a local file that isn't on the remote
+    # First create the file
+    filename2 = "not_on_the_repo.txt"
     filepath2 = Path(tmp_path, filename2)
-    with open(filepath2, 'w') as f:
-            f.write('Not data')
+    with filepath2.open("w") as f:
+        f.write("Not data")
     # Add it to the blob file
-    res.blob_dict[filename2] = 'sha'
+    res.blob_dict[filename2] = "sha"
     res._write_blobfile()
-    # Now try retriving it
+    # Now try retrieving it
     res.get_resource(filename2)
-    
+
     # Error is raised when a file isn't local or on the remote
     with pytest.raises(ValueError):
-        res.get_resource('not_anywhere.txt')
-
-
-    
-    
-    
+        res.get_resource("not_anywhere.txt")
