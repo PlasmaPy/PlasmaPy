@@ -23,6 +23,9 @@ jobs:
       with:
         python-version: 3.12
 
+    - name: Install tox
+      run: python -m pip install --upgrade tox
+
     - name: Rebuild requirements
       run: tox -e requirements
 
@@ -46,7 +49,7 @@ jobs:
         commit-message: Regenerate requirements.txt
         title: Update pinned requirements
         body: |
-          This pull request (PR) regenerates the pinned requirements files used in continuous integration (CI) tests and by integrated development environments (IDEs), including [requirements.txt](https://github.com/PlasmaPy/PlasmaPy/blob/main/requirements.txt) and the files in the[requirements/](https://github.com/PlasmaPy/PlasmaPy/blob/main/requirements) directory.
+          This pull request (PR) regenerates the pinned requirements files used in continuous integration (CI) tests and by integrated development environments (IDEs), including [requirements.txt](https://github.com/PlasmaPy/PlasmaPy/blob/main/requirements.txt) and the files in the[requirements/](https://github.com/PlasmaPy/PlasmaPy/blob/main/requirements) directory. To update requirements locally, run "tox -e requirements", with the environment defined in [tox.ini](https://github.com/PlasmaPy/PlasmaPy/blob/main/tox.ini). The resolution of requirements is done by [uv](https://github.com/astral-sh/uv).
 
           The purpose of periodically regenerating requirements files is to reduce the probability that tests will spontaneously start failing in other PRs due to a breaking change in a dependency. If all tests pass, please merge this PR. If any checks fail due to changes in the packages that we depend on, please use this PR to perform the fixes that are necessary to get the checks to pass again.
 

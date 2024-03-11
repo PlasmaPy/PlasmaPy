@@ -8,6 +8,7 @@ Module containing functionality focused on the plasma dispersion function
     subsequent release. Use
     `plasmapy.dispersion.dispersion_functions` instead.
 """
+
 __all__ = ["plasma_dispersion_func", "plasma_dispersion_func_deriv"]
 
 import warnings

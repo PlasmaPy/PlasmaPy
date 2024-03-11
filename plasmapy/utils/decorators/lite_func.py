@@ -2,6 +2,7 @@
 Module for defining functionality that marks and handle Lite-Function
 creation.
 """
+
 __all__ = ["bind_lite_func"]
 
 import functools
@@ -41,6 +42,8 @@ def bind_lite_func(lite_func, attrs: dict[str, Callable] | None = None):
 
     Examples
     --------
+    .. autolink-skip:: section
+
     .. code-block:: python
 
         def foo_lite(x):

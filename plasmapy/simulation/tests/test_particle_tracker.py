@@ -1,6 +1,7 @@
 """
 Tests for particle_tracker.py
 """
+
 import astropy.units as u
 import numpy as np
 import pytest

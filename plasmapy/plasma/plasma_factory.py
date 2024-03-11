@@ -5,6 +5,7 @@ Module for defining the framework around the plasma factory.
 
    |expect-api-changes|
 """
+
 __all__ = ["PlasmaFactory", "Plasma"]
 
 from plasmapy.plasma.plasma_base import GenericPlasma

@@ -2,6 +2,7 @@
 Convert author information from :file:`CITATION.cff` into a
 reStructuredText-formatted list.
 """
+
 import pathlib
 
 import yaml

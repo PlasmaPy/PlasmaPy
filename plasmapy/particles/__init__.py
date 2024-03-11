@@ -2,6 +2,7 @@
 The `plasmapy.particles` subpackage provides access to information about
 atoms, isotopes, ions, and other particles.
 """
+
 # __all__ will be auto populated below
 __all__ = []
 
