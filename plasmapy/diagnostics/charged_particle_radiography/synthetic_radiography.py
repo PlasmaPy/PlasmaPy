@@ -499,8 +499,8 @@ class Tracker(ParticleTracker):
                 f"The wire diameter ({2*wire_radius}) may be too large."
             )
 
-        self.x = self.x[keep_these_particles, :]
-        self.v = self.v[keep_these_particles, :]
+        self._stop_particles(~keep_these_particles)
+
         self.theta = self.theta[
             keep_these_particles
         ]  # Important to apply here to get correct grid_ind
