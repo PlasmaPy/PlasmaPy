@@ -32,10 +32,10 @@ jobs:
           python: '3.10'
           toxenv: py310-pins-pytest_all
 
-        - name: Python 3.10 (Windows), minimal dependencies
+        - name: Python 3.10 (Windows), lowest direct dependencies
           os: windows-latest
           python: '3.10'
-          toxenv: py310-minimal-pytest_all
+          toxenv: py310-lowest_direct-pytest_all
 
         - name: Python 3.10 with Astropy dev (Ubuntu)
           os: ubuntu-latest
@@ -66,17 +66,17 @@ jobs:
         - name: Import PlasmaPy (Windows)
           os: windows-latest
           python: '3.10'
-          toxenv: py310-minimal-pypi-import
+          toxenv: py310-lowest_direct-pypi-import
 
         - name: Import PlasmaPy (macOS)
           os: macos-latest
           python: '3.10'
-          toxenv: py310-minimal-pypi-import
+          toxenv: py310-lowest_direct-pypi-import
 
         - name: Import PlasmaPy (Ubuntu)
           os: ubuntu-latest
           python: '3.10'
-          toxenv: py310-minimal-pypi-import
+          toxenv: py310-lowest_direct-pypi-import
 
     steps:
 

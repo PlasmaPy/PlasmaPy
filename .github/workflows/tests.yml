@@ -33,10 +33,10 @@ jobs:
           python: '3.11'
           toxenv: py311-pins-pytest_cov_all
 
-        - name: Python 3.10 (Ubuntu), minimal dependencies, skip slow
+        - name: Python 3.10 (Ubuntu), lowest direct dependencies, skip slow
           os: ubuntu-latest
           python: '3.10'
-          toxenv: py310-minimal-pytest_skipslow
+          toxenv: py310-lowest_direct-pytest_skipslow
 
         - name: mypy
           os: ubuntu-latest
@@ -141,7 +141,7 @@ jobs:
       run: python -m pip install --progress-bar off --upgrade tox
 
     - name: Import PlasmaPy
-      run: tox -e py310-minimal-pypi-import
+      run: tox -e py310-lowest_direct-pypi-import
 
   build-n-publish:
     name: Packaging
