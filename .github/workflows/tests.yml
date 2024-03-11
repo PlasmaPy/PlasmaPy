@@ -82,7 +82,7 @@ jobs:
 
   documentation:
 
-    name: Documentation, pinned dependencies
+    name: Documentation, Python 3.12, Ubuntu
     runs-on: ubuntu-latest
 
     steps:
@@ -112,7 +112,7 @@ jobs:
         key: docs-${{ runner.os }}-${{ hashFiles('requirements.txt') }}
 
     - name: Build docs
-      run: tox -e build_docs_pins -- -q
+      run: tox -e build_docs -- -q
 
     - name: Print troubleshooting information on failure
       if: ${{ failure() }}
