@@ -237,11 +237,3 @@ class Downloader:
                 "retrieved from the PlasmPy-data repository: "
                 f"{filename}"
             )
-
-
-if __name__ == "__main__":
-    filename = "notfile.txt"
-    dl = Downloader()
-
-    dl._API_BASE_URL = "https://www.google.com"
-    dl._repo_file_info("NIST_STAR2.hdf5")
