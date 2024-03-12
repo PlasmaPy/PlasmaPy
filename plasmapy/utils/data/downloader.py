@@ -44,7 +44,11 @@ class Downloader:
     _API_BASE_URL = "https://api.github.com/repos/PlasmaPy/PlasmaPy-data/contents/"
 
     # Name for the local file that stores the SHA hashes of downloaded files
-    _local_blob_file = "RESOURCE_BLOB_SHA.json"
+    _local_blob_file_name = "LOCAL_RESOURCE_BLOB_SHA.json"
+    
+    # Name for the local file that stores the SHA hashes and download URLs
+    # of the data repository 
+    _repo_blob_file_name = "REPO_RESOURCE_BLOB_SHA.json"
 
     # Base URL for RAW files
     _RAW_BASE_URL = "https://raw.githubusercontent.com/PlasmaPy/PlasmaPy-data/main/"
@@ -66,62 +70,46 @@ class Downloader:
         # Make the directory if it doesn't already exist
         self._download_directory.mkdir(parents=True, exist_ok=True)
 
-        # Path to the SHA blob file
-        self._local_blob_file_path = Path(
-            self._download_directory, self._local_blob_file
+        # Path to the local SHA blob file
+        self._local_blob_file = Path(
+            self._download_directory, self._local_blob_name
         )
+        
+        # Path to the repo SHA blob file
+        self._repo_blob_file = Path(
+            self._download_directory, self._repo_blob_name
+        )
+        
 
-        # Create the SHA blob file if it doesn't already exist
-        if not self._local_blob_file_path.is_file():
+        # Create the local SHA blob file if it doesn't already exist
+        if not self._local_blob_file.is_file():
             self._local_blob_dict = {}
-            self._write_blobfile()
+            self._write_local_blobfile()
         # Otherwise, read the SHA blob file
         else:
-            self._read_blobfile()
+            self._read_local_blobfile()
+            
+            
+        # Create the local SHA blob file if it doesn't already exist
+        if not self._repo_blob_file.is_file():
+            self._repo_blob_dict = {}
+            self._write_repo_blobfile()
+        # Otherwise, read the SHA blob file
+        else:
+            self._read_local_blobfile()
+
+
+        
+
+
 
         # Retrieve the online repo file information
         try:
             self._repo_blob_dict = self._get_repo_blob_dict()
         except ValueError:
             self._repo_blob_dict = None
-
-    def _write_blobfile(self) -> None:
-        """
-        Write the _local_blob_dict to disk.
-        """
-        with self._local_blob_file_path.open("w") as f:
-            json.dump(self._local_blob_dict, fp=f)
-
-    def _read_blobfile(self) -> None:
-        """
-        Read the _local_blob_dict from disk.
-        """
-        with self._local_blob_file_path.open("r") as f:
-            self._local_blob_dict = json.load(f)
-
-    def _http_request(self, url: str) -> requests.Response:
-        """
-        Issue an HTTP request to the specified URL, handling exceptions.
-        """
-
-        try:
-            reply = requests.get(url)  # noqa: S113
-
-        # No test coverage for this exception since we can't test it without
-        # severing the network connectivity in pytest
-        except requests.ConnectionError as err:  # coverage: ignore
-            raise requests.ConnectionError(
-                "Unable to connect to data " f"repository {self._API_BASE_URL}"
-            ) from err
-
-        # Extract the 'message' value if it is there
-        # If the file does not exist on the repository, the GitHub API
-        # will return `Not Found` in response to this but not raise a 404 error
-        if reply.status_code == 404:
-            raise ValueError(f"URL returned 404: {url}")
-
-        return reply
-
+            
+    @property
     def _api_usage(self)->tuple[int,int]:
         """
         Return the API call limit and the number currently used from this IP.
@@ -135,8 +123,37 @@ class Downloader:
         used = int(rate_info["used"])
 
         return limit, used
+    
+    @property
+    def _is_rate_limited(self)->bool:
+        """
+        Whether or not the API is currently rate limited
+        """
+        limit, used = self._api_usage
+        return used >= limit
 
-    def _get_repo_blob_dict(self) -> dict[dict[str, str]] | None:
+    def _write_local_blobfile(self) -> None:
+        """
+        Write the _local_blob_dict to disk.
+        """
+        with self._local_blob_file_path.open("w") as f:
+            json.dump(self._local_blob_dict, fp=f)
+
+    def _read_local_blobfile(self) -> None:
+        """
+        Read the _local_blob_dict from disk.
+        """
+        with self._local_blob_file_path.open("r") as f:
+            self._local_blob_dict = json.load(f)
+            
+            
+    def _do_validation(self)->bool:
+        return self._validate and self._api_is_rate_limited
+            
+            
+            
+            
+    def _update_repo_blob_dict(self) -> dict[dict[str, str]] | None:
         """
         Download the file information for all the files in the repository
         at once.
@@ -154,12 +171,12 @@ class Downloader:
             with keys `sha` and `download_url`.
         """
 
-        # If validation is disabled, do not request any information from
-        # the server
-        if not self._validate:
+        # If validation is disabled, or API limit is met, 
+        #do not request any information from the server
+        if not self._do_validation:
             return None
 
-        limit, used = self._api_usage()
+        limit, used = self._api_usage
         # No tests since we don't want to hit this limit!
         if used >= limit:  # coverage: ignore
             raise ValueError(
@@ -204,6 +221,30 @@ class Downloader:
                 raise TypeError(f"Unexpected response type {info}") from err
 
         return repo_blob_dict
+            
+
+    def _http_request(self, url: str) -> requests.Response:
+        """
+        Issue an HTTP request to the specified URL, handling exceptions.
+        """
+
+        try:
+            reply = requests.get(url)  # noqa: S113
+
+        # No test coverage for this exception since we can't test it without
+        # severing the network connectivity in pytest
+        except requests.ConnectionError as err:  # coverage: ignore
+            raise requests.ConnectionError(
+                "Unable to connect to data " f"repository {self._API_BASE_URL}"
+            ) from err
+
+        # Extract the 'message' value if it is there
+        # If the file does not exist on the repository, the GitHub API
+        # will return `Not Found` in response to this but not raise a 404 error
+        if reply.status_code == 404:
+            raise ValueError(f"URL returned 404: {url}")
+
+        return reply
 
     def _download_file(self, filename: str, dl_url: str) -> Path:
         """
@@ -360,6 +401,9 @@ class Downloader:
 
         # Update the memory copy of the blob file
         self._read_blobfile()
+        
+        # Update the local copy of the repo blob
+        self._update_repo_blob_dict()
 
         # Get the SHAs
         local_sha = self._get_local_sha(filename)
