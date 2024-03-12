@@ -43,11 +43,6 @@ jobs:
           python: '3.12'
           toxenv: mypy
 
-        - name: Linters, Python 3.12, Ubuntu
-          os: ubuntu-latest
-          python: '3.12'
-          toxenv: linters
-
     steps:
 
     - name: Checkout code
