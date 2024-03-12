@@ -156,6 +156,9 @@ class Downloader:
                     "but missing expected "
                     f"keys 'sha' and 'download_url`. JSON contents: {info}"
                 ) from err
+                
+            except TypeError as err:
+                raise TypeError(f"Unexpected response type {info}") from err
 
         return repo_blob_dict
 
