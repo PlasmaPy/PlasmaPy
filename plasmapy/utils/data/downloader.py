@@ -197,11 +197,15 @@ class Downloader:
             local_sha = None
 
         # Get the online SHA
+        # Record any errors found to report at the end if the file cannot
+        # be found anywhere
+        repo_err = None
         try:
             online_sha, dl_url = self._repo_file_info(filename)
         # If online file cannot be found, set the sha hash to None
-        except (requests.ConnectionError, ValueError):
+        except (requests.ConnectionError, ValueError) as err:
             online_sha = None
+            repo_err = err
 
         # If local sha and online sha are equal, return the local filepath
         if local_sha == online_sha and local_sha is not None:
@@ -235,5 +239,5 @@ class Downloader:
             raise ValueError(
                 "Resource could not be found locally or "
                 "retrieved from the PlasmPy-data repository: "
-                f"{filename}"
+                f"{filename}. Exception raised: {repo_err}"
             )
