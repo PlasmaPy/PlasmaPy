@@ -182,3 +182,16 @@ jobs:
     - name: Perform editable installation with tests & docs requirements sets
       run: |
         pip install --progress-bar off -e .[tests,docs]
+
+  validate-citation-cff:
+    runs-on: ubuntu-latest
+    name: Validate CITATION.cff
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Validate CITATION.cff
+      uses: dieghernan/cff-validator@v3
