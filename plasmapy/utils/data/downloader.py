@@ -7,7 +7,6 @@ downloading files from |PlasmaPy's data repository|.
 import json
 import warnings
 from pathlib import Path
-from urllib.parse import urljoin
 
 import requests
 
@@ -35,7 +34,7 @@ class Downloader:
 
     _API_BASE_URL = "https://api.github.com/repos/PlasmaPy/PlasmaPy-data/contents/"
 
-    _blob_file = "RESOURCE_BLOB_SHA.json"
+    _local_blob_file = "RESOURCE_BLOB_SHA.json"
 
     def __init__(self, directory: Path | None = None):
         if directory is None:
@@ -53,29 +52,37 @@ class Downloader:
         self._download_directory.mkdir(parents=True, exist_ok=True)
 
         # Path to the SHA blob file
-        self._blob_file_path = Path(self._download_directory, self._blob_file)
+        self._local_blob_file_path = Path(
+            self._download_directory, self._local_blob_file
+        )
 
         # Create the SHA blob file if it doesn't already exist
-        if not self._blob_file_path.is_file():
-            self.blob_dict = {}
+        if not self._local_blob_file_path.is_file():
+            self._local_blob_dict = {}
             self._write_blobfile()
         # Otherwise, read the SHA blob file
         else:
             self._read_blobfile()
 
+        # Retrieve the online repo file information
+        try:
+            self._repo_blob_dict = self._get_repo_blob_dict()
+        except ValueError:
+            self._repo_blob_dict = None
+
     def _write_blobfile(self) -> None:
         """
-        Write the blob_dict to disk.
+        Write the _local_blob_dict to disk.
         """
-        with self._blob_file_path.open("w") as f:
-            json.dump(self.blob_dict, fp=f)
+        with self._local_blob_file_path.open("w") as f:
+            json.dump(self._local_blob_dict, fp=f)
 
     def _read_blobfile(self) -> None:
         """
-        Read the blob_dict from disk.
+        Read the _local_blob_dict from disk.
         """
-        with self._blob_file_path.open("r") as f:
-            self.blob_dict = json.load(f)
+        with self._local_blob_file_path.open("r") as f:
+            self._local_blob_dict = json.load(f)
 
     def _http_request(self, url: str) -> requests.Response:
         """
@@ -100,31 +107,24 @@ class Downloader:
 
         return reply
 
-    def _repo_file_info(self, filename: str) -> tuple[str, str]:
+    def _get_repo_blob_dict(self) -> dict:
         """
-        Return file information from github via the API.
-
-        Parameters
-        ----------
-        filename : str
-            DESCRIPTION.
-
-        Returns
-        -------
-        sha : str
-            SHA hash for the file on GitHub.
-        dl_url : str
-            URL from which the file can be downloaded from GitHub.
+        Download the file information for all the files in the repository
+        at once.
 
         Raises
         ------
         ValueError
-            If the URL corresponding to the filename doesn't return a JSON
-            file, or the JSON file is missing the expected keys.
+            If the URL does not return the expected JSON file with the
+            expected keys.
 
+        Returns
+        -------
+        repo_blob_dict : dict
+            Dictionary with filenames as keys. Each item is another entry
+            with keys `sha` and `download_url`.
         """
-        url = urljoin(self._API_BASE_URL, filename)
-        reply = self._http_request(url)
+        reply = self._http_request(self._API_BASE_URL)
 
         # Extract the SHA hash and the download URL from the response
 
@@ -135,22 +135,29 @@ class Downloader:
             info = reply.json()
         except requests.exceptions.JSONDecodeError as err:
             raise ValueError(
-                f"URL did not return the expected JSON file: {url}. "
+                "URL did not return the expected JSON file: "
+                f"{self._API_BASE_URL}. "
                 f"Response content: {reply.content}"
             ) from err
 
-        # Not tested, since any URL on the gituhb API that doesn't return a 404
-        # should be a JSON with these keys
-        try:  # coverage: ignore
-            sha = info["sha"]
-            dl_url = info["download_url"]
-        except KeyError as err:
-            raise ValueError(
-                f"URL {url} returned JSON file, but missing expected "
-                f"keys 'sha' and 'download_url`. JSON contents: {info}"
-            ) from err
+        repo_blob_dict = {}
 
-        return sha, dl_url
+        for item in info:
+            try:
+                repo_blob_dict[item["name"]] = {
+                    "sha": item["sha"],
+                    "download_url": item["download_url"],
+                }
+            # Not tested, since any URL on the gituhb API that doesn't return a 404
+            # should be a JSON with these keys
+            except KeyError as err:  # coverage: ignore
+                raise ValueError(
+                    f"URL {self._API_BASE_URL} returned JSON file, "
+                    "but missing expected "
+                    f"keys 'sha' and 'download_url`. JSON contents: {info}"
+                ) from err
+
+        return repo_blob_dict
 
     def _download_file(self, filepath: Path, dl_url: str) -> None:
         """
@@ -191,21 +198,22 @@ class Downloader:
 
         # If local file exists and also exists in blob file, get the
         # file sha
-        if filepath.is_file() and filename in self.blob_dict:
-            local_sha = self.blob_dict[filename]
+        if filepath.is_file() and filename in self._local_blob_dict:
+            local_sha = self._local_blob_dict[filename]
         else:
             local_sha = None
 
         # Get the online SHA
-        # Record any errors found to report at the end if the file cannot
-        # be found anywhere
         repo_err = None
-        try:
-            online_sha, dl_url = self._repo_file_info(filename)
-        # If online file cannot be found, set the sha hash to None
-        except (requests.ConnectionError, ValueError) as err:
-            online_sha = None
-            repo_err = err
+        online_sha = None
+        if self._repo_blob_dict is not None:
+            try:
+                online_sha = self._repo_blob_dict[filename]["sha"]
+            except KeyError as err:
+                repo_err = err
+                warnings.warn(f"Filename {filename} not found on repository.")
+            except ValueError as err:
+                repo_err = err
 
         # If local sha and online sha are equal, return the local filepath
         if local_sha == online_sha and local_sha is not None:
@@ -213,11 +221,12 @@ class Downloader:
 
         # Try downloading from the repository
         elif online_sha is not None:
+            dl_url = self._repo_blob_dict[filename]["download_url"]
             # Download the file
             self._download_file(filepath, dl_url)
 
             # Add SHA to blob dict and update blob file
-            self.blob_dict[filename] = online_sha
+            self._local_blob_dict[filename] = online_sha
             self._write_blobfile()
 
             local_sha = online_sha
