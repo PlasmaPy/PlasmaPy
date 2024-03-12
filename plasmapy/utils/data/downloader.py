@@ -107,7 +107,7 @@ class Downloader:
 
         return reply
 
-    def _get_repo_blob_dict(self) -> dict:
+    def _get_repo_blob_dict(self) -> dict[dict[str, str]]:
         """
         Download the file information for all the files in the repository
         at once.
