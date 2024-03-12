@@ -42,7 +42,7 @@ class Downloader:
                 Path.home(), ".plasmapy", "downloads"
             )  # nocov
         else:
-            self._download_directory = directory
+            self._download_directory = Path(directory)
 
         # Make the directory if it doesn't already exist
         self._download_directory.mkdir(parents=True, exist_ok=True)
