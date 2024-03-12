@@ -2,6 +2,7 @@
 A class for storing ionization state data for multiple elements or
 isotopes.
 """
+
 __all__ = ["IonizationStateCollection"]
 
 from numbers import Integral, Real

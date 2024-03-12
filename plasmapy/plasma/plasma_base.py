@@ -5,6 +5,7 @@ Module for defining the base framework of the plasma classes.
 
    |expect-api-changes|
 """
+
 __all__ = ["BasePlasma", "GenericPlasma"]
 
 from abc import ABC, abstractmethod

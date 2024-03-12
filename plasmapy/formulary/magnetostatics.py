@@ -2,6 +2,7 @@
 Define MagneticStatics class to calculate common static magnetic fields
 as first raised in issue #100.
 """
+
 __all__ = [
     "CircularWire",
     "FiniteStraightWire",

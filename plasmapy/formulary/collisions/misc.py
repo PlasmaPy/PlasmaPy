@@ -1,6 +1,7 @@
 """
 Module of miscellaneous parameters related to collisions.
 """
+
 __all__ = [
     "mobility",
     "Spitzer_resistivity",

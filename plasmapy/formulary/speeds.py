@@ -1,4 +1,5 @@
 """Functions to calculate fundamental plasma speed parameters."""
+
 __all__ = [
     "Alfven_speed",
     "kappa_thermal_speed",

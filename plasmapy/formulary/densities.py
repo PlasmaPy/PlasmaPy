@@ -1,4 +1,5 @@
 """Functions to calculate plasma density parameters."""
+
 __all__ = [
     "critical_density",
     "mass_density",
