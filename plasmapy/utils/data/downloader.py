@@ -122,7 +122,7 @@ class Downloader:
 
         return reply
 
-    def _api_usage(self):
+    def _api_usage(self)->tuple[int,int]:
         """
         Return the API call limit and the number currently used from this IP.
 
@@ -136,7 +136,7 @@ class Downloader:
 
         return limit, used
 
-    def _get_repo_blob_dict(self) -> dict[dict[str, str]]:
+    def _get_repo_blob_dict(self) -> dict[dict[str, str]] | None:
         """
         Download the file information for all the files in the repository
         at once.
@@ -205,7 +205,7 @@ class Downloader:
 
         return repo_blob_dict
 
-    def _download_file(self, filename: str, dl_url: str) -> str:
+    def _download_file(self, filename: str, dl_url: str) -> Path:
         """
         Download a file from a given URL to a specified path.
 
@@ -237,8 +237,8 @@ class Downloader:
         return filepath
 
     def _get_file_with_validation(
-        self, filename: str, local_sha: str, repo_sha: str
-    ) -> str | None:
+        self, filename: str, local_sha: str|None, repo_sha: str|None
+    ) -> Path | None:
         """
         Return file logic with validation.
         """
@@ -275,15 +275,16 @@ class Downloader:
             return None
 
     def _get_file_without_validation(
-        self, filename: str, local_sha: str
-    ) -> str | Exception:
+        self, filename: str, local_sha: str|None
+    ) -> Path:
         """
         Return file logic without validation.
 
-        Raises
-        ------
-        ValueError
-            If the URL is not valid.
+        Returns
+        -------
+        filepath : Path 
+            Path to file
+
         """
         filepath = Path(self._download_directory, filename)
 
@@ -300,7 +301,7 @@ class Downloader:
             dl_url = urljoin(self._RAW_BASE_URL, filename)
             return self._download_file(filename, dl_url)
         except ValueError as err:
-            raise ValueError(f"{filename} was not found at URL {dl_url}") from err
+            raise ValueError(f"{filename} was not found at URL {dl_url}:{err}")
 
     def _get_local_sha(self, filename: str) -> str | None:
         """
@@ -315,21 +316,26 @@ class Downloader:
         else:
             return None
 
-    def _get_repo_sha(self, filename: str) -> tuple[str | None, Exception | None]:
+    def _get_repo_sha(self, filename: str) -> str:
         """
         Get the online file SHA hash.
-
+        
+        Returns
+        -------
+        repo_sha : str | None
+            Repository SHA hash
         """
-        repo_sha = None
 
         # This is skipped if validate=False, since _repo_blob_dict is then None
         if self._repo_blob_dict is not None:
             try:
-                repo_sha = self._repo_blob_dict[filename]["sha"]
-            except (KeyError, ValueError):
-                warnings.warn(f"Filename {filename} not found on repository.")
-
-        return repo_sha
+                return self._repo_blob_dict[filename]["sha"]
+            except KeyError as err:
+                raise KeyError(f"Filename {filename} not found in repository SHA file: {err}")
+            except ValueError as err:
+                raise ValueError(f"Filename {filename} not found in repository SHA file: {err}")
+        
+        return None
 
     def get_file(self, filename: str) -> Path:
         """
@@ -357,20 +363,43 @@ class Downloader:
 
         # Get the SHAs
         local_sha = self._get_local_sha(filename)
-        repo_sha = self._get_repo_sha(filename)
+        print(local_sha)
+        
+        try:
+            repo_sha = self._get_repo_sha(filename)
+            repo_sha_err = None
+        except (KeyError, ValueError) as err:
+            repo_sha_err = err
+            repo_sha = None
+
 
         if self._validate:
-            filepath = self._get_file_with_validation(filename, local_sha, repo_sha)
-        else:
-            filepath = self._get_file_without_validation(filename, local_sha)
+            try:
+                return self._get_file_with_validation(filename, 
+                                                            local_sha, repo_sha)
+            except ValueError as err:
+                repo_err = err
 
-        if filepath is not None:
-            return filepath
         else:
-            # If neither online file or local file can be found, raise an
-            # exception
-            raise ValueError(
-                "Resource could not be found locally or "
-                "retrieved from the PlasmPy-data repository: "
-                f"{filename}. "
-            )
+            try:
+                return self._get_file_without_validation(filename, 
+                                                             local_sha)
+            except ValueError as err:
+                repo_err = err
+     
+
+        # If neither online file or local file can be found, raise an
+        # exception
+        raise ValueError(
+            "Resource could not be found locally or "
+            "retrieved from the PlasmPy-data repository: "
+            f"{filename}. Exceptions raised: {repo_sha_err}, "
+           f"{repo_err}."
+        )
+
+if __name__ == "__main__":
+    file = "not-a-real-file.txt"
+    dl = Downloader(validate=True)
+    print(dl.get_file(file))
+    limit, usage = dl._api_usage()
+    print(f"{usage}/{limit}")
