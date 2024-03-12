@@ -59,6 +59,28 @@ def test_get_file_NIST_PSTAR_datafile(tmp_path) -> None:
     assert np.allclose(arr[0, :], np.array([1e-3, 1.043e2]))
 
 
+test_urls = [
+    # Test with a page we know is up if the tests are running
+    ("https://github.com/PlasmaPy/PlasmaPy", None),
+    # Test with a known 404
+    ("https://www.google.com/404", ValueError),
+]
+
+
+@pytest.mark.parametrize(("url", "expected"), test_urls)
+def test_http_request(tmp_path, url, expected):
+    """
+    Test exceptions from http downloader
+    """
+    dl = Downloader(directory=tmp_path)
+
+    if expected is None:
+        dl._http_request(url)
+    else:
+        with pytest.raises(expected):
+            dl._http_request(url)
+
+
 def test_existing_sha_blob_file(tmp_path):
     """
     Test persistence of the blob file between instances

@@ -27,8 +27,9 @@ class Downloader:
 
     Parameters
     ----------
-    directory : `~pathlib.Path`|None, optional
-        DESCRIPTION. The default is None.
+    directory : `~pathlib.Path`, optional
+        The directory into which files will be downloaded. The default
+        is /~//.plasmapy//downloads//
 
     """
 
@@ -81,14 +82,21 @@ class Downloader:
         Issue an HTTP request to the specified URL, handling exceptions.
         """
 
-        reply = requests.get(url)  # noqa: S113
+        try:
+            reply = requests.get(url)  # noqa: S113
+
+        # No test coverage for this exception since we can't test it without
+        # severing the network connectivity in pytest
+        except requests.ConnectionError as err:  # coverage: ignore
+            raise requests.ConnectionError(
+                "Unable to connect to data " f"repository {self._API_BASE_URL}"
+            ) from err
 
         # Extract the 'message' value if it is there
         # If the file does not exist on the repository, the GitHub API
         # will return `Not Found` in response to this but not raise a 404 error
-
-        if reply.status_code == 404 or b"Not Found" in reply.content:
-            raise FileNotFoundError
+        if reply.status_code == 404:
+            raise ValueError(f"URL returned 404: {url}")
 
         return reply
 
@@ -108,25 +116,39 @@ class Downloader:
         dl_url : str
             URL from which the file can be downloaded from GitHub.
 
+        Raises
+        ------
+        ValueError
+            If the URL corresponding to the filename doesn't return a JSON
+            file, or the JSON file is missing the expected keys.
+
         """
         url = urljoin(self._API_BASE_URL, filename)
-
-        try:
-            reply = self._http_request(url)
-        except FileNotFoundError as err:
-            raise FileNotFoundError(f"File {filename} not found at {url}") from err
-
-        # No test coverage for this exception since we can't test it without
-        # severing the network connectivity in pytest
-        except requests.ConnectionError as err:  # coverage: ignore
-            raise requests.ConnectionError(
-                "Unable to connect to data " f"repository {self._API_BASE_URL}"
-            ) from err
+        reply = self._http_request(url)
 
         # Extract the SHA hash and the download URL from the response
-        info = reply.json()
-        sha = info["sha"]
-        dl_url = info["download_url"]
+
+        # Extract contents to JSON
+        # Not tested, since any URL on the gituhb API that doesn't raise a 404
+        # should return a JSON
+        try:  # coverage: ignore
+            info = reply.json()
+        except json.JSONDecodeError as err:
+            raise ValueError(
+                "URL did not return the expected JSON " f"file: {url}"
+            ) from err
+
+        # Not tested, since any URL on the gituhb API that doesn't return a 404
+        # should be a JSON with these keys
+        try:  # coverage: ignore
+            sha = info["sha"]
+            dl_url = info["download_url"]
+        except KeyError as err:
+            raise ValueError(
+                "URL returned JSON file, but missing expected "
+                "keys 'sha' and 'download_url': "
+                f"{url}"
+            ) from err
 
         return sha, dl_url
 
@@ -178,7 +200,7 @@ class Downloader:
         try:
             online_sha, dl_url = self._repo_file_info(filename)
         # If online file cannot be found, set the sha hash to None
-        except (requests.ConnectionError, FileNotFoundError):
+        except (requests.ConnectionError, ValueError):
             online_sha = None
 
         # If local sha and online sha are equal, return the local filepath
@@ -215,3 +237,11 @@ class Downloader:
                 "retrieved from the PlasmPy-data repository: "
                 f"{filename}"
             )
+
+
+if __name__ == "__main__":
+    filename = "notfile.txt"
+    dl = Downloader()
+
+    dl._API_BASE_URL = "https://www.google.com"
+    dl._repo_file_info("NIST_STAR2.hdf5")
