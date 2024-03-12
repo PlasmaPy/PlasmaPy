@@ -501,11 +501,6 @@ class Tracker(ParticleTracker):
 
         self._stop_particles(~keep_these_particles)
 
-        self.theta = self.theta[
-            keep_these_particles
-        ]  # Important to apply here to get correct grid_ind
-        self.nparticles = number_kept_particles
-
     # *************************************************************************
     # Particle creation methods
     # *************************************************************************
