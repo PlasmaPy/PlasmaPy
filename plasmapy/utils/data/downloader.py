@@ -38,9 +38,13 @@ class Downloader:
 
     def __init__(self, directory: Path | None = None):
         if directory is None:
-            self._download_directory = Path(
-                Path.home(), ".plasmapy", "downloads"
-            )  # nocov
+            # No test coverage for default directory, since pytest always
+            # saves into a temporary directory
+            self._download_directory = Path(  # coverage: ignore
+                Path.home(),
+                ".plasmapy",
+                "downloads",
+            )
         else:
             self._download_directory = Path(directory)
 
@@ -114,11 +118,10 @@ class Downloader:
 
         # No test coverage for this exception since we can't test it without
         # severing the network connectivity in pytest
-        except requests.ConnectionError as err:  # nocov
-            raise requests.ConnectionError(  # nocov
-                "Unable to connect to data "  # nocov
-                f"repository {self._API_BASE_URL}"  # nocov
-            ) from err  # nocov
+        except requests.ConnectionError as err:  # coverage: ignore
+            raise requests.ConnectionError(
+                "Unable to connect to data " f"repository {self._API_BASE_URL}"
+            ) from err
 
         # Extract the SHA hash and the download URL from the response
         info = reply.json()
