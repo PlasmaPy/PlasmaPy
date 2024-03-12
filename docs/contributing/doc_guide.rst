@@ -1141,6 +1141,8 @@ more details, please refer to `Sphinx's templating page`_.
    Remember: your happiness and well-being are more important than
    `nested inline markup`_!
 
+.. _building-docs:
+
 Building documentation
 ======================
 
@@ -1168,19 +1170,22 @@ There are two methods for building the documentation: make_ and |tox|.
 Prerequisites
 -------------
 
-To install all Python dependencies required to develop PlasmaPy on your
-local computer, enter the top-level directory of the cloned repository
-and run:
+Prior to building the documentation, please follow the
+:ref:`instructions on getting ready to contribute <getting ready to
+contribute>`. Alternatively, the dependencies for building docs can be
+installed by entering the top-level directory of the repository and
+running:
 
 .. code-block:: bash
 
-   pip install -e ".[tests,docs]"
+    pip install -e .[docs,tests]
 
 It may also be necessary to install the following software:
 
 * `graphviz <https://graphviz.org/download>`__
-* make_ (not necessary for building the documentation with |tox|)
 * `pandoc <https://pandoc.org/installing.html>`__
+* make_ (not necessary for building the documentation with |tox| or
+  sphinx_build)
 
 Building documentation
 ----------------------
@@ -1198,13 +1203,9 @@ sphinx-build_. We recommend starting with |tox|.
 
          tox -e build_docs
 
-      |tox| can be installed with
-
-      or :bash:`python -m pip install tox`.
-
       To pass any `options to sphinx-build`_, put them after ``--``. For
-      example, :bash:`tox -e build_docs -- -v` will increase the
-      verbosity of the output.
+      example, use :bash:`tox -e build_docs -- -v` to increase output
+      verbosity.
 
       Building with |tox| is well-suited for reproducible documentation
       builds in an isolated Python environment, which is why it is used
