@@ -1,3 +1,4 @@
-Replaced `~plasmapy.utils.data.downloader` module with `~plasmapy.utils.data.resources`
-which contains the `~plasmapy.utils.data.resources.Resources` class for downloading
-resource files from |PlasmaPy's data repository|.
+Replaced `~plasmapy.utils.data.downloader.get_file` function with a
+new class `~plasmapy.utils.data.downloader.Downloader` with a
+method ~plasmapy.utils.data.downloader.Downloader.get_file` which
+downloads resource files from |PlasmaPy's data repository|.

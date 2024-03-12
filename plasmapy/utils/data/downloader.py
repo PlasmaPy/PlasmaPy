@@ -11,14 +11,14 @@ from urllib.parse import urljoin
 
 import requests
 
-__all__ = ["Resources"]
+__all__ = ["Downloader"]
 
 
 # TODO: use a config file variable to allow users to set a location
 # for the data download folder?
 
 
-class Resources:
+class Downloader:
     """
     Accesses the PlasmaPy resource files.
 
@@ -38,7 +38,9 @@ class Resources:
 
     def __init__(self, directory: Path | None = None):
         if directory is None:
-            self._download_directory = Path(Path.home(), ".plasmapy", "downloads")
+            self._download_directory = Path(
+                Path.home(), ".plasmapy", "downloads"
+            )  # nocov
         else:
             self._download_directory = directory
 
@@ -47,7 +49,7 @@ class Resources:
 
         # Create the SHA blob file if it doesn't already exist
         if not self._blob_file_path.is_file():
-            self.blob_dict = dict()
+            self.blob_dict = {}
             self._write_blobfile()
         # Otherwise, read the SHA blob file
         else:
@@ -110,9 +112,9 @@ class Resources:
         # No test coverage for this exception since we can't test it without
         # severing the network connectivity in pytest
         except requests.ConnectionError as err:  # nocov
-            raise requests.ConnectionError(
+            raise requests.ConnectionError(  # nocov
                 "Unable to connect to data "  # nocov
-                f"repository {self._API_BASE_URL}"
+                f"repository {self._API_BASE_URL}"  # nocov
             ) from err  # nocov
 
         # Extract the SHA hash and the download URL from the response
@@ -134,7 +136,7 @@ class Resources:
         with filepath.open(mode="wb") as f:
             f.write(reply.content)
 
-    def get_resource(self, filename: str) -> Path:
+    def get_file(self, filename: str) -> Path:
         """
         Returns a local path to a resource file, downloading it if necessary.
 
@@ -207,14 +209,3 @@ class Resources:
                 "retrieved from the PlasmPy-data repository: "
                 f"{filename}"
             )
-
-
-if __name__ == "__main__":
-    obj = Resources()
-
-    # obj._download_file(Path(Path.home(), ".plasmapy", "downloads", "s.txt"),
-    #                  "https://api.github.com/repos/PlasmaPy/PlasmaPy-data/contents/s.txt")
-
-    # obj._API_BASE_URL = 'https://www.google.com/404'
-    x = obj.get_resource("NIST_STAR2.hdf5")
-    # print(x)
