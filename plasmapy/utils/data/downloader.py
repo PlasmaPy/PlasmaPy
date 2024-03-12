@@ -133,9 +133,10 @@ class Downloader:
         # should return a JSON
         try:  # coverage: ignore
             info = reply.json()
-        except json.JSONDecodeError as err:
+        except requests.exceptions.JSONDecodeError as err:
             raise ValueError(
-                "URL did not return the expected JSON " f"file: {url}"
+                f"URL did not return the expected JSON file: {url}. "
+                f"Response content: {reply.content}"
             ) from err
 
         # Not tested, since any URL on the gituhb API that doesn't return a 404
@@ -145,9 +146,8 @@ class Downloader:
             dl_url = info["download_url"]
         except KeyError as err:
             raise ValueError(
-                "URL returned JSON file, but missing expected "
-                "keys 'sha' and 'download_url': "
-                f"{url}"
+                f"URL {url} returned JSON file, but missing expected "
+                f"keys 'sha' and 'download_url`. JSON contents: {info}"
             ) from err
 
         return sha, dl_url
