@@ -102,7 +102,7 @@ Changelog guidelines
 
 * Changelog entries are not required for changes that are sufficiently
   minor, such as typo fixes or fixed hyperlinks. When this is the case,
-  a package maintainer will add the :guilabel`no changelog entry needed`
+  a package maintainer will add the :guilabel:`no changelog entry needed`
   label to the pull request.
 
 * Use the past tense to describe the change, and the present tense to

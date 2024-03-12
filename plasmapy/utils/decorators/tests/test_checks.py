@@ -2,6 +2,7 @@
 Tests for 'check` decorators (i.e. decorators that only check objects but do not
 change them).
 """
+
 import inspect
 from types import LambdaType
 from unittest import mock

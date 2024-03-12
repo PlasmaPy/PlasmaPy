@@ -2,6 +2,7 @@
 Functionality for calculating the numerical solutions to the Stix cold
 plasma function.
 """
+
 __all__ = ["stix"]
 
 import astropy.units as u

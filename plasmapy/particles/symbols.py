@@ -2,6 +2,7 @@
 Functions that deal with string representations of atomic symbols
 and numbers.
 """
+
 __all__ = [
     "atomic_symbol",
     "element_name",

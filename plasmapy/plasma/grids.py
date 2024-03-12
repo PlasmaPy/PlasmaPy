@@ -1,6 +1,7 @@
 """
 Defines the AbstractGrid class and child classes.
 """
+
 from collections.abc import Sequence
 
 __all__ = [

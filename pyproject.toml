@@ -90,6 +90,7 @@ tests = [
   "pre-commit >= 3.6.0",
   "pytest >= 8.0.2",
   "pytest-regressions >= 2.5.0",
+  "pytest-rerunfailures >= 13.0",
   "pytest-xdist >= 3.5.0",
   "tomli >= 2.0.1",
   "tox >= 4.12.1",

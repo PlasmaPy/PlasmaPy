@@ -1,6 +1,7 @@
 """
 Module of miscellaneous parameters related to collisions.
 """
+
 __all__ = [
     "mobility",
     "Spitzer_resistivity",
@@ -188,6 +189,8 @@ def mobility(
 
     Examples
     --------
+    .. autolink-skip:: section
+
     >>> import astropy.units as u
     >>> n = 1e19 * u.m**-3
     >>> T = 1e6 * u.K
@@ -314,6 +317,8 @@ def Spitzer_resistivity(
 
     Examples
     --------
+    .. autolink-skip:: section
+
     >>> import astropy.units as u
     >>> n = 1e19 * u.m**-3
     >>> T = 1e6 * u.K

@@ -1,6 +1,7 @@
 """
 Objects for representing magnetohydrodynamic (MHD) waves.
 """
+
 __all__ = [
     "AbstractMHDWave",
     "AlfvenWave",

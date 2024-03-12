@@ -1,6 +1,7 @@
 """
 Test module for `plasmapy.utils.decorators.lite_func.bind_lite_func`.
 """
+
 import pytest
 from numba import jit, njit
 
