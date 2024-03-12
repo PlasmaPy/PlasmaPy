@@ -1,4 +1,4 @@
-Replaced `~plasmapy.utils.data.downloader.get_file` function with a
+Replaced plasmapy.utils.data.downloader.get_file function with a
 new class `~plasmapy.utils.data.downloader.Downloader` with a
 method ~plasmapy.utils.data.downloader.Downloader.get_file` which
 downloads resource files from |PlasmaPy's data repository|.

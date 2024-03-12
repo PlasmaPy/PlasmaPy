@@ -27,7 +27,7 @@ class Downloader:
 
     Parameters
     ----------
-    directory : Path|None, optional
+    directory : `~pathlib.Path`|None, optional
         DESCRIPTION. The default is None.
 
     """
@@ -158,7 +158,7 @@ class Downloader:
 
         Returns
         -------
-        Path : Path
+        Path : `~pathlib.Path`
             The local path to the resource file.
 
         """
