@@ -124,6 +124,19 @@ class Downloader:
             Dictionary with filenames as keys. Each item is another entry
             with keys `sha` and `download_url`.
         """
+
+        # Ensure that the GitHub API is not rate limited
+        reply = self._http_request("https://api.github.com/rate_limit")
+        info = reply.json()
+        rate_info = info["resources"]["core"]
+        limit = int(rate_info["limit"])
+        used = int(rate_info["used"])
+        if used >= limit:  # coverage: ignore
+            raise ValueError(
+                f"Exceeded GitHub API limit ({used}/{limit}), "
+                "please try Downloader again later."
+            )
+
         reply = self._http_request(self._API_BASE_URL)
 
         # Extract the SHA hash and the download URL from the response
@@ -156,7 +169,7 @@ class Downloader:
                     "but missing expected "
                     f"keys 'sha' and 'download_url`. JSON contents: {info}"
                 ) from err
-                
+
             except TypeError as err:
                 raise TypeError(f"Unexpected response type {info}") from err
 
