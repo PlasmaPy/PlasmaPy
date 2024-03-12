@@ -96,7 +96,7 @@ class Downloader:
             self._write_repo_blobfile()
         # Otherwise, read the SHA blob file
         else:
-            self._read_local_blobfile()
+            self._read_repo_blobfile()
 
 
         
@@ -145,6 +145,20 @@ class Downloader:
         """
         with self._local_blob_file_path.open("r") as f:
             self._local_blob_dict = json.load(f)
+                 
+    def _write_repo_blobfile(self) -> None:
+        """
+        Write the _repo_blob_dict to disk.
+        """
+        with self._repo_blob_file_path.open("w") as f:
+            json.dump(self._repo_blob_dict, fp=f)
+
+    def _read_repo_blobfile(self) -> None:
+        """
+        Read the _repo_blob_dict from disk.
+        """
+        with self._repo_blob_file_path.open("r") as f:
+            self._repo_blob_dict = json.load(f)
             
             
     def _do_validation(self)->bool:
