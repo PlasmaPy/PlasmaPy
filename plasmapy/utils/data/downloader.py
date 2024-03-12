@@ -44,6 +44,9 @@ class Downloader:
         else:
             self._download_directory = directory
 
+        # Make the directory if it doesn't already exist
+        self._download_directory.mkdir(parents=True, exist_ok=True)
+
         # Path to the SHA blob file
         self._blob_file_path = Path(self._download_directory, self._blob_file)
 
