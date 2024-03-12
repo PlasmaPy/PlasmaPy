@@ -15,7 +15,8 @@ from plasmapy.utils.data.downloader import Downloader
 
 @pytest.fixture()
 def downloader(tmp_path):
-    return Downloader(directory=tmp_path)
+    # Turn off validation so API calls aren't used
+    return Downloader(directory=tmp_path, validate=False)
 
 
 @pytest.fixture()

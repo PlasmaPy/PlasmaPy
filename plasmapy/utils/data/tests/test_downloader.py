@@ -1,3 +1,4 @@
+import warnings
 from pathlib import Path
 
 import numpy as np
@@ -27,6 +28,9 @@ test_files = [
 @pytest.mark.parametrize(("filename", "expected"), test_files)
 def test_get_file(filename, expected, downloader) -> None:
     """Test the get_file function."""
+
+    # Scilence warnings from files not found on the repository
+    warnings.filterwarnings("ignore", category=UserWarning)
 
     if expected is not None:
         with pytest.raises(expected):
@@ -68,10 +72,52 @@ def test_http_request(downloader, url, expected):
             downloader._http_request(url)
 
 
+def test_without_validation(tmp_path):
+    """
+    Test how the downloader works with validation turned off
+
+    """
+
+    file = "NIST_PSTAR_aluminum.txt"
+    dl = Downloader(directory=tmp_path, validate=False)
+
+    # Download file
+    dl.get_file(file)
+
+    # Run again to retrieve local copy
+    dl.get_file(file)
+
+    # Test that exception is raised if file doesn't exist
+    with pytest.raises(ValueError):
+        dl.get_file("not_a_file.txt")
+
+
+def test_blob_file(downloader):
+    """
+    Test the read and write blob file routines
+    """
+
+    # Add a key to the blob file dict
+    test_str = "abc123"
+    downloader._local_blob_dict["test_key"] = test_str
+    # Write it to the file
+    downloader._write_blobfile()
+
+    # Change the key but don't write to file again
+    downloader._local_blob_dict["test_key"] = "not the same string"
+
+    # Read from file and confirm value was restored
+    downloader._read_blobfile()
+    assert downloader._local_blob_dict["test_key"] == test_str
+
+
 def test_multiple_resource_calls(tmp_path, downloader):
     """
     Test various file retrieval modes
     """
+    # Scilence warnings from files not found on the repository
+    warnings.filterwarnings("ignore", category=UserWarning)
+
     # Create a dummy file
     filename = "NIST_PSTAR_aluminum.txt"
 
