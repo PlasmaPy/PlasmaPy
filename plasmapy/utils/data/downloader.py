@@ -106,7 +106,8 @@ class Downloader:
         try:
             # Requesting this URL does not count as an API query
             self._http_request("https://api.github.com/rate_limit")
-        except requests.ConnectionError:
+        # No testing because CI always has a connection to the API
+        except requests.ConnectionError:  # coverage: ignore
             return False
         return True
 
@@ -184,7 +185,7 @@ class Downloader:
         # should return a JSON
         try:  # coverage: ignore
             info = reply.json()
-        except requests.exceptions.JSONDecodeError as err:
+        except requests.exceptions.JSONDecodeError as err: # coverage: ignore
             warnings.warn(
                 "URL did not return the expected JSON file: "
                 f"{self._API_BASE_URL}. "

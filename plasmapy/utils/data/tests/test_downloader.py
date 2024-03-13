@@ -55,6 +55,26 @@ def test_blob_file(downloader_validated):
     assert downloader_validated._blob_dict["test_key"] == test_str
 
 
+def test_update_blob_entry(downloader_validated):
+    """
+    Test the logic in the _update_blob_entry function
+    """
+    dl = downloader_validated
+
+    # Initialize with all None
+    dl._update_blob_entry("f1")
+    assert "f1" in dl._blob_dict
+    assert dl._blob_dict["f1"]["local_sha"] is None
+    assert dl._blob_dict["f1"]["repo_sha"] is None
+    assert dl._blob_dict["f1"]["download_url"] is None
+
+    dl._update_blob_entry("f1", local_sha="1", repo_sha="2", download_url="3")
+    assert "f1" in dl._blob_dict
+    assert dl._blob_dict["f1"]["local_sha"] == "1"
+    assert dl._blob_dict["f1"]["repo_sha"] == "2"
+    assert dl._blob_dict["f1"]["download_url"] == "3"
+
+
 test_files = [
     # Test downloading a file
     ("NIST_PSTAR_aluminum.txt", None),
@@ -160,3 +180,17 @@ def test_at_most_one_api_call(downloader_validated) -> None:
     limit, used1 = downloader_validated._api_usage
 
     assert used1 <= used0 + 1
+
+
+def test_creating_another_downloader(tmp_path, downloader_validated):
+    """
+    Test creating a second downloader in the same directory, which should
+    read in the existing blob file.
+    """
+
+    dl2 = Downloader(directory=tmp_path)
+
+    filename = "NIST_PSTAR_aluminum.txt"
+    filepath = dl2._filepath(filename)
+
+    assert dl2.get_file(filename) == filepath
