@@ -105,7 +105,7 @@ def test_get_local_only_fle(tmp_path, downloader, request):
     # Get the downloader fixture based on the string name provided
     dl = request.getfixturevalue(downloader)
 
-    # Scilence warnings from files not found on the repository
+    # Silence warnings from files not found on the repository
     warnings.filterwarnings("ignore", category=UserWarning)
 
     # Retrieve a local file that isn't on the remote
@@ -132,8 +132,31 @@ def test_get_local_only_fle(tmp_path, downloader, request):
 
 def test_get_file_NIST_PSTAR_datafile(downloader_validated) -> None:
     """Test getting a particular file and checking for known contents"""
+
+    # Silence warnings from files not found on the repository
+    warnings.filterwarnings("ignore", category=UserWarning)
+
     # Download data (or check that it already exists)
     path = downloader_validated.get_file("NIST_PSTAR_aluminum.txt")
 
     arr = np.loadtxt(path, skiprows=7)
     assert np.allclose(arr[0, :], np.array([1e-3, 1.043e2]))
+
+
+def test_at_most_one_api_call(downloader_validated) -> None:
+    """
+    Test that at most one API call is made over multiple queries
+    """
+    # Silence warnings from files not found on the repository
+    warnings.filterwarnings("ignore", category=UserWarning)
+
+    files = ["NIST_PSTAR_aluminum.txt", "plasmapy_logo.png", "test.h5"]
+
+    limit, used0 = downloader_validated._api_usage
+
+    for file in files:
+        downloader_validated.get_file(file)
+
+    limit, used1 = downloader_validated._api_usage
+
+    assert used1 <= used0 + 1

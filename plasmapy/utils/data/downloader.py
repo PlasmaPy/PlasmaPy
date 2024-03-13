@@ -64,6 +64,11 @@ class Downloader:
 
         self._validate = validate
 
+        # Flag to record whether the blob file has been updated from the repo
+        # by this instantiation of the class. Once the file has been updated
+        # once, we won't update it again to limit API calls.
+        self._updated_blob_file_from_repo = False
+
         # Make the directory if it doesn't already exist
         self._download_directory.mkdir(parents=True, exist_ok=True)
 
@@ -154,6 +159,11 @@ class Downloader:
         if not self._do_validation:
             return None
 
+        # If this instance of Downloader has already updated from the API once,
+        # don't do it again. Almost certainly nothing has changed!
+        if self._updated_blob_file_from_repo:
+            return None
+
         reply = self._http_request(self._API_BASE_URL)
 
         # Extract the SHA hash and the download URL from the response
@@ -186,14 +196,20 @@ class Downloader:
                     "missing expected keys 'sha' and 'download_url`."
                     f" JSON contents: {info}. Exception: {err}"
                 )
-
+                filename = None
                 repo_sha = None
                 download_url = None
 
-            self._update_blob_entry(
-                filename, repo_sha=repo_sha, download_url=download_url
-            )
+            if filename is not None:
+                self._update_blob_entry(
+                    filename, repo_sha=repo_sha, download_url=download_url
+                )
+        # At the end, write back to the blobfile
         self._write_blobfile()
+
+        # The blob file has been updated: set this flag so we won't do it
+        # again on this instance of Downloader
+        self._updated_blob_file_from_repo = True
 
     def _update_blob_entry(
         self,
