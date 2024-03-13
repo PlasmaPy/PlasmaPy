@@ -5,6 +5,7 @@ downloading files from |PlasmaPy's data repository|.
 """
 
 import json
+import time
 import warnings
 from pathlib import Path
 from urllib.parse import urljoin
@@ -154,6 +155,15 @@ class Downloader:
             Dictionary with filenames as keys. Each item is another entry
             with keys `sha` and `download_url`.
         """
+        # If the current blob file has been updated in the past 5 minutes,
+        # don't bother doing it again
+        try:
+            if time.time() - self._blob_dict["_timestamp"] < 300:
+                return None
+        # If the _timestamp key hasn't been set yet, the blob file has
+        # never been updated before
+        except KeyError:
+            pass
 
         # If validation is disabled, or API limit is met,
         # do not request any information from the server
@@ -205,6 +215,11 @@ class Downloader:
                 self._update_blob_entry(
                     filename, repo_sha=repo_sha, download_url=download_url
                 )
+
+        # Save the current epoch time in the blob file as a record of when
+        # it was updated
+        self._blob_dict["_timestamp"] = time.time()
+
         # At the end, write back to the blobfile
         self._write_blobfile()
 
