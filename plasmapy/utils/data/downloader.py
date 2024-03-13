@@ -124,20 +124,21 @@ class Downloader:
         return limit, used
 
     @property
-    def _is_rate_limited(self) -> bool:
+    def _api_is_rate_limited(self) -> bool:
         """
         Whether or not the API is currently rate limited.
         """
         limit, used = self._api_usage
         return used >= limit
 
+    @property
     def _do_validation(self) -> bool:
         """
         Determine whether or not to enforce validation using the GitHub API.
         """
         return self._validate and self._api_connected and not self._api_is_rate_limited
 
-    def _update_repo_blob_dict(self) -> dict[dict[str, str]] | None:
+    def _update_repo_blob_dict(self) -> None:
         """
         Update the blob file with a call to the repository.
 
