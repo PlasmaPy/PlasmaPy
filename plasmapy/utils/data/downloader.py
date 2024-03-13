@@ -44,11 +44,8 @@ class Downloader:
     _API_BASE_URL = "https://api.github.com/repos/PlasmaPy/PlasmaPy-data/contents/"
 
     # Name for the local file that stores the SHA hashes of downloaded files
-    _local_blob_file_name = "LOCAL_RESOURCE_BLOB_SHA.json"
-    
-    # Name for the local file that stores the SHA hashes and download URLs
-    # of the data repository 
-    _repo_blob_file_name = "REPO_RESOURCE_BLOB_SHA.json"
+    # and information about the SHA on the server
+    _blob_file_name = "RESOURCE_BLOB_SHA.json"
 
     # Base URL for RAW files
     _RAW_BASE_URL = "https://raw.githubusercontent.com/PlasmaPy/PlasmaPy-data/main/"
@@ -71,49 +68,46 @@ class Downloader:
         self._download_directory.mkdir(parents=True, exist_ok=True)
 
         # Path to the local SHA blob file
-        self._local_blob_file = Path(
-            self._download_directory, self._local_blob_name
-        )
-        
-        # Path to the repo SHA blob file
-        self._repo_blob_file = Path(
-            self._download_directory, self._repo_blob_name
-        )
-        
+        self._blob_file = Path(self._download_directory, self._blob_file_name)
 
-        # Create the local SHA blob file if it doesn't already exist
-        if not self._local_blob_file.is_file():
-            self._local_blob_dict = {}
-            self._write_local_blobfile()
+        # Create the SHA blob file if it doesn't already exist
+        if not self._blob_file.is_file():
+            self._blob_dict = {}
+            self._write_blobfile()
         # Otherwise, read the SHA blob file
         else:
-            self._read_local_blobfile()
-            
-            
-        # Create the local SHA blob file if it doesn't already exist
-        if not self._repo_blob_file.is_file():
-            self._repo_blob_dict = {}
-            self._write_repo_blobfile()
-        # Otherwise, read the SHA blob file
-        else:
-            self._read_repo_blobfile()
+            self._read_blobfile()
 
+    def _write_blobfile(self) -> None:
+        """
+        Write the _local_blob_dict to disk.
+        """
+        with self._blob_file.open("w") as f:
+            json.dump(self._blob_dict, fp=f)
 
-        
+    def _read_blobfile(self) -> None:
+        """
+        Read the _local_blob_dict from disk.
+        """
+        with self._blob_file.open("r") as f:
+            self._blob_dict = json.load(f)
 
-
-
-        # Retrieve the online repo file information
-        try:
-            self._repo_blob_dict = self._get_repo_blob_dict()
-        except ValueError:
-            self._repo_blob_dict = None
-            
     @property
-    def _api_usage(self)->tuple[int,int]:
+    def _api_connected(self) -> bool:
+        """
+        Returns `True` if a connection exists to the API, otherwise `False`.
+        """
+        try:
+            # Requesting this URL does not count as an API query
+            self._http_request("https://api.github.com/rate_limit")
+        except requests.ConnectionError:
+            return False
+        return True
+
+    @property
+    def _api_usage(self) -> tuple[int, int]:
         """
         Return the API call limit and the number currently used from this IP.
-
         """
         # Ensure that the GitHub API is not rate limited
         reply = self._http_request("https://api.github.com/rate_limit")
@@ -123,54 +117,24 @@ class Downloader:
         used = int(rate_info["used"])
 
         return limit, used
-    
+
     @property
-    def _is_rate_limited(self)->bool:
+    def _is_rate_limited(self) -> bool:
         """
-        Whether or not the API is currently rate limited
+        Whether or not the API is currently rate limited.
         """
         limit, used = self._api_usage
         return used >= limit
 
-    def _write_local_blobfile(self) -> None:
+    def _do_validation(self) -> bool:
         """
-        Write the _local_blob_dict to disk.
+        Determine whether or not to enforce validation using the GitHub API.
         """
-        with self._local_blob_file_path.open("w") as f:
-            json.dump(self._local_blob_dict, fp=f)
+        return self._validate and self._api_connected and not self._api_is_rate_limited
 
-    def _read_local_blobfile(self) -> None:
-        """
-        Read the _local_blob_dict from disk.
-        """
-        with self._local_blob_file_path.open("r") as f:
-            self._local_blob_dict = json.load(f)
-                 
-    def _write_repo_blobfile(self) -> None:
-        """
-        Write the _repo_blob_dict to disk.
-        """
-        with self._repo_blob_file_path.open("w") as f:
-            json.dump(self._repo_blob_dict, fp=f)
-
-    def _read_repo_blobfile(self) -> None:
-        """
-        Read the _repo_blob_dict from disk.
-        """
-        with self._repo_blob_file_path.open("r") as f:
-            self._repo_blob_dict = json.load(f)
-            
-            
-    def _do_validation(self)->bool:
-        return self._validate and self._api_is_rate_limited
-            
-            
-            
-            
     def _update_repo_blob_dict(self) -> dict[dict[str, str]] | None:
         """
-        Download the file information for all the files in the repository
-        at once.
+        Update the blob file with a call to the repository.
 
         Raises
         ------
@@ -185,18 +149,10 @@ class Downloader:
             with keys `sha` and `download_url`.
         """
 
-        # If validation is disabled, or API limit is met, 
-        #do not request any information from the server
+        # If validation is disabled, or API limit is met,
+        # do not request any information from the server
         if not self._do_validation:
             return None
-
-        limit, used = self._api_usage
-        # No tests since we don't want to hit this limit!
-        if used >= limit:  # coverage: ignore
-            raise ValueError(
-                f"Exceeded GitHub API limit ({used}/{limit}), "
-                "please try Downloader again later."
-            )
 
         reply = self._http_request(self._API_BASE_URL)
 
@@ -208,34 +164,62 @@ class Downloader:
         try:  # coverage: ignore
             info = reply.json()
         except requests.exceptions.JSONDecodeError as err:
-            raise ValueError(
+            warnings.warn(
                 "URL did not return the expected JSON file: "
                 f"{self._API_BASE_URL}. "
-                f"Response content: {reply.content}"
-            ) from err
-
-        repo_blob_dict = {}
+                f"Response content: {reply.content}. Exception: {err}"
+            )
+            self._validate = False
+            return None
 
         for item in info:
             try:
-                repo_blob_dict[item["name"]] = {
-                    "sha": item["sha"],
-                    "download_url": item["download_url"],
-                }
+                filename = item["name"]
+                repo_sha = item["sha"]
+                download_url = item["download_url"]
+
             # Not tested, since any URL on the gituhb API that doesn't return a 404
             # should be a JSON with these keys
-            except KeyError as err:  # coverage: ignore
-                raise ValueError(
+            except (KeyError, TypeError) as err:  # coverage: ignore
+                warnings.warn(
                     f"URL {self._API_BASE_URL} returned JSON file, "
-                    "but missing expected "
-                    f"keys 'sha' and 'download_url`. JSON contents: {info}"
-                ) from err
+                    "missing expected keys 'sha' and 'download_url`."
+                    f" JSON contents: {info}. Exception: {err}"
+                )
 
-            except TypeError as err:
-                raise TypeError(f"Unexpected response type {info}") from err
+                repo_sha = None
+                download_url = None
 
-        return repo_blob_dict
-            
+            self._update_blob_entry(
+                filename, repo_sha=repo_sha, download_url=download_url
+            )
+        self._write_blobfile()
+
+    def _update_blob_entry(
+        self,
+        filename: str,
+        local_sha: str | None = None,
+        repo_sha: str | None = None,
+        download_url: str | None = None,
+    ) -> None:
+        """
+        Update an entry in the blobfile, or create a new one if one doesn't
+        exist.
+        """
+
+        if filename in self._blob_dict:
+            if local_sha is not None:
+                self._blob_dict[filename]["local_sha"] = local_sha
+            if repo_sha is not None:
+                self._blob_dict[filename]["repo_sha"] = repo_sha
+            if download_url is not None:
+                self._blob_dict[filename]["download_url"] = download_url
+        else:
+            self._blob_dict[filename] = {
+                "local_sha": local_sha,
+                "repo_sha": repo_sha,
+                "download_url": download_url,
+            }
 
     def _http_request(self, url: str) -> requests.Response:
         """
@@ -260,6 +244,10 @@ class Downloader:
 
         return reply
 
+    def _filepath(self, filename: str) -> Path:
+        """Formats a filepath from a filename."""
+        return Path(self._download_directory, filename)
+
     def _download_file(self, filename: str, dl_url: str) -> Path:
         """
         Download a file from a given URL to a specified path.
@@ -283,7 +271,7 @@ class Downloader:
         # Request the contents of the file from the download URL
         reply = self._http_request(dl_url)
 
-        filepath = Path(self._download_directory, filename)
+        filepath = self._filepath(filename)
 
         # Write the contents to file
         with filepath.open(mode="wb") as f:
@@ -291,14 +279,60 @@ class Downloader:
 
         return filepath
 
-    def _get_file_with_validation(
-        self, filename: str, local_sha: str|None, repo_sha: str|None
-    ) -> Path | None:
+    def _get_file_without_validation(self, filename: str) -> Path:
+        """
+        Return file logic without validation.
+
+        Returns
+        -------
+        filepath : Path
+            Path to file
+
+        Raises
+        ------
+        ValueError
+            If the resource cannot be found locally or on the repository
+
+        """
+        filepath = self._filepath(filename)
+
+        # If the file exists locally, return that
+        if filepath.is_file():
+            return filepath
+
+        # Try blindly downloading from the base URL
+        # Note that downloading directly from the RAW url does not
+        # require an API call.
+        try:
+            dl_url = urljoin(self._RAW_BASE_URL, filename)
+            return self._download_file(filename, dl_url)
+        except ValueError:
+            pass
+
+        raise ValueError(
+            "Resource could not be found locally or "
+            "retrieved from the PlasmPy-data repository: "
+            f"{filename}."
+        )
+
+    def _get_file_with_validation(self, filename: str) -> Path:
         """
         Return file logic with validation.
         """
+        filepath = self._filepath(filename)
 
-        filepath = Path(self._download_directory, filename)
+        # Try to update the repo blob dict
+        self._update_repo_blob_dict()
+
+        try:
+            local_sha = self._blob_dict[filename]["local_sha"]
+        except KeyError:
+            local_sha = None
+
+        try:
+            repo_sha = self._blob_dict[filename]["repo_sha"]
+        except KeyError:
+            repo_sha = None
 
         # If local sha and online sha are equal, return the local filepath
         if local_sha == repo_sha and local_sha is not None:
@@ -306,91 +340,25 @@ class Downloader:
 
         # If the file is found online, try downloading from the repository
         elif repo_sha is not None:
-            dl_url = self._repo_blob_dict[filename]["download_url"]
+            dl_url = self._blob_dict[filename]["download_url"]
             # Download the file
             filepath = self._download_file(filename, dl_url)
 
-            # Add SHA to blob dict and update blob file
-            self._local_blob_dict[filename] = repo_sha
+            # This is a verified download, so we now know the local_sha is
+            # the same as the repo_sha
+            self._update_blob_entry(filename, local_sha=repo_sha)
             self._write_blobfile()
 
-            local_sha = repo_sha
             return filepath
 
-        # If online file cannot be reached but local file is present,
-        # return local file with warning
-        elif repo_sha is None and local_sha is not None:
+        # Otherwise fall back to retrieving the file without validation
+        else:
+            self._validate = False
             warnings.warn(
-                "No connection to PlasmaPy-data repository? "
-                "Proceeding with local files only, which may be out of date."
+                f"Could not retrieve file {filename} with validation: "
+                "trying again without validation."
             )
-            return filepath
-
-        else:
-            return None
-
-    def _get_file_without_validation(
-        self, filename: str, local_sha: str|None
-    ) -> Path:
-        """
-        Return file logic without validation.
-
-        Returns
-        -------
-        filepath : Path 
-            Path to file
-
-        """
-        filepath = Path(self._download_directory, filename)
-
-        # If the file exists locally, return that
-        if local_sha is not None:
-            return filepath
-
-        # Otherwise try blindly downloading from the base URL
-        # Note that downloading directly from the RAW url does not
-        # require an API call.
-        #
-        # Raises a ValueError if the URL is not valid
-        try:
-            dl_url = urljoin(self._RAW_BASE_URL, filename)
-            return self._download_file(filename, dl_url)
-        except ValueError as err:
-            raise ValueError(f"{filename} was not found at URL {dl_url}:{err}")
-
-    def _get_local_sha(self, filename: str) -> str | None:
-        """
-        Get the local file SHA hash.
-        """
-        filepath = Path(self._download_directory, filename)
-
-        # If local file exists and also exists in blob file, get the
-        # file sha
-        if filepath.is_file() and filename in self._local_blob_dict:
-            return self._local_blob_dict[filename]
-        else:
-            return None
-
-    def _get_repo_sha(self, filename: str) -> str:
-        """
-        Get the online file SHA hash.
-        
-        Returns
-        -------
-        repo_sha : str | None
-            Repository SHA hash
-        """
-
-        # This is skipped if validate=False, since _repo_blob_dict is then None
-        if self._repo_blob_dict is not None:
-            try:
-                return self._repo_blob_dict[filename]["sha"]
-            except KeyError as err:
-                raise KeyError(f"Filename {filename} not found in repository SHA file: {err}")
-            except ValueError as err:
-                raise ValueError(f"Filename {filename} not found in repository SHA file: {err}")
-        
-        return None
+            return self._get_file_without_validation(filename)
 
     def get_file(self, filename: str) -> Path:
         """
@@ -401,63 +369,13 @@ class Downloader:
         filename : str
             The name of the file in the PlasmaPy-data repository.
 
-        Raises
-        ------
-        ValueError
-            If the file cannot be found locally or online.
-
         Returns
         -------
         Path : `~pathlib.Path`
             The local path to the resource file.
 
         """
-
-        # Update the memory copy of the blob file
-        self._read_blobfile()
-        
-        # Update the local copy of the repo blob
-        self._update_repo_blob_dict()
-
-        # Get the SHAs
-        local_sha = self._get_local_sha(filename)
-        print(local_sha)
-        
-        try:
-            repo_sha = self._get_repo_sha(filename)
-            repo_sha_err = None
-        except (KeyError, ValueError) as err:
-            repo_sha_err = err
-            repo_sha = None
-
-
         if self._validate:
-            try:
-                return self._get_file_with_validation(filename, 
-                                                            local_sha, repo_sha)
-            except ValueError as err:
-                repo_err = err
-
+            return self._get_file_with_validation(filename)
         else:
-            try:
-                return self._get_file_without_validation(filename, 
-                                                             local_sha)
-            except ValueError as err:
-                repo_err = err
-     
-
-        # If neither online file or local file can be found, raise an
-        # exception
-        raise ValueError(
-            "Resource could not be found locally or "
-            "retrieved from the PlasmPy-data repository: "
-            f"{filename}. Exceptions raised: {repo_sha_err}, "
-           f"{repo_err}."
-        )
-
-if __name__ == "__main__":
-    file = "not-a-real-file.txt"
-    dl = Downloader(validate=True)
-    print(dl.get_file(file))
-    limit, usage = dl._api_usage()
-    print(f"{usage}/{limit}")
+            return self._get_file_without_validation(filename)
