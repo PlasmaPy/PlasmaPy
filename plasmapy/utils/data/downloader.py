@@ -158,12 +158,13 @@ class Downloader:
         """
         # If the current blob file has been updated in the past 5 minutes,
         # don't bother doing it again
+        # Ignore in tests, as this won't happen in CI
         try:
             if time.time() - self._blob_dict["_timestamp"] < 300:
-                return None
+                return None  # coverage : ignore
         # If the _timestamp key hasn't been set yet, the blob file has
         # never been updated before
-        except KeyError:
+        except KeyError:  # coverage : ignore
             pass
 
         # If this instance of Downloader has already updated from the API once,
