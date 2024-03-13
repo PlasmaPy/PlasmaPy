@@ -185,7 +185,7 @@ class Downloader:
         # should return a JSON
         try:  # coverage: ignore
             info = reply.json()
-        except requests.exceptions.JSONDecodeError as err: # coverage: ignore
+        except requests.exceptions.JSONDecodeError as err:  # coverage: ignore
             warnings.warn(
                 "URL did not return the expected JSON file: "
                 f"{self._API_BASE_URL}. "

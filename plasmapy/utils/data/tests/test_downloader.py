@@ -182,13 +182,13 @@ def test_at_most_one_api_call(downloader_validated) -> None:
     assert used1 <= used0 + 1
 
 
-def test_creating_another_downloader(tmp_path, downloader_validated):
+def test_creating_another_downloader(downloader_validated):
     """
-    Test creating a second downloader in the same directory, which should
-    read in the existing blob file.
+    Test creating a second downloader in the same directory.
+    This will test reading in the existing blob file.
     """
 
-    dl2 = Downloader(directory=tmp_path)
+    dl2 = Downloader(directory=downloader_validated._download_directory)
 
     filename = "NIST_PSTAR_aluminum.txt"
     filepath = dl2._filepath(filename)
