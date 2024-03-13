@@ -166,14 +166,11 @@ class Downloader:
         except KeyError:
             pass
 
-        # If validation is disabled, or API limit is met,
-        # do not request any information from the server
-        if not self._do_validation:
-            return None
-
         # If this instance of Downloader has already updated from the API once,
         # don't do it again. Almost certainly nothing has changed!
-        if self._updated_blob_file_from_repo:
+        # Not tested, since CI never waits >5 min with the same Downloader
+        # instantiated.
+        if self._updated_blob_file_from_repo:  # coverage: ignore
             return None
 
         reply = self._http_request(self._API_BASE_URL)
@@ -408,7 +405,7 @@ class Downloader:
             The local path to the resource file.
 
         """
-        if self._validate:
+        if self._do_validation:
             return self._get_file_with_validation(filename)
         else:
             return self._get_file_without_validation(filename)
