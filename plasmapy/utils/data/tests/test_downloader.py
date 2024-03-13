@@ -194,3 +194,20 @@ def test_creating_another_downloader(downloader_validated):
     filepath = dl2._filepath(filename)
 
     assert dl2.get_file(filename) == filepath
+
+
+def test_ensure_update_blob_dict_runs(downloader_validated):
+    """
+    Ensure the _update_blob_dict method gets run if it hasn't already.
+    """
+
+    # Only run this test if the downloader fixture hasn't already updated
+    # form the repo (so tests remain limited to 1 api call)
+    # It seems that sometimes this can happen, in which case this test
+    # is necessary to cover that method
+    if not downloader_validated._updated_blob_file_from_repo:
+        # Reset timer so it doesn't prevent a dict update
+        downloader_validated._blob_dict["_timestamp"] = 0
+
+        # Update the dict
+        downloader_validated._update_repo_blob_dict()
