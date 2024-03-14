@@ -5,6 +5,7 @@ Module containing save routines for the particle tracker.
 __all__ = [
     "AbstractSaveRoutine",
     "DoNotSaveSaveRoutine",
+    "SaveOnceOnCompletion",
     "IntervalSaveRoutine",
 ]
 
@@ -154,6 +155,26 @@ class DoNotSaveSaveRoutine(AbstractSaveRoutine):
     @property
     def save_now(self) -> bool:
         """The do not save save routine will never save by definition."""
+        return False
+
+
+class SaveOnceOnCompletion(AbstractSaveRoutine):
+    """Save only once the |ParticleTracker| has finished.
+
+    This works by taking advantage of the fact that the ``save()`` method
+    is called directly at the conclusion of a simulation, effectively
+    bypassing the ``save_now()`` criteria.
+    """
+
+    def __init__(self, output_directory: Path | None = None) -> None:
+        super().__init__(output_directory)
+
+    def save_now(self) -> bool:
+        """Never save during the simulation."""
+        return False
+
+    def require_synchronized_dt(self) -> bool:
+        """A synchronized time step is not required for this save routine to make sense."""
         return False
 
 
