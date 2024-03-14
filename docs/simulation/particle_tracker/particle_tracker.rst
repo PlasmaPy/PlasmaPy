@@ -1,4 +1,4 @@
-.. _particle_tracker_definition
+.. _particle_tracker_definition:
 
 *****************************
 Particle Tracking Simulations
