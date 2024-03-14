@@ -6,11 +6,9 @@ Module containing plasma simulation tools.
    |expect-api-changes|
 """
 
-__all__ = [
-    "AbstractSimulation",
-    "AbstractTimeDependentSimulation",
-]
+__all__ = ["AbstractSimulation", "AbstractTimeDependentSimulation", "particle_tracker"]
 
+from plasmapy.simulation import particle_tracker
 from plasmapy.simulation.abstractions import (
     AbstractNormalizations,
     AbstractSimulation,
