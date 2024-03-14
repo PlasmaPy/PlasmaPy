@@ -169,10 +169,12 @@ class SaveOnceOnCompletion(AbstractSaveRoutine):
     def __init__(self, output_directory: Path | None = None) -> None:
         super().__init__(output_directory)
 
+    @property
     def save_now(self) -> bool:
         """Never save during the simulation."""
         return False
 
+    @property
     def require_synchronized_dt(self) -> bool:
         """A synchronized time step is not required for this save routine to make sense."""
         return False
