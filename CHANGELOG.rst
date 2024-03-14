@@ -4,7 +4,7 @@ PlasmaPy v2024.2.0 (2024-02-06)
 Backwards Incompatible Changes
 ------------------------------
 
-- Created new `~plasmapy.simulation.particle_tracker.ParticleTracker`
+- Created new ``~plasmapy.simulation.particle_tracker.ParticleTracker``
   object for general particle pushing simulations involving
   electromagnetic fields. The tracker replaces the old
   ``~plasmapy.simulation.particletracker.ParticleTracker``. (:pr:`2245`)

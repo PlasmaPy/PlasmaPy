@@ -33,7 +33,7 @@ class AbstractSaveRoutine(ABC):
     Notes
     -----
     After every push, the `post_push_hook` method is called with the
-    respective `~plasmapy.simulation.particle_tracker.ParticleTracker` object passed as a parameter.
+    respective `~plasmapy.simulation.particle_tracker.particle_tracker.ParticleTracker` object passed as a parameter.
     Then, the hook calls `save_now` to determine whether or not the simulation state should be saved.
     """
 

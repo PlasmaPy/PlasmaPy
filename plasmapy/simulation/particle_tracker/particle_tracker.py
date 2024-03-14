@@ -60,11 +60,11 @@ class ParticleTracker:
         The list of required quantities varies depending on other keywords.
 
     termination_condition : `~plasmapy.simulation.particle_tracker.termination_conditions.AbstractTerminationCondition`
-        An instance of `~plasmapy.simulation.particle_tracker.AbstractTerminationCondition` which determines when the simulation has finished.
-        See `~plasmapy.simulation.particle_tracker.AbstractTerminationCondition` for more details.
+        An instance of `~plasmapy.simulation.particle_tracker.save_routines.AbstractTerminationCondition` which determines when the simulation has finished.
+        See `~plasmapy.simulation.particle_tracker.save_routines.AbstractTerminationCondition` for more details.
 
-    save_routine : `~plasmapy.simulation.particle_tracker.AbstractSaveRoutine`, optional
-        An instance of `~plasmapy.simulation.particle_tracker.AbstractSaveRoutine` which determines which
+    save_routine : `~plasmapy.simulation.particle_tracker.save_routines.AbstractSaveRoutine`, optional
+        An instance of `~plasmapy.simulation.particle_tracker.save_routines.AbstractSaveRoutine` which determines which
         time steps of the simulation to save. The default is `~plasmapy.simulation.particle_tracker.save_routines.DoNotSaveSaveRoutine`.
         See `~plasmapy.simulation.particle_tracker.save_routines.AbstractSaveRoutine` for more details.
 
