@@ -4,12 +4,13 @@ downloading files from |PlasmaPy's data repository|.
 
 """
 
+import contextlib
 import json
 import time
 import warnings
 from pathlib import Path
 from urllib.parse import urljoin
-import contextlib
+
 import requests
 
 __all__ = ["Downloader"]
@@ -39,6 +40,11 @@ class Downloader:
         verification and, if a local file cannot be found, attempt to download
         from the repository without validation.
 
+    api_auth : `tuple` of `str`, optional
+        A `tuple` of GitHub authorization username and token that, if provided,
+        will be used for queries to the GitHub API. If none is provided, public
+        API calls will be used.
+
     """
 
     # URL for the PlasmaPy-data repository through the GitHub API
@@ -51,15 +57,23 @@ class Downloader:
     # Base URL for RAW files
     _RAW_BASE_URL = "https://raw.githubusercontent.com/PlasmaPy/PlasmaPy-data/main/"
 
-    def __init__(self, directory: Path | None = None, validate: bool = True):
+    def __init__(
+        self,
+        directory: Path | None = None,
+        validate: bool = True,
+        api_auth: tuple[str] | None = None,
+    ):
         if directory is None:
             # No test coverage for default directory, since pytest always
             # saves into a temporary directory
-            self._download_directory = Path.home() / ".plasmapy" / "downloads"  # coverage: ignore
+            self._download_directory = (
+                Path.home() / ".plasmapy" / "downloads"
+            )  # coverage: ignore
         else:
             self._download_directory = Path(directory)
 
         self._validate = validate
+        self._api_auth = api_auth
 
         # Flag to record whether the blob file has been updated from the repo
         # by this instantiation of the class. Once the file has been updated
@@ -250,8 +264,11 @@ class Downloader:
         Issue an HTTP request to the specified URL, handling exceptions.
         """
 
+        # Only send GitHub api authorization if querying GitHub
+        auth = self._api_auth if "github.com" in url else None
+
         try:
-            reply = requests.get(url)  # noqa: S113
+            reply = requests.get(url, auth=auth)  # noqa: S113
 
         # No test coverage for this exception since we can't test it without
         # severing the network connectivity in pytest
@@ -344,8 +361,17 @@ class Downloader:
 
         self._update_repo_blob_dict()
 
-        local_sha = self._blob_dict[filename].get("local_sha", default=None)
-        repo_sha = self._blob_dict[filename].get("repo_sha", default=None)
+        # Retrieve the values: try/except catches KeyError both for
+        # key `filename` and `local_sha`/`repo_sha`
+        try:
+            local_sha = self._blob_dict[filename]["local_sha"]
+        except KeyError:
+            local_sha = None
+
+        try:
+            repo_sha = self._blob_dict[filename]["repo_sha"]
+        except KeyError:
+            repo_sha = None
 
         # If local sha and online sha are equal, return the local filepath
         if local_sha == repo_sha and local_sha is not None:
