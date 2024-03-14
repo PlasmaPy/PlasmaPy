@@ -30,7 +30,7 @@ class Downloader:
     ----------
     directory : `~pathlib.Path`, optional
         The directory into which files will be downloaded. The default
-        is /~//.plasmapy//downloads//
+        is :file:`/~//.plasmapy//downloads//`
 
     validate : bool, optional
         If `True`, verify that local files are up-to-date with the data
