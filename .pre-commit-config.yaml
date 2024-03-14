@@ -121,3 +121,4 @@ repos:
     - --check-overridden
     - --check-protected
     - --summary
+    exclude: tests|plasmapy_sphinx
