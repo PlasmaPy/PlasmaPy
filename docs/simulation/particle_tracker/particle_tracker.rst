@@ -1,10 +1,10 @@
-:orphan:
-
-.. currentmodule:: plasmapy.simulation.particle_tracker
+.. _particle_tracker_definition
 
 *****************************
-Particle tracking simulations
+Particle Tracking Simulations
 *****************************
+
+.. currentmodule:: plasmapy.simulation.particle_tracker.particle_tracker
 
 .. attention::
 
@@ -27,4 +27,5 @@ future.
 API
 ===
 
-.. automodapi:: plasmapy.simulation.particle_tracker
+.. automodapi:: plasmapy.simulation.particle_tracker.particle_tracker
+   :heading-chars: ^~

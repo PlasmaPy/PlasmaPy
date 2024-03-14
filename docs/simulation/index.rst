@@ -4,8 +4,13 @@
 Simulation (`plasmapy.simulation`)
 **********************************
 
-.. py:module:: plasmapy.simulation
-.. currentmodule:: plasmapy.simulation
+.. toctree::
+   :maxdepth: 1
+   :caption: Sub-Packages & Modules
+
+   Particle Tracker <particle_tracker/index>
+
+
 
 .. attention::
 
@@ -22,5 +27,4 @@ API
 ===
 
 .. automodapi:: plasmapy.simulation
-   :noindex:
-   :no-main-docstring:
+   :heading-chars: ^~
