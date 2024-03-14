@@ -32,12 +32,12 @@ class Downloader:
         The directory into which files will be downloaded. The default
         is :file:`/~//.plasmapy//downloads//`
 
-    validate : bool, optional
+    validate : `bool`, default: `True`
         If `True`, verify that local files are up-to-date with the data
         repository, and use the GitHub API to verify download URLs before
         downloading files. If `False`, return any matching local file without
         verification and, if a local file cannot be found, attempt to download
-        blindly from the repository. Default is `True`.
+        from the repository without validation.
 
     """
 
@@ -55,11 +55,7 @@ class Downloader:
         if directory is None:
             # No test coverage for default directory, since pytest always
             # saves into a temporary directory
-            self._download_directory = Path(  # coverage: ignore
-                Path.home(),
-                ".plasmapy",
-                "downloads",
-            )
+            self._download_directory = Path.home() / ".plasmapy" / "downloads"  # coverage: ignore
         else:
             self._download_directory = Path(directory)
 
@@ -70,7 +66,6 @@ class Downloader:
         # once, we won't update it again to limit API calls.
         self._updated_blob_file_from_repo = False
 
-        # Make the directory if it doesn't already exist
         self._download_directory.mkdir(parents=True, exist_ok=True)
 
         # Path to the local SHA blob file
@@ -101,7 +96,7 @@ class Downloader:
     @property
     def _api_connected(self) -> bool:
         """
-        Returns `True` if a connection exists to the API, otherwise `False`.
+        Return `True` if a connection exists to the API, otherwise `False`.
         """
         try:
             # Requesting this URL does not count as an API query
@@ -154,18 +149,16 @@ class Downloader:
         -------
         repo_blob_dict : dict
             Dictionary with filenames as keys. Each item is another entry
-            with keys `sha` and `download_url`.
+            with keys ``"sha"`` and ``"download_url"``.
         """
         # If the current blob file has been updated in the past 5 minutes,
         # don't bother doing it again
         # Ignore in tests, as this won't happen in CI
-        try:
+        with contextlib.suppress(KeyError):
+            # If the _timestamp key hasn't been set yet, the blob file has
+            # never been updated before
             if time.time() - self._blob_dict["_timestamp"] < 300:
                 return None  # coverage : ignore
-        # If the _timestamp key hasn't been set yet, the blob file has
-        # never been updated before
-        except KeyError:  # coverage : ignore
-            pass
 
         # If this instance of Downloader has already updated from the API once,
         # don't do it again. Almost certainly nothing has changed!
@@ -179,7 +172,7 @@ class Downloader:
         # Extract the SHA hash and the download URL from the response
 
         # Extract contents to JSON
-        # Not tested, since any URL on the gituhb API that doesn't raise a 404
+        # Not tested, since any URL on the GitHub API that doesn't raise a 404 error
         # should return a JSON
         try:  # coverage: ignore
             info = reply.json()
@@ -198,7 +191,7 @@ class Downloader:
                 repo_sha = item["sha"]
                 download_url = item["download_url"]
 
-            # Not tested, since any URL on the gituhb API that doesn't return a 404
+            # Not tested, since any URL on the GitHub API that doesn't return a 404
             # should be a JSON with these keys
             except (KeyError, TypeError) as err:  # coverage: ignore
                 warnings.warn(
@@ -264,7 +257,7 @@ class Downloader:
         # severing the network connectivity in pytest
         except requests.ConnectionError as err:  # coverage: ignore
             raise requests.ConnectionError(
-                "Unable to connect to data " f"repository {self._API_BASE_URL}"
+                f"Unable to connect to data repository {self._API_BASE_URL}"
             ) from err
 
         # Extract the 'message' value if it is there
@@ -290,7 +283,6 @@ class Downloader:
 
         dl_url : str
             URL from which to download
-
 
         Returns
         -------
@@ -334,15 +326,13 @@ class Downloader:
         # Try blindly downloading from the base URL
         # Note that downloading directly from the RAW url does not
         # require an API call.
-        try:
+        with contextlib.suppress(ValueError):
             dl_url = urljoin(self._RAW_BASE_URL, filename)
             return self._download_file(filename, dl_url)
-        except ValueError:
-            pass
 
         raise ValueError(
             "Resource could not be found locally or "
-            "retrieved from the PlasmPy-data repository: "
+            "retrieved from the PlasmaPy-data repository: "
             f"{filename}."
         )
 
@@ -352,18 +342,10 @@ class Downloader:
         """
         filepath = self._filepath(filename)
 
-        # Try to update the repo blob dict
         self._update_repo_blob_dict()
 
-        try:
-            local_sha = self._blob_dict[filename]["local_sha"]
-        except KeyError:
-            local_sha = None
-
-        try:
-            repo_sha = self._blob_dict[filename]["repo_sha"]
-        except KeyError:
-            repo_sha = None
+        local_sha = self._blob_dict[filename].get("local_sha", default=None)
+        repo_sha = self._blob_dict[filename].get("repo_sha", default=None)
 
         # If local sha and online sha are equal, return the local filepath
         if local_sha == repo_sha and local_sha is not None:
@@ -408,5 +390,4 @@ class Downloader:
         """
         if self._do_validation:
             return self._get_file_with_validation(filename)
-        else:
-            return self._get_file_without_validation(filename)
+        return self._get_file_without_validation(filename)
