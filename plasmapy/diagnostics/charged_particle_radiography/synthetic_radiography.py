@@ -742,7 +742,7 @@ class Tracker(ParticleTracker):
             np.min(np.linalg.norm(arr - self.source, axis=3)) for arr in self.grids_arr
         )
 
-        tracked_mask = self._tracked_particle_mask()
+        tracked_mask = self._tracked_particle_mask
 
         # Find speed of each particle towards the grid.
         vmax = np.dot(self.v[tracked_mask], self.src_n)
@@ -797,7 +797,7 @@ class Tracker(ParticleTracker):
         normal = np.cross(hdir, vdir)
 
         if mask is None:
-            mask = self._tracked_particle_mask()
+            mask = self._tracked_particle_mask
 
         # Calculate the time required to evolve each particle into the
         # plane
@@ -902,8 +902,15 @@ class Tracker(ParticleTracker):
         # but instead will be automatically advanced
         # to the detector plane
         theta_mask = self.theta >= self.max_theta_hit_grid
+
+        # Take the intersection of the theta mask and the tracked particle mask
+        # This must be done because some particles could have already been stopped
+        # by _apply_wire_mesh
         self.x = self._coast_to_plane(
-            self.detector, self.det_hdir, self.det_vdir, mask=theta_mask
+            self.detector,
+            self.det_hdir,
+            self.det_vdir,
+            mask=theta_mask & self._tracked_particle_mask,
         )
         self._stop_particles(theta_mask)
         self.fract_tracked = self.nparticles_tracked / self.nparticles

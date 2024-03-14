@@ -591,7 +591,7 @@ class ParticleTracker:
         Boris algorithm.
         """
         # Get a list of positions (input for interpolator)
-        tracked_mask = self._tracked_particle_mask()
+        tracked_mask = self._tracked_particle_mask
 
         self.iteration_number += 1
 
@@ -716,10 +716,11 @@ class ParticleTracker:
 
         This quantity is used for determining the grid crossing maximum time step.
         """
-        tracked_mask = self._tracked_particle_mask()
+        tracked_mask = self._tracked_particle_mask
 
         return float(np.max(np.linalg.norm(self.v[tracked_mask], axis=-1)))
 
+    @property
     def _tracked_particle_mask(self) -> NDArray[np.bool_]:
         """
         Calculates a boolean mask corresponding to particles that have not been stopped or removed.
@@ -729,7 +730,7 @@ class ParticleTracker:
     @property
     def nparticles_tracked(self) -> int:
         """Return the number of particles that don't have NaN position or velocity."""
-        return int(self._tracked_particle_mask().sum())
+        return int(self._tracked_particle_mask.sum())
 
     @property
     def is_adaptive_time_step(self) -> bool:
