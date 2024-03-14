@@ -268,7 +268,7 @@ class Downloader:
         auth = self._api_auth if "github.com" in url else None
 
         try:
-            reply = requests.get(url, auth=auth)  # noqa: S113
+            reply = requests.get(url, auth=auth, timeout=10)
 
         # No test coverage for this exception since we can't test it without
         # severing the network connectivity in pytest
