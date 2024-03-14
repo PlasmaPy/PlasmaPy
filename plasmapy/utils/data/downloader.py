@@ -9,7 +9,7 @@ import time
 import warnings
 from pathlib import Path
 from urllib.parse import urljoin
-
+import contextlib
 import requests
 
 __all__ = ["Downloader"]

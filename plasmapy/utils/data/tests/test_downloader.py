@@ -1,3 +1,4 @@
+import os
 import warnings
 from pathlib import Path
 
@@ -15,6 +16,11 @@ def downloader_validated(tmp_path):
 @pytest.fixture()
 def downloader_unvalidated(tmp_path):
     return Downloader(directory=tmp_path, validate=False)
+
+
+def test_find_env_var():
+    print(os.environ["GITHUB_TOKEN"])
+    assert 1 == 2
 
 
 test_urls = [
