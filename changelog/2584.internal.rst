@@ -1,0 +1,3 @@
+Enabled the `tox-uv <>`_ plugin to |tox|, so that package installation and the
+creation of virtual environments will be handled by |uv| instead of |pip|. This change
+makes it faster to run tests both locally and via |GitHub Actions|.
