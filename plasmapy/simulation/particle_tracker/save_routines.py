@@ -18,7 +18,7 @@ import h5py
 
 class AbstractSaveRoutine(ABC):
     """Abstract base class containing the necessary methods for a
-    |ParticleTracker| save routine.
+    `~plasmapy.simulation.particle_tracker.particle_tracker.ParticleTracker` save routine.
 
     The save routine class is responsible for defining the conditions and hooks
     for saving.
@@ -33,7 +33,7 @@ class AbstractSaveRoutine(ABC):
     Notes
     -----
     After every push, the `post_push_hook` method is called with the
-    respective |ParticleTracker| object passed as a parameter.
+    respective `~plasmapy.simulation.particle_tracker.particle_tracker.ParticleTracker` object passed as a parameter.
     Then, the hook calls `save_now` to determine whether or not the simulation state should be saved.
     """
 
@@ -139,7 +139,7 @@ class AbstractSaveRoutine(ABC):
 
 
 class DoNotSaveSaveRoutine(AbstractSaveRoutine):
-    """The default save routine for the |ParticleTracker| class.
+    """The default save routine for the `~plasmapy.simulation.particle_tracker.particle_tracker.ParticleTracker` class.
 
     This save routine is a placeholder and will not save the state of the particle tracker.
     """
@@ -159,7 +159,7 @@ class DoNotSaveSaveRoutine(AbstractSaveRoutine):
 
 
 class SaveOnceOnCompletion(AbstractSaveRoutine):
-    """Save only once the |ParticleTracker| has finished.
+    """Save only once the `~plasmapy.simulation.particle_tracker.particle_tracker.ParticleTracker` has finished.
 
     This works by taking advantage of the fact that the ``save()`` method
     is called directly at the conclusion of a simulation, effectively
