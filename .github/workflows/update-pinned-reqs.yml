@@ -23,8 +23,8 @@ jobs:
       with:
         python-version: 3.12
 
-    - name: Install tox
-      run: python -m pip install --upgrade tox
+    - name: Install tox and its extensions
+      run: python -m pip install --upgrade tox tox-uv
 
     - name: Rebuild requirements
       run: tox -e requirements
