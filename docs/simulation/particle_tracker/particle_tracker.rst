@@ -1,4 +1,4 @@
-.. _particle_tracker_definition:
+.. _particle_tracker:
 
 *****************************
 Particle Tracking Simulations
@@ -6,18 +6,11 @@ Particle Tracking Simulations
 
 .. currentmodule:: plasmapy.simulation.particle_tracker.particle_tracker
 
-.. attention::
-
-   |expect-api-changes|
-
 Introduction
 ============
 
 This module contains the |ParticleTracker| class, which is a simple
 particle stepper implementing the Boris algorithm.
-
-This module is highly unstable and is expected to change a lot in the
-future.
 
 .. nbgallery::
     :caption: Examples

@@ -1,8 +1,12 @@
-.. _particle_tracker:
+.. _particle_tracker_module:
 
 ===================================================
 `plasmapy.simulation.particle_tracker`
 ===================================================
+
+.. py:module:: plasmapy.simulation.particle_tracker
+.. currentmodule:: plasmapy.simulation.particle_tracker
+
 
 .. toctree::
    :maxdepth: 1
