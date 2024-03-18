@@ -35,17 +35,21 @@ Summary
   - Navigate to the top-level directory (probably named
     :file:`PlasmaPy/`) in your local clone of PlasmaPy's repository.
 
-  - If you are on macOS or Linux, run:
+  - Run the following command
 
-    .. code-block:: console
+    .. tabs::
 
-       python -m pip install -e ".[tests]"
+       .. group-tab:: macOS, Linux, or WSL
 
-    If you are on Windows, run:
+          .. code-block:: console
 
-    .. code-block:: console
+             python -m pip install -e .[tests]
 
-       py -m pip install -e .[tests]
+       .. group-tab:: Windows
+
+          .. code-block:: console
+
+             py -m pip install -e .[tests]
 
     These commands will perform an |editable installation| of your
     local clone of PlasmaPy.
