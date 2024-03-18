@@ -9,7 +9,7 @@ Particle Tracking Simulations
 Introduction
 ============
 
-This module contains the |ParticleTracker| class, which is a simple
+This module contains the `~plasmapy.simulation.particle_tracker.particle_tracker.ParticleTracker` class, which is a simple
 particle stepper implementing the Boris algorithm.
 
 .. nbgallery::

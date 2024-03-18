@@ -12,7 +12,8 @@ Simulation (`plasmapy.simulation`)
    :caption: Sub-Packages & Modules
 
    Particle Tracker <particle_tracker/index>
-
+   abstractions
+   particle_integrators
 
 
 .. attention::
