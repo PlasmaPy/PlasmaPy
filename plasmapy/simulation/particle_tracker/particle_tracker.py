@@ -3,25 +3,15 @@ Module containing the definition for the general particle tracker.
 """
 
 __all__ = [
-    "AbstractSaveRoutine",
-    "AbstractTerminationCondition",
-    "DoNotSaveSaveRoutine",
-    "IntervalSaveRoutine",
-    "NoParticlesOnGridsTerminationCondition",
     "ParticleTracker",
-    "TimeElapsedTerminationCondition",
 ]
 
 import collections
 import sys
 import warnings
-from abc import ABC, abstractmethod
 from collections.abc import Iterable
-from pathlib import Path
-from typing import Optional
 
 import astropy.units as u
-import h5py
 import numpy as np
 from numpy.typing import NDArray
 from tqdm import tqdm
@@ -30,289 +20,13 @@ from plasmapy.particles import Particle, particle_input
 from plasmapy.plasma.grids import AbstractGrid
 from plasmapy.plasma.plasma_base import BasePlasma
 from plasmapy.simulation.particle_integrators import boris_push
-
-
-class AbstractTerminationCondition(ABC):
-    """Abstract base class containing the necessary methods for a ParticleTracker termination condition."""
-
-    @property
-    def tracker(self) -> Optional["ParticleTracker"]:
-        """Return the `ParticleTracker` object for this termination condition."""
-        return self._particle_tracker
-
-    @tracker.setter
-    def tracker(self, particle_tracker: "ParticleTracker") -> None:
-        self._particle_tracker: ParticleTracker = particle_tracker
-
-    @property
-    @abstractmethod
-    def require_synchronized_dt(self) -> bool:
-        """Return if this termination condition requires a synchronized time step."""
-        ...
-
-    @property
-    @abstractmethod
-    def progress_description(self) -> str:
-        """Return a small string describing the relevant quantity shown on the meter."""
-        ...
-
-    @property
-    @abstractmethod
-    def units_string(self) -> str:
-        """Return a string representation of the units of `total`."""
-        ...
-
-    @property
-    @abstractmethod
-    def is_finished(self) -> bool:
-        """Return `True` if the simulation has finished."""
-        ...
-
-    @property
-    @abstractmethod
-    def progress(self) -> float:
-        """Return a number representing the progress of the simulation (compared to total).
-        This number represents the numerator of the completion percentage.
-        """
-        ...
-
-    @property
-    @abstractmethod
-    def total(self) -> float:
-        """Return a number representing the total number of steps in a simulation.
-        This number represents the denominator of the completion percentage.
-        """
-        ...
-
-
-class TimeElapsedTerminationCondition(AbstractTerminationCondition):
-    """Termination condition corresponding to the elapsed time of a ParticleTracker."""
-
-    def __init__(self, termination_time: u.Quantity) -> None:
-        self.termination_time: float = termination_time.to(u.s).value
-
-    @property
-    def require_synchronized_dt(self) -> bool:
-        """The elapsed time termination condition requires a synchronized step
-        to stop all particles at the same time.
-        """
-        return True
-
-    @property
-    def progress_description(self) -> str:
-        """The time elapsed termination condition depends on elapsed time,
-        therefore the relevant quantity is time remaining.
-        """
-        return "Time remaining"
-
-    @property
-    def units_string(self) -> str:
-        """The units for the time elapsed condition have the units of seconds."""
-
-        return "seconds"
-
-    @property
-    def is_finished(self) -> bool:
-        """Conclude the simulation if all particles have been tracked over the specified termination time."""
-
-        return bool(float(self.tracker.time) >= self.termination_time)
-
-    @property
-    def progress(self) -> float:
-        """Return the current time step of the simulation."""
-        return float(self.tracker.time)
-
-    @property
-    def total(self) -> float:
-        """Return the total amount of time over which the particles are tracked."""
-        return self.termination_time
-
-
-class NoParticlesOnGridsTerminationCondition(AbstractTerminationCondition):
-    """Termination condition corresponding to stopping the simulation when all particles have exited the grid."""
-
-    def __init__(self) -> None:
-        pass
-
-    @property
-    def require_synchronized_dt(self) -> bool:
-        """The no field termination condition does not require a synchronized time step."""
-        return False
-
-    @property
-    def progress_description(self) -> str:
-        """The progress meter is described in terms of the fraction of particles still on the grid."""
-        return "Number of particles still on grid"
-
-    @property
-    def units_string(self) -> str:
-        """The progress meter is described in terms of the fraction of particles still on the grid."""
-        return "Particles"
-
-    @property
-    def is_finished(self) -> bool:
-        """The simulation is finished when no more particles are on any grids."""
-        is_not_on_grid = self.tracker.on_any_grid == False  # noqa: E712
-
-        return is_not_on_grid.all() and self.tracker.iteration_number > 0
-
-    @property
-    def progress(self) -> float:
-        """The progress of the simulation is measured by how many particles are no longer on a grid."""
-        is_not_on_grid: NDArray[np.bool_] = self.tracker.on_grid == 0
-
-        return float(is_not_on_grid.sum())
-
-    @property
-    def total(self) -> float:
-        """The progress of the simulation is measured against the total number of particles in the simulation."""
-        return float(self.tracker.nparticles)
-
-
-class AbstractSaveRoutine(ABC):
-    """Abstract base class containing the necessary methods for a
-    |ParticleTracker| save routine.
-
-    The save routine class is responsible for defining the conditions and hooks
-    for saving.
-
-    Parameters
-    ----------
-    output_directory : `~pathlib.Path`, optional
-        Output for objects that are saved to disk. If a directory is not specified
-        then a memory save routine is used.
-
-
-    Notes
-    -----
-    After every push, the `post_push_hook` method is called with the
-    respective `~plasmapy.simulation.particle_tracker.ParticleTracker` object passed as a parameter.
-    Then, the hook calls `save_now` to determine whether or not the simulation state should be saved.
-    """
-
-    def __init__(self, output_directory: Path | None = None) -> None:
-        self.output_directory = output_directory
-
-        self.x_all = []
-        self.v_all = []
-
-        self._particle_tracker: ParticleTracker | None = None
-
-    @property
-    def tracker(self) -> Optional["ParticleTracker"]:
-        """Return the `ParticleTracker` object for this stop condition."""
-        return self._particle_tracker
-
-    @tracker.setter
-    def tracker(self, particle_tracker: "ParticleTracker") -> None:
-        self._particle_tracker = particle_tracker
-
-    @property
-    @abstractmethod
-    def require_synchronized_dt(self) -> bool:
-        """Return if this save routine requires a synchronized time step."""
-        ...
-
-    @property
-    @abstractmethod
-    def save_now(self) -> bool:
-        """Determine if to save on the current push step."""
-        ...
-
-    def save(self) -> None:
-        """Save the current state of the simulation to disk or memory based on whether the output directory was set."""
-
-        if self.output_directory is not None:
-            self._save_to_disk()
-        else:
-            self._save_to_memory()
-
-    def _save_to_disk(self) -> None:
-        """Save a hdf5 file containing simulation positions and velocities."""
-
-        path = self.output_directory / f"{self.tracker.iteration_number}.hdf5"
-
-        with h5py.File(path, "w") as output_file:
-            output_file["x"] = self.tracker.x
-            output_file["v"] = self.tracker.v
-
-    def _save_to_memory(self) -> None:
-        """Append simulation positions and velocities to save routine object."""
-        self.x_all.append(np.copy(self._particle_tracker.x))
-        self.v_all.append(np.copy(self._particle_tracker.v))
-
-    def post_push_hook(self, force_save=False) -> None:
-        """Function called after a push step.
-
-        This function is responsible for handling two steps of save routine, namely:
-            - Deciding to save on the current time step
-            - How the simulation data is saved (i.e. to disk or memory)
-
-        """
-        if self.save_now or force_save:
-            self.save()
-
-
-class DoNotSaveSaveRoutine(AbstractSaveRoutine):
-    """The default save routine for the |ParticleTracker| class.
-
-    This save routine is a placeholder and will not save the state of the particle tracker.
-    """
-
-    def __init__(self) -> None:
-        super().__init__()
-
-    @property
-    def require_synchronized_dt(self) -> bool:
-        """The do not save save routine does not require a synchronized time step."""
-        return False
-
-    @property
-    def save_now(self) -> bool:
-        """The do not save save routine will never save by definition."""
-        return False
-
-
-class IntervalSaveRoutine(AbstractSaveRoutine):
-    """Abstract class describing a save routine that saves every given interval."""
-
-    def __init__(self, interval: u.Quantity, **kwargs) -> None:
-        super().__init__(**kwargs)
-        self.t_all: list[float] = []
-
-        self.save_interval: float = interval.to(u.s).value
-        self.time_of_last_save: float = 0
-
-    @property
-    def require_synchronized_dt(self) -> bool:
-        """Save output only makes sense for synchronized time steps."""
-        return True
-
-    @property
-    def save_now(self) -> bool:
-        """Save at every interval given in instantiation."""
-
-        return bool(self.tracker.time - self.time_of_last_save >= self.save_interval)
-
-    def save(self) -> None:
-        """Save the current state of the simulation.
-        Sets the time of last save attribute and log the timestamp.
-        """
-        super().save()
-
-        self.time_of_last_save = self.tracker.time
-        self.t_all.append(self.tracker.time)
-
-    def results(self) -> tuple[u.Quantity, u.Quantity, u.Quantity]:
-        """Return the results of the simulation.
-        The quantities returned are the times, positions, and velocities, respectively.
-        """
-
-        return (
-            np.asarray(self.t_all) * u.s,
-            np.asarray(self.x_all) * u.m,
-            np.asarray(self.v_all) * u.m / u.s,
-        )
+from plasmapy.simulation.particle_tracker.save_routines import (
+    AbstractSaveRoutine,
+    DoNotSaveSaveRoutine,
+)
+from plasmapy.simulation.particle_tracker.termination_conditions import (
+    AbstractTerminationCondition,
+)
 
 
 class ParticleTracker:
@@ -334,9 +48,9 @@ class ParticleTracker:
 
     The simulation will push particles through the provided fields until a
     condition is met. This termination condition is provided as an instance
-    of the `~plasmapy.simulation.particle_tracker.AbstractTerminationCondition`
+    of the `~plasmapy.simulation.particle_tracker.termination_conditions.AbstractTerminationCondition`
     class as arguments to the simulation constructor. The results of a simulation
-    can be exported by specifying an instance of the `~plasmapy.simulation.particle_tracker.AbstractSaveRoutine`
+    can be exported by specifying an instance of the `~plasmapy.simulation.particle_tracker.save_routines.AbstractSaveRoutine`
     class to the ``run`` method.
 
     Parameters
@@ -345,14 +59,14 @@ class ParticleTracker:
         A Grid object or list of grid objects containing the required quantities.
         The list of required quantities varies depending on other keywords.
 
-    termination_condition : `~plasmapy.simulation.particle_tracker.AbstractTerminationCondition`
-        An instance of `~plasmapy.simulation.particle_tracker.AbstractTerminationCondition` which determines when the simulation has finished.
-        See `~plasmapy.simulation.particle_tracker.AbstractTerminationCondition` for more details.
+    termination_condition : `~plasmapy.simulation.particle_tracker.termination_conditions.AbstractTerminationCondition`
+        An instance of `~plasmapy.simulation.particle_tracker.termination_conditions.AbstractTerminationCondition` which determines when the simulation has finished.
+        See `~plasmapy.simulation.particle_tracker.termination_conditions.AbstractTerminationCondition` for more details.
 
-    save_routine : `~plasmapy.simulation.particle_tracker.AbstractSaveRoutine`, optional
-        An instance of `~plasmapy.simulation.particle_tracker.AbstractSaveRoutine` which determines which
-        time steps of the simulation to save. The default is `~plasmapy.simulation.particle_tracker.DoNotSaveSaveRoutine`.
-        See `~plasmapy.simulation.particle_tracker.AbstractSaveRoutine` for more details.
+    save_routine : `~plasmapy.simulation.particle_tracker.save_routines.AbstractSaveRoutine`, optional
+        An instance of `~plasmapy.simulation.particle_tracker.save_routines.AbstractSaveRoutine` which determines which
+        time steps of the simulation to save. The default is `~plasmapy.simulation.particle_tracker.save_routines.DoNotSaveSaveRoutine`.
+        See `~plasmapy.simulation.particle_tracker.save_routines.AbstractSaveRoutine` for more details.
 
     dt : `~astropy.units.Quantity`, optional
         An explicitly set time step in units convertible to seconds.
@@ -409,14 +123,7 @@ class ParticleTracker:
         verbose=True,
     ) -> None:
         # self.grid is the grid object
-        if isinstance(grids, AbstractGrid):
-            self.grids = [
-                grids,
-            ]
-        elif isinstance(grids, collections.abc.Iterable):
-            self.grids = grids
-        else:
-            self.grids = None
+        self.grids = self._grid_factory(grids)
 
         # Errors for unsupported grid types are raised in the validate constructor inputs method
 
@@ -466,6 +173,21 @@ class ParticleTracker:
 
         self.termination_condition = termination_condition
         self.save_routine = save_routine
+
+    @staticmethod
+    def _grid_factory(grids):
+        """
+        Take the user provided argument for grids and convert it into the proper type.
+        """
+
+        if isinstance(grids, AbstractGrid):
+            return [
+                grids,
+            ]
+        elif isinstance(grids, collections.abc.Iterable):
+            return grids
+        else:
+            return None
 
     def _set_time_step_attributes(
         self, dt, termination_condition, save_routine
@@ -750,17 +472,32 @@ class ParticleTracker:
             if self.save_routine is not None:
                 self.save_routine.post_push_hook()
 
+        # Simulation has finished running
+        self._has_run = True
+
         if self.save_routine is not None:
-            self.save_routine.post_push_hook(force_save=True)
+            self.save_routine.save()
 
         pbar.close()
 
-        # Log a summary of the run
-
         self._log("Run completed")
 
-        # Simulation has not run, because creating new particles changes the simulation
-        self._has_run = True
+    @property
+    def num_entered(self):
+        """Count the number of particles that have entered the grids.
+        This number is calculated by summing the number of non-zero entries in the
+        entered grid array.
+        """
+
+        return (self.entered_grid > 0).sum()
+
+    @property
+    def fract_entered(self):
+        """The fraction of particles that have entered the grid.
+        The denominator of this fraction is based off the number of tracked
+        particles, and therefore does not include stopped or removed particles.
+        """
+        return self.num_entered / self.nparticles_tracked
 
     def _stop_particles(self, particles_to_stop_mask) -> None:
         """Stop tracking the particles specified by the stop mask.
@@ -854,7 +591,7 @@ class ParticleTracker:
         Boris algorithm.
         """
         # Get a list of positions (input for interpolator)
-        tracked_mask = self._tracked_particle_mask()
+        tracked_mask = self._tracked_particle_mask
 
         self.iteration_number += 1
 
@@ -873,6 +610,9 @@ class ParticleTracker:
             .astype(np.bool_)
             .T
         )
+
+        # Don't count untracked particles as being on the grid
+        self.on_grid[~tracked_mask] = False
 
         # entered_grid is zero at the end if a particle has never
         # entered any grid
@@ -976,10 +716,11 @@ class ParticleTracker:
 
         This quantity is used for determining the grid crossing maximum time step.
         """
-        tracked_mask = self._tracked_particle_mask()
+        tracked_mask = self._tracked_particle_mask
 
         return float(np.max(np.linalg.norm(self.v[tracked_mask], axis=-1)))
 
+    @property
     def _tracked_particle_mask(self) -> NDArray[np.bool_]:
         """
         Calculates a boolean mask corresponding to particles that have not been stopped or removed.
@@ -989,7 +730,7 @@ class ParticleTracker:
     @property
     def nparticles_tracked(self) -> int:
         """Return the number of particles that don't have NaN position or velocity."""
-        return int(self._tracked_particle_mask().sum())
+        return int(self._tracked_particle_mask.sum())
 
     @property
     def is_adaptive_time_step(self) -> bool:
