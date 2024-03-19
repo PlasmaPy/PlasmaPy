@@ -10,8 +10,8 @@ from plasmapy.utils.data.downloader import Downloader
 
 @pytest.fixture()
 def downloader_validated(tmp_path):
-    auth_user = os.environ["GITHUB_API_USER"]
-    auth_token = os.environ["GITHUB_API_TOKEN"]
+    auth_user = os.environ["API_USER"]
+    auth_token = os.environ["API_TOKEN"]
     auth = (auth_user, auth_token)
     return Downloader(directory=tmp_path, api_auth=auth)
 

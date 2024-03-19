@@ -13,8 +13,8 @@ on:
 
 
 env:
-  GITHUB_API_TOKEN: ${{ secrets.API_TOKEN }}
-  GITHUB_API_USER: Test String
+  API_TOKEN: ${{ secrets.API_TOKEN }}
+  API_USER: ${{ secrets.API_USER }}
 
 jobs:
 
