@@ -10,11 +10,8 @@ from plasmapy.utils.data.downloader import Downloader
 
 @pytest.fixture()
 def downloader_validated(tmp_path):
-    assert os.environ["TEST_VAR"] == 'TEST'
-    auth_user = os.environ["API_USER"]
-    auth_token = os.environ["API_TOKEN"]
-    auth = (auth_user, auth_token)
-    return Downloader(directory=tmp_path, api_auth=auth)
+    api_token = os.environ["GH_TOKEN"]
+    return Downloader(directory=tmp_path, api_token=api_token)
 
 
 def test_api_token(downloader_validated):

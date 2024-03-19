@@ -13,9 +13,8 @@ on:
 
 
 env:
-  API_TOKEN: ${{ secrets.API_TOKEN }}
-  API_USER: ${{ secrets.API_USER }}
-  TEST_VAR: TEST
+  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 
 jobs:
 
@@ -76,10 +75,10 @@ jobs:
         path: |
           .tox
         key: ${{ matrix.toxenv }}-${{ runner.os }}-${{ hashFiles('requirements.txt', 'pyproject.toml') }}
-        
-    - name: Check available variables 
+
+    - name: Check available variables
       run: env
-        
+
     - name: Run tests
       run: tox -e ${{ matrix.toxenv }}
 

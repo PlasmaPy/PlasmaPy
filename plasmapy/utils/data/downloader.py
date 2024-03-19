@@ -40,8 +40,8 @@ class Downloader:
         verification and, if a local file cannot be found, attempt to download
         from the repository without validation.
 
-    api_auth : `tuple` of `str`, optional
-        A `tuple` of GitHub authorization username and token that, if provided,
+    api_token :  `str`, optional
+        A GitHub authorization token that, if provided,
         will be used for queries to the GitHub API. If none is provided, public
         API calls will be used.
 
@@ -61,7 +61,7 @@ class Downloader:
         self,
         directory: Path | None = None,
         validate: bool = True,
-        api_auth: tuple[str] | None = None,
+        api_token: tuple[str] | None = None,
     ):
         if directory is None:
             # No test coverage for default directory, since pytest always
@@ -73,7 +73,7 @@ class Downloader:
             self._download_directory = Path(directory)
 
         self._validate = validate
-        self._api_auth = api_auth
+        self._api_token = api_token
 
         # Flag to record whether the blob file has been updated from the repo
         # by this instantiation of the class. Once the file has been updated
@@ -265,10 +265,15 @@ class Downloader:
         """
 
         # Only send GitHub api authorization if querying GitHub
-        auth = self._api_auth if "github.com" in url else None
+        # auth = self._api_auth if "github.com" in url else None
+
+        headers = {"Content-Type": "application/json"}
+
+        if self._api_token is not None:
+            headers["authorization"] = f"Bearer {self._api_token}"
 
         try:
-            reply = requests.get(url, auth=auth, timeout=10)
+            reply = requests.get(url, headers=headers, timeout=10)
 
         # No test coverage for this exception since we can't test it without
         # severing the network connectivity in pytest
