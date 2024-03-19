@@ -1,3 +1,4 @@
+import os
 import warnings
 from pathlib import Path
 
@@ -9,7 +10,17 @@ from plasmapy.utils.data.downloader import Downloader
 
 @pytest.fixture()
 def downloader_validated(tmp_path):
-    return Downloader(directory=tmp_path)
+    auth_token = os.environ["GITHUB_TOKEN"]
+    auth = ("plasmapyapi", auth_token)
+    return Downloader(directory=tmp_path, api_auth=auth)
+
+
+def test_api_token(downloader_validated):
+    """
+    Test whether the API connection is valid
+    """
+    limit, used = downloader_validated._api_usage
+    assert limit >= 5000
 
 
 @pytest.fixture()
