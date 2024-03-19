@@ -14,16 +14,13 @@ on:
 
 env:
   GITHUB_API_TOKEN: ${{ secrets.API_TOKEN }}
-  GITHUB_API_USER: Test string
+  GITHUB_API_USER: Test String
 
 jobs:
 
   tests:
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.os }}
-    env:
-      GITHUB_API_TOKEN: ${{ secrets.API_TOKEN }}
-      GITHUB_API_USER: ${{ secrets.API_USER }}
 
     strategy:
       fail-fast: false
