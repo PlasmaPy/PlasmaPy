@@ -1,0 +1,1 @@
+Fix typo in description of `~plasmapy.formulary.densities.mass_density`.
