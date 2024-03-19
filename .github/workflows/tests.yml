@@ -11,8 +11,6 @@ on:
   pull_request:
   workflow_dispatch:
 
-env:
-  GITHUB_TOKEN: ${{ secrets.API_TOKEN }}
 
 jobs:
 
@@ -75,6 +73,8 @@ jobs:
         key: ${{ matrix.toxenv }}-${{ runner.os }}-${{ hashFiles('requirements.txt', 'pyproject.toml') }}
 
     - name: Run tests
+      env:
+        GITHUB_TOKEN: ${{ secrets.API_TOKEN }}
       run: tox -e ${{ matrix.toxenv }}
 
 
