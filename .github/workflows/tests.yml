@@ -14,7 +14,7 @@ on:
 
 env:
   GITHUB_API_TOKEN: ${{ secrets.API_TOKEN }}
-  GITHUB_API_USER: ${{ secrets.API_USER }}
+  GITHUB_API_USER: Test string
 
 jobs:
 
@@ -81,16 +81,9 @@ jobs:
         
     - name: Check available variables 
       run: env
-      env:
-        GITHUB_API_TOKEN: ${{ secrets.API_TOKEN }}
-        GITHUB_API_USER: ${{ secrets.API_USER }}
         
     - name: Run tests
       run: tox -e ${{ matrix.toxenv }}
-      env:
-        GITHUB_API_TOKEN: ${{ secrets.API_TOKEN }}
-        GITHUB_API_USER: ${{ secrets.API_USER }}
-
 
     - name: Upload coverage reports to Codecov
       if: ${{ contains(matrix.toxenv,'-cov') }}
