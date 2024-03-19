@@ -11,6 +11,9 @@ on:
   pull_request:
   workflow_dispatch:
 
+env:
+  GITHUB_TOKEN: ${{ secrets.API_TOKEN }}
+
 jobs:
 
   tests:
@@ -73,8 +76,7 @@ jobs:
 
     - name: Run tests
       run: tox -e ${{ matrix.toxenv }}
-      env:
-        GITHUB_TOKEN: ${{ secrets.API_TOKEN }}
+
 
     - name: Upload coverage reports to Codecov
       if: ${{ contains(matrix.toxenv,'-cov') }}
