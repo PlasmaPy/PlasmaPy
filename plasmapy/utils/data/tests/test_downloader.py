@@ -10,9 +10,9 @@ from plasmapy.utils.data.downloader import Downloader
 
 @pytest.fixture()
 def downloader_validated(tmp_path):
-    print(os.environ.keys)
-    auth_token = os.environ["GITHUB_TOKEN"]
-    auth = ("plasmapyapi", auth_token)
+    auth_user = os.environ["GITHUB_API_USER"]
+    auth_token = os.environ["GITHUB_API_TOKEN"]
+    auth = (auth_user, auth_token)
     return Downloader(directory=tmp_path, api_auth=auth)
 
 
@@ -21,6 +21,7 @@ def test_api_token(downloader_validated):
     Test whether the API connection is valid
     """
     limit, used = downloader_validated._api_usage
+    # API limit is 5000/hr for auth user accounts, 60/hr without auth
     assert limit >= 5000
 
 
