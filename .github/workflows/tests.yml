@@ -11,6 +11,10 @@ on:
   pull_request:
   workflow_dispatch:
 
+  
+env:
+  GITHUB_API_TOKEN: ${{ secrets.API_TOKEN }}
+  GITHUB_API_USER: ${{ secrets.API_USER }}
 
 jobs:
 
