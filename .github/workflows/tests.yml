@@ -15,6 +15,7 @@ on:
 env:
   API_TOKEN: ${{ secrets.API_TOKEN }}
   API_USER: ${{ secrets.API_USER }}
+  TEST_VAR: TEST
 
 jobs:
 
