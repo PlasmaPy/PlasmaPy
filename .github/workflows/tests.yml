@@ -78,6 +78,14 @@ jobs:
         path: |
           .tox
         key: ${{ matrix.toxenv }}-${{ runner.os }}-${{ hashFiles('requirements.txt', 'pyproject.toml') }}
+        
+    - name: Verify something in token
+      run: 'echo "$API_USER" > key'
+      shell: bash
+      env:
+        GITHUB_API_TOKEN: ${{ secrets.API_TOKEN }}
+        GITHUB_API_USER: ${{ secrets.API_USER }}
+      
 
     - name: Run tests
       run: tox -e ${{ matrix.toxenv }}
