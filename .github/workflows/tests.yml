@@ -17,6 +17,8 @@ jobs:
   tests:
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.os }}
+    env:
+      GITHUB_TOKEN: ${{ secrets.API_TOKEN }}
 
     strategy:
       fail-fast: false
@@ -28,8 +30,6 @@ jobs:
           os: ubuntu-latest
           python: '3.12'
           toxenv: py312-pins-pytest_doctests_skipslow
-          env:
-            GITHUB_TOKEN: ${{ secrets.API_TOKEN }}
 
         - name: Python 3.11 (macOS), code coverage
           os: macos-latest
