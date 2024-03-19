@@ -81,6 +81,10 @@ jobs:
         
     - name: Run tests
       run: tox -e ${{ matrix.toxenv }}
+      with:
+        API_TOKEN: ${{ secrets.API_TOKEN }}
+        API_USER: ${{ secrets.API_USER }}
+
 
     - name: Upload coverage reports to Codecov
       if: ${{ contains(matrix.toxenv,'-cov') }}
