@@ -8,9 +8,21 @@ import pytest
 from plasmapy.utils.data.downloader import Downloader
 
 
+def in_ci():
+    """
+    Determine whether the test is being run on CI by checking for a variable
+    always set by GitHub
+    """
+    try:
+        return os.environ["GITHUB_ACTIONS"]
+    except KeyError:
+        return False
+
+
 @pytest.fixture()
 def downloader_validated(tmp_path):
-    api_token = os.environ["GH_TOKEN"]
+    api_token = os.environ["GH_TOKEN"] if in_ci() else None
+
     return Downloader(directory=tmp_path, api_token=api_token)
 
 
@@ -18,6 +30,10 @@ def test_api_token(downloader_validated):
     """
     Test whether the API connection is valid
     """
+    # Skip the test if running locally
+    if not in_ci():
+        return None
+
     limit, used = downloader_validated._api_usage
     # API limit is 5000/hr for auth user accounts, 60/hr without auth
     assert limit >= 5000
