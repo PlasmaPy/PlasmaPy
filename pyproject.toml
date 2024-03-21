@@ -412,7 +412,6 @@ max-complexity = 10
 "test_*" = ["D100", "D101", "D102", "D103", "D104", "D209", "D400", "D401", "N801", "RUF012", "SLF001"]
 "*/*/tests/__init__.py" = ["D104"]
 
-
 [tool.ruff.lint.pydocstyle]
 convention = "numpy"
 
