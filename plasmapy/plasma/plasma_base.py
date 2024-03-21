@@ -29,7 +29,7 @@ class BasePlasma(ABC):
     """
 
     # GenericPlasma subclass registry
-    _registry: ClassVar[dict[type, Callable]] = {}
+    _registry: ClassVar[dict[type, Callable]] = {}  # type: ignore[type-arg]
 
     def __init_subclass__(cls, **kwargs) -> None:
         super().__init_subclass__(**kwargs)

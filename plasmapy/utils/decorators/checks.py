@@ -460,7 +460,7 @@ class CheckUnits(CheckBase):
     #   2. Add a corresponding conditioning statement to `_get_unit_checks`
     #   3. Add a corresponding behavior to `_check_unit`
     #
-    __check_defaults: ClassVar[dict[str, bool]] = {
+    __check_defaults: ClassVar[dict[str, object]] = {
         "units": None,
         "equivalencies": None,
         "pass_equivalent_units": False,
