@@ -1,4 +1,5 @@
 """Test functionality of Stix in `plasmapy.dispersion.analytical.stix_`."""
+
 import astropy.units as u
 import numpy as np
 import pytest

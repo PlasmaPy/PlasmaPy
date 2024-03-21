@@ -2,6 +2,7 @@
 ``FitFunction`` classes designed to assist in curve fitting of swept Langmuir
 traces.
 """
+
 __all__ = [
     "AbstractFitFunction",
     "Exponential",
@@ -104,8 +105,7 @@ class AbstractFitFunction(ABC):
         return f"{self.__str__()} {self.__class__}"
 
     @abstractmethod
-    def __str__(self) -> str:
-        ...
+    def __str__(self) -> str: ...
 
     @abstractmethod
     def func(self, x, *args):

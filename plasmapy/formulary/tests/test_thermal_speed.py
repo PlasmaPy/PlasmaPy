@@ -9,6 +9,7 @@ thermal speed.
 - `~plasmapy.formulary.speeds.vth_`
 - `~plasmapy.formulary.speeds.vth_kappa_`
 """
+
 import astropy.units as u
 import numpy as np
 import pytest

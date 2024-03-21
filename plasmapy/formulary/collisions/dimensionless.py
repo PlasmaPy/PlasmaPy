@@ -1,6 +1,7 @@
 """
 Module of dimensionless parameters related to collisions.
 """
+
 __all__ = [
     "coupling_parameter",
     "Knudsen_number",

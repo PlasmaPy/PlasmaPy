@@ -1,4 +1,5 @@
 """Helper functions for analyzing swept Langmuir traces."""
+
 __all__ = ["check_sweep"]
 
 import astropy.units as u

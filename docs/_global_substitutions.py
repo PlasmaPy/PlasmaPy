@@ -111,7 +111,7 @@ astropy_subs: dict[str, str] = {
 # links, we first define the links and then process them afterwards into
 # the form of a reStructuredText external link.
 
-links: dict[str, str] = {
+links_to_become_subs: dict[str, str] = {
     "Astropy": "https://docs.astropy.org",
     "Citation File Format": "https://citation-file-format.github.io/",
     "DOI": "https://www.doi.org",
@@ -157,10 +157,9 @@ links: dict[str, str] = {
     "type hint annotations": "https://peps.python.org/pep-0484",
     "xarray": "https://docs.xarray.dev",
     "Zenodo": "https://zenodo.org",
+    "uv": "https://github.com/astral-sh/uv",
 }
 
-processed_links = {key: f"`{key} <{value}>`_" for key, value in links.items()}
+link_subs = {key: f"`{key} <{value}>`_" for key, value in links_to_become_subs.items()}
 
-global_substitutions = (
-    plasmapy_subs | doc_subs | numpy_subs | astropy_subs | processed_links
-)
+global_substitutions = plasmapy_subs | doc_subs | numpy_subs | astropy_subs | link_subs

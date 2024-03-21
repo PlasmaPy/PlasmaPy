@@ -1,6 +1,7 @@
 """
 Tests for particle_tracker.py
 """
+
 import astropy.units as u
 import numpy as np
 import pytest
@@ -255,6 +256,7 @@ class TestParticleTrackerGyroradius:
         assert np.isclose(initial_kinetic_energies, simulation_kinetic_energies).all()
 
 
+@pytest.mark.slow()
 @given(st.integers(1, 10), st.integers(1, 10), st.integers(1, 10), st.integers(1, 10))
 @settings(deadline=2e4, max_examples=10)
 def test_particle_tracker_potential_difference(request, E_strength, L, mass, charge):

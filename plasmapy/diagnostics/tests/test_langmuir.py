@@ -185,7 +185,7 @@ def shuffle_characteristic(characteristic):
 
     _shuffle = sorted(
         np.arange(len(characteristic.bias)),
-        key=lambda k: np.random.random(),  # noqa: ARG005
+        key=lambda k: np.random.random(),  # noqa: ARG005, NPY002
     )
     U_shuffled = characteristic.bias[_shuffle]
     I_shuffled = characteristic.current[_shuffle]

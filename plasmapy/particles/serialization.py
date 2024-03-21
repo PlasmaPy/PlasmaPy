@@ -1,4 +1,5 @@
 """Functionality for JSON deserialization of particle objects."""
+
 __all__ = [
     "json_load_particle",
     "json_loads_particle",

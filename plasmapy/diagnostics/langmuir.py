@@ -1,4 +1,5 @@
 """Defines the Langmuir analysis module as part of the diagnostics package."""
+
 __all__ = [
     "Characteristic",
     "swept_probe_analysis",

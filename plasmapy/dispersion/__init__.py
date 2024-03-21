@@ -7,6 +7,7 @@ with plasma dispersion relations, including numerical solvers and
 
    |expect-api-changes|
 """
+
 __all__ = [
     "analytical",
     "dispersion_functions",
