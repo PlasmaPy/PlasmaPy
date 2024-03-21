@@ -21,7 +21,7 @@ class AbstractTerminationCondition(ABC):
 
     @property
     def tracker(self):
-        """Return the `ParticleTracker` object for this termination condition."""
+        """Return the |ParticleTracker| object for this termination condition."""
         return self._particle_tracker
 
     @tracker.setter

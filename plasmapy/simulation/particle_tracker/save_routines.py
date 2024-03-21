@@ -50,7 +50,7 @@ class AbstractSaveRoutine(ABC):
 
     @property
     def tracker(self):
-        """Return the `ParticleTracker` object for this stop condition."""
+        """Return the |ParticleTracker| object for this stop condition."""
         return self._particle_tracker
 
     @tracker.setter
