@@ -9,6 +9,8 @@ Module for defining the base framework of the plasma classes.
 __all__ = ["BasePlasma", "GenericPlasma"]
 
 from abc import ABC, abstractmethod
+from collections.abc import Callable
+from typing import ClassVar
 
 
 class BasePlasma(ABC):
@@ -27,7 +29,7 @@ class BasePlasma(ABC):
     """
 
     # GenericPlasma subclass registry
-    _registry = {}
+    _registry: ClassVar[dict[type, Callable]] = {}
 
     def __init_subclass__(cls, **kwargs) -> None:
         super().__init_subclass__(**kwargs)
