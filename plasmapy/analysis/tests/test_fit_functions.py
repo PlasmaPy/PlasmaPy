@@ -317,7 +317,7 @@ class BaseFFTests(ABC):
 
         with with_condition:
             results = ff_obj.func_err(x, **kwargs)
-            if "rety" in kwargs and kwargs["rety"]:
+            if kwargs.get("rety"):
                 y_err, y = results
             else:
                 y_err = results

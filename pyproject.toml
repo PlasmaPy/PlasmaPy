@@ -279,9 +279,14 @@ extend-select = [
   "RUF008", # mutable-dataclass-default
   "RUF009", # function-call-in-dataclass-default-argument
   "RUF010", # explicit-f-string-type-conversion
+  "RUF012", # mutable-class-default
   "RUF013", # implicit-optional
   "RUF015", # unnecessary-iterable-allocation-for-first-element
   "RUF016", # invalid-index-type
+  "RUF017", # quadratic-list-summation
+  "RUF018", # assignment-in-assert
+  "RUF019", # unnecessary-key-check
+  "RUF020", # never-union
   "RUF100", # unused-noqa
   "RUF200", # invalid-pyproject-toml
   "S", # flake8-bandit
@@ -394,6 +399,7 @@ max-complexity = 10
 "__init__.py" = ["D104", "E402", "F401", "F402", "F403"] # ignore import errors
 ".github/scripts/*.py" = ["D103", "INP001"]
 "docs/conf.py" = ["D100", "D103", "E402", "EXE001", "EXE005", "F401"]
+"docs/notebooks/formulary/coulomb.ipynb" = ["I001"]
 "plasmapy/analysis/fit_functions.py" = ["D301"]
 "plasmapy/formulary/braginskii.py" = ["C901", "RET503", "RET504"]
 "plasmapy/formulary/tests/test_distribution.py" = ["ARG005"]
@@ -403,7 +409,7 @@ max-complexity = 10
 "plasmapy/utils/_pytest_helpers/tests/test_pytest_helpers.py" = ["BLE001", "TRY002"]
 "plasmapy/utils/decorators/tests/test_converters.py" = ["ARG001", "ARG005"]
 "setup.py" = ["D100"]
-"test_*" = ["D100", "D101", "D102", "D103", "D104", "D209", "D400", "D401", "N801", "SLF001"]
+"test_*" = ["D100", "D101", "D102", "D103", "D104", "D209", "D400", "D401", "N801", "RUF012", "SLF001"]
 "*/*/tests/__init__.py" = ["D104"]
 
 [tool.ruff.lint.pydocstyle]
