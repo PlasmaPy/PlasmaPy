@@ -1065,6 +1065,8 @@ def ionic_levels(
     particle: ParticleLike,
     min_charge: int = 0,
     max_charge: int | None = None,
+    *,
+    Z=None,
 ) -> ParticleList:
     """
     Return a |ParticleList| that includes different ionic levels of a

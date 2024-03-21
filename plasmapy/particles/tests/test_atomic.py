@@ -579,18 +579,21 @@ def test_ionic_levels_example() -> None:
 
 
 @pytest.mark.parametrize(
-    ("particle", "min_charge", "max_charge", "expected_charge_numbers"),
+    ("particle", "min_charge", "max_charge", "Z", "expected_charge_numbers"),
     [
-        ("H-1", 0, 1, [0, 1]),
-        ("p+", 1, 1, [1]),
-        (Particle("p+"), 0, 0, [0]),
-        ("C", 3, 5, [3, 4, 5]),
+        ("H-1", 0, 1, None, [0, 1]),
+        ("p+", 1, 1, None, [1]),
+        (Particle("p+"), 0, 0, None, [0]),
+        ("C", 3, 5, None, [3, 4, 5]),
+        ("Fe", None, None, [1, 2, 3.3], [1, 2, 3.3]),
     ],
 )
-def test_ion_list2(particle, min_charge, max_charge, expected_charge_numbers) -> None:
+def test_ion_list2(
+    particle, min_charge, max_charge, Z, expected_charge_numbers
+) -> None:
     """Test that inputs to ionic_levels are interpreted correctly."""
     particle = Particle(particle)
-    ions = ionic_levels(particle, min_charge, max_charge)
+    ions = ionic_levels(particle, min_charge, max_charge, Z=Z)
     np.testing.assert_equal(ions.charge_number, expected_charge_numbers)
     assert ions[0].element == particle.element
     if particle.is_category("isotope"):
