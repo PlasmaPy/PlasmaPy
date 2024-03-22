@@ -329,14 +329,27 @@ class ParticleList(collections.UserList):
         corresponding particle is consistent with the categorization
         criteria, and `False` otherwise.
 
-        Please refer to the documentation of
-        `~plasmapy.particles.particle_class.Particle.is_category`
-        for information on the parameters and categories, as well as
-        more extensive examples.
+        .. note::
+
+           A difference between this method and the ``is_category``
+           methods
+
+           In contrast to the
+           `~plasmapy.particles.particle_class.Particle.is_category`
+           method of |Particle| and the
+           `~plasmapy.particles.particle_class.CustomParticle.is_category`
+           method of |CustomParticle|,
 
         Returns
         -------
         `list` of `bool`
+
+        Notes
+        -----
+        Please refer to the documentation of
+        `~plasmapy.particles.particle_class.Particle.is_category`
+        for information on the parameters and categories, as well as
+        more extensive examples.
 
         Examples
         --------

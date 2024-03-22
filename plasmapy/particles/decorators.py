@@ -429,11 +429,13 @@ class _ParticleInput:
         def _nothing_but_the_truth(a: bool | collections.abc.Collection[bool]) -> bool:
             return a if isinstance(a, bool) else all(a)
 
-        if not _nothing_but_the_truth(particle.is_category(
-            require=self.require,
-            any_of=self.any_of,
-            exclude=self.exclude,
-        )):
+        if not _nothing_but_the_truth(
+            particle.is_category(
+                require=self.require,
+                any_of=self.any_of,
+                exclude=self.exclude,
+            )
+        ):
             errmsg = self.category_errmsg(
                 particle,
                 self.require,
