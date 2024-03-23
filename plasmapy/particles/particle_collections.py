@@ -320,48 +320,43 @@ class ParticleList(collections.UserList):
         require: str | Iterable[str] | None = None,
         any_of: str | Iterable[str] | None = None,
         exclude: str | Iterable[str] | None = None,
-    ) -> list[bool]:
+        return_list: bool = False,
+    ) -> bool | list[bool]:
         """
-        Determine element-wise if the particles in the |ParticleList|
-        meet categorization criteria.
+        Determine if particles in the |ParticleList| meet categorization
+        criteria.
 
-        Return a `list` in which each element will be `True` if the
-        corresponding particle is consistent with the categorization
-        criteria, and `False` otherwise.
+        If ``return_list`` is `False` (default), this method will return
+        `True` if _all_ particles in the |ParticleList| meet the
+        categorization criteria. If ``return_list`` is `True`, then this
+        method will return a `list` containing booleans that represent
+        whether each individual particle matches the categorization
+        criteria.
 
         .. note::
 
-           A difference between this method and the ``is_category``
-           methods
-
-           In contrast to the
-           `~plasmapy.particles.particle_class.Particle.is_category`
-           method of |Particle| and the
-           `~plasmapy.particles.particle_class.CustomParticle.is_category`
-           method of |CustomParticle|,
+            For parameters to this method and the full list of
+            categories, refer to the documentation for the
+            `~plasmapy.particles.particle_class.Particle.is_category`
+            method of |Particle|.
 
         Returns
         -------
-        `list` of `bool`
-
-        Notes
-        -----
-        Please refer to the documentation of
-        `~plasmapy.particles.particle_class.Particle.is_category`
-        for information on the parameters and categories, as well as
-        more extensive examples.
+        `bool` or `list` of `bool`
 
         Examples
         --------
-        >>> particles = ParticleList(["proton", "electron", "tau neutrino"])
-        >>> particles.is_category("lepton")
+        >>> more_particles = ParticleList(["proton", "electron", "tau neutrino"])
+        >>> more_particles.is_category("lepton")  # a proton is not a lepton
+        False
+        >>> more_particles.is_category("lepton", return_list=True)
         [False, True, True]
-        >>> particles.is_category(require="lepton", exclude="neutrino")
-        [False, True, False]
-        >>> particles.is_category(any_of=["lepton", "charged"])
+        >>> more_particles.is_category(exclude="neutrino", return_list=True)
+        [True, True, False]
+        >>> more_particles.is_category(any_of=["lepton", "charged"], return_list=True)
         [True, True, True]
         """
-        return [
+        meets_criteria = [
             particle.is_category(
                 *category_tuple,
                 require=require,
@@ -370,6 +365,7 @@ class ParticleList(collections.UserList):
             )
             for particle in self
         ]
+        return meets_criteria if return_list else all(meets_criteria)
 
     @property
     def charge_number(self) -> np.array:

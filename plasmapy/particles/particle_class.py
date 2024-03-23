@@ -233,7 +233,8 @@ class AbstractPhysicalParticle(AbstractParticle):
         require: str | Iterable[str] | None = None,
         any_of: str | Iterable[str] | None = None,
         exclude: str | Iterable[str] | None = None,
-    ) -> bool:
+        return_list: bool = False,
+    ) -> bool | list[bool]:
         """Determine if the particle meets categorization criteria.
 
         Return `True` if the particle is consistent with the provided
@@ -258,6 +259,10 @@ class AbstractPhysicalParticle(AbstractParticle):
         exclude : `str` or iterable of `str`, |keyword-only|, optional
             One or more particle categories.  This method will return
             `False` if the particle belongs to any of these categories.
+
+        return_list : `bool`, default: `False`
+            If `True`, return a `list` containing either `True` if the
+            particle meets the criteria or `False` otherwise.
 
         See Also
         --------
@@ -327,6 +332,17 @@ class AbstractPhysicalParticle(AbstractParticle):
         ...     exclude="charged",
         ... )
         False
+
+        So that this method can be used interchangeably with the
+        `~plasmapy.particles.particle_collections.ParticleList.is_category`
+        method of |ParticleList|, the ``return_list`` parameter can be
+        used to return a `list` containing either `True` if the particle
+        meets the criteria or `False` otherwise.
+
+        >>> electron.is_category(require="lepton", return_list=True)
+        [True]
+        >>> electron.is_category(exclude="lepton", return_list=True)
+        [False]
         """
 
         def become_set(arg: str | set | Sequence) -> set[str]:
@@ -371,7 +387,9 @@ class AbstractPhysicalParticle(AbstractParticle):
         if any_of and not any_of & self.categories:
             return False
 
-        return require <= self.categories
+        meets_criteria = require <= self.categories
+
+        return [meets_criteria] if return_list else meets_criteria
 
     def __add__(self, other: str | Particle | ParticleList) -> ParticleList:
         return self._as_particle_list + other

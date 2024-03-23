@@ -453,7 +453,7 @@ class _ParticleInput:
             and not np.isnan(particle.charge)
             and particle.mass.value > 0
         ):
-            return
+            return None
 
         name_categorization_exception: list[
             tuple[str, dict[str, str | Iterable[str] | None], type]
@@ -472,9 +472,6 @@ class _ParticleInput:
                 continue
 
             meets_name_criteria = particle.is_category(**categorization)
-
-            if isinstance(particle, Iterable) and not isinstance(particle, str):
-                meets_name_criteria = all(meets_name_criteria)  # type: ignore[arg-type]
 
             if not meets_name_criteria:
                 raise exception(
@@ -505,7 +502,7 @@ class _ParticleInput:
         if (
             not self.allow_custom_particles
             and isinstance(particle, ParticleList)
-            and any(particle.is_category("custom"))
+            and any(particle.is_category("custom", return_list=True))
         ):
             raise InvalidParticleError(
                 f"{self.callable_.__name__} does not accept CustomParticle "
