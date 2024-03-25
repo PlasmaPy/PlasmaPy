@@ -27,7 +27,7 @@ distlib==0.3.8
 execnet==2.0.2
 executing==2.0.1
 fastjsonschema==2.19.1
-filelock==3.13.1
+filelock==3.13.3
 fonttools==4.50.0
 fqdn==1.5.1
 future==1.0.0
