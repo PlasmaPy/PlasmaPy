@@ -2,15 +2,15 @@
 import numpy as np
 
 
-def evaluate_K0_term(eta_net, gamma, x, spherical=True):
+def evaluate_K0_term(eta_net, normalized_probe_radius, x, spherical=True):
     r"""Second derivative of normalized potential in terms of `x`.
 
     Parameters
     ----------
     eta_net : `numpy.ndarray`
         Normalized net charge density from equation (9.1).
-    gamma : `float`
-        :math:`\gamma = R_p^2 / \lambda_D^2` from equation (9.1).
+    normalized_probe_radius : `float`
+        The radius of the probe normalized to the attracted particle Debye length as defined in `~plasmapy.diagnostics.brl.normalizations.get_normalized_probe_radius`.
     x : `numpy.ndarray`
         Normalized inverse radius calculated from `~plasmapy.diagnostics.brl.net_spacing.get_x_and_dx_ds`.
     spherical : `bool`, optional
@@ -25,9 +25,9 @@ def evaluate_K0_term(eta_net, gamma, x, spherical=True):
     This is the term :math:`K_0(s)` as defined in equations (D.1) and (D.12) for the spherical and cylindrical probes respectively. The charge density, `eta_net`, and inverse radius, `x`, should have the same shape and correspond to the same points in space.
     """
     if spherical:
-        return -gamma * eta_net / x**4
+        return -normalized_probe_radius**2 * eta_net / x**4
     else:
-        return -gamma * eta_net / x**3
+        return -normalized_probe_radius**2 * eta_net / x**3
 
 
 def evaluate_K1_term(K0_term, x, dx_ds, integration_matrix, spherical=True):
@@ -58,15 +58,15 @@ def evaluate_K1_term(K0_term, x, dx_ds, integration_matrix, spherical=True):
         return (dx_ds / x) * (integration_matrix @ (K0_term * dx_ds))
 
 
-def evaluate_K2_term(K1_term, chi_0, integration_matrix):
+def evaluate_K2_term(K1_term, normalized_probe_potential, integration_matrix):
     r"""The integral of :math:`K_1(s)` with the addition of the probe potential.
 
     Parameters
     ----------
     K1_term : `numpy.ndarray`
         The :math:`K_1(s)` term calculated from `~plasmapy.diagnostics.brl.poisson_equation_integration.evaluate_K1_term`.
-    chi_0 : `float`
-        The normalized potential of the probe.
+    normalized_probe_potential : `float`
+        The normalized potential of the probe as defined in `~plasmapy.diagnostics.brl.normalizations.get_normalized_potential`.
     integration_matrix : `numpy.ndarray`
         The matrix used for integrating functions from `~plasmapy.diagnostics.brl.integration.construct_integration_matrix`.
 
@@ -78,7 +78,7 @@ def evaluate_K2_term(K1_term, chi_0, integration_matrix):
     -----
     This is the term :math:`K_2(s)` as defined in equation (D.6). This is the same for both the spherical and cylindrical probes.
     """
-    return chi_0 + integration_matrix @ K1_term
+    return normalized_probe_potential + integration_matrix @ K1_term
 
 
 def dchi_dx_at_probe(
@@ -123,8 +123,8 @@ def dchi_dx_at_probe(
 
 def chi_and_dchi_ds(
     eta_net,
-    gamma,
-    chi_0,
+    normalized_probe_radius,
+    normalized_probe_potential,
     x,
     dx_ds,
     integration_matrix,
@@ -139,10 +139,10 @@ def chi_and_dchi_ds(
     ----------
     eta_net : `numpy.ndarray`
         Normalized net charge density from equation (9.1).
-    gamma : `float`
-        :math:`\gamma = R_p^2 / \lambda_D^2` from equation (9.1).
-    chi_0 : `float`
-        The normalized potential of the probe.
+    normalized_probe_radius : `float`
+        The radius of the probe normalized to the attracted particle Debye length as defined in `~plasmapy.diagnostics.brl.normalizations.get_normalized_probe_radius`.
+    normalized_probe_potential : `float`
+        The normalized potential of the probe as defined in `~plasmapy.diagnostics.brl.normalizations.get_normalized_potential`.
     x, dx_ds : `numpy.ndarray`
         The the normalized inverse radius and it's `s` derivative calculated from `~plasmapy.diagnostics.brl.net_spacing.get_x_and_dx_ds`.
     integration_matrix : `numpy.ndarray`
@@ -160,9 +160,9 @@ def chi_and_dchi_ds(
     -----
     These are the terms :math:`\chi(s)` and :math:`(d\chi / ds)(s)` from equations (D.7) and (D.8) (spherical probe) or (D.15) and (D.16) (cylindrical probe).
     """
-    K0_term = evaluate_K0_term(eta_net, gamma, x, spherical)
+    K0_term = evaluate_K0_term(eta_net, normalized_probe_radius, x, spherical)
     K1_term = evaluate_K1_term(K0_term, x, dx_ds, integration_matrix, spherical)
-    K2_term = evaluate_K2_term(K1_term, chi_0, integration_matrix)
+    K2_term = evaluate_K2_term(K1_term, normalized_probe_potential, integration_matrix)
     dchi_dx_0 = dchi_dx_at_probe(
         K1_term, K2_term, x, dx_ds, spherical, zero_T_repelled_particles
     )
