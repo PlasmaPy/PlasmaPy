@@ -124,7 +124,7 @@ namespaces = false
 write_to = "src/plasmapy/_version.py"
 
 [tool.pytest.ini_options]
-testpaths = ['plasmapy']
+testpaths = ['src', 'tests']
 norecursedirs = ['build', 'docs', 'src/plasmapy[\/]_dev']
 xfail_strict = true
 doctest_optionflags = """
@@ -153,7 +153,7 @@ exclude_lines = [
 [tool.coverage.run]
 omit = [
   "ci-helpers/*",
-  "*/tests/*",
+  "tests/*",
   "src/plasmapy/utils/calculator/*",
   "src/plasmapy/version.py",
   "src/plasmapy/_dev/*",
