@@ -3,9 +3,8 @@ import numpy as np
 import logging
 
 
-def mixing_function(coefficient_1, coefficient_2, x, effective_ion_to_electron_temperature_ratio, gamma, spherical=True):
-    r"""
-    Calculate the weighting for mixing solutions.
+def mixing_function(coefficient_1, coefficient_2, x, effective_attracted_to_repelled_temperature_ratio, normalized_probe_radius, spherical=True):
+    r"""Calculate the weighting for mixing solutions.
     
     Parameters
     ----------
@@ -13,10 +12,10 @@ def mixing_function(coefficient_1, coefficient_2, x, effective_ion_to_electron_t
         Coefficients used for calculating the mixing factors.
     x : `numpy.ndarray`
         Normalized inverse radius calculated from `~plasmapy.diagnostics.brl.net_spacing.get_x_and_dx_ds`.
-    effective_ion_to_electron_temperature_ratio : `float`
-        :math:`-\frac{T_+ Z_-}{T_- Z_+}` from equation (3.3).
-    gamma : `float`
-        :math:`\gamma = R_p^2 / \lambda_D^2` from equation (9.1).
+    effective_attracted_to_repelled_temperature_ratio : `float`
+        :math:`-\frac{T_+ Z_-}{T_- Z_+}` from `~plasmapy.diagnostics.brl.normalizations.get_effective_attracted_to_repelled_temperature_ratio`.
+    normalized_probe_radius : `float`
+        The radius of the probe normalized to the attracted particle Debye length as defined in `~plasmapy.diagnostics.brl.normalizations.get_normalized_probe_radius`.
     spherical : `bool`, optional
         If `True` the probe will be treated as spherical. If `False` then the probe is cylindrical. Default is `True`.
 
@@ -30,7 +29,7 @@ def mixing_function(coefficient_1, coefficient_2, x, effective_ion_to_electron_t
     and `coefficient_2` are `QT1` and `QT2` respectively. This returns an array
     that is referred to as `COOKIE` in the code.
     """
-    power = (gamma * min(effective_ion_to_electron_temperature_ratio, 1))**0.5
+    power = (normalized_probe_radius**2 * min(effective_attracted_to_repelled_temperature_ratio, 1))**0.5
 
     if spherical:
         # Line 100.
@@ -219,7 +218,7 @@ def estimate_num_iterations_oscillating(all_found_currents, relative_accuracy, e
         &= \lvert A \rvert e^{-B(N - 1)} \frac{e^{B} - e^{-B}}{2} \\
         
     Our solution should have oscillations less than :math:`a C` where :math:`a` 
-    is the `relative_accuracy`. We only want to know if we oscillations will be 
+    is the `relative_accuracy`. We only want to know if oscillations will be 
     smaller than that within 40 iterations and we can check that by calculating
 
     .. math::
@@ -318,8 +317,7 @@ def determine_coefficients(
         zero_temperature_repelled_particles=False,
         coefficients_previously_decreased=False,
     ):
-    r"""
-    This is the top level program that controls how much mixing is done between iterations.
+    r"""This is the top level program that controls how much mixing is done between iterations.
     
     Parameters
     ----------
@@ -341,7 +339,7 @@ def determine_coefficients(
     relative_accuracy : `float`
         Relative accuracy to determine how many more iterations are needed.
     new_net_charge_density, old_net_charge_density : `numpy.ndarray`
-        Arrays of charge density for the prior and current iteration.
+        Arrays of normalized charge density for the prior and current iteration.
     x : `numpy.ndarray`
         Normalized inverse radius calculated from `~plasmapy.diagnostics.brl.net_spacing.get_x_and_dx_ds`.
     zero_temperature_repelled_particles : `bool`, default `False`
