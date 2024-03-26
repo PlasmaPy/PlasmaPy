@@ -1,0 +1,2 @@
+Changed to an :file:`src` layout with tests included in a separate top-level directory
+named :file:`tests/`.
