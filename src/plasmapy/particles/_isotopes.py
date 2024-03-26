@@ -1,6 +1,6 @@
 """
 Module for loading isotope data from
-:file:`plasmapy/particles/data/isotopes.json`.
+:file:`src/plasmapy/particles/data/isotopes.json`.
 """
 
 __all__ = [

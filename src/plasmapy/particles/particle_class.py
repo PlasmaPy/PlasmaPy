@@ -613,7 +613,7 @@ class Particle(AbstractPhysicalParticle):
 
         # If __name__ is not defined here, then problems with the doc
         # build arise related to the Particle instances that are
-        # defined in plasmapy/particles/__init__.py.
+        # defined in src/plasmapy/particles/__init__.py.
 
         self.__name__ = self.__repr__()
 
