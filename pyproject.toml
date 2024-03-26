@@ -343,6 +343,7 @@ ignore = [
   "TRY301", # raise-within-try
   "UP025", # unicode-kind-prefix
   "W191", # tab-indentation (formatter conflict)
+  "W291", # trailing-whitespace (handled by formatter)
 ]
 dummy-variable-rgx = "Z|mass_numb|request|event"
 ignore-init-module-imports = true
