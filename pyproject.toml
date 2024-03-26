@@ -397,21 +397,27 @@ ban-relative-imports = "all"
 max-complexity = 10
 
 [tool.ruff.lint.per-file-ignores]
-"__init__.py" = ["D104", "E402", "F401", "F402", "F403"] # ignore import errors
 ".github/scripts/*.py" = ["D103", "INP001"]
+"__init__.py" = ["D104", "E402", "F401", "F402", "F403"] # ignore import errors
 "docs/conf.py" = ["D100", "D103", "E402", "EXE001", "EXE005", "F401"]
-"docs/notebooks/formulary/coulomb.ipynb" = ["I001"]
+"docs/notebooks/*.ipynb" = ["I001"]
+"docs/notebooks/*/*.ipynb" = ["I001"]
+"docs/notebooks/*/*/*.ipynb" = ["I001"]
+"setup.py" = ["D100"]
 "src/plasmapy/analysis/fit_functions.py" = ["D301"]
 "src/plasmapy/formulary/braginskii.py" = ["C901", "RET503", "RET504"]
-"tests/formulary/test_distribution.py" = ["ARG005"]
-"tests/particles/test_decorators.py" = ["ARG001", "ARG002"]
 "src/plasmapy/plasma/sources/*.py" = ["D102"]
 "src/plasmapy/utils/_pytest_helpers/pytest_helpers.py" = ["BLE001", "PLR", "SLF001"]
+"test_*" = ["D100", "D101", "D102", "D103", "D104", "D209", "D400", "D401", "N801", "RUF012", "SLF001"]
+"tests/*/*/*/*/__init__.py" = ["D104"]
+"tests/*/*/*/__init__.py" = ["D104"]
+"tests/*/*/__init__.py" = ["D104"]
+"tests/*/__init__.py" = ["D104"]
+"tests/__init__.py" = ["D104"]
+"tests/formulary/test_distribution.py" = ["ARG005"]
+"tests/particles/test_decorators.py" = ["ARG001", "ARG002"]
 "tests/utils/_pytest_helpers/test_pytest_helpers.py" = ["BLE001", "TRY002"]
 "tests/utils/decorators/test_converters.py" = ["ARG001", "ARG005"]
-"setup.py" = ["D100"]
-"test_*" = ["D100", "D101", "D102", "D103", "D104", "D209", "D400", "D401", "N801", "RUF012", "SLF001"]
-"*/*/tests/__init__.py" = ["D104"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "numpy"
