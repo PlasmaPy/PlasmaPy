@@ -116,15 +116,16 @@ include-package-data = true
 "plasmapy.utils.calculator" = ["*"]
 
 [tool.setuptools.packages.find]
-exclude = ["docs/automodapi", "plasmapy/_dev"]
+where = ["src"]
+exclude = ["docs/automodapi", "src/plasmapy/_dev"]
 namespaces = false
 
 [tool.setuptools_scm]
-write_to = "plasmapy/_version.py"
+write_to = "src/plasmapy/_version.py"
 
 [tool.pytest.ini_options]
 testpaths = ['plasmapy']
-norecursedirs = ['build', 'docs', 'plasmapy[\/]_dev']
+norecursedirs = ['build', 'docs', 'src/plasmapy[\/]_dev']
 xfail_strict = true
 doctest_optionflags = """
 NORMALIZE_WHITESPACE
@@ -153,9 +154,9 @@ exclude_lines = [
 omit = [
   "ci-helpers/*",
   "*/tests/*",
-  "plasmapy/utils/calculator/*",
-  "plasmapy/version.py",
-  "plasmapy/_dev/*",
+  "src/plasmapy/utils/calculator/*",
+  "src/plasmapy/version.py",
+  "src/plasmapy/_dev/*",
 ]
 
 [tool.build_docs]
@@ -400,14 +401,14 @@ max-complexity = 10
 ".github/scripts/*.py" = ["D103", "INP001"]
 "docs/conf.py" = ["D100", "D103", "E402", "EXE001", "EXE005", "F401"]
 "docs/notebooks/formulary/coulomb.ipynb" = ["I001"]
-"plasmapy/analysis/fit_functions.py" = ["D301"]
-"plasmapy/formulary/braginskii.py" = ["C901", "RET503", "RET504"]
-"plasmapy/formulary/tests/test_distribution.py" = ["ARG005"]
-"plasmapy/particles/tests/test_decorators.py" = ["ARG001", "ARG002"]
-"plasmapy/plasma/sources/*.py" = ["D102"]
-"plasmapy/utils/_pytest_helpers/pytest_helpers.py" = ["BLE001", "PLR", "SLF001"]
-"plasmapy/utils/_pytest_helpers/tests/test_pytest_helpers.py" = ["BLE001", "TRY002"]
-"plasmapy/utils/decorators/tests/test_converters.py" = ["ARG001", "ARG005"]
+"src/plasmapy/analysis/fit_functions.py" = ["D301"]
+"src/plasmapy/formulary/braginskii.py" = ["C901", "RET503", "RET504"]
+"src/plasmapy/formulary/tests/test_distribution.py" = ["ARG005"]
+"src/plasmapy/particles/tests/test_decorators.py" = ["ARG001", "ARG002"]
+"src/plasmapy/plasma/sources/*.py" = ["D102"]
+"src/plasmapy/utils/_pytest_helpers/pytest_helpers.py" = ["BLE001", "PLR", "SLF001"]
+"src/plasmapy/utils/_pytest_helpers/tests/test_pytest_helpers.py" = ["BLE001", "TRY002"]
+"src/plasmapy/utils/decorators/tests/test_converters.py" = ["ARG001", "ARG005"]
 "setup.py" = ["D100"]
 "test_*" = ["D100", "D101", "D102", "D103", "D104", "D209", "D400", "D401", "N801", "RUF012", "SLF001"]
 "*/*/tests/__init__.py" = ["D104"]
