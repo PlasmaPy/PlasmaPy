@@ -193,6 +193,7 @@ class Test__get_x_and_dx_ds:
             net_spacing.get_x_and_dx_ds(
                 np.linspace(0, 10),
                 normalized_probe_radius,
+                1,
                 zero_T_repelled_particles=zero_T_repelled_particles,
             )
 
@@ -231,7 +232,7 @@ class Test__get_x_and_dx_ds:
             self.get_num_s_poits(ds, s_end_point), s_end_point
         )
         x, dx_ds = net_spacing.get_x_and_dx_ds(
-            s_points, normalized_probe_radius, self.normalized_probe_potential
+            s_points, normalized_probe_radius, 1, normalized_probe_potential=self.normalized_probe_potential
         )
         normalized_r = 1 / x
         dr_dx_at_probe = -1 / 1**2
