@@ -11,14 +11,14 @@ def get_s_points(num_points, s_end_point):
     return np.linspace(0, s_end_point, num_points)
 
 
-def _large_probe_x_and_dx_ds(s_points, normalized_probe_radius):
+def _large_probe_x_and_dx_ds(s_points, renormalized_probe_radius):
     r"""The values of `x` and `dx/ds` that correspond to the `s_points` for a probe of large radius.
 
     Parameters
     ----------
     s_points : `numpy.ndarray`
-    normalized_probe_radius : `float`
-        The radio of probe radius to debye length, :math:`R_p / \lambda_D`.
+    renormalized_probe_radius : `float`
+        The radio of probe radius to the larger Debye length.
 
     Returns
     -------
@@ -41,7 +41,7 @@ def _large_probe_x_and_dx_ds(s_points, normalized_probe_radius):
     linear_coefficient = 1 / (1 - shared_constant)  # ZNP in Laframboise
     power_coefficient = linear_coefficient - 1  # AYA in Laframboise
     power = (
-        linear_coefficient - 10 / (shared_constant * normalized_probe_radius)
+        linear_coefficient - 10 / (shared_constant * renormalized_probe_radius)
     ) / power_coefficient
 
     x_points = (
@@ -115,7 +115,8 @@ def _zero_T_repelled_x_and_dx_ds(
     ----------
     s_points : `numpy.ndarray`
     normalized_probe_radius : `float`
-        The radio of probe radius to debye length, :math:`R_p / \lambda_D`.
+        The ratio of probe radius to attracted particle debye length, 
+        :math:`R_p / \lambda_D_+`, as defined in `~plasmapy.diagnostics.brl.normalizations.get_normalized_probe_radius`.
     normalized_probe_potential : `float`
         The probe potential normalized to the attracted particles temperature.
 
@@ -153,8 +154,10 @@ def _zero_T_repelled_x_and_dx_ds(
 def get_x_and_dx_ds(
     s_points,
     normalized_probe_radius,
+    effective_attracted_to_repelled_temperature_ratio,
     normalized_probe_potential=None,
     zero_T_repelled_particles=False,
+    charge_ratio=1,
 ):
     r"""The values of `x` and `dx/ds` that correspond to the `s_points` for a probe of any radius.
 
@@ -163,11 +166,19 @@ def get_x_and_dx_ds(
     s_points : `numpy.ndarray`
         Array of :math:`s` from `~plasmapy.diagnostics.brl.net_spacing.get_s_points`.
     normalized_probe_radius : `float`
-        The radio of probe radius to debye length, :math:`R_p / \lambda_D`.
+        The ratio of probe radius to attracted particle debye length, 
+        :math:`R_p / \lambda_D_+`, as defined in `~plasmapy.diagnostics.brl.normalizations.get_normalized_probe_radius`.
+    effective_attracted_to_repelled_temperature_ratio : `float`
+        :math:`-\frac{T_+ Z_-}{T_- Z_+}` as defined in `~plasmapy.diagnostics.brl.normalizations.get_effective_temperature_ratio`.
     normalized_probe_potential : `float`
-        The probe potential normalized to the attracted particles temperature. This is only needed if the repelled particles have zero temperature. Default is `None`.
+        The probe potential normalized to the attracted particles temperature as 
+        defined in `~plasmapy.diagnostics.brl.normalizations.get_normalized_potential`.
+        This is only needed if the repelled particles have zero temperature.
+        Default is `None`.
     zero_T_repelled_particles : `bool`
         Whether the repelled particles have zero temperature. Default is `False`.
+    charge_ratio : `float`
+        The ratio of the attracted particle charge to the repelled particle charge, :math:`Z_+ / Z_-`. Default is `1`.
 
     Returns
     -------
@@ -176,17 +187,42 @@ def get_x_and_dx_ds(
 
     Notes
     -----
-    Laframboise gives no explanation as to why these functions are chosen nor
-    the boundary values on small, medium, and large probes. Also, :math:`x = 1 / r`.
+    This follows the code on page 3 of the thesis. Laframboise gives no 
+    explanation as to why these functions are chosen nor the boundary values on 
+    small, medium, and large probes. Also, :math:`x = 1 / r`. Laframboise 
+    refers to the ``ratio of probe radius to larger debye length'', called 
+    `ROGA`, yet the code in the thesis uses
+
+    .. math::
+    
+       \texttt{ROGA} = \frac{R_p}{\lambda_D_+} \sqrt{\min\left(-\frac{T_+ Z_-}{T_- Z_+}, 1\right)}
+
+    If we assume that :math:`\frac{T_+ Z_-}{T_- Z_+} < 1` then
+
+    .. math::
+
+        \texttt{ROGA} &= \frac{R_p}{\lambda_D_+} \sqrt{-\frac{T_+ Z_-}{T_- Z_+}} \\
+        &= R_p \sqrt{\frac{Z_+^2 e^2 N_{\inf +}}{\eps k T_+}} \sqrt{-\frac{T_+ Z_-}{T_- Z_+}} \\
+        &= R_p \sqrt{\frac{-Z_+ Z_- e^2 N_{\inf +}}{\eps k T_-}}
+
+    If we assume :math:`Z_+ = -Z_-` then the code actually uses the ``ratio of 
+    probe radius to attracted particle debye length''. Since Laframboise only 
+    has solutions where :math:`Z_+ = -Z_-`, we'll assume that this is actually 
+    an issue with the thesis code and correct for it in ours.
     """
-    if (normalized_probe_radius > 2.6 or zero_T_repelled_particles) and np.max(
+    # Normalized the probe radius to the larger Debye length.
+    renormalized_probe_radius = normalized_probe_radius * np.sqrt(
+        min(effective_attracted_to_repelled_temperature_ratio / charge_ratio, 1)
+    )
+
+    if (renormalized_probe_radius > 2.6 or zero_T_repelled_particles) and np.max(
         s_points
     ) > 1:
         raise ValueError(
             "Maximum value of `s` must be less than or equal to 1 for all probes that aren't small."
         )
 
-    if normalized_probe_radius <= 2.6:
+    if renormalized_probe_radius <= 2.6:
         return _small_probe_x_and_dx_ds(s_points)
 
     if zero_T_repelled_particles:
@@ -197,7 +233,7 @@ def get_x_and_dx_ds(
         return _zero_T_repelled_x_and_dx_ds(
             s_points, normalized_probe_radius, normalized_probe_potential
         )
-    elif normalized_probe_radius <= 25.1:
+    elif renormalized_probe_radius <= 25.1:
         return _medium_probe_x_and_dx_ds(s_points)
     else:
-        return _large_probe_x_and_dx_ds(s_points, normalized_probe_radius)
+        return _large_probe_x_and_dx_ds(s_points, renormalized_probe_radius)
