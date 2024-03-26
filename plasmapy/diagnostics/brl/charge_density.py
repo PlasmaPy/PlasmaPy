@@ -34,7 +34,7 @@ def eta_1(A, chi, spherical=True):
     A : `numpy.ndarray`
         Lower bound of the integral. Also, `A >= chi`.
     chi : `numpy.ndarray`
-        The normalized potential.
+        The normalized potential as defined in `~plasmapy.diagnostics.brl.normalizations.get_normalized_potential`.
     spherical : `bool`, optional
         If `True` the probe will be treated as spherical. If `False` then the probe is cylindrical. Default is `True`.
 
@@ -61,10 +61,10 @@ def eta_2(A, chi, chi_p, x, spherical=True):
     ----------
     A : `numpy.ndarray`
         Lower bound of the integral. Also, `A >= kappa` as defined in (E.3).
-    chi : `numpy.ndarray`
-        The normalized potential.
+    chi, chi_p : `numpy.ndarray`
+        The normalized potential as defined in `~plasmapy.diagnostics.brl.normalizations.get_normalized_potential`.
     chi_p : `float`
-        The normalized potential of the probe.
+        The normalized potential of the probe as defined in `~plasmapy.diagnostics.brl.normalizations.get_normalized_potential`.
     x : `numpy.ndarray`
         Normalized inverse radius calculated from `~plasmapy.diagnostics.brl.net_spacing.get_x_and_dx_ds`.
     spherical : `bool`, optional
@@ -134,7 +134,7 @@ def eta_3(A, chi, x, x_B, spherical=True):
     A : `numpy.ndarray`
         Lower bound of the integral. Also, `A >= kappa` as defined in (E.3).
     chi : `numpy.ndarray`
-        The normalized potential.
+        The normalized potential as defined in `~plasmapy.diagnostics.brl.normalizations.get_normalized_potential`.
     x : `numpy.ndarray`
         Normalized inverse radius calculated from `~plasmapy.diagnostics.brl.net_spacing.get_x_and_dx_ds`.
     x_B : `float`
@@ -197,7 +197,7 @@ def eta_4(
     ds : `float`
         Spacing between any two points in `s`.
     chi : `numpy.ndarray`
-        The normalized potential.
+        The normalized potential as defined in `~plasmapy.diagnostics.brl.normalizations.get_normalized_potential`.
     x : `numpy.ndarray`
         Normalized inverse radius calculated from `~plasmapy.diagnostics.brl.net_spacing.get_x_and_dx_ds`.
     eta_net : `numpy.ndarray`
@@ -386,7 +386,7 @@ def delta_function_charge_density(chi, x, omega_G, beta_G, spherical=True):
     Parameters
     ----------
     chi : `numpy.ndarray`
-        The normalized potential.
+        The normalized potential as defined in `~plasmapy.diagnostics.brl.normalizations.get_normalized_potential`.
     x : `numpy.ndarray`
         Normalized inverse radius calculated from `~plasmapy.diagnostics.brl.net_spacing.get_x_and_dx_ds`.
     omega_G, beta_G : `numpy.ndarray`
@@ -451,7 +451,7 @@ def get_charge_density(chi, x, omega_G, beta_G, spherical=True, maxwellian=True)
     Parameters
     ----------
     chi : `numpy.ndarray`
-        The normalized potential.
+        The normalized potential as defined in `~plasmapy.diagnostics.brl.normalizations.get_normalized_potential`.
     x : `numpy.ndarray`
         Normalized inverse radius calculated from `~plasmapy.diagnostics.brl.net_spacing.get_x_and_dx_ds`.
     omega_G, beta_G : `numpy.ndarray`
