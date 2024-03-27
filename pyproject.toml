@@ -124,7 +124,7 @@ namespaces = false
 write_to = "src/plasmapy/_version.py"
 
 [tool.pytest.ini_options]
-testpaths = ['tests', 'src']
+testpaths = ['tests', 'src/plasmapy']
 norecursedirs = ['build', 'docs', 'src/plasmapy[\/]_dev', '__pycache__', '.tox', '.venv']
 addopts = "--ignore=src/plasmapy/_version.py"
 xfail_strict = true
