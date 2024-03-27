@@ -124,8 +124,8 @@ namespaces = false
 write_to = "src/plasmapy/_version.py"
 
 [tool.pytest.ini_options]
-testpaths = ['.']
-norecursedirs = ['build', 'docs', 'src/plasmapy[\/]_dev', '.github', '.jupyter']
+testpaths = ['tests', 'src']
+norecursedirs = ['build', 'docs', 'src/plasmapy[\/]_dev']
 xfail_strict = true
 doctest_optionflags = """
 NORMALIZE_WHITESPACE
