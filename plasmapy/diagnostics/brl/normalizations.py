@@ -149,7 +149,26 @@ def get_normalized_probe_radius(probe_radius: u.m, attracted_particle_temperatur
     normalized_probe_radius = np.abs(attracted_particle_charge_number) * (probe_radius / debye_length).to(u.dimensionless_unscaled).value
     return normalized_probe_radius
 
-def renormalize_probe_radius_to_larger_debye_length(normalized_probe_radius, effective_attracted_to_repelled_temperature_ratio, charge_ratio=1):
+@validate_quantities(
+    normalized_probe_radius={
+        "can_be_negative": False,
+        "can_be_inf": False,
+        "can_be_zero": False,
+        "can_be_nan": False,
+    },
+    effective_attracted_to_repelled_temperature_ratio={
+        "can_be_negative": False,
+        "can_be_inf": True,
+        "can_be_zero": False,
+        "can_be_nan": False,
+    },
+    charge_ratio={
+        "can_be_inf": False,
+        "can_be_zero": False,
+        "can_be_nan": False,
+    },
+)
+def renormalize_probe_radius_to_larger_debye_length(normalized_probe_radius, effective_attracted_to_repelled_temperature_ratio, charge_ratio=-1.0):
     r"""Renormalize the normalized probe radius to the larger Debye length.
     
     Since there are two species in the plasma, their Debye lengths may be 
@@ -163,7 +182,7 @@ def renormalize_probe_radius_to_larger_debye_length(normalized_probe_radius, eff
     
        \texttt{ROGA} = \frac{R_p}{\lambda_D_+} \sqrt{\min\left(-\frac{T_+ Z_-}{T_- Z_+}, 1\right)}
 
-    If we assume that :math:`\frac{T_+ Z_-}{T_- Z_+} < 1` then
+    If we assume that :math:`-\frac{T_+ Z_-}{T_- Z_+} < 1` then
 
     .. math::
 
@@ -186,8 +205,16 @@ def renormalize_probe_radius_to_larger_debye_length(normalized_probe_radius, eff
         species as defined in `~plasmapy.diagnostics.brl.normalizations.get_effective_temperature_ratio`.
     charge_ratio : `float`, optional
         The ratio of the attracted particles signed charge to the repelled 
-        particles signed charge, :math:`Z_+ / Z_-`. Default is `-1`.
+        particles signed charge, :math:`Z_+ / Z_-`. Default is `-1.0`.
+
+    Returns
+    -------
+    renormalized_probe_radius : `float`
+        The probe radius renormalized to the larger Debye length.
     """
+    if charge_ratio >= 0:
+        raise ValueError("The charge ratio must be negative.")
+
     return normalized_probe_radius * np.sqrt(
-        min(effective_attracted_to_repelled_temperature_ratio / charge_ratio, 1)
+        min(effective_attracted_to_repelled_temperature_ratio / -charge_ratio, 1)
     )
