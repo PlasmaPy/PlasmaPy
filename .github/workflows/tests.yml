@@ -26,7 +26,7 @@ jobs:
         - name: Python 3.12, with doctests, skip slow tests, Ubuntu
           os: ubuntu-latest
           python: '3.12'
-          toxenv: py312-pins-pytest_doctests_skipslow
+          toxenv: py312-pins-pytest_skipslow
 
         - name: Python 3.11, all tests, code coverage, macOS
           os: macos-latest
