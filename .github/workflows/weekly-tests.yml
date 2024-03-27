@@ -37,19 +37,19 @@ jobs:
           python: '3.10'
           toxenv: py310-lowest_direct-pytest_all
 
-        - name: Python 3.10, with Astropy dev, all tests, Ubuntu
+        - name: Python 3.12, with Astropy dev, all tests, Ubuntu
           os: ubuntu-latest
-          python: '3.10'
-          toxenv: py310-pytest_all-astropydev
+          python: '3.12'
+          toxenv: py312-pytest_all-astropydev
 
-        - name: Python 3.10, with matplotlib dev, all tests, Ubuntu
+        - name: Python 3.12, with matplotlib dev, all tests, Ubuntu
           os: ubuntu-latest
-          python: '3.10'
+          python: '3.12'
           toxenv: py312-pytest_all-matplotlibdev
 
-        - name: Python 3.10, with NumPy dev, all tests, Ubuntu
+        - name: Python 3.12, with NumPy dev, all tests, Ubuntu
           os: ubuntu-latest
-          python: '3.10'
+          python: '3.12'
           toxenv: py312-pytest_all-numpydev
 
         - name: Python 3.12, with NumPy dev, all tests, Windows
@@ -57,10 +57,10 @@ jobs:
           python: '3.12'
           toxenv: py312-pytest_all-numpydev
 
-        - name: Python 3.10, all tests, xarray dev, Ubuntu
+        - name: Python 3.12, all tests, xarray dev, Ubuntu
           os: ubuntu-latest
-          python: '3.10'
-          toxenv: py310-pytest_all-xarraydev
+          python: '3.12'
+          toxenv: py312-pytest_all-xarraydev
 
         - name: Documentation, with Sphinx dev, Python 3.12, Ubuntu
           os: ubuntu-latest
