@@ -1,6 +1,8 @@
 """The computational net spacing and it's inverse + derivative."""
 import numpy as np
 
+from plasmapy.diagnostics.brl.normalizations import renormalize_probe_radius_to_larger_debye_length
+
 
 def get_s_points(num_points, s_end_point):
     r"""Get the equally spaced points for the variable `s`."""
@@ -157,7 +159,7 @@ def get_x_and_dx_ds(
     effective_attracted_to_repelled_temperature_ratio,
     normalized_probe_potential=None,
     zero_T_repelled_particles=False,
-    charge_ratio=1,
+    charge_ratio=-1,
 ):
     r"""The values of `x` and `dx/ds` that correspond to the `s_points` for a probe of any radius.
 
@@ -178,7 +180,8 @@ def get_x_and_dx_ds(
     zero_T_repelled_particles : `bool`
         Whether the repelled particles have zero temperature. Default is `False`.
     charge_ratio : `float`
-        The ratio of the attracted particle charge to the repelled particle charge, :math:`Z_+ / Z_-`. Default is `1`.
+        The ratio of the attracted particles signed charge to the repelled 
+        particles signed charge, :math:`Z_+ / Z_-`. Default is `-1`.
 
     Returns
     -------
@@ -189,30 +192,11 @@ def get_x_and_dx_ds(
     -----
     This follows the code on page 3 of the thesis. Laframboise gives no 
     explanation as to why these functions are chosen nor the boundary values on 
-    small, medium, and large probes. Also, :math:`x = 1 / r`. Laframboise 
-    refers to the ``ratio of probe radius to larger debye length'', called 
-    `ROGA`, yet the code in the thesis uses
-
-    .. math::
-    
-       \texttt{ROGA} = \frac{R_p}{\lambda_D_+} \sqrt{\min\left(-\frac{T_+ Z_-}{T_- Z_+}, 1\right)}
-
-    If we assume that :math:`\frac{T_+ Z_-}{T_- Z_+} < 1` then
-
-    .. math::
-
-        \texttt{ROGA} &= \frac{R_p}{\lambda_D_+} \sqrt{-\frac{T_+ Z_-}{T_- Z_+}} \\
-        &= R_p \sqrt{\frac{Z_+^2 e^2 N_{\inf +}}{\eps k T_+}} \sqrt{-\frac{T_+ Z_-}{T_- Z_+}} \\
-        &= R_p \sqrt{\frac{-Z_+ Z_- e^2 N_{\inf +}}{\eps k T_-}}
-
-    If we assume :math:`Z_+ = -Z_-` then the code actually uses the ``ratio of 
-    probe radius to attracted particle debye length''. Since Laframboise only 
-    has solutions where :math:`Z_+ = -Z_-`, we'll assume that this is actually 
-    an issue with the thesis code and correct for it in ours.
+    small, medium, and large probes. Also, :math:`x = 1 / r`.
     """
     # Normalized the probe radius to the larger Debye length.
-    renormalized_probe_radius = normalized_probe_radius * np.sqrt(
-        min(effective_attracted_to_repelled_temperature_ratio / charge_ratio, 1)
+    renormalized_probe_radius = renormalize_probe_radius_to_larger_debye_length(
+        normalized_probe_radius, effective_attracted_to_repelled_temperature_ratio, charge_ratio
     )
 
     if (renormalized_probe_radius > 2.6 or zero_T_repelled_particles) and np.max(
