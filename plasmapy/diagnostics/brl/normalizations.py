@@ -149,25 +149,6 @@ def get_normalized_probe_radius(probe_radius: u.m, attracted_particle_temperatur
     normalized_probe_radius = np.abs(attracted_particle_charge_number) * (probe_radius / debye_length).to(u.dimensionless_unscaled).value
     return normalized_probe_radius
 
-@validate_quantities(
-    normalized_probe_radius={
-        "can_be_negative": False,
-        "can_be_inf": False,
-        "can_be_zero": False,
-        "can_be_nan": False,
-    },
-    effective_attracted_to_repelled_temperature_ratio={
-        "can_be_negative": False,
-        "can_be_inf": True,
-        "can_be_zero": False,
-        "can_be_nan": False,
-    },
-    charge_ratio={
-        "can_be_inf": False,
-        "can_be_zero": False,
-        "can_be_nan": False,
-    },
-)
 def renormalize_probe_radius_to_larger_debye_length(normalized_probe_radius, effective_attracted_to_repelled_temperature_ratio, charge_ratio=-1.0):
     r"""Renormalize the normalized probe radius to the larger Debye length.
     
