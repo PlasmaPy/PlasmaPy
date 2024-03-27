@@ -254,7 +254,7 @@ extend-select = [
   "FIX", # flake8-fixme
   "FLY", # flynt
   "G", # flake8-logging-format
-  "I", # isort
+#  "I", # isort
   "ICN", # flake8-import-conventions
   "INP", # flake8-no-pep420
   "INT", # flake8-gettext
@@ -401,9 +401,6 @@ max-complexity = 10
 ".github/scripts/*.py" = ["D103", "INP001"]
 "__init__.py" = ["D104", "E402", "F401", "F402", "F403"] # ignore import errors
 "docs/conf.py" = ["D100", "D103", "E402", "EXE001", "EXE005", "F401"]
-"docs/notebooks/*.ipynb" = ["I001"]
-"docs/notebooks/*/*.ipynb" = ["I001"]
-"docs/notebooks/*/*/*.ipynb" = ["I001"]
 "setup.py" = ["D100"]
 "src/plasmapy/analysis/fit_functions.py" = ["D301"]
 "src/plasmapy/formulary/braginskii.py" = ["C901", "RET503", "RET504"]
