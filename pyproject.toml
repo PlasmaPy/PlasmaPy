@@ -125,6 +125,16 @@ write_to = "src/plasmapy/_version.py"
 
 [tool.pytest.ini_options]
 testpaths = ['.']
+xfail_strict = true
+doctest_optionflags = """
+NORMALIZE_WHITESPACE
+ELLIPSIS
+NUMBER
+IGNORE_EXCEPTION_DETAIL"""
+filterwarnings = [
+  "ignore:.*deprecated in traitlets 4.2.*:DeprecationWarning",
+  "ignore:.*MultiIndex.*:DeprecationWarning",  # https://github.com/PlasmaPy/PlasmaPy/issues/2319
+]
 norecursedirs = [
   '.*cache*',
   '.git*',
@@ -146,17 +156,6 @@ norecursedirs = [
   '*egg-info*',
   'node_modules',
   '.cov*'
-]
-#addopts = "--ignore=src/plasmapy/_version.py"
-xfail_strict = true
-doctest_optionflags = """
-NORMALIZE_WHITESPACE
-ELLIPSIS
-NUMBER
-IGNORE_EXCEPTION_DETAIL"""
-filterwarnings = [
-  "ignore:.*deprecated in traitlets 4.2.*:DeprecationWarning",
-  "ignore:.*MultiIndex.*:DeprecationWarning",  # https://github.com/PlasmaPy/PlasmaPy/issues/2319
 ]
 
 [tool.coverage.report]
