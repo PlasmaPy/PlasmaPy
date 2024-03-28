@@ -338,26 +338,38 @@ def test_particle_multiplication(method, particle) -> None:
         [
             ["electron", "proton", "neutron"],
             ["lepton"],
-            {},
+            {"return_list": True},
             [True, False, False],
         ],
         [
             ["electron", "proton", "neutron"],
             [],
-            {"require": "lepton"},
+            {"require": "lepton", "return_list": True},
             [True, False, False],
         ],
         [
             ["electron", "proton", "neutron"],
             [],
-            {"exclude": "lepton"},
+            {"exclude": "lepton", "return_list": True},
             [False, True, True],
         ],
         [
             ["electron", "proton", "neutron"],
             [],
-            {"any_of": {"lepton", "charged"}},
+            {"any_of": {"lepton", "charged"}, "return_list": True},
             [True, True, False],
+        ],
+        [
+            ["electron", "proton", "neutron"],
+            [],
+            {"any_of": {"lepton", "charged"}},
+            False,
+        ],
+        [
+            ["He-4 1+", "e-"],
+            [],
+            {"any_of": {"ion", "lepton"}},
+            True,
         ],
     ],
 )

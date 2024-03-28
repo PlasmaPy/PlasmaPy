@@ -91,6 +91,7 @@ test_Particle_table = [
             'is_category(require=["boson", "fermion"])': False,
             'is_category(("element", "isotope", "ion"))': True,
             'is_category("charged")': True,
+            'is_category("lepton", return_list=True)': [False],
             "periodic_table.group": 1,
             "periodic_table.block": "s",
             "periodic_table.period": 1,
