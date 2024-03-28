@@ -5,18 +5,6 @@ import os
 from hypothesis import Verbosity, settings
 
 
-# Force MPL to use non-gui backends for testing.
-try:
-    import matplotlib as mpl
-except ImportError:
-    pass
-else:
-    import os
-
-    if "PLASMAPY_PLOT_TESTS" not in os.environ:
-        mpl.use("Agg")
-
-
 def pytest_configure(config) -> None:  # coverage: ignore
     """Adds @pytest.mark.slow annotation for marking slow tests for optional skipping."""
     config.addinivalue_line(
