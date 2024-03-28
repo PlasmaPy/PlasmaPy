@@ -126,6 +126,9 @@ write_to = "src/plasmapy/_version.py"
 [tool.pytest.ini_options]
 testpaths = ['.']
 xfail_strict = true
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+]
 doctest_optionflags = """
 NORMALIZE_WHITESPACE
 ELLIPSIS
