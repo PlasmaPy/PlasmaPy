@@ -31,7 +31,7 @@ wheels/
 *.egg
 
 # Downloaded files
-plasmapy/utils/data/downloads/
+src/plasmapy/utils/data/downloads/
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -136,7 +136,7 @@ docs/about/_authors.rst
 docs/notebooks/*.md
 
 # Version file
-plasmapy/_version.py
+_version.py
 tags
 
 # Miscellaneous files
