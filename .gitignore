@@ -29,7 +29,6 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
-src/plasmapy/_dev
 
 # Downloaded files
 src/plasmapy/utils/data/downloads/
@@ -94,7 +93,6 @@ celerybeat-schedule
 
 # dotenv
 .env
-env
 
 # virtualenv
 .venv
@@ -149,6 +147,11 @@ untitled*
 .DS_Store
 */cython_version.py
 .mypy_cache
+.dmypy.json
+dmypy.json
 node_modules
 package-lock.json
 monkeytype.sqlite3
+.pyre
+.pytype
+cython_debug
