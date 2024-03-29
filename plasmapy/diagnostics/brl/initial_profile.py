@@ -2,8 +2,12 @@
 import numpy as np
 
 
+from plasmapy.diagnostics.brl.normalizations import renormalize_probe_radius_to_larger_debye_length
+
+
 def evaluate_polynomial(coefficients, normalized_probe_potential, normalized_probe_radius, x_points, dx_ds_points, spherical=True):
-    r"""
+    r"""Create an initial profile using a polynomial in `x`.
+
     Parameters
     ----------
     coefficients : `numpy.ndarray`
@@ -17,7 +21,7 @@ def evaluate_polynomial(coefficients, normalized_probe_potential, normalized_pro
     dx_ds_points : `numpy.ndarray`
         The derivative of `x_points` with respect to `s`.
     spherical : `bool`, optional
-        Whether the polynomial is in spherical coordinates. Default is `True`.
+        Whether the probe is spherical or cylindrical. Default is `True`.
 
     Returns
     -------
@@ -71,28 +75,80 @@ def evaluate_polynomial(coefficients, normalized_probe_potential, normalized_pro
     return z, dxi_ds, eta
 
 
-def evaluate_debye_and_power_law(
-    power_law_coefficient, normalized_probe_potential, 
-):
-    pass
+def evaluate_debye_and_power_law(power_law_coefficient, normalized_probe_potential, normalized_probe_radius, effective_attracted_to_repelled_temperature, x_points, dx_ds_points, spherical=True):
+    r"""Create an initial profile using a Debye term and a power law term in `x`.
+    
+    Parameters
+    ----------
+    power_law_coefficient : `float`
+        The relative importance of the power law term compared to the Debye 
+        term. Must be between 0 and 1.
+    normalized_probe_potential : `float`
+        The normalized probe potential as defined in `~plasmapy.diagnostics.brl.normalizations.get_normalized_potential`.
+    normalized_probe_radius : `float`
+        The radius of the probe normalized to the attracted particle Debye length as defined in `~plasmapy.diagnostics.brl.normalizations.get_normalized_probe_radius`.
+    effective_attracted_to_repelled_temperature : `float`
+        The effective temperature ratio of the attracted to repelled particle
+        species as defined in `~plasmapy.diagnostics.brl.normalizations.get_effective_temperature_ratio`.
+    x_points : `numpy.ndarray`
+        The normalized inverse distance from the origin.
+    dx_ds_points : `numpy.ndarray`
+        The derivative of `x_points` with respect to `s`.
+    spherical : `bool`, optional
+        Whether the probe is spherical or cylindrical. Default is `True`.
+
+    Returns
+    -------
+    z : `numpy.ndarray`
+        This is used to calculate the potential.
+    dxi_ds, eta : `numpy.ndarray`
+        The derivative of the potential and the net charge density at each point.
+
+    """
+    if power_law_coefficient < 0 or power_law_coefficient > 1:
+        raise ValueError("The power law coefficient must be between 0 and 1.")
+
+    renormalized_probe_radius = renormalize_probe_radius_to_larger_debye_length(normalized_probe_radius, effective_attracted_to_repelled_temperature)
+    debye_coefficient = 1 - power_law_coefficient
+
+    normalized_power_law_coefficient = power_law_coefficient * normalized_probe_potential
+    normalized_debye_coefficient = debye_coefficient * normalized_probe_potential
+
+    debye_term = np.exp(renormalized_probe_radius * (1 - 1 / x_points))
+    if spherical:
+        z = normalized_debye_coefficient * x_points * debye_term + normalized_power_law_coefficient * x_points**2
+        dxi_ds = (normalized_debye_coefficient * debye_term * (1 + renormalized_probe_radius / x_points) + 2 * normalized_power_law_coefficient * x_points) * dx_ds_points
+        eta = -normalized_debye_coefficient * debye_term * x_points * min(effective_attracted_to_repelled_temperature, 1) - 2 * normalized_power_law_coefficient * x_points**4 / normalized_probe_radius**2
+    else:
+        z = normalized_debye_coefficient * debye_term * x_points**0.5 + normalized_power_law_coefficient * x_points
+        dxi_ds = (normalized_debye_coefficient * debye_term * (0.5 / x_points**0.5 + x_points**0.5 * renormalized_probe_radius / x_points**2) + normalized_power_law_coefficient) * dx_ds_points
+        eta = -(normalized_debye_coefficient * debye_term * x_points**0.5 * (x_points**2 / 4 + renormalized_probe_radius**2) + normalized_power_law_coefficient * x_points**3) / normalized_probe_radius**2
+
+    return z, dxi_ds, eta
 
 
 if __name__ == "__main__":
     coefficients = np.ones(9)
     # coefficients = np.arange(9, dtype=float)
-    normalized_probe_potential = 1
-    gamma = 1
+    power_law_coefficient = 0.1
+    normalized_probe_potential = 5
+    normalized_probe_radius = 0.4
+    effective_attracted_to_repelled_temperature = 2
     num_points = 10
-    spherical = True
+    spherical = False
 
     from plasmapy.diagnostics.brl.net_spacing import get_s_points, get_x_and_dx_ds
-    s_points = get_s_points(num_points, 0.4)
-    x_points, dx_ds_points = get_x_and_dx_ds(s_points, gamma**0.5)
+    s_points = get_s_points(num_points, 0.2)
+    x_points, dx_ds_points = get_x_and_dx_ds(s_points, normalized_probe_radius, effective_attracted_to_repelled_temperature)
 
     import matplotlib.pyplot as plt
-    z, dxi_ds, eta = evaluate_polynomial(
-        coefficients, normalized_probe_potential, gamma, num_points, 
-        x_points, dx_ds_points, spherical=spherical
+    # z, dxi_ds, eta = evaluate_polynomial(
+    #     coefficients, normalized_probe_potential, normalized_probe_radius, num_points, 
+    #     x_points, dx_ds_points, spherical=spherical
+    # )
+    z, dxi_ds, eta = evaluate_debye_and_power_law(
+        power_law_coefficient, normalized_probe_potential, normalized_probe_radius, 
+        effective_attracted_to_repelled_temperature, x_points, dx_ds_points, spherical=spherical
     )
 
     fig, ax = plt.subplots()
@@ -102,16 +158,20 @@ if __name__ == "__main__":
     ax.set_xlabel("r")
     ax.legend()
 
-    print(f"{coefficients = }")
+    def s(array):
+        return "np.array([" + ", ".join([f"{value}" for value in array]) + "])"
+    np.set_printoptions(linewidth=np.inf)
+    # print(f"{s(coefficients) = }")
+    print(f"{power_law_coefficient = }")
     print(f"{normalized_probe_potential = }")
-    print(f"{gamma = }")
+    print(f"{normalized_probe_radius = }")
     print(f"{num_points = }")
-    print(f"{x_points = }")
-    print(f"{dx_ds_points = }")
+    print(f"{s(x_points) = }")
+    print(f"{s(dx_ds_points) = }")
     print(f"{spherical = }")
-    print(f"{z = }")
-    print(f"{dxi_ds = }")
-    print(f"{eta = }")
+    print(f"{s(z) = }")
+    print(f"{s(dxi_ds) = }")
+    print(f"{s(eta) = }")
 
     plt.show()
 
