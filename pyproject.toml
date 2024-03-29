@@ -163,6 +163,8 @@ norecursedirs = [
 
 [tool.coverage.report]
 exclude_lines = [
+  "if TYPE_CHECKING",
+  "if typing.TYPE_CHECKING",
   "coverage: ignore",
   "ImportError",
   "ModuleNotFoundError",
@@ -176,6 +178,12 @@ exclude_lines = [
 ]
 
 [tool.coverage.run]
+
+# Enable branch coverage later! Need to find out why there are changes in code coverage first...
+# branch = true
+
+# relative_files = true
+
 omit = [
   "ci-helpers/*",
   "tests/*",
