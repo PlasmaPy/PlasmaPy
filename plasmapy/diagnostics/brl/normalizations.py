@@ -149,33 +149,12 @@ def get_normalized_probe_radius(probe_radius: u.m, attracted_particle_temperatur
     normalized_probe_radius = np.abs(attracted_particle_charge_number) * (probe_radius / debye_length).to(u.dimensionless_unscaled).value
     return normalized_probe_radius
 
-def renormalize_probe_radius_to_larger_debye_length(normalized_probe_radius, effective_attracted_to_repelled_temperature_ratio, charge_ratio=-1.0):
+def renormalize_probe_radius_to_larger_debye_length(normalized_probe_radius, effective_attracted_to_repelled_temperature_ratio):
     r"""Renormalize the normalized probe radius to the larger Debye length.
     
     Since there are two species in the plasma, their Debye lengths may be 
     different. This function takes the probe radius normalized to the attracted 
     particles debye length and renormalizes it to the larger Debye length.
-
-    Laframboise refers to the ``ratio of probe radius to larger debye length'', called 
-    `ROGA`, yet the code in the thesis uses
-
-    .. math::
-    
-       \texttt{ROGA} = \frac{R_p}{\lambda_D_+} \sqrt{\min\left(-\frac{T_+ Z_-}{T_- Z_+}, 1\right)}
-
-    If we assume that :math:`-\frac{T_+ Z_-}{T_- Z_+} < 1` then
-
-    .. math::
-
-        \texttt{ROGA} &= \frac{R_p}{\lambda_D_+} \sqrt{-\frac{T_+ Z_-}{T_- Z_+}} \\
-        &= R_p \sqrt{\frac{Z_+^2 e^2 N_{\inf +}}{\eps k T_+}} \sqrt{-\frac{T_+ Z_-}{T_- Z_+}} \\
-        &= R_p \sqrt{\frac{-Z_+ Z_- e^2 N_{\inf +}}{\eps k T_-}}
-
-    If we assume :math:`Z_+ = -Z_-` then the code actually uses the ``ratio of 
-    probe radius to attracted particle debye length'' but if 
-    :math:`Z_+ \neq -Z_-` then Laframboise is incorrect. Since Laframboise only 
-    has solutions where :math:`Z_+ = -Z_-`, we'll assume that this is actually 
-    an issue with the thesis code and correct for it in ours.
 
     Parameters
     ----------
@@ -184,18 +163,12 @@ def renormalize_probe_radius_to_larger_debye_length(normalized_probe_radius, eff
     effective_attracted_to_repelled_temperature_ratio : `float`
         The effective temperature ratio of the attracted to repelled particle 
         species as defined in `~plasmapy.diagnostics.brl.normalizations.get_effective_temperature_ratio`.
-    charge_ratio : `float`, optional
-        The ratio of the attracted particles signed charge to the repelled 
-        particles signed charge, :math:`Z_+ / Z_-`. Default is `-1.0`.
 
     Returns
     -------
     renormalized_probe_radius : `float`
         The probe radius renormalized to the larger Debye length.
     """
-    if charge_ratio >= 0:
-        raise ValueError("The charge ratio must be negative.")
-
     return normalized_probe_radius * np.sqrt(
-        min(effective_attracted_to_repelled_temperature_ratio / -charge_ratio, 1)
+        min(effective_attracted_to_repelled_temperature_ratio, 1)
     )
