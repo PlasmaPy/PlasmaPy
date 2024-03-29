@@ -168,6 +168,7 @@ exclude_lines = [
   "coverage: ignore",
   "ImportError",
   "ModuleNotFoundError",
+  "raise NotImplementedError",
   "@vectorize",
   "@numba.vectorize",
   "@numba.jit",
@@ -185,6 +186,7 @@ omit = [
   "src/plasmapy/utils/calculator/*",
   "src/plasmapy/*version.py",
   "src/plasmapy/_dev/*",
+  "src/plasmapy/dispersion/dispersionfunction.py",  # deprecated
 ]
 
 [tool.build_docs]
