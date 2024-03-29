@@ -159,7 +159,6 @@ def get_x_and_dx_ds(
     effective_attracted_to_repelled_temperature_ratio,
     normalized_probe_potential=None,
     zero_T_repelled_particles=False,
-    charge_ratio=-1,
 ):
     r"""The values of `x` and `dx/ds` that correspond to the `s_points` for a probe of any radius.
 
@@ -179,9 +178,6 @@ def get_x_and_dx_ds(
         Default is `None`.
     zero_T_repelled_particles : `bool`
         Whether the repelled particles have zero temperature. Default is `False`.
-    charge_ratio : `float`
-        The ratio of the attracted particles signed charge to the repelled 
-        particles signed charge, :math:`Z_+ / Z_-`. Default is `-1`.
 
     Returns
     -------
@@ -196,7 +192,7 @@ def get_x_and_dx_ds(
     """
     # Normalized the probe radius to the larger Debye length.
     renormalized_probe_radius = renormalize_probe_radius_to_larger_debye_length(
-        normalized_probe_radius, effective_attracted_to_repelled_temperature_ratio, charge_ratio
+        normalized_probe_radius, effective_attracted_to_repelled_temperature_ratio
     )
 
     if (renormalized_probe_radius > 2.6 or zero_T_repelled_particles) and np.max(
