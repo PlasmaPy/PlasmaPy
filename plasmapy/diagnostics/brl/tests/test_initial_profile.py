@@ -16,7 +16,7 @@ from plasmapy.diagnostics.brl.net_spacing import get_s_points, get_x_and_dx_ds
         "dx_ds_points",
         "spherical",
         "expected_z",
-        "expected_dxi_ds",
+        "expected_dchi_ds",
         "expected_eta",
     ),
     zip(
@@ -66,19 +66,19 @@ def test_evaluate_polynomial(
     dx_ds_points,
     spherical,
     expected_z,
-    expected_dxi_ds,
+    expected_dchi_ds,
     expected_eta,
 ):
-    z, dxi_ds, eta = initial_profile.evaluate_polynomial(
+    z, dchi_ds, eta = initial_profile.evaluate_polynomial(
         coefficients, normalized_probe_potential, normalized_probe_radius, x_points, dx_ds_points, spherical=spherical
     )
 
     assert np.isclose(z[0], normalized_probe_potential)
     assert np.allclose(z, expected_z)
-    assert np.allclose(dxi_ds, expected_dxi_ds)
+    assert np.allclose(dchi_ds, expected_dchi_ds)
     assert np.allclose(eta, expected_eta)
     assert z.size == x_points.size
-    assert dxi_ds.size == x_points.size
+    assert dchi_ds.size == x_points.size
     assert eta.size == x_points.size
 
 
@@ -92,7 +92,7 @@ def test_evaluate_polynomial(
         "dx_ds_points",
         "spherical",
         "expected_z",
-        "expected_dxi_ds",
+        "expected_dchi_ds",
         "expected_eta",
     ),
     (
@@ -131,10 +131,10 @@ def test_evaluate_debye_and_power_law(
     dx_ds_points,
     spherical,
     expected_z,
-    expected_dxi_ds,
+    expected_dchi_ds,
     expected_eta,
 ):
-    z, dxi_ds, eta = initial_profile.evaluate_debye_and_power_law(
+    z, dchi_ds, eta = initial_profile.evaluate_debye_and_power_law(
         power_law_coefficient,
         normalized_probe_potential,
         normalized_probe_radius,
@@ -145,8 +145,8 @@ def test_evaluate_debye_and_power_law(
     )
 
     assert np.allclose(z, expected_z)
-    assert np.allclose(dxi_ds, expected_dxi_ds)
+    assert np.allclose(dchi_ds, expected_dchi_ds)
     assert np.allclose(eta, expected_eta)
     assert z.size == x_points.size
-    assert dxi_ds.size == x_points.size
+    assert dchi_ds.size == x_points.size
     assert eta.size == x_points.size

@@ -27,7 +27,7 @@ def evaluate_polynomial(coefficients, normalized_probe_potential, normalized_pro
     -------
     z : `numpy.ndarray`
         This is used to calculate the potential.
-    dxi_ds, eta : `numpy.ndarray`
+    dchi_ds, eta : `numpy.ndarray`
         The derivative of the potential and the net charge density at each point.
 
     Notes
@@ -46,12 +46,12 @@ def evaluate_polynomial(coefficients, normalized_probe_potential, normalized_pro
         N &= \sum_{i=p_i}^{p_f} \frac{c_i}{\chi_p} \\
         \overline{c}_i &= \frac{c_i}{N}.
 
-    Then we can calculate :math:`z(s)`, :math:`\frac{d\xi}{ds}`, and :math:`\eta` as
+    Then we can calculate :math:`z(s)`, :math:`\frac{d\chi}{ds}`, and :math:`\eta` as
 
     .. math::
 
         z(s) &= \sum_{i=p_i}^{p_f} \overline{c}_i x(s)^i, \\
-        \frac{d\xi}{ds} &= \sum_{i=p_i}^{p_f} i \overline{c}_i x(s)^{i-1} \frac{dx}{ds}, \\
+        \frac{d\chi}{ds} &= \sum_{i=p_i}^{p_f} i \overline{c}_i x(s)^{i-1} \frac{dx}{ds}, \\
         \eta &= \frac{-1}{R_p^2} \sum_{i=p_i}^{p_f} a_i i \overline{c}_i x(s)^{i + 2}.
 
     :math:`a_i` is :math:`i - 1` if `spherical` and :math:`i` if not.
@@ -65,14 +65,14 @@ def evaluate_polynomial(coefficients, normalized_probe_potential, normalized_pro
     new_coefficients[min_order - 1:max_order] *= normalization_inverse
 
     z = np.zeros_like(x_points)
-    dxi_ds = np.zeros_like(x_points)
+    dchi_ds = np.zeros_like(x_points)
     eta = np.zeros_like(x_points)
     for power in range(min_order, max_order + 1):
         z += new_coefficients[power - 1] * x_points**power
-        dxi_ds += power * new_coefficients[power - 1] * x_points**(power - 1) * dx_ds_points
+        dchi_ds += power * new_coefficients[power - 1] * x_points**(power - 1) * dx_ds_points
         eta -= power * (power - spherical) * new_coefficients[power - 1] * x_points**(power + 2) / normalized_probe_radius**2
 
-    return z, dxi_ds, eta
+    return z, dchi_ds, eta
 
 
 def evaluate_debye_and_power_law(power_law_coefficient, normalized_probe_potential, normalized_probe_radius, effective_attracted_to_repelled_temperature, x_points, dx_ds_points, spherical=True):
@@ -101,7 +101,7 @@ def evaluate_debye_and_power_law(power_law_coefficient, normalized_probe_potenti
     -------
     z : `numpy.ndarray`
         This is used to calculate the potential.
-    dxi_ds, eta : `numpy.ndarray`
+    dchi_ds, eta : `numpy.ndarray`
         The derivative of the potential and the net charge density at each point.
 
     """
@@ -117,14 +117,20 @@ def evaluate_debye_and_power_law(power_law_coefficient, normalized_probe_potenti
     debye_term = np.exp(renormalized_probe_radius * (1 - 1 / x_points))
     if spherical:
         z = normalized_debye_coefficient * x_points * debye_term + normalized_power_law_coefficient * x_points**2
-        dxi_ds = (normalized_debye_coefficient * debye_term * (1 + renormalized_probe_radius / x_points) + 2 * normalized_power_law_coefficient * x_points) * dx_ds_points
+        dchi_ds = (normalized_debye_coefficient * debye_term * (1 + renormalized_probe_radius / x_points) + 2 * normalized_power_law_coefficient * x_points) * dx_ds_points
         eta = -normalized_debye_coefficient * debye_term * x_points * min(effective_attracted_to_repelled_temperature, 1) - 2 * normalized_power_law_coefficient * x_points**4 / normalized_probe_radius**2
     else:
         z = normalized_debye_coefficient * debye_term * x_points**0.5 + normalized_power_law_coefficient * x_points
-        dxi_ds = (normalized_debye_coefficient * debye_term * (0.5 / x_points**0.5 + x_points**0.5 * renormalized_probe_radius / x_points**2) + normalized_power_law_coefficient) * dx_ds_points
+        dchi_ds = (normalized_debye_coefficient * debye_term * (0.5 / x_points**0.5 + x_points**0.5 * renormalized_probe_radius / x_points**2) + normalized_power_law_coefficient) * dx_ds_points
         eta = -(normalized_debye_coefficient * debye_term * x_points**0.5 * (x_points**2 / 4 + renormalized_probe_radius**2) + normalized_power_law_coefficient * x_points**3) / normalized_probe_radius**2
 
-    return z, dxi_ds, eta
+    return z, dchi_ds, eta
+
+
+def enforce_boundary_condition(z, dchi_ds, x_points, dx_ds_points, spherical=True, zero_potential_boundary=False):
+    r"""Calculate 
+    """
+    pass
 
 
 if __name__ == "__main__":
@@ -142,18 +148,18 @@ if __name__ == "__main__":
     x_points, dx_ds_points = get_x_and_dx_ds(s_points, normalized_probe_radius, effective_attracted_to_repelled_temperature)
 
     import matplotlib.pyplot as plt
-    # z, dxi_ds, eta = evaluate_polynomial(
+    # z, dchi_ds, eta = evaluate_polynomial(
     #     coefficients, normalized_probe_potential, normalized_probe_radius, num_points, 
     #     x_points, dx_ds_points, spherical=spherical
     # )
-    z, dxi_ds, eta = evaluate_debye_and_power_law(
+    z, dchi_ds, eta = evaluate_debye_and_power_law(
         power_law_coefficient, normalized_probe_potential, normalized_probe_radius, 
         effective_attracted_to_repelled_temperature, x_points, dx_ds_points, spherical=spherical
     )
 
     fig, ax = plt.subplots()
     ax.plot(1 / x_points, z, label="Z", marker="o")
-    ax.plot(1 / x_points, dxi_ds, label="Potential derivative", marker="o")
+    ax.plot(1 / x_points, dchi_ds, label="Potential derivative", marker="o")
     ax.plot(1 / x_points, eta, label="Net charge density", marker="o")
     ax.set_xlabel("r")
     ax.legend()
@@ -170,7 +176,7 @@ if __name__ == "__main__":
     print(f"{s(dx_ds_points) = }")
     print(f"{spherical = }")
     print(f"{s(z) = }")
-    print(f"{s(dxi_ds) = }")
+    print(f"{s(dchi_ds) = }")
     print(f"{s(eta) = }")
 
     plt.show()

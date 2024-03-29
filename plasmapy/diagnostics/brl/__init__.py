@@ -27,7 +27,7 @@ Meaning of variables from Laframboise (1966):
 |               | equation (5.1)).                                            |                 |                   |
 +---------------+-------------------------------------------------------------+-----------------+-------------------+
 | `XI`          | Array of the normalized potential,                          |                 | Global            |
-|               | :math:`\xi(r) = \frac{Z_+ e \phi(r)}{k T_+}` (I think).     |                 |                   |
+|               | :math:`\chi(r) = \frac{Z_+ e \phi(r)}{k T_+}` (I think).    |                 |                   |
 +---------------+-------------------------------------------------------------+-----------------+-------------------+
 | `DXIDS`       | Array of the derivative of `XI` with respect to `S`.        |                 | Global            |
 +---------------+-------------------------------------------------------------+-----------------+-------------------+
@@ -48,10 +48,10 @@ Meaning of variables from Laframboise (1966):
 |               | (`RHO`:math:`= \rho / \rho_\infty_+`).                      |                 |                   |
 +---------------+-------------------------------------------------------------+-----------------+-------------------+
 | `OMGAG`       | Normalized squared angular momentum of the locus of extrema,|                 | Global            |
-|               | `OMGAG`:math:`= \Omega_G = -\frac{1}{2x} \frac{d\xi}{dx}`   | (9.8)           |                   |
+|               | `OMGAG`:math:`= \Omega_G = -\frac{1}{2x} \frac{d\chi}{dx}`  | (9.8)           |                   |
 +---------------+-------------------------------------------------------------+-----------------+-------------------+
 | `BETAG`       | Normalized energy of the locus of extrema,                  |                 | Global            |
-|               | `BETAG`:math:`= \beta_G = \xi - \frac{x}{2} \frac{d\xi}{dx}`| (9.8)           |                   |
+|               | `BETAG`:math:`= \beta_G = \chi - \frac{x}{2} \frac{d\chi}{dx}`| (9.8)           |                   |
 +---------------+-------------------------------------------------------------+-----------------+-------------------+
 | `P`           | Float value of `S` at outermost point (i.e. `s[-1]`).       |                 | Program 1         |
 +---------------+-------------------------------------------------------------+-----------------+-------------------+
