@@ -29,6 +29,7 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+src/plasmapy/_dev
 
 # Downloaded files
 src/plasmapy/utils/data/downloads/
@@ -93,6 +94,7 @@ celerybeat-schedule
 
 # dotenv
 .env
+env
 
 # virtualenv
 .venv
