@@ -31,14 +31,13 @@ def downloader_validated(tmpdir_factory) -> Downloader:
     return Downloader(directory=path, api_token=api_token)
 
 
+@pytest.mark.skipif(
+    not in_ci(), reason="Tests only use authenticated API calls when run in CI."
+)
 def test_api_token(downloader_validated: Downloader) -> None:
     """
     Test whether the API connection is valid
     """
-    # Skip the test if running locally
-    if not in_ci():
-        return None
-
     limit, used = downloader_validated._api_usage
     # API limit is 5000/hr for auth user accounts, 60/hr without auth
     assert limit >= 5000
