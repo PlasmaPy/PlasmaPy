@@ -11,6 +11,9 @@ on:
   pull_request:
   workflow_dispatch:
 
+env:
+  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 jobs:
 
   tests:
