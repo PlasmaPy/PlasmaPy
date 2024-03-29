@@ -179,8 +179,8 @@ exclude_lines = [
 ]
 
 [tool.coverage.run]
-#branch = true
-#relative_files = true
+branch = true
+relative_files = true
 omit = [
   "ci-helpers/*",
   "src/plasmapy/utils/calculator/*",
