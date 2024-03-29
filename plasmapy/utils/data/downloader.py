@@ -1,7 +1,6 @@
 """
 Contains functionality for downloading files from a URL. Intended for
 downloading files from |PlasmaPy's data repository|.
-
 """
 
 import contextlib
@@ -331,12 +330,12 @@ class Downloader:
         Returns
         -------
         filepath : Path
-            Path to file
+            Path to file.
 
         Raises
         ------
         ValueError
-            If the resource cannot be found locally or on the repository
+            If the resource cannot be found locally or on the repository.
 
         """
         filepath = self._filepath(filename)
@@ -411,7 +410,7 @@ class Downloader:
         Parameters
         ----------
         filename : str
-            The name of the file in the PlasmaPy-data repository.
+            The name of the file in the |PlasmaPy's data repository|.
 
         Returns
         -------

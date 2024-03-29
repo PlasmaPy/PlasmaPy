@@ -8,25 +8,22 @@ import pytest
 from plasmapy.utils.data.downloader import Downloader
 
 
-def in_ci():
+def in_ci() -> bool:
     """
     Determine whether the test is being run on CI by checking for a variable
     always set by GitHub
     """
-    try:
-        return os.environ["GITHUB_ACTIONS"]
-    except KeyError:
-        return False
+    return "GITHUB_ACTIONS" in os.environ
 
 
 @pytest.fixture()
-def downloader_validated(tmp_path):
+def downloader_validated(tmp_path) -> Downloader:
     api_token = os.environ["GH_TOKEN"] if in_ci() else None
 
     return Downloader(directory=tmp_path, api_token=api_token)
 
 
-def test_api_token(downloader_validated):
+def test_api_token(downloader_validated: Downloader) -> None:
     """
     Test whether the API connection is valid
     """
@@ -40,7 +37,7 @@ def test_api_token(downloader_validated):
 
 
 @pytest.fixture()
-def downloader_unvalidated(tmp_path):
+def downloader_unvalidated(tmp_path) -> Downloader:
     return Downloader(directory=tmp_path, validate=False)
 
 
@@ -53,7 +50,7 @@ test_urls = [
 
 
 @pytest.mark.parametrize(("url", "expected"), test_urls)
-def test_http_request(downloader_validated, url, expected):
+def test_http_request(downloader_validated: Downloader, url: str, expected | None: Exception):
     """
     Test exceptions from http downloader
     """
@@ -64,7 +61,7 @@ def test_http_request(downloader_validated, url, expected):
             downloader_validated._http_request(url)
 
 
-def test_blob_file(downloader_validated):
+def test_blob_file(downloader_validated: Downloader) -> None:
     """
     Test the read and write blob file routines
     """
@@ -119,13 +116,13 @@ test_files = [
     "downloader", ["downloader_validated", "downloader_unvalidated"]
 )
 @pytest.mark.parametrize(("filename", "expected"), test_files)
-def test_get_file(filename, expected, downloader, request) -> None:
+def test_get_file(filename: str, expected: Exception | None, downloader: Downloader, request) -> None:
     """Test the get_file function."""
 
     # Get the downloader fixture based on the string name provided
     dl = request.getfixturevalue(downloader)
 
-    # Scilence warnings from files not found on the repository
+    # Silence warnings from files not found on the repository
     warnings.filterwarnings("ignore", category=UserWarning)
 
     filepath = dl._filepath(filename)
@@ -144,7 +141,7 @@ def test_get_file(filename, expected, downloader, request) -> None:
 @pytest.mark.parametrize(
     "downloader", ["downloader_validated", "downloader_unvalidated"]
 )
-def test_get_local_only_fle(tmp_path, downloader, request):
+def test_get_local_only_fle(tmp_path, downloader: Downloader, request):
     """
     Test various file retrieval modes
     """
@@ -209,7 +206,7 @@ def test_at_most_one_api_call(downloader_validated) -> None:
     assert used1 <= used0 + 1
 
 
-def test_creating_another_downloader(downloader_validated):
+def test_creating_another_downloader(downloader_validated) -> None:
     """
     Test creating a second downloader in the same directory.
     This will test reading in the existing blob file.
@@ -223,7 +220,7 @@ def test_creating_another_downloader(downloader_validated):
     assert dl2.get_file(filename) == filepath
 
 
-def test_ensure_update_blob_dict_runs(downloader_validated):
+def test_ensure_update_blob_dict_runs(downloader_validated: Downloader) -> None:
     """
     Ensure the _update_blob_dict method gets run if it hasn't already.
     """
