@@ -142,10 +142,6 @@ def test_multiple_grids() -> None:
     solution??
     """
 
-    raise RuntimeError(
-        "Intentional failure to make sure that slow tests are being run."
-    )
-
     grid1 = _test_grid("constant_bz", L=3 * u.cm, num=50, B0=0.7 * u.T)
     grid2 = _test_grid("electrostatic_gaussian_sphere", L=1 * u.mm, num=50)
     grids = [grid1, grid2]
