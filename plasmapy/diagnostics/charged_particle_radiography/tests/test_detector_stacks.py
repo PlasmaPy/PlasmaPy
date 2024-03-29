@@ -1,5 +1,9 @@
 """
 Tests for proton radiography functions
+
+Note
+`downloader_unvalidated` is a fixture defined in
+utils/data/tests/test_downloader.py
 """
 
 import astropy.units as u
@@ -14,13 +18,17 @@ from plasmapy.utils.data.downloader import Downloader
 
 
 @pytest.fixture()
-def downloader(tmp_path):
+def downloader(tmpdir_factory):
+    path = tmpdir_factory.mktemp("data")
     # Turn off validation so API calls aren't used
-    return Downloader(directory=tmp_path, validate=False)
+    return Downloader(directory=path, validate=False)
 
 
 @pytest.fixture()
 def hdv2_stack(downloader):
+    """
+    A Stack object representing a stack of HDV2 radiochromic film.
+    """
     # Fetch stopping power data files from data module
     tissue_path = downloader.get_file("NIST_PSTAR_tissue_equivalent.txt")
     aluminum_path = downloader.get_file("NIST_PSTAR_aluminum.txt")

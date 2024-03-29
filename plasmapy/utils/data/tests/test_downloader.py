@@ -16,11 +16,19 @@ def in_ci() -> bool:
     return "GITHUB_ACTIONS" in os.environ
 
 
-@pytest.fixture()
-def downloader_validated(tmp_path) -> Downloader:
+@pytest.fixture(scope="module")
+def downloader_validated(tmpdir_factory) -> Downloader:
     api_token = os.environ["GH_TOKEN"] if in_ci() else None
 
-    return Downloader(directory=tmp_path, api_token=api_token)
+    # tmpdir_factory creates a session-scoped temporary directory
+    # while the tmp_path variable is function scoped
+    #
+    # Making this a session-scope directory means that other tests
+    # initialized with it should be able to access files if they are
+    # already downloaded by another test
+    path = tmpdir_factory.mktemp("data")
+
+    return Downloader(directory=path, api_token=api_token)
 
 
 def test_api_token(downloader_validated: Downloader) -> None:
@@ -36,9 +44,11 @@ def test_api_token(downloader_validated: Downloader) -> None:
     assert limit >= 5000
 
 
-@pytest.fixture()
-def downloader_unvalidated(tmp_path) -> Downloader:
-    return Downloader(directory=tmp_path, validate=False)
+@pytest.fixture(scope="module")
+def downloader_unvalidated(tmpdir_factory) -> Downloader:
+    path = tmpdir_factory.mktemp("unvalidated")
+
+    return Downloader(directory=path, validate=False)
 
 
 test_urls = [
@@ -50,7 +60,9 @@ test_urls = [
 
 
 @pytest.mark.parametrize(("url", "expected"), test_urls)
-def test_http_request(downloader_validated: Downloader, url: str, expected | None: Exception):
+def test_http_request(
+    downloader_validated: Downloader, url: str, expected: None | Exception
+):
     """
     Test exceptions from http downloader
     """
@@ -116,7 +128,9 @@ test_files = [
     "downloader", ["downloader_validated", "downloader_unvalidated"]
 )
 @pytest.mark.parametrize(("filename", "expected"), test_files)
-def test_get_file(filename: str, expected: Exception | None, downloader: Downloader, request) -> None:
+def test_get_file(
+    filename: str, expected: Exception | None, downloader: Downloader, request
+) -> None:
     """Test the get_file function."""
 
     # Get the downloader fixture based on the string name provided
@@ -141,13 +155,16 @@ def test_get_file(filename: str, expected: Exception | None, downloader: Downloa
 @pytest.mark.parametrize(
     "downloader", ["downloader_validated", "downloader_unvalidated"]
 )
-def test_get_local_only_fle(tmp_path, downloader: Downloader, request):
+def test_get_local_only_fle(downloader: Downloader, request):
     """
     Test various file retrieval modes
     """
 
     # Get the downloader fixture based on the string name provided
     dl = request.getfixturevalue(downloader)
+
+    # Find the folder used to save files for this downloader
+    tmp_path = dl._download_directory
 
     # Silence warnings from files not found on the repository
     warnings.filterwarnings("ignore", category=UserWarning)
