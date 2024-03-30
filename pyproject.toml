@@ -179,6 +179,8 @@ exclude_lines = [
 ]
 
 [tool.coverage.run]
+branch = true
+relative_files = true
 omit = [
   "ci-helpers/*",
   "*/tests/*",
