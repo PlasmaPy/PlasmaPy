@@ -284,7 +284,7 @@ extend-select = [
   "FIX", # flake8-fixme
   "FLY", # flynt
   "G", # flake8-logging-format
-#  "I", # isort
+  "I", # isort
   "ICN", # flake8-import-conventions
   "INP", # flake8-no-pep420
   "INT", # flake8-gettext
@@ -423,6 +423,9 @@ ban-relative-imports = "all"
 "typing.Set".msg = "Deprecated alias. Change to set"
 "typing.Tuple".msg = "Deprecated alias. Change to tuple"
 "typing.Type".msg = "Deprecated alias. Change to type"
+
+[tool.ruff.lint.isort]
+known-local-folder = ["src/plasmapy"]
 
 [tool.ruff.lint.mccabe]
 max-complexity = 10
