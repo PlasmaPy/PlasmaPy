@@ -132,7 +132,8 @@ markers = [
 doctest_optionflags = """
 NORMALIZE_WHITESPACE
 ELLIPSIS
-NUMBER"""
+NUMBER
+IGNORE_EXCEPTION_DETAIL"""
 filterwarnings = [
   "ignore:.*deprecated in traitlets 4.2.*:DeprecationWarning",
   "ignore:.*MultiIndex.*:DeprecationWarning",  # https://github.com/PlasmaPy/PlasmaPy/issues/2319
