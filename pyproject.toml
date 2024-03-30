@@ -141,9 +141,12 @@ filterwarnings = [
 
 [tool.coverage.report]
 exclude_lines = [
+  "if TYPE_CHECKING",
+  "if typing.TYPE_CHECKING",
   "coverage: ignore",
   "ImportError",
   "ModuleNotFoundError",
+  "raise NotImplementedError",
   "@vectorize",
   "@numba.vectorize",
   "@numba.jit",
