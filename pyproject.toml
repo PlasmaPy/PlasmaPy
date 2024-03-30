@@ -425,7 +425,7 @@ ban-relative-imports = "all"
 "typing.Type".msg = "Deprecated alias. Change to type"
 
 [tool.ruff.lint.isort]
-known-local-folder = ["src/plasmapy"]
+known-first-party = ["plasmapy"]
 
 [tool.ruff.lint.mccabe]
 max-complexity = 10
