@@ -20,7 +20,7 @@ Summary
 * Tests are either functions beginning with ``test_`` or classes
   beginning with ``Test``.
 
-* Here is an example of a minimal ``pytest`` test that uses an
+* Here is an example of a minimal `pytest` test that uses an
   :py:`assert` statement:
 
   .. code-block:: python
@@ -50,7 +50,7 @@ Summary
     These commands will perform an |editable installation| of your
     local clone of PlasmaPy.
 
-* Run ``pytest`` in the command line in order to run tests in that
+* Run `pytest` in the command line in order to run tests in that
   directory and its subdirectories.
 
 Introduction
@@ -104,6 +104,8 @@ Writing Tests
 Every code contribution that adds new functionality requires both tests
 and documentation in order to be merged. Here we describe the process of
 write a test.
+
+.. _locating-tests:
 
 Locating tests
 --------------
@@ -421,13 +423,15 @@ balanced with each other rather than absolute principles.
   increases the probability that we will lose track of what we are
   doing and slows down progress.
 
-  Decorate unavoidably slow tests with :py:`@pytest.mark.slow`:
+  .. tip::
 
-  .. code-block:: python
+     Decorate tests with :py:`@pytest.mark.slow` if they take ≳0.3 seconds.
 
-     @pytest.mark.slow
-     def test_calculating_primes() -> None:
-         calculate_all_primes()
+     .. code-block:: python
+
+        @pytest.mark.slow
+        def test_calculate_all_primes() -> None:
+            calculate_all_primes()
 
 * **Write tests that are easy to understand and change.** To fully
   understand a test failure or modify existing functionality, a
@@ -665,7 +669,7 @@ This command will run all of the tests found within your current
 directory and all of its subdirectories. Because it takes time to run
 PlasmaPy's tests, it is usually most convenient to specify that only a
 subset of the tests be run. To run the tests contained within a
-particular file or directory, include its name after ``pytest``. If you
+particular file or directory, include its name after `pytest`. If you
 are in the directory :file:`plasmapy/particles/tests/`, then the tests
 in in :file:`test_atomic.py` can be run with:
 
@@ -782,7 +786,7 @@ Generating coverage reports with pytest
 
 Code coverage reports may be generated on your local computer to show
 which lines of code are covered by tests and which are not. To generate
-an HTML report, use the ``--cov`` flag for ``pytest``:
+an HTML report, use the ``--cov`` flag for `pytest`:
 
 .. code-block:: shell
 
