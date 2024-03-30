@@ -126,6 +126,9 @@ write_to = "plasmapy/_version.py"
 testpaths = ['plasmapy']
 norecursedirs = ['build', 'docs', 'plasmapy[\/]_dev']
 xfail_strict = true
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+]
 doctest_optionflags = """
 NORMALIZE_WHITESPACE
 ELLIPSIS
