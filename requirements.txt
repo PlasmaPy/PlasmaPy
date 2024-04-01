@@ -12,8 +12,8 @@ arrow==1.3.0
     # via isoduration
 asteval==0.9.32
     # via lmfit
-astropy==6.0.0
-astropy-iers-data==0.2024.3.25.0.29.50
+astropy==6.0.1
+astropy-iers-data==0.2024.4.1.0.33.14
     # via astropy
 asttokens==2.4.1
     # via stack-data
@@ -89,7 +89,7 @@ fqdn==1.5.1
 future==1.0.0
     # via uncertainties
 h5py==3.10.0
-hypothesis==6.99.13
+hypothesis==6.100.0
 identify==2.5.35
     # via pre-commit
 idna==3.6
@@ -103,8 +103,8 @@ incremental==22.10.0
     # via towncrier
 iniconfig==2.0.0
     # via pytest
-ipykernel==6.29.3
-ipython==8.22.2
+ipykernel==6.29.4
+ipython==8.23.0
     # via
     #   ipykernel
     #   ipywidgets
@@ -119,7 +119,6 @@ jinja2==3.1.3
     #   jupyterlab-server
     #   nbconvert
     #   nbsphinx
-    #   numpydoc
     #   sphinx
     #   towncrier
 json5==0.9.24
@@ -214,7 +213,7 @@ numpy==1.26.4
     #   pyerfa
     #   scipy
     #   xarray
-numpydoc==1.6.0
+numpydoc==1.7.0
 overrides==7.7.0
     # via jupyter-server
 packaging==24.0
@@ -272,7 +271,7 @@ pybtex==0.24.0
     #   sphinxcontrib-bibtex
 pybtex-docutils==1.0.3
     # via sphinxcontrib-bibtex
-pycparser==2.21
+pycparser==2.22
     # via cffi
 pyerfa==2.0.1.1
     # via astropy
@@ -458,7 +457,7 @@ uri-template==1.3.0
     # via jsonschema
 urllib3==2.2.1
     # via requests
-uv==0.1.24
+uv==0.1.26
     # via tox-uv
 virtualenv==20.25.1
     # via
@@ -480,4 +479,4 @@ websockets==12.0
 widgetsnbextension==4.0.10
     # via ipywidgets
 wrapt==1.16.0
-xarray==2024.2.0
+xarray==2024.3.0

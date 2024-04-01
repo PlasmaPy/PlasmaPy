@@ -69,7 +69,7 @@ executing==2.0.1
     # via stack-data
 fastjsonschema==2.19.1
     # via nbformat
-filelock==3.13.1
+filelock==3.13.3
     # via
     #   tox
     #   virtualenv
@@ -82,7 +82,7 @@ future==1.0.0
 h11==0.14.0
     # via httpcore
 h5py==3.7.0
-httpcore==1.0.4
+httpcore==1.0.5
     # via httpx
 httpx==0.27.0
     # via jupyterlab
@@ -101,7 +101,7 @@ ipykernel==6.8.0
     # via
     #   ipywidgets
     #   jupyterlab
-ipython==8.22.2
+ipython==8.23.0
     # via
     #   ipykernel
     #   ipywidgets
@@ -270,7 +270,7 @@ ptyprocess==0.7.0
     #   terminado
 pure-eval==0.2.2
     # via stack-data
-pycparser==2.21
+pycparser==2.22
     # via cffi
 pyerfa==2.0.1.1
     # via astropy
@@ -399,13 +399,14 @@ typing-extensions==4.10.0
     # via
     #   anyio
     #   async-lru
+    #   ipython
 uncertainties==3.1.7
     # via lmfit
 uri-template==1.3.0
     # via jsonschema
 urllib3==1.26.18
     # via requests
-uv==0.1.24
+uv==0.1.26
     # via tox-uv
 virtualenv==20.25.1
     # via
