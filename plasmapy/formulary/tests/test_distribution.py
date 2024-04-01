@@ -1059,12 +1059,6 @@ class Test_kappa_velocity_1D:
     # TODO: Need to add a test to see if the kappa distribution goes to a
     # Maxwellian in the limit of large κ
 
-    @pytest.mark.skip(
-        reason=(
-            "This test is extremely slow because of the 3D integral, so "
-            "it should only be run when updating distribution.py."
-        )
-    )
     def test_norm(self) -> None:
         """
         Tests whether distribution function is normalized, and integrates to 1.
@@ -1308,6 +1302,12 @@ class Test_kappa_velocity_3D:
     #
     #        return
 
+    @pytest.mark.skip(
+        reason=(
+            "This test is extremely slow because of the 3D integral, so "
+            "it should only be run when updating distribution.py."
+        )
+    )
     def test_norm(self) -> None:
         """
         Tests whether distribution function is normalized, and integrates to 1.
