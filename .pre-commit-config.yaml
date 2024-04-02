@@ -58,6 +58,9 @@ repos:
   hooks:
   - id: search-and-replace
     exclude: changelog/.*|docs/changelog/.*|.sourcery.yaml|docs/_global_substitutions.py|CHANGELOG.rst
+    language: ruby
+    additional_dependencies:
+    - rainbow
 
 - repo: https://github.com/pre-commit/pygrep-hooks
   rev: v1.10.0
