@@ -50,13 +50,10 @@ repos:
     exclude: .github/labeler.yml|.pre-commit-search-and-replace.yaml
 
 - repo: https://github.com/mattlqx/pre-commit-search-and-replace
-  rev: v1.1.0
+  rev: v1.0.5
   hooks:
   - id: search-and-replace
     exclude: changelog/.*|docs/changelog/.*|.sourcery.yaml|docs/_global_substitutions.py|CHANGELOG.rst
-#    language: ruby
-#    additional_dependencies:
-#    - rainbow
 
 - repo: https://github.com/pre-commit/pygrep-hooks
   rev: v1.10.0
