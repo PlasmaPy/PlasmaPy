@@ -2,6 +2,10 @@ ci:
   autofix_prs: false
   autoupdate_schedule: monthly
 
+# Specify the default version of Ruby in case it is not installed
+default_language_version:
+  ruby: 2.7.2
+
 repos:
 
 - repo: https://github.com/pre-commit/pre-commit-hooks
