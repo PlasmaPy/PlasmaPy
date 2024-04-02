@@ -2,10 +2,6 @@ ci:
   autofix_prs: false
   autoupdate_schedule: monthly
 
-# Specify the default version of Ruby in case it is not installed
-default_language_version:
-  ruby: 2.7.2
-
 repos:
 
 - repo: https://github.com/pre-commit/pre-commit-hooks
@@ -58,9 +54,9 @@ repos:
   hooks:
   - id: search-and-replace
     exclude: changelog/.*|docs/changelog/.*|.sourcery.yaml|docs/_global_substitutions.py|CHANGELOG.rst
-    language: ruby
-    additional_dependencies:
-    - rainbow
+#    language: ruby
+#    additional_dependencies:
+#    - rainbow
 
 - repo: https://github.com/pre-commit/pygrep-hooks
   rev: v1.10.0
