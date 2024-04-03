@@ -93,6 +93,8 @@ doc_subs: dict[str, str] = {
     "plasma-calculator": r":ref:`plasmapy-calculator`\ ",
     "release guide": r":ref:`release guide`\ ",
     "testing guide": r":ref:`testing guide`\ ",
+    "src/plasmapy/": r":file:`src/plasmapy/`\ ",
+    "tests/": r":file:`tests/`\ ",
 }
 
 numpy_subs: dict[str, str] = {
