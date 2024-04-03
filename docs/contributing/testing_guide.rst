@@ -434,14 +434,13 @@ balanced with each other rather than absolute principles.
 
   .. tip::
 
-     Decorate tests with :py:`@pytest.mark.slow` if they take longer
-     than ∼0.3 seconds.
+     Decorate tests with :py:`@pytest.mark.slow` if they take ≳0.3 seconds.
 
-  .. code-block:: python
+     .. code-block:: python
 
-     @pytest.mark.slow
-     def test_calculate_all_primes() -> None:
-         calculate_all_primes()
+        @pytest.mark.slow
+        def test_calculate_all_primes() -> None:
+            calculate_all_primes()
 
 * **Write tests that are easy to understand and change.** To fully
   understand a test failure or modify existing functionality, a
@@ -848,9 +847,6 @@ popular IDEs:
 
 .. |integration test| replace:: :term:`integration test`
 .. |unit test| replace:: :term:`unit test`
-.. |tests/| replace:: :file:`tests/`
-.. |src/plasmapy/| replace:: :file:`src/plasmapy/`
-
 
 .. _Atom: https://atom.io
 .. _Codecov: https://about.codecov.io
