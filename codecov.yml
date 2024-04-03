@@ -1,7 +1,8 @@
+# CODECOV_TOKEN is set in the repository's secrets.
 codecov:
   notify:
-    wait_for_ci: no
-  require_ci_to_pass: no
+    wait_for_ci: false
+  require_ci_to_pass: false
 coverage:
   range: 75..98
   status:
