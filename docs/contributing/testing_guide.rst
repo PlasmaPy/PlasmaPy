@@ -846,6 +846,8 @@ popular IDEs:
   <https://code.visualstudio.com/docs/python/testing>`__
 
 .. |integration test| replace:: :term:`integration test`
+.. |src/plasmapy/| replace:: :file:`src/plasmapy/`
+.. |tests/| replace:: :file:`tests/`
 .. |unit test| replace:: :term:`unit test`
 
 .. _Atom: https://atom.io
@@ -864,7 +866,7 @@ popular IDEs:
 .. _`pytest-cov`: https://pytest-cov.readthedocs.io
 .. _`pytest-rerunfailures`: https://github.com/pytest-dev/pytest-rerunfailures
 .. _`Python debugger`: https://docs.python.org/3/library/pdb.html
-.. _refactoring: https://refactoring.guru/refactoring/techniques
+.. _refactoring: https://refacctoring.guru/refactoring/techniques
 .. _`test discovery conventions`: https://docs.pytest.org/en/latest/goodpractices.html#conventions-for-python-test-discovery
 .. _`test warnings`: https://docs.pytest.org/en/latest/warnings.html#warns
 .. _`test exceptions`: https://docs.pytest.org/en/latest/assert.html#assertions-about-expected-exceptions
