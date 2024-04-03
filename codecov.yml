@@ -1,12 +1,17 @@
 codecov:
-  token: 85c13d8a-e9e1-49fd-97d4-7ba103f3e830
   notify:
     wait_for_ci: no
   require_ci_to_pass: no
 coverage:
+  range: 75..98
   status:
     project:
       default:
-        target: auto
-        threshold: 1%
+        threshold: 0.2%
         removed_code_behavior: adjust_base
+        if_not_found: failure
+    patch:
+      default:
+        threshold: 0.2%
+        removed_code_behavior: adjust_base
+        if_not_found: failure
