@@ -30,6 +30,11 @@ jobs:
           python: '3.11'
           toxenv: py311-pins-pytest_all
 
+        - name: Python 3.11, all tests, code coverage, macOS
+          os: macos-latest
+          python: '3.11'
+          toxenv: py311-pins-pytest_cov_all
+
         - name: Python 3.10, all tests, Windows
           os: windows-latest
           python: '3.10'
