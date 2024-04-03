@@ -110,6 +110,3 @@ repos:
   - id: nbqa-ruff
     name: ruff for notebooks (see https://docs.astral.sh/ruff/rules)
     args: [--fix, '--select=A,ARG,B,BLE,C,C4,E,F,FLY,I,INT,ISC,PERF,PIE,PLC,PLE,PYI,Q003,RET,RSE,SIM,TID,TRY,UP,W', '--ignore=B007,B008,B015,B018,E402,E501,E741,SIM114']
-    additional_dependencies:
-    # remove ruff dependency after 0.3.5 is released
-    - ruff !=0.3.3, !=0.3.4
