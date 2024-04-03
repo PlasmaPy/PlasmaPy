@@ -52,7 +52,7 @@ dependencies = [
   "scipy >= 1.8.0",
   "setuptools >= 61.2.0",
   "tqdm >= 4.60.0",
-  "voila >= 0.3.0",
+  "voila >= 0.4.0",
   "wrapt >= 1.14.0",
   "xarray >= 2022.3.0",
 ]
