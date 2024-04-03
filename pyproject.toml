@@ -21,6 +21,7 @@ keywords = [
   "space plasmas",
 ]
 license = {file = "LICENSE.md"}
+#
 requires-python = ">=3.10"
 classifiers = [
   "Development Status :: 4 - Beta",
@@ -36,6 +37,13 @@ classifiers = [
 dynamic = [
   "version",
 ]
+# SPEC 0 recommends that support for core packages should generally be
+# dropped two years after their initial release (see
+# https://scientific-python.org/specs/spec-0000). Exceptions may include
+# critical bugfixes or when making use of important new features. Any
+# upper limits on package versions should be temporary because they can
+# make it harder to resolve environments when PlasmaPy is installed
+# alongside other packages, such as in the heliopythoniverse.
 dependencies = [
   "astropy >= 5.1",
   "h5py >= 3.7.0",
@@ -57,6 +65,8 @@ dependencies = [
   "xarray >= 2022.3.0",
 ]
 [project.optional-dependencies]
+# The documentation build occurs in an isolated environment that is not
+# user-facing, so we can have stricter requirements.
 docs = [
   "docutils >= 0.20.1",
   "jinja2 >= 3.1.3",
@@ -83,9 +93,11 @@ docs = [
   "sphinxcontrib-globalsubs >= 0.1.1",
   "towncrier >= 23.11.0",
   "tox >= 4.12.1",
-  "tox-uv >= 1.6.0",
+  "tox-uv >= 1.7.0",
   "unidecode >= 1.3.8",
 ]
+# Test dependencies are not user-facing, so we can set stricter
+# requirements to ensure that tests are run in consistent environments.
 tests = [
   "hypothesis >= 6.97.4",
   "pre-commit >= 3.6.0",
@@ -95,7 +107,7 @@ tests = [
   "pytest-xdist >= 3.5.0",
   "tomli >= 2.0.1",
   "tox >= 4.12.1",
-  "tox-uv >= 1.6.0",
+  "tox-uv >= 1.7.0",
 ]
 [project.urls]
 Changelog = "https://docs.plasmapy.org/en/stable/whatsnew/index.html"
