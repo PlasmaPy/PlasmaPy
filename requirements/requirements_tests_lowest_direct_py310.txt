@@ -412,7 +412,7 @@ virtualenv==20.25.1
     # via
     #   pre-commit
     #   tox
-voila==0.5.0
+voila==0.5.6
 wcwidth==0.2.13
     # via prompt-toolkit
 webcolors==1.13
