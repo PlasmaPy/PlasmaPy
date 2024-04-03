@@ -116,9 +116,12 @@ jobs:
 
     - name: Upload coverage to codecov
       if: ${{ contains(matrix.toxenv,'_cov') }}
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       uses: codecov/codecov-action@v4
       with:
         file: ./coverage.xml
+
 
   install-plasmapy-via-conda-forge:
     name: Install PlasmaPy from conda-forge
