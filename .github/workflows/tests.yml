@@ -74,11 +74,12 @@ jobs:
 
     - name: Upload coverage reports to Codecov
       if: ${{ contains(matrix.toxenv,'_cov') }}
-      env:
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       uses: codecov/codecov-action@v4
       with:
         file: ./coverage.xml
+        fail_ci_if_error: true
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
   documentation:
 

@@ -114,13 +114,14 @@ jobs:
     - name: Run tests
       run: tox ${{ matrix.toxargs }} -e ${{ matrix.toxenv }} -- ${{ matrix.toxposargs }}
 
-    - name: Upload coverage to codecov
+    - name: Upload coverage reports to Codecov
       if: ${{ contains(matrix.toxenv,'_cov') }}
-      env:
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       uses: codecov/codecov-action@v4
       with:
         file: ./coverage.xml
+        fail_ci_if_error: true
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
 
   install-plasmapy-via-conda-forge:
