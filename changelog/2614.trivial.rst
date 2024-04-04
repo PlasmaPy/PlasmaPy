@@ -1,1 +1,1 @@
-Added ``tests`` to verify correctness of the two properties in ``~plasmapy.formulary.collisions.frequencies.MaxwellianCollisionFrequencies``
+Added tests to verify correctness of two properties in `~plasmapy.formulary.collisions.frequencies.MaxwellianCollisionFrequencies`.
