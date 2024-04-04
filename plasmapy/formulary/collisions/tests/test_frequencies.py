@@ -753,7 +753,7 @@ class Test_collision_frequency:
         """
         fail1 = self.True1 * (1 + 1e-15)
         with pytest.warns(PhysicsWarning, match="strong coupling effects"):
-            methodVal: u.Quantity = collision_frequency(
+            methodVal = collision_frequency(
                 self.T,
                 self.n,
                 self.particles,
