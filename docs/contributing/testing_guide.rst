@@ -846,7 +846,7 @@ popular IDEs:
   <https://code.visualstudio.com/docs/python/testing>`__
 
 .. |integration test| replace:: :term:`integration test`
-.. |src/plasmapy/| replace:: :file:`src/plasmapy/`
+.. |unit test| replace:: :term:`unit test`
 
 .. _Atom: https://atom.io
 .. _Codecov: https://about.codecov.io
