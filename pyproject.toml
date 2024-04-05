@@ -51,7 +51,8 @@ dependencies = [
   "h5py >= 3.7.0",
   "ipykernel >= 6.8.0",
   "ipywidgets >= 7.7.0",
-  "lmfit >= 1.1.0",
+  # See issue 2620
+  "lmfit >= 1.1.0, < 1.3.0",
   "matplotlib >= 3.5.1",
   "mpmath >= 1.2.1",
   "numba >= 0.57.0",
