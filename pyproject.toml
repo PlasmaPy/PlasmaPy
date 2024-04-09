@@ -198,6 +198,7 @@ branch = true
 source = ["src"]
 omit = [
   "*/plasmapy/utils/calculator/*",
+  "*/plasmapy/tests/*",
   "*/plasmapy/*version.py",
   "*/plasmapy/_dev/*",
   "dispersionfunction.py",  # deprecated
