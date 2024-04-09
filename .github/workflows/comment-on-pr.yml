@@ -44,7 +44,7 @@ jobs:
 
             If this PR is marked as ready for review, someone should stop by to provide a code review and offer suggestions soon. ✅ If you don't get a review within a few days, please feel free to send us a reminder.
 
-            Please also use SI units within in PlasmaPy, except when there is strong justification otherwise or in some examples.
+            Please also use SI units within PlasmaPy, except when there is strong justification otherwise or in some examples.
 
             We thank you once again!`
           })
