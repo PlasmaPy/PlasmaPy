@@ -20,4 +20,4 @@ python:
   install:
   - method: pip
     path: .
-    requirements: requirements/requirements_docs_py312.txt
+  - requirements: requirements/requirements_docs_py312.txt
