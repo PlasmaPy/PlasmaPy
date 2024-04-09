@@ -434,6 +434,11 @@ def Maxwellian_velocity_3D(
     ... )
     <Quantity 2.0708...e-19 s3 / m3>
     """
+
+    # When updating this function, temporarily uncomment the test_norm
+    # method of Test_Maxwellian_velocity_3D. It is currently commented
+    # out because it is really slow.
+
     if units == "units":
         # unit checks and conversions
         # checking velocity units
@@ -1157,6 +1162,11 @@ def kappa_velocity_3D(
     ... )
     <Quantity 3.7833...e-19 s3 / m3>
     """
+
+    # When updating this function, temporarily uncomment the test_norm
+    # method of Test_kappa_velocity_3D. It is currently commented
+    # out because it is really slow.
+
     # must have kappa > 3/2 for distribution function to be valid
     if kappa <= 3 / 2:
         raise ValueError(f"Must have kappa > 3/2, instead of {kappa}.")

@@ -850,7 +850,9 @@ class IonizationState:
             use_rms_mass=use_rms_mass,
         )
 
-    def summarize(self, minimum_ionic_fraction: float = 0.01) -> None:
+    def summarize(
+        self, minimum_ionic_fraction: float = 0.01
+    ) -> None:  # coverage: ignore
         """
         Print quicklook information.
 

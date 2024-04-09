@@ -16,11 +16,10 @@ include plasmapy/py.typed
 include pyproject.toml
 include tox.ini
 
-exclude plasmapy/_version.py
+global-exclude _build build _version.py
 
 global-exclude *.o
 global-exclude *.py[cod]
-global-exclude _build build
 
 prune docs/api
 

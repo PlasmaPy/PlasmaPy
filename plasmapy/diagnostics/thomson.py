@@ -1000,10 +1000,12 @@ def spectral_density_model(  # noqa: C901, PLR0912, PLR0915
     #       quantities isn't consistent with the number of that species defined
     #       by ifract or efract.
 
+    def _spectral_density_model_lambda(wavelengths, **params):
+        return _spectral_density_model(wavelengths, settings=settings, **params)
+
     # Create and return the lmfit.Model
     return Model(
-        _spectral_density_model,
+        _spectral_density_model_lambda,
         independent_vars=["wavelengths"],
         nan_policy="omit",
-        settings=settings,
     )
