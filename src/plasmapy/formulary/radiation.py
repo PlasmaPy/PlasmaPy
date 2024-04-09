@@ -94,6 +94,23 @@ def thermal_bremsstrahlung(
     Notes
     -----
     For details, see :cite:t:`bekefi:1966`\ .
+
+    Examples
+    --------
+    >>> import astropy.units as u
+    >>> import numpy as np
+    >>> thermal_bremsstrahlung(10**15 * u.Hz, 1e10 * u.cm**-3, 2e7 * u.K)  # solar flare
+    <Quantity 8.17560238e-23 kg / (m s2)>
+    >>> thermal_bremsstrahlung(
+    ...     10 ** np.arange(15, 16, 0.1) * u.Hz, 1e22 * u.cm**-3, 1e2 * u.eV
+    ... )
+    <Quantity [ 79.59052452, 117.73282254, 127.85119908, 127.12505588,
+           121.01549498, 112.02367743, 101.45553309,  90.04503155,
+            78.23475796,  66.32227273] kg / (m s2)>
+    >>> thermal_bremsstrahlung(
+    ...     1e17 * u.Hz, 1e16 * u.cm**-3, 1e4 * u.eV, ion="Fe-56 12+"
+    ... )
+    <Quantity 2.16932808e-10 kg / (m s2)>
     """
 
     if n_i is None:  # default is quasineutrality
