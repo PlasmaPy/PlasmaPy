@@ -201,7 +201,6 @@ omit = [
   "*/plasmapy/tests/*",
   "*/plasmapy/*version.py",
   "*/plasmapy/_dev/*",
-  "dispersionfunction.py",  # deprecated
 ]
 
 [tool.build_docs]
