@@ -4,7 +4,7 @@ codecov:
     wait_for_ci: false
   require_ci_to_pass: false
 coverage:
-  range: 75..95
+  range: 75..98
   status:
     project:
       default:

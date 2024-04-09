@@ -54,7 +54,3 @@
 - search: 'ion="p"'
   replacement: 'ion="p+"'
   description: Use canonical symbol for proton
-
-- search: 'ħ'
-  replacement: 'ℏ'
-  description: Use Unicode symbol for reduced Planck constant
