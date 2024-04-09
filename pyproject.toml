@@ -195,12 +195,11 @@ exclude_lines = [
 
 [tool.coverage.run]
 branch = true
-relative_files = true
+source = "src"
 omit = [
-  "ci-helpers/*",
-  "src/plasmapy/utils/calculator/*",
-  "src/plasmapy/*version.py",
-  "src/plasmapy/_dev/*",
+  "*/plasmapy/utils/calculator/*",
+  "*/plasmapy/*version.py",
+  "*/plasmapy/_dev/*",
   "dispersionfunction.py",  # deprecated
 ]
 
