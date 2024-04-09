@@ -195,7 +195,7 @@ exclude_lines = [
 
 [tool.coverage.run]
 branch = true
-source = "src"
+source = ["src"]
 omit = [
   "*/plasmapy/utils/calculator/*",
   "*/plasmapy/*version.py",
