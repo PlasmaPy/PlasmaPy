@@ -43,9 +43,9 @@ class TestSingleParticleCollisionFrequencies:
     )
 
     for argument_to_convert in arguments_to_convert:
-        CGS_unit_conversion_test_constructor_arguments[
-            argument_to_convert
-        ] = CGS_unit_conversion_test_constructor_arguments[argument_to_convert].cgs
+        CGS_unit_conversion_test_constructor_arguments[argument_to_convert] = (
+            CGS_unit_conversion_test_constructor_arguments[argument_to_convert].cgs
+        )
 
     MKS_test_case = SingleParticleCollisionFrequencies(
         **MKS_unit_conversion_test_constructor_arguments
@@ -399,17 +399,17 @@ class TestSingleParticleCollisionFrequencies:
         if interaction_type == "e|e":
             charge_constant = 1
         elif interaction_type == "e|i":
-            charge_constant = value_test_case.field_particle.charge_number**2
+            charge_constant = value_test_case.field_particle.charge_number**2  # type: ignore[assignment]
         elif interaction_type == "i|e":
-            charge_constant = value_test_case.test_particle.charge_number**2
+            charge_constant = value_test_case.test_particle.charge_number**2  # type: ignore[assignment]
         elif interaction_type == "i|i":
-            charge_constant = (
+            charge_constant = (  # type: ignore[assignment]
                 value_test_case.test_particle.charge_number
                 * value_test_case.field_particle.charge_number
             ) ** 2
 
         for attribute_name, expected_limit_value in zip(
-            self.return_values_to_test, expected_limit_values
+            self.return_values_to_test, expected_limit_values, strict=False
         ):
             calculated_limit_value = getattr(value_test_case, attribute_name).value
             # Energy loss limit value is already in units of
@@ -661,6 +661,51 @@ class TestMaxwellianCollisionFrequencies:
 
         assert np.allclose(calculated_value, expected_value, rtol=5e-3, atol=0)
 
+    @pytest.mark.parametrize(
+        ("frequency_to_test", "constructor_keyword_arguments", "expected_value"),
+        [
+            (
+                "Maxwellian_avg_ei_collision_freq",
+                {
+                    "test_particle": Particle("e-"),
+                    "field_particle": Particle("Na+"),
+                    "v_drift": 1 * u.m / u.s,
+                    "n_a": 1e26 * u.m**-3,
+                    "T_a": 1 * u.eV,
+                    "n_b": 1e26 * u.m**-3,
+                    "T_b": 1e3 * u.eV,
+                    "Coulomb_log": 10 * u.dimensionless_unscaled,
+                },
+                2.8053078e15 * u.Hz,
+            ),
+            (
+                "Maxwellian_avg_ii_collision_freq",
+                {
+                    "test_particle": Particle("Na+"),
+                    "field_particle": Particle("Na+"),
+                    "v_drift": 1 * u.m / u.s,
+                    "n_a": 1e26 * u.m**-3,
+                    "T_a": 1e3 * u.eV,
+                    "n_b": 1e26 * u.m**-3,
+                    "T_b": 1e3 * u.eV,
+                    "Coulomb_log": 10 * u.dimensionless_unscaled,
+                },
+                1.1223822e8 * u.Hz,
+            ),
+        ],
+    )
+    @pytest.mark.filterwarnings("ignore::plasmapy.utils.exceptions.RelativityWarning")
+    def test_correctness_collision_freq_values(
+        self, frequency_to_test, constructor_keyword_arguments, expected_value
+    ) -> None:
+        value_test_case = MaxwellianCollisionFrequencies(
+            **constructor_keyword_arguments
+        )
+
+        calculated_value = getattr(value_test_case, frequency_to_test)
+
+        assert np.allclose(calculated_value, expected_value, rtol=5e-3, atol=0)
+
 
 class Test_collision_frequency:
     @classmethod
@@ -807,7 +852,7 @@ class Test_fundamental_electron_collision_freq:
         """Initializing parameters for tests"""
         cls.T_arr = np.array([1, 2]) * u.eV
         cls.n_arr = np.array([1e20, 2e20]) * u.cm**-3
-        cls.ion = "p"
+        cls.ion = "p+"
         cls.coulomb_log = 10
 
     # TODO: array coulomb log
@@ -826,7 +871,7 @@ class Test_fundamental_ion_collision_freq:
         """Initializing parameters for tests"""
         cls.T_arr = np.array([1, 2]) * u.eV
         cls.n_arr = np.array([1e20, 2e20]) * u.cm**-3
-        cls.ion = "p"
+        cls.ion = "p+"
         cls.coulomb_log = 10
 
     # TODO: array coulomb log

@@ -2,8 +2,8 @@
 Convert author information from :file:`CITATION.cff` into a
 reStructuredText-formatted list.
 """
+
 import pathlib
-from typing import Union
 
 import yaml
 from unidecode import unidecode
@@ -16,7 +16,7 @@ from unidecode import unidecode
 obsolete_github_usernames = {}
 
 
-def parse_cff(filename: str) -> dict[str, Union[str, list[dict[str, str]]]]:
+def parse_cff(filename: str) -> dict[str, str | list[dict[str, str]]]:
     """
     Parse a :file:`CITATION.cff` file into a dictionary.
 
@@ -30,7 +30,7 @@ def parse_cff(filename: str) -> dict[str, Union[str, list[dict[str, str]]]]:
     `dict`
         A dictionary containing the parsed data from :file:`CITATION.cff`.
     """
-    with pathlib.Path(filename).open() as stream:
+    with pathlib.Path(filename).open(encoding="utf-8") as stream:
         return yaml.safe_load(stream)
 
 
@@ -118,7 +118,7 @@ def begin_author_line(author: dict[str, str]) -> str:
         The beginning of the author line.
     """
     name = get_author_name(author)
-    alias = author.get("alias", None)
+    alias = author.get("alias")
 
     if not alias or alias in obsolete_github_usernames:
         return f"- {name}"
@@ -188,7 +188,7 @@ def main(cff_file="../CITATION.cff", rst_file="about/_authors.rst", verbose=Fals
     if verbose:
         print(authors_rst)  # noqa: T201
 
-    with pathlib.Path(rst_file).open("w") as file:
+    with pathlib.Path(rst_file).open("w", encoding="utf-8") as file:
         file.write(authors_rst)
 
 

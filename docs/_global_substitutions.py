@@ -48,7 +48,7 @@ plasmapy_subs: dict[str, str] = {
     "ParticleLike": ":obj:`~plasmapy.particles.particle_class.ParticleLike`",
     "ParticleList": ":class:`~plasmapy.particles.particle_collections.ParticleList`",
     "ParticleListLike": ":obj:`~plasmapy.particles.particle_collections.ParticleListLike`",
-    "ParticleTracker": ":class:`~plasmapy.simulation.particletracker.ParticleTracker`",
+    "ParticleTracker": ":class:`~plasmapy.simulation.particle_tracker.ParticleTracker`",
     "ParticleWarning": ":class:`~plasmapy.particles.exceptions.ParticleWarning`",
     "reduced_mass": ":func:`~plasmapy.particles.atomic.reduced_mass`",
     "RelativisticBody": ":class:`~plasmapy.formulary.relativity.RelativisticBody`",
@@ -83,8 +83,8 @@ doc_subs: dict[str, str] = {
     "keyword-only": r":term:`keyword-only`\ ",
     "lite-function": r":term:`lite-function`\ ",
     "lite-functions": r":term:`lite-functions`\ ",
-    "maxpython": "3.11",
-    "minpython": "3.9",
+    "maxpython": "3.12",
+    "minpython": "3.10",
     "Open a terminal": r":ref:`Open a terminal <opening-a-terminal>`\ ",
     "parameter": r":term:`parameter`\ ",
     "parameters": r":term:`parameters <parameter>`\ ",
@@ -111,7 +111,7 @@ astropy_subs: dict[str, str] = {
 # links, we first define the links and then process them afterwards into
 # the form of a reStructuredText external link.
 
-links: dict[str, str] = {
+links_to_become_subs: dict[str, str] = {
     "Astropy": "https://docs.astropy.org",
     "black": "https://black.readthedocs.io",
     "Citation File Format": "https://citation-file-format.github.io/",
@@ -159,10 +159,9 @@ links: dict[str, str] = {
     "type hint annotations": "https://peps.python.org/pep-0484",
     "xarray": "https://docs.xarray.dev",
     "Zenodo": "https://zenodo.org",
+    "uv": "https://github.com/astral-sh/uv",
 }
 
-processed_links = {key: f"`{key} <{value}>`_" for key, value in links.items()}
+link_subs = {key: f"`{key} <{value}>`_" for key, value in links_to_become_subs.items()}
 
-global_substitutions = (
-    plasmapy_subs | doc_subs | numpy_subs | astropy_subs | processed_links
-)
+global_substitutions = plasmapy_subs | doc_subs | numpy_subs | astropy_subs | link_subs

@@ -18,7 +18,6 @@ __all__ = [
 ]
 
 import warnings
-from numbers import Real
 
 import astropy.units as u
 import numpy as np
@@ -38,7 +37,7 @@ def Coulomb_logarithm(
     T: u.Quantity[u.K],
     n_e: u.Quantity[u.m**-3],
     species: (particles.Particle, particles.Particle),
-    z_mean: Real = np.nan,
+    z_mean: float = np.nan,
     V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
     method="classical",
 ):
@@ -521,9 +520,9 @@ def Coulomb_cross_section(impact_param: u.Quantity[u.m]) -> u.Quantity[u.m**2]:
 
     Examples
     --------
-    >>> Coulomb_cross_section(7e-10*u.m)
+    >>> Coulomb_cross_section(7e-10 * u.m)
     <Quantity 6.157...e-18 m2>
-    >>> Coulomb_cross_section(0.5*u.m)
+    >>> Coulomb_cross_section(0.5 * u.m)
     <Quantity 3.141... m2>
     """
     return np.pi * (2 * impact_param) ** 2

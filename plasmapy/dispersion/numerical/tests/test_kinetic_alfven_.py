@@ -1,4 +1,5 @@
 """Test functionality of Stix in `plasmapy.dispersion.numerical.kinetic_alfven_`."""
+
 import astropy.units as u
 import numpy as np
 import pytest

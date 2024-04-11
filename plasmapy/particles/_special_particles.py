@@ -2,6 +2,7 @@
 Classes, sets, and dictionaries to store data and taxonomy information
 for special particles.
 """
+
 __all__ = [
     "antiparticles",
     "create_particles_dict",
@@ -34,11 +35,11 @@ class ParticleZoo:
     Examples
     --------
     >>> particle_zoo_ = ParticleZoo()
-    >>> 'e-' in particle_zoo_.leptons
+    >>> "e-" in particle_zoo_.leptons
     True
-    >>> 'nu_e' in particle_zoo_.antineutrinos
+    >>> "nu_e" in particle_zoo_.antineutrinos
     False
-    >>> 'mu+' in particle_zoo_.antiparticles
+    >>> "mu+" in particle_zoo_.antiparticles
     True
     """
 

@@ -5,8 +5,8 @@ import numpy as np
 import pytest
 
 from plasmapy.formulary.speeds import Alfven_speed, cs_, ion_sound_speed, va_
-from plasmapy.particles import Particle
 from plasmapy.particles.exceptions import InvalidIonError, InvalidParticleError
+from plasmapy.particles.particle_class import Particle
 from plasmapy.utils._pytest_helpers import assert_can_handle_nparray
 from plasmapy.utils.exceptions import (
     PhysicsError,
@@ -171,8 +171,8 @@ class TestAlfvenSpeed:
                 (0.001 * u.T, [1.0e18, 2e18] * u.m**-3),
                 {"ion": "p"},
                 [
-                    va_(0.001 * u.T, 1e18 * u.m**-3, ion="p").value,
-                    va_(0.001 * u.T, 2e18 * u.m**-3, ion="p").value,
+                    va_(0.001 * u.T, 1e18 * u.m**-3, ion="p+").value,
+                    va_(0.001 * u.T, 2e18 * u.m**-3, ion="p+").value,
                 ]
                 * (u.m / u.s),
                 {},

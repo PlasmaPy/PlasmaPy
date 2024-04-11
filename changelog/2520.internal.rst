@@ -1,0 +1,2 @@
+Changed type hint annotations that used `numbers.Integral`, `numbers.Real`,
+or `numbers.Complex` to instead use `int`, `float`, or `complex`, respectively.

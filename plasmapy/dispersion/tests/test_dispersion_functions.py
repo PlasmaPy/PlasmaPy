@@ -7,7 +7,7 @@ import numpy as np
 import pytest
 from hypothesis import given
 from hypothesis.strategies import complex_numbers
-from numpy import pi as π
+from numpy import pi as π  # noqa: ICN003
 from scipy.special import gamma as Γ  # noqa: N812
 
 from plasmapy.dispersion.dispersion_functions import (

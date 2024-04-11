@@ -3,6 +3,7 @@ Common distribution functions for plasmas, such as the Maxwellian or
 Kappa distributions. Functionality is intended to include generation,
 fitting and calculation.
 """
+
 __all__ = [
     "Maxwellian_1D",
     "Maxwellian_velocity_2D",
@@ -39,7 +40,7 @@ def _v_drift_conversion(v_drift):
 def Maxwellian_1D(
     v,
     T,
-    particle: ParticleLike = "e",
+    particle: ParticleLike = "e-",
     v_drift=0,
     vTh=np.nan,
     units="units",
@@ -64,7 +65,7 @@ def Maxwellian_1D(
         The temperature in kelvin.
 
     particle : `str`, optional
-        Representation of the particle species(e.g., ``'p'`` for protons,
+        Representation of the particle species(e.g., ``'p+'`` for protons,
         ``'D+'`` for deuterium, or ``'He-4 +1'`` for singly ionized
         helium-4), which defaults to electrons.
 
@@ -122,8 +123,8 @@ def Maxwellian_1D(
     Examples
     --------
     >>> import astropy.units as u
-    >>> v=1*u.m/u.s
-    >>> Maxwellian_1D(v=v, T=30000 * u.K, particle='e', v_drift=0 * u.m / u.s)
+    >>> v = 1 * u.m / u.s
+    >>> Maxwellian_1D(v=v, T=30000 * u.K, particle="e-", v_drift=0 * u.m / u.s)
     <Quantity 5.9163...e-07 s / m>
     """
 
@@ -166,7 +167,7 @@ def Maxwellian_velocity_2D(
     vx,
     vy,
     T,
-    particle: ParticleLike = "e",
+    particle: ParticleLike = "e-",
     vx_drift=0,
     vy_drift=0,
     vTh=np.nan,
@@ -196,7 +197,7 @@ def Maxwellian_velocity_2D(
         The temperature, preferably in kelvin.
 
     particle : `str`, optional
-        Representation of the particle species [e.g., ``'p'`` for protons,
+        Representation of the particle species [e.g., ``'p+'`` for protons,
         ``'D+'`` for deuterium, or ``'He-4 +1'`` for :math:`He_4^{+1}`
         (singly ionized helium-4)], which defaults to electrons.
 
@@ -262,13 +263,15 @@ def Maxwellian_velocity_2D(
     Examples
     --------
     >>> import astropy.units as u
-    >>> v=1 * u.m / u.s
-    >>> Maxwellian_velocity_2D(vx=v,
-    ... vy=v,
-    ... T=30000*u.K,
-    ... particle='e',
-    ... vx_drift=0 * u.m / u.s,
-    ... vy_drift=0 * u.m / u.s)
+    >>> v = 1 * u.m / u.s
+    >>> Maxwellian_velocity_2D(
+    ...     vx=v,
+    ...     vy=v,
+    ...     T=30000 * u.K,
+    ...     particle="e-",
+    ...     vx_drift=0 * u.m / u.s,
+    ...     vy_drift=0 * u.m / u.s,
+    ... )
     <Quantity 3.5002...e-13 s2 / m2>
     """
     if units == "units":
@@ -315,7 +318,7 @@ def Maxwellian_velocity_3D(
     vy,
     vz,
     T,
-    particle: ParticleLike = "e",
+    particle: ParticleLike = "e-",
     vx_drift=0,
     vy_drift=0,
     vz_drift=0,
@@ -349,7 +352,7 @@ def Maxwellian_velocity_3D(
         The temperature, preferably in kelvin.
 
     particle : `str`, optional
-        Representation of the particle species (e.g., ``'p'`` for protons,
+        Representation of the particle species (e.g., ``'p+'`` for protons,
         ``'D+'`` for deuterium, or ``'He-4 +1'`` for
         singly ionized helium-4), which defaults to electrons.
 
@@ -418,17 +421,24 @@ def Maxwellian_velocity_3D(
     Examples
     --------
     >>> import astropy.units as u
-    >>> v=1 * u.m / u.s
-    >>> Maxwellian_velocity_3D(vx=v,
-    ... vy=v,
-    ... vz=v,
-    ... T=30000 * u.K,
-    ... particle='e',
-    ... vx_drift=0 * u.m / u.s,
-    ... vy_drift=0 * u.m / u.s,
-    ... vz_drift=0 * u.m / u.s)
+    >>> v = 1 * u.m / u.s
+    >>> Maxwellian_velocity_3D(
+    ...     vx=v,
+    ...     vy=v,
+    ...     vz=v,
+    ...     T=30000 * u.K,
+    ...     particle="e-",
+    ...     vx_drift=0 * u.m / u.s,
+    ...     vy_drift=0 * u.m / u.s,
+    ...     vz_drift=0 * u.m / u.s,
+    ... )
     <Quantity 2.0708...e-19 s3 / m3>
     """
+
+    # When updating this function, temporarily uncomment the test_norm
+    # method of Test_Maxwellian_velocity_3D. It is currently commented
+    # out because it is really slow.
+
     if units == "units":
         # unit checks and conversions
         # checking velocity units
@@ -472,7 +482,7 @@ def Maxwellian_velocity_3D(
 def Maxwellian_speed_1D(
     v,
     T,
-    particle: ParticleLike = "e",
+    particle: ParticleLike = "e-",
     v_drift=0,
     vTh=np.nan,
     units="units",
@@ -497,7 +507,7 @@ def Maxwellian_speed_1D(
         The temperature, preferably in kelvin.
 
     particle : `str`, optional
-        Representation of the particle species [e.g., ``'p'`` for protons, ``'D+'``
+        Representation of the particle species [e.g., ``'p+'`` for protons, ``'D+'``
         for deuterium, or ``'He-4 +1'`` for :math:`He_4^{+1}`
         (singly ionized helium-4)], which defaults to electrons.
 
@@ -555,10 +565,9 @@ def Maxwellian_speed_1D(
     Examples
     --------
     >>> import astropy.units as u
-    >>> v=1 * u.m / u.s
-    >>> Maxwellian_speed_1D(v=v, T=30000 * u.K, particle='e', v_drift=0 * u.m / u.s)
+    >>> v = 1 * u.m / u.s
+    >>> Maxwellian_speed_1D(v=v, T=30000 * u.K, particle="e-", v_drift=0 * u.m / u.s)
     <Quantity 1.1832...e-06 s / m>
-
     """
     if units == "units":
         # unit checks and conversions
@@ -599,7 +608,7 @@ def Maxwellian_speed_1D(
 def Maxwellian_speed_2D(
     v,
     T,
-    particle: ParticleLike = "e",
+    particle: ParticleLike = "e-",
     v_drift=0,
     vTh=np.nan,
     units="units",
@@ -625,7 +634,7 @@ def Maxwellian_speed_2D(
         The temperature, preferably in kelvin.
 
     particle: |particle-like|, optional
-        Representation of the particle species(e.g., ``'p'`` for protons,
+        Representation of the particle species(e.g., ``'p+'`` for protons,
         ``'D+'`` for deuterium, or ``'He-4 +1'`` for singly ionized
         helium-4), which defaults to electrons.
 
@@ -687,10 +696,9 @@ def Maxwellian_speed_2D(
     Examples
     --------
     >>> import astropy.units as u
-    >>> v=1 * u.m / u.s
-    >>> Maxwellian_speed_2D(v=v, T=30000 * u.K, particle='e', v_drift=0 * u.m / u.s)
+    >>> v = 1 * u.m / u.s
+    >>> Maxwellian_speed_2D(v=v, T=30000 * u.K, particle="e-", v_drift=0 * u.m / u.s)
     <Quantity 2.199...e-12 s / m>
-
     """
     if v_drift != 0:
         raise NotImplementedError("Non-zero drift speed is work in progress.")
@@ -734,7 +742,7 @@ def Maxwellian_speed_2D(
 def Maxwellian_speed_3D(
     v,
     T,
-    particle: ParticleLike = "e",
+    particle: ParticleLike = "e-",
     v_drift=0,
     vTh=np.nan,
     units="units",
@@ -760,9 +768,9 @@ def Maxwellian_speed_3D(
         The temperature, preferably in kelvin.
 
     particle : `str`, optional
-        Representation of the particle species(e.g., ``'p'`` for protons, ``'D+'``
+        Representation of the particle species(e.g., ``'p+'`` for protons, ``'D+'``
         for deuterium, or ``'He-4 +1'`` for :math:`He_4^{+1}`
-        (singly ionized helium-4)), which defaults to electrons.
+        (singly ionized helium-4), which defaults to electrons.
 
     v_drift : `~astropy.units.Quantity`
         The drift speed in units convertible to m/s.
@@ -822,8 +830,8 @@ def Maxwellian_speed_3D(
     Examples
     --------
     >>> import astropy.units as u
-    >>> v=1 * u.m / u.s
-    >>> Maxwellian_speed_3D(v=v, T=30000*u.K, particle='e', v_drift=0 * u.m / u.s)
+    >>> v = 1 * u.m / u.s
+    >>> Maxwellian_speed_3D(v=v, T=30000 * u.K, particle="e-", v_drift=0 * u.m / u.s)
     <Quantity 2.60235...e-18 s / m>
     """
     if v_drift != 0:
@@ -869,7 +877,7 @@ def kappa_velocity_1D(
     v,
     T,
     kappa,
-    particle: ParticleLike = "e",
+    particle: ParticleLike = "e-",
     v_drift=0,
     vTh=np.nan,
     units="units",
@@ -965,12 +973,12 @@ def kappa_velocity_1D(
     Examples
     --------
     >>> import astropy.units as u
-    >>> v=1 * u.m / u.s
+    >>> v = 1 * u.m / u.s
     >>> kappa_velocity_1D(
     ...     v=v,
-    ...     T=30000*u.K,
+    ...     T=30000 * u.K,
     ...     kappa=4,
-    ...     particle='e',
+    ...     particle="e-",
     ...     v_drift=0 * u.m / u.s,
     ... )
     <Quantity 6.75549...e-07 s / m>
@@ -1026,7 +1034,7 @@ def kappa_velocity_3D(
     vz,
     T,
     kappa,
-    particle: ParticleLike = "e",
+    particle: ParticleLike = "e-",
     vx_drift=0,
     vy_drift=0,
     vz_drift=0,
@@ -1037,11 +1045,11 @@ def kappa_velocity_3D(
     Z=None,
 ):
     r"""
-    Return the probability density function for finding a particle with
-    velocity components ``v_x``, ``v_y``, and ``v_z``in m/s in a suprathermal
-    plasma of temperature ``T`` and parameter ``kappa`` which follows the
-    3D Kappa distribution function. This function assumes Cartesian
-    coordinates.
+    Return the probability density function for finding a particle
+    with velocity components ``v_x``, ``v_y``, and ``v_z`` in m/s in a
+    suprathermal plasma of temperature ``T`` and parameter ``kappa``
+    which follows the 3D Kappa distribution function. This function
+    assumes Cartesian coordinates.
 
     Parameters
     ----------
@@ -1064,7 +1072,7 @@ def kappa_velocity_3D(
         than :math:`3/2`.
 
     particle : `str`, optional
-        Representation of the particle species(e.g., 'p' for protons, 'D+'
+        Representation of the particle species(e.g., 'p+' for protons, 'D+'
         for deuterium, or 'He-4 +1' for :math:`He_4^{+1}` : singly ionized
         helium-4)), which defaults to electrons.
 
@@ -1140,18 +1148,25 @@ def kappa_velocity_3D(
     Examples
     --------
     >>> import astropy.units as u
-    >>> v=1 * u.m / u.s
-    >>> kappa_velocity_3D(vx=v,
-    ... vy=v,
-    ... vz=v,
-    ... T=30000 * u.K,
-    ... kappa=4,
-    ... particle='e',
-    ... vx_drift=0 * u.m / u.s,
-    ... vy_drift=0 * u.m / u.s,
-    ... vz_drift=0 * u.m / u.s)
+    >>> v = 1 * u.m / u.s
+    >>> kappa_velocity_3D(
+    ...     vx=v,
+    ...     vy=v,
+    ...     vz=v,
+    ...     T=30000 * u.K,
+    ...     kappa=4,
+    ...     particle="e-",
+    ...     vx_drift=0 * u.m / u.s,
+    ...     vy_drift=0 * u.m / u.s,
+    ...     vz_drift=0 * u.m / u.s,
+    ... )
     <Quantity 3.7833...e-19 s3 / m3>
     """
+
+    # When updating this function, temporarily uncomment the test_norm
+    # method of Test_kappa_velocity_3D. It is currently commented
+    # out because it is really slow.
+
     # must have kappa > 3/2 for distribution function to be valid
     if kappa <= 3 / 2:
         raise ValueError(f"Must have kappa > 3/2, instead of {kappa}.")

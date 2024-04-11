@@ -2,12 +2,12 @@
 Module for defining functionality that marks and handle Lite-Function
 creation.
 """
+
 __all__ = ["bind_lite_func"]
 
 import functools
 import inspect
 from collections.abc import Callable
-from typing import Optional
 
 from numba.extending import is_jitted
 
@@ -24,7 +24,7 @@ class _LiteFuncDict(dict):
     # This is only to give __bound_lite_func__ a docstring.
 
 
-def bind_lite_func(lite_func, attrs: Optional[dict[str, Callable]] = None):
+def bind_lite_func(lite_func, attrs: dict[str, Callable] | None = None):
     """
     Decorator to bind a lightweight "lite" version of a formulary
     function to the full formulary function, as well as any supporting
@@ -42,6 +42,8 @@ def bind_lite_func(lite_func, attrs: Optional[dict[str, Callable]] = None):
 
     Examples
     --------
+    .. autolink-skip:: section
+
     .. code-block:: python
 
         def foo_lite(x):

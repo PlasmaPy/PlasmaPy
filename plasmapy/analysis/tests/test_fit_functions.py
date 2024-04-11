@@ -1,6 +1,7 @@
 """
 Tests for the fitting function classes defined in `plasmapy.analysis.fit_functions`.
 """
+
 from abc import ABC, abstractmethod
 from contextlib import nullcontext as does_not_raise
 
@@ -316,13 +317,13 @@ class BaseFFTests(ABC):
 
         with with_condition:
             results = ff_obj.func_err(x, **kwargs)
-            if "rety" in kwargs and kwargs["rety"]:
+            if kwargs.get("rety"):
                 y_err, y = results
             else:
                 y_err = results
                 y = None
 
-            x_err = kwargs["x_err"] if "x_err" in kwargs else None
+            x_err = kwargs.get("x_err", None)
             if isinstance(x, list):
                 x = np.array(x)
             y_err_expected = self.func_err(x, params, param_errors, x_err=x_err)
@@ -352,9 +353,8 @@ class BaseFFTests(ABC):
         params = self._test_params
         param_errors = self._test_param_errors
         ff_obj = self.ff_class(params=params, param_errors=param_errors)
-
-        reterr = kwargs["reterr"] if "reterr" in kwargs else False
-        x_err = kwargs["x_err"] if "x_err" in kwargs else None
+        reterr = kwargs.get("reterr", False)
+        x_err = kwargs.get("x_err", None)
         with with_condition:
             results = ff_obj(x, **kwargs)
             if reterr:
@@ -374,8 +374,7 @@ class BaseFFTests(ABC):
                 assert np.allclose(y_err, y_err_expected)
 
     @abstractmethod
-    def test_root_solve(self):
-        ...
+    def test_root_solve(self): ...
 
     def test_curve_fit(self) -> None:
         """Test the `curve_fit` method."""

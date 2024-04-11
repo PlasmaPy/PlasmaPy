@@ -296,7 +296,7 @@ def test_getitem(test_ionization_state) -> None:
 
     For example, if we create
 
-    >>> He_states = IonizationState('He', [0.2, 0.3, 0.5])
+    >>> He_states = IonizationState("He", [0.2, 0.3, 0.5])
 
     then this checks to make sure that `He_states[2]`,
     `He_states['He 2+']`, and `He_states[Particle('He 2+')]` all
@@ -317,7 +317,7 @@ def test_getitem(test_ionization_state) -> None:
     # these objects, we compare the string representations instead
     # (see Astropy issue #7901 on GitHub).
 
-    for keys in zip(charge_numbers, symbols, particles):
+    for keys in zip(charge_numbers, symbols, particles, strict=False):
         set_of_str_values = {str(test_ionization_state[key]) for key in keys}
         if len(set_of_str_values) != 1:
             errors.append(

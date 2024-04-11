@@ -9,6 +9,7 @@ thermal speed.
 - `~plasmapy.formulary.speeds.vth_`
 - `~plasmapy.formulary.speeds.vth_kappa_`
 """
+
 import astropy.units as u
 import numpy as np
 import pytest
@@ -23,8 +24,8 @@ from plasmapy.formulary.speeds import (
     vth_,
     vth_kappa_,
 )
-from plasmapy.particles import Particle
 from plasmapy.particles.exceptions import InvalidParticleError
+from plasmapy.particles.particle_class import Particle
 from plasmapy.utils._pytest_helpers import assert_can_handle_nparray
 from plasmapy.utils.exceptions import RelativityError, RelativityWarning
 
@@ -341,7 +342,7 @@ class Test_kappa_thermal_speed:
         cls.T_e = 5 * u.eV
         cls.kappaInvalid = 3 / 2
         cls.kappa = 4
-        cls.particle = "p"
+        cls.particle = "p+"
         cls.probable1True = 24467.878463594963
         cls.rms1True = 37905.474322612165
         cls.mean1True = 34922.98563039583

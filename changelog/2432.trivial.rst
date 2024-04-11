@@ -1,1 +1,0 @@
-Added mypy to the suite of continuous integration checks.

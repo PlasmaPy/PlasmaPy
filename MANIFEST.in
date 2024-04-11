@@ -1,23 +1,25 @@
 graft docs
 graft licenses
 graft plasmapy
+graft type_stubs
 
 include *.md
 include *.py
+include *.pyi
 include *.rst
 include *.txt
 include *.yaml
 include *.yml
 include changelog/README.rst
 include CITATION.cff
+include plasmapy/py.typed
 include pyproject.toml
 include tox.ini
 
-exclude plasmapy/_version.py
+global-exclude _build build _version.py
 
 global-exclude *.o
 global-exclude *.py[cod]
-global-exclude _build build
 
 prune docs/api
 

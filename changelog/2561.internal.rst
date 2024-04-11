@@ -1,0 +1,2 @@
+Added ``sphinx-lint`` as a |pre-commit| hook to find
+reStructuredText errors.

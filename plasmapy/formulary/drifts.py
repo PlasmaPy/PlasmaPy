@@ -50,7 +50,7 @@ def diamagnetic_drift(
     >>> import numpy as np
     >>> dp = np.array([0, -1, 0]) * u.Pa / u.m
     >>> b = np.array([0, 0, 1]) * u.T
-    >>> n = 1 / u.m ** 3
+    >>> n = 1 / u.m**3
     >>> q = 1 * u.C
     >>> diamagnetic_drift(dp, b, n, q)
     <Quantity [ 1., -0., -0.] m / s>
@@ -98,11 +98,11 @@ def ExB_drift(E: u.Quantity[u.V / u.m], B: u.Quantity[u.T]) -> u.Quantity[u.m / 
     >>> import astropy.units as u
     >>> ex = np.array([1, 0, 0])
     >>> ey = np.array([0, 1, 0])
-    >>> ExB_drift(ex * u.V/u.m, ey * u.T)
+    >>> ExB_drift(ex * u.V / u.m, ey * u.T)
     <Quantity [0., 0., 1.] m / s>
-    >>> ExB_drift(ex * u.V/u.m, ex * u.T)
+    >>> ExB_drift(ex * u.V / u.m, ex * u.T)
     <Quantity [0., 0., 0.] m / s>
-    >>> ExB_drift(ex * u.V/u.m, 100 * ey * u.T)
+    >>> ExB_drift(ex * u.V / u.m, 100 * ey * u.T)
     <Quantity [0.  , 0.  , 0.01] m / s>
 
     Notes
@@ -150,11 +150,11 @@ def force_drift(
     >>> from astropy.constants.si import g0, e, m_e
     >>> ex = np.array([1, 0, 0])
     >>> ez = np.array([0, 0, 1])
-    >>> force_drift(-ez*g0*m_e, ex*0.01*u.T, e)
+    >>> force_drift(-ez * g0 * m_e, ex * 0.01 * u.T, e)
     <Quantity [ 0.0000000e+00, -5.5756984e-09,  0.0000000e+00] m / s>
-    >>> force_drift(-ez*g0*m_e, ez*0.01*u.T, e)
+    >>> force_drift(-ez * g0 * m_e, ez * 0.01 * u.T, e)
     <Quantity [ 0., -0.,  0.] m / s>
-    >>> force_drift(-ez*g0*m_e, ex*u.T, e)
+    >>> force_drift(-ez * g0 * m_e, ex * u.T, e)
     <Quantity [ 0.0000000e+00, -5.5756984e-11,  0.0000000e+00] m / s>
 
     Returns

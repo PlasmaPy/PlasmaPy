@@ -2,8 +2,8 @@
 Tests for 'validate` decorators (i.e. decorators that check objects and change them
 when possible).
 """
+
 import inspect
-from typing import Optional
 from unittest import mock
 
 import astropy.units as u
@@ -194,11 +194,14 @@ class TestValidateQuantities:
                     assert arg_validations[key] == val
 
         # method calls `_get_unit_checks` and `_get_value_checks`
-        with mock.patch.object(
-            CheckUnits, "_get_unit_checks", return_value={}
-        ) as mock_cu_get, mock.patch.object(
-            CheckValues, "_get_value_checks", return_value={}
-        ) as mock_cv_get:
+        with (
+            mock.patch.object(
+                CheckUnits, "_get_unit_checks", return_value={}
+            ) as mock_cu_get,
+            mock.patch.object(
+                CheckValues, "_get_value_checks", return_value={}
+            ) as mock_cv_get,
+        ):
             vq = ValidateQuantities(x=u.cm)
             vq.f = self.foo
             sig = inspect.signature(self.foo)
@@ -439,11 +442,14 @@ class TestValidateQuantities:
             "x": {**default_validations, "units": [u.cm]},
             "validations_on_return": {**default_validations, "units": [u.cm]},
         }
-        with mock.patch.object(
-            ValidateQuantities, "_get_validations", return_value=validations
-        ) as mock_vq_get, mock.patch.object(
-            ValidateQuantities, "_validate_quantity", return_value=5 * u.cm
-        ) as mock_vq_validate:
+        with (
+            mock.patch.object(
+                ValidateQuantities, "_get_validations", return_value=validations
+            ) as mock_vq_get,
+            mock.patch.object(
+                ValidateQuantities, "_validate_quantity", return_value=5 * u.cm
+            ) as mock_vq_validate,
+        ):
             wfoo = ValidateQuantities(**validations)(self.foo)
             assert wfoo(5 * u.cm) == 5 * u.cm
             assert mock_vq_get.call_count == 1
@@ -554,9 +560,9 @@ class TestValidateClassAttributes:
     class SampleCase:  # noqa: D106
         def __init__(
             self,
-            x: Optional[int] = None,
-            y: Optional[int] = None,
-            z: Optional[int] = None,
+            x: int | None = None,
+            y: int | None = None,
+            z: int | None = None,
         ) -> None:
             self.x = x
             self.y = y

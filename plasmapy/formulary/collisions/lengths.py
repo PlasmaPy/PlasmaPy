@@ -1,29 +1,29 @@
 """
 Module of length parameters related to collisions.
 """
+
 __all__ = ["impact_parameter_perp", "impact_parameter", "mean_free_path"]
 
-from numbers import Real
 
 import astropy.units as u
 import numpy as np
 from astropy.constants.si import eps0, hbar
-from numpy import pi
 
-from plasmapy import particles
 from plasmapy.formulary.collisions import frequencies, misc
 from plasmapy.formulary.lengths import Debye_length
 from plasmapy.formulary.quantum import Wigner_Seitz_radius
+from plasmapy.particles.decorators import particle_input
+from plasmapy.particles.particle_class import Particle
 from plasmapy.utils.decorators import validate_quantities
 
 
 @validate_quantities(
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()}
 )
-@particles.particle_input
+@particle_input
 def impact_parameter_perp(
     T: u.Quantity[u.K],
-    species: (particles.Particle, particles.Particle),
+    species: (Particle, Particle),
     V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
 ) -> u.Quantity[u.m]:
     r"""
@@ -87,7 +87,7 @@ def impact_parameter_perp(
     --------
     >>> import astropy.units as u
     >>> T = 1e6 * u.K
-    >>> species = ('e', 'p')
+    >>> species = ("e", "p")
     >>> impact_parameter_perp(T, species)
     <Quantity 8.3550...e-12 m>
     """
@@ -100,7 +100,7 @@ def impact_parameter_perp(
         T=T, species=species, V=V
     )
 
-    return charges[0] * charges[1] / (4 * pi * eps0 * reduced_mass * V**2)
+    return charges[0] * charges[1] / (4 * np.pi * eps0 * reduced_mass * V**2)
 
 
 @validate_quantities(
@@ -112,7 +112,7 @@ def impact_parameter(  # noqa: C901
     T: u.Quantity[u.K],
     n_e: u.Quantity[u.m**-3],
     species,
-    z_mean: Real = np.nan,
+    z_mean: float = np.nan,
     V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
     method="classical",
 ):
@@ -219,7 +219,7 @@ def impact_parameter(  # noqa: C901
     >>> import astropy.units as u
     >>> n = 1e19 * u.m**-3
     >>> T = 1e6 * u.K
-    >>> species = ('e', 'p')
+    >>> species = ("e", "p")
     >>> impact_parameter(T, n, species)
     (<Quantity 1.051...e-11 m>, <Quantity 2.182...e-05 m>)
     >>> impact_parameter(T, n, species, V=1e6 * u.m / u.s)
@@ -334,7 +334,7 @@ def mean_free_path(
     T: u.Quantity[u.K],
     n_e: u.Quantity[u.m**-3],
     species,
-    z_mean: Real = np.nan,
+    z_mean: float = np.nan,
     V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
     method="classical",
 ) -> u.Quantity[u.m]:
@@ -425,11 +425,11 @@ def mean_free_path(
     Examples
     --------
     >>> import astropy.units as u
-    >>> n = 1e19 * u.m ** -3
+    >>> n = 1e19 * u.m**-3
     >>> T = 1e6 * u.K
-    >>> mean_free_path(T, n, ('e-', 'p+'))
+    >>> mean_free_path(T, n, ("e-", "p+"))
     <Quantity 7.839... m>
-    >>> mean_free_path(T, n, ('e-', 'p+'), V=1e6 * u.m / u.s)
+    >>> mean_free_path(T, n, ("e-", "p+"), V=1e6 * u.m / u.s)
     <Quantity 0.0109... m>
     """
     # collisional frequency

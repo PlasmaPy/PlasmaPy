@@ -1,30 +1,30 @@
 """
 Module of miscellaneous parameters related to collisions.
 """
+
 __all__ = [
     "mobility",
     "Spitzer_resistivity",
 ]
 
-from numbers import Real
 
 import astropy.units as u
 import numpy as np
 from astropy.constants.si import e
 
-from plasmapy import particles
 from plasmapy.formulary.collisions import frequencies
 from plasmapy.formulary.speeds import thermal_speed
+from plasmapy.particles.atomic import reduced_mass
+from plasmapy.particles.decorators import particle_input
+from plasmapy.particles.particle_class import Particle
 from plasmapy.utils.decorators import validate_quantities
 from plasmapy.utils.decorators.checks import _check_relativistic
 from plasmapy.utils.exceptions import PhysicsError
 
 
 @validate_quantities(T={"equivalencies": u.temperature_energy()})
-@particles.particle_input
-def _process_inputs(
-    T: u.Quantity[u.K], species: (particles.Particle, particles.Particle), V
-):
+@particle_input
+def _process_inputs(T: u.Quantity[u.K], species: (Particle, Particle), V):
     """
     Helper function for processing inputs to functionality contained
     in `plasmapy.formulary.collisions`.
@@ -36,14 +36,14 @@ def _process_inputs(
     charges = [np.abs(p.charge) for p in species]
 
     # obtaining reduced mass of 2 particle collision system
-    reduced_mass = particles.reduced_mass(*species)
+    reduced_mass_ = reduced_mass(*species)
 
     # getting thermal velocity of system if no velocity is given
-    V = _replace_nan_velocity_with_thermal_velocity(V, T, reduced_mass)
+    V = _replace_nan_velocity_with_thermal_velocity(V, T, reduced_mass_)
 
     _check_relativistic(V, "V")
 
-    return T, masses, charges, reduced_mass, V
+    return T, masses, charges, reduced_mass_, V
 
 
 # TODO: Remove redundant mass parameter
@@ -51,7 +51,7 @@ def _replace_nan_velocity_with_thermal_velocity(
     V,
     T,
     m,
-    species=particles.Particle("e-"),  # noqa: B008
+    species=Particle("e-"),  # noqa: B008
 ):
     """
     Get thermal velocity of system if no velocity is given, for a given
@@ -89,7 +89,7 @@ def mobility(
     T: u.Quantity[u.K],
     n_e: u.Quantity[u.m**-3],
     species,
-    z_mean: Real = np.nan,
+    z_mean: float = np.nan,
     V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
     method="classical",
 ) -> u.Quantity[u.m**2 / (u.V * u.s)]:
@@ -189,10 +189,12 @@ def mobility(
 
     Examples
     --------
+    .. autolink-skip:: section
+
     >>> import astropy.units as u
-    >>> n = 1e19 * u.m ** -3
+    >>> n = 1e19 * u.m**-3
     >>> T = 1e6 * u.K
-    >>> species = ('e', 'p')
+    >>> species = ("e", "p")
     >>> mobility(T, n, species)  # doctest: +SKIP
     <Quantity 250505... m2 / (V s)>
     >>> mobility(T, n, species, V=1e6 * u.m / u.s)  # doctest: +SKIP
@@ -204,9 +206,9 @@ def mobility(
     # we do this after collision_frequency since collision_frequency
     # already has a _process_inputs check and we are doing this just
     # to recover the charges, mass, etc.
-    T, masses, charges, reduced_mass, V = _process_inputs(T=T, species=species, V=V)
+    T, masses, charges, reduced_mass_, V = _process_inputs(T=T, species=species, V=V)
     z_val = (charges[0] + charges[1]) / 2 if np.isnan(z_mean) else z_mean * e
-    return z_val / (reduced_mass * freq)
+    return z_val / (reduced_mass_ * freq)
 
 
 @validate_quantities(
@@ -217,7 +219,7 @@ def Spitzer_resistivity(
     T: u.Quantity[u.K],
     n: u.Quantity[u.m**-3],
     species,
-    z_mean: Real = np.nan,
+    z_mean: float = np.nan,
     V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
     method="classical",
 ) -> u.Quantity[u.Ohm * u.m]:
@@ -315,10 +317,12 @@ def Spitzer_resistivity(
 
     Examples
     --------
+    .. autolink-skip:: section
+
     >>> import astropy.units as u
-    >>> n = 1e19 * u.m ** -3
+    >>> n = 1e19 * u.m**-3
     >>> T = 1e6 * u.K
-    >>> species = ('e', 'p')
+    >>> species = ("e", "p")
     >>> Spitzer_resistivity(T, n, species)  # doctest: +SKIP
     <Quantity 2.4915...e-06 Ohm m>
     >>> Spitzer_resistivity(T, n, species, V=1e6 * u.m / u.s)  # doctest: +SKIP
@@ -329,9 +333,9 @@ def Spitzer_resistivity(
         T=T, n=n, species=species, z_mean=z_mean, V=V, method=method
     )
     # fetching additional parameters
-    T, masses, charges, reduced_mass, V = _process_inputs(T=T, species=species, V=V)
+    T, masses, charges, reduced_mass_, V = _process_inputs(T=T, species=species, V=V)
     return (
-        freq * reduced_mass / (n * charges[0] * charges[1])
+        freq * reduced_mass_ / (n * charges[0] * charges[1])
         if np.isnan(z_mean)
-        else freq * reduced_mass / (n * (z_mean * e) ** 2)
+        else freq * reduced_mass_ / (n * (z_mean * e) ** 2)
     )
