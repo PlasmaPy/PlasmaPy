@@ -102,7 +102,7 @@ def mass_density(
     z_ratio : `int`, `float`, optional
         The ratio of the charge numbers corresponding to the plasma species
         represented by ``density`` and the ``particle``.  For example, if the
-        given ``density`` is and electron density and ``particle`` is doubly
+        given ``density`` is an electron density and ``particle`` is doubly
         ionized ``He``, then ``z_ratio = -0.5``.  Default is ``1``.
 
     Raises

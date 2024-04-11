@@ -15,6 +15,7 @@ import warnings
 from abc import ABC, abstractmethod
 from collections import namedtuple
 from functools import cached_property
+from typing import ClassVar
 
 import astropy.units as u
 import numpy as np
@@ -113,7 +114,7 @@ class AbstractGrid(ABC):
 
     # These standard keys are used to refer to certain
     # physical quantities. This dictionary also provides the expected unit.
-    _recognized_quantities_list = [
+    _recognized_quantities_list: ClassVar[list[RecognizedQuantity]] = [
         RecognizedQuantity("x", "x spatial position", u.m),
         RecognizedQuantity("y", "y spatial position", u.m),
         RecognizedQuantity("z", "z spatial position", u.m),
@@ -128,7 +129,7 @@ class AbstractGrid(ABC):
     ]
 
     # Create a dict of recognized quantities for fast access by key
-    _recognized_quantities = {}
+    _recognized_quantities: ClassVar[list[RecognizedQuantity]] = {}
     for _rq in _recognized_quantities_list:
         _recognized_quantities[_rq.key] = _rq
 
@@ -885,7 +886,7 @@ class AbstractGrid(ABC):
 
     # This property holds the list of quantity keys currently being interpolated
     # It's used in the following cached properties
-    _interp_args = []
+    _interp_args: ClassVar = []
 
     @cached_property
     def _interp_quantities(self):

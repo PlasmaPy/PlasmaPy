@@ -12,8 +12,8 @@ arrow==1.3.0
     # via isoduration
 asteval==0.9.32
     # via lmfit
-astropy==6.0.0
-astropy-iers-data==0.2024.3.4.0.30.17
+astropy==6.0.1
+astropy-iers-data==0.2024.4.8.0.32.4
     # via astropy
 asttokens==2.4.1
     # via stack-data
@@ -48,11 +48,11 @@ click==8.1.7
     # via towncrier
 colorama==0.4.6
     # via tox
-comm==0.2.1
+comm==0.2.2
     # via
     #   ipykernel
     #   ipywidgets
-contourpy==1.2.0
+contourpy==1.2.1
     # via matplotlib
 cycler==0.12.1
     # via matplotlib
@@ -62,6 +62,8 @@ decorator==5.1.1
     # via ipython
 defusedxml==0.7.1
     # via nbconvert
+dill==0.3.8
+    # via lmfit
 distlib==0.3.8
     # via virtualenv
 docutils==0.20.1
@@ -72,24 +74,24 @@ docutils==0.20.1
     #   sphinx-rtd-theme
     #   sphinx-tabs
     #   sphinxcontrib-bibtex
-execnet==2.0.2
+execnet==2.1.1
     # via pytest-xdist
 executing==2.0.1
     # via stack-data
 fastjsonschema==2.19.1
     # via nbformat
-filelock==3.13.1
+filelock==3.13.3
     # via
     #   tox
     #   virtualenv
-fonttools==4.49.0
+fonttools==4.51.0
     # via matplotlib
 fqdn==1.5.1
     # via jsonschema
 future==1.0.0
     # via uncertainties
 h5py==3.10.0
-hypothesis==6.99.2
+hypothesis==6.100.0
 identify==2.5.35
     # via pre-commit
 idna==3.6
@@ -103,8 +105,8 @@ incremental==22.10.0
     # via towncrier
 iniconfig==2.0.0
     # via pytest
-ipykernel==6.29.3
-ipython==8.22.2
+ipykernel==6.29.4
+ipython==8.23.0
     # via
     #   ipykernel
     #   ipywidgets
@@ -119,10 +121,9 @@ jinja2==3.1.3
     #   jupyterlab-server
     #   nbconvert
     #   nbsphinx
-    #   numpydoc
     #   sphinx
     #   towncrier
-json5==0.9.22
+json5==0.9.24
     # via jupyterlab-server
 jsonpointer==2.4
     # via jsonschema
@@ -133,13 +134,13 @@ jsonschema==4.21.1
     #   nbformat
 jsonschema-specifications==2023.12.1
     # via jsonschema
-jupyter-client==8.6.0
+jupyter-client==8.6.1
     # via
     #   ipykernel
     #   jupyter-server
     #   nbclient
     #   voila
-jupyter-core==5.7.1
+jupyter-core==5.7.2
     # via
     #   ipykernel
     #   jupyter-client
@@ -148,17 +149,17 @@ jupyter-core==5.7.1
     #   nbconvert
     #   nbformat
     #   voila
-jupyter-events==0.9.0
+jupyter-events==0.10.0
     # via jupyter-server
 jupyter-server==2.13.0
     # via
     #   jupyterlab-server
     #   voila
-jupyter-server-terminals==0.5.2
+jupyter-server-terminals==0.5.3
     # via jupyter-server
 jupyterlab-pygments==0.3.0
     # via nbconvert
-jupyterlab-server==2.25.3
+jupyterlab-server==2.26.0
     # via voila
 jupyterlab-widgets==3.0.10
     # via ipywidgets
@@ -168,12 +169,12 @@ latexcodec==3.0.0
     # via pybtex
 llvmlite==0.42.0
     # via numba
-lmfit==1.2.2
+lmfit==1.3.0
 markupsafe==2.1.5
     # via
     #   jinja2
     #   nbconvert
-matplotlib==3.8.3
+matplotlib==3.8.4
 matplotlib-inline==0.1.6
     # via
     #   ipykernel
@@ -185,12 +186,12 @@ nbclient==0.7.4
     # via
     #   nbconvert
     #   voila
-nbconvert==7.16.2
+nbconvert==7.16.3
     # via
     #   jupyter-server
     #   nbsphinx
     #   voila
-nbformat==5.9.2
+nbformat==5.10.4
     # via
     #   jupyter-server
     #   nbclient
@@ -201,7 +202,7 @@ nest-asyncio==1.6.0
     # via ipykernel
 nodeenv==1.8.0
     # via pre-commit
-numba==0.59.0
+numba==0.59.1
 numpy==1.26.4
     # via
     #   astropy
@@ -214,7 +215,7 @@ numpy==1.26.4
     #   pyerfa
     #   scipy
     #   xarray
-numpydoc==1.6.0
+numpydoc==1.7.0
 overrides==7.7.0
     # via jupyter-server
 packaging==24.0
@@ -230,16 +231,17 @@ packaging==24.0
     #   pytest-rerunfailures
     #   sphinx
     #   tox
+    #   tox-uv
     #   xarray
 pandas==2.2.1
     # via xarray
 pandocfilters==1.5.1
     # via nbconvert
-parso==0.8.3
+parso==0.8.4
     # via jedi
 pexpect==4.9.0
     # via ipython
-pillow==10.2.0
+pillow==10.3.0
     # via
     #   matplotlib
     #   sphinx-gallery
@@ -252,7 +254,7 @@ pluggy==1.4.0
     # via
     #   pytest
     #   tox
-pre-commit==3.6.2
+pre-commit==3.7.0
 prometheus-client==0.20.0
     # via jupyter-server
 prompt-toolkit==3.0.43
@@ -271,9 +273,9 @@ pybtex==0.24.0
     #   sphinxcontrib-bibtex
 pybtex-docutils==1.0.3
     # via sphinxcontrib-bibtex
-pycparser==2.21
+pycparser==2.22
     # via cffi
-pyerfa==2.0.1.1
+pyerfa==2.0.1.3
     # via astropy
 pygments==2.17.2
     # via
@@ -294,7 +296,7 @@ pytest==8.1.1
 pytest-datadir==1.5.0
     # via pytest-regressions
 pytest-regressions==2.5.0
-pytest-rerunfailures==13.0
+pytest-rerunfailures==14.0
 pytest-xdist==3.5.0
 python-dateutil==2.9.0.post0
     # via
@@ -318,7 +320,7 @@ pyzmq==25.1.2
     #   ipykernel
     #   jupyter-client
     #   jupyter-server
-referencing==0.33.0
+referencing==0.34.0
     # via
     #   jsonschema
     #   jsonschema-specifications
@@ -339,11 +341,11 @@ rpds-py==0.18.0
     # via
     #   jsonschema
     #   referencing
-scipy==1.12.0
+scipy==1.13.0
     # via lmfit
-send2trash==1.8.2
+send2trash==1.8.3
     # via jupyter-server
-setuptools==69.1.1
+setuptools==69.2.0
     # via nodeenv
 six==1.16.0
     # via
@@ -411,7 +413,7 @@ stack-data==0.6.3
     # via ipython
 tabulate==0.9.0
     # via numpydoc
-terminado==0.18.0
+terminado==0.18.1
     # via
     #   jupyter-server
     #   jupyter-server-terminals
@@ -426,9 +428,11 @@ tornado==6.4
     #   terminado
 towncrier==23.11.0
     # via sphinx-changelog
-tox==4.14.1
+tox==4.14.2
+    # via tox-uv
+tox-uv==1.7.0
 tqdm==4.66.2
-traitlets==5.14.1
+traitlets==5.14.2
     # via
     #   comm
     #   ipykernel
@@ -444,7 +448,7 @@ traitlets==5.14.1
     #   nbformat
     #   nbsphinx
     #   voila
-types-python-dateutil==2.8.19.20240311
+types-python-dateutil==2.9.0.20240316
     # via arrow
 tzdata==2024.1
     # via pandas
@@ -455,11 +459,13 @@ uri-template==1.3.0
     # via jsonschema
 urllib3==2.2.1
     # via requests
+uv==0.1.29
+    # via tox-uv
 virtualenv==20.25.1
     # via
     #   pre-commit
     #   tox
-voila==0.5.5
+voila==0.5.6
 wcwidth==0.2.13
     # via prompt-toolkit
 webcolors==1.13
@@ -475,4 +481,4 @@ websockets==12.0
 widgetsnbextension==4.0.10
     # via ipywidgets
 wrapt==1.16.0
-xarray==2024.2.0
+xarray==2024.3.0
