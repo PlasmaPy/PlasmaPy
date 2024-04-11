@@ -5,6 +5,7 @@ Module containing plasma simulation tools.
 
    |expect-api-changes|
 """
+
 __all__ = [
     "AbstractNormalizations",
     "AbstractSimulation",

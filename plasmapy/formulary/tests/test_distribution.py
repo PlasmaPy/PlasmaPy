@@ -229,7 +229,7 @@ class Test_Maxwellian_speed_1D:
         xData1D = np.arange(0, 10.01, 0.01) * self.vTh
         yData1D = Maxwellian_speed_1D(v=xData1D, T=self.T, particle=self.particle)
         # integrating, this should be close to 1
-        integ = spint.trapz(y=yData1D, x=xData1D)
+        integ = spint.trapezoid(y=yData1D, x=xData1D)
         exceptStr = "Integral of distribution function should be 1."
         assert np.isclose(integ.value, 1), exceptStr
 
@@ -543,7 +543,7 @@ class Test_Maxwellian_speed_2D:
         xData1D = np.arange(0, 10.001, 0.001) * self.vTh
         yData1D = Maxwellian_speed_2D(v=xData1D, T=self.T, particle=self.particle)
         # integrating, this should be close to 1
-        integ = spint.trapz(y=yData1D, x=xData1D)
+        integ = spint.trapezoid(y=yData1D, x=xData1D)
         exceptStr = "Integral of distribution function should be 1."
         assert np.isclose(integ.value, 1), exceptStr
 
@@ -660,7 +660,6 @@ class Test_Maxwellian_speed_2D:
             )
 
 
-@pytest.mark.slow()
 class Test_Maxwellian_velocity_3D:
     @classmethod
     def setup_class(cls) -> None:
@@ -680,6 +679,12 @@ class Test_Maxwellian_velocity_3D:
         cls.vz_drift2 = 1e5 * u.m / u.s
         cls.distFuncTrue = 6.465458269306909e-82
 
+    @pytest.mark.skip(
+        reason=(
+            "This test is extremely slow because of the 3D integral, so "
+            "it should only be run when updating distribution.py."
+        )
+    )
     def test_norm(self) -> None:
         """
         Tests whether distribution function is normalized, and integrates to 1.
@@ -873,7 +878,7 @@ class Test_Maxwellian_speed_3D:
         xData1D = np.arange(0, 10.01, 0.01) * self.vTh
         yData1D = Maxwellian_speed_3D(v=xData1D, T=self.T, particle=self.particle)
         # integrating, this should be close to 1
-        integ = spint.trapz(y=yData1D, x=xData1D)
+        integ = spint.trapezoid(y=yData1D, x=xData1D)
         exceptStr = "Integral of distribution function should be 1."
         assert np.isclose(integ.value, 1), exceptStr
 
@@ -1297,6 +1302,12 @@ class Test_kappa_velocity_3D:
     #
     #        return
 
+    @pytest.mark.skip(
+        reason=(
+            "This test is extremely slow because of the 3D integral, so "
+            "it should only be run when updating distribution.py."
+        )
+    )
     def test_norm(self) -> None:
         """
         Tests whether distribution function is normalized, and integrates to 1.

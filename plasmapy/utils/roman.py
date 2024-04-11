@@ -11,6 +11,7 @@ it under the terms of the Python 2.1.1 license, available at
 https://www.python.org/download/releases/2.1.1/license/
 
 """
+
 __all__ = [
     "to_roman",
     "from_roman",
@@ -58,7 +59,7 @@ _romanNumeralPattern = re.compile(
 )
 
 
-def to_roman(n: Integral | np.integer) -> str:
+def to_roman(n: int | np.integer) -> str:
     """
     Convert an integer to a Roman numeral.
 
@@ -106,7 +107,7 @@ def to_roman(n: Integral | np.integer) -> str:
     return result
 
 
-def from_roman(s: str) -> Integral:
+def from_roman(s: str) -> int:
     """
     Convert a Roman numeral to an integer.
 

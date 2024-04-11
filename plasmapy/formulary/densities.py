@@ -1,16 +1,16 @@
 """Functions to calculate plasma density parameters."""
+
 __all__ = [
     "critical_density",
     "mass_density",
 ]
 __aliases__ = ["rho_"]
-import numbers
 
 import astropy.units as u
 import numpy as np
 from astropy.constants.si import e, eps0, m_e
 
-from plasmapy.particles import Particle, ParticleLike
+from plasmapy.particles.particle_class import Particle, ParticleLike
 from plasmapy.utils.decorators import validate_quantities
 
 __all__ += __aliases__
@@ -69,7 +69,7 @@ def critical_density(omega: u.Quantity[u.rad / u.s]) -> u.Quantity[u.m**-3]:
 def mass_density(
     density: (u.m**-3, u.kg / (u.m**3)),
     particle: ParticleLike,
-    z_ratio: numbers.Real | None = 1,
+    z_ratio: float | None = 1,
 ) -> u.Quantity[u.kg / u.m**3]:
     r"""
     Calculate the mass density from a number density.
@@ -102,7 +102,7 @@ def mass_density(
     z_ratio : `int`, `float`, optional
         The ratio of the charge numbers corresponding to the plasma species
         represented by ``density`` and the ``particle``.  For example, if the
-        given ``density`` is and electron density and ``particle`` is doubly
+        given ``density`` is an electron density and ``particle`` is doubly
         ionized ``He``, then ``z_ratio = -0.5``.  Default is ``1``.
 
     Raises

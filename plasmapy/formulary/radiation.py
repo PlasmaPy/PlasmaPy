@@ -13,7 +13,8 @@ import numpy as np
 from scipy.special import exp1
 
 from plasmapy.formulary.frequencies import plasma_frequency
-from plasmapy.particles import ParticleLike, particle_input
+from plasmapy.particles.decorators import particle_input
+from plasmapy.particles.particle_class import ParticleLike
 from plasmapy.utils.decorators import validate_quantities
 from plasmapy.utils.exceptions import PhysicsError
 
@@ -32,10 +33,10 @@ def thermal_bremsstrahlung(
     n_i: u.Quantity[u.m**-3] = None,
     ion: ParticleLike = "p+",
     kmax: u.Quantity[u.m] = None,
-) -> np.ndarray:
+) -> u.Quantity[u.kg * u.m**-1 * u.s**-2]:
     r"""
-    Calculate the bremsstrahlung emission spectrum for a Maxwellian plasma
-    in the Rayleigh-Jeans limit :math:`ℏ ω ≪ k_B T_e`.
+    Calculate the bremsstrahlung emission spectrum for a Maxwellian
+    plasma in the Rayleigh-Jeans limit :math:`ℏ ω ≪ k_B T_e`.
 
     .. math::
        \frac{dP}{dω} = \frac{8 \sqrt{2}}{3\sqrt{π}}
@@ -56,8 +57,8 @@ def thermal_bremsstrahlung(
         y = \frac{1}{2} \frac{ω^2 m_e}{k_{max}^2 k_B T_e}
 
     where :math:`k_{max}` is a maximum wavenumber approximated here as
-    :math:`k_{max} = 1/λ_B` where  :math:`λ_B` is the electron
-    de Broglie wavelength.
+    :math:`k_{max} = 1/λ_B` where  :math:`λ_B` is the electron de
+    Broglie wavelength.
 
     Parameters
     ----------
@@ -66,14 +67,16 @@ def thermal_bremsstrahlung(
         calculated (convertible to Hz).
 
     n_e : `~astropy.units.Quantity`
-        Electron number density in the plasma (convertible to m\ :sup:`-3`\ ).
+        Electron number density in the plasma (convertible to
+        m\ :sup:`-3`\ ).
 
     T_e : `~astropy.units.Quantity`
         Temperature of the electrons (in K or convertible to eV).
 
     n_i : `~astropy.units.Quantity`, optional
-        Ion number density in the plasma (convertible to m\ :sup:`-3`\ ). Defaults
-        to the quasi-neutral condition :math:`n_i = n_e / Z`\ .
+        Ion number density in the plasma (convertible to
+        m\ :sup:`-3`\ ). Defaults to the quasineutral condition
+        :math:`n_i = n_e / Z`\ .
 
     ion : |particle-like|, default: ``"p+"``
         An instance of `~plasmapy.particles.particle_class.Particle`, or
@@ -91,23 +94,36 @@ def thermal_bremsstrahlung(
     Notes
     -----
     For details, see :cite:t:`bekefi:1966`\ .
+
+    Examples
+    --------
+    >>> import astropy.units as u
+    >>> import numpy as np
+    >>> thermal_bremsstrahlung(10**15 * u.Hz, 1e10 * u.cm**-3, 2e7 * u.K)  # solar flare
+    <Quantity 8.17560238e-23 kg / (m s2)>
+    >>> thermal_bremsstrahlung(
+    ...     10 ** np.arange(15, 16, 0.1) * u.Hz, 1e22 * u.cm**-3, 1e2 * u.eV
+    ... )
+    <Quantity [ 79.59052452, 117.73282254, 127.85119908, 127.12505588,
+           121.01549498, 112.02367743, 101.45553309,  90.04503155,
+            78.23475796,  66.32227273] kg / (m s2)>
+    >>> thermal_bremsstrahlung(
+    ...     1e17 * u.Hz, 1e16 * u.cm**-3, 1e4 * u.eV, ion="Fe-56 12+"
+    ... )
+    <Quantity 2.16932808e-10 kg / (m s2)>
     """
 
-    # Default n_i is n_e/Z:
-    if n_i is None:
+    if n_i is None:  # default is quasineutrality
         n_i = n_e / ion.charge_number
 
-    # Default value of kmax is the electrom thermal de Broglie wavelength
+    # Default value of kmax is the electron thermal de Broglie wavelength
     if kmax is None:
         kmax = (np.sqrt(const.m_e.si * const.k_B.si * T_e) / const.hbar.si).to(1 / u.m)
 
-    # Convert frequencies to angular frequencies
     ω = (frequencies * 2 * np.pi * u.rad).to(u.rad / u.s)
-
-    # Calculate the electron plasma frequency
     ω_pe = plasma_frequency(n=n_e, particle="e-")
 
-    # Check that all ω < wpe (this formula is only valid in this limit)
+    # Check that all ω < ω_pe (this formula is only valid in this limit)
     if np.min(ω) < ω_pe:
         raise PhysicsError(
             "Lowest frequency must be larger than the electron "

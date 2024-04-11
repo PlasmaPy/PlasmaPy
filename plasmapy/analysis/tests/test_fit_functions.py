@@ -1,6 +1,7 @@
 """
 Tests for the fitting function classes defined in `plasmapy.analysis.fit_functions`.
 """
+
 from abc import ABC, abstractmethod
 from contextlib import nullcontext as does_not_raise
 
@@ -316,7 +317,7 @@ class BaseFFTests(ABC):
 
         with with_condition:
             results = ff_obj.func_err(x, **kwargs)
-            if "rety" in kwargs and kwargs["rety"]:
+            if kwargs.get("rety"):
                 y_err, y = results
             else:
                 y_err = results
@@ -373,8 +374,7 @@ class BaseFFTests(ABC):
                 assert np.allclose(y_err, y_err_expected)
 
     @abstractmethod
-    def test_root_solve(self):
-        ...
+    def test_root_solve(self): ...
 
     def test_curve_fit(self) -> None:
         """Test the `curve_fit` method."""

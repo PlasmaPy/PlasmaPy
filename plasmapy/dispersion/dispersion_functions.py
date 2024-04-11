@@ -2,10 +2,9 @@
 Module containing functionality focused on the plasma dispersion function
 :math:`Z(ζ)`.
 """
+
 __all__ = ["plasma_dispersion_func", "plasma_dispersion_func_deriv"]
 
-
-from numbers import Complex
 
 import astropy.units as u
 import numpy as np
@@ -13,8 +12,8 @@ from scipy.special import wofz as faddeeva_function
 
 
 def plasma_dispersion_func(
-    zeta: Complex | np.ndarray | u.Quantity[u.dimensionless_unscaled],
-) -> Complex | np.ndarray | u.Quantity[u.dimensionless_unscaled]:
+    zeta: complex | np.ndarray | u.Quantity[u.dimensionless_unscaled],
+) -> complex | np.ndarray | u.Quantity[u.dimensionless_unscaled]:
     r"""
     Calculate the plasma dispersion function.
 
@@ -79,8 +78,8 @@ def plasma_dispersion_func(
 
 
 def plasma_dispersion_func_deriv(
-    zeta: Complex | np.ndarray | u.Quantity[u.dimensionless_unscaled],
-) -> Complex | np.ndarray | u.Quantity[u.dimensionless_unscaled]:
+    zeta: complex | np.ndarray | u.Quantity[u.dimensionless_unscaled],
+) -> complex | np.ndarray | u.Quantity[u.dimensionless_unscaled]:
     r"""
     Calculate the derivative of the plasma dispersion function.
 

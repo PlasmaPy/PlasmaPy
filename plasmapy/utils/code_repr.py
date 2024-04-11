@@ -4,7 +4,6 @@ __all__ = ["call_string", "attribute_call_string", "method_call_string"]
 
 import inspect
 from collections.abc import Callable
-from numbers import Integral
 from typing import Any
 
 import astropy.units as u
@@ -30,7 +29,7 @@ def _code_repr_of_ndarray(array: np.ndarray, max_items=np.inf) -> str:
         s = s.replace("inf", "np.inf")
         return s.replace("nan", "np.nan")
 
-    def replace_excess_items_with_ellipsis(s: str, max_items: Integral):
+    def replace_excess_items_with_ellipsis(s: str, max_items: int):
         substrings_between_commas = s.split(",")
         to_comma_before_ellipsis = ",".join(substrings_between_commas[:max_items])
         closing_brackets = "]" * substrings_between_commas[-1].count("]")
@@ -191,7 +190,7 @@ def call_string(
     f: Callable,
     args: Any = None,
     kwargs: dict[str, Any] | None = None,
-    max_items: Integral = 12,
+    max_items: int = 12,
 ) -> str:
     """
     Approximate a call of a function or class with positional and
@@ -253,7 +252,7 @@ def attribute_call_string(
     attr: str,
     args_to_cls: tuple | Any | None = None,
     kwargs_to_cls: dict[str, Any] | None = None,
-    max_items: Integral = 12,
+    max_items: int = 12,
 ) -> str:
     """
     Approximate the command to instantiate a class, and access an
@@ -330,7 +329,7 @@ def method_call_string(
     kwargs_to_cls: dict[str, Any] | None = None,
     args_to_method: Any | None = None,
     kwargs_to_method: dict[str, Any] | None = None,
-    max_items: Integral = 12,
+    max_items: int = 12,
 ) -> str:
     """
     Approximate the command to instantiate a class, and then call a

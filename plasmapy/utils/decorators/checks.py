@@ -1,6 +1,7 @@
 """
 Decorator for checking input/output arguments of functions.
 """
+
 __all__ = [
     "check_values",
     "check_units",
@@ -16,7 +17,7 @@ import inspect
 import warnings
 from functools import reduce
 from operator import add
-from typing import Any
+from typing import Any, ClassVar
 
 import astropy.units as u
 import numpy as np
@@ -128,7 +129,7 @@ class CheckValues(CheckBase):
     #   1. Add a key & default value to the `__check_defaults` dictionary
     #   2. Add a corresponding if-statement to method `_check_value`
     #
-    __check_defaults = {
+    __check_defaults: ClassVar[dict[str, bool]] = {
         "can_be_negative": True,
         "can_be_complex": False,
         "can_be_inf": True,
@@ -459,7 +460,7 @@ class CheckUnits(CheckBase):
     #   2. Add a corresponding conditioning statement to `_get_unit_checks`
     #   3. Add a corresponding behavior to `_check_unit`
     #
-    __check_defaults = {
+    __check_defaults: ClassVar[dict[str, object]] = {
         "units": None,
         "equivalencies": None,
         "pass_equivalent_units": False,

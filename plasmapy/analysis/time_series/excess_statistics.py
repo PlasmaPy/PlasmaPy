@@ -37,8 +37,8 @@ class ExcessStatistics:
     `ValueError`
         If ``time_step`` ≤ 0.
 
-    Example
-    -------
+    Examples
+    --------
     >>> from plasmapy.analysis.time_series.excess_statistics import ExcessStatistics
     >>> signal = [0, 0, 2, 2, 0, 4]
     >>> thresholds = [1, 3, 5]

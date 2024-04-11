@@ -1,0 +1,1 @@
+Added known limitations of |particle_input| to its docstring.

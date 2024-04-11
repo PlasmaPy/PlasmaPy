@@ -1,8 +1,8 @@
 """Functions that are related to nuclear reactions."""
+
 __all__ = ["nuclear_binding_energy", "nuclear_reaction_energy", "mass_energy"]
 
 import re
-from numbers import Integral
 
 import astropy.units as u
 
@@ -13,7 +13,7 @@ from plasmapy.particles.particle_class import Particle
 
 @particle_input(any_of={"isotope", "baryon"})
 def nuclear_binding_energy(
-    particle: Particle, mass_numb: Integral | None = None
+    particle: Particle, mass_numb: int | None = None
 ) -> u.Quantity[u.J]:
     """
     Return the nuclear binding energy associated with an isotope.
@@ -69,9 +69,7 @@ def nuclear_binding_energy(
 
 
 @particle_input
-def mass_energy(
-    particle: Particle, mass_numb: Integral | None = None
-) -> u.Quantity[u.J]:
+def mass_energy(particle: Particle, mass_numb: int | None = None) -> u.Quantity[u.J]:
     """
     Return a particle's mass energy.  If the particle is an isotope or
     nuclide, return the nuclear mass energy only.

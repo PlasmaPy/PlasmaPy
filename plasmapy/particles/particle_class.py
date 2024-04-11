@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import Any
+
 __all__ = [
     "AbstractParticle",
     "AbstractPhysicalParticle",
@@ -14,12 +16,13 @@ __all__ = [
 ]
 
 import json
+import typing
 import warnings
 from abc import ABC, abstractmethod
 from collections import defaultdict, namedtuple
 from datetime import datetime
 from numbers import Integral, Real
-from typing import TYPE_CHECKING, TypeAlias, Union
+from typing import TYPE_CHECKING, TypeAlias
 
 import astropy.constants as const
 import astropy.units as u
@@ -43,7 +46,9 @@ from plasmapy.utils._units_helpers import _get_physical_type_dict
 if TYPE_CHECKING:
     from collections.abc import Iterable, Sequence
 
-_classification_categories = {
+    from plasmapy.particles.particle_collections import ParticleList
+
+_classification_categories: set[str] = {
     "lepton",
     "antilepton",
     "fermion",
@@ -61,7 +66,7 @@ _classification_categories = {
     "custom",
 }
 
-_periodic_table_categories = {
+_periodic_table_categories: set[str] = {
     "nonmetal",
     "metal",
     "alkali metal",
@@ -75,11 +80,11 @@ _periodic_table_categories = {
     "lanthanide",
 }
 
-_atomic_property_categories = {"element", "isotope", "ion"}
+_atomic_property_categories: set[str] = {"element", "isotope", "ion"}
 
-_specific_particle_categories = {"electron", "positron", "proton", "neutron"}
+_specific_particle_categories: set[str] = {"electron", "positron", "proton", "neutron"}
 
-valid_categories = (
+valid_categories: set[str] = (
     _periodic_table_categories
     | _classification_categories
     | _atomic_property_categories
@@ -94,7 +99,7 @@ See Also
 """
 
 
-def _category_errmsg(particle, category: str) -> str:
+def _category_errmsg(particle: str | Particle, category: str) -> str:
     """
     Return an error message when an attribute raises an
     `~plasmapy.particles.exceptions.InvalidElementError`,
@@ -113,18 +118,18 @@ class AbstractParticle(ABC):
 
     @property
     @abstractmethod
-    def mass(self) -> u.Quantity | float:
+    def mass(self) -> u.Quantity[u.kg] | float:
         """Provide the particle's mass."""
         raise NotImplementedError
 
     @property
     @abstractmethod
-    def charge(self) -> u.Quantity | float:
+    def charge(self) -> u.Quantity[u.C] | float:
         """Provide the particle's electric charge."""
         raise NotImplementedError
 
     @property
-    def json_dict(self) -> dict:
+    def json_dict(self) -> dict[str, Any]:
         """
         A dictionary representation of the particle object that is JSON
         friendly (i.e. convertible to a JSON object).
@@ -173,7 +178,7 @@ class AbstractParticle(ABC):
         """
         raise ParticleError("The truth value of a particle is not defined.")
 
-    def json_dump(self, fp, **kwargs):
+    def json_dump(self, fp, **kwargs: dict[str, Any]) -> None:
         """
         Write the particle's `json_dict` to the ``fp`` file object using
         `json.dump`.
@@ -186,9 +191,9 @@ class AbstractParticle(ABC):
         **kwargs:
             Any keyword accepted by `json.dump`.
         """
-        return json.dump(self.json_dict, fp, **kwargs)
+        return json.dump(self.json_dict, fp, **kwargs)  # type: ignore[arg-type]
 
-    def json_dumps(self, **kwargs) -> str:
+    def json_dumps(self, **kwargs: object) -> str:
         """
         Serialize the particle's `json_dict` into a JSON formatted `str`
         using `json.dumps`.
@@ -210,7 +215,7 @@ class AbstractPhysicalParticle(AbstractParticle):
     """Base class for particles that are defined with physical units."""
 
     @property
-    def _as_particle_list(self):
+    def _as_particle_list(self) -> ParticleList:
         # Avoid circular imports by importing here
         from plasmapy.particles.particle_collections import ParticleList
 
@@ -368,19 +373,19 @@ class AbstractPhysicalParticle(AbstractParticle):
 
         return require <= self.categories
 
-    def __add__(self, other):
+    def __add__(self, other: str | Particle | ParticleList) -> ParticleList:
         return self._as_particle_list + other
 
-    def __radd__(self, other):
+    def __radd__(self, other: str) -> ParticleList:
         return other + self._as_particle_list
 
-    def __mul__(self, other):
+    def __mul__(self, other: int) -> ParticleList:
         return self._as_particle_list.__mul__(other)
 
-    def __rmul__(self, other):
+    def __rmul__(self, other: int) -> ParticleList:
         return self._as_particle_list.__mul__(other)
 
-    def __gt__(self, other):
+    def __gt__(self, other: ParticleList) -> u.Quantity:
         return self._as_particle_list.__gt__(other)
 
 
@@ -644,7 +649,7 @@ class Particle(AbstractPhysicalParticle):
         else:
             self._store_identity_of_atom(argument)
 
-    def _store_identity_of_atom(self, argument) -> None:
+    def _store_identity_of_atom(self, argument: str | int) -> None:
         """
         Store the particle's symbol, element, isotope, ion, mass number,
         and charge number.
@@ -816,7 +821,7 @@ class Particle(AbstractPhysicalParticle):
         """Return the particle's symbol."""
         return self.symbol
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: object) -> bool:
         """
         Determine if two objects correspond to the same particle.
 
@@ -897,7 +902,7 @@ class Particle(AbstractPhysicalParticle):
         return self.antiparticle
 
     @property
-    def json_dict(self) -> dict:
+    def json_dict(self) -> dict[str, Any]:
         """
         A JSON friendly dictionary representation of the particle.
 
@@ -1003,6 +1008,24 @@ class Particle(AbstractPhysicalParticle):
         'He-4'
         """
         return self._attributes["isotope"]
+
+    @property
+    def nucleus(self) -> Particle:
+        """
+        Return the nucleus of an atom.
+
+        Returns
+        -------
+        `~plasmapy.particles.exceptions.InvalidElementError`
+            If the particle is not an element, isotope, or ion.
+        """
+        if not self.element:
+            errmsg = (
+                f"Unable to return the nucleus of {self.symbol} because "
+                "it is not an element or isotope."
+            )
+            raise InvalidElementError(errmsg)
+        return Particle(self.isotope or self.element, Z=self.atomic_number)
 
     @property
     def ionic_symbol(self) -> str | None:
@@ -1111,7 +1134,7 @@ class Particle(AbstractPhysicalParticle):
         return f"{self.element_name}-{self.mass_number}"
 
     @property
-    def charge_number(self) -> Integral:
+    def charge_number(self) -> int:
         """
         The particle's electrical charge in units of the elementary charge.
 
@@ -1368,7 +1391,7 @@ class Particle(AbstractPhysicalParticle):
         return nuclear_binding_energy.to(u.J)
 
     @property
-    def atomic_number(self) -> Integral:
+    def atomic_number(self) -> int:
         """
         The number of protons in an element, isotope, or ion.
 
@@ -1391,7 +1414,7 @@ class Particle(AbstractPhysicalParticle):
         return self._attributes["atomic number"]
 
     @property
-    def mass_number(self) -> Integral:
+    def mass_number(self) -> int:
         """
         The total number of protons and neutrons in an isotope or nuclide.
 
@@ -1411,7 +1434,7 @@ class Particle(AbstractPhysicalParticle):
         return self._attributes["mass number"]
 
     @property
-    def neutron_number(self) -> Integral:
+    def neutron_number(self) -> int:
         """
         The number of neutrons in an isotope or nucleon.
 
@@ -1438,7 +1461,7 @@ class Particle(AbstractPhysicalParticle):
             raise InvalidIsotopeError(_category_errmsg(self, "isotope"))
 
     @property
-    def electron_number(self) -> Integral:
+    def electron_number(self) -> int:
         """
         The number of electrons in an ion.
 
@@ -1500,7 +1523,7 @@ class Particle(AbstractPhysicalParticle):
         return abundance
 
     @property
-    def baryon_number(self) -> Integral:
+    def baryon_number(self) -> int:
         """
         The number of baryons in a particle.
 
@@ -1526,7 +1549,7 @@ class Particle(AbstractPhysicalParticle):
         return self._attributes["baryon number"]
 
     @property
-    def lepton_number(self) -> Integral:
+    def lepton_number(self) -> int:
         """
         ``1`` for leptons, ``-1`` for antileptons, and ``0`` otherwise.
 
@@ -1684,7 +1707,7 @@ class Particle(AbstractPhysicalParticle):
         """
         return self.is_category("ion")
 
-    def ionize(self, n: int = 1, inplace: bool = False):
+    def ionize(self, n: int = 1, inplace: bool = False) -> Particle | None:
         """
         Create a new |Particle| instance corresponding to the current
         |Particle| after being ionized ``n`` times.
@@ -1766,7 +1789,7 @@ class Particle(AbstractPhysicalParticle):
         else:
             return Particle(base_particle, Z=new_charge_number)
 
-    def recombine(self, n: int = 1, inplace: bool = False):
+    def recombine(self, n: int = 1, inplace: bool = False) -> Particle | None:
         """
         Create a new |Particle| instance corresponding to the current
         |Particle| after undergoing recombination ``n`` times.
@@ -1912,7 +1935,7 @@ class DimensionlessParticle(AbstractParticle):
         return f"DimensionlessParticle(mass={self.mass}, charge={self.charge})"
 
     @staticmethod
-    def _validate_parameter(obj, can_be_negative: bool = True) -> np.float64:
+    def _validate_parameter(obj: Any, can_be_negative: bool = True) -> np.float64:
         """Verify that the argument corresponds to a valid real number."""
 
         # TODO: Replace with validator? Use an equivalency between
@@ -1941,7 +1964,7 @@ class DimensionlessParticle(AbstractParticle):
         return new_obj
 
     @property
-    def json_dict(self) -> dict:
+    def json_dict(self) -> dict[str, Any]:
         """
         A `json` friendly dictionary representation of the
         |DimensionlessParticle|.
@@ -1959,7 +1982,6 @@ class DimensionlessParticle(AbstractParticle):
             'date_created': '...',
             '__init__': {'args': (), 'kwargs': {'mass': 1.0, 'charge': -1.0,
             'symbol': 'DimensionlessParticle(mass=1.0, charge=-1.0)'}}}}
-        >>> import pytest
         >>> dimensionless_particle = DimensionlessParticle(mass=1.0)
         >>> dimensionless_particle.json_dict
         {'plasmapy_particle': {'type': 'DimensionlessParticle',
@@ -1987,7 +2009,7 @@ class DimensionlessParticle(AbstractParticle):
         return self._charge
 
     @mass.setter
-    def mass(self, m: float | u.Quantity | None):
+    def mass(self, m: float | u.Quantity[u.kg] | None):
         try:
             self._mass = self._validate_parameter(m, can_be_negative=False)
         except (TypeError, ValueError):
@@ -1997,7 +2019,7 @@ class DimensionlessParticle(AbstractParticle):
             ) from None
 
     @charge.setter
-    def charge(self, q: float | u.Quantity | None):
+    def charge(self, q: float | u.Quantity[u.C] | None):
         try:
             self._charge = self._validate_parameter(q, can_be_negative=True)
         except (TypeError, ValueError):
@@ -2016,7 +2038,7 @@ class DimensionlessParticle(AbstractParticle):
         return self._symbol
 
     @symbol.setter
-    def symbol(self, new_symbol: str):
+    def symbol(self, new_symbol: str) -> None:
         if new_symbol is None:
             self._symbol = repr(self)
         elif isinstance(new_symbol, str):
@@ -2203,7 +2225,7 @@ class CustomParticle(AbstractPhysicalParticle):
         )
 
     @property
-    def json_dict(self) -> dict[str, str]:
+    def json_dict(self) -> dict[str, Any]:
         """
         A `json` friendly dictionary representation of the |CustomParticle|.
 
@@ -2223,7 +2245,6 @@ class CustomParticle(AbstractPhysicalParticle):
             'date_created': '...',
             '__init__': {'args': (), 'kwargs': {'mass': '5.12 kg', 'charge': '6.2 C',
             'charge_number': '3.869735626...e+19', 'symbol': 'ξ'}}}}
-        >>> import pytest
         >>> custom_particle = CustomParticle(mass=1.5e-26 * u.kg)
         >>> custom_particle.json_dict
         {'plasmapy_particle': {'type': 'CustomParticle',
@@ -2287,7 +2308,7 @@ class CustomParticle(AbstractPhysicalParticle):
     @property
     def charge_number(self) -> float:
         """The ratio of the charge to the elementary charge."""
-        return (self.charge / const.e.si).value
+        return (self.charge / const.e.si).value  # type: ignore[no-any-return]
 
     @charge_number.setter
     def charge_number(self, Z: int) -> None:
@@ -2299,7 +2320,7 @@ class CustomParticle(AbstractPhysicalParticle):
         return self._mass
 
     @mass.setter
-    def mass(self, m: u.Quantity[u.kg]):
+    def mass(self, m: u.Quantity[u.kg]) -> None:
         if m is None:
             m = np.nan * u.kg
         elif isinstance(m, str):
@@ -2351,7 +2372,7 @@ class CustomParticle(AbstractPhysicalParticle):
         return repr(self) if self._symbol is None else self._symbol
 
     @symbol.setter
-    def symbol(self, new_symbol: str):
+    def symbol(self, new_symbol: str | None) -> None:
         if new_symbol is None:
             self._symbol = None
         elif isinstance(new_symbol, str):
@@ -2371,7 +2392,7 @@ class CustomParticle(AbstractPhysicalParticle):
 
         return categories_
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: object) -> bool:
         """
         Determine if two objects correspond to the same particle.
 
@@ -2492,7 +2513,16 @@ def molecule(symbol: str, Z: int | None = None) -> Particle | CustomParticle:
 # If ParticleLike is renamed or moves out of particle_class.py, check
 # for a link to its doc page in error messages in _factory.py.
 
-ParticleLike: TypeAlias = Union[str, Integral, Particle, CustomParticle, u.Quantity]  # noqa: UP007
+ParticleLike: TypeAlias = typing.Union[  # noqa: UP007
+    str,
+    int,
+    np.integer,
+    Particle,
+    CustomParticle,
+    u.Quantity,
+]
+
+# Using typing.Union in ParticleLike lets us define ParticleLike.__doc__
 
 ParticleLike.__doc__ = r"""
 An `object` is particle-like if it can be identified as an instance of

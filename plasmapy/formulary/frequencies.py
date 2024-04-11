@@ -1,4 +1,5 @@
 """Functions to calculate fundamental plasma frequency parameters."""
+
 __all__ = [
     "gyrofrequency",
     "lower_hybrid_frequency",
@@ -9,7 +10,6 @@ __all__ = [
 __aliases__ = ["oc_", "wc_", "wlh_", "wp_", "wuh_"]
 __lite_funcs__ = ["plasma_frequency_lite"]
 
-import numbers
 
 import astropy.units as u
 import numpy as np
@@ -17,8 +17,9 @@ from astropy.constants.si import e, eps0
 from numba import njit
 
 from plasmapy import particles
-from plasmapy.particles import ParticleLike, particle_input
+from plasmapy.particles.decorators import particle_input
 from plasmapy.particles.exceptions import InvalidParticleError
+from plasmapy.particles.particle_class import ParticleLike
 from plasmapy.utils.decorators import (
     angular_freq_to_hz,
     bind_lite_func,
@@ -44,8 +45,8 @@ def gyrofrequency(
     B: u.Quantity[u.T],
     particle: ParticleLike,
     signed: bool = False,
-    Z: numbers.Real | None = None,
-    mass_numb: numbers.Integral | None = None,
+    Z: float | None = None,
+    mass_numb: int | None = None,
 ) -> u.Quantity[u.rad / u.s]:
     r"""
     Calculate the particle gyrofrequency in units of radians per second.
@@ -157,11 +158,11 @@ wc_ = gyrofrequency
 @preserve_signature
 @njit
 def plasma_frequency_lite(
-    n: numbers.Real,
-    mass: numbers.Real,
-    Z: numbers.Real,
+    n: float,
+    mass: float,
+    Z: float,
     to_hz: bool = False,
-) -> numbers.Real:
+) -> float:
     r"""
     The :term:`lite-function` for
     `~plasmapy.formulary.frequencies.plasma_frequency`.  Performs the
@@ -172,13 +173,13 @@ def plasma_frequency_lite(
 
     Parameters
     ----------
-    n : `~numbers.Real`
+    n : `float`
         Particle number density, in units of m\ :sup:`-3`.
 
-    mass : `~numbers.Real`
+    mass : `float`
         Mass of the particle, in units of kg.
 
-    Z : `~numbers.Real`
+    Z : `float`
         The average ionization (arithmetic mean) for the particle
         species in the plasma.  For example, a proton would have a value
         of ``Z=1``.
@@ -189,7 +190,7 @@ def plasma_frequency_lite(
 
     Returns
     -------
-    wp : `~numbers.Real`
+    wp : `float`
         The particle plasma frequency in radians per second.  Setting
         keyword ``to_hz=True`` will apply the factor of :math:`1/2π`
         and yield a value in Hz.
@@ -236,8 +237,8 @@ def plasma_frequency(
     n: u.Quantity[u.m**-3],
     particle: ParticleLike,
     *,
-    mass_numb: numbers.Integral | None = None,
-    Z: numbers.Real | None = None,
+    mass_numb: int | None = None,
+    Z: float | None = None,
 ) -> u.Quantity[u.rad / u.s]:
     r"""Calculate the particle plasma frequency.
 

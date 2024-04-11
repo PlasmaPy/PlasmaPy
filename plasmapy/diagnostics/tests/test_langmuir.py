@@ -185,7 +185,7 @@ def shuffle_characteristic(characteristic):
 
     _shuffle = sorted(
         np.arange(len(characteristic.bias)),
-        key=lambda k: np.random.random(),  # noqa: ARG005
+        key=lambda k: np.random.random(),  # noqa: ARG005, NPY002
     )
     U_shuffled = characteristic.bias[_shuffle]
     I_shuffled = characteristic.current[_shuffle]
@@ -275,26 +275,21 @@ class Test__swept_probe_analysis:
         r"""Test error upon NaN area"""
 
         with pytest.raises(ValueError):
-            with pytest.warns(FutureWarning):
-                langmuir.swept_probe_analysis(
-                    characteristic, np.nan * u.cm**2, "Ar-40 1+"
-                )
+            langmuir.swept_probe_analysis(characteristic, np.nan * u.cm**2, "Ar-40 1+")
 
     @staticmethod
     def test_unit_conversion_error() -> None:
         r"""Test error upon incorrect probe area unit"""
 
         with pytest.raises(u.UnitTypeError):
-            with pytest.warns(FutureWarning):
-                langmuir.swept_probe_analysis(characteristic, 1 * u.cm, "Ar-40 1+")
+            langmuir.swept_probe_analysis(characteristic, 1 * u.cm, "Ar-40 1+")
 
     @staticmethod
     def test_negative_area() -> None:
         r"""Test error upon negative probe area"""
 
         with pytest.raises(ValueError):
-            with pytest.warns(FutureWarning):
-                langmuir.swept_probe_analysis(characteristic, -1 * u.cm**2, "Ar-40 1+")
+            langmuir.swept_probe_analysis(characteristic, -1 * u.cm**2, "Ar-40 1+")
 
     @staticmethod
     @pytest.mark.parametrize("bimaxwellian", [True, False])
