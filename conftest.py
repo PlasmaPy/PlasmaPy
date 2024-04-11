@@ -1,4 +1,4 @@
-"""Configure settings for running tests."""
+"""Adds custom functionality to pytest."""
 
 import os
 

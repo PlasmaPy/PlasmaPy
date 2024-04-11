@@ -21,6 +21,9 @@ keywords = [
   "space plasmas",
 ]
 license = {file = "LICENSE.md"}
+# NumPy Enhancement Proposal 29 recommends that packages support minor
+# releases of Python for 42 months after the initial release (see
+# https://numpy.org/neps/nep-0029-deprecation_policy.html#support-table).
 requires-python = ">=3.10"
 classifiers = [
   "Development Status :: 4 - Beta",
@@ -36,6 +39,13 @@ classifiers = [
 dynamic = [
   "version",
 ]
+# SPEC 0 recommends that support for core packages should generally be
+# dropped two years after their initial release (see
+# https://scientific-python.org/specs/spec-0000). Exceptions may include
+# critical bugfixes or when making use of important new features. Any
+# upper limits on package versions should be temporary because they can
+# make it harder to resolve environments when PlasmaPy is installed
+# alongside other packages, such as in the heliopythoniverse.
 dependencies = [
   "astropy >= 5.1",
   "h5py >= 3.7.0",
@@ -52,11 +62,13 @@ dependencies = [
   "scipy >= 1.8.0",
   "setuptools >= 61.2.0",
   "tqdm >= 4.60.0",
-  "voila >= 0.5.0",
+  "voila >= 0.4.0",
   "wrapt >= 1.14.0",
   "xarray >= 2022.3.0",
 ]
 [project.optional-dependencies]
+# The documentation build occurs in an isolated environment that is not
+# user-facing, so we can have stricter requirements.
 docs = [
   "docutils >= 0.20.1",
   "jinja2 >= 3.1.3",
@@ -83,9 +95,11 @@ docs = [
   "sphinxcontrib-globalsubs >= 0.1.1",
   "towncrier >= 23.11.0",
   "tox >= 4.12.1",
-  "tox-uv >= 1.6.0",
+  "tox-uv >= 1.7.0",
   "unidecode >= 1.3.8",
 ]
+# Test dependencies are not user-facing, so we can set stricter
+# requirements to ensure that tests are run in consistent environments.
 tests = [
   "hypothesis >= 6.97.4",
   "pre-commit >= 3.6.0",
@@ -95,7 +109,7 @@ tests = [
   "pytest-xdist >= 3.5.0",
   "tomli >= 2.0.1",
   "tox >= 4.12.1",
-  "tox-uv >= 1.6.0",
+  "tox-uv >= 1.7.0",
 ]
 [project.urls]
 Changelog = "https://docs.plasmapy.org/en/stable/whatsnew/index.html"
@@ -124,22 +138,51 @@ write_to = "plasmapy/_version.py"
 
 [tool.pytest.ini_options]
 testpaths = ['plasmapy']
-norecursedirs = ['build', 'docs', 'plasmapy[\/]_dev']
 xfail_strict = true
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+]
 doctest_optionflags = """
 NORMALIZE_WHITESPACE
 ELLIPSIS
-NUMBER"""
+NUMBER
+IGNORE_EXCEPTION_DETAIL"""
 filterwarnings = [
   "ignore:.*deprecated in traitlets 4.2.*:DeprecationWarning",
   "ignore:.*MultiIndex.*:DeprecationWarning",  # https://github.com/PlasmaPy/PlasmaPy/issues/2319
 ]
+norecursedirs = [
+  '*egg-info*',
+  '.*cache*',
+  '.*env',
+  '.[tn]ox',
+  '.cov*',
+  '.git*',
+  '.hypothesis',
+  '.idea',
+  '.jupyter',
+  '.vscode',
+  '__pycache__',
+  '_dev',
+  'binder',
+  'build',
+  'changelog',
+  'dist',
+  'docs',
+  'licenses',
+  'node_modules',
+  'venv',
+]
+
 
 [tool.coverage.report]
 exclude_lines = [
+  "if TYPE_CHECKING",
+  "if typing.TYPE_CHECKING",
   "coverage: ignore",
   "ImportError",
   "ModuleNotFoundError",
+  "raise NotImplementedError",
   "@vectorize",
   "@numba.vectorize",
   "@numba.jit",
@@ -150,6 +193,8 @@ exclude_lines = [
 ]
 
 [tool.coverage.run]
+branch = true
+relative_files = true
 omit = [
   "ci-helpers/*",
   "*/tests/*",
