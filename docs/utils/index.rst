@@ -23,7 +23,7 @@ subpackage. Functionality contained in `~plasmapy.utils` includes:
    `~plasmapy.utils.decorators.validators.validate_quantities`
    and `~plasmapy.utils.decorators.checks.check_relativistic`.
  * Helper utilities for importing and testing packages.
- * Functionality for downloading files from `PlasmaPy's data repository`_.
+ * Functionality for downloading files from |PlasmaPy's data repository|.
 
 API
 ===

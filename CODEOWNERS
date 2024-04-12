@@ -13,9 +13,9 @@ plasmapy/diagnostics/ @rocco8773
 plasmapy/diagnostics/charged_particle_radiography/ @pheuer
 plasmapy/dispersion/ @ejohnson-96
 plasmapy/particles/ @namurphy
-# plasmapy/simulation/ @StanczakDominik
+plasmapy/simulation/ @namurphy
 plasmapy/tests/ @namurphy
-# plasmapy/utils/decorators/ @rocco8773
+plasmapy/utils/decorators/ @rocco8773
 plasmapy/utils/pytest_helpers/ @namurphy
 
 # subpackage files (with wildcards to include tests)
@@ -42,5 +42,4 @@ setup.py @namurphy
 
 .github @namurphy
 .pre-commit-config.yaml @namurphy
-# **/conftest.py @StanczakDominik
 tox.ini @namurphy

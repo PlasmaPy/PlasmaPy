@@ -2,24 +2,46 @@ ci:
   autofix_prs: false
   autoupdate_schedule: monthly
 
+# Specify the default version of Ruby in case it is not installed
+default_language_version:
+  ruby: 2.7.2
+
 repos:
 
 - repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v4.4.0
+  rev: v4.5.0
   hooks:
   - id: check-ast
+    name: validate Python code
+  - id: check-merge-conflict
+    name: check for git merge conflicts
+    exclude: .*\.rst
+  - id: check-case-conflict
+    name: check for filename case conflicts
+  - id: name-tests-test
+    args: [--pytest-test-first]
+    exclude: src/plasmapy/tests/_helpers/.*
   - id: trailing-whitespace
   - id: end-of-file-fixer
-  - id: check-merge-conflict
-    exclude: .*\.rst
-  - id: check-symlinks
-  - id: check-case-conflict
   - id: check-json
   - id: check-toml
   - id: check-yaml
 
+- repo: https://github.com/python-jsonschema/check-jsonschema
+  rev: 0.28.1
+  hooks:
+  - id: check-github-workflows
+
+- repo: https://github.com/sirosen/texthooks
+  rev: 0.6.6
+  hooks:
+  - id: fix-smartquotes
+  - id: fix-spaces
+  - id: fix-ligatures
+  - id: forbid-bidi-controls
+
 - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
-  rev: v2.10.0
+  rev: v2.13.0
   hooks:
   - id: pretty-format-ini
     args: [--autofix]
@@ -31,71 +53,63 @@ repos:
     # run this hook on `labeler.yml` (or certain other files).
     exclude: .github/labeler.yml|.pre-commit-search-and-replace.yaml
 
-- repo: https://github.com/pre-commit/mirrors-csslint
-  rev: v1.0.5
-  hooks:
-  - id: csslint
-
-- repo: https://github.com/MarcoGorelli/absolufy-imports
-  rev: v0.3.1
-  hooks:
-  - id: absolufy-imports
-    exclude: docs/plasmapy_sphinx
-
 - repo: https://github.com/mattlqx/pre-commit-search-and-replace
   rev: v1.0.5
   hooks:
   - id: search-and-replace
-    exclude: changelog/.*|docs/changelog/.*|.sourcery.yaml|docs/common_links.rst
+    exclude: changelog/.*|docs/changelog/.*|.sourcery.yaml|docs/_global_substitutions.py|CHANGELOG.rst
 
 - repo: https://github.com/pre-commit/pygrep-hooks
   rev: v1.10.0
   hooks:
   - id: python-check-blanket-noqa
+    name: noqa comments have an error code
     exclude: ^docs/plasmapy_sphinx/
   - id: rst-directive-colons
   - id: rst-inline-touching-normal
+  - id: text-unicode-replacement-char
 
 - repo: https://github.com/codespell-project/codespell
-  rev: v2.2.5
+  rev: v2.2.6
   hooks:
   - id: codespell
+    name: codespell (add false positives to pyproject.toml)
     args: [--write-changes]
     additional_dependencies:
     - tomli
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.0.282
+  rev: v0.3.5
   hooks:
   - id: ruff
+    name: ruff (see https://docs.astral.sh/ruff/rules)
     args: [--fix]
-
-- repo: https://github.com/PyCQA/isort
-  rev: 5.12.0
-  hooks:
-  - id: isort
-    name: isort
-    entry: isort
-    require_serial: true
-    language: python
-    types:
-    - python
-
-- repo: https://github.com/psf/black
-  rev: 23.7.0
-  hooks:
-  - id: black
+  - id: ruff-format
+    name: autoformat source code with ruff formatter
 
 - repo: https://github.com/asottile/blacken-docs
-  rev: 1.15.0
+  rev: 1.16.0
   hooks:
   - id: blacken-docs
-    exclude: docs/contributing/coding_guide.rst
+    name: autoformat code blocks in docs
+    # docstrings are formatted using the ruff-format hook
+    exclude: docs/contributing/coding_guide.rst|.*\.py
+    additional_dependencies:
+    - black==24.3.0
+
+- repo: https://github.com/sphinx-contrib/sphinx-lint
+  rev: v0.9.1
+  hooks:
+  - id: sphinx-lint
 
 - repo: https://github.com/nbQA-dev/nbQA
-  rev: 1.7.0
+  rev: 1.8.5
   hooks:
-  - id: nbqa-black
-  - id: nbqa-isort
-    args:
-    - --nbqa-mutate
+  - id: nbqa-check-ast
+    name: validate Python notebooks
+  - id: nbqa-ruff
+    name: ruff for notebooks (see https://docs.astral.sh/ruff/rules)
+    args: [--fix, '--select=A,ARG,B,BLE,C,C4,E,F,FLY,I,INT,ISC,PERF,PIE,PLC,PLE,PYI,Q003,RET,RSE,SIM,TID,TRY,UP,W', '--ignore=B007,B008,B015,B018,E402,E501,E741,SIM114']
+    additional_dependencies:
+    # remove ruff dependency after 0.3.5 is released
+    - ruff !=0.3.3, !=0.3.4
