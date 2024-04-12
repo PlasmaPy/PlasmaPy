@@ -1,6 +1,6 @@
 graft docs
 graft licenses
-graft plasmapy
+graft src
 graft type_stubs
 
 include *.md
@@ -12,7 +12,6 @@ include *.yaml
 include *.yml
 include changelog/README.rst
 include CITATION.cff
-include plasmapy/py.typed
 include pyproject.toml
 include tox.ini
 
@@ -24,4 +23,4 @@ global-exclude *.py[cod]
 prune docs/api
 
 # Only for editable installs
-prune plasmapy/_dev
+prune src/plasmapy/_dev
