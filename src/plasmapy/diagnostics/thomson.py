@@ -694,6 +694,7 @@ def _spectral_density_model(wavelengths, settings=None, **params):
 
     # LOAD FROM PARAMS
     n = params["n"]
+    background = params["background"]
     T_e = _params_to_array(params, "T_e")
     T_i = _params_to_array(params, "T_i")
     efract = _params_to_array(params, "efract")
@@ -728,6 +729,9 @@ def _spectral_density_model(wavelengths, settings=None, **params):
     )
 
     model_Skw *= 1 / np.max(model_Skw)
+
+    # Add background after normalization
+    model_Skw += background
 
     return model_Skw
 
@@ -791,6 +795,7 @@ def spectral_density_model(  # noqa: C901, PLR0912, PLR0915
           sum to 1)
         - :samp:`"electron_speed_{e#}"` : Electron speed in m/s
         - :samp:`"ion_speed_{ei}"` : Ion speed in m/s
+        - :samp:`"background"` : Background level, as fraction of max signal
 
         These quantities can be either fixed or varying.
 
@@ -828,6 +833,10 @@ def spectral_density_model(  # noqa: C901, PLR0912, PLR0915
             f"The following required parameters were not provided in the "
             f"'params': {missing_params}"
         )
+
+    # Add background if not provided
+    if "background" not in params:
+        params.add("background", value=0.0, vary=False)
 
     # **********************
     # Count number of populations
