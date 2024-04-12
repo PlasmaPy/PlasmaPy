@@ -124,7 +124,7 @@ def thermal_bremsstrahlung(
     ω_pe = plasma_frequency(n=n_e, particle="e-")
 
     # Check that all ω < ω_pe (this formula is only valid in this limit)
-    if np.min(ω) < ω_pe:
+    if np.min(ω) < np.max(ω_pe):
         raise PhysicsError(
             "Lowest frequency must be larger than the electron "
             f"plasma frequency {ω_pe:.1e}, but min(ω) = {np.min(ω):.1e}"
