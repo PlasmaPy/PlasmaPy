@@ -12,13 +12,15 @@ Testing Guide
 Summary
 =======
 
-* New functionality added to PlasmaPy must also have tests.
+* New functionality added to PlasmaPy must have tests.
 
-* Tests are located in files that begin with :file:`test_` which are
-  inside subdirectories named :file:`tests/`.
+* Tests are located in the top-level |tests/| directory. For example,
+  tests of `plasmapy.formulary` are in :file:`tests/formulary/`.
 
-* Tests are either functions beginning with ``test_`` or classes
-  beginning with ``Test``.
+* The names of test files begin with :file:`test_`.
+
+* Tests are either functions beginning with :py:`test_` or classes
+  beginning with :py:`Test`.
 
 * Here is an example of a minimal `pytest` test that uses an
   :py:`assert` statement:
@@ -91,14 +93,11 @@ does it in isolation from other tests :cite:p:`khorikov:2020`. A typical
 *assert* :cite:p:`osherove:2013`. An |integration test| verifies that
 multiple software components work together as intended.
 
-PlasmaPy's tests are set up using the `pytest` framework. The tests for a
-subpackage are located in its :file:`tests/` subdirectory in files with
-names of the form :file:`test_*.py`. For example, tests for
-`plasmapy.formulary.speeds` are located at
-:file:`plasmapy/formulary/tests/test_speeds.py` relative to the top
-of the package. Example code contained within docstrings is tested to
-make sure that the actual printed output matches what is in the
-docstring.
+PlasmaPy's tests are run using `pytest` and |tox|. Tests are located in
+the |tests/| directory. For example, tests of `plasmapy.formulary`
+are located in :file:`tests/formulary` and tests of
+`plasmapy.formulary.speeds` are located in
+:file:`tests/formulary/test_speeds.py`.
 
 .. _writing-tests:
 
@@ -114,23 +113,33 @@ write a test.
 Locating tests
 --------------
 
-The tests for each subpackage are contained in its :file:`tests/`
-subdirectory. For example, the tests for `plasmapy.particles` are
-located in :file:`plasmapy/particles/tests/`. Test files begin with
-:file:`test_` and generally contain either the name of the module or a
-description of the behavior that is being tested. For example, tests for
-|Particle| are located at
-:file:`plasmapy/particles/tests/test_particle_class.py`.
+Tests are located in the top-level |tests/| directory. The directory
+structure of |tests/| largely mirrors that of |src/plasmapy/|, which
+contains the source code of PlasmaPy.
 
-The functions that are to be tested in each test file are prepended with
-``test_`` and end with a description of the behavior that is being
-tested. For example, a test that checks that a |Particle| can be turned
-into an antiparticle could be named ``test_particle_inversion``.
+The tests of a subpackage named :samp:`plasmapy.{subpackage}` are
+located in the :samp:`tests/{subpackage}/` directory. Tests for a module
+named :samp:`plasmapy.{subpackage}.{module}` are generally located in
+:samp:`tests/{subpackage}/test_{module}.py`. For example, tests for
+`plasmapy.formulary` are located in :file:`tests/formulary`, and tests
+of `plasmapy.formulary.speeds` are located in
+:file:`tests/formulary/test_speeds.py`.
 
-Strongly related tests may also be `grouped into classes`_. The name of
-such a class begins with ``Test`` and the methods to be tested begin
-with ``test_``. For example, :file:`test_particle_class.py` could define
-the ``TestParticle`` class containing the method ``test_charge_number``.
+Test functions within each file have names that begin with :py:`test_`
+and end with a description of the behavior that is being tested. For
+example, a test to checks that a |Particle| can be turned into an
+antiparticle might be named :py:`:test_create_antiparticle_from_particle`.
+Because |Particle| is defined in
+:file:`src/plasmapy/particles/particle_class.py`, this test would be
+located in :file:`tests/particles/test_particle_class.py`.
+
+Closely related tests may be `grouped into classes`_. The name of a
+test class begins with ``Test`` and the methods to be tested begin with
+:py:`test_`. For example, :file:`test_particle_class.py` could define a
+:py:`TestParticle` class containing the method ``test_charge_number``.
+
+Example code contained within docstrings is tested to make sure that the
+actual printed output matches the output included in the docstring.
 
 More information on test organization, naming, and collection is
 provided in pytest_'s documentation on `test discovery conventions`_.
