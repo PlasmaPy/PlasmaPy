@@ -94,7 +94,7 @@ h5py==3.10.0
 hypothesis==6.100.0
 identify==2.5.35
     # via pre-commit
-idna==3.6
+idna==3.7
     # via
     #   anyio
     #   jsonschema

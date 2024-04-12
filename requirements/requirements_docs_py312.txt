@@ -34,7 +34,7 @@ fonttools==4.51.0
 fqdn==1.5.1
 future==1.0.0
 h5py==3.10.0
-idna==3.6
+idna==3.7
 imagesize==1.4.1
 incremental==22.10.0
 ipykernel==6.29.4
