@@ -585,7 +585,7 @@ def test_ionic_levels_example() -> None:
         ("p+", 1, 1, None, [1]),
         (Particle("p+"), 0, 0, None, [0]),
         ("C", 3, 5, None, [3, 4, 5]),
-        ("Fe", None, None, [1, 2, 3.3], [1, 2, 3.3]),
+        ("Fe", None, None, [1, 2], [1, 2]),
     ],
 )
 def test_ion_list2(
