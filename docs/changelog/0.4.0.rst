@@ -116,7 +116,7 @@ Improved Documentation
 - Fixed a few documentation formatting errors. (`#827 <https://github.com/plasmapy/plasmapy/pull/827>`__)
 - Add notes on the PlasmaPy benchmarks repository to documentation. (`#841 <https://github.com/plasmapy/plasmapy/pull/841>`__)
 - Improve readability of the `plasmapy.formulary` page by replacing the ``toctree``
-  list with a cleaner reST table. (`#867 <https://github.com/plasmapy/plasmapy/pull/867>`__)
+  list with a cleaner reStructuredText table. (`#867 <https://github.com/plasmapy/plasmapy/pull/867>`__)
 
 
 Trivial/Internal Changes

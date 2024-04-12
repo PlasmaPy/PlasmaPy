@@ -1,5 +1,5 @@
-name: 🐛 Bug Report
-description: Report a problem that you encountered when using PlasmaPy
+name: Bug Report 🐛
+description: Report a problem that you encountered when using PlasmaPy.
 labels: [Bug]
 body:
 

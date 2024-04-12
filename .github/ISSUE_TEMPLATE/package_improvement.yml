@@ -1,0 +1,40 @@
+name: Package improvement 🛠
+description: |
+  Refactor existing functionality or improve package infrastructure.
+labels: [refactoring]
+body:
+- type: textarea
+  id: Description
+  attributes:
+    label: Description of improvement
+    description: >
+      What improvement should we make to PlasmaPy?
+  validations:
+    required: true
+
+- type: textarea
+  id: motivation
+  attributes:
+    label: Motivation
+    description: >
+      What are the benefits of making these improvements? What problems or
+      limitations would be solved? (optional)
+
+- type: textarea
+  id: solution
+  attributes:
+    label: Implementation strategy
+    description: >
+      How might we go about implementing these improvements? (optional)
+  validations:
+    required: false
+
+- type: textarea
+  id: additional-context
+  attributes:
+    label: Additional context
+    description: >
+      Please provide any additional helpful details or related issues
+      here. (optional)
+  validations:
+    required: false

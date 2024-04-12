@@ -1,0 +1,30 @@
+name: Check metadata
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  authors-included:
+    name: Author in CITATION.cff
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: 3.12
+
+    - name: Install dependencies
+      run: pip install requests
+
+    - name: Check that author usernames are in CITATION.cff
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        GITHUB_REPOSITORY: ${{ github.repository }}
+        GITHUB_HEAD_REF: ${{ github.head_ref }}
+      run: python .github/scripts/authors_in_cff.py
