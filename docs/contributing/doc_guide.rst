@@ -1114,8 +1114,8 @@ error or the absence of the module in the documentation build.
    stub file must be created for both of them.
 
    For example, suppose a pull request creates the ``plasmapy.io``
-   subpackage in the :file:`plasmapy/io/` directory and the
-   ``plasmapy.io.readers`` module via :file:`plasmapy/io/readers.py`. It
+   subpackage in the :file:`src/plasmapy/io/` directory and the
+   ``plasmapy.io.readers`` module via :file:`src/plasmapy/io/readers.py`. It
    will then be necessary to create stub files at both
    :file:`docs/api_static/plasmapy.io.rst` and
    :file:`docs/api_static/plasmapy.io.readers.rst`.
@@ -1345,7 +1345,7 @@ in a :file:`__init__.py` file. For example, the error
 
    AttributeError: module 'plasmapy.subpackage' has no attribute 'module'
 
-will occur when :file:`plasmapy/subpackage/__init__.py` is missing
+will occur when :file:`src/plasmapy/subpackage/__init__.py` is missing
 :py:`from plasmapy.subpackage import module`. Make sure that
 :py:`__all__` contains :py:`"module"` as well.
 

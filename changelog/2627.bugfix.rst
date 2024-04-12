@@ -1,0 +1,1 @@
+Fix a bug when `~plasmapy.formulary.radiation.thermal_bremsstrahlung` is given multiple input density values.
