@@ -7,4 +7,4 @@ try:
 
     version = get_version(root=pth.join("..", "..", ".."), relative_to=__file__)
 except Exception as e:
-    raise ImportError("setuptools_scm broken or not installed") from e
+    raise ImportError("Unable to get version using setuptools_scm.") from e
