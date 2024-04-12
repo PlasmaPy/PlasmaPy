@@ -130,14 +130,15 @@ include-package-data = true
 "plasmapy.utils.calculator" = ["*"]
 
 [tool.setuptools.packages.find]
-exclude = ["docs/automodapi", "plasmapy/_dev"]
+where = ["src"]
+exclude = ["docs/automodapi", "src/plasmapy/_dev"]
 namespaces = false
 
 [tool.setuptools_scm]
-write_to = "plasmapy/_version.py"
+write_to = "src/plasmapy/_version.py"
 
 [tool.pytest.ini_options]
-testpaths = ['plasmapy']
+testpaths = ['.']
 xfail_strict = true
 markers = [
     "slow: marks tests as slow (deselect with '-m \"not slow\"')",
@@ -194,13 +195,12 @@ exclude_lines = [
 
 [tool.coverage.run]
 branch = true
-relative_files = true
+source = ["src"]
 omit = [
-  "ci-helpers/*",
-  "*/tests/*",
-  "plasmapy/utils/calculator/*",
-  "plasmapy/version.py",
-  "plasmapy/_dev/*",
+  "*/plasmapy/utils/calculator/*",
+  "*/plasmapy/tests/*",
+  "*/plasmapy/*version.py",
+  "*/plasmapy/_dev/*",
 ]
 
 [tool.build_docs]
@@ -387,6 +387,7 @@ ignore = [
   "TRY301", # raise-within-try
   "UP025", # unicode-kind-prefix
   "W191", # tab-indentation (formatter conflict)
+  "W291", # trailing-whitespace (handled by formatter)
 ]
 dummy-variable-rgx = "Z|mass_numb|request|event"
 ignore-init-module-imports = true
@@ -437,25 +438,28 @@ ban-relative-imports = "all"
 "typing.Tuple".msg = "Deprecated alias. Change to tuple"
 "typing.Type".msg = "Deprecated alias. Change to type"
 
+[tool.ruff.lint.isort]
+known-first-party = ["plasmapy"]
+
 [tool.ruff.lint.mccabe]
 max-complexity = 10
 
 [tool.ruff.lint.per-file-ignores]
-"__init__.py" = ["D104", "E402", "F401", "F402", "F403"] # ignore import errors
 ".github/scripts/*.py" = ["D103", "INP001"]
+"__init__.py" = ["D104", "E402", "F401", "F402", "F403"] # ignore import errors
 "docs/conf.py" = ["D100", "D103", "E402", "EXE001", "EXE005", "F401"]
-"docs/notebooks/formulary/coulomb.ipynb" = ["I001"]
-"plasmapy/analysis/fit_functions.py" = ["D301"]
-"plasmapy/formulary/braginskii.py" = ["C901", "RET503", "RET504"]
-"plasmapy/formulary/tests/test_distribution.py" = ["ARG005"]
-"plasmapy/particles/tests/test_decorators.py" = ["ARG001", "ARG002"]
-"plasmapy/plasma/sources/*.py" = ["D102"]
-"plasmapy/utils/_pytest_helpers/pytest_helpers.py" = ["BLE001", "PLR", "SLF001"]
-"plasmapy/utils/_pytest_helpers/tests/test_pytest_helpers.py" = ["BLE001", "TRY002"]
-"plasmapy/utils/decorators/tests/test_converters.py" = ["ARG001", "ARG005"]
 "setup.py" = ["D100"]
+"src/plasmapy/analysis/fit_functions.py" = ["D301"]
+"src/plasmapy/formulary/braginskii.py" = ["C901", "RET503", "RET504"]
+"src/plasmapy/plasma/sources/*.py" = ["D102"]
+"src/plasmapy/utils/_pytest_helpers/pytest_helpers.py" = ["BLE001", "PLR", "SLF001"]
 "test_*" = ["D100", "D101", "D102", "D103", "D104", "D209", "D400", "D401", "N801", "RUF012", "SLF001"]
-"*/*/tests/__init__.py" = ["D104"]
+"tests/**/__init__.py" = ["D104"]
+"tests/**/*.py" = ["INP001"]
+"tests/formulary/test_distribution.py" = ["ARG005"]
+"tests/particles/test_decorators.py" = ["ARG001", "ARG002"]
+"tests/utils/_pytest_helpers/test_pytest_helpers.py" = ["BLE001", "TRY002"]
+"tests/utils/decorators/test_converters.py" = ["ARG001", "ARG005"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "numpy"
