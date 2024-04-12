@@ -2,6 +2,7 @@
 Convert author information from :file:`CITATION.cff` into a
 reStructuredText-formatted list.
 """
+
 import pathlib
 
 import yaml
@@ -29,7 +30,7 @@ def parse_cff(filename: str) -> dict[str, str | list[dict[str, str]]]:
     `dict`
         A dictionary containing the parsed data from :file:`CITATION.cff`.
     """
-    with pathlib.Path(filename).open() as stream:
+    with pathlib.Path(filename).open(encoding="utf-8") as stream:
         return yaml.safe_load(stream)
 
 
@@ -187,7 +188,7 @@ def main(cff_file="../CITATION.cff", rst_file="about/_authors.rst", verbose=Fals
     if verbose:
         print(authors_rst)  # noqa: T201
 
-    with pathlib.Path(rst_file).open("w") as file:
+    with pathlib.Path(rst_file).open("w", encoding="utf-8") as file:
         file.write(authors_rst)
 
 

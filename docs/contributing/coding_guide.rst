@@ -544,7 +544,7 @@ such, :term:`aliases` are given to functionality that already has a
 widely-used symbol in plasma literature.
 
 Here is a minimal example of an alias :py:`f_` to :py:`function` as
-would be defined in :file:`plasmapy/subpackage/module.py`.
+would be defined in :file:`src/plasmapy/subpackage/module.py`.
 
 .. code-block:: python
 
@@ -613,7 +613,7 @@ performance. Most :term:`lite-functions` are defined in
 
 Here is a minimal example of a :term:`lite-function` :py:`function_lite`
 that corresponds to :py:`function` as would be defined in
-:file:`plasmapy/subpackage/module.py`.
+:file:`src/plasmapy/subpackage/module.py`.
 
 .. code-block:: python
 
@@ -630,7 +630,7 @@ that corresponds to :py:`function` as would be defined in
 
    @preserve_signature
    @njit
-   def function_lite(v: Real) -> Real:
+   def function_lite(v: float) -> float:
        """
        The lite-function which accepts and returns real numbers in
        assumed SI units.
