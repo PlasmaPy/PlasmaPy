@@ -15,7 +15,5 @@ try:
 except ImportError:
     pass
 else:
-    import os
-
     if "PLASMAPY_PLOT_TESTS" not in os.environ:
         mpl.use("Agg")
