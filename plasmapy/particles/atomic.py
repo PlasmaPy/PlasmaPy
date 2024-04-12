@@ -1134,6 +1134,9 @@ def ionic_levels(
     if max_charge is None:
         max_charge = particle.atomic_number  # type: ignore[union-attr]
 
+    if min_charge is None:
+        min_charge = 0
+
     if not min_charge <= max_charge <= particle.atomic_number:  # type: ignore[union-attr]
         raise ChargeError(
             f"Need min_charge ({min_charge}) "
