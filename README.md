@@ -100,7 +100,6 @@ very welcome!
 > PlasmaPy recently switched to an [src layout]. Source code that was in
 > `plasmapy/` is now in [`src/plasmapy/`]. Tests are now located in a
 > top-level [`tests/`] directory.
->
 > Existing pull requests should pull in the changes from the `main`
 > branch with `git pull upstream main` (assuming the remote for the
 > primary PlasmaPy repo is named `upstream`).
