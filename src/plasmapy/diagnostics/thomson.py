@@ -57,7 +57,7 @@ def spectral_density_lite(
     efract: np.ndarray,
     ifract: np.ndarray,
     ion_z: np.ndarray,
-    ion_mass: np.ndarray,
+    ion_mu: np.ndarray,
     electron_vel: np.ndarray,
     ion_vel: np.ndarray,
     probe_vec: np.ndarray,
@@ -110,8 +110,9 @@ def spectral_density_lite(
         An `~numpy.ndarray` of the charge number :math:`Z` of each ion
         species.
 
-    ion_mass : (Ni,) `~numpy.ndarray`
-        An `~numpy.ndarray` of the mass of each ion species in kg.
+    ion_mu : (Ni,) `~numpy.ndarray`
+        An `~numpy.ndarray` of the mass number of each ion species,
+        :math:`/mu = m_i/m_p`.
 
     electron_vel : (Ne, 3) `~numpy.ndarray`
         Velocity of each electron population in the rest frame (in m/s).
@@ -163,6 +164,8 @@ def spectral_density_lite(
     """
 
     scattering_angle = np.arccos(np.dot(probe_vec, scatter_vec))
+
+    ion_mass = ion_mu * m_p_si_unitless
 
     # Calculate plasma parameters
     # Temperatures here in K!
@@ -262,13 +265,17 @@ def spectral_density_lite(
     if notch is not None:
         # If only one notch is included, create a dummy second dimension
         if np.ndim(notch) == 1:
-            notch = np.array([notch])
+            notch = np.array(
+                [
+                    notch,
+                ]
+            )
 
         for notch_i in notch:
             # For each notch, identify the index for the beginning and end
             # wavelengths and set Skw to zero between those indices
-            x0 = np.argwhere(wavelengths > notch_i[0])[0][0]
-            x1 = np.argwhere(wavelengths > notch_i[1])[0][0]
+            x0 = np.argmin(np.abs(wavelengths - notch_i[0]))
+            x1 = np.argmin(np.abs(wavelengths - notch_i[1]))
             Skw[x0:x1] = 0
 
     return np.mean(alpha), Skw
@@ -542,7 +549,7 @@ def spectral_density(  # noqa: C901, PLR0912, PLR0915
 
     # Create arrays of ion Z and mass from particles given
     ion_z = ions.charge_number
-    ion_mass = ions.mass
+    ion_mu = ions.mass.to(u.kg).value / m_p_si_unitless
 
     probe_vec = probe_vec / np.linalg.norm(probe_vec)
     scatter_vec = scatter_vec / np.linalg.norm(scatter_vec)
@@ -601,7 +608,7 @@ def spectral_density(  # noqa: C901, PLR0912, PLR0915
         efract=efract,
         ifract=ifract,
         ion_z=ion_z,
-        ion_mass=ion_mass.to(u.kg).value,
+        ion_mu=ion_mu,
         ion_vel=ion_vel.to(u.m / u.s).value,
         electron_vel=electron_vel.to(u.m / u.s).value,
         probe_vec=probe_vec,
@@ -682,8 +689,6 @@ def _spectral_density_model(wavelengths, settings=None, **params):
     """
 
     # LOAD FROM SETTINGS
-    ion_z = settings["ion_z"]
-    ion_mass = settings["ion_mass"]
     probe_vec = settings["probe_vec"]
     scatter_vec = settings["scatter_vec"]
     electron_vdir = settings["electron_vdir"]
@@ -697,6 +702,8 @@ def _spectral_density_model(wavelengths, settings=None, **params):
     background = params["background"]
     T_e = _params_to_array(params, "T_e")
     T_i = _params_to_array(params, "T_i")
+    ion_mu = _params_to_array(params, "ion_mu")
+    ion_z = _params_to_array(params, "ion_z")
     efract = _params_to_array(params, "efract")
     ifract = _params_to_array(params, "ifract")
 
@@ -719,7 +726,7 @@ def _spectral_density_model(wavelengths, settings=None, **params):
         efract=efract,
         ifract=ifract,
         ion_z=ion_z,
-        ion_mass=ion_mass,
+        ion_mu=ion_mu,
         electron_vel=electron_vel,
         ion_vel=ion_vel,
         probe_vec=probe_vec,
@@ -759,7 +766,10 @@ def spectral_density_model(  # noqa: C901, PLR0912, PLR0915
         - ``"ions"`` : list of particle strings,
           `~plasmapy.particles.particle_class.Particle` objects, or a
           `~plasmapy.particles.particle_collections.ParticleList`
-          describing each ion species. All ions must be positive.
+          describing each ion species. All ions must be positive. Ion mass
+          and charge number from this list will be automatically
+          added as fixed parameters, overridden by any ``ion_mass`` or ``ion_z``
+          parameters explicitly created.
 
         and may contain the following optional variables:
 
@@ -795,6 +805,8 @@ def spectral_density_model(  # noqa: C901, PLR0912, PLR0915
           sum to 1)
         - :samp:`"electron_speed_{e#}"` : Electron speed in m/s
         - :samp:`"ion_speed_{ei}"` : Ion speed in m/s
+        - :samp:`"ion_mu_{i#}"` : Ion mass number, :math:`\mu = m_i/m_p`
+        - :samp:`"ion_z_{i#}"` : Ion charge number
         - :samp:`"background"` : Background level, as fraction of max signal
 
         These quantities can be either fixed or varying.
@@ -818,7 +830,6 @@ def spectral_density_model(  # noqa: C901, PLR0912, PLR0915
         "probe_wavelength",
         "probe_vec",
         "scatter_vec",
-        "ions",
     }
 
     if missing_settings := required_settings - set(settings):
@@ -838,6 +849,21 @@ def spectral_density_model(  # noqa: C901, PLR0912, PLR0915
     if "background" not in params:
         params.add("background", value=0.0, vary=False)
 
+    # Add ion values as fixed parameters if a particle list is provided
+    # in settings
+    # Do not override any existing parameters
+    if "ions" in settings:
+        for i, ion in enumerate(settings["ions"]):
+            _ion = Particle(ion)
+            if f"ion_mu_{i!s}" not in params:
+                params.add(
+                    f"ion_mu_{i!s}",
+                    value=_ion.mass.to(u.kg).value / m_p_si_unitless,
+                    vary=False,
+                )
+            if f"ion_z_{i!s}" not in params:
+                params.add(f"ion_z_{i!s}", value=_ion.charge_number, vary=False)
+
     # **********************
     # Count number of populations
     # **********************
@@ -853,53 +879,15 @@ def spectral_density_model(  # noqa: C901, PLR0912, PLR0915
     # **********************
     # Required settings and parameters per population
     # **********************
-    for p, nums in zip(["T_e", "T_i"], [num_e, num_i], strict=False):
+    for p, nums in zip(
+        ["T_e", "T_i", "ion_mu", "ion_z"], [num_e, num_i, num_i, num_i], strict=False
+    ):
         for num in range(nums):
             key = f"{p}_{num!s}"
             if key not in params:
                 raise ValueError(
                     f"{p} was not provided in kwarg 'parameters', but is required."
                 )
-
-    # **************
-    # ions
-    # **************
-
-    ions = settings["ions"]
-    # Condition ions
-    # If a single value is provided, turn into a particle list
-    if isinstance(ions, ParticleList):
-        pass
-    elif isinstance(ions, str):
-        ions = ParticleList([Particle(ions)])
-    # If a list is provided, ensure all values are Particles, then convert
-    # to a ParticleList
-    elif isinstance(ions, list):
-        for ii, ion in enumerate(ions):
-            if isinstance(ion, Particle):
-                continue
-            ions[ii] = Particle(ion)
-        ions = ParticleList(ions)
-    else:
-        raise TypeError(
-            "The type of object provided to the ``ions`` keyword "
-            f"is not supported: {type(ions)}"
-        )
-
-    # Validate ions
-    if len(ions) == 0:
-        raise ValueError("At least one ion species needs to be defined.")
-
-    try:
-        if sum(ion.charge_number <= 0 for ion in ions):
-            raise ValueError("All ions must be positively charged.")
-    # Catch error if charge information is missing
-    except ChargeError as ex:
-        raise ValueError("All ions must be positively charged.") from ex
-
-    # Create arrays of ion Z and mass from particles given
-    settings["ion_z"] = ions.charge_number
-    settings["ion_mass"] = ions.mass
 
     # **************
     # efract and ifract

@@ -133,14 +133,14 @@ def args_to_lite_args(kwargs):  # noqa: C901
         ]
 
     ion_z = np.zeros(len(kwargs["ions"]))
-    ion_mass = np.zeros(len(kwargs["ions"]))
+    ion_mu = np.zeros(len(kwargs["ions"]))
     for i, particle in enumerate(kwargs["ions"]):
         if not isinstance(particle, Particle):
             particle = Particle(particle)  # noqa: PLW2901
         ion_z[i] = particle.charge_number
-        ion_mass[i] = particle_mass(particle).to(u.kg).value
+        ion_mu[i] = particle_mass(particle).to(u.kg).value / const.m_p.si.value
     kwargs["ion_z"] = ion_z
-    kwargs["ion_mass"] = ion_mass
+    kwargs["ion_mu"] = ion_mu
     del kwargs["ions"]
 
     return kwargs
@@ -761,6 +761,10 @@ def run_fit(
     """
     Take a Parameters object, generate some synthetic data near it,
     perturb the initial values, then try a fit.
+
+    Note: `ions` is passed in settings here (instead of parameters)
+    because we need the full ions list to make the spectrum. They are then
+    moved to parameters later in this function.
     """
 
     wavelengths = (wavelengths * u.m).to(u.nm)
@@ -931,7 +935,7 @@ def epw_single_species_settings_params():
     kwargs = {"probe_wavelength": probe_wavelength.to(u.m).value}
     kwargs["probe_vec"] = np.array([1, 0, 0])
     kwargs["scatter_vec"] = scatter_vec
-    kwargs["notch"] = notch.to(u.m).value
+    kwargs["notch"] = notch
     kwargs["ions"] = ["H+"]
 
     kwargs["n"] = Parameter(
@@ -969,7 +973,7 @@ def epw_multi_species_settings_params():
 
     kwargs["probe_vec"] = probe_vec
     kwargs["scatter_vec"] = scatter_vec
-    kwargs["notch"] = notch.to(u.m).value
+    kwargs["notch"] = notch
     kwargs["ions"] = ["H+"]
 
     kwargs["n"] = Parameter(
@@ -1153,6 +1157,25 @@ def test_fit_iaw_instr_func(iaw_single_species_settings_params) -> None:
 
 
 @pytest.mark.slow()
+def test_fit_ion_mu_and_z(iaw_single_species_settings_params) -> None:
+    """
+    Tests fitting with ion parameters explicitly set and allowed to vary
+    """
+    wavelengths, params, settings = spectral_density_model_settings_params(
+        iaw_single_species_settings_params
+    )
+
+    for i, ion in enumerate(settings["ions"]):
+        _ion = Particle(ion)
+        mass = _ion.mass.to(u.kg).value
+        Z = _ion.charge_number
+        params.add(f"ion_mu_{i!s}", value=mass, vary=True, min=0.5, max=10)
+        params.add(f"ion_z_{i!s}", value=Z, vary=True, min=1, max=10)
+
+    run_fit(wavelengths, params, settings)
+
+
+@pytest.mark.slow()
 def test_fit_iaw_multi_species(iaw_multi_species_settings_params) -> None:
     wavelengths, params, settings = spectral_density_model_settings_params(
         iaw_multi_species_settings_params
@@ -1188,7 +1211,7 @@ def test_fit_with_instr_func(epw_single_species_settings_params) -> None:
     )
 
     settings["instr_func"] = example_instr_func
-    settings["notch"] = np.array([531, 533]) * 1e-9
+    settings["notch"] = np.array([531, 533]) * 1e-9 * u.nm
 
     # Warns that data should not include any NaNs
     # This is taken care of in run_fit by deleting the notch region rather than
@@ -1233,7 +1256,7 @@ def test_fit_with_minimal_parameters() -> None:
     w0 = probe_wavelength.value
     wavelengths = np.linspace(w0 - 5, w0 + 5, num=512) * u.nm
 
-    ions = ["H+"]
+    ions = [Particle("H+")]
     n = 2e17 * u.cm**-3
     T_i = 20 * u.eV
     T_e = 10 * u.eV
@@ -1264,6 +1287,8 @@ def test_fit_with_minimal_parameters() -> None:
 
     params.add("T_e_0", value=T_e.value, vary=False, min=5, max=20)
     params.add("T_i_0", value=T_i.value, vary=True, min=5, max=70)
+    params.add("ion_mu_0", value=1, vary=False)
+    params.add("ion_z_0", value=ions[0].charge_number, vary=False)
 
     # Try creating model: will raise exception because required values
     # are missing in settings, eg. 'probe_wavelength'
@@ -1342,22 +1367,6 @@ def test_fit_with_minimal_parameters() -> None:
             {"ion_speed_0": Parameter("ion_speed_0", 1e5), "ion_vdir": None},
             ValueError,
             "ion_vdir must be set if ion_speeds",
-        ),
-        # Test different input types for ``ions``
-        ({"ions": ParticleList(["H+", "H+", "He+"])}, None, None),
-        # Error if no particles are provided
-        ({"ions": []}, ValueError, "At least one ion species needs to be defined."),
-        # Error if an ion is negative
-        (
-            {"ions": ParticleList(["H+", "H+", "e-"])},
-            ValueError,
-            "All ions must be positively charged.",
-        ),
-        # Error if an ion charge information is not given
-        (
-            {"ions": ParticleList(["H+", "H+", "He"])},
-            ValueError,
-            "All ions must be positively charged.",
         ),
     ],
 )
