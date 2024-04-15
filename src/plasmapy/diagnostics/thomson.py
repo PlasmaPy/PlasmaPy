@@ -57,7 +57,7 @@ def spectral_density_lite(
     efract: np.ndarray,
     ifract: np.ndarray,
     ion_z: np.ndarray,
-    ion_mu: np.ndarray,
+    ion_mass: np.ndarray,
     electron_vel: np.ndarray,
     ion_vel: np.ndarray,
     probe_vec: np.ndarray,
@@ -110,9 +110,8 @@ def spectral_density_lite(
         An `~numpy.ndarray` of the charge number :math:`Z` of each ion
         species.
 
-    ion_mu : (Ni,) `~numpy.ndarray`
-        An `~numpy.ndarray` of the mass number of each ion species,
-        :math:`/mu = m_i/m_p`.
+    ion_mass : (Ni,) `~numpy.ndarray`
+        An `~numpy.ndarray` of the mass number of each ion species in kg.
 
     electron_vel : (Ne, 3) `~numpy.ndarray`
         Velocity of each electron population in the rest frame (in m/s).
@@ -164,8 +163,6 @@ def spectral_density_lite(
     """
 
     scattering_angle = np.arccos(np.dot(probe_vec, scatter_vec))
-
-    ion_mass = ion_mu * m_p_si_unitless
 
     # Calculate plasma parameters
     # Temperatures here in K!
@@ -547,10 +544,6 @@ def spectral_density(  # noqa: C901, PLR0912, PLR0915
             f"T_e ({T_e.size}), or electron velocity ({electron_vel.shape[0]})."
         )
 
-    # Create arrays of ion Z and mass from particles given
-    ion_z = ions.charge_number
-    ion_mu = ions.mass.to(u.kg).value / m_p_si_unitless
-
     probe_vec = probe_vec / np.linalg.norm(probe_vec)
     scatter_vec = scatter_vec / np.linalg.norm(scatter_vec)
 
@@ -607,8 +600,8 @@ def spectral_density(  # noqa: C901, PLR0912, PLR0915
         T_i.to(u.K).value,
         efract=efract,
         ifract=ifract,
-        ion_z=ion_z,
-        ion_mu=ion_mu,
+        ion_z=ions.charge_number,
+        ion_mass=ions.mass.to(u.kg).value,
         ion_vel=ion_vel.to(u.m / u.s).value,
         electron_vel=electron_vel.to(u.m / u.s).value,
         probe_vec=probe_vec,
@@ -717,6 +710,9 @@ def _spectral_density_model(wavelengths, settings=None, **params):
     T_e *= 11604.51812155
     T_i *= 11604.51812155
 
+    # lite function takes ion mass, not mu=m_i/m_p
+    ion_mass = ion_mu * m_p_si_unitless
+
     alpha, model_Skw = spectral_density_lite(
         wavelengths,
         probe_wavelength,
@@ -726,7 +722,7 @@ def _spectral_density_model(wavelengths, settings=None, **params):
         efract=efract,
         ifract=ifract,
         ion_z=ion_z,
-        ion_mu=ion_mu,
+        ion_mass=ion_mass,
         electron_vel=electron_vel,
         ion_vel=ion_vel,
         probe_vec=probe_vec,

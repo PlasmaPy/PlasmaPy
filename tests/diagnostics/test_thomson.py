@@ -133,14 +133,14 @@ def args_to_lite_args(kwargs):  # noqa: C901
         ]
 
     ion_z = np.zeros(len(kwargs["ions"]))
-    ion_mu = np.zeros(len(kwargs["ions"]))
+    ion_mass = np.zeros(len(kwargs["ions"]))
     for i, particle in enumerate(kwargs["ions"]):
         if not isinstance(particle, Particle):
             particle = Particle(particle)  # noqa: PLW2901
         ion_z[i] = particle.charge_number
-        ion_mu[i] = particle_mass(particle).to(u.kg).value / const.m_p.si.value
+        ion_mass[i] = particle_mass(particle).to(u.kg).value
     kwargs["ion_z"] = ion_z
-    kwargs["ion_mu"] = ion_mu
+    kwargs["ion_mass"] = ion_mass
     del kwargs["ions"]
 
     return kwargs
