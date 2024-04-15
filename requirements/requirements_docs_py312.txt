@@ -5,7 +5,7 @@ argon2-cffi-bindings==21.2.0
 arrow==1.3.0
 asteval==0.9.32
 astropy==6.0.1
-astropy-iers-data==0.2024.4.8.0.32.4
+astropy-iers-data==0.2024.4.15.2.45.49
 asttokens==2.4.1
 attrs==23.2.0
 babel==2.14.0
@@ -29,12 +29,12 @@ distlib==0.3.8
 docutils==0.20.1
 executing==2.0.1
 fastjsonschema==2.19.1
-filelock==3.13.3
+filelock==3.13.4
 fonttools==4.51.0
 fqdn==1.5.1
 future==1.0.0
-h5py==3.10.0
-idna==3.6
+h5py==3.11.0
+idna==3.7
 imagesize==1.4.1
 incremental==22.10.0
 ipykernel==6.29.4
@@ -43,14 +43,14 @@ ipywidgets==8.1.2
 isoduration==20.11.0
 jedi==0.19.1
 jinja2==3.1.3
-json5==0.9.24
+json5==0.9.25
 jsonpointer==2.4
 jsonschema==4.21.1
 jsonschema-specifications==2023.12.1
 jupyter-client==8.6.1
 jupyter-core==5.7.2
 jupyter-events==0.10.0
-jupyter-server==2.13.0
+jupyter-server==2.14.0
 jupyter-server-terminals==0.5.3
 jupyterlab-pygments==0.3.0
 jupyterlab-server==2.26.0
@@ -74,7 +74,7 @@ numpy==1.26.4
 numpydoc==1.7.0
 overrides==7.7.0
 packaging==24.0
-pandas==2.2.1
+pandas==2.2.2
 pandocfilters==1.5.1
 parso==0.8.4
 pexpect==4.9.0
@@ -89,7 +89,7 @@ pure-eval==0.2.2
 pybtex==0.24.0
 pybtex-docutils==1.0.3
 pycparser==2.22
-pyerfa==2.0.1.3
+pyerfa==2.0.1.4
 pygments==2.17.2
 pyparsing==3.1.2
 pyproject-api==1.6.1
@@ -97,7 +97,7 @@ python-dateutil==2.9.0.post0
 python-json-logger==2.0.7
 pytz==2024.1
 pyyaml==6.0.1
-pyzmq==25.1.2
+pyzmq==26.0.0
 referencing==0.34.0
 requests==2.31.0
 rfc3339-validator==0.1.4
@@ -105,7 +105,7 @@ rfc3986-validator==0.1.1
 rpds-py==0.18.0
 scipy==1.13.0
 send2trash==1.8.3
-setuptools==69.2.0
+setuptools==69.5.1
 six==1.16.0
 sniffio==1.3.1
 snowballstemmer==2.2.0
@@ -117,7 +117,7 @@ sphinx-collapse==0.1.3
 sphinx-copybutton==0.5.2
 sphinx-gallery==0.15.0
 sphinx-hoverxref==1.3.0
-sphinx-issues==4.0.0
+sphinx-issues==4.1.0
 sphinx-notfound-page==1.0.0
 sphinx-reredirects==0.1.3
 sphinx-rtd-theme==2.0.0
@@ -147,7 +147,7 @@ uncertainties==3.1.7
 unidecode==1.3.8
 uri-template==1.3.0
 urllib3==2.2.1
-uv==0.1.29
+uv==0.1.31
 virtualenv==20.25.1
 voila==0.5.6
 wcwidth==0.2.13
