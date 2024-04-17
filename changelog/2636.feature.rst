@@ -1,0 +1,2 @@
+Added support for new ``background``, ``ion_mu`` and ``ion_z`` fitting
+parameters to the `~plasmapy.diagnostics.thomson.spectral_density_model` function.
