@@ -33,8 +33,8 @@ sys.path.insert(0, os.path.abspath("."))  # noqa: PTH100
 from datetime import datetime
 
 import _cff_to_rst
-import pkg_resources  # deprecated; after removal, drop setuptools dependency for docs
 from _global_substitutions import global_substitutions
+from packaging.version import Version
 from sphinx.application import Sphinx
 
 # Generate author list from CITATION.cff
@@ -51,10 +51,12 @@ copyright = f"2015–{datetime.utcnow().year}, {author}"  # noqa: A001, DTZ003
 language = "en"
 
 release = "" if release == "unknown" else release
-parsed_version = pkg_resources.parse_version(release)  # deprecated
-release = parsed_version.public
+revision = ""
+if release != "":
+    pv = Version(release)
+    release = pv.public
+    revision = "" if pv.local is None else pv.local[1:]
 version = ".".join(release.split(".")[:2])  # short X.Y version
-revision = parsed_version.local[1:] if parsed_version.local is not None else ""
 
 # Sphinx configuration variables
 
@@ -497,7 +499,7 @@ nbsphinx_prolog = r"""
     \sphinxcode{\sphinxupquote{\strut {{ docname | escape_latex }}}} \dotfill}}
 """
 
-# plasmapy_sphinx settings
+# plasmapy_sphinx.ext.autodoc settings
 
 autosummary_generate = True
 automodapi_custom_groups = {

@@ -74,11 +74,10 @@ docs = [
   "jinja2 >= 3.1.3",
   "nbsphinx >= 0.9.3",
   "numpydoc >= 1.6.0",
+  "packaging",
   "pillow >= 10.2.0",
   "pygments >= 2.17.2",
   "plasmapy_sphinx >= 0.1.0a1",
-  # install setuptools to get pkg_resources for doc build
-  "setuptools; python_version >= '3.12'",
   # see issue 2497
   "sphinx >= 7.3.7",
   "sphinx-changelog >= 1.5.0",
