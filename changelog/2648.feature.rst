@@ -1,1 +1,1 @@
-Added a new keyword `particlewise` to the function `particle_collections.is_category`, which now causes the function to return a `bool` for the whole list by default.  The old functionality is still available by setting `particlewise` to `True`.  
+Added a new keyword `particlewise` to the function `particle_collections.is_category`, which now causes the function to return a `bool` for the whole list by default.  The old functionality is still available by setting `particlewise` to `True`.
