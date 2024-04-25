@@ -68,8 +68,6 @@ extensions = [
     "IPython.sphinxext.ipython_console_highlighting",
     "nbsphinx",
     "notfound.extension",
-    "plasmapy_sphinx",
-    "sphinx.ext.autodoc",
     "sphinx.ext.duration",
     "sphinx.ext.extlinks",
     "sphinx.ext.graphviz",
