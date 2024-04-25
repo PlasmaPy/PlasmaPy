@@ -3,8 +3,8 @@
 Functions
 *********
 
-In addition to the |Particle| class, the `plasmapy.particles`
-subpackage has a functional interface.
+In addition to the |Particle| class, the `plasmapy.particles` subpackage
+has a functional interface.
 
 .. _particles-func-symbols:
 
@@ -86,8 +86,8 @@ environment may be found using |isotopic_abundance|.
 >>> isotopic_abundance('D')
 0.000115
 
-A list of all discovered isotopes in order of increasing mass number
-can be found with |known_isotopes|.
+A list of all discovered isotopes in order of increasing mass number can
+be found with |known_isotopes|.
 
 >>> known_isotopes('H')
 ['H-1', 'D', 'T', 'H-4', 'H-5', 'H-6', 'H-7']

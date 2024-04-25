@@ -1,0 +1,8 @@
+PlasmaPy v0.9.1 (2022-11-15)
+============================
+
+Trivial/Internal Changes
+------------------------
+
+- Removed a test of requirement file consistency to allow tests to pass on
+  conda-forge.

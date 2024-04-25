@@ -1,26 +1,112 @@
-Continuous integration: .github/**/*
+# This file defines which GitHub labels get applied when files
+# matching certain minimatch glob patterns are changed.
+#
+# Documentation: https://github.com/actions/labeler#pull-request-labeler
+#
+# If a label includes a space or a pattern begins with an asterisk or
+# special character, enclose it in quotes.
 
-Diagnostics: plasmapy/diagnostics/**/*
+'changes existing API':
+  - changed-files:
+    - any-glob-to-any-file: 'changelog/*.breaking*.rst'
 
-Formulary: plasmapy/formulary/**/*
+bug:
+  - changed-files:
+    - any-glob-to-any-file: 'changelog/*.bugfix*.rst'
 
-Mathematics: plasmapy/formulary/mathematics.py
+'CI':
+  - changed-files:
+    - any-glob-to-any-file: [
+      '.codecov.yaml',
+      '.github/workflows/*test*.yml',
+      '.pre-commit-config.yaml',
+      '.readthedocs.yml',
+      'CODEOWNERS',
+      'noxfile.py',
+      'tox.ini'
+    ]
 
-parameters.quantum: plasmapy/formulary/quantum.py
+'contributor guide':
+  - changed-files:
+    - any-glob-to-any-file: ['changelog/README.rst', 'docs/contributing/**/*']
 
-Particles: plasmapy/particles/**/*
+dependencies:
+  - changed-files:
+    - any-glob-to-any-file: 'requirements.txt'
 
-# Add Documentation label to any change in docs but notebooks
-Documentation:
-- any: [docs/**/*]
-  all: ['!docs/notebooks/**/*']
+docs:
+  - changed-files:
+    - any-glob-to-any-file: ['.readthedocs.yml', 'changelog/*doc*.rst', 'docs/**/*', 'README.md']
 
-Notebooks: docs/notebooks/**/*
+'GitHub Actions':
+  - changed-files:
+    - any-glob-to-any-file: '.github/**/*'
 
-Plasma class: plasmapy/plasma/**/*
+linters:
+  - changed-files:
+    - any-glob-to-any-file: ['.sourcery.yaml', '.pre-commit-config.yaml']
 
-simulations: plasmapy/simulations/**/*
+notebooks:
+  - changed-files:
+    - any-glob-to-any-file: 'docs/notebooks/**/*'
 
-Utilities: plasmapy/utils/**/*
+packaging:
+  - changed-files:
+    - any-glob-to-any-file: [
+      '.github/workflows/*publish*',
+      '.github/workflows/*release*',
+      '.zenodo*',
+      'CITATION.cff',
+      'LICENSE.md',
+      'MANIFEST.in',
+      'PATENT.md',
+      'pyproject.toml',
+      'setup.*'
+    ]
 
-Breaking: changelog/*.breaking*rst
+plasmapy.analysis:
+  - changed-files:
+    - any-glob-to-any-file: 'plasmapy/analysis/**/*'
+
+plasmapy.diagnostics:
+  - changed-files:
+    - any-glob-to-any-file: 'plasmapy/diagnostics/**/*'
+
+plasmapy.dispersion:
+  - changed-files:
+    - any-glob-to-any-file: 'plasmapy/dispersion/**/*'
+
+plasmapy.formulary:
+  - changed-files:
+    - any-glob-to-any-file: 'plasmapy/formulary/**/*'
+
+plasmapy.formulary.quantum:
+  - changed-files:
+    - any-glob-to-any-file: 'plasmapy/**/quantum*'
+
+plasmapy.particles:
+  - changed-files:
+    - any-glob-to-any-file: 'plasmapy/particles/**/*'
+
+plasmapy.plasma:
+  - changed-files:
+    - any-glob-to-any-file: 'plasmapy/plasma/**/*'
+
+plasmapy.simulation:
+  - changed-files:
+    - any-glob-to-any-file: 'plasmapy/simulation/**/*'
+
+plasmapy.utils:
+  - changed-files:
+    - any-glob-to-any-file: 'plasmapy/utils/**/*'
+
+testing:
+  - changed-files:
+    - any-glob-to-any-file: [
+      '**/test*.py',
+      '**/conftest.py',
+      '.github/workflows/weekly-tests.yml',
+      '.codecov.yaml',
+      'noxfile.py',
+      'tox.ini'
+    ]

@@ -1,0 +1,2 @@
+Updated the instructions in the |documentation guide| on how to build
+PlasmaPy's documentation locally.

@@ -10,8 +10,8 @@ Particles (`plasmapy.particles`)
 Introduction
 ============
 
-The `~plasmapy.particles` subpackage provides access to information about
-atoms, ions, isotopes, and other particles.
+The `~plasmapy.particles` subpackage provides access to information
+about atoms, ions, isotopes, and other particles.
 
 Submodules
 ==========

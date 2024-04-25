@@ -6,6 +6,10 @@
 Particle movement integrators
 *****************************
 
+.. attention::
+
+   |expect-api-changes|
+
 API
 ===
 
