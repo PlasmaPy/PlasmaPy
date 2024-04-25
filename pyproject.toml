@@ -76,7 +76,7 @@ docs = [
   "numpydoc >= 1.6.0",
   "pillow >= 10.2.0",
   "pygments >= 2.17.2",
-  "plasmapy_sphinx >= 0.1.0a1",
+  "plasmapy_sphinx @ git+https://github.com/PlasmaPy/plasmapy_sphinx@main",
   # install setuptools to get pkg_resources for doc build
   "setuptools; python_version >= '3.12'",
   # see issue 2497
