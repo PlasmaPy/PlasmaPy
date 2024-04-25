@@ -106,7 +106,6 @@ modindex_common_prefix = ["plasmapy."]
 pygments_style = "default"  # code highlighting style to meet WCAG AA contrast standard
 root_doc = "index"
 source_suffix = ".rst"
-templates_path = ["_templates"]
 
 # Specify patterns to ignore when doing a nitpicky documentation build.
 # These may include common expressions like "real number" as well as
