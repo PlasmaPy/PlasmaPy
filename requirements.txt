@@ -47,7 +47,13 @@ charset-normalizer==3.3.2
 click==8.1.7
     # via towncrier
 colorama==0.4.6
-    # via tox
+    # via
+    #   click
+    #   ipython
+    #   pytest
+    #   sphinx
+    #   tox
+    #   tqdm
 comm==0.2.2
     # via
     #   ipykernel
@@ -69,6 +75,7 @@ distlib==0.3.8
 docutils==0.20.1
     # via
     #   nbsphinx
+    #   plasmapy-sphinx
     #   pybtex-docutils
     #   sphinx
     #   sphinx-rtd-theme
@@ -121,6 +128,7 @@ jinja2==3.1.3
     #   jupyterlab-server
     #   nbconvert
     #   nbsphinx
+    #   plasmapy-sphinx
     #   sphinx
     #   towncrier
 json5==0.9.25
@@ -239,12 +247,11 @@ pandocfilters==1.5.1
     # via nbconvert
 parso==0.8.4
     # via jedi
-pexpect==4.9.0
-    # via ipython
 pillow==10.3.0
     # via
     #   matplotlib
     #   sphinx-gallery
+plasmapy-sphinx==0.1.0a1
 platformdirs==4.2.0
     # via
     #   jupyter-core
@@ -261,10 +268,6 @@ prompt-toolkit==3.0.43
     # via ipython
 psutil==5.9.8
     # via ipykernel
-ptyprocess==0.7.0
-    # via
-    #   pexpect
-    #   terminado
 pure-eval==0.2.2
     # via stack-data
 pybtex==0.24.0
@@ -308,6 +311,13 @@ python-json-logger==2.0.7
     # via jupyter-events
 pytz==2024.1
     # via pandas
+pywin32==306
+    # via jupyter-core
+pywinpty==2.0.13
+    # via
+    #   jupyter-server
+    #   jupyter-server-terminals
+    #   terminado
 pyyaml==6.0.1
     # via
     #   astropy
@@ -366,6 +376,7 @@ sphinx==7.3.7
     # via
     #   nbsphinx
     #   numpydoc
+    #   plasmapy-sphinx
     #   sphinx-changelog
     #   sphinx-codeautolink
     #   sphinx-collapse
@@ -385,11 +396,13 @@ sphinx-codeautolink==0.15.1
 sphinx-collapse==0.1.3
 sphinx-copybutton==0.5.2
 sphinx-gallery==0.15.0
+    # via plasmapy-sphinx
 sphinx-hoverxref==1.3.0
 sphinx-issues==4.1.0
 sphinx-notfound-page==1.0.0
 sphinx-reredirects==0.1.3
 sphinx-rtd-theme==2.0.0
+    # via plasmapy-sphinx
 sphinx-tabs==3.4.5
 sphinxcontrib-applehelp==1.0.8
     # via sphinx
@@ -459,9 +472,9 @@ uri-template==1.3.0
     # via jsonschema
 urllib3==2.2.1
     # via requests
-uv==0.1.35
+uv==0.1.38
     # via tox-uv
-virtualenv==20.25.3
+virtualenv==20.26.0
     # via
     #   pre-commit
     #   tox
