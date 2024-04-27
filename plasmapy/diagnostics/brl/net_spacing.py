@@ -1,7 +1,9 @@
 """The computational net spacing and it's inverse + derivative."""
 import numpy as np
 
-from plasmapy.diagnostics.brl.normalizations import renormalize_probe_radius_to_larger_debye_length
+from plasmapy.diagnostics.brl.normalizations import (
+    renormalize_probe_radius_to_larger_debye_length,
+)
 
 
 def get_s_points(num_points, s_end_point):
@@ -117,7 +119,7 @@ def _zero_T_repelled_x_and_dx_ds(
     ----------
     s_points : `numpy.ndarray`
     normalized_probe_radius : `float`
-        The ratio of probe radius to attracted particle debye length, 
+        The ratio of probe radius to attracted particle debye length,
         :math:`R_p / \lambda_D_+`, as defined in `~plasmapy.diagnostics.brl.normalizations.get_normalized_probe_radius`.
     normalized_probe_potential : `float`
         The probe potential normalized to the attracted particles temperature.
@@ -167,12 +169,12 @@ def get_x_and_dx_ds(
     s_points : `numpy.ndarray`
         Array of :math:`s` from `~plasmapy.diagnostics.brl.net_spacing.get_s_points`.
     normalized_probe_radius : `float`
-        The ratio of probe radius to attracted particle debye length, 
+        The ratio of probe radius to attracted particle debye length,
         :math:`R_p / \lambda_D_+`, as defined in `~plasmapy.diagnostics.brl.normalizations.get_normalized_probe_radius`.
     effective_attracted_to_repelled_temperature_ratio : `float`
         :math:`-\frac{T_+ Z_-}{T_- Z_+}` as defined in `~plasmapy.diagnostics.brl.normalizations.get_effective_temperature_ratio`.
     normalized_probe_potential : `float`
-        The probe potential normalized to the attracted particles temperature as 
+        The probe potential normalized to the attracted particles temperature as
         defined in `~plasmapy.diagnostics.brl.normalizations.get_normalized_potential`.
         This is only needed if the repelled particles have zero temperature.
         Default is `None`.
@@ -186,8 +188,8 @@ def get_x_and_dx_ds(
 
     Notes
     -----
-    This follows the code on page 3 of the thesis. Laframboise gives no 
-    explanation as to why these functions are chosen nor the boundary values on 
+    This follows the code on page 3 of the thesis. Laframboise gives no
+    explanation as to why these functions are chosen nor the boundary values on
     small, medium, and large probes. Also, :math:`x = 1 / r`.
     """
     # Normalized the probe radius to the larger Debye length.
