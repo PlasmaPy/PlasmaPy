@@ -2,8 +2,8 @@
 import astropy.units as u
 import numpy as np
 
-from plasmapy.utils.decorators import validate_quantities
 from plasmapy.formulary.lengths import Debye_length
+from plasmapy.utils.decorators import validate_quantities
 
 
 @validate_quantities(
@@ -46,8 +46,8 @@ def get_effective_attracted_to_repelled_temperature_ratio(
     .. math::
         \pi_6 = -\frac{T_+}{T_-} \frac{Z_-}{Z_+},
 
-    where :math:`T_+` and :math:`T_-` are the temperatures of the attracted and 
-    repelled particle species, and :math:`Z_+` and :math:`Z_-` are the signed 
+    where :math:`T_+` and :math:`T_-` are the temperatures of the attracted and
+    repelled particle species, and :math:`Z_+` and :math:`Z_-` are the signed
     charge numbers of the attracted and repelled particle species.
 
     Parameters
@@ -73,7 +73,9 @@ def get_effective_attracted_to_repelled_temperature_ratio(
 
 
 def get_normalized_potential(
-    potential: u.V, attracted_particle_temperature: u.eV, attracted_particle_charge_number
+    potential: u.V,
+    attracted_particle_temperature: u.eV,
+    attracted_particle_charge_number,
 ):
     r"""
     Calculate the normalized potential.
@@ -83,7 +85,7 @@ def get_normalized_potential(
     .. math::
         \chi_+ = Z_+ \frac{e \phi}{k T_+},
 
-    where :math:`\phi` is the potential, :math:`T_+` is the temperature 
+    where :math:`\phi` is the potential, :math:`T_+` is the temperature
     of the attracted particle species, and :math:`e` is the elementary charge.
 
     Parameters
@@ -105,13 +107,20 @@ def get_normalized_potential(
     The normalized potential uses the same normalization as the probe potential,
     :math:`\chi_p_+`, in equation (3.2) of the thesis.
     """
-    normalized_potential = attracted_particle_charge_number * (potential / attracted_particle_temperature).to(
-        u.dimensionless_unscaled
-    ).value
-    return normalized_potential
+    return (
+        attracted_particle_charge_number
+        * (potential / attracted_particle_temperature)
+        .to(u.dimensionless_unscaled)
+        .value
+    )
 
 
-def get_normalized_probe_radius(probe_radius: u.m, attracted_particle_temperature: u.eV, attracted_particle_density_at_infinity: u.m**-3, attracted_particle_charge_number):
+def get_normalized_probe_radius(
+    probe_radius: u.m,
+    attracted_particle_temperature: u.eV,
+    attracted_particle_density_at_infinity: u.m**-3,
+    attracted_particle_charge_number,
+):
     r"""
     Calculate the normalized probe radius.
 
@@ -146,14 +155,19 @@ def get_normalized_probe_radius(probe_radius: u.m, attracted_particle_temperatur
         temperature=attracted_particle_temperature,
         number_density=attracted_particle_density_at_infinity,
     )
-    normalized_probe_radius = np.abs(attracted_particle_charge_number) * (probe_radius / debye_length).to(u.dimensionless_unscaled).value
-    return normalized_probe_radius
+    return (
+        np.abs(attracted_particle_charge_number)
+        * (probe_radius / debye_length).to(u.dimensionless_unscaled).value
+    )
 
-def renormalize_probe_radius_to_larger_debye_length(normalized_probe_radius, effective_attracted_to_repelled_temperature_ratio):
+
+def renormalize_probe_radius_to_larger_debye_length(
+    normalized_probe_radius, effective_attracted_to_repelled_temperature_ratio
+):
     r"""Renormalize the normalized probe radius to the larger Debye length.
-    
-    Since there are two species in the plasma, their Debye lengths may be 
-    different. This function takes the probe radius normalized to the attracted 
+
+    Since there are two species in the plasma, their Debye lengths may be
+    different. This function takes the probe radius normalized to the attracted
     particles debye length and renormalizes it to the larger Debye length.
 
     Parameters
@@ -161,7 +175,7 @@ def renormalize_probe_radius_to_larger_debye_length(normalized_probe_radius, eff
     normalized_probe_radius : `float`
         The probe radius normalized to the attracted particle Debye length.
     effective_attracted_to_repelled_temperature_ratio : `float`
-        The effective temperature ratio of the attracted to repelled particle 
+        The effective temperature ratio of the attracted to repelled particle
         species as defined in `~plasmapy.diagnostics.brl.normalizations.get_effective_temperature_ratio`.
 
     Returns
