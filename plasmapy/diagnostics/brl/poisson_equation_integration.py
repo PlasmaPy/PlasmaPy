@@ -25,9 +25,9 @@ def evaluate_K0_term(eta_net, normalized_probe_radius, x, spherical=True):
     This is the term :math:`K_0(s)` as defined in equations (D.1) and (D.12) for the spherical and cylindrical probes respectively. The charge density, `eta_net`, and inverse radius, `x`, should have the same shape and correspond to the same points in space.
     """
     if spherical:
-        return -normalized_probe_radius**2 * eta_net / x**4
+        return -(normalized_probe_radius**2) * eta_net / x**4
     else:
-        return -normalized_probe_radius**2 * eta_net / x**3
+        return -(normalized_probe_radius**2) * eta_net / x**3
 
 
 def evaluate_K1_term(K0_term, x, dx_ds, integration_matrix, spherical=True):
