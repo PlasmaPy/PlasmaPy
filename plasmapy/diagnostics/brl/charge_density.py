@@ -284,12 +284,12 @@ def eta_5(A, spherical=True):
         return np.zeros_like(A)
     else:
         return np.exp(-A) / 2
-    
+
 
 def find_beta_M_index(beta_M, beta_G):
     r"""Find the point at which beta_G crosses beta_M.
-    
-    We assume that `x` is ordered from `1 -> 0`. The returned index is the index 
+
+    We assume that `x` is ordered from `1 -> 0`. The returned index is the index
     at which `beta_G` is less then `beta_M` for all `x < x_M`, (all `i > beta_M_index`).
 
     Parameters
@@ -308,11 +308,11 @@ def find_beta_M_index(beta_M, beta_G):
         return 0
     else:
         return beta_G.size - np.argmax(beta_M < beta_G[::-1])
-    
+
 
 def estimate_omega_M(beta_M, beta_M_index, beta_G, omega_G):
     r"""Do some Taylor expansions to find the omega that corresponds to `beta_M`.
-    
+
     Parameters
     ----------
     beta_M : `float`
@@ -329,9 +329,9 @@ def estimate_omega_M(beta_M, beta_M_index, beta_G, omega_G):
 
     Notes
     -----
-    We do a second order Taylor expansion of `beta_G` and then solve for the 
-    index where `beta_G(index) \approx beta_M`. Then we do a second order 
-    Taylor expansion of `omega_G` to find the correct `omega`. This only works 
+    We do a second order Taylor expansion of `beta_G` and then solve for the
+    index where `beta_G(index) \approx beta_M`. Then we do a second order
+    Taylor expansion of `omega_G` to find the correct `omega`. This only works
     if `np.min(beta_G) <= beta_M <= np.max(beta_G)`.
     """
     if beta_M == beta_G[beta_M_index]:
@@ -341,14 +341,22 @@ def estimate_omega_M(beta_M, beta_M_index, beta_G, omega_G):
         expansion_index = 1
     else:
         expansion_index = min(
-            beta_G.size - 2, 
-            beta_M_index + round((beta_M - beta_G[beta_M_index - 1]) / (beta_G[beta_M_index] - beta_G[beta_M_index - 1]))
+            beta_G.size - 2,
+            beta_M_index
+            + round(
+                (beta_M - beta_G[beta_M_index - 1])
+                / (beta_G[beta_M_index] - beta_G[beta_M_index - 1])
+            ),
         )
 
     # Second order Taylor expansion of `beta_G`.
     zeroth_order = beta_G[expansion_index]
     first_order = (beta_G[expansion_index + 1] - beta_G[expansion_index - 1]) / 2
-    second_order = (beta_G[expansion_index + 1] - 2 * beta_G[expansion_index] + beta_G[expansion_index - 1])
+    second_order = (
+        beta_G[expansion_index + 1]
+        - 2 * beta_G[expansion_index]
+        + beta_G[expansion_index - 1]
+    )
     # Now solve the quadratic equation.
     if np.isclose(second_order, 0):
         # If the second derivative is very small then just use the first derivative.
@@ -356,7 +364,9 @@ def estimate_omega_M(beta_M, beta_M_index, beta_G, omega_G):
     else:
         # Solve the quadratic formula.
         quadratic_first_term = -first_order / second_order
-        quadratic_second_term = (first_order**2 - 4 * second_order / 2 * (zeroth_order - beta_M))**0.5 / second_order
+        quadratic_second_term = (
+            first_order**2 - 4 * second_order / 2 * (zeroth_order - beta_M)
+        ) ** 0.5 / second_order
         terms_added = quadratic_first_term + quadratic_second_term
         terms_subtracted = quadratic_first_term - quadratic_second_term
 
@@ -372,17 +382,23 @@ def estimate_omega_M(beta_M, beta_M_index, beta_G, omega_G):
     # Second order Taylor expansion of `omega_G`.
     zeroth_order = omega_G[expansion_index]
     first_order = (omega_G[expansion_index + 1] - omega_G[expansion_index - 1]) / 2
-    second_order = (omega_G[expansion_index + 1] - 2 * omega_G[expansion_index] + omega_G[expansion_index - 1])
-    omega_M = zeroth_order + (float_index - expansion_index) * first_order + (float_index - expansion_index)**2 * second_order / 2
-
-    return omega_M
+    second_order = (
+        omega_G[expansion_index + 1]
+        - 2 * omega_G[expansion_index]
+        + omega_G[expansion_index - 1]
+    )
+    return (
+        zeroth_order
+        + (float_index - expansion_index) * first_order
+        + (float_index - expansion_index) ** 2 * second_order / 2
+    )
 
 
 def delta_function_charge_density(chi, x, omega_G, beta_G, spherical=True):
     r"""Calculate the charge density when the distribution function is a delta function.
 
     Calculate the charge density for a single species of particles.
-    
+
     Parameters
     ----------
     chi : `numpy.ndarray`
@@ -404,17 +420,21 @@ def delta_function_charge_density(chi, x, omega_G, beta_G, spherical=True):
     # Create an array that stores the omega corresponding to the boundary of no allowed particles.
     # Populate the array with the omega using only the local boundary.
     no_particle_omega_boundary = (beta_M - chi) / x**2
-    # Find the indeces where `beta_G` crosses `beta_M`. These are the indeces 
-    # just before crossing. We only need crossings in which 
-    # `beta_G[index] < beta_M < beta_G[index + 1]`. This is because these 
+    # Find the indices where `beta_G` crosses `beta_M`. These are the indices
+    # just before crossing. We only need crossings in which
+    # `beta_G[index] < beta_M < beta_G[index + 1]`. This is because these
     # crossings are the ones that will globally limit omega.
-    crossing_indeces = np.nonzero(np.logical_and(beta_G[:-1] < beta_M, beta_G[1:] > beta_M))[0]
+    crossing_indeces = np.nonzero(
+        np.logical_and(beta_G[:-1] < beta_M, beta_G[1:] > beta_M)
+    )[0]
     # If there are any crossings then find the omega that corresponds to each of these crossings.
     if crossing_indeces.size > 0:
         for crossing_index in crossing_indeces:
             crossed_omega_G = estimate_omega_M(beta_M, crossing_index, beta_G, omega_G)
             # Apply the global boundary of the extrema.
-            no_particle_omega_boundary[:crossing_index + 1] = np.min(crossed_omega_G, no_particle_omega_boundary[:crossing_index + 1])
+            no_particle_omega_boundary[: crossing_index + 1] = np.min(
+                crossed_omega_G, no_particle_omega_boundary[: crossing_index + 1]
+            )
 
     no_particle_omega_boundary[no_particle_omega_boundary < 0] = 0
     # Determine the boundary where the probe consumes incoming particles.
@@ -423,16 +443,39 @@ def delta_function_charge_density(chi, x, omega_G, beta_G, spherical=True):
     factors = beta_M > chi
     # Equation (13.1).
     if spherical:
-        eta = -1 / (2 * beta_M**0.5) * (
-            -1 * (factors * (beta_M - chi))**0.5 +
-            -1 * (factors * (beta_M - chi - probe_consumption_omega_boundary * x**2))**0.5 +
-            2 * (factors * (beta_M - chi - no_particle_omega_boundary * x**2))**0.5
+        eta = (
+            -1
+            / (2 * beta_M**0.5)
+            * (
+                -1 * (factors * (beta_M - chi)) ** 0.5
+                + -1
+                * (factors * (beta_M - chi - probe_consumption_omega_boundary * x**2))
+                ** 0.5
+                + 2
+                * (factors * (beta_M - chi - no_particle_omega_boundary * x**2))
+                ** 0.5
+            )
         )
     else:
-        eta = 1 / np.pi * (
-            # The zero boundary term evaluates to 0.
-            -1 * np.arcsin((factors * (probe_consumption_omega_boundary * x**2 / (beta_M - chi)))**0.5) +
-            2 * np.arcsin((factors * (no_particle_omega_boundary * x**2 / (beta_M - chi)))**0.5)
+        eta = (
+            1
+            / np.pi
+            * (
+                # The zero boundary term evaluates to 0.
+                -1
+                * np.arcsin(
+                    (
+                        factors
+                        * (probe_consumption_omega_boundary * x**2 / (beta_M - chi))
+                    )
+                    ** 0.5
+                )
+                + 2
+                * np.arcsin(
+                    (factors * (no_particle_omega_boundary * x**2 / (beta_M - chi)))
+                    ** 0.5
+                )
+            )
         )
 
     return eta
@@ -440,14 +483,16 @@ def delta_function_charge_density(chi, x, omega_G, beta_G, spherical=True):
 
 def determine_coefficients_and_integration_points():
     """Determine the coefficients of all eta and the integration start and end points."""
-    pass
+    raise NotImplementedError(
+        "The calculation for determining the coefficients and integration points has not been implemented."
+    )
 
 
 def get_charge_density(chi, x, omega_G, beta_G, spherical=True, maxwellian=True):
     r"""Calculate the charge density at all grid points.
 
     Calculate the charge density for a single species of particles.
-    
+
     Parameters
     ----------
     chi : `numpy.ndarray`
@@ -458,12 +503,16 @@ def get_charge_density(chi, x, omega_G, beta_G, spherical=True, maxwellian=True)
         Normalized angular momentum and energy of the locus of extrema as functions of `s`.
     spherical : `bool`, optional
         If `True` the probe will be treated as spherical. If `False` then the probe is cylindrical. Default is `True`.
-    
+
     Returns
     -------
     eta : `numpy.ndarray`
     """
     if not maxwellian:
-        return delta_function_charge_density(chi, x, omega_G, beta_G, spherical=spherical)
+        return delta_function_charge_density(
+            chi, x, omega_G, beta_G, spherical=spherical
+        )
     else:
-        raise NotImplementedError("The calculation for charge density for a maxwellian distribution has not been implemented.")
+        raise NotImplementedError(
+            "The calculation for charge density for a maxwellian distribution has not been implemented."
+        )
