@@ -520,7 +520,7 @@ class _ParticleInput:
         if is_ParticleList:
             is_custom = any(particle.is_category("custom", particlewise=True))
         else:
-            is_custom = any(particle.is_category("custom"))
+            is_custom = particle.is_category("custom")
 
         if not self.allow_particle_lists and is_ParticleList:
             raise InvalidParticleError(
