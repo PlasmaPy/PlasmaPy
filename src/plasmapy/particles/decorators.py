@@ -353,7 +353,9 @@ class _ParticleInput:
 
         if isinstance(particle, ParticleList):
             uncharged = particle.is_category("uncharged", particlewise=True)
-            lacks_charge_info = particle.is_category(exclude={"charged", "uncharged"}, particlewise=True)
+            lacks_charge_info = particle.is_category(
+                exclude={"charged", "uncharged"}, particlewise=True
+            )
         else:
             uncharged = particle.is_category("uncharged")
             lacks_charge_info = particle.is_category(exclude={"charged", "uncharged"})
@@ -434,14 +436,14 @@ class _ParticleInput:
                 require=self.require,
                 any_of=self.any_of,
                 exclude=self.exclude,
-                particlewise = True
+                particlewise=True,
             )
         else:
             particle_in_category = particle.is_category(
                 require=self.require,
                 any_of=self.any_of,
                 exclude=self.exclude,
-                )
+            )
         if not particle_in_category:
             errmsg = self.category_errmsg(
                 particle,
@@ -485,7 +487,9 @@ class _ParticleInput:
                 continue
 
             if isinstance(particle, ParticleList):
-                meets_name_criteria = particle.is_category(**categorization, particlewise=True)
+                meets_name_criteria = particle.is_category(
+                    **categorization, particlewise=True
+                )
             else:
                 meets_name_criteria = particle.is_category(**categorization)
 
@@ -512,21 +516,23 @@ class _ParticleInput:
                 f"or CustomParticle-like inputs."
             )
 
-        if not self.allow_particle_lists and isinstance(particle, ParticleList):
+        is_ParticleList = isinstance(particle, ParticleList)
+        if is_ParticleList:
+            is_custom = any(particle.is_category("custom", particlewise=True))
+        else:
+            is_custom = any(particle.is_category("custom"))
+
+        if not self.allow_particle_lists and is_ParticleList:
             raise InvalidParticleError(
                 f"{self.callable_.__name__} does not accept ParticleList "
                 "or particle-list-like inputs."
             )
 
-        if (
-            not self.allow_custom_particles
-            and isinstance(particle, ParticleList)
-        ):
-            if any(particle.is_category("custom", particlewise=True):
-                raise InvalidParticleError(
-                    f"{self.callable_.__name__} does not accept CustomParticle "
-                    f"or CustomParticle-like inputs."
-                )
+        if not self.allow_custom_particles and is_ParticleList and is_custom:
+            raise InvalidParticleError(
+                f"{self.callable_.__name__} does not accept CustomParticle "
+                f"or CustomParticle-like inputs."
+            )
 
     def process_argument(
         self,
