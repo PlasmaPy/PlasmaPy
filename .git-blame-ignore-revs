@@ -1,18 +1,79 @@
-# Revisions specified in this file are hidden from the blame view
-# using the `git blame --ignore-revs-file` configuration setting.
+# GitHub hides the changes associated with the commit hashes in this file
+# from the blame view; see
 # https://docs.github.com/en/repositories/working-with-files/using-files/viewing-a-file#ignore-commits-in-the-blame-view
 
-# Apply black formatting rules to entire codebase
+# Switch to `src` layout with separate `tests` directory (#2598)
+2a6cf7fc923724316fe45e6433d181637d63416e
 
-8abf3d089c3046383651d0fd9eef4dc96e9f97b7
-39931da8cf1ab6a8f94e1b9490b7de096e409a72
+# Update pre-commit with new version of ruff and update version of mypy (#2566)
+33966e25dc085ae0ff05fbc4f44f79d9d25afde1
 
-# Apply isort rules to entire codebase
+# Apply ruff rules `UP006` and `UP007` (#2504)
+c8b95faa457d2aa91f344458587daae61188fd3f
 
-86ce0fabe32f475688c6a389b632733f089a14f0
-9602b5b780c71c3beb955c060d2ad4e5b24cf2cd
+# Drop python 3.9 support (#2501)
+bf6b6d888a3fa19e79321d9ef92fbab3a367113b
+
+# Use `isort` rules for `ruff` instead of using `isort` in `pre-commit` (#2453)
 b25e083a03a4396e73676d7d62329385fcfe2c0f
 
-# Switch to src layout
+# Use autotyping to add `-> None` return annotations (#2439)
+1c70047f96b974f36601645dea887625ceda86e5
 
-2a6cf7fc923724316fe45e6433d181637d63416e
+# Annotate dunder methods using `autotyping` and change `NoReturn` annotations to `None` (#2437)
+46ce50ec8fc15c7c4afac32c7ce2b9fcec72ed41
+
+# Replace `black` with `ruff` in pre-commit config (#2394)
+d13e52b151696d29c42b7b654e9b15242410fd5f
+
+# Update ruff rules (#2213)
+5cfd6f45bbbdba9e725b87fc1d06b973a9078092
+
+# Enable more `pydocstyle` rules for `ruff` (#2128)
+c2f2180130983402c6891902884f28ac40a6b1c2
+
+# Enable ruff rules for flake8-pytest-style (#2123)
+b9bad610ee643a588eba01e221b7f2b8e0082991
+
+# Sourcery refactored main branch (#2105)
+ec22c1f2040235d1537bf2d517dd12abfe0ce48b
+
+# change version of black in pre commit (#1955)
+3bf3f4c17c44b778ff6fe6b042f47d0e08a7f73a
+
+# Change minimum version of Python from 3.8 to 3.9 (#1885)
+1c85df50bb35f41adf86e6fcc13245c86e950614
+
+# Use `ruff` and `refurb` on remainder of `plasmapy` (#1853)
+276c70f1cded439ecafe8675618afa0c87a819c2
+
+# Merge automatic changes from v0.9.0 release (#1798)
+e0b33ab67fb267b2594f13d1866b01785b8f158f
+
+# Apply automated Sourcery refactorings (#1714)
+aa63c39adcd488351a8533590c1e4ec30a163c56
+
+# Merge v0.8.x and then revert it (#1616, #1624)
+12061ae9dadb2398c4b902ada93dc0f656f6f38e
+54335601df36c1db4951305f40b2121f5fc1b12b
+
+# Update to newest version of `black` for `pre-commit` (#1582)
+549f6b63394689ec03081c6fd013d7e5804fdcf3
+
+# Use `codespell` for spellchecking (#1493)
+5ecb7650c132ab053a436875f7f30798244d840f
+
+# Bring back isort to pre-commit suite
+9602b5b780c71c3beb955c060d2ad4e5b24cf2cd
+
+# Fix issues arising from github actions (#846)
+39931da8cf1ab6a8f94e1b9490b7de096e409a72
+
+# Add pre-commit github action (#845)
+8abf3d089c3046383651d0fd9eef4dc96e9f97b7
+
+# Reformat most subpackages with black code formatter (#761)
+f7a4a86922fb91afcab845fba8aa0c160fad329f
+
+# Rename plasmapy.atomic to plasmapy.particles (#742)
+063c678fcaa79926a6de394a8000cf5076cd8fe7
