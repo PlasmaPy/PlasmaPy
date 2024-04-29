@@ -5,7 +5,7 @@ argon2-cffi-bindings==21.2.0
 arrow==1.3.0
 asteval==0.9.32
 astropy==6.0.1
-astropy-iers-data==0.2024.4.22.0.29.50
+astropy-iers-data==0.2024.4.29.0.28.48
 asttokens==2.4.1
 attrs==23.2.0
 babel==2.14.0
@@ -38,7 +38,7 @@ idna==3.7
 imagesize==1.4.1
 incremental==22.10.0
 ipykernel==6.29.4
-ipython==8.23.0
+ipython==8.24.0
 ipywidgets==8.1.2
 isoduration==20.11.0
 jedi==0.19.1
@@ -53,7 +53,7 @@ jupyter-events==0.10.0
 jupyter-server==2.14.0
 jupyter-server-terminals==0.5.3
 jupyterlab-pygments==0.3.0
-jupyterlab-server==2.27.0
+jupyterlab-server==2.27.1
 jupyterlab-widgets==3.0.10
 kiwisolver==1.4.5
 latexcodec==3.0.0
@@ -79,7 +79,7 @@ pandocfilters==1.5.1
 parso==0.8.4
 pexpect==4.9.0
 pillow==10.3.0
-platformdirs==4.2.0
+platformdirs==4.2.1
 pluggy==1.5.0
 prometheus-client==0.20.0
 prompt-toolkit==3.0.43
@@ -98,7 +98,7 @@ python-json-logger==2.0.7
 pytz==2024.1
 pyyaml==6.0.1
 pyzmq==26.0.2
-referencing==0.34.0
+referencing==0.35.0
 requests==2.31.0
 rfc3339-validator==0.1.4
 rfc3986-validator==0.1.1
@@ -115,7 +115,7 @@ sphinx-changelog==1.5.0
 sphinx-codeautolink==0.15.1
 sphinx-collapse==0.1.3
 sphinx-copybutton==0.5.2
-sphinx-gallery==0.15.0
+sphinx-gallery==0.16.0
 sphinx-hoverxref==1.3.0
 sphinx-issues==4.1.0
 sphinx-notfound-page==1.0.0
@@ -134,10 +134,10 @@ sphinxcontrib-serializinghtml==1.1.10
 stack-data==0.6.3
 tabulate==0.9.0
 terminado==0.18.1
-tinycss2==1.2.1
+tinycss2==1.3.0
 tornado==6.4
 towncrier==23.11.0
-tox==4.14.2
+tox==4.15.0
 tox-uv==1.7.0
 tqdm==4.66.2
 traitlets==5.14.3
@@ -147,13 +147,13 @@ uncertainties==3.1.7
 unidecode==1.3.8
 uri-template==1.3.0
 urllib3==2.2.1
-uv==0.1.35
-virtualenv==20.25.3
+uv==0.1.39
+virtualenv==20.26.0
 voila==0.5.6
 wcwidth==0.2.13
 webcolors==1.13
 webencodings==0.5.1
-websocket-client==1.7.0
+websocket-client==1.8.0
 websockets==12.0
 widgetsnbextension==4.0.10
 wrapt==1.16.0
