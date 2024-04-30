@@ -828,7 +828,7 @@ Coverage configurations
 
 Configurations for coverage tests are given in the ``[coverage:run]``
 and ``[coverage:report]`` sections of :file:`setup.cfg`. Codecov_
-configurations are given in :file:`.codecov.yaml`.
+configurations are given in :file:`codecov.yaml`.
 
 Using an integrated development environment
 -------------------------------------------
