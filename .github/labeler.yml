@@ -17,7 +17,7 @@ bug:
 'CI':
   - changed-files:
     - any-glob-to-any-file: [
-      '.codecov.yaml',
+      'codecov.yaml',
       '.github/workflows/*test*.yml',
       '.pre-commit-config.yaml',
       '.readthedocs.yml',

@@ -119,7 +119,7 @@ class TestPlasmaDispersionFunction:
 
         try:
             Z_of_w_array = plasma_dispersion_func(w_array)
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             raise ValueError(
                 "plasma_dispersion_func is unable to accept an "
                 f"ndarray argument with values:\n{w_array}"
