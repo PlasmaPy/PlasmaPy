@@ -85,6 +85,7 @@ doc_subs: dict[str, str] = {
     "lite-functions": r":term:`lite-functions`\ ",
     "maxpython": "3.12",
     "minpython": "3.10",
+    "open a terminal": r":ref:`open a terminal <opening-a-terminal>`\ ",
     "Open a terminal": r":ref:`Open a terminal <opening-a-terminal>`\ ",
     "parameter": r":term:`parameter`\ ",
     "parameters": r":term:`parameters <parameter>`\ ",
