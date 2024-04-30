@@ -370,7 +370,7 @@ class ParticleList(collections.UserList):
             )
             for particle in self
         ]
-        return category_list if particlewise else np.allclose(category_list, True)  # noqa: FBT003
+        return category_list if particlewise else all(category_list)
 
     @property
     def charge_number(self) -> np.array:
