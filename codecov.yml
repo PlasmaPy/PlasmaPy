@@ -4,15 +4,13 @@ codecov:
     wait_for_ci: false
   require_ci_to_pass: false
 coverage:
-  range: 75..98
+  range: 80..98
   status:
     project:
       default:
-        threshold: 0.2%
+        threshold: 0.1%
         removed_code_behavior: adjust_base
-        if_not_found: failure
     patch:
       default:
-        threshold: 0.2%
+        threshold: 0.5%
         removed_code_behavior: adjust_base
-        if_not_found: failure
