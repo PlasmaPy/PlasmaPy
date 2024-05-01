@@ -138,7 +138,7 @@ namespaces = false
 write_to = "src/plasmapy/_version.py"
 
 [tool.pytest.ini_options]
-testpaths = ['tests', 'src/plasmapy']
+testpaths = ['tests', 'src']
 xfail_strict = true
 markers = [
     "slow: marks tests as slow (deselect with '-m \"not slow\"')",
