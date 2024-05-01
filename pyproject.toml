@@ -172,6 +172,7 @@ norecursedirs = [
   'docs',
   'licenses',
   'node_modules',
+  'noxfile.py',
   'venv',
 ]
 
