@@ -5,7 +5,7 @@ __all__ = ["ParticleList", "ParticleListLike"]
 import collections
 import contextlib
 from collections.abc import Callable, Iterable, Sequence
-from typing import TypeAlias, Union
+from typing import TypeAlias, Union, overload
 
 import astropy.units as u
 import numpy as np
@@ -313,6 +313,26 @@ class ParticleList(collections.UserList):
         elif not isinstance(particle, Particle | CustomParticle):
             particle = Particle(particle)
         self.data.insert(index, particle)
+
+    @overload
+    def is_category(
+        self,
+        *category_tuple,
+        require: str | Iterable[str] | None = None,
+        any_of: str | Iterable[str] | None = None,
+        exclude: str | Iterable[str] | None = None,
+        particlewise: bool = False,
+    ) -> bool: ...
+
+    @overload
+    def is_category(
+        self,
+        *category_tuple,
+        require: str | Iterable[str] | None = None,
+        any_of: str | Iterable[str] | None = None,
+        exclude: str | Iterable[str] | None = None,
+        particlewise: bool = True,
+    ) -> list[bool]: ...
 
     def is_category(
         self,
