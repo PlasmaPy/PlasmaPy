@@ -1,2 +1,2 @@
 Reconfigured the auto-generated requirements files used during continuous integration
-and for documentation builds and added corresponding documentation.
+and for documentation builds, while adding corresponding documentation.
