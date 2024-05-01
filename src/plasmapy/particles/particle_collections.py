@@ -5,7 +5,7 @@ __all__ = ["ParticleList", "ParticleListLike"]
 import collections
 import contextlib
 from collections.abc import Callable, Iterable, Sequence
-from typing import TypeAlias, Union, overload
+from typing import Literal, TypeAlias, Union, overload
 
 import astropy.units as u
 import numpy as np
@@ -321,7 +321,7 @@ class ParticleList(collections.UserList):
         require: str | Iterable[str] | None = None,
         any_of: str | Iterable[str] | None = None,
         exclude: str | Iterable[str] | None = None,
-        particlewise: bool = False,
+        particlewise: Literal[True] = ...,
     ) -> bool: ...
 
     @overload
@@ -331,7 +331,7 @@ class ParticleList(collections.UserList):
         require: str | Iterable[str] | None = None,
         any_of: str | Iterable[str] | None = None,
         exclude: str | Iterable[str] | None = None,
-        particlewise: bool = True,
+        particlewise: Literal[False],
     ) -> list[bool]: ...
 
     def is_category(
