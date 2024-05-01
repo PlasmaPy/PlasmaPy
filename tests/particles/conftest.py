@@ -16,7 +16,7 @@ def particle(request):  # noqa: D103
 def opposite(particle):  # noqa: D103
     try:
         opposite_particle = ~particle
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         raise InvalidParticleError(
             f"The unary ~ (invert) operator is unable to find the "
             f"antiparticle of {particle}."
