@@ -138,7 +138,7 @@ namespaces = false
 write_to = "src/plasmapy/_version.py"
 
 [tool.pytest.ini_options]
-testpaths = ['tests', 'src']
+testpaths = ['.']
 xfail_strict = true
 markers = [
     "slow: marks tests as slow (deselect with '-m \"not slow\"')",
@@ -173,6 +173,7 @@ norecursedirs = [
   'docs',
   'licenses',
   'node_modules',
+  'noxfile.py',
   'venv',
   '.venv',
 ]
