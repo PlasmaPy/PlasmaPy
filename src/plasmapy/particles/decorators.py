@@ -516,19 +516,17 @@ class _ParticleInput:
                 f"or CustomParticle-like inputs."
             )
 
-        is_ParticleList = isinstance(particle, ParticleList)
-        if is_ParticleList:
-            is_custom = any(particle.is_category("custom", particlewise=True))
-        else:
-            is_custom = particle.is_category("custom")
-
-        if not self.allow_particle_lists and is_ParticleList:
+        if not self.allow_particle_lists and isinstance(particle, ParticleList):
             raise InvalidParticleError(
                 f"{self.callable_.__name__} does not accept ParticleList "
                 "or particle-list-like inputs."
             )
 
-        if not self.allow_custom_particles and is_ParticleList and is_custom:
+        if (
+            not self.allow_custom_particles
+            and isinstance(particle, ParticleList)
+            and any(particle.is_category("custom", particlewise=True))
+        ):
             raise InvalidParticleError(
                 f"{self.callable_.__name__} does not accept CustomParticle "
                 f"or CustomParticle-like inputs."
