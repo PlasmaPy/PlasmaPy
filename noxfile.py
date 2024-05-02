@@ -27,7 +27,7 @@ def docs(session):
     """Build documentation with Sphinx."""
     session.install(*doc_requirements)
     session.install(".")
-    session.run(*sphinx_commands, *html)
+    session.run(*sphinx_commands, *html, *session.posargs)
 
 
 @nox.session(python=maxpython)
@@ -35,7 +35,7 @@ def linkcheck(session):
     """Check hyperlinks in documentation."""
     session.install(*doc_requirements)
     session.install(".")
-    session.run(*sphinx_commands, *check_hyperlinks)
+    session.run(*sphinx_commands, *check_hyperlinks, *session.posargs)
 
 
 @nox.session(python=maxpython)
@@ -53,4 +53,5 @@ def mypy(session):
         "--pretty",
         "--exclude",
         "build",
+        *session.posargs,
     )
