@@ -60,7 +60,7 @@ jobs:
 
   documentation:
 
-    name: Documentation, Python 3.12, Ubuntu, nox
+    name: Documentation, Python 3.12, Ubuntu
     runs-on: ubuntu-latest
 
     steps:
