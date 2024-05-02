@@ -19,7 +19,7 @@ sphinx_commands = (
 )
 
 html = ("-b", "html")
-check_hyperlinks = ("-b", "linkcheck")
+check_hyperlinks = ("-b", "linkcheck", "-q")
 
 
 @nox.session(python=maxpython)
