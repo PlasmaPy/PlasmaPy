@@ -348,7 +348,7 @@ linkcheck_allowed_redirects = {
     r"https://.+\.org": r"https://.+\.org/en/.+",
     r"https://docs.+\.io": r"https://docs.+\.io/en/.+",
     r"https://docs.+\.com": r"https://docs.+\.com/en/.+",
-    r"https://docs.+\.codes": r"https://docs.+\.codes/en/.+",
+    r"https://.+\.codes": r"https://.+\.codes/en/.+",
     r"https://docs.+\.dev": r"https://docs.+\.dev/en/.+",
     r"https://github\.com/sponsors/.+": r"https://github\.com/.+",
     r"https://en.wikipedia.org/wiki.+": "https://en.wikipedia.org/wiki.+",
