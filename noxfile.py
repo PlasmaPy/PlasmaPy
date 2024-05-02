@@ -53,5 +53,7 @@ def mypy(session):
         "--pretty",
         "--exclude",
         "build",
+        "--exclude",
+        "_version.py",
         *session.posargs,
     )
