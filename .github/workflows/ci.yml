@@ -50,9 +50,6 @@ jobs:
     - name: Build documentation with Sphinx
       run: nox -e docs -- -q
 
-    - name: Intentional failure to test printing of doc troubleshooting
-      run: nox -e docs -- -q
-
     - name: Print troubleshooting information on failure
       if: ${{ failure() }}
       run: echo $DOC_TROUBLESHOOTING
