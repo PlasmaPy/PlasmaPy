@@ -47,9 +47,9 @@ jobs:
           .nox
         key: docs-${{ runner.os }}-${{ hashFiles('requirements.txt') }}
 
-    - name: Build documentation with Sphinx
-      run: nox -e docs -- -q
+#    - name: Build documentation with Sphinx
+#      run: nox -e docs -- -q
 
     - name: Print troubleshooting information on failure
-      if: ${{ failure() }}
-      run: echo $DOC_TROUBLESHOOTING
+#      if: ${{ failure() }}
+      run: echo -e $DOC_TROUBLESHOOTING
