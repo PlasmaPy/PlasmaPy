@@ -12,7 +12,7 @@ on:
   workflow_dispatch:
 
 env:
-  DOC_TROUBLESHOOTING: "For help with fixing failures, please check out the documentation troubleshooting guide at:\n\n  https://docs.plasmapy.org/en/latest/contributing/doc_guide.html#troubleshooting\n\nWarnings like 'reference target not found' occur when Sphinx tries to interpret text as a Python object, but is unable to do so. This warning can often be fixed by surrounding text in double back ticks instead of single back ticks (e.g., by changing `y` to ``y``) so that it gets formatted as an in-line literal."
+  DOC_TROUBLESHOOTING: "For help with fixing failures, please check out the documentation troubleshooting guide at: https://docs.plasmapy.org/en/latest/contributing/doc_guide.html#troubleshooting\n\nWarnings like 'reference target not found' occur when Sphinx tries to interpret text as a Python object, but is unable to do so. This warning can often be fixed by surrounding text in double back ticks instead of single back ticks (e.g., by changing `y` to ``y``) so that it gets formatted as an in-line literal."
 
 jobs:
 
@@ -53,3 +53,6 @@ jobs:
     - name: Print troubleshooting information on failure
 #      if: ${{ failure() }}
       run: echo -e $DOC_TROUBLESHOOTING
+
+    - name: man echo
+      run: man echo
