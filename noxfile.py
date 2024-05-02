@@ -20,7 +20,6 @@ sphinx_commands = (
 
 html = ("-b", "html")
 check_hyperlinks = ("-b", "linkcheck")
-skip_notebook_execution = ("-D", "nbsphinx_execute=never")
 
 
 @nox.session(python=maxpython)
