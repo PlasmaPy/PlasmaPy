@@ -40,20 +40,15 @@ def linkcheck(session):
 
 @nox.session(python=maxpython)
 def mypy(session):
-    """Perform static type checking."""
-    session.install("mypy >= 1.9.0", "pip")
-    session.install("-r", "requirements.txt")
-    session.run(
-        "mypy",
-        ".",
+    """Perform static type checking with mypy."""
+    mypy_command = ("mypy", ".")
+    mypy_options = (
         "--install-types",
         "--non-interactive",
         "--show-error-context",
         "--show-error-code-links",
         "--pretty",
-        "--exclude",
-        "build",
-        "--exclude",
-        "_version.py",
-        *session.posargs,
     )
+    session.install("mypy >= 1.9.0", "pip")
+    session.install("-r", "requirements.txt")
+    session.run(*mypy_command, *mypy_options, *session.posargs)
