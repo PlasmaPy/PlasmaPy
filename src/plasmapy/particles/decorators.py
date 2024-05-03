@@ -362,7 +362,7 @@ class _ParticleInput:
 
         if isinstance(uncharged, Iterable):
             uncharged = any(uncharged)
-            lacks_charge_info = any(lacks_charge_info)  # type: ignore[arg-type]
+            lacks_charge_info = any(lacks_charge_info)
 
         if must_be_charged and (uncharged or must_have_charge_info):
             raise ChargeError(f"{self.callable_} can only accept charged particles.")
@@ -525,7 +525,7 @@ class _ParticleInput:
         if (
             not self.allow_custom_particles
             and isinstance(particle, ParticleList)
-            and any(particle.is_category("custom", particlewise=True))
+            and any(particle.is_category("custom", particlewise=True))  # type: ignore[arg-type]
         ):
             raise InvalidParticleError(
                 f"{self.callable_.__name__} does not accept CustomParticle "
