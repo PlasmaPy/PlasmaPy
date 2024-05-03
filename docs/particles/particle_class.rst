@@ -259,6 +259,18 @@ and/or |ParticleList| objects together.
 >>> helium_ions + cp + proton
 ParticleList(['He-4 0+', 'He-4 1+', 'He-4 2+', 'Fe 9.5+', 'p+'])
 
+As with an individual |Particle| and |CustomParticle|, we can check whether
+all the particles in a list fall within a category using |is_category|.
+
+>>> helium_ions.is_category("ion")
+False
+
+We may also check each particle in the list individually with by setting
+the parameter `particlewise` to `True`.
+
+>>> helium_ions.is_category("ion", particlewise=True)
+[False, True, True]
+
 The machinery contained with |ParticleList| lets us calculate plasma
 parameters from `plasmapy.formulary` for multiple particles at once.
 

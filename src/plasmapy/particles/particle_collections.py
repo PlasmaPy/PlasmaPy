@@ -354,7 +354,7 @@ class ParticleList(collections.UserList):
         Parameters
         ----------
         particlewise : `bool`, default: `False`
-            If `True`, return a `list` of `bool` in which each element will be `True`
+            If `True`, return a `list` of `bool` in which an element will be `True`
             if the corresponding particle is consistent with the categorization
             criteria, and `False` otherwise. If `False`, return a `bool` which
             will be `True` if all particles are consistent with the categorization
@@ -363,6 +363,10 @@ class ParticleList(collections.UserList):
         Returns
         -------
         `bool` or `list` of `bool`
+
+        See Also
+        --------
+        `~plasmapy.particles.particle_class.Particle.is_category`
 
         Examples
         --------
