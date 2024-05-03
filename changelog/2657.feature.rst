@@ -6,4 +6,4 @@ ex.
 ```>>> from plasmapy.particles import Particle
 >>> ion = Particle('H')
 >>> ion.ionization_energy
-<Quantity 2.17870942e-18 J>
+<Quantity 2.17870942e-18 J>```
