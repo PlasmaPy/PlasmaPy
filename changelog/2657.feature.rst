@@ -1,3 +1,3 @@
 Added ionization energy data from NIST to the `~plasmapy.particles.Particle` class.
-This can now be accessed using the `ionization_energy` attribute
+This can now be accessed using the `~plasmapy.particles.Particle.ionization_energy` attribute
 from the `~plasmapy.particles.Particle` class.
