@@ -787,7 +787,7 @@ class Particle(AbstractPhysicalParticle):
 
         try:
             ev_value = this_element["ionization energy"] * u.eV
-            attributes["ionization energy"] = u.Quantity(ev_value.to(u.J).value, u.J)
+            attributes["ionization energy"] = ev_value.to(u.J)
         except KeyError:
             attributes["ionization energy"] = None
 
