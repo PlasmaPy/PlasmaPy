@@ -346,18 +346,19 @@ class ParticleList(collections.UserList):
         Determine if the particles in the |ParticleList|
         meet categorization criteria.
 
-        If `particlewise` is `False`, return a `bool` which will be `True`
-        if all particles are consistent with the categorization criteria
-        and `False` otherwise.
-
-        If `particlewise` is `True`, return a `list` in which each element
-        will be `True` if the corresponding particle is consistent with the
-        categorization criteria, and `False` otherwise.
-
         Please refer to the documentation of
         `~plasmapy.particles.particle_class.Particle.is_category`
         for information on the parameters and categories, as well as
         more extensive examples.
+
+        Parameters
+        ----------
+        particlewise : `bool`, default: `False`
+            If `True`, return a `list` of `bool` in which each element will be `True`
+            if the corresponding particle is consistent with the categorization
+            criteria, and `False` otherwise. If `False`, return a `bool` which
+            will be `True` if all particles are consistent with the categorization
+            criteria and `False` otherwise.
 
         Returns
         -------
