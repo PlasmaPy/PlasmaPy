@@ -1573,3 +1573,21 @@ def test_undefined_mass_energy() -> None:
     """Test that a particle with an undefined mass energy returns |nan| J."""
     nu_tau_particle = Particle("nu_tau")
     assert u.isclose(nu_tau_particle.mass_energy, np.nan * u.J, equal_nan=True)
+
+@pytest.mark.parametrize("particle_symbol, expected_ionization_energy", [
+    ("H", u.Quantity((13.598434599702 * u.eV).to(u.J).value, u.J)),
+    ("He", u.Quantity((24.587389011 * u.eV).to(u.J).value, u.J)),
+    ("Li", u.Quantity((5.391714996 * u.eV).to(u.J).value, u.J)),
+])
+def test_particle_ionization_energy(particle_symbol, expected_ionization_energy):
+    particle = Particle(particle_symbol)
+    assert u.isclose(particle.ionization_energy, expected_ionization_energy, rtol=1e-4), \
+        f"Expected {expected_ionization_energy}, got {particle.ionization_energy}"
+
+def test_undefined_ionization_energy():
+    particle = Particle("tau neutrino")
+    try:
+        energy = particle.ionization_energy
+        pytest.fail("Expected MissingParticleDataError")
+    except MissingParticleDataError:
+        pass
