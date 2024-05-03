@@ -131,7 +131,7 @@ jupyter-core==5.7.2
     #   nbformat
     #   notebook
     #   voila
-jupyter-server==1.24.0
+jupyter-server==2.11.2
     # via
     #   jupyterlab-server
     #   nbclassic
