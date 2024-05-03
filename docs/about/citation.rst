@@ -56,4 +56,4 @@ on, such as `Astropy <https://www.astropy.org/acknowledging.html>`__,
 .. note::
 
    All public releases of PlasmaPy are openly archived in the `PlasmaPy
-   Community <https://zenodo.org/communities/plasmapy>`__ on |Zenodo|.
+   Community <https://zenodo.org/communities/plasmapy/records>`__ on |Zenodo|.

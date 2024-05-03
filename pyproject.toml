@@ -183,6 +183,7 @@ norecursedirs = [
   'licenses',
   'node_modules',
   'venv',
+  '.venv',
 ]
 
 

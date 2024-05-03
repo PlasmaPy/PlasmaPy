@@ -1391,7 +1391,7 @@ invisible imports with ``.. autolink-preface::``.
 
 If this warning occurs in the "Examples" section of a docstring, put
 ``.. autolink-skip: section`` at the beginning of that section (see
-:issue:`2554`). These warnings sometimes only show up when rebuilding
+:pr:`2554`). These warnings sometimes only show up when rebuilding
 the documentation.
 
 A related warning is "Could not match transformation of _ on source
