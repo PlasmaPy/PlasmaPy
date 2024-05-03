@@ -1878,7 +1878,7 @@ class Particle(AbstractPhysicalParticle):
 
         Raises
         ------
-        MissingParticleDataError
+        ~plasmapy.particles.exceptions.MissingParticleDataError
             If the ionization energy is not available for the particle.
         
 
