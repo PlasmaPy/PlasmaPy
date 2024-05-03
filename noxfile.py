@@ -7,7 +7,7 @@ nox.options.default_venv_backend = "uv"
 
 maxpython = "3.12"
 
-doc_requirements = ("-r", "requirements/requirements_docs_py312.txt")
+doc_requirements = ("-r", "ci_requirements/requirements_docs_py312.txt")
 
 sphinx_commands = (
     "sphinx-build",
