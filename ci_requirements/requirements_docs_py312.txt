@@ -139,7 +139,7 @@ tornado==6.4
 towncrier==23.11.0
 tox==4.15.0
 tox-uv==1.7.0
-tqdm==4.66.2
+tqdm==4.66.3
 traitlets==5.14.3
 types-python-dateutil==2.9.0.20240316
 tzdata==2024.1

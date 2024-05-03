@@ -431,7 +431,7 @@ towncrier==23.11.0
 tox==4.15.0
     # via tox-uv
 tox-uv==1.7.0
-tqdm==4.66.2
+tqdm==4.66.3
 traitlets==5.14.3
     # via
     #   comm

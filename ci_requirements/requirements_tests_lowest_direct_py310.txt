@@ -346,7 +346,7 @@ tornado==6.4
 tox==4.14.0
     # via tox-uv
 tox-uv==1.7.0
-tqdm==4.60.0
+tqdm==4.66.3
 traitlets==5.14.3
     # via
     #   ipykernel
