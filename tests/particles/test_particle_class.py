@@ -1578,7 +1578,7 @@ def test_undefined_mass_energy() -> None:
 @pytest.mark.parametrize(
     ("particle_symbol", "expected_ionization_energy"),
     [
-        ("H", u.Quantity((13.598434599702 * u.eV).to(u.J).value, u.J)),
+        ("H", (13.598434599702 * u.eV).to(u.J) ),
         ("He", u.Quantity((24.587389011 * u.eV).to(u.J).value, u.J)),
         ("Li", u.Quantity((5.391714996 * u.eV).to(u.J).value, u.J)),
     ],
