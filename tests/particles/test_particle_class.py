@@ -1593,7 +1593,7 @@ def test_particle_ionization_energy(particle_symbol, expected_ionization_energy)
 def test_undefined_ionization_energy():
     particle = Particle("tau neutrino")
     try:
-        particle.ionization_energy
-        pytest.fail("Expected MissingParticleDataError")
+        energy = particle.ionization_energy
+        pytest.fail(f"Expected MissingParticleDataError, got {energy}")
     except MissingParticleDataError:
         pass
