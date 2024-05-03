@@ -11,7 +11,7 @@ argon2-cffi-bindings==21.2.0
     # via argon2-cffi
 asteval==0.9.32
     # via lmfit
-astropy==5.1
+astropy==5.3.3
 asttokens==2.4.1
     # via stack-data
 attrs==23.2.0
