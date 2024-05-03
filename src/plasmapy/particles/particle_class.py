@@ -783,6 +783,11 @@ class Particle(AbstractPhysicalParticle):
 
         categories.add(this_element["category"])
 
+        try:
+            attributes["ionization energy"] = this_element["ionization energy"]
+        except KeyError:
+            attributes["ionization energy"] = None
+
     def _add_charge_information(self) -> None:
         """Assign attributes and categories related to charge information."""
         if self._attributes["charge number"] == 1:
@@ -1862,6 +1867,25 @@ class Particle(AbstractPhysicalParticle):
             return None
         else:
             return Particle(base_particle, Z=new_charge_number)
+    
+
+    @property
+    def ionization_energy(self) -> u.Quantity:
+        """
+        Returns the ionization energy of the particle in Joules (SI units).
+
+        Raises
+        ------
+        MissingParticleDataError
+            If the ionization energy is not available for the particle.
+        """
+
+        if self._attributes["ionization energy"] is None:
+            raise MissingParticleDataError(
+                f"The ionization energy of {self.symbol} is not available."
+            )
+
+        return self._attributes["ionization energy"]
 
 
 class DimensionlessParticle(AbstractParticle):
