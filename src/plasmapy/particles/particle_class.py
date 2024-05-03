@@ -529,6 +529,8 @@ class Particle(AbstractPhysicalParticle):
     <Quantity 881.5 s>
     >>> Particle("C-14").half_life.to(u.year)
     <Quantity 5730. yr>
+    >>> hydrogen.ionization_energy
+    <Quantity 2.17870942e-18 J>
     >>> deuteron.electron_number
     0
     >>> alpha.neutron_number
@@ -1878,8 +1880,15 @@ class Particle(AbstractPhysicalParticle):
         ------
         MissingParticleDataError
             If the ionization energy is not available for the particle.
-        """
+        
 
+        Examples
+        --------
+        >>> hydrogen = Particle("H")
+        >>> hydrogen.ionization_energy
+        <Quantity 2.17870942e-18 J>
+
+        """
         if self._attributes["ionization energy"] is None:
             raise MissingParticleDataError(
                 f"The ionization energy of {self.symbol} is not available."
