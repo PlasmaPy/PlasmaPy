@@ -23,7 +23,7 @@
     "group": 18,
     "block": "s",
     "category": "noble gas",
-    "ionization energy": 24.587389011 
+    "ionization energy": 24.587389011
   },
   "Li": {
     "atomic number": 3,
@@ -36,7 +36,7 @@
     "group": 1,
     "block": "s",
     "category": "alkali metal",
-    "ionization energy": 5.391714996 
+    "ionization energy": 5.391714996
   },
   "Be": {
     "atomic number": 4,
@@ -49,7 +49,7 @@
     "group": 2,
     "block": "s",
     "category": "alkaline earth metal",
-    "ionization energy": 9.322699 
+    "ionization energy": 9.322699
   },
   "B": {
     "atomic number": 5,
@@ -62,7 +62,7 @@
     "group": 13,
     "block": "p",
     "category": "metalloid",
-    "ionization energy": 8.298019 
+    "ionization energy": 8.298019
   },
   "C": {
     "atomic number": 6,
@@ -75,7 +75,7 @@
     "group": 14,
     "block": "p",
     "category": "nonmetal",
-    "ionization energy": 11.2602880 
+    "ionization energy": 11.2602880
   },
   "N": {
     "atomic number": 7,
@@ -709,7 +709,7 @@
     "group": 1,
     "block": "s",
     "category": "alkali metal",
-    "ionization energy": 3.89390572743    
+    "ionization energy": 3.89390572743
   },
   "Ba": {
     "atomic number": 56,
