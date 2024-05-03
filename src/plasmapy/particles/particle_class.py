@@ -1866,8 +1866,7 @@ class Particle(AbstractPhysicalParticle):
             self.__init__(base_particle, Z=new_charge_number)
             return None
         else:
-            return Particle(base_particle, Z=new_charge_number)
-    
+            return Particle(base_particle, Z=new_charge_number)    
 
     @property
     def ionization_energy(self) -> u.Quantity:
