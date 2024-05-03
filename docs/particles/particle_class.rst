@@ -74,6 +74,8 @@ These properties are often returned as a |Quantity| in SI units.
 <Quantity 3.888e+08 s>
 >>> iron56.binding_energy.to('GeV')
 <Quantity 0.49225958 GeV>
+>>> hydrogen.ionization_energy
+<Quantity 2.17870942e-18 J>
 
 Strings representing particles may be accessed using the
 `~plasmapy.particles.particle_class.Particle.symbol`,
