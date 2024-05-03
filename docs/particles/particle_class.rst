@@ -266,7 +266,7 @@ all the particles in a list fall within a category using |is_category|.
 False
 
 We may also check each particle in the list individually by setting
-the parameter `particlewise` to `True`.
+the keyword ``particlewise`` to `True`.
 
 >>> helium_ions.is_category("ion", particlewise=True)
 [False, True, True]
