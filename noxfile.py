@@ -46,7 +46,16 @@ def requirements(session):
 
     session.install("uv >= 0.1.37")
 
-    command = ("python", "-m", "uv", "pip", "compile", "pyproject.toml", "--upgrade")
+    command = (
+        "python",
+        "-m",
+        "uv",
+        "pip",
+        "compile",
+        "pyproject.toml",
+        "--upgrade",
+        "--quiet",
+    )
 
     # Generate documentation requirements file for the most recent
     # version of Python and the newest versions of dependencies.
