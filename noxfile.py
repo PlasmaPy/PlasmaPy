@@ -1,10 +1,16 @@
-"""Experimental nox configuration file."""
+"""
+Configuration file for nox.
+
+To invoke a nox session, run `nox -s <session>`, where <session> is
+replaced with the name of the session.
+"""
 
 import nox
 
 nox.options.default_venv_backend = "uv"
+nox.options.sessions = ["requirements"]
 
-supported_python_versions = ["3.10", "3.11", "3.12"]
+supported_python_versions = ("3.10", "3.11", "3.12")
 
 maxpython = max(supported_python_versions)
 minpython = min(supported_python_versions)
@@ -36,7 +42,9 @@ def get_requirements_file(
     str
         The path to the requirements file.
     """
-    specifiers = [category, version, resolution]
+    specifiers = [category, version]
+    if resolution != "highest":
+        specifiers.append(resolution)
     return f"{requirements_directory}/{'-'.join(specifiers)}.txt"
 
 
@@ -44,7 +52,23 @@ def get_requirements_file(
 def requirements(session):
     """Regenerate pinned requirements files used during CI."""
 
-    session.install("uv >= 0.1.37")
+    session.install("uv >= 0.1.39")
+
+    category_version_resolution = [
+        ("all", maxpython, "highest"),
+        ("docs", maxpython, "highest"),
+        ("tests", minpython, "lowest-direct"),
+    ]
+
+    category_version_resolution += [
+        ("tests", version, "highest") for version in supported_python_versions
+    ]
+
+    category_flags = {
+        "all": ("--all-extras",),
+        "docs": ("--extra", "docs"),
+        "tests": ("--extra", "tests"),
+    }
 
     command = (
         "python",
@@ -55,42 +79,13 @@ def requirements(session):
         "pyproject.toml",
         "--upgrade",
         "--quiet",
+        "--custom-compile-command",
+        "nox -s requirements",
     )
 
-    # Generate documentation requirements file for the most recent
-    # version of Python and the newest versions of dependencies.
-
-    doc_requirements_file = get_requirements_file(category="docs", version=maxpython)
-    session.run(
-        *command, "-p", maxpython, "--extra", "docs", "-o", doc_requirements_file
-    )
-
-    # Generate testing requirements files for all versions of Python with
-    # the newest versions of dependencies.
-
-    for version in supported_python_versions:
-        requirements_file = get_requirements_file(category="tests", version=version)
-
-        session.run(
-            *command, "-p", version, "--extra", "tests", "-o", requirements_file
-        )
-
-    # Generate testing requirements using the lowest-direct resolution strategy
-
-    minimal_requirements_file = get_requirements_file(
-        category="tests",
-        version=minpython,
-        resolution="lowest-direct",
-    )
-
-    session.run(
-        *command,
-        "-p",
-        minpython,
-        "-o",
-        minimal_requirements_file,
-        "--resolution=lowest-direct",
-    )
+    for category, version, resolution in category_version_resolution:
+        filename = get_requirements_file(category, version, resolution)
+        session.run(*command, "-p", version, "-o", filename, *category_flags[category])
 
 
 # Environments for building documentation
