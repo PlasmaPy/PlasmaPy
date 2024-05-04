@@ -19,7 +19,9 @@ requirements_directory = "ci_requirements"
 
 
 def get_requirements_file(
-    category: str, version: str, resolution: str = "highest"
+    category: str,
+    version: str,
+    resolution: str = "highest",
 ) -> str:
     """
     Return the file path to the requirements file.
@@ -78,14 +80,27 @@ def requirements(session):
         "compile",
         "pyproject.toml",
         "--upgrade",
+    )
+
+    flags = (
         "--quiet",
-        "--custom-compile-command",
+        "--custom-compile-command",  # defines command to be included in file header
         "nox -s requirements",
     )
 
     for category, version, resolution in category_version_resolution:
         filename = get_requirements_file(category, version, resolution)
-        session.run(*command, "-p", version, "-o", filename, *category_flags[category])
+        session.run(
+            *command,
+            "--python-version",
+            version,
+            *category_flags[category],
+            "--output-file",
+            filename,
+            "--resolution",
+            resolution,
+            *flags,
+        )
 
 
 # Environments for building documentation
