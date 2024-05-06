@@ -301,7 +301,7 @@ rpds-py==0.18.0
     # via
     #   jsonschema
     #   referencing
-scipy==1.8.0
+scipy==1.11.1
     # via lmfit
 send2trash==1.8.3
     # via
