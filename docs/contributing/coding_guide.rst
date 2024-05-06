@@ -880,8 +880,8 @@ outputs in the notebook* but store it in the repository with a
 :file:`preexecuted_` prefix (e.g.,
 :file:`preexecuted_full_3d_mhd_chaotic_turbulence_simulation.ipynb`).
 
-Compatibility with prior versions of Python and other dependencies
-==================================================================
+Python and dependency version support
+=====================================
 
 PlasmaPy releases will generally abide by the following standards, which
 are adapted from `NEP 29`_ and `SPEC 0`_ for the support of old versions
