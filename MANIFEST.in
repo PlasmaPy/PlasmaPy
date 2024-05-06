@@ -12,6 +12,7 @@ include *.yaml
 include *.yml
 include changelog/README.rst
 include CITATION.cff
+include noxfile.py
 include pyproject.toml
 include tox.ini
 

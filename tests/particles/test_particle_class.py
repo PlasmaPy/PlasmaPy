@@ -528,7 +528,7 @@ def test_Particle_class(arg, kwargs, expected_dict):
 
     try:
         particle = Particle(arg, **kwargs)  # noqa: F841
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         raise ParticleError(f"Problem creating {call}") from exc
 
     for key in expected_dict:
@@ -910,7 +910,7 @@ def test_that_object_can_be_dict_key(key):
 
     try:
         dictionary = {key: value}
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         error_message = f"{key} is not a valid key for a dict. "
         if not isinstance(key, collections.abc.Hashable):
             error_message += f"{key} is not hashable. "

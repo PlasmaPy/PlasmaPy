@@ -5,7 +5,7 @@ __all__ = ["ParticleList", "ParticleListLike"]
 import collections
 import contextlib
 from collections.abc import Callable, Iterable, Sequence
-from typing import TypeAlias, Union
+from typing import Literal, TypeAlias, Union, overload
 
 import astropy.units as u
 import numpy as np
@@ -314,24 +314,37 @@ class ParticleList(collections.UserList):
             particle = Particle(particle)
         self.data.insert(index, particle)
 
+    @overload
     def is_category(
         self,
         *category_tuple,
         require: str | Iterable[str] | None = None,
         any_of: str | Iterable[str] | None = None,
         exclude: str | Iterable[str] | None = None,
-        return_list: bool = False,
+        particlewise: Literal[True] = ...,
+    ) -> bool: ...
+
+    @overload
+    def is_category(
+        self,
+        *category_tuple,
+        require: str | Iterable[str] | None = None,
+        any_of: str | Iterable[str] | None = None,
+        exclude: str | Iterable[str] | None = None,
+        particlewise: Literal[False],
+    ) -> list[bool]: ...
+
+    def is_category(
+        self,
+        *category_tuple,
+        require: str | Iterable[str] | None = None,
+        any_of: str | Iterable[str] | None = None,
+        exclude: str | Iterable[str] | None = None,
+        particlewise: bool = False,
     ) -> bool | list[bool]:
         """
-        Determine if particles in the |ParticleList| meet categorization
-        criteria.
-
-        If ``return_list`` is `False` (default), this method will return
-        `True` if _all_ particles in the |ParticleList| meet the
-        categorization criteria. If ``return_list`` is `True`, then this
-        method will return a `list` containing booleans that represent
-        whether each individual particle matches the categorization
-        criteria.
+        Determine if the particles in the |ParticleList|
+        meet categorization criteria.
 
         .. note::
 
@@ -340,23 +353,42 @@ class ParticleList(collections.UserList):
             `~plasmapy.particles.particle_class.Particle.is_category`
             method of |Particle|.
 
+        Parameters
+        ----------
+        particlewise : `bool`, default: `False`
+            If `True`, return a `list` of `bool` in which an element will be `True`
+            if the corresponding particle is consistent with the categorization
+            criteria, and `False` otherwise. If `False`, return a `bool` which
+            will be `True` if all particles are consistent with the categorization
+            criteria and `False` otherwise.
+
         Returns
         -------
         `bool` or `list` of `bool`
 
+        See Also
+        --------
+        `~plasmapy.particles.particle_class.Particle.is_category`
+
         Examples
         --------
-        >>> more_particles = ParticleList(["proton", "electron", "tau neutrino"])
-        >>> more_particles.is_category("lepton")  # a proton is not a lepton
+        >>> particles = ParticleList(["proton", "electron", "tau neutrino"])
+        >>> particles.is_category("lepton")
         False
-        >>> more_particles.is_category("lepton", return_list=True)
+        >>> particles.is_category("lepton", particlewise=True)
         [False, True, True]
-        >>> more_particles.is_category(exclude="neutrino", return_list=True)
-        [True, True, False]
-        >>> more_particles.is_category(any_of=["lepton", "charged"], return_list=True)
+        >>> particles.is_category(require="lepton", exclude="neutrino")
+        False
+        >>> particles.is_category(
+        ...     require="lepton", exclude="neutrino", particlewise=True
+        ... )
+        [False, True, False]
+        >>> particles.is_category(any_of=["lepton", "charged"])
+        True
+        >>> particles.is_category(any_of=["lepton", "charged"], particlewise=True)
         [True, True, True]
         """
-        meets_criteria = [
+        category_list = [
             particle.is_category(
                 *category_tuple,
                 require=require,
@@ -365,7 +397,7 @@ class ParticleList(collections.UserList):
             )
             for particle in self
         ]
-        return meets_criteria if return_list else all(meets_criteria)
+        return category_list if particlewise else all(category_list)
 
     @property
     def charge_number(self) -> np.array:

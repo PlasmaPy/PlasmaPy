@@ -351,12 +351,18 @@ class _ParticleInput:
         must_be_charged = self.require is not None and "charged" in self.require
         must_have_charge_info = self.any_of == {"charged", "uncharged"}
 
-        uncharged = particle.is_category("uncharged")
-        lacks_charge_info = particle.is_category(exclude={"charged", "uncharged"})
+        if isinstance(particle, ParticleList):
+            uncharged = particle.is_category("uncharged", particlewise=True)
+            lacks_charge_info = particle.is_category(
+                exclude={"charged", "uncharged"}, particlewise=True
+            )
+        else:
+            uncharged = particle.is_category("uncharged")
+            lacks_charge_info = particle.is_category(exclude={"charged", "uncharged"})
 
         if isinstance(uncharged, Iterable):
             uncharged = any(uncharged)
-            lacks_charge_info = any(lacks_charge_info)  # type: ignore[arg-type]
+            lacks_charge_info = any(lacks_charge_info)
 
         if must_be_charged and (uncharged or must_have_charge_info):
             raise ChargeError(f"{self.callable_} can only accept charged particles.")
@@ -425,11 +431,20 @@ class _ParticleInput:
         --------
         ~plasmapy.particles.particle_class.Particle.is_category
         """
-        if not particle.is_category(
-            require=self.require,
-            any_of=self.any_of,
-            exclude=self.exclude,
-        ):
+        if isinstance(particle, ParticleList):
+            particle_in_category = particle.is_category(
+                require=self.require,
+                any_of=self.any_of,
+                exclude=self.exclude,
+                particlewise=True,
+            )
+        else:
+            particle_in_category = particle.is_category(
+                require=self.require,
+                any_of=self.any_of,
+                exclude=self.exclude,
+            )
+        if not particle_in_category:
             errmsg = self.category_errmsg(
                 particle,
                 self.require,
@@ -471,7 +486,12 @@ class _ParticleInput:
             if parameter != name or particle is None:
                 continue
 
-            meets_name_criteria = particle.is_category(**categorization)
+            if isinstance(particle, ParticleList):
+                meets_name_criteria = particle.is_category(
+                    **categorization, particlewise=True
+                )
+            else:
+                meets_name_criteria = particle.is_category(**categorization)
 
             if not meets_name_criteria:
                 raise exception(
@@ -502,7 +522,7 @@ class _ParticleInput:
         if (
             not self.allow_custom_particles
             and isinstance(particle, ParticleList)
-            and any(particle.is_category("custom", return_list=True))
+            and any(particle.is_category("custom", particlewise=True))  # type: ignore[arg-type]
         ):
             raise InvalidParticleError(
                 f"{self.callable_.__name__} does not accept CustomParticle "

@@ -7,7 +7,7 @@ on:
 
 jobs:
   update-requirements:
-    name: Regenerate requirements.txt
+    name: Regenerate requirements
     runs-on: ubuntu-latest
     if: github.repository == 'PlasmaPy/PlasmaPy'
 
@@ -46,7 +46,7 @@ jobs:
       uses: peter-evans/create-pull-request@v6
       with:
         token: ${{ steps.generate_token.outputs.token }}
-        commit-message: Regenerate requirements.txt
+        commit-message: Regenerate requirements
         title: Update pinned requirements
         body: |
           This pull request (PR) regenerates the pinned requirements files used in continuous integration (CI) tests and by integrated development environments (IDEs), including [requirements.txt](https://github.com/PlasmaPy/PlasmaPy/blob/main/requirements.txt) and the files in the[requirements/](https://github.com/PlasmaPy/PlasmaPy/blob/main/requirements) directory. To update requirements locally, run "tox -e requirements", with the environment defined in [tox.ini](https://github.com/PlasmaPy/PlasmaPy/blob/main/tox.ini). The resolution of requirements is done by [uv](https://github.com/astral-sh/uv).
