@@ -54,7 +54,7 @@ repos:
     exclude: .github/labeler.yml|.pre-commit-search-and-replace.yaml
 
 - repo: https://github.com/mattlqx/pre-commit-search-and-replace
-  rev: v1.0.5
+  rev: v1.1.0
   hooks:
   - id: search-and-replace
     exclude: changelog/.*|docs/changelog/.*|.sourcery.yaml|docs/_global_substitutions.py|CHANGELOG.rst
@@ -79,7 +79,7 @@ repos:
     - tomli
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.4.2
+  rev: v0.4.3
   hooks:
   - id: ruff
     name: ruff (see https://docs.astral.sh/ruff/rules)
