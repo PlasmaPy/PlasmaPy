@@ -295,7 +295,7 @@ referencing==0.35.1
     # via
     #   jsonschema
     #   jsonschema-specifications
-requests==2.28.0
+requests==2.31.0
     # via jupyterlab-server
 rpds-py==0.18.0
     # via
