@@ -18,7 +18,7 @@ Running tests
 To prepare to run tests from the command line, |open a terminal| and
 install |tox| with its extensions:
 
-.. group-tabs::
+.. group-tab::
 
   .. tabs::
 
