@@ -1201,10 +1201,10 @@ sphinx-build_. We recommend starting with |nox|.
 
       .. code-block:: bash
 
-         nox -s build_docs
+         nox -s docs
 
       To pass any `options to sphinx-build`_, put them after ``--``. For
-      example, use :bash:`nox -s build_docs -- -v` to increase output
+      example, use :bash:`nox -s docs -- -v` to increase output
       verbosity.
 
       Building with |nox| is well-suited for reproducible documentation
