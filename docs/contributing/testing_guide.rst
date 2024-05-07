@@ -18,21 +18,19 @@ Running tests
 To prepare to run tests from the command line, |open a terminal| and
 install |tox| with its extensions:
 
-.. group-tab::
+.. tabs::
 
-  .. tabs::
+   .. group-tab:: macOS, Linux, or WSL
 
-    .. group-tab:: macOS, Linux, or WSL
+      .. code-block:: console
 
-       .. code-block:: console
+         python -m pip install tox tox-uv
 
-          python -m pip install tox tox-uv
+   .. group-tab:: Windows
 
-    .. group-tab:: Windows
+      .. code-block:: console
 
-       .. code-block:: console
-
-          py -m pip install tox tox-uv
+         py -m pip install tox tox-uv
 
 To run tests, navigate to a directory within your local clone of
 PlasmaPy and run:
