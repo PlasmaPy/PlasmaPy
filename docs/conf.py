@@ -351,6 +351,7 @@ linkcheck_allowed_redirects = {
     r"https://.+\.codes": r"https://.+\.codes/en/.+",
     r"https://docs.+\.dev": r"https://docs.+\.dev/en/.+",
     r"https://github\.com/sponsors/.+": r"https://github\.com/.+",
+    r"https://github\.com/.+/issues/.+": r"https://github\.com/.+/discussions/.+",
     r"https://en.wikipedia.org/wiki.+": "https://en.wikipedia.org/wiki.+",
     r"https://.+\.readthedocs\.io": r"https://.+\.readthedocs\.io/en/.+",
     r"https://www\.sphinx-doc\.org": r"https://www\.sphinx-doc\.org/en/.+",
