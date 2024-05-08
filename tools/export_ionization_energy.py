@@ -1,4 +1,9 @@
-"""Utility script for pulling ionization energy data from NIST."""
+"""Utility script for pulling ionization energy data from NIST and exporting it to a JSON file.
+
+This script retrieves ionization energy data for elements from the NIST website,
+formats it, and saves it as a JSON file for inclusion in the PlasmaPy package.
+This script is provided for reference and is not intended to be part of the PlasmaPy package.
+"""
 
 import json
 import time
@@ -9,15 +14,6 @@ import requests
 import logging
 
 from pathlib import Path
-
-###
-###
-### Utility script used to pull ionization energy data from NIST and export it to a JSON file
-### for inclusion in the PlasmaPy package. This script is not intended to be part of the
-### PlasmaPy package itself, but is provided here for reference.
-###
-###
-
 
 # Updated list of element symbols including Deuterium
 elements = [
@@ -149,6 +145,7 @@ ionization_data = {}
 base_url = "https://physics.nist.gov/cgi-bin/ASD/ie.pl"
 
 def add_to_dict(row):
+    """Adds ionization data from a row of the DataFrame to the ionization_data dictionary."""
     ionization_data[row["ion"]] = {"ionization energy": row["ionization_energy"]}
     return None  # Return None to satisfy pandas apply without altering data
 
