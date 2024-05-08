@@ -1,9 +1,14 @@
+"""Utility script for pulling ionization energy data from NIST."""
+
 import json
 import time
 from io import StringIO
 
 import pandas as pd
 import requests
+import logging
+
+from pathlib import Path
 
 ###
 ###
@@ -165,7 +170,7 @@ for element in elements:
     }
 
     # Send GET request
-    response = requests.get(base_url, params=params)
+    response = requests.get(base_url, params=params, timeout=10)
 
     try:
         text = response.text
@@ -234,24 +239,21 @@ for element in elements:
         # Rename Ionization Energy (eV) to ionization energy
         data = data.rename(columns={"Ionization Energy (eV)": "ionization_energy"})
 
-        print(element, data.head())
-
         # Add the data if ionization energy data is available; each ion is a separate record
-        for index, row in data.iterrows():
+        for _, row in data.iterrows():
             ionization_data[row["ion"]] = {
                 "ionization energy": row["ionization_energy"]
             }
 
-    except Exception as e:
-        print(
-            f"Failed to parse data for {element} with exception type {type(e)}: {e!s}"
-        )
+    except KeyError as e:
+        logging.error(f"Failed to parse data for {element}: {e!s}")
+    except requests.exceptions.RequestException as e:
+        logging.error(f"Failed to retrieve data for {element}: {e!s}")
 
     # Delay of .5 seconds to avoid hitting rate limits or putting too much load on NIST
     time.sleep(0.5)
 
 # Export the data to a JSON file
-with open("ionization_energy.json", "w") as f:
+with Path.open("ionization_energy.json", "w") as f:
     json.dump(ionization_data, f, indent=2)
 
-print("Ionization energy data exported successfully.")
