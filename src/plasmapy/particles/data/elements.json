@@ -9,8 +9,7 @@
     "period": 1,
     "group": 1,
     "block": "s",
-    "category": "nonmetal",
-    "ionization energy": 13.598434599702
+    "category": "nonmetal"
   },
   "He": {
     "atomic number": 2,
@@ -22,8 +21,7 @@
     "period": 1,
     "group": 18,
     "block": "s",
-    "category": "noble gas",
-    "ionization energy": 24.587389011
+    "category": "noble gas"
   },
   "Li": {
     "atomic number": 3,
@@ -35,8 +33,7 @@
     "period": 2,
     "group": 1,
     "block": "s",
-    "category": "alkali metal",
-    "ionization energy": 5.391714996
+    "category": "alkali metal"
   },
   "Be": {
     "atomic number": 4,
@@ -48,8 +45,7 @@
     "period": 2,
     "group": 2,
     "block": "s",
-    "category": "alkaline earth metal",
-    "ionization energy": 9.322699
+    "category": "alkaline earth metal"
   },
   "B": {
     "atomic number": 5,
@@ -61,8 +57,7 @@
     "period": 2,
     "group": 13,
     "block": "p",
-    "category": "metalloid",
-    "ionization energy": 8.298019
+    "category": "metalloid"
   },
   "C": {
     "atomic number": 6,
@@ -74,8 +69,7 @@
     "period": 2,
     "group": 14,
     "block": "p",
-    "category": "nonmetal",
-    "ionization energy": 11.2602880
+    "category": "nonmetal"
   },
   "N": {
     "atomic number": 7,
@@ -87,8 +81,7 @@
     "period": 2,
     "group": 15,
     "block": "p",
-    "category": "nonmetal",
-    "ionization energy": 14.53413
+    "category": "nonmetal"
   },
   "O": {
     "atomic number": 8,
@@ -100,8 +93,7 @@
     "period": 2,
     "group": 16,
     "block": "p",
-    "category": "nonmetal",
-    "ionization energy": 13.618055
+    "category": "nonmetal"
   },
   "F": {
     "atomic number": 9,
@@ -113,8 +105,7 @@
     "period": 2,
     "group": 17,
     "block": "p",
-    "category": "halogen",
-    "ionization energy": 17.42282
+    "category": "halogen"
   },
   "Ne": {
     "atomic number": 10,
@@ -126,8 +117,7 @@
     "period": 2,
     "group": 18,
     "block": "p",
-    "category": "noble gas",
-    "ionization energy": 21.564541
+    "category": "noble gas"
   },
   "Na": {
     "atomic number": 11,
@@ -139,8 +129,7 @@
     "period": 3,
     "group": 1,
     "block": "s",
-    "category": "alkali metal",
-    "ionization energy": 5.13907696
+    "category": "alkali metal"
   },
   "Mg": {
     "atomic number": 12,
@@ -152,8 +141,7 @@
     "period": 3,
     "group": 2,
     "block": "s",
-    "category": "alkaline earth metal",
-    "ionization energy": 7.646236
+    "category": "alkaline earth metal"
   },
   "Al": {
     "atomic number": 13,
@@ -165,8 +153,7 @@
     "period": 3,
     "group": 13,
     "block": "p",
-    "category": "post-transition metal",
-    "ionization energy": 5.985769
+    "category": "post-transition metal"
   },
   "Si": {
     "atomic number": 14,
@@ -178,8 +165,7 @@
     "period": 3,
     "group": 14,
     "block": "p",
-    "category": "metalloid",
-    "ionization energy": 8.15168
+    "category": "metalloid"
   },
   "P": {
     "atomic number": 15,
@@ -191,8 +177,7 @@
     "period": 3,
     "group": 15,
     "block": "p",
-    "category": "nonmetal",
-    "ionization energy": 10.486686
+    "category": "nonmetal"
   },
   "S": {
     "atomic number": 16,
@@ -205,8 +190,7 @@
     "period": 3,
     "group": 16,
     "block": "p",
-    "category": "nonmetal",
-    "ionization energy": 10.36001
+    "category": "nonmetal"
   },
   "Cl": {
     "atomic number": 17,
@@ -218,8 +202,7 @@
     "period": 3,
     "group": 17,
     "block": "p",
-    "category": "halogen",
-    "ionization energy": 12.967633
+    "category": "halogen"
   },
   "Ar": {
     "atomic number": 18,
@@ -231,8 +214,7 @@
     "period": 3,
     "group": 18,
     "block": "p",
-    "category": "noble gas",
-    "ionization energy": 15.7596119
+    "category": "noble gas"
   },
   "K": {
     "atomic number": 19,
@@ -244,8 +226,7 @@
     "period": 4,
     "group": 1,
     "block": "s",
-    "category": "alkali metal",
-    "ionization energy": 4.34066373
+    "category": "alkali metal"
   },
   "Ca": {
     "atomic number": 20,
@@ -257,8 +238,7 @@
     "period": 4,
     "group": 2,
     "block": "s",
-    "category": "alkaline earth metal",
-    "ionization energy": 6.11315547
+    "category": "alkaline earth metal"
   },
   "Sc": {
     "atomic number": 21,
@@ -270,8 +250,7 @@
     "period": 4,
     "group": 3,
     "block": "d",
-    "category": "transition metal",
-    "ionization energy": 6.56149
+    "category": "transition metal"
   },
   "Ti": {
     "atomic number": 22,
@@ -283,8 +262,7 @@
     "period": 4,
     "group": 4,
     "block": "d",
-    "category": "transition metal",
-    "ionization energy": 6.828120
+    "category": "transition metal"
   },
   "V": {
     "atomic number": 23,
@@ -296,8 +274,7 @@
     "period": 4,
     "group": 5,
     "block": "d",
-    "category": "transition metal",
-    "ionization energy": 6.746187
+    "category": "transition metal"
   },
   "Cr": {
     "atomic number": 24,
@@ -309,8 +286,7 @@
     "period": 4,
     "group": 6,
     "block": "d",
-    "category": "transition metal",
-    "ionization energy": 6.76651
+    "category": "transition metal"
   },
   "Mn": {
     "atomic number": 25,
@@ -322,8 +298,7 @@
     "period": 4,
     "group": 7,
     "block": "d",
-    "category": "transition metal",
-    "ionization energy": 7.4340380
+    "category": "transition metal"
   },
   "Fe": {
     "atomic number": 26,
@@ -335,8 +310,7 @@
     "period": 4,
     "group": 8,
     "block": "d",
-    "category": "transition metal",
-    "ionization energy": 7.9024681
+    "category": "transition metal"
   },
   "Co": {
     "atomic number": 27,
@@ -348,8 +322,7 @@
     "period": 4,
     "group": 9,
     "block": "d",
-    "category": "transition metal",
-    "ionization energy": 7.88101
+    "category": "transition metal"
   },
   "Ni": {
     "atomic number": 28,
@@ -361,8 +334,7 @@
     "period": 4,
     "group": 10,
     "block": "d",
-    "category": "transition metal",
-    "ionization energy": 7.639878
+    "category": "transition metal"
   },
   "Cu": {
     "atomic number": 29,
@@ -374,8 +346,7 @@
     "period": 4,
     "group": 11,
     "block": "d",
-    "category": "transition metal",
-    "ionization energy": 7.726380
+    "category": "transition metal"
   },
   "Zn": {
     "atomic number": 30,
@@ -387,8 +358,7 @@
     "period": 4,
     "group": 12,
     "block": "d",
-    "category": "transition metal",
-    "ionization energy": 9.394197
+    "category": "transition metal"
   },
   "Ga": {
     "atomic number": 31,
@@ -400,8 +370,7 @@
     "period": 4,
     "group": 13,
     "block": "p",
-    "category": "post-transition metal",
-    "ionization energy": 5.9993020
+    "category": "post-transition metal"
   },
   "Ge": {
     "atomic number": 32,
@@ -413,8 +382,7 @@
     "period": 4,
     "group": 14,
     "block": "p",
-    "category": "metalloid",
-    "ionization energy": 7.899435
+    "category": "metalloid"
   },
   "As": {
     "atomic number": 33,
@@ -426,8 +394,7 @@
     "period": 4,
     "group": 15,
     "block": "p",
-    "category": "metalloid",
-    "ionization energy": 9.78855
+    "category": "metalloid"
   },
   "Se": {
     "atomic number": 34,
@@ -439,8 +406,7 @@
     "period": 4,
     "group": 16,
     "block": "p",
-    "category": "nonmetal",
-    "ionization energy": 9.752368
+    "category": "nonmetal"
   },
   "Br": {
     "atomic number": 35,
@@ -452,8 +418,7 @@
     "period": 4,
     "group": 17,
     "block": "p",
-    "category": "halogen",
-    "ionization energy": 11.81381
+    "category": "halogen"
   },
   "Kr": {
     "atomic number": 36,
@@ -465,8 +430,7 @@
     "period": 4,
     "group": 18,
     "block": "p",
-    "category": "noble gas",
-    "ionization energy": 13.9996055
+    "category": "noble gas"
   },
   "Rb": {
     "atomic number": 37,
@@ -478,8 +442,7 @@
     "period": 5,
     "group": 1,
     "block": "s",
-    "category": "alkali metal",
-    "ionization energy": 4.1771281
+    "category": "alkali metal"
   },
   "Sr": {
     "atomic number": 38,
@@ -491,8 +454,7 @@
     "period": 5,
     "group": 2,
     "block": "s",
-    "category": "alkaline earth metal",
-    "ionization energy": 5.69486745
+    "category": "alkaline earth metal"
   },
   "Y": {
     "atomic number": 39,
@@ -504,8 +466,7 @@
     "period": 5,
     "group": 3,
     "block": "d",
-    "category": "transition metal",
-    "ionization energy": 6.21726
+    "category": "transition metal"
   },
   "Zr": {
     "atomic number": 40,
@@ -517,8 +478,7 @@
     "period": 5,
     "group": 4,
     "block": "d",
-    "category": "transition metal",
-    "ionization energy": 6.634126
+    "category": "transition metal"
   },
   "Nb": {
     "atomic number": 41,
@@ -530,8 +490,7 @@
     "period": 5,
     "group": 5,
     "block": "d",
-    "category": "transition metal",
-    "ionization energy": 6.75885
+    "category": "transition metal"
   },
   "Mo": {
     "atomic number": 42,
@@ -543,8 +502,7 @@
     "period": 5,
     "group": 6,
     "block": "d",
-    "category": "transition metal",
-    "ionization energy": 7.09243
+    "category": "transition metal"
   },
   "Tc": {
     "atomic number": 43,
@@ -552,8 +510,7 @@
     "period": 5,
     "group": 7,
     "block": "d",
-    "category": "transition metal",
-    "ionization energy": 7.11938
+    "category": "transition metal"
   },
   "Ru": {
     "atomic number": 44,
@@ -565,8 +522,7 @@
     "period": 5,
     "group": 8,
     "block": "d",
-    "category": "transition metal",
-    "ionization energy": 7.36050
+    "category": "transition metal"
   },
   "Rh": {
     "atomic number": 45,
@@ -578,8 +534,7 @@
     "period": 5,
     "group": 9,
     "block": "d",
-    "category": "transition metal",
-    "ionization energy": 7.45890
+    "category": "transition metal"
   },
   "Pd": {
     "atomic number": 46,
@@ -591,8 +546,7 @@
     "period": 5,
     "group": 10,
     "block": "d",
-    "category": "transition metal",
-    "ionization energy": 8.336839
+    "category": "transition metal"
   },
   "Ag": {
     "atomic number": 47,
@@ -604,8 +558,7 @@
     "period": 5,
     "group": 11,
     "block": "d",
-    "category": "transition metal",
-    "ionization energy": 7.576234
+    "category": "transition metal"
   },
   "Cd": {
     "atomic number": 48,
@@ -617,8 +570,7 @@
     "period": 5,
     "group": 12,
     "block": "d",
-    "category": "transition metal",
-    "ionization energy": 8.993820
+    "category": "transition metal"
   },
   "In": {
     "atomic number": 49,
@@ -630,8 +582,7 @@
     "period": 5,
     "group": 13,
     "block": "p",
-    "category": "post-transition metal",
-    "ionization energy": 5.7863558
+    "category": "post-transition metal"
   },
   "Sn": {
     "atomic number": 50,
@@ -643,8 +594,7 @@
     "period": 5,
     "group": 14,
     "block": "p",
-    "category": "post-transition metal",
-    "ionization energy": 7.343918
+    "category": "post-transition metal"
   },
   "Sb": {
     "atomic number": 51,
@@ -656,8 +606,7 @@
     "period": 5,
     "group": 15,
     "block": "p",
-    "category": "metalloid",
-    "ionization energy": 8.608389
+    "category": "metalloid"
   },
   "Te": {
     "atomic number": 52,
@@ -669,8 +618,7 @@
     "period": 5,
     "group": 16,
     "block": "p",
-    "category": "metalloid",
-    "ionization energy": 9.009808
+    "category": "metalloid"
   },
   "I": {
     "atomic number": 53,
@@ -682,8 +630,7 @@
     "period": 5,
     "group": 17,
     "block": "p",
-    "category": "halogen",
-    "ionization energy": 10.451236
+    "category": "halogen"
   },
   "Xe": {
     "atomic number": 54,
@@ -695,8 +642,7 @@
     "period": 5,
     "group": 18,
     "block": "p",
-    "category": "noble gas",
-    "ionization energy": 12.1298437
+    "category": "noble gas"
   },
   "Cs": {
     "atomic number": 55,
@@ -708,8 +654,7 @@
     "period": 6,
     "group": 1,
     "block": "s",
-    "category": "alkali metal",
-    "ionization energy": 3.89390572743
+    "category": "alkali metal"
   },
   "Ba": {
     "atomic number": 56,
@@ -721,8 +666,7 @@
     "period": 6,
     "group": 2,
     "block": "s",
-    "category": "alkaline earth metal",
-    "ionization energy": 5.2116646
+    "category": "alkaline earth metal"
   },
   "La": {
     "atomic number": 57,
@@ -734,8 +678,7 @@
     "period": 6,
     "group": 3,
     "block": "d",
-    "category": "lanthanide",
-    "ionization energy": 5.5769
+    "category": "lanthanide"
   },
   "Ce": {
     "atomic number": 58,
@@ -747,8 +690,7 @@
     "period": 6,
     "group": 3,
     "block": "f",
-    "category": "lanthanide",
-    "ionization energy": 5.5386
+    "category": "lanthanide"
   },
   "Pr": {
     "atomic number": 59,
@@ -760,8 +702,7 @@
     "period": 6,
     "group": 3,
     "block": "f",
-    "category": "lanthanide",
-    "ionization energy": 5.4702
+    "category": "lanthanide"
   },
   "Nd": {
     "atomic number": 60,
@@ -773,8 +714,7 @@
     "period": 6,
     "group": 3,
     "block": "f",
-    "category": "lanthanide",
-    "ionization energy": 5.5250
+    "category": "lanthanide"
   },
   "Pm": {
     "atomic number": 61,
@@ -782,8 +722,7 @@
     "period": 6,
     "group": 3,
     "block": "f",
-    "category": "lanthanide",
-    "ionization energy": 5.58187
+    "category": "lanthanide"
   },
   "Sm": {
     "atomic number": 62,
@@ -795,8 +734,7 @@
     "period": 6,
     "group": 3,
     "block": "f",
-    "category": "lanthanide",
-    "ionization energy": 5.643722
+    "category": "lanthanide"
   },
   "Eu": {
     "atomic number": 63,
@@ -808,8 +746,7 @@
     "period": 6,
     "group": 3,
     "block": "f",
-    "category": "lanthanide",
-    "ionization energy": 5.670385
+    "category": "lanthanide"
   },
   "Gd": {
     "atomic number": 64,
@@ -821,8 +758,7 @@
     "period": 6,
     "group": 3,
     "block": "f",
-    "category": "lanthanide",
-    "ionization energy": 6.14980
+    "category": "lanthanide"
   },
   "Tb": {
     "atomic number": 65,
@@ -834,8 +770,7 @@
     "period": 6,
     "group": 3,
     "block": "f",
-    "category": "lanthanide",
-    "ionization energy": 5.8638
+    "category": "lanthanide"
   },
   "Dy": {
     "atomic number": 66,
@@ -847,8 +782,7 @@
     "period": 6,
     "group": 3,
     "block": "f",
-    "category": "lanthanide",
-    "ionization energy": 5.939061
+    "category": "lanthanide"
   },
   "Ho": {
     "atomic number": 67,
@@ -860,8 +794,7 @@
     "period": 6,
     "group": 3,
     "block": "f",
-    "category": "lanthanide",
-    "ionization energy": 6.0215
+    "category": "lanthanide"
   },
   "Er": {
     "atomic number": 68,
@@ -873,8 +806,7 @@
     "period": 6,
     "group": 3,
     "block": "f",
-    "category": "lanthanide",
-    "ionization energy": 6.1077
+    "category": "lanthanide"
   },
   "Tm": {
     "atomic number": 69,
@@ -886,8 +818,7 @@
     "period": 6,
     "group": 3,
     "block": "f",
-    "category": "lanthanide",
-    "ionization energy": 6.184402
+    "category": "lanthanide"
   },
   "Yb": {
     "atomic number": 70,
@@ -899,8 +830,7 @@
     "period": 6,
     "group": 3,
     "block": "f",
-    "category": "lanthanide",
-    "ionization energy": 6.254160
+    "category": "lanthanide"
   },
   "Lu": {
     "atomic number": 71,
@@ -912,8 +842,7 @@
     "period": 6,
     "group": 3,
     "block": "f",
-    "category": "lanthanide",
-    "ionization energy": 5.425871
+    "category": "lanthanide"
   },
   "Hf": {
     "atomic number": 72,
@@ -925,8 +854,7 @@
     "period": 6,
     "group": 4,
     "block": "d",
-    "category": "transition metal",
-    "ionization energy": 6.825070
+    "category": "transition metal"
   },
   "Ta": {
     "atomic number": 73,
@@ -938,8 +866,7 @@
     "period": 6,
     "group": 5,
     "block": "d",
-    "category": "transition metal",
-    "ionization energy": 7.549571
+    "category": "transition metal"
   },
   "W": {
     "atomic number": 74,
@@ -951,8 +878,7 @@
     "period": 6,
     "group": 6,
     "block": "d",
-    "category": "transition metal",
-    "ionization energy": 7.86403
+    "category": "transition metal"
   },
   "Re": {
     "atomic number": 75,
@@ -964,8 +890,7 @@
     "period": 6,
     "group": 7,
     "block": "d",
-    "category": "transition metal",
-    "ionization energy": 7.83352
+    "category": "transition metal"
   },
   "Os": {
     "atomic number": 76,
@@ -977,8 +902,7 @@
     "period": 6,
     "group": 8,
     "block": "d",
-    "category": "transition metal",
-    "ionization energy": 8.43823
+    "category": "transition metal"
   },
   "Ir": {
     "atomic number": 77,
@@ -990,8 +914,7 @@
     "period": 6,
     "group": 9,
     "block": "d",
-    "category": "transition metal",
-    "ionization energy": 8.96702
+    "category": "transition metal"
   },
   "Pt": {
     "atomic number": 78,
@@ -1003,8 +926,7 @@
     "period": 6,
     "group": 10,
     "block": "d",
-    "category": "transition metal",
-    "ionization energy": 8.95883
+    "category": "transition metal"
   },
   "Au": {
     "atomic number": 79,
@@ -1016,8 +938,7 @@
     "period": 6,
     "group": 11,
     "block": "d",
-    "category": "transition metal",
-    "ionization energy": 9.225554
+    "category": "transition metal"
   },
   "Hg": {
     "atomic number": 80,
@@ -1029,8 +950,7 @@
     "period": 6,
     "group": 12,
     "block": "d",
-    "category": "transition metal",
-    "ionization energy": 10.437504
+    "category": "transition metal"
   },
   "Tl": {
     "atomic number": 81,
@@ -1042,8 +962,7 @@
     "period": 6,
     "group": 13,
     "block": "p",
-    "category": "post-transition metal",
-    "ionization energy": 6.1082873
+    "category": "post-transition metal"
   },
   "Pb": {
     "atomic number": 82,
@@ -1055,8 +974,7 @@
     "period": 6,
     "group": 14,
     "block": "p",
-    "category": "post-transition metal",
-    "ionization energy": 7.4166799
+    "category": "post-transition metal"
   },
   "Bi": {
     "atomic number": 83,
@@ -1068,8 +986,7 @@
     "period": 6,
     "group": 15,
     "block": "p",
-    "category": "post-transition metal",
-    "ionization energy": 7.285516
+    "category": "post-transition metal"
   },
   "Po": {
     "atomic number": 84,
@@ -1077,8 +994,7 @@
     "period": 6,
     "group": 16,
     "block": "p",
-    "category": "metalloid",
-    "ionization energy": 8.418070
+    "category": "metalloid"
   },
   "At": {
     "atomic number": 85,
@@ -1086,8 +1002,7 @@
     "period": 6,
     "group": 17,
     "block": "p",
-    "category": "halogen",
-    "ionization energy": 9.31751
+    "category": "halogen"
   },
   "Rn": {
     "atomic number": 86,
@@ -1095,8 +1010,7 @@
     "period": 6,
     "group": 18,
     "block": "p",
-    "category": "noble gas",
-    "ionization energy": 10.74850
+    "category": "noble gas"
   },
   "Fr": {
     "atomic number": 87,
@@ -1104,8 +1018,7 @@
     "period": 7,
     "group": 1,
     "block": "s",
-    "category": "alkali metal",
-    "ionization energy": 4.0727411
+    "category": "alkali metal"
   },
   "Ra": {
     "atomic number": 88,
@@ -1113,8 +1026,7 @@
     "period": 7,
     "group": 2,
     "block": "s",
-    "category": "alkaline earth metal",
-    "ionization energy": 5.2784239
+    "category": "alkaline earth metal"
   },
   "Ac": {
     "atomic number": 89,
@@ -1122,8 +1034,7 @@
     "period": 7,
     "group": 3,
     "block": "d",
-    "category": "actinide",
-    "ionization energy": 5.380235
+    "category": "actinide"
   },
   "Th": {
     "atomic number": 90,
@@ -1135,8 +1046,7 @@
     "period": 7,
     "group": 3,
     "block": "f",
-    "category": "actinide",
-    "ionization energy": 6.30670
+    "category": "actinide"
   },
   "Pa": {
     "atomic number": 91,
@@ -1148,8 +1058,7 @@
     "period": 7,
     "group": 3,
     "block": "f",
-    "category": "actinide",
-    "ionization energy": 5.89
+    "category": "actinide"
   },
   "U": {
     "atomic number": 92,
@@ -1161,8 +1070,7 @@
     "period": 7,
     "group": 3,
     "block": "f",
-    "category": "actinide",
-    "ionization energy": 6.19405
+    "category": "actinide"
   },
   "Np": {
     "atomic number": 93,
@@ -1170,8 +1078,7 @@
     "period": 7,
     "group": 3,
     "block": "f",
-    "category": "actinide",
-    "ionization energy": 6.26554
+    "category": "actinide"
   },
   "Pu": {
     "atomic number": 94,
@@ -1179,8 +1086,7 @@
     "period": 7,
     "group": 3,
     "block": "f",
-    "category": "actinide",
-    "ionization energy": 6.02576
+    "category": "actinide"
   },
   "Am": {
     "atomic number": 95,
@@ -1188,8 +1094,7 @@
     "period": 7,
     "group": 3,
     "block": "f",
-    "category": "actinide",
-    "ionization energy": 5.97381
+    "category": "actinide"
   },
   "Cm": {
     "atomic number": 96,
@@ -1197,8 +1102,7 @@
     "period": 7,
     "group": 3,
     "block": "f",
-    "category": "actinide",
-    "ionization energy": 5.992241
+    "category": "actinide"
   },
   "Bk": {
     "atomic number": 97,
@@ -1206,8 +1110,7 @@
     "period": 7,
     "group": 3,
     "block": "f",
-    "category": "actinide",
-    "ionization energy": 6.19785
+    "category": "actinide"
   },
   "Cf": {
     "atomic number": 98,
@@ -1215,8 +1118,7 @@
     "period": 7,
     "group": 3,
     "block": "f",
-    "category": "actinide",
-    "ionization energy": 6.281878
+    "category": "actinide"
   },
   "Es": {
     "atomic number": 99,
@@ -1224,8 +1126,7 @@
     "period": 7,
     "group": 3,
     "block": "f",
-    "category": "actinide",
-    "ionization energy": 6.36840
+    "category": "actinide"
   },
   "Fm": {
     "atomic number": 100,
@@ -1233,8 +1134,7 @@
     "period": 7,
     "group": 3,
     "block": "f",
-    "category": "actinide",
-    "ionization energy": 6.50
+    "category": "actinide"
   },
   "Md": {
     "atomic number": 101,
@@ -1242,8 +1142,7 @@
     "period": 7,
     "group": 3,
     "block": "f",
-    "category": "actinide",
-    "ionization energy": 6.58
+    "category": "actinide"
   },
   "No": {
     "atomic number": 102,
@@ -1251,8 +1150,7 @@
     "period": 7,
     "group": 3,
     "block": "f",
-    "category": "actinide",
-    "ionization energy": 6.62621
+    "category": "actinide"
   },
   "Lr": {
     "atomic number": 103,
@@ -1260,8 +1158,7 @@
     "period": 7,
     "group": 3,
     "block": "f",
-    "category": "actinide",
-    "ionization energy": 4.96
+    "category": "actinide"
   },
   "Rf": {
     "atomic number": 104,
@@ -1269,8 +1166,7 @@
     "period": 7,
     "group": 4,
     "block": "d",
-    "category": "transition metal",
-    "ionization energy": 6.02
+    "category": "transition metal"
   },
   "Db": {
     "atomic number": 105,
@@ -1278,8 +1174,7 @@
     "period": 7,
     "group": 5,
     "block": "d",
-    "category": "transition metal",
-    "ionization energy": 6.8
+    "category": "transition metal"
   },
   "Sg": {
     "atomic number": 106,
@@ -1287,8 +1182,7 @@
     "period": 7,
     "group": 6,
     "block": "d",
-    "category": "transition metal",
-    "ionization energy": 7.8
+    "category": "transition metal"
   },
   "Bh": {
     "atomic number": 107,
@@ -1296,8 +1190,7 @@
     "period": 7,
     "group": 7,
     "block": "d",
-    "category": "transition metal",
-    "ionization energy": 7.7
+    "category": "transition metal"
   },
   "Hs": {
     "atomic number": 108,
@@ -1305,8 +1198,7 @@
     "period": 7,
     "group": 8,
     "block": "d",
-    "category": "transition metal",
-    "ionization energy": 7.6
+    "category": "transition metal"
   },
   "Mt": {
     "atomic number": 109,
@@ -1314,8 +1206,7 @@
     "period": 7,
     "group": 9,
     "block": "d",
-    "category": "transition metal",
-    "ionization energy": 50.0
+    "category": "transition metal"
   },
   "Ds": {
     "atomic number": 110,
@@ -1323,8 +1214,7 @@
     "period": 7,
     "group": 10,
     "block": "d",
-    "category": "transition metal",
-    "ionization energy": 65.0
+    "category": "transition metal"
   },
   "Rg": {
     "atomic number": 111,

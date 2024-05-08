@@ -28,7 +28,7 @@ import astropy.constants as const
 import astropy.units as u
 import numpy as np
 
-from plasmapy.particles import _elements, _isotopes, _parsing, _special_particles
+from plasmapy.particles import _elements, _isotopes, _ionization_energy, _parsing, _special_particles
 from plasmapy.particles.exceptions import (
     ChargeError,
     InvalidElementError,
@@ -786,8 +786,12 @@ class Particle(AbstractPhysicalParticle):
         categories.add(this_element["category"])
 
         try:
-            ev_value = this_element["ionization energy"] * u.eV
-            attributes["ionization energy"] = ev_value.to(u.J)
+            symbol = element
+            if isotope:
+                symbol = isotope
+            elif ion:
+                symbol = ion
+            attributes["ionization energy"] = _ionization_energy.data_about_ionization_energy[symbol]
         except KeyError:
             attributes["ionization energy"] = None
 
