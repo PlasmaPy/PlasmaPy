@@ -880,34 +880,54 @@ outputs in the notebook* but store it in the repository with a
 :file:`preexecuted_` prefix (e.g.,
 :file:`preexecuted_full_3d_mhd_chaotic_turbulence_simulation.ipynb`).
 
-Compatibility with Prior Versions of Python, NumPy, and Astropy
-===============================================================
+Python and dependency version support
+=====================================
 
 PlasmaPy releases will generally abide by the following standards, which
-are adapted from `NEP 29`_ for the support of old versions of |Python|,
-|NumPy|, and |Astropy|.
+are adapted from `NEP 29`_ and `SPEC 0`_ for the support of old versions
+of |Python|, |NumPy|, |Astropy|, and other dependencies.
 
-* PlasmaPy should support at least the minor versions of Python
-  initially released 42 months prior to a planned project release date.
+* PlasmaPy should support the minor versions of Python initially
+  released 42 months prior to a release. Because :pep:`602` establishes
+  that Python releases will generally occur in October of each year,
+  the minimum required version fo Python should be increased for the
+  first release of PlasmaPy after April each year.
+
+* PlasmaPy should support minor versions of its dependencies that were
+  released in the 24 months prior to each release of PlasmaPy.
+  Exceptions to this guideline should only be made when there are good
+  reasons to do so, such as impactful bugfixes or major improvements to
+  upstream functionality.
+
+  .. caution::
+
+     Even if a dependency is unlikely to be shared with packages
+     installed alongside PlasmaPy, that dependency can have strict
+     requirements that do cause conflicts. For example, requiring the
+     newest version of voila_ once caused dependency conflicts with
+     other packages in the heliopythoniverse because voila_ had strict
+     dependencies on packages in the Jupyter ecosystem.
 
 * PlasmaPy should support at least the 3 latest minor versions of
-  Python.
+  |NumPy| and |Astropy|.
 
-* PlasmaPy should support minor versions of NumPy initially released
-  in the 24 months prior to a planned project release date or the
-  oldest version that supports the minimum Python version (whichever is
-  higher).
+* The required major and minor version numbers of upstream packages may
+  only change during major or minor releases of PlasmaPy, and not during
+  patch releases.
 
-* PlasmaPy should support at least the 3 latest minor versions of
-  NumPy and Astropy.
+* The ``tests`` and ``docs`` dependency sets are required for running
+  tests and building documentation, but are not required for package
+  installation. Consequently, it is not necessary to support older
+  versions of packages that are only in these optional dependency sets.
 
-The required major and minor version numbers of upstream packages may
-only change during major or minor releases of PlasmaPy, and never during
-patch releases.
+.. tip::
 
-Exceptions to these guidelines should only be made when there are major
-improvements or fixes to upstream functionality or when other required
-packages have stricter requirements.
+   Packages that depend on PlasmaPy should periodically run their tests
+   against the ``main`` branch of PlasmaPy. Similarly, PlasmaPy has
+   GitHub workflows that run its test suite against the development
+   versions of NumPy and Astropy; and build the documentation using the
+   newest version of Sphinx. Such tests can help find problems before
+   they are included in an official release.
 
 Benchmarks
 ==========
@@ -935,8 +955,10 @@ in the README file of `benchmarks-repo`_.
 .. _NEP 29: https://numpy.org/neps/nep-0029-deprecation_policy.html
 .. _not a number: https://en.wikipedia.org/wiki/NaN
 .. _NumPy Enhancement Proposal 29: https://numpy.org/neps/nep-0029-deprecation_policy.html
+.. _SPEC 0: https://scientific-python.org/specs/spec-0000
 .. _pyupgrade: https://github.com/asottile/pyupgrade
 .. _rename refactoring in PyCharm: https://www.jetbrains.com/help/pycharm/rename-refactorings.html
+.. _voila: https://voila.readthedocs.io
 
 .. _`astropy.units`: https://docs.astropy.org/en/stable/units/index.html
 .. |astropy.units| replace:: `astropy.units`

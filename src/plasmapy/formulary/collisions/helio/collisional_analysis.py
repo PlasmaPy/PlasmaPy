@@ -211,7 +211,7 @@ def temp_ratio(  # noqa: C901
             f"Instead received {len(ions)} input values."
         )
 
-    if not all(ions.is_category("ion")):
+    if not ions.is_category("ion"):
         raise ValueError(
             f"Particle(s) in 'ions' must be ions, received {ions=} "
             "instead. Please renter the 'ions' input parameter."
@@ -352,7 +352,7 @@ def temp_ratio(  # noqa: C901
 
         return res  # noqa: TRY300
 
-    except Exception as e:  # noqa: BLE001
+    except Exception as e:
         raise ValueError(
             "Argument(s) are of unequal lengths, the following "
             "arguments should be of equal length: 'r_0', 'r_n', "

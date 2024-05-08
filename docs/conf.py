@@ -338,13 +338,21 @@ linkcheck_anchors_ignore = [
     "L[0-9].+",
     "!forum/plasmapy",
 ]
+
+# The default value of linkcheck_report_timeouts_as_broken will default
+# to False for Sphinx 8.0, so the following line can be removed.
+linkcheck_report_timeouts_as_broken = False
+
 linkcheck_allowed_redirects = {
     r"https://doi\.org/.+": r"https://.+",  # DOI links are persistent
-    r"https://docs.+\.org": r"https://docs.+\.org/en/.+",
+    r"https://.+\.org": r"https://.+\.org/en/.+",
     r"https://docs.+\.io": r"https://docs.+\.io/en/.+",
     r"https://docs.+\.com": r"https://docs.+\.com/en/.+",
+    r"https://.+\.codes": r"https://.+\.codes/en/.+",
     r"https://docs.+\.dev": r"https://docs.+\.dev/en/.+",
     r"https://github\.com/sponsors/.+": r"https://github\.com/.+",
+    # Allow :issue: role from sphinx-issues to point to GitHub discussions
+    r"https://github\.com/.+/issues/.+": r"https://github\.com/.+/discussions/.+",
     r"https://en.wikipedia.org/wiki.+": "https://en.wikipedia.org/wiki.+",
     r"https://.+\.readthedocs\.io": r"https://.+\.readthedocs\.io/en/.+",
     r"https://www\.sphinx-doc\.org": r"https://www\.sphinx-doc\.org/en/.+",

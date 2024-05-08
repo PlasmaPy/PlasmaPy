@@ -1,1 +1,2 @@
-Refactored `~plasmapy.formulary.lengths.gyroradius` to reduce the cognitive complexity of the function.
+Reduced the :wikipedia:`cognitive complexity`
+of `~plasmapy.formulary.lengths.gyroradius`.

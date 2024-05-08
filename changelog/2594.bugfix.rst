@@ -1,0 +1,2 @@
+Fixed a bug in |particle_input| where particle categorization criteria
+had not been applied to arguments that became a |ParticleList|.

@@ -1,0 +1,97 @@
+name: CI
+
+on:
+  push:
+    branches:
+    - main
+    - stable
+    - v*.*.*
+    tags:
+    - v*
+  pull_request:
+  workflow_dispatch:
+
+env:
+  DOC_TROUBLESHOOTING: "Warnings like 'reference target not found' occur when Sphinx tries to interpret text as a Python object, but is unable to do so. This warning can often be fixed by surrounding text in double back ticks instead of single back ticks (e.g., by changing `y` to ``y``) so that it gets formatted as an in-line literal. For more information about addressing documentation build failures, please check out the documentation troubleshooting guide at: https://docs.plasmapy.org/en/latest/contributing/doc_guide.html#troubleshooting"
+
+jobs:
+
+
+  tests:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+        include:
+
+        - name: Static type checking with mypy, Python 3.12, Ubuntu
+          os: ubuntu-latest
+          python: '3.12'
+          noxenv: mypy
+
+    steps:
+
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python }}
+        cache: pip
+
+    - name: Install nox and uv
+      run: python -m pip install --progress-bar off --upgrade nox uv
+
+    - name: Cache
+      uses: actions/cache@v4
+      with:
+        path: |
+          .nox
+        key: ${{ matrix.noxenv }}-${{ runner.os }}-${{ hashFiles('requirements.txt', 'pyproject.toml') }}
+
+    - name: Run tests
+      run: nox -e ${{ matrix.noxenv }}
+
+  documentation:
+
+    name: Documentation, Python 3.12, Ubuntu
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Install graphviz and pandoc
+      run: sudo apt-get install graphviz pandoc
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+        cache: pip
+
+    - name: Install nox uv
+      run: python -m pip install --progress-bar off --upgrade nox uv
+
+    - name: Cache
+      uses: actions/cache@v4
+      with:
+        path: |
+          .nox
+        key: docs-${{ runner.os }}-${{ hashFiles('requirements.txt') }}
+
+    - name: Build documentation with Sphinx
+      run: nox -e docs -- -q
+
+    - name: Print troubleshooting information on failure
+      if: ${{ failure() }}
+      run: echo -e $DOC_TROUBLESHOOTING

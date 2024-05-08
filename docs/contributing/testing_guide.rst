@@ -12,7 +12,46 @@ Testing Guide
 Summary
 =======
 
-* New functionality added to PlasmaPy must have tests.
+Running tests
+-------------
+
+To prepare to run tests from the command line, |open a terminal| and
+install |tox| with its extensions:
+
+.. tabs::
+
+   .. group-tab:: macOS, Linux, or WSL
+
+      .. code-block:: console
+
+         python -m pip install tox tox-uv
+
+   .. group-tab:: Windows
+
+      .. code-block:: console
+
+         py -m pip install tox tox-uv
+
+To run tests, navigate to a directory within your local clone of
+PlasmaPy and run:
+
+.. code-block:: console
+
+   tox
+
+This command will invoke `pytest` to run PlasmaPy's tests, excluding the
+tests marked as slow.
+
+.. important::
+
+   PlasmaPy is in the process of switching its test runner from |tox| to
+   |nox|. In the near future, it will likely be necessary to run ``nox``
+   instead of ``tox`` to invoke tests.
+
+Writing tests
+-------------
+
+* All functionality in PlasmaPy must have tests.
 
 * Tests are located in the top-level |tests/| directory. For example,
   tests of `plasmapy.formulary` are in :file:`tests/formulary/`.
@@ -29,31 +68,6 @@ Summary
 
       def test_multiplication():
           assert 2 * 3 == 6
-
-* To install the packages needed to run the tests:
-
-  - Open a terminal.
-
-  - Navigate to the top-level directory (probably named
-    :file:`PlasmaPy/`) in your local clone of PlasmaPy's repository.
-
-  - If you are on macOS or Linux, run:
-
-    .. code-block:: console
-
-       python -m pip install -e ".[tests]"
-
-    If you are on Windows, run:
-
-    .. code-block:: console
-
-       py -m pip install -e .[tests]
-
-    These commands will perform an |editable installation| of your
-    local clone of PlasmaPy.
-
-* Run `pytest` in the command line in order to run tests in that
-  directory and its subdirectories.
 
 Introduction
 ============
@@ -533,20 +547,13 @@ PlasmaPy's tests can be run in the following ways:
 4. Running tests from an :wikipedia:`integrated development environment
    <integrated_development_environment>` (IDE).
 
-We recommend that new contributors perform the tests via a pull request
-on |GitHub|. Creating a draft pull request and keeping it updated will
-ensure that the necessary checks are run frequently. This approach is
-also appropriate for pull requests with a limited scope. This advantage
-of this approach is that the tests are run automatically and do not
-require any extra work. The disadvantages are that running the tests on
-|GitHub| is often slow and that navigating the test results is sometimes
-difficult.
+We recommend that new contributors perform tests via a pull request on
+GitHub. Creating a draft pull request and keeping it updated ensures
+that all necessary checks are run frequently.
 
-We recommend that experienced contributors run tests either by using
-`pytest` from the command line or by using your preferred IDE. Using |tox|
-is an alternative to `pytest`, but running tests with |tox| adds the
-overhead of creating an isolated environment for your test and can thus
-be slower.
+Experienced contributors may find it useful to run tests from the
+command line using `pytest` or |tox|, or via an IDE. In particular,
+using |tox| ensures that tests are run in the same way as in CI.
 
 Using GitHub
 ------------
@@ -652,7 +659,7 @@ The following checks are performed with each pull request.
 
 .. note::
 
-   The continuous integration checks performed for pull requests change
+   The continuous integration (CI) checks performed for pull requests change
    frequently. If you notice that the above list has become out-of-date,
    please `submit an issue that this section needs updating
    <https://github.com/PlasmaPy/PlasmaPy/issues/new?title=Update%20information%20on%20GitHub%20checks%20in%20testing%20guide&labels=Documentation>`__.
@@ -663,14 +670,14 @@ Using pytest
 To install the packages necessary to run tests on your local computer
 (including |tox| and pytest_), run:
 
-.. code-block:: shell
+.. code-block:: console
 
    pip install -e .[tests]
 
 To run PlasmaPy's tests from the command line, go to a directory within
 PlasmaPy's repository and run:
 
-.. code-block:: shell
+.. code-block:: console
 
    pytest
 
@@ -682,7 +689,7 @@ particular file or directory, include its name after `pytest`. If you
 are in the directory :file:`plasmapy/particles/tests/`, then the tests
 in in :file:`test_atomic.py` can be run with:
 
-.. code-block:: shell
+.. code-block:: console
 
    pytest test_atomic.py
 
@@ -713,13 +720,21 @@ PlasmaPy's continuous integration tests on |GitHub| are typically run
 using |tox|, a tool for automating Python testing. Using |tox| simplifies
 testing PlasmaPy with different releases of Python, with different
 versions of PlasmaPy's dependencies, and on different operating systems.
-While testing with |tox| is more robust than testing with `pytest`, using
-|tox| to run tests is typically slower because |tox| creates its own
-virtual environments.
+Testing with |tox| is more robust than testing with `pytest` because
+|tox| creates its own virtual environments and ensures that tests are
+run the same way as in CI. The ``tox-uv`` extension lets |tox| use |uv|
+as its back-end for significantly improved dependency resolution and
+caching.
+
+To run PlasmaPy's tests (except for those marked as slow), run:
+
+.. code-block:: console
+
+   tox
 
 To run PlasmaPy's tests for a particular environment, run:
 
-.. code-block:: shell
+.. code-block:: console
 
    tox -e ⟨envname⟩
 
@@ -727,25 +742,24 @@ where ``⟨envname⟩`` is replaced with the name of the |tox| environment,
 as described below.
 
 Some testing environments for |tox| are pre-defined. For example, you
-can replace ``⟨envname⟩`` with ``py39`` if you are running Python
-``3.9.x``, ``py310`` if you are running Python ``3.10.x``, or ``py311``
-if you are running Python ``3.11.x``. Running |tox| with any of these
+can replace ``⟨envname⟩`` with ``py310`` if you are running Python
+``3.10.x``, ``py311`` if you are running Python ``3.11.x``, or ``py312``
+if you are running Python ``3.12.x``. Running |tox| with any of these
 environments requires that the appropriate version of Python has been
 installed and can be found by |tox|. To find the version of Python that
-you are using, go to the command line and run ``python
---version``.
+you are using, go to the command line and run ``python --version``.
 
 Additional `tox environments`_ are defined in :file:`tox.ini` in the
 top-level directory of PlasmaPy's repository. To find which testing
 environments are available, run:
 
-.. code-block:: shell
+.. code-block:: console
 
    tox -a
 
 For example, static type checking with |mypy| can be run locally with
 
-.. code-block:: shell
+.. code-block:: console
 
    tox -e mypy
 
@@ -797,7 +811,7 @@ Code coverage reports may be generated on your local computer to show
 which lines of code are covered by tests and which are not. To generate
 an HTML report, use the ``--cov`` flag for `pytest`:
 
-.. code-block:: shell
+.. code-block:: console
 
    pytest --cov
    coverage html
@@ -828,7 +842,7 @@ Coverage configurations
 
 Configurations for coverage tests are given in the ``[coverage:run]``
 and ``[coverage:report]`` sections of :file:`setup.cfg`. Codecov_
-configurations are given in :file:`.codecov.yaml`.
+configurations are given in :file:`codecov.yaml`.
 
 Using an integrated development environment
 -------------------------------------------

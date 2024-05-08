@@ -1,1 +1,1 @@
-Add examples to docstring for `~plasmapy.formulary.radiation.thermal_bremsstrahlung`.
+Add examples to the docstring for `~plasmapy.formulary.radiation.thermal_bremsstrahlung`.
