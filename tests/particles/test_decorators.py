@@ -764,7 +764,7 @@ def test_particle_input_with_pos_and_var_positional_arguments() -> None:
     ],
 )
 def test_particle_categorization_of_particle_lists(
-    criteria: dict[str, str],
+    criteria: dict[str, str | Iterable[str]],
     kwargs: dict[str, ParticleListLike],
     exception: Exception,
 ) -> None:
