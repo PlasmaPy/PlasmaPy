@@ -755,6 +755,12 @@ def test_particle_input_with_pos_and_var_positional_arguments() -> None:
     [
         ({"require": "ion"}, {"particle": ["p+", "He"]}, ParticleError),
         ({"require": "isotope"}, {"particle": ["p+", "He"]}, ParticleError),
+        (
+            {"any_of": {"lepton", "neutrino"}},
+            {"particle": ["p+", "alpha"]},
+            ParticleError,
+        ),
+        ({"exclude": "lepton"}, {"particle": ["p+", "e-"]}, ParticleError),
     ],
 )
 def test_particle_categorization_of_particle_lists(
