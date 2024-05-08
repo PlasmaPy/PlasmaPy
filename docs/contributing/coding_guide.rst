@@ -418,41 +418,44 @@ PlasmaPy uses |type hint annotations| and |mypy| to perform
 |static type checking|.
 
 Type hint annotations are used to specify the expected types of
-arguments and return values. A function that accepts a `float` and
-returns a `str` may be written as:
+arguments and return values. A function that accepts a `float` or `str`
+and returns a `str` may be written as:
 
 .. code-block:: python
 
-   def f(name: float) -> str:
+   def f(x: float | str) -> str:
        ...
 
-Type hint annotations are usually not enforced at runtime. Instead, they
-are used by developers to indicate that a function accepts or returns
-different types.
+The :py:`|` operator is used to represent unions between types.
 
+Type hint annotations are by default not enforced at runtime. Instead,
+type hints are used by developers to indicate that a function accepts or
+returns different types.
 
-the types of objects that a function accepts and
-returns.
+To learn more, check out the `type hints cheat sheet`_.
 
+Ignoring mypy errors
+--------------------
 
+Static type checkers like |mypy| are unable to follow the behavior of
+functions that dynamically change the types of objects, which occurs in
+functions decorated by |particle_input|. In situations like this, we can
+use a :py:`# type: ignore` comment to indicate that |mypy| should ignore
+a particular error.
 
 .. code-block:: python
 
-   from typing import Optional
-   from collections.abc import Iterable
+   from plasmapy.particles import particle_input, ParticleLike
 
-   def g(
-       arg1: float | str,  # arg1 should be either a float or str
-       arg2: Iterable[str],  # arg2 should be, for example, a list of `str` objects
-       kwarg1: Optional[float] = None,  # kwarg1 can be a float or None
-   ):
-       ...
+   @particle_input
+   def f(particle: ParticleLike) -> Particle | CustomParticle | ParticleList:
+       return particle  # type: ignore[return-value]
 
-Type hint annotations are usually not enforced at runtime, but are
-rather used
+.. note::
 
-When we wish to add a type hint annotation for an object such as
-
+   PlasmaPy only recently added |mypy| to its continuous integration
+   suite. If you run into |mypy| errors that frequently need to be
+   ignored, please bring them up in :issue:`2589`.
 
 Project infrastructure
 ======================
@@ -998,6 +1001,7 @@ in the README file of `benchmarks-repo`_.
 .. _SPEC 0: https://scientific-python.org/specs/spec-0000
 .. _pyupgrade: https://github.com/asottile/pyupgrade
 .. _rename refactoring in PyCharm: https://www.jetbrains.com/help/pycharm/rename-refactorings.html
+.. _type hints cheat sheet: https://mypy.readthedocs.io/en/stable/cheat_sheet_py3.html
 .. _voila: https://voila.readthedocs.io
 
 .. _`astropy.units`: https://docs.astropy.org/en/stable/units/index.html
