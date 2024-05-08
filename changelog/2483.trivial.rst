@@ -1,3 +1,0 @@
-Added ``pytest-rerunfailures`` to the ``tests`` set of dependencies
-defined in :file:`pyproject.toml`, and applied it to a test that
-experiences intermittent failures.

@@ -1,1 +1,0 @@
-Fixed the requirements file used by binder to open notebooks.
