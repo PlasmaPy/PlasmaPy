@@ -92,6 +92,23 @@ If you are interested in contributing, please check out our
 [good first issues] in our GitHub repository. New contributors are
 very welcome!
 
+[src layout]: https://packaging.python.org/en/latest/discussions/src-layout-vs-flat-layout/
+[`src/plasmapy/`]: https://github.com/PlasmaPy/PlasmaPy/tree/main/src/plasmapy
+[`tests/`]: https://github.com/PlasmaPy/PlasmaPy/tree/main/tests
+
+> [!IMPORTANT]
+> PlasmaPy recently switched to an [src layout]. Source code that was in
+> `plasmapy/` is now in [`src/plasmapy/`]. Tests are now located in a
+> top-level [`tests/`] directory.
+> Existing pull requests should pull in the changes from the `main`
+> branch with `git pull upstream main` (assuming the remote for the
+> primary PlasmaPy repo is named `upstream`).
+> Because `git` does not automatically remove directories, the
+> `plasmapy/` directory in older clones must be manually deleted.
+> If you previously did an editable installation of PlasmaPy, it will
+> likely need to be redone by running `pip install -e .[tests,docs]` in
+> the top-level directory of the repository.
+
 ## Installation
 
 PlasmaPy requires Python 3.10 or newer. If you do not have Python

@@ -333,7 +333,7 @@ when you :py:`import plasmapy`.
 .. _powershell: https://learn.microsoft.com/en-us/powershell
 .. _Real Python: https://realpython.com
 .. _remote: https://github.com/git-guides/git-remote
-.. _sign up on GitHub: https://github.com/join
+.. _sign up on GitHub: https://github.com/signup
 .. _terminal user guide: https://support.apple.com/guide/terminal/welcome/mac
 .. _this xkcd comic: https://xkcd.com/1987
 .. _unix tutorial: https://www.hpc.iastate.edu/guides/unix-introduction/unix-tutorial-1

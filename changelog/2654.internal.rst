@@ -1,0 +1,3 @@
+Added :file:`noxfile.py` as a configuration file for |nox|. This file initially contains
+environments for building documentation, checking hyperlinks, and performing static
+type checking with |mypy|

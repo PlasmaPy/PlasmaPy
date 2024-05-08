@@ -1,0 +1,3 @@
+Updated the |testing guide| to reflect recent performance improvements with |tox|
+via the ``tox-uv`` extension, and the |documentation guide| to reflect that the
+documentation is now built with |nox| instead of |tox|
