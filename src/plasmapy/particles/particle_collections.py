@@ -346,12 +346,10 @@ class ParticleList(collections.UserList):
         Determine if the particles in the |ParticleList|
         meet categorization criteria.
 
-        .. note::
-
-            For parameters to this method and the full list of
-            categories, refer to the documentation for the
-            `~plasmapy.particles.particle_class.Particle.is_category`
-            method of |Particle|.
+        Please refer to the documentation of
+        `~plasmapy.particles.particle_class.Particle.is_category`
+        for information on the parameters and categories, as well as
+        more extensive examples.
 
         Parameters
         ----------
