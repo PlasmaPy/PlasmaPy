@@ -767,12 +767,12 @@ def test_particle_categorization_of_particle_lists(
     criteria: dict[str, str],
     kwargs: dict[str, ParticleListLike],
     exception: Exception,
-):
-    @particle_input(**criteria)
+) -> None:
+    @particle_input(**criteria)  # type: ignore[arg-type]
     def get_particle(
         particle: ParticleLike,
     ) -> Particle | ParticleList | CustomParticle:
-        return particle
+        return particle  # type: ignore[return-value]
 
-    with pytest.raises(exception):
+    with pytest.raises(exception):  # type: ignore[call-overload]
         get_particle(**kwargs)
