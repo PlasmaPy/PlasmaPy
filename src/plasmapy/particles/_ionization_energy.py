@@ -13,7 +13,7 @@ import pkgutil
 
 import astropy.units as u
 
-def ionization_energy_obj_hook(obj) -> object:
+def ionization_energy_obj_hook(obj):
     """Provide an ``object_hook`` designed for `json.load` and `json.loads`."""
     return (obj["ionization energy"] * u.eV).to(u.J) if "ionization energy" in obj else obj
 
