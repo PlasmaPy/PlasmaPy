@@ -233,7 +233,7 @@ class AbstractPhysicalParticle(AbstractParticle):
         require: str | Iterable[str] | None = None,
         any_of: str | Iterable[str] | None = None,
         exclude: str | Iterable[str] | None = None,
-    ) -> bool | list[bool]:
+    ) -> bool:
         """Determine if the particle meets categorization criteria.
 
         Return `True` if the particle is consistent with the provided
