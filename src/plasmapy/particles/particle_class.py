@@ -51,7 +51,7 @@ if TYPE_CHECKING:
 _classification_categories: set[str] = {
     "lepton",
     "antilepton",
-    "ion",
+    "fermion",
     "boson",
     "antibaryon",
     "baryon",
