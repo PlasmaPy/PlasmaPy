@@ -3,6 +3,7 @@
 [community meeting]: https://www.plasmapy.org/meetings/weekly
 [conda-forge feedstock]: https://github.com/conda-forge/plasmapy-feedstock
 [Create an issue for the release]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/create-release-issue.yml
+[Create a pull request]: https://github.com/PlasmaPy/PlasmaPy/compare
 [Create a release on GitHub]: https://github.com/PlasmaPy/PlasmaPy/releases/new
 [`docs/about/citation.rst`]: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/about/citation.rst
 [`docs/conf.py`]: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/conf.py
@@ -64,7 +65,7 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
  - [ ] Download a `.tar.gz` file of the tagged release from the [list of tagged versions] on GitHub, and upload it to [Zenodo].
    - [ ] Update the author list with new authors from the automatically generated release notes or [`CITATION.cff`].
    - [ ] Update the bibliography, and publish the release to Zenodo.
- - [ ] Create and merge a pull request from the release branch back into `main`. <!-- Automate pull request creation? Change it into a commit? -->
+ - [ ] [Create a pull request] to merge the changes from the release back into `main`. Under the box for _compare_, select _Tags_, select the tag for the most recent release (e.g., `v2024.5.0`), and then click on _Create pull request_. <!-- By creating the pull request from the tag, we should not accidentally delete the release branch. --> <!-- Automate pull request creation? Change it into a commit? -->
  - [ ] Fix any problems with the automated pull request to [conda-forge feedstock], if necessary. This step should be automatic, but may take a while.
  - [ ] Update requirements in the [conda-forge feedstock] in `recipe/meta.yaml`, in particular when there is a new version of Python.
 
