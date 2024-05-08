@@ -124,6 +124,8 @@ authors:
   orcid: https://orcid.org/0000-0002-2105-0280
   alias: KhalilBryant
 
+- alias: Bzero
+
 - given-names: Sean
   family-names: Carroll
   alias: seanwilliamcarroll
@@ -309,19 +311,23 @@ authors:
   orcid: https://orcid.org/0009-0008-5134-6171
   alias: ironwod
 
-- given-names: Siddharth
-  family-names: Kulshrestha
-  alias: siddharthk07
-
-- given-names: Piotr
-  family-names: Kuszaj
-  alias: kuszaj
-
 - given-names: Alf
   family-names: Köhn-Seemann
   affiliation: University of Stuttgart
   orcid: https://orcid.org/0000-0002-1192-2057
   alias: alfkoehn
+
+- given-names: Siddharth
+  family-names: Kulshrestha
+  alias: siddharthk07
+
+- given-names: Sundaran
+  family-names: Kumar
+  alias: daran9
+
+- given-names: Piotr
+  family-names: Kuszaj
+  alias: kuszaj
 
 - given-names: Samuel
   family-names: Langendorf
@@ -548,6 +554,10 @@ authors:
   affiliation: University of Michigan
   alias: Sobeskes
 
+- given-names: Matteo
+  family-names: Spedicato
+  alias: Spedi
+
 - given-names: David
   family-names: Stansby
   affiliation: Mullard Space Science Laboratory
@@ -612,13 +622,3 @@ authors:
 - given-names: Carol
   family-names: Zhang
   alias: carolyz
-
-- alias: Bzero
-
-- given-names: Matteo
-  family-names: Spedicato
-  alias: Spedi
-
-- given-names: Sundaran
-  family-names: Kumar
-  alias: daran9
