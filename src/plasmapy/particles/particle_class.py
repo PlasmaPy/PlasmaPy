@@ -18,7 +18,6 @@ __all__ = [
 import json
 import typing
 import warnings
-import re
 from abc import ABC, abstractmethod
 from collections import defaultdict, namedtuple
 from datetime import datetime
@@ -29,7 +28,13 @@ import astropy.constants as const
 import astropy.units as u
 import numpy as np
 
-from plasmapy.particles import _elements, _isotopes, _ionization_energy, _parsing, _special_particles
+from plasmapy.particles import (
+    _elements,
+    _ionization_energy,
+    _isotopes,
+    _parsing,
+    _special_particles,
+)
 from plasmapy.particles.exceptions import (
     ChargeError,
     InvalidElementError,
@@ -788,10 +793,12 @@ class Particle(AbstractPhysicalParticle):
 
         try:
             symbol = element
-            if ion and not ' 0+' in ion:
+            if ion and " 0+" not in ion:
                 # If the ion is not neutral, then extract the charge number and add it to the element symbol
                 symbol = element + " " + ion.split()[-1]
-            attributes["ionization energy"] = _ionization_energy.data_about_ionization_energy[symbol]
+            attributes["ionization energy"] = (
+                _ionization_energy.data_about_ionization_energy[symbol]
+            )
         except KeyError:
             attributes["ionization energy"] = None
 
@@ -1884,7 +1891,7 @@ class Particle(AbstractPhysicalParticle):
         ------
         ~plasmapy.particles.exceptions.MissingParticleDataError
             If the ionization energy is not available for the particle.
-        
+
 
         Examples
         --------
@@ -1893,7 +1900,7 @@ class Particle(AbstractPhysicalParticle):
         <Quantity 2.17870942e-18 J>
 
         Notes
-        ------
+        -----
         Ionization energy data downloaded from the `NIST Atomic Spectra Database <https://physics.nist.gov/PhysRefData/ASD/ionEnergy.html>`_  on 5/7/2024.
 
         """
