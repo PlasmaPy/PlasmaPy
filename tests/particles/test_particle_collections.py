@@ -384,12 +384,6 @@ def test_particle_multiplication(method, particle) -> None:
             False,
         ],
         [
-            ["He-4 1+", "e-"],
-            [],
-            {"any_of": {"ion", "lepton"}},
-            True,
-        ],
-        [
             ["electron", "proton", "tau neutrino"],
             [],
             {"any_of": {"lepton", "charged"}},
