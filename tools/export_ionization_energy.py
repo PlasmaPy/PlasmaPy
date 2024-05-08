@@ -144,7 +144,7 @@ ionization_data = {}
 # Base URL for the NIST ionization energy data
 base_url = "https://physics.nist.gov/cgi-bin/ASD/ie.pl"
 
-def add_to_dict(row):
+def add_to_dict(row) -> None:
     """Adds ionization data from a row of the DataFrame to the ionization_data dictionary."""
     ionization_data[row["ion"]] = {"ionization energy": row["ionization_energy"]}
     return None  # Return None to satisfy pandas apply without altering data
@@ -252,6 +252,5 @@ for element in elements:
     time.sleep(0.5)
 
 # Export the data to a JSON file
-with Path.open("ionization_energy.json", "w") as f:
+with Path.open(Path(__file__).parent / "ionization_energy.json", "w") as f:
     json.dump(ionization_data, f, indent=2)
-
