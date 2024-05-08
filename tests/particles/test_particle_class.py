@@ -1575,6 +1575,33 @@ def test_undefined_mass_energy() -> None:
     assert u.isclose(nu_tau_particle.mass_energy, np.nan * u.J, equal_nan=True)
 
 
+def test_isotopes_have_equivalent_ionization_energy() -> None:
+    """Test that isotopes of the same element with the same charge have the same ionization energy."""
+    U = Particle("U +1")
+    U_235 = Particle("U-235 +1")
+    U_238 = Particle("U-238 +1")
+
+    assert U.ionization_energy == U_235.ionization_energy == U_238.ionization_energy
+
+
+def test_different_ions_have_different_ionization_energy() -> None:
+    """Test that isotopes of the same element with different charges have different ionization energies."""
+    U_1 = Particle("U +1")
+    U_2 = Particle("U +2")
+    U_3 = Particle("U +3")
+
+    assert U_1.ionization_energy != U_2.ionization_energy
+    assert U_1.ionization_energy != U_3.ionization_energy
+    assert U_2.ionization_energy != U_3.ionization_energy
+
+
+def test_zero_charge_ionization_energy() -> None:
+    """Test that the ionization energy is the same if initialized with a zero charge or just the element symbol."""
+    C_0 = Particle("C +0")
+    C = Particle("C")
+    assert C_0.ionization_energy == C.ionization_energy
+
+
 @pytest.mark.parametrize(
     ("particle_symbol", "expected_ionization_energy"),
     [
