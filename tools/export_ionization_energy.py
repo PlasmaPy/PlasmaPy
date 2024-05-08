@@ -148,6 +148,10 @@ ionization_data = {}
 # Base URL for the NIST ionization energy data
 base_url = "https://physics.nist.gov/cgi-bin/ASD/ie.pl"
 
+def add_to_dict(row):
+    ionization_data[row["ion"]] = {"ionization energy": row["ionization_energy"]}
+    return None  # Return None to satisfy pandas apply without altering data
+
 # Iterate through each element
 for element in elements:
     params = {
@@ -240,15 +244,12 @@ for element in elements:
         data = data.rename(columns={"Ionization Energy (eV)": "ionization_energy"})
 
         # Add the data if ionization energy data is available; each ion is a separate record
-        for _, row in data.iterrows():
-            ionization_data[row["ion"]] = {
-                "ionization energy": row["ionization_energy"]
-            }
+        data.apply(add_to_dict, axis=1)
 
     except KeyError as e:
-        logging.error(f"Failed to parse data for {element}: {e!s}")
+        logging.error("Failed to parse data for %s", element)
     except requests.exceptions.RequestException as e:
-        logging.error(f"Failed to retrieve data for {element}: {e!s}")
+        logging.error("Failed to retrieve data for %s", element)
 
     # Delay of .5 seconds to avoid hitting rate limits or putting too much load on NIST
     time.sleep(0.5)
