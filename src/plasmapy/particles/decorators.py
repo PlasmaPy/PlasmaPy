@@ -431,9 +431,6 @@ class _ParticleInput:
         --------
         ~plasmapy.particles.particle_class.Particle.is_category
         """
-
-        assert isinstance(particle, CustomParticle | Particle | ParticleList)
-
         particle_in_category = particle.is_category(
             require=self.require,
             any_of=self.any_of,
