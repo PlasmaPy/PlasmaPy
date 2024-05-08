@@ -297,7 +297,7 @@ referencing==0.35.1
     #   jsonschema-specifications
 requests==2.28.0
     # via jupyterlab-server
-rpds-py==0.18.0
+rpds-py==0.18.1
     # via
     #   jsonschema
     #   referencing
@@ -368,7 +368,7 @@ uncertainties==3.1.7
     # via lmfit
 urllib3==1.26.18
     # via requests
-uv==0.1.39
+uv==0.1.41
     # via tox-uv
 virtualenv==20.26.1
     # via
