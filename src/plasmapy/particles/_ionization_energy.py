@@ -19,6 +19,6 @@ def ionization_energy_obj_hook(obj):
 
 #: Dictionary of isotope data.
 data_about_ionization_energy = json.loads(
-    pkgutil.get_data("plasmapy", "particles/data/ionization_energy.json"),
+    pkgutil.get_data("plasmapy.particles.data", "ionization_energy.json"),
     object_hook=ionization_energy_obj_hook
 )
