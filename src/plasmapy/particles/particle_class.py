@@ -1895,6 +1895,10 @@ class Particle(AbstractPhysicalParticle):
         >>> hydrogen.ionization_energy
         <Quantity 2.17870942e-18 J>
 
+        Notes
+        ------
+        Ionization energy data downloaded from the `NIST Atomic Spectra Database <https://physics.nist.gov/PhysRefData/ASD/ionEnergy.html>`_  on 5/7/2024.
+
         """
         if self._attributes["ionization energy"] is None:
             raise MissingParticleDataError(
