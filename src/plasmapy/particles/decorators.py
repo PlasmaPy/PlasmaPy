@@ -487,6 +487,7 @@ class _ParticleInput:
                 )
             else:
                 meets_name_criteria = particle.is_category(**categorization)
+
             if isinstance(particle, Iterable) and not isinstance(particle, str):
                 meets_name_criteria = all(meets_name_criteria)  # type: ignore[arg-type]
 
@@ -958,7 +959,6 @@ def particle_input(
     ...     return isotope.mass_number
     >>> mass_number("D")
     2
-
     """
 
     # The following pattern comes from the docs for wrapt, and requires
