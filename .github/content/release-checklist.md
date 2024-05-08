@@ -53,7 +53,7 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
 
  - [ ] Begin an upload to [Zenodo] for the new release using the `team@plasmapy.org` login, and reserve a DOI.
  - [ ] Run the GitHub Action to [mint a release]. Specify the version (i.e., `2024.5.0` or `2024.5.0rc1` for a release candidate) and copy/paste the reserved DOI from Zenodo.  This action will update the DOI, build the changelog, and tag the release.
- - [ ] [Create a release on GitHub]. Choose the newly created tag (e.g., `v2024.5.0`) and use it as the title. Select the options to automatically generate release notes and create a discussion for the release. For beta releases or release candidates (e.g., `v2024.5.0rc1`), specify it as a pre-release.
+ - [ ] [Create a release on GitHub]. Choose the newly created tag (e.g., `v2024.5.0`) and use it as the title. Select the options to automatically generate release notes and create a discussion for the release. For beta releases or release candidates (e.g., `v2024.5.0rc1`), specify it as a pre-release.  [TODO: specify which branch!]
  - [ ] Download a `.tar.gz` file of the tagged release from the [list of tagged versions] and upload it to [Zenodo].
    - [ ] Update the author list with new authors from the automatically generated release notes or [`CITATION.cff`].
    - [ ] Update the bibliography, and publish the release to Zenodo.
