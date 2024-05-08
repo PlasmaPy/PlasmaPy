@@ -1153,16 +1153,16 @@ Building documentation
    documentation locally on your own computer. New contributors can
    safely skip this section.
 
-There are two methods for building the documentation: make_ and |tox|.
+There are two methods for building the documentation: make_ and |nox|.
 
 * Using make_ will build the documentation based off of what is in the
   current directory structure. make_ is quicker for local builds than
-  |tox| but requires you to install and set up all dependencies.
+  |nox| but requires you to install and set up all dependencies.
 
-* Using |tox| does not require setting up all dependencies ahead of
+* Using |nox| does not require setting up all dependencies ahead of
   time, but is more computationally intensive since it creates a virtual
   environment and builds the package before building the documentation.
-  Consequently, PlasmaPy uses |tox| for building the documentation on
+  Consequently, PlasmaPy uses |nox| for building the documentation on
   continuous integration testing platforms.
 
 .. _doc-build-prereqs:
@@ -1184,40 +1184,37 @@ It may also be necessary to install the following software:
 
 * `graphviz <https://graphviz.org/download>`__
 * `pandoc <https://pandoc.org/installing.html>`__
-* make_ (not necessary for building the documentation with |tox| or
+* make_ (not necessary for building the documentation with |nox| or
   sphinx_build)
 
 Building documentation
 ----------------------
 
-PlasmaPy's documentation can be built using |tox|, make_, or
-sphinx-build_. We recommend starting with |tox|.
+PlasmaPy's documentation can be built using |nox|, make_, or
+sphinx-build_. We recommend starting with |nox|.
 
 .. tabs::
 
-   .. group-tab:: tox
+   .. group-tab:: nox
 
-      We can use |tox| to build the documentation locally by running:
+      We can use |nox| to build the documentation locally by running:
 
       .. code-block:: bash
 
-         tox -e build_docs
+         nox -s docs
 
       To pass any `options to sphinx-build`_, put them after ``--``. For
-      example, use :bash:`tox -e build_docs -- -v` to increase output
+      example, use :bash:`nox -s docs -- -v` to increase output
       verbosity.
 
-      Building with |tox| is well-suited for reproducible documentation
+      Building with |nox| is well-suited for reproducible documentation
       builds in an isolated Python environment, which is why it is used
-      in continuous integration tests. The tradeoff is that |tox| takes
-      extra time, in particular when it creates the Python environment
-      for the first time.
+      in continuous integration tests.
 
    .. group-tab:: make
 
-      Building documentation with make_ is quicker than with |tox|,
-      and is useful for interactively building and rebuilding the
-      documentation.
+      Building documentation with make_ is useful for interactively
+      building and rebuilding the documentation.
 
       If make_ is installed, we can build the documentation by entering
       the :file:`docs/` directory and running:
@@ -1235,7 +1232,7 @@ sphinx-build_. We recommend starting with |tox|.
    .. group-tab:: sphinx-build
 
       Using sphinx-build_ allows us to choose different `options to
-      sphinx-build`_ than the defaults used by |tox| and make_.
+      sphinx-build`_ than the defaults used by |nox| and make_.
 
       PlasmaPy's documentation can be build by going to the top-level
       directory of the repository and running:
@@ -1251,11 +1248,11 @@ To check hyperlinks locally, run:
 
 .. tabs::
 
-   .. group-tab:: tox
+   .. group-tab:: nox
 
       .. code-block:: bash
 
-         tox -e linkcheck
+         nox -s linkcheck
 
    .. group-tab:: make
 
@@ -1272,8 +1269,8 @@ To check hyperlinks locally, run:
 .. tip::
 
    When writing documentation, please fix any new warnings that arise.
-   To enforce this, the ``build_docs`` |tox| environment fails if there
-   are any warnings.
+   To enforce this, the ``docs`` |nox| environment fails if there are
+   any warnings.
 
 Troubleshooting
 ===============
@@ -1509,7 +1506,7 @@ For example Jupyter notebooks, the tables of contents are in
 .. For these workarounds, if the replacement is something in single back
    ticks (e.g., `xarray`), then it should also be added to
    nitpick_ignore_regex in docs/conf.py so that it doesn't get counted
-   as an error in a nitpicky doc build (e.g., tox -e doc_build_nitpicky).
+   as an error.
 
 .. _`docs/_static/`: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/_static
 .. |docs/_static/| replace:: :file:`docs/_static/`
