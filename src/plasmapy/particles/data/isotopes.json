@@ -33,8 +33,7 @@
       "value": 2.01410177812
     },
     "stable": true,
-    "abundance": 0.000115,
-    "ionization energy": 13.602134636569
+    "abundance": 0.000115
   },
   "T": {
     "name": "tritium",
@@ -48,8 +47,7 @@
     "half-life": {
       "unit": "s",
       "value": 388800000.0
-    },
-    "ionization energy": 13.603365719
+    }
   },
   "H-4": {
     "atomic number": 1,
