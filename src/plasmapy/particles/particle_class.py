@@ -18,6 +18,7 @@ __all__ = [
 import json
 import typing
 import warnings
+import re
 from abc import ABC, abstractmethod
 from collections import defaultdict, namedtuple
 from datetime import datetime
@@ -787,13 +788,9 @@ class Particle(AbstractPhysicalParticle):
 
         try:
             symbol = element
-            if isotope:
-                symbol = isotope
-            elif ion:
-                if ' 0+' in ion:
-                    symbol = element
-                else:
-                    symbol = ion
+            if ion and not ' 0+' in ion:
+                # If the ion is not neutral, then extract the charge number and add it to the element symbol
+                symbol = element + " " + ion.split()[-1]
             attributes["ionization energy"] = _ionization_energy.data_about_ionization_energy[symbol]
         except KeyError:
             attributes["ionization energy"] = None
