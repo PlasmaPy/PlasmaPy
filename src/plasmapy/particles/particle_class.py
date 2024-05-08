@@ -790,7 +790,10 @@ class Particle(AbstractPhysicalParticle):
             if isotope:
                 symbol = isotope
             elif ion:
-                symbol = ion
+                if ' 0+' in ion:
+                    symbol = element
+                else:
+                    symbol = ion
             attributes["ionization energy"] = _ionization_energy.data_about_ionization_energy[symbol]
         except KeyError:
             attributes["ionization energy"] = None
