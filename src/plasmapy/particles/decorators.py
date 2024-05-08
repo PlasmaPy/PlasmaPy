@@ -431,19 +431,14 @@ class _ParticleInput:
         --------
         ~plasmapy.particles.particle_class.Particle.is_category
         """
-        if isinstance(particle, ParticleList):
-            particle_in_category = particle.is_category(
-                require=self.require,
-                any_of=self.any_of,
-                exclude=self.exclude,
-                particlewise=True,
-            )
-        else:
-            particle_in_category = particle.is_category(
-                require=self.require,
-                any_of=self.any_of,
-                exclude=self.exclude,
-            )
+
+        assert isinstance(particle, CustomParticle | Particle | ParticleList)
+
+        particle_in_category = particle.is_category(
+            require=self.require,
+            any_of=self.any_of,
+            exclude=self.exclude,
+        )
         if not particle_in_category:
             errmsg = self.category_errmsg(
                 particle,
