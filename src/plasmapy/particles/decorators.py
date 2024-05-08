@@ -487,6 +487,8 @@ class _ParticleInput:
                 )
             else:
                 meets_name_criteria = particle.is_category(**categorization)
+            if isinstance(particle, Iterable) and not isinstance(particle, str):
+                meets_name_criteria = all(meets_name_criteria)  # type: ignore[arg-type]
 
             if not meets_name_criteria:
                 raise exception(
