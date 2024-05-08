@@ -1,2 +1,0 @@
-Reduced the :wikipedia:`cognitive complexity`
-of `~plasmapy.formulary.lengths.gyroradius`.
