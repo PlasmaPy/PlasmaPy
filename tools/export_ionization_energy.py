@@ -6,14 +6,13 @@ This script is provided for reference and is not intended to be part of the Plas
 """
 
 import json
+import logging
 import time
 from io import StringIO
+from pathlib import Path
 
 import pandas as pd
 import requests
-import logging
-
-from pathlib import Path
 
 # Updated list of element symbols including Deuterium
 elements = [
@@ -144,10 +143,11 @@ ionization_data = {}
 # Base URL for the NIST ionization energy data
 base_url = "https://physics.nist.gov/cgi-bin/ASD/ie.pl"
 
+
 def add_to_dict(row) -> None:
     """Adds ionization data from a row of the DataFrame to the ionization_data dictionary."""
     ionization_data[row["ion"]] = {"ionization energy": row["ionization_energy"]}
-    return None  # Return None to satisfy pandas apply without altering data
+
 
 # Iterate through each element
 for element in elements:
@@ -243,10 +243,10 @@ for element in elements:
         # Add the data if ionization energy data is available; each ion is a separate record
         data.apply(add_to_dict, axis=1)
 
-    except KeyError as e:
-        logging.error("Failed to parse data for %s", element)
-    except requests.exceptions.RequestException as e:
-        logging.error("Failed to retrieve data for %s", element)
+    except KeyError:
+        logging.exception("Failed to parse data for %s", element)
+    except requests.exceptions.RequestException:
+        logging.exception("Failed to retrieve data for %s", element)
 
     # Delay of .5 seconds to avoid hitting rate limits or putting too much load on NIST
     time.sleep(0.5)
