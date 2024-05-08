@@ -1,0 +1,170 @@
+PlasmaPy v2024.5.0 (2024-05-08)
+===============================
+
+New Features
+------------
+
+- Added the `~plasmapy.particles.particle_class.Particle.nucleus` attribute of
+  |Particle|. (:pr:`2538`)
+- Replaced ``plasmapy.utils.data.downloader.get_file`` with a
+  new class `~plasmapy.utils.data.downloader.Downloader` with a
+  method `~plasmapy.utils.data.downloader.Downloader.get_file` which
+  downloads resource files from |PlasmaPy's data repository|. (:pr:`2570`)
+- Added support for new ``background``, ``ion_mu`` and ``ion_z`` fitting
+  parameters to the `~plasmapy.diagnostics.thomson.spectral_density_model`
+  function. (:pr:`2636`)
+
+
+Documentation Improvements
+--------------------------
+
+- Added the ``internal`` category for changelog entries, which will be used to
+  denote
+  refactorings with minimal impact on the API, and updated the |changelog
+  guide| to
+  reflect these changes. (:pr:`2441`)
+- Updated the docstring of |particle_input| to indicate that annotations
+  for optional parameters should now be :py:`ParticleLike | None` or
+  :py:`ParticleListLike | None`. (:pr:`2505`)
+- Added known limitations of |particle_input| to its docstring. (:pr:`2516`)
+- Removed references to PlasmaPy's Twitter account, which is no longer used.
+  (:pr:`2522`)
+- Updated the docstring for `~plasmapy.formulary.lengths.gyroradius` to finish
+  an unfinished sentence. (:pr:`2560`)
+- Updated the instructions in the |documentation guide| on how to build
+  PlasmaPy's documentation locally. (:pr:`2565`)
+- Fix typo in description of `~plasmapy.formulary.densities.mass_density`.
+  (:pr:`2588`)
+- Updated the |testing guide| to reflect recent performance improvements with
+  |tox|
+  via the ``tox-uv`` extension, and the |documentation guide| to reflect that
+  the
+  documentation is now built with |nox| instead of |tox| (:pr:`2590`)
+- Add examples to the docstring for
+  `~plasmapy.formulary.radiation.thermal_bremsstrahlung`. (:pr:`2618`)
+- Update the dependency version support policy in the |coding guide|.
+  (:pr:`2670`)
+
+
+Backwards Incompatible Changes
+------------------------------
+
+- Changed the minimum required version of Python from 3.9 to 3.10. (:pr:`2501`)
+- Modified `~plasmapy.particles.atomic.common_isotopes`,
+  `~plasmapy.particles.atomic.known_isotopes`,
+  and `~plasmapy.particles.atomic.known_isotopes` to each return a
+  |ParticleList|. (:pr:`2559`)
+- Added a new keyword ``particlewise`` to the method
+  `~plasmapy.particles.particle_collections.ParticleList.is_category` of
+  |ParticleList|,
+  which now causes the function to return a `bool` for the whole list by
+  default.  The old functionality is still available
+  by setting ``particlewise`` to `True`. (:pr:`2648`)
+
+
+Bug Fixes
+---------
+
+- Fixed an error when :py:`lorentzfactor` and multiple particles are provided
+  to `~plasmapy.formulary.lengths.gyroradius`. (:pr:`2542`)
+- Required UTF-8 encoding to be used for generating citation output.
+  (:pr:`2578`)
+- Fixed a bug in |particle_input| where particle categorization criteria
+  had not been applied to arguments that became a |ParticleList|. (:pr:`2594`)
+- Made `~plasmapy.diagnostics.thomson.spectral_density_model` compatible with
+  the
+  new version of ``lmfit==1.3.0``. (:pr:`2623`)
+- Fixed a bug when `~plasmapy.formulary.radiation.thermal_bremsstrahlung`
+  is given multiple input density values. (:pr:`2627`)
+- Fixed the requirements file used by binder to open notebooks. (:pr:`2672`)
+
+
+Internal Changes and Refactorings
+---------------------------------
+
+- Changed type hint annotations to be consistent with :pep:`604`. Most type
+  unions are now made using the ``|`` operator rather than with
+  `typing.Union`. (:pr:`2504`)
+- Refactored, parametrized, and expanded the tests
+  for `~plasmapy.formulary.lengths.Debye_length`. (:pr:`2509`)
+- Changed type hint annotations that used `numbers.Integral`, `numbers.Real`,
+  or `numbers.Complex` to instead use `int`, `float`, or `complex`,
+  respectively. (:pr:`2520`)
+- Created a |tox| environment for regenerating requirements files used
+  in continuous integration (CI) and by integrated development environments
+  (IDEs). This environment is now what is being used in the automated pull
+  requests to regenerate requirements files. Switching from ``pip-compile``
+  to ``uv pip compile`` now allows requirements files to be created for
+  multiple
+  versions of Python, as well as for minimal versions of dependencies.
+  (:pr:`2523`)
+- Reduced the :wikipedia:`cognitive complexity`
+  of `~plasmapy.formulary.lengths.gyroradius`. (:pr:`2542`)
+- Added and updated type hint annotations within `plasmapy.formulary`.
+  (:pr:`2543`)
+- Applied caching through |GitHub Actions| to speed up continuous
+  integration tests and documentation builds. Because the Python environments
+  used
+  by |tox| to run tests no longer need to be recreated every time tests are
+  run,
+  caching speeds up several continuous integration tests by ∼2–3 minutes.
+  See :issue:`2585` to learn more about recent efforts to drastically
+  speed up PlasmaPy's continuous integraiton checks. (:pr:`2552`)
+- Removed :file:`setup.py`. (:pr:`2558`)
+- Added ``sphinx-lint`` as a |pre-commit| hook to find
+  reStructuredText errors. (:pr:`2561`)
+- Enabled the `tox-uv <https://github.com/tox-dev/tox-uv>`_ plugin to |tox|,
+  so that package installation, caching, and the creation of virtual
+  environments will
+  be handled by |uv| instead of |pip|. This change makes it faster to run
+  tests both locally and via |GitHub Actions|. (:pr:`2584`)
+- Changed the project structure to an `src
+  layout
+  <https://packaging.python.org/en/latest/discussions/src-layout-vs-flat-layout/>`__
+  to follow the updated recommendation from the Python Packaging
+  Authority's `packaging guide <https://packaging.python.org/>`__. The
+  motivation for this change is described in :issue:`2581`. Source code
+  previously in :file:`plasmapy/` is now located in |src/plasmapy/| and
+  tests are now in a separate |tests/| directory. Tests previously in
+  :file:`plasmapy/**/tests/` are now in :file:`tests/**/`, where
+  :file:`**` refers to an arbitrary number of subdirectories. For example,
+  the source code of `plasmapy.formulary` is now located in
+  :file:`src/plasmapy/formulary/` and the tests for `plasmapy.formulary`
+  are now in :file:`tests/formulary/`. (:pr:`2598`)
+- Reconfigured the auto-generated requirements files used during continuous
+  integration
+  and for documentation builds, while adding corresponding documentation.
+  (:pr:`2650`)
+- Added :file:`noxfile.py` as a configuration file for |nox|. This file
+  initially contains
+  environments for building documentation, checking hyperlinks, and performing
+  static
+  type checking with |mypy| (:pr:`2654`)
+- Began using |nox| for some testing environments in |GitHub Actions|,
+  including for the
+  documentation build and static type checking. (:pr:`2656`)
+
+
+Additional Changes
+------------------
+
+- Updated type hint annotations in `plasmapy.particles`. (:pr:`2458`)
+- Added ``pytest-rerunfailures`` to the ``tests`` set of dependencies
+  defined in :file:`pyproject.toml`, and applied it to a test that
+  experiences intermittent failures. (:pr:`2483`)
+- Added a flag to `~plasmapy.plasma.grids.AbstractGrid.require_quantities`
+  to silence warnings when a quantity is not provided and is assumed to be
+  zero everywhere. Modified
+  `~plasmapy.simulation.particle_tracker.ParticleTracker` to
+  not display this warning for the :math:`\mathbf{E}` and :math:`\mathbf{B}`
+  field components, since one of these is often not explicitly provided.
+  (:pr:`2519`)
+- Removed |pytest| as a runtime dependency. (:pr:`2525`)
+- Removed the unused ``py310-conda`` |tox| environment. (:pr:`2526`)
+- Exposed `~plasmapy.formulary.dielectric.StixTensorElements`
+  and `~plasmapy.formulary.dielectric.RotatingTensorElements`
+  to the public API. (:pr:`2543`)
+- Added tests to verify correctness of two properties
+  in
+  `~plasmapy.formulary.collisions.frequencies.MaxwellianCollisionFrequencies`.
+  (:pr:`2614`)

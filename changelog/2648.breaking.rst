@@ -1,3 +1,0 @@
-Added a new keyword ``particlewise`` to the method `~plasmapy.particles.particle_collections.ParticleList.is_category` of |ParticleList|,
-which now causes the function to return a `bool` for the whole list by default.  The old functionality is still available
-by setting ``particlewise`` to `True`.
