@@ -1,1 +1,0 @@
-Added tests to verify correctness of two properties in `~plasmapy.formulary.collisions.frequencies.MaxwellianCollisionFrequencies`.

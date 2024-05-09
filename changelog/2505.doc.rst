@@ -1,3 +1,0 @@
-Updated the docstring of |particle_input| to indicate that annotations
-for optional parameters should now be :py:`ParticleLike | None` or
-:py:`ParticleListLike | None`.

@@ -5,7 +5,7 @@ __all__ = ["ParticleList", "ParticleListLike"]
 import collections
 import contextlib
 from collections.abc import Callable, Iterable, Sequence
-from typing import TypeAlias, Union
+from typing import Literal, TypeAlias, Union, overload
 
 import astropy.units as u
 import numpy as np
@@ -314,41 +314,79 @@ class ParticleList(collections.UserList):
             particle = Particle(particle)
         self.data.insert(index, particle)
 
+    @overload
     def is_category(
         self,
         *category_tuple,
         require: str | Iterable[str] | None = None,
         any_of: str | Iterable[str] | None = None,
         exclude: str | Iterable[str] | None = None,
-    ) -> list[bool]:
-        """
-        Determine element-wise if the particles in the |ParticleList|
-        meet categorization criteria.
+        particlewise: Literal[True] = ...,
+    ) -> bool: ...
 
-        Return a `list` in which each element will be `True` if the
-        corresponding particle is consistent with the categorization
-        criteria, and `False` otherwise.
+    @overload
+    def is_category(
+        self,
+        *category_tuple,
+        require: str | Iterable[str] | None = None,
+        any_of: str | Iterable[str] | None = None,
+        exclude: str | Iterable[str] | None = None,
+        particlewise: Literal[False],
+    ) -> list[bool]: ...
+
+    def is_category(
+        self,
+        *category_tuple,
+        require: str | Iterable[str] | None = None,
+        any_of: str | Iterable[str] | None = None,
+        exclude: str | Iterable[str] | None = None,
+        particlewise: bool = False,
+    ) -> bool | list[bool]:
+        """
+        Determine if the particles in the |ParticleList|
+        meet categorization criteria.
 
         Please refer to the documentation of
         `~plasmapy.particles.particle_class.Particle.is_category`
         for information on the parameters and categories, as well as
         more extensive examples.
 
+        Parameters
+        ----------
+        particlewise : `bool`, default: `False`
+            If `True`, return a `list` of `bool` in which an element will be `True`
+            if the corresponding particle is consistent with the categorization
+            criteria, and `False` otherwise. If `False`, return a `bool` which
+            will be `True` if all particles are consistent with the categorization
+            criteria and `False` otherwise.
+
         Returns
         -------
-        `list` of `bool`
+        `bool` or `list` of `bool`
+
+        See Also
+        --------
+        `~plasmapy.particles.particle_class.Particle.is_category`
 
         Examples
         --------
         >>> particles = ParticleList(["proton", "electron", "tau neutrino"])
         >>> particles.is_category("lepton")
+        False
+        >>> particles.is_category("lepton", particlewise=True)
         [False, True, True]
         >>> particles.is_category(require="lepton", exclude="neutrino")
+        False
+        >>> particles.is_category(
+        ...     require="lepton", exclude="neutrino", particlewise=True
+        ... )
         [False, True, False]
         >>> particles.is_category(any_of=["lepton", "charged"])
+        True
+        >>> particles.is_category(any_of=["lepton", "charged"], particlewise=True)
         [True, True, True]
         """
-        return [
+        category_list = [
             particle.is_category(
                 *category_tuple,
                 require=require,
@@ -357,6 +395,7 @@ class ParticleList(collections.UserList):
             )
             for particle in self
         ]
+        return category_list if particlewise else all(category_list)
 
     @property
     def charge_number(self) -> np.array:
