@@ -110,8 +110,6 @@ def requirements(session):
         )
 
 
-# Environments for building documentation
-
 sphinx_commands = (
     "sphinx-build",
     "docs/",
@@ -146,9 +144,6 @@ def linkcheck(session):
     session.install("-r", docs_requirements)
     session.install(".")
     session.run(*sphinx_commands, *check_hyperlinks, *session.posargs)
-
-
-# Environments for static type checking
 
 
 @nox.session
