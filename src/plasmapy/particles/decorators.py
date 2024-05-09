@@ -431,19 +431,11 @@ class _ParticleInput:
         --------
         ~plasmapy.particles.particle_class.Particle.is_category
         """
-        if isinstance(particle, ParticleList):
-            particle_in_category = particle.is_category(
-                require=self.require,
-                any_of=self.any_of,
-                exclude=self.exclude,
-                particlewise=True,
-            )
-        else:
-            particle_in_category = particle.is_category(
-                require=self.require,
-                any_of=self.any_of,
-                exclude=self.exclude,
-            )
+        particle_in_category = particle.is_category(
+            require=self.require,
+            any_of=self.any_of,
+            exclude=self.exclude,
+        )
         if not particle_in_category:
             errmsg = self.category_errmsg(
                 particle,
@@ -468,7 +460,7 @@ class _ParticleInput:
             and not np.isnan(particle.charge)
             and particle.mass.value > 0
         ):
-            return
+            return None
 
         name_categorization_exception: list[
             tuple[str, dict[str, str | Iterable[str] | None], type]
@@ -964,7 +956,6 @@ def particle_input(
     ...     return isotope.mass_number
     >>> mass_number("D")
     2
-
     """
 
     # The following pattern comes from the docs for wrapt, and requires
