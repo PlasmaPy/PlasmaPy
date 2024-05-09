@@ -14,13 +14,14 @@ import nox
 
 nox.options.default_venv_backend = "uv|virtualenv"
 
-python_of_nox = f"{sys.version_info.major}.{sys.version_info.minor}"
-nox.options.sessions = [f"tests-{python_of_nox}(skipslow)"]
 
 supported_python_versions = ("3.10", "3.11", "3.12")
 
 maxpython = max(supported_python_versions)
 minpython = min(supported_python_versions)
+
+current_python = f"{sys.version_info.major}.{sys.version_info.minor}"
+nox.options.sessions = [f"tests-{current_python}(skipslow)"]
 
 
 def get_requirements_filepath(
@@ -86,9 +87,6 @@ def requirements(session):
         "compile",
         "pyproject.toml",
         "--upgrade",
-    )
-
-    flags = (
         "--quiet",
         "--custom-compile-command",  # defines command to be included in file header
         "nox -s requirements",
@@ -105,7 +103,6 @@ def requirements(session):
             filename,
             "--resolution",
             resolution,
-            *flags,
         )
 
 
