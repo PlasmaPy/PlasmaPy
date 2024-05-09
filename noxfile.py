@@ -145,8 +145,9 @@ def linkcheck(session):
 @nox.session
 def mypy(session):
     """Perform static type checking with mypy."""
-    mypy_command = ("mypy", ".")
-    mypy_options = (
+    mypy_command = (
+        "mypy",
+        ".",
         "--install-types",
         "--non-interactive",
         "--show-error-context",
@@ -155,7 +156,7 @@ def mypy(session):
     )
     session.install("mypy >= 1.10.0", "pip")
     session.install("-r", "requirements.txt")
-    session.run(*mypy_command, *mypy_options, *session.posargs)
+    session.run(*mypy_command, *session.posargs)
 
 
 pytest_command = (
