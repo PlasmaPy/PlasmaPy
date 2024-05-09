@@ -1,22 +1,21 @@
 """
-Configuration file for nox.
-
 nox is an automation tool that allows us to configure and perform tasks
 using programmable Python sessions. Each nox session is defined via a
-function decorated with ``@nox.session``. The name of a session is given
-by the name of the function.
-
-To list available sessions, run `nox -l`. To invoke a nox session, run
-`nox -s <session>`, where <session> is replaced with the name of the
-session.
+function decorated with ``@nox.session``. To list available sessions,
+run `nox -l`. To invoke a nox session, run `nox -s <session>`, where
+<session> is replaced with the name of the session.
 
 Documentation for nox is at: https://nox.thea.codes
 """
 
+import sys
+
 import nox
 
 nox.options.default_venv_backend = "uv|virtualenv"
-nox.options.sessions = []
+
+python_of_nox = f"{sys.version_info.major}.{sys.version_info.minor}"
+nox.options.sessions = [f"tests-{python_of_nox}(skipslow)"]
 
 supported_python_versions = ("3.10", "3.11", "3.12")
 
@@ -162,7 +161,7 @@ def mypy(session):
     session.run(*mypy_command, *mypy_options, *session.posargs)
 
 
-pytest = (
+pytest_command = (
     "pytest",
     "--pyargs",
     "--durations=5",
@@ -171,35 +170,55 @@ pytest = (
     "--dist=loadfile",
 )
 
-slow = ("-m", "slow")
-skipslow = ("-m", "not slow")
-all_ = ()
+with_doctests = ("--doctest-modules", "--doctest-continue-on-failure")
 
-coverage = (
+with_coverage = (
     "--cov=plasmapy",
     "--cov-config=pyproject.toml",
     "--cov-append",
     "--cov-report xml:coverage.xml",
 )
 
+all_skipslow = [nox.param((), id="all"), nox.param(("-m", "not slow"), id="skipslow")]
 
-@nox.session
-@nox.parametrize(
-    "test_selection",
-    [
-        nox.param(all_, id="all"),
-        nox.param(skipslow, id="skipslow"),
-        nox.param(slow, id="slow"),
-    ],
-)
-def tests(session, test_selection, doctest_option):
+
+@nox.session(python=supported_python_versions)
+@nox.parametrize("test_selection", all_skipslow)
+def tests(session, test_selection):
     """
-    Run pytest for PlasmaPy.
+    Run tests with pytest.
 
-    Doctests will be run if and only if
+    Slow tests are skipped during sessions that include `skipslow`. All
+    tests are run with code coverage during sessions that include `all`.
+    Doctests are run only for the most recent version of Python.
     """
-    session.install("-r", "requirements.txt")
-    session.run(*pytest, *session.posargs, *test_selection, *doctest_option)
 
-    # Make it so that doctests are run if and only if python=maxpython
-    # and the requirements files are
+    options = []
+    if session.python == maxpython:
+        options += with_doctests
+
+    if test_selection == "all":
+        options += with_coverage
+
+    requirements = get_requirements_filepath(
+        category="tests",
+        version=session.python,
+        resolution="highest",
+    )
+
+    session.install("-r", requirements)
+    session.install(".")
+    session.run(*pytest_command, *test_selection, *options, *session.posargs)
+
+
+@nox.session(python=minpython)
+def tests_lowest_direct(session):
+    """Run tests of Python with the lowest version of direct dependencies."""
+    requirements = get_requirements_filepath(
+        category="tests",
+        version=session.python,
+        resolution="lowest-direct",
+    )
+    session.install("-r", requirements)
+    session.install(".")
+    session.run(*pytest_command, *session.posargs)
