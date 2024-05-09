@@ -1,13 +1,21 @@
 """
 Configuration file for nox.
 
-To invoke a nox session, run `nox -s <session>`, where <session> is
-replaced with the name of the session.
+nox is an automation tool that allows us to configure and perform tasks
+using programmable Python sessions. Each nox session is defined via a
+function decorated with ``@nox.session``. The name of a session is given
+by the name of the function.
+
+To list available sessions, run `nox -l`. To invoke a nox session, run
+`nox -s <session>`, where <session> is replaced with the name of the
+session.
+
+Documentation for nox is at: https://nox.thea.codes
 """
 
 import nox
 
-nox.options.default_venv_backend = "uv"
+nox.options.default_venv_backend = "uv|virtualenv"
 nox.options.sessions = ["requirements"]
 
 supported_python_versions = ("3.10", "3.11", "3.12")
@@ -15,10 +23,8 @@ supported_python_versions = ("3.10", "3.11", "3.12")
 maxpython = max(supported_python_versions)
 minpython = min(supported_python_versions)
 
-requirements_directory = "ci_requirements"
 
-
-def get_requirements_file(
+def get_requirements_filepath(
     category: str,
     version: str,
     resolution: str = "highest",
@@ -35,15 +41,16 @@ def get_requirements_file(
     version : str
         The version of Python to get the requirements for.
 
-    resolution : str
-        The resolution strategy to be used by ``uv pip compile``
-        ``uv pip compile``.
+    resolution : str, default: "highest"
+        The resolution strategy to be used by ``uv pip compile``. Other
+        options include ``"lowest-direct"`` or ``"lowest"``.
 
     Returns
     -------
     str
         The path to the requirements file.
     """
+    requirements_directory = "ci_requirements"
     specifiers = [category, version]
     if resolution != "highest":
         specifiers.append(resolution)
@@ -89,7 +96,7 @@ def requirements(session):
     )
 
     for category, version, resolution in category_version_resolution:
-        filename = get_requirements_file(category, version, resolution)
+        filename = get_requirements_filepath(category, version, resolution)
         session.run(
             *command,
             "--python-version",
@@ -116,22 +123,27 @@ sphinx_commands = (
 
 html = ("-b", "html")
 check_hyperlinks = ("-b", "linkcheck", "-q")
-documentation_requirements = get_requirements_file(category="docs", version=maxpython)
+docs_requirements = get_requirements_filepath(category="docs", version=maxpython)
 
 
 @nox.session(python=maxpython)
 def docs(session):
     """Build documentation with Sphinx."""
-
-    session.install("-r", documentation_requirements)
+    session.install("-r", docs_requirements)
     session.install(".")
     session.run(*sphinx_commands, *html, *session.posargs)
 
 
 @nox.session(python=maxpython)
 def linkcheck(session):
-    """Check hyperlinks in documentation."""
-    session.install("-r", documentation_requirements)
+    """
+    Check hyperlinks in documentation.
+
+    Use ``linkcheck_ignore`` and ``linkcheck_allowed_redirects`` in
+    :file:`docs/conf.py` to specify hyperlink patterns that should be
+    ignored.
+    """
+    session.install("-r", docs_requirements)
     session.install(".")
     session.run(*sphinx_commands, *check_hyperlinks, *session.posargs)
 
@@ -150,6 +162,6 @@ def mypy(session):
         "--show-error-code-links",
         "--pretty",
     )
-    session.install("mypy >= 1.9.0", "pip")
+    session.install("mypy >= 1.10.0", "pip")
     session.install("-r", "requirements.txt")
     session.run(*mypy_command, *mypy_options, *session.posargs)
