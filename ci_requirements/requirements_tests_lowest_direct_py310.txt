@@ -308,7 +308,7 @@ send2trash==1.8.3
     #   jupyter-server
     #   nbclassic
     #   notebook
-setuptools==61.2.0
+setuptools==65.5.1
     # via nodeenv
 six==1.16.0
     # via

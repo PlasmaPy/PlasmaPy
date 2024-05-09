@@ -351,7 +351,7 @@ scipy==1.13.0
     # via lmfit
 send2trash==1.8.3
     # via jupyter-server
-setuptools==69.5.1
+setuptools==65.5.1
     # via nodeenv
 six==1.16.0
     # via
