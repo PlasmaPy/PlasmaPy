@@ -3,8 +3,8 @@
 Acknowledging and Citing
 ========================
 
-.. |version_to_cite| replace:: 2024.2.0
-.. |doi_hyperlink| replace:: https://doi.org/10.5281/zenodo.10613904
+.. |version_to_cite| replace:: 2024.5.0
+.. |doi_hyperlink| replace:: https://doi.org/10.5281/zenodo.11154884
 .. |citation_year| replace:: 2024
 
 .. These substitutions are automatically updated by the GitHub Action
@@ -56,4 +56,4 @@ on, such as `Astropy <https://www.astropy.org/acknowledging.html>`__,
 .. note::
 
    All public releases of PlasmaPy are openly archived in the `PlasmaPy
-   Community <https://zenodo.org/communities/plasmapy>`__ on |Zenodo|.
+   Community <https://zenodo.org/communities/plasmapy/records>`__ on |Zenodo|.
