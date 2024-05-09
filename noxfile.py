@@ -65,7 +65,7 @@ pytest = (
 
 slow = ("-m", "slow")
 skipslow = ("-m", "not slow")
-all = ()
+all_ = ()
 
 coverage = (
     "--cov=plasmapy",
@@ -79,19 +79,17 @@ coverage = (
 @nox.parametrize(
     "test_selection",
     [
-        nox.param(all, id="all"),
+        nox.param(all_, id="all"),
         nox.param(skipslow, id="skipslow"),
         nox.param(slow, id="slow"),
     ],
 )
-@nox.parametrize(
-    "doctest_option",
-    [
-        nox.param((), id="no-doctest"),
-    ],
-)
 def tests(session, test_selection, doctest_option):
-    """Run pytest for PlasmaPy."""
+    """
+    Run pytest for PlasmaPy.
+
+    Doctests will be run if and only if
+    """
     session.install("-r", "requirements.txt")
     session.run(*pytest, *session.posargs, *test_selection, *doctest_option)
 
