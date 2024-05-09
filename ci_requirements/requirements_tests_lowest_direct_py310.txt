@@ -159,7 +159,7 @@ matplotlib-inline==0.1.7
     #   ipython
 mistune==3.0.2
     # via nbconvert
-mpmath==1.2.1
+mpmath==1.3.0
 nbclassic==1.0.0
     # via notebook
 nbclient==0.7.4
