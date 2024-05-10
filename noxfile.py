@@ -176,13 +176,11 @@ def cff(session):
     session.run("cffconvert", "--validate")
 
 
-build_command = ("python", "-m", "build")
-
-
 @nox.session
 def build(session):
     """Build and verify a source distribution and wheel."""
     session.install("twine", "build")
+    build_command = ("python", "-m", "build")
     session.run(*build_command, "--sdist")
     session.run(*build_command, "--wheel")
     session.run("twine", "check", "dist/*")
