@@ -162,7 +162,7 @@ def mypy(session):
     session.run(*mypy_command, *mypy_options, *session.posargs)
 
 
-@nox.session
+@nox.session(name="import")
 def try_import(session):
     """Install PlasmaPy and import it."""
     session.install(".")
