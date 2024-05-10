@@ -1,1 +1,1 @@
-Created |nox| sessions to run tests.
+Created a parametrized |nox| session to run tests.
