@@ -160,3 +160,10 @@ def mypy(session):
     session.install("mypy >= 1.10.0", "pip")
     session.install("-r", "requirements.txt")
     session.run(*mypy_command, *mypy_options, *session.posargs)
+
+
+@nox.session
+def try_import(session):
+    """Install PlasmaPy and import it."""
+    session.install(".")
+    session.run("python", "-c", "import plasmapy")
