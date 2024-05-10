@@ -24,13 +24,13 @@ import nox
 nox.options.default_venv_backend = "uv|virtualenv"
 
 
-supported_python_versions = ("3.10", "3.11", "3.12")
+supported_python_versions: tuple[str, ...] = ("3.10", "3.11", "3.12")
 
 maxpython = max(supported_python_versions)
 minpython = min(supported_python_versions)
 
 current_python = f"{sys.version_info.major}.{sys.version_info.minor}"
-nox.options.sessions = [f"tests-{current_python}(skipslow)"]
+nox.options.sessions: list[str] = [f"tests-{current_python}(skipslow)"]
 
 
 def get_requirements_filepath(
@@ -60,19 +60,19 @@ def requirements(session):
 
     session.install("uv >= 0.1.39")
 
-    category_version_resolution = [
+    category_version_resolution: list[tuple[str, str, str]] = [
         ("tests", version, resolution)
         for version in supported_python_versions
         for resolution in ("highest", "lowest-direct")
     ]
 
-    category_flags = {
+    category_flags: dict[str, tuple[str, ...]] = {
         "all": ("--all-extras",),
         "docs": ("--extra", "docs"),
         "tests": ("--extra", "tests"),
     }
 
-    command = (
+    command: tuple[str, ...] = (
         "python",
         "-m",
         "uv",
@@ -99,7 +99,7 @@ def requirements(session):
         )
 
 
-pytest_command = (
+pytest_command: tuple[str, ...] = (
     "pytest",
     "--pyargs",
     "--durations=5",
@@ -108,18 +108,18 @@ pytest_command = (
     "--dist=loadfile",
 )
 
-with_doctests = ("--doctest-modules", "--doctest-continue-on-failure")
+with_doctests: tuple[str, ...] = ("--doctest-modules", "--doctest-continue-on-failure")
 
-with_coverage = (
+with_coverage: tuple[str, ...] = (
     "--cov=plasmapy",
     "--cov-config=pyproject.toml",
     "--cov-append",
     "--cov-report xml:coverage.xml",
 )
 
-skipslow = ("-m", "not slow")
+skipslow: tuple[str, ...] = ("-m", "not slow")
 
-test_selections = [
+test_specifiers: list[nox._parametrize.Param] = [
     nox.param("all", id="all"),
     nox.param("with code coverage", id="cov"),
     nox.param("skip slow tests", id="skipslow"),
@@ -128,14 +128,11 @@ test_selections = [
 
 
 @nox.session(python=supported_python_versions)
-@nox.parametrize("test_selection", test_selections)
-# @nox.parametrize(
-#    ["test_selection", "coverage"],
-# )
-def tests(session, test_selection):
+@nox.parametrize("test_specifier", test_specifiers)
+def tests(session, test_specifier: nox._parametrize.Param):
     """Run tests with pytest."""
 
-    resolution = "lowest-direct" if test_selection == "lowest-direct" else "highest"
+    resolution = "lowest-direct" if test_specifier == "lowest-direct" else "highest"
 
     requirements = get_requirements_filepath(
         category="tests",
@@ -143,18 +140,18 @@ def tests(session, test_selection):
         resolution=resolution,
     )
 
-    options = []
+    options: list[str] = []
 
-    if test_selection == "skipslow":
+    if test_specifier == "skipslow":
         options += skipslow
 
-    if test_selection == "cov":
+    if test_specifier == "cov":
         options += with_coverage
 
     # Doctests are only run with the most recent versions of Python and
     # other dependencies because there may be subtle differences in the
     # output between different versions of Python, NumPy, and Astropy.
-    if session.python == maxpython and test_selection in {"all", "skipslow"}:
+    if session.python == maxpython and test_specifier in {"all", "skipslow"}:
         options += with_doctests
 
     session.install("-r", requirements)
@@ -162,7 +159,7 @@ def tests(session, test_selection):
     session.run(*pytest_command, *options, *session.posargs)
 
 
-sphinx_commands = (
+sphinx_commands: tuple[str, ...] = (
     "sphinx-build",
     "docs/",
     "docs/build/html",
@@ -171,8 +168,8 @@ sphinx_commands = (
     "--keep-going",
 )
 
-html = ("-b", "html")
-check_hyperlinks = ("-b", "linkcheck", "-q")
+html: tuple[str, ...] = ("-b", "html")
+check_hyperlinks: tuple[str, ...] = ("-b", "linkcheck", "-q")
 docs_requirements = get_requirements_filepath(category="docs", version=maxpython)
 
 
@@ -201,7 +198,7 @@ def linkcheck(session):
 @nox.session
 def mypy(session):
     """Perform static type checking."""
-    mypy_command = (
+    mypy_command: tuple[str, ...] = (
         "mypy",
         ".",
         "--install-types",
