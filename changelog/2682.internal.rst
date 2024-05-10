@@ -1,1 +1,2 @@
-Added |nox| sessions for trying :py:`import plasmapy` and validating :file:`CITATION.cff`.
+Added |nox| sessions to test importing PlasmaPy, validating :file:`CITATION.cff`,
+and building a source distribution and wheel.
