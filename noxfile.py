@@ -167,3 +167,10 @@ def try_import(session):
     """Install PlasmaPy and import it."""
     session.install(".")
     session.run("python", "-c", "import plasmapy")
+
+
+@nox.session
+def cff(session):
+    """Validate CITATION.cff."""
+    session.install("cffconvert")
+    session.run("cffconvert", "--validate")
