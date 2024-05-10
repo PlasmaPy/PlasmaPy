@@ -1,7 +1,7 @@
 """
 Running `nox` without arguments will run tests with the version of
 Python that `nox` is installed under, skipping slow tests. To invoke a
-nox session, run `nox -s <session>`, where <session> is replaced with
+nox session, run `nox -s "<session>"`, where <session> is replaced with
 the name of the session. To list available sessions, run `nox -l`.
 
 The tests can be run with the following options:
@@ -15,14 +15,9 @@ Doctests are run only for the most recent versions of Python and
 PlasmaPy dependencies, and not when code coverage checks are performed.
 """
 
-# nox documentation: https://nox.thea.codes
-
 import sys
 
 import nox
-
-nox.options.default_venv_backend = "uv|virtualenv"
-
 
 supported_python_versions: tuple[str, ...] = ("3.10", "3.11", "3.12")
 
@@ -30,7 +25,9 @@ maxpython = max(supported_python_versions)
 minpython = min(supported_python_versions)
 
 current_python = f"{sys.version_info.major}.{sys.version_info.minor}"
+
 nox.options.sessions: list[str] = [f"tests-{current_python}(skipslow)"]
+nox.options.default_venv_backend = "uv|virtualenv"
 
 
 def get_requirements_filepath(
