@@ -1,0 +1,1 @@
+Added |nox| sessions for trying :py:`import plasmapy` and validating :file:`CITATION.cff`.
