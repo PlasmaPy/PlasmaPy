@@ -160,3 +160,27 @@ def mypy(session):
     session.install("mypy >= 1.10.0", "pip")
     session.install("-r", "requirements.txt")
     session.run(*mypy_command, *mypy_options, *session.posargs)
+
+
+@nox.session(name="import")
+def try_import(session):
+    """Install PlasmaPy and import it."""
+    session.install(".")
+    session.run("python", "-c", "import plasmapy")
+
+
+@nox.session
+def cff(session):
+    """Validate CITATION.cff."""
+    session.install("cffconvert")
+    session.run("cffconvert", "--validate")
+
+
+@nox.session
+def build(session):
+    """Build and verify a source distribution and wheel."""
+    session.install("twine", "build")
+    build_command = ("python", "-m", "build")
+    session.run(*build_command, "--sdist")
+    session.run(*build_command, "--wheel")
+    session.run("twine", "check", "dist/*")
