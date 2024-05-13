@@ -685,13 +685,19 @@ This command will run all of the tests found within your current
 directory and all of its subdirectories. Because it takes time to run
 PlasmaPy's tests, it is usually most convenient to specify that only a
 subset of the tests be run. To run the tests contained within a
-particular file or directory, include its name after `pytest`. If you
-are in the directory :file:`plasmapy/particles/tests/`, then the tests
-in in :file:`test_atomic.py` can be run with:
+particular file or directory, include its name after `pytest`.
 
 .. code-block:: console
 
-   pytest test_atomic.py
+   pytest tests/particles/test_atomic.py
+
+The ``pytest-filter-subpackage`` extension lets us use the ``-P`` flag
+to specify a subpackage that tests should be run for. To perform tests
+for `plasmapy.particles`, run:
+
+.. code-block:: console
+
+   pytest -P particles
 
 The documentation for `pytest` describes `how to invoke pytest`_ and
 specify which tests will or will not be run. A few useful examples of
