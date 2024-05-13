@@ -12,7 +12,8 @@ Testing Guide
 Summary
 =======
 
-Running tests (quickstart)
+Running tests (quickstart guide)
+--------------------------------
 
 To prepare to run tests from the command line, |open a terminal| and
 install |Nox| and |uv|:
@@ -723,40 +724,30 @@ operating systems. Testing with |Nox| is more robust than testing with
 `pytest` alone because |Nox| creates its own virtual environments and
 ensures that tests are run the same way as in CI.
 
+.. tip::
+
+   Installing |uv| alongside |Nox| leads to significantly faster
+   dependency resolution and improved caching.
+
 To run PlasmaPy's tests (except for those marked as slow), run:
 
 .. code-block:: console
 
    nox
 
-To run PlasmaPy's tests for a particular |Nox| session, run:
-
-.. code-block:: console
-
-   nox -s ⟨session⟩
-
-where ``⟨session⟩`` is replaced with the name of the |Nox| session, as
-described below.
-
-To find out what sessions are defined, run: |Nox|
+To find out what |Nox| sessions are defined, run:
 
 .. code-block::
 
    nox -l
 
+To run PlasmaPy's tests for a particular session, run:
 
+.. code-block:: console
 
-.. Some testing environments for |ox| are pre-defined. For example, you
-.. can replace ``⟨envname⟩`` with ``py310`` if you are running Python
-.. ``3.10.x``, ``py311`` if you are running Python ``3.11.x``, or ``py312``
-.. if you are running Python ``3.12.x``. Running |tox| with any of these
-.. environments requires that the appropriate version of Python has been
-.. installed and can be found by |tox|. To find the version of Python that
-.. you are using, go to the command line and run ``python --version``.
+   nox -s ⟨session⟩
 
-.. Additional `tox environments`_ are defined in :file:`tox.ini` in the
-.. top-level directory of PlasmaPy's repository. To find which testing
-.. environments are available, run:
+where ``⟨session⟩`` is replaced with the name of the |Nox| session.
 
 For example, static type checking with |mypy| can be run locally with
 
