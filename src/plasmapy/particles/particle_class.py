@@ -794,6 +794,7 @@ class Particle(AbstractPhysicalParticle):
         self._add_ionization_energy_information(attributes, element, isotope, ion)
 
     def _add_ionization_energy_information(self, attributes, element, isotope, ion):
+        """Assign ionization energy to elements, isotopes, and ions."""
         try:
             symbol = element
             if ion and " 0+" not in ion:
