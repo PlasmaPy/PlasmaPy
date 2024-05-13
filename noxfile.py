@@ -112,7 +112,8 @@ with_coverage: tuple[str, ...] = (
     "--cov=plasmapy",
     "--cov-config=pyproject.toml",
     "--cov-append",
-    "--cov-report xml:coverage.xml",
+    "--cov-report",
+    "xml:coverage.xml",
 )
 
 skipslow: tuple[str, ...] = ("-m", "not slow")
