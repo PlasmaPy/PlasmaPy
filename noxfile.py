@@ -127,7 +127,7 @@ test_specifiers: list[nox._parametrize.Param] = [
 
 @nox.session(python=supported_python_versions)
 @nox.parametrize("test_specifier", test_specifiers)
-def tests(session, test_specifier: nox._parametrize.Param):
+def tests(session: nox.Session, test_specifier: nox._parametrize.Param):
     """Run tests with pytest."""
 
     resolution = "lowest-direct" if test_specifier == "lowest-direct" else "highest"
@@ -175,7 +175,7 @@ docs_requirements = get_requirements_filepath(category="docs", version=maxpython
 
 
 @nox.session(python=maxpython)
-def docs(session):
+def docs(session: nox.Session):
     """Build documentation with most recent supported version of Python."""
     session.install("-r", docs_requirements)
     session.install(".")
@@ -183,7 +183,7 @@ def docs(session):
 
 
 @nox.session(python=maxpython)
-def linkcheck(session):
+def linkcheck(session: nox.Session):
     """
     Check hyperlinks in documentation.
 
@@ -197,7 +197,7 @@ def linkcheck(session):
 
 
 @nox.session
-def mypy(session):
+def mypy(session: nox.Session):
     """Perform static type checking."""
     mypy_command: tuple[str, ...] = (
         "mypy",
@@ -214,24 +214,24 @@ def mypy(session):
 
 
 @nox.session(name="import")
-def try_import(session):
+def try_import(session: nox.Session):
     """Install PlasmaPy and import it."""
     session.install(".")
     session.run("python", "-c", "import plasmapy")
 
 
 @nox.session
-def cff(session):
-    """Validate CITATION.cff."""
-    session.install("cffconvert")
-    session.run("cffconvert", "--validate")
-
-
-@nox.session
-def build(session):
+def build(session: nox.Session):
     """Build and verify a source distribution and wheel."""
     session.install("twine", "build")
     build_command = ("python", "-m", "build")
     session.run(*build_command, "--sdist")
     session.run(*build_command, "--wheel")
     session.run("twine", "check", "dist/*")
+
+
+@nox.session
+def cff(session: nox.Session):
+    """Validate CITATION.cff."""
+    session.install("cffconvert")
+    session.run("cffconvert", "--validate")
