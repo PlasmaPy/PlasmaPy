@@ -791,7 +791,7 @@ class Particle(AbstractPhysicalParticle):
 
         categories.add(this_element["category"])
 
-        self._add_ionization_energy_information(attributes, element, isotope, ion)        
+        self._add_ionization_energy_information(attributes, element, isotope, ion)
 
     def _add_ionization_energy_information(self, attributes, element, isotope, ion):
         try:
@@ -808,7 +808,7 @@ class Particle(AbstractPhysicalParticle):
             else:
                 attributes["ionization energy"] = (
                     _ionization_energy.data_about_ionization_energy[symbol]
-                )        
+                )
         except KeyError:
             attributes["ionization energy"] = None
 
