@@ -80,12 +80,14 @@ jobs:
     - name: Install nox and uv
       run: python -m pip install --progress-bar off --upgrade nox uv
 
-    - name: Cache
+    - name: Cache .nox to reduce startup time
       uses: actions/cache@v4
       with:
         path: |
           .nox
-        key: ${{ matrix.nox_session }}-${{ runner.os }}-${{ hashFiles('ci_requirements/tests-*.txt', 'pyproject.toml') }}
+        # Invalidate the cache after changes to pyproject.toml or the
+        # requirements file used by the nox session.
+        key: ${{ matrix.nox_session }}-${{ runner.os }}-${{ hashFiles('pyproject.toml', 'ci_requirements/tests-${{ matrix.python }}.txt') }}
 
     - name: Run tests
       run: nox -e '${{ matrix.nox_session }}'
