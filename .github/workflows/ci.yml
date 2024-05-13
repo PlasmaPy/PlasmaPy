@@ -43,7 +43,7 @@ jobs:
           python: '3.10'
           nox_session: tests-3.10(lowest-direct)
 
-        - name: Packaging
+        - name: Packaging, Python 3.12, Ubuntu
           os: ubuntu-latest
           python: '3.12'
           nox_session: build
