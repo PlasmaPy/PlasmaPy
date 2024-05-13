@@ -15,6 +15,7 @@ Doctests are run only for the most recent versions of Python and
 PlasmaPy dependencies, and not when code coverage checks are performed.
 """
 
+import os
 import sys
 
 import nox
@@ -150,6 +151,9 @@ def tests(session, test_specifier: nox._parametrize.Param):
     # output between different versions of Python, NumPy, and Astropy.
     if session.python == maxpython and test_specifier in {"all", "skipslow"}:
         options += with_doctests
+
+    if gh_token := os.getenv("GH_TOKEN"):
+        session.env(gh_token)
 
     session.install("-r", requirements)
     session.install(".")
