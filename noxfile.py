@@ -153,7 +153,7 @@ def tests(session, test_specifier: nox._parametrize.Param):
         options += with_doctests
 
     if gh_token := os.getenv("GH_TOKEN"):
-        session.env(gh_token)
+        session.env({"GH_TOKEN": gh_token})
 
     session.install("-r", requirements)
     session.install(".")
