@@ -796,9 +796,16 @@ class Particle(AbstractPhysicalParticle):
             if ion and " 0+" not in ion:
                 # If the ion is not neutral, then extract the charge number and add it to the element symbol
                 symbol = element + " " + ion.split()[-1]
-            attributes["ionization energy"] = (
-                _ionization_energy.data_about_ionization_energy[symbol]
-            )
+
+            # Attempt to get the isotope's ionization energy before defaulting to the element's ionization energy
+            if isotope in _ionization_energy.data_about_ionization_energy.keys():
+                attributes["ionization energy"] = (
+                    _ionization_energy.data_about_ionization_energy[isotope]
+                )
+            else:
+                attributes["ionization energy"] = (
+                    _ionization_energy.data_about_ionization_energy[symbol]
+                )        
         except KeyError:
             attributes["ionization energy"] = None
 

@@ -1602,6 +1602,15 @@ def test_zero_charge_ionization_energy() -> None:
     assert C_0.ionization_energy == C.ionization_energy
 
 
+def test_deuterium_ionization_energy() -> None:
+    """Test that the ionization energy of deuterium is the same as the ionization energy of H-2."""
+    D = Particle("D")
+    H_2 = Particle("H-2")
+    H = Particle("H")
+    assert D.ionization_energy == H_2.ionization_energy
+    assert D.ionization_energy != H.ionization_energy
+
+
 @pytest.mark.parametrize(
     ("particle_symbol", "expected_ionization_energy"),
     [
