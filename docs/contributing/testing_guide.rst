@@ -745,9 +745,11 @@ To run PlasmaPy's tests for a particular session, run:
 
 .. code-block:: console
 
-   nox -s ⟨session⟩
+   nox -s '<session>'
 
-where ``⟨session⟩`` is replaced with the name of the |Nox| session.
+where ``<session>`` is replaced with the name of the |Nox| session. The
+quotes are only needed if ``<session>`` contains special characters like
+parentheses.
 
 For example, static type checking with |mypy| can be run locally with
 
