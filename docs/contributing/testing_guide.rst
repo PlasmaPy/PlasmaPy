@@ -721,9 +721,7 @@ simplifies testing PlasmaPy with different releases of Python, with
 different versions of PlasmaPy's dependencies, and on different
 operating systems. Testing with |Nox| is more robust than testing with
 `pytest` alone because |Nox| creates its own virtual environments and
-ensures that tests are run the same way as in CI. Installing |uv|
-alongside |Nox| will lead to improved dependency resolution performance
-and caching.
+ensures that tests are run the same way as in CI.
 
 To run PlasmaPy's tests (except for those marked as slow), run:
 
@@ -746,7 +744,6 @@ To find out what sessions are defined, run: |Nox|
 
    nox -l
 
-|Nox| sessions
 
 
 .. Some testing environments for |ox| are pre-defined. For example, you
