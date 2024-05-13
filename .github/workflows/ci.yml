@@ -43,6 +43,11 @@ jobs:
           python: '3.10'
           nox_session: tests-3.10(lowest-direct)
 
+        - name: Packaging
+          os: ubuntu-latest
+          python: '3.12'
+          nox_session: build
+
         - name: Static type checking with mypy, Python 3.12, Ubuntu
           os: ubuntu-latest
           python: '3.12'
