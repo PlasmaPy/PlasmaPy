@@ -27,10 +27,25 @@ jobs:
       matrix:
         include:
 
+        - name: Python 3.12, with doctests, skip slow tests, Ubuntu
+          os: ubuntu-latest
+          python: '3.12'
+          nox_session: tests-3.12(skipslow)
+
+        - name: Python 3.11, all tests, code coverage, macOS
+          os: macos-latest
+          python: '3.11'
+          nox_session: tests-3.11(cov)
+
+        - name: Python 3.10, lowest direct dependencies, all tests, Windows
+          os: windows-latest
+          python: '3.10'
+          nox_session: tests-3.10(lowest-direct)
+
         - name: Static type checking with mypy, Python 3.12, Ubuntu
           os: ubuntu-latest
           python: '3.12'
-          noxenv: mypy
+          nox_session: mypy
 
     steps:
 
@@ -53,10 +68,19 @@ jobs:
       with:
         path: |
           .nox
-        key: ${{ matrix.noxenv }}-${{ runner.os }}-${{ hashFiles('requirements.txt', 'pyproject.toml') }}
+        key: ${{ matrix.nox_session }}-${{ runner.os }}-${{ hashFiles('ci_requirements/tests-*.txt', 'pyproject.toml') }}
 
     - name: Run tests
-      run: nox -e ${{ matrix.noxenv }}
+      run: nox -e ${{ matrix.nox_session }}
+
+    - name: Upload coverage reports to Codecov
+      if: ${{ contains(matrix.nox_session, 'cov') }}
+      uses: codecov/codecov-action@v4
+      with:
+        file: ./coverage.xml
+        fail_ci_if_error: false
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
   documentation:
 
