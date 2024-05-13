@@ -110,6 +110,7 @@ with_doctests: tuple[str, ...] = ("--doctest-modules", "--doctest-continue-on-fa
 
 with_coverage: tuple[str, ...] = (
     "--cov=plasmapy",
+    "--cov-report=xml",
     "--cov-config=pyproject.toml",
     "--cov-append",
     "--cov-report",
