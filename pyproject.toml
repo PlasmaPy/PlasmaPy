@@ -114,6 +114,7 @@ tests = [
   "nox >= 2024.4.15",
   "pre-commit >= 3.6.0",
   "pytest >= 8.0.2",
+  "pytest-cov >= 5.0.0",
   "pytest-regressions >= 2.5.0",
   "pytest-rerunfailures >= 13.0",
   "pytest-xdist >= 3.5.0",
@@ -222,7 +223,7 @@ build-dir = "docs/_build"
 all_files = "1"
 
 [tool.codespell]
-skip = "*.png,*cache*,*egg*,.git,.hypothesis,.idea,.tox,_build,*charged_particle*.ipynb,venv"
+skip = "*.png,*cache*,*egg*,.git,.hypothesis,.idea,.nox,.tox,_build,*charged_particle*.ipynb,venv"
 # Add false positives found by codespell to ignore-words-list
 ignore-words-list = """
 aas,
