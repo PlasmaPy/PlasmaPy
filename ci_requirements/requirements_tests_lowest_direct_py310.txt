@@ -2,6 +2,8 @@
 #    uv pip compile pyproject.toml -p 3.10 -o ci_requirements/requirements_tests_lowest_direct_py310.txt --extra tests --resolution=lowest-direct
 anyio==3.7.1
     # via jupyter-server
+argcomplete==3.3.0
+    # via nox
 argon2-cffi==23.1.0
     # via
     #   jupyter-server
@@ -39,6 +41,8 @@ charset-normalizer==2.0.12
     # via requests
 colorama==0.4.6
     # via tox
+colorlog==6.8.2
+    # via nox
 cycler==0.12.1
     # via matplotlib
 debugpy==1.8.1
@@ -192,6 +196,7 @@ notebook==6.5.7
     # via widgetsnbextension
 notebook-shim==0.2.4
     # via nbclassic
+nox==2024.4.15
 numba==0.57.0
 numpy==1.23.0
     # via
@@ -211,6 +216,7 @@ packaging==23.2
     #   jupyterlab-server
     #   matplotlib
     #   nbconvert
+    #   nox
     #   pyproject-api
     #   pytest
     #   pytest-rerunfailures
@@ -332,6 +338,7 @@ tinycss2==1.3.0
     # via nbconvert
 tomli==2.0.1
     # via
+    #   nox
     #   pyproject-api
     #   pytest
     #   tox
@@ -368,10 +375,11 @@ uncertainties==3.1.7
     # via lmfit
 urllib3==1.26.18
     # via requests
-uv==0.1.41
+uv==0.1.42
     # via tox-uv
 virtualenv==20.26.1
     # via
+    #   nox
     #   pre-commit
     #   tox
 voila==0.4.0
