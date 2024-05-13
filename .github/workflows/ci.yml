@@ -58,6 +58,11 @@ jobs:
           python: '3.12'
           nox_session: cff
 
+        - name: Import PlasmaPy, Python 3.10, Windows
+          os: windows-latest
+          python: 3.10
+          nox_session: import
+
     steps:
 
     - name: Checkout code
