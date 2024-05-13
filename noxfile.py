@@ -143,7 +143,7 @@ def tests(session: nox.Session, test_specifier: nox._parametrize.Param):
     if test_specifier == "skip slow tests":
         options += skipslow
 
-    if test_specifier.id == "with code coverage":
+    if test_specifier == "with code coverage":
         options += with_coverage
 
     # Doctests are only run with the most recent versions of Python and
