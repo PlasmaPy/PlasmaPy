@@ -215,6 +215,7 @@ packaging==23.2
     #   nox
     #   pyproject-api
     #   pytest
+    #   pytest-filter-subpackage
     #   pytest-rerunfailures
     #   tox
     #   tox-uv
@@ -268,12 +269,14 @@ pytest==8.0.2
     # via
     #   pytest-cov
     #   pytest-datadir
+    #   pytest-filter-subpackage
     #   pytest-regressions
     #   pytest-rerunfailures
     #   pytest-xdist
 pytest-cov==5.0.0
 pytest-datadir==1.5.0
     # via pytest-regressions
+pytest-filter-subpackage==0.2.0
 pytest-regressions==2.5.0
 pytest-rerunfailures==13.0
 pytest-xdist==3.5.0
@@ -368,7 +371,7 @@ urllib3==1.26.18
     # via requests
 uv==0.1.42
     # via tox-uv
-virtualenv==20.26.1
+virtualenv==20.26.2
     # via
     #   nox
     #   pre-commit
