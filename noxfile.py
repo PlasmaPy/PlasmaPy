@@ -118,7 +118,7 @@ with_coverage: tuple[str, ...] = (
 skipslow: tuple[str, ...] = ("-m", "not slow")
 
 test_specifiers: list[nox._parametrize.Param] = [
-    nox.param("all", id="all"),
+    nox.param("run all tests", id="all"),
     nox.param("with code coverage", id="cov"),
     nox.param("skip slow tests", id="skipslow"),
     nox.param("lowest-direct", id="lowest-direct"),
@@ -140,10 +140,10 @@ def tests(session, test_specifier: nox._parametrize.Param):
 
     options: list[str] = []
 
-    if test_specifier == "skipslow":
+    if test_specifier.id == "skipslow":
         options += skipslow
 
-    if test_specifier == "cov":
+    if test_specifier.id == "cov":
         options += with_coverage
 
     # Doctests are only run with the most recent versions of Python and
