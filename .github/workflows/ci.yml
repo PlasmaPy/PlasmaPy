@@ -28,32 +28,32 @@ jobs:
       matrix:
         include:
 
-        - name: Tests, Python ${{ matrix.python }}, skip slow tests, doctests, ${{ matrix.os }}
+        - name: Tests, Python 3.12, skip slow tests, doctests, Ubuntu
           os: ubuntu-latest
           python: '3.12'
           nox_session: tests-3.12(skipslow)
 
-        - name: Tests, Python ${{ matrix.python }}, all tests, code coverage, ${{ matrix.os }}
+        - name: Tests, Python 3.11, with code coverage, macOS
           os: macos-latest
           python: '3.11'
           nox_session: tests-3.11(cov)
 
-        - name: Tests, Python ${{ matrix.python }}, all tests, lowest direct dependencies, ${{ matrix.os }}
+        - name: Tests, Python 3.10, lowest direct dependencies, Windows
           os: windows-latest
           python: '3.10'
           nox_session: tests-3.10(lowest-direct)
 
-        - name: Packaging, Python ${{ matrix.python }}, ${{ matrix.os }}
+        - name: Packaging, Python 3.12, Ubuntu
           os: ubuntu-latest
           python: '3.12'
           nox_session: build
 
-        - name: Import PlasmaPy, Python ${{ matrix.python }}, ${{ matrix.os }}
+        - name: Import PlasmaPy, Python 3.10, Windows
           os: windows-latest
           python: '3.10'
           nox_session: import
 
-        - name: Static type checking with mypy, Python ${{ matrix.python }}, ${{ matrix.os }}
+        - name: Static type checking with mypy, Python 3.12, Ubuntu
           os: ubuntu-latest
           python: '3.12'
           nox_session: mypy
