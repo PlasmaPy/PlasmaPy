@@ -50,6 +50,8 @@ comm==0.2.2
     #   ipywidgets
 contourpy==1.2.1
     # via matplotlib
+coverage==7.5.1
+    # via pytest-cov
 cycler==0.12.1
     # via matplotlib
 debugpy==1.8.1
@@ -255,10 +257,12 @@ pyproject-api==1.6.1
     # via tox
 pytest==8.2.0
     # via
+    #   pytest-cov
     #   pytest-datadir
     #   pytest-regressions
     #   pytest-rerunfailures
     #   pytest-xdist
+pytest-cov==5.0.0
 pytest-datadir==1.5.0
     # via pytest-regressions
 pytest-regressions==2.5.0
