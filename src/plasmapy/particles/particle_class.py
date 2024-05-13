@@ -791,6 +791,9 @@ class Particle(AbstractPhysicalParticle):
 
         categories.add(this_element["category"])
 
+        self._add_ionization_energy_information(attributes, element, isotope, ion)        
+
+    def _add_ionization_energy_information(self, attributes, element, isotope, ion):
         try:
             symbol = element
             if ion and " 0+" not in ion:
@@ -798,7 +801,7 @@ class Particle(AbstractPhysicalParticle):
                 symbol = element + " " + ion.split()[-1]
 
             # Attempt to get the isotope's ionization energy before defaulting to the element's ionization energy
-            if isotope in _ionization_energy.data_about_ionization_energy.keys():
+            if isotope in _ionization_energy.data_about_ionization_energy:
                 attributes["ionization energy"] = (
                     _ionization_energy.data_about_ionization_energy[isotope]
                 )
