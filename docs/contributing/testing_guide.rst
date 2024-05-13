@@ -12,11 +12,10 @@ Testing Guide
 Summary
 =======
 
-Running tests
--------------
+Running tests (quickstart)
 
 To prepare to run tests from the command line, |open a terminal| and
-install |tox| with its extensions:
+install |Nox| and |uv|:
 
 .. tabs::
 
@@ -24,20 +23,20 @@ install |tox| with its extensions:
 
       .. code-block:: console
 
-         python -m pip install tox tox-uv
+         python -m pip install nox uv
 
    .. group-tab:: Windows
 
       .. code-block:: console
 
-         py -m pip install tox tox-uv
+         py -m pip install nox uv
 
 To run tests, navigate to a directory within your local clone of
 PlasmaPy and run:
 
 .. code-block:: console
 
-   tox
+   nox
 
 This command will invoke `pytest` to run PlasmaPy's tests, excluding the
 tests marked as slow.
@@ -45,8 +44,7 @@ tests marked as slow.
 .. important::
 
    PlasmaPy is in the process of switching its test runner from |tox| to
-   |nox|. In the near future, it will likely be necessary to run ``nox``
-   instead of ``tox`` to invoke tests.
+   |Nox|. |tox| is still used for defining weekly tests.
 
 Writing tests
 -------------
@@ -103,7 +101,7 @@ does it in isolation from other tests :cite:p:`khorikov:2020`. A typical
 *assert* :cite:p:`osherove:2013`. An |integration test| verifies that
 multiple software components work together as intended.
 
-PlasmaPy's tests are run using `pytest` and |tox|. Tests are located in
+PlasmaPy's tests are run using `pytest` and |Nox|. Tests are located in
 the |tests/| directory. For example, tests of `plasmapy.formulary`
 are located in :file:`tests/formulary` and tests of
 `plasmapy.formulary.speeds` are located in
@@ -543,7 +541,7 @@ PlasmaPy's tests can be run in the following ways:
 
 1. Creating and updating a pull request on |GitHub|.
 2. Running `pytest` from the command line.
-3. Running |tox| from the command line.
+3. Running |Nox| from the command line.
 4. Running tests from an :wikipedia:`integrated development environment
    <integrated_development_environment>` (IDE).
 
@@ -552,8 +550,8 @@ GitHub. Creating a draft pull request and keeping it updated ensures
 that all necessary checks are run frequently.
 
 Experienced contributors may find it useful to run tests from the
-command line using `pytest` or |tox|, or via an IDE. In particular,
-using |tox| ensures that tests are run in the same way as in CI.
+command line using `pytest` or |Nox|, or via an IDE. In particular,
+using |Nox| ensures that tests are run in the same way as in CI.
 
 Using GitHub
 ------------
@@ -580,7 +578,7 @@ The following checks are performed with each pull request.
 * Checks with labels like **CI / Python 3.x (pull request)** verify that
   PlasmaPy works with different versions of Python and other
   dependencies, and on different operating systems. These tests are set
-  up using |tox| and run with `pytest` via |GitHub Actions|. When
+  up using |Nox| and run with `pytest` via |GitHub Actions|. When
   multiple tests fail, investigate these tests first.
 
   .. tip::
@@ -668,7 +666,7 @@ Using pytest
 ------------
 
 To install the packages necessary to run tests on your local computer
-(including |tox| and pytest_), run:
+(including |Nox| and pytest_), run:
 
 .. code-block:: console
 
@@ -713,58 +711,65 @@ flags you can use with it:
 * Use the ``--pdb`` flag to enter the `Python debugger`_ upon test
   failures.
 
-Using tox
+Using Nox
 ---------
 
-PlasmaPy's continuous integration tests on |GitHub| are typically run
-using |tox|, a tool for automating Python testing. Using |tox| simplifies
-testing PlasmaPy with different releases of Python, with different
-versions of PlasmaPy's dependencies, and on different operating systems.
-Testing with |tox| is more robust than testing with `pytest` because
-|tox| creates its own virtual environments and ensures that tests are
-run the same way as in CI. The ``tox-uv`` extension lets |tox| use |uv|
-as its back-end for significantly improved dependency resolution and
-caching.
+PlasmaPy's continuous integration checks on |GitHub| are typically run
+using |Nox|, a Python tool for automating tasks such as running software
+tests, building documentation, and performing other checks. Using |Nox|
+simplifies testing PlasmaPy with different releases of Python, with
+different versions of PlasmaPy's dependencies, and on different
+operating systems. Testing with |Nox| is more robust than testing with
+`pytest` alone because |Nox| creates its own virtual environments and
+ensures that tests are run the same way as in CI. Installing |uv|
+alongside |Nox| will lead to improved dependency resolution performance
+and caching.
 
 To run PlasmaPy's tests (except for those marked as slow), run:
 
 .. code-block:: console
 
-   tox
+   nox
 
-To run PlasmaPy's tests for a particular environment, run:
-
-.. code-block:: console
-
-   tox -e ⟨envname⟩
-
-where ``⟨envname⟩`` is replaced with the name of the |tox| environment,
-as described below.
-
-Some testing environments for |tox| are pre-defined. For example, you
-can replace ``⟨envname⟩`` with ``py310`` if you are running Python
-``3.10.x``, ``py311`` if you are running Python ``3.11.x``, or ``py312``
-if you are running Python ``3.12.x``. Running |tox| with any of these
-environments requires that the appropriate version of Python has been
-installed and can be found by |tox|. To find the version of Python that
-you are using, go to the command line and run ``python --version``.
-
-Additional `tox environments`_ are defined in :file:`tox.ini` in the
-top-level directory of PlasmaPy's repository. To find which testing
-environments are available, run:
+To run PlasmaPy's tests for a particular |Nox| session, run:
 
 .. code-block:: console
 
-   tox -a
+   nox -s ⟨session⟩
+
+where ``⟨session⟩`` is replaced with the name of the |Nox| session, as
+described below.
+
+To find out what sessions are defined, run: |Nox|
+
+.. code-block::
+
+   nox -l
+
+|Nox| sessions
+
+
+.. Some testing environments for |ox| are pre-defined. For example, you
+.. can replace ``⟨envname⟩`` with ``py310`` if you are running Python
+.. ``3.10.x``, ``py311`` if you are running Python ``3.11.x``, or ``py312``
+.. if you are running Python ``3.12.x``. Running |tox| with any of these
+.. environments requires that the appropriate version of Python has been
+.. installed and can be found by |tox|. To find the version of Python that
+.. you are using, go to the command line and run ``python --version``.
+
+.. Additional `tox environments`_ are defined in :file:`tox.ini` in the
+.. top-level directory of PlasmaPy's repository. To find which testing
+.. environments are available, run:
 
 For example, static type checking with |mypy| can be run locally with
 
 .. code-block:: console
 
-   tox -e mypy
+   nox -s mypy
 
-Commands using |tox| can be run in any directory within PlasmaPy's
-repository with the same effect.
+Commands using |Nox| must be run in the top-level directory of the
+PlasmaPy repository, which is the directory containing
+:file:`noxfile.py`.
 
 .. _code-coverage:
 
@@ -882,6 +887,5 @@ popular IDEs:
 .. _`test discovery conventions`: https://docs.pytest.org/en/latest/goodpractices.html#conventions-for-python-test-discovery
 .. _`test warnings`: https://docs.pytest.org/en/latest/warnings.html#warns
 .. _`test exceptions`: https://docs.pytest.org/en/latest/assert.html#assertions-about-expected-exceptions
-.. _`tox environments`: https://tox.wiki/en/stable/config.html#tox-environment
 .. _unpacking: https://docs.python.org/3/tutorial/controlflow.html#unpacking-argument-lists
 .. _`Visual Studio`: https://visualstudio.microsoft.com
