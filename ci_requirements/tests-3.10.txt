@@ -85,7 +85,7 @@ fqdn==1.5.1
 future==1.0.0
     # via uncertainties
 h5py==3.11.0
-hypothesis==6.101.0
+hypothesis==6.102.1
 identify==2.5.36
     # via pre-commit
 idna==3.7
