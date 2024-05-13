@@ -53,6 +53,11 @@ jobs:
           python: '3.12'
           nox_session: mypy
 
+        - name: Validate CITATION.cff
+          os: ubuntu-latest
+          python: '3.12'
+          nox_session: cff
+
     steps:
 
     - name: Checkout code
