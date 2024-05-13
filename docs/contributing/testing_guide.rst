@@ -692,8 +692,8 @@ particular file or directory, include its name after `pytest`.
    pytest tests/particles/test_atomic.py
 
 The ``pytest-filter-subpackage`` extension lets us use the ``-P`` flag
-to specify a subpackage that tests should be run for. To perform tests
-for `plasmapy.particles`, run:
+to specify a subpackage (directory) that tests should be run for. To
+perform tests for `plasmapy.particles`, run:
 
 .. code-block:: console
 
