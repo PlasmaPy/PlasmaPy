@@ -185,8 +185,8 @@ repository. To print out a preview of the changelog, run:
 
    towncrier --draft
 
-To convert the changelog entries into a changelog prior to the `v2024.5.0`
-release, run:
+To convert the changelog entries into a changelog prior to the
+``v2024.5.0`` release, run:
 
 .. code-block:: shell
 
