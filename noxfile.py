@@ -55,7 +55,7 @@ def get_requirements_filepath(
 def requirements(session):
     """Regenerate pinned requirements files."""
 
-    session.install("uv >= 0.1.39")
+    session.install("uv >= 0.1.44")
 
     category_version_resolution: list[tuple[str, str, str]] = [
         ("tests", version, resolution)
