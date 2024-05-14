@@ -14,14 +14,14 @@ bug:
   - changed-files:
     - any-glob-to-any-file: 'changelog/*.bugfix*.rst'
 
-'CI':
+CI:
   - changed-files:
     - any-glob-to-any-file: [
       'codecov.yaml',
       '.github/workflows/*test*.yml',
       '.pre-commit-config.yaml',
       '.readthedocs.yml',
-      'CODEOWNERS',
+      'mypy.ini',
       'noxfile.py',
       'tox.ini'
     ]
@@ -36,7 +36,7 @@ dependencies:
 
 docs:
   - changed-files:
-    - any-glob-to-any-file: ['.readthedocs.yml', 'changelog/*doc*.rst', 'docs/**/*', 'README.md']
+    - any-glob-to-any-file: ['.readthedocs.yml', 'changelog/*doc*.rst', 'docs/**/*']
 
 'GitHub Actions':
   - changed-files:
@@ -44,65 +44,110 @@ docs:
 
 linters:
   - changed-files:
-    - any-glob-to-any-file: ['.sourcery.yaml', '.pre-commit-config.yaml']
+    - any-glob-to-any-file: ['.sourcery.yaml', '.pre-commit*.yaml']
+
+maintenance:
+  - changed-files:
+    - any-glob-to-any-file: [
+      '**/.editorconfig',
+      '.git-blame-ignore-revs',
+      '.gitattributes',
+      '.gitignore',
+      '.mailmap',
+      'CODEOWNERS',
+      '**/README*'
+    ]
 
 notebooks:
   - changed-files:
-    - any-glob-to-any-file: 'docs/notebooks/**/*'
+    - any-glob-to-any-file: [
+      'docs/notebooks/**/*',
+      '**/*.ipynb',
+      '**/binder/**/*',
+      '.jupyter/**/*'
+    ]
+
+nox:
+  - changed-files:
+    - any-glob-to-any-file: '**/noxfile.py'
 
 packaging:
   - changed-files:
     - any-glob-to-any-file: [
       '.github/workflows/*publish*',
+      '.github/workflows/*pypi*',
       '.github/workflows/*release*',
-      '.zenodo*',
-      'CITATION.cff',
       'LICENSE.md',
       'MANIFEST.in',
       'PATENT.md',
       'pyproject.toml',
+      '**/scm_version.py',
       'setup.*'
+    ]
+
+'physical data':
+  - changed-files:
+    - any-glob-to-any-file: [
+      '**/particles/data/**/*',
+      '**/tools/export_ionization_energy.py'
     ]
 
 plasmapy.analysis:
   - changed-files:
-    - any-glob-to-any-file: 'plasmapy/analysis/**/*'
+    - any-glob-to-any-file: '**/analysis/**/*'
 
 plasmapy.diagnostics:
   - changed-files:
-    - any-glob-to-any-file: 'plasmapy/diagnostics/**/*'
+    - any-glob-to-any-file: '**/diagnostics/**/*'
 
 plasmapy.dispersion:
   - changed-files:
-    - any-glob-to-any-file: 'plasmapy/dispersion/**/*'
+    - any-glob-to-any-file: '**/dispersion/**/*'
 
 plasmapy.formulary:
   - changed-files:
-    - any-glob-to-any-file: 'plasmapy/formulary/**/*'
+    - any-glob-to-any-file: '**/formulary/**/*'
 
 plasmapy.formulary.quantum:
   - changed-files:
-    - any-glob-to-any-file: 'plasmapy/**/quantum*'
+    - any-glob-to-any-file: '**/quantum*'
 
 plasmapy.particles:
   - changed-files:
-    - any-glob-to-any-file: 'plasmapy/particles/**/*'
+    - any-glob-to-any-file: '**/particles/**/*'
 
 plasmapy.plasma:
   - changed-files:
-    - any-glob-to-any-file: 'plasmapy/plasma/**/*'
+    - any-glob-to-any-file: '**/plasma/**/*'
 
 plasmapy.simulation:
   - changed-files:
-    - any-glob-to-any-file: 'plasmapy/simulation/**/*'
+    - any-glob-to-any-file: '**/simulation/**/*'
 
 plasmapy.utils:
   - changed-files:
-    - any-glob-to-any-file: 'plasmapy/utils/**/*'
+    - any-glob-to-any-file: '**/utils/**/*'
+
+release:
+  - changed-files:
+    - any-glob-to-any-file: [
+      '.github/workflows/*publish*',
+      '.github/workflows/*pypi*',
+      '.github/workflows/*release*',
+    ]
+
+'static type checking':
+  - changed-files:
+    - any-glob-to-any-file: [
+      '**/*mypy*',
+      '**/type_stubs/**/*',
+      '**/py.typed'
+    ]
 
 testing:
   - changed-files:
     - any-glob-to-any-file: [
+      '**/tests/**/*',
       '**/test*.py',
       '**/conftest.py',
       '.github/workflows/weekly-tests.yml',
@@ -110,3 +155,7 @@ testing:
       'noxfile.py',
       'tox.ini'
     ]
+
+tools:
+  - changed-files:
+    - any-glob-to-any-file: ['tools/**/*']
