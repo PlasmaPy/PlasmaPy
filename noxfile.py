@@ -63,6 +63,11 @@ def requirements(session):
         for resolution in ("highest", "lowest-direct")
     ]
 
+    category_version_resolution += [
+        ("docs", maxpython, "highest"),
+        ("all", maxpython, "highest"),
+    ]
+
     category_flags: dict[str, tuple[str, ...]] = {
         "all": ("--all-extras",),
         "docs": ("--extra", "docs"),
