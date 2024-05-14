@@ -54,7 +54,7 @@ pull request to PlasmaPy's ``main`` branch.
    * ``feature``: For new user-facing features and any new behavior.
    * ``internal``: For refactoring of the internal mechanics of the code
      and tests in ways that do not change the application user interface.
-   * ``removal``: For feature deprecation and/or removal.
+   * ``removal``: For feature deprecation and planned removals.
    * ``trivial``: For minor changes that do not change the application
      programming interface.
 
