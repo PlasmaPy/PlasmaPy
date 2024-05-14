@@ -55,12 +55,17 @@ def get_requirements_filepath(
 def requirements(session):
     """Regenerate pinned requirements files."""
 
-    session.install("uv >= 0.1.39")
+    session.install("uv >= 0.1.44")
 
     category_version_resolution: list[tuple[str, str, str]] = [
         ("tests", version, resolution)
         for version in supported_python_versions
         for resolution in ("highest", "lowest-direct")
+    ]
+
+    category_version_resolution += [
+        ("docs", maxpython, "highest"),
+        ("all", maxpython, "highest"),
     ]
 
     category_flags: dict[str, tuple[str, ...]] = {
