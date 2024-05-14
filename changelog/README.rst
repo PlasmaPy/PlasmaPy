@@ -174,7 +174,7 @@ go to the top-level directory of your local clone of PlasmaPy and run:
 
 .. code-block:: shell
 
-   pip install -e .[dev]
+   pip install -e .[docs]
 
 Configuration files for |towncrier| are in :file:`pyproject.toml`.
 
@@ -185,16 +185,15 @@ repository. To print out a preview of the changelog, run:
 
    towncrier --draft
 
-To convert the changelog entries into a changelog prior to the 0.7.0
+To convert the changelog entries into a changelog prior to the `v2024.5.0`
 release, run:
 
 .. code-block:: shell
 
-   towncrier --version v0.7.0
+   towncrier build --version=v2024.5.0
 
-This will create :file:`CHANGELOG.rst` in the top-level directory, with
-the option to delete the individual changelog entry files. The full
-steps to update the changelog are described in the :ref:`Release Guide`.
+This command will ask for permission to delete changelog entries, and
+then create :file:`CHANGELOG.rst` in the top-level directory.
 
 .. tip::
 
@@ -205,8 +204,7 @@ steps to update the changelog are described in the :ref:`Release Guide`.
 
       towncrier create --edit ⟨number⟩.⟨type⟩.rst
 
-   Here, ``⟨number⟩`` is replaced with the pull request number and
-   ``⟨type⟩`` is replaced with the one of the changelog types as
-   described above.
+   Replace ``⟨number⟩`` with the pull request number and ``⟨type⟩``
+   with the one of the changelog types as described above.
 
 .. _inline literal: https://docutils.sourceforge.io/docs/user/rst/quickref.html#inline-markup
