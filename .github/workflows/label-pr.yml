@@ -3,8 +3,7 @@ name: Label PR
 # The labels to be added are defined in .github/labeler.yml
 
 on:
-  pull_request_target:
-    types: [opened, edited, reopened]
+- pull_request_target
 
 jobs:
   labeler:
