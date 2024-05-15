@@ -1371,7 +1371,7 @@ class Particle(AbstractPhysicalParticle):
             return energy.to(u.J)
 
     @property
-    def binding_energy(self) -> u.Quantity[u.J]:
+    def nuclear_binding_energy(self) -> u.Quantity[u.J]:
         """
         The particle's nuclear binding energy.
 
@@ -1383,18 +1383,18 @@ class Particle(AbstractPhysicalParticle):
         Examples
         --------
         >>> alpha = Particle("alpha")
-        >>> alpha.binding_energy
+        >>> alpha.nuclear_binding_energy
         <Quantity 4.53346...e-12 J>
-        >>> Particle("T").binding_energy.to("MeV")
+        >>> Particle("T").nuclear_binding_energy.to("MeV")
         <Quantity 8.481... MeV>
 
         The binding energy of a nucleon equals 0 joules.
 
         >>> neutron = Particle("n")
         >>> proton = Particle("p+")
-        >>> neutron.binding_energy
+        >>> neutron.nuclear_binding_energy
         <Quantity 0. J>
-        >>> proton.binding_energy
+        >>> proton.nuclear_binding_energy
         <Quantity 0. J>
         """
 
@@ -1419,6 +1419,20 @@ class Particle(AbstractPhysicalParticle):
         nuclear_binding_energy = mass_defect * const.c**2
 
         return nuclear_binding_energy.to(u.J)
+    
+
+    @property
+    def binding_energy(self) -> u.Quantity[u.J]:
+        """
+        DEPRECATED - Please use nuclear_binding_energy instead.
+        This property will be removed in a future release.
+        """
+        warnings.warn(
+            "The binding_energy property is deprecated and will be removed in a future release. "
+            "Please use the nuclear_binding_energy property instead.",
+            FutureWarning,
+        )
+        return self.nuclear_binding_energy
 
     @property
     def atomic_number(self) -> int:
