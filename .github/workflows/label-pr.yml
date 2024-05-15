@@ -5,7 +5,6 @@ name: Label PR
 on:
   pull_request_target:
     types: [opened, edited, reopened]
-  workflow_dispatch:
 
 jobs:
   labeler:
