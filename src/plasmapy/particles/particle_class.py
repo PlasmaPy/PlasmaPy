@@ -851,8 +851,6 @@ class Particle(AbstractPhysicalParticle):
         except KeyError:
             attributes["electron binding energy"] = None
             return
-        except Exception as e:
-            print(e)
 
     def _add_charge_information(self) -> None:
         """Assign attributes and categories related to charge information."""
