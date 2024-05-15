@@ -89,6 +89,8 @@ exclude_patterns = [
     "**.ipynb_checkpoints",
     "**Untitled*",
     ".DS_Store",
+    ".nox",
+    ".tox",
     "_build",
     "notebooks/langmuir_samples",
     "plasmapy_sphinx",
@@ -99,7 +101,7 @@ default_role = "py:obj"
 html_extra_path = ["robots.txt"]
 html_favicon = "./_static/icon.ico"
 modindex_common_prefix = ["plasmapy."]
-pygments_style = "default"  # code highlighting style to meet WCAG AA contrast standard
+pygments_style = "default"  # code highlighting to meet WCAG AA contrast standard
 root_doc = "index"
 source_suffix = ".rst"
 templates_path = ["_templates"]
