@@ -618,6 +618,8 @@ class Particle(AbstractPhysicalParticle):
         self._assign_particle_attributes()
         self._add_charge_information()
         self._add_half_life_information()
+        if not self.is_category("isotope"):
+            self._add_electron_binding_energy()
 
         # If __name__ is not defined here, then problems with the doc
         # build arise related to the Particle instances that are
@@ -812,6 +814,45 @@ class Particle(AbstractPhysicalParticle):
                 )
         except KeyError:
             attributes["ionization energy"] = None
+    
+    def _add_electron_binding_energy(self) -> None:
+        """Assign electron binding energy to elements, isotopes, and ions."""
+        # If there is no ionization energy data, then the electron binding energy is not available
+        if self._attributes["ionization energy"] is None:
+            self._attributes["electron binding energy"] = None
+            return
+
+        try:
+            attributes = self._attributes
+
+            element = attributes["element"]
+
+            charge_number = attributes["charge number"]
+
+            if charge_number is None:
+                charge_number = 0
+            
+            max_charge = charge_number
+
+            # Find the maximum charge for the element
+            for key in _ionization_energy.data_about_ionization_energy:
+                if key.startswith(element + " "):
+                    try:
+                        charge = int(key.split()[-1].replace("+", ""))
+                        if charge > max_charge:
+                            max_charge = charge
+                    except ValueError:
+                        # Handle the case where there is no charge number
+                        pass
+
+            if charge_number < max_charge:
+                 ions = [f"{element} {charge}+" for charge in range(charge_number + 1, max_charge + 1)]             
+                 attributes["electron binding energy"] = sum(_ionization_energy.data_about_ionization_energy[p] for p in ions)
+        except KeyError:
+            attributes["electron binding energy"] = None
+            return
+        except Exception as e:
+            print(e)
 
     def _add_charge_information(self) -> None:
         """Assign attributes and categories related to charge information."""
@@ -1918,6 +1959,12 @@ class Particle(AbstractPhysicalParticle):
             If the ionization energy is not available for the particle.
 
 
+        Returns
+        -------
+        ionization_energy : `~astropy.units.Quantity`
+            The ionization energy of the particle in Joules.
+
+
         Examples
         --------
         >>> hydrogen = Particle("H")
@@ -1935,6 +1982,44 @@ class Particle(AbstractPhysicalParticle):
             )
 
         return self._attributes["ionization energy"]
+    
+    @property
+    def electron_binding_energy(self) -> u.Quantity:
+        """
+        Returns the electron binding energy of the particle in Joules (SI units).
+
+        Raises
+        ------
+        ~plasmapy.particles.exceptions.MissingParticleDataError
+            If the electron binding energy is not available for the particle.
+
+
+        Returns
+        -------
+        electron_binding_energy : `~astropy.units.Quantity`
+            The electron binding energy of the particle in Joules.
+
+        
+        Examples
+        --------
+        >>> helium = Particle("He")
+        >>> helium.electron_binding_energy
+        <Quantity 8.71868724e-18 J>
+
+        >>> carbon_3 = Particle("C 3+")
+        >>> carbon_3.electron_binding_energy
+        <Quantity 1.413254e-16 J>
+
+        Notes
+        -----
+        Relies on ionization energy data downloaded from the `NIST Atomic Spectra Database <https://physics.nist.gov/PhysRefData/ASD/ionEnergy.html>`_  on 5/7/2024.
+        """
+        if self._attributes["electron binding energy"] is None:
+            raise MissingParticleDataError(
+                f"The electron binding energy of {self.symbol} is not available."
+            )
+
+        return self._attributes["electron binding energy"]
 
 
 class DimensionlessParticle(AbstractParticle):

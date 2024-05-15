@@ -1633,3 +1633,10 @@ def test_undefined_ionization_energy():
         pytest.fail(f"Expected MissingParticleDataError, got {energy}")
     except MissingParticleDataError:
         pass
+
+
+def test_electron_binding_energy():
+    C_3 = Particle("C 3+")
+    C_4 = Particle("C 4+")
+    C_5 = Particle("C 5+")    
+    assert C_3.electron_binding_energy == C_4.ionization_energy + C_5.ionization_energy
