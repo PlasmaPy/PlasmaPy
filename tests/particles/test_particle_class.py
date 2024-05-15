@@ -1640,3 +1640,12 @@ def test_electron_binding_energy():
     C_4 = Particle("C 4+")
     C_5 = Particle("C 5+")    
     assert C_3.electron_binding_energy == C_4.ionization_energy + C_5.ionization_energy
+
+
+def test_undefined_electron_binding_energy():
+    particle = Particle("tau neutrino")
+    try:
+        energy = particle.electron_binding_energy
+        pytest.fail(f"Expected MissingParticleDataError, got {energy}")
+    except MissingParticleDataError:
+        pass
