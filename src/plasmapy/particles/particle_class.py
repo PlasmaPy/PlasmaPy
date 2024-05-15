@@ -837,13 +837,9 @@ class Particle(AbstractPhysicalParticle):
             # Find the maximum charge for the element
             for key in _ionization_energy.data_about_ionization_energy:
                 if key.startswith(element + " "):
-                    try:
-                        charge = int(key.split()[-1].replace("+", ""))
-                        if charge > max_charge:
-                            max_charge = charge
-                    except ValueError:
-                        # Handle the case where there is no charge number
-                        pass
+                    charge = int(key.split()[-1].replace("+", ""))
+                    if charge > max_charge:
+                        max_charge = charge
 
             if charge_number < max_charge:
                  ions = [f"{element} {charge}+" for charge in range(charge_number + 1, max_charge + 1)]             
