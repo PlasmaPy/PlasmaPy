@@ -2,5 +2,5 @@ Added electrong binding energy data, relying on ionization energy data from NIST
 This can now be accessed using the `~plasmapy.particles.particle_class.Particle.electron_binding_energy` attribute
 from the |Particle| class.
 
-Renamed `~plasmapy.particles.particle_class.Particle.binding_energy` to `~plasmapy.particles.particle_class.Particle.nuclear_binding_energy` 
+Renamed `~plasmapy.particles.particle_class.Particle.binding_energy` to `~plasmapy.particles.particle_class.Particle.nuclear_binding_energy`
 to avoid confusion with `~plasmapy.particles.particle_class.Particle.electron_binding_energy`.

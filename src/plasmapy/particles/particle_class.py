@@ -814,7 +814,7 @@ class Particle(AbstractPhysicalParticle):
                 )
         except KeyError:
             attributes["ionization energy"] = None
-    
+
     def _add_electron_binding_energy(self) -> None:
         """Assign electron binding energy to elements, isotopes, and ions."""
         # If there is no ionization energy data, then the electron binding energy is not available
@@ -831,7 +831,7 @@ class Particle(AbstractPhysicalParticle):
 
             if charge_number is None:
                 charge_number = 0
-            
+
             max_charge = charge_number
 
             # Find the maximum charge for the element
@@ -842,8 +842,13 @@ class Particle(AbstractPhysicalParticle):
                         max_charge = charge
 
             if charge_number < max_charge:
-                 ions = [f"{element} {charge}+" for charge in range(charge_number + 1, max_charge + 1)]             
-                 attributes["electron binding energy"] = sum(_ionization_energy.data_about_ionization_energy[p] for p in ions)
+                ions = [
+                    f"{element} {charge}+"
+                    for charge in range(charge_number + 1, max_charge + 1)
+                ]
+                attributes["electron binding energy"] = sum(
+                    _ionization_energy.data_about_ionization_energy[p] for p in ions
+                )
         except KeyError:
             attributes["electron binding energy"] = None
             return
@@ -1454,7 +1459,6 @@ class Particle(AbstractPhysicalParticle):
         nuclear_binding_energy = mass_defect * const.c**2
 
         return nuclear_binding_energy.to(u.J)
-    
 
     @property
     def binding_energy(self) -> u.Quantity[u.J]:
@@ -1976,7 +1980,7 @@ class Particle(AbstractPhysicalParticle):
             )
 
         return self._attributes["ionization energy"]
-    
+
     @property
     def electron_binding_energy(self) -> u.Quantity:
         """
@@ -1993,7 +1997,7 @@ class Particle(AbstractPhysicalParticle):
         electron_binding_energy : `~astropy.units.Quantity`
             The electron binding energy of the particle in Joules.
 
-        
+
         Examples
         --------
         >>> helium = Particle("He")
