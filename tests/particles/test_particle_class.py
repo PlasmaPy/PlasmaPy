@@ -1649,3 +1649,8 @@ def test_undefined_electron_binding_energy():
         pytest.fail(f"Expected MissingParticleDataError, got {energy}")
     except MissingParticleDataError:
         pass
+
+def test_warning_on_use_of_binding_energy():
+    with pytest.warns(FutureWarning):
+        particle = Particle("n")        
+        assert particle.binding_energy == particle.nuclear_binding_energy
