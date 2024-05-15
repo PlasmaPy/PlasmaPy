@@ -124,7 +124,7 @@ with_coverage: tuple[str, ...] = (
 
 skipslow: tuple[str, ...] = ("-m", "not slow")
 
-test_specifiers: list[nox._parametrize.Param] = [
+test_specifiers: list = [
     nox.param("run all tests", id="all"),
     nox.param("with code coverage", id="cov"),
     nox.param("skip slow tests", id="skipslow"),
