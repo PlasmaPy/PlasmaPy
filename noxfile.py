@@ -184,12 +184,11 @@ docs_requirements = get_requirements_filepath(category="docs", version=maxpython
 @nox.session(python=maxpython)
 def docs(session: nox.Session):
     """Build documentation."""
-    session.install("-r", docs_requirements)
-    session.install(".")
-    session.run("pandoc", "--version")
+    session.install("-r", docs_requirements, ".")
     session.run(*sphinx_commands, *html, *session.posargs)
 
 
+@nox.session(python=maxpython)
 @nox.parametrize(
     ["org", "repo"],
     [
@@ -197,12 +196,9 @@ def docs(session: nox.Session):
         nox.param("readthedocs", "sphinx_rtd_theme", id="sphinx_rtd_theme"),
     ],
 )
-@nox.session(python=maxpython)
 def docs_with_unreleased_dependency(session: nox.Session, org, repo):
     """Build documentation against an unreleased version of a dependency."""
     session.install(f"git+https://github.com/{org}/{repo}", ".[docs]")
-    session.install(".", "-r", docs_requirements)
-    session.run("sphinx-build", "--version")
     session.run(*sphinx_commands, *html, *session.posargs)
 
 
