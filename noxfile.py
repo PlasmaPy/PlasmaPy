@@ -267,7 +267,12 @@ def mypy(session: nox.Session):
         "--show-error-code-links",
         "--pretty",
     )
-    session.install("mypy >= 1.10.0", "pip", ".")
+    requirements = get_requirements_filepath(
+        category="tests",
+        version=session.python,
+        resolution="highest",
+    )
+    session.install("-r", requirements, ".[tests]")
     session.run(*mypy_command, *session.posargs)
 
 
