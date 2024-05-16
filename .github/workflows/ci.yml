@@ -31,10 +31,6 @@ jobs:
       matrix:
         include:
 
-        - name: Documentation, Python 3.12, Ubuntu
-          os: ubuntu-latest
-          python: '3.12'
-
         - name: Tests, Python 3.12, skip slow tests, doctests, Ubuntu
           os: ubuntu-latest
           python: '3.12'
@@ -50,20 +46,20 @@ jobs:
           python: '3.10'
           nox_session: tests-3.10(lowest-direct)
 
-        - name: Packaging, Python 3.12, Ubuntu
+        - name: Documentation, Python 3.12, Ubuntu
           os: ubuntu-latest
           python: '3.12'
-          nox_session: build
-
-        - name: Import PlasmaPy, Python 3.10, Windows
-          os: windows-latest
-          python: '3.10'
-          nox_session: import
+          nox_session: docs
 
         - name: Static type checking with mypy, Python 3.12, Ubuntu
           os: ubuntu-latest
           python: '3.12'
           nox_session: mypy
+
+        - name: Packaging, Python 3.12, Ubuntu
+          os: ubuntu-latest
+          python: '3.12'
+          nox_session: build
 
         - name: Validate CITATION.cff
           os: ubuntu-latest
