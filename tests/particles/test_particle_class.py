@@ -55,7 +55,7 @@ test_Particle_table = [
             "lepton_number": 0,
             "mass": m_n,
             "nuclide_mass": m_n,
-            "binding_energy": 0 * u.J,
+            "nuclear_binding_energy": 0 * u.J,
             "periodic_table.group": InvalidElementError,
         },
     ),
@@ -95,7 +95,7 @@ test_Particle_table = [
             "periodic_table.block": "s",
             "periodic_table.period": 1,
             "periodic_table.category": "nonmetal",
-            "binding_energy": 0 * u.J,
+            "nuclear_binding_energy": 0 * u.J,
             "recombine()": "H-1 0+",
         },
     ),
@@ -135,7 +135,7 @@ test_Particle_table = [
             "periodic_table.block": "s",
             "periodic_table.period": 1,
             "periodic_table.category": "nonmetal",
-            "binding_energy": 0 * u.J,
+            "nuclear_binding_energy": 0 * u.J,
             "recombine()": "H-1 0+",
         },
     ),
@@ -210,7 +210,7 @@ test_Particle_table = [
             "baryon_number": 0,
             "__str__()": "e-",
             "__repr__()": 'Particle("e-")',
-            "binding_energy": InvalidIsotopeError,
+            "nuclear_binding_energy": InvalidIsotopeError,
             "periodic_table.group": InvalidElementError,
             "periodic_table.block": InvalidElementError,
             "periodic_table.period": InvalidElementError,
@@ -1633,3 +1633,25 @@ def test_undefined_ionization_energy():
         pytest.fail(f"Expected MissingParticleDataError, got {energy}")
     except MissingParticleDataError:
         pass
+
+
+def test_electron_binding_energy():
+    C_3 = Particle("C 3+")
+    C_4 = Particle("C 4+")
+    C_5 = Particle("C 5+")
+    assert C_3.electron_binding_energy == C_4.ionization_energy + C_5.ionization_energy
+
+
+def test_undefined_electron_binding_energy():
+    particle = Particle("tau neutrino")
+    try:
+        energy = particle.electron_binding_energy
+        pytest.fail(f"Expected MissingParticleDataError, got {energy}")
+    except MissingParticleDataError:
+        pass
+
+
+def test_warning_on_use_of_binding_energy():
+    with pytest.warns(FutureWarning):
+        particle = Particle("n")
+        assert particle.binding_energy == particle.nuclear_binding_energy
