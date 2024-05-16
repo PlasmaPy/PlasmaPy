@@ -4,6 +4,11 @@ on:
   schedule:
   - cron: 37 7 * * 1
   workflow_dispatch:
+  pull_request:
+    types: [labeled, opened, synchronize, reopened]
+    branches:
+    - main
+
 
 env:
   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -13,7 +18,10 @@ jobs:
   weekly:
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.os }}
-    if: (github.repository == 'PlasmaPy/PlasmaPy' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'run weekly tests in CI')) ||
+      (github.event_name == 'schedule' && github.repository == 'PlasmaPy/PlasmaPy' && github.ref == 'refs/heads/main')
 
     strategy:
       fail-fast: false
@@ -146,77 +154,10 @@ jobs:
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
-  tests:
-    name: ${{ matrix.name }}
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      fail-fast: false
-
-      matrix:
-        include:
-
-        - name: Python 3.12, with Astropy dev, all tests, Ubuntu
-          os: ubuntu-latest
-          python: '3.12'
-          toxenv: py312-pytest_all-astropydev
-
-        - name: Python 3.12, with matplotlib dev, all tests, Ubuntu
-          os: ubuntu-latest
-          python: '3.12'
-          toxenv: py312-pytest_all-matplotlibdev
-
-        - name: Python 3.12, with NumPy dev, all tests, Ubuntu
-          os: ubuntu-latest
-          python: '3.12'
-          toxenv: py312-pytest_all-numpydev
-
-        - name: Python 3.12, with NumPy dev, all tests, Windows
-          os: windows-latest
-          python: '3.12'
-          toxenv: py312-pytest_all-numpydev
-
-        - name: Python 3.12, all tests, xarray dev, Ubuntu
-          os: ubuntu-latest
-          python: '3.12'
-          toxenv: py312-pytest_all-xarraydev
-
-    steps:
-
-    - name: Checkout code
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: ${{ matrix.python }}
-        cache: pip
-
-    - name: Install tox and its extensions
-      run: python -m pip install --upgrade tox tox-uv
-
-    - name: Install graphviz & pandoc
-      if: startsWith(matrix.name, 'Documentation')
-      run: sudo apt-get install graphviz pandoc
-
-    - name: Run tests
-      run: tox ${{ matrix.toxargs }} -e ${{ matrix.toxenv }} -- ${{ matrix.toxposargs }}
-
-    - name: Upload coverage reports to Codecov
-      if: ${{ contains(matrix.toxenv,'_cov') }}
-      uses: codecov/codecov-action@v4
-      with:
-        file: ./coverage.xml
-        fail_ci_if_error: true
-      env:
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-
   install-via-conda-forge:
     name: Install PlasmaPy from conda-forge
     runs-on: ubuntu-latest
-    if: (github.repository == 'PlasmaPy/PlasmaPy' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
+    if: (github.repository == 'PlasmaPy/PlasmaPy' && github.ref == 'refs/heads/main' && github.event_name != 'pull_request') || github.event_name == 'workflow_dispatch'
 
     steps:
 
