@@ -133,7 +133,9 @@ jobs:
         key: docs-${{ runner.os }}-${{ hashFiles('requirements.txt') }}
 
     - name: Build documentation with Sphinx
-      run: nox -e docs -- -q
+      # run: nox -e docs -- -q
+      # Revert this!!!
+      run: nox -e 'docs_with_unreleased_dependency(sphinx)' -- -q
 
     - name: Print troubleshooting information on failure
       if: ${{ failure() }}
