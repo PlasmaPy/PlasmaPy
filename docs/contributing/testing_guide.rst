@@ -45,7 +45,7 @@ tests marked as slow.
 .. important::
 
    PlasmaPy is in the process of switching its test runner from |tox| to
-   |nox|. In the near future, it will likely be necessary to run ``nox``
+   |Nox|. In the near future, it will likely be necessary to run ``nox``
    instead of ``tox`` to invoke tests.
 
 Writing tests
