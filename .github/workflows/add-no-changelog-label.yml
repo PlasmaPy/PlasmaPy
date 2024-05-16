@@ -6,7 +6,7 @@ on:
 
 jobs:
   no-changelog:
-    name: Add no changelog label
+    name: Add labels
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -45,5 +45,30 @@ jobs:
               repo: context.repo.repo,
               issue_number: context.issue.number,
               labels: ['No changelog entry needed'],
+            });
+          }
+
+    - name: Add linkcheck label
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          // Fetch the PR
+          const { data: pullRequest } = await github.rest.pulls.get({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            pull_number: context.issue.number,
+          });
+
+          if (
+            pullRequest.title.includes('linkcheck') ||
+            pullRequest.title.includes('Linkcheck')
+          ) {
+            // If yes, then apply the label "perform linkcheck in CI"
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              labels: ['perform linkcheck in CI'],
             });
           }
