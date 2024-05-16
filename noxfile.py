@@ -280,7 +280,7 @@ def try_import(session: nox.Session):
 
 
 @nox.session
-def build(session: nox.Session):
+def packaging(session: nox.Session):
     """Build and verify a source distribution and wheel."""
     session.install("twine", "build")
     build_command = ("python", "-m", "build")
