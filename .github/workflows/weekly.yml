@@ -49,28 +49,18 @@ jobs:
           python: '3.10'
           nox_session: tests-3.10(lowest-direct)
 
-        - name: Static type checking with mypy, Python 3.12, Windows
-          os: windows-latest
+        - name: Documentation, Python 3.12, Ubuntu
+          os: ubuntu-latest
           python: '3.12'
-          nox_session: mypy
+          nox_session: docs
 
-        - name: Packaging, Python 3.11, Windows
-          os: windows-latest
-          python: '3.12'
-          nox_session: packaging
-
-        - name: Import PlasmaPy, Python 3.11, macOS
-          os: macos-latest
-          python: '3.11'
-          nox_session: import
-
-        - name: Documentation, Python 3.12, sphinx-dev, Windows
-          os: windows-latest
+        - name: Documentation, Python 3.12, sphinx-dev, Ubuntu
+          os: ubuntu-latest
           python: '3.12'
           nox_session: build_docs_with_dev_version_of(sphinx)
 
-        - name: Documentation, Python 3.12, sphinx_rtd_theme-dev, macOS
-          os: macos-latest
+        - name: Documentation, Python 3.12, sphinx_rtd_theme-dev, Ubuntu
+          os: ubuntu-latest
           python: '3.12'
           nox_session: build_docs_with_dev_version_of(sphinx_rtd_theme)
 
@@ -109,8 +99,18 @@ jobs:
           python: '3.12'
           nox_session: run_test_with_dev_version_of(h5py)
 
-        - name: Packaging, Python 3.11, Windows
+        - name: Static type checking with mypy, Python 3.12, Windows
           os: windows-latest
+          python: '3.12'
+          nox_session: mypy
+
+        - name: Packaging, Python 3.12, Windows
+          os: windows-latest
+          python: '3.12'
+          nox_session: packaging
+
+        - name: Packaging, Python 3.11, Ubuntu
+          os: ubuntu-latest
           python: '3.11'
           nox_session: packaging
 
@@ -149,6 +149,7 @@ jobs:
 
     - name: Install graphviz and pandoc for documentation builds
       if: startsWith(matrix.name, 'Documentation')
+      # This step only works with Ubuntu
       run: sudo apt-get install graphviz pandoc
 
     - name: Install Nox and uv
