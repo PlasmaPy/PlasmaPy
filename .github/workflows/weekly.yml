@@ -44,16 +44,6 @@ jobs:
           python: '3.10'
           nox_session: tests-3.10(all)
 
-        - name: Tests, Python 3.12, lowest direct dependencies, Windows
-          os: windows-latest
-          python: '3.12'
-          nox_session: tests-3.12(lowest-direct)
-
-        - name: Tests, Python 3.11, lowest direct dependencies, macOS
-          os: macos-latest
-          python: '3.11'
-          nox_session: tests-3.11(lowest-direct)
-
         - name: Tests, Python 3.10, lowest direct dependencies, Ubuntu
           os: ubuntu-latest
           python: '3.10'
