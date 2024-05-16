@@ -1,8 +1,9 @@
 """
 Running `nox` without arguments will run tests with the version of
 Python that `nox` is installed under, skipping slow tests. To invoke a
-nox session, run `nox -s "<session>"`, where <session> is replaced with
-the name of the session. To list available sessions, run `nox -l`.
+nox session, enter the top-level directory of this repository and run
+`nox -s "<session>"`, where <session> is replaced with the name of the
+session. To list available sessions, run `nox -l`.
 
 The tests can be run with the following options:
 
@@ -162,8 +163,7 @@ def tests(session: nox.Session, test_specifier: nox._parametrize.Param):
     if gh_token := os.getenv("GH_TOKEN"):
         session.env["GH_TOKEN"] = gh_token
 
-    session.install("-r", requirements)
-    session.install(".")
+    session.install("-r", requirements, ".[tests]")
     session.run(*pytest_command, *options, *session.posargs)
 
 
@@ -176,30 +176,36 @@ sphinx_commands: tuple[str, ...] = (
     "--keep-going",
 )
 
-html: tuple[str, ...] = ("-b", "html")
+build_html: tuple[str, ...] = ("-b", "html")
 check_hyperlinks: tuple[str, ...] = ("-b", "linkcheck", "-q")
 docs_requirements = get_requirements_filepath(category="docs", version=maxpython)
 
 
 @nox.session(python=maxpython)
 def docs(session: nox.Session):
-    """Build documentation."""
+    """Build the docs."""
     session.install("-r", docs_requirements, ".")
-    session.run(*sphinx_commands, *html, *session.posargs)
+    session.run(*sphinx_commands, *build_html, *session.posargs)
 
 
 @nox.session(python=maxpython)
 @nox.parametrize(
-    ["org", "repo"],
+    ["site", "repository"],
     [
-        nox.param("sphinx-doc", "sphinx", id="sphinx"),
-        nox.param("readthedocs", "sphinx_rtd_theme", id="sphinx_rtd_theme"),
+        nox.param("github", "sphinx-doc/sphinx", id="sphinx"),
+        nox.param("github", "readthedocs/sphinx_rtd_theme", id="sphinx_rtd_theme"),
+        nox.param("github", "spatialaudio/nbsphinx", id="nbsphinx"),
     ],
 )
-def docs_with_unreleased_dependency(session: nox.Session, org, repo):
-    """Build documentation against an unreleased version of a dependency."""
-    session.install(f"git+https://github.com/{org}/{repo}", ".[docs]")
-    session.run(*sphinx_commands, *html, *session.posargs)
+def build_docs_with_dev_version_of(session: nox.Session, site: str, repository: str):
+    """
+    Build docs against the development branch of a dependency.
+
+    The purpose of this session is to catch bugs and breaking changes
+    so that they can be fixed or updated earlier rather than later.
+    """
+    session.install(f"git+https://{site}.com/{repository}", ".[docs]")
+    session.run(*sphinx_commands, *build_html, *session.posargs)
 
 
 @nox.session(python=maxpython)
