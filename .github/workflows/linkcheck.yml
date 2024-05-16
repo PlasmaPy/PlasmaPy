@@ -1,5 +1,8 @@
 name: Check hyperlinks
 
+# To check hyperlinks on a pull request, add the label entitled
+# 'perform linkcheck in CI'.
+
 on:
   schedule:
   - cron: 37 7 * * 2
