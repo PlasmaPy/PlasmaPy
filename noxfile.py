@@ -167,6 +167,29 @@ def tests(session: nox.Session, test_specifier: nox._parametrize.Param):
     session.run(*pytest_command, *options, *session.posargs)
 
 
+@nox.session(python=maxpython)
+@nox.parametrize(
+    ["site", "repository"],
+    [
+        nox.param("github", "numpy/numpy", id="numpy"),
+        nox.param("github", "astropy/astropy", id="astropy"),
+        nox.param("github", "pydata/xarray", id="xarray"),
+        nox.param("github", "lmfit/lmfit-py", id="lmfit"),
+        nox.param("github", "pandas-dev/pandas", id="pandas"),
+        nox.param("github", "h5py/h5py", id="h5py"),
+    ],
+)
+def run_tests_with_dev_version_of(session: nox.Session, site: str, repository: str):
+    """
+    Run tests against the development branch of a dependency.
+
+    The purpose of this session is to catch bugs and breaking changes
+    so that they can be fixed or updated earlier rather than later.
+    """
+    session.install(f"git+https://{site}.com/{repository}", ".[tests]")
+    session.run(*pytest_command, *session.posargs)
+
+
 sphinx_commands: tuple[str, ...] = (
     "sphinx-build",
     "docs/",
