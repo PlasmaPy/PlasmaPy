@@ -267,8 +267,7 @@ def mypy(session: nox.Session):
         "--show-error-code-links",
         "--pretty",
     )
-    session.install("mypy >= 1.10.0", "pip")
-    session.install("-r", "requirements.txt")
+    session.install("mypy >= 1.10.0", "pip", ".")
     session.run(*mypy_command, *session.posargs)
 
 
