@@ -67,7 +67,7 @@ jobs:
         - name: Packaging, Python 3.11, Windows
           os: windows-latest
           python: '3.12'
-          nox_session: build
+          nox_session: packaging
 
         - name: Import PlasmaPy, Python 3.11, macOS
           os: macos-latest
