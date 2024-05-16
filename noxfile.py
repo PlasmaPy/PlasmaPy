@@ -15,6 +15,7 @@ Doctests are run only for the most recent versions of Python and
 PlasmaPy dependencies, and not when code coverage checks are performed.
 """
 
+import os
 import sys
 
 import nox
@@ -114,15 +115,17 @@ with_doctests: tuple[str, ...] = ("--doctest-modules", "--doctest-continue-on-fa
 
 with_coverage: tuple[str, ...] = (
     "--cov=plasmapy",
+    "--cov-report=xml",
     "--cov-config=pyproject.toml",
     "--cov-append",
-    "--cov-report xml:coverage.xml",
+    "--cov-report",
+    "xml:coverage.xml",
 )
 
 skipslow: tuple[str, ...] = ("-m", "not slow")
 
-test_specifiers: list[nox._parametrize.Param] = [
-    nox.param("all", id="all"),
+test_specifiers: list = [
+    nox.param("run all tests", id="all"),
     nox.param("with code coverage", id="cov"),
     nox.param("skip slow tests", id="skipslow"),
     nox.param("lowest-direct", id="lowest-direct"),
@@ -131,7 +134,7 @@ test_specifiers: list[nox._parametrize.Param] = [
 
 @nox.session(python=supported_python_versions)
 @nox.parametrize("test_specifier", test_specifiers)
-def tests(session, test_specifier: nox._parametrize.Param):
+def tests(session: nox.Session, test_specifier: nox._parametrize.Param):
     """Run tests with pytest."""
 
     resolution = "lowest-direct" if test_specifier == "lowest-direct" else "highest"
@@ -144,10 +147,10 @@ def tests(session, test_specifier: nox._parametrize.Param):
 
     options: list[str] = []
 
-    if test_specifier == "skipslow":
+    if test_specifier == "skip slow tests":
         options += skipslow
 
-    if test_specifier == "cov":
+    if test_specifier == "with code coverage":
         options += with_coverage
 
     # Doctests are only run with the most recent versions of Python and
@@ -155,6 +158,9 @@ def tests(session, test_specifier: nox._parametrize.Param):
     # output between different versions of Python, NumPy, and Astropy.
     if session.python == maxpython and test_specifier in {"all", "skipslow"}:
         options += with_doctests
+
+    if gh_token := os.getenv("GH_TOKEN"):
+        session.env["GH_TOKEN"] = gh_token
 
     session.install("-r", requirements)
     session.install(".")
@@ -176,7 +182,7 @@ docs_requirements = get_requirements_filepath(category="docs", version=maxpython
 
 
 @nox.session(python=maxpython)
-def docs(session):
+def docs(session: nox.Session):
     """Build documentation with most recent supported version of Python."""
     session.install("-r", docs_requirements)
     session.install(".")
@@ -184,7 +190,7 @@ def docs(session):
 
 
 @nox.session(python=maxpython)
-def linkcheck(session):
+def linkcheck(session: nox.Session):
     """
     Check hyperlinks in documentation.
 
@@ -198,7 +204,7 @@ def linkcheck(session):
 
 
 @nox.session
-def mypy(session):
+def mypy(session: nox.Session):
     """Perform static type checking."""
     mypy_command: tuple[str, ...] = (
         "mypy",
@@ -215,24 +221,24 @@ def mypy(session):
 
 
 @nox.session(name="import")
-def try_import(session):
+def try_import(session: nox.Session):
     """Install PlasmaPy and import it."""
     session.install(".")
     session.run("python", "-c", "import plasmapy")
 
 
 @nox.session
-def cff(session):
-    """Validate CITATION.cff."""
-    session.install("cffconvert")
-    session.run("cffconvert", "--validate")
-
-
-@nox.session
-def build(session):
+def build(session: nox.Session):
     """Build and verify a source distribution and wheel."""
     session.install("twine", "build")
     build_command = ("python", "-m", "build")
     session.run(*build_command, "--sdist")
     session.run(*build_command, "--wheel")
     session.run("twine", "check", "dist/*")
+
+
+@nox.session
+def cff(session: nox.Session):
+    """Validate CITATION.cff."""
+    session.install("cffconvert")
+    session.run("cffconvert", "--validate")
