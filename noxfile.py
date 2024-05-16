@@ -232,7 +232,7 @@ def linkcheck(session: nox.Session):
     session.run(*sphinx_commands, *check_hyperlinks, *session.posargs)
 
 
-@nox.session
+@nox.session(python=maxpython)
 def mypy(session: nox.Session):
     """Perform static type checking."""
     mypy_command: tuple[str, ...] = (
