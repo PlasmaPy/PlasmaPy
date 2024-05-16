@@ -65,7 +65,7 @@ def nuclear_binding_energy(
     >>> (after - before).to(u.MeV)  # released energy from D + T --> alpha + n
     <Quantity 17.589 MeV>
     """
-    return particle.nuclear_binding_energy.to(u.J)
+    return particle.binding_energy.to(u.J)
 
 
 @particle_input

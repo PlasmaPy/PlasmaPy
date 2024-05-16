@@ -203,7 +203,6 @@ def test_get_file_NIST_PSTAR_datafile(downloader_validated) -> None:
     assert np.allclose(arr[0, :], np.array([1e-3, 1.043e2]))
 
 
-@pytest.mark.flaky(reruns=2)
 def test_at_most_one_api_call(downloader_validated) -> None:
     """
     Test that at most one API call is made over multiple queries

@@ -54,7 +54,3 @@
 - search: 'ion="p"'
   replacement: 'ion="p+"'
   description: Use canonical symbol for proton
-
-- search: '|nox|'
-  replacement: '|Nox|'
-  description: Nox is capitalized except when used as a command

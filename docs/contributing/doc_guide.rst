@@ -1153,16 +1153,16 @@ Building documentation
    documentation locally on your own computer. New contributors can
    safely skip this section.
 
-There are two methods for building the documentation: make_ and |Nox|.
+There are two methods for building the documentation: make_ and |nox|.
 
 * Using make_ will build the documentation based off of what is in the
   current directory structure. make_ is quicker for local builds than
-  |Nox| but requires you to install and set up all dependencies.
+  |nox| but requires you to install and set up all dependencies.
 
-* Using |Nox| does not require setting up all dependencies ahead of
+* Using |nox| does not require setting up all dependencies ahead of
   time, but is more computationally intensive since it creates a virtual
   environment and builds the package before building the documentation.
-  Consequently, PlasmaPy uses |Nox| for building the documentation on
+  Consequently, PlasmaPy uses |nox| for building the documentation on
   continuous integration testing platforms.
 
 .. _doc-build-prereqs:
@@ -1184,20 +1184,20 @@ It may also be necessary to install the following software:
 
 * `graphviz <https://graphviz.org/download>`__
 * `pandoc <https://pandoc.org/installing.html>`__
-* make_ (not necessary for building the documentation with |Nox| or
+* make_ (not necessary for building the documentation with |nox| or
   sphinx_build)
 
 Building documentation
 ----------------------
 
-PlasmaPy's documentation can be built using |Nox|, make_, or
-sphinx-build_. We recommend starting with |Nox|.
+PlasmaPy's documentation can be built using |nox|, make_, or
+sphinx-build_. We recommend starting with |nox|.
 
 .. tabs::
 
    .. group-tab:: nox
 
-      We can use |Nox| to build the documentation locally by running:
+      We can use |nox| to build the documentation locally by running:
 
       .. code-block:: bash
 
@@ -1207,7 +1207,7 @@ sphinx-build_. We recommend starting with |Nox|.
       example, use :bash:`nox -s docs -- -v` to increase output
       verbosity.
 
-      Building with |Nox| is well-suited for reproducible documentation
+      Building with |nox| is well-suited for reproducible documentation
       builds in an isolated Python environment, which is why it is used
       in continuous integration tests.
 
@@ -1232,7 +1232,7 @@ sphinx-build_. We recommend starting with |Nox|.
    .. group-tab:: sphinx-build
 
       Using sphinx-build_ allows us to choose different `options to
-      sphinx-build`_ than the defaults used by |Nox| and make_.
+      sphinx-build`_ than the defaults used by |nox| and make_.
 
       PlasmaPy's documentation can be build by going to the top-level
       directory of the repository and running:
@@ -1269,7 +1269,7 @@ To check hyperlinks locally, run:
 .. tip::
 
    When writing documentation, please fix any new warnings that arise.
-   To enforce this, the ``docs`` |Nox| environment fails if there are
+   To enforce this, the ``docs`` |nox| environment fails if there are
    any warnings.
 
 Troubleshooting

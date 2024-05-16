@@ -30,13 +30,8 @@ jobs:
           });
 
           if (
-            pullRequest.title.includes('autoupdate') ||
-            pullRequest.title.includes('Minor') ||
-            pullRequest.title.includes('Fix typo') ||
-            pullRequest.title.includes('Update changelog entries') ||
-            pullRequest.title.includes('Update changelog prior to') ||
             pullRequest.title.includes('Update pinned requirements') ||
-            pullRequest.title.includes('Update release checklist') ||
+            pullRequest.title.includes('autoupdate') ||
             bumpPattern.test(pullRequest.title)
           ) {
             // If yes, then apply the label "No changelog entry needed"

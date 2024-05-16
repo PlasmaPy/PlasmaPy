@@ -39,7 +39,7 @@ Documentation Improvements
   |tox|
   via the ``tox-uv`` extension, and the |documentation guide| to reflect that
   the
-  documentation is now built with |Nox| instead of |tox| (:pr:`2590`)
+  documentation is now built with |nox| instead of |tox| (:pr:`2590`)
 - Add examples to the docstring for
   `~plasmapy.formulary.radiation.thermal_bremsstrahlung`. (:pr:`2618`)
 - Update the dependency version support policy in the |coding guide|.
@@ -135,12 +135,12 @@ Internal Changes and Refactorings
   integration
   and for documentation builds, while adding corresponding documentation.
   (:pr:`2650`)
-- Added :file:`noxfile.py` as a configuration file for |Nox|. This file
+- Added :file:`noxfile.py` as a configuration file for |nox|. This file
   initially contains
   environments for building documentation, checking hyperlinks, and performing
   static
   type checking with |mypy| (:pr:`2654`)
-- Began using |Nox| for some testing environments in |GitHub Actions|,
+- Began using |nox| for some testing environments in |GitHub Actions|,
   including for the
   documentation build and static type checking. (:pr:`2656`)
 
