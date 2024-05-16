@@ -174,16 +174,26 @@ sphinx_commands: tuple[str, ...] = (
     "--nitpicky",
     "--fail-on-warning",
     "--keep-going",
+    "-q",
 )
 
 build_html: tuple[str, ...] = ("-b", "html")
-check_hyperlinks: tuple[str, ...] = ("-b", "linkcheck", "-q")
+check_hyperlinks: tuple[str, ...] = ("-b", "linkcheck")
 docs_requirements = get_requirements_filepath(category="docs", version=maxpython)
+
+doc_troubleshooting_message = """
+
+✨️ To learn how to address common build failures, please check out
+PlasmaPy's documentation troubleshooting guide at:
+
+https://docs.plasmapy.org/en/latest/contributing/doc_guide.html#troubleshooting
+"""
 
 
 @nox.session(python=maxpython)
 def docs(session: nox.Session):
     """Build the docs."""
+    session.debug(doc_troubleshooting_message)
     session.install("-r", docs_requirements, ".")
     session.run(*sphinx_commands, *build_html, *session.posargs)
 
