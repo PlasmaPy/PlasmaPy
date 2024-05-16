@@ -72,32 +72,32 @@ jobs:
         - name: Tests, Python 3.12, astropy-dev, Ubuntu
           os: ubuntu-latest
           python: '3.12'
-          nox_session: run_test_with_dev_version_of(astropy)
+          nox_session: run_tests_with_dev_version_of(astropy)
 
         - name: Tests, Python 3.12, numpy-dev, Ubuntu
           os: ubuntu-latest
           python: '3.12'
-          nox_session: run_test_with_dev_version_of(numpy)
+          nox_session: run_tests_with_dev_version_of(numpy)
 
         - name: Tests, Python 3.12, xarray-dev, Ubuntu
           os: ubuntu-latest
           python: '3.12'
-          nox_session: run_test_with_dev_version_of(xarray)
+          nox_session: run_tests_with_dev_version_of(xarray)
 
         - name: Tests, Python 3.12, pandas-dev, Ubuntu
           os: ubuntu-latest
           python: '3.12'
-          nox_session: run_test_with_dev_version_of(pandas)
+          nox_session: run_tests_with_dev_version_of(pandas)
 
         - name: Tests, Python 3.12, lmfit-dev, Ubuntu
           os: ubuntu-latest
           python: '3.12'
-          nox_session: run_test_with_dev_version_of(lmfit)
+          nox_session: run_tests_with_dev_version_of(lmfit)
 
         - name: Tests, Python 3.12, h5py-dev, Ubuntu
           os: ubuntu-latest
           python: '3.12'
-          nox_session: run_test_with_dev_version_of(h5py)
+          nox_session: run_tests_with_dev_version_of(h5py)
 
         - name: Static type checking with mypy, Python 3.12, Windows
           os: windows-latest
