@@ -237,6 +237,40 @@ def build(session: nox.Session):
     session.run("twine", "check", "dist/*")
 
 
+AUTOTYPING_SAFE = ("--none-return", "--scalar-return", "--annotate-magics")
+AUTOTYPING_RISKY = (
+    *AUTOTYPING_SAFE,
+    "--bool-param",
+    "--int-param",
+    "--float-param",
+    "--str-param",
+    "--bytes-param",
+    "--annotate-imprecise-magics",
+)
+
+
+@nox.session
+@nox.parametrize(
+    "options",
+    [
+        nox.param(AUTOTYPING_SAFE, id="safe"),
+        nox.param(AUTOTYPING_RISKY, id="aggressive"),
+    ],
+)
+def autotyping(session: nox.Session, options: tuple[str, ...]) -> None:
+    """
+    Automatically add type hints with autotyping.
+
+    The `safe` option generates very few incorrect type hints, and can
+    be used in CI. The `aggressive` option may add type hints that are
+    incorrect, so please perform a careful code review when using this
+    option.
+    """
+    session.install(".[tests,docs]", "autotyping", "typing_extensions")
+    PATHS = ("src", "tests", "tools", "noxfile.py", ".github/scripts", "docs/*.py")
+    session.run("python", "-m", "autotyping", *PATHS, *options)
+
+
 @nox.session
 def cff(session: nox.Session):
     """Validate CITATION.cff."""
