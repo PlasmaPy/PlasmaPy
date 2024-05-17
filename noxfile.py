@@ -239,7 +239,7 @@ def build(session: nox.Session):
 
 @nox.session
 def cff(session: nox.Session):
-    """Validate CITATION.cff."""
+    """Validate CITATION.cff against the metadata standard."""
     session.install("cffconvert")
     session.run("cffconvert", "--validate", *session.posargs)
 
