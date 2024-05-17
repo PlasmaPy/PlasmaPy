@@ -262,4 +262,10 @@ def manifest(session: nox.Session):
 def lint(session: nox.Session):
     """Run all pre-commit hooks on all files."""
     session.install("pre-commit")
-    session.run("pre-commit", "run", "--all-files")
+    session.run(
+        "pre-commit",
+        "run",
+        "--all-files",
+        "--show-diff-on-failure",
+        *session.posargs,
+    )
