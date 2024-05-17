@@ -255,7 +255,7 @@ def manifest(session: nox.Session):
     `ignore` under `[tool.check-manifest]` in `pyproject.toml`.
     """
     session.install("check-manifest")
-    session.run("check-manifest")
+    session.run("check-manifest", *session.posargs)
 
 
 @nox.session
