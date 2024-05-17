@@ -59,7 +59,7 @@ jobs:
         - name: Packaging, Python 3.12, Ubuntu
           os: ubuntu-latest
           python: '3.12'
-          nox_session: packaging
+          nox_session: build
 
         - name: Validate CITATION.cff
           os: ubuntu-latest
