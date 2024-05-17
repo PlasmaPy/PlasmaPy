@@ -172,10 +172,10 @@ def tests(session: nox.Session, test_specifier: nox._parametrize.Param):
     ["repository"],
     [
         nox.param("numpy", id="numpy"),
-        nox.param("https://github/astropy/astropy", id="astropy"),
-        nox.param("https://github/pydata/xarray", id="xarray"),
-        nox.param("https://github/lmfit/lmfit-py", id="lmfit"),
-        nox.param("https://github/pandas-dev/pandas", id="pandas"),
+        nox.param("https://github.com/astropy/astropy", id="astropy"),
+        nox.param("https://github.com/pydata/xarray", id="xarray"),
+        nox.param("https://github.com/lmfit/lmfit-py", id="lmfit"),
+        nox.param("https://github.com/pandas-dev/pandas", id="pandas"),
     ],
 )
 def run_tests_with_dev_version_of(session: nox.Session, repository: str):
