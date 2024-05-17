@@ -49,26 +49,6 @@ jobs:
           python: '3.10'
           nox_session: tests-3.10(lowest-direct)
 
-        - name: Documentation, Python 3.12, Ubuntu
-          os: ubuntu-latest
-          python: '3.12'
-          nox_session: docs
-
-        - name: Documentation, Python 3.12, sphinx-dev, Ubuntu
-          os: ubuntu-latest
-          python: '3.12'
-          nox_session: build_docs_with_dev_version_of(sphinx)
-
-        - name: Documentation, Python 3.12, sphinx_rtd_theme-dev, Ubuntu
-          os: ubuntu-latest
-          python: '3.12'
-          nox_session: build_docs_with_dev_version_of(sphinx_rtd_theme)
-
-        - name: Documentation, Python 3.12, nbsphinx-dev, Ubuntu
-          os: ubuntu-latest
-          python: '3.12'
-          nox_session: build_docs_with_dev_version_of(nbsphinx)
-
         - name: Tests, Python 3.12, astropy-dev, Ubuntu
           os: ubuntu-latest
           python: '3.12'
@@ -93,6 +73,26 @@ jobs:
           os: ubuntu-latest
           python: '3.12'
           nox_session: run_tests_with_dev_version_of(lmfit)
+
+        - name: Documentation, Python 3.12, Ubuntu
+          os: ubuntu-latest
+          python: '3.12'
+          nox_session: docs
+
+        - name: Documentation, Python 3.12, sphinx-dev, Ubuntu
+          os: ubuntu-latest
+          python: '3.12'
+          nox_session: build_docs_with_dev_version_of(sphinx)
+
+        - name: Documentation, Python 3.12, sphinx_rtd_theme-dev, Ubuntu
+          os: ubuntu-latest
+          python: '3.12'
+          nox_session: build_docs_with_dev_version_of(sphinx_rtd_theme)
+
+        - name: Documentation, Python 3.12, nbsphinx-dev, Ubuntu
+          os: ubuntu-latest
+          python: '3.12'
+          nox_session: build_docs_with_dev_version_of(nbsphinx)
 
         - name: Static type checking with mypy, Python 3.12, Windows
           os: windows-latest
