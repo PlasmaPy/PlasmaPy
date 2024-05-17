@@ -106,6 +106,7 @@ def requirements(session):
             filename,
             "--resolution",
             resolution,
+            *session.posargs,
         )
 
 
@@ -305,7 +306,7 @@ def mypy(session: nox.Session):
 def try_import(session: nox.Session):
     """Install PlasmaPy and import it."""
     session.install(".")
-    session.run("python", "-c", "import plasmapy")
+    session.run("python", "-c", "import plasmapy", *session.posargs)
 
 
 @nox.session
@@ -315,7 +316,7 @@ def build(session: nox.Session):
     build_command = ("python", "-m", "build")
     session.run(*build_command, "--sdist")
     session.run(*build_command, "--wheel")
-    session.run("twine", "check", "dist/*")
+    session.run("twine", "check", "dist/*", *session.posargs)
 
 
 @nox.session
