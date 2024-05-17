@@ -1,4 +1,8 @@
 """
+Nox is an automation tool used by PlasmaPy to run tests, build
+documentation, and perform other checks. Nox sessions are defined in
+noxfile.py.
+
 Running `nox` without arguments will run tests with the version of
 Python that `nox` is installed under, skipping slow tests. To invoke a
 nox session, enter the top-level directory of this repository and run
@@ -14,6 +18,8 @@ The tests can be run with the following options:
 
 Doctests are run only for the most recent versions of Python and
 PlasmaPy dependencies, and not when code coverage checks are performed.
+Some of the checks require the most recent supported version of Python
+to be installed.
 """
 
 import os
@@ -32,7 +38,7 @@ nox.options.sessions: list[str] = [f"tests-{current_python}(skipslow)"]
 nox.options.default_venv_backend = "uv|virtualenv"
 
 
-def get_requirements_filepath(
+def _get_requirements_filepath(
     category: str,
     version: str,
     resolution: str = "highest",
@@ -55,7 +61,7 @@ def get_requirements_filepath(
 
 @nox.session
 def requirements(session):
-    """Regenerate pinned requirements files."""
+    """Regenerate pinned requirements files used in tests and doc builds."""
 
     session.install("uv >= 0.1.44")
 
@@ -90,7 +96,7 @@ def requirements(session):
     )
 
     for category, version, resolution in category_version_resolution:
-        filename = get_requirements_filepath(category, version, resolution)
+        filename = _get_requirements_filepath(category, version, resolution)
         session.run(
             *command,
             "--python-version",
@@ -127,8 +133,8 @@ skipslow: tuple[str, ...] = ("-m", "not slow")
 
 test_specifiers: list = [
     nox.param("run all tests", id="all"),
-    nox.param("with code coverage", id="cov"),
     nox.param("skip slow tests", id="skipslow"),
+    nox.param("with code coverage", id="cov"),
     nox.param("lowest-direct", id="lowest-direct"),
 ]
 
@@ -140,7 +146,7 @@ def tests(session: nox.Session, test_specifier: nox._parametrize.Param):
 
     resolution = "lowest-direct" if test_specifier == "lowest-direct" else "highest"
 
-    requirements = get_requirements_filepath(
+    requirements = _get_requirements_filepath(
         category="tests",
         version=session.python,
         resolution=resolution,
@@ -217,7 +223,7 @@ sphinx_commands: tuple[str, ...] = (
 
 build_html: tuple[str, ...] = ("-b", "html")
 check_hyperlinks: tuple[str, ...] = ("-b", "linkcheck")
-docs_requirements = get_requirements_filepath(category="docs", version=maxpython)
+docs_requirements = _get_requirements_filepath(category="docs", version=maxpython)
 
 doc_troubleshooting_message = """
 
@@ -230,7 +236,11 @@ https://docs.plasmapy.org/en/latest/contributing/doc_guide.html#troubleshooting
 
 @nox.session(python=maxpython)
 def docs(session: nox.Session):
-    """Build the docs."""
+    """
+    Build the documentation with Sphinx.
+
+    Requires Python 3.12, and installation of
+    """
     session.debug(doc_troubleshooting_message)
     session.install("-r", docs_requirements, ".")
     session.run(*sphinx_commands, *build_html, *session.posargs)
@@ -282,7 +292,7 @@ def mypy(session: nox.Session):
         "--show-error-code-links",
         "--pretty",
     )
-    requirements = get_requirements_filepath(
+    requirements = _get_requirements_filepath(
         category="tests",
         version=session.python,
         resolution="highest",
@@ -299,8 +309,8 @@ def try_import(session: nox.Session):
 
 
 @nox.session
-def packaging(session: nox.Session):
-    """Build and verify a source distribution and wheel."""
+def build(session: nox.Session):
+    """Build & verify the source distribution and wheel."""
     session.install("twine", "build")
     build_command = ("python", "-m", "build")
     session.run(*build_command, "--sdist")
