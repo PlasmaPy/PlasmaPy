@@ -524,17 +524,12 @@ showcontent = true
 
 [tool.check-manifest]
 ignore = [
-  "#*#",
+  "#*",
+  "*#",
   "*checkpoint*",
   "*TEMP*",
   "*~",
   ".mailmap",
-  "docs/build/*",
-  "docs/build/*/*",
-  "docs/build/*/*/*",
-  "docs/build/*/*/*/*",
-  "docs/build/*/*/*/*/*",
-  "docs/build/*/*/*/*/*/*",
-  "docs/build/*/*/*/*/*/*/*",
+  "docs/*build/**",
   "Untitled*",
 ]
