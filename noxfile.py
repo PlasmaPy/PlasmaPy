@@ -241,7 +241,7 @@ def build(session: nox.Session):
 def cff(session: nox.Session):
     """Validate CITATION.cff."""
     session.install("cffconvert")
-    session.run("cffconvert", "--validate")
+    session.run("cffconvert", "--validate", *session.posargs)
 
 
 @nox.session
