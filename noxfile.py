@@ -242,3 +242,17 @@ def cff(session: nox.Session):
     """Validate CITATION.cff."""
     session.install("cffconvert")
     session.run("cffconvert", "--validate")
+
+
+@nox.session
+def manifest(session: nox.Session):
+    """Check contents of MANIFEST.in."""
+    session.install("check-manifest")
+    session.run("check-manifest")
+
+
+@nox.session
+def lint(session: nox.Session):
+    """Run all pre-commit hooks on all files."""
+    session.install("pre-commit")
+    session.run("pre-commit", "run", "--all-files")
