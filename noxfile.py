@@ -246,7 +246,14 @@ def cff(session: nox.Session):
 
 @nox.session
 def manifest(session: nox.Session):
-    """Check contents of MANIFEST.in."""
+    """
+    Check contents of MANIFEST.in.
+
+    When run outside of CI, this check may report files that were
+    locally created but not included in version control. These false
+    positives can be ignored by adding file patterns and paths to
+    `ignore` under `[tool.check-manifest]` in `pyproject.toml`.
+    """
     session.install("check-manifest")
     session.run("check-manifest")
 
