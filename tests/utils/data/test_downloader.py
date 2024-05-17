@@ -61,7 +61,7 @@ test_urls = [
 @pytest.mark.parametrize(("url", "expected"), test_urls)
 def test_http_request(
     downloader_validated: Downloader, url: str, expected: None | Exception
-):
+) -> None:
     """
     Test exceptions from http downloader
     """
@@ -90,7 +90,7 @@ def test_blob_file(downloader_validated: Downloader) -> None:
     assert downloader_validated._blob_dict["test_key"] == test_str
 
 
-def test_update_blob_entry(downloader_validated):
+def test_update_blob_entry(downloader_validated) -> None:
     """
     Test the logic in the _update_blob_entry function
     """
@@ -154,7 +154,7 @@ def test_get_file(
 @pytest.mark.parametrize(
     "downloader", ["downloader_validated", "downloader_unvalidated"]
 )
-def test_get_local_only_fle(downloader: Downloader, request):
+def test_get_local_only_fle(downloader: Downloader, request) -> None:
     """
     Test various file retrieval modes
     """

@@ -106,7 +106,7 @@ def grid_with_inf_entry():
 )
 def test_particle_tracker_constructor_errors(
     request, grids, termination_condition, save_routine, kwargs, expected_exception
-):
+) -> None:
     if isinstance(grids, str):
         grids = request.getfixturevalue(grids)
 
@@ -139,7 +139,7 @@ def test_particle_tracker_constructor_errors(
 )
 def test_particle_tracker_construction(
     request, grids, termination_condition, save_routine, kwargs
-):
+) -> None:
     termination_condition = request.getfixturevalue(termination_condition)
 
     if save_routine is not None:
@@ -150,7 +150,7 @@ def test_particle_tracker_construction(
 
 def test_particle_tracker_load_particles_shape_error(
     no_particles_on_grids_instantiated,
-):
+) -> None:
     """Inconsistent shape for x and v error"""
     grid = CartesianGrid(-1 * u.m, 1 * u.m)
 
@@ -181,7 +181,7 @@ def test_particle_tracker_load_particles_shape_error(
         ),
     ],
 )
-def test_interval_save_routine(request, stop_condition, save_routine):
+def test_interval_save_routine(request, stop_condition, save_routine) -> None:
     x = [[0, 0, 0]] * u.m
     v = [[0, 1, 0]] * u.m / u.s
     point_particle = CustomParticle(1 * u.kg, 1 * u.C)
@@ -237,14 +237,14 @@ class TestParticleTrackerGyroradius:
 
     simulation.run()
 
-    def test_gyroradius(self):
+    def test_gyroradius(self) -> None:
         """Test to ensure particles maintain their gyroradius over time"""
         _, positions, _ = self.save_routine.results()
         distances = np.linalg.norm(positions, axis=-1)
 
         assert np.isclose(distances, self.R_L, rtol=5e-2).all()
 
-    def test_kinetic_energy(self):
+    def test_kinetic_energy(self) -> None:
         """Test to ensure particles maintain their gyroradius over time"""
 
         initial_kinetic_energies = 0.5 * self.point_particle.mass * self.v_x**2
@@ -259,7 +259,9 @@ class TestParticleTrackerGyroradius:
 @pytest.mark.slow()
 @given(st.integers(1, 10), st.integers(1, 10), st.integers(1, 10), st.integers(1, 10))
 @settings(deadline=2e4, max_examples=10)
-def test_particle_tracker_potential_difference(request, E_strength, L, mass, charge):
+def test_particle_tracker_potential_difference(
+    request, E_strength, L, mass, charge
+) -> None:
     # Apply appropriate units to the random inputs
     E_strength = E_strength * u.V / u.m
     L = L * u.m
@@ -304,7 +306,7 @@ def test_particle_tracker_potential_difference(request, E_strength, L, mass, cha
     )
 
 
-def test_asynchronous_time_step(no_particles_on_grids_instantiated):
+def test_asynchronous_time_step(no_particles_on_grids_instantiated) -> None:
     E_strength = 1 * u.V / u.m
     L = 1 * u.m
     mass = 1 * u.kg
@@ -344,7 +346,7 @@ def test_asynchronous_time_step(no_particles_on_grids_instantiated):
 
 def test_asynchronous_time_step_error(
     memory_interval_save_routine_instantiated, no_particles_on_grids_instantiated
-):
+) -> None:
     E_strength = 1 * u.V / u.m
     L = 1 * u.m
 
@@ -367,7 +369,7 @@ def test_asynchronous_time_step_error(
 
 def test_nearest_neighbor_interpolation(
     time_elapsed_termination_condition_instantiated,
-):
+) -> None:
     E_strength = 1 * u.V / u.m
     L = 1 * u.m
     mass = 1 * u.kg
@@ -396,7 +398,9 @@ def test_nearest_neighbor_interpolation(
     simulation.run()
 
 
-def test_setup_adaptive_time_step(time_elapsed_termination_condition_instantiated):
+def test_setup_adaptive_time_step(
+    time_elapsed_termination_condition_instantiated,
+) -> None:
     E_strength = 1 * u.V / u.m
     L = 1 * u.m
     mass = 1 * u.kg
@@ -427,7 +431,7 @@ def test_setup_adaptive_time_step(time_elapsed_termination_condition_instantiate
     simulation.run()
 
 
-def test_particle_tracker_stop_particles(request):
+def test_particle_tracker_stop_particles(request) -> None:
     E_strength = 1 * u.V / u.m
     L = 1 * u.m
     mass = 1 * u.kg

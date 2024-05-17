@@ -1619,14 +1619,16 @@ def test_deuterium_ionization_energy() -> None:
         ("Li", u.Quantity((5.391714996 * u.eV).to(u.J).value, u.J)),
     ],
 )
-def test_particle_ionization_energy(particle_symbol, expected_ionization_energy):
+def test_particle_ionization_energy(
+    particle_symbol, expected_ionization_energy
+) -> None:
     particle = Particle(particle_symbol)
     assert u.isclose(
         particle.ionization_energy, expected_ionization_energy, rtol=1e-4
     ), f"Expected {expected_ionization_energy}, got {particle.ionization_energy}"
 
 
-def test_undefined_ionization_energy():
+def test_undefined_ionization_energy() -> None:
     particle = Particle("tau neutrino")
     try:
         energy = particle.ionization_energy
