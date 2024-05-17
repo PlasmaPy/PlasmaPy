@@ -1,27 +1,29 @@
+graft changelog
+graft ci_requirements
 graft docs
 graft licenses
 graft src
+graft tests
+graft tools
 graft type_stubs
 
+include *.ini
+include *.ini *.toml *.yaml *.yml
 include *.md
 include *.py
 include *.pyi
 include *.rst
 include *.txt
-include *.yaml
-include *.yml
-include changelog/README.rst
+include .editorconfig
+include .git-blame-ignore-revs
+include .jupyter/*.py
+include binder/requirements.txt
 include CITATION.cff
-include noxfile.py
-include pyproject.toml
-include tox.ini
+include CODEOWNERS
 
-global-exclude _build build _version.py
-
-global-exclude *.o
-global-exclude *.py[cod]
-
-prune docs/api
+global-exclude _build build _authors.rst _version.py
+global-exclude *.o *.py[cod]
 
 # Only for editable installs
+prune docs/api
 prune src/plasmapy/_dev
