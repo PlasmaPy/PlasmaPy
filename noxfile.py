@@ -265,10 +265,15 @@ def autotyping(session: nox.Session, options: tuple[str, ...]) -> None:
     be used in CI. The `aggressive` option may add type hints that are
     incorrect, so please perform a careful code review when using this
     option.
+
+    To check specific files, pass them after a `--`, such as:
+
+        nox -s 'autotyping(safe)' -- noxfile.py
     """
     session.install(".[tests,docs]", "autotyping", "typing_extensions")
-    PATHS = ("src", "tests", "tools", "noxfile.py", ".github/scripts", "docs/*.py")
-    session.run("python", "-m", "autotyping", *PATHS, *options)
+    DEFAULT_PATHS = ("src", "tests", "tools", "*.py", ".github", "docs/*.py")
+    paths = session.posargs or DEFAULT_PATHS
+    session.run("python", "-m", "autotyping", *options, *paths)
 
 
 @nox.session
