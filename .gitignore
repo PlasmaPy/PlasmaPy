@@ -128,9 +128,6 @@ VIRTUAL/
 *.bbl
 *.blg
 
-# Configuration files for autotyping
-.libcst.codemod.yaml
-
 # Documentation files
 auto_examples
 docs/about/_authors.rst
