@@ -61,7 +61,7 @@ class Downloader:
         directory: Path | None = None,
         validate: bool = True,
         api_token: str | None = None,
-    ):
+    ) -> None:
         if directory is None:
             # No test coverage for default directory, since pytest always
             # saves into a temporary directory
