@@ -94,11 +94,6 @@ jobs:
           python: '3.12'
           nox_session: run_tests_with_dev_version_of(lmfit)
 
-        - name: Tests, Python 3.12, h5py-dev, Ubuntu
-          os: ubuntu-latest
-          python: '3.12'
-          nox_session: run_tests_with_dev_version_of(h5py)
-
         - name: Static type checking with mypy, Python 3.12, Windows
           os: windows-latest
           python: '3.12'

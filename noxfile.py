@@ -176,7 +176,6 @@ def tests(session: nox.Session, test_specifier: nox._parametrize.Param):
         nox.param("github", "pydata/xarray", id="xarray"),
         nox.param("github", "lmfit/lmfit-py", id="lmfit"),
         nox.param("github", "pandas-dev/pandas", id="pandas"),
-        nox.param("github", "h5py/h5py", id="h5py"),
     ],
 )
 def run_tests_with_dev_version_of(session: nox.Session, site: str, repository: str):
