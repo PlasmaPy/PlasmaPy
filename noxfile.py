@@ -238,14 +238,14 @@ def build(session: nox.Session):
 
 
 @nox.session
-def cff(session: nox.Session):
+def cff(session: nox.Session) -> None:
     """Validate CITATION.cff against the metadata standard."""
     session.install("cffconvert")
     session.run("cffconvert", "--validate", *session.posargs)
 
 
 @nox.session
-def manifest(session: nox.Session):
+def manifest(session: nox.Session) -> None:
     """
     Check contents of MANIFEST.in.
 
@@ -259,7 +259,7 @@ def manifest(session: nox.Session):
 
 
 @nox.session
-def lint(session: nox.Session):
+def lint(session: nox.Session) -> None:
     """Run all pre-commit hooks on all files."""
     session.install("pre-commit")
     session.run(
