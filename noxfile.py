@@ -169,23 +169,39 @@ def tests(session: nox.Session, test_specifier: nox._parametrize.Param):
 
 @nox.session(python=maxpython)
 @nox.parametrize(
-    ["site", "repository"],
+    ["repository"],
     [
-        nox.param("github", "numpy/numpy", id="numpy"),
-        nox.param("github", "astropy/astropy", id="astropy"),
-        nox.param("github", "pydata/xarray", id="xarray"),
-        nox.param("github", "lmfit/lmfit-py", id="lmfit"),
-        nox.param("github", "pandas-dev/pandas", id="pandas"),
+        nox.param("numpy", id="numpy"),
+        nox.param("https://github/astropy/astropy", id="astropy"),
+        nox.param("https://github/pydata/xarray", id="xarray"),
+        nox.param("https://github/lmfit/lmfit-py", id="lmfit"),
+        nox.param("https://github/pandas-dev/pandas", id="pandas"),
     ],
 )
-def run_tests_with_dev_version_of(session: nox.Session, site: str, repository: str):
+def run_tests_with_dev_version_of(session: nox.Session, repository: str):
     """
     Run tests against the development branch of a dependency.
 
     The purpose of this session is to catch bugs and breaking changes
     so that they can be fixed or updated earlier rather than later.
     """
-    session.install(f"git+https://{site}.com/{repository}", ".[tests]")
+    if repository != "numpy":
+        session.install(f"git+{repository}")
+    else:
+        # From: https://numpy.org/doc/1.26/dev/depending_on_numpy.html
+        session.run_install(
+            "uv",
+            "pip",
+            "install",
+            "-U",
+            "--pre",
+            "--only-binary",
+            ":all:",
+            "-i",
+            "https://pypi.anaconda.org/scientific-python-nightly-wheels/simple",
+            "numpy",
+        )
+    session.install(".[tests]")
     session.run(*pytest_command, *session.posargs)
 
 
