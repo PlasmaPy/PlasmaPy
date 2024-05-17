@@ -60,7 +60,7 @@ def _get_requirements_filepath(
 
 
 @nox.session
-def requirements(session):
+def requirements(session) -> None:
     """Regenerate pinned requirements files used in tests and doc builds."""
 
     session.install("uv >= 0.1.44")
@@ -142,7 +142,7 @@ test_specifiers: list = [
 
 @nox.session(python=supported_python_versions)
 @nox.parametrize("test_specifier", test_specifiers)
-def tests(session: nox.Session, test_specifier: nox._parametrize.Param):
+def tests(session: nox.Session, test_specifier: nox._parametrize.Param) -> None:
     """Run tests with pytest."""
 
     resolution = "lowest-direct" if test_specifier == "lowest-direct" else "highest"
@@ -185,7 +185,7 @@ def tests(session: nox.Session, test_specifier: nox._parametrize.Param):
         nox.param("https://github.com/pandas-dev/pandas", id="pandas"),
     ],
 )
-def run_tests_with_dev_version_of(session: nox.Session, repository: str):
+def run_tests_with_dev_version_of(session: nox.Session, repository: str) -> None:
     """
     Run tests against the development branch of a dependency.
 
@@ -236,7 +236,7 @@ https://docs.plasmapy.org/en/latest/contributing/doc_guide.html#troubleshooting
 
 
 @nox.session(python=maxpython)
-def docs(session: nox.Session):
+def docs(session: nox.Session) -> None:
     """
     Build the documentation with Sphinx.
 
@@ -256,7 +256,9 @@ def docs(session: nox.Session):
         nox.param("github", "spatialaudio/nbsphinx", id="nbsphinx"),
     ],
 )
-def build_docs_with_dev_version_of(session: nox.Session, site: str, repository: str):
+def build_docs_with_dev_version_of(
+    session: nox.Session, site: str, repository: str
+) -> None:
     """
     Build docs against the development branch of a dependency.
 
@@ -268,7 +270,7 @@ def build_docs_with_dev_version_of(session: nox.Session, site: str, repository: 
 
 
 @nox.session(python=maxpython)
-def linkcheck(session: nox.Session):
+def linkcheck(session: nox.Session) -> None:
     """
     Check hyperlinks in documentation.
 
@@ -282,7 +284,7 @@ def linkcheck(session: nox.Session):
 
 
 @nox.session(python=maxpython)
-def mypy(session: nox.Session):
+def mypy(session: nox.Session) -> None:
     """Perform static type checking."""
     mypy_command: tuple[str, ...] = (
         "mypy",
@@ -303,14 +305,14 @@ def mypy(session: nox.Session):
 
 
 @nox.session(name="import")
-def try_import(session: nox.Session):
+def try_import(session: nox.Session) -> None:
     """Install PlasmaPy and import it."""
     session.install(".")
     session.run("python", "-c", "import plasmapy", *session.posargs)
 
 
 @nox.session
-def build(session: nox.Session):
+def build(session: nox.Session) -> None:
     """Build & verify the source distribution and wheel."""
     session.install("twine", "build")
     build_command = ("python", "-m", "build")
