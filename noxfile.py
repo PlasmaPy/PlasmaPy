@@ -230,7 +230,7 @@ To automatically add type hints for common patterns, run:
 def mypy(session: nox.Session):
     """Perform static type checking."""
     session.debug(MYPY_TROUBLESHOOTING)
-    mypy_command: tuple[str, ...] = (
+    MYPY_COMMAND: tuple[str, ...] = (
         "mypy",
         ".",
         "--install-types",
@@ -241,7 +241,7 @@ def mypy(session: nox.Session):
     )
     session.install("mypy >= 1.10.0", "pip")
     session.install("-r", "requirements.txt")
-    session.run(*mypy_command, *session.posargs)
+    session.run(*MYPY_COMMAND, *session.posargs)
 
 
 @nox.session(name="import")
@@ -261,8 +261,12 @@ def build(session: nox.Session):
     session.run("twine", "check", "dist/*")
 
 
-AUTOTYPING_SAFE = ("--none-return", "--scalar-return", "--annotate-magics")
-AUTOTYPING_RISKY = (
+AUTOTYPING_SAFE: tuple[str, ...] = (
+    "--none-return",
+    "--scalar-return",
+    "--annotate-magics",
+)
+AUTOTYPING_RISKY: tuple[str, ...] = (
     *AUTOTYPING_SAFE,
     "--bool-param",
     "--int-param",
