@@ -206,13 +206,13 @@ def linkcheck(session: nox.Session):
 MYPY_TROUBLESHOOTING = """
 🦺 To learn more about type hints, check out mypy's cheat sheet at:
   https://mypy.readthedocs.io/en/stable/cheat_sheet_py3.html
-🏷 For more details about specific mypy errors, go to:
+For more details about specific mypy errors, go to:
   https://mypy.readthedocs.io/en/stable/error_codes.html
-🔕 Errors can be ignored on individual lines by adding a comment such as:
+Errors can be ignored on individual lines by adding a comment such as:
   # type: ignore[assignment]
 where `assignment` is the mypy error code. Please use `# type: ignore`
 only for particularly troublesome mypy errors.
-🤖 To automatically add type hints for common patterns, run:
+To automatically add type hints for common patterns, run:
   nox -s 'autotyping(safe)'
 """
 
