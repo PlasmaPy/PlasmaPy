@@ -521,3 +521,15 @@ showcontent = true
 directory = "trivial"
 name = "Additional Changes"
 showcontent = true
+
+[tool.check-manifest]
+ignore = [
+  "#*",
+  "*#",
+  "*checkpoint*",
+  "*TEMP*",
+  "*~",
+  ".mailmap",
+  "docs/*build/**",
+  "Untitled*",
+]

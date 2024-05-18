@@ -238,7 +238,34 @@ def build(session: nox.Session):
 
 
 @nox.session
-def cff(session: nox.Session):
-    """Validate CITATION.cff."""
+def cff(session: nox.Session) -> None:
+    """Validate CITATION.cff against the metadata standard."""
     session.install("cffconvert")
-    session.run("cffconvert", "--validate")
+    session.run("cffconvert", "--validate", *session.posargs)
+
+
+@nox.session
+def manifest(session: nox.Session) -> None:
+    """
+    Check contents of MANIFEST.in.
+
+    When run outside of CI, this check may report files that were
+    locally created but not included in version control. These false
+    positives can be ignored by adding file patterns and paths to
+    `ignore` under `[tool.check-manifest]` in `pyproject.toml`.
+    """
+    session.install("check-manifest")
+    session.run("check-manifest", *session.posargs)
+
+
+@nox.session
+def lint(session: nox.Session) -> None:
+    """Run all pre-commit hooks on all files."""
+    session.install("pre-commit")
+    session.run(
+        "pre-commit",
+        "run",
+        "--all-files",
+        "--show-diff-on-failure",
+        *session.posargs,
+    )
