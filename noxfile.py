@@ -205,7 +205,7 @@ def linkcheck(session: nox.Session):
 
 MYPY_TROUBLESHOOTING = """
 
-To learn more about type hints, check out mypy's cheat sheet at:
+To learn more about type hints 🦺, check out mypy's cheat sheet at:
 
   https://mypy.readthedocs.io/en/stable/cheat_sheet_py3.html
 
