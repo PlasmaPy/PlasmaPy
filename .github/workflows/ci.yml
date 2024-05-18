@@ -66,6 +66,11 @@ jobs:
           python: '3.12'
           nox_session: cff
 
+        - name: Check MANIFEST.in
+          os: ubuntu-latest
+          python: '3.12'
+          nox_session: manifest
+
     steps:
 
     - name: Checkout code
