@@ -129,6 +129,16 @@ jobs:
           python: '3.10'
           nox_session: import
 
+        - name: Check MANIFEST.in
+          os: ubuntu-latest
+          python: '3.12'
+          nox_session: manifest
+
+        - name: Lint
+          os: ubuntu-latest
+          python: '3.12'
+          nox_session: lint
+
     steps:
 
     - name: Checkout code
