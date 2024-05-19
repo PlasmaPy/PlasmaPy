@@ -622,3 +622,7 @@ authors:
 - given-names: Carol
   family-names: Zhang
   alias: carolyz
+
+- given-names: Chase
+  family-names: Davies
+  alias: chasepd
