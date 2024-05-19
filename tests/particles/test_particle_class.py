@@ -527,7 +527,7 @@ def test_Particle_class(arg, kwargs, expected_dict):
 
     try:
         particle = Particle(arg, **kwargs)  # noqa: F841
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         raise ParticleError(f"Problem creating {call}") from exc
 
     for key in expected_dict:
@@ -909,7 +909,7 @@ def test_that_object_can_be_dict_key(key):
 
     try:
         dictionary = {key: value}
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         error_message = f"{key} is not a valid key for a dict. "
         if not isinstance(key, collections.abc.Hashable):
             error_message += f"{key} is not hashable. "
@@ -1573,3 +1573,63 @@ def test_undefined_mass_energy() -> None:
     """Test that a particle with an undefined mass energy returns |nan| J."""
     nu_tau_particle = Particle("nu_tau")
     assert u.isclose(nu_tau_particle.mass_energy, np.nan * u.J, equal_nan=True)
+
+
+def test_isotopes_have_equivalent_ionization_energy() -> None:
+    """Test that isotopes of the same element with the same charge have the same ionization energy."""
+    U = Particle("U +1")
+    U_235 = Particle("U-235 +1")
+    U_238 = Particle("U-238 +1")
+
+    assert U.ionization_energy == U_235.ionization_energy == U_238.ionization_energy
+
+
+def test_different_ions_have_different_ionization_energy() -> None:
+    """Test that isotopes of the same element with different charges have different ionization energies."""
+    U_1 = Particle("U +1")
+    U_2 = Particle("U +2")
+    U_3 = Particle("U +3")
+
+    assert U_1.ionization_energy != U_2.ionization_energy
+    assert U_1.ionization_energy != U_3.ionization_energy
+    assert U_2.ionization_energy != U_3.ionization_energy
+
+
+def test_zero_charge_ionization_energy() -> None:
+    """Test that the ionization energy is the same if initialized with a zero charge or just the element symbol."""
+    C_0 = Particle("C +0")
+    C = Particle("C")
+    assert C_0.ionization_energy == C.ionization_energy
+
+
+def test_deuterium_ionization_energy() -> None:
+    """Test that the ionization energy of deuterium is the same as the ionization energy of H-2."""
+    D = Particle("D")
+    H_2 = Particle("H-2")
+    H = Particle("H")
+    assert D.ionization_energy == H_2.ionization_energy
+    assert D.ionization_energy != H.ionization_energy
+
+
+@pytest.mark.parametrize(
+    ("particle_symbol", "expected_ionization_energy"),
+    [
+        ("H", (13.598434599702 * u.eV).to(u.J)),
+        ("He", u.Quantity((24.587389011 * u.eV).to(u.J).value, u.J)),
+        ("Li", u.Quantity((5.391714996 * u.eV).to(u.J).value, u.J)),
+    ],
+)
+def test_particle_ionization_energy(particle_symbol, expected_ionization_energy):
+    particle = Particle(particle_symbol)
+    assert u.isclose(
+        particle.ionization_energy, expected_ionization_energy, rtol=1e-4
+    ), f"Expected {expected_ionization_energy}, got {particle.ionization_energy}"
+
+
+def test_undefined_ionization_energy():
+    particle = Particle("tau neutrino")
+    try:
+        energy = particle.ionization_energy
+        pytest.fail(f"Expected MissingParticleDataError, got {energy}")
+    except MissingParticleDataError:
+        pass

@@ -7,7 +7,7 @@ on:
 
 jobs:
   update-requirements:
-    name: Regenerate requirements.txt
+    name: Regenerate requirements
     runs-on: ubuntu-latest
     if: github.repository == 'PlasmaPy/PlasmaPy'
 
@@ -24,10 +24,16 @@ jobs:
         python-version: 3.12
 
     - name: Install tox and its extensions
-      run: python -m pip install --upgrade tox tox-uv
+      run: python -m pip install --upgrade tox tox-uv nox uv
 
-    - name: Rebuild requirements
+    # Temporarily use requirements files generated both by tox and nox
+    # during the switchover from tox to nox.
+
+    - name: Rebuild requirements with tox
       run: tox -e requirements
+
+    - name: Rebuild requirements with nox
+      run: nox -s requirements
 
     # When a PR is created by a GitHub Action, normally the checks will
     # not be run. While the simplest workaround would have been to open
@@ -46,7 +52,7 @@ jobs:
       uses: peter-evans/create-pull-request@v6
       with:
         token: ${{ steps.generate_token.outputs.token }}
-        commit-message: Regenerate requirements.txt
+        commit-message: Regenerate requirements
         title: Update pinned requirements
         body: |
           This pull request (PR) regenerates the pinned requirements files used in continuous integration (CI) tests and by integrated development environments (IDEs), including [requirements.txt](https://github.com/PlasmaPy/PlasmaPy/blob/main/requirements.txt) and the files in the[requirements/](https://github.com/PlasmaPy/PlasmaPy/blob/main/requirements) directory. To update requirements locally, run "tox -e requirements", with the environment defined in [tox.ini](https://github.com/PlasmaPy/PlasmaPy/blob/main/tox.ini). The resolution of requirements is done by [uv](https://github.com/astral-sh/uv).

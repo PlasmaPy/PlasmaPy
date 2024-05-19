@@ -12,7 +12,45 @@ Testing Guide
 Summary
 =======
 
-* New functionality added to PlasmaPy must have tests.
+Running tests (quickstart guide)
+--------------------------------
+
+To prepare to run tests from the command line, |open a terminal| and
+install |Nox| and |uv|:
+
+.. tabs::
+
+   .. group-tab:: macOS, Linux, or WSL
+
+      .. code-block:: console
+
+         python -m pip install nox uv
+
+   .. group-tab:: Windows
+
+      .. code-block:: console
+
+         py -m pip install nox uv
+
+To run tests, navigate to a directory within your local clone of
+PlasmaPy and run:
+
+.. code-block:: console
+
+   nox
+
+This command will invoke `pytest` to run PlasmaPy's tests, excluding the
+tests marked as slow.
+
+.. important::
+
+   PlasmaPy is in the process of switching its test runner from |tox| to
+   |Nox|. |tox| is still used for defining weekly tests.
+
+Writing tests
+-------------
+
+* All functionality in PlasmaPy must have tests.
 
 * Tests are located in the top-level |tests/| directory. For example,
   tests of `plasmapy.formulary` are in :file:`tests/formulary/`.
@@ -29,31 +67,6 @@ Summary
 
       def test_multiplication():
           assert 2 * 3 == 6
-
-* To install the packages needed to run the tests:
-
-  - Open a terminal.
-
-  - Navigate to the top-level directory (probably named
-    :file:`PlasmaPy/`) in your local clone of PlasmaPy's repository.
-
-  - If you are on macOS or Linux, run:
-
-    .. code-block:: console
-
-       python -m pip install -e ".[tests]"
-
-    If you are on Windows, run:
-
-    .. code-block:: console
-
-       py -m pip install -e .[tests]
-
-    These commands will perform an |editable installation| of your
-    local clone of PlasmaPy.
-
-* Run `pytest` in the command line in order to run tests in that
-  directory and its subdirectories.
 
 Introduction
 ============
@@ -89,7 +102,7 @@ does it in isolation from other tests :cite:p:`khorikov:2020`. A typical
 *assert* :cite:p:`osherove:2013`. An |integration test| verifies that
 multiple software components work together as intended.
 
-PlasmaPy's tests are run using `pytest` and |tox|. Tests are located in
+PlasmaPy's tests are run using `pytest` and |Nox|. Tests are located in
 the |tests/| directory. For example, tests of `plasmapy.formulary`
 are located in :file:`tests/formulary` and tests of
 `plasmapy.formulary.speeds` are located in
@@ -529,24 +542,17 @@ PlasmaPy's tests can be run in the following ways:
 
 1. Creating and updating a pull request on |GitHub|.
 2. Running `pytest` from the command line.
-3. Running |tox| from the command line.
+3. Running |Nox| from the command line.
 4. Running tests from an :wikipedia:`integrated development environment
    <integrated_development_environment>` (IDE).
 
-We recommend that new contributors perform the tests via a pull request
-on |GitHub|. Creating a draft pull request and keeping it updated will
-ensure that the necessary checks are run frequently. This approach is
-also appropriate for pull requests with a limited scope. This advantage
-of this approach is that the tests are run automatically and do not
-require any extra work. The disadvantages are that running the tests on
-|GitHub| is often slow and that navigating the test results is sometimes
-difficult.
+We recommend that new contributors perform tests via a pull request on
+GitHub. Creating a draft pull request and keeping it updated ensures
+that all necessary checks are run frequently.
 
-We recommend that experienced contributors run tests either by using
-`pytest` from the command line or by using your preferred IDE. Using |tox|
-is an alternative to `pytest`, but running tests with |tox| adds the
-overhead of creating an isolated environment for your test and can thus
-be slower.
+Experienced contributors may find it useful to run tests from the
+command line using `pytest` or |Nox|, or via an IDE. In particular,
+using |Nox| ensures that tests are run in the same way as in CI.
 
 Using GitHub
 ------------
@@ -573,7 +579,7 @@ The following checks are performed with each pull request.
 * Checks with labels like **CI / Python 3.x (pull request)** verify that
   PlasmaPy works with different versions of Python and other
   dependencies, and on different operating systems. These tests are set
-  up using |tox| and run with `pytest` via |GitHub Actions|. When
+  up using |Nox| and run with `pytest` via |GitHub Actions|. When
   multiple tests fail, investigate these tests first.
 
   .. tip::
@@ -652,7 +658,7 @@ The following checks are performed with each pull request.
 
 .. note::
 
-   The continuous integration checks performed for pull requests change
+   The continuous integration (CI) checks performed for pull requests change
    frequently. If you notice that the above list has become out-of-date,
    please `submit an issue that this section needs updating
    <https://github.com/PlasmaPy/PlasmaPy/issues/new?title=Update%20information%20on%20GitHub%20checks%20in%20testing%20guide&labels=Documentation>`__.
@@ -661,16 +667,16 @@ Using pytest
 ------------
 
 To install the packages necessary to run tests on your local computer
-(including |tox| and pytest_), run:
+(including |Nox| and pytest_), run:
 
-.. code-block:: shell
+.. code-block:: console
 
    pip install -e .[tests]
 
 To run PlasmaPy's tests from the command line, go to a directory within
 PlasmaPy's repository and run:
 
-.. code-block:: shell
+.. code-block:: console
 
    pytest
 
@@ -678,13 +684,19 @@ This command will run all of the tests found within your current
 directory and all of its subdirectories. Because it takes time to run
 PlasmaPy's tests, it is usually most convenient to specify that only a
 subset of the tests be run. To run the tests contained within a
-particular file or directory, include its name after `pytest`. If you
-are in the directory :file:`plasmapy/particles/tests/`, then the tests
-in in :file:`test_atomic.py` can be run with:
+particular file or directory, include its name after `pytest`.
 
-.. code-block:: shell
+.. code-block:: console
 
-   pytest test_atomic.py
+   pytest tests/particles/test_atomic.py
+
+The ``pytest-filter-subpackage`` extension lets us use the ``-P`` flag
+to specify a subpackage (directory) that tests should be run for. To
+perform tests for `plasmapy.particles`, run:
+
+.. code-block:: console
+
+   pytest -P particles
 
 The documentation for `pytest` describes `how to invoke pytest`_ and
 specify which tests will or will not be run. A few useful examples of
@@ -706,51 +718,54 @@ flags you can use with it:
 * Use the ``--pdb`` flag to enter the `Python debugger`_ upon test
   failures.
 
-Using tox
+Using Nox
 ---------
 
-PlasmaPy's continuous integration tests on |GitHub| are typically run
-using |tox|, a tool for automating Python testing. Using |tox| simplifies
-testing PlasmaPy with different releases of Python, with different
-versions of PlasmaPy's dependencies, and on different operating systems.
-While testing with |tox| is more robust than testing with `pytest`, using
-|tox| to run tests is typically slower because |tox| creates its own
-virtual environments.
+PlasmaPy's continuous integration checks on |GitHub| are typically run
+using |Nox|, a Python tool for automating tasks such as running software
+tests, building documentation, and performing other checks. Using |Nox|
+simplifies testing PlasmaPy with different releases of Python, with
+different versions of PlasmaPy's dependencies, and on different
+operating systems. Testing with |Nox| is more robust than testing with
+`pytest` alone because |Nox| creates its own virtual environments and
+ensures that tests are run the same way as in CI.
 
-To run PlasmaPy's tests for a particular environment, run:
+.. tip::
 
-.. code-block:: shell
+   Installing |uv| alongside |Nox| leads to significantly faster
+   dependency resolution and improved caching.
 
-   tox -e ⟨envname⟩
+To run PlasmaPy's tests (except for those marked as slow), run:
 
-where ``⟨envname⟩`` is replaced with the name of the |tox| environment,
-as described below.
+.. code-block:: console
 
-Some testing environments for |tox| are pre-defined. For example, you
-can replace ``⟨envname⟩`` with ``py39`` if you are running Python
-``3.9.x``, ``py310`` if you are running Python ``3.10.x``, or ``py311``
-if you are running Python ``3.11.x``. Running |tox| with any of these
-environments requires that the appropriate version of Python has been
-installed and can be found by |tox|. To find the version of Python that
-you are using, go to the command line and run ``python
---version``.
+   nox
 
-Additional `tox environments`_ are defined in :file:`tox.ini` in the
-top-level directory of PlasmaPy's repository. To find which testing
-environments are available, run:
+To find out what |Nox| sessions are defined, run:
 
-.. code-block:: shell
+.. code-block::
 
-   tox -a
+   nox -l
+
+To run PlasmaPy's tests for a particular session, run:
+
+.. code-block:: console
+
+   nox -s '<session>'
+
+where ``<session>`` is replaced with the name of the |Nox| session. The
+quotes are only needed if ``<session>`` contains special characters like
+parentheses.
 
 For example, static type checking with |mypy| can be run locally with
 
-.. code-block:: shell
+.. code-block:: console
 
-   tox -e mypy
+   nox -s mypy
 
-Commands using |tox| can be run in any directory within PlasmaPy's
-repository with the same effect.
+Commands using |Nox| must be run in the top-level directory of the
+PlasmaPy repository, which is the directory containing
+:file:`noxfile.py`.
 
 .. _code-coverage:
 
@@ -797,7 +812,7 @@ Code coverage reports may be generated on your local computer to show
 which lines of code are covered by tests and which are not. To generate
 an HTML report, use the ``--cov`` flag for `pytest`:
 
-.. code-block:: shell
+.. code-block:: console
 
    pytest --cov
    coverage html
@@ -816,8 +831,8 @@ yet able to handle correctly.
 
 To exclude a line from a coverage report, end it with
 ``# coverage: ignore``. Alternatively, we may add a line to
-``exclude_lines`` in the ``[coverage:report]`` section of
-:file:`setup.cfg` that consists of a
+``exclude_lines`` in the ``[tool.coverage.report]`` section of
+:file:`pyproject.toml` that consists of a
 a pattern that indicates that a line be excluded from coverage reports.
 In general, untested lines of code should remain marked as untested to
 give future developers a better idea of where tests should be added in
@@ -826,9 +841,10 @@ the future and where potential bugs may exist.
 Coverage configurations
 -----------------------
 
-Configurations for coverage tests are given in the ``[coverage:run]``
-and ``[coverage:report]`` sections of :file:`setup.cfg`. Codecov_
-configurations are given in :file:`.codecov.yaml`.
+Configurations for coverage tests are given in the
+``[tool.coverage.report]`` and ``[tool.coverage.run]`` sections of
+:file:`pyproject.toml`. Codecov_ configurations are given in
+:file:`codecov.yml`.
 
 Using an integrated development environment
 -------------------------------------------
@@ -868,6 +884,5 @@ popular IDEs:
 .. _`test discovery conventions`: https://docs.pytest.org/en/latest/goodpractices.html#conventions-for-python-test-discovery
 .. _`test warnings`: https://docs.pytest.org/en/latest/warnings.html#warns
 .. _`test exceptions`: https://docs.pytest.org/en/latest/assert.html#assertions-about-expected-exceptions
-.. _`tox environments`: https://tox.wiki/en/stable/config.html#tox-environment
 .. _unpacking: https://docs.python.org/3/tutorial/controlflow.html#unpacking-argument-lists
 .. _`Visual Studio`: https://visualstudio.microsoft.com
