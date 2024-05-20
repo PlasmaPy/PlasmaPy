@@ -14,7 +14,7 @@ asteval==0.9.32
     # via lmfit
 astropy==6.1.0
     # via plasmapy (pyproject.toml)
-astropy-iers-data==0.2024.5.13.0.30.12
+astropy-iers-data==0.2024.5.20.0.29.40
     # via astropy
 asttokens==2.4.1
     # via stack-data
@@ -89,7 +89,7 @@ future==1.0.0
     # via uncertainties
 h5py==3.11.0
     # via plasmapy (pyproject.toml)
-hypothesis==6.102.1
+hypothesis==6.102.4
     # via plasmapy (pyproject.toml)
 identify==2.5.36
     # via pre-commit
@@ -167,7 +167,7 @@ markupsafe==2.1.5
     # via
     #   jinja2
     #   nbconvert
-matplotlib==3.8.4
+matplotlib==3.9.0
     # via plasmapy (pyproject.toml)
 matplotlib-inline==0.1.7
     # via
@@ -242,7 +242,7 @@ pexpect==4.9.0
     # via ipython
 pillow==10.3.0
     # via matplotlib
-platformdirs==4.2.1
+platformdirs==4.2.2
     # via
     #   jupyter-core
     #   tox
@@ -277,7 +277,7 @@ pyparsing==3.1.2
     # via matplotlib
 pyproject-api==1.6.1
     # via tox
-pytest==8.2.0
+pytest==8.2.1
     # via
     #   plasmapy (pyproject.toml)
     #   pytest-cov
@@ -291,6 +291,7 @@ pytest-cov==5.0.0
 pytest-datadir==1.5.0
     # via pytest-regressions
 pytest-filter-subpackage==0.2.0
+    # via plasmapy (pyproject.toml)
 pytest-regressions==2.5.0
     # via plasmapy (pyproject.toml)
 pytest-rerunfailures==14.0
