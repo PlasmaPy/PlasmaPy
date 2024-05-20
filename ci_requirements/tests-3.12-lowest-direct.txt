@@ -244,7 +244,7 @@ pexpect==4.9.0
     # via ipython
 pillow==10.3.0
     # via matplotlib
-platformdirs==4.2.1
+platformdirs==4.2.2
     # via
     #   jupyter-core
     #   tox
@@ -294,6 +294,7 @@ pytest-cov==5.0.0
 pytest-datadir==1.5.0
     # via pytest-regressions
 pytest-filter-subpackage==0.2.0
+    # via plasmapy (pyproject.toml)
 pytest-regressions==2.5.0
     # via plasmapy (pyproject.toml)
 pytest-rerunfailures==13.0

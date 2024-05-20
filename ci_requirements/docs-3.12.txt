@@ -16,7 +16,7 @@ asteval==0.9.32
     # via lmfit
 astropy==6.1.0
     # via plasmapy (pyproject.toml)
-astropy-iers-data==0.2024.5.13.0.30.12
+astropy-iers-data==0.2024.5.20.0.29.40
     # via astropy
 asttokens==2.4.1
     # via stack-data
@@ -175,7 +175,7 @@ markupsafe==2.1.5
     # via
     #   jinja2
     #   nbconvert
-matplotlib==3.8.4
+matplotlib==3.9.0
     # via plasmapy (pyproject.toml)
 matplotlib-inline==0.1.7
     # via
@@ -255,7 +255,7 @@ pillow==10.3.0
     #   plasmapy (pyproject.toml)
     #   matplotlib
     #   sphinx-gallery
-platformdirs==4.2.1
+platformdirs==4.2.2
     # via
     #   jupyter-core
     #   tox
