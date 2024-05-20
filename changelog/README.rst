@@ -52,8 +52,11 @@ pull request to PlasmaPy's ``main`` branch.
    * ``bugfix``: For changes that fix bugs or problems with the code.
    * ``doc``: For changes to the documentation.
    * ``feature``: For new user-facing features and any new behavior.
-   * ``removal``: For feature deprecation and/or removal.
-   * ``trivial``: For changes that have no user-facing effects.
+   * ``internal``: For refactoring of the internal mechanics of the code
+     and tests in ways that do not change the application user interface.
+   * ``removal``: For feature deprecation and planned removals.
+   * ``trivial``: For minor changes that do not change the application
+     programming interface.
 
    Pull request `#1198 <https://github.com/PlasmaPy/PlasmaPy/pull/1198>`__
    includes an update to the documentation, so the file should be named
@@ -98,8 +101,9 @@ Changelog guidelines
   understandable to someone with limited familiarity of the package.
 
 * Changelog entries are not required for changes that are sufficiently
-  minor, such as typo fixes. When this is the case, a package maintainer
-  will add the *No changelog entry needed* label to the pull request.
+  minor, such as typo fixes or fixed hyperlinks. When this is the case,
+  a package maintainer will add the :guilabel:`no changelog entry needed`
+  label to the pull request.
 
 * Use the past tense to describe the change, and the present tense to
   describe how the functionality currently works.
@@ -143,17 +147,16 @@ Changelog guidelines
 
 .. tip::
 
-   When removing or moving an object, |reStructuredText| links that follow the
-   original namespace will break, causing the documentation build to
-   fail.
+   When removing or moving an object, |reStructuredText| links that
+   follow the original namespace will break, causing the documentation
+   build to fail.
 
    Text in single back ticks is used to link to code objects, while text
    in double back ticks is treated as an `inline literal`_. To remedy
    this problem in old changelog entries, change the broken link into an
    inline literal by surrounding it with double back ticks instead.
    Remove the tilde if present. For example,
-   ```~plasmapy.subpackage.module.function``` should be changed
-   to:
+   ```~plasmapy.subpackage.module.function``` should be changed to:
 
    .. code-block:: rst
 
@@ -166,12 +169,12 @@ Building the changelog
 ======================
 
 During the release cycle, |towncrier| is used to build the changelog. To
-install |towncrier| and the other packages needed to develop PlasmaPy, go
-to the top-level directory of your local clone of PlasmaPy and run:
+install |towncrier| and the other packages needed to develop PlasmaPy,
+go to the top-level directory of your local clone of PlasmaPy and run:
 
 .. code-block:: shell
 
-   pip install -e .[dev]
+   pip install -e .[docs]
 
 Configuration files for |towncrier| are in :file:`pyproject.toml`.
 
@@ -182,16 +185,15 @@ repository. To print out a preview of the changelog, run:
 
    towncrier --draft
 
-To convert the changelog entries into a changelog prior to the 0.7.0
-release, run:
+To convert the changelog entries into a changelog prior to the
+``v2024.5.0`` release, run:
 
 .. code-block:: shell
 
-   towncrier --version v0.7.0
+   towncrier build --version=v2024.5.0
 
-This will create :file:`CHANGELOG.rst` in the top-level directory, with
-the option to delete the individual changelog entry files. The full
-steps to update the changelog are described in the :ref:`Release Guide`.
+This command will ask for permission to delete changelog entries, and
+then create :file:`CHANGELOG.rst` in the top-level directory.
 
 .. tip::
 
@@ -202,8 +204,7 @@ steps to update the changelog are described in the :ref:`Release Guide`.
 
       towncrier create --edit ⟨number⟩.⟨type⟩.rst
 
-   Here, ``⟨number⟩`` is replaced with the pull request number and
-   ``⟨type⟩`` is replaced with the one of the changelog types as
-   described above.
+   Replace ``⟨number⟩`` with the pull request number and ``⟨type⟩``
+   with the one of the changelog types as described above.
 
 .. _inline literal: https://docutils.sourceforge.io/docs/user/rst/quickref.html#inline-markup

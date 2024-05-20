@@ -1,3 +1,0 @@
-Changed the default configuration for `pytest` so that if a test is marked
-as expected to fail actually passes, then that test will issue an error
-to indicate that the `pytest.mark.xfail` mark can be removed.

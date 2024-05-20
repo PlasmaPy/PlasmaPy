@@ -1,2 +1,0 @@
-Reduced the number of warnings emitted by `plasmapy.particles` during
-tests by decorating test functions with `pytest.mark.filterwarnings`.

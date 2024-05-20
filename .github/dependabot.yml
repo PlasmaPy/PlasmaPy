@@ -3,9 +3,11 @@ version: 2
 updates:
 
 - package-ecosystem: github-actions
-  directory: /
+  directory: /.github/workflows
+  labels:
+  - GitHub Actions
+  - no changelog entry needed
+  reviewers:
+  - namurphy
   schedule:
     interval: daily
-  labels:
-  - No changelog entry needed
-  - GitHub Actions

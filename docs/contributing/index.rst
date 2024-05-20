@@ -11,6 +11,7 @@ Contributor Guide
 
    getting_ready
    workflow
+   pre-commit
    coding_guide
    changelog_guide
    testing_guide

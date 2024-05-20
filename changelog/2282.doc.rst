@@ -1,5 +1,0 @@
-Changed ``from astropy import units as u``
-to ``import astropy.units as u``
-and ``from astropy import constants as const``
-to ``import astropy.constants as const`` in order to increase
-consistency of import statements.

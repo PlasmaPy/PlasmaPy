@@ -9,6 +9,9 @@ Getting Ready to Contribute
    :local:
    :backlinks: none
 
+.. role:: bash(code)
+   :language: bash
+
 Introduction
 ============
 
@@ -146,10 +149,10 @@ Initial setup
 #. Create a fork_ of PlasmaPy by clicking on :guilabel:`Fork`, followed
    by :guilabel:`Create fork`.
 
-#. :ref:`Open a terminal <opening-a-terminal>`. Then create and/or
-   navigate to the folder in which you want to download PlasmaPy. For
-   example, to put PlasmaPy into a new directory called :file:`repos/`
-   in your home directory (denoted by :bash:`~`), run:
+#. |Open a terminal|. Then create and/or navigate to the folder in which
+   you want to download PlasmaPy. For example, to put PlasmaPy into a
+   new directory called :file:`repos/` in your home directory (denoted
+   by :bash:`~`), run:
 
    .. code-block::
 
@@ -203,16 +206,16 @@ environment`_ instead.
    Using Conda/virtual environments helps avoid situations as in `this
    xkcd comic`_.
 
-#. :ref:`Open a terminal <opening-a-terminal>`.
+#. |Open a terminal|.
 
 #. Create a Conda environment named ``plasmapy-dev`` by running:
 
    .. code-block:: bash
 
-      conda create -n plasmapy-dev python=3.11
+      conda create -n plasmapy-dev python=3.12
 
    The :bash:`-n` flag is used to specify the name of the environment.
-   The ``3.11`` can be replaced with any version of Python from
+   The ``3.12`` can be replaced with any version of Python from
    |minpython| to |maxpython|.
 
 #. Activate the environment with:
@@ -233,7 +236,7 @@ clone of PlasmaPy. Making the PlasmaPy installation *editable* means
 that if you modify the source code, then those changes will be included
 when you :py:`import plasmapy`.
 
-1. :ref:`Open a terminal <opening-a-terminal>`.
+1. |Open a terminal|.
 
 2. Navigate to the directory for your clone of PlasmaPy, which should be
    named :file:`PlasmaPy`. For example, if you ran the :bash:`git clone`
@@ -268,7 +271,7 @@ when you :py:`import plasmapy`.
 
          .. code-block:: bash
 
-            python -m pip install -e .[docs,tests]
+            python -m pip install -e '.[docs,tests]'
 
       .. group-tab:: Linux/WSL
 
@@ -308,86 +311,6 @@ when you :py:`import plasmapy`.
       >>> # now change the source code
       >>> reload(plasmapy)
 
-Installing pre-commit
-=====================
-
-PlasmaPy uses |pre-commit| to automate code quality checks and perform
-automated fixes. Because pre-commit checks are performed on GitHub, it
-is optional to set up pre-commit locally.
-
-.. tip::
-
-   We recommend enabling pre-commit locally on your computer after you
-   become comfortable with the :ref:`code contribution workflow
-   <workflow>`.
-
-To enable pre-commit on your computer:
-
-#. :ref:`Open a terminal <opening-a-terminal>`.
-
-#. Navigate to the :file:`PlasmaPy/` directory that contains your clone
-   of PlasmaPy's repository. For example, if you cloned PlasmaPy into
-   the :file:`~/repos/` directory, then run:
-
-   .. code-block:: bash
-
-      cd ~/repos/PlasmaPy
-
-#. If you created a Conda_ environment for PlasmaPy, activate it with:
-
-   .. code-block:: bash
-
-      conda activate plasmapy-dev
-
-#. Make sure that pre-commit is installed by running:
-
-   .. tabs::
-
-      .. group-tab:: Windows
-
-         .. code-block:: bash
-
-            py -m pip install pre-commit
-
-      .. group-tab:: macOS
-
-         .. code-block:: bash
-
-            python -m pip install pre-commit
-
-      .. group-tab:: Linux/WSL
-
-         .. code-block:: bash
-
-            python -m pip install pre-commit
-
-#. Install pre-commit with:
-
-   .. code-block:: bash
-
-      pre-commit install
-
-.. note::
-
-   Once pre-commit has been installed for a repository, pre-commit will
-   run every time you try to commit a change. If any pre-commit checks
-   fail, or if pre-commit changes any files, it will be necessary to
-   redo :bash:`git add` on the changed files and :bash:`git commit` once
-   again.
-
-.. tip::
-
-   To commit a change without running pre-commit, use the :bash:`-n` or
-   :bash:`--no-verify` flag with |git|.
-
-.. tip::
-
-   To run ``pre-commit`` on all files, use
-
-   .. code-block:: bash
-
-      pre-commit run --all-files
-
 .. _Add a new SSH key to your GitHub account: https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account
 .. _Anaconda Navigator: https://docs.anaconda.com/free/navigator
 .. _Anaconda: https://docs.anaconda.com
@@ -410,7 +333,7 @@ To enable pre-commit on your computer:
 .. _powershell: https://learn.microsoft.com/en-us/powershell
 .. _Real Python: https://realpython.com
 .. _remote: https://github.com/git-guides/git-remote
-.. _sign up on GitHub: https://github.com/join
+.. _sign up on GitHub: https://github.com/signup
 .. _terminal user guide: https://support.apple.com/guide/terminal/welcome/mac
 .. _this xkcd comic: https://xkcd.com/1987
 .. _unix tutorial: https://www.hpc.iastate.edu/guides/unix-introduction/unix-tutorial-1

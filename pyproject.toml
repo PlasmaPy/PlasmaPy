@@ -21,7 +21,10 @@ keywords = [
   "space plasmas",
 ]
 license = {file = "LICENSE.md"}
-requires-python = ">=3.9"
+# NumPy Enhancement Proposal 29 recommends that packages support minor
+# releases of Python for 42 months after the initial release (see
+# https://numpy.org/neps/nep-0029-deprecation_policy.html#support-table).
+requires-python = ">=3.10"
 classifiers = [
   "Development Status :: 4 - Beta",
   "Intended Audience :: Education",
@@ -36,68 +39,98 @@ classifiers = [
 dynamic = [
   "version",
 ]
+
+# SPEC 0 recommends that support for core packages should generally be
+# dropped two years after their initial release (see
+# https://scientific-python.org/specs/spec-0000). Exceptions may include
+# critical bugfixes or when making use of important new features. Any
+# upper limits on package versions should be temporary because they can
+# make it harder to resolve environments when PlasmaPy is installed
+# alongside other packages, such as in the heliopythoniverse.
+
+# When updating dependencies, run `nox -s requirements` to update the
+# pinned requirements files. See `ci_requirements/README.txt` for
+# details.
+
 dependencies = [
-  "astropy >= 5.0.2",
-  "h5py >= 3.3.0",
-  "ipykernel >= 5.5.6",
-  "ipywidgets >= 7.6.5",
-  "lmfit >= 1.0.3",
+  "astropy >= 5.1",
+  "h5py >= 3.7.0",
+  "ipykernel >= 6.8.0",
+  "ipywidgets >= 7.7.0",
+  "lmfit >= 1.1.0",
   "matplotlib >= 3.5.1",
   "mpmath >= 1.2.1",
-  "numba >= 0.56.0",
-  "numpy >= 1.21.0",
+  "numba >= 0.57.0",
+  "numpy >= 1.23.0",
   "packaging >= 22.0",
-  "pandas >= 1.3.0",
-  "pytest >= 7.0.1",
-  "requests >= 2.27.1",
-  "scipy >= 1.7.0",
+  "pandas >= 1.4.0",
+  "requests >= 2.28.0",
+  "scipy >= 1.8.0",
+  "setuptools >= 61.2.0",
   "tqdm >= 4.60.0",
-  "voila >= 0.3.3",
-  "wrapt >= 1.12.1",
+  "voila >= 0.4.0",
+  "wrapt >= 1.14.0",
   "xarray >= 2022.3.0",
 ]
+
 [project.optional-dependencies]
+# The documentation build occurs in an isolated environment that is not
+# user-facing, so we can have stricter requirements.
 docs = [
-  "docutils >= 0.18.1",
-  "jinja2 >= 3.1.2",
-  "nbsphinx >= 0.9.1",
-  "numpydoc >= 1.5.0",
-  "pillow >= 9.5.0",
-  "pygments >= 2.15.0",
-  "sphinx >= 7.2.3",
-  "sphinx-changelog >= 1.3.0",
+  "docutils >= 0.20.1",
+  "jinja2 >= 3.1.3",
+  "nbsphinx >= 0.9.3",
+  "nox >= 2024.4.15",
+  "numpydoc >= 1.6.0",
+  "pillow >= 10.2.0",
+  "pygments >= 2.17.2",
+  # install setuptools to get pkg_resources for doc build
+  "setuptools; python_version >= '3.12'",
+  "sphinx >= 7.3.7",
+  "sphinx-changelog >= 1.5.0",
   "sphinx-codeautolink >= 0.15.0",
-  "sphinx-copybutton >= 0.5.1",
-  "sphinx-gallery >= 0.12.2",
-  "sphinx-hoverxref >= 1.1.1",
-  "sphinx-issues >= 3.0.1",
+  "sphinx-copybutton >= 0.5.2",
+  "sphinx-gallery >= 0.15.0",
+  "sphinx-hoverxref >= 1.3.0",
+  "sphinx-issues >= 4.0.0",
   "sphinx-notfound-page >= 1.0.0",
-  "sphinx-reredirects >= 0.1.1",
-  "sphinx_rtd_theme >= 1.2.2",
-  "sphinx_tabs >= 3.4.1",
-  "sphinx_toolbox >= 3.5.0",
-  "sphinxcontrib-bibtex >= 2.5.0",
+  "sphinx-reredirects >= 0.1.3",
+  "sphinx_rtd_theme >= 2.0.0",
+  "sphinx_tabs >= 3.4.5",
+  "sphinx_collapse >= 0.1.2",
+  "sphinxcontrib-bibtex >= 2.6.2",
   "sphinxcontrib-globalsubs >= 0.1.1",
-  "towncrier >= 22.12",
-  "tox >= 4.4.0",
-  "unidecode >= 1.3.6",
+  "towncrier >= 23.11.0",
+  "tox >= 4.12.1",
+  "tox-uv >= 1.7.0",
+  "unidecode >= 1.3.8",
 ]
+
+# Test dependencies are not user-facing, so we can set stricter
+# requirements to ensure that tests are run in consistent environments.
 tests = [
-  "hypothesis >= 6.35.1",
-  "pre-commit >= 3.0.0",
-  "pytest-regressions >= 2.3.1",
-  "pytest-xdist >= 3.0.2",
+  "hypothesis >= 6.97.4",
+  "nox >= 2024.4.15",
+  "pre-commit >= 3.6.0",
+  "pytest >= 8.0.2",
+  "pytest-cov >= 5.0.0",
+  "pytest-filter-subpackage >= 0.2.0",
+  "pytest-regressions >= 2.5.0",
+  "pytest-rerunfailures >= 13.0",
+  "pytest-xdist >= 3.5.0",
   "tomli >= 2.0.1",
-  "tox >= 4.3.1",
+  "tox >= 4.12.1",
+  "tox-uv >= 1.7.0",
 ]
+
 [project.urls]
 Changelog = "https://docs.plasmapy.org/en/stable/whatsnew/index.html"
 Chat = "https://plasmapy.org/chat"
 Documentation = "https://docs.plasmapy.org/"
 Issues = "https://github.com/PlasmaPy/plasmapy/issues/"
 Source = "https://github.com/PlasmaPy/plasmapy"
-Twitter = "https://twitter.com/PlasmaPy"
 website = "https://www.plasmapy.org"
+
 [project.scripts]
 plasma-calculator = "plasmapy.utils.calculator:main"
 
@@ -110,40 +143,61 @@ include-package-data = true
 "plasmapy.utils.calculator" = ["*"]
 
 [tool.setuptools.packages.find]
-exclude = ["docs/automodapi", "plasmapy/_dev"]
+where = ["src"]
+exclude = ["docs/automodapi", "src/plasmapy/_dev"]
 namespaces = false
 
 [tool.setuptools_scm]
-write_to = "plasmapy/_version.py"
-
-[tool.isort]
-profile = "black"
-known_first_party = ["plasmapy", ]
-default_section = "STDLIB"
-force_alphabetical_sort_within_sections = true
-honor_noqa = true
-lines_between_types = 1
+write_to = "src/plasmapy/_version.py"
 
 [tool.pytest.ini_options]
-minversion = "7.0.1"
-testpaths = ['plasmapy']
-norecursedirs = ['build', 'docs', 'plasmapy[\/]_dev']
+testpaths = ['.']
 xfail_strict = true
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+]
 doctest_optionflags = """
 NORMALIZE_WHITESPACE
 ELLIPSIS
-NUMBER"""
-addopts = "--doctest-modules --doctest-continue-on-failure"
+NUMBER
+IGNORE_EXCEPTION_DETAIL"""
 filterwarnings = [
   "ignore:.*deprecated in traitlets 4.2.*:DeprecationWarning",
   "ignore:.*MultiIndex.*:DeprecationWarning",  # https://github.com/PlasmaPy/PlasmaPy/issues/2319
 ]
+norecursedirs = [
+  '*egg-info*',
+  '.*cache*',
+  '.*env',
+  '.[tn]ox',
+  '.cov*',
+  '.git*',
+  '.hypothesis',
+  '.idea',
+  '.jupyter',
+  '.vscode',
+  '__pycache__',
+  '_dev',
+  'binder',
+  'build',
+  'changelog',
+  'dist',
+  'docs',
+  'licenses',
+  'node_modules',
+  'venv',
+  '.venv',
+]
+
 
 [tool.coverage.report]
 exclude_lines = [
+  "if TYPE_CHECKING",
+  "if typing.TYPE_CHECKING",
   "coverage: ignore",
   "ImportError",
   "ModuleNotFoundError",
+  "raise NotImplementedError",
   "@vectorize",
   "@numba.vectorize",
   "@numba.jit",
@@ -154,12 +208,13 @@ exclude_lines = [
 ]
 
 [tool.coverage.run]
+branch = true
+source = ["src"]
 omit = [
-  "ci-helpers/*",
-  "*/tests/*",
-  "plasmapy/utils/calculator/*",
-  "plasmapy/version.py",
-  "plasmapy/_dev/*",
+  "*/plasmapy/utils/calculator/*",
+  "*/plasmapy/tests/*",
+  "*/plasmapy/*version.py",
+  "*/plasmapy/_dev/*",
 ]
 
 [tool.build_docs]
@@ -168,7 +223,8 @@ build-dir = "docs/_build"
 all_files = "1"
 
 [tool.codespell]
-skip = "*.png,*cache*,*egg*,.git,.hypothesis,.idea,.tox,_build,*charged_particle*.ipynb,venv"
+skip = "*.png,*cache*,*egg*,.git,.hypothesis,.idea,.nox,.tox,_build,*charged_particle*.ipynb,venv"
+# Add false positives found by codespell to ignore-words-list
 ignore-words-list = """
 aas,
 aci,
@@ -206,18 +262,35 @@ enabled = true
 
 [tool.gilesbot.towncrier_changelog]
 enabled = true
-changelog_skip_label = "No changelog entry needed"
+changelog_skip_label = "no changelog entry needed"
 help_url = "https://docs.plasmapy.org/en/latest/contributing/changelog_guide.html#adding-a-changelog-entry"
 changelog_missing = "Missing changelog entry (see `changelog/README.rst`)"
-changelog_missing_long = "This pull request needs a changelog entry at `changelog/NUMBER.TYPE.rst`, where `NUMBER` is the pull request number and `TYPE` is one of `feature`, `trivial`, `doc`, `bugfix`, `breaking`, or `removal`.\n\nFor details, see: https://docs.plasmapy.org/en/latest/contributing/changelog_guide.html#adding-a-changelog-entry"
+changelog_missing_long = "Please add a changelog entry at `changelog/NUMBER.TYPE.rst`, where `NUMBER` is the pull request number and `TYPE` is one of `feature`, `trivial`, `doc`, `internal`, `bugfix`, `breaking`, or `removal`.\n\nMinor pull requests, such as typo fixes and hyperlink updates, do not need a changelog entry.\n\nFor details, see: https://docs.plasmapy.org/en/latest/contributing/changelog_guide.html#adding-a-changelog-entry"
 verify_pr_number = true
 number_incorrect = "Changelog entry number ≠ PR number (see `changelog/README.rst`)"
-number_incorrect_long = "The changelog entry number does not match this pull request's number.\n\nWhen purposefully editing the changelog entry for a different pull request, set the 'No changelog entry needed' label to ignore this check."
+number_incorrect_long = "The changelog entry number does not match this pull request's number.\n\nWhen purposefully editing the changelog entry for a different pull request, set the 'no changelog entry needed' label to ignore this check."
 type_incorrect = "Incorrect changelog type (see `changelog/README.rst`)"
-type_incorrect_long = "The filename of the changelog entry must be of the form `changelog/NUMBER.TYPE.rst` where `TYPE` is one of `feature`, `trivial`, `doc`, `bugfix`, `breaking`, or `removal`.\n\nFor details, see: https://docs.plasmapy.org/en/latest/contributing/changelog_guide.html#adding-a-changelog-entry"
+type_incorrect_long = "The filename of the changelog entry must be of the form `changelog/NUMBER.TYPE.rst` where `TYPE` is one of `feature`, `trivial`, `doc`, `internal`, `bugfix`, `breaking`, or `removal`.\n\nFor details, see: https://docs.plasmapy.org/en/latest/contributing/changelog_guide.html#adding-a-changelog-entry"
 
 [tool.ruff]
-target-version = "py39"
+target-version = "py310"
+namespace-packages = [".github/workflows", "docs"]
+output-format = "grouped"
+show-fixes = true
+extend-exclude = [
+  "docs/plasmapy_sphinx",
+  ".idea",
+  ".hypothesis",
+  ".jupyter",
+  "__pycache__",
+  "_dev",
+]
+
+[tool.ruff.format]
+docstring-code-format = true
+line-ending = "lf"
+
+[tool.ruff.lint]
 extend-select = [
   "A", # flake8-builtins
   "ANN204", # missing-return-type-special-method
@@ -239,7 +312,7 @@ extend-select = [
   "FIX", # flake8-fixme
   "FLY", # flynt
   "G", # flake8-logging-format
-  "I002", # missing-required-import
+  "I", # isort
   "ICN", # flake8-import-conventions
   "INP", # flake8-no-pep420
   "INT", # flake8-gettext
@@ -257,7 +330,6 @@ extend-select = [
   "PT", # flake8-pytest-style
   "PTH", # flake8-use-pathlib
   "PYI", # flake8-pyi
-  "Q003", # avoidable-escaped-quote
   "RET", # flake8-return
   "RSE", # flake8-raise
   "RUF005", # collection-literal-concatenation
@@ -266,11 +338,14 @@ extend-select = [
   "RUF008", # mutable-dataclass-default
   "RUF009", # function-call-in-dataclass-default-argument
   "RUF010", # explicit-f-string-type-conversion
-  "RUF011", # static-key-dict-comprehension
+  "RUF012", # mutable-class-default
   "RUF013", # implicit-optional
   "RUF015", # unnecessary-iterable-allocation-for-first-element
   "RUF016", # invalid-index-type
   "RUF017", # quadratic-list-summation
+  "RUF018", # assignment-in-assert
+  "RUF019", # unnecessary-key-check
+  "RUF020", # never-union
   "RUF100", # unused-noqa
   "RUF200", # invalid-pyproject-toml
   "S", # flake8-bandit
@@ -293,11 +368,13 @@ ignore = [
   "D200", # fits-on-one-line (incompatible with multiline short summaries)
   "D202", # no-blank-line-after-function
   "D205", # blank-line-after-summary (incompatible with multiline short summaries)
+  "D206", # indent-with-spaces (formatter conflict)
   "D401", # non-imperative-mood (enable later?)
   "E501", # line-too-long
   "EM101", # raw-string-in-exception (enable later in focused PR)
   "EM102", # f-string-in-exception (enable later in focused PR)
   "FIX002", # line-contains-todo
+  "ISC001", # single-line-implicit-string-concatenation (formatter conflict)
   "N802", # invalid-function-name
   "N803", # invalid-argument-name
   "N806", # non-lowercase-variable-in-function
@@ -322,58 +399,83 @@ ignore = [
   "TD003", # missing-todo-link
   "TRY003", # raise-vanilla-args
   "TRY301", # raise-within-try
-  "UP006", # non-pep585-annotation
-  "UP007", # non-pep604-annotation
   "UP025", # unicode-kind-prefix
-]
-extend-exclude = [
-  "docs/plasmapy_sphinx",
-  ".jupyter",
-  "__pycache__",
-  "_build",
-  "_dev",
+  "W191", # tab-indentation (formatter conflict)
+  "W291", # trailing-whitespace (handled by formatter)
 ]
 dummy-variable-rgx = "Z|mass_numb|request|event"
-namespace-packages = [".github/workflows", "docs"]
-show-fixes = true
-show-source = true
+ignore-init-module-imports = true
 
-[tool.ruff.flake8-annotations]
+[tool.ruff.lint.flake8-annotations]
 allow-star-arg-any = true
 ignore-fully-untyped = true
 mypy-init-return = true
 suppress-dummy-args = true
 suppress-none-returning = true
 
-[tool.ruff.flake8-import-conventions.aliases]
+[tool.ruff.lint.flake8-import-conventions]
+banned-from = [
+  "astropy.units",
+  "matplotlib.pyplot",
+  "numpy",
+  "pytest",
+  "warnings",
+]
+
+[tool.ruff.lint.flake8-import-conventions.aliases]
+"astropy.constants" = "const"
 "astropy.units" = "u"
+"matplotlib" = "mpl"
 "matplotlib.pyplot" = "plt"
 numpy = "np"
 pandas = "pd"
 
-[tool.ruff.flake8-unused-arguments]
+[tool.ruff.lint.flake8-unused-arguments]
 ignore-variadic-names = true
 
-[tool.ruff.mccabe]
+[tool.ruff.lint.flake8-tidy-imports]
+ban-relative-imports = "all"
+
+[tool.ruff.lint.flake8-tidy-imports.banned-api]
+"typing.Callable".msg = "Deprecated alias. Change to collections.abc.Callable"
+"typing.Collection".msg = "Deprecated alias. Change to collections.abc.Collection"
+"typing.DefaultDict".msg = "Deprecated alias. Change to collections.defaultdict"
+"typing.Dict".msg = "Deprecated alias. Change to dict"
+"typing.Generator".msg = "Deprecated alias. Change to collections.abc.Generator"
+"typing.Iterable".msg = "Deprecated alias. Change to collections.abc.Iterable"
+"typing.Iterator".msg = "Deprecated alias. Change to collections.abc.Iterator"
+"typing.List".msg = "Deprecated alias. Change to list"
+"typing.Mapping".msg = "Deprecated alias. Change to collections.abc.mapping"
+"typing.MutableMapping".msg = "Deprecated alias. Change to collections.abc.MutableMapping"
+"typing.Sequence".msg = "Deprecated alias. Change to collections.abc.Sequence"
+"typing.Set".msg = "Deprecated alias. Change to set"
+"typing.Tuple".msg = "Deprecated alias. Change to tuple"
+"typing.Type".msg = "Deprecated alias. Change to type"
+
+[tool.ruff.lint.isort]
+known-first-party = ["plasmapy"]
+
+[tool.ruff.lint.mccabe]
 max-complexity = 10
 
-[tool.ruff.per-file-ignores]
-"__init__.py" = ["D104", "E402", "F401", "F402", "F403"] # ignore import errors
+[tool.ruff.lint.per-file-ignores]
 ".github/scripts/*.py" = ["D103", "INP001"]
+"__init__.py" = ["D104", "E402", "F401", "F402", "F403"] # ignore import errors
 "docs/conf.py" = ["D100", "D103", "E402", "EXE001", "EXE005", "F401"]
-"plasmapy/analysis/fit_functions.py" = ["D301"]
-"plasmapy/formulary/braginskii.py" = ["C901", "RET503", "RET504"]
-"plasmapy/formulary/tests/test_distribution.py" = ["ARG005"]
-"plasmapy/particles/tests/test_decorators.py" = ["ARG001", "ARG002"]
-"plasmapy/plasma/sources/*.py" = ["D102"]
-"plasmapy/utils/_pytest_helpers/pytest_helpers.py" = ["BLE001", "PLR", "SLF001"]
-"plasmapy/utils/_pytest_helpers/tests/test_pytest_helpers.py" = ["BLE001", "TRY002"]
-"plasmapy/utils/decorators/tests/test_converters.py" = ["ARG001", "ARG005"]
 "setup.py" = ["D100"]
-"test_*" = ["D100", "D101", "D102", "D103", "D104", "D209", "D400", "D401", "N801", "SLF001"]
-"*/*/tests/__init__.py" = ["D104"]
+"src/plasmapy/analysis/fit_functions.py" = ["D301"]
+"src/plasmapy/formulary/braginskii.py" = ["C901", "RET503", "RET504"]
+"src/plasmapy/plasma/sources/*.py" = ["D102"]
+"src/plasmapy/utils/_pytest_helpers/pytest_helpers.py" = ["BLE001", "PLR", "SLF001"]
+"test_*" = ["D100", "D101", "D102", "D103", "D104", "D209", "D400", "D401", "N801", "RUF012", "SLF001"]
+"tests/**/__init__.py" = ["D104"]
+"tests/**/*.py" = ["INP001"]
+"tests/formulary/test_distribution.py" = ["ARG005"]
+"tests/particles/test_decorators.py" = ["ARG001", "ARG002"]
+"tests/utils/_pytest_helpers/test_pytest_helpers.py" = ["BLE001", "TRY002"]
+"tests/utils/decorators/test_converters.py" = ["ARG001", "ARG005"]
 
-[tool.ruff.pydocstyle]
+[tool.ruff.lint.pydocstyle]
 convention = "numpy"
 
 [tool.towncrier]
@@ -386,18 +488,23 @@ issue_format = ":pr:`{issue}`" # Despite the name mismatch, we use this for link
 wrap = true
 
 [[tool.towncrier.type]]
+directory = "feature"
+name = "New Features"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "doc"
+name = "Documentation Improvements"
+showcontent = true
+
+[[tool.towncrier.type]]
 directory = "breaking"
 name = "Backwards Incompatible Changes"
 showcontent = true
 
 [[tool.towncrier.type]]
 directory = "removal"
-name = "Deprecations and Removals"
-showcontent = true
-
-[[tool.towncrier.type]]
-directory = "feature"
-name = "Features"
+name = "Deprecations and Planned Removals"
 showcontent = true
 
 [[tool.towncrier.type]]
@@ -406,11 +513,23 @@ name = "Bug Fixes"
 showcontent = true
 
 [[tool.towncrier.type]]
-directory = "doc"
-name = "Improved Documentation"
+directory = "internal"
+name = "Internal Changes and Refactorings"
 showcontent = true
 
 [[tool.towncrier.type]]
 directory = "trivial"
-name = "Trivial/Internal Changes"
+name = "Additional Changes"
 showcontent = true
+
+[tool.check-manifest]
+ignore = [
+  "#*",
+  "*#",
+  "*checkpoint*",
+  "*TEMP*",
+  "*~",
+  ".mailmap",
+  "docs/*build/**",
+  "Untitled*",
+]

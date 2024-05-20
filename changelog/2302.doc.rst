@@ -1,2 +1,0 @@
-Added and applied ``nbqa-ruff`` to our suite of |pre-commit| hooks so
-that |ruff| can perform code quality checks on our example notebooks.

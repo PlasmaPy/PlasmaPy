@@ -198,7 +198,7 @@ Trivial/Internal Changes
 - Implemented the new private |CustomParticle| constructor from
   :pr:`1881` into the private particle creation factory used by
   |particle_input|. (:pr:`1884`)
-- Dropped ``dlint`` from the the tests requirements, as it is no longer
+- Dropped ``dlint`` from the tests requirements, as it is no longer
   being maintained. (:pr:`1906`)
 - Modified |particle_input| to allow |CustomParticle|\ -like objects with
   a defined charge to be passed through to decorated functions when a
