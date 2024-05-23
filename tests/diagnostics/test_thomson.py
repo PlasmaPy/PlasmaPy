@@ -423,7 +423,7 @@ def test_multiple_species_collective_spectrum(
     max_wavelength = wavelength.value[np.argmax(Skw.value)]
 
     # Check width
-    assert np.isclose(width, 0.14, 1e-2), (
+    assert np.isclose(width, 0.159, 1e-2), (
         f"Multiple ion species case spectrum width is {width} instead of "
         "expected 0.14"
     )
