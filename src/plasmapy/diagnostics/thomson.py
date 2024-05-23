@@ -172,8 +172,8 @@ def spectral_density_lite(
 
     # Compute electron and ion densities
     ne = efract * n
-    zbar = np.sum(ifract * ion_z)
-    ni = ifract * n / zbar  # ne/zbar = sum(ni)
+    zbar = ifract * ion_z
+    ni = ifract * n / np.sum(zbar)  # ne/zbar = sum(ni)
 
     # wpe is calculated for the entire plasma (all electron populations combined)
     wpe = plasma_frequency_lite(n, m_e_si_unitless, 1)
@@ -244,7 +244,7 @@ def spectral_density_lite(
         icontr[m, :] = ifract[m] * (
             2
             * np.sqrt(np.pi)
-            * ion_z[m]
+            * ion_z[m]**2/zbar[m]
             / k
             / vT_i[m]
             * np.power(np.abs(np.sum(chiE, axis=0) / epsilon), 2)
