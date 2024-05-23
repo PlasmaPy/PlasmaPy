@@ -418,8 +418,11 @@ def test_multiple_species_collective_spectrum(
 
     # Compute the width and max of the spectrum, and the wavelength
     # of the max (sensitive to ion vel)
-    width = width_at_value(wavelength.value, Skw.value, 0.2e-11)
-    max_skw = np.max(Skw.value)
+    max_skw = np.nanmax(Skw.value)
+    print(max_skw)
+    width = width_at_value(wavelength.value, Skw.value, 0.1*max_skw )
+    print(width)
+    
     max_wavelength = wavelength.value[np.argmax(Skw.value)]
 
     # Check width

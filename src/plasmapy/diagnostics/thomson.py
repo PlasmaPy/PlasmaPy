@@ -172,8 +172,8 @@ def spectral_density_lite(
 
     # Compute electron and ion densities
     ne = efract * n
-    zbar = ifract * ion_z
-    ni = ifract * n / np.sum(zbar)  # ne/zbar = sum(ni)
+    zbar = np.sum(ifract * ion_z)
+    ni = ifract * n / zbar  # ne/zbar = sum(ni)
 
     # wpe is calculated for the entire plasma (all electron populations combined)
     wpe = plasma_frequency_lite(n, m_e_si_unitless, 1)
@@ -244,7 +244,8 @@ def spectral_density_lite(
         icontr[m, :] = ifract[m] * (
             2
             * np.sqrt(np.pi)
-            * ion_z[m]**2/zbar[m]
+            * ion_z[m] ** 2
+            / zbar
             / k
             / vT_i[m]
             * np.power(np.abs(np.sum(chiE, axis=0) / epsilon), 2)
@@ -403,14 +404,14 @@ def spectral_density(  # noqa: C901, PLR0912, PLR0915
         S(k,ω) = \sum_e \frac{2π}{k}
         \bigg |1 - \frac{χ_e}{ε} \bigg |^2
         f_{e0,e} \bigg (\frac{ω}{k} \bigg ) +
-        \sum_i \frac{2π Z_i}{k}
+        \sum_i \frac{2π}{k} \frac{Z_i^2}{\bar Z}
         \bigg |\frac{χ_e}{ε} \bigg |^2 f_{i0,i}
         \bigg ( \frac{ω}{k} \bigg )
 
     where :math:`χ_e` is the electron population susceptibility of the
     plasma and :math:`ε = 1 + ∑_e χ_e + ∑_i χ_i` is the total plasma
     dielectric function (with :math:`χ_i` being the ion population of
-    the susceptibility), :math:`Z_i` is the charge of each ion,
+    the susceptibility), 
     :math:`k` is the scattering wavenumber, :math:`ω` is the scattering
     frequency, and :math:`f_{e0,e}` and :math:`f_{i0,i}` are the
     electron and ion velocity distribution functions, respectively. In
@@ -433,6 +434,11 @@ def spectral_density(  # noqa: C901, PLR0912, PLR0915
 
     .. math::
         \sum_e F_e = 1
+        
+    and 
+    
+    .. math::
+        \bar Z = \sum_k F_k Z_k 
 
     The plasma is assumed to be quasineutral, and therefore the number
     density of the i\ :sup:`th` ion population is
