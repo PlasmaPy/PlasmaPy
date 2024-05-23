@@ -9,11 +9,11 @@ extend-ignore-identifiers-re = [
 AttributeIDSupressMenu = "AttributeIDSupressMenu"
 
 [default.extend-words]
-ba = "ba"
 aas = "aas"
+arange = "arange"
+ba = "ba"
+dne = "dne"
 explin = "explin"
 hax = "hax"
-arange = "arange"
-nd = "nd"
-dne = "dne"
 iy = "iy"
+nd = "nd"
