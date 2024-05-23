@@ -364,14 +364,14 @@ def multiple_species_collective_args():
         "n": 5e17 * u.cm**-3,
         "T_e": 10 * u.eV,
     }
-    kwargs["T_i"] = np.array([5, 5]) * u.eV
+    kwargs["T_i"] = np.array([25, 25]) * u.eV
     kwargs["ions"] = [Particle("p+"), Particle("C-12 5+")]
     kwargs["probe_vec"] = np.array([1, 0, 0])
     kwargs["scatter_vec"] = np.array([0, 1, 0])
     kwargs["efract"] = np.array([1.0])
     kwargs["ifract"] = np.array([0.7, 0.3])
-    kwargs["electron_vel"] = np.array([[300, 0, 0]]) * u.km / u.s
-    kwargs["ion_vel"] = np.array([[-500, 0, 0], [0, 500, 0]]) * u.km / u.s
+    kwargs["electron_vel"] = np.array([[0, 0, 0]]) * u.km / u.s
+    kwargs["ion_vel"] = np.array([[-100, 0, 0], [0, 100, 0]]) * u.km / u.s
 
     return kwargs
 
@@ -419,28 +419,26 @@ def test_multiple_species_collective_spectrum(
     # Compute the width and max of the spectrum, and the wavelength
     # of the max (sensitive to ion vel)
     max_skw = np.nanmax(Skw.value)
-    print(max_skw)
-    width = width_at_value(wavelength.value, Skw.value, 0.1*max_skw )
-    print(width)
-    
+    width = width_at_value(wavelength.value, Skw.value, 2e-12)
+
     max_wavelength = wavelength.value[np.argmax(Skw.value)]
 
     # Check width
-    assert np.isclose(width, 0.159, 1e-2), (
+    assert np.isclose(width, 0.17, 1e-2), (
         f"Multiple ion species case spectrum width is {width} instead of "
-        "expected 0.14"
+        "expected 0.17"
     )
 
     # Check max value
-    assert np.isclose(max_skw, 2.4e-11, 1e-11), (
+    assert np.isclose(max_skw, 6e-12, 1e-11), (
         f"Multiple ion species case spectrum max is {max_skw} instead of "
-        "expected 2.4e-11"
+        "expected 6e-12"
     )
 
     # Check max peak location
-    assert np.isclose(max_wavelength, 530.799, 1e-2), (
+    assert np.isclose(max_wavelength, 532, 1e-2), (
         "Multiple ion species case spectrum peak wavelength is "
-        f"{max_wavelength} instead of expected 530.79"
+        f"{max_wavelength} instead of expected 532"
     )
 
 

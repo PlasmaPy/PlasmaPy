@@ -411,7 +411,7 @@ def spectral_density(  # noqa: C901, PLR0912, PLR0915
     where :math:`χ_e` is the electron population susceptibility of the
     plasma and :math:`ε = 1 + ∑_e χ_e + ∑_i χ_i` is the total plasma
     dielectric function (with :math:`χ_i` being the ion population of
-    the susceptibility), 
+    the susceptibility),
     :math:`k` is the scattering wavenumber, :math:`ω` is the scattering
     frequency, and :math:`f_{e0,e}` and :math:`f_{i0,i}` are the
     electron and ion velocity distribution functions, respectively. In
@@ -434,11 +434,11 @@ def spectral_density(  # noqa: C901, PLR0912, PLR0915
 
     .. math::
         \sum_e F_e = 1
-        
-    and 
-    
+
+    and
+
     .. math::
-        \bar Z = \sum_k F_k Z_k 
+        \bar Z = \sum_k F_k Z_k
 
     The plasma is assumed to be quasineutral, and therefore the number
     density of the i\ :sup:`th` ion population is
