@@ -78,6 +78,11 @@ repos:
     additional_dependencies:
     - tomli
 
+- repo: https://github.com/crate-ci/typos
+  rev: v1.21.0
+  hooks:
+  - id: typos
+
 - repo: https://github.com/astral-sh/ruff-pre-commit
   rev: v0.4.3
   hooks:
