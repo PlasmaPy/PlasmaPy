@@ -1,0 +1,17 @@
+[default]
+extend-ignore-identifiers-re = [
+    # *sigh* this just isn't worth the cost of fixing
+    "AttributeID.*Suppress.*",
+]
+
+[default.extend-identifiers]
+# *sigh* this just isn't worth the cost of fixing
+AttributeIDSupressMenu = "AttributeIDSupressMenu"
+
+[default.extend-words]
+ba = "ba"
+aas = "aas"
+explin = "explin"
+hax = "hax"
+arange = "arange"
+nd = "nd"
