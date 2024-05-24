@@ -2297,7 +2297,7 @@ class CustomParticle(AbstractPhysicalParticle):
         >>> str(custom_particle)
         'I2+'
 
-        Without sybmol, the |repr| is returned.
+        Without a symbol, the |repr| is returned.
 
         >>> mass = 1.2e-26 * u.kg
         >>> charge = 9.2e-19 * u.C
