@@ -1,0 +1,1 @@
+Added a `__str__` method to the ``CustomParticle`` class that returns the symbol of the particle if provided, otherwise falls back to the ``__repr__``.
