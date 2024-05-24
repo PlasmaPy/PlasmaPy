@@ -2283,6 +2283,10 @@ class CustomParticle(AbstractPhysicalParticle):
             else f"CustomParticle(mass={self.mass}, charge={self.charge}, symbol={self.symbol})"
         )
 
+    def __str__(self) -> str:
+        """Return the particle's symbol if provided, otherwise the |repr|."""
+        return self.symbol
+
     @property
     def json_dict(self) -> dict[str, Any]:
         """
