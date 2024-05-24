@@ -2284,7 +2284,27 @@ class CustomParticle(AbstractPhysicalParticle):
         )
 
     def __str__(self) -> str:
-        """Return the particle's symbol if provided, otherwise the |repr|."""
+        """
+        Return the particle's symbol if provided, otherwise the |repr|.
+
+        Examples
+        --------
+        >>> custom_particle = CustomParticle(
+        ...     mass=4.21e-25 * u.kg,
+        ...     charge=1.6e-19 * u.C,
+        ...     symbol="I2+",
+        ... )
+        >>> str(custom_particle)
+        'I2+'
+
+        Without sybmol, the |repr| is returned.
+
+        >>> mass = 1.2e-26 * u.kg
+        >>> charge = 9.2e-19 * u.C
+        >>> custom_particle = CustomParticle(mass=mass, charge=charge)
+        >>> repr(custom_particle)
+        'CustomParticle(mass=1.2e-26 kg, charge=9.2e-19 C)'
+        """
         return self.symbol
 
     @property
