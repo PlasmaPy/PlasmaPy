@@ -91,7 +91,7 @@ repos:
     name: ruff (see https://docs.astral.sh/ruff/rules)
     args: [--fix]
   - id: ruff-format
-    name: autoformat source code with ruff formatter
+    name: autoformat source code with ruff-format
 
 - repo: https://github.com/asottile/blacken-docs
   rev: 1.16.0
