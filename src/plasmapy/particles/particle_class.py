@@ -2285,7 +2285,7 @@ class CustomParticle(AbstractPhysicalParticle):
 
     def __str__(self) -> str:
         """
-        Return the particle's symbol if provided, otherwise the |repr|.
+        Return the particle's symbol if provided, otherwise the `repr`.
 
         Examples
         --------
