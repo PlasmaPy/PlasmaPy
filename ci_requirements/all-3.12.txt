@@ -2,7 +2,7 @@
 #    nox -s requirements
 alabaster==0.7.16
     # via sphinx
-anyio==4.3.0
+anyio==4.4.0
     # via jupyter-server
 argcomplete==3.3.0
     # via nox
@@ -12,11 +12,11 @@ argon2-cffi-bindings==21.2.0
     # via argon2-cffi
 arrow==1.3.0
     # via isoduration
-asteval==0.9.32
+asteval==0.9.33
     # via lmfit
 astropy==6.1.0
     # via plasmapy (pyproject.toml)
-astropy-iers-data==0.2024.5.20.0.29.40
+astropy-iers-data==0.2024.5.27.0.30.8
     # via astropy
 asttokens==2.4.1
     # via stack-data
@@ -59,7 +59,7 @@ comm==0.2.2
     #   ipywidgets
 contourpy==1.2.1
     # via matplotlib
-coverage==7.5.1
+coverage==7.5.2
     # via pytest-cov
 cycler==0.12.1
     # via matplotlib
@@ -92,7 +92,7 @@ filelock==3.14.0
     # via
     #   tox
     #   virtualenv
-fonttools==4.51.0
+fonttools==4.52.1
     # via matplotlib
 fqdn==1.5.1
     # via jsonschema
@@ -100,7 +100,7 @@ future==1.0.0
     # via uncertainties
 h5py==3.11.0
     # via plasmapy (pyproject.toml)
-hypothesis==6.102.4
+hypothesis==6.102.6
     # via plasmapy (pyproject.toml)
 identify==2.5.36
     # via pre-commit
@@ -147,7 +147,7 @@ jsonschema==4.22.0
     #   nbformat
 jsonschema-specifications==2023.12.1
     # via jsonschema
-jupyter-client==8.6.1
+jupyter-client==8.6.2
     # via
     #   ipykernel
     #   jupyter-server
@@ -172,7 +172,7 @@ jupyter-server-terminals==0.5.3
     # via jupyter-server
 jupyterlab-pygments==0.3.0
     # via nbconvert
-jupyterlab-server==2.27.1
+jupyterlab-server==2.27.2
     # via voila
 jupyterlab-widgets==3.0.10
     # via ipywidgets
@@ -198,7 +198,7 @@ mistune==3.0.2
     # via nbconvert
 mpmath==1.3.0
     # via plasmapy (pyproject.toml)
-nbclient==0.7.4
+nbclient==0.10.0
     # via
     #   nbconvert
     #   voila
@@ -365,7 +365,7 @@ referencing==0.35.1
     #   jsonschema
     #   jsonschema-specifications
     #   jupyter-events
-requests==2.31.0
+requests==2.32.2
     # via
     #   plasmapy (pyproject.toml)
     #   jupyterlab-server
@@ -382,13 +382,13 @@ rpds-py==0.18.1
     # via
     #   jsonschema
     #   referencing
-scipy==1.13.0
+scipy==1.13.1
     # via
     #   plasmapy (pyproject.toml)
     #   lmfit
 send2trash==1.8.3
     # via jupyter-server
-setuptools==69.5.1
+setuptools==70.0.0
     # via
     #   plasmapy (pyproject.toml)
     #   nodeenv
@@ -440,7 +440,7 @@ sphinx-hoverxref==1.3.0
     # via plasmapy (pyproject.toml)
 sphinx-issues==4.1.0
     # via plasmapy (pyproject.toml)
-sphinx-notfound-page==1.0.0
+sphinx-notfound-page==1.0.2
     # via plasmapy (pyproject.toml)
 sphinx-reredirects==0.1.3
     # via plasmapy (pyproject.toml)
@@ -526,14 +526,14 @@ uri-template==1.3.0
     # via jsonschema
 urllib3==2.2.1
     # via requests
-uv==0.1.44
+uv==0.2.4
     # via tox-uv
 virtualenv==20.26.2
     # via
     #   nox
     #   pre-commit
     #   tox
-voila==0.5.6
+voila==0.5.7
     # via plasmapy (pyproject.toml)
 wcwidth==0.2.13
     # via prompt-toolkit
