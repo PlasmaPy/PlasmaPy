@@ -165,6 +165,7 @@ class Tracker(ParticleTracker):
         field_weighting="volume averaged",
         detector_hdir=None,
         output_file: Path | None = None,
+        fraction_exited_threshold: float = 0.001,
         verbose: bool = True,
     ) -> None:
         # The synthetic radiography class handles logging, so we can disable logging for the particle tracker
@@ -177,7 +178,7 @@ class Tracker(ParticleTracker):
         )
 
         termination_condition = AllParticlesOffGridTerminationCondition(
-            fraction_exited_threshold=0.001
+            fraction_exited_threshold=fraction_exited_threshold
         )
 
         super().__init__(
