@@ -42,9 +42,9 @@ class AbstractSaveRoutine(ABC):
 
         self._results = {}
         self._quantities = {
+            "time": (u.s, "dataset"),
             "x": (u.m, "dataset"),
             "v": (u.m / u.s, "dataset"),
-            "t": (u.s, "dataset"),
         }
 
         self._particle_tracker = None
