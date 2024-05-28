@@ -74,7 +74,9 @@ class Downloader:
         else:
             self._download_directory = Path(directory)
 
-        if _IS_CI:
+        # If currently operating in a CI environment and no token was specified,
+        # take the token from the CI environment variables
+        if _IS_CI and api_token is None:
             api_token = api_token if api_token is not None else os.getenv("GH_TOKEN")
 
         self._validate = validate
