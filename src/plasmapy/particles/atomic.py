@@ -41,10 +41,12 @@ from plasmapy.particles.exceptions import (
 from plasmapy.particles.particle_class import Particle, ParticleLike
 from plasmapy.particles.particle_collections import ParticleList
 from plasmapy.particles.symbols import atomic_symbol
-from plasmapy.utils.data.downloader import get_file
+from plasmapy.utils.data.downloader import Downloader
 from plasmapy.utils.decorators import validate_quantities
 
 __all__.sort()
+
+_DEFAULT_DOWNLOADER = Downloader()
 
 
 @particle_input
@@ -1180,7 +1182,7 @@ def stopping_power(
 
     """
 
-    nist_data_path = get_file("NIST_STAR.hdf5")
+    nist_data_path = _DEFAULT_DOWNLOADER.get_file("NIST_STAR.hdf5")
 
     # Validate particle input. Currently, the only supported particles are protons and electrons.
     with h5py.File(nist_data_path, "r") as nist_data:
