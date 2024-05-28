@@ -9,7 +9,7 @@ default_language_version:
 repos:
 
 - repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v4.5.0
+  rev: v4.6.0
   hooks:
   - id: check-ast
     name: validate Python code
@@ -20,7 +20,7 @@ repos:
     name: check for filename case conflicts
   - id: name-tests-test
     args: [--pytest-test-first]
-    exclude: plasmapy/tests/_helpers/.*
+    exclude: src/plasmapy/tests/_helpers/.*
   - id: trailing-whitespace
   - id: end-of-file-fixer
   - id: check-json
@@ -28,12 +28,12 @@ repos:
   - id: check-yaml
 
 - repo: https://github.com/python-jsonschema/check-jsonschema
-  rev: 0.28.0
+  rev: 0.28.2
   hooks:
   - id: check-github-workflows
 
 - repo: https://github.com/sirosen/texthooks
-  rev: 0.6.4
+  rev: 0.6.6
   hooks:
   - id: fix-smartquotes
   - id: fix-spaces
@@ -41,7 +41,7 @@ repos:
   - id: forbid-bidi-controls
 
 - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
-  rev: v2.12.0
+  rev: v2.13.0
   hooks:
   - id: pretty-format-ini
     args: [--autofix]
@@ -79,7 +79,7 @@ repos:
     - tomli
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.3.1
+  rev: v0.4.3
   hooks:
   - id: ruff
     name: ruff (see https://docs.astral.sh/ruff/rules)
@@ -95,7 +95,7 @@ repos:
     # docstrings are formatted using the ruff-format hook
     exclude: docs/contributing/coding_guide.rst|.*\.py
     additional_dependencies:
-    - black==24.1.1
+    - black==24.3.0
 
 - repo: https://github.com/sphinx-contrib/sphinx-lint
   rev: v0.9.1
@@ -103,10 +103,13 @@ repos:
   - id: sphinx-lint
 
 - repo: https://github.com/nbQA-dev/nbQA
-  rev: 1.8.4
+  rev: 1.8.5
   hooks:
   - id: nbqa-check-ast
     name: validate Python notebooks
   - id: nbqa-ruff
     name: ruff for notebooks (see https://docs.astral.sh/ruff/rules)
     args: [--fix, '--select=A,ARG,B,BLE,C,C4,E,F,FLY,I,INT,ISC,PERF,PIE,PLC,PLE,PYI,Q003,RET,RSE,SIM,TID,TRY,UP,W', '--ignore=B007,B008,B015,B018,E402,E501,E741,SIM114']
+    additional_dependencies:
+    # remove ruff dependency after 0.3.5 is released
+    - ruff !=0.3.3, !=0.3.4
