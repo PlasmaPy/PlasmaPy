@@ -74,10 +74,17 @@ def _coerce_to_cartesian_si(pos):
 
 
 class _SyntheticRadiographySaveRoutine(AbstractSaveRoutine):
-    ARRAY_KEYS = ["x", "y", "v", "x0", "y0", "v0"]
-
     def __init__(self, output_directory: Path):
         super().__init__(output_directory=output_directory)
+
+        self._quantities = {
+            "x": (u.m, "dataset"),
+            "y": (u.m, "dataset"),
+            "v": (u.m / u.s, "dataset"),
+            "x0": (u.m, "dataset"),
+            "y0": (u.m, "dataset"),
+            "v0": (u.m, "dataset"),
+        }
 
     @property
     def require_synchronized_dt(self) -> bool:
@@ -96,11 +103,12 @@ class _SyntheticRadiographySaveRoutine(AbstractSaveRoutine):
         output_file_path = self.output_directory / "output.hdf5"
 
         with h5py.File(output_file_path, "w") as output_file:
-            for attribute, value in result_dictionary.items():
-                if attribute in self.ARRAY_KEYS:
-                    output_file.create_dataset(attribute, data=value)
-                else:
-                    output_file.attrs.create(attribute, value)
+            for key, (_units, data_type) in self._quantities.items():  # noqa: B007
+                match data_type:
+                    case "attribute":
+                        output_file.attrs.create(key, result_dictionary[key])
+                    case "dataset":
+                        output_file.create_dataset(key, data=result_dictionary[key])
 
 
 class Tracker(ParticleTracker):
