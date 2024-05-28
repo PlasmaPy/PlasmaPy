@@ -7,11 +7,10 @@ argcomplete==3.3.0
 argon2-cffi==23.1.0
     # via
     #   jupyter-server
-    #   nbclassic
     #   notebook
 argon2-cffi-bindings==21.2.0
     # via argon2-cffi
-asteval==0.9.32
+asteval==0.9.33
     # via lmfit
 astropy==5.1
     # via plasmapy (pyproject.toml)
@@ -44,7 +43,7 @@ colorama==0.4.6
     # via tox
 colorlog==6.8.2
     # via nox
-coverage==7.5.1
+coverage==7.5.2
     # via pytest-cov
 cycler==0.12.1
     # via matplotlib
@@ -74,7 +73,7 @@ filelock==3.14.0
     # via
     #   tox
     #   virtualenv
-fonttools==4.51.0
+fonttools==4.52.1
     # via matplotlib
 future==1.0.0
     # via uncertainties
@@ -113,7 +112,6 @@ jinja2==3.1.4
     # via
     #   jupyter-server
     #   jupyterlab-server
-    #   nbclassic
     #   nbconvert
     #   notebook
 json5==0.9.25
@@ -128,7 +126,6 @@ jupyter-client==7.4.1
     # via
     #   ipykernel
     #   jupyter-server
-    #   nbclassic
     #   nbclient
     #   notebook
     #   voila
@@ -136,7 +133,6 @@ jupyter-core==5.7.2
     # via
     #   jupyter-client
     #   jupyter-server
-    #   nbclassic
     #   nbclient
     #   nbconvert
     #   nbformat
@@ -145,7 +141,6 @@ jupyter-core==5.7.2
 jupyter-server==1.24.0
     # via
     #   jupyterlab-server
-    #   nbclassic
     #   notebook-shim
     #   voila
 jupyterlab-pygments==0.3.0
@@ -174,7 +169,7 @@ mistune==3.0.2
     # via nbconvert
 mpmath==1.2.1
     # via plasmapy (pyproject.toml)
-nbclassic==1.0.0
+nbclassic==1.1.0
     # via notebook
 nbclient==0.7.4
     # via
@@ -183,14 +178,12 @@ nbclient==0.7.4
 nbconvert==7.16.4
     # via
     #   jupyter-server
-    #   nbclassic
     #   notebook
     #   voila
 nbformat==5.10.4
     # via
     #   ipywidgets
     #   jupyter-server
-    #   nbclassic
     #   nbclient
     #   nbconvert
     #   notebook
@@ -264,7 +257,6 @@ pre-commit==3.6.0
 prometheus-client==0.20.0
     # via
     #   jupyter-server
-    #   nbclassic
     #   notebook
 prompt-toolkit==3.0.43
     # via ipython
@@ -323,7 +315,6 @@ pyzmq==26.0.3
     # via
     #   jupyter-client
     #   jupyter-server
-    #   nbclassic
     #   notebook
 referencing==0.35.1
     # via
@@ -344,7 +335,6 @@ scipy==1.8.0
 send2trash==1.8.3
     # via
     #   jupyter-server
-    #   nbclassic
     #   notebook
 setuptools==61.2.0
     # via
@@ -366,7 +356,6 @@ stack-data==0.6.3
 terminado==0.18.1
     # via
     #   jupyter-server
-    #   nbclassic
     #   notebook
 tinycss2==1.3.0
     # via nbconvert
@@ -383,7 +372,6 @@ tornado==6.4
     #   ipykernel
     #   jupyter-client
     #   jupyter-server
-    #   nbclassic
     #   notebook
     #   terminado
 tox==4.14.0
@@ -403,19 +391,18 @@ traitlets==5.14.3
     #   jupyter-core
     #   jupyter-server
     #   matplotlib-inline
-    #   nbclassic
     #   nbclient
     #   nbconvert
     #   nbformat
     #   notebook
     #   voila
-typing-extensions==4.11.0
+typing-extensions==4.12.0
     # via ipython
 uncertainties==3.1.7
     # via lmfit
 urllib3==1.26.18
     # via requests
-uv==0.1.44
+uv==0.2.4
     # via tox-uv
 virtualenv==20.26.2
     # via
