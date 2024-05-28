@@ -1,2 +1,0 @@
-Modified `~plasmapy.particles.atomic.common_isotopes`, `~plasmapy.particles.atomic.known_isotopes`,
-and `~plasmapy.particles.atomic.known_isotopes` to each return a |ParticleList|.
