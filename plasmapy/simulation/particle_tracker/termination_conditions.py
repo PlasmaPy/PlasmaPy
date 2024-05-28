@@ -143,7 +143,7 @@ class NoParticlesOnGridsTerminationCondition(AbstractTerminationCondition):
     @property
     def progress(self) -> float:
         """The progress of the simulation is measured by how many particles are no longer on a grid."""
-        is_not_on_grid: npt.NDArray[np.bool_] = self.tracker.on_grid == 0
+        is_not_on_grid: npt.NDArray[np.bool_] = self.tracker.particles_on_grid == 0
 
         return float(is_not_on_grid.sum())
 

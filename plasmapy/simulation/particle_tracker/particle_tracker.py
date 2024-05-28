@@ -426,17 +426,14 @@ class ParticleTracker:
         self._enforce_particle_creation()
 
         # Keep track of how many push steps have occurred for trajectory tracing
+        # This number is independent of the current "time" of the simulation
         self.iteration_number = 0
 
+        # The time state of a simulation with synchronized time step can be described
+        # by a single number. Otherwise, a time value is required for each particle.
         self.time: NDArray[np.float64] | float = (
             np.zeros((self.nparticles, 1)) if not self.is_synchronized_time_step else 0
         )
-        # Create flags for tracking when particles during the simulation
-        # on_grid -> zero if the particle is off grid, 1
-        # shape [nparticles, ngrids]
-        self.on_grid: NDArray[np.bool_] = np.zeros(
-            [self.nparticles, self.num_grids]
-        ).astype(np.bool_)
 
         # Entered grid -> non-zero if particle EVER entered a grid
         self.entered_grid: NDArray[np.bool_] = np.zeros([self.nparticles]).astype(
@@ -456,6 +453,7 @@ class ParticleTracker:
         )
 
         # Push the particles until the termination condition is satisfied
+        # or the number of particles being evolved is zero
         is_finished = False
         while not (is_finished or self.nparticles_tracked == 0):
             is_finished = self.termination_condition.is_finished
@@ -469,6 +467,8 @@ class ParticleTracker:
 
             self._push()
 
+            # The state of a step is saved after each time step by calling the post_push_hook()
+            # though the save routine may do nothing with this information
             if self.save_routine is not None:
                 self.save_routine.post_push_hook()
 
@@ -550,7 +550,9 @@ class ParticleTracker:
         # Wherever a particle is on a grid, include that grid's grid step
         # in the list of candidate time steps
         for i, _grid in enumerate(self.grids):  # noqa: B007
-            candidates[:, i] = np.where(self.on_grid[:, i] > 0, gridstep[i], np.inf)
+            candidates[:, i] = np.where(
+                self.particles_on_grid[:, i] > 0, gridstep[i], np.inf
+            )
 
         # If not, compute a number of possible time steps
         # Compute the cyclotron gyroperiod
@@ -585,6 +587,18 @@ class ParticleTracker:
 
         return dt
 
+    @property
+    def particles_on_grid(self):
+        r"""
+        Returns a boolean mask of shape [ngrids, nparticles] corresponding to
+        whether or not the particle is on the associated grid.
+        """
+
+        all_particles = np.array([grid.on_grid(self.x * u.m) for grid in self.grids]).T
+        all_particles[~self._tracked_particle_mask] = False
+
+        return all_particles
+
     def _push(self) -> None:
         r"""
         Advance particles using an implementation of the time-centered
@@ -595,28 +609,15 @@ class ParticleTracker:
 
         self.iteration_number += 1
 
-        # nparticles_tracked may fluctuate with stopping
-        # all particles are therefore used regardless of if they reach the grid
         pos_all = self.x
         pos_tracked = pos_all[tracked_mask]
 
         vel_all = self.v
         vel_tracked = vel_all[tracked_mask]
 
-        # Update the list of particles on and off the grid
-        # shape [nparticles, ngrids]
-        self.on_grid = (
-            np.array([grid.on_grid(pos_all * u.m) for grid in self.grids])
-            .astype(np.bool_)
-            .T
-        )
-
-        # Don't count untracked particles as being on the grid
-        self.on_grid[~tracked_mask] = False
-
         # entered_grid is zero at the end if a particle has never
         # entered any grid
-        self.entered_grid += np.sum(self.on_grid, axis=-1).astype(np.bool_)
+        self.entered_grid += np.sum(self.particles_on_grid, axis=-1).astype(np.bool_)
 
         Ex = np.zeros(self.nparticles_tracked) * u.V / u.m
         Ey = np.zeros(self.nparticles_tracked) * u.V / u.m
@@ -708,7 +709,7 @@ class ParticleTracker:
         Binary array for each particle indicating whether it is currently
         on ANY grid.
         """
-        return np.sum(self.on_grid, axis=-1) > 0
+        return np.sum(self.particles_on_grid, axis=-1) > 0
 
     @property
     def vmax(self) -> float:
