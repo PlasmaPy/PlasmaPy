@@ -102,6 +102,9 @@ class _SyntheticRadiographySaveRoutine(SaveOnceOnCompletion):
     def save(self) -> None:
         result_dictionary = self._particle_tracker.results_dict
 
+        if self.output_directory is None:
+            return
+
         output_file_path = self.output_directory / "output.hdf5"
 
         with h5py.File(output_file_path, "w") as output_file:

@@ -948,7 +948,7 @@ def test_multiple_grids2() -> None:
     """
 
 
-def test_radiography_save_routine(tmp_path):
+def test_radiography_disk_save_routine(tmp_path):
     grid = _test_grid("electrostatic_gaussian_sphere", L=1 * u.mm, num=50)
 
     source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
@@ -957,5 +957,16 @@ def test_radiography_save_routine(tmp_path):
     sim = cpr.Tracker(
         grid, source, detector, field_weighting="nearest neighbor", output_file=tmp_path
     )
+    sim.create_particles(1e3, 15 * u.MeV, max_theta=8 * u.deg, random_seed=42)
+    sim.run()
+
+
+def test_radiography_memory_save_routine():
+    grid = _test_grid("electrostatic_gaussian_sphere", L=1 * u.mm, num=50)
+
+    source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
+    detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
+
+    sim = cpr.Tracker(grid, source, detector, field_weighting="nearest neighbor")
     sim.create_particles(1e3, 15 * u.MeV, max_theta=8 * u.deg, random_seed=42)
     sim.run()
