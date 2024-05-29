@@ -31,7 +31,7 @@ wheels/
 *.egg
 
 # Downloaded files
-plasmapy/utils/data/downloads/
+src/plasmapy/utils/data/downloads/
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -93,6 +93,7 @@ celerybeat-schedule
 
 # dotenv
 .env
+env
 
 # virtualenv
 .venv
@@ -136,7 +137,7 @@ docs/about/_authors.rst
 docs/notebooks/*.md
 
 # Version file
-plasmapy/_version.py
+_version.py
 tags
 
 # Miscellaneous files
@@ -147,6 +148,11 @@ untitled*
 .DS_Store
 */cython_version.py
 .mypy_cache
+.dmypy.json
+dmypy.json
 node_modules
 package-lock.json
 monkeytype.sqlite3
+.pyre
+.pytype
+cython_debug
