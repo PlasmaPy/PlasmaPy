@@ -1,8 +1,8 @@
 :orphan:
 
-`plasmapy.simulation.particle_tracker.save_routes`
-================================
+`plasmapy.simulation.particle_tracker.save_routines`
+==================================================
 
-.. currentmodule:: plasmapy.simulation.particle_tracker.save_routes
+.. currentmodule:: plasmapy.simulation.particle_tracker.save_routines
 
-.. automodapi::  plasmapy.simulation.particle_tracker.save_routes
+.. automodapi::  plasmapy.simulation.particle_tracker.save_routines
