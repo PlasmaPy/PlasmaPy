@@ -20,10 +20,10 @@ from plasmapy import particles
 from plasmapy.formulary.mathematics import rot_a_to_b
 from plasmapy.particles import Particle
 from plasmapy.plasma.grids import AbstractGrid
-from plasmapy.simulation.particle_tracker.particle_tracker import (
-    AbstractSaveRoutine,
+from plasmapy.simulation.particle_tracker.particle_tracker import ParticleTracker
+from plasmapy.simulation.particle_tracker.save_routines import AbstractSaveRoutine
+from plasmapy.simulation.particle_tracker.termination_conditions import (
     AllParticlesOffGridTerminationCondition,
-    ParticleTracker,
 )
 
 
