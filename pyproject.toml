@@ -55,8 +55,9 @@ dynamic = [
 dependencies = [
   "astropy >= 5.1",
   "h5py >= 3.7.0",
-  "ipykernel >= 6.8.0",
-  "ipywidgets >= 7.7.0",
+  # Minimum version of ipykernel should not exceed what's used by Google Colab
+  "ipykernel >= 5.5.6",
+  "ipywidgets >= 6.0.0",
   "lmfit >= 1.1.0",
   "matplotlib >= 3.5.1",
   "mpmath >= 1.2.1",
@@ -68,7 +69,8 @@ dependencies = [
   "scipy >= 1.8.0",
   "setuptools >= 61.2.0",
   "tqdm >= 4.60.0",
-  "voila >= 0.4.0",
+  # Use loose requirements for voila because it impacts ipykernel version
+  "voila >= 0.2.0",
   "wrapt >= 1.14.0",
   "xarray >= 2022.3.0",
 ]
