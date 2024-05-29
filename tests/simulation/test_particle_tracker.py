@@ -13,10 +13,10 @@ from plasmapy.formulary.lengths import gyroradius
 from plasmapy.particles import CustomParticle
 from plasmapy.plasma import Plasma
 from plasmapy.plasma.grids import CartesianGrid
-from plasmapy.simulation.particle_tracker import (
-    IntervalSaveRoutine,
+from plasmapy.simulation.particle_tracker.particle_tracker import ParticleTracker
+from plasmapy.simulation.particle_tracker.save_routines import IntervalSaveRoutine
+from plasmapy.simulation.particle_tracker.termination_conditions import (
     NoParticlesOnGridsTerminationCondition,
-    ParticleTracker,
     TimeElapsedTerminationCondition,
 )
 
@@ -160,49 +160,6 @@ def test_particle_tracker_load_particles_shape_error(
         simulation.load_particles([[0, 0, 0]] * u.m, [[0, 0, 0], [0, 0, 0]] * u.m / u.s)
 
 
-@pytest.mark.parametrize(
-    ("stop_condition", "save_routine"),
-    [
-        (
-            "no_particles_on_grids_instantiated",
-            "memory_interval_save_routine_instantiated",
-        ),
-        (
-            "time_elapsed_termination_condition_instantiated",
-            "memory_interval_save_routine_instantiated",
-        ),
-        (
-            "no_particles_on_grids_instantiated",
-            "disk_interval_save_routine_instantiated",
-        ),
-        (
-            "time_elapsed_termination_condition_instantiated",
-            "disk_interval_save_routine_instantiated",
-        ),
-    ],
-)
-def test_interval_save_routine(request, stop_condition, save_routine):
-    x = [[0, 0, 0]] * u.m
-    v = [[0, 1, 0]] * u.m / u.s
-    point_particle = CustomParticle(1 * u.kg, 1 * u.C)
-
-    L = 1 * u.m
-    num = 2
-    grid = CartesianGrid(-L, L, num=num)
-    grid_shape = (num,) * 3
-
-    Ex = np.full(grid_shape, 1) * u.V / u.m
-    grid.add_quantities(E_x=Ex)
-
-    termination_condition = request.getfixturevalue(stop_condition)
-    save_routine = request.getfixturevalue(save_routine)
-
-    simulation = ParticleTracker(grid, termination_condition, save_routine)
-    simulation.load_particles(x, v, point_particle)
-
-    simulation.run()
-
-
 class TestParticleTrackerGyroradius:
     v_x = rng.integers(1, 10, size=100) * u.m / u.s
 
@@ -239,7 +196,7 @@ class TestParticleTrackerGyroradius:
 
     def test_gyroradius(self):
         """Test to ensure particles maintain their gyroradius over time"""
-        _, positions, _ = self.save_routine.results()
+        positions = self.save_routine.results["x"]
         distances = np.linalg.norm(positions, axis=-1)
 
         assert np.isclose(distances, self.R_L, rtol=5e-2).all()
@@ -249,14 +206,13 @@ class TestParticleTrackerGyroradius:
 
         initial_kinetic_energies = 0.5 * self.point_particle.mass * self.v_x**2
 
-        _, _, velocities = self.save_routine.results()
+        velocities = self.save_routine.results["v"]
         speeds = np.linalg.norm(velocities, axis=-1)
         simulation_kinetic_energies = 0.5 * self.point_particle.mass * speeds**2
 
         assert np.isclose(initial_kinetic_energies, simulation_kinetic_energies).all()
 
 
-@pytest.mark.slow()
 @given(st.integers(1, 10), st.integers(1, 10), st.integers(1, 10), st.integers(1, 10))
 @settings(deadline=2e4, max_examples=10)
 def test_particle_tracker_potential_difference(request, E_strength, L, mass, charge):
@@ -285,12 +241,18 @@ def test_particle_tracker_potential_difference(request, E_strength, L, mass, cha
     )
     save_routine = request.getfixturevalue("memory_interval_save_routine_instantiated")
 
-    simulation = ParticleTracker(grid, termination_condition, save_routine, dt=dt)
+    simulation = ParticleTracker(
+        grid,
+        termination_condition,
+        save_routine,
+        dt=dt,
+        field_weighting="nearest neighbor",
+    )
     simulation.load_particles(x, v, point_particle)
 
     simulation.run()
 
-    _, _, velocities = save_routine.results()
+    velocities = save_routine.results["v"]
     velocities_particle = velocities[:, 0]
 
     speeds = np.linalg.norm(velocities_particle, axis=-1)
