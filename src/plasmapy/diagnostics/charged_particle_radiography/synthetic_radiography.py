@@ -21,7 +21,7 @@ from plasmapy.formulary.mathematics import rot_a_to_b
 from plasmapy.particles import Particle
 from plasmapy.plasma.grids import AbstractGrid
 from plasmapy.simulation.particle_tracker.particle_tracker import ParticleTracker
-from plasmapy.simulation.particle_tracker.save_routines import AbstractSaveRoutine
+from plasmapy.simulation.particle_tracker.save_routines import SaveOnceOnCompletion
 from plasmapy.simulation.particle_tracker.termination_conditions import (
     AllParticlesOffGridTerminationCondition,
 )
@@ -73,7 +73,7 @@ def _coerce_to_cartesian_si(pos):
     return pos_out
 
 
-class _SyntheticRadiographySaveRoutine(AbstractSaveRoutine):
+class _SyntheticRadiographySaveRoutine(SaveOnceOnCompletion):
     def __init__(self, output_directory: Path):
         super().__init__(output_directory=output_directory)
 
@@ -101,9 +101,6 @@ class _SyntheticRadiographySaveRoutine(AbstractSaveRoutine):
 
     def save(self) -> None:
         result_dictionary = self._particle_tracker.results_dict
-
-        if self.output_directory is None:
-            return
 
         output_file_path = self.output_directory / "output.hdf5"
 
