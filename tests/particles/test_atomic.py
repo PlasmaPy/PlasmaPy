@@ -692,7 +692,7 @@ def test_stopping_power_interpolation(
 ):
     """Test the interpolation functionality of the stopping power function against NIST values"""
     _, actual_stopping_power = stopping_power(
-        incident_particle, material, energies, component
+        incident_particle, material, energies, component=component
     )
 
     # NIST data is given to four significant figures: use a tolerance of 1 part in 1000
