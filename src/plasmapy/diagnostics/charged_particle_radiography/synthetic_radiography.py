@@ -91,14 +91,6 @@ class _SyntheticRadiographySaveRoutine(SaveOnceOnCompletion):
             "v0": (u.m, "dataset"),
         }
 
-    @property
-    def require_synchronized_dt(self) -> bool:
-        return False
-
-    @property
-    def save_now(self) -> bool:
-        return False
-
     def save(self) -> None:
         result_dictionary = self._particle_tracker.results_dict
 
