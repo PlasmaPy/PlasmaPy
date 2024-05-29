@@ -121,7 +121,10 @@ class AbstractSaveRoutine(ABC):
         results_copy = self._results.copy()
 
         for quantity, (units, _data_type) in self._quantities.items():  # noqa: B007
-            results_copy[quantity] = results_copy[quantity] * units
+            # Only apply units if they are specified
+            # otherwise assume the quantity is dimensionless
+            if units is not None:
+                results_copy[quantity] = results_copy[quantity] * units
 
         return results_copy
 

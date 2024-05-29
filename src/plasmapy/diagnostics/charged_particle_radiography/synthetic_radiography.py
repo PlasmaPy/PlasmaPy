@@ -78,6 +78,11 @@ class _SyntheticRadiographySaveRoutine(AbstractSaveRoutine):
         super().__init__(output_directory=output_directory)
 
         self._quantities = {
+            "source": (u.m, "attribute"),
+            "detector": (u.m, "attribute"),
+            "mag": (u.m, "attribute"),
+            "max_deflection": (None, "attribute"),
+            "nparticles": (None, "attribute"),
             "x": (u.m, "dataset"),
             "y": (u.m, "dataset"),
             "v": (u.m / u.s, "dataset"),
