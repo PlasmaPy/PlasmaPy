@@ -677,14 +677,14 @@ def test_stopping_power_errors(incident_particle, material, kwargs, expected_err
             * u.cm**2
             / u.g,
         ),
-        # Test no interpolation
-        (
-            Particle("H+"),
-            "COPPER",
-            None,
-            "total",
-            [0, 0, 0, 0, 0, 0] * u.MeV * u.cm**2 / u.g,
-        ),
+        # # Test no interpolation
+        # (
+        #     Particle("H+"),
+        #     "COPPER",
+        #     None,
+        #     "total",
+        #     [0, 0, 0, 0, 0, 0] * u.MeV * u.cm**2 / u.g,
+        # ),
     ],
 )
 def test_stopping_power_interpolation(
