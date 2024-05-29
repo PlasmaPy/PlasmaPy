@@ -19,4 +19,5 @@ API
 ---
 
 .. automodapi:: plasmapy.simulation.particle_tracker
+   :noindex:
    :heading-chars: ^~
