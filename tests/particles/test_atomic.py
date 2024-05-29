@@ -625,13 +625,20 @@ def test_stopping_power_errors(incident_particle, material, kwargs, expected_err
 
 
 @pytest.mark.parametrize(
-    ("incident_particle", "material", "energies", "expected_stopping_power"),
+    (
+        "incident_particle",
+        "material",
+        "energies",
+        "component",
+        "expected_stopping_power",
+    ),
     [
         # Test ASTAR interpolation
         (
             Particle("He-4"),
             "OXYGEN",
             [1.25e-3, 1.25e-2, 1.25e-1, 1.25, 1.25e1, 1.25e2] * u.MeV,
+            "total",
             [2.383e2, 4.055e2, 1.048e3, 1.669e3, 3.837e2, 6.273e1]
             * u.MeV
             * u.cm**2
@@ -642,18 +649,51 @@ def test_stopping_power_errors(incident_particle, material, kwargs, expected_err
             Particle("H+"),
             "HYDROGEN",
             [1.25e-3, 1.25e-2, 1.25e-1, 1.25, 1.25e1, 1.25e2] * u.MeV,
+            "total",
             [1.030e3, 2.621e3, 3.188e3, 5.673e2, 8.44e1, 1.295e1]
             * u.MeV
             * u.cm**2
             / u.g,
         ),
+        # Test electronic component
+        (
+            Particle("H+"),
+            "ACETYLENE",
+            [1.25e-3, 1.25e-2, 1.25e-1, 1.25, 1.25e1, 1.25e2] * u.MeV,
+            "electronic",
+            [2.073e2, 6.002e2, 8.871e2, 2.307e2, 3.859e1, 6.185]
+            * u.MeV
+            * u.cm**2
+            / u.g,
+        ),
+        # Test nuclear component
+        (
+            Particle("He-4"),
+            "POLYSTYRENE",
+            [1.25e-3, 1.25e-2, 1.25e-1, 1.25, 1.25e1, 1.25e2] * u.MeV,
+            "nuclear",
+            [2.143e2, 7.921e1, 1.526e1, 2.244, 2.936e-1, 3.450e-2]
+            * u.MeV
+            * u.cm**2
+            / u.g,
+        ),
+        # Test no interpolation
+        (
+            Particle("H+"),
+            "COPPER",
+            None,
+            "total",
+            [0, 0, 0, 0, 0, 0] * u.MeV * u.cm**2 / u.g,
+        ),
     ],
 )
 def test_stopping_power_interpolation(
-    incident_particle, material, energies, expected_stopping_power
+    incident_particle, material, energies, component, expected_stopping_power
 ):
     """Test the interpolation functionality of the stopping power function against NIST values"""
-    _, actual_stopping_power = stopping_power(incident_particle, material, energies)
+    _, actual_stopping_power = stopping_power(
+        incident_particle, material, energies, component
+    )
 
     # NIST data is given to four significant figures: use a tolerance of 1 part in 1000
     assert np.isclose(actual_stopping_power, expected_stopping_power, rtol=0.001).all()
