@@ -697,3 +697,8 @@ def test_stopping_power_interpolation(
 
     # NIST data is given to four significant figures: use a tolerance of 1 part in 1000
     assert np.isclose(actual_stopping_power, expected_stopping_power, rtol=0.001).all()
+
+def test_stopping_power_no_interpolation():
+    result = stopping_power(Particle("H+"), "Copper")
+
+    assert type(result) is tuple
