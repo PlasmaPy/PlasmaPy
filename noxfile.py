@@ -66,12 +66,11 @@ def requirements(session) -> None:
     session.install("uv >= 0.1.44")
 
     category_version_resolution: list[tuple[str, str, str]] = [
-        ("tests", version, resolution)
-        for version in supported_python_versions
-        for resolution in ("highest", "lowest-direct")
+        ("tests", version, "highest") for version in supported_python_versions
     ]
 
     category_version_resolution += [
+        ("tests", minpython, "lowest-direct"),
         ("docs", maxpython, "highest"),
         ("all", maxpython, "highest"),
     ]
