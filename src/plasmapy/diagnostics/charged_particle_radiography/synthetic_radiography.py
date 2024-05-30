@@ -896,26 +896,6 @@ class Tracker(ParticleTracker):
         detector plane where they can be used to construct a synthetic
         diagnostic image.
 
-        Parameters
-        ----------
-        dt : `~astropy.units.Quantity`, optional
-            An explicitly set timestep in units convertible to seconds.
-            Setting this optional keyword overrules the adaptive time step
-            capability and forces the use of this timestep throughout. If a tuple
-            of timesteps is provided, the adaptive timestep will be clamped
-            between the first and second values.
-
-        field_weighting : str
-            String that selects the field weighting algorithm used to determine
-            what fields are felt by the particles. Options are:
-
-            * 'nearest neighbor': Particles are assigned the fields on
-                the grid vertex closest to them.
-            * 'volume averaged' : The fields experienced by a particle are a
-                volume-average of the eight grid points surrounding them.
-
-            The default is 'volume averaged'.
-
         Returns
         -------
         None
