@@ -699,6 +699,6 @@ def test_stopping_power_interpolation(
     assert np.isclose(actual_stopping_power, expected_stopping_power, rtol=0.001).all()
 
 def test_stopping_power_no_interpolation():
-    result = stopping_power(Particle("H+"), "Copper")
+    result = stopping_power(Particle("H+"), "COPPER")
 
     assert type(result) is tuple
