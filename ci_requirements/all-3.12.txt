@@ -533,7 +533,7 @@ virtualenv==20.26.2
     #   nox
     #   pre-commit
     #   tox
-voila==0.5.7
+voila==0.2.17
     # via plasmapy (pyproject.toml)
 wcwidth==0.2.13
     # via prompt-toolkit
