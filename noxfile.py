@@ -24,6 +24,7 @@ to be installed.
 
 import os
 import sys
+from typing import Literal
 
 import nox
 
@@ -39,18 +40,24 @@ nox.options.default_venv_backend = "uv|virtualenv"
 
 
 def _get_requirements_filepath(
-    category: str,
-    version: str,
-    resolution: str = "highest",
+    category: Literal["docs", "tests", "all"],
+    version: Literal["3.10", "3.11", "3.12", "3.13", "3.14", "3.15"],
+    resolution: Literal["highest", "lowest-direct", "lowest"],
 ) -> str:
     """
     Return the file path to the requirements file.
 
     Parameters
     ----------
-    category : "docs" | "tests" | "all"
-    version : "3.10" | "3.11" | "3.12"
-    resolution : "highest" (default) | "lowest-direct" | "lowest"
+    category : str
+        The name of the optional dependency set, as defined in
+        :file:`pyproject.toml`.
+
+    version : str
+        The supported version of Python.
+
+    resolution : str
+        The resolution strategy used by uv.
     """
     requirements_directory = "ci_requirements"
     specifiers = [category, version]
@@ -63,7 +70,7 @@ def _get_requirements_filepath(
 def requirements(session) -> None:
     """Regenerate pinned requirements files used in tests and doc builds."""
 
-    session.install("uv >= 0.1.44")
+    session.install("uv >= 0.2.5")
 
     category_version_resolution: list[tuple[str, str, str]] = [
         ("tests", version, "highest") for version in supported_python_versions
