@@ -143,6 +143,26 @@ class Tracker(ParticleTracker):
         can also be specified in cartesian, cylindrical, or spherical
         coordinates (see the ``source`` keyword).
 
+    dt : `~astropy.units.Quantity`, optional
+        An explicitly set time step in units convertible to seconds.
+        Setting this optional keyword overrules the adaptive time step
+        capability and forces the use of this time step throughout.
+
+    dt_range : tuple of shape (2,) of `~astropy.units.Quantity`, optional
+        If specified, the calculated adaptive time step will be clamped
+        between the first and second values.
+
+    field_weighting : str
+        String that selects the field weighting algorithm used to determine
+        what fields are felt by the particles. Options are:
+
+        * 'nearest neighbor': Particles are assigned the fields on
+            the grid vertex closest to them.
+        * 'volume averaged' : The fields experienced by a particle are a
+            volume-average of the eight grid points surrounding them.
+
+        The default is 'volume averaged'.
+
     detector_hdir : `numpy.ndarray`, shape (3), optional
         A unit vector (in Cartesian coordinates) defining the horizontal
         direction on the detector plane. By default, the horizontal axis in the
@@ -154,6 +174,14 @@ class Tracker(ParticleTracker):
         The detector vertical axis is then defined
         to be orthogonal to both the source-to-detector vector and the
         detector horizontal axis.
+
+    output_directory : `~pathlib.Path`, optional
+        Output for objects that are saved to disk. If a directory is not specified
+        then a memory save routine is used.
+
+    fraction_exited_threshold : float, optional
+        The fraction of particles that must leave the grids to terminate the simulation.
+        This does not include particles that have never entered the grids.
 
     verbose : bool, optional
         If true, updates on the status of the program will be printed
