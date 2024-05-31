@@ -192,7 +192,11 @@ class ParticleTracker:
     def _set_time_step_attributes(
         self, dt, termination_condition, save_routine
     ) -> None:
-        """Determines whether the simulation will follow a synchronized or adaptive time step."""
+        """Determines whether the simulation will follow a synchronized or adaptive time step.
+
+        This method also sets the `_is_synchronized_time_step` and
+        `_is_adaptive_time_step` attributes.
+        """
 
         self._require_synchronized_time = (
             termination_condition.require_synchronized_dt
@@ -259,8 +263,7 @@ class ParticleTracker:
     ) -> None:
         """
         Ensure the specified termination condition and save routine are actually
-        a termination routine class and save routine, respectively. This function also
-        sets the `_is_synchronized_time_step` and `_is_adaptive_time_step` attributes.
+        a termination routine class and save routine, respectively.
         """
 
         if isinstance(grids, BasePlasma):
