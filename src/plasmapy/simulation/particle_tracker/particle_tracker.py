@@ -28,6 +28,8 @@ from plasmapy.simulation.particle_tracker.termination_conditions import (
     AbstractTerminationCondition,
 )
 
+_INTEGRATORS = {"explicit_boris": boris_push}
+
 
 class ParticleTracker:
     r"""A particle tracker for particles in electric and magnetic fields without inter-particle interactions.
@@ -116,6 +118,7 @@ class ParticleTracker:
         grids: AbstractGrid | Iterable[AbstractGrid],
         termination_condition: AbstractTerminationCondition | None = None,
         save_routine: AbstractSaveRoutine | None = None,
+        integrator: str = "explicit_boris",
         dt=None,
         dt_range=None,
         field_weighting="volume averaged",
@@ -133,8 +136,11 @@ class ParticleTracker:
 
         # Validate inputs to the run function
         self._validate_constructor_inputs(
-            grids, termination_condition, save_routine, field_weighting
+            grids, termination_condition, save_routine, integrator, field_weighting
         )
+
+        # Look up the integrator function for the passed string representation
+        self._integrator = _INTEGRATORS[integrator]
 
         self._set_time_step_attributes(dt, termination_condition, save_routine)
 
@@ -255,7 +261,12 @@ class ParticleTracker:
         self._Courant_parameter = Courant_parameter
 
     def _validate_constructor_inputs(
-        self, grids, termination_condition, save_routine, field_weighting: str
+        self,
+        grids,
+        termination_condition,
+        save_routine,
+        integrator: str,
+        field_weighting: str,
     ) -> None:
         """
         Ensure the specified termination condition and save routine are actually
@@ -279,6 +290,9 @@ class ParticleTracker:
         if not isinstance(save_routine, AbstractSaveRoutine):
             raise TypeError("Please specify a valid save routine.")
 
+        if integrator not in self._INTEGRATORS:
+            raise ValueError("Please specify a valid integrator.")
+
         # Load and validate inputs
         field_weightings = ["volume averaged", "nearest neighbor"]
         if field_weighting in field_weightings:
@@ -297,7 +311,7 @@ class ParticleTracker:
         """
 
         # Some quantities are necessary for the particle tracker to function regardless of other configurations
-        required_quantities = {"E_x", "E_y", "E_z", "B_x", "B_y", "B_z"}
+        required_quantities = ["E_x", "E_y", "E_z", "B_x", "B_y", "B_z"]
 
         for grid in self.grids:
             # Require the field quantities - do not warn if they are absent
@@ -697,7 +711,8 @@ class ParticleTracker:
         else:
             self.time += dt
 
-        self.x[tracked_mask], self.v[tracked_mask] = boris_push(
+        # Update the tracked particles using the integrator specified at instantiation
+        self.x[tracked_mask], self.v[tracked_mask] = self._integrator(
             pos_tracked, vel_tracked, B, E, self.q, self.m, dt, inplace=False
         )
 

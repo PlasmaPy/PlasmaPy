@@ -94,6 +94,14 @@ def grid_with_inf_entry():
             {},
             ValueError,
         ),
+        # Invalid integrator string
+        (
+            CartesianGrid(-1 * u.m, 1 * u.m),
+            "no_particles_on_grids_instantiated",
+            None,
+            {"integrator": "lorem ipsum"},
+            ValueError,
+        ),
         # Invalid field weighting
         (
             CartesianGrid(-1 * u.m, 1 * u.m),
