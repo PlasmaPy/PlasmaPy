@@ -187,7 +187,7 @@ class Tracker(ParticleTracker):
         the grids.
 
     verbose : bool, optional
-        If `true`, updates on the status of the program will be printed
+        If `True`, updates on the status of the program will be printed
         into the standard output while running.
     """
 
