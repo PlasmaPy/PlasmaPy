@@ -19,7 +19,7 @@ from tqdm import tqdm
 from plasmapy.particles import Particle, particle_input
 from plasmapy.plasma.grids import AbstractGrid
 from plasmapy.plasma.plasma_base import BasePlasma
-from plasmapy.simulation.particle_integrators import boris_push
+from plasmapy.simulation.particle_integrators import boris_push, boris_push_relativistic
 from plasmapy.simulation.particle_tracker.save_routines import (
     AbstractSaveRoutine,
     DoNotSaveSaveRoutine,
@@ -28,7 +28,10 @@ from plasmapy.simulation.particle_tracker.termination_conditions import (
     AbstractTerminationCondition,
 )
 
-_INTEGRATORS = {"explicit_boris": boris_push}
+_INTEGRATORS = {
+    "explicit_boris": boris_push,
+    "explicit_boris_relativistic": boris_push_relativistic,
+}
 
 
 class ParticleTracker:
