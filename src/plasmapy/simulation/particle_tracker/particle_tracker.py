@@ -117,7 +117,7 @@ class ParticleTracker:
     If both the particle's position and velocity are set to ``NaN``, then the particle has been removed from the simulation.
     """
 
-    @validate_quantities(dt={"none_shall_pass": True})
+    @validate_quantities
     def __init__(
         self,
         grids: AbstractGrid | Iterable[AbstractGrid],
