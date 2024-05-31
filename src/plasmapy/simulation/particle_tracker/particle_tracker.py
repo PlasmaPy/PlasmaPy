@@ -148,6 +148,8 @@ class ParticleTracker:
         # This flag records whether the simulation has been run
         self._has_run = False
 
+        self._do_stopping = False
+
         # Raise a ValueError if a synchronized dt is required by termination condition or save routine but one is
         # not given. This is only the case if an array with differing entries is specified for dt
         if self._require_synchronized_time and not self._is_synchronized_time_step:
@@ -409,6 +411,38 @@ class ParticleTracker:
 
         self.x = x.to(u.m).value
         self.v = v.to(u.m / u.s).value
+
+    def add_stopping(self, I: u.Quantity):  # noqa: E741
+        r"""
+        Enable particle stopping described by non-relativistic Bethe formula.
+
+        The electron density associated with each material must be provided in
+        the grid during instantiation.
+
+        Parameters
+        ----------
+        I : `~astropy.units.Quantity`, shape (ngrids)
+            An array of the mean excitation energy values for each of the provided
+            grids.
+
+        Raises
+        ------
+        `ValueError`:
+            The provided mean excitation energy array does not match with the number
+            of grids provided at class instantiation.
+        """
+
+        if len(I) != len(self.grids):
+            raise ValueError(
+                "Please provide an array of length ngrids for the mean excitation energies."
+            )
+
+        self._do_stopping = True
+
+        # Require that each grid has a defined electron density,
+        # if a grid does not define n_e, raise an exception
+        for grid in self.grids:
+            grid.require_quantities("n_e", replace_with_zeros=False)
 
     def run(self) -> None:
         r"""
