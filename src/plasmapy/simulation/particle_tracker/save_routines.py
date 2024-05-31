@@ -14,6 +14,7 @@ from pathlib import Path
 
 import astropy.units as u
 import h5py
+import numpy as np
 
 
 class AbstractSaveRoutine(ABC):
@@ -108,7 +109,7 @@ class AbstractSaveRoutine(ABC):
 
         for quantity in self._quantities:
             quantity_history = self._results.get(quantity, [])
-            current_quantity = getattr(self._particle_tracker, quantity, 0)
+            current_quantity = np.copy(getattr(self._particle_tracker, quantity, 0))
 
             quantity_history.append(current_quantity)
             self._results[quantity] = quantity_history
