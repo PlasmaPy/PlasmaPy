@@ -75,6 +75,11 @@ class AbstractSaveRoutine(ABC):
         """Return the results of the simulation.
         The quantities returned depend on those defined in the body of the save routine.
         """
+        if not self._particle_tracker or not self._particle_tracker._has_run:  # noqa: SLF001
+            raise RuntimeError(
+                "Please run the tracker simulation before attempting to access the save routine results."
+            )
+
         return self._apply_units_to_results()
 
     def save(self) -> None:

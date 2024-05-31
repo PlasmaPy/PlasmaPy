@@ -27,6 +27,7 @@ from plasmapy.simulation.particle_tracker.save_routines import (
 from plasmapy.simulation.particle_tracker.termination_conditions import (
     AbstractTerminationCondition,
 )
+from plasmapy.utils.decorators import validate_quantities
 
 _INTEGRATORS = {
     "explicit_boris": boris_push,
@@ -116,14 +117,15 @@ class ParticleTracker:
     If both the particle's position and velocity are set to ``NaN``, then the particle has been removed from the simulation.
     """
 
+    @validate_quantities(dt={"none_shall_pass": True})
     def __init__(
         self,
         grids: AbstractGrid | Iterable[AbstractGrid],
         termination_condition: AbstractTerminationCondition | None = None,
         save_routine: AbstractSaveRoutine | None = None,
         integrator: str = "explicit_boris",
-        dt=None,
-        dt_range=None,
+        dt: u.Quantity[u.s] | None = None,
+        dt_range: tuple[u.s, u.s] | None = None,
         field_weighting="volume averaged",
         req_quantities=None,
         verbose=True,
@@ -293,7 +295,7 @@ class ParticleTracker:
         if not isinstance(save_routine, AbstractSaveRoutine):
             raise TypeError("Please specify a valid save routine.")
 
-        if integrator not in self._INTEGRATORS:
+        if integrator not in _INTEGRATORS:
             raise ValueError("Please specify a valid integrator.")
 
         # Load and validate inputs
@@ -314,7 +316,7 @@ class ParticleTracker:
         """
 
         # Some quantities are necessary for the particle tracker to function regardless of other configurations
-        required_quantities = ["E_x", "E_y", "E_z", "B_x", "B_y", "B_z"]
+        required_quantities = {"E_x", "E_y", "E_z", "B_x", "B_y", "B_z"}
 
         for grid in self.grids:
             # Require the field quantities - do not warn if they are absent
@@ -388,10 +390,11 @@ class ParticleTracker:
             print(msg)  # noqa: T201
 
     @particle_input
+    @validate_quantities
     def load_particles(
         self,
-        x,
-        v,
+        x: u.Quantity[u.m],
+        v: u.Quantity[u.m / u.s],
         particle: Particle = Particle("p+"),  # noqa: B008
     ) -> None:
         r"""
