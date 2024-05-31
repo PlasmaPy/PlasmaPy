@@ -154,7 +154,7 @@ def test_get_file(
 @pytest.mark.parametrize(
     "downloader", ["downloader_validated", "downloader_unvalidated"]
 )
-def test_get_local_only_fle(downloader: Downloader, request) -> None:
+def test_get_local_only_file(downloader: Downloader, request) -> None:
     """
     Test various file retrieval modes
     """

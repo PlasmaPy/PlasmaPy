@@ -5,6 +5,7 @@ downloading files from |PlasmaPy's data repository|.
 
 import contextlib
 import json
+import os
 import time
 import warnings
 from pathlib import Path
@@ -13,6 +14,8 @@ from urllib.parse import urljoin
 import requests
 
 __all__ = ["Downloader"]
+
+_IS_CI = "GH_TOKEN" in os.environ
 
 
 # TODO: use a config file variable to allow users to set a location
@@ -70,6 +73,11 @@ class Downloader:
             )  # coverage: ignore
         else:
             self._download_directory = Path(directory)
+
+        # If currently operating in a CI environment and no token was specified,
+        # take the token from the CI environment variables
+        if _IS_CI and api_token is None:
+            api_token = api_token if api_token is not None else os.getenv("GH_TOKEN")
 
         self._validate = validate
         self._api_token = api_token
