@@ -280,7 +280,7 @@ class Downloader:
             headers["authorization"] = f"Bearer {self._api_token}"
 
         try:
-            reply = requests.get(url, headers=headers, timeout=10)
+            reply = requests.get(url, headers=headers, timeout=40)
 
         # No test coverage for this exception since we can't test it without
         # severing the network connectivity in pytest
