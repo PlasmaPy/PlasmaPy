@@ -27,7 +27,7 @@ bleach==6.1.0
     # via nbconvert
 cachetools==5.3.3
     # via tox
-certifi==2024.2.2
+certifi==2024.6.2
     # via requests
 cffi==1.16.0
     # via argon2-cffi-bindings
@@ -63,7 +63,7 @@ filelock==3.14.0
     # via
     #   tox
     #   virtualenv
-fonttools==4.52.4
+fonttools==4.53.0
     # via matplotlib
 future==1.0.0
     # via uncertainties
@@ -85,7 +85,7 @@ ipykernel==5.5.6
     #   ipywidgets
     #   nbclassic
     #   notebook
-ipython==8.24.0
+ipython==8.25.0
     # via
     #   ipykernel
     #   ipywidgets
