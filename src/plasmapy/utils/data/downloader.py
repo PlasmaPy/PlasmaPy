@@ -23,7 +23,7 @@ _IS_CI = "GH_TOKEN" in os.environ
 # for the data download folder?
 
 try:
-    response = requests.get("https://api.github.com/", timeout=40)
+    response = requests.get("https://api.github.com/", timeout=10)
 
     _API_CONNECTION_ESTABLISHED = response.status_code == 304
 except (requests.exceptions.ConnectionError, requests.exceptions.ReadTimeout) as e:
@@ -290,7 +290,7 @@ class Downloader:
             headers["authorization"] = f"Bearer {self._api_token}"
 
         try:
-            reply = requests.get(url, headers=headers, timeout=40)
+            reply = requests.get(url, headers=headers, timeout=10)
 
         # No test coverage for this exception since we can't test it without
         # severing the network connectivity in pytest

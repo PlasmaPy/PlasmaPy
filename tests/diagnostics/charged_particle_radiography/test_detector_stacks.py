@@ -16,6 +16,10 @@ from plasmapy.diagnostics.charged_particle_radiography.detector_stacks import (
 )
 from plasmapy.utils.data.downloader import _API_CONNECTION_ESTABLISHED, Downloader
 
+check_database_connection = pytest.mark.skipif(
+    not _API_CONNECTION_ESTABLISHED, reason="failed to connect to data repository"
+)
+
 
 @pytest.fixture()
 def downloader(tmpdir_factory):
@@ -62,9 +66,7 @@ def hdv2_stack(downloader):
     return Stack(layers)
 
 
-@pytest.mark.skipif(
-    not _API_CONNECTION_ESTABLISHED, reason="failed to connect to data repository"
-)
+@check_database_connection
 def test_create_layer_with_different_stopping_powers(downloader) -> None:
     """
     Tests the input validation for creating a Layer with either the linear
@@ -97,33 +99,25 @@ def test_create_layer_with_different_stopping_powers(downloader) -> None:
         Layer(100 * u.um, eaxis, mass_stopping_power, mass_density=None)
 
 
-@pytest.mark.skipif(
-    not _API_CONNECTION_ESTABLISHED, reason="failed to connect to data repository"
-)
+@check_database_connection
 def test_film_stack_num_layers(hdv2_stack) -> None:
     # Test num_layers property
     assert hdv2_stack.num_layers == 21
 
 
-@pytest.mark.skipif(
-    not _API_CONNECTION_ESTABLISHED, reason="failed to connect to data repository"
-)
+@check_database_connection
 def test_film_stack_num_active(hdv2_stack) -> None:
     # Test num_active property
     assert hdv2_stack.num_active == 10
 
 
-@pytest.mark.skipif(
-    not _API_CONNECTION_ESTABLISHED, reason="failed to connect to data repository"
-)
+@check_database_connection
 def test_film_stack_thickness(hdv2_stack) -> None:
     # Test thickness property
     assert np.isclose(hdv2_stack.thickness.to(u.mm).value, 1.19)
 
 
-@pytest.mark.skipif(
-    not _API_CONNECTION_ESTABLISHED, reason="failed to connect to data repository"
-)
+@check_database_connection
 def test_film_stack_deposition_curves(hdv2_stack) -> None:
     energies = np.arange(1, 60, 1) * u.MeV
     deposition_curves = hdv2_stack.deposition_curves(energies, return_only_active=False)
@@ -134,9 +128,7 @@ def test_film_stack_deposition_curves(hdv2_stack) -> None:
     ), "The integral over all layers for each particle species is not unity."
 
 
-@pytest.mark.skipif(
-    not _API_CONNECTION_ESTABLISHED, reason="failed to connect to data repository"
-)
+@check_database_connection
 def test_film_stack_energy_bands_active(hdv2_stack) -> None:
     # Test energy bands
     ebands = hdv2_stack.energy_bands([0.1, 60] * u.MeV, 0.1 * u.MeV, dx=1 * u.um)
@@ -147,9 +139,7 @@ def test_film_stack_energy_bands_active(hdv2_stack) -> None:
     assert np.allclose(ebands.to(u.MeV).value[:5, :], expected, atol=0.15)
 
 
-@pytest.mark.skipif(
-    not _API_CONNECTION_ESTABLISHED, reason="failed to connect to data repository"
-)
+@check_database_connection
 def test_film_stack_energy_bands_inum_active(hdv2_stack) -> None:
     # Test including inum_active layers
     ebands = hdv2_stack.energy_bands(
