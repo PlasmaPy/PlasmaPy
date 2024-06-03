@@ -9,7 +9,7 @@ jobs:
   update-requirements:
     name: Regenerate requirements
     runs-on: ubuntu-latest
-    if: github.repository == 'PlasmaPy/PlasmaPy' || github.event.name == 'workflow_dispatch'
+#    if: github.repository == 'PlasmaPy/PlasmaPy' || github.event.name == 'workflow_dispatch'
 
     steps:
 
@@ -47,7 +47,7 @@ jobs:
       with:
 #        token: ${{ steps.generate_token.outputs.token }}
         commit-message: Run 'nox -s requirements'
-        title: Update pinned requirements 📍
+        title: Update pinned requirements
         body-path: .github/content/update-requirements-pr-body.md
         labels: no changelog entry needed, requirements
         delete-branch: true
