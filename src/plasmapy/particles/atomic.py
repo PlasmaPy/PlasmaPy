@@ -1142,44 +1142,11 @@ def _is_electron(arg: Any) -> bool:
     )
 
 
-@particle_input
-@validate_quantities(energies=u.MeV)
-def stopping_power(
-    incident_particle: Particle,
-    material: str,
-    energies: u.Quantity[u.MeV] | None = None,
-    component="total",
-) -> tuple[u.Quantity, u.Quantity]:
-    """Calculate stopping powers for a provided particle in a provided material.
-
-    Parameters
-    ----------
-    incident_particle : |Particle|
-        The incident particle. Only protons and alpha particles are currently supported.
-
-    material : `str`
-        The material the particle is being stopped in. See notes for details on supported materials.
-
-    energies : `~astropy.units.Quantity`, default: See notes.
-        The particle kinetic energies for which the stopping power is calculated.
-
-    component : `str`, default: ``total``
-        The component of the stopping power to be calculated. Supported values are ``electronic``,
-        ``nuclear``, and ``total`` for the electronic, nuclear, and total energies, respectively.
-
-    Returns
-    -------
-    ``Tuple[u.Quantity, u.Quantity[u.MeV * u.cm**2 / u.g]]``
-        A two-tuple where the first element represents the energy values. The
-        second element is an array of the associated stopping powers.
-
-    Notes
-    -----
-    The data for stopping power is taken from the National Institute of
-    Standards and Technology's Stopping-Power and Range Tables :cite:p:`niststar:2005`.
-    Valid materials can be found on the NIST STAR website. The default energies
-    are taken from the data points in the STAR database.
-
+def _get_relevant_stopping_information(
+    incident_particle: Particle, material: str, component: str
+) -> tuple[u.Quantity[u.MeV], u.Quantity[u.MeV * u.cm**2 / u.g]]:
+    r"""
+    Retrieve saved energy stopping power data points from the NIST data file.
     """
 
     nist_data_path = _DEFAULT_DOWNLOADER.get_file("NIST_STAR.hdf5")
@@ -1225,17 +1192,77 @@ def stopping_power(
                 f"Please specify one of: total, electronic, or nuclear for component! (Got {component}.)"
             )
 
-        if energies is not None:
-            # Interpolate NIST data to the user-provided energy values. Uses log-log scale fed into a cubic spline.
-            cs = CubicSpline(
-                x=np.log(baseline_energies_data), y=np.log(relevant_stopping_data)
-            )
-
-            return energies, np.exp(
-                cs(np.log(energies.to("MeV").value))
-            ) * u.MeV * u.cm**2 / u.g
-
         return (
             baseline_energies_data * u.MeV,
-            relevant_stopping_data * u.MeV * u.cm**2 / u.g,
+            relevant_stopping_data * u.MeV * u.cm** 2 / u.g,
         )
+
+
+def _stopping_power_interpolator(
+    incident_particle: Particle, material: str, component="total"
+) -> CubicSpline:
+    r"""
+    Instantiate a SciPy interpolator that can be used to interpolate the stopping power of a given energy.
+    """
+
+    baseline_energies_data, relevant_stopping_data = _get_relevant_stopping_information(
+        incident_particle, material, component
+    )
+
+    return CubicSpline(
+        x=np.log(baseline_energies_data.value), y=np.log(relevant_stopping_data.value)
+    )
+
+
+@particle_input
+@validate_quantities(energies=u.MeV)
+def stopping_power(
+    incident_particle: Particle,
+    material: str,
+    energies: u.Quantity | None = None,
+    component="total",
+) -> tuple[u.Quantity, u.Quantity]:
+    """Calculate stopping powers for a provided particle in a provided material.
+
+    Parameters
+    ----------
+    incident_particle : |Particle|
+        The incident particle. Only protons and alpha particles are currently supported.
+
+    material : `str`
+        The material the particle is being stopped in. See notes for details on supported materials.
+
+    energies : `~astropy.units.Quantity`, default: See notes.
+        The particle kinetic energies for which the stopping power is calculated.
+
+    component : `str`, default: ``total``
+        The component of the stopping power to be calculated. Supported values are ``electronic``,
+        ``nuclear``, and ``total`` for the electronic, nuclear, and total energies, respectively.
+
+    Returns
+    -------
+    ``Tuple[u.Quantity, u.Quantity[u.MeV * u.cm**2 / u.g]]``
+        A two-tuple where the first element represents the energy values. The
+        second element is an array of the associated stopping powers.
+
+    Notes
+    -----
+    The data for stopping power is taken from the National Institute of
+    Standards and Technology's Stopping-Power and Range Tables :cite:p:`niststar:2005`.
+    Valid materials can be found on the NIST STAR website. The default energies
+    are taken from the data points in the STAR database.
+
+    """
+    baseline_energies_data, relevant_stopping_data = _get_relevant_stopping_information(
+        incident_particle, material, component
+    )
+
+    if energies is None:
+        return baseline_energies_data, relevant_stopping_data
+
+    # Interpolate NIST data to the user-provided energy values. Uses log-log scale fed into a cubic spline.
+    cs = _stopping_power_interpolator(incident_particle, material, component)
+
+    return energies, np.exp(
+        cs(np.log(energies.to("MeV").value))
+    ) * u.MeV * u.cm**2 / u.g
