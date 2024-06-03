@@ -8,7 +8,7 @@ import collections
 import sys
 import warnings
 from collections.abc import Iterable
-from enum import StrEnum, auto
+from enum import Enum, auto
 
 import astropy.units as u
 import numpy as np
@@ -28,7 +28,7 @@ from plasmapy.simulation.particle_tracker.termination_conditions import (
 )
 
 
-class StoppingMaterial(StrEnum):
+class StoppingMaterial(Enum):
     """
     Acceptable materials to be used with the NIST stopping power database.
     """
