@@ -9,7 +9,7 @@ jobs:
   update-requirements:
     name: Regenerate requirements
     runs-on: ubuntu-latest
-    if: github.repository == 'PlasmaPy/PlasmaPy'
+    if: github.repository == 'PlasmaPy/PlasmaPy' || github.event.name == 'workflow_dispatch'
 
     steps:
 
@@ -51,3 +51,4 @@ jobs:
         body-path: .github/content/update-requirements-pr-body.md
         labels: no changelog entry needed, requirements
         delete-branch: true
+        base: main
