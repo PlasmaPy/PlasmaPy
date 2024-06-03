@@ -20,8 +20,8 @@ def in_ci() -> bool:
     return "GITHUB_ACTIONS" in os.environ
 
 
-@check_database_connection
 @pytest.fixture(scope="module")
+@check_database_connection
 def downloader_validated(tmpdir_factory) -> Downloader:
     api_token = os.environ["GH_TOKEN"] if in_ci() else None
 
@@ -49,8 +49,8 @@ def test_api_token(downloader_validated: Downloader) -> None:
     assert limit >= 5000
 
 
-@check_database_connection
 @pytest.fixture(scope="module")
+@check_database_connection
 def downloader_unvalidated(tmpdir_factory) -> Downloader:
     path = tmpdir_factory.mktemp("unvalidated")
 
@@ -133,11 +133,11 @@ test_files = [
 ]
 
 
-@check_database_connection
 @pytest.mark.parametrize(
     "downloader", ["downloader_validated", "downloader_unvalidated"]
 )
 @pytest.mark.parametrize(("filename", "expected"), test_files)
+@check_database_connection
 def test_get_file(
     filename: str, expected: Exception | None, downloader: Downloader, request
 ) -> None:
@@ -162,10 +162,10 @@ def test_get_file(
         assert dl.get_file(filename) == filepath
 
 
-@check_database_connection
 @pytest.mark.parametrize(
     "downloader", ["downloader_validated", "downloader_unvalidated"]
 )
+@check_database_connection
 def test_get_local_only_file(downloader: Downloader, request):
     """
     Test various file retrieval modes
@@ -216,8 +216,8 @@ def test_get_file_NIST_PSTAR_datafile(downloader_validated) -> None:
     assert np.allclose(arr[0, :], np.array([1e-3, 1.043e2]))
 
 
-@check_database_connection
 @pytest.mark.flaky(reruns=2)
+@check_database_connection
 def test_at_most_one_api_call(downloader_validated) -> None:
     """
     Test that at most one API call is made over multiple queries
