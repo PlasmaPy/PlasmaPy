@@ -5,7 +5,7 @@
 [`noxfile.py`]: https://github.com/PlasmaPy/PlasmaPy/blob/main/noxfile.py
 [`pyproject.toml`]: https://github.com/PlasmaPy/PlasmaPy/blob/main/pyproject.toml
 
-This pull request (PR) regenerates the requirements files in [ci_requirements/] that are used for running tests, building documentation, and performing other continuous integration (CI) checks. Pinning requirements files reduces the probability that a CI check will spontaneously start failing in a PR due to a breaking change in a dependency. This PR lets us find unexpected breaking changes in newly released dependencies before they get used in CI. 🛡
+This pull request (PR) regenerates the requirements files in [`ci_requirements/`] that are used for running tests, building documentation, and performing other continuous integration (CI) checks. Pinning requirements files reduces the probability that a CI check will spontaneously start failing in a PR due to a breaking change in a dependency. This PR lets us find unexpected breaking changes in newly released dependencies before they get used in CI. 🛡
 
 **If all checks pass ✅, please merge this PR.** If any checks fail due to a breaking change in a dependency 🚨, please fix the problem and get the checks to pass again.
 
