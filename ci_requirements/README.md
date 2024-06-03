@@ -2,33 +2,42 @@
 
 [`.github/workflows/update-pinned-reqs.yml`]: ../.github/workflows/update-pinned-reqs.yml
 [Nox]: https://nox.thea.codes/en/stable/
+[`pyproject.toml`]: https://github.com/PlasmaPy/PlasmaPy/blob/main/pyproject.toml
+[workflow to update pinned requirements]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/update-pinned-reqs.yml
 
 This directory contains pinned requirements files for use by the [Nox]
-sessions that are used in continuous integration testing. Pinning
-requirements files ensures that continuous integration tests are
-consistently run on a set of dependencies that are known to work.
+sessions that run tests, build documentation, and perform other
+checks. Pinning requirements files ensures that continuous integration
+(CI) tests are consistently run on a set of dependencies that are
+known to work.
 
 These requirements files are regenerated via weekly automated pull
-requests created through the GitHub workflow defined in
-[`.github/workflows/update-pinned-reqs.yml`]. These pull requests help
-us find out when an upstream dependency causes new test failures, and
-usually prevent spontaneous test failures.
+requests (PRs) created through the GitHub workflow defined in
+[`.github/workflows/update-pinned-reqs.yml`]. These PRs help us
+discover and address new test failures that result from breaking
+changes in upstream dependencies. If we did not pin dependencies,
+breaking changes would result in PRs having spontaneous CI failures
+that are unrelated to the PR and thus difficult to track down.
 
 ## Regenerating requirements
 
-[workflow to update pinned requirements]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/update-pinned-reqs.yml
-[#2597]: https://github.com/PlasmaPy/PlasmaPy/pull/2597
-[`pyproject.toml`]: https://github.com/PlasmaPy/PlasmaPy/blob/main/pyproject.toml
+### Locally with Nox
 
-When the dependencies defined in [`pyproject.toml`] change in a pull
-request, it is necessary to regenerate these requirements files. To
-regenerate the requirements locally, run:
+When a PR changes the dependencies as defined in [`pyproject.toml`],
+it is necessary to regenerate these requirements files. To regenerate
+the requirements locally using [Nox], go to the top-level directory of
+your clone of PlasmaPy and run
 
 ```console
 nox -s requirements
 ```
 
+before committing the changes and pushing them to GitHub.
+
+### On GitHub
+
 Package maintainers may trigger the [workflow to update pinned
-requirements] through going to that page, selecting _Run workflow_ and
-choosing the `main` branch. This workflow will create a pull request
-(e.g., [#2597]) that updates the files in this directory.
+requirements] by going to that page, selecting _Run workflow_, and
+choosing the `main` branch. This workflow will run the [Nox] session
+described above to regenerate the requirements files in this directory
+and create a PR to `main` with those changes (e.g., [#2597]).
