@@ -38,16 +38,16 @@ jobs:
     # do this are in the documentation for the create-pull-request
     # action.
 
-    - uses: tibdex/github-app-token@v2
-      id: generate_token
-      with:
-        app_id: ${{ secrets.APP_ID }}
-        private_key: ${{ secrets.APP_PRIVATE_KEY }}
+#    - uses: tibdex/github-app-token@v2
+#      id: generate_token
+#      with:
+#        app_id: ${{ secrets.APP_ID }}
+#        private_key: ${{ secrets.APP_PRIVATE_KEY }}
 
     - name: Create Pull Request
       uses: peter-evans/create-pull-request@v6
       with:
-        token: ${{ steps.generate_token.outputs.token }}
+#        token: ${{ steps.generate_token.outputs.token }}
         commit-message: Run 'nox -s requirements'
         title: Update pinned requirements 📍
         body-path: ../content/update-requirements-pr-body.md
