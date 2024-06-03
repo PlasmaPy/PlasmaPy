@@ -1,0 +1,3 @@
+Created the new `~plasmapy.enum` subpackage.
+Added the `~plasmapy.enum.materials` module, which contains definitions
+for acceptable materials to be used with the NIST stopping power database.
