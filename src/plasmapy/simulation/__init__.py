@@ -1,27 +1,8 @@
-"""
-Module containing plasma simulation tools.
+__all__ = ["AbstractSimulation", "AbstractTimeDependentSimulation", "particle_tracker"]
 
-.. attention::
-
-   |expect-api-changes|
-"""
-
-__all__ = [
-    "AbstractSimulation",
-    "AbstractTimeDependentSimulation",
-    "ParticleTracker",
-    "StoppingMaterial",
-]
-
+from plasmapy.simulation import particle_tracker
 from plasmapy.simulation.abstractions import (
     AbstractNormalizations,
     AbstractSimulation,
     AbstractTimeDependentSimulation,
-)
-from plasmapy.simulation.particle_tracker import (
-    IntervalSaveRoutine,
-    NoParticlesOnGridsTerminationCondition,
-    ParticleTracker,
-    StoppingMaterial,
-    TimeElapsedTerminationCondition,
 )
