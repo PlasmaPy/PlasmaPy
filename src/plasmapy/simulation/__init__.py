@@ -10,6 +10,7 @@ __all__ = [
     "AbstractSimulation",
     "AbstractTimeDependentSimulation",
     "ParticleTracker",
+    "StoppingMaterial",
 ]
 
 from plasmapy.simulation.abstractions import (
@@ -21,5 +22,6 @@ from plasmapy.simulation.particle_tracker import (
     IntervalSaveRoutine,
     NoParticlesOnGridsTerminationCondition,
     ParticleTracker,
+    StoppingMaterial,
     TimeElapsedTerminationCondition,
 )
