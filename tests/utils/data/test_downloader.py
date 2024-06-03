@@ -5,7 +5,7 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-from plasmapy.utils.data.downloader import Downloader
+from plasmapy.utils.data.downloader import _API_CONNECTION_ESTABLISHED, Downloader
 
 
 def in_ci() -> bool:
@@ -16,6 +16,9 @@ def in_ci() -> bool:
     return "GITHUB_ACTIONS" in os.environ
 
 
+@pytest.mark.skipif(
+    not _API_CONNECTION_ESTABLISHED, reason="failed to connect to data repository"
+)
 @pytest.fixture(scope="module")
 def downloader_validated(tmpdir_factory) -> Downloader:
     api_token = os.environ["GH_TOKEN"] if in_ci() else None
@@ -32,6 +35,9 @@ def downloader_validated(tmpdir_factory) -> Downloader:
 
 
 @pytest.mark.skipif(
+    not _API_CONNECTION_ESTABLISHED, reason="failed to connect to data repository"
+)
+@pytest.mark.skipif(
     not in_ci(), reason="Tests only use authenticated API calls when run in CI."
 )
 def test_api_token(downloader_validated: Downloader) -> None:
@@ -43,6 +49,9 @@ def test_api_token(downloader_validated: Downloader) -> None:
     assert limit >= 5000
 
 
+@pytest.mark.skipif(
+    not _API_CONNECTION_ESTABLISHED, reason="failed to connect to data repository"
+)
 @pytest.fixture(scope="module")
 def downloader_unvalidated(tmpdir_factory) -> Downloader:
     path = tmpdir_factory.mktemp("unvalidated")
@@ -58,6 +67,9 @@ test_urls = [
 ]
 
 
+@pytest.mark.skipif(
+    not _API_CONNECTION_ESTABLISHED, reason="failed to connect to data repository"
+)
 @pytest.mark.parametrize(("url", "expected"), test_urls)
 def test_http_request(
     downloader_validated: Downloader, url: str, expected: None | Exception
@@ -72,6 +84,9 @@ def test_http_request(
             downloader_validated._http_request(url)
 
 
+@pytest.mark.skipif(
+    not _API_CONNECTION_ESTABLISHED, reason="failed to connect to data repository"
+)
 def test_blob_file(downloader_validated: Downloader) -> None:
     """
     Test the read and write blob file routines
@@ -90,6 +105,9 @@ def test_blob_file(downloader_validated: Downloader) -> None:
     assert downloader_validated._blob_dict["test_key"] == test_str
 
 
+@pytest.mark.skipif(
+    not _API_CONNECTION_ESTABLISHED, reason="failed to connect to data repository"
+)
 def test_update_blob_entry(downloader_validated):
     """
     Test the logic in the _update_blob_entry function
@@ -123,6 +141,9 @@ test_files = [
 ]
 
 
+@pytest.mark.skipif(
+    not _API_CONNECTION_ESTABLISHED, reason="failed to connect to data repository"
+)
 @pytest.mark.parametrize(
     "downloader", ["downloader_validated", "downloader_unvalidated"]
 )
@@ -151,6 +172,9 @@ def test_get_file(
         assert dl.get_file(filename) == filepath
 
 
+@pytest.mark.skipif(
+    not _API_CONNECTION_ESTABLISHED, reason="failed to connect to data repository"
+)
 @pytest.mark.parametrize(
     "downloader", ["downloader_validated", "downloader_unvalidated"]
 )
@@ -190,6 +214,9 @@ def test_get_local_only_file(downloader: Downloader, request):
         dl.get_file("not_anywhere.txt")
 
 
+@pytest.mark.skipif(
+    not _API_CONNECTION_ESTABLISHED, reason="failed to connect to data repository"
+)
 def test_get_file_NIST_PSTAR_datafile(downloader_validated) -> None:
     """Test getting a particular file and checking for known contents"""
 
@@ -203,6 +230,9 @@ def test_get_file_NIST_PSTAR_datafile(downloader_validated) -> None:
     assert np.allclose(arr[0, :], np.array([1e-3, 1.043e2]))
 
 
+@pytest.mark.skipif(
+    not _API_CONNECTION_ESTABLISHED, reason="failed to connect to data repository"
+)
 @pytest.mark.flaky(reruns=2)
 def test_at_most_one_api_call(downloader_validated) -> None:
     """
@@ -223,6 +253,9 @@ def test_at_most_one_api_call(downloader_validated) -> None:
     assert used1 <= used0 + 1
 
 
+@pytest.mark.skipif(
+    not _API_CONNECTION_ESTABLISHED, reason="failed to connect to data repository"
+)
 def test_creating_another_downloader(downloader_validated) -> None:
     """
     Test creating a second downloader in the same directory.
@@ -237,6 +270,9 @@ def test_creating_another_downloader(downloader_validated) -> None:
     assert dl2.get_file(filename) == filepath
 
 
+@pytest.mark.skipif(
+    not _API_CONNECTION_ESTABLISHED, reason="failed to connect to data repository"
+)
 def test_ensure_update_blob_dict_runs(downloader_validated: Downloader) -> None:
     """
     Ensure the _update_blob_dict method gets run if it hasn't already.
