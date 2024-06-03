@@ -17,6 +17,7 @@ from numpy.typing import NDArray
 from tqdm import tqdm
 
 from plasmapy.particles import Particle, particle_input
+from plasmapy.particles.atomic import _stopping_power_interpolator
 from plasmapy.plasma.grids import AbstractGrid
 from plasmapy.plasma.plasma_base import BasePlasma
 from plasmapy.simulation.particle_integrators import boris_push
@@ -401,6 +402,7 @@ class ParticleTracker:
         # is this a reasonable assumption?
         self.q = particle.charge.to(u.C).value
         self.m = particle.mass.to(u.kg).value
+        self._particle = particle
 
         if x.shape[0] != v.shape[0]:
             raise ValueError(
@@ -414,7 +416,7 @@ class ParticleTracker:
         self.x = x.to(u.m).value
         self.v = v.to(u.m / u.s).value
 
-    def add_bethe_stopping(self, I: u.Quantity):  # noqa: E741
+    def add_Bethe_stopping(self, I: u.Quantity):  # noqa: E741
         r"""
         Enable particle stopping described by non-relativistic Bethe formula.
 
@@ -446,15 +448,21 @@ class ParticleTracker:
         for grid in self.grids:
             grid.require_quantities("n_e", replace_with_zeros=False)
 
-    def add_stopping(self):
+    def add_stopping(self, materials: list[str]):
         r"""
         Enable particle stopping using experimental stopping powers.
-
         """
-        self._do_stopping = True
 
-        for grid in self.grids:
-            grid.require_quantities("S", replace_with_zeros=True)
+        if len(materials) != len(self.grids):
+            raise ValueError(
+                "Please provide an array of length ngrids for the materials."
+            )
+
+        self._do_stopping = True
+        self._stopping_power_interpolators = [
+            _stopping_power_interpolator(self._particle, material)
+            for (grid, material) in zip(self.grids, materials, strict=False)
+        ]
 
     def run(self) -> None:
         r"""
@@ -765,6 +773,8 @@ class ParticleTracker:
         if not self._do_stopping:
             return
 
+        # TODO: maybe break out different stopping models into separate functions?
+        # TODO: particle_stopping_routines?
         S = np.zeros(self.nparticles_tracked) * u.J / u.m
 
         for grid in self.grids:
@@ -776,7 +786,18 @@ class ParticleTracker:
             S += _S
 
         dx = self.v[tracked_mask] * dt
-        dE = S * dx
+
+        stopping_power = np.zeros(self.nparticles_tracked)
+
+        for cs in self._stopping_power_interpolators:
+            # TODO: is this the proper way to handle the addition of multiple stopping powers?
+            stopping_power += cs(
+                np.log(self._particle_kinetic_energy[tracked_mask].to("MeV").value)
+            )
+
+        # Take the negative stopping power since we want to be removing energy
+        # from the particles
+        dE = -stopping_power * dx
 
         # Update the velocities of the particles using the new energy values
         # TODO: again, figure out how to differentiate relativistic and classical cases
