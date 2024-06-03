@@ -1102,6 +1102,25 @@ def test_customized_particle_repr(cls, kwargs, expected_repr) -> None:
         )
 
 
+custom_particle_str_table = [
+    (
+        {"mass": 5.12 * u.kg, "charge": 6.2 * u.C},
+        "CustomParticle(mass=5.12 kg, charge=6.2 C)",
+    ),
+    (
+        {"mass": 5.12 * u.kg, "charge": 6.2 * u.C, "symbol": "I2"},
+        "I2",
+    ),
+]
+
+
+@pytest.mark.parametrize(("kwargs", "expected_str"), custom_particle_str_table)
+def test_custom_particle_str(kwargs, expected_str) -> None:
+    """Test the string representation of a custom particle."""
+    instance = CustomParticle(**kwargs)
+    assert str(instance) == expected_str
+
+
 @pytest.mark.parametrize("cls", [CustomParticle, DimensionlessParticle])
 @pytest.mark.parametrize("not_a_str", [1, u.kg])
 def test_typeerror_redefining_symbol(cls, not_a_str) -> None:

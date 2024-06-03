@@ -890,7 +890,7 @@ of |Python|, |NumPy|, |Astropy|, and other dependencies.
 * PlasmaPy should support the minor versions of Python initially
   released 42 months prior to a release. Because :pep:`602` establishes
   that Python releases will generally occur in October of each year,
-  the minimum required version fo Python should be increased for the
+  the minimum required version of Python should be increased for the
   first release of PlasmaPy after April each year.
 
 * PlasmaPy should support minor versions of its dependencies that were
