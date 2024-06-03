@@ -1,0 +1,2 @@
+Added a condition to check if the GitHub API can be reached to be used by the
+`~plasmapy.utils.data.downloader.Downloader` object.
