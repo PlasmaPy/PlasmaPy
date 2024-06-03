@@ -397,6 +397,8 @@ class ParticleTracker:
         # Raise an error if the run method has already been called.
         self._enforce_order()
 
+        # TODO: it is an assumption that there exists only one species of particles
+        # is this a reasonable assumption?
         self.q = particle.charge.to(u.C).value
         self.m = particle.mass.to(u.kg).value
 
@@ -412,7 +414,7 @@ class ParticleTracker:
         self.x = x.to(u.m).value
         self.v = v.to(u.m / u.s).value
 
-    def add_stopping(self, I: u.Quantity):  # noqa: E741
+    def add_bethe_stopping(self, I: u.Quantity):  # noqa: E741
         r"""
         Enable particle stopping described by non-relativistic Bethe formula.
 
@@ -443,6 +445,16 @@ class ParticleTracker:
         # if a grid does not define n_e, raise an exception
         for grid in self.grids:
             grid.require_quantities("n_e", replace_with_zeros=False)
+
+    def add_stopping(self):
+        r"""
+        Enable particle stopping using experimental stopping powers.
+
+        """
+        self._do_stopping = True
+
+        for grid in self.grids:
+            grid.require_quantities("S", replace_with_zeros=True)
 
     def run(self) -> None:
         r"""
@@ -633,7 +645,19 @@ class ParticleTracker:
 
         return all_particles
 
-    def _push(self) -> None:
+    @property
+    def _particle_kinetic_energy(self):
+        r"""
+        Return the non-relativistic kinetic energy of the particles.
+        """
+
+        # TODO: how should the relativistic case be handled?
+
+        return 0.5 * self.m * self.v**2
+
+    # TODO: reduce cognitive complexity of this method
+    # maybe break stopping calculations into a separate method?
+    def _push(self) -> None:  # noqa: PLR0915
         r"""
         Advance particles using an implementation of the time-centered
         Boris algorithm.
@@ -736,6 +760,29 @@ class ParticleTracker:
         )
 
         self.dt = dt
+
+        # Update velocities to reflect stopping
+        if not self._do_stopping:
+            return
+
+        S = np.zeros(self.nparticles_tracked) * u.J / u.m
+
+        for grid in self.grids:
+            _S = grid.nearest_neighbor_interpolator(
+                pos_tracked * u.m, "S", persistent=False
+            )
+            _S = np.nan_to_num(_S, nan=0.0 * u.J / u.m)
+
+            S += _S
+
+        dx = self.v[tracked_mask] * dt
+        dE = S * dx
+
+        # Update the velocities of the particles using the new energy values
+        # TODO: again, figure out how to differentiate relativistic and classical cases
+        E = self._particle_kinetic_energy + dE
+
+        self.v[tracked_mask] = np.sqrt(2 * E / self.m)
 
     @property
     def on_any_grid(self) -> NDArray[np.bool_]:

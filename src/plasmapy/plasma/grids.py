@@ -127,6 +127,7 @@ class AbstractGrid(ABC):
         RecognizedQuantity("B_z", "Magnetic field (z component)", u.T),
         RecognizedQuantity("phi", "Electric Scalar Potential", u.V),
         RecognizedQuantity("n_e", "Electron Number Density", 1 / u.m**3),
+        RecognizedQuantity("S", "Stopping Power", u.J / u.m),
     ]
 
     # Create a dict of recognized quantities for fast access by key
