@@ -47,7 +47,7 @@ jobs:
       with:
 #        token: ${{ steps.generate_token.outputs.token }}
         commit-message: Run 'nox -s requirements'
-        title: Update pinned requirements
+        title: Update pinned requirements 📍
         body-path: .github/content/update-requirements-pr-body.md
         labels: no changelog entry needed, requirements
         delete-branch: true
