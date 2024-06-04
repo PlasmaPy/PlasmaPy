@@ -65,8 +65,6 @@ filelock==3.14.0
     #   virtualenv
 fonttools==4.53.0
     # via matplotlib
-future==1.0.0
-    # via uncertainties
 h5py==3.7.0
     # via plasmapy (pyproject.toml)
 hypothesis==6.97.4
@@ -363,11 +361,11 @@ traitlets==5.14.3
     #   notebook
 typing-extensions==4.12.1
     # via ipython
-uncertainties==3.1.7
+uncertainties==3.2.0
     # via lmfit
 urllib3==1.26.18
     # via requests
-uv==0.2.5
+uv==0.2.6
     # via tox-uv
 virtualenv==20.26.2
     # via
