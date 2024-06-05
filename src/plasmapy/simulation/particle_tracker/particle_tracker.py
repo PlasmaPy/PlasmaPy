@@ -149,6 +149,8 @@ class ParticleTracker:
         # This flag records whether the simulation has been run
         self._has_run = False
 
+        # Should the tracker update particle energies after every time step to
+        # reflect stopping?
         self._do_stopping = False
 
         # Raise a ValueError if a synchronized dt is required by termination condition or save routine but one is
@@ -158,6 +160,7 @@ class ParticleTracker:
                 "Please specify a synchronized time step to use the simulation with this configuration!"
             )
 
+        # Ensure that the grids have defined the necessary quantities or at least zeroed
         self._preprocess_grids(req_quantities)
 
         # self.grid_arr is the grid positions in si units. This is created here
@@ -450,12 +453,24 @@ class ParticleTracker:
     def add_stopping(self, materials: list[str]):
         r"""
         Enable particle stopping using experimental stopping powers.
+
+        Interpolation of stopping powers is conducted using data from the NIST
+        PSTAR. This information is combined with the mass density quantity
+        provided in the grids to calculate the energy loss over the distance
+        travelled during a timestep.
         """
 
         if len(materials) != len(self.grids):
             raise ValueError(
                 "Please provide an array of length ngrids for the materials."
             )
+
+        # Require that each grid has a defined mass density,
+        # if a grid does not define rho, raise an exception
+        # TODO: should this be replaced with only raising an exception when none
+        #  of the grids specify a mass density?
+        for grid in self.grids:
+            grid.require_quantities("rho", replace_with_zeros=False)
 
         self._do_stopping = True
         self._stopping_power_interpolators = [
@@ -773,7 +788,7 @@ class ParticleTracker:
             return
 
         # TODO: maybe break out different stopping models into separate functions?
-        # TODO: particle_stopping_routines?
+        #  particle_stopping_routines?
         S = np.zeros(self.nparticles_tracked) * u.J / u.m
 
         for grid in self.grids:
