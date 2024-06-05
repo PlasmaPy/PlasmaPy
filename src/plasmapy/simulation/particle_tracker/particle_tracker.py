@@ -8,6 +8,7 @@ __all__ = [
 
 import collections
 import sys
+import typing
 import warnings
 from collections.abc import Iterable
 
@@ -161,6 +162,7 @@ class ParticleTracker:
             )
 
         # Ensure that the grids have defined the necessary quantities or at least zeroed
+        self._required_quantities = req_quantities
         self._preprocess_grids(req_quantities)
 
         # self.grid_arr is the grid positions in si units. This is created here
@@ -295,24 +297,39 @@ class ParticleTracker:
                 f"{field_weightings}",
             )
 
+    # Some quantities are necessary for the particle tracker to function
+    # regardless of other configurations
+    _REQUIRED_QUANTITIES: typing.ClassVar[set[str]] = {
+        "E_x",
+        "E_y",
+        "E_z",
+        "B_x",
+        "B_y",
+        "B_z",
+    }
+
     def _preprocess_grids(self, additional_required_quantities) -> None:
         """Add required quantities to grid objects.
 
-        Grids lacking the required quantities will be filled with zeros.
+        Grids lacking the default required quantities will be filled with zeros.
+        This method is not only called during instantiation of the |ParticleTracker|
+        but is also called when enabling stopping.
         """
 
-        # Some quantities are necessary for the particle tracker to function regardless of other configurations
-        required_quantities = {"E_x", "E_y", "E_z", "B_x", "B_y", "B_z"}
+        if getattr(self, "_req_quantities", None) is None:
+            self._required_quantities = self._REQUIRED_QUANTITIES
 
         for grid in self.grids:
             # Require the field quantities - do not warn if they are absent
             # and are replaced with zeros
             grid.require_quantities(
-                required_quantities,
+                self._REQUIRED_QUANTITIES,
                 replace_with_zeros=True,
                 warn_on_replace_with_zeros=False,
             )
 
+            # "additional_required_quantities" can also refer to explicitly specified
+            # fields that are covered as default field requirements
             if additional_required_quantities is not None:
                 # Require the additional quantities - in this case, do warn
                 # if they are set to zeros
@@ -322,10 +339,11 @@ class ParticleTracker:
 
         if additional_required_quantities is not None:
             # Add additional required quantities based off simulation configuration
-            required_quantities.update(additional_required_quantities)
+            # this must be done after the above processing to properly get warnings
+            self._required_quantities.update(additional_required_quantities)
 
         for grid in self.grids:
-            for rq in required_quantities:
+            for rq in self._required_quantities:
                 # Check that there are no infinite values
                 if not np.isfinite(grid[rq].value).all():
                     raise ValueError(
@@ -678,8 +696,8 @@ class ParticleTracker:
         return 0.5 * self.m * self.v**2
 
     # TODO: reduce cognitive complexity of this method
-    # maybe break stopping calculations into a separate method?
-    def _push(self) -> None:  # noqa: PLR0915
+    #  maybe break stopping calculations into a separate method?
+    def _push(self) -> None:
         r"""
         Advance particles using an implementation of the time-centered
         Boris algorithm.
@@ -699,69 +717,66 @@ class ParticleTracker:
         # entered any grid
         self.entered_grid += np.sum(self.particles_on_grid, axis=-1).astype(np.bool_)
 
-        Ex = np.zeros(self.nparticles_tracked) * u.V / u.m
-        Ey = np.zeros(self.nparticles_tracked) * u.V / u.m
-        Ez = np.zeros(self.nparticles_tracked) * u.V / u.m
-        Bx = np.zeros(self.nparticles_tracked) * u.T
-        By = np.zeros(self.nparticles_tracked) * u.T
-        Bz = np.zeros(self.nparticles_tracked) * u.T
+        # TODO: should this interpolation step be broken into a separate method
+        #  for the sake of simplicity?
+        # Construct a dictionary of empty arrays to populate with values of the
+        # interpolation calculation. field name: field value pairs
+        summed_field_values = {
+            field_name: np.zeros(self.nparticles_tracked)
+            * AbstractGrid.recognized_quantities[field_name].unit
+            for field_name in self._required_quantities
+        }
+
         for grid in self.grids:
-            # Estimate the E and B fields for each particle
-            # Note that this interpolation step is BY FAR the slowest part of the push
-            # loop. Any speed improvements will have to come from here.
             if self.field_weighting == "volume averaged":
-                _Ex, _Ey, _Ez, _Bx, _By, _Bz = grid.volume_averaged_interpolator(
-                    pos_tracked * u.m,
-                    "E_x",
-                    "E_y",
-                    "E_z",
-                    "B_x",
-                    "B_y",
-                    "B_z",
-                    persistent=True,
+                field_values = grid.volume_averaged_interpolator(
+                    pos_tracked * u.m, *summed_field_values.keys(), persistent=True
                 )
             elif self.field_weighting == "nearest neighbor":
-                _Ex, _Ey, _Ez, _Bx, _By, _Bz = grid.nearest_neighbor_interpolator(
-                    pos_tracked * u.m,
-                    "E_x",
-                    "E_y",
-                    "E_z",
-                    "B_x",
-                    "B_y",
-                    "B_z",
-                    persistent=True,
+                field_values = grid.nearest_neighbor_interpolator(
+                    pos_tracked * u.m, *summed_field_values.keys(), persistent=True
                 )
 
-            # Interpret any NaN values (points off the grid) as zero
-            # Do this before adding to the totals, because 0 + nan = nan
-            _Ex = np.nan_to_num(_Ex, nan=0.0 * u.V / u.m)
-            _Ey = np.nan_to_num(_Ey, nan=0.0 * u.V / u.m)
-            _Ez = np.nan_to_num(_Ez, nan=0.0 * u.V / u.m)
-            _Bx = np.nan_to_num(_Bx, nan=0.0 * u.T)
-            _By = np.nan_to_num(_By, nan=0.0 * u.T)
-            _Bz = np.nan_to_num(_Bz, nan=0.0 * u.T)
-
-            # Add the values interpolated for this grid to the totals
-            Ex += _Ex
-            Ey += _Ey
-            Ez += _Ez
-            Bx += _Bx
-            By += _By
-            Bz += _Bz
+            # Iterate through the interpolated fields and add them to the running sum
+            # NaN values are zeroed
+            for field_value, field_name in zip(
+                field_values, summed_field_values.keys(), strict=False
+            ):
+                summed_field_values[field_name] += np.nan_to_num(
+                    field_value,
+                    0.0 * AbstractGrid.recognized_quantities[field_name].unit,
+                )
 
         # Create arrays of E and B as required by push algorithm
         E = np.array(
-            [Ex.to(u.V / u.m).value, Ey.to(u.V / u.m).value, Ez.to(u.V / u.m).value]
+            [
+                summed_field_values["E_x"].to(u.V / u.m).value,
+                summed_field_values["E_y"].to(u.V / u.m).value,
+                summed_field_values["E_z"].to(u.V / u.m).value,
+            ]
         )
         E = np.moveaxis(E, 0, -1)
-        B = np.array([Bx.to(u.T).value, By.to(u.T).value, Bz.to(u.T).value])
+        B = np.array(
+            [
+                summed_field_values["B_x"].to(u.T).value,
+                summed_field_values["B_y"].to(u.T).value,
+                summed_field_values["B_z"].to(u.T).value,
+            ]
+        )
         B = np.moveaxis(B, 0, -1)
 
         # Calculate the adaptive time step from the fields currently experienced
         # by the particles
         # If user sets dt explicitly, that's handled in _adaptive_dt
         if self._is_adaptive_time_step:
-            dt = self._adaptive_dt(Ex, Ey, Ez, Bx, By, Bz)
+            dt = self._adaptive_dt(
+                summed_field_values["E_x"],
+                summed_field_values["E_y"],
+                summed_field_values["E_z"],
+                summed_field_values["B_x"],
+                summed_field_values["B_y"],
+                summed_field_values["B_z"],
+            )
         else:
             dt = self.dt
 
