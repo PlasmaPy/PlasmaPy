@@ -1194,7 +1194,7 @@ def _get_relevant_stopping_information(
 
         return (
             baseline_energies_data * u.MeV,
-            relevant_stopping_data * u.MeV * u.cm** 2 / u.g,
+            relevant_stopping_data * u.MeV * u.cm**2 / u.g,
         )
 
 
