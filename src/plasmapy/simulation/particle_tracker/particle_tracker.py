@@ -262,8 +262,7 @@ class ParticleTracker:
     ) -> None:
         """
         Ensure the specified termination condition and save routine are actually
-        a termination routine class and save routine, respectively. This function also
-        sets the `_is_synchronized_time_step` and `_is_adaptive_time_step` attributes.
+        a termination routine class and save routine, respectively.
         """
 
         if isinstance(grids, BasePlasma):
@@ -828,11 +827,14 @@ class ParticleTracker:
         """
         Calculates a boolean mask corresponding to particles that have not been stopped or removed.
         """
+        # See Class docstring for definition of `stopped` and `removed`
         return ~np.logical_or(np.isnan(self.x[:, 0]), np.isnan(self.v[:, 0]))
 
     @property
     def nparticles_tracked(self) -> int:
-        """Return the number of particles that don't have NaN position or velocity."""
+        """Return the number of particles currently being tracked.
+        (i.e. they don't have NaN position or velocity)
+        """
         return int(self._tracked_particle_mask.sum())
 
     @property

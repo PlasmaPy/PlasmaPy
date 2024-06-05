@@ -127,7 +127,7 @@ class Tracker(ParticleTracker):
     source : `~astropy.units.Quantity`, shape (3)
         A vector pointing from the origin of the grid to the location
         of the particle source. This vector will be interpreted as
-        being in either cartesian, cylindrical, or spherical coordinates
+        being in either Cartesian, cylindrical, or spherical coordinates
         based on its units. Valid geometries are:
 
         * Cartesian (x,y,z) : (meters, meters, meters)
@@ -140,7 +140,7 @@ class Tracker(ParticleTracker):
         A vector pointing from the origin of the grid to the center
         of the detector plane. The vector from the source point to this
         point defines the normal vector of the detector plane. This vector
-        can also be specified in cartesian, cylindrical, or spherical
+        can also be specified in Cartesian, cylindrical, or spherical
         coordinates (see the ``source`` keyword).
 
     dt : `~astropy.units.Quantity`, optional
@@ -156,10 +156,12 @@ class Tracker(ParticleTracker):
         String that selects the field weighting algorithm used to determine
         what fields are felt by the particles. Options are:
 
-        * 'nearest neighbor': Particles are assigned the fields on
-            the grid vertex closest to them.
-        * 'volume averaged' : The fields experienced by a particle are a
-            volume-average of the eight grid points surrounding them.
+        * 'nearest neighbor':
+            Particles are assigned the fields on the grid vertex closest to
+            them.
+        * 'volume averaged':
+            The fields experienced by a particle are a volume-average of the
+            eight grid points surrounding them.
 
         The default is 'volume averaged'.
 
@@ -176,15 +178,16 @@ class Tracker(ParticleTracker):
         detector horizontal axis.
 
     output_directory : `~pathlib.Path`, optional
-        Output for objects that are saved to disk. If a directory is not specified
-        then a memory save routine is used.
+        Directory for objects that are saved to disk. If a directory is not
+        specified then a memory save routine is used.
 
     fraction_exited_threshold : float, optional
-        The fraction of particles that must leave the grids to terminate the simulation.
-        This does not include particles that have never entered the grids.
+        The fraction of particles that must leave the grids to terminate the
+        simulation. This does not include particles that have never entered
+        the grids.
 
     verbose : bool, optional
-        If true, updates on the status of the program will be printed
+        If `True`, updates on the status of the program will be printed
         into the standard output while running.
     """
 

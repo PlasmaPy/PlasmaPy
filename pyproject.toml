@@ -246,6 +246,7 @@ gud,
 hax,
 hist,
 hve,
+inpt,
 nd,
 noo,
 nwo,
@@ -253,6 +254,7 @@ ot,
 recuse,
 ro,
 te,
+tru,
 ue,
 ue,
 windo"""
@@ -406,7 +408,6 @@ ignore = [
   "W291", # trailing-whitespace (handled by formatter)
 ]
 dummy-variable-rgx = "Z|mass_numb|request|event"
-ignore-init-module-imports = true
 
 [tool.ruff.lint.flake8-annotations]
 allow-star-arg-any = true
