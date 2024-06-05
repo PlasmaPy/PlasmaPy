@@ -488,12 +488,13 @@ class ParticleTracker:
         # TODO: should this be replaced with only raising an exception when none
         #  of the grids specify a mass density?
         for grid in self.grids:
-            grid.require_quantities("rho", replace_with_zeros=False)
+            grid.require_quantities(["rho"], replace_with_zeros=False)
 
         self._do_stopping = True
+        self._required_quantities.update({"rho"})
         self._stopping_power_interpolators = [
             _stopping_power_interpolator(self._particle, material)
-            for (grid, material) in zip(self.grids, materials, strict=False)
+            for material in materials
         ]
 
     def run(self) -> None:
@@ -692,8 +693,7 @@ class ParticleTracker:
         """
 
         # TODO: how should the relativistic case be handled?
-
-        return 0.5 * self.m * self.v**2
+        return 0.5 * self.m * np.square(np.linalg.norm(self.v, axis=-1))
 
     # TODO: reduce cognitive complexity of this method
     #  maybe break stopping calculations into a separate method?
@@ -716,11 +716,12 @@ class ParticleTracker:
         # entered_grid is zero at the end if a particle has never
         # entered any grid
         self.entered_grid += np.sum(self.particles_on_grid, axis=-1).astype(np.bool_)
-
         # TODO: should this interpolation step be broken into a separate method
         #  for the sake of simplicity?
+        # TODO: how should we handle unrecognized quantities?
         # Construct a dictionary of empty arrays to populate with values of the
         # interpolation calculation. field name: field value pairs
+
         summed_field_values = {
             field_name: np.zeros(self.nparticles_tracked)
             * AbstractGrid.recognized_quantities[field_name].unit
@@ -804,35 +805,55 @@ class ParticleTracker:
 
         # TODO: maybe break out different stopping models into separate functions?
         #  particle_stopping_routines?
-        S = np.zeros(self.nparticles_tracked) * u.J / u.m
-
-        for grid in self.grids:
-            _S = grid.nearest_neighbor_interpolator(
-                pos_tracked * u.m, "S", persistent=False
-            )
-            _S = np.nan_to_num(_S, nan=0.0 * u.J / u.m)
-
-            S += _S
-
-        dx = self.v[tracked_mask] * dt
-
-        stopping_power = np.zeros(self.nparticles_tracked)
+        # S = np.zeros(self.nparticles_tracked) * u.J / u.m
+        #
+        # for grid in self.grids:
+        #     _S = grid.nearest_neighbor_interpolator(
+        #         pos_tracked * u.m, "S", persistent=False
+        #     )
+        #     _S = np.nan_to_num(_S, nan=0.0 * u.J / u.m)
+        #
+        #     S += _S
+        speeds = np.linalg.norm(self.v[tracked_mask], axis=-1)[:, np.newaxis]
+        dx = np.multiply(speeds, dt)
+        stopping_power = np.zeros((self.nparticles_tracked, 1))
 
         for cs in self._stopping_power_interpolators:
             # TODO: is this the proper way to handle the addition of multiple stopping powers?
-            stopping_power += cs(
-                np.log(self._particle_kinetic_energy[tracked_mask].to("MeV").value)
+            relevant_kinetic_energy = (
+                self._particle_kinetic_energy[tracked_mask, np.newaxis] * u.J
             )
+            relevant_kinetic_energy = relevant_kinetic_energy.to(u.MeV).value
+            # print(f"Kinetic energy is {relevant_kinetic_energy}")
+
+            interpolation_result = np.exp(cs(np.log(relevant_kinetic_energy)))
+
+            stopping_power += interpolation_result
+
+        stopping_power = (
+            (stopping_power * u.MeV * u.cm**2 / u.g).to(u.J * u.m**2 / u.kg).value
+        )
+        # stopping_power = stopping_power[:, np.newaxis]
 
         # Take the negative stopping power since we want to be removing energy
         # from the particles
-        dE = -stopping_power * dx
 
+        # print(f"Rho: {summed_field_values["rho"].value}")
+        energy_loss_per_length = np.multiply(
+            stopping_power, summed_field_values["rho"].value[:, np.newaxis]
+        )
+        dE = -np.multiply(energy_loss_per_length, dx)
+        # print(f"Energy loss per unit length {energy_loss_per_length}")
+        # print(f"Stopping power, {(stopping_power * u.J * u.m**2 / u.kg).to(u.MeV * u.cm**2 / u.g)}")
+        # print(f"dx, {dx}")
         # Update the velocities of the particles using the new energy values
         # TODO: again, figure out how to differentiate relativistic and classical cases
-        E = self._particle_kinetic_energy + dE
+        E = self._particle_kinetic_energy[tracked_mask, np.newaxis] + dE
+        # print(f"Lost {dE}, max {np.min(dE)}")
+        speeds = np.sqrt(2 * E / self.m)
+        unit_vectors = np.multiply(1 / speeds, self.v[tracked_mask])
 
-        self.v[tracked_mask] = np.sqrt(2 * E / self.m)
+        self.v[tracked_mask] = np.multiply(speeds, unit_vectors)
 
     @property
     def on_any_grid(self) -> NDArray[np.bool_]:

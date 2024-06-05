@@ -668,6 +668,7 @@ class Tracker(ParticleTracker):
         self.particle_energy = particle_energy.to(u.eV).value
         self.q = particle.charge.to(u.C).value
         self.m = particle.mass.to(u.kg).value
+        self._particle = particle
 
         # If max_theta is not specified, make a guess based on the grid size
         if max_theta is None:
