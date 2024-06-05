@@ -27,7 +27,7 @@
 [Astropy]: https://www.astropy.org
 [3-clause BSD license]: ./LICENSE.md
 [calendar]: https://calendar.google.com/calendar/embed?src=c_sqqq390s24jjfjp3q86pv41pi8%40group.calendar.google.com&ctz=America%2FNew_York
-[citation instructions]: https://docs.plasmapy.org/en/latest/about/citation.html
+[cite PlasmaPy]: https://docs.plasmapy.org/en/latest/about/citation.html
 [code of conduct]: http://docs.plasmapy.org/en/latest/CODE_OF_CONDUCT.html
 [collaborative award]: https://doi.org/10.5281/zenodo.2633286
 [command line]: https://tutorial.djangogirls.org/en/intro_to_command_line/
@@ -35,7 +35,6 @@
 [contributor guide]: https://docs.plasmapy.org/en/latest/development/index.html
 [Cyberinfrastructure for Sustained Scientific Innovation]: https://beta.nsf.gov/funding/opportunities/cyberinfrastructure-sustained-scientific-innovation-cssi
 [Department of Energy]: https://www.energy.gov
-[emerging best practice for software citation]: https://doi.org/10.7717/peerj-cs.86
 [example gallery]: https://docs.plasmapy.org/en/stable/examples.html
 [GitHub discussions]: https://github.com/PlasmaPy/PlasmaPy/discussions
 [Gitter]: https://gitter.im/PlasmaPy/Lobby
@@ -81,16 +80,67 @@ do, check out our [example gallery] of Jupyter notebooks. Many of our
 recent presentations are available from the [PlasmaPy Community on
 Zenodo].
 
+## Installing PlasmaPy
+
+PlasmaPy requires Python 3.10 or newer. Here are instructions to
+[download and install Python].
+
+To install PlasmaPy on macOS or Linux, open a terminal and run:
+```Shell
+python -m pip install plasmapy
+```
+On some systems, it might be necessary to specify the Python version
+number, for example by using `python3` or `python3.12` instead of
+`python`.
+
+To install PlasmaPy on Windows, open a terminal and run
+```Shell
+py -3.12 -m pip install plasmapy
+```
+The `3.12` may be replaced by any version of Python that is supported by
+PlasmaPy.
+
+If you have [installed Conda], then you can install PlasmaPy into an
+activated Conda environment by running:
+```Shell
+conda install -c conda-forge plasmapy
+```
+PlasmaPy can be installed using [Anaconda Navigator] if `conda-forge` is
+added as a channel.
+
+Further information on [how to install PlasmaPy] and [installing
+PlasmaPy from source] is included in [PlasmaPy's online documentation].
+
+## Citing PlasmaPy
+
+If you use PlasmaPy for research resulting in a publication, please
+[cite PlasmaPy]. Citing software used in research provides credit to its
+authors, promotes open science & scientific reproducibility, and helps
+open source projects demonstrate to funding agencies that continued
+development should be supported.
+
+Please check out the [PlasmaPy community on Zenodo] for prior releases
+of PlasmaPy and other resources.
+
+## Submitting bug reports and feature requests
+
+
+
+## Contact Information
+
 Please [submit a feature request] in our [GitHub repository] if you
 have an idea for new functionality. PlasmaPy is community-driven, and
 feature requests really help guide the direction of software
 development. Please also [submit a bug report] if you notice any
 problems. We really appreciate it!
 
+## Contributing
+
+New contributors are very welcome and much appreciated!
 If you are interested in contributing, please check out our
-[contributor guide] and [code of conduct]. There are also a number of
-[good first issues] in our GitHub repository. New contributors are
-very welcome!
+[contributor guide] and [code of conduct]. The GitHub repository
+contains several [good first issues] for new contributors.
+[good first issues] in our GitHub repository.
 
 [src layout]: https://packaging.python.org/en/latest/discussions/src-layout-vs-flat-layout/
 [`src/plasmapy/`]: https://github.com/PlasmaPy/PlasmaPy/tree/main/src/plasmapy
@@ -109,41 +159,6 @@ very welcome!
 > likely need to be redone by running `pip install -e .[tests,docs]` in
 > the top-level directory of the repository.
 
-## Installation
-
-PlasmaPy requires Python 3.10 or newer. If you do not have Python
-installed already, here are the instructions to [download and install
-Python].
-
-To install PlasmaPy on macOS or Linux, open a terminal and run:
-```Shell
-python -m pip install plasmapy
-```
-On some systems, it might be necessary to specify the Python version
-number, for example by using `python3` or `python3.12` instead of
-`python`.
-
-To install PlasmaPy on Windows, open a terminal and run
-```Shell
-py -3.12 -m pip install plasmapy
-```
-The `3.12` may be replaced by any version of Python that is supported by
-PlasmaPy.
-
-If you have [installed Conda], then you can also install PlasmaPy into
-an activated Conda environment by running:
-```Shell
-conda install -c conda-forge plasmapy
-```
-PlasmaPy can also be installed using [Anaconda Navigator] so long as
-`conda-forge` is added as a channel.
-
-Check out our instructions on [installing PlasmaPy] for more details.
-
-Please check out our documentation for more information on [how to
-install PlasmaPy]. To contribute to the package or use the most recent
-version, check out our instructions on [installing PlasmaPy from
-source].
 
 ## Events
 
@@ -186,15 +201,6 @@ meet fortnightly, and their meeting times can be found in PlasmaPy's
 event [calendar]. If you would like to join a PlasmaPy working group
 or even start a new one, please email us at [team@plasmapy.org]!
 
-### Plasma Hack Week
-
-A [hack week] is a mix of a hackathon and a summer school. Hack weeks
-provide an opportunity to learn from each other and code together.
-[Plasma Hack Week] was held virtually in the summers of 2021 and 2022,
-and we hope to hold this again in the future. If you would like to
-help organize a future Plasma Hack Week, please email
-[team@plasmapy.org].
-
 ## Community
 
 ### Matrix chat
@@ -213,36 +219,10 @@ bring up discussion topics, and ask questions.
 You can subscribe to PlasmaPy's low-volume [mailing list] to receive
 PlasmaPy newsletters and other announcements.
 
-### Suggestion box
-
-We have a [suggestion box] if you would like to (optionally
-anonymously) suggest a feature/topic for consideration. These
-suggestions might be changed into GitHub issues for further
-discussion.
-
-## Contact information
-
-Please feel free to reach out to us at [team@plasmapy.org] or stop by
-our [office hours] with any ideas, questions, and/or puns about
-computational magnetohydrodynamics.
-
 ## License
 
 PlasmaPy is permissively licensed under a [3-clause BSD license] with
 added [protections against software patents].
-
-## Citing PlasmaPy
-
-An [emerging best practice for software citation] is to cite the
-_specific version_ of each software package used in a research project
-(instead of only citing a journal article, website, or GitHub
-repository). The citation should include a persistent identifier that
-uniquely identifies which version of the software was used. We
-therefore ask that you cite the specific version of PlasmaPy used in
-your research project. Releases of PlasmaPy are available from the
-[PlasmaPy community on Zenodo], along with many other PlasmaPy
-resources. Please check our documentation for more detailed [citation
-instructions].
 
 ## Acknowledgments
 
