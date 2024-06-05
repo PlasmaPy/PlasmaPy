@@ -2,7 +2,7 @@
 Module containing the definition for the general particle tracker.
 """
 
-__all__ = ["ParticleTracker"]
+__all__ = ["ParticleTracker", "StoppingMaterial"]
 
 import collections
 import sys
