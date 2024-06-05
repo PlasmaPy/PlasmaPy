@@ -833,7 +833,7 @@ class ParticleTracker:
     @property
     def nparticles_tracked(self) -> int:
         """Return the number of particles currently being tracked.
-        (i.e. they don't have NaN position or velocity)
+        That is, they do not have NaN position or velocity.
         """
         return int(self._tracked_particle_mask.sum())
 
