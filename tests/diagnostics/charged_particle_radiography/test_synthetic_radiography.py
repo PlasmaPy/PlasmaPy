@@ -542,9 +542,6 @@ def create_tracker_obj(**kwargs) -> cpr.Tracker:
     return sim
 
 
-tracker_obj_simulated = create_tracker_obj(field_weighting="nearest neighbor").run()
-
-
 @pytest.mark.slow()
 class TestSyntheticRadiograph:
     """
