@@ -619,7 +619,9 @@ def test_invalid_inputs_to_ion_list2(element, min_charge, max_charge) -> None:
         (Particle("H+"), "OXYGEN", {"component": "Lorem Ipsum"}, ValueError),
     ],
 )
-def test_stopping_power_errors(incident_particle, material, kwargs, expected_error):
+def test_stopping_power_errors(
+    incident_particle, material, kwargs, expected_error
+) -> None:
     with pytest.raises(expected_error):
         stopping_power(incident_particle, material, **kwargs)
 
@@ -689,7 +691,7 @@ def test_stopping_power_errors(incident_particle, material, kwargs, expected_err
 )
 def test_stopping_power_interpolation(
     incident_particle, material, energies, component, expected_stopping_power
-):
+) -> None:
     """Test the interpolation functionality of the stopping power function against NIST values"""
     _, actual_stopping_power = stopping_power(
         incident_particle, material, energies, component=component
@@ -699,7 +701,7 @@ def test_stopping_power_interpolation(
     assert np.isclose(actual_stopping_power, expected_stopping_power, rtol=0.001).all()
 
 
-def test_stopping_power_no_interpolation():
+def test_stopping_power_no_interpolation() -> None:
     result = stopping_power(Particle("H+"), "COPPER")
 
     assert type(result) is tuple
