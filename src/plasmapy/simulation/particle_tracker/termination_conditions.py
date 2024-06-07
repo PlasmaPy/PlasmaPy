@@ -166,7 +166,7 @@ class AllParticlesOffGridTerminationCondition(AbstractTerminationCondition):
 
     def __init__(
         self,
-        fraction_exited_threshold: float = 0.01,
+        fraction_exited_threshold: float = 0.99,
     ):
         super().__init__()
 
