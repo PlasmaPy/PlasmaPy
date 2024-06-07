@@ -206,9 +206,11 @@ class AllParticlesOffGridTerminationCondition(AbstractTerminationCondition):
         else:
             still_on = 0.0
 
+        proportion_exited = 1 - still_on
+
         return (
             self._particle_tracker.num_entered > 0
-            and self.fraction_exited_threshold > still_on
+            and self.fraction_exited_threshold <= proportion_exited
         )
 
     @property
