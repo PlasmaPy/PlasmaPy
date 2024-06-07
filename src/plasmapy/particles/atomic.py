@@ -22,6 +22,7 @@ __all__ = [
     "stopping_power",
 ]
 
+from collections.abc import Callable
 from numbers import Integral
 from typing import Any
 
@@ -1201,7 +1202,7 @@ def _get_relevant_stopping_information(
 
 def _stopping_power_interpolator(
     incident_particle: Particle, material: str, component="total"
-) -> CubicSpline:
+) -> Callable[[u.Quantity], u.Quantity]:
     r"""
     Instantiate a SciPy interpolator that can be used to interpolate the stopping power of a given energy.
     """
@@ -1210,9 +1211,11 @@ def _stopping_power_interpolator(
         incident_particle, material, component
     )
 
-    return CubicSpline(
+    cs = CubicSpline(
         x=np.log(baseline_energies_data.value), y=np.log(relevant_stopping_data.value)
     )
+
+    return lambda x: np.exp(cs(np.log(x.to(u.MeV).value))) * u.MeV * u.cm**2 / u.g
 
 
 @particle_input
@@ -1254,16 +1257,13 @@ def stopping_power(
     are taken from the data points in the STAR database.
 
     """
-    baseline_energies_data, relevant_stopping_data = _get_relevant_stopping_information(
-        incident_particle, material, component
-    )
 
     if energies is None:
-        return baseline_energies_data, relevant_stopping_data
+        return _get_relevant_stopping_information(
+            incident_particle, material, component
+        )
 
     # Interpolate NIST data to the user-provided energy values. Uses log-log scale fed into a cubic spline.
     cs = _stopping_power_interpolator(incident_particle, material, component)
 
-    return energies, np.exp(
-        cs(np.log(energies.to("MeV").value))
-    ) * u.MeV * u.cm**2 / u.g
+    return energies, cs(energies)

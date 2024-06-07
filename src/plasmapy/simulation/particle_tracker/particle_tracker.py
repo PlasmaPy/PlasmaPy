@@ -823,33 +823,26 @@ class ParticleTracker:
             relevant_kinetic_energy = (
                 self._particle_kinetic_energy[tracked_mask, np.newaxis] * u.J
             )
-            relevant_kinetic_energy = relevant_kinetic_energy.to(u.MeV).value
-            # print(f"Kinetic energy is {relevant_kinetic_energy}")
 
-            interpolation_result = np.exp(cs(np.log(relevant_kinetic_energy)))
+            interpolation_result = (
+                cs(relevant_kinetic_energy).to(u.J * u.m**2 / u.kg).value
+            )
 
             stopping_power += interpolation_result
-
-        stopping_power = (
-            (stopping_power * u.MeV * u.cm**2 / u.g).to(u.J * u.m**2 / u.kg).value
-        )
-        # stopping_power = stopping_power[:, np.newaxis]
 
         # Take the negative stopping power since we want to be removing energy
         # from the particles
 
-        # print(f"Rho: {summed_field_values["rho"].value}")
         energy_loss_per_length = np.multiply(
-            stopping_power, summed_field_values["rho"].value[:, np.newaxis]
+            stopping_power,
+            summed_field_values["rho"].to(u.kg / u.m**3).value[:, np.newaxis],
         )
         dE = -np.multiply(energy_loss_per_length, dx)
-        # print(f"Energy loss per unit length {energy_loss_per_length}")
-        # print(f"Stopping power, {(stopping_power * u.J * u.m**2 / u.kg).to(u.MeV * u.cm**2 / u.g)}")
-        # print(f"dx, {dx}")
+
         # Update the velocities of the particles using the new energy values
         # TODO: again, figure out how to differentiate relativistic and classical cases
         E = self._particle_kinetic_energy[tracked_mask, np.newaxis] + dE
-        # print(f"Lost {dE}, max {np.min(dE)}")
+
         speeds = np.sqrt(2 * E / self.m)
         unit_vectors = np.multiply(1 / speeds, self.v[tracked_mask])
 
