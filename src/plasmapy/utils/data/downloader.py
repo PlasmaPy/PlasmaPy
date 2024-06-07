@@ -26,7 +26,10 @@ try:
     response = requests.get("https://api.github.com/", timeout=10)
 
     _API_CONNECTION_ESTABLISHED = response.status_code == 200
-except (requests.exceptions.ConnectionError, requests.exceptions.ReadTimeout) as e:
+except (
+    requests.exceptions.ConnectionError,
+    requests.exceptions.ReadTimeout,
+) as e:  # coverage: ignore
     # TODO: logging library when??
     print(f"Failed to connect to GitHub API:\n{e}")  # noqa: T201
     _API_CONNECTION_ESTABLISHED = False
