@@ -27,7 +27,7 @@ bleach==6.1.0
     # via nbconvert
 cachetools==5.3.3
     # via tox
-certifi==2024.2.2
+certifi==2024.6.2
     # via requests
 cffi==1.16.0
     # via argon2-cffi-bindings
@@ -63,10 +63,8 @@ filelock==3.14.0
     # via
     #   tox
     #   virtualenv
-fonttools==4.52.4
+fonttools==4.53.0
     # via matplotlib
-future==1.0.0
-    # via uncertainties
 h5py==3.7.0
     # via plasmapy (pyproject.toml)
 hypothesis==6.97.4
@@ -85,7 +83,7 @@ ipykernel==5.5.6
     #   ipywidgets
     #   nbclassic
     #   notebook
-ipython==8.24.0
+ipython==8.25.0
     # via
     #   ipykernel
     #   ipywidgets
@@ -302,7 +300,7 @@ rpds-py==0.18.1
     # via
     #   jsonschema
     #   referencing
-scipy==1.9.0
+scipy==1.9.2
     # via
     #   plasmapy (pyproject.toml)
     #   lmfit
@@ -361,13 +359,13 @@ traitlets==5.14.3
     #   nbconvert
     #   nbformat
     #   notebook
-typing-extensions==4.12.0
+typing-extensions==4.12.1
     # via ipython
-uncertainties==3.1.7
+uncertainties==3.2.0
     # via lmfit
 urllib3==1.26.18
     # via requests
-uv==0.2.5
+uv==0.2.6
     # via tox-uv
 virtualenv==20.26.2
     # via
