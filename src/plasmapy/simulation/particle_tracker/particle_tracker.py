@@ -847,6 +847,7 @@ class ParticleTracker:
         unit_vectors = np.multiply(1 / speeds, self.v[tracked_mask])
 
         self.v[tracked_mask] = np.multiply(speeds, unit_vectors)
+        self._stop_particles(self.v[self.v <= 0])
 
     @property
     def on_any_grid(self) -> NDArray[np.bool_]:
