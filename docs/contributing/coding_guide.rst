@@ -463,13 +463,14 @@ Dependencies
     their initial release.
 
 * The |ci_requirements/|_ directory contains pinned requirements files
-  that are auto-generated for use in continuous integration tests (see
+  that for use in continuous integration tests (see
   |ci_requirements/README.md|_).
 
-  .. important::
+  - These files are updated periodically via pull requests created by a
+    GitHub workflow to `update pinned requirements`_.
 
-     When updating requirements, run ``nox -s requirements`` to update
-     the pinned requirements files.
+  - When updating requirements in |pyproject.toml|_, run
+    ``nox -s requirements`` to update the pinned requirements files.
 
 * Even if a dependency is unlikely to be shared with packages installed
   alongside PlasmaPy, that dependency can have strict requirements that
@@ -927,16 +928,17 @@ in the README file of `benchmarks-repo`_.
 .. _SPEC 0: https://scientific-python.org/specs/spec-0000
 .. _pyupgrade: https://github.com/asottile/pyupgrade
 .. _rename refactoring in PyCharm: https://www.jetbrains.com/help/pycharm/rename-refactorings.html
+.. _update pinned requirements: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/update-pinned-reqs.yml
 .. _voila: https://voila.readthedocs.io
 
 .. _`astropy.units`: https://docs.astropy.org/en/stable/units/index.html
 .. |astropy.units| replace:: `astropy.units`
-
-.. _`pyproject.toml`: https://github.com/PlasmaPy/PlasmaPy/blob/main/pyproject.toml
-.. |pyproject.toml| replace:: :file:`pyproject.toml`
 
 .. _`ci_requirements/`: https://github.com/PlasmaPy/PlasmaPy/blob/main/ci_requirements
 .. |ci_requirements| replace:: :file:`ci_requirements/`
 
 .. _`ci_requirements/README.md`: https://github.com/PlasmaPy/PlasmaPy/blob/main/ci_requirements/README.md
 .. |ci_requirements/README.md| replace:: :file:`ci_requirements/README.md`
+
+.. _`pyproject.toml`: https://github.com/PlasmaPy/PlasmaPy/blob/main/pyproject.toml
+.. |pyproject.toml| replace:: :file:`pyproject.toml`
