@@ -935,7 +935,7 @@ in the README file of `benchmarks-repo`_.
 .. |astropy.units| replace:: `astropy.units`
 
 .. _`ci_requirements/`: https://github.com/PlasmaPy/PlasmaPy/blob/main/ci_requirements
-.. |ci_requirements| replace:: :file:`ci_requirements/`
+.. |ci_requirements/| replace:: :file:`ci_requirements/`
 
 .. _`ci_requirements/README.md`: https://github.com/PlasmaPy/PlasmaPy/blob/main/ci_requirements/README.md
 .. |ci_requirements/README.md| replace:: :file:`ci_requirements/README.md`
