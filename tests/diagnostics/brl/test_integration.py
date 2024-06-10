@@ -1,10 +1,10 @@
 """Tests for doing integration."""
 
+import warnings
+from itertools import product
+
 import numpy as np
 import pytest
-import warnings
-
-from itertools import product
 
 from plasmapy.diagnostics.brl import integration
 

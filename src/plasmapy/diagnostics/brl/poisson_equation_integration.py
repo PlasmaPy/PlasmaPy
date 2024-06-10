@@ -1,4 +1,5 @@
 """Evaluation and integration of Poisson's equation."""
+
 import numpy as np
 
 

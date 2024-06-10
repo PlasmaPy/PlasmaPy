@@ -215,6 +215,7 @@ class Test__get_x_and_dx_ds:
             s_end_point_values,
             r_end_over_r_probe_values,
             r_end_minus_r_probe_over_debye_length_values,
+            strict=False,
         ),
     )
     def test_laframboise_table(

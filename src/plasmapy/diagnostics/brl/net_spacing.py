@@ -1,4 +1,5 @@
 """The computational net spacing and it's inverse + derivative."""
+
 import numpy as np
 
 from plasmapy.diagnostics.brl.normalizations import (

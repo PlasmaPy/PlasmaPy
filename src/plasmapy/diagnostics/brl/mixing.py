@@ -1,5 +1,7 @@
 """Calculate the mixing function and adjust the coefficients as evaluation continues."""
+
 import logging
+
 import numpy as np
 
 
@@ -58,9 +60,7 @@ def mixing_function(
         return coefficient_1 * x * np.exp(power * (1 - 1 / x)) + coefficient_2 * x**2
     else:
         # Line 200.
-        return (
-            coefficient_1 * x**0.5 * np.exp(power * (1 - 1 / x)) + coefficient_2 * x
-        )
+        return coefficient_1 * x**0.5 * np.exp(power * (1 - 1 / x)) + coefficient_2 * x
 
 
 def decrease_mixing_coefficients(coefficient_1, coefficient_2):

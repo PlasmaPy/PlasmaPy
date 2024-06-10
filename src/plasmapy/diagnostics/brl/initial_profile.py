@@ -1,4 +1,5 @@
 """Calculate the initial potential and net charge density profiles to start iterations from."""
+
 import numpy as np
 
 from plasmapy.diagnostics.brl.normalizations import (

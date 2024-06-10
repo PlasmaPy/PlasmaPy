@@ -1,4 +1,5 @@
 """Calculate the normalizations for the BRL theory."""
+
 import astropy.units as u
 import numpy as np
 

@@ -124,6 +124,7 @@ from plasmapy.diagnostics.brl import initial_profile
                 [-153.33333333, -102.7242156, -69.05024154, -46.58060901, -31.54176446]
             ),
         ],
+        strict=False,
     ),
 )
 def test_evaluate_polynomial(

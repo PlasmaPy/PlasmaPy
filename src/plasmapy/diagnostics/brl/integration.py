@@ -1,4 +1,5 @@
 """Functions related to accurate integration of a sampled integrand."""
+
 import numpy as np
 
 
