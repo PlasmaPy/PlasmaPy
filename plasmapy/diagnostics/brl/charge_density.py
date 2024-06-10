@@ -1,6 +1,6 @@
 """Using the potential, calculate the charge density."""
-import numpy as np
 
+import numpy as np
 from scipy.integrate import quad_vec
 from scipy.special import erfc, erfi
 
@@ -27,7 +27,11 @@ def _g(x):
 
 
 def eta_1(A, chi, spherical=True):
-    r"""Calculate the contribution to the charge density along the :math:`J^2 = 0` line.
+    r"""
+    Calculate the contribution to the charge density along the :math:`J^2 = 0` line.
+
+    This runs along the vertical :math:`E` (or :math:`\beta`) axis. `A` denotes
+    where along that vertical axis the integration starts.
 
     Parameters
     ----------
@@ -55,13 +59,16 @@ def eta_1(A, chi, spherical=True):
 
 
 def eta_2(A, chi, chi_p, x, spherical=True):
-    r"""Calculate the contribution to the charge density between the region where particles are absorbed by the probe and non-striking particles exist.
+    r"""
+    Calculate the contribution to the charge density between the region where particles are absorbed by the probe and non-striking particles exist.
+
+    This is the straight line given by the equation :math:`\beta = \chi_p + \Omega`.
 
     Parameters
     ----------
     A : `numpy.ndarray`
         Lower bound of the integral. Also, `A >= kappa` as defined in (E.3).
-    chi, chi_p : `numpy.ndarray`
+    chi : `numpy.ndarray`
         The normalized potential as defined in `~plasmapy.diagnostics.brl.normalizations.get_normalized_potential`.
     chi_p : `float`
         The normalized potential of the probe as defined in `~plasmapy.diagnostics.brl.normalizations.get_normalized_potential`.
@@ -98,9 +105,7 @@ def eta_2(A, chi, chi_p, x, spherical=True):
 
         # Integrand from (E.59). (E.59) is a formula that is ready to integrate numerically.
         def integrand(omega):
-            return 1 / (
-                (-np.log(omega) - theta) * (np.log(omega) ** 2 - mu**2) ** 0.5
-            )
+            return 1 / ((-np.log(omega) - theta) * (np.log(omega) ** 2 - mu**2) ** 0.5)
 
         # Evaluate H1 from (E.59).
         H1 = (
@@ -128,6 +133,7 @@ def eta_3(A, chi, x, x_B, spherical=True):
     r"""Calculate the contribution to the charge density when there is a finite radius at which the potential is 0.
 
     This only appears when the temperature of the attracted particles is zero.
+    This is the straight line given by :math:`\beta = \Omega x_B^2`.
 
     Parameters
     ----------
@@ -149,6 +155,8 @@ def eta_3(A, chi, x, x_B, spherical=True):
     Notes
     -----
     This is the term :math:`\eta_3(A)` that appears in various formula in appendix E.
+
+    Equation (E.20) along with figure (10b) show a good example of where to use this term.
     """
     # Equation (E.5).
     beta_B = -chi / (x**2 / x_B**2 - 1)
@@ -452,8 +460,7 @@ def delta_function_charge_density(chi, x, omega_G, beta_G, spherical=True):
                 * (factors * (beta_M - chi - probe_consumption_omega_boundary * x**2))
                 ** 0.5
                 + 2
-                * (factors * (beta_M - chi - no_particle_omega_boundary * x**2))
-                ** 0.5
+                * (factors * (beta_M - chi - no_particle_omega_boundary * x**2)) ** 0.5
             )
         )
     else:
