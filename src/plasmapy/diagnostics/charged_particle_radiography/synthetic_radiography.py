@@ -1114,7 +1114,7 @@ class Tracker(ParticleTracker):
 # *************************************************************************
 
 
-def synthetic_radiograph(  # noqa: C901
+def synthetic_radiograph(  # noqa: C901, PLR0912
     obj, size=None, bins=None, ignore_grid: bool = False, optical_density: bool = False
 ):
     r"""
@@ -1221,6 +1221,11 @@ def synthetic_radiograph(  # noqa: C901
     nan_mask = np.logical_or(np.isnan(xloc), np.isnan(yloc))
     sanitized_xloc = xloc[~nan_mask]
     sanitized_yloc = yloc[~nan_mask]
+
+    if not ignore_grid:
+        tracked_mask = ~np.isnan(d["v"][:, 0])
+        sanitized_xloc = sanitized_xloc[tracked_mask]
+        sanitized_yloc = sanitized_yloc[tracked_mask]
 
     # Generate the histogram
     intensity, h, v = np.histogram2d(
