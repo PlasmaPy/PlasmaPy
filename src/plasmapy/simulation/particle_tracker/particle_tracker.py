@@ -814,8 +814,10 @@ class ParticleTracker:
         #     _S = np.nan_to_num(_S, nan=0.0 * u.J / u.m)
         #
         #     S += _S
-        speeds = np.linalg.norm(self.v[tracked_mask], axis=-1)[:, np.newaxis]
-        dx = np.multiply(speeds, dt)
+        current_speeds = np.linalg.norm(self.v[tracked_mask], axis=-1)[:, np.newaxis]
+        unit_vectors = np.multiply(1 / current_speeds, self.v[tracked_mask])
+        dx = np.multiply(current_speeds, dt)
+
         stopping_power = np.zeros((self.nparticles_tracked, 1))
 
         for cs in self._stopping_power_interpolators:
@@ -842,12 +844,22 @@ class ParticleTracker:
         # Update the velocities of the particles using the new energy values
         # TODO: again, figure out how to differentiate relativistic and classical cases
         E = self._particle_kinetic_energy[tracked_mask, np.newaxis] + dE
+        tracked_particles_to_be_stopped_mask = (
+            E < 0
+        ).flatten()  # A subset of the tracked particles!
+        particles_to_be_stopped_mask = np.full(
+            shape=tracked_mask.shape, fill_value=False
+        )
 
-        speeds = np.sqrt(2 * E / self.m)
-        unit_vectors = np.multiply(1 / speeds, self.v[tracked_mask])
+        # Of the tracked particles, stop the ones indicated by the subset mask
+        particles_to_be_stopped_mask[tracked_mask] = (
+            tracked_particles_to_be_stopped_mask
+        )
 
-        self.v[tracked_mask] = np.multiply(speeds, unit_vectors)
-        self._stop_particles(self.v <= 0)
+        new_speeds = np.sqrt(2 * E / self.m)
+        self.v[tracked_mask] = np.multiply(new_speeds, unit_vectors)
+
+        self._stop_particles(particles_to_be_stopped_mask)
 
     @property
     def on_any_grid(self) -> NDArray[np.bool_]:
