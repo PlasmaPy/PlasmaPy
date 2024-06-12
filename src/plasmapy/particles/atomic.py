@@ -1160,8 +1160,7 @@ def _get_relevant_stopping_information(
             raise NotImplementedError(
                 "Stopping calculations for electrons have not been implemented yet!"
             )
-        # TODO: is there a difference between H+ and p+ ??
-        elif incident_particle == Particle("H+") or incident_particle == Particle("p+"):
+        elif incident_particle in ParticleList(["H+", "p+"]):
             group_name = "protons"
         else:
             raise ValueError(
