@@ -29,8 +29,7 @@ style changes. Please feel free to propose revisions to this guide by
 a community meeting.
 
 PlasmaPy generally follows the :pep:`8` style guide for Python code,
-using auto-formatters such as |black| and |isort| that are executed using
-|pre-commit|.
+using linters such as |ruff| that are executed using |pre-commit|.
 
 Coding guidelines
 =================
