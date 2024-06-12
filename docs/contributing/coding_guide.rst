@@ -411,9 +411,6 @@ frustration.
 * Write error messages that are friendly, supportive, and helpful. Error
   message should never be condescending or blame the user.
 
-Project infrastructure
-======================
-
 Imports
 -------
 
@@ -427,7 +424,7 @@ Imports
      import numpy as np
      import pandas as pd
 
-* PlasmaPy uses |isort| to organize import statements via a |pre-commit|
+* PlasmaPy uses |ruff| to organize import statements via a |pre-commit|
   hook.
 
 * For infrequently used objects, import the package, subpackage, or
@@ -450,12 +447,33 @@ Imports
 * Do not use star imports (e.g., :py:`from package.subpackage import *`),
   except in very limited situations.
 
-Dependencies
-------------
+Project infrastructure
+======================
 
-* The dependencies and requirements are specified in |pyproject.toml|_.
+.. role:: toml(code)
+   :language: TOML
 
-* PlasmaPy releases should follow the recommendations in `SPEC 0`_ that:
+For general information about Python packaging, check out the
+`Python Packaging User Guide`_.
+
+Configuration
+-------------
+
+PlasmaPy's main configuration file is |pyproject.toml|_ (which is
+written in the TOML_ format). The Python Packaging User Guide contains
+a page on `writing your pyproject.toml file`_. The :toml:`project`
+table defines overall project metadata, while tables like
+:toml:`[tool.ruff]` include the configuration for tools like |ruff|.
+
+Dependencies and requirements
+-----------------------------
+
+* PlasmaPy's dependencies and requirements are specified in
+  |pyproject.toml|_ under :toml:`[project.dependencies]` (i.e., in the
+  :toml:`dependencies` array in the :toml:`[project]` table).
+
+* PlasmaPy releases should follow the recommendations in `SPEC 0`_,
+  including that:
 
   - Support for Python versions be dropped **3 years** after their
     initial release.
@@ -925,11 +943,14 @@ in the README file of `benchmarks-repo`_.
 .. _extract function refactoring pattern: https://refactoring.guru/extract-method
 .. _not a number: https://en.wikipedia.org/wiki/NaN
 .. _NumPy Enhancement Proposal 29: https://numpy.org/neps/nep-0029-deprecation_policy.html
-.. _SPEC 0: https://scientific-python.org/specs/spec-0000
+.. _Python Packaging User Guide: https://packaging.python.org
 .. _pyupgrade: https://github.com/asottile/pyupgrade
 .. _rename refactoring in PyCharm: https://www.jetbrains.com/help/pycharm/rename-refactorings.html
+.. _SPEC 0: https://scientific-python.org/specs/spec-0000
+.. _TOML: https://toml.io/en/v1.0.0
 .. _update pinned requirements: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/update-pinned-reqs.yml
 .. _voila: https://voila.readthedocs.io
+.. _writing your pyproject.toml file: https://packaging.python.org/en/latest/guides/writing-pyproject-toml/
 
 .. _`astropy.units`: https://docs.astropy.org/en/stable/units/index.html
 .. |astropy.units| replace:: `astropy.units`
