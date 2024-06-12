@@ -10,14 +10,13 @@
 
 [![Matrix](https://img.shields.io/badge/Matrix-join%20chat-blueviolet?style=flat&logo=matrix)](https://app.element.io/#/room/#plasmapy:openastronomy.org)
 <a rel="me" href="https://fosstodon.org/@plasmapy">![Mastodon](https://img.shields.io/badge/Mastodon-plasmapy%40fosstodon.org-blue?logo=mastodon&style=fla)</a>
-[![Twitter](https://img.shields.io/badge/Twitter%20-follow-red?style=flat&logo=twitter)](https://twitter.com/plasmapy)
 [![YouTube](https://img.shields.io/badge/YouTube%20-subscribe-red?style=flat&logo=youtube)](https://www.youtube.com/channel/UCSH6qzslhqIZKTAJmHPxIxw)
 
 [![GitHub Actions — CI](https://github.com/PlasmaPy/PlasmaPy/workflows/CI/badge.svg)](https://github.com/PlasmaPy/PlasmaPy/actions?query=workflow%3ACI+branch%3Amain)
 [![weekly tests](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/weekly-tests.yml/badge.svg?branch=main)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/weekly-tests.yml)
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/PlasmaPy/PlasmaPy/main.svg)](https://results.pre-commit.ci/latest/github/PlasmaPy/PlasmaPy/main)
 [![codecov](https://codecov.io/gh/PlasmaPy/PlasmaPy/branch/main/graph/badge.svg)](https://codecov.io/gh/PlasmaPy/PlasmaPy)
-[![Read the Docs Status](https://readthedocs.org/projects/plasmapy/badge/?version=latest&logo=twitter)](http://plasmapy.readthedocs.io/en/latest/?badge=latest)
+[![Read the Docs Status](https://readthedocs.org/projects/plasmapy/badge/?version=latest)](http://plasmapy.readthedocs.io/en/latest/?badge=latest)
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1436011.svg)](https://doi.org/10.5281/zenodo.1436011)
 [![astropy](http://img.shields.io/badge/powered%20by-AstroPy-orange.svg?style=flat&logo=astropy)](http://www.astropy.org/)
@@ -92,6 +91,23 @@ If you are interested in contributing, please check out our
 [contributor guide] and [code of conduct]. There are also a number of
 [good first issues] in our GitHub repository. New contributors are
 very welcome!
+
+[src layout]: https://packaging.python.org/en/latest/discussions/src-layout-vs-flat-layout/
+[`src/plasmapy/`]: https://github.com/PlasmaPy/PlasmaPy/tree/main/src/plasmapy
+[`tests/`]: https://github.com/PlasmaPy/PlasmaPy/tree/main/tests
+
+> [!IMPORTANT]
+> PlasmaPy recently switched to an [src layout]. Source code that was in
+> `plasmapy/` is now in [`src/plasmapy/`]. Tests are now located in a
+> top-level [`tests/`] directory.
+> Existing pull requests should pull in the changes from the `main`
+> branch with `git pull upstream main` (assuming the remote for the
+> primary PlasmaPy repo is named `upstream`).
+> Because `git` does not automatically remove directories, the
+> `plasmapy/` directory in older clones must be manually deleted.
+> If you previously did an editable installation of PlasmaPy, it will
+> likely need to be redone by running `pip install -e .[tests,docs]` in
+> the top-level directory of the repository.
 
 ## Installation
 
