@@ -12,11 +12,13 @@ import typing
 import warnings
 from collections.abc import Iterable
 
+import astropy.constants as const
 import astropy.units as u
 import numpy as np
 from numpy.typing import NDArray
 from tqdm import tqdm
 
+from plasmapy.formulary.relativity import Lorentz_factor
 from plasmapy.particles import Particle, particle_input
 from plasmapy.particles.atomic import _stopping_power_interpolator
 from plasmapy.plasma.grids import AbstractGrid
@@ -436,7 +438,7 @@ class ParticleTracker:
         self.x = x.to(u.m).value
         self.v = v.to(u.m / u.s).value
 
-    def add_Bethe_stopping(self, I: u.Quantity):  # noqa: E741
+    def add_Bethe_stopping(self, I: u.Quantity[u.J]):  # noqa: E741
         r"""
         Enable particle stopping described by non-relativistic Bethe formula.
 
@@ -462,11 +464,27 @@ class ParticleTracker:
             )
 
         self._do_stopping = True
+        self._stopping_routine = "Bethe stopping"
+
+        self._excitation_energies = I.to(u.J).value
 
         # Require that each grid has a defined electron density,
         # if a grid does not define n_e, raise an exception
         for grid in self.grids:
             grid.require_quantities("n_e", replace_with_zeros=False)
+
+    @staticmethod
+    def _is_quantity_defined_on_one_grid(
+        grids: list[AbstractGrid], quantity: str
+    ) -> bool:
+        r"""
+        Check to ensure the provided quantity string is defined on at least one grid.
+
+        Returns ``True` if the quantity is defined on at least one grid and
+        ``False`` if none of the grids have defined the specified quantity.
+        """
+
+        return any(quantity in grid.quantities for grid in grids)
 
     def add_stopping(self, materials: list[str]):
         r"""
@@ -483,14 +501,24 @@ class ParticleTracker:
                 "Please provide an array of length ngrids for the materials."
             )
 
+        if not self._is_quantity_defined_on_one_grid(self.grids, "rho"):
+            warnings.warn(
+                "The density is not defined on any of the provided grids! Particle stopping will not be "
+                "calculated."
+            )
+
+            # Don't set `_do_stopping`. The push loop does not have to do stopping
+            # calculations
+            return
+
         # Require that each grid has a defined mass density,
         # if a grid does not define rho, raise an exception
-        # TODO: should this be replaced with only raising an exception when none
-        #  of the grids specify a mass density?
         for grid in self.grids:
-            grid.require_quantities(["rho"], replace_with_zeros=False)
+            grid.require_quantities(["rho"], replace_with_zeros=True)
 
         self._do_stopping = True
+        self._stopping_routine = "NIST stopping"
+
         self._required_quantities.update({"rho"})
         self._stopping_power_interpolators = [
             _stopping_power_interpolator(self._particle, material)
@@ -500,9 +528,9 @@ class ParticleTracker:
     def run(self) -> None:
         r"""
         Runs a particle-tracing simulation.
-        Time steps are adaptively calculated based on the
-        local grid resolution of the particles and the electric and magnetic
-        fields they are experiencing.
+        Time steps are adaptively calculated based on the local grid resolution
+        of the particles and the electric and magnetic fields they are
+        experiencing.
 
         Returns
         -------
@@ -602,8 +630,8 @@ class ParticleTracker:
     def _remove_particles(self, particles_to_remove_mask) -> None:
         """Remove the specified particles from the simulation.
 
-        For the sake of keeping consistent array lengths, the position and velocities of the
-        removed particles are set to NaN.
+        For the sake of keeping consistent array lengths, the position and
+        velocities of the removed particles are set to NaN.
         """
 
         if len(particles_to_remove_mask) != self.x.shape[0]:
@@ -621,9 +649,8 @@ class ParticleTracker:
     def _adaptive_dt(self, Ex, Ey, Ez, Bx, By, Bz) -> NDArray[np.float64] | float:  # noqa: ARG002
         r"""
         Calculate the appropriate dt for each grid based on a number of
-        considerations
-        including the local grid resolution (ds) and the gyroperiod of the
-        particles in the current fields.
+        considerations including the local grid resolution (ds) and the
+        gyroperiod of the particles in the current fields.
         """
 
         # candidate time steps includes one per grid (based on the grid resolution)
@@ -697,7 +724,7 @@ class ParticleTracker:
 
     # TODO: reduce cognitive complexity of this method
     #  maybe break stopping calculations into a separate method?
-    def _push(self) -> None:
+    def _push(self) -> None:  # noqa: C901, PLR0915
         r"""
         Advance particles using an implementation of the time-centered
         Boris algorithm.
@@ -716,12 +743,12 @@ class ParticleTracker:
         # entered_grid is zero at the end if a particle has never
         # entered any grid
         self.entered_grid += np.sum(self.particles_on_grid, axis=-1).astype(np.bool_)
-        # TODO: should this interpolation step be broken into a separate method
-        #  for the sake of simplicity?
-        # TODO: how should we handle unrecognized quantities?
-        # Construct a dictionary of empty arrays to populate with values of the
-        # interpolation calculation. field name: field value pairs
 
+        # TODO: how should we handle unrecognized quantities?
+
+        # Construct a dictionary to store the interpolation results
+        # This is accomplished using a dictionary comprehension. Each quantity is
+        # initialized as a zeros array with its respective units
         summed_field_values = {
             field_name: np.zeros(self.nparticles_tracked)
             * AbstractGrid.recognized_quantities[field_name].unit
@@ -730,6 +757,7 @@ class ParticleTracker:
 
         for grid in self.grids:
             if self.field_weighting == "volume averaged":
+                # Use the keys of the storage dictionary as input quantity strings to the interpolator
                 field_values = grid.volume_averaged_interpolator(
                     pos_tracked * u.m, *summed_field_values.keys(), persistent=True
                 )
@@ -805,40 +833,54 @@ class ParticleTracker:
 
         # TODO: maybe break out different stopping models into separate functions?
         #  particle_stopping_routines?
-        # S = np.zeros(self.nparticles_tracked) * u.J / u.m
-        #
-        # for grid in self.grids:
-        #     _S = grid.nearest_neighbor_interpolator(
-        #         pos_tracked * u.m, "S", persistent=False
-        #     )
-        #     _S = np.nan_to_num(_S, nan=0.0 * u.J / u.m)
-        #
-        #     S += _S
         current_speeds = np.linalg.norm(self.v[tracked_mask], axis=-1)[:, np.newaxis]
         unit_vectors = np.multiply(1 / current_speeds, self.v[tracked_mask])
         dx = np.multiply(current_speeds, dt)
 
         stopping_power = np.zeros((self.nparticles_tracked, 1))
-
-        for cs in self._stopping_power_interpolators:
-            # TODO: is this the proper way to handle the addition of multiple stopping powers?
-            relevant_kinetic_energy = (
-                self._particle_kinetic_energy[tracked_mask, np.newaxis] * u.J
-            )
-
-            interpolation_result = (
-                cs(relevant_kinetic_energy).to(u.J * u.m**2 / u.kg).value
-            )
-
-            stopping_power += interpolation_result
-
-        # Take the negative stopping power since we want to be removing energy
-        # from the particles
-
-        energy_loss_per_length = np.multiply(
-            stopping_power,
-            summed_field_values["rho"].to(u.kg / u.m**3).value[:, np.newaxis],
+        relevant_kinetic_energy = (
+            self._particle_kinetic_energy[tracked_mask, np.newaxis] * u.J
         )
+
+        # TODO: split these into separate functions
+        if self._stopping_routine == "NIST stopping":
+            for cs in self._stopping_power_interpolators:
+                interpolation_result = (
+                    cs(relevant_kinetic_energy).to(u.J * u.m**2 / u.kg).value
+                )
+
+                stopping_power += interpolation_result
+
+            # Take the negative stopping power since we want to be removing energy
+            # from the particles
+
+            energy_loss_per_length = np.multiply(
+                stopping_power,
+                summed_field_values["rho"].to(u.kg / u.m**3).value[:, np.newaxis],
+            )
+        elif self._stopping_routine == "Bethe stopping":
+            z = self.q / const.e.si
+            beta = Lorentz_factor(self.v[tracked_mask] * u.m / u.s)
+            energy_loss_per_length = (
+                4
+                * np.pi
+                / (const.m_e.si * const.c.si)
+                * summed_field_values["n_e"].to(1 / u.m**3).value[:, np.newaxis]
+                * z**2
+                / beta**2
+                * (const.e.si**2 / (4 * np.pi * const.eps0.si)) ** 2
+                * (
+                    np.log(
+                        2
+                        * const.m_e.si
+                        * const.c.si**2
+                        * beta**2
+                        / (self._excitation_energies * (1 - beta**2))
+                    )
+                    - beta**2
+                )
+            )
+
         dE = -np.multiply(energy_loss_per_length, dx)
 
         # Update the velocities of the particles using the new energy values
