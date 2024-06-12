@@ -978,16 +978,16 @@ def test_radiography_memory_save_routine():
     [
         (500 * u.keV, 5.42 * u.um),
         (1 * u.MeV, 14.38 * u.um),
-        (10 * u.MeV, 622.71 * u.um)
-    ]
+        (10 * u.MeV, 622.71 * u.um),
+    ],
 )
-def test_NIST_particle_stopping(proton_energy: u.Quantity[u.MeV], expected_stopping_distance: u.Quantity[u.m]):
+def test_NIST_particle_stopping(
+    proton_energy: u.Quantity[u.MeV], expected_stopping_distance: u.Quantity[u.m]
+):
     width = expected_stopping_distance * 1.1
 
     stopping_grid = CartesianGrid(
-        [-0.2, 0.0, -0.2] * u.cm,
-        [0.2, width.to(u.cm).value, 0.2] * u.cm,
-        num=100
+        [-0.2, 0.0, -0.2] * u.cm, [0.2, width.to(u.cm).value, 0.2] * u.cm, num=100
     )
 
     rho = np.ones(stopping_grid.shape) * 2.7 * u.g / u.cm**3
@@ -996,11 +996,20 @@ def test_NIST_particle_stopping(proton_energy: u.Quantity[u.MeV], expected_stopp
     source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
     detector = (0 * u.mm, 100 * u.mm, 0 * u.mm)
 
-    sim = cpr.Tracker([stopping_grid], source, detector, field_weighting="nearest neighbor", verbose=True, fraction_exited_threshold=0.99)
+    sim = cpr.Tracker(
+        [stopping_grid],
+        source,
+        detector,
+        field_weighting="nearest neighbor",
+        verbose=True,
+        fraction_exited_threshold=0.99,
+    )
     sim.create_particles(1e5, proton_energy, max_theta=np.pi / 15 * u.rad)
     sim.add_stopping(["ALUMINUM"])
 
     sim.run()
 
     # Take the median to avoid influence of outliers
-    assert np.isclose(np.median(sim.x[:, 1]), expected_stopping_distance.to(u.m).value, rtol=0.05).all()
+    assert np.isclose(
+        np.median(sim.x[:, 1]), expected_stopping_distance.to(u.m).value, rtol=0.05
+    ).all()
