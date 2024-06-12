@@ -984,6 +984,10 @@ def test_radiography_memory_save_routine():
 def test_NIST_particle_stopping(
     proton_energy: u.Quantity[u.MeV], expected_stopping_distance: u.Quantity[u.m]
 ):
+    r"""
+    Test to ensure that the simulated stopping range matches the SRIM output
+    for various proton energies.
+    """
     width = expected_stopping_distance * 1.1
 
     stopping_grid = CartesianGrid(
