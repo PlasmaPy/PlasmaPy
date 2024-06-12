@@ -1,0 +1,2 @@
+Updated the |coding guide| with information on |static type checking|
+with |mypy|.

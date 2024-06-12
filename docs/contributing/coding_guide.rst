@@ -29,8 +29,8 @@ style changes. Please feel free to propose revisions to this guide by
 a community meeting.
 
 PlasmaPy generally follows the :pep:`8` style guide for Python code,
-using auto-formatters such as |black| and |isort| that are executed using
-|pre-commit|.
+while using tools like |pre-commit|, |ruff|, and the |ruff formatter| to
+perform autoformatting, code quality checks, and automatic fixes.
 
 Coding guidelines
 =================
@@ -411,6 +411,52 @@ frustration.
 * Write error messages that are friendly, supportive, and helpful. Error
   message should never be condescending or blame the user.
 
+Type hint annotations
+=====================
+
+PlasmaPy uses |type hint annotations| and |mypy| to perform
+|static type checking|.
+
+Type hint annotations are used to specify the expected types of
+arguments and return values. A function that accepts a `float` or `str`
+and returns a `str` may be written as:
+
+.. code-block:: python
+
+   def f(x: float | str) -> str:
+       ...
+
+The :py:`|` operator is used to represent unions between types.
+
+Type hint annotations are by default not enforced at runtime. Instead,
+type hints are used by developers to indicate that a function accepts or
+returns different types.
+
+To learn more, check out the `type hints cheat sheet`_.
+
+Ignoring mypy errors
+--------------------
+
+Static type checkers like |mypy| are unable to follow the behavior of
+functions that dynamically change the types of objects, which occurs in
+functions decorated by |particle_input|. In situations like this, we can
+use a :py:`# type: ignore` comment to indicate that |mypy| should ignore
+a particular error.
+
+.. code-block:: python
+
+   from plasmapy.particles import particle_input, ParticleLike
+
+   @particle_input
+   def f(particle: ParticleLike) -> Particle | CustomParticle | ParticleList:
+       return particle  # type: ignore[return-value]
+
+.. note::
+
+   PlasmaPy only recently added |mypy| to its continuous integration
+   suite. If you run into |mypy| errors that frequently need to be
+   ignored, please bring them up in :issue:`2589`.
+
 Project infrastructure
 ======================
 
@@ -427,21 +473,18 @@ Imports
      import numpy as np
      import pandas as pd
 
-* PlasmaPy uses |isort| to organize import statements via a |pre-commit|
+* PlasmaPy uses |ruff| to organize import statements via a |pre-commit|
   hook.
 
-* For infrequently used objects, import the package, subpackage, or
-  module rather than the individual code object. Including more of the
-  namespace provides contextual information that can make code easier to
-  read. For example, :py:`json.loads` is more readable than using only
+* For most objects, import the package, subpackage, or module rather
+  than the individual code object. Including more of the namespace
+  provides contextual information that can make code easier to read. For
+  example, :py:`json.loads` is more readable than using only
   :py:`loads`.
 
-* For frequently used objects (e.g., |Particle|) and type hint
-  annotations (e.g., `~typing.Optional` and `~numbers.Real`), import the
-  object directly instead of importing the package, subpackage, or
-  module. Including more of the namespace would increase clutter and
-  decrease readability without providing commensurately more
-  information.
+* For the most frequently used PlasmaPy objects (e.g., |Particle|) and
+  |type hint annotations| (e.g., `~typing.Optional`), import the object
+  directly instead of importing the package, subpackage, or module.
 
 * Use absolute imports (e.g., :py:`from plasmapy.particles import
   Particle`) rather than relative imports (e.g., :py:`from ..particles
@@ -775,11 +818,11 @@ notebook on particles`_.
 
   .. code-block:: python
 
-     from plasmapy.particles import ParticleLike, particle_input
+     from plasmapy.particles import Particle, ParticleLike, particle_input
 
 
      @particle_input
-     def get_particle(particle: ParticleLike):
+     def get_particle(particle: ParticleLike) -> Particle:
          return particle
 
   If we use :py:`get_particle` on something |particle-like|, it will
@@ -958,6 +1001,7 @@ in the README file of `benchmarks-repo`_.
 .. _SPEC 0: https://scientific-python.org/specs/spec-0000
 .. _pyupgrade: https://github.com/asottile/pyupgrade
 .. _rename refactoring in PyCharm: https://www.jetbrains.com/help/pycharm/rename-refactorings.html
+.. _type hints cheat sheet: https://mypy.readthedocs.io/en/stable/cheat_sheet_py3.html
 .. _voila: https://voila.readthedocs.io
 
 .. _`astropy.units`: https://docs.astropy.org/en/stable/units/index.html
