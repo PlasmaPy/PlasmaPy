@@ -1,5 +1,8 @@
 .. _coding guide:
 
+.. role:: toml(code)
+   :language: TOML
+
 ************
 Coding Guide
 ************
@@ -448,9 +451,6 @@ Imports
 
 Project infrastructure
 ======================
-
-.. role:: toml(code)
-   :language: TOML
 
 For general information about Python packaging, check out the
 `Python Packaging User Guide`_.
