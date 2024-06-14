@@ -14,6 +14,7 @@ from pathlib import Path
 
 import astropy.units as u
 import h5py
+import numpy as np
 
 
 class AbstractSaveRoutine(ABC):
@@ -75,11 +76,6 @@ class AbstractSaveRoutine(ABC):
         """Return the results of the simulation.
         The quantities returned depend on those defined in the body of the save routine.
         """
-        if not self._particle_tracker or not self._particle_tracker._has_run:  # noqa: SLF001
-            raise RuntimeError(
-                "Please run the tracker simulation before attempting to access the save routine results."
-            )
-
         return self._apply_units_to_results()
 
     def save(self) -> None:
@@ -113,7 +109,7 @@ class AbstractSaveRoutine(ABC):
 
         for quantity in self._quantities:
             quantity_history = self._results.get(quantity, [])
-            current_quantity = getattr(self._particle_tracker, quantity, 0)
+            current_quantity = np.copy(getattr(self._particle_tracker, quantity, 0))
 
             quantity_history.append(current_quantity)
             self._results[quantity] = quantity_history

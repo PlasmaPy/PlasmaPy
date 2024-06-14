@@ -2251,7 +2251,7 @@ Improved Documentation
 
 - Added real-world examples to examples/plot_physics.py and adjusted the plots to be more human-friendly. (`#448 <https://github.com/plasmapy/plasmapy/pull/448>`__)
 - Add examples images to the top of the main doc page in `docs\index.rst` (`#655 <https://github.com/plasmapy/plasmapy/pull/655>`__)
-- Added exampes to the documentation to mass_density
+- Added examples to the documentation to mass_density
    and Hall_parameter functions (`#709 <https://github.com/plasmapy/plasmapy/pull/709>`__)
 - Add docstrings to decorator :func:`plasmapy.utils.decorators.converter.angular_freq_to_hz`. (`#729 <https://github.com/plasmapy/plasmapy/pull/729>`__)
 

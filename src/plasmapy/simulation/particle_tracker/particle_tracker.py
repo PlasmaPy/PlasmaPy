@@ -19,7 +19,7 @@ from tqdm import tqdm
 from plasmapy.particles import Particle, particle_input
 from plasmapy.plasma.grids import AbstractGrid
 from plasmapy.plasma.plasma_base import BasePlasma
-from plasmapy.simulation.particle_integrators import boris_push, boris_push_relativistic
+from plasmapy.simulation.particle_integrators import boris_push
 from plasmapy.simulation.particle_tracker.save_routines import (
     AbstractSaveRoutine,
     DoNotSaveSaveRoutine,
@@ -27,12 +27,6 @@ from plasmapy.simulation.particle_tracker.save_routines import (
 from plasmapy.simulation.particle_tracker.termination_conditions import (
     AbstractTerminationCondition,
 )
-from plasmapy.utils.decorators import validate_quantities
-
-_INTEGRATORS = {
-    "explicit_boris": boris_push,
-    "explicit_boris_relativistic": boris_push_relativistic,
-}
 
 
 class ParticleTracker:
@@ -117,15 +111,13 @@ class ParticleTracker:
     If both the particle's position and velocity are set to ``NaN``, then the particle has been removed from the simulation.
     """
 
-    @validate_quantities
     def __init__(
         self,
         grids: AbstractGrid | Iterable[AbstractGrid],
         termination_condition: AbstractTerminationCondition | None = None,
         save_routine: AbstractSaveRoutine | None = None,
-        integrator: str = "explicit_boris",
-        dt: u.Quantity[u.s] | None = None,
-        dt_range: tuple[u.s, u.s] | None = None,
+        dt=None,
+        dt_range=None,
         field_weighting="volume averaged",
         req_quantities=None,
         verbose=True,
@@ -141,11 +133,8 @@ class ParticleTracker:
 
         # Validate inputs to the run function
         self._validate_constructor_inputs(
-            grids, termination_condition, save_routine, integrator, field_weighting
+            grids, termination_condition, save_routine, field_weighting
         )
-
-        # Look up the integrator function for the passed string representation
-        self._integrator = _INTEGRATORS[integrator]
 
         self._set_time_step_attributes(dt, termination_condition, save_routine)
 
@@ -203,7 +192,11 @@ class ParticleTracker:
     def _set_time_step_attributes(
         self, dt, termination_condition, save_routine
     ) -> None:
-        """Determines whether the simulation will follow a synchronized or adaptive time step."""
+        """Determines whether the simulation will follow a synchronized or adaptive time step.
+
+        This method also sets the `_is_synchronized_time_step` and
+        `_is_adaptive_time_step` attributes.
+        """
 
         self._require_synchronized_time = (
             termination_condition.require_synchronized_dt
@@ -266,17 +259,11 @@ class ParticleTracker:
         self._Courant_parameter = Courant_parameter
 
     def _validate_constructor_inputs(
-        self,
-        grids,
-        termination_condition,
-        save_routine,
-        integrator: str,
-        field_weighting: str,
+        self, grids, termination_condition, save_routine, field_weighting: str
     ) -> None:
         """
         Ensure the specified termination condition and save routine are actually
-        a termination routine class and save routine, respectively. This function also
-        sets the `_is_synchronized_time_step` and `_is_adaptive_time_step` attributes.
+        a termination routine class and save routine, respectively.
         """
 
         if isinstance(grids, BasePlasma):
@@ -294,9 +281,6 @@ class ParticleTracker:
 
         if not isinstance(save_routine, AbstractSaveRoutine):
             raise TypeError("Please specify a valid save routine.")
-
-        if integrator not in _INTEGRATORS:
-            raise ValueError("Please specify a valid integrator.")
 
         # Load and validate inputs
         field_weightings = ["volume averaged", "nearest neighbor"]
@@ -390,11 +374,10 @@ class ParticleTracker:
             print(msg)  # noqa: T201
 
     @particle_input
-    @validate_quantities
     def load_particles(
         self,
-        x: u.Quantity[u.m],
-        v: u.Quantity[u.m / u.s],
+        x,
+        v,
         particle: Particle = Particle("p+"),  # noqa: B008
     ) -> None:
         r"""
@@ -717,8 +700,7 @@ class ParticleTracker:
         else:
             self.time += dt
 
-        # Update the tracked particles using the integrator specified at instantiation
-        self.x[tracked_mask], self.v[tracked_mask] = self._integrator(
+        self.x[tracked_mask], self.v[tracked_mask] = boris_push(
             pos_tracked, vel_tracked, B, E, self.q, self.m, dt, inplace=False
         )
 
@@ -747,11 +729,12 @@ class ParticleTracker:
         """
         Calculates a boolean mask corresponding to particles that have not been stopped or removed.
         """
+        # See Class docstring for definition of `stopped` and `removed`
         return ~np.logical_or(np.isnan(self.x[:, 0]), np.isnan(self.v[:, 0]))
 
     @property
     def nparticles_tracked(self) -> int:
-        """Return the number of particles that don't have NaN position or velocity."""
+        """Return the number of particles currently being tracked."""
         return int(self._tracked_particle_mask.sum())
 
     @property
