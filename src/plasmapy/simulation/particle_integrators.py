@@ -191,12 +191,12 @@ def boris_push_relativistic(x, v, B, E, q, m, dt, inplace: bool = True):
            Simulation", 2004, p. 58-63
     """
 
-    γ = 1 / np.sqrt(1 - (v / _c) ** 2)
+    γ = 1 / np.sqrt(1 - (v / _c.si.value) ** 2)
     uvel = v * γ
 
     uvel_minus = uvel + q * E * dt / (2 * m)
 
-    γ1 = np.sqrt(1 + (uvel_minus / _c) ** 2)
+    γ1 = np.sqrt(1 + (uvel_minus / _c.si.value) ** 2)
 
     # Birdsall has a factor of c incorrect in the definition of t?
     # See this source: https://www.sciencedirect.com/science/article/pii/S163107211400148X
@@ -209,7 +209,7 @@ def boris_push_relativistic(x, v, B, E, q, m, dt, inplace: bool = True):
 
     # You can show that this expression is equivalent to calculating
     # v_new  then calculating γnew using the usual formula
-    γ2 = np.sqrt(1 + (uvel_new / _c) ** 2)
+    γ2 = np.sqrt(1 + (uvel_new / _c.si.value) ** 2)
 
     if inplace:
         # Update the velocities of the particles that are being pushed
