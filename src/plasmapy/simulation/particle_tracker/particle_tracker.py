@@ -719,7 +719,7 @@ class ParticleTracker:
 
             if beta >= 0.01 and not self._integrator["is_relativistic"]:
                 warnings.warn(
-                    f"Particles are travelling at speeds {round(beta * 100)}% of the speed of light. "
+                    f"Particles are travelling at {round(beta * 100)}% of the speed of light. "
                     f"Please consider using a relativistic integrator!",
                     RelativityWarning,
                 )
