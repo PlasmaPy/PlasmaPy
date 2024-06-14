@@ -9,8 +9,10 @@ __all__ = [
 import collections
 import sys
 import warnings
-from collections.abc import Iterable
+from collections.abc import Callable, Iterable
+from typing import TypedDict
 
+import astropy.constants as const
 import astropy.units as u
 import numpy as np
 from numpy.typing import NDArray
@@ -19,7 +21,7 @@ from tqdm import tqdm
 from plasmapy.particles import Particle, particle_input
 from plasmapy.plasma.grids import AbstractGrid
 from plasmapy.plasma.plasma_base import BasePlasma
-from plasmapy.simulation.particle_integrators import boris_push
+from plasmapy.simulation.particle_integrators import boris_push, boris_push_relativistic
 from plasmapy.simulation.particle_tracker.save_routines import (
     AbstractSaveRoutine,
     DoNotSaveSaveRoutine,
@@ -27,6 +29,21 @@ from plasmapy.simulation.particle_tracker.save_routines import (
 from plasmapy.simulation.particle_tracker.termination_conditions import (
     AbstractTerminationCondition,
 )
+from plasmapy.utils.exceptions import RelativityWarning
+
+
+class _IntegratorInfo(TypedDict):
+    definition: Callable
+    is_relativistic: bool
+
+
+_INTEGRATORS: dict[str, _IntegratorInfo] = {
+    "explicit_boris": {"definition": boris_push, "is_relativistic": False},
+    "explicit_boris_relativistic": {
+        "definition": boris_push_relativistic,
+        "is_relativistic": True,
+    },
+}
 
 
 class ParticleTracker:
@@ -119,9 +136,14 @@ class ParticleTracker:
         dt=None,
         dt_range=None,
         field_weighting="volume averaged",
+        integrator="explicit_boris_relativistic",
         req_quantities=None,
         verbose=True,
     ) -> None:
+        # Set the integrator object based on the provided integrator string
+        # TODO: maybe add a more descriptive error here?
+        self._integrator = _INTEGRATORS[integrator]
+
         # self.grid is the grid object
         self.grids = self._grid_factory(grids)
 
@@ -602,6 +624,8 @@ class ParticleTracker:
 
         return all_particles
 
+    _relativistic_warning_raised = False
+
     def _push(self) -> None:
         r"""
         Advance particles using an implementation of the time-centered
@@ -688,8 +712,19 @@ class ParticleTracker:
         else:
             dt = self.dt
 
-        # TODO: Test v/c and implement relativistic Boris push when required
-        # vc = np.max(v)/_c
+        # Make sure this warning is only raised once at simulation runtime as
+        # opposed to once every push
+        if not self._relativistic_warning_raised:
+            beta = self.vmax / const.c.si.value
+
+            if beta >= 0.01 and not self._integrator["is_relativistic"]:
+                warnings.warn(
+                    f"Particles are travelling at speeds {round(beta * 100)}% of the speed of light. "
+                    f"Please consider using a relativistic integrator!",
+                    RelativityWarning,
+                )
+
+                self._relativistic_warning_raised = True
 
         # Make sure the time step can be multiplied by a [nparticles, 3] shape field array
         if isinstance(dt, np.ndarray) and dt.size > 1:
@@ -700,7 +735,8 @@ class ParticleTracker:
         else:
             self.time += dt
 
-        self.x[tracked_mask], self.v[tracked_mask] = boris_push(
+        # Update the tracked particles using the integrator specified at instantiation
+        self.x[tracked_mask], self.v[tracked_mask] = self._integrator["definition"](
             pos_tracked, vel_tracked, B, E, self.q, self.m, dt, inplace=False
         )
 
