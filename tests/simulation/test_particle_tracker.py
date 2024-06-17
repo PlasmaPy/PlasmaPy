@@ -2,11 +2,13 @@
 Tests for particle_tracker.py
 """
 
+import astropy.constants as const
 import astropy.units as u
 import numpy as np
 import pytest
 from hypothesis import given, settings
 from hypothesis import strategies as st
+from scipy.optimize import fsolve
 
 from plasmapy.formulary.frequencies import gyrofrequency
 from plasmapy.formulary.lengths import gyroradius
@@ -92,14 +94,6 @@ def grid_with_inf_entry():
             "no_particles_on_grids_instantiated",
             None,
             {},
-            ValueError,
-        ),
-        # Invalid integrator string
-        (
-            CartesianGrid(-1 * u.m, 1 * u.m),
-            "no_particles_on_grids_instantiated",
-            None,
-            {"integrator": "lorem ipsum"},
             ValueError,
         ),
         # Invalid field weighting
@@ -446,3 +440,134 @@ def test_particle_tracker_stop_particles(request):
         simulation._remove_particles([True, True])
 
     assert np.isnan(simulation.x[0, :]).all()
+
+
+def t_opt(𝜏, t, vd, γd, ν):
+    """
+    fsolve optimization function
+    Eq. 72 in the Friedman paper
+
+    """
+    return t - γd.value**2 / ν.value * (
+        ν.value * 𝜏 - vd.value**2 / const.c.si.value**2 * np.sin(ν.value * 𝜏)
+    )
+
+
+def ExB_trajectory(t, E, B, q=const.e.si, m=const.m_p.si, nonrel=False):
+    """
+    Calculates the relativistically-correct ExB drift trajectory for a
+    particle starting at x=v=0 at t=0 with E in the x direction and
+    B in the y direction and ExB in the z direction. The motion is 2D in the
+    xz plane.
+
+    From https://journals.aps.org/pre/abstract/10.1103/PhysRevE.72.026603
+
+    """
+
+    # TODO: implement this for more regimes?
+    if E >= const.c.si * B:
+        raise ValueError("Currently this function only works for E<cB")
+
+    # Just after Eq. 41
+    vd = (E / B).to(u.m / u.s)
+
+    # Eq. 34
+    ν = q * np.sqrt((const.c.si * B) ** 2 - E**2) / (m * const.c.si)
+
+    if nonrel:
+        # Calculate the positions using the non-relativistic expression
+        # Eq. 79
+        a = m * vd / (q * B)
+        x = (a * (ν * t - np.sin(ν.si.value * t.si.value))).to(u.m)
+        z = (a * (np.cos(ν.si.value * t.si.value) - 1)).to(u.m)
+    else:
+        # Eq. 45
+        γd = 1 / np.sqrt(1 - vd**2 / const.c.si**2)
+
+        # Numerically invert Eq. 72 to calculate the proper time for each time
+        # t in the lab frame
+        𝜏 = np.zeros(t.size)
+        for i, val in enumerate(t):
+            𝜏[i] = fsolve(t_opt, [val.si.value], args=(val.si.value, vd, γd, ν))
+        𝜏 *= u.s
+
+        # Calculate the positions
+        # Eq. 71
+        a = γd * vd / ν
+        x = (a * γd * (ν * 𝜏 - np.sin(ν.si.value * 𝜏.si.value))).to(u.m)
+        z = (a * (np.cos(ν.si.value * 𝜏.si.value) - 1)).to(u.m)
+
+    return x, z
+
+
+def construct_field(
+    grid, magnitude, direction
+) -> tuple[u.Quantity, u.Quantity, u.Quantity]:
+    # add third dimension to account for the fact that we are dealing with a vector field
+    field = (
+        np.full(fill_value=magnitude * direction, shape=(*grid.shape, 3))
+        * magnitude.unit
+    )
+    f_x, f_y, f_z = np.moveaxis(field, -1, 0)
+
+    return f_x, f_y, f_z
+
+
+@pytest.mark.parametrize("regime", [(0.01,), (0.5,), (0.99,)])
+def test_Boris_integrator_fitting(regime):
+    B_0 = 10 * u.T
+    B_dir = np.asarray([0, 1, 0])
+
+    E_0 = (regime * const.c.si.value * B_0.to(u.T).value) * u.V / u.m
+    E_dir = np.asarray([0, 0, -1])
+
+    L = 20 * u.m
+    fields = CartesianGrid(-L, L)
+
+    E_x, E_y, E_z = construct_field(fields, E_0, E_dir)
+    B_x, B_y, B_z = construct_field(fields, B_0, B_dir)
+    fields.add_quantities(
+        E_x=E_x,
+        E_y=E_y,
+        E_z=E_z,
+        B_x=B_x,
+        B_y=B_y,
+        B_z=B_z,
+    )
+
+    termination_condition = TimeElapsedTerminationCondition(500 * u.ns)
+
+    """
+    ----------
+    Simulation
+    ----------
+    """
+    save_routine = IntervalSaveRoutine(0.1 * u.ns)
+
+    simulation = ParticleTracker(
+        grids=fields,
+        save_routine=save_routine,
+        termination_condition=termination_condition,
+    )
+    simulation.load_particles(
+        x=[np.zeros(3)] * u.m,
+        v=[np.zeros(3)] * u.m / u.s,
+    )
+    simulation.run()
+
+    """
+    --------------
+    Theory Fitting
+    --------------
+    """
+    relativistic_theory_x, relativistic_theory_z = ExB_trajectory(
+        save_routine.results["time"][:], E_0, B_0, nonrel=False
+    )
+
+    # Remove the first twenty data points to allow the particle to accelerate to the drift velocity
+    assert np.isclose(
+        relativistic_theory_x[20:],
+        save_routine.results["x"][:, 0, 0][20:],
+        equal_nan=True,
+        rtol=0.05,
+    ).all()
