@@ -186,6 +186,10 @@ class Tracker(ParticleTracker):
         simulation. This does not include particles that have never entered
         the grids.
 
+    relativistic_beta_threshold: `float`, optional
+        The threshold fraction of the speed of light, which once exceeded, will
+        trigger the simulation to switch to a relativistic Boris push.
+
     verbose : bool, optional
         If `True`, updates on the status of the program will be printed
         into the standard output while running.
@@ -202,6 +206,7 @@ class Tracker(ParticleTracker):
         detector_hdir=None,
         output_file: Path | None = None,
         fraction_exited_threshold: float = 0.001,
+        relativistic_beta_threshold=0.01,
         verbose: bool = True,
     ) -> None:
         # The synthetic radiography class handles logging, so we can disable logging for the particle tracker
@@ -224,6 +229,7 @@ class Tracker(ParticleTracker):
             dt=dt,
             dt_range=dt_range,
             field_weighting=field_weighting,
+            relativistic_beta_threshold=relativistic_beta_threshold,
             verbose=False,
         )
 
