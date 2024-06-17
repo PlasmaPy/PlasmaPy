@@ -161,11 +161,11 @@ def boris_push_relativistic(x, v, B, E, q, m, dt, inplace: bool = True):
 
     Parameters
     ----------
-    x : np.ndarray
+    x : `~np.ndarray`
         particle position at full timestep, in SI (meter) units.
-    v : np.ndarray
+    v : `~np.ndarray`
         particle velocity at half timestep, in SI (meter/second) units.
-    B : np.ndarray
+    B : `~np.ndarray`
         magnetic field at full timestep, in SI (tesla) units.
     E : float
         electric field at full timestep, in SI (V/m) units.
