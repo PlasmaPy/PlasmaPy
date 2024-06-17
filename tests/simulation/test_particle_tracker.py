@@ -513,7 +513,14 @@ def construct_field(
     return f_x, f_y, f_z
 
 
-@pytest.mark.parametrize("regime", [(0.01,), (0.5,), (0.99,)])
+@pytest.mark.parametrize(
+    "regime",
+    [
+        0.01,
+        0.5,
+        0.99,
+    ],
+)
 def test_Boris_integrator_fitting(regime):
     B_0 = 10 * u.T
     B_dir = np.asarray([0, 1, 0])
