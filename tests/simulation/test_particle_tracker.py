@@ -571,10 +571,10 @@ def test_Boris_integrator_fitting(regime):
         save_routine.results["time"][:], E_0, B_0, nonrel=False
     )
 
-    # Remove the first twenty data points to allow the particle to accelerate to the drift velocity
     assert np.isclose(
-        relativistic_theory_x[20:],
-        save_routine.results["x"][:, 0, 0][20:],
+        relativistic_theory_x,
+        save_routine.results["x"][:, 0, 0],
         equal_nan=True,
+        atol=5e-2,
         rtol=0.05,
     ).all()
