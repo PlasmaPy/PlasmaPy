@@ -300,7 +300,7 @@ rpds-py==0.18.1
     # via
     #   jsonschema
     #   referencing
-scipy==1.9.2
+scipy==1.9.0
     # via
     #   plasmapy (pyproject.toml)
     #   lmfit

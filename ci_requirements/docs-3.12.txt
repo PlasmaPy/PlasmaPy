@@ -206,7 +206,7 @@ nox==2024.4.15
     # via plasmapy (pyproject.toml)
 numba==0.60.0
     # via plasmapy (pyproject.toml)
-numpy==2.0.0
+numpy==1.26.4
     # via
     #   plasmapy (pyproject.toml)
     #   astropy
