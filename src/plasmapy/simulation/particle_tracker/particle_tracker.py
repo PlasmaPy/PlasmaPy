@@ -29,7 +29,6 @@ from plasmapy.simulation.particle_tracker.save_routines import (
 from plasmapy.simulation.particle_tracker.termination_conditions import (
     AbstractTerminationCondition,
 )
-from plasmapy.utils.exceptions import RelativityWarning
 
 
 class _IntegratorInfo(TypedDict):
@@ -94,6 +93,10 @@ class ParticleTracker:
         If specified, the calculated adaptive time step will be clamped
         between the first and second values.
 
+    relativistic_beta_threshold: `float`, optional
+        The threshold fraction of the speed of light, which once exceeded, will
+        trigger the simulation to switch to a relativistic Boris push.
+
     field_weighting : str
         String that selects the field weighting algorithm used to determine
         what fields are felt by the particles. Options are:
@@ -135,14 +138,17 @@ class ParticleTracker:
         save_routine: AbstractSaveRoutine | None = None,
         dt=None,
         dt_range=None,
+        relativistic_beta_threshold=0.01,
         field_weighting="volume averaged",
-        integrator="explicit_boris_relativistic",
         req_quantities=None,
         verbose=True,
     ) -> None:
-        # Set the integrator object based on the provided integrator string
-        # TODO: maybe add a more descriptive error here?
-        self._integrator = _INTEGRATORS[integrator]
+        # By default, set the integrator to the explicit Boris push
+        # The `_push()` method may change this to a relativistic integrator if the energies of the particles
+        # exceed the threshold specified by `relativistic_beta_threshold`
+        self._integrator = _INTEGRATORS["explicit_boris"]
+        self._beta_threshold = relativistic_beta_threshold
+        self._is_relativistic = False
 
         # self.grid is the grid object
         self.grids = self._grid_factory(grids)
@@ -712,19 +718,14 @@ class ParticleTracker:
         else:
             dt = self.dt
 
-        # Make sure this warning is only raised once at simulation runtime as
-        # opposed to once every push
-        if not self._relativistic_warning_raised:
+        # Check if the beta threshold has been achieved if the simulation is not
+        # already using the relativistic integrator
+        if not self._is_relativistic:
             beta = self.vmax / const.c.si.value
 
-            if beta >= 0.01 and not self._integrator["is_relativistic"]:
-                warnings.warn(
-                    f"Particles are travelling at {round(beta * 100)}% of the speed of light. "
-                    f"Please consider using a relativistic integrator!",
-                    RelativityWarning,
-                )
-
-                self._relativistic_warning_raised = True
+            if beta >= self._beta_threshold:
+                self._integrator = _INTEGRATORS["explicit_boris_relativistic"]
+                self._is_relativistic = True
 
         # Make sure the time step can be multiplied by a [nparticles, 3] shape field array
         if isinstance(dt, np.ndarray) and dt.size > 1:
