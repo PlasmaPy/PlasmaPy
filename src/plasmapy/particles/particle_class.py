@@ -837,19 +837,6 @@ class Particle(AbstractPhysicalParticle):
             
             element_key = element
 
-            # Adjust the element key to include the isotope if it's hydrogen
-            if element == "H" and isotope is not None:
-                if isotope == "H-1":
-                    element_key = "H"
-                elif isotope == "H-2" or isotope == "D":
-                    element_key = "D"
-                elif isotope == "H-3" or isotope == "T":
-                    element_key = "T"
-                else:
-                    raise InvalidIsotopeError(
-                        f"The isotope {isotope} is not a valid isotope of hydrogen."
-                    )
-
             # Find the maximum charge for the element
             for key in _ionization_energy.data_about_ionization_energy:
                 if key.startswith(element_key + " "):
