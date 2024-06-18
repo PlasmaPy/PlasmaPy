@@ -844,7 +844,7 @@ class Particle(AbstractPhysicalParticle):
             if charge_number < max_charge:
                 ions = [
                     f"{element} {charge}+"
-                    for charge in range(charge_number + 1, max_charge + 1)
+                    for charge in range(charge_number, max_charge + 1)
                 ]
                 attributes["electron binding energy"] = sum(
                     _ionization_energy.data_about_ionization_energy[p] for p in ions
