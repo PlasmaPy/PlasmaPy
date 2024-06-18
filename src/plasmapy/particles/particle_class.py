@@ -826,7 +826,6 @@ class Particle(AbstractPhysicalParticle):
             attributes = self._attributes
 
             element = attributes["element"]
-            isotope = attributes["isotope"]
 
             charge_number = attributes["charge number"]
 
