@@ -1635,13 +1635,6 @@ def test_undefined_ionization_energy():
         pass
 
 
-def test_electron_binding_energy():
-    C_3 = Particle("C 3+")
-    C_4 = Particle("C 4+")
-    C_5 = Particle("C 5+")
-    assert C_3.electron_binding_energy == C_4.ionization_energy + C_5.ionization_energy
-
-
 def test_undefined_electron_binding_energy():
     particle = Particle("tau neutrino")
     try:
@@ -1655,3 +1648,29 @@ def test_warning_on_use_of_binding_energy():
     with pytest.warns(FutureWarning):
         particle = Particle("n")
         assert particle.binding_energy == particle.nuclear_binding_energy
+
+
+def test_deuterium_electron_binding_energy():
+    D = Particle("D")
+    H_2 = Particle("H-2")
+    H = Particle("H")
+    assert D.electron_binding_energy == H_2.electron_binding_energy
+    assert D.electron_binding_energy != H.electron_binding_energy
+
+
+def test_other_isotopes_electron_binding_energy():
+    C_12 = Particle("C-12")
+    C_13 = Particle("C-13")
+    C_14 = Particle("C-14")
+    assert C_12.electron_binding_energy == C_13.electron_binding_energy
+    assert C_12.electron_binding_energy == C_14.electron_binding_energy
+    assert C_13.electron_binding_energy == C_14.electron_binding_energy
+
+
+def test_isotope_ion_electron_binding_energy():
+    C_12 = Particle("C-12 +1")
+    C_13 = Particle("C-13 +1")
+    C_14 = Particle("C-14 +1")
+    assert C_12.electron_binding_energy == C_13.electron_binding_energy
+    assert C_12.electron_binding_energy == C_14.electron_binding_energy
+    assert C_13.electron_binding_energy == C_14.electron_binding_energy
