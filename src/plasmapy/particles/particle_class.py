@@ -826,6 +826,7 @@ class Particle(AbstractPhysicalParticle):
             attributes = self._attributes
 
             element = attributes["element"]
+            isotope = attributes["isotope"]
 
             charge_number = attributes["charge number"]
 
@@ -833,17 +834,32 @@ class Particle(AbstractPhysicalParticle):
                 charge_number = 0
 
             max_charge = charge_number
+            
+            element_key = element
+
+            # Adjust the element key to include the isotope if it's hydrogen
+            if element == "H" and isotope is not None:
+                if isotope == "H-1":
+                    element_key = "H"
+                elif isotope == "H-2" or isotope == "D":
+                    element_key = "D"
+                elif isotope == "H-3" or isotope == "T":
+                    element_key = "T"
+                else:
+                    raise InvalidIsotopeError(
+                        f"The isotope {isotope} is not a valid isotope of hydrogen."
+                    )
 
             # Find the maximum charge for the element
             for key in _ionization_energy.data_about_ionization_energy:
-                if key.startswith(element + " "):
+                if key.startswith(element_key + " "):
                     charge = int(key.split()[-1].replace("+", ""))
                     if charge > max_charge:
                         max_charge = charge
 
-            if charge_number < max_charge:
+            if charge_number <= max_charge:
                 ions = [
-                    f"{element} {charge}+"
+                    f"{element_key}" if charge == 0 else f"{element_key} {charge}+"
                     for charge in range(charge_number, max_charge + 1)
                 ]
                 attributes["electron binding energy"] = sum(
@@ -2012,10 +2028,28 @@ class Particle(AbstractPhysicalParticle):
         -----
         Relies on ionization energy data downloaded from the `NIST Atomic Spectra Database <https://physics.nist.gov/PhysRefData/ASD/ionEnergy.html>`_  on 5/7/2024.
         """
-        if self._attributes["electron binding energy"] is None:
+
+        # If the particle is an isotope, return the electron binding energy of the base element in the given ionization, except for hydrogen isotopes
+
+        base_particle = None
+
+        if self.isotope and self.element != "H":
+            base_particle = self.element                
+            
+            # Add the charge number to the base particle if the particle is an ion
+            if self.is_ion:
+                base_particle += f" {self.charge_number:+d}"
+            base_particle = Particle(base_particle)
+
+        if self.isotope == "D":
+            return _ionization_energy.data_about_ionization_energy["D"]
+        
+        if self._attributes["electron binding energy"] is None and base_particle is None:
             raise MissingParticleDataError(
                 f"The electron binding energy of {self.symbol} is not available."
             )
+        elif base_particle is not None:
+            return base_particle.electron_binding_energy
 
         return self._attributes["electron binding energy"]
 
