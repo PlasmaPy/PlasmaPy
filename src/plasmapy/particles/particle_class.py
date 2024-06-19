@@ -833,7 +833,7 @@ class Particle(AbstractPhysicalParticle):
                 charge_number = 0
 
             max_charge = charge_number
-            
+
             element_key = element
 
             # Find the maximum charge for the element
@@ -2020,8 +2020,8 @@ class Particle(AbstractPhysicalParticle):
         base_particle = None
 
         if self.isotope and self.element != "H":
-            base_particle = self.element                
-            
+            base_particle = self.element
+
             # Add the charge number to the base particle if the particle is an ion
             if self.is_ion:
                 base_particle = self.element + f" {self.charge_number:+d}"
@@ -2029,8 +2029,11 @@ class Particle(AbstractPhysicalParticle):
 
         if self.isotope == "D":
             return _ionization_energy.data_about_ionization_energy["D"]
-        
-        if self._attributes["electron binding energy"] is None and base_particle is None:
+
+        if (
+            self._attributes["electron binding energy"] is None
+            and base_particle is None
+        ):
             raise MissingParticleDataError(
                 f"The electron binding energy of {self.symbol} is not available."
             )
