@@ -2024,7 +2024,7 @@ class Particle(AbstractPhysicalParticle):
 
             # Add the charge number to the base particle if the particle is an ion
             if self.is_ion:
-                base_particle = self.element + f" {self.charge_number:+d}"
+                base_particle = f"{self.element} {self.charge_number:+d}"
             base_particle = Particle(base_particle)
 
         if self.isotope == "D":
