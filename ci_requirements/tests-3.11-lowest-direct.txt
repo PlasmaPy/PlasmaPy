@@ -59,7 +59,7 @@ executing==2.0.1
     # via stack-data
 fastjsonschema==2.20.0
     # via nbformat
-filelock==3.15.1
+filelock==3.15.3
     # via
     #   tox
     #   virtualenv
@@ -300,7 +300,7 @@ rpds-py==0.18.1
     # via
     #   jsonschema
     #   referencing
-scipy==1.9.0
+scipy==1.9.2
     # via
     #   plasmapy (pyproject.toml)
     #   lmfit
@@ -365,7 +365,7 @@ uncertainties==3.2.1
     # via lmfit
 urllib3==1.26.19
     # via requests
-uv==0.2.11
+uv==0.2.13
     # via tox-uv
 virtualenv==20.26.2
     # via
