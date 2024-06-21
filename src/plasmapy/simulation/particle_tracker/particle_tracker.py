@@ -9,8 +9,7 @@ __all__ = [
 import collections
 import sys
 import warnings
-from collections.abc import Callable, Iterable
-from typing import TypedDict
+from collections.abc import Iterable
 
 import astropy.constants as const
 import astropy.units as u
@@ -21,7 +20,11 @@ from tqdm import tqdm
 from plasmapy.particles import Particle, particle_input
 from plasmapy.plasma.grids import AbstractGrid
 from plasmapy.plasma.plasma_base import BasePlasma
-from plasmapy.simulation.particle_integrators import boris_push, boris_push_relativistic
+from plasmapy.simulation.particle_integrators import (
+    AbstractIntegrator,
+    BorisIntegrator,
+    RelativisticBorisIntegrator,
+)
 from plasmapy.simulation.particle_tracker.save_routines import (
     AbstractSaveRoutine,
     DoNotSaveSaveRoutine,
@@ -29,20 +32,6 @@ from plasmapy.simulation.particle_tracker.save_routines import (
 from plasmapy.simulation.particle_tracker.termination_conditions import (
     AbstractTerminationCondition,
 )
-
-
-class _IntegratorInfo(TypedDict):
-    definition: Callable
-    is_relativistic: bool
-
-
-_INTEGRATORS: dict[str, _IntegratorInfo] = {
-    "explicit_boris": {"definition": boris_push, "is_relativistic": False},
-    "explicit_boris_relativistic": {
-        "definition": boris_push_relativistic,
-        "is_relativistic": True,
-    },
-}
 
 
 class ParticleTracker:
@@ -146,9 +135,8 @@ class ParticleTracker:
         # By default, set the integrator to the explicit Boris push
         # The `_push()` method may change this to a relativistic integrator if the energies of the particles
         # exceed the threshold specified by `relativistic_beta_threshold`
-        self._integrator = _INTEGRATORS["explicit_boris"]
+        self._integrator: type[AbstractIntegrator] = BorisIntegrator
         self._beta_threshold = relativistic_beta_threshold
-        self._is_relativistic = False
 
         # self.grid is the grid object
         self.grids = self._grid_factory(grids)
@@ -592,8 +580,8 @@ class ParticleTracker:
         if Bmag == 0:
             gyroperiod = np.inf
         else:
-            gyroperiod = np.abs(
-                2 * np.pi * self.m / (self.q * np.max(Bmag))
+            gyroperiod = (
+                2 * np.pi * self.m / (np.abs(self.q) * np.max(Bmag))
             )  # Account for negative charges!
 
         # Subdivide the gyroperiod into a provided number of steps
@@ -720,12 +708,11 @@ class ParticleTracker:
 
         # Check if the beta threshold has been achieved if the simulation is not
         # already using the relativistic integrator
-        if not self._is_relativistic:
+        if not self._integrator.is_relativistic:
             beta = self.vmax / const.c.si.value
 
             if beta >= self._beta_threshold:
-                self._integrator = _INTEGRATORS["explicit_boris_relativistic"]
-                self._is_relativistic = True
+                self._integrator = RelativisticBorisIntegrator
 
         # Make sure the time step can be multiplied by a [nparticles, 3] shape field array
         if isinstance(dt, np.ndarray) and dt.size > 1:
@@ -739,8 +726,8 @@ class ParticleTracker:
         # Update the tracked particles using the integrator specified at instantiation
         # TODO: implement "tentative" x and v to prevent speeds faster than light
         #  from occurring over one step. Possibly based on field strengths?
-        self.x[tracked_mask], self.v[tracked_mask] = self._integrator["definition"](
-            pos_tracked, vel_tracked, B, E, self.q, self.m, dt, inplace=False
+        self.x[tracked_mask], self.v[tracked_mask] = self._integrator.push(
+            pos_tracked, vel_tracked, B, E, self.q, self.m, dt
         )
 
         self.dt = dt
