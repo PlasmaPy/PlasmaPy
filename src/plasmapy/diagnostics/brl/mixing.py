@@ -96,7 +96,7 @@ def increase_mixing_coefficients(coefficient_1, coefficient_2):
 
     Notes
     -----
-    This is line 126 or page 16 of the `ADJUST` program.
+    This is line 126 on page 16 of the `ADJUST` program.
     """
     # FACT in code.
     factor_2 = 1.111
