@@ -108,7 +108,7 @@ def increase_mixing_coefficients(coefficient_1, coefficient_2):
         factor_1 = factor_2
     else:
         factor_1 = factor_2 * new_coefficient_2 / increased_coefficient_2
-    new_coefficient_1 = min(1 - coefficient_2, coefficient_1 * factor_1)
+    new_coefficient_1 = min(1 - new_coefficient_2, coefficient_1 * factor_1)
 
     return new_coefficient_1, new_coefficient_2
 
