@@ -188,7 +188,8 @@ class Tracker(ParticleTracker):
 
     relativistic_beta_threshold: `float`, optional
         The threshold fraction of the speed of light, which once exceeded, will
-        trigger the simulation to switch to a relativistic Boris push.
+        trigger the simulation to switch to a relativistic Boris push. The
+        default value for this is `0.01` (or 1% of the speed of light.)
 
     verbose : bool, optional
         If `True`, updates on the status of the program will be printed
