@@ -147,7 +147,12 @@ def test_decrease_mixing_coefficients():
         "expected_new_coefficient_1",
         "expected_new_coefficient_2",
     ),
-    [(0.1, 0.1, 0.1111, 0.1111), (0.9, 0.05, 0.95, 0.05555), (0.1, 0.8, 0.0875, 0.7)],
+    [
+        (0.1, 0.1, 0.1111, 0.1111),
+        (0.9, 0.05, 0.94445, 0.05555),
+        (0.1, 0.8, 0.0875, 0.7),
+        (1.0, 0.0, 1.0, 0.0),
+    ],
 )
 def test_increase_mixing_coefficients(
     coefficient_1, coefficient_2, expected_new_coefficient_1, expected_new_coefficient_2

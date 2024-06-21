@@ -105,10 +105,10 @@ def increase_mixing_coefficients(coefficient_1, coefficient_2):
     # QT2 in code.
     new_coefficient_2 = min(0.7, increased_coefficient_2)
     if increased_coefficient_2 == 0:
-        factor_1 = factor_2
+        new_coefficient_1 = 1 - new_coefficient_2
     else:
         factor_1 = factor_2 * new_coefficient_2 / increased_coefficient_2
-    new_coefficient_1 = min(1 - new_coefficient_2, coefficient_1 * factor_1)
+        new_coefficient_1 = min(1 - new_coefficient_2, coefficient_1 * factor_1)
 
     return new_coefficient_1, new_coefficient_2
 
