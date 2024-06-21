@@ -204,6 +204,7 @@ def test_estimate_num_iterations_decaying_diverging_points():
         [[1, np.log(2), 10], 0.1 * 2**-30, 9],
         [[1, np.log(2), 1], 2**-25, 4],
         [[1, np.log(1.1), 1], 1.1**-100, 79],
+        [[1, 2, 0], 4**-10, np.inf],
     ],
 )
 def test_estimate_num_iterations_decaying_converging_points(
