@@ -12,7 +12,7 @@ from scipy.optimize import fsolve
 
 from plasmapy.formulary.frequencies import gyrofrequency
 from plasmapy.formulary.lengths import gyroradius
-from plasmapy.particles import CustomParticle
+from plasmapy.particles import CustomParticle, Particle
 from plasmapy.plasma import Plasma
 from plasmapy.plasma.grids import CartesianGrid
 from plasmapy.simulation.particle_tracker.particle_tracker import ParticleTracker
@@ -514,23 +514,42 @@ def construct_field(
 
 
 @pytest.mark.parametrize(
-    "regime",
+    ("regime", "particle"),
     [
-        0.01,
-        0.5,
-        0.99,
+        (0.01, Particle("p+")),
+        (0.01, Particle("e-")),
+        (0.5, Particle("p+")),
+        (0.5, Particle("e-")),
+        (0.9, Particle("p+")),
+        (0.9, Particle("e-")),
     ],
 )
-def test_Boris_integrator_fitting(regime):
-    B_0 = 10 * u.T
-    B_dir = np.asarray([0, 1, 0])
+def test_Boris_integrator_fitting(regime, particle):
+    """
+    Fit the results of the (relativistic) Boris integrator using
+    relativistic models developed in https://www.sciencedirect.com/science/article/pii/S163107211400148X
+    """
 
-    E_0 = (regime * const.c.si.value * B_0.to(u.T).value) * u.V / u.m
+    N_PERIODS_RECORDED = 5
+    B_0 = 10 * u.T
+    E_0 = regime * const.c * B_0
+    B_dir = np.asarray([0, 1, 0])
     E_dir = np.asarray([0, 0, -1])
 
-    L = 20 * u.m
-    fields = CartesianGrid(-L, L)
+    q = particle.charge
+    m = particle.mass
+    vd = (E_0 / B_0).to(u.m / u.s)
+    ν = q * np.sqrt((const.c.si * B_0) ** 2 - E_0**2) / (m * const.c.si)
+    γd = 1 / np.sqrt(1 - vd**2 / const.c.si**2)
 
+    # Convert period in proper time to the time elapsed in the laboratory frame
+    proper_period = np.abs(2 * np.pi / ν).to(
+        u.s, equivalencies=u.dimensionless_angles()
+    )
+    period = -t_opt(proper_period.si.value, 0, vd, γd, ν) * u.s
+
+    L = vd * period * (N_PERIODS_RECORDED + 1)
+    fields = CartesianGrid(-L, L)
     E_x, E_y, E_z = construct_field(fields, E_0, E_dir)
     B_x, B_y, B_z = construct_field(fields, B_0, B_dir)
     fields.add_quantities(
@@ -542,24 +561,27 @@ def test_Boris_integrator_fitting(regime):
         B_z=B_z,
     )
 
-    termination_condition = TimeElapsedTerminationCondition(500 * u.ns)
-
     """
-    ----------
+    -----------------------
     Simulation
-    ----------
+    -----------------------
     """
-    save_routine = IntervalSaveRoutine(0.1 * u.ns)
+    termination_condition = TimeElapsedTerminationCondition(N_PERIODS_RECORDED * period)
+
+    save_routine = IntervalSaveRoutine(period / 10)
 
     simulation = ParticleTracker(
         grids=fields,
         save_routine=save_routine,
         termination_condition=termination_condition,
     )
+
     simulation.load_particles(
         x=[np.zeros(3)] * u.m,
         v=[np.zeros(3)] * u.m / u.s,
+        particle=particle,
     )
+
     simulation.run()
 
     """
@@ -568,8 +590,36 @@ def test_Boris_integrator_fitting(regime):
     --------------
     """
     relativistic_theory_x, relativistic_theory_z = ExB_trajectory(
-        save_routine.results["time"][:], E_0, B_0, nonrel=False
+        save_routine.results["time"][:],
+        E_0,
+        B_0,
+        q=particle.charge,
+        m=particle.mass,
     )
+
+    # Trajectory debug
+    """
+    import matplotlib.pyplot as plt
+
+    ax = plt.gca()
+    plt.title(f"Regime={regime}")
+    plt.xlabel("Time (ns)")
+    plt.ylabel("Drift Component of Position (m)")
+
+    plt.plot(
+        save_routine.results["time"][:].to(u.ns).value,
+        relativistic_theory_x,
+        label="relativistic theory",
+    )
+    plt.plot(
+        save_routine.results["time"][:].to(u.ns).value,
+        save_routine.results["x"][:, 0, 0],
+        label="simulation",
+    )
+
+    ax.legend()
+    plt.show()
+    """
 
     assert np.isclose(
         relativistic_theory_x,
