@@ -13,13 +13,26 @@ from urllib.parse import urljoin
 
 import requests
 
-__all__ = ["Downloader"]
+__all__ = ["_API_CONNECTION_ESTABLISHED", "Downloader"]
 
+_API_CONNECTION_ESTABLISHED = False
 _IS_CI = "GH_TOKEN" in os.environ
 
 
 # TODO: use a config file variable to allow users to set a location
 # for the data download folder?
+
+try:
+    response = requests.get("https://api.github.com/", timeout=10)
+
+    _API_CONNECTION_ESTABLISHED = response.status_code == 200
+except (
+    requests.exceptions.ConnectionError,
+    requests.exceptions.ReadTimeout,
+) as e:  # coverage: ignore
+    # TODO: logging library when??
+    print(f"Failed to connect to GitHub API:\n{e}")  # noqa: T201
+    _API_CONNECTION_ESTABLISHED = False
 
 
 class Downloader:

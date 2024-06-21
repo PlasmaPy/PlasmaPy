@@ -62,7 +62,7 @@ dependencies = [
   "matplotlib >= 3.5.1",
   "mpmath >= 1.2.1",
   "numba >= 0.57.0",
-  "numpy >= 1.23.0",
+  "numpy >= 1.23.0, < 2.0.0",
   "packaging >= 22.0",
   "pandas >= 1.4.0",
   "requests >= 2.28.0",
@@ -246,6 +246,7 @@ gud,
 hax,
 hist,
 hve,
+inpt,
 nd,
 noo,
 nwo,
@@ -253,6 +254,7 @@ ot,
 recuse,
 ro,
 te,
+tru,
 ue,
 ue,
 windo"""
@@ -406,7 +408,6 @@ ignore = [
   "W291", # trailing-whitespace (handled by formatter)
 ]
 dummy-variable-rgx = "Z|mass_numb|request|event"
-ignore-init-module-imports = true
 
 [tool.ruff.lint.flake8-annotations]
 allow-star-arg-any = true
