@@ -592,7 +592,9 @@ class ParticleTracker:
         if Bmag == 0:
             gyroperiod = np.inf
         else:
-            gyroperiod = 2 * np.pi * self.m / (self.q * np.max(Bmag))
+            gyroperiod = np.abs(
+                2 * np.pi * self.m / (self.q * np.max(Bmag))
+            )  # Account for negative charges!
 
         # Subdivide the gyroperiod into a provided number of steps
         # Use the result as the candidate associated with gyration in B field
@@ -629,8 +631,6 @@ class ParticleTracker:
         all_particles[~self._tracked_particle_mask] = False
 
         return all_particles
-
-    _relativistic_warning_raised = False
 
     def _push(self) -> None:
         r"""
@@ -737,6 +737,8 @@ class ParticleTracker:
             self.time += dt
 
         # Update the tracked particles using the integrator specified at instantiation
+        # TODO: implement "tentative" x and v to prevent speeds faster than light
+        #  from occurring over one step. Possibly based on field strengths?
         self.x[tracked_mask], self.v[tracked_mask] = self._integrator["definition"](
             pos_tracked, vel_tracked, B, E, self.q, self.m, dt, inplace=False
         )
