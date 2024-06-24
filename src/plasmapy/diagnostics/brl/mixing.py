@@ -402,6 +402,48 @@ def determine_convergence(
     return converged
 
 
+def check_accuracy_for_zero_temperature_repelled_particles(
+    coefficient_1,
+    coefficient_2,
+    all_found_currents,
+    num_checks_since_coefficient_change,
+    relative_accuracy,
+    coefficients_previously_decreased,
+):
+    """Check if the current to the probe is sufficiently accurate for zero temperature repelled particles.
+
+    Notes
+    -----
+    This is lines 281, 282, and 283 of the `ADJUST` code on page 16.
+    """
+    converged = determine_convergence_zero_temperature_repelled_particles(
+        all_found_currents,
+        relative_accuracy,
+    )
+    if not converged:
+        logging.info("Current to the probe is not sufficiently accurate.")
+        return (
+            coefficient_1,
+            coefficient_2,
+            False,
+            num_checks_since_coefficient_change + 1,
+            coefficients_previously_decreased,
+        )
+    else:
+        estimated_final_current = (all_found_currents[-1] + all_found_currents[-2]) / 2
+        logging.info(
+            "Current to the probe is sufficiently accurate. Ending iterations. Estimated final current: %f",
+            estimated_final_current,
+        )
+        return (
+            coefficient_1,
+            coefficient_2,
+            True,
+            num_checks_since_coefficient_change + 1,
+            coefficients_previously_decreased,
+        )
+
+
 def determine_coefficients(  # noqa: C901 PLR0911 PLR0912
     coefficient_1,
     coefficient_2,
@@ -458,7 +500,7 @@ def determine_coefficients(  # noqa: C901 PLR0911 PLR0912
     -----
     This runs very similar to the `ADJUST` code of 15 of the thesis.
     The size of `all_found_currents` is `KEND`, `coefficient_1` is `QT1`, `coefficient_2` is
-    `QT2`, `control_level` is `KWIT`, and `num_no_oscillation_checks` is `MEW`.
+    `QT2`, `control_level` is `KWIT`, `num_no_oscillation_checks` is `MEW`, and `coefficients_previously_decreased` is `MAD`.
     """
     if control_level == 1:
         return (
@@ -504,12 +546,48 @@ def determine_coefficients(  # noqa: C901 PLR0911 PLR0912
 
     # Line 132.
     if zero_temperature_repelled_particles:
-        converged = determine_convergence_zero_temperature_repelled_particles(
+        return check_accuracy_for_zero_temperature_repelled_particles(
+            coefficient_1,
+            coefficient_2,
             all_found_currents,
+            num_checks_since_coefficient_change,
             relative_accuracy,
+            coefficients_previously_decreased,
         )
-        if not converged:
-            logging.info("Current to the probe is not sufficiently accurate.")
+    # Line 280.
+    elif num_checks_since_coefficient_change < 2:
+        logging.info(
+            "Not checking for slow oscillation damping since `num_checks_since_coefficient_change` is less than 2."
+        )
+        return (
+            coefficient_1,
+            coefficient_2,
+            False,
+            num_checks_since_coefficient_change + 1,
+            coefficients_previously_decreased,
+        )
+
+    (
+        converging,
+        num_iterations,
+        estimated_final_current,
+    ) = estimate_num_iterations_decaying(all_found_currents, relative_accuracy)
+    if not converging:
+        logging.info("Current to probe is not converging.")
+        return (
+            coefficient_1,
+            coefficient_2,
+            False,
+            num_checks_since_coefficient_change + 1,
+            coefficients_previously_decreased,
+        )
+    elif num_iterations > 40:
+        # Lines 141 and 28.
+        if control_level <= 3 or coefficients_previously_decreased:
+            logging.info(
+                "Convergence is too slow (iterations remaining = %.0f). Not increasing coefficients because either the `control_level` is not high enough or the coefficients were previously decreased.",
+                num_iterations,
+            )
             return (
                 coefficient_1,
                 coefficient_2,
@@ -518,126 +596,75 @@ def determine_coefficients(  # noqa: C901 PLR0911 PLR0912
                 coefficients_previously_decreased,
             )
         else:
-            estimated_final_current = (
-                all_found_currents[-1] + all_found_currents[-2]
-            ) / 2
             logging.info(
-                "Current to the probe is sufficiently accurate. Ending iterations. Estimated final current: %f",
-                estimated_final_current,
-            )
-            return (
-                coefficient_1,
-                coefficient_2,
-                True,
-                num_checks_since_coefficient_change + 1,
-                coefficients_previously_decreased,
-            )
-    else:
-        # Line 280.
-        if num_checks_since_coefficient_change < 2:
-            logging.info(
-                "Not checking for slow oscillation damping since `num_checks_since_coefficient_change` is less than 2."
-            )
-            return (
-                coefficient_1,
-                coefficient_2,
-                False,
-                num_checks_since_coefficient_change + 1,
-                coefficients_previously_decreased,
-            )
-
-        (
-            converging,
-            num_iterations,
-            estimated_final_current,
-        ) = estimate_num_iterations_decaying(all_found_currents, relative_accuracy)
-        if not converging:
-            logging.info("Current to probe is not converging.")
-            return (
-                coefficient_1,
-                coefficient_2,
-                False,
-                num_checks_since_coefficient_change + 1,
-                coefficients_previously_decreased,
-            )
-        elif num_iterations > 40:
-            # Lines 141 and 28.
-            if control_level <= 3 or coefficients_previously_decreased:
-                logging.info(
-                    "Convergence is too slow (iterations remaining = %.0f). Not increasing coefficients because either the `control_level` is not high enough or the coefficients were previously decreased.",
-                    num_iterations,
-                )
-                return (
-                    coefficient_1,
-                    coefficient_2,
-                    False,
-                    num_checks_since_coefficient_change + 1,
-                    coefficients_previously_decreased,
-                )
-            else:
-                logging.info(
-                    "Convergence is too slow (if coefficient left unchanged, iterations remaining = %.0f). Increasing mixing coefficients.",
-                    num_iterations,
-                )
-                new_coefficient_1, new_coefficient_2 = increase_mixing_coefficients(
-                    coefficient_1, coefficient_2
-                )
-                return new_coefficient_1, new_coefficient_2, False, 0, True
-
-        has_converged = determine_convergence(
-            all_found_currents,
-            relative_accuracy,
-            estimated_final_current,
-            new_net_charge_density,
-            old_net_charge_density,
-            x,
-        )
-
-        if has_converged:
-            logging.info("Current to the probe is sufficiently accurate.")
-            return (
-                coefficient_1,
-                coefficient_2,
-                True,
-                num_checks_since_coefficient_change + 1,
-                coefficients_previously_decreased,
-            )
-        elif control_level <= 3:
-            logging.info(
-                "Not checking for slow oscillation damping since `control_level` is less than 4 (control_level = %d). Expected number of iterations remaining = %.0f.",
-                control_level,
+                "Convergence is too slow (if coefficient left unchanged, iterations remaining = %.0f). Increasing mixing coefficients.",
                 num_iterations,
             )
-            return (
-                coefficient_1,
-                coefficient_2,
-                False,
-                num_checks_since_coefficient_change + 1,
-                coefficients_previously_decreased,
-            )
-
-        is_oscillating, converges_fast = estimate_num_iterations_oscillating(
-            all_found_currents, relative_accuracy, estimated_final_current
-        )
-
-        if is_oscillating and not converges_fast:
-            logging.info(
-                "Oscillations are damping too slowly (iterations remaining = %.0f). Decreasing mixing coefficients.",
-                num_iterations,
-            )
-            new_coefficient_1, new_coefficient_2 = decrease_mixing_coefficients(
+            new_coefficient_1, new_coefficient_2 = increase_mixing_coefficients(
                 coefficient_1, coefficient_2
             )
-            return new_coefficient_1, new_coefficient_2, False, 0, True
-        else:
-            logging.info(
-                "Oscillations are damping quickly and convergence is in approximately %.0f iterations.",
-                num_iterations,
-            )
             return (
-                coefficient_1,
-                coefficient_2,
+                new_coefficient_1,
+                new_coefficient_2,
                 False,
-                num_checks_since_coefficient_change + 1,
+                0,
                 coefficients_previously_decreased,
             )
+
+    has_converged = determine_convergence(
+        all_found_currents,
+        relative_accuracy,
+        estimated_final_current,
+        new_net_charge_density,
+        old_net_charge_density,
+        x,
+    )
+
+    if has_converged:
+        logging.info("Current to the probe is sufficiently accurate.")
+        return (
+            coefficient_1,
+            coefficient_2,
+            True,
+            num_checks_since_coefficient_change + 1,
+            coefficients_previously_decreased,
+        )
+    elif control_level <= 3:
+        logging.info(
+            "Not checking for slow oscillation damping since `control_level` is less than 4 (control_level = %d). Expected number of iterations remaining = %.0f.",
+            control_level,
+            num_iterations,
+        )
+        return (
+            coefficient_1,
+            coefficient_2,
+            False,
+            num_checks_since_coefficient_change + 1,
+            coefficients_previously_decreased,
+        )
+
+    is_oscillating, converges_fast = estimate_num_iterations_oscillating(
+        all_found_currents, relative_accuracy, estimated_final_current
+    )
+
+    if is_oscillating and not converges_fast:
+        logging.info(
+            "Oscillations are damping too slowly (iterations remaining = %.0f). Decreasing mixing coefficients.",
+            num_iterations,
+        )
+        new_coefficient_1, new_coefficient_2 = decrease_mixing_coefficients(
+            coefficient_1, coefficient_2
+        )
+        return new_coefficient_1, new_coefficient_2, False, 0, True
+    else:
+        logging.info(
+            "Oscillations are damping quickly and convergence is in approximately %.0f iterations.",
+            num_iterations,
+        )
+        return (
+            coefficient_1,
+            coefficient_2,
+            False,
+            num_checks_since_coefficient_change + 1,
+            coefficients_previously_decreased,
+        )
