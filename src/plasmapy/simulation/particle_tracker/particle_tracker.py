@@ -118,9 +118,9 @@ class ParticleTracker:
         save_routine: AbstractSaveRoutine | None = None,
         dt=None,
         dt_range=None,
-        field_weighting="volume averaged",
+        field_weighting: str = "volume averaged",
         req_quantities=None,
-        verbose=True,
+        verbose: bool = True,
     ) -> None:
         # self.grid is the grid object
         self.grids = self._grid_factory(grids)
