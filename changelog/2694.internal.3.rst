@@ -1,0 +1,2 @@
+Deleted :file:`tox.ini`, since all |tox| environments defined therein
+have been converted to |Nox| sessions.
