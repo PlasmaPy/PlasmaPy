@@ -21,11 +21,16 @@ _c = const.c
 class AbstractIntegrator(ABC):
     """Outlines the necessary methods to define a particle integrator."""
 
-    @classmethod
-    @abstractmethod
-    def is_relativistic(cls):  # TODO: Find a less hacky way to do this
-        r"""Does the integrator account for relativistic corrections?"""  # noqa: D400
-        ...
+    is_relativistic = NotImplemented
+
+    def __init_subclass__(cls, **kwargs):
+        super().__init_subclass__(**kwargs)
+
+        if cls.is_relativistic is NotImplemented:
+            raise NotImplementedError(
+                "Please define the `is_relativistic` attribute inside of your integrator "
+                "implementation."
+            )
 
     @staticmethod
     @abstractmethod
@@ -42,11 +47,7 @@ class AbstractIntegrator(ABC):
 class BorisIntegrator(AbstractIntegrator):
     """The explicit Boris pusher."""
 
-    @classmethod
-    @property
-    def is_relativistic(cls):
-        r"""The pusher does not include relativistic corrections."""
-        return False
+    is_relativistic = False
 
     @staticmethod
     def push(x, v, B, E, q, m, dt):
@@ -181,11 +182,7 @@ class BorisIntegrator(AbstractIntegrator):
 class RelativisticBorisIntegrator(AbstractIntegrator):
     """The explicit Boris pusher, including relativistic corrections."""
 
-    @classmethod
-    @property
-    def is_relativistic(cls):
-        r"""The pusher does include relativistic corrections."""
-        return True
+    is_relativistic = True
 
     @staticmethod
     def push(x, v, B, E, q, m, dt):
