@@ -135,7 +135,7 @@ class ParticleTracker:
         # By default, set the integrator to the explicit Boris push
         # The `_push()` method may change this to a relativistic integrator if the energies of the particles
         # exceed the threshold specified by `relativistic_beta_threshold`
-        self._integrator: type[AbstractIntegrator] = BorisIntegrator
+        self._integrator: AbstractIntegrator = BorisIntegrator()
         self._beta_threshold = relativistic_beta_threshold
 
         # self.grid is the grid object
@@ -712,7 +712,7 @@ class ParticleTracker:
             beta = self.vmax / const.c.si.value
 
             if beta >= self._beta_threshold:
-                self._integrator = RelativisticBorisIntegrator
+                self._integrator = RelativisticBorisIntegrator()
 
         # Make sure the time step can be multiplied by a [nparticles, 3] shape field array
         if isinstance(dt, np.ndarray) and dt.size > 1:

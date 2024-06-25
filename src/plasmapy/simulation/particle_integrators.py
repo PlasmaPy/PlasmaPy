@@ -21,16 +21,14 @@ _c = const.c
 class AbstractIntegrator(ABC):
     """Outlines the necessary methods to define a particle integrator."""
 
-    is_relativistic = NotImplemented
-
-    def __init_subclass__(cls, **kwargs):
-        super().__init_subclass__(**kwargs)
-
-        if cls.is_relativistic is NotImplemented:
-            raise NotImplementedError(
-                "Please define the `is_relativistic` attribute inside of your integrator "
-                "implementation."
-            )
+    @property
+    @abstractmethod
+    def is_relativistic(self):
+        r"""
+        Property representing whether an integrator incorporates relativistic
+        corrections.
+        """
+        ...
 
     @staticmethod
     @abstractmethod
@@ -47,7 +45,12 @@ class AbstractIntegrator(ABC):
 class BorisIntegrator(AbstractIntegrator):
     """The explicit Boris pusher."""
 
-    is_relativistic = False
+    @property
+    def is_relativistic(self):
+        r"""
+        The explicit Boris pusher is not relativistic.
+        """
+        return False
 
     @staticmethod
     def push(x, v, B, E, q, m, dt):
@@ -182,7 +185,13 @@ class BorisIntegrator(AbstractIntegrator):
 class RelativisticBorisIntegrator(AbstractIntegrator):
     """The explicit Boris pusher, including relativistic corrections."""
 
-    is_relativistic = True
+    @property
+    def is_relativistic(self):
+        r"""
+        The push implementation of the Boris push algorithm includes relativistic
+        corrections.
+        """
+        return True
 
     @staticmethod
     def push(x, v, B, E, q, m, dt):
