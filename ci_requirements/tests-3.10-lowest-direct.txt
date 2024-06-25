@@ -65,7 +65,7 @@ executing==2.0.1
     # via stack-data
 fastjsonschema==2.20.0
     # via nbformat
-filelock==3.15.1
+filelock==3.15.3
     # via
     #   tox
     #   virtualenv
@@ -151,6 +151,10 @@ mistune==0.8.4
     # via nbconvert
 mpmath==1.2.1
     # via plasmapy (pyproject.toml)
+mypy==1.10.0
+    # via plasmapy (pyproject.toml)
+mypy-extensions==1.0.0
+    # via mypy
 nbclassic==1.1.0
     # via notebook
 nbclient==0.5.13
@@ -339,6 +343,7 @@ tomli==2.0.1
     # via
     #   plasmapy (pyproject.toml)
     #   coverage
+    #   mypy
     #   nox
     #   pyproject-api
     #   pytest
@@ -372,12 +377,14 @@ traitlets==5.14.3
     #   nbformat
     #   notebook
 typing-extensions==4.12.2
-    # via ipython
+    # via
+    #   ipython
+    #   mypy
 uncertainties==3.2.1
     # via lmfit
 urllib3==1.26.19
     # via requests
-uv==0.2.11
+uv==0.2.13
     # via tox-uv
 virtualenv==20.26.2
     # via
