@@ -198,11 +198,11 @@ class RelativisticBorisIntegrator(AbstractIntegrator):
         r"""
         Parameters
         ----------
-        x : `~np.ndarray`
+        x : `~numpy.ndarray`
             particle position at full timestep, in SI (meter) units.
-        v : `~np.ndarray`
+        v : `~numpy.ndarray`
             particle velocity at half timestep, in SI (meter/second) units.
-        B : `~np.ndarray`
+        B : `~numpy.ndarray`
             magnetic field at full timestep, in SI (tesla) units.
         E : float
             electric field at full timestep, in SI (V/m) units.
