@@ -41,7 +41,7 @@ def find_missing_github_usernames(authors: list[str]) -> list[str]:
         ]
 
 
-def main():
+def main() -> None:
     """Check that all authors are included in CITATION.cff."""
     authors = get_pr_authors()
     missing_github_usernames = find_missing_github_usernames(authors)

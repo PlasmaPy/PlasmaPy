@@ -74,7 +74,7 @@ def _coerce_to_cartesian_si(pos):
 
 
 class _SyntheticRadiographySaveRoutine(SaveOnceOnCompletion):
-    def __init__(self, output_directory: Path):
+    def __init__(self, output_directory: Path) -> None:
         super().__init__(output_directory=output_directory)
 
         self._quantities = {
@@ -714,7 +714,7 @@ class Tracker(ParticleTracker):
         x,
         v,
         particle: Particle = Particle("p+"),  # noqa: B008
-    ):
+    ) -> None:
         r"""
         Load arrays of particle positions and velocities.
 
@@ -889,7 +889,7 @@ class Tracker(ParticleTracker):
                 RuntimeWarning,
             )
 
-    def run(self):
+    def run(self) -> None:
         r"""
         Runs a particle-tracing simulation.
         Timesteps are adaptively calculated based on the

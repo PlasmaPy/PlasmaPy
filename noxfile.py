@@ -289,10 +289,25 @@ def linkcheck(session: nox.Session) -> None:
     session.run(*sphinx_commands, *check_hyperlinks, *session.posargs)
 
 
+MYPY_TROUBLESHOOTING = """
+🦺 To learn more about type hints, check out mypy's cheat sheet at:
+  https://mypy.readthedocs.io/en/stable/cheat_sheet_py3.html
+For more details about specific mypy errors, go to:
+  https://mypy.readthedocs.io/en/stable/error_codes.html
+Errors can be ignored on individual lines by adding a comment such as:
+  # type: ignore[assignment]
+where `assignment` is the mypy error code. Please use `# type: ignore`
+only for particularly troublesome mypy errors.
+To automatically add type hints for common patterns, run:
+  nox -s 'autotyping(safe)'
+"""
+
+
 @nox.session(python=maxpython)
 def mypy(session: nox.Session) -> None:
     """Perform static type checking."""
-    mypy_command: tuple[str, ...] = (
+    session.debug(MYPY_TROUBLESHOOTING)
+    MYPY_COMMAND: tuple[str, ...] = (
         "mypy",
         ".",
         "--install-types",
@@ -301,13 +316,14 @@ def mypy(session: nox.Session) -> None:
         "--show-error-code-links",
         "--pretty",
     )
+
     requirements = _get_requirements_filepath(
         category="tests",
         version=session.python,
         resolution="highest",
     )
     session.install("-r", requirements, ".[tests]")
-    session.run(*mypy_command, *session.posargs)
+    session.run(*MYPY_COMMAND, *session.posargs)
 
 
 @nox.session(name="import")
@@ -325,6 +341,49 @@ def build(session: nox.Session) -> None:
     session.run(*build_command, "--sdist")
     session.run(*build_command, "--wheel")
     session.run("twine", "check", "dist/*", *session.posargs)
+
+
+AUTOTYPING_SAFE: tuple[str, ...] = (
+    "--none-return",
+    "--scalar-return",
+    "--annotate-magics",
+)
+AUTOTYPING_RISKY: tuple[str, ...] = (
+    *AUTOTYPING_SAFE,
+    "--bool-param",
+    "--int-param",
+    "--float-param",
+    "--str-param",
+    "--bytes-param",
+    "--annotate-imprecise-magics",
+)
+
+
+@nox.session
+@nox.parametrize(
+    "options",
+    [
+        nox.param(AUTOTYPING_SAFE, id="safe"),
+        nox.param(AUTOTYPING_RISKY, id="aggressive"),
+    ],
+)
+def autotyping(session: nox.Session, options: tuple[str, ...]) -> None:
+    """
+    Automatically add type hints with autotyping.
+
+    The `safe` option generates very few incorrect type hints, and can
+    be used in CI. The `aggressive` option may add type hints that are
+    incorrect, so please perform a careful code review when using this
+    option.
+
+    To check specific files, pass them after a `--`, such as:
+
+        nox -s 'autotyping(safe)' -- noxfile.py
+    """
+    session.install(".[tests,docs]", "autotyping", "typing_extensions")
+    DEFAULT_PATHS = ("src", "tests", "tools", "*.py", ".github", "docs/*.py")
+    paths = session.posargs or DEFAULT_PATHS
+    session.run("python", "-m", "autotyping", *options, *paths)
 
 
 @nox.session

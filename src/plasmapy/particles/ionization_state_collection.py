@@ -225,7 +225,7 @@ class IonizationStateCollection:
                 number_density=self.number_densities[particle][int_charge],
             )
 
-    def __setitem__(self, key, value):  # noqa: C901, PLR0912
+    def __setitem__(self, key, value) -> None:  # noqa: C901, PLR0912
         errmsg = (
             f"Cannot set item for this IonizationStateCollection instance for "
             f"key = {key!r} and value = {value!r}"

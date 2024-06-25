@@ -542,9 +542,6 @@ def create_tracker_obj(**kwargs) -> cpr.Tracker:
     return sim
 
 
-tracker_obj_simulated = create_tracker_obj(field_weighting="nearest neighbor").run()
-
-
 @pytest.mark.slow()
 class TestSyntheticRadiograph:
     """
@@ -948,7 +945,7 @@ def test_multiple_grids2() -> None:
     """
 
 
-def test_radiography_disk_save_routine(tmp_path):
+def test_radiography_disk_save_routine(tmp_path) -> None:
     grid = _test_grid("electrostatic_gaussian_sphere", L=1 * u.mm, num=50)
 
     source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
@@ -961,7 +958,7 @@ def test_radiography_disk_save_routine(tmp_path):
     sim.run()
 
 
-def test_radiography_memory_save_routine():
+def test_radiography_memory_save_routine() -> None:
     grid = _test_grid("electrostatic_gaussian_sphere", L=1 * u.mm, num=50)
 
     source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
