@@ -480,7 +480,7 @@ class ParticleTracker:
         r"""
         Check to ensure the provided quantity string is defined on at least one grid.
 
-        Returns ``True` if the quantity is defined on at least one grid and
+        Returns ``True`` if the quantity is defined on at least one grid and
         ``False`` if none of the grids have defined the specified quantity.
         """
 
