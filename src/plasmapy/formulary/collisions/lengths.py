@@ -114,7 +114,7 @@ def impact_parameter(  # noqa: C901
     species,
     z_mean: float = np.nan,
     V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
-    method="classical",
+    method: str = "classical",
 ):
     r"""
     Impact parameters for classical and quantum Coulomb collision.
@@ -336,7 +336,7 @@ def mean_free_path(
     species,
     z_mean: float = np.nan,
     V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
-    method="classical",
+    method: str = "classical",
 ) -> u.Quantity[u.m]:
     r"""
     Collisional mean free path (m).
