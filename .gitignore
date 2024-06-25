@@ -1,10 +1,10 @@
 # Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
 *$py.class
 *.a
 *.o
+*.py[cod]
 *.so
+__pycache__/
 MANIFEST
 
 # Ignore .c files by default to avoid including generated code. If you want to
@@ -12,23 +12,23 @@ MANIFEST
 *.c
 
 # Distribution / packaging
+*.egg
+*.egg-info/
+.eggs/
+.installed.cfg
 .Python
-env/
 build/
 develop-eggs/
 dist/
 downloads/
 eggs/
-.eggs/
+env/
 lib/
 lib64/
 parts/
 sdist/
 var/
 wheels/
-*.egg-info/
-.installed.cfg
-*.egg
 
 # Downloaded files
 src/plasmapy/utils/data/downloads/
@@ -40,20 +40,20 @@ src/plasmapy/utils/data/downloads/
 *.spec
 
 # Installer logs
-pip-log.txt
 pip-delete-this-directory.txt
+pip-log.txt
 
 # Unit test / coverage reports
-htmlcov/
-.tox/
+*,cover
+.cache
 .coverage
 .coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*,cover
 .hypothesis/
 .pytest_cache
+.tox/
+coverage.xml
+htmlcov/
+nosetests.xml
 
 # Translations
 *.mo
@@ -64,8 +64,8 @@ coverage.xml
 local_settings.py
 
 # Flask stuff:
-instance/
 .webassets-cache
+instance/
 
 # Scrapy stuff:
 .scrapy
@@ -97,8 +97,8 @@ env
 
 # virtualenv
 .venv
-venv/
 ENV/
+venv/
 
 # Spyder project settings
 .spyderproject
@@ -114,8 +114,8 @@ ENV/
 
 # Auxiliary files associated with emacs
 *#
-*~
 *.#
+*~
 .#*
 
 # Auxiliary files associated with vim
@@ -123,7 +123,6 @@ ENV/
 VIRTUAL/
 
 # LaTeX and bibtex auxiliary files
-
 *.aux
 *.bbl
 *.blg
@@ -138,18 +137,18 @@ _version.py
 tags
 
 # Miscellaneous files
-.idea/
-Untitled*
-untitled*
+cython_version.py
 *debuglog*
-.DS_Store
-*/cython_version.py
-.mypy_cache
 .dmypy.json
-dmypy.json
-node_modules
-package-lock.json
-monkeytype.sqlite3
+.DS_Store
+.idea/
+.mypy_cache
 .pyre
 .pytype
 cython_debug
+dmypy.json
+monkeytype.sqlite3
+node_modules
+package-lock.json
+Untitled*
+untitled*
