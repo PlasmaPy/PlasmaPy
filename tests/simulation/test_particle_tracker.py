@@ -513,6 +513,9 @@ def construct_field(
     return f_x, f_y, f_z
 
 
+trajectory_tolerance_parameters = {"atol": 5e-2, "rtol": 0.05}
+
+
 @pytest.mark.parametrize(
     ("regime", "particle"),
     [
@@ -562,9 +565,9 @@ def test_Boris_integrator_fitting(regime, particle):
     )
 
     """
-    -----------------------
+    ----------
     Simulation
-    -----------------------
+    ----------
     """
     termination_condition = TimeElapsedTerminationCondition(N_PERIODS_RECORDED * period)
 
@@ -590,7 +593,7 @@ def test_Boris_integrator_fitting(regime, particle):
     --------------
     """
     relativistic_theory_x, relativistic_theory_z = ExB_trajectory(
-        save_routine.results["time"][:],
+        save_routine.results["time"],
         E_0,
         B_0,
         q=particle.charge,
@@ -625,6 +628,33 @@ def test_Boris_integrator_fitting(regime, particle):
         relativistic_theory_x,
         save_routine.results["x"][:, 0, 0],
         equal_nan=True,
-        atol=5e-2,
-        rtol=0.05,
+        **trajectory_tolerance_parameters,
     ).all()
+
+    # Ensure that non-relativistic simulations have significant deviation
+    # given the set of tolerance parameters
+    if regime >= 0.5:
+        classical_save_routine = IntervalSaveRoutine(period / 10)
+
+        classical_simulation = ParticleTracker(
+            grids=fields,
+            save_routine=classical_save_routine,
+            termination_condition=termination_condition,
+            relativistic_beta_threshold=1.01,  # Disable relativistic push
+        )
+        classical_simulation.load_particles(
+            x=[np.zeros(3)] * u.m,
+            v=[np.zeros(3)] * u.m / u.s,
+            particle=particle,
+        )
+        classical_simulation.run()
+
+        assert (
+            np.isclose(
+                relativistic_theory_x,
+                save_routine.results["x"][:, 0, 0],
+                equal_nan=True,
+                **trajectory_tolerance_parameters,
+            ).sum()
+            > 0
+        )
