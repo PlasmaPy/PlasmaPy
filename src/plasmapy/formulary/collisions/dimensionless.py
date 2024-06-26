@@ -73,7 +73,7 @@ def coupling_parameter(
         thermal velocity is assumed: :math:`μ V^2 \sim 2 k_B T` where
         :math:`μ` is the reduced mass.
 
-    method : {"classical", "quantum"}, default: "classical"
+    method : {``"classical"``, ``"quantum"``}, default: "classical"
         The method by which to compute the coupling parameter: either
         ``"classical"`` or ``"quantum"``. The Notes section of this
         docstring has more information about these two methods.
