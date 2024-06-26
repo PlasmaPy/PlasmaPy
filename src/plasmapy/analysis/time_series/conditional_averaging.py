@@ -106,7 +106,7 @@ class ConditionalEvents:
         upper_threshold=None,
         reference_signal=None,
         length_of_return=None,
-        distance=0,
+        distance: float = 0,
         remove_non_max_peaks: bool = False,
     ) -> None:
         self._check_for_value_errors(

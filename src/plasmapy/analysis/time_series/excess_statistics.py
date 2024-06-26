@@ -112,7 +112,7 @@ class ExcessStatistics:
 
             self.events_per_threshold.update({threshold: self._times_above_threshold})
 
-    def hist(self, bins=32):
+    def hist(self, bins: int = 32):
         """
         Computes the probability density function of the time above each value
         in ``thresholds``.
