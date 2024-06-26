@@ -10,6 +10,7 @@ __all__ = ["Tracker", "synthetic_radiograph"]
 import warnings
 from collections.abc import Iterable
 from pathlib import Path
+from typing import Literal
 
 import astropy.constants as const
 import astropy.units as u
@@ -152,18 +153,16 @@ class Tracker(ParticleTracker):
         If specified, the calculated adaptive time step will be clamped
         between the first and second values.
 
-    field_weighting : str
+    field_weighting : str, default: ``"volume averaged"``
         String that selects the field weighting algorithm used to determine
         what fields are felt by the particles. Options are:
 
-        * 'nearest neighbor':
+        * ``"nearest neighbor"``:
             Particles are assigned the fields on the grid vertex closest to
             them.
-        * 'volume averaged':
+        * ``"volume averaged"``:
             The fields experienced by a particle are a volume-average of the
             eight grid points surrounding them.
-
-        The default is 'volume averaged'.
 
     detector_hdir : `numpy.ndarray`, shape (3), optional
         A unit vector (in Cartesian coordinates) defining the horizontal
@@ -198,7 +197,9 @@ class Tracker(ParticleTracker):
         detector: u.Quantity[u.m],
         dt=None,
         dt_range=None,
-        field_weighting: str = "volume averaged",
+        field_weighting: Literal[
+            "volume averaged", "nearest neighbor"
+        ] = "volume averaged",
         detector_hdir=None,
         output_file: Path | None = None,
         fraction_exited_threshold: float = 0.001,
