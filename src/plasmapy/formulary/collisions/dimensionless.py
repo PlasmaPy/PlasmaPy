@@ -40,7 +40,7 @@ def coupling_parameter(
     Ratio of the Coulomb energy to the kinetic (usually thermal) energy.
 
     Classical plasmas are weakly coupled (:math:`Γ ≪ 1`, where :math:`Γ`
-    is the coupling parameter).  Dense plasmas tend to have significant
+    is the coupling parameter). Dense plasmas tend to have significant
     to strong coupling (:math:`Γ ≥ 1`\ ).  For more details, see the
     notes section below.
 
