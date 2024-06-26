@@ -79,13 +79,20 @@ def test_angular_freq_to_hz_preserves_signature() -> None:
     ):
         return 2 * u.rad / u.s
 
-    def undecorated_func(
-        pos_only, /, arg, *args, required_kwarg, optional_kwarg: int = 2, **kwargs
+    def func_with_expected_signature(
+        pos_only,
+        /,
+        arg,
+        *args,
+        required_kwarg,
+        optional_kwarg: int = 2,
+        to_hz: bool = False,
+        **kwargs,
     ):
         return 2 * u.rad / u.s
 
     original_signature = inspect.signature(test_func)
-    expected_signature = inspect.signature(undecorated_func)
+    expected_signature = inspect.signature(func_with_expected_signature)
 
     assert (
         original_signature == expected_signature
