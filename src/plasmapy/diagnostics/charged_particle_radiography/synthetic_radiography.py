@@ -198,7 +198,7 @@ class Tracker(ParticleTracker):
         detector: u.Quantity[u.m],
         dt=None,
         dt_range=None,
-        field_weighting="volume averaged",
+        field_weighting: str = "volume averaged",
         detector_hdir=None,
         output_file: Path | None = None,
         fraction_exited_threshold: float = 0.001,
@@ -599,7 +599,7 @@ class Tracker(ParticleTracker):
         particle_energy,
         max_theta=None,
         particle: Particle = Particle("p+"),  # noqa: B008
-        distribution="monte-carlo",
+        distribution: str = "monte-carlo",
         random_seed=None,
     ) -> None:
         r"""
