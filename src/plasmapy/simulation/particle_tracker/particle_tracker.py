@@ -12,13 +12,11 @@ import typing
 import warnings
 from collections.abc import Iterable
 
-import astropy.constants as const
 import astropy.units as u
 import numpy as np
 from numpy.typing import NDArray
 from tqdm import tqdm
 
-from plasmapy.formulary.relativity import Lorentz_factor
 from plasmapy.particles import Particle, particle_input
 from plasmapy.particles.atomic import stopping_power
 from plasmapy.plasma.grids import AbstractGrid
@@ -444,41 +442,6 @@ class ParticleTracker:
         self.x = x.to(u.m).value
         self.v = v.to(u.m / u.s).value
 
-    def add_Bethe_stopping(self, I: u.Quantity[u.J]):  # noqa: E741
-        r"""
-        Enable particle stopping described by non-relativistic Bethe formula.
-
-        The electron density associated with each material must be provided in
-        the grid during instantiation.
-
-        Parameters
-        ----------
-        I : `~astropy.units.Quantity`, shape (ngrids)
-            An array of the mean excitation energy values for each of the provided
-            grids.
-
-        Raises
-        ------
-        `ValueError`:
-            The provided mean excitation energy array does not match with the number
-            of grids provided at class instantiation.
-        """
-
-        if len(I) != len(self.grids):
-            raise ValueError(
-                "Please provide an array of length ngrids for the mean excitation energies."
-            )
-
-        self._do_stopping = True
-        self._stopping_routine = "Bethe stopping"
-
-        self._excitation_energies = I.to(u.J).value
-
-        # Require that each grid has a defined electron density,
-        # if a grid does not define n_e, raise an exception
-        for grid in self.grids:
-            grid.require_quantities("n_e", replace_with_zeros=False)
-
     @staticmethod
     def _is_quantity_defined_on_one_grid(
         grids: list[AbstractGrid], quantity: str
@@ -523,7 +486,6 @@ class ParticleTracker:
             grid.require_quantities(["rho"], replace_with_zeros=True)
 
         self._do_stopping = True
-        self._stopping_routine = "NIST stopping"
 
         self._required_quantities.update({"rho"})
         self._stopping_power_interpolators = [
@@ -732,7 +694,7 @@ class ParticleTracker:
 
     # TODO: reduce cognitive complexity of this method
     #  maybe break stopping calculations into a separate method?
-    def _push(self) -> None:  # noqa: C901, PLR0915
+    def _push(self) -> None:
         r"""
         Advance particles using an implementation of the time-centered
         Boris algorithm.
@@ -851,44 +813,20 @@ class ParticleTracker:
         stopping_power = np.zeros((self.nparticles_tracked, 1))
         relevant_kinetic_energy = self._particle_kinetic_energy[tracked_mask] * u.J
 
-        # TODO: split these into separate functions
-        if self._stopping_routine == "NIST stopping":
-            for cs in self._stopping_power_interpolators:
-                interpolation_result = (
-                    cs(relevant_kinetic_energy).to(u.J * u.m**2 / u.kg).value
-                )
-
-                stopping_power += interpolation_result
-
-            # Take the negative stopping power since we want to be removing energy
-            # from the particles
-
-            energy_loss_per_length = np.multiply(
-                stopping_power,
-                summed_field_values["rho"].to(u.kg / u.m**3).value[:, np.newaxis],
+        for cs in self._stopping_power_interpolators:
+            interpolation_result = (
+                cs(relevant_kinetic_energy).to(u.J * u.m**2 / u.kg).value
             )
-        elif self._stopping_routine == "Bethe stopping":
-            z = self.q / const.e.si
-            beta = Lorentz_factor(self.v[tracked_mask] * u.m / u.s)
-            energy_loss_per_length = (
-                4
-                * np.pi
-                / (const.m_e.si * const.c.si)
-                * summed_field_values["n_e"].to(1 / u.m**3).value[:, np.newaxis]
-                * z**2
-                / beta**2
-                * (const.e.si**2 / (4 * np.pi * const.eps0.si)) ** 2
-                * (
-                    np.log(
-                        2
-                        * const.m_e.si
-                        * const.c.si**2
-                        * beta**2
-                        / (self._excitation_energies * (1 - beta**2))
-                    )
-                    - beta**2
-                )
-            )
+
+            stopping_power += interpolation_result
+
+        # Take the negative stopping power since we want to be removing energy
+        # from the particles
+
+        energy_loss_per_length = np.multiply(
+            stopping_power,
+            summed_field_values["rho"].to(u.kg / u.m**3).value[:, np.newaxis],
+        )
 
         dE = -np.multiply(energy_loss_per_length, dx)
 
