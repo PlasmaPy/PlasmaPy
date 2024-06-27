@@ -20,7 +20,7 @@ from tqdm import tqdm
 
 from plasmapy.formulary.relativity import Lorentz_factor
 from plasmapy.particles import Particle, particle_input
-from plasmapy.particles.atomic import _stopping_power_interpolator
+from plasmapy.particles.atomic import stopping_power
 from plasmapy.plasma.grids import AbstractGrid
 from plasmapy.plasma.plasma_base import BasePlasma
 from plasmapy.simulation.particle_integrators import (
@@ -527,7 +527,7 @@ class ParticleTracker:
 
         self._required_quantities.update({"rho"})
         self._stopping_power_interpolators = [
-            _stopping_power_interpolator(self._particle, material)
+            stopping_power(self._particle, material, return_interpolator=True)
             for material in materials
         ]
 

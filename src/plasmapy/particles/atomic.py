@@ -1141,89 +1141,18 @@ def _is_electron(arg: Any) -> bool:
     )
 
 
-def _get_relevant_stopping_information(
-    incident_particle: Particle, material: str, component: str
-) -> tuple[u.Quantity[u.MeV], u.Quantity[u.MeV * u.cm**2 / u.g]]:
-    r"""
-    Retrieve saved energy stopping power data points from the NIST data file.
-    """
-
-    # TODO: figure out a better way of handling the Downloader() here
-    nist_data_path = Downloader().get_file("NIST_STAR.hdf5")
-
-    # Validate particle input. Currently, the only supported particles are protons and electrons.
-    with h5py.File(nist_data_path, "r") as nist_data:
-        if incident_particle == Particle("He-4"):
-            group_name = "helium_ions"
-        elif incident_particle == Particle("e-"):
-            raise NotImplementedError(
-                "Stopping calculations for electrons have not been implemented yet!"
-            )
-        elif incident_particle in ParticleList(["H+", "p+"]):
-            group_name = "protons"
-        else:
-            raise ValueError(
-                "Please pass a valid particle type for stopping power calculations."
-            )
-
-        group_data = nist_data[group_name]
-
-        if material not in group_data:
-            raise ValueError(
-                f"Please pass a valid material string! Material {material} not found in {group_name}."
-            )
-
-        # Energies are not included in the material data. They must be loaded from a separate data set.
-        # To differentiate from "energies" which refers to the user provided energies, we use "baseline_energies"
-        baseline_energies_data = group_data["energy"]
-        material_data = group_data[material]
-
-        if component == "total":
-            relevant_stopping_data = (
-                material_data["electronic_stopping_power"]
-                + material_data["nuclear_stopping_power"]
-            )
-        elif component == "electronic":
-            relevant_stopping_data = material_data["electronic_stopping_power"]
-        elif component == "nuclear":
-            relevant_stopping_data = material_data["nuclear_stopping_power"]
-        else:
-            raise ValueError(
-                f"Please specify one of: total, electronic, or nuclear for component! (Got {component}.)"
-            )
-
-        return (
-            baseline_energies_data * u.MeV,
-            relevant_stopping_data * u.MeV * u.cm**2 / u.g,
-        )
-
-
-def _stopping_power_interpolator(
-    incident_particle: Particle, material: str, component="total"
-) -> Callable[[u.Quantity], u.Quantity]:
-    r"""
-    Instantiate a SciPy interpolator that can be used to interpolate the stopping power of a given energy.
-    """
-
-    baseline_energies_data, relevant_stopping_data = _get_relevant_stopping_information(
-        incident_particle, material, component
-    )
-
-    cs = CubicSpline(
-        x=np.log(baseline_energies_data.value), y=np.log(relevant_stopping_data.value)
-    )
-
-    return lambda x: np.exp(cs(np.log(x.to(u.MeV).value))) * u.MeV * u.cm**2 / u.g
-
-
 @particle_input
 @validate_quantities(energies=u.MeV)
 def stopping_power(
     incident_particle: Particle,
     material: str,
-    energies: u.Quantity | None = None,
+    energies: u.Quantity[u.MeV] | None = None,
+    return_interpolator: bool = False,
     component="total",
-) -> tuple[u.Quantity, u.Quantity]:
+) -> (
+    tuple[u.Quantity, u.Quantity]
+    | Callable[[u.Quantity[u.J]], u.Quantity[u.MeV * u.cm**2 / u.g]]
+):
     """Calculate stopping powers for a provided particle in a provided material.
 
     Parameters
@@ -1256,12 +1185,69 @@ def stopping_power(
 
     """
 
-    if energies is None:
-        return _get_relevant_stopping_information(
-            incident_particle, material, component
+    # TODO: figure out a better way of handling the Downloader() here
+    nist_data_path = Downloader().get_file("NIST_STAR.hdf5")
+
+    # Validate particle input. Currently, the only supported particles are protons and electrons.
+    with h5py.File(nist_data_path, "r") as nist_data:
+        if incident_particle == Particle("He-4"):
+            group_name = "helium_ions"
+        elif incident_particle == Particle("e-"):
+            raise NotImplementedError(
+                "Stopping calculations for electrons have not been implemented yet!"
+            )
+        elif incident_particle == Particle("H+"):
+            group_name = "protons"
+        else:
+            raise ValueError(
+                "Please pass a valid particle type for stopping power calculations."
+            )
+
+        group_data = nist_data[group_name]
+
+        if material not in group_data:
+            raise ValueError(
+                f"Please pass a valid material string! Material {material} not found in {group_name}."
+            )
+
+        # Energies are not included in the material data. They must be loaded from a separate data set.
+        # To differentiate from "energies" which refers to the user provided energies, we use "baseline_energies"
+        baseline_energies_data = group_data["energy"]
+        material_data = group_data[material]
+
+        if component == "total":
+            relevant_stopping_data = (
+                material_data["electronic_stopping_power"]
+                + material_data["nuclear_stopping_power"]
+            )
+        elif component == "electronic":
+            relevant_stopping_data = material_data["electronic_stopping_power"]
+        elif component == "nuclear":
+            relevant_stopping_data = material_data["nuclear_stopping_power"]
+        else:
+            raise ValueError(
+                f"Please specify one of: total, electronic, or nuclear for component! (Got {component}.)"
+            )
+
+        if energies is None:
+            return (
+                baseline_energies_data * u.MeV,
+                relevant_stopping_data * u.MeV * u.cm**2 / u.g,
+            )
+
+        # Interpolate NIST data to the user-provided energy values. Uses log-log scale fed into a cubic spline.
+        cs = CubicSpline(
+            x=np.log(baseline_energies_data), y=np.log(relevant_stopping_data)
         )
 
-    # Interpolate NIST data to the user-provided energy values. Uses log-log scale fed into a cubic spline.
-    cs = _stopping_power_interpolator(incident_particle, material, component)
+        # If it has been indicated that the user wants the interpolator, construct
+        # an anonymous function to handle units and sanitize IO
+        if return_interpolator:
+            return (
+                lambda x: np.exp(cs(np.log(x.to(u.MeV).value))) * u.MeV * u.cm**2 / u.g
+            )
 
-    return energies, cs(energies)
+        return (
+            energies,
+            np.exp(cs(np.log(energies.to("MeV").value))) * u.MeV * u.cm**2 / u.g,
+        )
