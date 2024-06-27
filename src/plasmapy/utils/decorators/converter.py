@@ -101,7 +101,9 @@ def angular_freq_to_hz(fn):
             new_params.append(param)
 
     new_params.append(
-        inspect.Parameter("to_hz", inspect.Parameter.KEYWORD_ONLY, default=False)
+        inspect.Parameter(
+            "to_hz", inspect.Parameter.KEYWORD_ONLY, default=False, annotation=bool
+        )
     )
 
     if var_keyword_param:

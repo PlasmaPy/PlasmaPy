@@ -86,7 +86,7 @@ def test_angular_freq_to_hz_preserves_signature() -> None:
         *args,
         required_kwarg,
         optional_kwarg: int = 2,
-        to_hz=False,  # adding type hint here will break signature comparison below
+        to_hz: bool = False,
         **kwargs,
     ):
         return 2 * u.rad / u.s
