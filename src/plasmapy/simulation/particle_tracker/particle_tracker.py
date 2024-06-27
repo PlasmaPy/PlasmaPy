@@ -421,13 +421,13 @@ class ParticleTracker:
 
         particle : |particle-like|, optional
             Representation of the particle species as either a |Particle| object
-            or a string representation. The default particle is protons.
+            or a string representation. The default species are protons.
         """
         # Raise an error if the run method has already been called.
         self._enforce_order()
 
-        # TODO: it is an assumption that there exists only one species of particles
-        # is this a reasonable assumption?
+        # TODO: it is an assumption that there exists only one specie of particles
+        #  is this a reasonable assumption?
         self.q = particle.charge.to(u.C).value
         self.m = particle.mass.to(u.kg).value
         self._particle = particle
