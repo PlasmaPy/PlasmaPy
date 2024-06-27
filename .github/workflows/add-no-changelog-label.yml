@@ -5,7 +5,7 @@ on:
     types: [opened, synchronize, reopened, edited, labeled, unlabeled]
 
 jobs:
-  no-changelog:
+  add-no-changelog-label:
     name: Add no changelog label
     runs-on: ubuntu-latest
     permissions:
@@ -51,6 +51,7 @@ jobs:
   changelog-checker:
     name: Validate towncrier changelog entry
     runs-on: ubuntu-latest
+    needs: add-no-changelog-label
     steps:
     - uses: scientific-python/action-towncrier-changelog@v1
       env:
