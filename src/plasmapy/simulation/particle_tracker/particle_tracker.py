@@ -23,7 +23,11 @@ from plasmapy.particles import Particle, particle_input
 from plasmapy.particles.atomic import _stopping_power_interpolator
 from plasmapy.plasma.grids import AbstractGrid
 from plasmapy.plasma.plasma_base import BasePlasma
-from plasmapy.simulation.particle_integrators import boris_push
+from plasmapy.simulation.particle_integrators import (
+    AbstractIntegrator,
+    BorisIntegrator,
+    RelativisticBorisIntegrator,
+)
 from plasmapy.simulation.particle_tracker.save_routines import (
     AbstractSaveRoutine,
     DoNotSaveSaveRoutine,
@@ -81,6 +85,10 @@ class ParticleTracker:
         If specified, the calculated adaptive time step will be clamped
         between the first and second values.
 
+    relativistic_beta_threshold: `float`, optional
+        The threshold fraction of the speed of light, which once exceeded, will
+        trigger the simulation to switch to a relativistic Boris push.
+
     field_weighting : str
         String that selects the field weighting algorithm used to determine
         what fields are felt by the particles. Options are:
@@ -122,10 +130,17 @@ class ParticleTracker:
         save_routine: AbstractSaveRoutine | None = None,
         dt=None,
         dt_range=None,
+        relativistic_beta_threshold=0.01,
         field_weighting="volume averaged",
         req_quantities=None,
         verbose=True,
     ) -> None:
+        # By default, set the integrator to the explicit Boris push
+        # The `_push()` method may change this to a relativistic integrator if the energies of the particles
+        # exceed the threshold specified by `relativistic_beta_threshold`
+        self._integrator: AbstractIntegrator = BorisIntegrator()
+        self._beta_threshold = relativistic_beta_threshold
+
         # self.grid is the grid object
         self.grids = self._grid_factory(grids)
 
@@ -675,7 +690,9 @@ class ParticleTracker:
         if Bmag == 0:
             gyroperiod = np.inf
         else:
-            gyroperiod = 2 * np.pi * self.m / (self.q * np.max(Bmag))
+            gyroperiod = (
+                2 * np.pi * self.m / (np.abs(self.q) * np.max(Bmag))
+            )  # Account for negative charges!
 
         # Subdivide the gyroperiod into a provided number of steps
         # Use the result as the candidate associated with gyration in B field
@@ -809,8 +826,13 @@ class ParticleTracker:
         else:
             dt = self.dt
 
-        # TODO: Test v/c and implement relativistic Boris push when required
-        # vc = np.max(v)/_c
+        # Check if the beta threshold has been achieved if the simulation is not
+        # already using the relativistic integrator
+        if not self._integrator.is_relativistic:
+            beta = self.vmax / const.c.si.value
+
+            if beta >= self._beta_threshold:
+                self._integrator = RelativisticBorisIntegrator()
 
         # Make sure the time step can be multiplied by a [nparticles, 3] shape field array
         if isinstance(dt, np.ndarray) and dt.size > 1:
@@ -821,8 +843,11 @@ class ParticleTracker:
         else:
             self.time += dt
 
-        self.x[tracked_mask], self.v[tracked_mask] = boris_push(
-            pos_tracked, vel_tracked, B, E, self.q, self.m, dt, inplace=False
+        # Update the tracked particles using the integrator specified at instantiation
+        # TODO: implement "tentative" x and v to prevent speeds faster than light
+        #  from occurring over one step. Possibly based on field strengths?
+        self.x[tracked_mask], self.v[tracked_mask] = self._integrator.push(
+            pos_tracked, vel_tracked, B, E, self.q, self.m, dt
         )
 
         self.dt = dt
