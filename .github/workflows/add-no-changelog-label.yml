@@ -4,6 +4,10 @@ on:
   pull_request:
     types: [opened, synchronize, reopened, edited, labeled, unlabeled]
 
+env:
+  CHANGELOG_INSTRUCTIONS: "⚠️ Please add a changelog entry at `changelog/NUMBER.TYPE.rst`, where `NUMBER` is the pull request number and `TYPE` is one of `feature`, `trivial`, `doc`, `internal`, `bugfix`, `breaking`, or `removal`.\n\nMinor change such as typo fixes and hyperlink updates do not need a changelog entry.\n\nFor details, see: https://docs.plasmapy.org/en/latest/contributing/changelog_guide.html#adding-a-changelog-entry"
+
+
 jobs:
   add-no-changelog-label:
     name: Add no changelog label
@@ -57,3 +61,9 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         BOT_USERNAME: changelog-bot
+
+    - name: Print troubleshooting information
+      if: ${{ failure() }}
+      run: |
+        echo -e $CHANGELOG_INSTRUCTIONS
+        exit 1
