@@ -260,22 +260,14 @@ ue,
 ue,
 windo"""
 
-[tool.gilesbot]
-
-[tool.gilesbot.pull_requests]
+[tool.changelog-bot]
+[tool.changelog-bot.towncrier_changelog]
 enabled = true
-
-[tool.gilesbot.towncrier_changelog]
-enabled = true
-changelog_skip_label = "no changelog entry needed"
-help_url = "https://docs.plasmapy.org/en/latest/contributing/changelog_guide.html#adding-a-changelog-entry"
-changelog_missing = "Missing changelog entry (see `changelog/README.rst`)"
-changelog_missing_long = "Please add a changelog entry at `changelog/NUMBER.TYPE.rst`, where `NUMBER` is the pull request number and `TYPE` is one of `feature`, `trivial`, `doc`, `internal`, `bugfix`, `breaking`, or `removal`.\n\nMinor pull requests, such as typo fixes and hyperlink updates, do not need a changelog entry.\n\nFor details, see: https://docs.plasmapy.org/en/latest/contributing/changelog_guide.html#adding-a-changelog-entry"
 verify_pr_number = true
-number_incorrect = "Changelog entry number ≠ PR number (see `changelog/README.rst`)"
-number_incorrect_long = "The changelog entry number does not match this pull request's number.\n\nWhen purposefully editing the changelog entry for a different pull request, set the 'no changelog entry needed' label to ignore this check."
-type_incorrect = "Incorrect changelog type (see `changelog/README.rst`)"
-type_incorrect_long = "The filename of the changelog entry must be of the form `changelog/NUMBER.TYPE.rst` where `TYPE` is one of `feature`, `trivial`, `doc`, `internal`, `bugfix`, `breaking`, or `removal`.\n\nFor details, see: https://docs.plasmapy.org/en/latest/contributing/changelog_guide.html#adding-a-changelog-entry"
+changelog_skip_label = "no changelog entry needed"
+changelog_noop_label = "skip changelog checks"
+whatsnew_label = "needs changelog entry"
+whatsnew_pattern = '''changelog\/\d+\.[a-zA-Z]+(\.\d+)?\.rst'''
 
 [tool.ruff]
 target-version = "py310"
@@ -486,7 +478,7 @@ convention = "numpy"
 package = "plasmapy"
 name = "PlasmaPy"
 filename = "CHANGELOG.rst"
-directory = "changelog/"
+directory = "changelog"
 title_format = "{name} v{version} ({project_date})"
 issue_format = ":pr:`{issue}`" # Despite the name mismatch, we use this for linking to PRs
 wrap = true
