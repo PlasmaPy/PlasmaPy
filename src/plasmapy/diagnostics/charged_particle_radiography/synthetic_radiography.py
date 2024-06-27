@@ -184,7 +184,12 @@ class Tracker(ParticleTracker):
     fraction_exited_threshold : float, optional
         The fraction of particles that must leave the grids to terminate the
         simulation. This does not include particles that have never entered
-        the grids.
+        the grids. By default, this is set to ``0.001`` (or 0.1%).
+
+    relativistic_beta_threshold: `float`, optional
+        The threshold fraction of the speed of light, which once exceeded, will
+        trigger the simulation to switch to a relativistic Boris push. The
+        default value for this is ``0.01`` (or 1% of the speed of light.)
 
     verbose : bool, optional
         If `True`, updates on the status of the program will be printed
@@ -202,6 +207,7 @@ class Tracker(ParticleTracker):
         detector_hdir=None,
         output_file: Path | None = None,
         fraction_exited_threshold: float = 0.001,
+        relativistic_beta_threshold=0.01,
         verbose: bool = True,
     ) -> None:
         # The synthetic radiography class handles logging, so we can disable logging for the particle tracker
@@ -224,6 +230,7 @@ class Tracker(ParticleTracker):
             dt=dt,
             dt_range=dt_range,
             field_weighting=field_weighting,
+            relativistic_beta_threshold=relativistic_beta_threshold,
             verbose=False,
         )
 
