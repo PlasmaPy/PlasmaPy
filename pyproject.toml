@@ -267,7 +267,7 @@ verify_pr_number = true
 changelog_skip_label = "no changelog entry needed"
 changelog_noop_label = "skip changelog checks"
 whatsnew_label = "needs changelog entry"
-whatsnew_pattern = '''changelog\/\d+\.\d+\.rst'''
+whatsnew_pattern = '''changelog\/\d+\.[a-zA-Z]+(\.\d+)?\.rst'''
 
 [tool.ruff]
 target-version = "py310"
@@ -478,7 +478,7 @@ convention = "numpy"
 package = "plasmapy"
 name = "PlasmaPy"
 filename = "CHANGELOG.rst"
-directory = "changelog/"
+directory = "changelog"
 title_format = "{name} v{version} ({project_date})"
 issue_format = ":pr:`{issue}`" # Despite the name mismatch, we use this for linking to PRs
 wrap = true
