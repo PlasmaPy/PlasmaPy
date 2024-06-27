@@ -329,8 +329,8 @@ def Spitzer_resistivity(
     >>> Spitzer_resistivity(T, n, species, V=1e6 * u.m / u.s)  # doctest: +SKIP
     <Quantity 0.000324... Ohm m>
     >>> T_eV = 86.173 * u.eV
-    >>> T_K = (T_eV).to("K", equivalencies = u.temperature_energy())
-    >>> Spitzer_resistivity(T_K,n,species)
+    >>> T_K = (T_eV).to("K", equivalencies=u.temperature_energy())
+    >>> Spitzer_resistivity(T_K, n, species)
     """
     # collisional frequency
     freq = frequencies.collision_frequency(
