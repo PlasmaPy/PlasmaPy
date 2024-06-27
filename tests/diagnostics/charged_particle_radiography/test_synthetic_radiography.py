@@ -1017,6 +1017,7 @@ def test_NIST_particle_stopping(
     )
     sim.create_particles(1e5, proton_energy, max_theta=np.pi / 15 * u.rad)
     sim.add_stopping(["ALUMINUM"])
+    sim.setup_adaptive_time_step()
 
     sim.run()
 
