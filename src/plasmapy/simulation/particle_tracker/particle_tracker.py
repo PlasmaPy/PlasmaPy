@@ -728,7 +728,7 @@ class ParticleTracker:
         """
 
         # TODO: how should the relativistic case be handled?
-        return 0.5 * self.m * np.square(np.linalg.norm(self.v, axis=-1))
+        return 0.5 * self.m * np.square(np.linalg.norm(self.v, axis=-1, keepdims=True))
 
     # TODO: reduce cognitive complexity of this method
     #  maybe break stopping calculations into a separate method?
@@ -844,14 +844,12 @@ class ParticleTracker:
 
         # TODO: maybe break out different stopping models into separate functions?
         #  particle_stopping_routines?
-        current_speeds = np.linalg.norm(self.v[tracked_mask], axis=-1)[:, np.newaxis]
+        current_speeds = np.linalg.norm(self.v[tracked_mask], axis=-1, keepdims=True)
         unit_vectors = np.multiply(1 / current_speeds, self.v[tracked_mask])
         dx = np.multiply(current_speeds, dt)
 
         stopping_power = np.zeros((self.nparticles_tracked, 1))
-        relevant_kinetic_energy = (
-            self._particle_kinetic_energy[tracked_mask, np.newaxis] * u.J
-        )
+        relevant_kinetic_energy = self._particle_kinetic_energy[tracked_mask] * u.J
 
         # TODO: split these into separate functions
         if self._stopping_routine == "NIST stopping":
@@ -896,7 +894,7 @@ class ParticleTracker:
 
         # Update the velocities of the particles using the new energy values
         # TODO: again, figure out how to differentiate relativistic and classical cases
-        E = self._particle_kinetic_energy[tracked_mask, np.newaxis] + dE
+        E = self._particle_kinetic_energy[tracked_mask] + dE
         tracked_particles_to_be_stopped_mask = (
             E < 0
         ).flatten()  # A subset of the tracked particles!

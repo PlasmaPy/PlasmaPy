@@ -1196,7 +1196,7 @@ def stopping_power(
             raise NotImplementedError(
                 "Stopping calculations for electrons have not been implemented yet!"
             )
-        elif incident_particle == Particle("H+"):
+        elif incident_particle in [Particle("H+"), Particle("p+")]:
             group_name = "protons"
         else:
             raise ValueError(
@@ -1229,7 +1229,7 @@ def stopping_power(
                 f"Please specify one of: total, electronic, or nuclear for component! (Got {component}.)"
             )
 
-        if energies is None:
+        if energies is None and not return_interpolator:
             return (
                 baseline_energies_data * u.MeV,
                 relevant_stopping_data * u.MeV * u.cm**2 / u.g,
