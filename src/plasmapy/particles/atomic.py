@@ -47,8 +47,6 @@ from plasmapy.utils.decorators import validate_quantities
 
 __all__.sort()
 
-_DEFAULT_DOWNLOADER = Downloader()
-
 
 @particle_input
 def atomic_number(element: ParticleLike) -> int:
@@ -1150,7 +1148,8 @@ def _get_relevant_stopping_information(
     Retrieve saved energy stopping power data points from the NIST data file.
     """
 
-    nist_data_path = _DEFAULT_DOWNLOADER.get_file("NIST_STAR.hdf5")
+    # TODO: figure out a better way of handling the Downloader() here
+    nist_data_path = Downloader().get_file("NIST_STAR.hdf5")
 
     # Validate particle input. Currently, the only supported particles are protons and electrons.
     with h5py.File(nist_data_path, "r") as nist_data:

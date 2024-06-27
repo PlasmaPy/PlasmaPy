@@ -360,7 +360,7 @@ class IonizationState:
 
         return result
 
-    def __setitem__(self, key, value):
+    def __setitem__(self, key, value) -> None:
         raise NotImplementedError(
             "Item assignment of an IonizationState instance is not "
             "allowed because the ionic fractions for different "

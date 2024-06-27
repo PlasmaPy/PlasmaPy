@@ -57,7 +57,7 @@ def memory_interval_save_routine_instantiated():
         ),
     ],
 )
-def test_interval_save_routine(request, stop_condition, save_routine):
+def test_interval_save_routine(request, stop_condition, save_routine) -> None:
     x = [[0, 0, 0]] * u.m
     v = [[0, 1, 0]] * u.m / u.s
     point_particle = CustomParticle(1 * u.kg, 1 * u.C)

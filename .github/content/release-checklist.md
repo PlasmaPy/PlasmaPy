@@ -3,6 +3,7 @@
 [community meeting]: https://www.plasmapy.org/meetings/weekly
 [conda-forge feedstock]: https://github.com/conda-forge/plasmapy-feedstock
 [Create an issue for the release]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/create-release-issue.yml
+[Create a pull request]: https://github.com/PlasmaPy/PlasmaPy/compare
 [Create a release on GitHub]: https://github.com/PlasmaPy/PlasmaPy/releases/new
 [`docs/about/citation.rst`]: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/about/citation.rst
 [`docs/conf.py`]: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/conf.py
@@ -15,6 +16,7 @@
 [mint a release]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/mint-release.yml
 [publish to PyPI]: https://github.com/PlasmaPy/PlasmaPy/blob/main/.github/workflows/publish-to-pypi.yml
 [release checklist]: https://github.com/PlasmaPy/PlasmaPy/tree/main/.github/content/release-checklist.md
+[release history]: https://pypi.org/project/plasmapy/#history
 [tests]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/tests.yml
 [Update pinned requirements]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/update-pinned-reqs.yml
 [weekly tests]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/weekly-tests.yml
@@ -53,11 +55,17 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
 
  - [ ] Begin an upload to [Zenodo] for the new release using the `team@plasmapy.org` login, and reserve a DOI.
  - [ ] Run the GitHub Action to [mint a release]. Specify the version (i.e., `2024.5.0` or `2024.5.0rc1` for a release candidate) and copy/paste the reserved DOI from Zenodo.  This action will update the DOI, build the changelog, and tag the release.
- - [ ] [Create a release on GitHub]. Choose the newly created tag (e.g., `v2024.5.0`) and use it as the title. Select the options to automatically generate release notes and create a discussion for the release. For beta releases or release candidates (e.g., `v2024.5.0rc1`), specify it as a pre-release.
- - [ ] Download a `.tar.gz` file of the tagged release from the [list of tagged versions] and upload it to [Zenodo].
+ - [ ] [Create a release on GitHub].
+   - Choose the newly created tag (e.g., `v2024.5.0`), and use it as the title. (The release will be performed from the tag, so it is not necessary to select the branch.)
+   - Select the option to automatically generate release notes.
+   - Select the option to create a discussion for the release under the _General_ category.
+   - For official releases, make sure the checkbox is selected for _Set as the latest release_. For beta releases or release candidates (e.g., `v2024.5.0rc1`), specify it as a pre-release.
+   - Click on _Publish release_, which will create the GitHub release and trigger the GitHub workflow to [publish to PyPI].
+   - Check the [release history] on PyPI to make sure that the release was successful.
+ - [ ] Download a `.tar.gz` file of the tagged release from the [list of tagged versions] on GitHub, and upload it to [Zenodo].
    - [ ] Update the author list with new authors from the automatically generated release notes or [`CITATION.cff`].
    - [ ] Update the bibliography, and publish the release to Zenodo.
- - [ ] Create and merge a pull request from the release branch back into `main`. <!-- Automate pull request creation? Change it into a commit? -->
+ - [ ] [Create a pull request] to merge the changes from the release back into `main`. Under the box for _compare_, select _Tags_, select the tag for the most recent release (e.g., `v2024.5.0`), and then click on _Create pull request_. <!-- By creating the pull request from the tag, we should not accidentally delete the release branch. --> <!-- Automate pull request creation? Change it into a commit? -->
  - [ ] Fix any problems with the automated pull request to [conda-forge feedstock], if necessary. This step should be automatic, but may take a while.
  - [ ] Update requirements in the [conda-forge feedstock] in `recipe/meta.yaml`, in particular when there is a new version of Python.
 
