@@ -692,23 +692,13 @@ class ParticleTracker:
         # TODO: how should the relativistic case be handled?
         return 0.5 * self.m * np.square(np.linalg.norm(self.v, axis=-1, keepdims=True))
 
-    # TODO: reduce cognitive complexity of this method
-    #  maybe break stopping calculations into a separate method?
-    def _push(self) -> None:
-        r"""
-        Advance particles using an implementation of the time-centered
-        Boris algorithm.
-        """
+    def _interpolate_grid(self):
         # Get a list of positions (input for interpolator)
         tracked_mask = self._tracked_particle_mask
 
         self.iteration_number += 1
 
-        pos_all = self.x
-        pos_tracked = pos_all[tracked_mask]
-
-        vel_all = self.v
-        vel_tracked = vel_all[tracked_mask]
+        pos_tracked = self.x[tracked_mask]
 
         # entered_grid is zero at the end if a particle has never
         # entered any grid
@@ -764,6 +754,9 @@ class ParticleTracker:
         )
         B = np.moveaxis(B, 0, -1)
 
+        return summed_field_values, E, B
+
+    def _update_time(self, summed_field_values):
         # Calculate the adaptive time step from the fields currently experienced
         # by the particles
         # If user sets dt explicitly, that's handled in _adaptive_dt
@@ -781,37 +774,40 @@ class ParticleTracker:
 
         # Make sure the time step can be multiplied by a [nparticles, 3] shape field array
         if isinstance(dt, np.ndarray) and dt.size > 1:
-            dt = dt[tracked_mask, np.newaxis]
+            dt = dt[self._tracked_particle_mask, np.newaxis]
 
             # Increment the tracked particles' time by dt
-            self.time[tracked_mask] += dt
+            self.time[self._tracked_particle_mask] += dt
         else:
             self.time += dt
 
-        # Update the tracked particles using the integrator specified at instantiation
-        # TODO: implement "tentative" x and v to prevent speeds faster than light
-        #  from occurring over one step. Possibly based on field strengths?
+        return dt
 
+    def _update_position(self, B, E):
+        pos_tracked = self.x[self._tracked_particle_mask]
+        vel_tracked = self.v[self._tracked_particle_mask]
         x_results, v_results = self._integrator.push(
-            pos_tracked, vel_tracked, B, E, self.q, self.m, dt
+            pos_tracked, vel_tracked, B, E, self.q, self.m, self.dt
         )
 
-        self.x[tracked_mask], self.v[tracked_mask] = x_results, v_results
+        self.x[self._tracked_particle_mask], self.v[self._tracked_particle_mask] = (
+            x_results,
+            v_results,
+        )
 
-        self.dt = dt
-
-        # Update velocities to reflect stopping
-        if not self._do_stopping:
-            return
-
-        # TODO: maybe break out different stopping models into separate functions?
-        #  particle_stopping_routines?
-        current_speeds = np.linalg.norm(self.v[tracked_mask], axis=-1, keepdims=True)
-        unit_vectors = np.multiply(1 / current_speeds, self.v[tracked_mask])
-        dx = np.multiply(current_speeds, dt)
+    def _update_velocity_stopping(self, summed_field_values):
+        current_speeds = np.linalg.norm(
+            self.v[self._tracked_particle_mask], axis=-1, keepdims=True
+        )
+        velocity_unit_vectors = np.multiply(
+            1 / current_speeds, self.v[self._tracked_particle_mask]
+        )
+        dx = np.multiply(current_speeds, self.dt)
 
         stopping_power = np.zeros((self.nparticles_tracked, 1))
-        relevant_kinetic_energy = self._particle_kinetic_energy[tracked_mask] * u.J
+        relevant_kinetic_energy = (
+            self._particle_kinetic_energy[self._tracked_particle_mask] * u.J
+        )
 
         for cs in self._stopping_power_interpolators:
             interpolation_result = (
@@ -832,23 +828,47 @@ class ParticleTracker:
 
         # Update the velocities of the particles using the new energy values
         # TODO: again, figure out how to differentiate relativistic and classical cases
-        E = self._particle_kinetic_energy[tracked_mask] + dE
+        E = self._particle_kinetic_energy[self._tracked_particle_mask] + dE
+
+        particles_to_be_stopped_mask = np.full(
+            shape=self._tracked_particle_mask.shape, fill_value=False
+        )
         tracked_particles_to_be_stopped_mask = (
             E < 0
         ).flatten()  # A subset of the tracked particles!
-        particles_to_be_stopped_mask = np.full(
-            shape=tracked_mask.shape, fill_value=False
-        )
-
         # Of the tracked particles, stop the ones indicated by the subset mask
-        particles_to_be_stopped_mask[tracked_mask] = (
+        particles_to_be_stopped_mask[self._tracked_particle_mask] = (
             tracked_particles_to_be_stopped_mask
         )
 
         new_speeds = np.sqrt(2 * E / self.m)
-        self.v[tracked_mask] = np.multiply(new_speeds, unit_vectors)
+        self.v[self._tracked_particle_mask] = np.multiply(
+            new_speeds, velocity_unit_vectors
+        )
 
         self._stop_particles(particles_to_be_stopped_mask)
+
+    def _push(self) -> None:
+        r"""
+        Advance particles using an implementation of the time-centered
+        Boris algorithm.
+        """
+
+        # Interpolate fields at particle positions
+        summed_field_values, E, B = self._interpolate_grid()
+
+        # Calculate an appropriate timestep (uniform, synchronized)
+        self.dt = self._update_time(summed_field_values)
+
+        # Update the position of the particles using timestep calculations as well
+        # as the magnitude of E and B fields
+        self._update_position(B, E)
+
+        # Update velocities to reflect stopping
+        if not self._do_stopping:
+            return
+
+        self._update_velocity_stopping(summed_field_values)
 
     @property
     def on_any_grid(self) -> NDArray[np.bool_]:

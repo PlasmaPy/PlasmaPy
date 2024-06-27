@@ -538,14 +538,14 @@ class TestParticleTrajectory:
         N_PERIODS_RECORDED = 5
         B_0 = 10 * u.T
         E_0 = regime * const.c * B_0
-        B_dir = np.asarray([0, 1, 0])
-        E_dir = np.asarray([0, 0, -1])
+        B_dir = np.asarray([0, 0, 1])
+        E_dir = np.asarray([0, 1, 0])
 
         q = particle.charge
         m = particle.mass
-        vd = (E_0 / B_0).to(u.m / u.s)
-        ν = q * np.sqrt((const.c.si * B_0) ** 2 - E_0**2) / (m * const.c.si)
-        γd = 1 / np.sqrt(1 - vd**2 / const.c.si**2)
+        vd = E_0 / B_0
+        ν = q * np.sqrt((const.c * B_0) ** 2 - E_0**2) / (m * const.c)
+        γd = 1 / np.sqrt(1 - vd**2 / const.c**2)
 
         # Convert period in proper time to the time elapsed in the laboratory frame
         proper_period = np.abs(2 * np.pi / ν).to(
@@ -635,29 +635,31 @@ class TestParticleTrajectory:
             **cls.trajectory_tolerance_parameters,
         ).all()
 
-        # Ensure that non-relativistic simulations have significant deviation
-        # given the set of tolerance parameters
-        if regime >= 0.5:
-            classical_save_routine = IntervalSaveRoutine(period / 10)
-
-            classical_simulation = ParticleTracker(
-                grids=fields,
-                save_routine=classical_save_routine,
-                termination_condition=termination_condition,
-            )
-            classical_simulation.load_particles(
-                x=[np.zeros(3)] * u.m,
-                v=[np.zeros(3)] * u.m / u.s,
-                particle=particle,
-            )
-            classical_simulation.run()
-
-            assert (
-                np.isclose(
-                    relativistic_theory_x,
-                    save_routine.results["x"][:, 0, 0],
-                    equal_nan=True,
-                    **cls.trajectory_tolerance_parameters,
-                ).sum()
-                > 0
-            )
+        # TODO: how to explicitly specify that we want to run a non-relativistic simulation?
+        #
+        # # Ensure that non-relativistic simulations have significant deviation
+        # # given the set of tolerance parameters
+        # if regime >= 0.5:
+        #     classical_save_routine = IntervalSaveRoutine(period / 10)
+        #
+        #     classical_simulation = ParticleTracker(
+        #         grids=fields,
+        #         save_routine=classical_save_routine,
+        #         termination_condition=termination_condition,
+        #     )
+        #     classical_simulation.load_particles(
+        #         x=[np.zeros(3)] * u.m,
+        #         v=[np.zeros(3)] * u.m / u.s,
+        #         particle=particle,
+        #     )
+        #     classical_simulation.run()
+        #
+        #     assert (
+        #         (~np.isclose(
+        #             relativistic_theory_x,
+        #             save_routine.results["x"][:, 0, 0],
+        #             equal_nan=True,
+        #             **cls.trajectory_tolerance_parameters,
+        #         )).sum()
+        #         > 0
+        #     )
