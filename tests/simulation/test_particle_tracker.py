@@ -459,7 +459,7 @@ class TestParticleTrajectory:
         )
 
     @classmethod
-    def ExB_trajectory(cls, t, E, B, q=const.e.si, m=const.m_p.si, nonrel=False):
+    def ExB_trajectory(cls, t, E, B, q=const.e.si, m=const.m_p.si):
         """
         Calculates the relativistically-correct ExB drift trajectory for a
         particle starting at x=v=0 at t=0 with E in the x direction and
@@ -479,28 +479,18 @@ class TestParticleTrajectory:
         # Eq. 34
         ν = q * np.sqrt((const.c.si * B) ** 2 - E**2) / (m * const.c.si)
 
-        if nonrel:
-            # Calculate the positions using the non-relativistic expression
-            # Eq. 79
-            a = m * vd / (q * B)
-            x = (a * (ν * t - np.sin(ν.si.value * t.si.value))).to(u.m)
-            z = (a * (np.cos(ν.si.value * t.si.value) - 1)).to(u.m)
-        else:
-            # Eq. 45
-            γd = 1 / np.sqrt(1 - vd**2 / const.c.si**2)
+        # Eq. 45
+        γd = 1 / np.sqrt(1 - vd**2 / const.c.si**2)
 
-            # Numerically invert Eq. 72 to calculate the proper time for each time
-            # t in the lab frame
-            𝜏 = np.zeros(t.size)
-            for i, val in enumerate(t):
-                𝜏[i] = fsolve(cls.t_opt, [val.si.value], args=(val.si.value, vd, γd, ν))
-            𝜏 *= u.s
+        # Numerically invert Eq. 72 to calculate the proper time for each time
+        # t in the lab frame
+        𝜏 = fsolve(cls.t_opt, t.si.value, args=(t.si.value, vd, γd, ν)) * u.s
 
-            # Calculate the positions
-            # Eq. 71
-            a = γd * vd / ν
-            x = (a * γd * (ν * 𝜏 - np.sin(ν.si.value * 𝜏.si.value))).to(u.m)
-            z = (a * (np.cos(ν.si.value * 𝜏.si.value) - 1)).to(u.m)
+        # Calculate the positions
+        # Eq. 71
+        a = γd * vd / ν
+        x = (a * γd * (ν * 𝜏 - np.sin(ν.si.value * 𝜏.si.value))).to(u.m)
+        z = (a * (np.cos(ν.si.value * 𝜏.si.value) - 1)).to(u.m)
 
         return x, z
 
