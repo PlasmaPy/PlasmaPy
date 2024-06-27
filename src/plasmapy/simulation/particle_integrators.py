@@ -235,13 +235,16 @@ class RelativisticBorisIntegrator(AbstractIntegrator):
         .. [1] C. K. Birdsall, A. B. Langdon, "Plasma Physics via Computer
                Simulation", 2004, p. 58-63
         """
-
-        γ = 1 / np.sqrt(1 - (np.linalg.norm(v) / _c.si.value) ** 2)
+        γ = 1 / np.sqrt(
+            1 - (np.linalg.norm(v, axis=1, keepdims=True) / _c.si.value) ** 2
+        )
         uvel = v * γ
 
         uvel_minus = uvel + q * E * dt / (2 * m)
 
-        γ1 = np.sqrt(1 + (np.linalg.norm(uvel_minus) / _c.si.value) ** 2)
+        γ1 = np.sqrt(
+            1 + (np.linalg.norm(uvel_minus, axis=1, keepdims=True) / _c.si.value) ** 2
+        )
 
         # Birdsall has a factor of c incorrect in the definition of t?
         # See this source: https://www.sciencedirect.com/science/article/pii/S163107211400148X
@@ -250,11 +253,13 @@ class RelativisticBorisIntegrator(AbstractIntegrator):
 
         uvel_prime = uvel_minus + np.cross(uvel_minus, t)
         uvel_plus = uvel_minus + np.cross(uvel_prime, s)
-        uvel_new = uvel_plus + +q * E * dt / (2 * m)
+        uvel_new = uvel_plus + q * E * dt / (2 * m)
 
         # You can show that this expression is equivalent to calculating
         # v_new  then calculating γnew using the usual formula
-        γ2 = np.sqrt(1 + (np.linalg.norm(uvel_new) / _c.si.value) ** 2)
+        γ2 = np.sqrt(
+            1 + (np.linalg.norm(uvel_new, axis=1, keepdims=True) / _c.si.value) ** 2
+        )
 
         v = uvel_new / γ2
 

@@ -646,7 +646,6 @@ class TestParticleTrajectory:
                 grids=fields,
                 save_routine=classical_save_routine,
                 termination_condition=termination_condition,
-                relativistic_beta_threshold=1.01,  # Disable relativistic push
             )
             classical_simulation.load_particles(
                 x=[np.zeros(3)] * u.m,

@@ -186,9 +186,7 @@ def run_1D_example(name: str):
     with pytest.warns(
         RuntimeWarning, match="Quantities should go to zero at edges of grid to avoid "
     ):
-        sim = cpr.Tracker(
-            grid, source, detector, relativistic_beta_threshold=1.01, verbose=False
-        )
+        sim = cpr.Tracker(grid, source, detector, verbose=False)
     sim.create_particles(1e4, 3 * u.MeV, max_theta=0.1 * u.deg, random_seed=42)
     sim.run()
 
@@ -227,7 +225,6 @@ def run_mesh_example(
         source,
         detector,
         field_weighting="nearest neighbor",
-        relativistic_beta_threshold=1.01,
         verbose=False,
     )
 
@@ -500,7 +497,6 @@ def test_run_options() -> None:
         detector,
         field_weighting="nearest neighbor",
         dt=1e-12 * u.s,
-        relativistic_beta_threshold=1.01,
         verbose=True,
     )
     sim.create_particles(1e4, 3 * u.MeV, max_theta=89 * u.deg, random_seed=42)
@@ -524,7 +520,6 @@ def test_run_options() -> None:
             detector,
             field_weighting="nearest neighbor",
             dt=1e-12 * u.s,
-            relativistic_beta_threshold=1.01,
             verbose=False,
         )
     sim.create_particles(1e4, 3 * u.MeV, max_theta=0.1 * u.deg, random_seed=42)
@@ -551,7 +546,6 @@ def create_tracker_obj(**kwargs) -> cpr.Tracker:
         source,
         detector,
         verbose=False,
-        relativistic_beta_threshold=1.01,
         **kwargs,
     )
     sim.create_particles(int(1e4), 3 * u.MeV, max_theta=10 * u.deg, random_seed=42)
@@ -756,9 +750,7 @@ def test_gaussian_sphere_analytical_comparison() -> None:
     with pytest.warns(
         RuntimeWarning, match="Quantities should go to zero at edges of grid to avoid "
     ):
-        sim = cpr.Tracker(
-            grid, source, detector, relativistic_beta_threshold=1.01, verbose=False
-        )
+        sim = cpr.Tracker(grid, source, detector, verbose=False)
 
     sim.create_particles(1e3, W * u.eV, max_theta=12 * u.deg, random_seed=42)
     sim.run()
@@ -1029,6 +1021,9 @@ def test_NIST_particle_stopping(
     sim.run()
 
     # Take the median to avoid influence of outliers
+    # TODO: Choose a different geometry for this test to better facilitate this testing
+    #  i.e. particles should be loaded in a planar "collimated" geometry as opposed
+    #  to radiating from point source
     assert np.isclose(
         np.median(sim.x[:, 1]), expected_stopping_distance.to(u.m).value, rtol=0.05
     ).all()
