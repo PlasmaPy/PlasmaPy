@@ -72,6 +72,18 @@ class HarrisSheet:
         ----------
         y : `~astropy.units.Quantity`
            Orthogonal distance from the current sheet center.
+
+        Examples
+        --------
+        >>> import astropy.units as u
+        >>> B0 = 1 * u.T
+        >>> delta = 1 * u.m
+        >>> P0 = 0 * u.Pa
+        >>> hs = HarrisSheet(B0, delta, P0)
+        >>> y = [-2, 0, 2] * u.m
+        >>> hs.magnetic_field(y)
+        <Quantity [-0.96402758007, 0, 0.96402758007] T>
+
         """
         return self.B0 * np.tanh(u.rad * y / self.delta)
 
@@ -88,6 +100,17 @@ class HarrisSheet:
         ----------
         y : `~astropy.units.Quantity`
           Orthogonal distance from the current sheet center.
+
+        Examples
+        --------
+        >>> import astropy.units as u
+        >>> B0 = 1 * u.T
+        >>> delta = 1 * u.m
+        >>> P0 = 0 * u.Pa
+        >>> hs = HarrisSheet(B0, delta, P0)
+        >>> y = [-2, 0, 2] * u.m
+        >>> hs.current_density(y)
+        <Quantity [-56222.1400445, -795774.715459, -56222.1400445] A / m2>
         """
         return (
             -self.B0 / (self.delta * const.mu0) * np.cosh(u.rad * y / self.delta) ** -2
@@ -106,6 +129,17 @@ class HarrisSheet:
         ----------
         y : `~astropy.units.Quantity`
           Orthogonal distance from the current sheet center.
+
+        Examples
+        --------
+        >>> import astropy.units as u
+        >>> B0 = 1 * u.T
+        >>> delta = 1 * u.m
+        >>> P0 = 0 * u.Pa
+        >>> hs = HarrisSheet(B0, delta, P0)
+        >>> y = [-2, 0, 2] * u.m
+        >>> hs.plasma_pressure(y)
+        <Quantity [28111.07, 397887.36, 28111.07] Pa>
         """
         return (
             self.B0**2 / (2 * const.mu0) * (np.cosh(u.rad * y / self.delta) ** -2)
