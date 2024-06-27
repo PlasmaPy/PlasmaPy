@@ -1,8 +1,8 @@
-name: Label PR
+name: Changelog
 
 on:
-  pull_request_target:
-    types: [opened, synchronize, reopened, edited]
+  pull_request:
+    types: [opened, synchronize, reopened, edited, labeled, unlabeled]
 
 jobs:
   no-changelog:
@@ -47,3 +47,12 @@ jobs:
               labels: ['No changelog entry needed'],
             });
           }
+
+  changelog-checker:
+    name: Validate towncrier changelog entry
+    runs-on: ubuntu-latest
+    steps:
+    - uses: scientific-python/action-towncrier-changelog@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        BOT_USERNAME: changelog-bot
