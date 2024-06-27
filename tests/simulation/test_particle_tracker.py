@@ -448,18 +448,20 @@ def test_particle_tracker_stop_particles(request) -> None:
 
 class TestParticleTrajectory:
     @staticmethod
-    def t_opt(𝜏, t, vd, γd, ν):
+    def laboratory_time_case_one(𝜏, vd, γd, ν):
         """
         fsolve optimization function
         Eq. 72 in the Friedman paper
 
         """
-        return t - γd.value**2 / ν.value * (
-            ν.value * 𝜏 - vd.value**2 / const.c.si.value**2 * np.sin(ν.value * 𝜏)
+        return (
+            γd.value**2
+            / ν.value
+            * (ν.value * 𝜏 - vd.value**2 / const.c.si.value**2 * np.sin(ν.value * 𝜏))
         )
 
     @classmethod
-    def ExB_trajectory(cls, t, E, B, q=const.e.si, m=const.m_p.si):
+    def ExB_trajectory_case_one(cls, t, E, B, q=const.e.si, m=const.m_p.si):
         """
         Calculates the relativistically-correct ExB drift trajectory for a
         particle starting at x=v=0 at t=0 with E in the x direction and
@@ -484,7 +486,13 @@ class TestParticleTrajectory:
 
         # Numerically invert Eq. 72 to calculate the proper time for each time
         # t in the lab frame
-        𝜏 = fsolve(cls.t_opt, t.si.value, args=(t.si.value, vd, γd, ν)) * u.s
+        𝜏 = (
+            fsolve(
+                lambda 𝜏: t.si.value - cls.laboratory_time_case_one(𝜏, vd, γd, ν),
+                t.si.value,
+            )
+            * u.s
+        )
 
         # Calculate the positions
         # Eq. 71
@@ -543,7 +551,7 @@ class TestParticleTrajectory:
         proper_period = np.abs(2 * np.pi / ν).to(
             u.s, equivalencies=u.dimensionless_angles()
         )
-        period = -cls.t_opt(proper_period.si.value, 0, vd, γd, ν) * u.s
+        period = cls.laboratory_time_case_one(proper_period.si.value, vd, γd, ν) * u.s
 
         L = vd * period * (N_PERIODS_RECORDED + 1)
         fields = CartesianGrid(-L, L)
@@ -588,7 +596,7 @@ class TestParticleTrajectory:
         Theory Fitting
         --------------
         """
-        relativistic_theory_x, relativistic_theory_z = cls.ExB_trajectory(
+        relativistic_theory_x, relativistic_theory_z = cls.ExB_trajectory_case_one(
             save_routine.results["time"],
             E_0,
             B_0,
