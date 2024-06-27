@@ -82,8 +82,8 @@ class HarrisSheet:
         >>> hs = HarrisSheet(B0, delta, P0)
         >>> y = [-2, 0, 2] * u.m
         >>> hs.magnetic_field(y)
-        <Quantity [-0.96402758007, 0, 0.96402758007] T>     
-        
+        <Quantity [-0.96402758007, 0, 0.96402758007] T>
+
         """
         return self.B0 * np.tanh(u.rad * y / self.delta)
 
