@@ -229,7 +229,7 @@ def Spitzer_resistivity(
     Parameters
     ----------
     T : `~astropy.units.Quantity`
-        Temperature in units of Kelvin.  This should be the
+        Temperature in units of Kelvin or eV.  This should be the
         electron temperature for electron-electron and electron-ion
         collisions, and the ion temperature for ion-ion collisions. An
         example of temperature given in eV can be found below.
