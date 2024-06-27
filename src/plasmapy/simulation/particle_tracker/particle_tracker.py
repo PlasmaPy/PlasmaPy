@@ -817,14 +817,6 @@ class ParticleTracker:
         else:
             dt = self.dt
 
-        # Check if the beta threshold has been achieved if the simulation is not
-        # already using the relativistic integrator
-        # if not self._integrator.is_relativistic:
-        #     beta = self.vmax / const.c.si.value
-        #
-        #     if beta >= self._beta_threshold:
-        #         self._integrator = RelativisticBorisIntegrator()
-
         # Make sure the time step can be multiplied by a [nparticles, 3] shape field array
         if isinstance(dt, np.ndarray) and dt.size > 1:
             dt = dt[tracked_mask, np.newaxis]
