@@ -455,13 +455,18 @@ class TestParticleTrajectory:
 
         """
         return (
-            γd.value**2
-            / ν.value
-            * (ν.value * 𝜏 - vd.value**2 / const.c.si.value**2 * np.sin(ν.value * 𝜏))
+            γd.si.value**2
+            / ν.si.value
+            * (
+                ν.si.value * 𝜏
+                - vd.si.value**2 / const.c.si.value**2 * np.sin(ν.si.value * 𝜏)
+            )
         )
 
     @classmethod
-    def ExB_trajectory_case_one(cls, t, E, B, q=const.e.si, m=const.m_p.si):
+    def ExB_trajectory_case_one(
+        cls, t, E, B, q=const.e.si, m=const.m_p.si, is_relativistic=True
+    ):
         """
         Calculates the relativistically-correct ExB drift trajectory for a
         particle starting at x=v=0 at t=0 with E in the x direction and
@@ -481,24 +486,31 @@ class TestParticleTrajectory:
         # Eq. 34
         ν = q * np.sqrt((const.c.si * B) ** 2 - E**2) / (m * const.c.si)
 
-        # Eq. 45
-        γd = 1 / np.sqrt(1 - vd**2 / const.c.si**2)
+        if is_relativistic:
+            # Eq. 45
+            γd = 1 / np.sqrt(1 - vd**2 / const.c.si**2)
 
-        # Numerically invert Eq. 72 to calculate the proper time for each time
-        # t in the lab frame
-        𝜏 = (
-            fsolve(
-                lambda 𝜏: t.si.value - cls.laboratory_time_case_one(𝜏, vd, γd, ν),
-                t.si.value,
+            # Numerically invert Eq. 72 to calculate the proper time for each time
+            # t in the lab frame
+            𝜏 = (
+                fsolve(
+                    lambda 𝜏: t.si.value - cls.laboratory_time_case_one(𝜏, vd, γd, ν),
+                    t.si.value,
+                )
+                * u.s
             )
-            * u.s
-        )
 
-        # Calculate the positions
-        # Eq. 71
-        a = γd * vd / ν
-        x = (a * γd * (ν * 𝜏 - np.sin(ν.si.value * 𝜏.si.value))).to(u.m)
-        z = (a * (np.cos(ν.si.value * 𝜏.si.value) - 1)).to(u.m)
+            # Calculate the positions
+            # Eq. 71
+            a = γd * vd / ν
+            x = (a * γd * (ν * 𝜏 - np.sin(ν.si.value * 𝜏.si.value))).to(u.m)
+            z = (a * (np.cos(ν.si.value * 𝜏.si.value) - 1)).to(u.m)
+        else:
+            # Calculate the positions using the non-relativistic expression
+            # Eq. 79
+            a = m * vd / (q * B)
+            x = (a * (ν * t - np.sin(ν.si.value * t.si.value))).to(u.m)
+            z = (a * (np.cos(ν.si.value * t.si.value) - 1)).to(u.m)
 
         return x, z
 
@@ -515,7 +527,7 @@ class TestParticleTrajectory:
 
         return f_x, f_y, f_z
 
-    trajectory_tolerance_parameters = {"atol": 5e-2, "rtol": 0.05}
+    trajectory_tolerance_parameters = {"rtol": 0.03}
 
     @classmethod
     @pytest.mark.parametrize(
@@ -628,38 +640,35 @@ class TestParticleTrajectory:
         plt.show()
         """
 
+        # Discard the first five points due to large relative error.
         assert np.isclose(
-            relativistic_theory_x,
-            save_routine.results["x"][:, 0, 0],
+            relativistic_theory_x[5:],
+            save_routine.results["x"][5:, 0, 0],
             equal_nan=True,
-            **cls.trajectory_tolerance_parameters,
+            rtol=0.05,
         ).all()
 
-        # TODO: how to explicitly specify that we want to run a non-relativistic simulation?
-        #
-        # # Ensure that non-relativistic simulations have significant deviation
-        # # given the set of tolerance parameters
-        # if regime >= 0.5:
-        #     classical_save_routine = IntervalSaveRoutine(period / 10)
-        #
-        #     classical_simulation = ParticleTracker(
-        #         grids=fields,
-        #         save_routine=classical_save_routine,
-        #         termination_condition=termination_condition,
-        #     )
-        #     classical_simulation.load_particles(
-        #         x=[np.zeros(3)] * u.m,
-        #         v=[np.zeros(3)] * u.m / u.s,
-        #         particle=particle,
-        #     )
-        #     classical_simulation.run()
-        #
-        #     assert (
-        #         (~np.isclose(
-        #             relativistic_theory_x,
-        #             save_routine.results["x"][:, 0, 0],
-        #             equal_nan=True,
-        #             **cls.trajectory_tolerance_parameters,
-        #         )).sum()
-        #         > 0
-        #     )
+        # Ensure that a non-relativistic analytic solution does not appear to fit
+        # the relativistic trajectory within the defined tolerance parameters.
+        if regime >= 0.5:
+            # Calculate the classical analytic trajectory with all else being equal
+            calculate_theory_x, calculate_theory_z = cls.ExB_trajectory_case_one(
+                save_routine.results["time"],
+                E_0,
+                B_0,
+                q=particle.charge,
+                m=particle.mass,
+                is_relativistic=False,
+            )
+
+            # Calculate the sum of the squares of the residuals for both the classical
+            # and relativistic analytic trajectories as compared against the simulated
+            # trajectory
+            classical_r_squared = np.sum(
+                (save_routine.results["x"][:, 0, 0] - calculate_theory_x) ** 2
+            )
+            relativistic_r_squared = np.sum(
+                (save_routine.results["x"][:, 0, 0] - relativistic_theory_x) ** 2
+            )
+
+            assert classical_r_squared.si.value / relativistic_r_squared.si.value > 100
