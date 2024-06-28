@@ -1149,7 +1149,10 @@ def stopping_power(
     energies: u.Quantity[u.MeV] | None = None,
     return_interpolator: bool = False,
     component: Literal["total", "electronic", "nuclear"] = "total",
-) -> tuple[u.Quantity, u.Quantity] | Callable[[u.Quantity[u.J]], u.Quantity[u.MeV * u.cm**2 / u.g]]:
+) -> (
+    tuple[u.Quantity, u.Quantity]
+    | Callable[[u.Quantity[u.J]], u.Quantity[u.MeV * u.cm**2 / u.g]]
+):
     """
     Calculate stopping powers for a provided particle in a provided
     material.
