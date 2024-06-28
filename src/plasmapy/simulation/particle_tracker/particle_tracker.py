@@ -144,7 +144,9 @@ class ParticleTracker:
     ) -> None:
         # Instantiate the integrator object for use in the _push() method
         self._integrator: AbstractIntegrator = (
-            particle_integrator() or RelativisticBorisIntegrator()
+            RelativisticBorisIntegrator()
+            if not particle_integrator
+            else particle_integrator()
         )
 
         self._raised_relativity_warning = False
