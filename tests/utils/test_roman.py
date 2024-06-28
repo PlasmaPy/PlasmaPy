@@ -138,7 +138,7 @@ ints_and_roman_numerals: list[tuple[int, str]] = [
 ]
 
 exceptions_table: list[
-    tuple[Callable[[Any], Any], int | str | tuple[str, str], type[BaseException]]
+    tuple[Callable[[Any], Any], int | str | tuple[str, str], type]
 ] = [
     (roman.to_roman, "X", TypeError),
     (roman.to_roman, -1, OutOfRangeError),
@@ -168,7 +168,7 @@ def test_to_roman(integer: int, roman_numeral: str) -> None:
 def test_to_roman_exceptions(
     function: Callable[[Any], Any],
     argument: str | int | tuple[str, str],
-    expected_exception: type[BaseException],
+    expected_exception: type,
 ) -> None:
     """
     Test that `~plasmapy.utils.roman` functions raise the correct
