@@ -12,6 +12,7 @@ import typing
 import warnings
 from collections.abc import Iterable
 
+import astropy.constants as const
 import astropy.units as u
 import numpy as np
 from numpy.typing import NDArray
@@ -32,6 +33,7 @@ from plasmapy.simulation.particle_tracker.save_routines import (
 from plasmapy.simulation.particle_tracker.termination_conditions import (
     AbstractTerminationCondition,
 )
+from plasmapy.utils.exceptions import RelativityWarning
 
 
 class ParticleTracker:
@@ -73,6 +75,11 @@ class ParticleTracker:
         time steps of the simulation to save. The default is `~plasmapy.simulation.particle_tracker.save_routines.DoNotSaveSaveRoutine`.
         See `~plasmapy.simulation.particle_tracker.save_routines.AbstractSaveRoutine` for more details.
 
+    particle_integrator : `~plasmapy.simulation.particle_integrators.AbstractParticleIntegrator`, optional
+        An instance of `~plasmapy.simulation.particle_integrators.AbstractParticleIntegrator` that is responsible for implementing the push behavior
+        of the simulation when provided the electric and magnetic fields. The default value is set to `~plasmapy.simulation.particle_integrators.RelativisticBorisIntegrator`.
+        See `~plasmapy.simulation.particle_integrators.AbstractParticleIntegrator` for more information on how to implement custom push routines.
+
     dt : `~astropy.units.Quantity`, optional
         An explicitly set time step in units convertible to seconds.
         Setting this optional keyword overrules the adaptive time step
@@ -106,6 +113,13 @@ class ParticleTracker:
         If true, updates on the status of the program will be printed
         into the standard output while running. The default is True.
 
+    Warns
+    -----
+    `~plasmapy.utils.exceptions.RelativityWarning`
+        The provided integrator does not account for relativistic corrections
+        and particles have reached a non-negligible fraction of the speed of
+        light.
+
     Notes
     -----
     We adopt the convention of ``NaN`` values to represent various states of a particle.
@@ -121,6 +135,7 @@ class ParticleTracker:
         grids: AbstractGrid | Iterable[AbstractGrid],
         termination_condition: AbstractTerminationCondition | None = None,
         save_routine: AbstractSaveRoutine | None = None,
+        particle_integrator: type[AbstractIntegrator] | None = None,
         dt=None,
         dt_range=None,
         field_weighting="volume averaged",
@@ -128,7 +143,11 @@ class ParticleTracker:
         verbose=True,
     ) -> None:
         # Instantiate the integrator object for use in the _push() method
-        self._integrator: AbstractIntegrator = RelativisticBorisIntegrator()
+        self._integrator: AbstractIntegrator = (
+            particle_integrator or RelativisticBorisIntegrator()
+        )
+
+        self._raised_relativity_warning = False
 
         # self.grid is the grid object
         self.grids = self._grid_factory(grids)
@@ -784,6 +803,8 @@ class ParticleTracker:
         return dt
 
     def _update_position(self, B, E):
+        # TODO: should this be generalized to allow for more fields to be
+        #  interpolated and provided to the pusher?
         pos_tracked = self.x[self._tracked_particle_mask]
         vel_tracked = self.v[self._tracked_particle_mask]
         x_results, v_results = self._integrator.push(
@@ -860,9 +881,20 @@ class ParticleTracker:
         # Calculate an appropriate timestep (uniform, synchronized)
         self.dt = self._update_time(summed_field_values)
 
-        # Update the position of the particles using timestep calculations as well
-        # as the magnitude of E and B fields
+        # Update the position and velocities of the particles using timestep
+        # calculations as well as the magnitude of E and B fields
         self._update_position(B, E)
+
+        if not self._integrator.is_relativistic and not self._raised_relativity_warning:
+            beta_max = self.vmax / const.c
+
+            if beta_max >= 0.01:
+                self._raised_relativity_warning = True
+
+                warnings.warn(
+                    f"Particles have reached {beta_max}% of the speed of light. Consider using a relativistic integrator for more accurate results.",
+                    RelativityWarning,
+                )
 
         # Update velocities to reflect stopping
         if not self._do_stopping:
