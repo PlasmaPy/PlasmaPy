@@ -75,10 +75,10 @@ class ParticleTracker:
         time steps of the simulation to save. The default is `~plasmapy.simulation.particle_tracker.save_routines.DoNotSaveSaveRoutine`.
         See `~plasmapy.simulation.particle_tracker.save_routines.AbstractSaveRoutine` for more details.
 
-    particle_integrator : `~plasmapy.simulation.particle_integrators.AbstractParticleIntegrator`, optional
-        An instance of `~plasmapy.simulation.particle_integrators.AbstractParticleIntegrator` that is responsible for implementing the push behavior
+    particle_integrator : `~plasmapy.simulation.particle_integrators.AbstractIntegrator`, optional
+        An instance of `~plasmapy.simulation.particle_integrators.AbstractIntegrator` that is responsible for implementing the push behavior
         of the simulation when provided the electric and magnetic fields. The default value is set to `~plasmapy.simulation.particle_integrators.RelativisticBorisIntegrator`.
-        See `~plasmapy.simulation.particle_integrators.AbstractParticleIntegrator` for more information on how to implement custom push routines.
+        See `~plasmapy.simulation.particle_integrators.AbstractIntegrator` for more information on how to implement custom push routines.
 
     dt : `~astropy.units.Quantity`, optional
         An explicitly set time step in units convertible to seconds.

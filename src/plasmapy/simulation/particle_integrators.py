@@ -36,7 +36,7 @@ class AbstractIntegrator(ABC):
         r"""
         The method for applying a push to the specified ensemble of particles.
 
-        The passed parameters should in general not be `~astropy.Quantity`
+        The passed parameters should in general not be `~astropy.units.Quantity`
         objects, but rather their SI values. Specific user implementations may vary.
         """
         ...
