@@ -24,7 +24,7 @@ __all__ = [
 
 from collections.abc import Callable
 from numbers import Integral
-from typing import Any
+from typing import Any, Literal
 
 import astropy.units as u
 import h5py
@@ -1144,31 +1144,34 @@ def _is_electron(arg: Any) -> bool:
 @particle_input
 @validate_quantities(energies=u.MeV)
 def stopping_power(
-    incident_particle: Particle,
+    incident_particle: ParticleLike,
     material: str,
     energies: u.Quantity[u.MeV] | None = None,
     return_interpolator: bool = False,
-    component="total",
-) -> (
-    tuple[u.Quantity, u.Quantity]
-    | Callable[[u.Quantity[u.J]], u.Quantity[u.MeV * u.cm**2 / u.g]]
-):
-    """Calculate stopping powers for a provided particle in a provided material.
+    component: Literal["total", "electronic", "nuclear"] = "total",
+) -> tuple[u.Quantity, u.Quantity] | Callable[[u.Quantity[u.J]], u.Quantity[u.MeV * u.cm**2 / u.g]]:
+    """
+    Calculate stopping powers for a provided particle in a provided
+    material.
 
     Parameters
     ----------
-    incident_particle : |Particle|
-        The incident particle. Only protons and alpha particles are currently supported.
+    incident_particle : |particle-like|
+        The incident particle. Only protons and alpha particles are
+        currently supported.
 
     material : `str`
-        The material the particle is being stopped in. See notes for details on supported materials.
+        The material the particle is being stopped in. See notes for
+        details on supported materials.
 
     energies : `~astropy.units.Quantity`, default: See notes.
-        The particle kinetic energies for which the stopping power is calculated.
+        The particle kinetic energies for which the stopping power is
+        calculated.
 
-    component : `str`, default: ``total``
-        The component of the stopping power to be calculated. Supported values are ``electronic``,
-        ``nuclear``, and ``total`` for the electronic, nuclear, and total energies, respectively.
+    component : {"total", "electronic", "nuclear"}, default: ``total``
+        The component of the stopping power to be calculated. Supported
+        values are ``electronic``, ``nuclear``, and ``total`` for the
+        electronic, nuclear, and total energies, respectively.
 
     Returns
     -------
@@ -1182,7 +1185,6 @@ def stopping_power(
     Standards and Technology's Stopping-Power and Range Tables :cite:p:`niststar:2005`.
     Valid materials can be found on the NIST STAR website. The default energies
     are taken from the data points in the STAR database.
-
     """
 
     # TODO: figure out a better way of handling the Downloader() here

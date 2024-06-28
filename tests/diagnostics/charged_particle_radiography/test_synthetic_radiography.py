@@ -202,12 +202,12 @@ def run_1D_example(name: str):
 def run_mesh_example(
     location=(0, -2, 0) * u.mm,
     extent=(2 * u.mm, 1.5 * u.mm),
-    nwires=9,
+    nwires: int = 9,
     wire_diameter=20 * u.um,
     mesh_hdir=None,
     mesh_vdir=None,
     nparticles: int = 10000,
-    problem="electrostatic_gaussian_sphere",
+    problem: str = "electrostatic_gaussian_sphere",
 ) -> cpr.Tracker:
     """
     Takes all of the add_wire_mesh parameters and runs a standard example problem
@@ -348,7 +348,7 @@ def test_input_validation() -> None:
             grid,
             source,
             detector,
-            field_weighting="not a valid field weighting",
+            field_weighting="not a valid field weighting",  # type: ignore[arg-type]
             verbose=False,
         )
 

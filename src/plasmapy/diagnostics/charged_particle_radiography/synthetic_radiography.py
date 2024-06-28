@@ -10,6 +10,7 @@ __all__ = ["Tracker", "synthetic_radiograph"]
 import warnings
 from collections.abc import Iterable
 from pathlib import Path
+from typing import Literal
 
 import astropy.constants as const
 import astropy.units as u
@@ -152,18 +153,16 @@ class Tracker(ParticleTracker):
         If specified, the calculated adaptive time step will be clamped
         between the first and second values.
 
-    field_weighting : str
+    field_weighting : str, default: ``"volume averaged"``
         String that selects the field weighting algorithm used to determine
         what fields are felt by the particles. Options are:
 
-        * 'nearest neighbor':
+        * ``"nearest neighbor"``:
             Particles are assigned the fields on the grid vertex closest to
             them.
-        * 'volume averaged':
+        * ``"volume averaged"``:
             The fields experienced by a particle are a volume-average of the
             eight grid points surrounding them.
-
-        The default is 'volume averaged'.
 
     detector_hdir : `numpy.ndarray`, shape (3), optional
         A unit vector (in Cartesian coordinates) defining the horizontal
@@ -198,7 +197,9 @@ class Tracker(ParticleTracker):
         detector: u.Quantity[u.m],
         dt=None,
         dt_range=None,
-        field_weighting="volume averaged",
+        field_weighting: Literal[
+            "volume averaged", "nearest neighbor"
+        ] = "volume averaged",
         detector_hdir=None,
         output_file: Path | None = None,
         fraction_exited_threshold: float = 0.999,
@@ -599,7 +600,7 @@ class Tracker(ParticleTracker):
         particle_energy,
         max_theta=None,
         particle: Particle = Particle("p+"),  # noqa: B008
-        distribution="monte-carlo",
+        distribution: Literal["monte-carlo", "uniform"] = "monte-carlo",
         random_seed=None,
     ) -> None:
         r"""
@@ -655,8 +656,6 @@ class Tracker(ParticleTracker):
         random_seed : int, optional
             A random seed to be used when generating random particle
             distributions, e.g. with the ``monte-carlo`` distribution.
-
-
         """
         self._log("Creating Particles")
 
@@ -730,23 +729,6 @@ class Tracker(ParticleTracker):
         particle : |particle-like|, optional
             Representation of the particle species as either a |Particle| object
             or a string representation. The default particle is protons.
-
-        distribution: str
-            A keyword which determines how particles will be distributed
-            in velocity space. Options are:
-
-                - 'monte-carlo': velocities will be chosen randomly,
-                    such that the flux per solid angle is uniform.
-
-                - 'uniform': velocities will be distributed such that,
-                   left unperturbed,they will form a uniform pattern
-                   on the detection plane.
-
-            Simulations run in the ``'uniform'`` mode will imprint a grid pattern
-            on the image, but will well-sample the field grid with a
-            smaller number of particles. The default is ``'monte-carlo'``.
-
-
         """
         # Load particles for particle tracker class
         super().load_particles(x, v, particle)
@@ -893,6 +875,7 @@ class Tracker(ParticleTracker):
     def run(self) -> None:
         r"""
         Runs a particle-tracing simulation.
+
         Timesteps are adaptively calculated based on the
         local grid resolution of the particles and the electric and magnetic
         fields they are experiencing. After all particles
@@ -903,7 +886,6 @@ class Tracker(ParticleTracker):
         Returns
         -------
         None
-
         """
 
         self._enforce_particle_creation()
@@ -988,8 +970,7 @@ class Tracker(ParticleTracker):
         Returns
         -------
         max_deflection : float
-            The maximum deflection in radians
-
+            The maximum deflection in radians.
         """
         # Normalize the initial and final velocities
         v_norm = self.v / np.linalg.norm(self.v, axis=1, keepdims=True)
@@ -1064,7 +1045,6 @@ class Tracker(ParticleTracker):
                The velocity is in a coordinate system relative to the
                detector plane. The components are [normal, horizontal,
                vertical] relative to the detector plane coordinates.
-
         """
 
         if not self._has_run:
@@ -1171,7 +1151,6 @@ def synthetic_radiograph(  # noqa: C901
 
     intensity : `~numpy.ndarray`, shape ``(hbins, vbins)``
         The number of particles counted in each bin of the histogram.
-
     """
 
     # condition `obj` input

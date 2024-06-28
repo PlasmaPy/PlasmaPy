@@ -3,6 +3,8 @@ Objects for storing ionization state data for a single element or for
 a single ionization level.
 """
 
+from collections.abc import Iterator
+
 __all__ = ["IonicLevel", "IonizationState"]
 
 import warnings
@@ -368,7 +370,7 @@ class IonizationState:
             "normalization constraint."
         )
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator:
         yield from [self[i] for i in range(self.atomic_number + 1)]
 
     def __eq__(self, other):

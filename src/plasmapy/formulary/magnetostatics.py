@@ -519,7 +519,7 @@ class CircularWire(Wire):
         center: u.Quantity[u.m],
         radius: u.Quantity[u.m],
         current: u.Quantity[u.A],
-        n=300,
+        n: int = 300,
     ) -> None:
         self.normal = normal / np.linalg.norm(normal)
         self.center = center.value
