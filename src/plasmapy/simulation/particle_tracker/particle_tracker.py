@@ -463,10 +463,7 @@ class ParticleTracker:
         self.x = x.to(u.m).value
         self.v = v.to(u.m / u.s).value
 
-    @staticmethod
-    def _is_quantity_defined_on_one_grid(
-        grids: list[AbstractGrid], quantity: str
-    ) -> bool:
+    def _is_quantity_defined_on_one_grid(self, quantity: str) -> bool:
         r"""
         Check to ensure the provided quantity string is defined on at least one grid.
 
@@ -474,7 +471,7 @@ class ParticleTracker:
         ``False`` if none of the grids have defined the specified quantity.
         """
 
-        return any(quantity in grid.quantities for grid in grids)
+        return any(quantity in grid.quantities for grid in self.grids)
 
     def add_stopping(self, materials: list[str]):
         r"""
@@ -491,7 +488,7 @@ class ParticleTracker:
                 "Please provide an array of length ngrids for the materials."
             )
 
-        if not self._is_quantity_defined_on_one_grid(self.grids, "rho"):
+        if not self._is_quantity_defined_on_one_grid("rho"):
             warnings.warn(
                 "The density is not defined on any of the provided grids! Particle stopping will not be "
                 "calculated.",
