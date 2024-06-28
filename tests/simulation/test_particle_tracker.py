@@ -448,6 +448,45 @@ def test_particle_tracker_stop_particles(request) -> None:
     assert np.isnan(simulation.x[0, :]).all()
 
 
+def test_particle_tracker_add_stopping_errors(
+    no_particles_on_grids_instantiated, memory_interval_save_routine_instantiated
+) -> None:
+    E_strength = 1 * u.V / u.m
+    L = 1 * u.m
+    mass = 1 * u.kg
+    charge = 1 * u.C
+
+    num = 2
+    dt = 1e-2 * u.s
+
+    grid = CartesianGrid(-L, L, num=num)
+    grid_shape = (num,) * 3
+
+    Ex = np.full(grid_shape, E_strength) * u.V / u.m
+    grid.add_quantities(E_x=Ex)
+
+    point_particle = CustomParticle(mass, charge)
+
+    x = [[0, 0, 0]] * u.m
+    v = [[0, 0, 0]] * u.m / u.s
+
+    termination_condition = no_particles_on_grids_instantiated
+    save_routine = memory_interval_save_routine_instantiated
+
+    simulation = ParticleTracker(grid, termination_condition, save_routine, dt=dt)
+    simulation.load_particles(x, v, point_particle)
+
+    with pytest.raises(
+        ValueError, match="Please provide an array of length ngrids for the materials."
+    ):
+        simulation.add_stopping(["ALUMINUM", "ALUMINUM"])
+
+    with pytest.warns(
+        RuntimeWarning, match="The density is not defined on any of the provided grids!"
+    ):
+        simulation.add_stopping(["ALUMINUM"])
+
+
 class TestParticleTrajectory:
     @staticmethod
     def laboratory_time_case_one(𝜏, vd, γd, ν):

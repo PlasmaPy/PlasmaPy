@@ -494,7 +494,8 @@ class ParticleTracker:
         if not self._is_quantity_defined_on_one_grid(self.grids, "rho"):
             warnings.warn(
                 "The density is not defined on any of the provided grids! Particle stopping will not be "
-                "calculated."
+                "calculated.",
+                RuntimeWarning,
             )
 
             # Don't set `_do_stopping`. The push loop does not have to do stopping
