@@ -453,8 +453,6 @@ def test_particle_tracker_add_stopping_errors(
 ) -> None:
     E_strength = 1 * u.V / u.m
     L = 1 * u.m
-    mass = 1 * u.kg
-    charge = 1 * u.C
 
     num = 2
     dt = 1e-2 * u.s
@@ -465,8 +463,6 @@ def test_particle_tracker_add_stopping_errors(
     Ex = np.full(grid_shape, E_strength) * u.V / u.m
     grid.add_quantities(E_x=Ex)
 
-    point_particle = CustomParticle(mass, charge)
-
     x = [[0, 0, 0]] * u.m
     v = [[0, 0, 0]] * u.m / u.s
 
@@ -474,7 +470,7 @@ def test_particle_tracker_add_stopping_errors(
     save_routine = memory_interval_save_routine_instantiated
 
     simulation = ParticleTracker(grid, termination_condition, save_routine, dt=dt)
-    simulation.load_particles(x, v, point_particle)
+    simulation.load_particles(x, v, Particle("p+"))
 
     with pytest.raises(
         ValueError, match="Please provide an array of length ngrids for the materials."
