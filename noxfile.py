@@ -322,6 +322,7 @@ def mypy(session: nox.Session) -> None:
         version=session.python,
         resolution="highest",
     )
+    session.install("pip")
     session.install("-r", requirements, ".[tests]")
     session.run(*MYPY_COMMAND, *session.posargs)
 
