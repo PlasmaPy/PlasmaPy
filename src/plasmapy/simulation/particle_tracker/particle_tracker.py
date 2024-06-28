@@ -344,7 +344,7 @@ class ParticleTracker:
         """
 
         if getattr(self, "_req_quantities", None) is None:
-            self._required_quantities = self._REQUIRED_QUANTITIES
+            self._required_quantities = self._REQUIRED_QUANTITIES.copy()
 
         for grid in self.grids:
             # Require the field quantities - do not warn if they are absent
@@ -499,6 +499,7 @@ class ParticleTracker:
             # calculations
             return
 
+        raise ValueError("Requiring rho!")
         # Require that each grid has a defined mass density,
         # if a grid does not define rho, raise an exception
         for grid in self.grids:
