@@ -181,7 +181,7 @@ test_is_roman_numeral_table: list[tuple[str, bool]] = [
     ("I", True),
     ("i", False),
     ("CLXXXVIII", True),
-    ("khjfda", False),
+    ("invalid", False),
     ("VIIII", False),
     ("IXX", False),
 ]
