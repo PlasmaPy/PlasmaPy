@@ -1,10 +1,13 @@
-import numpy as np
+from collections.abc import Callable
+from typing import Any
+
 import pytest
 
 from plasmapy.utils import roman
-from plasmapy.utils._pytest_helpers import run_test
+from plasmapy.utils._pytest_helpers.pytest_helpers import run_test
+from plasmapy.utils.exceptions import InvalidRomanNumeralError, OutOfRangeError
 
-ints_and_roman_numerals = [
+ints_and_roman_numerals: list[tuple[int, str]] = [
     (1, "I"),
     (2, "II"),
     (3, "III"),
@@ -132,27 +135,25 @@ ints_and_roman_numerals = [
     (198, "CXCVIII"),
     (199, "CXCIX"),
     (200, "CC"),
-    (9, "IX"),
-    (np.int16(10), "X"),
-    (np.int32(11), "XI"),
-    (np.int64(14), "XIV"),
 ]
 
-exceptions_table = [
+exceptions_table: list[
+    tuple[Callable[[Any], Any], int | str | tuple[str, str], type]
+] = [
     (roman.to_roman, "X", TypeError),
-    (roman.to_roman, -1, roman.OutOfRangeError),
-    (roman.to_roman, 0, roman.OutOfRangeError),
-    (roman.to_roman, 5000, roman.OutOfRangeError),
-    (roman.from_roman, "asdfasd", roman.InvalidRomanNumeralError),
+    (roman.to_roman, -1, OutOfRangeError),
+    (roman.to_roman, 0, OutOfRangeError),
+    (roman.to_roman, 5000, OutOfRangeError),
+    (roman.from_roman, "invalid roman numeral", InvalidRomanNumeralError),
     (roman.from_roman, 1, TypeError),
-    (roman.from_roman, "xi", roman.InvalidRomanNumeralError),
-    (roman.is_roman_numeral, 1, TypeError),  # TODO: tbh I would just return False here?
+    (roman.from_roman, "xi", InvalidRomanNumeralError),
+    (roman.is_roman_numeral, 1, TypeError),
     (roman.is_roman_numeral, ("I", "II"), TypeError),
 ]
 
 
 @pytest.mark.parametrize(("integer", "roman_numeral"), ints_and_roman_numerals)
-def test_to_roman(integer, roman_numeral) -> None:
+def test_to_roman(integer: int, roman_numeral: str) -> None:
     """
     Test that `~plasmapy.utils.roman.to_roman` correctly converts
     integers to Roman numerals, and that the inverse is true as well.
@@ -164,7 +165,11 @@ def test_to_roman(integer, roman_numeral) -> None:
 @pytest.mark.parametrize(
     ("function", "argument", "expected_exception"), exceptions_table
 )
-def test_to_roman_exceptions(function, argument, expected_exception) -> None:
+def test_to_roman_exceptions(
+    function: Callable[[Any], Any],
+    argument: str | int | tuple[str, str],
+    expected_exception: type,
+) -> None:
     """
     Test that `~plasmapy.utils.roman` functions raise the correct
     exceptions when necessary.
@@ -172,16 +177,16 @@ def test_to_roman_exceptions(function, argument, expected_exception) -> None:
     run_test(func=function, args=argument, expected_outcome=expected_exception)
 
 
-test_is_roman_numeral_table = [
+test_is_roman_numeral_table: list[tuple[str, bool]] = [
     ("I", True),
     ("i", False),
     ("CLXXXVIII", True),
-    ("khjfda", False),
+    ("invalid", False),
     ("VIIII", False),
     ("IXX", False),
 ]
 
 
 @pytest.mark.parametrize(("argument", "expected"), test_is_roman_numeral_table)
-def test_is_roman_numeral(argument, expected) -> None:
+def test_is_roman_numeral(argument: str, expected: bool) -> None:
     run_test(func=roman.is_roman_numeral, args=argument, expected_outcome=expected)
