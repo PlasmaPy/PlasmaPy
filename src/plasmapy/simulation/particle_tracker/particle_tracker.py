@@ -499,7 +499,6 @@ class ParticleTracker:
             # calculations
             return
 
-        raise ValueError("Requiring rho!")
         # Require that each grid has a defined mass density,
         # if a grid does not define rho, raise an exception
         for grid in self.grids:
