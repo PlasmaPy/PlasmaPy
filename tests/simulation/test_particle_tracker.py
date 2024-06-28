@@ -15,12 +15,14 @@ from plasmapy.formulary.lengths import gyroradius
 from plasmapy.particles import CustomParticle, Particle
 from plasmapy.plasma import Plasma
 from plasmapy.plasma.grids import CartesianGrid
+from plasmapy.simulation.particle_integrators import BorisIntegrator
 from plasmapy.simulation.particle_tracker.particle_tracker import ParticleTracker
 from plasmapy.simulation.particle_tracker.save_routines import IntervalSaveRoutine
 from plasmapy.simulation.particle_tracker.termination_conditions import (
     NoParticlesOnGridsTerminationCondition,
     TimeElapsedTerminationCondition,
 )
+from plasmapy.utils.exceptions import RelativityWarning
 
 rng = np.random.default_rng()
 
@@ -541,9 +543,9 @@ class TestParticleTrajectory:
             (0.9, Particle("e-")),
         ],
     )
-    def test_Boris_integrator_fitting(cls, regime, particle):
+    def test_relativistic_Boris_integrator_fitting(cls, regime, particle):
         """
-        Fit the results of the (relativistic) Boris integrator using
+        Fit the results of the relativistic Boris integrator using
         relativistic models developed in https://www.sciencedirect.com/science/article/pii/S163107211400148X
         """
 
@@ -672,3 +674,198 @@ class TestParticleTrajectory:
             )
 
             assert classical_r_squared.si.value / relativistic_r_squared.si.value > 100
+
+    @classmethod
+    @pytest.mark.parametrize(
+        ("regime", "particle"),
+        [
+            (0.01, Particle("p+")),
+            (0.01, Particle("e-")),
+            (0.1, Particle("p+")),
+            (0.1, Particle("e-")),
+        ],
+    )
+    def test_classical_Boris_integrator_fitting(cls, regime, particle):
+        """
+        Fit the results of the non-relativistic Boris integrator using
+        relativistic models developed in https://www.sciencedirect.com/science/article/pii/S163107211400148X
+        """
+
+        N_PERIODS_RECORDED = 5
+        B_0 = 10 * u.T
+        E_0 = regime * const.c * B_0
+        B_dir = np.asarray([0, 0, 1])
+        E_dir = np.asarray([0, 1, 0])
+
+        q = particle.charge
+        m = particle.mass
+        vd = E_0 / B_0
+        ν = q * np.sqrt((const.c * B_0) ** 2 - E_0**2) / (m * const.c)
+        γd = 1 / np.sqrt(1 - vd**2 / const.c**2)
+
+        # Convert period in proper time to the time elapsed in the laboratory frame
+        proper_period = np.abs(2 * np.pi / ν).to(
+            u.s, equivalencies=u.dimensionless_angles()
+        )
+        period = cls.laboratory_time_case_one(proper_period.si.value, vd, γd, ν) * u.s
+
+        L = vd * period * (N_PERIODS_RECORDED + 1)
+        fields = CartesianGrid(-L, L)
+        E_x, E_y, E_z = cls.construct_field(fields, E_0, E_dir)
+        B_x, B_y, B_z = cls.construct_field(fields, B_0, B_dir)
+        fields.add_quantities(
+            E_x=E_x,
+            E_y=E_y,
+            E_z=E_z,
+            B_x=B_x,
+            B_y=B_y,
+            B_z=B_z,
+        )
+
+        """
+        ----------
+        Simulation
+        ----------
+        """
+        termination_condition = TimeElapsedTerminationCondition(
+            N_PERIODS_RECORDED * period
+        )
+
+        save_routine = IntervalSaveRoutine(period / 10)
+
+        simulation = ParticleTracker(
+            grids=fields,
+            save_routine=save_routine,
+            termination_condition=termination_condition,
+            particle_integrator=BorisIntegrator,
+        )
+
+        simulation.load_particles(
+            x=[np.zeros(3)] * u.m,
+            v=[np.zeros(3)] * u.m / u.s,
+            particle=particle,
+        )
+
+        simulation.run()
+
+        """
+        --------------
+        Theory Fitting
+        --------------
+        """
+        classical_theory_x, classical_theory_z = cls.ExB_trajectory_case_one(
+            save_routine.results["time"],
+            E_0,
+            B_0,
+            q=particle.charge,
+            m=particle.mass,
+            is_relativistic=False,
+        )
+
+        # Trajectory debug
+        """
+        import matplotlib.pyplot as plt
+
+        ax = plt.gca()
+        plt.title(f"Regime={regime}")
+        plt.xlabel("Time (ns)")
+        plt.ylabel("Drift Component of Position (m)")
+
+        plt.plot(
+            save_routine.results["time"][:].to(u.ns).value,
+            classical_theory_x,
+            label="classical theory",
+        )
+        plt.plot(
+            save_routine.results["time"][:].to(u.ns).value,
+            save_routine.results["x"][:, 0, 0],
+            label="simulation",
+        )
+
+        ax.legend()
+        plt.show()
+        """
+
+        # Discard the first five points due to large relative error.
+        assert np.isclose(
+            classical_theory_x[5:],
+            save_routine.results["x"][5:, 0, 0],
+            equal_nan=True,
+            rtol=0.05,
+        ).all()
+
+    @classmethod
+    @pytest.mark.parametrize(
+        ("regime", "particle"),
+        [
+            (0.3, Particle("p+")),
+            (0.3, Particle("e-")),
+            (0.5, Particle("p+")),
+            (0.5, Particle("e-")),
+            (0.9, Particle("p+")),
+            (0.9, Particle("e-")),
+        ],
+    )
+    def test_relativity_warning(cls, regime, particle):
+        """
+        Fit the results of the non-relativistic Boris integrator using
+        relativistic models developed in https://www.sciencedirect.com/science/article/pii/S163107211400148X
+        """
+
+        N_PERIODS_RECORDED = 5
+        B_0 = 10 * u.T
+        E_0 = regime * const.c * B_0
+        B_dir = np.asarray([0, 0, 1])
+        E_dir = np.asarray([0, 1, 0])
+
+        q = particle.charge
+        m = particle.mass
+        vd = E_0 / B_0
+        ν = q * np.sqrt((const.c * B_0) ** 2 - E_0**2) / (m * const.c)
+        γd = 1 / np.sqrt(1 - vd**2 / const.c**2)
+
+        # Convert period in proper time to the time elapsed in the laboratory frame
+        proper_period = np.abs(2 * np.pi / ν).to(
+            u.s, equivalencies=u.dimensionless_angles()
+        )
+        period = cls.laboratory_time_case_one(proper_period.si.value, vd, γd, ν) * u.s
+
+        L = vd * period * (N_PERIODS_RECORDED + 1)
+        fields = CartesianGrid(-L, L)
+        E_x, E_y, E_z = cls.construct_field(fields, E_0, E_dir)
+        B_x, B_y, B_z = cls.construct_field(fields, B_0, B_dir)
+        fields.add_quantities(
+            E_x=E_x,
+            E_y=E_y,
+            E_z=E_z,
+            B_x=B_x,
+            B_y=B_y,
+            B_z=B_z,
+        )
+
+        """
+        ----------
+        Simulation
+        ----------
+        """
+        termination_condition = TimeElapsedTerminationCondition(
+            N_PERIODS_RECORDED * period
+        )
+
+        save_routine = IntervalSaveRoutine(period / 10)
+
+        simulation = ParticleTracker(
+            grids=fields,
+            save_routine=save_routine,
+            termination_condition=termination_condition,
+            particle_integrator=BorisIntegrator,
+        )
+
+        simulation.load_particles(
+            x=[np.zeros(3)] * u.m,
+            v=[np.zeros(3)] * u.m / u.s,
+            particle=particle,
+        )
+
+        with pytest.warns(RelativityWarning):
+            simulation.run()
