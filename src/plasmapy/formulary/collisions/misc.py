@@ -91,7 +91,7 @@ def mobility(
     species,
     z_mean: float = np.nan,
     V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
-    method="classical",
+    method: str = "classical",
 ) -> u.Quantity[u.m**2 / (u.V * u.s)]:
     r"""
     Return the electrical mobility.
@@ -221,7 +221,7 @@ def Spitzer_resistivity(
     species,
     z_mean: float = np.nan,
     V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
-    method="classical",
+    method: str = "classical",
 ) -> u.Quantity[u.Ohm * u.m]:
     r"""
     Spitzer resistivity of a plasma.

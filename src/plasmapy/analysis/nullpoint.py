@@ -1416,7 +1416,7 @@ def _classify_null_point(vspace, cell, loc):
     return null_point_type
 
 
-def _vspace_iterator(vspace, maxiter=500, err: float = 1e-10):
+def _vspace_iterator(vspace, maxiter: int = 500, err: float = 1e-10):
     r"""
     Returns an array of null point objects, representing the null points
     of the given vector space.
@@ -1466,7 +1466,7 @@ def null_point_find(
     u_arr=None,
     v_arr=None,
     w_arr=None,
-    maxiter=500,
+    maxiter: int = 500,
     err: float = 1e-10,
 ):
     r"""
@@ -1550,7 +1550,7 @@ def uniform_null_point_find(
     z_range,
     func: Callable,
     precision=(0.05, 0.05, 0.05),
-    maxiter=500,
+    maxiter: int = 500,
     err: float = 1e-10,
 ):
     r"""

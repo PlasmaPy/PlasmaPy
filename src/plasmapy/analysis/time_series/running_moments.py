@@ -62,7 +62,7 @@ def running_mean(signal, radius: int):
     return run_mean[window - 1 :] / window
 
 
-def running_moment(signal, radius: int, moment=1, time=None):
+def running_moment(signal, radius: int, moment: int = 1, time=None):
     """
     Calculate either the running mean, standard deviation, skewness or
     excess kurtosis of a sequence.
