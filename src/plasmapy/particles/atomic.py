@@ -1143,7 +1143,7 @@ def _is_electron(arg: Any) -> bool:
 
 @particle_input
 @validate_quantities(energies=u.MeV)
-def stopping_power(
+def stopping_power(  # noqa: C901
     incident_particle: ParticleLike,
     material: str,
     energies: u.Quantity[u.MeV] | None = None,
@@ -1189,7 +1189,7 @@ def stopping_power(
     Valid materials can be found on the NIST STAR website. The default energies
     are taken from the data points in the STAR database.
     """
-
+    # TODO: reduce cognitive complexity
     # TODO: figure out a better way of handling the Downloader() here
     nist_data_path = Downloader().get_file("NIST_STAR.hdf5")
 
@@ -1251,6 +1251,9 @@ def stopping_power(
             return (
                 lambda x: np.exp(cs(np.log(x.to(u.MeV).value))) * u.MeV * u.cm**2 / u.g
             )
+
+        if energies is None:
+            raise ValueError("mypy testing")
 
         return (
             energies,
