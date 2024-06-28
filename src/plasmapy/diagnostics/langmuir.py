@@ -730,7 +730,7 @@ def get_electron_density_LM(
     electron saturation current is given by
 
     .. math::
-        I_{es} = \frac{1}{4} e n_e A_p \sqrt{\frac{8 T_e}{\pi m_e}}.
+        I_{es} = \frac{1}{4} e n_e A_p \sqrt{\frac{8 T_e}{π m_e}}.
 
     Please note that the electron saturation current density is a hard
     parameter to acquire and it is usually better to measure the ion density,
@@ -1199,7 +1199,7 @@ def get_ion_density_OML(
     temperature [mott-smith.langmuir-1926]_:
 
     .. math::
-        I_i \xrightarrow[T_i = 0]{} A_p n_i e \frac{\sqrt{2}}{\pi}
+        I_i \xrightarrow[T_i = 0]{} A_p n_i e \frac{\sqrt{2}}{π}
         \sqrt{\frac{e \left( V_F - V \right)}{m_i}}
 
     References
@@ -1352,8 +1352,8 @@ def get_EEDF(probe_characteristic, visualize: bool = False):
     [druyvesteyn-1930]_:
 
     .. math::
-        N_e \left( \epsilon \right) =
-        \frac{2}{A_pe^2} \sqrt{\frac{2 m \epsilon}{e}}
+        N_e \left( ε \right) =
+        \frac{2}{A_pe^2} \sqrt{\frac{2 m ε}{e}}
         \frac{\textrm{d}^2 I}{\textrm{d} V^2}
 
     References
