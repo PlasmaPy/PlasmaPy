@@ -1143,7 +1143,7 @@ def _is_electron(arg: Any) -> bool:
 
 @particle_input
 @validate_quantities(energies=u.MeV)
-def stopping_power(  # noqa: C901
+def stopping_power(
     incident_particle: ParticleLike,
     material: str,
     energies: u.Quantity[u.MeV] | None = None,
@@ -1170,6 +1170,12 @@ def stopping_power(  # noqa: C901
     energies : `~astropy.units.Quantity`, default: See notes.
         The particle kinetic energies for which the stopping power is
         calculated.
+
+    return_interpolator : `bool`, default: `False`
+        The function will by default return a tuple of energies and their
+        associated stopping power. By setting this argument to `True`, the
+        function will instead return a `Callable`, which takes in energies and
+        will return the associated stopping energies.
 
     component : {"total", "electronic", "nuclear"}, default: ``total``
         The component of the stopping power to be calculated. Supported
@@ -1252,10 +1258,7 @@ def stopping_power(  # noqa: C901
                 lambda x: np.exp(cs(np.log(x.to(u.MeV).value))) * u.MeV * u.cm**2 / u.g
             )
 
-        if energies is None:
-            raise ValueError("mypy testing")
-
         return (
             energies,
-            np.exp(cs(np.log(energies.to("MeV").value))) * u.MeV * u.cm**2 / u.g,
+            np.exp(cs(np.log(energies.to("MeV").value))) * u.MeV * u.cm**2 / u.g,  # type: ignore[union-attr]
         )
