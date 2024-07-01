@@ -4,13 +4,13 @@ Module of miscellaneous parameters related to collisions.
 
 __all__ = [
     "mobility",
+    "Bethe_stopping",
     "Spitzer_resistivity",
 ]
 
-
+import astropy.constants as const
 import astropy.units as u
 import numpy as np
-from astropy.constants.si import e
 
 from plasmapy.formulary.collisions import frequencies
 from plasmapy.formulary.speeds import thermal_speed
@@ -20,6 +20,11 @@ from plasmapy.particles.particle_class import Particle
 from plasmapy.utils.decorators import validate_quantities
 from plasmapy.utils.decorators.checks import _check_relativistic
 from plasmapy.utils.exceptions import PhysicsError
+
+_c = const.c
+_e = const.e.si
+_eps0 = const.eps0
+_m_e = const.m_e
 
 
 @validate_quantities(T={"equivalencies": u.temperature_energy()})
@@ -207,8 +212,61 @@ def mobility(
     # already has a _process_inputs check and we are doing this just
     # to recover the charges, mass, etc.
     T, masses, charges, reduced_mass_, V = _process_inputs(T=T, species=species, V=V)
-    z_val = (charges[0] + charges[1]) / 2 if np.isnan(z_mean) else z_mean * e
+    z_val = (charges[0] + charges[1]) / 2 if np.isnan(z_mean) else z_mean * _e
     return z_val / (reduced_mass_ * freq)
+
+
+@validate_quantities()
+def Bethe_stopping(
+    I: u.Quantity[u.J],  # noqa: E741
+    n: u.Quantity[1 / u.m**3],
+    v: u.Quantity[u.m / u.s],
+    z: int,
+) -> u.Quantity[u.J / u.m]:
+    r"""
+    The theoretical electronic stopping power for swift charged particles
+    calculated from the Bethe formula.
+
+    The Bethe formula should only be used for high energy particles, as
+    higher order corrections become non-negligible for smaller energies.
+
+    By convention, this function returns a positive value for the stopping
+    energy.
+
+    Parameters
+    ----------
+    I: `~astropy.units.Quantity`
+        The mean excitation energy for the material in which the particle is
+        being stopped. Expressed in units of energy.
+
+    n: `~astropy.units.Quantity`
+        The electron number density of the material. Expressed in units of number density.
+
+    v: `~astropy.units.Quantity`
+        The velocity of the particle being stopped. Expressed in units of speed.
+
+    z: `int`
+        The charge of the charged particle in multiples of the electron charge.
+        Expressed only as an integer.
+
+    Returns
+    -------
+    dEdx : `~astropy.units.Quantity`
+        The stopping power of the material given the particle's energy.
+
+    """
+
+    beta = v / _c
+
+    return (
+        4
+        * np.pi
+        * n
+        * z**2
+        / (_m_e * _c**2 * beta**2)
+        * (_e**2 / (4 * np.pi * _eps0)) ** 2
+        * (np.log(2 * _m_e * _c**2 * beta**2 / (I * (1 - beta**2))) - beta**2)
+    )
 
 
 @validate_quantities(
@@ -341,5 +399,5 @@ def Spitzer_resistivity(
     return (
         freq * reduced_mass_ / (n * charges[0] * charges[1])
         if np.isnan(z_mean)
-        else freq * reduced_mass_ / (n * (z_mean * e) ** 2)
+        else freq * reduced_mass_ / (n * (z_mean * _e) ** 2)
     )
