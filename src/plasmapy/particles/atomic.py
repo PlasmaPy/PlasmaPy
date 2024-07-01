@@ -1195,7 +1195,6 @@ def stopping_power(
     Valid materials can be found on the NIST STAR website. The default energies
     are taken from the data points in the STAR database.
     """
-    # TODO: reduce cognitive complexity
     # TODO: figure out a better way of handling the Downloader() here
     nist_data_path = Downloader().get_file("NIST_STAR.hdf5")
 
