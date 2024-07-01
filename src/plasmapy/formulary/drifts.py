@@ -61,7 +61,7 @@ def diamagnetic_drift(
 
     .. math::
 
-        \vec{v} = -\frac{ ∇ p \times \vec{B} }{ q n |B|^2 }
+        \vec{v} = -\frac{ ∇ p × \vec{B} }{ q n |B|^2 }
 
     This is the velocity component of a fluid element perpendicular to
     the magnetic field.
@@ -111,7 +111,7 @@ def ExB_drift(E: u.Quantity[u.V / u.m], B: u.Quantity[u.T]) -> u.Quantity[u.m / 
 
     .. math::
 
-        \vec{v} = \frac{\vec{E} \times \vec{B}}{|B|^2}
+        \vec{v} = \frac{\vec{E} × \vec{B}}{|B|^2}
 
     and is independent of particle charge.
     """
@@ -169,7 +169,7 @@ def force_drift(
 
     .. math::
 
-        \vec{v} = \frac{\vec{F} \times \vec{B}}{q |B|^2}
+        \vec{v} = \frac{\vec{F} × \vec{B}}{q |B|^2}
 
     Note the charge dependency.
     """

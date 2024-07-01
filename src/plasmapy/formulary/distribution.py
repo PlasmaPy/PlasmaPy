@@ -115,8 +115,8 @@ def Maxwellian_1D(
 
     .. math::
 
-        f = \sqrt{\frac{m}{2 \pi k_B T}} e^{-\frac{m}{2 k_B T} (v-V)^2}
-        \equiv \frac{1}{\sqrt{\pi v_{Th}^2}} e^{-(v - v_{drift})^2 / v_{Th}^2}
+        f = \sqrt{\frac{m}{2π k_B T}} e^{-\frac{m}{2 k_B T} (v-V)^2}
+        \equiv \frac{1}{\sqrt{π v_{Th}^2}} e^{-(v - v_{drift})^2 / v_{Th}^2}
 
     where :math:`v_{Th} = \sqrt{2 k_B T / m}` is the thermal speed
 
@@ -251,7 +251,7 @@ def Maxwellian_velocity_2D(
 
     .. math::
 
-        f = (\pi v_{Th}^2)^{-1} \exp \left [-(\vec{v} -
+        f = (π v_{Th}^2)^{-1} \exp \left [-(\vec{v} -
         \vec{V}_{drift})^2 / v_{Th}^2 \right ]
 
     where :math:`v_{Th} = \sqrt{2 k_B T / m}` is the thermal speed.
@@ -409,7 +409,7 @@ def Maxwellian_velocity_3D(
 
     .. math::
 
-        f = (\pi v_{Th}^2)^{-3/2} \exp \left [-(\vec{v} -
+        f = (π v_{Th}^2)^{-3/2} \exp \left [-(\vec{v} -
         \vec{V}_{drift})^2 / v_{Th}^2 \right ]
 
     where :math:`v_{Th} = \sqrt{2 k_B T / m}` is the thermal speed.
@@ -1133,7 +1133,7 @@ def kappa_velocity_3D(
        \vec{V_{drift}})^2}{κ v_{Th},κ^2}\right)^{-(κ + 1)}
 
     where :math:`v_{Th},κ` is the kappa thermal speed
-    and :math:`A_κ = \frac{1}{2 π (κ v_{Th},κ^2)^{3/2}}
+    and :math:`A_κ = \frac{1}{2π (κ v_{Th},κ^2)^{3/2}}
     \frac{Γ(κ + 1)}{Γ(κ - 1/2) Γ(3/2)}` is the
     normalization constant.
 

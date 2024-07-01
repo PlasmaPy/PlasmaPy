@@ -14,7 +14,8 @@ from plasmapy.utils.decorators import validate_quantities
     T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()}
 )
 def ionization_balance(
-    n: u.Quantity[u.m**-3], T_e: u.Quantity[u.K]
+    n: u.Quantity[u.m**-3],
+    T_e: u.Quantity[u.K],
 ) -> u.Quantity[u.dimensionless_unscaled]:
     r"""
     Return the average ionization state of ions in a plasma assuming that
@@ -32,7 +33,7 @@ def ionization_balance(
 
     .. math::
 
-        Z\_bal = \sqrt{\frac{k_B T_e}{E_H}} \sqrt{\ln{\frac{1}{4 n a_{0}^3}
+        Z\_bal = \sqrt{\frac{k_B T_e}{E_H}} \sqrt{\ln{\frac{1}{4 n a_0^3}
         (\frac{k_B T_e}{π E_H})^{3/2}}} - \frac{1}{2}
 
     Where :math:`k_B` is the Boltzmann constant,
