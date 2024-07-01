@@ -76,12 +76,12 @@ def impact_parameter_perp(
 
     Notes
     -----
-    The distance of closest approach, impact_parameter_perp, is given by
-    (see Ch. 5 of :cite:t:`chen:2016`):
+    The distance of closest approach, ``impact_parameter_perp``, is
+    given by (see Ch. 5 of :cite:t:`chen:2016`):
 
     .. math::
 
-        b_⟂ = \frac{Z_1 Z_2}{4 π \epsilon_0 m v^2}
+        b_⟂ = \frac{Z_1 Z_2}{4 π ε_0 m v^2}
 
     Examples
     --------
@@ -197,8 +197,8 @@ def impact_parameter(  # noqa: C901
     length.
 
     For quantum plasmas the maximum impact parameter can be the
-    quadratic sum of the debye length and ion radius (Wigner_Seitz)
-    :cite:p:`gericke:2002`
+    quadratic sum of the debye length and ion radius
+    (``Wigner_Seitz_radius``) :cite:p:`gericke:2002`:
 
     .. math::
 
