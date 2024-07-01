@@ -499,8 +499,7 @@ class ParticleTracker:
             # calculations
             return
 
-        # Require that each grid has a defined mass density,
-        # if a grid does not define rho, raise an exception
+        # Require that each grid has a defined mass density
         for grid in self.grids:
             grid.require_quantities(["rho"], replace_with_zeros=True)
 
@@ -802,9 +801,7 @@ class ParticleTracker:
 
         return dt
 
-    def _update_position(self, B, E):
-        # TODO: should this be generalized to allow for more fields to be
-        #  interpolated and provided to the pusher?
+    def _update_position(self, E, B):
         pos_tracked = self.x[self._tracked_particle_mask]
         vel_tracked = self.v[self._tracked_particle_mask]
         x_results, v_results = self._integrator.push(
@@ -876,14 +873,14 @@ class ParticleTracker:
         """
 
         # Interpolate fields at particle positions
-        summed_field_values, E, B = self._interpolate_grid()
+        total_grid_values, E, B = self._interpolate_grid()
 
         # Calculate an appropriate timestep (uniform, synchronized)
-        self.dt = self._update_time(summed_field_values)
+        self.dt = self._update_time(total_grid_values)
 
         # Update the position and velocities of the particles using timestep
         # calculations as well as the magnitude of E and B fields
-        self._update_position(B, E)
+        self._update_position(E, B)
 
         if not self._integrator.is_relativistic and not self._raised_relativity_warning:
             beta_max = self.vmax / const.c.si.value
@@ -897,10 +894,8 @@ class ParticleTracker:
                 )
 
         # Update velocities to reflect stopping
-        if not self._do_stopping:
-            return
-
-        self._update_velocity_stopping(summed_field_values)
+        if self._do_stopping:
+            self._update_velocity_stopping(total_grid_values)
 
     @property
     def on_any_grid(self) -> NDArray[np.bool_]:
