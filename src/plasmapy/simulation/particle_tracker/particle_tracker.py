@@ -343,14 +343,14 @@ class ParticleTracker:
         but is also called when enabling stopping.
         """
 
-        if getattr(self, "_req_quantities", None) is None:
-            self._required_quantities = self._REQUIRED_QUANTITIES.copy()
+        # Convert the required quantities set to a list to appease type hinting
+        quantities_list = list(self._REQUIRED_QUANTITIES)
 
         for grid in self.grids:
             # Require the field quantities - do not warn if they are absent
             # and are replaced with zeros
             grid.require_quantities(
-                self._REQUIRED_QUANTITIES,
+                quantities_list,
                 replace_with_zeros=True,
                 warn_on_replace_with_zeros=False,
             )
