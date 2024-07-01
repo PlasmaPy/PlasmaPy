@@ -359,6 +359,8 @@ extend-select = [
   "W", # pycodestyle warnings
   "YTT", # flake8-2020
 ]
+# The ruff rules to include or ignore for notebooks are defined
+# separately in .pre-commit-config.yaml in the hook for nbqa-ruff
 ignore = [
   "B028", # no-explicit-stacklevel
   "D105", # undocumented-magic-method (enable later?)
