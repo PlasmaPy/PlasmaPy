@@ -653,30 +653,6 @@ class TestParticleTrajectory:
             m=particle.mass,
         )
 
-        # Trajectory debug
-        """
-        import matplotlib.pyplot as plt
-
-        ax = plt.gca()
-        plt.title(f"Regime={regime}")
-        plt.xlabel("Time (ns)")
-        plt.ylabel("Drift Component of Position (m)")
-
-        plt.plot(
-            save_routine.results["time"][:].to(u.ns).value,
-            relativistic_theory_x,
-            label="relativistic theory",
-        )
-        plt.plot(
-            save_routine.results["time"][:].to(u.ns).value,
-            save_routine.results["x"][:, 0, 0],
-            label="simulation",
-        )
-
-        ax.legend()
-        plt.show()
-        """
-
         # Discard the first five points due to large relative error.
         assert np.isclose(
             relativistic_theory_x[5:],
