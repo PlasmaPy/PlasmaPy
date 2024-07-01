@@ -664,10 +664,9 @@ class Tracker(ParticleTracker):
 
         # Load inputs
         self.nparticles = int(nparticles)
-        self.particle_energy = particle_energy.to(u.eV).value
-        self.q = particle.charge.to(u.C).value
-        self.m = particle.mass.to(u.kg).value
-        self._particle = particle
+
+        particle_energy = particle_energy.to(u.eV).value
+        m = particle.mass.to(u.kg).value
 
         # If max_theta is not specified, make a guess based on the grid size
         if max_theta is None:
@@ -678,7 +677,7 @@ class Tracker(ParticleTracker):
             self.max_theta = max_theta.to(u.rad).value
 
         # Calculate the velocity corresponding to the particle energy
-        ER = self.particle_energy * 1.6e-19 / (self.m * self._c**2)
+        ER = particle_energy * 1.6e-19 / (m * self._c**2)
         v0 = self._c * np.sqrt(1 - 1 / (ER + 1) ** 2)
 
         if distribution == "monte-carlo":
@@ -686,15 +685,11 @@ class Tracker(ParticleTracker):
         elif distribution == "uniform":
             theta, phi = self._angles_uniform()
 
-        # Temporarily save theta to later determine which particles
-        # should be tracked
-        self.theta = theta
-
         # Construct the velocity distribution around the z-axis
-        self.v = np.zeros([self.nparticles, 3])
-        self.v[:, 0] = v0 * np.sin(theta) * np.cos(phi)
-        self.v[:, 1] = v0 * np.sin(theta) * np.sin(phi)
-        self.v[:, 2] = v0 * np.cos(theta)
+        v = np.zeros([self.nparticles, 3])
+        v[:, 0] = v0 * np.sin(theta) * np.cos(phi)
+        v[:, 1] = v0 * np.sin(theta) * np.sin(phi)
+        v[:, 2] = v0 * np.cos(theta)
 
         # Calculate the rotation matrix that rotates the z-axis
         # onto the source-detector axis
@@ -703,10 +698,14 @@ class Tracker(ParticleTracker):
         rot = rot_a_to_b(a, b)
 
         # Apply rotation matrix to calculated velocity distribution
-        self.v = np.matmul(self.v, rot)
+        v = np.matmul(v, rot)
 
         # Place particles at the source
-        self.x = np.tile(self.source, (self.nparticles, 1))
+        x = np.tile(self.source, (self.nparticles, 1))
+
+        # Call the underlying load method to ensure consistency with
+        # other properties within the ParticleTracker
+        self.load_particles(x * u.m, v * u.m / u.s, particle=particle)
 
     @particles.particle_input
     def load_particles(
