@@ -545,7 +545,8 @@ class Tracker(ParticleTracker):
     # Particle creation methods
     # *************************************************************************
 
-    def _angles_monte_carlo(self, random_seed=None):
+    @staticmethod
+    def _angles_monte_carlo(nparticles, max_theta, random_seed=None):
         """
         Generates angles for each particle randomly such that the flux
         per solid angle is uniform.
@@ -553,7 +554,7 @@ class Tracker(ParticleTracker):
         # Create a probability vector for the theta distribution
         # Theta must follow a sine distribution in order for the particle
         # flux per solid angle to be uniform.
-        arg = np.linspace(0, self.max_theta, num=int(1e5))
+        arg = np.linspace(0, max_theta, num=int(1e5))
         prob = np.sin(arg)
         prob *= 1 / np.sum(prob)
 
@@ -561,14 +562,15 @@ class Tracker(ParticleTracker):
         rng = np.random.default_rng(seed=random_seed)
 
         # Randomly choose theta's weighted with the sine probabilities
-        theta = rng.choice(arg, size=self.nparticles, replace=True, p=prob)
+        theta = rng.choice(arg, size=nparticles, replace=True, p=prob)
 
         # Also generate a uniform phi distribution
-        phi = rng.uniform(high=2 * np.pi, size=self.nparticles)
+        phi = rng.uniform(high=2 * np.pi, size=nparticles)
 
         return theta, phi
 
-    def _angles_uniform(self):
+    @staticmethod
+    def _angles_uniform(nparticles, max_theta):
         """
         Generates angles for each particle such that their velocities are
         uniformly distributed on a grid in theta and phi. This method
@@ -577,14 +579,11 @@ class Tracker(ParticleTracker):
         than the provided `nparticles`.
         """
         # Calculate the approximate square root
-        n_per = np.floor(np.sqrt(self.nparticles)).astype(np.int32)
-
-        # Set new nparticles to be a perfect square
-        self.nparticles = n_per**2
+        n_per = np.floor(np.sqrt(nparticles)).astype(np.int32)
 
         # Create an imaginary grid positioned 1 unit from the source
         # and spanning max_theta at the corners
-        extent = np.sin(self.max_theta) / np.sqrt(2)
+        extent = np.sin(max_theta) / np.sqrt(2)
         arr = np.linspace(-extent, extent, num=n_per)
         harr, varr = np.meshgrid(arr, arr, indexing="ij")
 
@@ -688,30 +687,35 @@ class Tracker(ParticleTracker):
         self._enforce_order()
 
         # Load inputs
-        self.nparticles = int(nparticles)
+        nparticles = int(nparticles)
 
         particle_energy = particle_energy.to(u.eV).value
         m = particle.mass.to(u.kg).value
 
         # If max_theta is not specified, make a guess based on the grid size
         if max_theta is None:
-            self.max_theta = np.clip(
-                1.5 * self.max_theta_hit_grid, 0.01, 0.99 * np.pi / 2
-            )
+            max_theta = np.clip(1.5 * self.max_theta_hit_grid, 0.01, 0.99 * np.pi / 2)
         else:
-            self.max_theta = max_theta.to(u.rad).value
+            max_theta = max_theta.to(u.rad).value
 
         # Calculate the velocity corresponding to the particle energy
         ER = particle_energy * 1.6e-19 / (m * self._c**2)
         v0 = self._c * np.sqrt(1 - 1 / (ER + 1) ** 2)
 
         if distribution == "monte-carlo":
-            theta, phi = self._angles_monte_carlo(random_seed=random_seed)
+            theta, phi = self._angles_monte_carlo(
+                nparticles, max_theta, random_seed=random_seed
+            )
         elif distribution == "uniform":
-            theta, phi = self._angles_uniform()
+            theta, phi = self._angles_uniform(nparticles, max_theta)
+
+        # Adjust nparticles to reflex what the distribution function returned.
+        # Some distributions will modify the number of particles to meet the
+        # necessary criteria of the distribution.
+        nparticles = theta.shape[0]  # TODO: make sure this works
 
         # Construct the velocity distribution around the z-axis
-        v = np.zeros([self.nparticles, 3])
+        v = np.zeros([nparticles, 3])
         v[:, 0] = v0 * np.sin(theta) * np.cos(phi)
         v[:, 1] = v0 * np.sin(theta) * np.sin(phi)
         v[:, 2] = v0 * np.cos(theta)
@@ -726,7 +730,7 @@ class Tracker(ParticleTracker):
         v = np.matmul(v, rot)
 
         # Place particles at the source
-        x = np.tile(self.source, (self.nparticles, 1))
+        x = np.tile(self.source, (nparticles, 1))
 
         # Call the underlying load method to ensure consistency with
         # other properties within the ParticleTracker
