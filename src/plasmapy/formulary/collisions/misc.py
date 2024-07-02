@@ -12,6 +12,7 @@ __lite_funcs__ = ["Bethe_stopping_lite"]
 import astropy.constants as const
 import astropy.units as u
 import numpy as np
+import numpy.typing as npt
 
 from plasmapy.formulary.collisions import frequencies
 from plasmapy.formulary.speeds import thermal_speed
@@ -220,11 +221,11 @@ def mobility(
 
 
 def Bethe_stopping_lite(
-    I: np.ndarray,  # noqa: E741
-    n: np.ndarray,
-    v: np.ndarray,
+    I: npt.NDArray[float],  # noqa: E741
+    n: npt.NDArray[float],
+    v: npt.NDArray[float],
     z: int,
-) -> np.ndarray:
+) -> npt.NDArray[float]:
     r"""
     The :term:`lite-function` version of `Bethe_stopping`. Performs the same
     calculations as `Bethe_stopping`, but is intended for computational use

@@ -482,7 +482,7 @@ def test_particle_tracker_add_stopping_errors(
         ValueError,
         match="Please provide one of 'NIST' or 'Bethe' for the method keyword",
     ):
-        simulation.add_stopping(method="Lorem Ipsum")
+        simulation.add_stopping(method="Lorem Ipsum")  # type: ignore[arg-type]
 
     with pytest.raises(
         ValueError,

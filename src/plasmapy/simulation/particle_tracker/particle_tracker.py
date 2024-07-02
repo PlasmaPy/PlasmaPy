@@ -483,7 +483,7 @@ class ParticleTracker:
         method: Literal["NIST", "Bethe"],
         materials: list[str] | None = None,
         I: u.Quantity[u.eV] | None = None,  # noqa: E741
-    ) -> bool | None:
+    ) -> bool:
         r"""
         Validate inputs to the `add_stopping` method. Raises errors if the
         proper keyword arguments are not provided for a given method.
@@ -510,7 +510,7 @@ class ParticleTracker:
 
                     # Don't set `_do_stopping`. The push loop does not have to do stopping
                     # calculations
-                    return
+                    return False
             case "Bethe":
                 if I is None:
                     raise ValueError(
@@ -531,7 +531,7 @@ class ParticleTracker:
 
                     # Don't set `_do_stopping`. The push loop does not have to do stopping
                     # calculations
-                    return
+                    return False
 
         return True
 
