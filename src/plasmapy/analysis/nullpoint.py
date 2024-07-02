@@ -26,7 +26,6 @@ import numpy as np
 # Declare Constants & global variables
 _EQUALITY_ATOL = 1e-10
 _MAX_RECURSION_LEVEL = 10
-global _recursion_level
 _recursion_level = 0
 
 
