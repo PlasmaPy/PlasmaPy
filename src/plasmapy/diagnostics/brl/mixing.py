@@ -502,17 +502,8 @@ def determine_coefficients(  # noqa: C901 PLR0911 PLR0912
     The size of `all_found_currents` is `KEND`, `coefficient_1` is `QT1`, `coefficient_2` is
     `QT2`, `control_level` is `KWIT`, `num_no_oscillation_checks` is `MEW`, and `coefficients_previously_decreased` is `MAD`.
     """
-    if control_level == 1:
-        return (
-            coefficient_1,
-            coefficient_2,
-            False,
-            num_checks_since_coefficient_change,
-            coefficients_previously_decreased,
-        )
-
     iteration_number = all_found_currents.size
-    if iteration_number % 10 != 0:
+    if control_level == 1 or iteration_number % 10 != 0:
         return (
             coefficient_1,
             coefficient_2,
@@ -530,9 +521,8 @@ def determine_coefficients(  # noqa: C901 PLR0911 PLR0912
             coefficient_1, coefficient_2
         )
         return new_coefficient_1, new_coefficient_2, False, 0, True
-
-    # Line 123.
-    if not divergent_oscillations_exist and control_level <= 2:
+    elif control_level <= 2:
+        # Line 123.
         logging.info(
             "Not checking for convergence rate since `control_level` is less than 3 and oscillations are not diverging."
         )
