@@ -183,7 +183,7 @@ class Tracker(ParticleTracker):
     fraction_exited_threshold : float, optional
         The fraction of particles that must leave the grids to terminate the
         simulation. This does not include particles that have never entered
-        the grids. By default, this is set to ``0.001`` (or 0.1%).
+        the grids. By default, this is set to ``0.999`` (corresponding to 99.9%).
 
     verbose : bool, optional
         If `True`, updates on the status of the program will be printed
