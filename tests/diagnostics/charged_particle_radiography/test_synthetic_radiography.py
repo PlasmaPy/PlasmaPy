@@ -2,6 +2,7 @@
 Tests for proton radiography functions
 """
 
+import astropy.constants as const
 import astropy.units as u
 import numpy as np
 import pytest
@@ -10,7 +11,10 @@ from scipy.special import erf
 from plasmapy.diagnostics.charged_particle_radiography import (
     synthetic_radiography as cpr,
 )
+from plasmapy.particles.particle_class import Particle
 from plasmapy.plasma.grids import CartesianGrid
+
+rng = np.random.default_rng()
 
 
 def _test_grid(  # noqa: C901, PLR0912
@@ -979,52 +983,120 @@ def test_radiography_memory_save_routine() -> None:
     sim.run()
 
 
-@pytest.mark.slow()
+# How many particles should be instantiated to probe each energy value?
+PARTICLES_PER_CONFIGURATION = 100
+
+
 @pytest.mark.parametrize(
-    ("proton_energy", "expected_stopping_distance"),
+    ("material", "density", "energy_projected_range_list"),
     [
-        (500 * u.keV, 5.42 * u.um),
-        (1 * u.MeV, 14.38 * u.um),
-        (10 * u.MeV, 622.71 * u.um),
+        (
+            "ALUMINUM",
+            2.69890e00 * u.g / u.cm**3,
+            [
+                (500 * u.keV, 5.57 * u.um),
+                (1 * u.MeV, 14.62 * u.um),
+                (10 * u.MeV, 631.74 * u.um),
+            ],
+        ),
+        (
+            "SILICON",
+            2.33000e00 * u.g / u.cm**3,
+            [
+                (500 * u.keV, 6.18 * u.um),
+                (1 * u.MeV, 16.46 * u.um),
+                (10 * u.MeV, 714.59 * u.um),
+            ],
+        ),
     ],
 )
 def test_NIST_particle_stopping(
-    proton_energy: u.Quantity[u.MeV], expected_stopping_distance: u.Quantity[u.m]
+    material: str,
+    density: u.Quantity[u.kg / u.m**3],
+    energy_projected_range_list: list[tuple[u.Quantity[u.J], u.Quantity[u.m]]],
 ):
     r"""
     Test to ensure that the simulated stopping range matches the SRIM output
     for various proton energies.
     """
-    width = expected_stopping_distance * 1.1
 
+    # Split the list of tuples into two iterables using the splat operator
+    energies, projected_ranges = zip(*energy_projected_range_list, strict=True)
+
+    # Apply uniform units and cast to quantity array
+    energies = np.asarray([v[0].si.value for v in energy_projected_range_list]) * u.J
+    projected_ranges = (
+        np.asarray([v[1].si.value for v in energy_projected_range_list]) * u.m
+    )
+
+    # Calculate the relativistic speed of the particles as a function of their
+    # kinetic energy
+    speeds = const.c * np.sqrt(
+        1 - (const.m_p * const.c**2 / (energies + const.m_p * const.c**2)) ** 2
+    )
+
+    width = np.max(projected_ranges) * 1.1
     stopping_grid = CartesianGrid(
         [-0.2, 0.0, -0.2] * u.cm, [0.2, width.to(u.cm).value, 0.2] * u.cm, num=100
     )
 
-    rho = np.ones(stopping_grid.shape) * 2.7 * u.g / u.cm**3
+    rho = np.ones(stopping_grid.shape) * density
     stopping_grid.add_quantities(rho=rho)
 
-    source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
-    detector = (0 * u.mm, 100 * u.mm, 0 * u.mm)
+    source = [0, -10, 0] * u.mm
+    detector = [0, 100, 0] * u.mm
 
     sim = cpr.Tracker(
         [stopping_grid],
         source,
         detector,
-        field_weighting="nearest neighbor",
+        field_weighting="volume averaged",
         verbose=True,
-        fraction_exited_threshold=0.99,
     )
-    sim.create_particles(1e5, proton_energy, max_theta=np.pi / 15 * u.rad)
-    sim.add_stopping(method="NIST", materials=["ALUMINUM"])
-    sim.setup_adaptive_time_step()
 
+    # Initialize the position array with shape [nparticles, 3] and use `source` as fill_value
+    x = np.full(
+        shape=(energies.shape[0] * PARTICLES_PER_CONFIGURATION, 3),
+        fill_value=source.si.value,
+    )
+    # Add noise [-1, 1] mm in the XZ plane
+    x[
+        :,
+        (
+            0,
+            2,
+        ),
+    ] += (
+        rng.normal(size=(energies.shape[0] * PARTICLES_PER_CONFIGURATION, 2)) * u.mm
+    ).si.value
+
+    # Initialize the velocity array with shape [3, nparticles_per_energy, n_energies] and fill with zero
+    # This ordering allows the initial speeds to be populated trivially using only two lines
+    v = np.zeros(shape=(3, PARTICLES_PER_CONFIGURATION, energies.shape[0]))
+
+    # Copy the previously calculated speed into the relevant component of the velocity
+    # This is simplified by the fact that we have dedicated the third axis to the energy values
+    v[1, :, :] = speeds.si.value
+
+    # Swapping the first and third axes we get the more intuitive [n_energies, nparticles_per_energy, 3] array
+    v = np.swapaxes(v, 0, 2)
+    # Reshape the result of the previous swap into the necessary [n_particles, 3] array
+    # where n_particles = n_energy * nparticles_per_energy
+    v = np.reshape(v, newshape=(energies.shape[0] * PARTICLES_PER_CONFIGURATION, 3))
+
+    # Apply units
+    x *= u.m
+    v *= u.m / u.s
+
+    sim.load_particles(x, v, Particle("p+"))
+    sim.add_stopping(method="NIST", materials=[material])
     sim.run()
 
-    # Take the median to avoid influence of outliers
-    # TODO: Choose a different geometry for this test to better facilitate this testing
-    #  i.e. particles should be loaded in a planar "collimated" geometry as opposed
-    #  to radiating from point source
-    assert np.isclose(
-        np.median(sim.x[:, 1]), expected_stopping_distance.to(u.m).value, rtol=0.05
-    ).all()
+    x_final = (
+        np.reshape(
+            sim.x[:, 1], newshape=(energies.shape[0], PARTICLES_PER_CONFIGURATION)
+        )
+        * u.m
+    )
+
+    assert np.isclose(np.median(x_final, axis=-1), projected_ranges, rtol=0.05).all()
