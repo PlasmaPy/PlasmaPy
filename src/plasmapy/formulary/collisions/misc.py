@@ -227,8 +227,8 @@ def Bethe_stopping_lite(
     z: int,
 ) -> npt.NDArray[np.float64]:
     r"""
-    The :term:`lite-function` version of `Bethe_stopping`. Performs the same
-    calculations as `Bethe_stopping`, but is intended for computational use
+    The :term:`lite-function` version of `~plasmapy.formulary.collisions.misc.Bethe_stopping`. Performs the same
+    calculations as `~plasmapy.formulary.collisions.misc.Bethe_stopping`, but is intended for computational use
     and thus has data conditioning safeguards removed.
 
     The theoretical electronic stopping power for swift charged particles
@@ -258,7 +258,7 @@ def Bethe_stopping_lite(
 
     Returns
     -------
-    dEdx : `~numpy.ndarray
+    dEdx : `~numpy.ndarray`
         The stopping power of the material given the particle's energy.
 
     """
@@ -288,8 +288,8 @@ def Bethe_stopping(
     z: int,
 ) -> u.Quantity[u.J / u.m]:
     r"""
-    The :term:`lite-function` version of `Bethe_stopping`. Performs the same
-    calculations as `Bethe_stopping`, but is intended for computational use
+    The :term:`lite-function` version of `~plasmapy.formulary.collisions.misc.Bethe_stopping`. Performs the same
+    calculations as `~plasmapy.formulary.collisions.misc.Bethe_stopping`, but is intended for computational use
     and thus has data conditioning safeguards removed.
 
     The theoretical electronic stopping power for swift charged particles
