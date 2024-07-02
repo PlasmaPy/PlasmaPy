@@ -273,8 +273,6 @@ class Tracker(ParticleTracker):
         # velocities
         self.max_theta_hit_grid = self._max_theta_hit_grid()
 
-        self._max_theta: float | None = None
-
         # *********************************************************************
         # Define the detector plane
         # *********************************************************************
@@ -593,29 +591,6 @@ class Tracker(ParticleTracker):
         phi = np.arctan2(varr, harr)
 
         return theta.flatten(), phi.flatten()
-
-    @property
-    def max_theta(self) -> float:
-        r"""
-        The largest velocity vector angle (measured from the
-        source-to-detector axis) for which particles are generated.
-
-        Raises
-        ------
-        `AttributeError`
-            The attribute has not yet been defined by the `create_particles` method.
-        """
-
-        if self._max_theta is None:
-            raise AttributeError(
-                "Attempted to access `max_theta` before it was defined!"
-            )
-
-        return self._max_theta
-
-    @max_theta.setter
-    def max_theta(self, value):
-        self._max_theta = value
 
     @particles.particle_input
     def create_particles(
