@@ -478,23 +478,24 @@ class ParticleTracker:
 
         return any(quantity in grid.quantities for grid in self.grids)
 
-    def add_stopping(  # noqa: C901
+    def _validate_stopping_inputs(
         self,
         method: Literal["NIST", "Bethe"],
         materials: list[str] | None = None,
         I: u.Quantity[u.eV] | None = None,  # noqa: E741
-    ):
+    ) -> bool | None:
         r"""
-        Enable particle stopping using experimental stopping powers.
-
-        Interpolation of stopping powers is conducted using data from the NIST
-        PSTAR. This information is combined with the mass density quantity
-        provided in the grids to calculate the energy loss over the distance
-        travelled during a timestep.
+        Validate inputs to the `add_stopping` method. Raises errors if the
+        proper keyword arguments are not provided for a given method.
         """
 
         match method:
             case "NIST":
+                if materials is None:
+                    raise ValueError(
+                        "Please specify the relevant materials to use NIST stopping!"
+                    )
+
                 if len(materials) != len(self.grids):
                     raise ValueError(
                         "Please provide an array of length ngrids for the materials."
@@ -510,18 +511,12 @@ class ParticleTracker:
                     # Don't set `_do_stopping`. The push loop does not have to do stopping
                     # calculations
                     return
-
-                # Require that each grid has a defined mass density
-                for grid in self.grids:
-                    grid.require_quantities(["rho"], replace_with_zeros=True)
-
-                self._required_quantities.update({"rho"})
-                stopping_power_interpolators = [
-                    stopping_power(self._particle, material, return_interpolator=True)
-                    for material in materials
-                ]
-
             case "Bethe":
+                if I is None:
+                    raise ValueError(
+                        "Please specify the mean excitation energy (I) to use Bethe stopping!"
+                    )
+
                 if len(I) != len(self.grids):
                     raise ValueError(
                         "Please provide an array of length ngrids for the mean excitation energy."
@@ -538,12 +533,50 @@ class ParticleTracker:
                     # calculations
                     return
 
+        return True
+
+    def add_stopping(
+        self,
+        method: Literal["NIST", "Bethe"],
+        materials: list[str] | None = None,
+        I: u.Quantity[u.eV] | None = None,  # noqa: E741
+    ):
+        r"""
+        Enable particle stopping using experimental stopping powers.
+
+        Interpolation of stopping powers is conducted using data from the NIST
+        PSTAR. This information is combined with the mass density quantity
+        provided in the grids to calculate the energy loss over the distance
+        travelled during a timestep.
+        """
+
+        # Check inputs for user error and raise respective exceptions/warnings if
+        # necessary. Returns `True` if no errors were detected. If a "falsy" value
+        # is returned then the add_stopping method will abort.
+        if not self._validate_stopping_inputs(method, materials, I):
+            return
+
+        match method:
+            case "NIST":
+                # Require that each grid has a defined mass density
+                for grid in self.grids:
+                    grid.require_quantities(["rho"], replace_with_zeros=True)
+
+                self._required_quantities.update({"rho"})
+                stopping_power_interpolators = [
+                    stopping_power(self._particle, material, return_interpolator=True)
+                    for material in materials
+                ]
+
+            case "Bethe":
                 # Require that each grid has a defined electron number density
                 for grid in self.grids:
                     grid.require_quantities(["n_e"], replace_with_zeros=True)
 
                 self._required_quantities.update({"n_e"})
 
+                # These functions are used to represent that the mean excitation energy
+                # does not change over space for a given grid.
                 def wrapped_Bethe_stopping(I_grid):
                     def inner_Bethe_stopping(v, n_e):
                         return Bethe_stopping_lite(
@@ -590,7 +623,7 @@ class ParticleTracker:
             np.zeros((self.nparticles, 1)) if not self.is_synchronized_time_step else 0
         )
 
-        # Entered grid -> non-zero if particle EVER entered a grid
+        # Entered grid -> non-zero if particle EVER entered any grid
         self.entered_grid: NDArray[np.bool_] = np.zeros([self.nparticles]).astype(
             np.bool_
         )
@@ -622,14 +655,16 @@ class ParticleTracker:
 
             self._push()
 
-            # The state of a step is saved after each time step by calling the post_push_hook()
-            # though the save routine may do nothing with this information
+            # The state of a step is saved after each time step by calling `post_push_hook`
+            # The save routine may choose to do nothing with this information
             if self.save_routine is not None:
                 self.save_routine.post_push_hook()
 
         # Simulation has finished running
         self._has_run = True
 
+        # Force save of the final state of the simulation if a save routine is
+        # provided
         if self.save_routine is not None:
             self.save_routine.save()
 
