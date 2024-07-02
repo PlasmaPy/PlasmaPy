@@ -1020,14 +1020,9 @@ def test_NIST_particle_stopping(
     for various proton energies.
     """
 
-    # Split the list of tuples into two iterables using the splat operator
-    energies, projected_ranges = zip(*energy_projected_range_list, strict=True)
-
     # Apply uniform units and cast to quantity array
-    energies = np.asarray([v[0].si.value for v in energy_projected_range_list]) * u.J
-    projected_ranges = (
-        np.asarray([v[1].si.value for v in energy_projected_range_list]) * u.m
-    )
+    energies: u.Quantity = [v[0].si.value for v in energy_projected_range_list] * u.J
+    projected_ranges = [v[1].si.value for v in energy_projected_range_list] * u.m
 
     # Calculate the relativistic speed of the particles as a function of their
     # kinetic energy
@@ -1043,8 +1038,8 @@ def test_NIST_particle_stopping(
     rho = np.ones(stopping_grid.shape) * density
     stopping_grid.add_quantities(rho=rho)
 
-    source = [0, -10, 0] * u.mm
-    detector = [0, 100, 0] * u.mm
+    source: u.Quantity = [0, -10, 0] * u.mm
+    detector: u.Quantity = [0, 100, 0] * u.mm
 
     sim = cpr.Tracker(
         [stopping_grid],
