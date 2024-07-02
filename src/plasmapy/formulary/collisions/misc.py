@@ -7,6 +7,7 @@ __all__ = [
     "Bethe_stopping",
     "Spitzer_resistivity",
 ]
+__lite_funcs__ = ["Bethe_stopping_lite"]
 
 import astropy.constants as const
 import astropy.units as u
@@ -17,9 +18,11 @@ from plasmapy.formulary.speeds import thermal_speed
 from plasmapy.particles.atomic import reduced_mass
 from plasmapy.particles.decorators import particle_input
 from plasmapy.particles.particle_class import Particle
-from plasmapy.utils.decorators import validate_quantities
+from plasmapy.utils.decorators import bind_lite_func, validate_quantities
 from plasmapy.utils.decorators.checks import _check_relativistic
 from plasmapy.utils.exceptions import PhysicsError
+
+__all__ += __lite_funcs__
 
 _c = const.c
 _e = const.e.si
@@ -216,6 +219,66 @@ def mobility(
     return z_val / (reduced_mass_ * freq)
 
 
+def Bethe_stopping_lite(
+    I: np.ndarray,  # noqa: E741
+    n: np.ndarray,
+    v: np.ndarray,
+    z: int,
+) -> np.ndarray:
+    r"""
+    The :term:`lite-function` version of `Bethe_stopping`. Performs the same
+    calculations as `Bethe_stopping`, but is intended for computational use
+    and thus has data conditioning safeguards removed.
+
+    The theoretical electronic stopping power for swift charged particles
+    calculated from the Bethe formula.
+
+    The Bethe formula should only be used for high energy particles, as
+    higher order corrections become non-negligible for smaller energies.
+
+    By convention, this function returns a positive value for the stopping
+    energy.
+
+    Parameters
+    ----------
+    I: `~numpy.ndarray`
+        The mean excitation energy for the material in which the particle is
+        being stopped. Expressed in units of energy.
+
+    n: `~numpy.ndarray`
+        The electron number density of the material. Expressed in units of number density.
+
+    v: `~numpy.ndarray`
+        The velocity of the particle being stopped. Expressed in units of speed.
+
+    z: `int`
+        The charge of the charged particle in multiples of the electron charge.
+        Expressed only as an integer.
+
+    Returns
+    -------
+    dEdx : `~numpy.ndarray
+        The stopping power of the material given the particle's energy.
+
+    """
+
+    beta = v / _c.si.value
+
+    return (
+        4
+        * np.pi
+        * n
+        * z**2
+        / (_m_e.si.value * _c.si.value**2 * beta**2)
+        * (_e.si.value**2 / (4 * np.pi * _eps0.si.value)) ** 2
+        * (
+            np.log(2 * _m_e.si.value * _c.si.value**2 * beta**2 / (I * (1 - beta**2)))
+            - beta**2
+        )
+    )
+
+
+@bind_lite_func(Bethe_stopping_lite)
 def Bethe_stopping(
     I: u.Quantity[u.J],  # noqa: E741
     n: u.Quantity[1 / u.m**3],
@@ -223,6 +286,10 @@ def Bethe_stopping(
     z: int,
 ) -> u.Quantity[u.J / u.m]:
     r"""
+    The :term:`lite-function` version of `Bethe_stopping`. Performs the same
+    calculations as `Bethe_stopping`, but is intended for computational use
+    and thus has data conditioning safeguards removed.
+
     The theoretical electronic stopping power for swift charged particles
     calculated from the Bethe formula.
 
@@ -255,20 +322,7 @@ def Bethe_stopping(
 
     """
 
-    beta = v / _c.si.value
-
-    return (
-        4
-        * np.pi
-        * n
-        * z**2
-        / (_m_e.si.value * _c.si.value**2 * beta**2)
-        * (_e.si.value**2 / (4 * np.pi * _eps0.si.value)) ** 2
-        * (
-            np.log(2 * _m_e.si.value * _c.si.value**2 * beta**2 / (I * (1 - beta**2)))
-            - beta**2
-        )
-    )
+    return Bethe_stopping_lite(I.si.value, n.si.value, v.si.value, z) * u.J / u.m
 
 
 @validate_quantities(

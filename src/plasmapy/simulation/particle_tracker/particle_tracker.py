@@ -19,7 +19,7 @@ import numpy as np
 from numpy.typing import NDArray
 from tqdm import tqdm
 
-from plasmapy.formulary.collisions.misc import Bethe_stopping
+from plasmapy.formulary.collisions.misc import Bethe_stopping_lite
 from plasmapy.particles import Particle, particle_input
 from plasmapy.particles.atomic import stopping_power
 from plasmapy.plasma.grids import AbstractGrid
@@ -546,7 +546,7 @@ class ParticleTracker:
 
                 def wrapped_Bethe_stopping(I_grid):
                     def inner_Bethe_stopping(v, n_e):
-                        return Bethe_stopping(
+                        return Bethe_stopping_lite(
                             I_grid, n_e, v, self._particle.charge_number
                         )
 
