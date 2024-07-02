@@ -26,6 +26,7 @@ import astropy.units as u
 import numpy as np
 from astropy.constants import si as const
 from astropy.visualization import quantity_support
+from scipy.integrate import trapezoid
 from scipy.optimize import curve_fit
 
 from plasmapy.particles import Particle
@@ -1393,7 +1394,7 @@ def get_EEDF(probe_characteristic, visualize: bool = False):
     probability = dIdV2[_filter] * np.sqrt(energy.to(u.eV).value)
 
     # Integration of the EEDF for the purpose of normalization.
-    integral = np.abs(np.trapz(probability, x=energy.to(u.eV).value))
+    integral = np.abs(trapezoid(probability, x=energy.to(u.eV).value))
     probability = probability / integral
 
     if visualize:
