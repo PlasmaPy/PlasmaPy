@@ -1175,7 +1175,8 @@ def stopping_power(
         The function will by default return a tuple of energies and their
         associated stopping power. By setting this argument to `True`, the
         function will instead return a `Callable`, which takes in energies and
-        will return the associated stopping energies.
+        will return the associated stopping energies. Under the hood, this is
+        just a wrapped instance of `~scipy.interpolate.CubicSpline` with units.
 
     component : {"total", "electronic", "nuclear"}, default: ``total``
         The component of the stopping power to be calculated. Supported
