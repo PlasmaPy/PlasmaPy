@@ -11,6 +11,7 @@ import sys
 import typing
 import warnings
 from collections.abc import Iterable
+from typing import Literal
 
 import astropy.constants as const
 import astropy.units as u
@@ -18,6 +19,7 @@ import numpy as np
 from numpy.typing import NDArray
 from tqdm import tqdm
 
+from plasmapy.formulary.collisions.misc import Bethe_stopping
 from plasmapy.particles import Particle, particle_input
 from plasmapy.particles.atomic import stopping_power
 from plasmapy.plasma.grids import AbstractGrid
@@ -34,6 +36,9 @@ from plasmapy.simulation.particle_tracker.termination_conditions import (
     AbstractTerminationCondition,
 )
 from plasmapy.utils.exceptions import RelativityWarning
+
+_c = const.c
+_m_p = const.m_p
 
 
 class ParticleTracker:
@@ -189,7 +194,7 @@ class ParticleTracker:
             )
 
         # Ensure that the grids have defined the necessary quantities or at least zeroed
-        self._required_quantities = req_quantities
+        self._required_quantities = self._REQUIRED_QUANTITIES.copy()
         self._preprocess_grids(req_quantities)
 
         # self.grid_arr is the grid positions in si units. This is created here
@@ -473,7 +478,12 @@ class ParticleTracker:
 
         return any(quantity in grid.quantities for grid in self.grids)
 
-    def add_stopping(self, materials: list[str]):
+    def add_stopping(  # noqa: C901
+        self,
+        method: Literal["NIST", "Bethe"],
+        materials: list[str] | None = None,
+        I: u.Quantity[u.eV] | None = None,  # noqa: E741
+    ):
         r"""
         Enable particle stopping using experimental stopping powers.
 
@@ -483,33 +493,77 @@ class ParticleTracker:
         travelled during a timestep.
         """
 
-        if len(materials) != len(self.grids):
-            raise ValueError(
-                "Please provide an array of length ngrids for the materials."
-            )
+        match method:
+            case "NIST":
+                if len(materials) != len(self.grids):
+                    raise ValueError(
+                        "Please provide an array of length ngrids for the materials."
+                    )
 
-        if not self._is_quantity_defined_on_one_grid("rho"):
-            warnings.warn(
-                "The density is not defined on any of the provided grids! Particle stopping will not be "
-                "calculated.",
-                RuntimeWarning,
-            )
+                if not self._is_quantity_defined_on_one_grid("rho"):
+                    warnings.warn(
+                        "The density is not defined on any of the provided grids! Particle stopping will not be "
+                        "calculated.",
+                        RuntimeWarning,
+                    )
 
-            # Don't set `_do_stopping`. The push loop does not have to do stopping
-            # calculations
-            return
+                    # Don't set `_do_stopping`. The push loop does not have to do stopping
+                    # calculations
+                    return
 
-        # Require that each grid has a defined mass density
-        for grid in self.grids:
-            grid.require_quantities(["rho"], replace_with_zeros=True)
+                # Require that each grid has a defined mass density
+                for grid in self.grids:
+                    grid.require_quantities(["rho"], replace_with_zeros=True)
+
+                self._required_quantities.update({"rho"})
+                stopping_power_interpolators = [
+                    stopping_power(self._particle, material, return_interpolator=True)
+                    for material in materials
+                ]
+
+            case "Bethe":
+                if len(I) != len(self.grids):
+                    raise ValueError(
+                        "Please provide an array of length ngrids for the mean excitation energy."
+                    )
+
+                if not self._is_quantity_defined_on_one_grid("n_e"):
+                    warnings.warn(
+                        "The electron number density is not defined on any of the provided grids!"
+                        "Particle stopping will not be calculated.",
+                        RuntimeWarning,
+                    )
+
+                    # Don't set `_do_stopping`. The push loop does not have to do stopping
+                    # calculations
+                    return
+
+                # Require that each grid has a defined electron number density
+                for grid in self.grids:
+                    grid.require_quantities(["n_e"], replace_with_zeros=True)
+
+                self._required_quantities.update({"n_e"})
+
+                def wrapped_Bethe_stopping(I_grid):
+                    def inner_Bethe_stopping(v, n_e):
+                        return Bethe_stopping(
+                            I_grid, n_e, v, self._particle.charge_number
+                        )
+
+                    return inner_Bethe_stopping
+
+                stopping_power_interpolators = [
+                    wrapped_Bethe_stopping(I_grid.si.value) for I_grid in I
+                ]
+
+            case _:
+                raise ValueError(
+                    f"Please provide one of 'NIST' or 'Bethe' for the method keyword. (Got: {method})"
+                )
 
         self._do_stopping = True
-
-        self._required_quantities.update({"rho"})
-        self._stopping_power_interpolators = [
-            stopping_power(self._particle, material, return_interpolator=True)
-            for material in materials
-        ]
+        self._stopping_method = method
+        self._stopping_power_interpolators = stopping_power_interpolators
 
     def run(self) -> None:
         r"""
@@ -775,6 +829,10 @@ class ParticleTracker:
         return summed_field_values, E, B
 
     def _update_time(self, summed_field_values):
+        r"""
+        Calculate an appropriate time step for the simulation with respect to
+        user configuration. Returns the calculated time step.
+        """
         # Calculate the adaptive time step from the fields currently experienced
         # by the particles
         # If user sets dt explicitly, that's handled in _adaptive_dt
@@ -802,6 +860,10 @@ class ParticleTracker:
         return dt
 
     def _update_position(self, E, B):
+        r"""
+        Update the positions and velocities of the simulated particles using the
+        integrator provided at instantiation.
+        """
         pos_tracked = self.x[self._tracked_particle_mask]
         vel_tracked = self.v[self._tracked_particle_mask]
         x_results, v_results = self._integrator.push(
@@ -814,6 +876,13 @@ class ParticleTracker:
         )
 
     def _update_velocity_stopping(self, summed_field_values):
+        r"""
+        Apply stopping to the simulated particles using the provided stopping
+        routine. The stopping is applied to the simulation by calculating the
+        new energy values of the particles, and then updating the particles'
+        velocity to match these energies.
+        """
+
         current_speeds = np.linalg.norm(
             self.v[self._tracked_particle_mask], axis=-1, keepdims=True
         )
@@ -827,20 +896,28 @@ class ParticleTracker:
             self._particle_kinetic_energy[self._tracked_particle_mask] * u.J
         )
 
-        for cs in self._stopping_power_interpolators:
-            interpolation_result = (
-                cs(relevant_kinetic_energy).to(u.J * u.m**2 / u.kg).value
-            )
+        # NIST
+        match self._stopping_method:
+            case "NIST":
+                for cs in self._stopping_power_interpolators:
+                    interpolation_result = cs(relevant_kinetic_energy).si.value
 
-            stopping_power += interpolation_result
+                    stopping_power += interpolation_result
 
-        # Take the negative stopping power since we want to be removing energy
-        # from the particles
+                energy_loss_per_length = np.multiply(
+                    stopping_power,
+                    summed_field_values["rho"].si.value[:, np.newaxis],
+                )
+            case "Bethe":
+                for cs in self._stopping_power_interpolators:
+                    interpolation_result = cs(
+                        current_speeds,
+                        summed_field_values["n_e"].si.value[:, np.newaxis],
+                    )
 
-        energy_loss_per_length = np.multiply(
-            stopping_power,
-            summed_field_values["rho"].to(u.kg / u.m**3).value[:, np.newaxis],
-        )
+                    stopping_power += interpolation_result
+
+                energy_loss_per_length = stopping_power
 
         dE = -np.multiply(energy_loss_per_length, dx)
 
@@ -863,6 +940,11 @@ class ParticleTracker:
         self.v[self._tracked_particle_mask] = np.multiply(
             new_speeds, velocity_unit_vectors
         )
+
+        if not hasattr(self, "_stopping_history"):
+            self._stopping_history = []
+
+        self._stopping_history.append(stopping_power)
 
         self._stop_particles(particles_to_be_stopped_mask)
 
