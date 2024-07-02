@@ -781,52 +781,38 @@ class ParticleTracker:
         # Construct a dictionary to store the interpolation results
         # This is accomplished using a dictionary comprehension. Each quantity is
         # initialized as a zeros array with its respective units
-        summed_field_values = {
+        total_grid_values = {
             field_name: np.zeros(self.nparticles_tracked)
             * AbstractGrid.recognized_quantities[field_name].unit
             for field_name in self._required_quantities
         }
 
         for grid in self.grids:
-            if self.field_weighting == "volume averaged":
-                # Use the keys of the storage dictionary as input quantity strings to the interpolator
-                field_values = grid.volume_averaged_interpolator(
-                    pos_tracked * u.m, *summed_field_values.keys(), persistent=True
-                )
-            elif self.field_weighting == "nearest neighbor":
-                field_values = grid.nearest_neighbor_interpolator(
-                    pos_tracked * u.m, *summed_field_values.keys(), persistent=True
-                )
+            # TODO: maybe convert this to a ternary operator for now?
+            match self.field_weighting:
+                case "volume averaged":
+                    interpolation_method = grid.volume_averaged_interpolator
+                case "nearest neighbor":
+                    interpolation_method = grid.nearest_neighbor_interpolator
+
+            # Use the keys of `total_grid_values` as input quantity strings to the interpolator
+            grid_values = interpolation_method(
+                pos_tracked * u.m, *total_grid_values.keys(), persistent=True
+            )
 
             # Iterate through the interpolated fields and add them to the running sum
             # NaN values are zeroed
-            for field_value, field_name in zip(
-                field_values, summed_field_values.keys(), strict=False
+            for grid_value, grid_name in zip(
+                grid_values,
+                total_grid_values.keys(),
+                strict=True,
             ):
-                summed_field_values[field_name] += np.nan_to_num(
-                    field_value,
-                    0.0 * AbstractGrid.recognized_quantities[field_name].unit,
+                total_grid_values[grid_name] += np.nan_to_num(
+                    grid_value,
+                    0.0 * AbstractGrid.recognized_quantities[grid_name].unit,
                 )
 
-        # Create arrays of E and B as required by push algorithm
-        E = np.array(
-            [
-                summed_field_values["E_x"].to(u.V / u.m).value,
-                summed_field_values["E_y"].to(u.V / u.m).value,
-                summed_field_values["E_z"].to(u.V / u.m).value,
-            ]
-        )
-        E = np.moveaxis(E, 0, -1)
-        B = np.array(
-            [
-                summed_field_values["B_x"].to(u.T).value,
-                summed_field_values["B_y"].to(u.T).value,
-                summed_field_values["B_z"].to(u.T).value,
-            ]
-        )
-        B = np.moveaxis(B, 0, -1)
-
-        return summed_field_values, E, B
+        return total_grid_values
 
     def _update_time(self, summed_field_values):
         r"""
@@ -859,11 +845,30 @@ class ParticleTracker:
 
         return dt
 
-    def _update_position(self, E, B):
+    def _update_position(self, summed_field_values):
         r"""
         Update the positions and velocities of the simulated particles using the
         integrator provided at instantiation.
         """
+
+        # Create arrays of E and B as required by push algorithm
+        E = np.array(
+            [
+                summed_field_values["E_x"].to(u.V / u.m).value,
+                summed_field_values["E_y"].to(u.V / u.m).value,
+                summed_field_values["E_z"].to(u.V / u.m).value,
+            ]
+        )
+        E = np.moveaxis(E, 0, -1)
+        B = np.array(
+            [
+                summed_field_values["B_x"].to(u.T).value,
+                summed_field_values["B_y"].to(u.T).value,
+                summed_field_values["B_z"].to(u.T).value,
+            ]
+        )
+        B = np.moveaxis(B, 0, -1)
+
         pos_tracked = self.x[self._tracked_particle_mask]
         vel_tracked = self.v[self._tracked_particle_mask]
         x_results, v_results = self._integrator.push(
@@ -896,7 +901,8 @@ class ParticleTracker:
             self._particle_kinetic_energy[self._tracked_particle_mask] * u.J
         )
 
-        # NIST
+        # TODO: how can we reorganize this if we decide to add more stopping
+        #  routines in the future?
         match self._stopping_method:
             case "NIST":
                 for cs in self._stopping_power_interpolators:
@@ -955,14 +961,14 @@ class ParticleTracker:
         """
 
         # Interpolate fields at particle positions
-        total_grid_values, E, B = self._interpolate_grid()
+        total_grid_values = self._interpolate_grid()
 
         # Calculate an appropriate timestep (uniform, synchronized)
         self.dt = self._update_time(total_grid_values)
 
         # Update the position and velocities of the particles using timestep
         # calculations as well as the magnitude of E and B fields
-        self._update_position(E, B)
+        self._update_position(total_grid_values)
 
         if not self._integrator.is_relativistic and not self._raised_relativity_warning:
             beta_max = self.vmax / const.c.si.value

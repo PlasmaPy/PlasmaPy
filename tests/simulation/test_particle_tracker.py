@@ -472,15 +472,28 @@ def test_particle_tracker_add_stopping_errors(
     simulation = ParticleTracker(grid, termination_condition, save_routine, dt=dt)
     simulation.load_particles(x, v, Particle("p+"))
 
+    # TODO: should the following blocks be parametrized? maybe convert the above to a fixture?
     with pytest.raises(
         ValueError, match="Please provide an array of length ngrids for the materials."
     ):
-        simulation.add_stopping(["ALUMINUM", "ALUMINUM"])
+        simulation.add_stopping(method="NIST", materials=["ALUMINUM", "ALUMINUM"])
+
+    with pytest.raises(
+        ValueError,
+        match="Please provide one of 'NIST' or 'Bethe' for the method keyword",
+    ):
+        simulation.add_stopping(method="Lorem Ipsum")
+
+    with pytest.raises(
+        ValueError,
+        match="Please provide an array of length ngrids for the mean excitation energy.",
+    ):
+        simulation.add_stopping(method="Bethe", I=[0.0, 0.0] * u.eV)
 
     with pytest.warns(
         RuntimeWarning, match="The density is not defined on any of the provided grids!"
     ):
-        simulation.add_stopping(["ALUMINUM"])
+        simulation.add_stopping(method="NIST", materials=["ALUMINUM"])
 
 
 class TestParticleTrajectory:

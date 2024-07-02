@@ -216,7 +216,6 @@ def mobility(
     return z_val / (reduced_mass_ * freq)
 
 
-@validate_quantities()
 def Bethe_stopping(
     I: u.Quantity[u.J],  # noqa: E741
     n: u.Quantity[1 / u.m**3],
@@ -256,16 +255,19 @@ def Bethe_stopping(
 
     """
 
-    beta = v / _c
+    beta = v / _c.si.value
 
     return (
         4
         * np.pi
         * n
         * z**2
-        / (_m_e * _c**2 * beta**2)
-        * (_e**2 / (4 * np.pi * _eps0)) ** 2
-        * (np.log(2 * _m_e * _c**2 * beta**2 / (I * (1 - beta**2))) - beta**2)
+        / (_m_e.si.value * _c.si.value**2 * beta**2)
+        * (_e.si.value**2 / (4 * np.pi * _eps0.si.value)) ** 2
+        * (
+            np.log(2 * _m_e.si.value * _c.si.value**2 * beta**2 / (I * (1 - beta**2)))
+            - beta**2
+        )
     )
 
 
