@@ -35,7 +35,7 @@ from plasmapy.simulation.particle_tracker.save_routines import (
 from plasmapy.simulation.particle_tracker.termination_conditions import (
     AbstractTerminationCondition,
 )
-from plasmapy.utils.exceptions import RelativityWarning
+from plasmapy.utils.exceptions import PhysicsWarning, RelativityWarning
 
 _c = const.c
 _m_p = const.m_p
@@ -524,7 +524,7 @@ class ParticleTracker:
 
                 if not self._is_quantity_defined_on_one_grid("n_e"):
                     warnings.warn(
-                        "The electron number density is not defined on any of the provided grids!"
+                        "The electron number density is not defined on any of the provided grids! "
                         "Particle stopping will not be calculated.",
                         RuntimeWarning,
                     )
@@ -574,6 +574,7 @@ class ParticleTracker:
                     grid.require_quantities(["n_e"], replace_with_zeros=True)
 
                 self._required_quantities.update({"n_e"})
+                self._raised_energy_warning = False
 
                 # These functions are used to represent that the mean excitation energy
                 # does not change over space for a given grid.
@@ -959,6 +960,18 @@ class ParticleTracker:
                     stopping_power += interpolation_result
 
                 energy_loss_per_length = stopping_power
+
+                if (
+                    not self._raised_energy_warning
+                    and np.min(energy_loss_per_length * u.J).to(u.MeV).value < 1
+                ):
+                    self._raised_energy_warning = True
+
+                    warnings.warn(
+                        "The Bethe model is only valid for high energy particles. Consider using"
+                        "NIST stopping if you require accurate stopping powers at lower energies.",
+                        category=PhysicsWarning,
+                    )
 
         dE = -np.multiply(energy_loss_per_length, dx)
 

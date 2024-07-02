@@ -2,6 +2,8 @@
 Tests for particle_tracker.py
 """
 
+import re
+
 import astropy.constants as const
 import astropy.units as u
 import numpy as np
@@ -22,7 +24,7 @@ from plasmapy.simulation.particle_tracker.termination_conditions import (
     NoParticlesOnGridsTerminationCondition,
     TimeElapsedTerminationCondition,
 )
-from plasmapy.utils.exceptions import RelativityWarning
+from plasmapy.utils.exceptions import PhysicsWarning, RelativityWarning
 
 rng = np.random.default_rng()
 
@@ -448,8 +450,47 @@ def test_particle_tracker_stop_particles(request) -> None:
     assert np.isnan(simulation.x[0, :]).all()
 
 
+@pytest.mark.parametrize(
+    ("kwargs", "expected_error", "match_string"),
+    [
+        (
+            {"method": "NIST"},
+            ValueError,
+            "Please specify the relevant materials to use NIST stopping!",
+        ),
+        (
+            {
+                "method": "NIST",
+                "materials": ["ALUMINUM", "ALUMINUM"],
+            },
+            ValueError,
+            "Please provide an array of length ngrids for the materials.",
+        ),
+        (
+            {
+                "method": "Lorem Ipsum",
+            },
+            ValueError,
+            "Please provide one of 'NIST' or 'Bethe' for the method keyword.",
+        ),
+        (
+            {"method": "Bethe"},
+            ValueError,
+            "Please specify the mean excitation energy (I) to use Bethe stopping!",
+        ),
+        (
+            {"method": "Bethe", "I": [0, 0] * u.eV},
+            ValueError,
+            "Please provide an array of length ngrids for the mean excitation energy.",
+        ),
+    ],
+)
 def test_particle_tracker_add_stopping_errors(
-    no_particles_on_grids_instantiated, memory_interval_save_routine_instantiated
+    no_particles_on_grids_instantiated,
+    memory_interval_save_routine_instantiated,
+    kwargs,
+    expected_error,
+    match_string,
 ) -> None:
     E_strength = 1 * u.V / u.m
     L = 1 * u.m
@@ -472,28 +513,50 @@ def test_particle_tracker_add_stopping_errors(
     simulation = ParticleTracker(grid, termination_condition, save_routine, dt=dt)
     simulation.load_particles(x, v, Particle("p+"))
 
-    # TODO: should the following blocks be parametrized? maybe convert the above to a fixture?
-    with pytest.raises(
-        ValueError, match="Please provide an array of length ngrids for the materials."
-    ):
-        simulation.add_stopping(method="NIST", materials=["ALUMINUM", "ALUMINUM"])
-
-    with pytest.raises(
-        ValueError,
-        match="Please provide one of 'NIST' or 'Bethe' for the method keyword",
-    ):
-        simulation.add_stopping(method="Lorem Ipsum")  # type: ignore[arg-type]
-
-    with pytest.raises(
-        ValueError,
-        match="Please provide an array of length ngrids for the mean excitation energy.",
-    ):
-        simulation.add_stopping(method="Bethe", I=[0.0, 0.0] * u.eV)
+    with pytest.raises(expected_error, match=re.escape(match_string)):
+        simulation.add_stopping(**kwargs)
 
     with pytest.warns(
         RuntimeWarning, match="The density is not defined on any of the provided grids!"
     ):
         simulation.add_stopping(method="NIST", materials=["ALUMINUM"])
+
+
+def test_particle_tracker_Bethe_warning(
+    no_particles_on_grids_instantiated,
+    memory_interval_save_routine_instantiated,
+) -> None:
+    L = 1 * u.m
+
+    num = 2
+    dt = 1e-2 * u.s
+
+    grid = CartesianGrid(-L, L, num=num)
+    grid_shape = (num,) * 3
+
+    n_e = np.full(grid_shape, 1) * u.m**-3
+
+    x = [[0, 0, 0]] * u.m
+    v = [[0, 0, 0]] * u.m / u.s
+
+    termination_condition = no_particles_on_grids_instantiated
+    save_routine = memory_interval_save_routine_instantiated
+
+    simulation = ParticleTracker(grid, termination_condition, save_routine, dt=dt)
+    simulation.load_particles(x, v, Particle("p+"))
+
+    with pytest.warns(
+        RuntimeWarning, match="The electron number density is not defined"
+    ):
+        simulation.add_stopping(method="Bethe", I=[0] * u.eV)
+
+    grid.add_quantities(n_e=n_e)
+    simulation.add_stopping(method="Bethe", I=[166] * u.eV)
+
+    with pytest.warns(
+        PhysicsWarning, match="The Bethe model is only valid for high energy particles."
+    ):
+        simulation.run()
 
 
 class TestParticleTrajectory:
@@ -785,30 +848,6 @@ class TestParticleTrajectory:
             m=particle.mass,
             is_relativistic=False,
         )
-
-        # Trajectory debug
-        """
-        import matplotlib.pyplot as plt
-
-        ax = plt.gca()
-        plt.title(f"Regime={regime}")
-        plt.xlabel("Time (ns)")
-        plt.ylabel("Drift Component of Position (m)")
-
-        plt.plot(
-            save_routine.results["time"][:].to(u.ns).value,
-            classical_theory_x,
-            label="classical theory",
-        )
-        plt.plot(
-            save_routine.results["time"][:].to(u.ns).value,
-            save_routine.results["x"][:, 0, 0],
-            label="simulation",
-        )
-
-        ax.legend()
-        plt.show()
-        """
 
         # Discard the first five points due to large relative error.
         assert np.isclose(
