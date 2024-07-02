@@ -47,7 +47,6 @@
 [download and install Python]: https://wiki.python.org/moin/BeginnersGuide/Download
 [GitHub repository]: https://github.com/PlasmaPy/PlasmaPy
 [installing PlasmaPy]: https://docs.plasmapy.org/en/latest/install.html
-[installing PlasmaPy from source]: http://docs.plasmapy.org/en/latest/install.html#building-and-installing-from-source-code
 [Mailing list]: https://groups.google.com/forum/#!forum/plasmapy
 [Matrix]: https://app.element.io/#/room/#plasmapy:openastronomy.org
 [meetings]: https://www.plasmapy.org/meetings/weekly
@@ -81,15 +80,14 @@ recent presentations are available from the [PlasmaPy Community on
 Zenodo].
 
 Please [submit a feature request] in our [GitHub repository] if you
-have an idea for new functionality. PlasmaPy is community-driven, and
-feature requests really help guide the direction of software
-development. Please also [submit a bug report] if you notice any
-problems. We really appreciate it!
+have an idea for new or improved functionality. PlasmaPy is
+community-driven, and feature requests really help guide the future of
+the project. Please [submit a bug report] if you notice any problems. We
+really appreciate it!
 
-If you are interested in contributing, please check out our
-[contributor guide] and [code of conduct]. There are also a number of
-[good first issues] in our GitHub repository. New contributors are
-very welcome!
+If you are interested in contributing, please check out our [contributor
+guide] and [code of conduct]. There are a number of [good first issues]
+in our GitHub repository. New contributors are very welcome!
 
 [src layout]: https://packaging.python.org/en/latest/discussions/src-layout-vs-flat-layout/
 [`src/plasmapy/`]: https://github.com/PlasmaPy/PlasmaPy/tree/main/src/plasmapy
@@ -98,15 +96,14 @@ very welcome!
 > [!IMPORTANT]
 > PlasmaPy switched to an [src layout]. Source code that was in
 > `plasmapy/` is now in [`src/plasmapy/`]. Tests are now located in a
-> top-level [`tests/`] directory.
-> Existing pull requests should pull in the changes from the `main`
-> branch with `git pull upstream main` (assuming the remote for the
-> primary PlasmaPy repo is named `upstream`).
-> Because `git` does not automatically remove directories, the
-> `plasmapy/` directory in older clones must be manually deleted.
-> If you previously did an editable installation of PlasmaPy, it will
-> likely need to be redone by running `pip install -e .[tests,docs]` in
-> the top-level directory of the repository.
+> top-level [`tests/`] directory. Existing pull requests should pull
+> in the changes from the `main` branch with `git pull upstream main`
+> (assuming the remote for the primary PlasmaPy repo is named
+> `upstream`). Because `git` does not automatically remove
+> directories, the `plasmapy/` directory in older clones must be
+> manually deleted. If you previously did an editable installation of
+> PlasmaPy, it will likely need to be redone by running `pip install
+> -e .[tests,docs]` in the top-level directory of the repository.
 
 ## Installation
 
@@ -129,20 +126,13 @@ py -3.12 -m pip install plasmapy
 The `3.12` may be replaced by any version of Python that is supported by
 PlasmaPy.
 
-If you have [installed Conda], then you can also install PlasmaPy into
-an activated Conda environment by running:
+If you have [installed Conda], then you can install PlasmaPy into  an
+activated Conda environment by running:
 ```Shell
 conda install -c conda-forge plasmapy
 ```
-PlasmaPy can also be installed using [Anaconda Navigator] so long as
-`conda-forge` is added as a channel.
 
 Check out our instructions on [installing PlasmaPy] for more details.
-
-Please check out our documentation for more information on [how to
-install PlasmaPy]. To contribute to the package or use the most recent
-version, check out our instructions on [installing PlasmaPy from
-source].
 
 ## Events
 
@@ -167,7 +157,7 @@ feel free to come by!
 PlasmaPy's weekly [community meetings] are a place to talk about code
 development. If you have an idea for a new feature or would like to
 make a code contribution, community meetings are a good place to go
-to.  As of February 2024, our community meetings are on most Tuesdays
+to. As of February 2024, our community meetings are on most Tuesdays
 at 2 pm Eastern.
 
 ### Project meetings
