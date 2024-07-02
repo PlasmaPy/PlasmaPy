@@ -221,11 +221,11 @@ def mobility(
 
 
 def Bethe_stopping_lite(
-    I: npt.NDArray[float],  # noqa: E741
-    n: npt.NDArray[float],
-    v: npt.NDArray[float],
+    I: npt.NDArray[np.float64],  # noqa: E741
+    n: npt.NDArray[np.float64],
+    v: npt.NDArray[np.float64],
     z: int,
-) -> npt.NDArray[float]:
+) -> npt.NDArray[np.float64]:
     r"""
     The :term:`lite-function` version of `Bethe_stopping`. Performs the same
     calculations as `Bethe_stopping`, but is intended for computational use
@@ -265,7 +265,7 @@ def Bethe_stopping_lite(
 
     beta = v / _c.si.value
 
-    return (
+    return np.asarray(
         4
         * np.pi
         * n
@@ -275,7 +275,8 @@ def Bethe_stopping_lite(
         * (
             np.log(2 * _m_e.si.value * _c.si.value**2 * beta**2 / (I * (1 - beta**2)))
             - beta**2
-        )
+        ),
+        dtype=np.float64,
     )
 
 
