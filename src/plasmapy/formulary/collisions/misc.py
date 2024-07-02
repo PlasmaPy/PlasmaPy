@@ -221,11 +221,11 @@ def mobility(
 
 
 def Bethe_stopping_lite(
-    I: npt.NDArray[np.float64],  # noqa: E741
-    n: npt.NDArray[np.float64],
-    v: npt.NDArray[np.float64],
+    I: npt.NDArray[np.float32],  # noqa: E741
+    n: npt.NDArray[np.float32],
+    v: npt.NDArray[np.float32],
     z: int,
-) -> npt.NDArray[np.float64]:
+) -> npt.NDArray[np.float32]:
     r"""
     The :term:`lite-function` version of `~plasmapy.formulary.collisions.misc.Bethe_stopping`. Performs the same
     calculations as `~plasmapy.formulary.collisions.misc.Bethe_stopping`, but is intended for computational use
