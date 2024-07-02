@@ -25,11 +25,11 @@
 
 [Anaconda Navigator]: https://anaconda.org/anaconda/anaconda-navigator
 [Astropy]: https://www.astropy.org
+[authors and credits]: https://docs.plasmapy.org/en/latest/about/credits.html
 [3-clause BSD license]: ./LICENSE.md
 [calendar]: https://calendar.google.com/calendar/embed?src=c_sqqq390s24jjfjp3q86pv41pi8%40group.calendar.google.com&ctz=America%2FNew_York
 [citation instructions]: https://docs.plasmapy.org/en/latest/about/citation.html
 [code of conduct]: http://docs.plasmapy.org/en/latest/CODE_OF_CONDUCT.html
-[collaborative award]: https://doi.org/10.5281/zenodo.2633286
 [command line]: https://tutorial.djangogirls.org/en/intro_to_command_line/
 [community meetings]: https://www.plasmapy.org/meetings/weekly
 [contributor guide]: https://docs.plasmapy.org/en/latest/development/index.html
@@ -64,7 +64,6 @@
 [Smithsonian Institution]: https://www.si.edu
 [submit a bug report]: https://github.com/PlasmaPy/PlasmaPy/issues/new?assignees=&labels=Bug&template=bug_report.yml
 [submit a feature request]: https://github.com/PlasmaPy/PlasmaPy/issues/new?assignees=&labels=Feature+request&template=feature_request.yml
-[Suggestion box]: https://docs.google.com/forms/d/e/1FAIpQLSdT3O5iHZrLJRuavFyzoR23PGy0Prfzx2SQOcwJGWtvHyT2lw/viewform?usp=sf_link
 [team@plasmapy.org]: mailto:team@plasmapy.org
 [this video]: https://youtu.be/E8RwQF5wcXM
 [Zoom]: https://zoom.us/j/91633383503?pwd=QWNkdHpWeFhrYW1vQy91ODNTVG5Ndz09
@@ -97,7 +96,7 @@ very welcome!
 [`tests/`]: https://github.com/PlasmaPy/PlasmaPy/tree/main/tests
 
 > [!IMPORTANT]
-> PlasmaPy recently switched to an [src layout]. Source code that was in
+> PlasmaPy switched to an [src layout]. Source code that was in
 > `plasmapy/` is now in [`src/plasmapy/`]. Tests are now located in a
 > top-level [`tests/`] directory.
 > Existing pull requests should pull in the changes from the `main`
@@ -213,13 +212,6 @@ bring up discussion topics, and ask questions.
 You can subscribe to PlasmaPy's low-volume [mailing list] to receive
 PlasmaPy newsletters and other announcements.
 
-### Suggestion box
-
-We have a [suggestion box] if you would like to (optionally
-anonymously) suggest a feature/topic for consideration. These
-suggestions might be changed into GitHub issues for further
-discussion.
-
 ## Contact information
 
 Please feel free to reach out to us at [team@plasmapy.org] or stop by
@@ -246,9 +238,7 @@ instructions].
 
 ## Acknowledgments
 
-Early development on PlasmaPy was supported in part by the U.S.
-[Department of Energy], the [Smithsonian Institution], [NASA], and
-[Google Summer of Code]. Ongoing PlasmaPy development is being
-supported through a [collaborative award] from the
-[Cyberinfrastructure for Sustained Scientific Innovation] program of
-the U.S. [National Science Foundation].
+Development of PlasmaPy has been supported in part by the [National
+Science  Foundation], [Department of Energy], [NASA], and the
+[Smithsonian Institution]. For more details, please see PlasmaPy's
+documentation page on [authors and credits].
