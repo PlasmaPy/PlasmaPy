@@ -78,7 +78,7 @@ class AbstractGrid(ABC):
 
     """
 
-    def __init__(self, *seeds: Sequence[int], num: int = 100, **kwargs) -> None:
+    def __init__(self, *seeds: Sequence[u.Quantity], num: int = 100, **kwargs) -> None:
         # Initialize some variables
         self._interpolator = None
         self._is_uniform = None
@@ -126,6 +126,8 @@ class AbstractGrid(ABC):
         RecognizedQuantity("B_y", "Magnetic field (y component)", u.T),
         RecognizedQuantity("B_z", "Magnetic field (z component)", u.T),
         RecognizedQuantity("phi", "Electric Scalar Potential", u.V),
+        RecognizedQuantity("n_e", "Electron Number Density", 1 / u.m**3),
+        RecognizedQuantity("dEdx", "Stopping Power", u.J * u.m**2 / u.kg),
     ]
 
     # Create a dict of recognized quantities for fast access by key
@@ -133,8 +135,9 @@ class AbstractGrid(ABC):
     for _rq in _recognized_quantities_list:
         _recognized_quantities[_rq.key] = _rq
 
+    @classmethod
     @property
-    def recognized_quantities(self):
+    def recognized_quantities(cls):
         r"""
         A dictionary of standard key names representing particular physical
         quantities. Using these keys allows these
@@ -142,7 +145,7 @@ class AbstractGrid(ABC):
         Each entry contains a tuple containing a description and the unit
         associated with the quantity.
         """
-        return self._recognized_quantities
+        return cls._recognized_quantities
 
     def require_quantities(
         self,
