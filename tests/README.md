@@ -4,10 +4,10 @@
 [**testing guide**]: https://docs.plasmapy.org/en/latest/contributing/testing_guide.html
 [`src/plasmapy/formulary/speeds.py`]: https://github.com/PlasmaPy/PlasmaPy/blob/main/src/plasmapy/formulary/speeds.py
 [`tests/formulary/test_speeds.py`]: https://github.com/PlasmaPy/PlasmaPy/blob/main/tests/formulary/test_speeds.py
-[`tests/`]: https://github.com/PlasmaPy/PlasmaPy/blob/main/tests
+[`tests`]: https://github.com/PlasmaPy/PlasmaPy/blob/main/tests
 [`src/plasmapy/`]: https://github.com/PlasmaPy/PlasmaPy/blob/main/src/plasmapy
 
-The [`tests/`] directory contains PlasmaPy's tests.
+The [`tests`] directory contains PlasmaPy's tests.
 
 > [!TIP]
 > To learn more about software testing, please check out the
@@ -15,7 +15,7 @@ The [`tests/`] directory contains PlasmaPy's tests.
 
 ## Locating tests
 
-The directory structure and organization of [`tests/`] largely mirrors
+The directory structure and organization of [`tests`] largely mirrors
 that of [`src/plasmapy/`], which contains PlasmaPy's source code.
 
 Using the example of `plasmapy.formulary.speeds`:
