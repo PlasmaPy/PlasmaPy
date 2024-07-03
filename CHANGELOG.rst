@@ -113,9 +113,8 @@ Internal Changes and Refactorings
 - Removed :file:`setup.py`. (:pr:`2558`)
 - Added ``sphinx-lint`` as a |pre-commit| hook to find
   reStructuredText errors. (:pr:`2561`)
-- Enabled the `tox-uv <https://github.com/tox-dev/tox-uv>`_ plugin to tox,
-  so that package installation, caching, and the creation of virtual
-  environments will
+- Enabled the ``tox-uv``plugin to tox, so that package installation,
+  caching, and the creation of virtual environments will
   be handled by |uv| instead of |pip|. This change makes it faster to run
   tests both locally and via |GitHub Actions|. (:pr:`2584`)
 - Changed the project structure to an `src
