@@ -9,6 +9,8 @@ __all__ = [
 ]
 __lite_funcs__ = ["Bethe_stopping_lite"]
 
+from typing import Any
+
 import astropy.constants as const
 import astropy.units as u
 import numpy as np
@@ -221,11 +223,11 @@ def mobility(
 
 
 def Bethe_stopping_lite(
-    I: npt.NDArray[np.integer | np.floating],  # noqa: E741
-    n: npt.NDArray[np.integer | np.floating],
-    v: npt.NDArray[np.integer | np.floating],
+    I: npt.NDArray[np.integer[Any] | np.floating[Any]],  # noqa: E741
+    n: npt.NDArray[np.integer[Any] | np.floating[Any]],
+    v: npt.NDArray[np.integer[Any] | np.floating[Any]],
     z: int,
-) -> npt.NDArray[np.integer | np.floating]:
+) -> npt.NDArray[np.integer[Any] | np.floating[Any]]:
     r"""
     The :term:`lite-function` version of `~plasmapy.formulary.collisions.misc.Bethe_stopping`. Performs the same
     calculations as `~plasmapy.formulary.collisions.misc.Bethe_stopping`, but is intended for computational use
