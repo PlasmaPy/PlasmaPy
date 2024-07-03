@@ -323,8 +323,8 @@ class ClassicalTransport:
         m_i: u.Quantity[u.kg] = None,
         Z=None,
         B: u.Quantity[u.T] = 0.0 * u.T,
-        model="Braginskii",
-        field_orientation="parallel",
+        model: str = "Braginskii",
+        field_orientation: str = "parallel",
         coulomb_log_ei=None,
         V_ei=None,
         coulomb_log_ii=None,
@@ -333,7 +333,7 @@ class ClassicalTransport:
         hall_i=None,
         mu=None,
         theta: float | None = None,
-        coulomb_log_method="classical",
+        coulomb_log_method: str = "classical",
     ) -> None:
         # check the model
         self.model = model.lower()  # string inputs should be case-insensitive
@@ -795,11 +795,11 @@ def resistivity(
     m_i=None,
     Z=None,
     B: u.Quantity[u.T] = 0.0 * u.T,
-    model="Braginskii",
-    field_orientation="parallel",
+    model: str = "Braginskii",
+    field_orientation: str = "parallel",
     mu=None,
     theta: float | None = None,
-    coulomb_log_method="classical",
+    coulomb_log_method: str = "classical",
 ) -> u.Quantity[u.Ohm * u.m]:
     r"""
     Calculate the resistivity.
@@ -864,11 +864,11 @@ def thermoelectric_conductivity(
     m_i=None,
     Z=None,
     B: u.Quantity[u.T] = 0.0 * u.T,
-    model="Braginskii",
-    field_orientation="parallel",
+    model: str = "Braginskii",
+    field_orientation: str = "parallel",
     mu=None,
     theta: float | None = None,
-    coulomb_log_method="classical",
+    coulomb_log_method: str = "classical",
 ):
     r"""
     Calculate the thermoelectric conductivity.
@@ -906,11 +906,11 @@ def ion_thermal_conductivity(
     m_i=None,
     Z=None,
     B: u.Quantity[u.T] = 0.0 * u.T,
-    model="Braginskii",
-    field_orientation="parallel",
+    model: str = "Braginskii",
+    field_orientation: str = "parallel",
     mu=None,
     theta: float | None = None,
-    coulomb_log_method="classical",
+    coulomb_log_method: str = "classical",
 ) -> u.Quantity[u.W / u.m / u.K]:
     r"""
     Calculate the thermal conductivity for ions.
@@ -977,11 +977,11 @@ def electron_thermal_conductivity(
     m_i=None,
     Z=None,
     B: u.Quantity[u.T] = 0.0 * u.T,
-    model="Braginskii",
-    field_orientation="parallel",
+    model: str = "Braginskii",
+    field_orientation: str = "parallel",
     mu=None,
     theta: float | None = None,
-    coulomb_log_method="classical",
+    coulomb_log_method: str = "classical",
 ) -> u.Quantity[u.W / u.m / u.K]:
     r"""
     Calculate the thermal conductivity for electrons.
@@ -1059,11 +1059,11 @@ def ion_viscosity(
     m_i=None,
     Z=None,
     B: u.Quantity[u.T] = 0.0 * u.T,
-    model="Braginskii",
-    field_orientation="parallel",
+    model: str = "Braginskii",
+    field_orientation: str = "parallel",
     mu=None,
     theta: float | None = None,
-    coulomb_log_method="classical",
+    coulomb_log_method: str = "classical",
 ) -> u.Quantity[u.Pa * u.s]:
     r"""
     Calculate the ion viscosity.
@@ -1116,11 +1116,11 @@ def electron_viscosity(
     m_i=None,
     Z=None,
     B: u.Quantity[u.T] = 0.0 * u.T,
-    model="Braginskii",
-    field_orientation="parallel",
+    model: str = "Braginskii",
+    field_orientation: str = "parallel",
     mu=None,
     theta: float | None = None,
-    coulomb_log_method="classical",
+    coulomb_log_method: str = "classical",
 ) -> u.Quantity[u.Pa * u.s]:
     r"""
     Calculate the electron viscosity.
@@ -2071,7 +2071,7 @@ def _nondim_visc_e_ji_held(hall, Z):
     return np.array((eta_0, eta_1, eta_2, eta_3, eta_4))
 
 
-def _nondim_tc_i_ji_held(hall, Z, mu, theta: float, field_orientation, K=3):
+def _nondim_tc_i_ji_held(hall, Z, mu, theta: float, field_orientation, K: int = 3):
     """
     Dimensionless ion thermal conductivity — Ji-Held.
 
@@ -2152,7 +2152,7 @@ def _nondim_tc_i_ji_held(hall, Z, mu, theta: float, field_orientation, K=3):
         )
 
 
-def _nondim_visc_i_ji_held(hall, Z, mu, theta: float, K=3):
+def _nondim_visc_i_ji_held(hall, Z, mu, theta: float, K: int = 3):
     """
     Dimensionless ion viscosity — Ji-Held.
 

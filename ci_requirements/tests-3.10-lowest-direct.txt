@@ -2,7 +2,7 @@
 #    nox -s requirements
 anyio==3.7.1
     # via jupyter-server
-argcomplete==3.3.0
+argcomplete==3.4.0
     # via nox
 argon2-cffi==23.1.0
     # via
@@ -10,7 +10,7 @@ argon2-cffi==23.1.0
     #   notebook
 argon2-cffi-bindings==21.2.0
     # via argon2-cffi
-asteval==0.9.33
+asteval==1.0.0
     # via lmfit
 astropy==5.1
     # via plasmapy (pyproject.toml)
@@ -25,23 +25,17 @@ beautifulsoup4==4.12.3
     # via nbconvert
 bleach==6.1.0
     # via nbconvert
-cachetools==5.3.3
-    # via tox
 certifi==2024.6.2
     # via requests
 cffi==1.16.0
     # via argon2-cffi-bindings
 cfgv==3.4.0
     # via pre-commit
-chardet==5.2.0
-    # via tox
 charset-normalizer==2.0.12
     # via requests
-colorama==0.4.6
-    # via tox
 colorlog==6.8.2
     # via nox
-coverage==7.5.3
+coverage==7.5.4
     # via pytest-cov
 cycler==0.12.1
     # via matplotlib
@@ -63,12 +57,10 @@ execnet==2.1.1
     # via pytest-xdist
 executing==2.0.1
     # via stack-data
-fastjsonschema==2.19.1
+fastjsonschema==2.20.0
     # via nbformat
-filelock==3.14.0
-    # via
-    #   tox
-    #   virtualenv
+filelock==3.15.4
+    # via virtualenv
 fonttools==4.53.0
     # via matplotlib
 h5py==3.7.0
@@ -89,7 +81,7 @@ ipykernel==5.5.6
     #   ipywidgets
     #   nbclassic
     #   notebook
-ipython==8.25.0
+ipython==8.26.0
     # via
     #   ipykernel
     #   ipywidgets
@@ -151,6 +143,10 @@ mistune==0.8.4
     # via nbconvert
 mpmath==1.2.1
     # via plasmapy (pyproject.toml)
+mypy==1.10.0
+    # via plasmapy (pyproject.toml)
+mypy-extensions==1.0.0
+    # via mypy
 nbclassic==1.1.0
     # via notebook
 nbclient==0.5.13
@@ -174,7 +170,7 @@ nest-asyncio==1.6.0
     #   nbclassic
     #   nbclient
     #   notebook
-nodeenv==1.9.0
+nodeenv==1.9.1
     # via pre-commit
 notebook==6.5.7
     # via widgetsnbextension
@@ -196,7 +192,7 @@ numpy==1.23.0
     #   pyerfa
     #   scipy
     #   xarray
-packaging==23.2
+packaging==22.0
     # via
     #   plasmapy (pyproject.toml)
     #   astropy
@@ -204,12 +200,9 @@ packaging==23.2
     #   matplotlib
     #   nbconvert
     #   nox
-    #   pyproject-api
     #   pytest
     #   pytest-filter-subpackage
     #   pytest-rerunfailures
-    #   tox
-    #   tox-uv
     #   xarray
 pandas==1.4.0
     # via
@@ -221,24 +214,21 @@ parso==0.8.4
     # via jedi
 pexpect==4.9.0
     # via ipython
-pillow==10.3.0
+pillow==10.4.0
     # via matplotlib
 platformdirs==4.2.2
     # via
     #   jupyter-core
-    #   tox
     #   virtualenv
 pluggy==1.5.0
-    # via
-    #   pytest
-    #   tox
+    # via pytest
 pre-commit==3.6.0
     # via plasmapy (pyproject.toml)
 prometheus-client==0.20.0
     # via
     #   jupyter-server
     #   notebook
-prompt-toolkit==3.0.45
+prompt-toolkit==3.0.47
     # via ipython
 ptyprocess==0.7.0
     # via
@@ -256,8 +246,6 @@ pygments==2.18.0
     #   nbconvert
 pyparsing==3.1.2
     # via matplotlib
-pyproject-api==1.6.1
-    # via tox
 pytest==8.0.2
     # via
     #   plasmapy (pyproject.toml)
@@ -339,23 +327,16 @@ tomli==2.0.1
     # via
     #   plasmapy (pyproject.toml)
     #   coverage
+    #   mypy
     #   nox
-    #   pyproject-api
     #   pytest
-    #   tox
-tornado==6.4
+tornado==6.4.1
     # via
     #   ipykernel
     #   jupyter-client
     #   jupyter-server
     #   notebook
     #   terminado
-tox==4.14.0
-    # via
-    #   plasmapy (pyproject.toml)
-    #   tox-uv
-tox-uv==1.7.0
-    # via plasmapy (pyproject.toml)
 tqdm==4.60.0
     # via plasmapy (pyproject.toml)
 traitlets==5.14.3
@@ -371,19 +352,18 @@ traitlets==5.14.3
     #   nbconvert
     #   nbformat
     #   notebook
-typing-extensions==4.12.1
-    # via ipython
-uncertainties==3.2.0
+typing-extensions==4.12.2
+    # via
+    #   ipython
+    #   mypy
+uncertainties==3.2.1
     # via lmfit
-urllib3==1.26.18
+urllib3==1.26.19
     # via requests
-uv==0.2.6
-    # via tox-uv
-virtualenv==20.26.2
+virtualenv==20.26.3
     # via
     #   nox
     #   pre-commit
-    #   tox
 voila==0.2.7
     # via plasmapy (pyproject.toml)
 wcwidth==0.2.13

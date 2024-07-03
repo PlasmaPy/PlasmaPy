@@ -1,0 +1,3 @@
+Removed :file:`requirements.txt`, along with the requirements files
+in :file:`ci_requirements/` that were used in tox environments
+that have since been replaced with |Nox| sessions.

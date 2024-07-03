@@ -186,7 +186,9 @@ def run_1D_example(name: str):
     with pytest.warns(
         RuntimeWarning, match="Quantities should go to zero at edges of grid to avoid "
     ):
-        sim = cpr.Tracker(grid, source, detector, verbose=False)
+        sim = cpr.Tracker(
+            grid, source, detector, relativistic_beta_threshold=1.01, verbose=False
+        )
     sim.create_particles(1e4, 3 * u.MeV, max_theta=0.1 * u.deg, random_seed=42)
     sim.run()
 
@@ -202,12 +204,12 @@ def run_1D_example(name: str):
 def run_mesh_example(
     location=(0, -2, 0) * u.mm,
     extent=(2 * u.mm, 1.5 * u.mm),
-    nwires=9,
+    nwires: int = 9,
     wire_diameter=20 * u.um,
     mesh_hdir=None,
     mesh_vdir=None,
     nparticles: int = 10000,
-    problem="electrostatic_gaussian_sphere",
+    problem: str = "electrostatic_gaussian_sphere",
 ) -> cpr.Tracker:
     """
     Takes all of the add_wire_mesh parameters and runs a standard example problem
@@ -221,7 +223,12 @@ def run_mesh_example(
     detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
 
     sim = cpr.Tracker(
-        grid, source, detector, field_weighting="nearest neighbor", verbose=False
+        grid,
+        source,
+        detector,
+        field_weighting="nearest neighbor",
+        relativistic_beta_threshold=1.01,
+        verbose=False,
     )
 
     sim.add_wire_mesh(
@@ -344,7 +351,7 @@ def test_input_validation() -> None:
             grid,
             source,
             detector,
-            field_weighting="not a valid field weighting",
+            field_weighting="not a valid field weighting",  # type: ignore[arg-type]
             verbose=False,
         )
 
@@ -493,6 +500,7 @@ def test_run_options() -> None:
         detector,
         field_weighting="nearest neighbor",
         dt=1e-12 * u.s,
+        relativistic_beta_threshold=1.01,
         verbose=True,
     )
     sim.create_particles(1e4, 3 * u.MeV, max_theta=89 * u.deg, random_seed=42)
@@ -516,6 +524,7 @@ def test_run_options() -> None:
             detector,
             field_weighting="nearest neighbor",
             dt=1e-12 * u.s,
+            relativistic_beta_threshold=1.01,
             verbose=False,
         )
     sim.create_particles(1e4, 3 * u.MeV, max_theta=0.1 * u.deg, random_seed=42)
@@ -537,12 +546,16 @@ def create_tracker_obj(**kwargs) -> cpr.Tracker:
     source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
     detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
 
-    sim = cpr.Tracker(grid, source, detector, verbose=False, **kwargs)
+    sim = cpr.Tracker(
+        grid,
+        source,
+        detector,
+        verbose=False,
+        relativistic_beta_threshold=1.01,
+        **kwargs,
+    )
     sim.create_particles(int(1e4), 3 * u.MeV, max_theta=10 * u.deg, random_seed=42)
     return sim
-
-
-tracker_obj_simulated = create_tracker_obj(field_weighting="nearest neighbor").run()
 
 
 @pytest.mark.slow()
@@ -743,7 +756,9 @@ def test_gaussian_sphere_analytical_comparison() -> None:
     with pytest.warns(
         RuntimeWarning, match="Quantities should go to zero at edges of grid to avoid "
     ):
-        sim = cpr.Tracker(grid, source, detector, verbose=False)
+        sim = cpr.Tracker(
+            grid, source, detector, relativistic_beta_threshold=1.01, verbose=False
+        )
 
     sim.create_particles(1e3, W * u.eV, max_theta=12 * u.deg, random_seed=42)
     sim.run()
@@ -948,7 +963,7 @@ def test_multiple_grids2() -> None:
     """
 
 
-def test_radiography_disk_save_routine(tmp_path):
+def test_radiography_disk_save_routine(tmp_path) -> None:
     grid = _test_grid("electrostatic_gaussian_sphere", L=1 * u.mm, num=50)
 
     source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
@@ -961,7 +976,7 @@ def test_radiography_disk_save_routine(tmp_path):
     sim.run()
 
 
-def test_radiography_memory_save_routine():
+def test_radiography_memory_save_routine() -> None:
     grid = _test_grid("electrostatic_gaussian_sphere", L=1 * u.mm, num=50)
 
     source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
