@@ -4,10 +4,10 @@ PlasmaPy v2024.2.0 (2024-02-06)
 Backwards Incompatible Changes
 ------------------------------
 
-- Created new ``~plasmapy.simulation.particle_tracker.ParticleTracker``
+- Created new ``plasmapy.simulation.particle_tracker.ParticleTracker``
   object for general particle pushing simulations involving
   electromagnetic fields. The tracker replaces the old
-  ``~plasmapy.simulation.particletracker.ParticleTracker``. (:pr:`2245`)
+  ``plasmapy.simulation.particletracker.ParticleTracker``. (:pr:`2245`)
 - Imports of classes and functions from `plasmapy.utils` must now be
   made directly from the subpackages and modules, rather than from
   `plasmapy.utils` itself. (:pr:`2403`)
@@ -28,8 +28,8 @@ Features
 - Changed unit annotations to |Quantity| type hint
   annotations. (:pr:`2421`)
 - Enabled |particle_input| to decorate functions which have variadic
-  positional arguments followed by keyword arguments. See
-  :issue:`2150`.  (:pr:`2428`)
+  positional arguments followed by keyword arguments. (:pr:`2428`; see
+  also :issue:`2150`)
 - Added a ``random_seed`` keyword in the
   `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography.Tracker.create_particles`
   method of the
@@ -74,8 +74,8 @@ Trivial/Internal Changes
 - Added |mypy| to the suite of continuous integration
   checks. (:pr:`2432`)
 - Used ``autotyping`` to implement |type hint annotations| for special
-  methods like ``__init__`` and ``__str__``, and changed ``->
-  typing.NoReturn`` annotations to ``-> None``. (:pr:`2437`)
+  methods like ``__init__`` and ``__str__``, and changed
+  :py:`-> typing.NoReturn` annotations to :py:`-> None`. (:pr:`2437`)
 - Used ``autotyping`` to add :py:`-> None` return annotations to
   functions and methods with no :py:`return` statement. (:pr:`2439`)
 - Added a stub file containing |type hint annotations| for
@@ -85,8 +85,8 @@ Trivial/Internal Changes
   and the corresponding tests. (:pr:`2443`)
 - Dropped the |pre-commit| hook for ``isort`` and enabled all
   ``isort`` rules in |ruff|. (:pr:`2453`)
-- Added a :file:`py.typed` marker to indicate that PlasmaPy contains
-  type hint annotations as per :pep:`561`. (:pr:`2473`)
+- Added a :file:`py.typed` marker file to indicate that PlasmaPy
+  contains type hint annotations as per :pep:`561`. (:pr:`2473`)
 - Changed ``_nearest_neighbor_interpolator`` method in
   `~plasmapy.plasma.grids` to interpolate quantities array instead of
   producing an intermediate index.  (:pr:`2475`)

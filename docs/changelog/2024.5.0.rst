@@ -33,15 +33,15 @@ Documentation Improvements
   to finish an unfinished sentence. (:pr:`2560`)
 - Updated the instructions in the |documentation guide| on how to
   build PlasmaPy's documentation locally. (:pr:`2565`)
-- Fix typo in description of
+- Fixed a typo in description of
   `~plasmapy.formulary.densities.mass_density`.  (:pr:`2588`)
 - Updated the |testing guide| to reflect recent performance
   improvements with tox via the ``tox-uv`` extension, and the
   |documentation guide| to reflect that the documentation is now built
   with |Nox| instead of tox (:pr:`2590`)
-- Add examples to the docstring for
+- Added examples to the docstring for
   `~plasmapy.formulary.radiation.thermal_bremsstrahlung`. (:pr:`2618`)
-- Update the dependency version support policy in the |coding guide|.
+- Updated the dependency version support policy in the |coding guide|.
   (:pr:`2670`)
 
 
