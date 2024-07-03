@@ -177,7 +177,7 @@ class ValidateQuantities(CheckUnits, CheckValues):
             wrapped function of ``f``
         """
         self.f = f
-        wrapped_sign = inspect.signature(f)
+        wrapped_sign = inspect.signature(f, eval_str=True)
 
         @preserve_signature
         @functools.wraps(f)
