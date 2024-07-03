@@ -113,12 +113,11 @@ Internal Changes and Refactorings
 - Removed :file:`setup.py`. (:pr:`2558`)
 - Added ``sphinx-lint`` as a |pre-commit| hook to find
   reStructuredText errors. (:pr:`2561`)
-- Enabled the `tox-uv <https://github.com/tox-dev/tox-uv>`_ plugin to tox,
-  so that package installation, caching, and the creation of virtual
-  environments will
-  be handled by |uv| instead of |pip|. This change makes it faster to run
-  tests both locally and via |GitHub Actions|. (:pr:`2584`)
-- Changed the project structure to an `src
+- Enabled the ``tox-uv`` plugin to tox, so that package installation,
+  caching, and the creation of virtual environments will be handled by
+  |uv| instead of |pip|. This change makes it faster to run tests both
+  locally and via |GitHub Actions|. (:pr:`2584`)
+  - Changed the project structure to an `src
   layout
   <https://packaging.python.org/en/latest/discussions/src-layout-vs-flat-layout/>`__
   to follow the updated recommendation from the Python Packaging
@@ -131,18 +130,16 @@ Internal Changes and Refactorings
   the source code of `plasmapy.formulary` is now located in
   :file:`src/plasmapy/formulary/` and the tests for `plasmapy.formulary`
   are now in :file:`tests/formulary/`. (:pr:`2598`)
-- Reconfigured the auto-generated requirements files used during continuous
-  integration
-  and for documentation builds, while adding corresponding documentation.
-  (:pr:`2650`)
-- Added :file:`noxfile.py` as a configuration file for |Nox|. This file
-  initially contains
-  environments for building documentation, checking hyperlinks, and performing
-  static
-  type checking with |mypy| (:pr:`2654`)
+- Reconfigured the auto-generated requirements files used during
+  continuous integration and for documentation builds, while adding
+  corresponding documentation.  (:pr:`2650`)
+- Added :file:`noxfile.py` as a configuration file for |Nox|. This
+  file initially contains environments for building documentation,
+  checking hyperlinks, and performing static type checking with |mypy|
+  (:pr:`2654`)
 - Began using |Nox| for some testing environments in |GitHub Actions|,
-  including for the
-  documentation build and static type checking. (:pr:`2656`)
+  including for the documentation build and static type
+  checking. (:pr:`2656`)
 
 
 Additional Changes
