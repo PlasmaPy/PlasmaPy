@@ -7,11 +7,12 @@
 [`tests/`]: https://github.com/PlasmaPy/PlasmaPy/blob/main/tests
 [`src/plasmapy/`]: https://github.com/PlasmaPy/PlasmaPy/blob/main/src/plasmapy
 [Nox]: https://nox.thea.codes
-[noxfile.py]: https://github.com/PlasmaPy/PlasmaPy/blob/main/noxfile.py
+[`noxfile.py`]: https://github.com/PlasmaPy/PlasmaPy/blob/main/noxfile.py
 [pytest]: https://docs.pytest.org
 
-ℹ️To learn more about software testing in PlasmaPy, please check out
-the [**testing guide**] in the online [contributor guide].
+> [!TIP]
+> To learn more about software testing in PlasmaPy, please check out the
+> [**testing guide**].
 
 ## Locating tests
 
