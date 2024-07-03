@@ -94,8 +94,8 @@ Trivial/Internal Changes
   (``pip install plasmapy[all]`` and ``[extras]`` are gone).  (:pr:`1758`)
 - Added `blacken-docs <https://github.com/adamchainz/blacken-docs>`__
   to the |pre-commit| configuration. (:pr:`1807`)
-- Removed ``pytest-xdist`` from the testing requirements (see also
-  :issue:`750`). (:pr:`1822`)
+- Removed ``pytest-xdist`` from the testing requirements. (:pr:`1822`;
+  see also :issue:`750`)
 - Refactored tests of `~plasmapy.formulary.relativity.Lorentz_factor`
   and
   `~plasmapy.formulary.relativity.relativistic_energy`. (:pr:`1844`)
