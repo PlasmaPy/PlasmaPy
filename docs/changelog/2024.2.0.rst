@@ -69,7 +69,7 @@ Trivial/Internal Changes
   (:pr:`2402`)
 - Added an initial configuration for |mypy| that temporarily ignores existing
   errors. (:pr:`2424`)
-- Added a |tox| environment for running |mypy|. (:pr:`2431`)
+- Added a tox environment for running |mypy|. (:pr:`2431`)
 - Added |mypy| to the suite of continuous integration checks. (:pr:`2432`)
 - Used ``autotyping`` to implement |type hint annotations| for special
   methods like ``__init__`` and ``__str__``, and changed ``-> typing.NoReturn``

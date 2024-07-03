@@ -36,10 +36,10 @@ Documentation Improvements
 - Fix typo in description of `~plasmapy.formulary.densities.mass_density`.
   (:pr:`2588`)
 - Updated the |testing guide| to reflect recent performance improvements with
-  |tox|
+  tox
   via the ``tox-uv`` extension, and the |documentation guide| to reflect that
   the
-  documentation is now built with |Nox| instead of |tox| (:pr:`2590`)
+  documentation is now built with |Nox| instead of tox (:pr:`2590`)
 - Add examples to the docstring for
   `~plasmapy.formulary.radiation.thermal_bremsstrahlung`. (:pr:`2618`)
 - Update the dependency version support policy in the |coding guide|.
@@ -90,7 +90,7 @@ Internal Changes and Refactorings
 - Changed type hint annotations that used `numbers.Integral`, `numbers.Real`,
   or `numbers.Complex` to instead use `int`, `float`, or `complex`,
   respectively. (:pr:`2520`)
-- Created a |tox| environment for regenerating requirements files used
+- Created a tox environment for regenerating requirements files used
   in continuous integration (CI) and by integrated development environments
   (IDEs). This environment is now what is being used in the automated pull
   requests to regenerate requirements files. Switching from ``pip-compile``
@@ -105,7 +105,7 @@ Internal Changes and Refactorings
 - Applied caching through |GitHub Actions| to speed up continuous
   integration tests and documentation builds. Because the Python environments
   used
-  by |tox| to run tests no longer need to be recreated every time tests are
+  by tox to run tests no longer need to be recreated every time tests are
   run,
   caching speeds up several continuous integration tests by ∼2–3 minutes.
   See :issue:`2585` to learn more about recent efforts to drastically
@@ -113,7 +113,7 @@ Internal Changes and Refactorings
 - Removed :file:`setup.py`. (:pr:`2558`)
 - Added ``sphinx-lint`` as a |pre-commit| hook to find
   reStructuredText errors. (:pr:`2561`)
-- Enabled the `tox-uv <https://github.com/tox-dev/tox-uv>`_ plugin to |tox|,
+- Enabled the `tox-uv <https://github.com/tox-dev/tox-uv>`_ plugin to tox,
   so that package installation, caching, and the creation of virtual
   environments will
   be handled by |uv| instead of |pip|. This change makes it faster to run
@@ -160,7 +160,7 @@ Additional Changes
   field components, since one of these is often not explicitly provided.
   (:pr:`2519`)
 - Removed |pytest| as a runtime dependency. (:pr:`2525`)
-- Removed the unused ``py310-conda`` |tox| environment. (:pr:`2526`)
+- Removed the unused ``py310-conda`` tox environment. (:pr:`2526`)
 - Exposed `~plasmapy.formulary.dielectric.StixTensorElements`
   and `~plasmapy.formulary.dielectric.RotatingTensorElements`
   to the public API. (:pr:`2543`)
