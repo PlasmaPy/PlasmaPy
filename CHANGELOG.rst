@@ -36,10 +36,10 @@ Documentation Improvements
 - Fix typo in description of `~plasmapy.formulary.densities.mass_density`.
   (:pr:`2588`)
 - Updated the |testing guide| to reflect recent performance improvements with
-  |tox|
+  tox
   via the ``tox-uv`` extension, and the |documentation guide| to reflect that
   the
-  documentation is now built with |Nox| instead of |tox| (:pr:`2590`)
+  documentation is now built with |Nox| instead of tox (:pr:`2590`)
 - Add examples to the docstring for
   `~plasmapy.formulary.radiation.thermal_bremsstrahlung`. (:pr:`2618`)
 - Update the dependency version support policy in the |coding guide|.
@@ -90,7 +90,7 @@ Internal Changes and Refactorings
 - Changed type hint annotations that used `numbers.Integral`, `numbers.Real`,
   or `numbers.Complex` to instead use `int`, `float`, or `complex`,
   respectively. (:pr:`2520`)
-- Created a |tox| environment for regenerating requirements files used
+- Created a tox environment for regenerating requirements files used
   in continuous integration (CI) and by integrated development environments
   (IDEs). This environment is now what is being used in the automated pull
   requests to regenerate requirements files. Switching from ``pip-compile``
@@ -105,7 +105,7 @@ Internal Changes and Refactorings
 - Applied caching through |GitHub Actions| to speed up continuous
   integration tests and documentation builds. Because the Python environments
   used
-  by |tox| to run tests no longer need to be recreated every time tests are
+  by tox to run tests no longer need to be recreated every time tests are
   run,
   caching speeds up several continuous integration tests by ∼2–3 minutes.
   See :issue:`2585` to learn more about recent efforts to drastically
@@ -113,7 +113,7 @@ Internal Changes and Refactorings
 - Removed :file:`setup.py`. (:pr:`2558`)
 - Added ``sphinx-lint`` as a |pre-commit| hook to find
   reStructuredText errors. (:pr:`2561`)
-- Enabled the `tox-uv <https://github.com/tox-dev/tox-uv>`_ plugin to |tox|,
+- Enabled the `tox-uv <https://github.com/tox-dev/tox-uv>`_ plugin to tox,
   so that package installation, caching, and the creation of virtual
   environments will
   be handled by |uv| instead of |pip|. This change makes it faster to run
@@ -160,7 +160,7 @@ Additional Changes
   field components, since one of these is often not explicitly provided.
   (:pr:`2519`)
 - Removed |pytest| as a runtime dependency. (:pr:`2525`)
-- Removed the unused ``py310-conda`` |tox| environment. (:pr:`2526`)
+- Removed the unused ``py310-conda`` tox environment. (:pr:`2526`)
 - Exposed `~plasmapy.formulary.dielectric.StixTensorElements`
   and `~plasmapy.formulary.dielectric.RotatingTensorElements`
   to the public API. (:pr:`2543`)
@@ -241,7 +241,7 @@ Trivial/Internal Changes
   (:pr:`2402`)
 - Added an initial configuration for |mypy| that temporarily ignores existing
   errors. (:pr:`2424`)
-- Added a |tox| environment for running |mypy|. (:pr:`2431`)
+- Added a tox environment for running |mypy|. (:pr:`2431`)
 - Added |mypy| to the suite of continuous integration checks. (:pr:`2432`)
 - Used ``autotyping`` to implement |type hint annotations| for special
   methods like ``__init__`` and ``__str__``, and changed ``-> typing.NoReturn``
@@ -1034,7 +1034,7 @@ Trivial/Internal Changes
 - Made ``pytest`` an ``install`` requirement instead of a ``testing``
   requirement. (:pr:`1749`)
 - Added a step to validate :file:`CITATION.cff` as part of the ``linters``
-  |tox| testing environment. (:pr:`1771`)
+  tox testing environment. (:pr:`1771`)
 - Added ``cffconvert`` to the ``testing`` requirements. (:pr:`1771`)
 - Deleted :file:`codemeta.json`, which recorded project metadata using
   the `CodeMeta <https://codemeta.github.io>`__ metadata
@@ -1344,9 +1344,9 @@ Improved Documentation
 - Added an example notebook that calculates plasma parameters associated
   with the Magnetospheric Multiscale Mission (MMS). (`#1568 <https://github.com/plasmapy/plasmapy/pull/1568>`__)
 - Added an example notebook that discusses Coulomb collisions. (`#1569 <https://github.com/plasmapy/plasmapy/pull/1569>`__)
-- Increased the strictness of the ``build_docs`` |tox| environment so that
+- Increased the strictness of the ``build_docs`` tox environment so that
   broken |reStructuredText| links now emit warnings which are then treated as errors,
-  fixed the new errors, removed the ``build_docs_nitpicky`` |tox|
+  fixed the new errors, removed the ``build_docs_nitpicky`` tox
   environment, and updated the |documentation guide| accordingly. (`#1587 <https://github.com/plasmapy/plasmapy/pull/1587>`__)
 - Renamed the :file:`magnetic_statics.ipynb` notebook to
   :file:`magnetostatics.ipynb`, and made some minor edits to its text
@@ -1463,7 +1463,7 @@ Trivial/Internal Changes
 - Added a test that ``import plasmapy`` does not raise an exception. (`#1501 <https://github.com/plasmapy/plasmapy/pull/1501>`__)
 - Added a GitHub Action for `codespell
   <https://github.com/codespell-project/codespell>`__, and updated the
-  corresponding |tox| environment to print out contextual information. (`#1530 <https://github.com/plasmapy/plasmapy/pull/1530>`__)
+  corresponding tox environment to print out contextual information. (`#1530 <https://github.com/plasmapy/plasmapy/pull/1530>`__)
 - Added :file:`plasmapy/utils/units_definitions.py` to precompute units
   which were applied to optimize functionality in
   :file:`plasmapy/formulary/distribution.py`. (`#1531 <https://github.com/plasmapy/plasmapy/pull/1531>`__)
@@ -1692,7 +1692,7 @@ Improved Documentation
   so that the release of PlasmaPy on |PyPI| gets installed when opening
   example notebooks from the stable and release branches of the online
   documentation. (`#1205 <https://github.com/plasmapy/plasmapy/pull/1205>`__)
-- Updated the documentation guide to include updates to |tox| environments
+- Updated the documentation guide to include updates to tox environments
   for building the documentation. (`#1206 <https://github.com/plasmapy/plasmapy/pull/1206>`__)
 - Fixed numerous broken |reStructuredText| links in prior changelogs. (`#1207 <https://github.com/plasmapy/plasmapy/pull/1207>`__)
 - Improve the docstring for `plasmapy.online_help`. (`#1213 <https://github.com/plasmapy/plasmapy/pull/1213>`__)
@@ -1763,10 +1763,10 @@ Trivial/Internal Changes
   now determines the default detector size to be the smallest detector
   plane centered on the origin that includes all particles. (`#1134 <https://github.com/plasmapy/plasmapy/pull/1134>`__)
 - Added ion velocity input to the :file:`thomson.ipynb` diagnostics notebook. (`#1171 <https://github.com/plasmapy/plasmapy/pull/1171>`__)
-- Added |tox| and removed `pytest` as extra requirements. (`#1195 <https://github.com/plasmapy/plasmapy/pull/1195>`__)
-- Updated |tox| test environments for building the documentation. Added the
+- Added tox and removed `pytest` as extra requirements. (`#1195 <https://github.com/plasmapy/plasmapy/pull/1195>`__)
+- Updated tox test environments for building the documentation. Added the
   ``build_docs_nitpicky`` environment to check for broken |reStructuredText| links. (`#1206 <https://github.com/plasmapy/plasmapy/pull/1206>`__)
-- Added the ``--keep-going`` flag to the ``build_docs*`` |tox| environments with
+- Added the ``--keep-going`` flag to the ``build_docs*`` tox environments with
   the ``-W`` option so that test failures will not stop after the first warning
   (that is treated as an error). (`#1206 <https://github.com/plasmapy/plasmapy/pull/1206>`__)
 - Make queries to `plasmapy.online_help` for ``"quantity"`` or ``"quantities"`` redirect to the
@@ -1787,7 +1787,7 @@ Trivial/Internal Changes
 - Switched usage of `str.format` to formatted string literals (f-strings)
   in several files. (`#1281 <https://github.com/plasmapy/plasmapy/pull/1281>`__)
 - Added `flake8-absolute-import <https://github.com/bskinn/flake8-absolute-import>`_
-  to the ``linters`` |tox| environment. (`#1283 <https://github.com/plasmapy/plasmapy/pull/1283>`__)
+  to the ``linters`` tox environment. (`#1283 <https://github.com/plasmapy/plasmapy/pull/1283>`__)
 - Removed unused imports, and changed several imports from relative to absolute. (`#1283 <https://github.com/plasmapy/plasmapy/pull/1283>`__)
 - Added |pre-commit| hooks to auto-format :file:`.ini`,
   :file:`.toml`, and :file:`.yaml` files, and applied changes from
