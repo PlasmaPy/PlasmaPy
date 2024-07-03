@@ -1,13 +1,21 @@
 # Tests
 
 [contributor guide]: https://docs.plasmapy.org/en/latest/contributing
+
 [**testing guide**]: https://docs.plasmapy.org/en/latest/contributing/testing_guide.html
+
 [`src/plasmapy/formulary/speeds.py`]: https://github.com/PlasmaPy/PlasmaPy/blob/main/src/plasmapy/formulary/speeds.py
+
 [`tests/formulary/test_speeds.py`]: https://github.com/PlasmaPy/PlasmaPy/blob/main/tests/formulary/test_speeds.py
+
 [`tests/`]: https://github.com/PlasmaPy/PlasmaPy/blob/main/tests
+
 [`src/plasmapy/`]: https://github.com/PlasmaPy/PlasmaPy/blob/main/src/plasmapy
+
 [Nox]: https://nox.thea.codes
+
 [`noxfile.py`]: https://github.com/PlasmaPy/PlasmaPy/blob/main/noxfile.py
+
 [pytest]: https://docs.pytest.org
 
 > [!TIP]
@@ -38,6 +46,12 @@ run locally with the following steps:
    nox
    ```
 
-Additional Nox sessions are defined in [`noxfile.py`], and can be viewed
-with `nox -l`. For example, to run all tests in Python 3.12, run
-`nox -s 'tests-3.12(all)'`.
+Additional Nox sessions to run tests and perform other tasks are defined
+in [`noxfile.py`], and can be viewed with
+```shell
+nox -l
+```
+For example, we can run all tests in Python 3.12 with
+```shell
+nox -s 'tests-3.12 (all)'
+```
