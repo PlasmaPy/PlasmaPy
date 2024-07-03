@@ -917,22 +917,6 @@ outputs in the notebook* but store it in the repository with a
 :file:`preexecuted_` prefix (e.g.,
 :file:`preexecuted_full_3d_mhd_chaotic_turbulence_simulation.ipynb`).
 
-Benchmarks
-==========
-
-.. _benchmarks: https://www.plasmapy.org/plasmapy-benchmarks
-.. _benchmarks-repo: https://github.com/PlasmaPy/plasmapy-benchmarks
-.. _asv: https://github.com/airspeed-velocity/asv
-.. _asv-docs: https://asv.readthedocs.io/en/stable
-
-PlasmaPy has a set of asv_ benchmarks that monitor performance of its
-functionalities. This is meant to protect the package from performance
-regressions. The benchmarks can be viewed at benchmarks_. They are
-generated from results located in `benchmarks-repo`_. Detailed
-instructions on writing such benchmarks can be found at `asv-docs`_.
-Up-to-date instructions on running the benchmark suite will be located
-in the README file of `benchmarks-repo`_.
-
 .. _ASCII: https://en.wikipedia.org/wiki/ASCII
 .. _cognitive complexity: https://docs.codeclimate.com/docs/cognitive-complexity
 .. _Cython: https://cython.org
