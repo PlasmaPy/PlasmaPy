@@ -1,0 +1,1 @@
+Switched over weekly tests to use |Nox| sessions rather than |tox| environments.

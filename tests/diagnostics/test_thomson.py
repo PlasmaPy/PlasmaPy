@@ -225,7 +225,7 @@ def test_single_species_collective_spectrum(single_species_collective_spectrum) 
         (np.array([np.array([520, 525]), np.array([530, 540])]) * u.nm, 2),
     ],
 )
-def test_notched_spectrum(notch, notch_num, single_species_collective_args):
+def test_notched_spectrum(notch, notch_num, single_species_collective_args) -> None:
     """
     Compares notched and unnotched spectra
     """
@@ -279,7 +279,7 @@ def test_notched_spectrum(notch, notch_num, single_species_collective_args):
         (np.array([530, 531, 533]) * u.nm),  # Not exactly 2 elements
     ],
 )
-def test_notch_errors(notch, single_species_collective_args):
+def test_notch_errors(notch, single_species_collective_args) -> None:
     """
     Check notch input validation
     """
@@ -751,11 +751,11 @@ def run_fit(
     params,
     settings,
     noise_amp: float = 0.05,
-    fit_method="differential_evolution",
+    fit_method: str = "differential_evolution",
     fit_kws={},  # noqa: B006
     max_iter=None,
     check_errors: bool = True,  # noqa: ARG001
-    require_redchi=1,
+    require_redchi: float = 1.0,
     # If false, don't perform the actual fit but instead just create the Model
     run_fit: bool = True,
 ) -> None:
