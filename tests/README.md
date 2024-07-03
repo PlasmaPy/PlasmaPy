@@ -53,5 +53,5 @@ nox -l
 ```
 For example, we can run all tests in Python 3.12 with
 ```shell
-nox -s 'tests-3.12 (all)'
+nox -s 'tests-3.12(all)'
 ```
