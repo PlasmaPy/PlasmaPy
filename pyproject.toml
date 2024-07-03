@@ -359,6 +359,8 @@ extend-select = [
   "W", # pycodestyle warnings
   "YTT", # flake8-2020
 ]
+# The ruff rules to include or ignore for notebooks are defined
+# separately in .pre-commit-config.yaml in the hook for nbqa-ruff
 ignore = [
   "B028", # no-explicit-stacklevel
   "D105", # undocumented-magic-method (enable later?)
@@ -377,6 +379,8 @@ ignore = [
   "N806", # non-lowercase-variable-in-function
   "N816", # mixed-case-variable-in-global-scope
   "PERF203", # try-except-in-loop (remove when we require Python ≥ 3.11)
+  "PLC2401", # non-ascii-name (flags variables used as mathematical symbols)
+  "PLC2403", # non-ascii-import-name
   "PLE0605", # invalid-all-format (flags `__all__ += __lite_funcs`, etc.)
   "PLR0913", # too-many-arguments
   "PLR2004", # magic-value-comparison
