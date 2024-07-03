@@ -1,2 +1,0 @@
-Began using |nox| for some testing environments in |GitHub Actions|, including for the
-documentation build and static type checking.

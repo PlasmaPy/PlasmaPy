@@ -1,5 +1,8 @@
 name: Check hyperlinks
 
+# To check hyperlinks on a pull request, add the label entitled
+# 'perform linkcheck in CI'.
+
 on:
   schedule:
   - cron: 37 7 * * 2
@@ -14,7 +17,10 @@ jobs:
   linkcheck:
     name: Documentation linkcheck
     runs-on: ubuntu-latest
-    if: github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'perform linkcheck in CI')
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'perform linkcheck in CI')) ||
+      (github.event_name == 'schedule' && github.repository == 'PlasmaPy/PlasmaPy' && github.ref == 'refs/heads/main')
 
     steps:
 
@@ -35,4 +41,4 @@ jobs:
       run: sudo apt-get install graphviz pandoc
 
     - name: Check hyperlinks
-      run: nox -e linkcheck
+      run: nox -s linkcheck

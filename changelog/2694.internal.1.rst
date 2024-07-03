@@ -1,0 +1,2 @@
+Added |Nox| sessions to run tests and build documentation against unreleased versions
+of major dependencies.

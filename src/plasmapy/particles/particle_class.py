@@ -28,7 +28,13 @@ import astropy.constants as const
 import astropy.units as u
 import numpy as np
 
-from plasmapy.particles import _elements, _isotopes, _parsing, _special_particles
+from plasmapy.particles import (
+    _elements,
+    _ionization_energy,
+    _isotopes,
+    _parsing,
+    _special_particles,
+)
 from plasmapy.particles.exceptions import (
     ChargeError,
     InvalidElementError,
@@ -529,6 +535,8 @@ class Particle(AbstractPhysicalParticle):
     <Quantity 881.5 s>
     >>> Particle("C-14").half_life.to(u.year)
     <Quantity 5730. yr>
+    >>> hydrogen.ionization_energy
+    <Quantity 2.17870942e-18 J>
     >>> deuteron.electron_number
     0
     >>> alpha.neutron_number
@@ -610,6 +618,8 @@ class Particle(AbstractPhysicalParticle):
         self._assign_particle_attributes()
         self._add_charge_information()
         self._add_half_life_information()
+        if not self.is_category("isotope"):
+            self._add_electron_binding_energy()
 
         # If __name__ is not defined here, then problems with the doc
         # build arise related to the Particle instances that are
@@ -782,6 +792,70 @@ class Particle(AbstractPhysicalParticle):
         )
 
         categories.add(this_element["category"])
+
+        self._add_ionization_energy_information(attributes, element, isotope, ion)
+
+    def _add_ionization_energy_information(
+        self, attributes, element, isotope, ion
+    ) -> None:
+        """Assign ionization energy to elements, isotopes, and ions."""
+        try:
+            symbol = element
+            if ion and " 0+" not in ion:
+                # If the ion is not neutral, then extract the charge number and add it to the element symbol
+                symbol = element + " " + ion.split()[-1]
+
+            # Attempt to get the isotope's ionization energy before defaulting to the element's ionization energy
+            if isotope in _ionization_energy.data_about_ionization_energy:
+                attributes["ionization energy"] = (
+                    _ionization_energy.data_about_ionization_energy[isotope]
+                )
+            else:
+                attributes["ionization energy"] = (
+                    _ionization_energy.data_about_ionization_energy[symbol]
+                )
+        except KeyError:
+            attributes["ionization energy"] = None
+
+    def _add_electron_binding_energy(self) -> None:
+        """Assign electron binding energy to elements, isotopes, and ions."""
+        # If there is no ionization energy data, then the electron binding energy is not available
+        if self._attributes["ionization energy"] is None:
+            self._attributes["electron binding energy"] = None
+            return
+
+        try:
+            attributes = self._attributes
+
+            element = attributes["element"]
+
+            charge_number = attributes["charge number"]
+
+            if charge_number is None:
+                charge_number = 0
+
+            max_charge = charge_number
+
+            element_key = element
+
+            # Find the maximum charge for the element
+            for key in _ionization_energy.data_about_ionization_energy:
+                if key.startswith(element_key + " "):
+                    charge = int(key.split()[-1].replace("+", ""))
+                    if charge > max_charge:
+                        max_charge = charge
+
+            if charge_number <= max_charge:
+                ions = [
+                    f"{element_key}" if charge == 0 else f"{element_key} {charge}+"
+                    for charge in range(charge_number, max_charge + 1)
+                ]
+                attributes["electron binding energy"] = sum(
+                    _ionization_energy.data_about_ionization_energy[p] for p in ions
+                )
+        except KeyError:
+            attributes["electron binding energy"] = None
+            return
 
     def _add_charge_information(self) -> None:
         """Assign attributes and categories related to charge information."""
@@ -1341,7 +1415,7 @@ class Particle(AbstractPhysicalParticle):
             return energy.to(u.J)
 
     @property
-    def binding_energy(self) -> u.Quantity[u.J]:
+    def nuclear_binding_energy(self) -> u.Quantity[u.J]:
         """
         The particle's nuclear binding energy.
 
@@ -1353,18 +1427,18 @@ class Particle(AbstractPhysicalParticle):
         Examples
         --------
         >>> alpha = Particle("alpha")
-        >>> alpha.binding_energy
+        >>> alpha.nuclear_binding_energy
         <Quantity 4.53346...e-12 J>
-        >>> Particle("T").binding_energy.to("MeV")
+        >>> Particle("T").nuclear_binding_energy.to("MeV")
         <Quantity 8.481... MeV>
 
         The binding energy of a nucleon equals 0 joules.
 
         >>> neutron = Particle("n")
         >>> proton = Particle("p+")
-        >>> neutron.binding_energy
+        >>> neutron.nuclear_binding_energy
         <Quantity 0. J>
-        >>> proton.binding_energy
+        >>> proton.nuclear_binding_energy
         <Quantity 0. J>
         """
 
@@ -1389,6 +1463,19 @@ class Particle(AbstractPhysicalParticle):
         nuclear_binding_energy = mass_defect * const.c**2
 
         return nuclear_binding_energy.to(u.J)
+
+    @property
+    def binding_energy(self) -> u.Quantity[u.J]:
+        """
+        DEPRECATED - Please use nuclear_binding_energy instead.
+        This property will be removed in a future release.
+        """
+        warnings.warn(
+            "The binding_energy property is deprecated and will be removed in a future release. "
+            "Please use the nuclear_binding_energy property instead.",
+            FutureWarning,
+        )
+        return self.nuclear_binding_energy
 
     @property
     def atomic_number(self) -> int:
@@ -1863,6 +1950,100 @@ class Particle(AbstractPhysicalParticle):
         else:
             return Particle(base_particle, Z=new_charge_number)
 
+    @property
+    def ionization_energy(self) -> u.Quantity:
+        """
+        Returns the ionization energy of the particle in Joules (SI units).
+
+        Raises
+        ------
+        ~plasmapy.particles.exceptions.MissingParticleDataError
+            If the ionization energy is not available for the particle.
+
+
+        Returns
+        -------
+        ionization_energy : `~astropy.units.Quantity`
+            The ionization energy of the particle in Joules.
+
+
+        Examples
+        --------
+        >>> hydrogen = Particle("H")
+        >>> hydrogen.ionization_energy
+        <Quantity 2.17870942e-18 J>
+
+        Notes
+        -----
+        Ionization energy data downloaded from the `NIST Atomic Spectra Database <https://physics.nist.gov/PhysRefData/ASD/ionEnergy.html>`_  on 5/7/2024.
+
+        """
+        if self._attributes["ionization energy"] is None:
+            raise MissingParticleDataError(
+                f"The ionization energy of {self.symbol} is not available."
+            )
+
+        return self._attributes["ionization energy"]
+
+    @property
+    def electron_binding_energy(self) -> u.Quantity:
+        """
+        Returns the electron binding energy of the particle in Joules (SI units).
+
+        Raises
+        ------
+        ~plasmapy.particles.exceptions.MissingParticleDataError
+            If the electron binding energy is not available for the particle.
+
+
+        Returns
+        -------
+        electron_binding_energy : `~astropy.units.Quantity`
+            The electron binding energy of the particle in Joules.
+
+
+        Examples
+        --------
+        >>> helium = Particle("He")
+        >>> helium.electron_binding_energy
+        <Quantity 8.71868724e-18 J>
+
+        >>> carbon_3 = Particle("C 3+")
+        >>> carbon_3.electron_binding_energy
+        <Quantity 1.413254e-16 J>
+
+        Notes
+        -----
+        Relies on ionization energy data downloaded from the `NIST Atomic Spectra Database <https://physics.nist.gov/PhysRefData/ASD/ionEnergy.html>`_  on 5/7/2024.
+        """
+
+        # If the particle is an isotope, return the electron binding energy of the base element in the given ionization, except for hydrogen isotopes
+
+        base_particle = None
+
+        if self.isotope and self.element != "H":
+            base_particle = self.element
+
+            # Add the charge number to the base particle if the particle is an ion
+            if self.is_ion:
+                base_particle = f"{self.element} {self.charge_number:+d}"
+            base_particle = Particle(base_particle)
+
+        if self.isotope == "D":
+            return _ionization_energy.data_about_ionization_energy["D"]
+
+        if (
+            self._attributes["electron binding energy"] is None
+            and base_particle is None
+        ):
+            raise MissingParticleDataError(
+                f"The electron binding energy of {self.symbol} is not available."
+            )
+        elif base_particle is not None:
+            return base_particle.electron_binding_energy
+
+        return self._attributes["electron binding energy"]
+
 
 class DimensionlessParticle(AbstractParticle):
     """
@@ -2223,6 +2404,30 @@ class CustomParticle(AbstractPhysicalParticle):
             if self._symbol is None
             else f"CustomParticle(mass={self.mass}, charge={self.charge}, symbol={self.symbol})"
         )
+
+    def __str__(self) -> str:
+        """
+        Return the particle's symbol if provided, otherwise the `repr`.
+
+        Examples
+        --------
+        >>> custom_particle = CustomParticle(
+        ...     mass=4.21e-25 * u.kg,
+        ...     charge=1.6e-19 * u.C,
+        ...     symbol="I2+",
+        ... )
+        >>> str(custom_particle)
+        'I2+'
+
+        Without a symbol, the |repr| is returned.
+
+        >>> mass = 1.2e-26 * u.kg
+        >>> charge = 9.2e-19 * u.C
+        >>> custom_particle = CustomParticle(mass=mass, charge=charge)
+        >>> repr(custom_particle)
+        'CustomParticle(mass=1.2e-26 kg, charge=9.2e-19 C)'
+        """
+        return self.symbol
 
     @property
     def json_dict(self) -> dict[str, Any]:

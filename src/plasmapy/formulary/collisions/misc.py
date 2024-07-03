@@ -91,7 +91,7 @@ def mobility(
     species,
     z_mean: float = np.nan,
     V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
-    method="classical",
+    method: str = "classical",
 ) -> u.Quantity[u.m**2 / (u.V * u.s)]:
     r"""
     Return the electrical mobility.
@@ -221,7 +221,7 @@ def Spitzer_resistivity(
     species,
     z_mean: float = np.nan,
     V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
-    method="classical",
+    method: str = "classical",
 ) -> u.Quantity[u.Ohm * u.m]:
     r"""
     Spitzer resistivity of a plasma.
@@ -229,9 +229,10 @@ def Spitzer_resistivity(
     Parameters
     ----------
     T : `~astropy.units.Quantity`
-        Temperature in units of temperature.  This should be the
+        Temperature in units of Kelvin or eV.  This should be the
         electron temperature for electron-electron and electron-ion
-        collisions, and the ion temperature for ion-ion collisions.
+        collisions, and the ion temperature for ion-ion collisions. An
+        example of temperature given in eV can be found below.
 
     n : `~astropy.units.Quantity`
         The density in units convertible to per cubic meter.  This
@@ -327,6 +328,9 @@ def Spitzer_resistivity(
     <Quantity 2.4915...e-06 Ohm m>
     >>> Spitzer_resistivity(T, n, species, V=1e6 * u.m / u.s)  # doctest: +SKIP
     <Quantity 0.000324... Ohm m>
+    >>> T_eV = 86.173 * u.eV
+    >>> T_K = (T_eV).to("K", equivalencies=u.temperature_energy())
+    >>> Spitzer_resistivity(T_K, n, species)
     """
     # collisional frequency
     freq = frequencies.collision_frequency(

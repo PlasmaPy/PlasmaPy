@@ -620,7 +620,7 @@ def collision_frequency(
     species,
     z_mean: float = np.nan,
     V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
-    method="classical",
+    method: str = "classical",
 ) -> u.Quantity[u.Hz]:
     r"""
     Collision frequency of particles in a plasma.
@@ -810,7 +810,7 @@ def fundamental_electron_collision_freq(
     ion,
     coulomb_log=None,
     V=None,
-    coulomb_log_method="classical",
+    coulomb_log_method: str = "classical",
 ) -> u.Quantity[u.s**-1]:
     r"""
     Average momentum relaxation rate for a slowly flowing Maxwellian
@@ -970,7 +970,7 @@ def fundamental_ion_collision_freq(
     ion,
     coulomb_log=None,
     V=None,
-    coulomb_log_method="classical",
+    coulomb_log_method: str = "classical",
 ) -> u.Quantity[u.s**-1]:
     r"""
     Average momentum relaxation rate for a slowly flowing Maxwellian
