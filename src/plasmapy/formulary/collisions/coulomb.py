@@ -18,6 +18,7 @@ __all__ = [
 ]
 
 import warnings
+from typing import Literal
 
 import astropy.units as u
 import numpy as np
@@ -39,7 +40,22 @@ def Coulomb_logarithm(
     species: (particles.Particle, particles.Particle),
     z_mean: float = np.nan,
     V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
-    method="classical",
+    method: Literal[
+        "classical",
+        "GMS-1",
+        "GMS-2",
+        "GMS-3",
+        "GMS-4",
+        "GMS-5",
+        "GMS-6",
+        "hls_full_interp",
+        "hls_max_interp",
+        "hls_min_interp",
+        "ls",
+        "ls_clamp_mininterp",
+        "ls_full_interp",
+        "ls_min_interp",
+    ] = "classical",
 ):
     r"""
     Compute the Coulomb logarithm.
@@ -58,7 +74,7 @@ def Coulomb_logarithm(
         A tuple containing string representations of the test particle
         (listed first) and the target particle (listed second).
 
-    z_mean : `~astropy.units.Quantity`, optional
+    z_mean : float, optional
         The average ionization (arithmetic mean) of a plasma for which a
         macroscopic description is valid. This parameter is used to
         compute the average ion density (given the average ionization

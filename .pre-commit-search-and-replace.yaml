@@ -54,3 +54,11 @@
 - search: 'ion="p"'
   replacement: 'ion="p+"'
   description: Use canonical symbol for proton
+
+- search: '|nox|'
+  replacement: '|Nox|'
+  description: Nox is capitalized except when used as a command
+
+- search: 'nox -e'
+  replacement: 'nox -s'
+  description: The -s refers to Nox sessions, while the -e is from tox environments

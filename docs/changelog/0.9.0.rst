@@ -96,7 +96,7 @@ Features
 - Added the |RelativisticBody| class to facilitate calculation of the
   relativistic properties of a body in motion. (:pr:`1540`)
 - Added ``inplace`` as an optional argument to
-  `~plasmapy.simulation.particle_integrators.boris_push`. (:pr:`1556`)
+  ``plasmapy.simulation.particle_integrators.boris_push``. (:pr:`1556`)
 - Added a function to calculate the dimensionless Lundquist number.
   (:pr:`1642`)
 - Created the `plasmapy.formulary.densities` module. (:pr:`1664`)

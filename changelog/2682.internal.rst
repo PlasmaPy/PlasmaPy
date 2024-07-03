@@ -1,0 +1,2 @@
+Added |Nox| sessions to test importing PlasmaPy, validating :file:`CITATION.cff`,
+and building a source distribution and wheel.

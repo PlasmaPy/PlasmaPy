@@ -286,7 +286,7 @@ class ValidateQuantities(CheckUnits, CheckValues):
 
         return validations
 
-    def _validate_quantity(  # noqa: C901, PLR0912
+    def _validate_quantity(  # noqa: C901
         self,
         arg,
         arg_name: str,
