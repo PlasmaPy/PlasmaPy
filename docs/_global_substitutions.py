@@ -159,7 +159,6 @@ links_to_become_subs: dict[str, str] = {
     "Sphinx": "https://www.sphinx-doc.org",
     "static type checking": "https://realpython.com/lessons/python-type-checking-overview",
     "towncrier": "https://github.com/twisted/towncrier",
-    "tox": "https://tox.wiki/en/latest",
     "type hint annotations": "https://peps.python.org/pep-0484",
     "xarray": "https://docs.xarray.dev",
     "Zenodo": "https://zenodo.org",
