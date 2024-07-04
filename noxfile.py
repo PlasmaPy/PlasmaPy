@@ -25,6 +25,7 @@ to be installed.
 import os
 import sys
 from typing import Literal
+import pathlib
 
 import nox
 
@@ -357,6 +358,60 @@ AUTOTYPING_RISKY: tuple[str, ...] = (
     "--bytes-param",
     "--annotate-imprecise-magics",
 )
+
+import re
+
+@nox.session
+@nox.parametrize("draft", [nox.param(True, id='draft'), nox.param(False, id='final')])
+def changelog(session: nox.Session, draft: str) -> None:
+    """Build the changelog with towncrier."""
+
+    if len(session.posargs) != 1:
+        raise TypeError(
+            "Please provide the version of PlasmaPy to be released "
+            "(i.e., `nox -s changelog -- 2024.9.0`")
+
+    version = session.posargs[0]
+
+    year_pattern = r'(202[4-9]|20[3-9][0-9]|2[1-9][0-9]{2}|[3-9][0-9]{3,})'
+    month_pattern = r'(1[0-2]|[1-9])'
+    patch_pattern = r'(0?[0-9]|[1-9][0-9])'
+    version_pattern = rf'^{year_pattern}\.{month_pattern}\.{patch_pattern}$'
+
+    if not re.match(version_pattern, version):
+        raise ValueError(
+            "Please provide a version of the form YYYY.M.PATCH, where "
+            "YYYY is the year past 2024, M is the one or two digit month, "
+            "and PATCH is a non-negative integer."
+        )
+
+    session.install(".")
+    session.install("towncrier")
+
+    options = ("--draft", "--keep") if draft else ("--yes",)
+
+    session.install("towncrier")
+    session.run(
+        "towncrier",
+        "build",
+        "--config",
+        "pyproject.toml",
+        "--dir",
+        ".",
+        "--version",
+        version,
+        *options,
+    )
+
+    if not draft:
+        original_file = pathlib.Path("./CHANGELOG.rst")
+        destination = pathlib.Path(f"./docs/changelog/{version}.rst")
+        original_file.rename(destination)
+
+        # TODO: Add newly added changelog to docs/changelog/index.rst
+
+        # TODO: Make it so that "unreleased changes" doesn't show up in changelog
+        #       index for releases, but still on main.
 
 
 @nox.session
