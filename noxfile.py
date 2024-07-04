@@ -23,9 +23,10 @@ to be installed.
 """
 
 import os
+import pathlib
+import re
 import sys
 from typing import Literal
-import pathlib
 
 import nox
 
@@ -359,24 +360,24 @@ AUTOTYPING_RISKY: tuple[str, ...] = (
     "--annotate-imprecise-magics",
 )
 
-import re
 
 @nox.session
-@nox.parametrize("draft", [nox.param(True, id='draft'), nox.param(False, id='final')])
+@nox.parametrize("draft", [nox.param(True, id="draft"), nox.param(False, id="final")])
 def changelog(session: nox.Session, draft: str) -> None:
     """Build the changelog with towncrier."""
 
     if len(session.posargs) != 1:
         raise TypeError(
             "Please provide the version of PlasmaPy to be released "
-            "(i.e., `nox -s changelog -- 2024.9.0`")
+            "(i.e., `nox -s changelog -- 2024.9.0`"
+        )
 
     version = session.posargs[0]
 
-    year_pattern = r'(202[4-9]|20[3-9][0-9]|2[1-9][0-9]{2}|[3-9][0-9]{3,})'
-    month_pattern = r'(1[0-2]|[1-9])'
-    patch_pattern = r'(0?[0-9]|[1-9][0-9])'
-    version_pattern = rf'^{year_pattern}\.{month_pattern}\.{patch_pattern}$'
+    year_pattern = r"(202[4-9]|20[3-9][0-9]|2[1-9][0-9]{2}|[3-9][0-9]{3,})"
+    month_pattern = r"(1[0-2]|[1-9])"
+    patch_pattern = r"(0?[0-9]|[1-9][0-9])"
+    version_pattern = rf"^{year_pattern}\.{month_pattern}\.{patch_pattern}$"
 
     if not re.match(version_pattern, version):
         raise ValueError(
