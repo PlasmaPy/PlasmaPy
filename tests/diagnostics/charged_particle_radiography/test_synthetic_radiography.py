@@ -10,6 +10,7 @@ from scipy.special import erf
 from plasmapy.diagnostics.charged_particle_radiography import (
     synthetic_radiography as cpr,
 )
+from plasmapy.particles import Particle
 from plasmapy.plasma.grids import CartesianGrid
 
 
@@ -444,8 +445,9 @@ def test_load_particles() -> None:
     # Test adding unequal numbers of particles
     x = np.zeros([100, 3]) * u.m
     v = np.ones([150, 3]) * u.m / u.s
+    particle = Particle("p+")
     with pytest.raises(ValueError):
-        sim.load_particles(x, v)
+        sim.load_particles(x, v, particle)
 
     # Test creating particles with explicit keywords
     x = sim.x * u.m
@@ -453,7 +455,7 @@ def test_load_particles() -> None:
 
     # Try setting particles going the wrong direction
     with pytest.warns(RuntimeWarning):
-        sim.load_particles(x, -v)
+        sim.load_particles(x, -v, particle)
 
     # Try specifying a larger ion (not a proton or electron)
     sim.load_particles(x, v, particle="C-12 +3")
