@@ -282,6 +282,7 @@ def Bethe_stopping_lite(
 
 
 @bind_lite_func(Bethe_stopping_lite)
+@validate_quantities()
 def Bethe_stopping(
     I: u.Quantity[u.J],  # noqa: E741
     n: u.Quantity[1 / u.m**3],
@@ -289,10 +290,6 @@ def Bethe_stopping(
     z: int,
 ) -> u.Quantity[u.J / u.m]:
     r"""
-    The :term:`lite-function` version of `~plasmapy.formulary.collisions.misc.Bethe_stopping`. Performs the same
-    calculations as `~plasmapy.formulary.collisions.misc.Bethe_stopping`, but is intended for computational use
-    and thus has data conditioning safeguards removed.
-
     The theoretical electronic stopping power for swift charged particles
     calculated from the Bethe formula.
 
