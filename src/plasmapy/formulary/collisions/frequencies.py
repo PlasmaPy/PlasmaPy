@@ -92,7 +92,7 @@ class SingleParticleCollisionFrequencies:
         + ψ' \left( x^{α \backslash β} \right) \right]
         ν_0^{α \backslash β}`
 
-        parallel diffusion: :math:`ν_{||}^{α \backslash β}
+        parallel diffusion: :math:`ν_{∥}^{α \backslash β}
         = \left[ \frac{ψ \left( x^{α \backslash β} \right)
         }{x^{α \backslash β}} \right] ν_{0}^{α \backslash β}`
 
