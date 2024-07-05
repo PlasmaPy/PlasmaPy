@@ -10,7 +10,7 @@ from scipy.special import erf
 from plasmapy.diagnostics.charged_particle_radiography import (
     synthetic_radiography as cpr,
 )
-from plasmapy.particles import Particle
+from plasmapy.particles.particle_class import Particle
 from plasmapy.plasma.grids import CartesianGrid
 
 
