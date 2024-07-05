@@ -12,7 +12,7 @@ from scipy.optimize import fsolve
 
 from plasmapy.formulary.frequencies import gyrofrequency
 from plasmapy.formulary.lengths import gyroradius
-from plasmapy.particles import CustomParticle, Particle
+from plasmapy.particles.particle_class import CustomParticle, Particle
 from plasmapy.plasma import Plasma
 from plasmapy.plasma.grids import CartesianGrid
 from plasmapy.simulation.particle_tracker.particle_tracker import ParticleTracker
