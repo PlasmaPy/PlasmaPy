@@ -23,6 +23,7 @@ to be installed.
 """
 
 import os
+import pathlib
 import sys
 from typing import Literal
 
@@ -384,6 +385,43 @@ def autotyping(session: nox.Session, options: tuple[str, ...]) -> None:
     DEFAULT_PATHS = ("src", "tests", "tools", "*.py", ".github", "docs/*.py")
     paths = session.posargs or DEFAULT_PATHS
     session.run("python", "-m", "autotyping", *options, *paths)
+
+
+@nox.session
+def monkeytype(session: nox.Session) -> None:
+    """
+    Automatically add type hints to a module as inferred from pytest.
+    Experimental.
+
+    Examples
+    --------
+    nox -s monkeytype -- plasmapy.particles.atomic
+    """
+
+    if not session.posargs:
+        session.error(
+            "Please add at least one module "
+            "`nox -s monkeytype -- plasmapy.particles.atomic`"
+        )
+
+    session.install(".[tests]")
+    session.install("MonkeyType", "pytest-monkeytype", "pre-commit")
+
+    database = pathlib.Path("./monkeytype.sqlite3")
+
+    if not database.exists():
+        session.log(f"File {database.absolute()} not found. Running MonkeyType.")
+        session.run(
+            "pytest", "-m", "not slow", f"--monkeytype-output={database.absolute()}"
+        )
+    else:
+        session.log(f"File {database.absolute()} found.")
+
+    for module in session.posargs:
+        session.run("monkeytype", "apply", module)
+
+    session.run("pre-commit", "run", "ruff", "--all-files")
+    session.run("pre-commit", "run", "ruff-format", "--all-files")
 
 
 @nox.session
