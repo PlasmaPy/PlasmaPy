@@ -9,6 +9,7 @@
 [Nox]: https://nox.thea.codes
 [`noxfile.py`]: https://github.com/PlasmaPy/PlasmaPy/blob/main/noxfile.py
 [pytest]: https://docs.pytest.org
+[running tests]: https://docs.plasmapy.org/en/latest/contributing/testing_guide.html#running-tests
 
 > [!TIP]
 > To learn more about software testing in PlasmaPy, please check out the
@@ -26,24 +27,21 @@ the source code of `plasmapy.formulary.speeds` is located at
 ## Running tests
 
 PlasmaPy's tests are written using the [pytest] framework, with [Nox] as
-the test runner. The test suite (excluding tests marked as slow) can be
-run locally with the following steps:
+the test runner. The test suite is automatically run whenever a pull
+request to PlasmaPy's GitHub repository is submitted or updated.
 
-1. Install [Nox] and its dependencies with:
-   ```shell
-   python -m pip install nox uv
-   ```
-2. Enter the top-level directory of your clone of PlasmaPy and run
-   ```shell
-   nox
-   ```
+To run tests locally, first install Nox and its dependencies with:
 
-Additional Nox sessions to run tests and perform other tasks are defined
-in [`noxfile.py`], and can be viewed with
 ```shell
-nox -l
+python -m pip install nox uv
 ```
-For example, we can run all tests in Python 3.12 with
+
+To run all but the slowest tests, enter the top-level directory of your
+clone of PlasmaPy and run:
+
 ```shell
-nox -s 'tests-3.12(all)'
+nox
 ```
+
+For more details, please see the section of the testing guide on
+[running tests].
