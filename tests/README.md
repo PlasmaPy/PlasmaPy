@@ -1,6 +1,6 @@
 # Tests
 
-[**testing guide**]: https://docs.plasmapy.org/en/latest/contributing/testing_guide.html
+[**testing guide**]: https://docs.plasmapy.org/en/latest/contributing/doc_guide.html
 [`src/plasmapy/formulary/speeds.py`]: ../src/plasmapy/formulary/speeds.py
 [`tests/formulary/test_speeds.py`]: formulary/test_speeds.py
 [`tests/`]: .
