@@ -7,9 +7,11 @@ from scipy.special import erf
 from plasmapy.diagnostics.brl import charge_density
 
 
-@pytest.mark.parametrize("x", [0, -1, 1, 0.5, -0.5])
+# TODO: When the test is not parametrized in this way the test fails. Why?
+@pytest.mark.parametrize("x", [[val] for val in [0, -1, 1, 0.5, -0.5]])
 def test__g(x):
     """Test the function _g."""
+    x = x[0]
     assert np.isclose(
         charge_density._g(x), np.pi**0.5 / 2 * np.exp(x**2) * (1 - erf(x))
     )
