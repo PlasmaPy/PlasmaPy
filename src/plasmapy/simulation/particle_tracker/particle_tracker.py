@@ -35,6 +35,7 @@ from plasmapy.simulation.particle_tracker.save_routines import (
 from plasmapy.simulation.particle_tracker.termination_conditions import (
     AbstractTerminationCondition,
 )
+from plasmapy.utils.decorators import validate_quantities
 from plasmapy.utils.exceptions import PhysicsWarning, RelativityWarning
 
 _c = const.c
@@ -145,6 +146,7 @@ class ParticleTracker:
         dt_range=None,
         field_weighting="volume averaged",
         req_quantities=None,
+        seed: int | None = None,
         verbose=True,
     ) -> None:
         # Instantiate the integrator object for use in the _push() method
@@ -153,9 +155,6 @@ class ParticleTracker:
             if not particle_integrator
             else particle_integrator()
         )
-
-        self._raised_relativity_warning = False
-
         # self.grid is the grid object
         self.grids = self._grid_factory(grids)
 
@@ -177,6 +176,8 @@ class ParticleTracker:
                 "Specifying a time step range is only possible for an adaptive time step."
             )
 
+        self._rng = np.random.default_rng(seed)
+
         self.verbose = verbose
 
         # This flag records whether the simulation has been run
@@ -185,6 +186,8 @@ class ParticleTracker:
         # Should the tracker update particle energies after every time step to
         # reflect stopping?
         self._do_stopping = False
+        self._do_scattering = False
+        self._raised_relativity_warning = False
 
         # Raise a ValueError if a synchronized dt is required by termination condition or save routine but one is
         # not given. This is only the case if an array with differing entries is specified for dt
@@ -482,7 +485,7 @@ class ParticleTracker:
         self,
         method: Literal["NIST", "Bethe"],
         materials: list[str] | None = None,
-        I: u.Quantity[u.eV] | None = None,  # noqa: E741
+        I: u.Quantity[u.J] | None = None,  # noqa: E741
     ) -> bool:
         r"""
         Validate inputs to the `add_stopping` method. Raises errors if the
@@ -535,11 +538,12 @@ class ParticleTracker:
 
         return True
 
+    @validate_quantities
     def add_stopping(
         self,
         method: Literal["NIST", "Bethe"],
         materials: list[str] | None = None,
-        I: u.Quantity[u.eV] | None = None,  # noqa: E741
+        I: u.Quantity[u.J] | None = None,  # noqa: E741
     ):
         r"""
         Enable particle stopping using experimental stopping powers.
@@ -598,6 +602,25 @@ class ParticleTracker:
         self._do_stopping = True
         self._stopping_method = method
         self._stopping_power_interpolators = stopping_power_interpolators
+
+    # TODO: create a method to validate that these quantities have shape ngrids
+    @validate_quantities
+    def add_scattering(
+        self, L: u.Quantity[u.kg / u.m**2], n_s: u.Quantity[1 / u.m**3], Z: int
+    ):
+        r"""
+        Enable particle scattering using the Born approximation for Coulomb
+        scattering.
+        """
+        if len(L) != len(self.grids):
+            raise ValueError(
+                "Please provide an array of length ngrids for the radiation length."
+            )
+
+        self._do_scattering = True
+        self._L = L
+        self._n_s = n_s
+        self._Z = Z
 
     def run(self) -> None:
         r"""
@@ -997,6 +1020,42 @@ class ParticleTracker:
 
         self._stop_particles(particles_to_be_stopped_mask)
 
+    def _update_velocity_scattering(self):
+        # TODO: Find a home for these somewhere in the formulary
+        #  (collisions.misc maybe?)
+        speeds = np.linalg.norm(self.v[self._tracked_particle_mask], keepdims=True)
+
+        mean_squared_rate = (
+            self._Z**2
+            * self._n_s.si.value
+            * const.e.si.value**4
+            * np.log(
+                self._L
+                / (2 * np.pi * const.eps0.si.value * const.m_e.si.value**2 * speeds**3)
+            )
+        )
+
+        R = self._rng.standard_normal(size=(self.nparticles_tracked, 1))
+
+        # The polar angle resulting from scattering
+        theta = R * np.sqrt(mean_squared_rate) * self.dt
+
+        # Now generate azimuthal angles using a uniform distribution
+        # Generate a vector that lies somewhere in the plane perpendicular to the velocity
+        k = np.cross(
+            self.v[self._tracked_particle_mask],
+            self._rng.random(size=(self.nparticles_tracked, 3)),
+        )
+        # Normalize
+        k_norm = k / np.linalg.norm(k, keepdims=True)
+
+        # Scale to the perpendicular component of the new velocity
+        v_perp = speeds * np.tan(theta) * k_norm
+
+        v_new_unsanitized = self.v[self._tracked_particle_mask] + v_perp
+
+        return v_new_unsanitized * speeds / np.linalg.norm(v_perp, keepdims=True)
+
     def _push(self) -> None:
         r"""
         Advance particles using an implementation of the time-centered
@@ -1027,6 +1086,9 @@ class ParticleTracker:
         # Update velocities to reflect stopping
         if self._do_stopping:
             self._update_velocity_stopping(total_grid_values)
+
+        if self._do_scattering:
+            self._update_velocity_scattering()
 
     @property
     def on_any_grid(self) -> NDArray[np.bool_]:
