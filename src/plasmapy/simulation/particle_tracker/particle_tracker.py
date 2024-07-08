@@ -995,11 +995,6 @@ class ParticleTracker:
             new_speeds, velocity_unit_vectors
         )
 
-        if not hasattr(self, "_stopping_history"):
-            self._stopping_history = []
-
-        self._stopping_history.append(stopping_power)
-
         self._stop_particles(particles_to_be_stopped_mask)
 
     def _push(self) -> None:
