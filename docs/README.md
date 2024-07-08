@@ -1,6 +1,6 @@
 # PlasmaPy Documentation
 
-[**documentation guide**]: https://docs.plasmapy.org/en/latest/contributing/testing_guide.html
+[**documentation guide**]: https://docs.plasmapy.org/en/latest/contributing/doc_guide.html
 [Sphinx]: https://www.sphinx-doc.org
 [Nox]: https://nox.thea.codes
 [Read the Docs]: https://about.readthedocs.com
