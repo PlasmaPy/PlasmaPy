@@ -651,7 +651,7 @@ class ClassicalTransport:
         Calculate the ion viscosity.
 
         .. todo::
-            The ion viscosity (:math:`\eta`) of a plasma is defined by...
+            The ion viscosity (:math:`η`) of a plasma is defined by...
 
         Notes
         -----
@@ -699,7 +699,7 @@ class ClassicalTransport:
         Calculate the electron viscosity.
 
         .. todo::
-            The electron viscosity (:math:`\eta`) of a plasma is defined by...
+            The electron viscosity (:math:`η`) of a plasma is defined by...
 
         Notes
         -----
@@ -1069,7 +1069,7 @@ def ion_viscosity(
     Calculate the ion viscosity.
 
     .. todo::
-        The ion viscosity (:math:`\eta`) of a plasma is defined by...
+        The ion viscosity (:math:`η`) of a plasma is defined by...
 
     Notes
     -----
@@ -1126,7 +1126,7 @@ def electron_viscosity(
     Calculate the electron viscosity.
 
     .. todo::
-        The electron viscosity (:math:`\eta`) of a plasma is defined by...
+        The electron viscosity (:math:`η`) of a plasma is defined by...
 
     Notes
     -----
