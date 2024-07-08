@@ -4,7 +4,7 @@
 [`src/plasmapy/formulary/speeds.py`]: ../src/plasmapy/formulary/speeds.py
 [`tests/formulary/test_speeds.py`]: formulary/test_speeds.py
 [`tests/`]: .
-[`src/plasmapy/`]: src/plasmapy
+[`src/plasmapy/`]: ../src/plasmapy
 [Nox]: https://nox.thea.codes
 [pytest]: https://docs.pytest.org
 [running tests]: https://docs.plasmapy.org/en/latest/contributing/testing_guide.html#running-tests
