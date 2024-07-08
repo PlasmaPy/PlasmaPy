@@ -1,8 +1,8 @@
 # Tests
 
 [**testing guide**]: https://docs.plasmapy.org/en/latest/contributing/testing_guide.html
-[`src/plasmapy/formulary/speeds.py`]: https://github.com/PlasmaPy/PlasmaPy/blob/main/src/plasmapy/formulary/speeds.py
-[`tests/formulary/test_speeds.py`]: https://github.com/PlasmaPy/PlasmaPy/blob/main/tests/formulary/test_speeds.py
+[`src/plasmapy/formulary/speeds.py`]: ../src/plasmapy/formulary/speeds.py
+[`tests/formulary/test_speeds.py`]: formulary/test_speeds.py
 [`tests/`]: .
 [`src/plasmapy/`]: src/plasmapy
 [Nox]: https://nox.thea.codes
