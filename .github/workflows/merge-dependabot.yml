@@ -8,7 +8,7 @@ permissions:
 jobs:
   dependabot:
     runs-on: ubuntu-latest
-    if: github.actor == 'dependabot[bot]'
+    if: github.actor == 'plasmapy-requirements-bot[bot]'
     steps:
     - name: Fetch metadata
       id: metadata
