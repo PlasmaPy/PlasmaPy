@@ -5,6 +5,7 @@
 [Nox]: https://nox.thea.codes
 [Read the Docs]: https://about.readthedocs.com
 [reStructuredText]: https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#rst-primer
+[`docs/`]: .
 [`docs/conf.py`]: conf.py
 [install graphviz]: https://graphviz.org/download
 [install pandoc]: https://pandoc.org/installing.html
@@ -14,7 +15,7 @@
 > [**documentation guide**].
 
 PlasmaPy's documentation is written in [reStructuredText], built using
-[Sphinx] via a [Nox] session, and is hosted by [Read the Docs].
+[Sphinx] via a [Nox] session, and hosted by [Read the Docs].
 
 The "stable" documentation corresponds to PlasmaPy's most recent
 release, and can be found at https://docs.plasmapy.org/en/stable. The
@@ -22,8 +23,8 @@ release, and can be found at https://docs.plasmapy.org/en/stable. The
 branch on PlasmaPy's GitHub repository, and is available at
 https://docs.plasmapy.org/en/latest.
 
-The `docs/` directory contains the source files for PlasmaPy's narrative
-documentation. The configuration file is [`docs/conf.py`].
+The [`docs/`] directory contains the source files for PlasmaPy's
+narrative documentation. The configuration file is [`docs/conf.py`].
 
 ## Building documentation
 
