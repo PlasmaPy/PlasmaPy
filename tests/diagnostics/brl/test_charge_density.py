@@ -2,8 +2,17 @@
 
 import numpy as np
 import pytest
+from scipy.special import erf
 
 from plasmapy.diagnostics.brl import charge_density
+
+
+@pytest.mark.parametrize("x", [0, -1, 1, 0.5, -0.5])
+def test__g(x):
+    """Test the function _g."""
+    assert np.isclose(
+        charge_density._g(x), np.pi**0.5 / 2 * np.exp(x**2) * (1 - erf(x))
+    )
 
 
 @pytest.mark.parametrize(
