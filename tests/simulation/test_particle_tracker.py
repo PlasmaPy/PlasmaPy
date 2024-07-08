@@ -12,7 +12,7 @@ from scipy.optimize import fsolve
 
 from plasmapy.formulary.frequencies import gyrofrequency
 from plasmapy.formulary.lengths import gyroradius
-from plasmapy.particles import CustomParticle, Particle
+from plasmapy.particles.particle_class import CustomParticle, Particle
 from plasmapy.plasma import Plasma
 from plasmapy.plasma.grids import CartesianGrid
 from plasmapy.simulation.particle_tracker.particle_tracker import ParticleTracker
@@ -159,7 +159,9 @@ def test_particle_tracker_load_particles_shape_error(
     simulation = ParticleTracker(grid, no_particles_on_grids_instantiated)
 
     with pytest.raises(ValueError):
-        simulation.load_particles([[0, 0, 0]] * u.m, [[0, 0, 0], [0, 0, 0]] * u.m / u.s)
+        simulation.load_particles(
+            [[0, 0, 0]] * u.m, [[0, 0, 0], [0, 0, 0]] * u.m / u.s, Particle("p+")
+        )
 
 
 class TestParticleTrackerGyroradius:

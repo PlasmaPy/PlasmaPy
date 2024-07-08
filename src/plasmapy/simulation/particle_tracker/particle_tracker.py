@@ -394,7 +394,7 @@ class ParticleTracker:
         self,
         x,
         v,
-        particle: Particle = Particle("p+"),  # noqa: B008
+        particle: Particle,
     ) -> None:
         r"""
         Load arrays of particle positions and velocities.
@@ -407,9 +407,9 @@ class ParticleTracker:
         v : `~astropy.units.Quantity`, shape (N,3)
             Velocities for N particles
 
-        particle : |particle-like|, optional
+        particle : |particle-like|
             Representation of the particle species as either a |Particle| object
-            or a string representation. The default particle is protons.
+            or a string representation.
         """
         # Raise an error if the run method has already been called.
         self._enforce_order()
