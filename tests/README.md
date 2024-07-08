@@ -13,6 +13,9 @@
 > To learn more about software testing in PlasmaPy, please check out the
 > [**testing guide**].
 
+PlasmaPy's tests are written using the [pytest] framework, with [Nox] as
+the test runner.
+
 ## Locating tests
 
 The [`tests/`] directory contains PlasmaPy's tests. The directory
@@ -24,11 +27,7 @@ the source code of `plasmapy.formulary.speeds` is located at
 
 ## Running tests
 
-PlasmaPy's tests are written using the [pytest] framework, with [Nox] as
-the test runner. The test suite is automatically run whenever a pull
-request to PlasmaPy's GitHub repository is submitted or updated.
-
-To run tests locally, first install Nox and its dependencies with:
+To run tests locally, first install [Nox] and its dependencies with:
 
 ```shell
 python -m pip install nox uv
@@ -41,5 +40,5 @@ clone of PlasmaPy and run:
 nox
 ```
 
-For more details, please see the section of the testing guide on
+For more information, please see the section in the testing guide on
 [running tests].
