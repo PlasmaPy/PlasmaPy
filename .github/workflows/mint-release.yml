@@ -38,12 +38,6 @@ jobs:
         git config --global user.email "team@plasmapy.org"
         git config --global user.name "PlasmaPy Release Bot"
 
-    - name: Create or checkout branch
-      run: |
-        VERSION="v${{ github.event.inputs.tag }}"
-        BRANCH=$(echo $VERSION | awk 'BEGIN{FS=OFS="."} {$3="x"} 1' | cut -f1,2,3 -d'.' | awk -F'rc' '{print $1 ORS $2}')
-        git checkout $BRANCH 2>/dev/null || git checkout -b $BRANCH
-
     - name: Update CITATION.cff, docs/about/citation.rst with the DOI for the new version.
       run: |
         python .github/scripts/citation_updater.py CITATION.cff docs/about/citation.rst docs/changelog/index.rst --version=${{ github.event.inputs.tag}} --doi=${{ github.event.inputs.doi}}
@@ -62,6 +56,12 @@ jobs:
       run: |
         git tag "v${{ github.event.inputs.tag }}" -m "Version v${{ github.event.inputs.tag }}"
         git tag
+
+    - name: Create or checkout branch
+      run: |
+        VERSION="v${{ github.event.inputs.tag }}"
+        BRANCH=$(echo $VERSION | awk 'BEGIN{FS=OFS="."} {$3="x"} 1' | cut -f1,2,3 -d'.' | awk -F'rc' '{print $1 ORS $2}')
+        git checkout $BRANCH 2>/dev/null || git checkout -b $BRANCH
 
     - name: Push tag, branch state
       run: |
