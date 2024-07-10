@@ -1,8 +1,8 @@
 [build-system]
 build-backend = "setuptools.build_meta"
 requires = [
-  "setuptools >= 61.2.0",
-  "setuptools-scm >= 6.3.2",
+  "setuptools >= 64",
+  "setuptools-scm >= 8.0.0",
   "wheel >= 0.37.0",
 ]
 
@@ -36,9 +36,7 @@ classifiers = [
   "Topic :: Scientific/Engineering :: Physics",
   "Topic :: Scientific/Engineering :: Astronomy",
 ]
-dynamic = [
-  "version",
-]
+dynamic = ["version"]
 
 # SPEC 0 recommends that support for core packages should generally be
 # dropped two years after their initial release (see
@@ -147,7 +145,7 @@ exclude = ["docs/automodapi", "src/plasmapy/_dev"]
 namespaces = false
 
 [tool.setuptools_scm]
-write_to = "src/plasmapy/_version.py"
+version_file = "src/plasmapy/_version.py"
 
 [tool.pytest.ini_options]
 testpaths = ['.']
