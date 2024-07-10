@@ -447,8 +447,6 @@ class ParticleTracker:
         # Raise an error if the run method has already been called.
         self._enforce_order()
 
-        # TODO: it is an assumption that there exists only one specie of particles
-        #  is this a reasonable assumption?
         self.q = particle.charge.to(u.C).value
         self.m = particle.mass.to(u.kg).value
         self._particle = particle
