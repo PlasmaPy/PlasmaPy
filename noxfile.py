@@ -244,7 +244,7 @@ docs_requirements = _get_requirements_filepath(category="docs", version=maxpytho
 
 doc_troubleshooting_message = """
 
-Tips for troubleshooting common documentation build failures are in
+📘 Tips for troubleshooting common documentation build failures are in
 PlasmaPy's documentation guide at:
 
 🔗 https://docs.plasmapy.org/en/latest/contributing/doc_guide.html#troubleshooting
