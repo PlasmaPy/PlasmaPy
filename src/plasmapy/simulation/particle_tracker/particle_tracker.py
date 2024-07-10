@@ -477,7 +477,7 @@ class ParticleTracker:
         self,
         method: Literal["NIST", "Bethe"],
         materials: list[str] | None = None,
-        I: u.Quantity[u.eV] | None = None,  # noqa: E741
+        I: u.Quantity[u.J] | None = None,  # noqa: E741
     ) -> bool:
         r"""
         Validate inputs to the `add_stopping` method. Raises errors if the
@@ -486,12 +486,7 @@ class ParticleTracker:
 
         match method:
             case "NIST":
-                if materials is None:
-                    raise ValueError(
-                        "Please specify the relevant materials to use NIST stopping!"
-                    )
-
-                if len(materials) != len(self.grids):
+                if materials is None or len(materials) != len(self.grids):
                     raise ValueError(
                         "Please provide an array of length ngrids for the materials."
                     )
@@ -507,12 +502,7 @@ class ParticleTracker:
                     # calculations
                     return False
             case "Bethe":
-                if I is None:
-                    raise ValueError(
-                        "Please specify the mean excitation energy (I) to use Bethe stopping!"
-                    )
-
-                if len(I) != len(self.grids):
+                if I is None or len(I) != len(self.grids):
                     raise ValueError(
                         "Please provide an array of length ngrids for the mean excitation energy."
                     )
@@ -534,7 +524,7 @@ class ParticleTracker:
         self,
         method: Literal["NIST", "Bethe"],
         materials: list[str] | None = None,
-        I: u.Quantity[u.eV] | None = None,  # noqa: E741
+        I: u.Quantity[u.J] | None = None,  # noqa: E741
     ):
         r"""
         Enable particle stopping using experimental stopping powers.
