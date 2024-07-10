@@ -1,0 +1,1 @@
+Updated the GitHub workflow to mint a release so that tags are created on the ``main`` branch rather than on the release branch.
