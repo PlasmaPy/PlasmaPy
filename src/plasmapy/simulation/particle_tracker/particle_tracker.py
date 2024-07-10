@@ -1001,7 +1001,7 @@ class ParticleTracker:
         if not self._integrator.is_relativistic and not self._raised_relativity_warning:
             beta_max = self.vmax / const.c.si.value
 
-            if beta_max >= 0.01:
+            if beta_max >= 0.001:
                 self._raised_relativity_warning = True
 
                 warnings.warn(
