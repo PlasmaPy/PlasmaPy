@@ -135,6 +135,17 @@ class ParticleTracker:
     If both the particle's position and velocity are set to ``NaN``, then the particle has been removed from the simulation.
     """
 
+    # Some quantities are necessary for the particle tracker to function
+    # regardless of other configurations
+    _REQUIRED_QUANTITIES: typing.ClassVar[set[str]] = {
+        "E_x",
+        "E_y",
+        "E_z",
+        "B_x",
+        "B_y",
+        "B_z",
+    }
+
     def __init__(
         self,
         grids: AbstractGrid | Iterable[AbstractGrid],
@@ -328,17 +339,6 @@ class ParticleTracker:
                 "field_weighting. Valid choices are",
                 f"{field_weightings}",
             )
-
-    # Some quantities are necessary for the particle tracker to function
-    # regardless of other configurations
-    _REQUIRED_QUANTITIES: typing.ClassVar[set[str]] = {
-        "E_x",
-        "E_y",
-        "E_z",
-        "B_x",
-        "B_y",
-        "B_z",
-    }
 
     def _preprocess_grids(self, additional_required_quantities) -> None:
         """Add required quantities to grid objects.
