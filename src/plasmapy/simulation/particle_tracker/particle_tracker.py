@@ -540,9 +540,9 @@ class ParticleTracker:
         Enable particle stopping using experimental stopping powers.
 
         Interpolation of stopping powers is conducted using data from the NIST
-        PSTAR. This information is combined with the mass density quantity
-        provided in the grids to calculate the energy loss over the distance
-        travelled during a timestep.
+        PSTAR database. This information is combined with the mass density
+        quantity provided in the grids to calculate the energy loss over the
+        distance travelled during a timestep.
         """
 
         # Check inputs for user error and raise respective exceptions/warnings if
