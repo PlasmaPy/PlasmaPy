@@ -14,6 +14,7 @@ import contextlib
 import warnings
 from abc import ABC, abstractmethod
 from collections import namedtuple
+from collections.abc import Iterable
 from functools import cached_property
 from typing import ClassVar
 
@@ -149,7 +150,7 @@ class AbstractGrid(ABC):
 
     def require_quantities(
         self,
-        req_quantities,
+        req_quantities: Iterable[str],
         replace_with_zeros: bool = False,
         warn_on_replace_with_zeros: bool = True,
     ):
@@ -160,7 +161,7 @@ class AbstractGrid(ABC):
 
         Parameters
         ----------
-        req_quantities : `list` of `str`
+        req_quantities : ``iterable` of `str`
             A list of quantity keys that are required.
 
         replace_with_zeros : `bool`, optional
