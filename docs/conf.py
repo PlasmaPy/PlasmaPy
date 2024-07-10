@@ -42,6 +42,8 @@ from sphinx.application import Sphinx
 
 _cff_to_rst.main()
 
+# Regenerate the changelog index file
+
 _changelog_index.main()
 
 from plasmapy import __version__ as release
