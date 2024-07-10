@@ -34,7 +34,8 @@ def there_are_unreleased_changes() -> bool:
     `False` otherwise.
     """
     path = pathlib.Path(changelog_directory)
-    return bool(path.glob("[1-9]*[0-9].*.rst"))
+    # path.glob() returns a generator, so make it into a list and then a bool
+    return bool(list(path.glob("[1-9]*[0-9].*.rst")))
 
 
 def get_release_notes_stems() -> list[str]:
