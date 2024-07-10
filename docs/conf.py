@@ -33,6 +33,7 @@ sys.path.insert(0, os.path.abspath("."))  # noqa: PTH100
 from datetime import datetime
 
 import _cff_to_rst
+import _changelog_index
 import pkg_resources  # deprecated; after removal, drop setuptools dependency for docs
 from _global_substitutions import global_substitutions
 from sphinx.application import Sphinx
@@ -40,6 +41,8 @@ from sphinx.application import Sphinx
 # Generate author list from CITATION.cff
 
 _cff_to_rst.main()
+
+_changelog_index.main()
 
 from plasmapy import __version__ as release
 
