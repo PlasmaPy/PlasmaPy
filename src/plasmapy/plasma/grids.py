@@ -161,7 +161,7 @@ class AbstractGrid(ABC):
 
         Parameters
         ----------
-        req_quantities : ``iterable` of `str`
+        req_quantities : ``iterable`` of `str`
             A list of quantity keys that are required.
 
         replace_with_zeros : `bool`, optional
