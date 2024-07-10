@@ -39,6 +39,8 @@ current_python = f"{sys.version_info.major}.{sys.version_info.minor}"
 nox.options.sessions: list[str] = [f"tests-{current_python}(skipslow)"]
 nox.options.default_venv_backend = "uv|virtualenv"
 
+running_on_ci = os.getenv("CI")
+
 
 def _get_requirements_filepath(
     category: Literal["docs", "tests", "all"],
@@ -69,9 +71,16 @@ def _get_requirements_filepath(
 
 @nox.session
 def requirements(session) -> None:
-    """Regenerate pinned requirements files used in tests and doc builds."""
+    """
+    Regenerate the pinned requirements files used in CI.
 
-    session.install("uv >= 0.2.5")
+    This session uses `uv pip compile` to regenerate the pinned
+    requirements files in `ci_requirements/` for use by the Nox sessions
+    for running tests, building documentation, and performing other
+    continuous integration checks.
+    """
+
+    session.install("uv >= 0.2.23")
 
     category_version_resolution: list[tuple[str, str, str]] = [
         ("tests", version, "highest") for version in supported_python_versions
@@ -196,8 +205,8 @@ def run_tests_with_dev_version_of(session: nox.Session, repository: str) -> None
     """
     Run tests against the development branch of a dependency.
 
-    The purpose of this session is to catch bugs and breaking changes
-    so that they can be fixed or updated earlier rather than later.
+    Running this session helps us catch problems resulting from breaking
+    changes in an upstream dependency before its official release.
     """
     if repository != "numpy":
         session.install(f"git+{repository}")
@@ -229,29 +238,38 @@ sphinx_commands: tuple[str, ...] = (
     "-q",
 )
 
-build_html: tuple[str, ...] = ("-b", "html")
-check_hyperlinks: tuple[str, ...] = ("-b", "linkcheck")
+build_html: tuple[str, ...] = ("--builder", "html")
+check_hyperlinks: tuple[str, ...] = ("--builder", "linkcheck")
 docs_requirements = _get_requirements_filepath(category="docs", version=maxpython)
 
 doc_troubleshooting_message = """
 
-To learn how to address common build failures, please check out
-PlasmaPy's documentation troubleshooting guide at:
+📘 Tips for troubleshooting common documentation build failures are in
+PlasmaPy's documentation guide at:
 
-https://docs.plasmapy.org/en/latest/contributing/doc_guide.html#troubleshooting
+🔗 https://docs.plasmapy.org/en/latest/contributing/doc_guide.html#troubleshooting
 """
 
 
 @nox.session(python=maxpython)
 def docs(session: nox.Session) -> None:
     """
-    Build the documentation with Sphinx.
+    Build documentation with Sphinx.
 
-    Requires Python 3.12, and installation of
+    This session may require installation of pandoc and graphviz.
     """
-    session.debug(doc_troubleshooting_message)
+    if running_on_ci:
+        session.debug(doc_troubleshooting_message)
     session.install("-r", docs_requirements, ".")
     session.run(*sphinx_commands, *build_html, *session.posargs)
+    landing_page = (
+        pathlib.Path(session.invoked_from) / "docs" / "build" / "html" / "index.html"
+    )
+
+    if not running_on_ci and landing_page.exists():
+        session.debug(f"The documentation may be previewed at {landing_page}")
+    elif not running_on_ci:
+        session.debug(f"Documentation preview landing page not found: {landing_page}")
 
 
 @nox.session(python=maxpython)
@@ -267,7 +285,7 @@ def build_docs_with_dev_version_of(
     session: nox.Session, site: str, repository: str
 ) -> None:
     """
-    Build docs against the development branch of a dependency.
+    Build documentation against the development branch of a dependency.
 
     The purpose of this session is to catch bugs and breaking changes
     so that they can be fixed or updated earlier rather than later.
@@ -276,30 +294,43 @@ def build_docs_with_dev_version_of(
     session.run(*sphinx_commands, *build_html, *session.posargs)
 
 
+LINKCHECK_TROUBLESHOOTING = """
+The Sphinx configuration variables `linkcheck_ignore` and
+`linkcheck_allowed_redirects` in `docs/conf.py` can be used to specify
+hyperlink patterns to be ignored along with allowed redirects. For more
+information, see:
+
+🔗 https://www.sphinx-doc.org/en/master/usage/configuration.html#confval-linkcheck_ignore
+🔗 https://www.sphinx-doc.org/en/master/usage/configuration.html#confval-linkcheck_allowed_redirects
+
+These variables are in the form of Python regular expressions:
+
+🔗 https://docs.python.org/3/howto/regex.html
+"""
+
+
 @nox.session(python=maxpython)
 def linkcheck(session: nox.Session) -> None:
-    """
-    Check hyperlinks in documentation.
-
-    Use ``linkcheck_ignore`` and ``linkcheck_allowed_redirects`` in
-    :file:`docs/conf.py` to specify hyperlink patterns that should be
-    ignored.
-    """
+    """Check hyperlinks in documentation."""
+    if running_on_ci:
+        session.debug(LINKCHECK_TROUBLESHOOTING)
     session.install("-r", docs_requirements)
     session.install(".")
     session.run(*sphinx_commands, *check_hyperlinks, *session.posargs)
 
 
 MYPY_TROUBLESHOOTING = """
-🦺 To learn more about type hints, check out mypy's cheat sheet at:
+🛡 To learn more about type hints, check out mypy's cheat sheet at:
   https://mypy.readthedocs.io/en/stable/cheat_sheet_py3.html
+
 For more details about specific mypy errors, go to:
-  https://mypy.readthedocs.io/en/stable/error_codes.html
-Errors can be ignored on individual lines by adding a comment such as:
-  # type: ignore[assignment]
-where `assignment` is the mypy error code. Please use `# type: ignore`
-only for particularly troublesome mypy errors.
-To automatically add type hints for common patterns, run:
+🔗 https://mypy.readthedocs.io/en/stable/error_codes.html
+
+🪧 Especially difficult errors can be ignored with an inline comment of
+the form: `# type: ignore[error]`, where `error` is replaced with the
+mypy error code. Please use sparingly!
+
+🛠 To automatically add type hints for common patterns, run:
   nox -s 'autotyping(safe)'
 """
 
@@ -307,7 +338,8 @@ To automatically add type hints for common patterns, run:
 @nox.session(python=maxpython)
 def mypy(session: nox.Session) -> None:
     """Perform static type checking."""
-    session.debug(MYPY_TROUBLESHOOTING)
+    if running_on_ci:
+        session.debug(MYPY_TROUBLESHOOTING)
     MYPY_COMMAND: tuple[str, ...] = (
         "mypy",
         ".",
@@ -434,7 +466,7 @@ def cff(session: nox.Session) -> None:
 @nox.session
 def manifest(session: nox.Session) -> None:
     """
-    Check contents of MANIFEST.in.
+    Check for missing files in MANIFEST.in.
 
     When run outside of CI, this check may report files that were
     locally created but not included in version control. These false
