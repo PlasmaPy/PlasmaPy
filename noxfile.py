@@ -422,8 +422,7 @@ def autotyping(session: nox.Session, options: tuple[str, ...]) -> None:
 @nox.session
 def monkeytype(session: nox.Session) -> None:
     """
-    Automatically add type hints to a module as inferred from pytest.
-    Experimental.
+    Add type hints to a module based on variable types from running pytest.
 
     Examples
     --------
@@ -432,7 +431,7 @@ def monkeytype(session: nox.Session) -> None:
 
     if not session.posargs:
         session.error(
-            "Please add at least one module "
+            "Please add at least one module using a command like: "
             "`nox -s monkeytype -- plasmapy.particles.atomic`"
         )
 
@@ -443,9 +442,7 @@ def monkeytype(session: nox.Session) -> None:
 
     if not database.exists():
         session.log(f"File {database.absolute()} not found. Running MonkeyType.")
-        session.run(
-            "pytest", "-m", "not slow", f"--monkeytype-output={database.absolute()}"
-        )
+        session.run("pytest", f"--monkeytype-output={database.absolute()}")
     else:
         session.log(f"File {database.absolute()} found.")
 
@@ -454,6 +451,9 @@ def monkeytype(session: nox.Session) -> None:
 
     session.run("pre-commit", "run", "ruff", "--all-files")
     session.run("pre-commit", "run", "ruff-format", "--all-files")
+
+    session.log("Please inspect newly added type hints for correctness.")
+    session.log("Check new type hints with `nox -s mypy`.")
 
 
 @nox.session
