@@ -205,6 +205,7 @@ html_theme_options = {
     "includehidden": False,
 }
 htmlhelp_basename = "PlasmaPydoc"
+github_url = "https://github.com/PlasmaPy/PlasmaPy"
 
 # sphinx.ext.autodoc
 
