@@ -195,9 +195,13 @@ rst_prolog = """
    :language: python
 """
 
+# Set title
+
+if "dev" in release or release.split(".")[0] != 2:
+    html_title = "PlasmaPy Documentation"
+
 # html output options
 
-html_title = "PlasmaPy Documentation"
 html_logo = "./_static/with-text-light-190px.png"
 html_static_path = ["_static"]
 html_theme = "sphinx_rtd_theme"
