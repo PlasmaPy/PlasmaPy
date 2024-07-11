@@ -16,7 +16,6 @@ Sphinx extensions (built-in):
     https://www.sphinx-doc.org/en/master/usage/extensions/index.html
 """
 
-
 #!/usr/bin/env python3
 
 # If extensions (or modules to document with autodoc) are in another directory,
@@ -28,7 +27,6 @@ import sys
 import warnings
 from datetime import datetime, timezone
 
-from packaging.version import Version
 from sphinx.application import Sphinx
 
 from plasmapy import __version__
@@ -50,10 +48,8 @@ language = "en"
 release = __version__
 version = __version__
 
-# Set fallback to title
-
-if "dev" in __version__:
-    html_title = "PlasmaPy Documentation"
+if release.startswith("0"):
+    warnings.warn(f"Incorrect version in documentation build ({release = })")
 
 # Generate author list from CITATION.cff
 
