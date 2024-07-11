@@ -8,8 +8,10 @@ __all__ = [
 
 import collections
 import sys
+import typing
 import warnings
 from collections.abc import Iterable
+from typing import Literal
 
 import astropy.constants as const
 import astropy.units as u
@@ -17,12 +19,13 @@ import numpy as np
 from numpy.typing import NDArray
 from tqdm import tqdm
 
+from plasmapy.formulary.collisions.misc import Bethe_stopping_lite
 from plasmapy.particles import Particle, particle_input
+from plasmapy.particles.atomic import stopping_power
 from plasmapy.plasma.grids import AbstractGrid
 from plasmapy.plasma.plasma_base import BasePlasma
 from plasmapy.simulation.particle_integrators import (
     AbstractIntegrator,
-    BorisIntegrator,
     RelativisticBorisIntegrator,
 )
 from plasmapy.simulation.particle_tracker.save_routines import (
@@ -32,6 +35,10 @@ from plasmapy.simulation.particle_tracker.save_routines import (
 from plasmapy.simulation.particle_tracker.termination_conditions import (
     AbstractTerminationCondition,
 )
+from plasmapy.utils.exceptions import PhysicsWarning, RelativityWarning
+
+_c = const.c
+_m_p = const.m_p
 
 
 class ParticleTracker:
@@ -65,13 +72,18 @@ class ParticleTracker:
         The list of required quantities varies depending on other keywords.
 
     termination_condition : `~plasmapy.simulation.particle_tracker.termination_conditions.AbstractTerminationCondition`
-        An instance of `~plasmapy.simulation.particle_tracker.termination_conditions.AbstractTerminationCondition` which determines when the simulation has finished.
+        An subclass of `~plasmapy.simulation.particle_tracker.termination_conditions.AbstractTerminationCondition` which determines when the simulation has finished.
         See `~plasmapy.simulation.particle_tracker.termination_conditions.AbstractTerminationCondition` for more details.
 
     save_routine : `~plasmapy.simulation.particle_tracker.save_routines.AbstractSaveRoutine`, optional
-        An instance of `~plasmapy.simulation.particle_tracker.save_routines.AbstractSaveRoutine` which determines which
+        An subclass of `~plasmapy.simulation.particle_tracker.save_routines.AbstractSaveRoutine` which determines which
         time steps of the simulation to save. The default is `~plasmapy.simulation.particle_tracker.save_routines.DoNotSaveSaveRoutine`.
         See `~plasmapy.simulation.particle_tracker.save_routines.AbstractSaveRoutine` for more details.
+
+    particle_integrator : `~plasmapy.simulation.particle_integrators.AbstractIntegrator`, optional
+        An subclass of `~plasmapy.simulation.particle_integrators.AbstractIntegrator` that is responsible for implementing the push behavior
+        of the simulation when provided the electric and magnetic fields. The default value is set to `~plasmapy.simulation.particle_integrators.RelativisticBorisIntegrator`.
+        See `~plasmapy.simulation.particle_integrators.AbstractIntegrator` for more information on how to implement custom push routines.
 
     dt : `~astropy.units.Quantity`, optional
         An explicitly set time step in units convertible to seconds.
@@ -81,10 +93,6 @@ class ParticleTracker:
     dt_range : tuple of shape (2,) of `~astropy.units.Quantity`, optional
         If specified, the calculated adaptive time step will be clamped
         between the first and second values.
-
-    relativistic_beta_threshold: `float`, optional
-        The threshold fraction of the speed of light, which once exceeded, will
-        trigger the simulation to switch to a relativistic Boris push.
 
     field_weighting : str
         String that selects the field weighting algorithm used to determine
@@ -110,6 +118,13 @@ class ParticleTracker:
         If true, updates on the status of the program will be printed
         into the standard output while running. The default is True.
 
+    Warns
+    -----
+    `~plasmapy.utils.exceptions.RelativityWarning`
+        The provided integrator does not account for relativistic corrections
+        and particles have reached a non-negligible fraction of the speed of
+        light.
+
     Notes
     -----
     We adopt the convention of ``NaN`` values to represent various states of a particle.
@@ -120,23 +135,37 @@ class ParticleTracker:
     If both the particle's position and velocity are set to ``NaN``, then the particle has been removed from the simulation.
     """
 
+    # Some quantities are necessary for the particle tracker to function
+    # regardless of other configurations
+    _REQUIRED_QUANTITIES: typing.ClassVar[set[str]] = {
+        "E_x",
+        "E_y",
+        "E_z",
+        "B_x",
+        "B_y",
+        "B_z",
+    }
+
     def __init__(
         self,
         grids: AbstractGrid | Iterable[AbstractGrid],
         termination_condition: AbstractTerminationCondition | None = None,
         save_routine: AbstractSaveRoutine | None = None,
+        particle_integrator: type[AbstractIntegrator] | None = None,
         dt=None,
         dt_range=None,
-        relativistic_beta_threshold=0.01,
         field_weighting="volume averaged",
         req_quantities=None,
         verbose=True,
     ) -> None:
-        # By default, set the integrator to the explicit Boris push
-        # The `_push()` method may change this to a relativistic integrator if the energies of the particles
-        # exceed the threshold specified by `relativistic_beta_threshold`
-        self._integrator: AbstractIntegrator = BorisIntegrator()
-        self._beta_threshold = relativistic_beta_threshold
+        # Instantiate the integrator object for use in the _push() method
+        self._integrator: AbstractIntegrator = (
+            RelativisticBorisIntegrator()
+            if not particle_integrator
+            else particle_integrator()
+        )
+
+        self._raised_relativity_warning = False
 
         # self.grid is the grid object
         self.grids = self._grid_factory(grids)
@@ -164,6 +193,10 @@ class ParticleTracker:
         # This flag records whether the simulation has been run
         self._has_run = False
 
+        # Should the tracker update particle energies after every time step to
+        # reflect stopping?
+        self._do_stopping = False
+
         # Raise a ValueError if a synchronized dt is required by termination condition or save routine but one is
         # not given. This is only the case if an array with differing entries is specified for dt
         if self._require_synchronized_time and not self._is_synchronized_time_step:
@@ -171,6 +204,8 @@ class ParticleTracker:
                 "Please specify a synchronized time step to use the simulation with this configuration!"
             )
 
+        # Ensure that the grids have defined the necessary quantities or at least zeroed
+        self._required_quantities = self._REQUIRED_QUANTITIES.copy()
         self._preprocess_grids(req_quantities)
 
         # self.grid_arr is the grid positions in si units. This is created here
@@ -208,11 +243,7 @@ class ParticleTracker:
     def _set_time_step_attributes(
         self, dt, termination_condition, save_routine
     ) -> None:
-        """Determines whether the simulation will follow a synchronized or adaptive time step.
-
-        This method also sets the `_is_synchronized_time_step` and
-        `_is_adaptive_time_step` attributes.
-        """
+        """Determines whether the simulation will follow a synchronized or adaptive time step."""
 
         self._require_synchronized_time = (
             termination_condition.require_synchronized_dt
@@ -312,21 +343,22 @@ class ParticleTracker:
     def _preprocess_grids(self, additional_required_quantities) -> None:
         """Add required quantities to grid objects.
 
-        Grids lacking the required quantities will be filled with zeros.
+        Grids lacking the default required quantities will be filled with zeros.
+        This method is not only called during instantiation of the |ParticleTracker|
+        but is also called when enabling stopping.
         """
-
-        # Some quantities are necessary for the particle tracker to function regardless of other configurations
-        required_quantities = {"E_x", "E_y", "E_z", "B_x", "B_y", "B_z"}
 
         for grid in self.grids:
             # Require the field quantities - do not warn if they are absent
             # and are replaced with zeros
             grid.require_quantities(
-                required_quantities,
+                self._REQUIRED_QUANTITIES,
                 replace_with_zeros=True,
                 warn_on_replace_with_zeros=False,
             )
 
+            # "additional_required_quantities" can also refer to explicitly specified
+            # fields that are covered as default field requirements
             if additional_required_quantities is not None:
                 # Require the additional quantities - in this case, do warn
                 # if they are set to zeros
@@ -336,10 +368,11 @@ class ParticleTracker:
 
         if additional_required_quantities is not None:
             # Add additional required quantities based off simulation configuration
-            required_quantities.update(additional_required_quantities)
+            # this must be done after the above processing to properly get warnings
+            self._required_quantities.update(additional_required_quantities)
 
         for grid in self.grids:
-            for rq in required_quantities:
+            for rq in self._required_quantities:
                 # Check that there are no infinite values
                 if not np.isfinite(grid[rq].value).all():
                     raise ValueError(
@@ -394,7 +427,7 @@ class ParticleTracker:
         self,
         x,
         v,
-        particle: Particle = Particle("p+"),  # noqa: B008
+        particle: Particle,
     ) -> None:
         r"""
         Load arrays of particle positions and velocities.
@@ -407,15 +440,16 @@ class ParticleTracker:
         v : `~astropy.units.Quantity`, shape (N,3)
             Velocities for N particles
 
-        particle : |particle-like|, optional
+        particle : |particle-like|
             Representation of the particle species as either a |Particle| object
-            or a string representation. The default particle is protons.
+            or a string representation.
         """
         # Raise an error if the run method has already been called.
         self._enforce_order()
 
         self.q = particle.charge.to(u.C).value
         self.m = particle.mass.to(u.kg).value
+        self._particle = particle
 
         if x.shape[0] != v.shape[0]:
             raise ValueError(
@@ -429,12 +463,133 @@ class ParticleTracker:
         self.x = x.to(u.m).value
         self.v = v.to(u.m / u.s).value
 
+    def _is_quantity_defined_on_one_grid(self, quantity: str) -> bool:
+        r"""
+        Check to ensure the provided quantity string is defined on at least one grid.
+
+        Returns ``True`` if the quantity is defined on at least one grid and
+        ``False`` if none of the grids have defined the specified quantity.
+        """
+
+        return any(quantity in grid.quantities for grid in self.grids)
+
+    def _validate_stopping_inputs(
+        self,
+        method: Literal["NIST", "Bethe"],
+        materials: list[str] | None = None,
+        I: u.Quantity[u.J] | None = None,  # noqa: E741
+    ) -> bool:
+        r"""
+        Validate inputs to the `add_stopping` method. Raises errors if the
+        proper keyword arguments are not provided for a given method.
+        """
+
+        match method:
+            case "NIST":
+                if materials is None or len(materials) != len(self.grids):
+                    raise ValueError(
+                        "Please provide an array of length ngrids for the materials."
+                    )
+
+                if not self._is_quantity_defined_on_one_grid("rho"):
+                    warnings.warn(
+                        "The density is not defined on any of the provided grids! Particle stopping will not be "
+                        "calculated.",
+                        RuntimeWarning,
+                    )
+
+                    # Don't set `_do_stopping`. The push loop does not have to do stopping
+                    # calculations
+                    return False
+            case "Bethe":
+                if I is None or len(I) != len(self.grids):
+                    raise ValueError(
+                        "Please provide an array of length ngrids for the mean excitation energy."
+                    )
+
+                if not self._is_quantity_defined_on_one_grid("n_e"):
+                    warnings.warn(
+                        "The electron number density is not defined on any of the provided grids! "
+                        "Particle stopping will not be calculated.",
+                        RuntimeWarning,
+                    )
+
+                    # Don't set `_do_stopping`. The push loop does not have to do stopping
+                    # calculations
+                    return False
+
+        return True
+
+    def add_stopping(
+        self,
+        method: Literal["NIST", "Bethe"],
+        materials: list[str] | None = None,
+        I: u.Quantity[u.J] | None = None,  # noqa: E741
+    ):
+        r"""
+        Enable particle stopping using experimental stopping powers.
+
+        Interpolation of stopping powers is conducted using data from the NIST
+        PSTAR database. This information is combined with the mass density
+        quantity provided in the grids to calculate the energy loss over the
+        distance travelled during a timestep.
+        """
+
+        # Check inputs for user error and raise respective exceptions/warnings if
+        # necessary. Returns `True` if no errors were detected. If a "falsy" value
+        # is returned then the add_stopping method will abort.
+        if not self._validate_stopping_inputs(method, materials, I):
+            return
+
+        match method:
+            case "NIST":
+                # Require that each grid has a defined mass density
+                for grid in self.grids:
+                    grid.require_quantities(["rho"], replace_with_zeros=True)
+
+                self._required_quantities.update({"rho"})
+                stopping_power_interpolators = [
+                    stopping_power(self._particle, material, return_interpolator=True)
+                    for material in materials
+                ]
+
+            case "Bethe":
+                # Require that each grid has a defined electron number density
+                for grid in self.grids:
+                    grid.require_quantities(["n_e"], replace_with_zeros=True)
+
+                self._required_quantities.update({"n_e"})
+                self._raised_energy_warning = False
+
+                # These functions are used to represent that the mean excitation energy
+                # does not change over space for a given grid.
+                def wrapped_Bethe_stopping(I_grid):
+                    def inner_Bethe_stopping(v, n_e):
+                        return Bethe_stopping_lite(
+                            I_grid, n_e, v, self._particle.charge_number
+                        )
+
+                    return inner_Bethe_stopping
+
+                stopping_power_interpolators = [
+                    wrapped_Bethe_stopping(I_grid.si.value) for I_grid in I
+                ]
+
+            case _:
+                raise ValueError(
+                    f"Please provide one of 'NIST' or 'Bethe' for the method keyword. (Got: {method})"
+                )
+
+        self._do_stopping = True
+        self._stopping_method = method
+        self._stopping_power_interpolators = stopping_power_interpolators
+
     def run(self) -> None:
         r"""
         Runs a particle-tracing simulation.
-        Time steps are adaptively calculated based on the
-        local grid resolution of the particles and the electric and magnetic
-        fields they are experiencing.
+        Time steps are adaptively calculated based on the local grid resolution
+        of the particles and the electric and magnetic fields they are
+        experiencing.
 
         Returns
         -------
@@ -454,7 +609,7 @@ class ParticleTracker:
             np.zeros((self.nparticles, 1)) if not self.is_synchronized_time_step else 0
         )
 
-        # Entered grid -> non-zero if particle EVER entered a grid
+        # Entered grid -> non-zero if particle EVER entered any grid
         self.entered_grid: NDArray[np.bool_] = np.zeros([self.nparticles]).astype(
             np.bool_
         )
@@ -486,14 +641,16 @@ class ParticleTracker:
 
             self._push()
 
-            # The state of a step is saved after each time step by calling the post_push_hook()
-            # though the save routine may do nothing with this information
+            # The state of a step is saved after each time step by calling `post_push_hook`
+            # The save routine may choose to do nothing with this information
             if self.save_routine is not None:
                 self.save_routine.post_push_hook()
 
         # Simulation has finished running
         self._has_run = True
 
+        # Force save of the final state of the simulation if a save routine is
+        # provided
         if self.save_routine is not None:
             self.save_routine.save()
 
@@ -534,8 +691,8 @@ class ParticleTracker:
     def _remove_particles(self, particles_to_remove_mask) -> None:
         """Remove the specified particles from the simulation.
 
-        For the sake of keeping consistent array lengths, the position and velocities of the
-        removed particles are set to NaN.
+        For the sake of keeping consistent array lengths, the position and
+        velocities of the removed particles are set to NaN.
         """
 
         if len(particles_to_remove_mask) != self.x.shape[0]:
@@ -553,9 +710,8 @@ class ParticleTracker:
     def _adaptive_dt(self, Ex, Ey, Ez, Bx, By, Bz) -> NDArray[np.float64] | float:  # noqa: ARG002
         r"""
         Calculate the appropriate dt for each grid based on a number of
-        considerations
-        including the local grid resolution (ds) and the gyroperiod of the
-        particles in the current fields.
+        considerations including the local grid resolution (ds) and the
+        gyroperiod of the particles in the current fields.
         """
 
         # candidate time steps includes one per grid (based on the grid resolution)
@@ -620,117 +776,242 @@ class ParticleTracker:
 
         return all_particles
 
-    def _push(self) -> None:
+    @property
+    def _particle_kinetic_energy(self):
         r"""
-        Advance particles using an implementation of the time-centered
-        Boris algorithm.
+        Return the non-relativistic kinetic energy of the particles.
         """
+
+        # TODO: how should the relativistic case be handled?
+        return 0.5 * self.m * np.square(np.linalg.norm(self.v, axis=-1, keepdims=True))
+
+    def _interpolate_grid(self):
         # Get a list of positions (input for interpolator)
         tracked_mask = self._tracked_particle_mask
 
         self.iteration_number += 1
 
-        pos_all = self.x
-        pos_tracked = pos_all[tracked_mask]
-
-        vel_all = self.v
-        vel_tracked = vel_all[tracked_mask]
+        pos_tracked = self.x[tracked_mask]
 
         # entered_grid is zero at the end if a particle has never
         # entered any grid
         self.entered_grid += np.sum(self.particles_on_grid, axis=-1).astype(np.bool_)
 
-        Ex = np.zeros(self.nparticles_tracked) * u.V / u.m
-        Ey = np.zeros(self.nparticles_tracked) * u.V / u.m
-        Ez = np.zeros(self.nparticles_tracked) * u.V / u.m
-        Bx = np.zeros(self.nparticles_tracked) * u.T
-        By = np.zeros(self.nparticles_tracked) * u.T
-        Bz = np.zeros(self.nparticles_tracked) * u.T
+        # TODO: how should we handle unrecognized quantities?
+
+        # Construct a dictionary to store the interpolation results
+        # This is accomplished using a dictionary comprehension. Each quantity is
+        # initialized as a zeros array with its respective units
+        total_grid_values = {
+            field_name: np.zeros(self.nparticles_tracked)
+            * AbstractGrid.recognized_quantities[field_name].unit
+            for field_name in self._required_quantities
+        }
+
         for grid in self.grids:
-            # Estimate the E and B fields for each particle
-            # Note that this interpolation step is BY FAR the slowest part of the push
-            # loop. Any speed improvements will have to come from here.
-            if self.field_weighting == "volume averaged":
-                _Ex, _Ey, _Ez, _Bx, _By, _Bz = grid.volume_averaged_interpolator(
-                    pos_tracked * u.m,
-                    "E_x",
-                    "E_y",
-                    "E_z",
-                    "B_x",
-                    "B_y",
-                    "B_z",
-                    persistent=True,
-                )
-            elif self.field_weighting == "nearest neighbor":
-                _Ex, _Ey, _Ez, _Bx, _By, _Bz = grid.nearest_neighbor_interpolator(
-                    pos_tracked * u.m,
-                    "E_x",
-                    "E_y",
-                    "E_z",
-                    "B_x",
-                    "B_y",
-                    "B_z",
-                    persistent=True,
+            # TODO: maybe convert this to a ternary operator for now?
+            match self.field_weighting:
+                case "volume averaged":
+                    interpolation_method = grid.volume_averaged_interpolator
+                case "nearest neighbor":
+                    interpolation_method = grid.nearest_neighbor_interpolator
+
+            # Use the keys of `total_grid_values` as input quantity strings to the interpolator
+            grid_values = interpolation_method(
+                pos_tracked * u.m, *total_grid_values.keys(), persistent=True
+            )
+
+            # Iterate through the interpolated fields and add them to the running sum
+            # NaN values are zeroed
+            for grid_value, grid_name in zip(
+                grid_values,
+                total_grid_values.keys(),
+                strict=True,
+            ):
+                total_grid_values[grid_name] += np.nan_to_num(
+                    grid_value,
+                    0.0 * AbstractGrid.recognized_quantities[grid_name].unit,
                 )
 
-            # Interpret any NaN values (points off the grid) as zero
-            # Do this before adding to the totals, because 0 + nan = nan
-            _Ex = np.nan_to_num(_Ex, nan=0.0 * u.V / u.m)
-            _Ey = np.nan_to_num(_Ey, nan=0.0 * u.V / u.m)
-            _Ez = np.nan_to_num(_Ez, nan=0.0 * u.V / u.m)
-            _Bx = np.nan_to_num(_Bx, nan=0.0 * u.T)
-            _By = np.nan_to_num(_By, nan=0.0 * u.T)
-            _Bz = np.nan_to_num(_Bz, nan=0.0 * u.T)
+        return total_grid_values
 
-            # Add the values interpolated for this grid to the totals
-            Ex += _Ex
-            Ey += _Ey
-            Ez += _Ez
-            Bx += _Bx
-            By += _By
-            Bz += _Bz
-
-        # Create arrays of E and B as required by push algorithm
-        E = np.array(
-            [Ex.to(u.V / u.m).value, Ey.to(u.V / u.m).value, Ez.to(u.V / u.m).value]
-        )
-        E = np.moveaxis(E, 0, -1)
-        B = np.array([Bx.to(u.T).value, By.to(u.T).value, Bz.to(u.T).value])
-        B = np.moveaxis(B, 0, -1)
-
+    def _update_time(self, summed_field_values):
+        r"""
+        Calculate an appropriate time step for the simulation with respect to
+        user configuration. Returns the calculated time step.
+        """
         # Calculate the adaptive time step from the fields currently experienced
         # by the particles
         # If user sets dt explicitly, that's handled in _adaptive_dt
         if self._is_adaptive_time_step:
-            dt = self._adaptive_dt(Ex, Ey, Ez, Bx, By, Bz)
+            dt = self._adaptive_dt(
+                summed_field_values["E_x"],
+                summed_field_values["E_y"],
+                summed_field_values["E_z"],
+                summed_field_values["B_x"],
+                summed_field_values["B_y"],
+                summed_field_values["B_z"],
+            )
         else:
             dt = self.dt
 
-        # Check if the beta threshold has been achieved if the simulation is not
-        # already using the relativistic integrator
-        if not self._integrator.is_relativistic:
-            beta = self.vmax / const.c.si.value
-
-            if beta >= self._beta_threshold:
-                self._integrator = RelativisticBorisIntegrator()
-
         # Make sure the time step can be multiplied by a [nparticles, 3] shape field array
         if isinstance(dt, np.ndarray) and dt.size > 1:
-            dt = dt[tracked_mask, np.newaxis]
+            dt = dt[self._tracked_particle_mask, np.newaxis]
 
             # Increment the tracked particles' time by dt
-            self.time[tracked_mask] += dt
+            self.time[self._tracked_particle_mask] += dt
         else:
             self.time += dt
 
-        # Update the tracked particles using the integrator specified at instantiation
-        # TODO: implement "tentative" x and v to prevent speeds faster than light
-        #  from occurring over one step. Possibly based on field strengths?
-        self.x[tracked_mask], self.v[tracked_mask] = self._integrator.push(
-            pos_tracked, vel_tracked, B, E, self.q, self.m, dt
+        return dt
+
+    def _update_position(self, summed_field_values):
+        r"""
+        Update the positions and velocities of the simulated particles using the
+        integrator provided at instantiation.
+        """
+
+        # Create arrays of E and B as required by push algorithm
+        E = np.array(
+            [
+                summed_field_values["E_x"].to(u.V / u.m).value,
+                summed_field_values["E_y"].to(u.V / u.m).value,
+                summed_field_values["E_z"].to(u.V / u.m).value,
+            ]
+        )
+        E = np.moveaxis(E, 0, -1)
+        B = np.array(
+            [
+                summed_field_values["B_x"].to(u.T).value,
+                summed_field_values["B_y"].to(u.T).value,
+                summed_field_values["B_z"].to(u.T).value,
+            ]
+        )
+        B = np.moveaxis(B, 0, -1)
+
+        pos_tracked = self.x[self._tracked_particle_mask]
+        vel_tracked = self.v[self._tracked_particle_mask]
+        x_results, v_results = self._integrator.push(
+            pos_tracked, vel_tracked, B, E, self.q, self.m, self.dt
         )
 
-        self.dt = dt
+        self.x[self._tracked_particle_mask], self.v[self._tracked_particle_mask] = (
+            x_results,
+            v_results,
+        )
+
+    def _update_velocity_stopping(self, summed_field_values):
+        r"""
+        Apply stopping to the simulated particles using the provided stopping
+        routine. The stopping is applied to the simulation by calculating the
+        new energy values of the particles, and then updating the particles'
+        velocity to match these energies.
+        """
+
+        current_speeds = np.linalg.norm(
+            self.v[self._tracked_particle_mask], axis=-1, keepdims=True
+        )
+        velocity_unit_vectors = np.multiply(
+            1 / current_speeds, self.v[self._tracked_particle_mask]
+        )
+        dx = np.multiply(current_speeds, self.dt)
+
+        stopping_power = np.zeros((self.nparticles_tracked, 1))
+        relevant_kinetic_energy = (
+            self._particle_kinetic_energy[self._tracked_particle_mask] * u.J
+        )
+
+        # TODO: how can we reorganize this if we decide to add more stopping
+        #  routines in the future?
+        match self._stopping_method:
+            case "NIST":
+                for cs in self._stopping_power_interpolators:
+                    interpolation_result = cs(relevant_kinetic_energy).si.value
+
+                    stopping_power += interpolation_result
+
+                energy_loss_per_length = np.multiply(
+                    stopping_power,
+                    summed_field_values["rho"].si.value[:, np.newaxis],
+                )
+            case "Bethe":
+                for cs in self._stopping_power_interpolators:
+                    interpolation_result = cs(
+                        current_speeds,
+                        summed_field_values["n_e"].si.value[:, np.newaxis],
+                    )
+
+                    stopping_power += interpolation_result
+
+                energy_loss_per_length = stopping_power
+
+                if (
+                    not self._raised_energy_warning
+                    and np.min(energy_loss_per_length * u.J).to(u.MeV).value < 1
+                ):
+                    self._raised_energy_warning = True
+
+                    warnings.warn(
+                        "The Bethe model is only valid for high energy particles. Consider using"
+                        "NIST stopping if you require accurate stopping powers at lower energies.",
+                        category=PhysicsWarning,
+                    )
+
+        dE = -np.multiply(energy_loss_per_length, dx)
+
+        # Update the velocities of the particles using the new energy values
+        # TODO: again, figure out how to differentiate relativistic and classical cases
+        E = self._particle_kinetic_energy[self._tracked_particle_mask] + dE
+
+        particles_to_be_stopped_mask = np.full(
+            shape=self._tracked_particle_mask.shape, fill_value=False
+        )
+        tracked_particles_to_be_stopped_mask = (
+            E < 0
+        ).flatten()  # A subset of the tracked particles!
+        # Of the tracked particles, stop the ones indicated by the subset mask
+        particles_to_be_stopped_mask[self._tracked_particle_mask] = (
+            tracked_particles_to_be_stopped_mask
+        )
+
+        new_speeds = np.sqrt(2 * E / self.m)
+        self.v[self._tracked_particle_mask] = np.multiply(
+            new_speeds, velocity_unit_vectors
+        )
+
+        self._stop_particles(particles_to_be_stopped_mask)
+
+    def _push(self) -> None:
+        r"""
+        Advance particles using an implementation of the time-centered
+        Boris algorithm.
+        """
+
+        # Interpolate fields at particle positions
+        total_grid_values = self._interpolate_grid()
+
+        # Calculate an appropriate timestep (uniform, synchronized)
+        self.dt = self._update_time(total_grid_values)
+
+        # Update the position and velocities of the particles using timestep
+        # calculations as well as the magnitude of E and B fields
+        self._update_position(total_grid_values)
+
+        if not self._integrator.is_relativistic and not self._raised_relativity_warning:
+            beta_max = self.vmax / const.c.si.value
+
+            if beta_max >= 0.001:
+                self._raised_relativity_warning = True
+
+                warnings.warn(
+                    f"Particles have reached {beta_max}% of the speed of light. Consider using a relativistic integrator for more accurate results.",
+                    RelativityWarning,
+                )
+
+        # Update velocities to reflect stopping
+        if self._do_stopping:
+            self._update_velocity_stopping(total_grid_values)
 
     @property
     def on_any_grid(self) -> NDArray[np.bool_]:
@@ -760,7 +1041,9 @@ class ParticleTracker:
 
     @property
     def nparticles_tracked(self) -> int:
-        """Return the number of particles currently being tracked."""
+        """Return the number of particles currently being tracked.
+        That is, they do not have NaN position or velocity.
+        """
         return int(self._tracked_particle_mask.sum())
 
     @property
