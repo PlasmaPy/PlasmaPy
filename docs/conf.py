@@ -16,6 +16,7 @@ Sphinx extensions (built-in):
     https://www.sphinx-doc.org/en/master/usage/extensions/index.html
 """
 
+
 #!/usr/bin/env python3
 
 # If extensions (or modules to document with autodoc) are in another directory,
@@ -24,37 +25,39 @@ Sphinx extensions (built-in):
 
 import os
 import sys
+import warnings
+from datetime import datetime, timezone
+
+from packaging.version import Version
+from sphinx.application import Sphinx
+
+from plasmapy import __version__
 
 # isort: off
 sys.path.insert(0, os.path.abspath(".."))  # noqa: PTH100
 sys.path.insert(0, os.path.abspath("."))  # noqa: PTH100
 # isort: on
 
-from datetime import datetime
-
 import _cff_to_rst
-import pkg_resources  # deprecated; after removal, drop setuptools dependency for docs
 from _global_substitutions import global_substitutions
-from sphinx.application import Sphinx
-
-# Generate author list from CITATION.cff
-
-_cff_to_rst.main()
-
-from plasmapy import __version__ as release
 
 # Project metadata
 
 project = "PlasmaPy"
 author = "PlasmaPy Community"
-copyright = f"2015–{datetime.utcnow().year}, {author}"  # noqa: A001, DTZ003
+copyright = f"2015–{datetime.now(timezone.utc).year}, {author}"  # noqa: A001
 language = "en"
+release = __version__
+version = __version__
 
-release = "" if release == "unknown" else release
-parsed_version = pkg_resources.parse_version(release)  # deprecated
-release = parsed_version.public
-version = ".".join(release.split(".")[:2])  # short X.Y version
-revision = parsed_version.local[1:] if parsed_version.local is not None else ""
+# Set fallback to title
+
+if "dev" in __version__:
+    html_title = "PlasmaPy Documentation"
+
+# Generate author list from CITATION.cff
+
+_cff_to_rst.main()
 
 # Sphinx configuration variables
 
@@ -105,6 +108,7 @@ pygments_style = "default"  # code highlighting to meet WCAG AA contrast standar
 root_doc = "index"
 source_suffix = ".rst"
 templates_path = ["_templates"]
+maximum_signature_line_length = 90
 
 # Specify patterns to ignore when doing a nitpicky documentation build.
 # These may include common expressions like "real number" as well as
@@ -194,11 +198,6 @@ rst_prolog = """
 .. role:: py(code)
    :language: python
 """
-
-# Set title
-
-if "dev" in release or release.split(".")[0] != 2:
-    html_title = "PlasmaPy Documentation"
 
 # html output options
 
