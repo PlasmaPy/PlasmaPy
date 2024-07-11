@@ -1,4 +1,4 @@
-# MANIFEST.in specifies which files are to be included in the source
+# MANIFEST.in specifies the files are to be included in the source
 # distribution (sdist) of PlasmaPy.
 
 graft changelog
