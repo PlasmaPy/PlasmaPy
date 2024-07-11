@@ -149,8 +149,8 @@ def kinetic_alfven(  # noqa: C901, PLR0912
 
     With :math:`c_{\rm s}` being the wave speed and :math:`ω_{\rm ci}`
     as the gyrofrequency of the respective ion.  The regions in which
-    this is valid are :math:`ω ≪ ω_{\rm ci}` and :math:`\nu_{\rm Te} ≫
-    \frac{ω}{k_{z}} ≫ \nu_{\rm Ti}`, with :math:`\nu_{\rm Ti}`
+    this is valid are :math:`ω ≪ ω_{\rm ci}` and :math:`ν_{\rm Te} ≫
+    \frac{ω}{k_{z}} ≫ ν_{\rm Ti}`, with :math:`ν_{\rm Ti}`
     standing for the thermal speed of the respective ion. There is no
     restriction on propagation angle.
 

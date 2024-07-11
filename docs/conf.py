@@ -24,6 +24,7 @@ Sphinx extensions (built-in):
 
 import os
 import sys
+import warnings
 
 # isort: off
 sys.path.insert(0, os.path.abspath(".."))  # noqa: PTH100
@@ -55,11 +56,15 @@ author = "PlasmaPy Community"
 copyright = f"2015–{datetime.utcnow().year}, {author}"  # noqa: A001, DTZ003
 language = "en"
 
+if release.startswith("0"):
+    warnings.warn(f"Incorrect version in documentation build ({release = })")
+
 release = "" if release == "unknown" else release
 parsed_version = pkg_resources.parse_version(release)  # deprecated
 release = parsed_version.public
 version = ".".join(release.split(".")[:2])  # short X.Y version
 revision = parsed_version.local[1:] if parsed_version.local is not None else ""
+
 
 # Sphinx configuration variables
 
