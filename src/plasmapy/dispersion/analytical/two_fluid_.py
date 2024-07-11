@@ -183,7 +183,7 @@ def two_fluid(
                 \frac{1}{3} \cos^{-1}\left(
                     \frac{3q}{2p} \sqrt{-\frac{3}{p}}
                 \right)
-                - \frac{2 \pi}{3}j
+                - \frac{2π}{3}j
             \right)
             + \frac{Λ A}{3}
         }
