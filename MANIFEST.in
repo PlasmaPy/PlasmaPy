@@ -21,9 +21,10 @@ include binder/requirements.txt
 include CITATION.cff
 include CODEOWNERS
 
-global-exclude _build build _authors.rst _version.py
+global-exclude _build build _authors.rst
 global-exclude *.o *.py[cod]
 
-# Only for editable installs
 prune docs/api
+
+# Only for editable installs
 prune src/plasmapy/_dev
