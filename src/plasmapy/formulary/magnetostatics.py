@@ -218,7 +218,7 @@ class GeneralWire(Wire):
         This line integral is approximated by segmenting the wire into
         :math:`n` straight pieces of equal length. The :math:`i\text{th}`
         wire element can be written as
-        :math:`394\vec{l}_i = \vec{l}(t_i) - \vec{l}(t_{i - 1})`
+        :math:`Δ\vec{l}_i = \vec{l}(t_i) - \vec{l}(t_{i - 1})`
         where :math:`t_i = t_{\min} + i(t_{\max}-t_{\min})/n`. Further,
         the displacement vector from the center of the :math:`i\text{th}`
         wire element to the position :math:`\vec{p}` is
