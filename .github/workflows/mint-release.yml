@@ -16,6 +16,8 @@ jobs:
 
   tag:
     runs-on: ubuntu-latest
+    env:
+      VERSION: v${{ github.event.inputs.tag }}
 
     steps:
 
@@ -59,12 +61,10 @@ jobs:
 
     - name: Create or checkout release branch
       run: |
-        VERSION="v${{ github.event.inputs.tag }}"
         BRANCH=$(echo $VERSION | awk 'BEGIN{FS=OFS="."} {$3="x"} 1' | cut -f1,2,3 -d'.' | awk -F'rc' '{print $1 ORS $2}')
         git checkout $BRANCH 2>/dev/null || git checkout -b $BRANCH
 
     - name: Push tag and branch to remote repository
       run: |
-        VERSION="v${{ github.event.inputs.tag }}"
         BRANCH=$(echo $VERSION | awk 'BEGIN{FS=OFS="."} {$3="x"} 1' | cut -f1,2,3 -d'.' | awk -F'rc' '{print $1 ORS $2}')
         git push --set-upstream origin $VERSION $BRANCH
