@@ -57,7 +57,6 @@ jobs:
     - name: Tag the release
       run: |
         git tag "v${{ github.event.inputs.tag }}" -m "Version v${{ github.event.inputs.tag }}"
-        git tag
 
     - name: Create or checkout release branch
       run: |
