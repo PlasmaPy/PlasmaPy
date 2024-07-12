@@ -118,7 +118,7 @@ class AbstractMHDWave(ABC):
         """Validate and return wavenumber and angle."""
         # validate argument k
         k = k.squeeze()
-        if k.ndim not in [0, 1]:
+        if k.ndim not in {0, 1}:
             raise ValueError(
                 f"Argument 'k' needs to be a single-valued or 1D array astropy Quantity,"
                 f" got array of shape {k.shape}."
@@ -128,7 +128,7 @@ class AbstractMHDWave(ABC):
 
         # validate argument theta
         theta = theta.squeeze()
-        if theta.ndim not in [0, 1]:
+        if theta.ndim not in {0, 1}:
             raise ValueError(
                 f"Argument 'theta' needs to be a single-valued or 1D array astropy "
                 f"Quantity, got array of shape {k.shape}."

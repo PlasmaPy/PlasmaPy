@@ -195,7 +195,7 @@ def kinetic_alfven(  # noqa: C901, PLR0912
 
     # Validate argument k
     k = k.value.squeeze()
-    if k.ndim not in (0, 1):
+    if k.ndim not in {0, 1}:
         raise ValueError(
             "Argument 'k' needs to be a single valued or 1D array "
             f"astropy Quantity, instead got array of shape {k.shape}."
@@ -207,7 +207,7 @@ def kinetic_alfven(  # noqa: C901, PLR0912
 
     # Validate argument theta
     theta = theta.value.squeeze()
-    if theta.ndim not in (0, 1):
+    if theta.ndim not in {0, 1}:
         raise ValueError(
             "Argument 'theta' needs to be a single valued or 1D array "
             f"astropy Quantity, instead got array of shape {theta.shape}."
