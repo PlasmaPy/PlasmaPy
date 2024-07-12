@@ -189,7 +189,7 @@ def stix(  # noqa: C901, PLR0912, PLR0915
         )
 
     # Validate n_i argument
-    if n_i.ndim not in (0, 1):
+    if n_i.ndim not in {0, 1}:
         raise ValueError(
             "Argument 'n_i' must be a single valued or a 1D array of "
             f"size 1 or {len(ions)}, instead got shape of {n_i.shape}"
@@ -221,7 +221,7 @@ def stix(  # noqa: C901, PLR0912, PLR0915
 
     # Validate w argument and dimension
     w = w.value.squeeze()
-    if w.ndim not in (0, 1):
+    if w.ndim not in {0, 1}:
         raise ValueError(
             "Argument 'w' needs to be a single value or a 1D array "
             f" astropy Quantity, got a value of shape {w.shape}."
@@ -231,7 +231,7 @@ def stix(  # noqa: C901, PLR0912, PLR0915
 
     # Validate theta value
     theta = theta.value.squeeze()
-    if theta.ndim not in (0, 1):
+    if theta.ndim not in {0, 1}:
         raise TypeError(
             "Argument 'theta' needs to be a single value or 1D array "
             f" astropy Quantity, got array of shape {theta.shape}."

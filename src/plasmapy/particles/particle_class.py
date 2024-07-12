@@ -731,7 +731,7 @@ class Particle(AbstractPhysicalParticle):
                 f"use: Particle({attributes['particle']!r})"
             )
 
-        if mass_numb not in (1, None) or Z not in (1, None):
+        if mass_numb not in {1, None} or Z not in {1, None}:
             raise InvalidParticleError(
                 "Cannot create a Particle representing a proton for a "
                 "mass number or charge number not equal to 1."
