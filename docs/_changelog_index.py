@@ -59,9 +59,7 @@ def main() -> None:
     Regenerate the index file for release changelog files. Include
     unreleased changes only when there are unreleased changes.
     """
-    changelog_index_file.open(mode="w", encoding="utf-8")
-
-    with changelog_index_file.open("w") as f:
+    with changelog_index_file.open(mode="w", encoding="utf-8") as f:
         f.write(preamble)
 
         if there_are_unreleased_changes():
