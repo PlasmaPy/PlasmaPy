@@ -8,7 +8,7 @@ on:
         required: true
         default: 2024.5.0rc1
       DOI:
-        description: Reserved DOI from Zenodo
+        description: Reserved DOI from Zenodo (using team@plasmapy.org login)
         required: true
         default: 10.5281/zenodo.1238132
 
