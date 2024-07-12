@@ -38,13 +38,13 @@ jobs:
         git config --global user.email "team@plasmapy.org"
         git config --global user.name "PlasmaPy Release Bot"
 
-    - name: Update CITATION.cff, docs/about/citation.rst with the DOI for the new version.
+    - name: Update citation information
       run: |
         python .github/scripts/citation_updater.py CITATION.cff docs/about/citation.rst docs/changelog/index.rst --version=${{ github.event.inputs.tag}} --doi=${{ github.event.inputs.doi}}
         git add .
         git commit -m "Update citation and changelog index entry"
 
-    - name: Create changelog
+    - name: Build changelog
       run: |
         towncrier build --yes --version ${{ github.event.inputs.tag }} --draft | tee docs/changelog/${{ github.event.inputs.tag }}.rst
         sed -i -e :a -e '/^\n*$/{$d;N;ba' -e '}' docs/changelog/${{ github.event.inputs.tag }}.rst   # strip empty lines
@@ -57,13 +57,13 @@ jobs:
         git tag "v${{ github.event.inputs.tag }}" -m "Version v${{ github.event.inputs.tag }}"
         git tag
 
-    - name: Create or checkout branch
+    - name: Create or checkout release branch
       run: |
         VERSION="v${{ github.event.inputs.tag }}"
         BRANCH=$(echo $VERSION | awk 'BEGIN{FS=OFS="."} {$3="x"} 1' | cut -f1,2,3 -d'.' | awk -F'rc' '{print $1 ORS $2}')
         git checkout $BRANCH 2>/dev/null || git checkout -b $BRANCH
 
-    - name: Push tag, branch state
+    - name: Push tag and branch to remote repository
       run: |
         VERSION="v${{ github.event.inputs.tag }}"
         BRANCH=$(echo $VERSION | awk 'BEGIN{FS=OFS="."} {$3="x"} 1' | cut -f1,2,3 -d'.' | awk -F'rc' '{print $1 ORS $2}')
