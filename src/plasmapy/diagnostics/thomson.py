@@ -807,7 +807,7 @@ def spectral_density_model(  # noqa: C901, PLR0912, PLR0915
           sum to 1)
         - :samp:`"electron_speed_{e#}"` : Electron speed in m/s
         - :samp:`"ion_speed_{ei}"` : Ion speed in m/s
-        - :samp:`"ion_mu_{i#}"` : Ion mass number, :math:`\mu = m_i/m_p`
+        - :samp:`"ion_mu_{i#}"` : Ion mass number, :math:`μ = m_i/m_p`
         - :samp:`"ion_z_{i#}"` : Ion charge number
         - :samp:`"background"` : Background level, as fraction of max signal
 

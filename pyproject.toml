@@ -86,8 +86,6 @@ docs = [
   "numpydoc >= 1.6.0",
   "pillow >= 10.2.0",
   "pygments >= 2.17.2",
-  # install setuptools to get pkg_resources for doc build
-  "setuptools; python_version >= '3.12'",
   "sphinx >= 7.3.7",
   "sphinx-changelog >= 1.5.0",
   "sphinx-codeautolink >= 0.15.0",
@@ -103,8 +101,6 @@ docs = [
   "sphinxcontrib-bibtex >= 2.6.2",
   "sphinxcontrib-globalsubs >= 0.1.1",
   "towncrier >= 23.11.0",
-  "tox >= 4.12.1",
-  "tox-uv >= 1.7.0",
   "unidecode >= 1.3.8",
 ]
 
@@ -122,8 +118,6 @@ tests = [
   "pytest-rerunfailures >= 13.0",
   "pytest-xdist >= 3.5.0",
   "tomli >= 2.0.1",
-  "tox >= 4.12.1",
-  "tox-uv >= 1.7.0",
 ]
 
 [project.urls]
@@ -359,6 +353,8 @@ extend-select = [
   "W", # pycodestyle warnings
   "YTT", # flake8-2020
 ]
+# The ruff rules to include or ignore for notebooks are defined
+# separately in .pre-commit-config.yaml in the hook for nbqa-ruff
 ignore = [
   "B028", # no-explicit-stacklevel
   "D105", # undocumented-magic-method (enable later?)
@@ -377,6 +373,8 @@ ignore = [
   "N806", # non-lowercase-variable-in-function
   "N816", # mixed-case-variable-in-global-scope
   "PERF203", # try-except-in-loop (remove when we require Python ≥ 3.11)
+  "PLC2401", # non-ascii-name (flags variables used as mathematical symbols)
+  "PLC2403", # non-ascii-import-name
   "PLE0605", # invalid-all-format (flags `__all__ += __lite_funcs`, etc.)
   "PLR0913", # too-many-arguments
   "PLR2004", # magic-value-comparison

@@ -42,11 +42,6 @@ PlasmaPy and run:
 This command will invoke `pytest` to run PlasmaPy's tests, excluding the
 tests marked as slow.
 
-.. important::
-
-   PlasmaPy is in the process of switching its test runner from |tox| to
-   |Nox|. |tox| is still used for defining weekly tests.
-
 Writing tests
 -------------
 
