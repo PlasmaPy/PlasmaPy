@@ -62,10 +62,17 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
    - For official releases, make sure the checkbox is selected for _Set as the latest release_. For beta releases or release candidates (e.g., `v2024.5.0rc1`), specify it as a pre-release.
    - Click on _Publish release_, which will create the GitHub release and trigger the GitHub workflow to [publish to PyPI].
    - Check the [release history] on PyPI to make sure that the release was successful.
+ - [ ] [Create a pull request] to merge the tag for the release back into main. Under the box for _compare_, select _Tags_, choose the tag for this release (e.g., `v2024.7.0`), and then click on _Create pull request_.  Merge **but do not squash** this PR back into `main`.
+
+<!-- Creating the pull request *from the tag* prevents us from accidentally deleting the release branch. -->
+<!-- Squashing PRs from release branches back into `main` has caused problems with `setuptools_scm` being able to guess the correct next version for development installations.  See #2630. -->
+<!-- Automate pull request creation? Change it into a commit? -->
+
+### Following the release
+
  - [ ] Download a `.tar.gz` file of the tagged release from the [list of tagged versions] on GitHub, and upload it to [Zenodo].
    - [ ] Update the author list with new authors from the automatically generated release notes or [`CITATION.cff`].
    - [ ] Update the bibliography, and publish the release to Zenodo.
- - [ ] [Create a pull request] to merge the changes from the release back into `main`. Under the box for _compare_, select _Tags_, select the tag for the most recent release (e.g., `v2024.5.0`), and then click on _Create pull request_. <!-- By creating the pull request from the tag, we should not accidentally delete the release branch. --> <!-- Automate pull request creation? Change it into a commit? -->
  - [ ] Fix any problems with the automated pull request to [conda-forge feedstock], if necessary. This step should be automatic, but may take a while.
  - [ ] Update requirements in the [conda-forge feedstock] in `recipe/meta.yaml`, in particular when there is a new version of Python.
 
