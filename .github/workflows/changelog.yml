@@ -43,12 +43,12 @@ jobs:
             pullRequest.title.includes('Update release checklist') ||
             bumpPattern.test(pullRequest.title)
           ) {
-            // If yes, then apply the label "No changelog entry needed"
+            // If yes, then apply the label "no changelog entry needed"
             await github.rest.issues.addLabels({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
-              labels: ['No changelog entry needed'],
+              labels: ['no changelog entry needed'],
             });
           }
 
