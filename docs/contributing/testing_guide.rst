@@ -291,6 +291,7 @@ both will be run.
    def test_less_than_1000_positive_number() -> None:
        assert less_than_1000(999)
 
+
    def test_less_than_1000_negative_number() -> None:
        assert less_than_1000(-1000)
 
@@ -316,7 +317,9 @@ functions or pass in tuples containing inputs and expected values.
 
 .. code-block:: python
 
-   @pytest.mark.parametrize("number_to_test, expected", [(999, True), (-1000, True), (1000, False)])
+   @pytest.mark.parametrize(
+       "number_to_test, expected", [(999, True), (-1000, True), (1000, False)]
+   )
    def test_less_than_1000(number_to_test: int, expected: bool) -> None:
        assert less_than_1000(number_to_test) == expected
 
