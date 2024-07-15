@@ -183,20 +183,16 @@ def make_global_substitutions_table(
     headers = ("substitution", "example", "replaces")
     Row = collections.namedtuple("Row", headers)
 
-    # The :rst: role is defined in doc_guide.rst for in-line reStructuredText formatting
     rows = [
         Row(
-            f":rst:`|{substitution}|`",
+            f"``|{substitution}|``",
             f"|{substitution}|",
-            f":rst:`{global_substitutions[substitution].replace(r"`", r"\`")}`",
+            f"``{global_substitutions[substitution].replace(r"`", r"\`")}``",
         )
         for substitution in sorted(global_substitutions)
     ]
 
     lines = [
-        ".. role:: rest(code)",
-        "   :language: rst",
-        "",
         ".. list-table:: Global Substitutions",
         "   :header-rows: 1",
         "   :widths: 22 22 56",
