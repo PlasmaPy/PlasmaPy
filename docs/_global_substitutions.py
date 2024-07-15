@@ -82,7 +82,7 @@ doc_subs: dict[str, str] = {
     "decorated": r":term:`decorated <decorator>`\ ",
     "decorator": r":term:`decorator`\ ",
     "documentation guide": r":ref:`documentation guide`\ ",
-    "expect-api-changes": "This functionality is under development. Backward incompatible changes might occur in future releases.",
+    "expect-api-changes": "This feature is under development. Breaking changes may occur in the future.",
     "getting ready to contribute": r":ref:`getting ready to contribute`\ ",
     "glossary": r":ref:`glossary`\ ",
     "keyword-only": r":term:`keyword-only`\ ",
@@ -183,11 +183,12 @@ def make_global_substitutions_table(
     headers = ("substitution", "example", "replaces")
     Row = collections.namedtuple("Row", headers)
 
+    # Using :rest: role as defined in doc_guide.rst
     rows = [
         Row(
-            f"``|{substitution}|``",
+            f":rest:`|{substitution}|`",
             f"|{substitution}|",
-            f"``` {global_substitutions[substitution]} ```",
+            f":rest:`{global_substitutions[substitution].replace(r"`", r"\`")}`",
         )
         for substitution in sorted(global_substitutions)
     ]
