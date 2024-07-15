@@ -176,7 +176,7 @@ global_substitutions = plasmapy_subs | doc_subs | numpy_subs | astropy_subs | li
 
 
 def make_global_substitutions_table(
-    rst_file: str = "contributing/_global_substitutions.rst",
+    rst_file: str = "contributing/_global_substitutions_table.rst",
 ) -> None:
     headers = ("substitution", "example", "replaces")
 
@@ -213,3 +213,14 @@ def make_global_substitutions_table(
 
     with pathlib.Path(rst_file).open("w", encoding="utf-8") as file:
         file.write(content)
+
+
+if __name__ == "__main__":
+    """
+    To test generating the table of substitutions, run:
+
+    .. code-block: bash
+
+        python _global_substitutions.py
+    """
+    make_global_substitutions_table()

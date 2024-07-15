@@ -1048,7 +1048,9 @@ substitutions should not be used in docstrings when it is important that
 users have quick access to the full path of the `object` (such as in the
 ``See Also`` section).
 
-.. include:: _global_substitutions.rst
+Here are the substitutions that can be used in the documentation.
+
+.. include:: _global_substitutions_table.rst
 
 .. _citation-instructions:
 
