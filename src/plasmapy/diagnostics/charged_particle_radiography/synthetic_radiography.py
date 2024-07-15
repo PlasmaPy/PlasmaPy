@@ -26,6 +26,7 @@ from plasmapy.simulation.particle_tracker.save_routines import SaveOnceOnComplet
 from plasmapy.simulation.particle_tracker.termination_conditions import (
     AllParticlesOffGridTerminationCondition,
 )
+from plasmapy.utils.decorators import validate_quantities
 
 
 def _coerce_to_cartesian_si(pos):
@@ -593,11 +594,12 @@ class Tracker(ParticleTracker):
         return theta.flatten(), phi.flatten()
 
     @particles.particle_input
+    @validate_quantities
     def create_particles(
         self,
         nparticles,
         particle_energy,
-        max_theta=None,
+        max_theta: u.Quantity[u.rad] | None = None,
         particle: Particle = Particle("p+"),  # noqa: B008
         distribution: Literal["monte-carlo", "uniform"] = "monte-carlo",
         random_seed=None,
