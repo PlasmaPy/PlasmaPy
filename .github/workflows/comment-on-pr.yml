@@ -39,7 +39,7 @@ jobs:
             > 📚 For a documentation preview, click on *Details* next to **docs/readthedocs.org:plasmapy**. For cryptic documentation errors, see the [documentation troubleshooting guide](https://docs.plasmapy.org/en/latest/contributing/doc_guide.html#troubleshooting).
 
             > [!HINT]
-            > 🧹 Automatically fix most **pre-commit.ci** failures by commenting [\`pre-commit.ci autofix\`](https://github.com/PlasmaPy/PlasmaPy/pull/1500#issuecomment-1216865989) below. See also the [pre-commit troubleshooting guide](https://docs.plasmapy.org/en/stable/contributing/pre-commit.html#troubleshooting-pre-commit-failures).
+            > 🧹 Automatically fix most **pre-commit.ci** failures by commenting [\`pre-commit.ci autofix\`](https://github.com/PlasmaPy/PlasmaPy/pull/1500#issuecomment-1216865989) below. For other failures, please see the [pre-commit troubleshooting guide](https://docs.plasmapy.org/en/stable/contributing/pre-commit.html#troubleshooting-pre-commit-failures).
 
             We thank you once again! 🌌`
           })
