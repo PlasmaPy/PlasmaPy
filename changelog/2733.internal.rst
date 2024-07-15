@@ -1,1 +1,1 @@
-Added type hint annotations to `plasmapy.utils.roman`.
+Added |type hint annotations| to `plasmapy.utils.roman`.

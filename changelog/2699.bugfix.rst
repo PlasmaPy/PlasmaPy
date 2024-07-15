@@ -1,5 +1,5 @@
-Changed the :math:`z` dependence of the ion contribution to the optical Thomson scattering
-spectral density function in `~plasmapy.diagnostics.thomson.spectral_density_lite` from ``z``
-to ``z^2 / zbar`` to match Eq. 5.1.2 and following equations in :cite:t:`sheffield:2011`.
+Changed the |charge number| (:math:`Z`) dependence of the ion contribution to the optical Thomson scattering
+spectral density function in `~plasmapy.diagnostics.thomson.spectral_density_lite` from :math:`Z`
+to :math:`z^2 / \bar{z}` to match Eq. 5.1.2 and following equations in :cite:t:`sheffield:2011`.
 The result is a small change in the ion acoustic wave spectrum for plasmas
 with multiple ion species.
