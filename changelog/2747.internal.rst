@@ -1,1 +1,1 @@
-Added an experimental |Nox| session for adding type hint annotations based off a database of variable types created from running the test suite.
+Added an experimental |Nox| session for adding |type hint annotations| based off a database of variable types created from running the test suite.
