@@ -86,6 +86,7 @@ docs = [
   "numpydoc >= 1.6.0",
   "pillow >= 10.2.0",
   "pygments >= 2.17.2",
+  # See #2764
   "sphinx == 7.3.7",
   "sphinx-changelog >= 1.5.0",
   "sphinx-codeautolink >= 0.15.0",
