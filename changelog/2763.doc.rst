@@ -1,1 +1,1 @@
-Re-writes the "Test independence and parametrization" section of the testing guide to use extremely simple math.
+Re-wrote the "Test independence and parametrization" section of the testing guide to use extremely simple math.
