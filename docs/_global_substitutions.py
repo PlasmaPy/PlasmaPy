@@ -194,6 +194,9 @@ def make_global_substitutions_table(
     ]
 
     lines = [
+        ".. role:: rest(code)",
+        "   :language: rst",
+        "",
         ".. list-table:: Global Substitutions",
         "   :header-rows: 1",
         "   :widths: 22 22 56",
