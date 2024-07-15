@@ -268,7 +268,7 @@ than 1000:
 
 .. code-block:: python
 
-   def less_than_1000(x) -> bool:
+   def less_than_1000(x: int) -> bool:
        return True if x < 1000 else False
 
 Let's say we want to test both positive and negative numbers that are less
