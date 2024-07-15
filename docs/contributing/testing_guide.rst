@@ -262,18 +262,17 @@ To test that a function raises an appropriate exception, use
 Test independence and parametrization
 -------------------------------------
 
-Sometimes, we want to test how a function handles many different inputs.
+Sometimes we want to test how a function handles many different inputs.
 For example, take this simple function that checks if a number is less
 than 1000:
 
 .. code-block:: python
 
    def less_than_1000(x) -> bool:
-
        return True if x < 1000 else False
 
 Let's say we want to test both positive and negative numbers that are less
-than 1000. One way to use pytest would be to write sequential test in a
+than 1000. One way to use pytest would be to write sequential tests in a
 single function.
 
 .. code-block:: python
