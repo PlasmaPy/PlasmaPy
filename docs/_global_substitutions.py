@@ -12,6 +12,11 @@ if the key is ``"particle-like"``, then it can be used as
 ``|particle-like|`` throughout the documentation.
 """
 
+__all__ = ["global_substitutions", "make_global_substitutions_table"]
+
+import collections
+import pathlib
+
 plasmapy_subs: dict[str, str] = {
     "atomic_number": ":func:`~plasmapy.particles.atomic.atomic_number`",
     "atomic_symbol": ":func:`~plasmapy.particles.symbols.atomic_symbol`",
@@ -168,3 +173,43 @@ links_to_become_subs: dict[str, str] = {
 link_subs = {key: f"`{key} <{value}>`_" for key, value in links_to_become_subs.items()}
 
 global_substitutions = plasmapy_subs | doc_subs | numpy_subs | astropy_subs | link_subs
+
+
+def make_global_substitutions_table(
+    rst_file: str = "contributing/_global_substitutions.rst",
+) -> None:
+    headers = ("substitution", "example", "replaces")
+
+    Row = collections.namedtuple("Row", headers)
+
+    rows = [
+        Row(
+            f"``|{substitution}|``",
+            f"|{substitution}|",
+            f"``{global_substitutions[substitution]}``",
+        )
+        for substitution in sorted(global_substitutions)
+    ]
+
+    lines = [
+        ".. list-table:: Global Substitutions",
+        "   :header-rows: 1",
+        "",
+        f"   * - {headers[0]}",
+        f"     - {headers[1]}",
+        f"     - {headers[2]}",
+    ]
+
+    for row in rows:
+        lines.extend(
+            [
+                f"   * - {row.substitution}",
+                f"     - {row.example}",
+                f"     - {row.replaces}",
+            ]
+        )
+
+    content = "\n".join(lines)
+
+    with pathlib.Path(rst_file).open("w", encoding="utf-8") as file:
+        file.write(content)

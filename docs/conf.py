@@ -37,7 +37,7 @@ sys.path.insert(0, os.path.abspath("."))  # noqa: PTH100
 # isort: on
 
 import _cff_to_rst
-from _global_substitutions import global_substitutions
+from _global_substitutions import global_substitutions, make_global_substitutions_table
 
 # Project metadata
 
@@ -50,6 +50,8 @@ version = __version__
 
 if release.startswith("0"):
     warnings.warn(f"Incorrect version in documentation build ({release = })")
+
+make_global_substitutions_table()
 
 # Generate author list from CITATION.cff
 
