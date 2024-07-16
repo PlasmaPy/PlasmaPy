@@ -44,10 +44,10 @@ def critical_density(omega: u.Quantity[u.rad / u.s]) -> u.Quantity[u.m**-3]:
     The critical density is given by the formula
 
     .. math::
-        n_{c}=\frac{m_{e}\varepsilon_0\omega^{2}}{e^{2}}
+        n_c=\frac{m_e ε_0 θ^{2}}{e^2}
 
     where :math:`m_{e}` is the mass of an electron,
-    :math:`\varepsilon_0` is the permittivity of free space, :math:`\omega`
+    :math:`ε_0` is the permittivity of free space, :math:`θ`
     is the radiation frequency, and :math:`e` is the elementary charge.
 
     Examples
@@ -76,14 +76,15 @@ def mass_density(
 
     .. math::
 
-        \rho = \left| \frac{Z_{s}}{Z_{particle}} \right| n_{s} m_{particle}
-              = | Z_{ratio} | n_{s} m_{particle}
+        ρ = \left| \frac{Z_s}{Z_{particle}} \right| n_s m_{particle}
+              = | Z_{ratio} | n_s m_{particle}
 
-    where :math:`m_{particle}` is the particle mass, :math:`n_{s}` is a number
-    density for plasma species :math:`s`, :math:`Z_{s}` is the charge number of
-    species :math:`s`, and :math:`Z_{particle}` is the charge number of
-    ``particle``.  For example, if the electron density is given for :math:`n_s`
-    and ``particle`` is a doubly ionized atom, then :math:`Z_{ratio} = -1 / 2`\ .
+    where :math:`m_{particle}` is the particle mass, :math:`n_s` is a
+    number density for plasma species :math:`s`, :math:`Z_s` is the
+    charge number of species :math:`s`, and :math:`Z_{particle}` is the
+    charge number of ``particle``. For example, if the electron density
+    is given for :math:`n_s` and ``particle`` is a doubly ionized atom,
+    then :math:`Z_{ratio} = -1 / 2`\ .
 
     Parameters
     ----------
@@ -94,16 +95,16 @@ def mass_density(
         through and returned without modification.
 
     particle : `~plasmapy.particles.particle_class.Particle`
-        The particle for which the mass density is being calculated for.  Must
+        The particle for which the mass density is being calculated.  Must
         be a `~plasmapy.particles.particle_class.Particle` or a value convertible to
         a `~plasmapy.particles.particle_class.Particle` (e.g., ``'p+'`` for protons,
         ``'D+'`` for deuterium, or ``'He-4 +1'`` for singly ionized helium-4).
 
-    z_ratio : `int`, `float`, optional
+    z_ratio : `int` | `float`, default: ``1``
         The ratio of the charge numbers corresponding to the plasma species
         represented by ``density`` and the ``particle``.  For example, if the
         given ``density`` is an electron density and ``particle`` is doubly
-        ionized ``He``, then ``z_ratio = -0.5``.  Default is ``1``.
+        ionized ``He``, then ``z_ratio = -0.5``.
 
     Raises
     ------
