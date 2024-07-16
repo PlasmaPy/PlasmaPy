@@ -199,7 +199,6 @@ def make_global_substitutions_table(
     lines = [
         ".. list-table:: Global Substitutions",
         "   :header-rows: 1",
-        "   :widths: 22 22 56",
         "",
         f"   * - {headers[0].title()}",
         f"     - {headers[1].title()}",
