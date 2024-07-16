@@ -62,3 +62,6 @@
 - search: 'nox -e'
   replacement: 'nox -s'
   description: The -s refers to Nox sessions, while the -e is from tox environments
+
+- search: '``~plasmapy'
+  description: Either enclose the namespace with single backticks to make it a link, or remove the tilde and keep it a literal
