@@ -656,10 +656,10 @@ def thermal_speed(
           To do this we first define another function :math:`g(v)` given by
 
           .. math::
-             \int_{0}^{\infty} g(v) dv
-                = \int_{-\infty}^{\infty} f(\mathbf{v}) d^3\mathbf{v}
+             \int_{0}^{∞} g(v) dv
+                = \int_{-∞}^{∞} f(\mathbf{v}) d^3\mathbf{v}
                 \quad \rightarrow \quad
-                g(v) = 4 \pi v^2 f(v)
+                g(v) = 4 π v^2 f(v)
 
           then
 
@@ -683,7 +683,7 @@ def thermal_speed(
 
           .. math::
              v_{th} = \int |\mathbf{v}| f(\mathbf{v}) d^3 \mathbf{v}
-                         = \sqrt{\frac{8 k_B T}{\pi m}}
+                         = \sqrt{\frac{8 k_B T}{π m}}
 
 
         - **NRL Formulary** ``method = "nrl"``
