@@ -1,0 +1,1 @@
+Added the `~plasmapy.formulary.collisions.misc.Bethe_stopping` function to the `~plasmapy.formulary.collisions` subpackage.

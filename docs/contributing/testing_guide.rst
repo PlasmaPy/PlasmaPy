@@ -262,41 +262,38 @@ To test that a function raises an appropriate exception, use
 Test independence and parametrization
 -------------------------------------
 
-In this section, we'll discuss the issue of parametrization based on an
-example of a :wikipedia:`proof <Riemann_hypothesis#Excluded_middle>` of
-Gauss's class number conjecture.
-
-The proof goes along these lines:
-
-* If the generalized Riemann hypothesis is true, the conjecture is true.
-
-* If the generalized Riemann hypothesis is false, the conjecture is also
-  true.
-
-* Therefore, the conjecture is true.
-
-One way to use pytest would be to write sequential test in a single
-function.
+Sometimes we want to test how a function handles many different inputs.
+For example, take this simple function that checks if a number is less
+than 1000:
 
 .. code-block:: python
 
-   def test_proof_by_riemann_hypothesis() -> None:
-       assert proof_by_riemann(False)
-       assert proof_by_riemann(True)  # will only be run if the previous test passes
+   def less_than_1000(x: int) -> bool:
+       return True if x < 1000 else False
 
-If the first test were to fail, then the second test would never be run.
+Let's say we want to test both positive and negative numbers that are less
+than 1000. One way to use pytest would be to write sequential tests in a
+single function.
+
+.. code-block:: python
+
+   def test_less_than_1000() -> None:
+       assert less_than_1000(999)
+       assert less_than_1000(-1000)  # will only be run if the previous test passes
+
+If the first test were to fail, then the subsequent test would never be run.
 We would therefore not know the potentially useful results of the second
 test. This drawback can be avoided by making independent tests so that
 both will be run.
 
 .. code-block:: python
 
-   def test_proof_if_riemann_false() -> None:
-       assert proof_by_riemann(False)
+   def test_less_than_1000_positive_number() -> None:
+       assert less_than_1000(999)
 
 
-   def test_proof_if_riemann_true() -> None:
-       assert proof_by_riemann(True)
+   def test_less_than_1000_negative_number() -> None:
+       assert less_than_1000(-1000)
 
 However, this approach can lead to cumbersome, repeated code if you are
 calling the same function over and over. If you wish to run multiple
@@ -305,12 +302,12 @@ tests for the same function, the preferred method is to decorate it with
 
 .. code-block:: python
 
-   @pytest.mark.parametrize("truth_value", [True, False])
-   def test_proof_if_riemann(truth_value: bool) -> None:
-       assert proof_by_riemann(truth_value)
+   @pytest.mark.parametrize("number_to_test", [999, -1000])
+   def test_less_than_1000(number_to_test: int) -> None:
+       assert less_than_1000(number_to_test)
 
-This code snippet will run :py:`proof_by_riemann(truth_value)` for each
-``truth_value`` in :py:`[True, False]`. Both of the above tests will be
+This code snippet will run :py:`less_than_1000(number_to_test)` for each
+``number_to_test`` in :py:`[999, -1000]`. Both of the above tests will be
 run regardless of failures. This approach is much cleaner for long lists
 of arguments, and has the advantage that you would only need to change
 the function call in one place if the function changes.
@@ -320,9 +317,11 @@ functions or pass in tuples containing inputs and expected values.
 
 .. code-block:: python
 
-   @pytest.mark.parametrize("truth_value, expected", [(True, True), (False, True)])
-   def test_proof_if_riemann(truth_value: bool, expected: bool) -> None:
-       assert proof_by_riemann(truth_value) == expected
+   @pytest.mark.parametrize(
+       "number_to_test, expected", [(999, True), (-1000, True), (1000, False)]
+   )
+   def test_less_than_1000(number_to_test: int, expected: bool) -> None:
+       assert less_than_1000(number_to_test) == expected
 
 Test parametrization with argument unpacking
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
