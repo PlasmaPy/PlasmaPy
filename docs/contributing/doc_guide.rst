@@ -1043,14 +1043,16 @@ summarized in the following table.
 
    .. include:: _global_substitutions_table.rst
 
-Since substitutions are executed by |Sphinx| when the documentation is
-built, any substitution used in docstrings will not show up when using
-`help`. For example, when :rst:`|Particle|` is used in a docstring, `help`
-will show it as :rst:`|Particle|` rather than
-```~plasmapy.particles.particle_class.Particle```. Consequently,
-substitutions should not be used in docstrings when it is important
-that users have quick access to the full path of the `object` (such
-as in the ``See Also`` section).
+.. note::
+
+   Since substitutions are executed by |Sphinx| when the documentation
+   is built, any substitution used in docstrings will not show up when
+   using `help`. For example, when :rst:`|Particle|` is used in a
+   docstring, `help` will show it as :rst:`|Particle|` rather than
+   ```~plasmapy.particles.particle_class.Particle```. Consequently,
+   substitutions should not be used in docstrings when it is important
+   that users have quick access to the full path of the `object` (such
+   as in the ``See Also`` section).
 
 .. _citation-instructions:
 
