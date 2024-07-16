@@ -750,11 +750,11 @@ The type specification should not include information about the
 * Use the substitution :rst:`|array_like|` to indicate that an |argument|
   must be |array_like| (i.e., convertible into an |ndarray|).
 
-* Use the substitution :rst:`|particle-like|` to indicate that a
-  |particle-like| argument should be convertible into a |Particle|,
-  |CustomParticle|, or |ParticleList|.
+* Use :rst:`|particle-like|` to indicate that a |particle-like| argument
+  should be convertible into a |Particle|, |CustomParticle|, or
+  |ParticleList|.
 
-* Use the :rst:`|particle-list-like|` to indicate that a
+* Use :rst:`|particle-list-like|` to indicate that a
   |particle-list-like| argument should be convertible into a
   |ParticleList|.
 
