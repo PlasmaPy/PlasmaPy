@@ -36,8 +36,8 @@ sys.path.insert(0, os.path.abspath(".."))  # noqa: PTH100
 sys.path.insert(0, os.path.abspath("."))  # noqa: PTH100
 # isort: on
 
-import _cff_to_rst
-from _global_substitutions import global_substitutions
+import _author_list_from_cff
+import _global_substitutions
 
 # Project metadata
 
@@ -51,9 +51,12 @@ version = __version__
 if release.startswith("0"):
     warnings.warn(f"Incorrect version in documentation build ({release = })")
 
+_global_substitutions.make_global_substitutions_table()
+global_substitutions = _global_substitutions.global_substitutions
+
 # Generate author list from CITATION.cff
 
-_cff_to_rst.main()
+_author_list_from_cff.generate_rst_file()
 
 # Sphinx configuration variables
 
