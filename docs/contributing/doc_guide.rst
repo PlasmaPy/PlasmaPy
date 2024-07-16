@@ -1032,27 +1032,26 @@ documentation. |reStructuredText| allows us to `define substitutions`_
 Here whenever ``|Particle|`` is used |Sphinx| will replace it with
 ```~plasmapy.particles.particle_class.Particle``` during build time.
 
-PlasmaPy has certain common substitutions pre-defined so that they can
-be used elsewhere in the documentation. For example, we can write
-``|Quantity|`` instead of ```~astropy.units.Quantity```, and
-``|Particle|`` instead of
-```~plasmapy.particles.particle_class.Particle```.
-
-Global substitutions are defined in |docs/_global_substitutions.py|_,
-and are summarized in the following table.
+PlasmaPy contains pre-defined global substitutions that can be used
+elsewhere in the documentation. For example, we can write ``|Quantity|``
+instead of ```~astropy.units.Quantity```, and ``|Particle|`` instead of
+```~plasmapy.particles.particle_class.Particle```. These global
+substitutions are defined in |docs/_global_substitutions.py|_, and are
+summarized in the following table.
 
 .. include:: _global_substitutions_table.rst
 
 .. note::
 
-   Since substitutions are performed by |Sphinx| when the documentation is
-   built, any substitution used in docstrings will not show up when using
-   Python's `help` function (or the like). For example, when ``|Particle|``
-   is used in a docstring, `help` will show it as ``|Particle|`` rather
-   than ```~plasmapy.particles.particle_class.Particle```. Consequently,
-   substitutions should not be used in docstrings when it is important that
-   users have quick access to the full path of the `object` (such as in the
-   ``See Also`` section).
+   Since substitutions are performed by |Sphinx| when the documentation
+   is built, any substitution used in docstrings will not show up when
+   using Python's `help` function (or the like). For example, when
+   ``|Particle|`` is used in a docstring, `help` will show it as
+   ``|Particle|`` rather than
+   ```~plasmapy.particles.particle_class.Particle```. Consequently,
+   substitutions should not be used in docstrings when it is important
+   that users have quick access to the full path of the `object` (such
+   as in the ``See Also`` section).
 
 .. _citation-instructions:
 
