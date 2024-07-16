@@ -26,7 +26,7 @@ import numpy as np
 from plasmapy.utils.exceptions import InvalidRomanNumeralError, OutOfRangeError
 
 # Define digit mapping
-_romanNumeralMap = (
+_romanNumeralMap: tuple[tuple[str, int], ...] = (
     ("M", 1000),
     ("CM", 900),
     ("D", 500),
@@ -59,7 +59,7 @@ _romanNumeralPattern = re.compile(
 )
 
 
-def to_roman(n: int | np.integer) -> str:
+def to_roman(n: int) -> str:
     """
     Convert an integer to a Roman numeral.
 
