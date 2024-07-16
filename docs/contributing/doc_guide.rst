@@ -1039,21 +1039,18 @@ instead of ```~astropy.units.Quantity```, and ``|Particle|`` instead of
 substitutions are defined in |docs/_global_substitutions.py|_, and are
 summarized in the following table.
 
-.. collapse:: Click here for table of global substitutions
+.. collapse:: Click here to expand/collapse table of global substitutions
 
    .. include:: _global_substitutions_table.rst
 
-.. note::
-
-   Since substitutions are performed by |Sphinx| when the documentation
-   is built, any substitution used in docstrings will not show up when
-   using Python's `help` function (or the like). For example, when
-   ``|Particle|`` is used in a docstring, `help` will show it as
-   ``|Particle|`` rather than
-   ```~plasmapy.particles.particle_class.Particle```. Consequently,
-   substitutions should not be used in docstrings when it is important
-   that users have quick access to the full path of the `object` (such
-   as in the ``See Also`` section).
+Since substitutions are executed by |Sphinx| when the documentation is
+built, any substitution used in docstrings will not show up when using
+`help`. For example, when ``|Particle|`` is used in a docstring, `help`
+will show it as ``|Particle|`` rather than
+```~plasmapy.particles.particle_class.Particle```. Consequently,
+substitutions should not be used in docstrings when it is important
+that users have quick access to the full path of the `object` (such
+as in the ``See Also`` section).
 
 .. _citation-instructions:
 
