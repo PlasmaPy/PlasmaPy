@@ -15,6 +15,8 @@ Documentation Guide
 .. role:: rst(code)
    :language: rst
 
+<!-- Escape backticks with a \ in arguments provided to :rst: (like :rst:`:math:\`5+6\``) -->
+
 Introduction
 ============
 
@@ -268,8 +270,8 @@ the numpydoc_ standard for docstrings. Docstring conventions for
    and a single backslash needs to be represented with ``\\``. This
    complication is avoided by beginning the docstring with :py:`r"""`,
    which denotes the docstring as a `raw string`_. For example, the `raw
-   string`_ :py:`r""":math:`\alpha`"""` will render the same as the
-   normal string :py:`""":math:`\\alpha`"""`.
+   string`_  ``r""":math:`\alpha`"""`` will render the same as the
+   normal string ``""":math:`\\alpha`"""``.
 
 .. _example docstring:
 
