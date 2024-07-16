@@ -12,7 +12,7 @@ Documentation Guide
 .. role:: bash(code)
    :language: bash
 
-.. role:: rest(code)
+.. role:: rst(code)
    :language: rst
 
 Introduction
