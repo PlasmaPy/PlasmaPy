@@ -189,7 +189,7 @@ def make_global_substitutions_table(
     rows = []
     for substitution in sorted(global_substitutions):
         replaces_ = global_substitutions[substitution]
-        replaces = f"`` {replaces_} ``" if "`" in replaces_ else f"``{replaces_}``"
+        replaces = rf"`` {replaces_} ``" if r"`" in replaces_ else rf"``{replaces_}``"
 
         rows.append(
             Row(
