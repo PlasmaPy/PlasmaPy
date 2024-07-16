@@ -19,7 +19,7 @@ def test_particle_antiparticle_pairs(particle_antiparticle_pair) -> None:
     if "nu" not in particle:
         identical_keys.append("mass")
 
-    if particle in ("e-", "mu-", "tau-") or "nu" in particle:
+    if particle in {"e-", "mu-", "tau-"} or "nu" in particle:
         identical_keys.append("generation")
 
     opposite_keys = ["charge number", "lepton number", "baryon number"]
@@ -36,7 +36,7 @@ def test_particle_antiparticle_pairs(particle_antiparticle_pair) -> None:
             == -data_about_special_particles[antiparticle][key]
         ), f"{particle} and {antiparticle} do not have exact opposite {key}."
 
-    if particle not in ("e-", "n"):
+    if particle not in {"e-", "n"}:
         assert data_about_special_particles[particle][
             "name"
         ] == data_about_special_particles[antiparticle]["name"].replace(

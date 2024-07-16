@@ -440,30 +440,30 @@ def Coulomb_logarithm(
         T=T, n_e=n_e, species=species, z_mean=z_mean, V=V, method=method
     )
 
-    if method in (
+    if method in {
         "classical",
         "ls",
         "ls_min_interp",
         "GMS-1",
         "ls_full_interp",
         "GMS-2",
-    ):
+    }:
         ln_Lambda = np.log(bmax / bmin)
-    elif method in ("ls_clamp_mininterp", "GMS-3"):
+    elif method in {"ls_clamp_mininterp", "GMS-3"}:
         ln_Lambda = np.log(bmax / bmin)
         if np.any(ln_Lambda < 2):
             if np.isscalar(ln_Lambda.value):
                 ln_Lambda = 2 * u.dimensionless_unscaled
             else:
                 ln_Lambda[ln_Lambda < 2] = 2 * u.dimensionless_unscaled
-    elif method in (
+    elif method in {
         "hls_min_interp",
         "GMS-4",
         "hls_max_interp",
         "GMS-5",
         "hls_full_interp",
         "GMS-6",
-    ):
+    }:
         ln_Lambda = 0.5 * np.log(1 + bmax**2 / bmin**2)
     else:
         raise ValueError(
@@ -478,14 +478,14 @@ def Coulomb_logarithm(
 
     min_ln_Lambda = np.nanmin(ln_Lambda)
 
-    if min_ln_Lambda < 2 and method in (
+    if min_ln_Lambda < 2 and method in {
         "classical",
         "ls",
         "ls_min_interp",
         "GMS-1",
         "ls_full_interp",
         "GMS-2",
-    ):
+    }:
         warnings.warn(
             f"The calculation of the Coulomb logarithm has found a value of "
             f"min(ln Λ) = {min_ln_Lambda:.4f} which is likely to be inaccurate "

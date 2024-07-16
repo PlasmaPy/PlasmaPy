@@ -1175,7 +1175,7 @@ def _nondim_thermal_conductivity(
     be ions.
     """
     if _is_electron(particle):
-        if model in ("spitzer-harm", "spitzer"):
+        if model in {"spitzer-harm", "spitzer"}:
             kappa_hat = _nondim_tc_e_spitzer(Z)
         elif model == "braginskii":
             kappa_hat = _nondim_tc_e_braginskii(hall, Z, field_orientation)
@@ -1189,7 +1189,7 @@ def _nondim_thermal_conductivity(
         kappa_hat = _nondim_tc_i_braginskii(hall, field_orientation)
     elif model == "ji-held":
         kappa_hat = _nondim_tc_i_ji_held(hall, Z, mu, theta, field_orientation)
-    elif model in ("spitzer-harm", "spitzer"):
+    elif model in {"spitzer-harm", "spitzer"}:
         raise NotImplementedError(
             "Ion thermal conductivity is not implemented in the Spitzer model."
         )
@@ -1228,7 +1228,7 @@ def _nondim_viscosity(
         eta_hat = _nondim_visc_i_braginskii(hall)
     elif model == "ji-held":
         eta_hat = _nondim_visc_i_ji_held(hall, Z, mu, theta)
-    elif model in ("spitzer-harm", "spitzer"):
+    elif model in {"spitzer-harm", "spitzer"}:
         raise NotImplementedError(
             "Ion viscosity is not implemented in the Spitzer model."
         )
@@ -1244,7 +1244,7 @@ def _nondim_resistivity(hall, Z, particle, model, field_orientation):  # noqa: A
     This function is a switchboard / wrapper that calls the appropriate
     model-specific functions depending on which model is specified.
     """
-    if model in ("spitzer-harm", "spitzer"):
+    if model in {"spitzer-harm", "spitzer"}:
         alpha_hat = _nondim_resist_spitzer(Z, field_orientation)
     elif model == "braginskii":
         alpha_hat = _nondim_resist_braginskii(hall, Z, field_orientation)
@@ -1268,7 +1268,7 @@ def _nondim_te_conductivity(
     This function is a switchboard / wrapper that calls the appropriate
     model-specific functions depending on which model is specified.
     """
-    if model in ("spitzer-harm", "spitzer"):
+    if model in {"spitzer-harm", "spitzer"}:
         beta_hat = _nondim_tec_spitzer(Z)
     elif model == "braginskii":
         beta_hat = _nondim_tec_braginskii(hall, Z, field_orientation)
@@ -1340,12 +1340,12 @@ def _nondim_resist_spitzer(Z, field_orientation):
     in Physics of Fully Ionized Gases, Spitzer.
     """
     alpha_perp = 1
-    if field_orientation in ("perpendicular", "perp"):
+    if field_orientation in {"perpendicular", "perp"}:
         return alpha_perp
 
     (gamma_E, gamma_T, delta_E, delta_T) = _get_spitzer_harm_coeffs(Z)
     alpha_par = (3 * np.pi / 32) * (1 / gamma_E)
-    if field_orientation in ("parallel", "par"):
+    if field_orientation in {"parallel", "par"}:
         return alpha_par
     #        alpha_par = 0.5064 # Z = 1
 
@@ -1388,11 +1388,11 @@ def _nondim_tc_e_braginskii(hall, Z, field_orientation):
     gamma_0 = gamma_0_prime[Z_idx] / delta_0[Z_idx]
     Delta = hall**4 + delta_1[Z_idx] * hall**2 + delta_0[Z_idx]
 
-    if field_orientation in ("parallel", "par"):
+    if field_orientation in {"parallel", "par"}:
         kappa_par = gamma_0
         return kappa_par
 
-    if field_orientation in ("perpendicular", "perp"):
+    if field_orientation in {"perpendicular", "perp"}:
         kappa_perp = (gamma_1_prime[Z_idx] * hall**2 + gamma_0_prime[Z_idx]) / Delta
         return kappa_perp
 
@@ -1424,7 +1424,7 @@ def _nondim_tc_i_braginskii(hall, field_orientation):
     # instead of an int
     hall = float(hall)
 
-    if field_orientation in ("parallel", "par"):
+    if field_orientation in {"parallel", "par"}:
         kappa_par_coeff_0 = 3.906
         kappa_par = kappa_par_coeff_0
         return kappa_par
@@ -1433,7 +1433,7 @@ def _nondim_tc_i_braginskii(hall, field_orientation):
     delta_0 = 0.677
     Delta = hall**4 + delta_1 * hall**2 + delta_0
 
-    if field_orientation in ("perpendicular", "perp"):
+    if field_orientation in {"perpendicular", "perp"}:
         kappa_perp_coeff_2 = 2.0
         kappa_perp_coeff_0 = 2.645
         kappa_perp = (kappa_perp_coeff_2 * hall**2 + kappa_perp_coeff_0) / Delta
@@ -1561,11 +1561,11 @@ def _nondim_resist_braginskii(hall, Z, field_orientation):
     alpha_0 = 1 - alpha_0_prime[Z_idx] / delta_0[Z_idx]
     Delta = hall**4 + delta_1[Z_idx] * hall**2 + delta_0[Z_idx]
 
-    if field_orientation in ("parallel", "par"):
+    if field_orientation in {"parallel", "par"}:
         alpha_par = alpha_0
         return alpha_par
 
-    if field_orientation in ("perpendicular", "perp"):
+    if field_orientation in {"perpendicular", "perp"}:
         alpha_perp = 1 - (alpha_1_prime[Z_idx] * hall**2 + alpha_0_prime[Z_idx]) / Delta
         return alpha_perp
 
@@ -1610,11 +1610,11 @@ def _nondim_tec_braginskii(hall, Z, field_orientation):
     beta_0 = beta_0_prime[Z_idx] / delta_0[Z_idx]
     #    beta_0 = 0.7110
 
-    if field_orientation in ("parallel", "par"):
+    if field_orientation in {"parallel", "par"}:
         beta_par = beta_0
         return beta_par
 
-    if field_orientation in ("perpendicular", "perp"):
+    if field_orientation in {"perpendicular", "perp"}:
         beta_perp = (beta_1_prime[Z_idx] * hall**2 + beta_0_prime[Z_idx]) / Delta
         return beta_perp
 
@@ -2093,7 +2093,7 @@ def _nondim_tc_i_ji_held(hall, Z, mu, theta: float, field_orientation, K: int = 
     elif K == 3:
         Delta_par_i1 = 1 + 26.90 * zeta + 187.5 * zeta**2 + 346.9 * zeta**3
         kappa_par_i = (5.586 + 101.7 * zeta + 289.1 * zeta**2) / Delta_par_i1
-    if field_orientation in ("parallel", "par"):
+    if field_orientation in {"parallel", "par"}:
         return kappa_par_i / np.sqrt(2)
 
     if K == 3:
@@ -2118,7 +2118,7 @@ def _nondim_tc_i_ji_held(hall, Z, mu, theta: float, field_orientation, K: int = 
         kappa_perp_i = (
             (np.sqrt(2) + 15 / 2 * zeta) * r**2 + 0.1693 * kappa_par_i * Delta_par_i1**2
         ) / Delta_perp_i1
-    if field_orientation in ("perpendicular", "perp"):
+    if field_orientation in {"perpendicular", "perp"}:
         return kappa_perp_i / np.sqrt(2)
 
     if K == 2:
