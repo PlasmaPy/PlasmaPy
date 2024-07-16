@@ -178,7 +178,10 @@ global_substitutions = plasmapy_subs | doc_subs | numpy_subs | astropy_subs | li
 def make_global_substitutions_table(
     rst_file: str = "contributing/_global_substitutions_table.rst",
 ) -> None:
-    """Create a file containing a table of global reStructuredText substitutions."""
+    """
+    Create a file containing a table of global reStructuredText substitutions
+    for inclusion in :file:`docs/contributing/doc_guide.rst`.
+    """
 
     headers = ("substitution", "example", "replaces")
     Row = collections.namedtuple("Row", headers)
