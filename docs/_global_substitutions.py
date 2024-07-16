@@ -12,6 +12,11 @@ if the key is ``"particle-like"``, then it can be used as
 ``|particle-like|`` throughout the documentation.
 """
 
+__all__ = ["global_substitutions", "make_global_substitutions_table"]
+
+import collections
+import pathlib
+
 plasmapy_subs: dict[str, str] = {
     "atomic_number": ":func:`~plasmapy.particles.atomic.atomic_number`",
     "atomic_symbol": ":func:`~plasmapy.particles.symbols.atomic_symbol`",
@@ -59,8 +64,8 @@ plasmapy_subs: dict[str, str] = {
     "validate_quantities": ":func:`~plasmapy.utils.decorators.validators.validate_quantities`",
 }
 
-# The backslash is needed for the substitution to work correctly when
-# used just before a period.
+# The trailing backslash and space are needed for the substitution to
+# work correctly when used just before a period.
 
 doc_subs: dict[str, str] = {
     "annotated": r":term:`annotated <annotation>`\ ",
@@ -77,7 +82,7 @@ doc_subs: dict[str, str] = {
     "decorated": r":term:`decorated <decorator>`\ ",
     "decorator": r":term:`decorator`\ ",
     "documentation guide": r":ref:`documentation guide`\ ",
-    "expect-api-changes": "This functionality is under development. Backward incompatible changes might occur in future releases.",
+    "expect-api-changes": "This feature is under development. Breaking changes may occur in the future.",
     "getting ready to contribute": r":ref:`getting ready to contribute`\ ",
     "glossary": r":ref:`glossary`\ ",
     "keyword-only": r":term:`keyword-only`\ ",
@@ -168,3 +173,57 @@ links_to_become_subs: dict[str, str] = {
 link_subs = {key: f"`{key} <{value}>`_" for key, value in links_to_become_subs.items()}
 
 global_substitutions = plasmapy_subs | doc_subs | numpy_subs | astropy_subs | link_subs
+
+
+def make_global_substitutions_table(
+    rst_file: str = "contributing/_global_substitutions_table.rst",
+) -> None:
+    """
+    Create a file containing a table of global reStructuredText substitutions
+    for inclusion in :file:`docs/contributing/doc_guide.rst`.
+    """
+
+    headers = ("substitution", "replaces", "example")
+    Row = collections.namedtuple("Row", headers)
+
+    rows = [
+        Row(
+            f"``|{substitution}|``",
+            f"``{global_substitutions[substitution].rstrip()}``",
+            f"|{substitution}|",
+        )
+        for substitution in sorted(global_substitutions)
+    ]
+    lines = [
+        ".. list-table:: Global Substitutions",
+        "   :header-rows: 1",
+        "",
+        f"   * - {headers[0].title()}",
+        f"     - {headers[1].title()}",
+        f"     - {headers[2].title()}",
+    ]
+
+    for row in rows:
+        lines.extend(
+            [
+                f"   * - {row.substitution}",
+                f"     - {row.replaces}",
+                f"     - {row.example}",
+            ]
+        )
+
+    content = "\n".join(lines)
+
+    with pathlib.Path(rst_file).open("w", encoding="utf-8") as file:
+        file.write(content)
+
+
+if __name__ == "__main__":
+    """
+    To test generating the table of substitutions, run:
+
+    .. code-block: bash
+
+        python _global_substitutions.py
+    """
+    make_global_substitutions_table()
