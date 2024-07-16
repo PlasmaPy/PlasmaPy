@@ -1029,12 +1029,12 @@ documentation. |reStructuredText| allows us to `define substitutions`_
 
    .. |Particle| replace:: `~plasmapy.particles.particle_class.Particle`
 
-Here whenever ``|Particle|`` is used |Sphinx| will replace it with
+Here whenever :rst:`|Particle|` is used |Sphinx| will replace it with
 ```~plasmapy.particles.particle_class.Particle``` during build time.
 
 PlasmaPy contains pre-defined global substitutions that can be used
-elsewhere in the documentation. For example, we can write ``|Quantity|``
-instead of ```~astropy.units.Quantity```, and ``|Particle|`` instead of
+elsewhere in the documentation. For example, we can write :rst:`|Quantity|`
+instead of ```~astropy.units.Quantity```, and :rst:`|Particle|` instead of
 ```~plasmapy.particles.particle_class.Particle```. These global
 substitutions are defined in |docs/_global_substitutions.py|_, and are
 summarized in the following table.
@@ -1045,8 +1045,8 @@ summarized in the following table.
 
 Since substitutions are executed by |Sphinx| when the documentation is
 built, any substitution used in docstrings will not show up when using
-`help`. For example, when ``|Particle|`` is used in a docstring, `help`
-will show it as ``|Particle|`` rather than
+`help`. For example, when :rst:`|Particle|` is used in a docstring, `help`
+will show it as :rst:`|Particle|` rather than
 ```~plasmapy.particles.particle_class.Particle```. Consequently,
 substitutions should not be used in docstrings when it is important
 that users have quick access to the full path of the `object` (such
@@ -1117,9 +1117,9 @@ error or the absence of the module in the documentation build.
    If a pull request adds a new subpackage *and* a new module, then a
    stub file must be created for both of them.
 
-   For example, suppose a pull request creates the ``plasmapy.io``
+   For example, suppose a pull request creates the :py:`plasmapy.io`
    subpackage in the :file:`src/plasmapy/io/` directory and the
-   ``plasmapy.io.readers`` module via :file:`src/plasmapy/io/readers.py`. It
+   :py:`plasmapy.io.readers` module via :file:`src/plasmapy/io/readers.py`. It
    will then be necessary to create stub files at both
    :file:`docs/api_static/plasmapy.io.rst` and
    :file:`docs/api_static/plasmapy.io.readers.rst`.
@@ -1306,7 +1306,7 @@ typo and changing it to ```plasmapy.particles```.
    For PlasmaPy objects, use the full namespace of the object (i.e., use
    ```plasmapy.particles.particle_class.Particle``` instead of
    ```plasmapy.particles.Particle```) or a :ref:`reStructuredText
-   substitution <substitutions>` like ``|Particle|`` as defined in
+   substitution <substitutions>` like :rst:`|Particle|` as defined in
    |docs/_global_substitutions.py|_.
 
 This warning may occur when a new module or subpackage is created
@@ -1387,11 +1387,11 @@ object to its corresponding documentation. Double check that the code is
 correct, and consider adding any missing :py:`import` statements. The
 documentation for this extension contains `examples
 <https://sphinx-codeautolink.readthedocs.io/en/latest/examples.html>`__
-on how to skip blocks with ``.. autolink-skip::`` and how to do
-invisible imports with ``.. autolink-preface::``.
+on how to skip blocks with :rst:`.. autolink-skip::` and how to do
+invisible imports with :rst:`.. autolink-preface::`.
 
 If this warning occurs in the "Examples" section of a docstring, put
-``.. autolink-skip: section`` at the beginning of that section (see
+:rst:`.. autolink-skip: section` at the beginning of that section (see
 :pr:`2554`). These warnings sometimes only show up when rebuilding
 the documentation.
 
