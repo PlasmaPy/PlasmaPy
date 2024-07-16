@@ -3,8 +3,8 @@
 [**testing guide**]: https://docs.plasmapy.org/en/latest/contributing/testing_guide.html
 [`src/plasmapy/formulary/speeds.py`]: ../src/plasmapy/formulary/speeds.py
 [`tests/formulary/test_speeds.py`]: formulary/test_speeds.py
-[`tests/`]: .
-[`src/plasmapy/`]: ../src/plasmapy
+[`tests`]: .
+[`src/plasmapy`]: ../src/plasmapy
 [Nox]: https://nox.thea.codes
 [pytest]: https://docs.pytest.org
 [running tests]: https://docs.plasmapy.org/en/latest/contributing/testing_guide.html#running-tests
@@ -18,9 +18,9 @@ the test runner.
 
 ## Locating tests
 
-The [`tests/`] directory contains PlasmaPy's tests. The directory
-structure and organization of [`tests/`] largely mirrors that of
-[`src/plasmapy/`], which contains PlasmaPy's source code. For example,
+The [`tests`] directory contains PlasmaPy's tests. The directory
+structure and organization of [`tests`] largely mirrors that of
+[`src/plasmapy`], which contains PlasmaPy's source code. For example,
 the source code of `plasmapy.formulary.speeds` is located at
 [`src/plasmapy/formulary/speeds.py`], while its tests are located at
 [`tests/formulary/test_speeds.py`]
