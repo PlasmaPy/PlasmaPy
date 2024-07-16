@@ -183,14 +183,18 @@ def make_global_substitutions_table(
     headers = ("substitution", "example", "replaces")
     Row = collections.namedtuple("Row", headers)
 
-    rows = [
-        Row(
-            f"``|{substitution}|``",
-            f"|{substitution}|",
-            f"`` {global_substitutions[substitution]} ``",
+    rows = []
+    for substitution in sorted(global_substitutions):
+        replaces_ = global_substitutions[substitution]
+        replaces = f"`` {replaces_} ``" if "`" in replaces_ else f"``{replaces_}``"
+
+        rows.append(
+            Row(
+                f"``|{substitution}|``",
+                f"|{substitution}|",
+                replaces,
+            )
         )
-        for substitution in sorted(global_substitutions)
-    ]
 
     lines = [
         ".. list-table:: Global Substitutions",
