@@ -15,12 +15,12 @@ Continuous integration (CI) workflows include:
  - [`weekly.yml`](./weekly.yml) — run weekly tests
  - [`check-author-included.yml`](./check-author-included.yml) — verify
    that the author of a PR is included in the top-level
-   [`CITATION.cff`](../../CITATION.cff)
+   [`CITATION.cff`](../../CITATION.cff) metadata file
 
 Workflows associated with the release process include:
 
  - [`create-release-issue.yml`](./create-release-issue.yml) — create an
-   issue containing the release checklst (triggered manually)
+   issue containing the release checklist (triggered manually)
  - [`mint-release.yml`](./mint-release.yml) — preparing the repository
    for a release (triggered manually)
  - [`publish-to-pypi.yml`](./publish-to-pypi.yml) — perform the official
