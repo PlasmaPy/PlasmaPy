@@ -183,7 +183,7 @@ def make_global_substitutions_table(
     for inclusion in :file:`docs/contributing/doc_guide.rst`.
     """
 
-    headers = ("substitution", "example", "replaces")
+    headers = ("substitution", "replaces", "example")
     Row = collections.namedtuple("Row", headers)
 
     rows = []
@@ -194,8 +194,8 @@ def make_global_substitutions_table(
         rows.append(
             Row(
                 f"``|{substitution}|``",
-                f"|{substitution}|",
                 replaces,
+                f"|{substitution}|",
             )
         )
 
@@ -212,8 +212,8 @@ def make_global_substitutions_table(
         lines.extend(
             [
                 f"   * - {row.substitution}",
-                f"     - {row.example}",
                 f"     - {row.replaces}",
+                f"     - {row.example}",
             ]
         )
 
