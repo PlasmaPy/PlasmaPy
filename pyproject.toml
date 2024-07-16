@@ -527,4 +527,5 @@ ignore = [
   ".mailmap",
   "docs/*build/**",
   "Untitled*",
+  "src/plasmapy/_version.py",
 ]
