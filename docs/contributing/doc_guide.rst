@@ -1039,7 +1039,9 @@ instead of ```~astropy.units.Quantity```, and ``|Particle|`` instead of
 substitutions are defined in |docs/_global_substitutions.py|_, and are
 summarized in the following table.
 
-.. include:: _global_substitutions_table.rst
+.. collapse:: Click here for table of global substitutions
+
+   .. include:: _global_substitutions_table.rst
 
 .. note::
 
