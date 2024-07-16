@@ -106,7 +106,7 @@ linking will work for |Python| objects as well as certain packages like
 |NumPy|, |SciPy|, |Astropy|, and |pandas|. This linking is described in the
 section on :ref:`external-references`. In-line code samples are
 typically enclosed in double backticks. To get inline code highlighting,
-use the :rest:`:py:` role for Python code or :rest:`:bash:` for code run
+use the :rst:`:py:` role for Python code or :rst:`:bash:` for code run
 in a terminal.
 
 .. code-block:: rst
@@ -589,7 +589,7 @@ documentation for PlasmaPy and affiliated packages.
   of a sentence.
 
 * Particle and chemical symbols should be formatted as regular text. Use
-  :rest:`:sub:` for subscripts and :rest:`:sup:` for superscripts.
+  :rst:`:sub:` for subscripts and :rst:`:sup:` for superscripts.
 
   Because interpreted text must normally be surrounded by whitespace or
   punctuation, use a backslash followed by a space for the interpreted
