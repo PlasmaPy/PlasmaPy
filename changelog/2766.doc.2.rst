@@ -1,0 +1,1 @@
+Renamed :file:`docs/_cff_to_rst.py` to :file:`docs/_author_list_from_cff.py`.
