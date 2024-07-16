@@ -262,14 +262,14 @@ the numpydoc_ standard for docstrings. Docstring conventions for
 .. tip::
 
    If a docstring contains math that utilizes LaTeX_ syntax, begin the
-   docstring with ``r"""`` instead of ``"""``.
+   docstring with :py:`r"""` instead of :py:`"""`.
 
    In a normal string, backslashes are used to begin escape sequences,
    and a single backslash needs to be represented with ``\\``. This
-   complication is avoided by beginning the docstring with ``r"""``,
+   complication is avoided by beginning the docstring with :py:`r"""`,
    which denotes the docstring as a `raw string`_. For example, the `raw
-   string`_ ``r""":math:`\alpha`"""`` will render the same as the normal
-   string ``""":math:`\\alpha`"""``.
+   string`_ :py:`r""":math:`\alpha`"""` will render the same as the
+   normal string :py:`""":math:`\\alpha`"""`.
 
 .. _example docstring:
 
@@ -467,12 +467,12 @@ at |docs/glossary.rst|_. Here is an example of a term defined within the
          An abbreviation for keyword arguments.
 
 Using the :rst:role:`term` |role| allows us to link to the definitions
-of terms. Using ``:term:`kwargs``` will link to :term:`kwargs` in the
+of terms. Using :rst:`:term:\`kwargs\`` will link to :term:`kwargs` in the
 :ref:`glossary`. We can also refer to terms defined in the projects
 connected via |intersphinx| if they have not already been defined in
-PlasmaPy's :ref:`glossary`. Using ``:term:`role``` will link to |role|
-and ``:term:`directive``` will link to |directive| in `Sphinx's
-glossary`_.
+PlasmaPy's :ref:`glossary`. Using :rst:`:term:\`role\`` will link to
+|role| and :rst:`:term:\`directive\`` will link to |directive| in
+`Sphinx's glossary`_.
 
 Documentation guidelines
 ========================
@@ -656,8 +656,8 @@ Docstring guidelines
   attribute of a class decorated with `property`) should not begin with
   a verb and should end with a period.
 
-* Keep the docstring indented at the same level as the ``r"""`` or
-  ``"""`` that begins the docstring, except for |reStructuredText|
+* Keep the docstring indented at the same level as the :py:`r"""` or
+  :py:`"""` that begins the docstring, except for |reStructuredText|
   constructs like lists, math, and code blocks. Use an indentation of
   four spaces more than the declaration of the object.
 
@@ -747,19 +747,19 @@ The type specification should not include information about the
    |Quantity| [length], default: 10 m
    |Quantity| [temperature, energy], |keyword-only|, default: 0 K
 
-* Use the substitution ``|array_like|`` to indicate that an |argument|
+* Use the substitution :rst:`|array_like|` to indicate that an |argument|
   must be |array_like| (i.e., convertible into an |ndarray|).
 
-* Use the substitution ``|particle-like|`` to indicate that a
+* Use the substitution :rst:`|particle-like|` to indicate that a
   |particle-like| argument should be convertible into a |Particle|,
   |CustomParticle|, or |ParticleList|.
 
-* Use the ``|particle-list-like|`` to indicate that a
+* Use the :rst:`|particle-list-like|` to indicate that a
   |particle-list-like| argument should be convertible into a
   |ParticleList|.
 
-* Use ``|atom-like|`` to indicate that an argument must be |atom-like|
-  (i.e., an element, isotope, and/or ion).
+* Use :rst:`|atom-like|` to indicate that an argument must be
+  |atom-like| (i.e., an element, isotope, and/or ion).
 
 * When the array must be :math:`n`\ -dimensional, precede the type by
   :samp:`{n}D` where :samp:`{n}` is replaced by the number of
@@ -828,8 +828,8 @@ include type information when:
 
 For functions that accept an arbitrary number of positional and/or
 keyword arguments, include them in the "Parameters_" section with the
-preceding asterisk(s). Order ``*args`` and ``**kwargs`` as they appear
-in the signature.
+preceding asterisk(s). Order :py:`*args` and :py:`**kwargs` as they
+appear in the signature.
 
 .. code-block:: rst
 
@@ -891,7 +891,7 @@ Attributes
 * When an attribute in a class has both a getter (which is the method
   decorated with `property`) and a ``setter`` decoration, then the
   getter and ``setter`` functionality should be documented in the
-  docstring of the attribute decorated with ``@property``.
+  docstring of the attribute decorated with :py:`@property`.
 
   .. code-block:: python
 
@@ -949,7 +949,7 @@ extensions:
 
 * `sphinx.ext.autodoc` for including documentation from docstrings.
 * `sphinx.ext.extlinks` for shortening links to external sites (e.g.,
-  ``:orcid:`` and ``:wikipedia:``).
+  :rst:`:orcid:` and :rst:`:wikipedia:`).
 * `sphinx.ext.graphviz` to allow Graphviz_ graphs to be included.
 * `sphinx.ext.intersphinx` for linking to other projects' documentation.
 * `sphinx.ext.mathjax` for math rendering with MathJax_.
@@ -968,8 +968,8 @@ extensions:
   of the documentation.
 * |sphinx-notfound-page|_ to add a :wikipedia:`404 <HTTP_404>` page for
   the documentation.
-* |sphinx-issues|_ to add roles for linking to GitHub (``:commit:``,
-  ``:issue:``, ``:pr:``, and ``:user:``).
+* |sphinx-issues|_ to add roles for linking to GitHub (:rst:`:commit:`,
+  :rst:`:issue:`, :rst:`:pr:`, and :rst:`:user:`).
 * |sphinx-reredirects|_ to enable hyperlink redirects.
 * |sphinx-toolbox|_ for handy tools for Sphinx_ documentation
 * `plasmapy_sphinx` for customizations created for use in PlasmaPy and
