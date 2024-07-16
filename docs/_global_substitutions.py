@@ -187,7 +187,7 @@ def make_global_substitutions_table(
         Row(
             f"``|{substitution}|``",
             f"|{substitution}|",
-            f"``{global_substitutions[substitution].replace(r"`", r"\`")}``",
+            f"``{global_substitutions[substitution].replace(r"`", r"\`")} ``",
         )
         for substitution in sorted(global_substitutions)
     ]
