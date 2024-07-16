@@ -201,9 +201,9 @@ def make_global_substitutions_table(
         "   :header-rows: 1",
         "   :widths: 22 22 56",
         "",
-        f"   * - {headers[0]}",
-        f"     - {headers[1]}",
-        f"     - {headers[2]}",
+        f"   * - {headers[0].title()}",
+        f"     - {headers[1].title()}",
+        f"     - {headers[2].title()}",
     ]
 
     for row in rows:
