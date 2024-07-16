@@ -64,8 +64,8 @@ plasmapy_subs: dict[str, str] = {
     "validate_quantities": ":func:`~plasmapy.utils.decorators.validators.validate_quantities`",
 }
 
-# The backslash is needed for the substitution to work correctly when
-# used just before a period.
+# The trailing backslash and space are needed for the substitution to
+# work correctly when used just before a period.
 
 doc_subs: dict[str, str] = {
     "annotated": r":term:`annotated <annotation>`\ ",
