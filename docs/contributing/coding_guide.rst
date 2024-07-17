@@ -1096,7 +1096,6 @@ in the README file of `benchmarks-repo`_.
 .. _voila: https://voila.readthedocs.io
 .. _error codes for optional checks: https://mypy.readthedocs.io/en/stable/error_code_list2.html
 
-
 .. _`astropy.units`: https://docs.astropy.org/en/stable/units/index.html
 .. |astropy.units| replace:: `astropy.units`
 
