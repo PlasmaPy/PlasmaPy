@@ -739,14 +739,12 @@ class ParticleTracker:
         #         number_density_space,
         #     )
         # ]
-        # print(f"interpolator input: {evaluated_mean_square_rate}")
+        #
         # self._do_scattering = True
         # self._scattering_interpolator = LinearNDInterpolator(  # sigma(n_e, v)
         #     list(zip(number_density_space.si.value, velocity_space.si.value)),
         #     evaluated_mean_square_rate,
         # )
-        #
-        # print("Finished constructing interpolator")
 
     def run(self) -> None:
         r"""
@@ -839,16 +837,57 @@ class ParticleTracker:
         """
         return self.num_entered / self.nparticles_tracked
 
+    def _remove_grid_values(self, particles_to_remove) -> None:
+        """Remove the specified particles from the internal grid
+        values object.
+
+        The ``particles_to_remove`` array must be of length ``nparticles``.
+
+        This must be done whenever particles are stopped or removed during an
+        intermediate step in the push algorithm. Otherwise, subsequent readouts
+        of tracked velocities will not match the shape of the grid values.
+        """
+
+        # The dictionary is not defined at the beginning of the simulation
+        if not hasattr(self, "_total_grid_values"):
+            return
+
+        # Construct masked array with all `True` of length nparticles
+        keep_grid_value_mask = np.full(shape=self.nparticles, fill_value=True)
+
+        # Mark the indicated particles for removal from the grid values
+        keep_grid_value_mask[particles_to_remove] = False
+
+        # Iterate through the `self._total_grid_values` dictionary, keeping only
+        # the necessary values
+        self._total_grid_values = {
+            key: np.compress(
+                keep_grid_value_mask[self._tracked_particle_mask], grid_value
+            )
+            for key, grid_value in self._total_grid_values.items()
+        }
+
+        # TODO: this seems awkward, maybe ``dt`` should be of shape ``nparticles``? as
+        #  is the case for position and velocity
+        # Axis is indicated to ensure the array is not flattened
+        self.dt = np.compress(
+            keep_grid_value_mask[self._tracked_particle_mask], self.dt, axis=0
+        )
+
     def _stop_particles(self, particles_to_stop_mask) -> None:
         """Stop tracking the particles specified by the stop mask.
 
         This is represented by setting the particle's velocity to NaN.
+        This method also takes care of removing the specified particles
+        from the grid values dictionary.
         """
 
         if len(particles_to_stop_mask) != self.x.shape[0]:
             raise ValueError(
                 f"Expected mask of size {self.x.shape[0]}, got {len(particles_to_stop_mask)}"
             )
+
+        self._remove_grid_values(particles_to_stop_mask)
 
         self.v[particles_to_stop_mask] = np.nan
 
@@ -864,6 +903,8 @@ class ParticleTracker:
                 f"Expected mask of size {self.x.shape[0]}, got {len(particles_to_remove_mask)}"
             )
 
+        self._remove_grid_values(particles_to_remove_mask)
+
         self.x[particles_to_remove_mask] = np.nan
         self.v[particles_to_remove_mask] = np.nan
 
@@ -871,7 +912,15 @@ class ParticleTracker:
     # Run/push loop methods
     # *************************************************************************
 
-    def _adaptive_dt(self, Ex, Ey, Ez, Bx, By, Bz) -> NDArray[np.float64] | float:  # noqa: ARG002
+    def _adaptive_dt(
+        self,
+        Ex,  # noqa: ARG002
+        Ey,  # noqa: ARG002
+        Ez,  # noqa: ARG002
+        Bx,
+        By,
+        Bz,
+    ) -> NDArray[np.float64] | float:
         r"""
         Calculate the appropriate dt for each grid based on a number of
         considerations including the local grid resolution (ds) and the
@@ -999,7 +1048,7 @@ class ParticleTracker:
 
         return total_grid_values
 
-    def _update_time(self, summed_field_values):
+    def _update_time(self):
         r"""
         Calculate an appropriate time step for the simulation with respect to
         user configuration. Returns the calculated time step.
@@ -1009,12 +1058,12 @@ class ParticleTracker:
         # If user sets dt explicitly, that's handled in _adaptive_dt
         if self._is_adaptive_time_step:
             dt = self._adaptive_dt(
-                summed_field_values["E_x"],
-                summed_field_values["E_y"],
-                summed_field_values["E_z"],
-                summed_field_values["B_x"],
-                summed_field_values["B_y"],
-                summed_field_values["B_z"],
+                self._total_grid_values["E_x"],
+                self._total_grid_values["E_y"],
+                self._total_grid_values["E_z"],
+                self._total_grid_values["B_x"],
+                self._total_grid_values["B_y"],
+                self._total_grid_values["B_z"],
             )
         else:
             dt = self.dt
@@ -1030,7 +1079,7 @@ class ParticleTracker:
 
         return dt
 
-    def _update_position(self, summed_field_values):
+    def _update_position(self):
         r"""
         Update the positions and velocities of the simulated particles using the
         integrator provided at instantiation.
@@ -1039,17 +1088,17 @@ class ParticleTracker:
         # Create arrays of E and B as required by push algorithm
         E = np.array(
             [
-                summed_field_values["E_x"].to(u.V / u.m).value,
-                summed_field_values["E_y"].to(u.V / u.m).value,
-                summed_field_values["E_z"].to(u.V / u.m).value,
+                self._total_grid_values["E_x"].to(u.V / u.m).value,
+                self._total_grid_values["E_y"].to(u.V / u.m).value,
+                self._total_grid_values["E_z"].to(u.V / u.m).value,
             ]
         )
         E = np.moveaxis(E, 0, -1)
         B = np.array(
             [
-                summed_field_values["B_x"].to(u.T).value,
-                summed_field_values["B_y"].to(u.T).value,
-                summed_field_values["B_z"].to(u.T).value,
+                self._total_grid_values["B_x"].to(u.T).value,
+                self._total_grid_values["B_y"].to(u.T).value,
+                self._total_grid_values["B_z"].to(u.T).value,
             ]
         )
         B = np.moveaxis(B, 0, -1)
@@ -1065,7 +1114,7 @@ class ParticleTracker:
             v_results,
         )
 
-    def _update_velocity_stopping(self, total_grid_values):
+    def _update_velocity_stopping(self):
         r"""
         Apply stopping to the simulated particles using the provided stopping
         routine. The stopping is applied to the simulation by calculating the
@@ -1097,13 +1146,13 @@ class ParticleTracker:
 
                 energy_loss_per_length = np.multiply(
                     stopping_power,
-                    total_grid_values["rho"].si.value[:, np.newaxis],
+                    self._total_grid_values["rho"].si.value[:, np.newaxis],
                 )
             case "Bethe":
                 for cs in self._stopping_power_interpolators:
                     interpolation_result = cs(
                         current_speeds,
-                        total_grid_values["n_e"].si.value[:, np.newaxis],
+                        self._total_grid_values["n_e"].si.value[:, np.newaxis],
                     )
 
                     stopping_power += interpolation_result
@@ -1146,22 +1195,25 @@ class ParticleTracker:
 
         self._stop_particles(particles_to_be_stopped_mask)
 
-    def _update_velocity_scattering(self, total_grid_values):
+    def _update_velocity_scattering(self):
         speeds = np.linalg.norm(self.v[self._tracked_particle_mask], axis=-1)
 
         match self._scattering_method:
             # Numerically integrate the scattering integral to construct the mean square scatter rate
             case "differential cross section":
                 # `theta_prime` dummy variable introduced to prevent global shadow of `theta`
-                def mean_squared_integrand(theta_prime):
-                    return theta_prime**2 * self._scattering_routine(
-                        theta_prime,
-                        speeds,
-                        self._particle,
-                        self._target,
-                        total_grid_values["T_e"],
-                        total_grid_values["n_e"],
-                    )
+                def mean_squared_integrand(theta_prime, speed, T_e, n_e):
+                    return (
+                        theta_prime**2
+                        * self._scattering_routine(
+                            theta_prime,
+                            speed,
+                            self._particle,
+                            self._target,
+                            T_e,
+                            n_e,
+                        )
+                    ).si.value
 
                 # Calculate the minimum scattering angle based on screening
                 mu = reduced_mass(self._target, self._particle)
@@ -1171,41 +1223,55 @@ class ParticleTracker:
                     / (4 * np.pi * const.eps0 * mu * speeds**2)
                 )
                 lambda_D = Debye_length(
-                    total_grid_values["T_e"], total_grid_values["n_e"]
+                    self._total_grid_values["T_e"], self._total_grid_values["n_e"]
                 )
                 theta_min = 2 * b_0 / lambda_D
 
                 # Numerically integrate the classical scattering integral
-                mean_square_scatter_rate = (
-                    2
-                    * np.pi
-                    * total_grid_values["n_e"]
-                    * speeds
-                    * quad(mean_squared_integrand, theta_min, np.pi)[0]
-                )  # Quad returns a tuple, we only care about the result
+                mean_square_scatter_rate = [
+                    (
+                        2
+                        * np.pi
+                        * n_e
+                        * speed
+                        * quad(
+                            mean_squared_integrand,
+                            lower_bound,
+                            np.pi,
+                            args=(speed, T_e, n_e),
+                        )[0]
+                    )
+                    for (T_e, n_e, speed, lower_bound) in zip(
+                        self._total_grid_values["T_e"],
+                        self._total_grid_values["n_e"],
+                        speeds,
+                        theta_min.value,
+                        strict=False,
+                    )
+                ]  # Quad returns a tuple, we only care about the result
             case "mean square scatter rate":
                 mean_square_scatter_rate = self._scattering_routine(
                     speeds,
                     self._particle,
                     self._target,
-                    total_grid_values["T_e"],
-                    total_grid_values["n_e"],
+                    self._total_grid_values["T_e"].si.value,
+                    self._total_grid_values["n_e"].si.value,
                 )
 
-        R = self._rng.standard_normal(size=(self.nparticles_tracked, 1))
         mean_square_scatter_rate = np.reshape(
             mean_square_scatter_rate, newshape=(self.nparticles_tracked, 1)
         )
 
-        # The polar angle resulting from scattering
-        theta = R * np.sqrt(mean_square_scatter_rate.si.value * self.dt)
-        theta = np.nan_to_num(theta, 0)
+        # The (polar) angle resulting from scattering
+        theta = self._rng.normal(
+            scale=np.sqrt(mean_square_scatter_rate * self.dt),
+            size=(self.nparticles_tracked, 1),
+        )
 
-        # Generate azimuthal angles using a uniform distribution
         # Generate a vector that lies somewhere in the plane perpendicular to the velocity
         k = np.cross(
             self.v[self._tracked_particle_mask],
-            self._rng.random(size=(self.nparticles_tracked, 3)),
+            self._rng.uniform(low=-1, high=1, size=(self.nparticles_tracked, 3)),
         )
         # Normalize
         k_norm = k / np.linalg.norm(k, axis=-1, keepdims=True)
@@ -1231,14 +1297,14 @@ class ParticleTracker:
         Boris algorithm.
         """
         # Interpolate fields at particle positions
-        total_grid_values = self._interpolate_grid()
+        self._total_grid_values = self._interpolate_grid()
 
         # Calculate an appropriate timestep (uniform, synchronized)
-        self.dt = self._update_time(total_grid_values)
+        self.dt = self._update_time()
 
         # Update the position and velocities of the particles using timestep
         # calculations as well as the magnitude of E and B fields
-        self._update_position(total_grid_values)
+        self._update_position()
 
         if not self._integrator.is_relativistic and not self._raised_relativity_warning:
             beta_max = self.vmax / const.c.si.value
@@ -1253,10 +1319,10 @@ class ParticleTracker:
 
         # Update velocities to reflect stopping
         if self._do_stopping:
-            self._update_velocity_stopping(total_grid_values)
+            self._update_velocity_stopping()
 
         if self._do_scattering:
-            self._update_velocity_scattering(total_grid_values)
+            self._update_velocity_scattering()
 
     @property
     def on_any_grid(self) -> NDArray[np.bool_]:
