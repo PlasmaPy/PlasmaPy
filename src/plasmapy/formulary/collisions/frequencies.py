@@ -754,7 +754,7 @@ def collision_frequency(
     # reduced mass
     V_reduced = V_r
 
-    if species[0] in ("e", "e-") and species[1] in ("e", "e-"):
+    if species[0] in {"e", "e-"} and species[1] in {"e", "e-"}:
         # electron-electron collision
         # if a velocity was passed, we use that instead of the reduced
         # thermal velocity
@@ -765,7 +765,7 @@ def collision_frequency(
         )
         # impact parameter for 90° collision
         bPerp = lengths.impact_parameter_perp(T=T, species=species, V=V_reduced)
-    elif species[0] in ("e", "e-") or species[1] in ("e", "e-"):
+    elif species[0] in {"e", "e-"} or species[1] in {"e", "e-"}:
         # electron-ion collision
         # Need to manually pass electron thermal velocity to obtain
         # correct perpendicular collision radius

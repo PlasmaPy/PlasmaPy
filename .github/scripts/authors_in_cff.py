@@ -50,7 +50,7 @@ def main() -> None:
         msg = (
             f"The authors of pull request {PR_NUMBER} for {REPO} are: "
             f"{', '.join(sorted(authors))}. All authors are included "
-            "in CITATION.cff. 😸"
+            "in CITATION.cff. ✅️"
         )
         logging.info(msg)
         sys.exit(0)
@@ -60,12 +60,12 @@ def main() -> None:
 
     instructions_to_add_author = f"""
 
-To ensure that you get credit for your contribution, please add the
+⚠️ To ensure that you get credit for your contribution, please add the
 following authors to CITATION.cff: {", ".join(missing_github_usernames)!r}
 
 This file can be edited at:
 
-https://github.com/{username}/PlasmaPy/edit/{branch}/CITATION.cff
+🔗️ https://github.com/{username}/PlasmaPy/edit/{branch}/CITATION.cff
 
 Each entry should be of the form:
 
@@ -77,11 +77,11 @@ Each entry should be of the form:
 
 All fields are optional except "alias", which is the GitHub username.
 
-We encourage all contributors to sign up for an ORCID iD: a unique,
+🏷️ We encourage all contributors to sign up for an ORCID iD: a unique,
 persistent identifier used by researchers, authors, and open source
 contributors. Sign up at: https://orcid.org/register
 
-Thank you for contributing!
+Thank you for contributing! 🌱️
 """
 
     logging.info(instructions_to_add_author)

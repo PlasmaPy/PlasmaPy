@@ -1135,7 +1135,7 @@ def _is_electron(arg: Any) -> bool:
     # TODO: Remove _is_electron from all parts of code.
 
     return (
-        arg in ("e", "e-") or arg.lower() == "electron"
+        arg in {"e", "e-"} or arg.lower() == "electron"
         if isinstance(arg, str)
         else False
     )
@@ -1207,7 +1207,7 @@ def stopping_power(
             raise NotImplementedError(
                 "Stopping calculations for electrons have not been implemented yet!"
             )
-        elif incident_particle in [Particle("H+"), Particle("p+")]:
+        elif incident_particle in {Particle("H+"), Particle("p+")}:
             group_name = "protons"
         else:
             raise ValueError(

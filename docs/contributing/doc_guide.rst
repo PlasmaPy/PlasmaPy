@@ -12,8 +12,10 @@ Documentation Guide
 .. role:: bash(code)
    :language: bash
 
-.. role:: rest(code)
+.. role:: rst(code)
    :language: rst
+
+<!-- Escape backticks with a \ in arguments provided to :rst: (like :rst:`:math:\`5+6\``) -->
 
 Introduction
 ============
@@ -106,7 +108,7 @@ linking will work for |Python| objects as well as certain packages like
 |NumPy|, |SciPy|, |Astropy|, and |pandas|. This linking is described in the
 section on :ref:`external-references`. In-line code samples are
 typically enclosed in double backticks. To get inline code highlighting,
-use the :rest:`:py:` role for Python code or :rest:`:bash:` for code run
+use the :rst:`:py:` role for Python code or :rst:`:bash:` for code run
 in a terminal.
 
 .. code-block:: rst
@@ -262,14 +264,14 @@ the numpydoc_ standard for docstrings. Docstring conventions for
 .. tip::
 
    If a docstring contains math that utilizes LaTeX_ syntax, begin the
-   docstring with ``r"""`` instead of ``"""``.
+   docstring with :py:`r"""` instead of :py:`"""`.
 
    In a normal string, backslashes are used to begin escape sequences,
    and a single backslash needs to be represented with ``\\``. This
-   complication is avoided by beginning the docstring with ``r"""``,
+   complication is avoided by beginning the docstring with :py:`r"""`,
    which denotes the docstring as a `raw string`_. For example, the `raw
-   string`_ ``r""":math:`\alpha`"""`` will render the same as the normal
-   string ``""":math:`\\alpha`"""``.
+   string`_  ``r""":math:`\alpha`"""`` will render the same as the
+   normal string ``""":math:`\\alpha`"""``.
 
 .. _example docstring:
 
@@ -467,12 +469,12 @@ at |docs/glossary.rst|_. Here is an example of a term defined within the
          An abbreviation for keyword arguments.
 
 Using the :rst:role:`term` |role| allows us to link to the definitions
-of terms. Using ``:term:`kwargs``` will link to :term:`kwargs` in the
+of terms. Using :rst:`:term:\`kwargs\`` will link to :term:`kwargs` in the
 :ref:`glossary`. We can also refer to terms defined in the projects
 connected via |intersphinx| if they have not already been defined in
-PlasmaPy's :ref:`glossary`. Using ``:term:`role``` will link to |role|
-and ``:term:`directive``` will link to |directive| in `Sphinx's
-glossary`_.
+PlasmaPy's :ref:`glossary`. Using :rst:`:term:\`role\`` will link to
+|role| and :rst:`:term:\`directive\`` will link to |directive| in
+`Sphinx's glossary`_.
 
 Documentation guidelines
 ========================
@@ -589,7 +591,7 @@ documentation for PlasmaPy and affiliated packages.
   of a sentence.
 
 * Particle and chemical symbols should be formatted as regular text. Use
-  :rest:`:sub:` for subscripts and :rest:`:sup:` for superscripts.
+  :rst:`:sub:` for subscripts and :rst:`:sup:` for superscripts.
 
   Because interpreted text must normally be surrounded by whitespace or
   punctuation, use a backslash followed by a space for the interpreted
@@ -656,8 +658,8 @@ Docstring guidelines
   attribute of a class decorated with `property`) should not begin with
   a verb and should end with a period.
 
-* Keep the docstring indented at the same level as the ``r"""`` or
-  ``"""`` that begins the docstring, except for |reStructuredText|
+* Keep the docstring indented at the same level as the :py:`r"""` or
+  :py:`"""` that begins the docstring, except for |reStructuredText|
   constructs like lists, math, and code blocks. Use an indentation of
   four spaces more than the declaration of the object.
 
@@ -747,19 +749,19 @@ The type specification should not include information about the
    |Quantity| [length], default: 10 m
    |Quantity| [temperature, energy], |keyword-only|, default: 0 K
 
-* Use the substitution ``|array_like|`` to indicate that an |argument|
+* Use the substitution :rst:`|array_like|` to indicate that an |argument|
   must be |array_like| (i.e., convertible into an |ndarray|).
 
-* Use the substitution ``|particle-like|`` to indicate that a
-  |particle-like| argument should be convertible into a |Particle|,
-  |CustomParticle|, or |ParticleList|.
+* Use :rst:`|particle-like|` to indicate that a |particle-like| argument
+  should be convertible into a |Particle|, |CustomParticle|, or
+  |ParticleList|.
 
-* Use the ``|particle-list-like|`` to indicate that a
+* Use :rst:`|particle-list-like|` to indicate that a
   |particle-list-like| argument should be convertible into a
   |ParticleList|.
 
-* Use ``|atom-like|`` to indicate that an argument must be |atom-like|
-  (i.e., an element, isotope, and/or ion).
+* Use :rst:`|atom-like|` to indicate that an argument must be
+  |atom-like| (i.e., an element, isotope, and/or ion).
 
 * When the array must be :math:`n`\ -dimensional, precede the type by
   :samp:`{n}D` where :samp:`{n}` is replaced by the number of
@@ -828,8 +830,8 @@ include type information when:
 
 For functions that accept an arbitrary number of positional and/or
 keyword arguments, include them in the "Parameters_" section with the
-preceding asterisk(s). Order ``*args`` and ``**kwargs`` as they appear
-in the signature.
+preceding asterisk(s). Order :py:`*args` and :py:`**kwargs` as they
+appear in the signature.
 
 .. code-block:: rst
 
@@ -891,7 +893,7 @@ Attributes
 * When an attribute in a class has both a getter (which is the method
   decorated with `property`) and a ``setter`` decoration, then the
   getter and ``setter`` functionality should be documented in the
-  docstring of the attribute decorated with ``@property``.
+  docstring of the attribute decorated with :py:`@property`.
 
   .. code-block:: python
 
@@ -949,7 +951,7 @@ extensions:
 
 * `sphinx.ext.autodoc` for including documentation from docstrings.
 * `sphinx.ext.extlinks` for shortening links to external sites (e.g.,
-  ``:orcid:`` and ``:wikipedia:``).
+  :rst:`:orcid:` and :rst:`:wikipedia:`).
 * `sphinx.ext.graphviz` to allow Graphviz_ graphs to be included.
 * `sphinx.ext.intersphinx` for linking to other projects' documentation.
 * `sphinx.ext.mathjax` for math rendering with MathJax_.
@@ -968,8 +970,8 @@ extensions:
   of the documentation.
 * |sphinx-notfound-page|_ to add a :wikipedia:`404 <HTTP_404>` page for
   the documentation.
-* |sphinx-issues|_ to add roles for linking to GitHub (``:commit:``,
-  ``:issue:``, ``:pr:``, and ``:user:``).
+* |sphinx-issues|_ to add roles for linking to GitHub (:rst:`:commit:`,
+  :rst:`:issue:`, :rst:`:pr:`, and :rst:`:user:`).
 * |sphinx-reredirects|_ to enable hyperlink redirects.
 * |sphinx-toolbox|_ for handy tools for Sphinx_ documentation
 * `plasmapy_sphinx` for customizations created for use in PlasmaPy and
@@ -1029,24 +1031,30 @@ documentation. |reStructuredText| allows us to `define substitutions`_
 
    .. |Particle| replace:: `~plasmapy.particles.particle_class.Particle`
 
-Here whenever ``|Particle|`` is used |Sphinx| will replace it with
+Here whenever :rst:`|Particle|` is used |Sphinx| will replace it with
 ```~plasmapy.particles.particle_class.Particle``` during build time.
 
-PlasmaPy has certain common substitutions pre-defined so that they can
-be used elsewhere in the documentation. For example, we can write
-``|Quantity|`` instead of ```~astropy.units.Quantity```, and
-``|Particle|`` instead of
-```~plasmapy.particles.particle_class.Particle```. For an up-to-date
-list of substitutions, please refer to |docs/_global_substitutions.py|_.
+PlasmaPy contains pre-defined global substitutions that can be used
+elsewhere in the documentation. For example, we can write :rst:`|Quantity|`
+instead of ```~astropy.units.Quantity```, and :rst:`|Particle|` instead of
+```~plasmapy.particles.particle_class.Particle```. These global
+substitutions are defined in |docs/_global_substitutions.py|_, and are
+summarized in the following table.
 
-Since substitutions are performed by |Sphinx| when the documentation is
-built, any substitution used in docstrings will not show up when using
-Python's `help` function (or the like). For example, when ``|Particle|``
-is used in a docstring, `help` will show it as ``|Particle|`` rather
-than ```~plasmapy.particles.particle_class.Particle```. Consequently,
-substitutions should not be used in docstrings when it is important that
-users have quick access to the full path of the `object` (such as in the
-``See Also`` section).
+.. collapse:: Click here to expand/collapse table of global substitutions
+
+   .. include:: _global_substitutions_table.rst
+
+.. note::
+
+   Since substitutions are executed by |Sphinx| when the documentation
+   is built, any substitution used in docstrings will not show up when
+   using `help`. For example, when :rst:`|Particle|` is used in a
+   docstring, `help` will show it as :rst:`|Particle|` rather than
+   ```~plasmapy.particles.particle_class.Particle```. Consequently,
+   substitutions should not be used in docstrings when it is important
+   that users have quick access to the full path of the `object` (such
+   as in the ``See Also`` section).
 
 .. _citation-instructions:
 
@@ -1072,14 +1080,15 @@ and alphabetize references by the surname of the first author. To
 preserve capitalization, enclose words or phrases within curly brackets
 (e.g., ``{NumPy}``).
 
-Use ``:cite:p:`citekey``` to create a parenthetical citation and
-``:cite:t:`citekey``` to create a textual citation, where ``citekey`` is
-replaced with the BibTeX_ citekey. Multiple citekeys can also be used
-when separated by commas, like ``:cite:p:`citekey1, citekey2```. For
-example, ``:cite:p:`wilson:2014``` will show up as
-:cite:p:`wilson:2014`, ``:cite:t:`wilson:2014``` will show up as
-:cite:t:`wilson:2014`, and ``:cite:p:`wilson:2014, wilson:2017``` will
-show up as :cite:p:`wilson:2014, wilson:2017`.
+Use :rst:`:cite:p:\`citekey\`` to create a parenthetical citation and
+:rst:`:cite:t:\`citekey\`` to create a textual citation, where
+``citekey`` is replaced with the BibTeX_ citekey. Multiple citekeys can
+also be used when separated by commas, like
+:rst:`:cite:p:\`citekey1, citekey2\``. For example,
+:rst:`:cite:p:`wilson:2014\`` will show up as
+:cite:p:`wilson:2014`, :rst:`:cite:t:\`wilson:2014\`` will show up as
+:cite:t:`wilson:2014`, and :rst:`:cite:p:\`wilson:2014, wilson:2017\``
+will show up as :cite:p:`wilson:2014, wilson:2017`.
 
 .. _api-static:
 
@@ -1113,9 +1122,9 @@ error or the absence of the module in the documentation build.
    If a pull request adds a new subpackage *and* a new module, then a
    stub file must be created for both of them.
 
-   For example, suppose a pull request creates the ``plasmapy.io``
+   For example, suppose a pull request creates the :py:`plasmapy.io`
    subpackage in the :file:`src/plasmapy/io/` directory and the
-   ``plasmapy.io.readers`` module via :file:`src/plasmapy/io/readers.py`. It
+   :py:`plasmapy.io.readers` module via :file:`src/plasmapy/io/readers.py`. It
    will then be necessary to create stub files at both
    :file:`docs/api_static/plasmapy.io.rst` and
    :file:`docs/api_static/plasmapy.io.readers.rst`.
@@ -1302,7 +1311,7 @@ typo and changing it to ```plasmapy.particles```.
    For PlasmaPy objects, use the full namespace of the object (i.e., use
    ```plasmapy.particles.particle_class.Particle``` instead of
    ```plasmapy.particles.Particle```) or a :ref:`reStructuredText
-   substitution <substitutions>` like ``|Particle|`` as defined in
+   substitution <substitutions>` like :rst:`|Particle|` as defined in
    |docs/_global_substitutions.py|_.
 
 This warning may occur when a new module or subpackage is created
@@ -1383,11 +1392,11 @@ object to its corresponding documentation. Double check that the code is
 correct, and consider adding any missing :py:`import` statements. The
 documentation for this extension contains `examples
 <https://sphinx-codeautolink.readthedocs.io/en/latest/examples.html>`__
-on how to skip blocks with ``.. autolink-skip::`` and how to do
-invisible imports with ``.. autolink-preface::``.
+on how to skip blocks with :rst:`.. autolink-skip::` and how to do
+invisible imports with :rst:`.. autolink-preface::`.
 
 If this warning occurs in the "Examples" section of a docstring, put
-``.. autolink-skip: section`` at the beginning of that section (see
+:rst:`.. autolink-skip: section` at the beginning of that section (see
 :pr:`2554`). These warnings sometimes only show up when rebuilding
 the documentation.
 

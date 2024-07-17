@@ -246,8 +246,6 @@ class RelativisticBorisIntegrator(AbstractIntegrator):
             1 + (np.linalg.norm(uvel_minus, axis=1, keepdims=True) / _c.si.value) ** 2
         )
 
-        # Birdsall has a factor of c incorrect in the definition of t?
-        # See this source: https://www.sciencedirect.com/science/article/pii/S163107211400148X
         t = q * B * dt / (2 * γ1 * m)
         s = 2 * t / (1 + (t * t).sum(axis=1, keepdims=True))
 

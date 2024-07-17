@@ -458,7 +458,7 @@ def test_particle_tracker_stop_particles(request) -> None:
         (
             {"method": "NIST"},
             ValueError,
-            "Please specify the relevant materials to use NIST stopping!",
+            "Please provide an array of length ngrids for the materials.",
         ),
         (
             {
@@ -478,7 +478,7 @@ def test_particle_tracker_stop_particles(request) -> None:
         (
             {"method": "Bethe"},
             ValueError,
-            "Please specify the mean excitation energy (I) to use Bethe stopping!",
+            "Please provide an array of length ngrids for the mean excitation energy.",
         ),
         (
             {"method": "Bethe", "I": [0, 0] * u.eV},

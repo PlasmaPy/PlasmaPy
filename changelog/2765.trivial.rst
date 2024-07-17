@@ -1,0 +1,1 @@
+Updated the comment that gets posted to new pull requests via a GitHub workflow.

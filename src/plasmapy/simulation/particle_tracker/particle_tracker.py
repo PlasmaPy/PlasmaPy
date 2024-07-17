@@ -138,6 +138,17 @@ class ParticleTracker:
     If both the particle's position and velocity are set to ``NaN``, then the particle has been removed from the simulation.
     """
 
+    # Some quantities are necessary for the particle tracker to function
+    # regardless of other configurations
+    _REQUIRED_QUANTITIES: typing.ClassVar[set[str]] = {
+        "E_x",
+        "E_y",
+        "E_z",
+        "B_x",
+        "B_y",
+        "B_z",
+    }
+
     def __init__(
         self,
         grids: AbstractGrid | Iterable[AbstractGrid],
@@ -157,6 +168,7 @@ class ParticleTracker:
             if not particle_integrator
             else particle_integrator()
         )
+
         # self.grid is the grid object
         self.grids = self._grid_factory(grids)
 
@@ -496,12 +508,7 @@ class ParticleTracker:
 
         match method:
             case "NIST":
-                if materials is None:
-                    raise ValueError(
-                        "Please specify the relevant materials to use NIST stopping!"
-                    )
-
-                if len(materials) != len(self.grids):
+                if materials is None or len(materials) != len(self.grids):
                     raise ValueError(
                         "Please provide an array of length ngrids for the materials."
                     )
@@ -517,12 +524,7 @@ class ParticleTracker:
                     # calculations
                     return False
             case "Bethe":
-                if I is None:
-                    raise ValueError(
-                        "Please specify the mean excitation energy (I) to use Bethe stopping!"
-                    )
-
-                if len(I) != len(self.grids):
+                if I is None or len(I) != len(self.grids):
                     raise ValueError(
                         "Please provide an array of length ngrids for the mean excitation energy."
                     )
@@ -551,9 +553,9 @@ class ParticleTracker:
         Enable particle stopping using experimental stopping powers.
 
         Interpolation of stopping powers is conducted using data from the NIST
-        PSTAR. This information is combined with the mass density quantity
-        provided in the grids to calculate the energy loss over the distance
-        travelled during a timestep.
+        PSTAR database. This information is combined with the mass density
+        quantity provided in the grids to calculate the energy loss over the
+        distance travelled during a timestep.
         """
 
         # Check inputs for user error and raise respective exceptions/warnings if
@@ -1114,6 +1116,97 @@ class ParticleTracker:
             v_results,
         )
 
+    def _update_velocity_stopping(self, summed_field_values):
+        r"""
+        Apply stopping to the simulated particles using the provided stopping
+        routine. The stopping is applied to the simulation by calculating the
+        new energy values of the particles, and then updating the particles'
+        velocity to match these energies.
+        """
+
+        current_speeds = np.linalg.norm(
+            self.v[self._tracked_particle_mask], axis=-1, keepdims=True
+        )
+        velocity_unit_vectors = np.multiply(
+            1 / current_speeds, self.v[self._tracked_particle_mask]
+        )
+        dx = np.multiply(current_speeds, self.dt)
+
+        stopping_power = np.zeros((self.nparticles_tracked, 1))
+        relevant_kinetic_energy = (
+            self._particle_kinetic_energy[self._tracked_particle_mask] * u.J
+        )
+
+        # TODO: how can we reorganize this if we decide to add more stopping
+        #  routines in the future?
+        match self._stopping_method:
+            case "NIST":
+                for cs in self._stopping_power_interpolators:
+                    interpolation_result = cs(relevant_kinetic_energy).si.value
+
+                    stopping_power += interpolation_result
+
+                energy_loss_per_length = np.multiply(
+                    stopping_power,
+                    summed_field_values["rho"].si.value[:, np.newaxis],
+                )
+            case "Bethe":
+                for cs in self._stopping_power_interpolators:
+                    interpolation_result = cs(
+                        current_speeds,
+                        summed_field_values["n_e"].si.value[:, np.newaxis],
+                    )
+
+                    stopping_power += interpolation_result
+
+                energy_loss_per_length = stopping_power
+
+                if (
+                    not self._raised_energy_warning
+                    and np.min(energy_loss_per_length * u.J).to(u.MeV).value < 1
+                ):
+                    self._raised_energy_warning = True
+
+                    warnings.warn(
+                        "The Bethe model is only valid for high energy particles. Consider using"
+                        "NIST stopping if you require accurate stopping powers at lower energies.",
+                        category=PhysicsWarning,
+                    )
+
+        dE = -np.multiply(energy_loss_per_length, dx)
+
+        # Update the velocities of the particles using the new energy values
+        # TODO: again, figure out how to differentiate relativistic and classical cases
+        E = self._particle_kinetic_energy[self._tracked_particle_mask] + dE
+
+        particles_to_be_stopped_mask = np.full(
+            shape=self._tracked_particle_mask.shape, fill_value=False
+        )
+        tracked_particles_to_be_stopped_mask = (
+            E < 0
+        ).flatten()  # A subset of the tracked particles!
+        # Of the tracked particles, stop the ones indicated by the subset mask
+        particles_to_be_stopped_mask[self._tracked_particle_mask] = (
+            tracked_particles_to_be_stopped_mask
+        )
+
+        new_speeds = np.sqrt(2 * E / self.m)
+        self.v[self._tracked_particle_mask] = np.multiply(
+            new_speeds, velocity_unit_vectors
+        )
+        B = np.moveaxis(B, 0, -1)
+
+        pos_tracked = self.x[self._tracked_particle_mask]
+        vel_tracked = self.v[self._tracked_particle_mask]
+        x_results, v_results = self._integrator.push(
+            pos_tracked, vel_tracked, B, E, self.q, self.m, self.dt
+        )
+
+        self.x[self._tracked_particle_mask], self.v[self._tracked_particle_mask] = (
+            x_results,
+            v_results,
+        )
+
     def _update_velocity_stopping(self):
         r"""
         Apply stopping to the simulated particles using the provided stopping
@@ -1309,7 +1402,7 @@ class ParticleTracker:
         if not self._integrator.is_relativistic and not self._raised_relativity_warning:
             beta_max = self.vmax / const.c.si.value
 
-            if beta_max >= 0.01:
+            if beta_max >= 0.001:
                 self._raised_relativity_warning = True
 
                 warnings.warn(

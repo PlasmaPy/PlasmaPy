@@ -86,8 +86,8 @@ def cold_plasma_permittivity_SDP(
 
     Notes
     -----
-    The dielectric permittivity tensor is expressed in the Stix frame with
-    the :math:`\exp(-i ω t)` time-harmonic convention as
+    The dielectric permittivity tensor is expressed in the Stix frame
+    with the :math:`\exp(-i ω t)` time-harmonic convention as
     :math:`ε = ε_0 A`, with :math:`A` being
 
     .. math::
@@ -187,7 +187,7 @@ def cold_plasma_permittivity_LRP(
     -----
     In the rotating frame defined by
     :math:`(\mathbf{u}_{+}, \mathbf{u}_{-}, \mathbf{u}_z)`
-    with :math:`\mathbf{u}_{\pm}=(\mathbf{u}_x \pm \mathbf{u}_y)/\sqrt{2}`,
+    with :math:`\mathbf{u}_{±}=(\mathbf{u}_x ± \mathbf{u}_y)/\sqrt{2}`,
     the dielectric tensor takes a diagonal form with elements L, R, P with:
 
     .. math::
