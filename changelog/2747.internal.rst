@@ -1,1 +1,2 @@
-Added an experimental |Nox| session for adding |type hint annotations| based off a database of variable types created from running the test suite.
+Added an experimental |Nox| session for adding |type hint annotations| using `MonkeyType <https://github.com/Instagram/MonkeyType>`__.
+This session creates a database of variable types from running pytest, and then applies the observed types to a particular module.
