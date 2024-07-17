@@ -437,6 +437,23 @@ more, check out the `type hints cheat sheet`_.
    hints do play a role at runtime, such as in functions decorated by
    |particle_input| and/or |validate_quantities|.
 
+Quantity type hints
+-------------------
+
+When a function accepts a |Quantity|, the annotation should also include
+the corresponding unit in brackets, including when a function is
+decorated by |validate_quantities|.
+
+.. code-block:: python
+
+import astropy.units as u
+from plasmapy.utils.decorators import validate_quantities
+
+
+@validate_quantities
+def speed(distance: u.Quantity[u.m], time: u.Quantity[u.s]) -> u.Quantity[u.m / u.s]:
+    return distance / time
+
 Automatically adding type hint annotations
 ------------------------------------------
 
@@ -495,6 +512,12 @@ We will then get the following error:
 
    Incompatible return value type (got "int | str", expected "int")  [return-value]
 
+.. tip::
+
+   To learn more about a particular |mypy| error code, search for it in
+   its documentation pages on `error codes enabled by default`_ and
+   `error codes for optional checks`_.
+
 Ignoring mypy errors
 ~~~~~~~~~~~~~~~~~~~~
 
@@ -511,6 +534,11 @@ a particular error.
    @particle_input
    def f(particle: ParticleLike) -> Particle | CustomParticle | ParticleList:
        return particle  # type: ignore[return-value]
+
+.. important::
+
+   Because type hints are easier to add while writing code, please use
+   :py:`# type ignore` comments sparingly.
 
 .. note::
 
@@ -557,8 +585,7 @@ Imports
 Requirements
 ------------
 
-* Package requirements are specified in |pyproject.toml|_. |tox.ini|_
-  also contains a testing environment for the minimal dependencies.
+* Package requirements are specified in |pyproject.toml|_.
 
 * Each release of PlasmaPy should support all minor versions of
   Python that have been released in the prior 42 months, and all minor
@@ -1054,6 +1081,7 @@ in the README file of `benchmarks-repo`_.
 .. _cognitive complexity: https://docs.codeclimate.com/docs/cognitive-complexity
 .. _Cython: https://cython.org
 .. _equivalencies: https://docs.astropy.org/en/stable/units/equivalencies.html
+.. _error codes enabled by default: https://mypy.readthedocs.io/en/stable/error_code_list.html
 .. _example notebook on particles: ../notebooks/getting_started/particles.ipynb
 .. _example notebook on units: ../notebooks/getting_started/units.ipynb
 .. _extract function refactoring pattern: https://refactoring.guru/extract-method
@@ -1061,11 +1089,13 @@ in the README file of `benchmarks-repo`_.
 .. _NEP 29: https://numpy.org/neps/nep-0029-deprecation_policy.html
 .. _not a number: https://en.wikipedia.org/wiki/NaN
 .. _NumPy Enhancement Proposal 29: https://numpy.org/neps/nep-0029-deprecation_policy.html
-.. _SPEC 0: https://scientific-python.org/specs/spec-0000
 .. _pyupgrade: https://github.com/asottile/pyupgrade
 .. _rename refactoring in PyCharm: https://www.jetbrains.com/help/pycharm/rename-refactorings.html
+.. _SPEC 0: https://scientific-python.org/specs/spec-0000
 .. _type hints cheat sheet: https://mypy.readthedocs.io/en/stable/cheat_sheet_py3.html
 .. _voila: https://voila.readthedocs.io
+.. _error codes for optional checks: https://mypy.readthedocs.io/en/stable/error_code_list2.html
+
 
 .. _`astropy.units`: https://docs.astropy.org/en/stable/units/index.html
 .. |astropy.units| replace:: `astropy.units`
@@ -1073,9 +1103,5 @@ in the README file of `benchmarks-repo`_.
 .. _`mypy.ini`: https://github.com/PlasmaPy/PlasmaPy/blob/main/mypy.ini
 .. |mypy.ini| replace:: :file:`mypy.ini`
 
-
 .. _`pyproject.toml`: https://github.com/PlasmaPy/PlasmaPy/blob/main/pyproject.toml
 .. |pyproject.toml| replace:: :file:`pyproject.toml`
-
-.. _`tox.ini`: https://github.com/PlasmaPy/PlasmaPy/blob/main/tox.ini
-.. |tox.ini| replace:: :file:`tox.ini`
