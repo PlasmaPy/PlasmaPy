@@ -440,9 +440,10 @@ more, check out the `type hints cheat sheet`_.
 Quantity type hints
 -------------------
 
-When a function accepts a |Quantity|, the annotation should also include
-the corresponding unit in brackets, including when a function is
-decorated by |validate_quantities|.
+When a function accepts a |Quantity|, the annotation should additionally
+include the corresponding unit in brackets. When the function is
+|decorated| with |validate_quantities|, then the |Quantity| provided to
+and/or returned by the function will be converted to that unit.
 
 .. code-block:: python
 
