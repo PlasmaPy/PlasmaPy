@@ -864,13 +864,6 @@ class ParticleTracker:
             for key, grid_value in self._total_grid_values.items()
         }
 
-        # TODO: this seems awkward, maybe ``dt`` should be of shape ``nparticles``? as
-        #  is the case for position and velocity
-        # Axis is indicated to ensure the array is not flattened
-        self.dt = np.compress(
-            keep_grid_value_mask[self._tracked_particle_mask], self.dt, axis=0
-        )
-
     def _stop_particles(self, particles_to_stop_mask) -> None:
         """Stop tracking the particles specified by the stop mask.
 
@@ -1067,10 +1060,10 @@ class ParticleTracker:
 
         # Make sure the time step can be multiplied by a [nparticles, 3] shape field array
         if isinstance(dt, np.ndarray) and dt.size > 1:
-            dt = dt[self._tracked_particle_mask, np.newaxis]
+            dt = dt[:, np.newaxis]
 
             # Increment the tracked particles' time by dt
-            self.time[self._tracked_particle_mask] += dt
+            self.time[self._tracked_particle_mask] += dt[self._tracked_particle_mask]
         else:
             self.time += dt
 
@@ -1103,7 +1096,13 @@ class ParticleTracker:
         pos_tracked = self.x[self._tracked_particle_mask]
         vel_tracked = self.v[self._tracked_particle_mask]
         x_results, v_results = self._integrator.push(
-            pos_tracked, vel_tracked, B, E, self.q, self.m, self.dt
+            pos_tracked,
+            vel_tracked,
+            B,
+            E,
+            self.q,
+            self.m,
+            self.dt[self._tracked_particle_mask],
         )
 
         self.x[self._tracked_particle_mask], self.v[self._tracked_particle_mask] = (
@@ -1125,7 +1124,7 @@ class ParticleTracker:
         velocity_unit_vectors = np.multiply(
             1 / current_speeds, self.v[self._tracked_particle_mask]
         )
-        dx = np.multiply(current_speeds, self.dt)
+        dx = np.multiply(current_speeds, self.dt[self._tracked_particle_mask])
 
         stopping_power = np.zeros((self.nparticles_tracked, 1))
         relevant_kinetic_energy = (
@@ -1261,7 +1260,9 @@ class ParticleTracker:
 
         # The (polar) angle resulting from scattering
         theta = self._rng.normal(
-            scale=np.sqrt(mean_square_scatter_rate * self.dt),
+            scale=np.sqrt(
+                mean_square_scatter_rate * self.dt[self._tracked_particle_mask]
+            ),
             size=(self.nparticles_tracked, 1),
         )
 
