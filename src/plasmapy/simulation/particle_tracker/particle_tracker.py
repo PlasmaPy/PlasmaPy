@@ -462,8 +462,6 @@ class ParticleTracker:
         # Raise an error if the run method has already been called.
         self._enforce_order()
 
-        # TODO: it is an assumption that there exists only one specie of particles
-        #  is this a reasonable assumption?
         self.q = particle.charge.to(u.C).value
         self.m = particle.mass.to(u.kg).value
         self._particle = particle
@@ -644,6 +642,8 @@ class ParticleTracker:
         r"""
         Enable particle scattering by numeric integration of the provided
         differential cross-section.
+
+
         """
 
         # For scattering calculations, a multidimensional interpolator must be
@@ -1272,12 +1272,12 @@ class ParticleTracker:
         )
         # Normalize
         k_norm = k / np.linalg.norm(k, axis=-1, keepdims=True)
-        # Scale to the perpendicular component of the velocity
+        # Scale to the perpendicular component of the change in velocities
         delta_v = speeds[:, np.newaxis] * np.sin(theta) * k_norm
 
         # Begin by constructing the new velocities by adding the change in
         # velocity to the current velocities. The direction of this vector will be
-        # correct but will need to be "rescaled" to unsure that the speed remains
+        # correct but will need to be "rescaled" to ensure that the speed remains
         # consistent.
         v_new_unscaled = self.v[self._tracked_particle_mask] + delta_v
 
