@@ -2,6 +2,7 @@
 Tests for proton radiography functions
 """
 
+import astropy.constants as const
 import astropy.units as u
 import numpy as np
 import pytest
@@ -10,7 +11,10 @@ from scipy.special import erf
 from plasmapy.diagnostics.charged_particle_radiography import (
     synthetic_radiography as cpr,
 )
+from plasmapy.particles.particle_class import Particle
 from plasmapy.plasma.grids import CartesianGrid
+
+rng = np.random.default_rng()
 
 
 def _test_grid(  # noqa: C901, PLR0912
@@ -186,9 +190,7 @@ def run_1D_example(name: str):
     with pytest.warns(
         RuntimeWarning, match="Quantities should go to zero at edges of grid to avoid "
     ):
-        sim = cpr.Tracker(
-            grid, source, detector, relativistic_beta_threshold=1.01, verbose=False
-        )
+        sim = cpr.Tracker(grid, source, detector, verbose=False)
     sim.create_particles(1e4, 3 * u.MeV, max_theta=0.1 * u.deg, random_seed=42)
     sim.run()
 
@@ -227,7 +229,6 @@ def run_mesh_example(
         source,
         detector,
         field_weighting="nearest neighbor",
-        relativistic_beta_threshold=1.01,
         verbose=False,
     )
 
@@ -444,8 +445,9 @@ def test_load_particles() -> None:
     # Test adding unequal numbers of particles
     x = np.zeros([100, 3]) * u.m
     v = np.ones([150, 3]) * u.m / u.s
+    particle = Particle("p+")
     with pytest.raises(ValueError):
-        sim.load_particles(x, v)
+        sim.load_particles(x, v, particle)
 
     # Test creating particles with explicit keywords
     x = sim.x * u.m
@@ -453,7 +455,7 @@ def test_load_particles() -> None:
 
     # Try setting particles going the wrong direction
     with pytest.warns(RuntimeWarning):
-        sim.load_particles(x, -v)
+        sim.load_particles(x, -v, particle)
 
     # Try specifying a larger ion (not a proton or electron)
     sim.load_particles(x, v, particle="C-12 +3")
@@ -500,7 +502,6 @@ def test_run_options() -> None:
         detector,
         field_weighting="nearest neighbor",
         dt=1e-12 * u.s,
-        relativistic_beta_threshold=1.01,
         verbose=True,
     )
     sim.create_particles(1e4, 3 * u.MeV, max_theta=89 * u.deg, random_seed=42)
@@ -524,7 +525,6 @@ def test_run_options() -> None:
             detector,
             field_weighting="nearest neighbor",
             dt=1e-12 * u.s,
-            relativistic_beta_threshold=1.01,
             verbose=False,
         )
     sim.create_particles(1e4, 3 * u.MeV, max_theta=0.1 * u.deg, random_seed=42)
@@ -551,7 +551,6 @@ def create_tracker_obj(**kwargs) -> cpr.Tracker:
         source,
         detector,
         verbose=False,
-        relativistic_beta_threshold=1.01,
         **kwargs,
     )
     sim.create_particles(int(1e4), 3 * u.MeV, max_theta=10 * u.deg, random_seed=42)
@@ -756,9 +755,7 @@ def test_gaussian_sphere_analytical_comparison() -> None:
     with pytest.warns(
         RuntimeWarning, match="Quantities should go to zero at edges of grid to avoid "
     ):
-        sim = cpr.Tracker(
-            grid, source, detector, relativistic_beta_threshold=1.01, verbose=False
-        )
+        sim = cpr.Tracker(grid, source, detector, verbose=False)
 
     sim.create_particles(1e3, W * u.eV, max_theta=12 * u.deg, random_seed=42)
     sim.run()
@@ -985,3 +982,117 @@ def test_radiography_memory_save_routine() -> None:
     sim = cpr.Tracker(grid, source, detector, field_weighting="nearest neighbor")
     sim.create_particles(1e3, 15 * u.MeV, max_theta=8 * u.deg, random_seed=42)
     sim.run()
+
+
+# How many particles should be instantiated to probe each energy value?
+PARTICLES_PER_CONFIGURATION = 100
+
+
+@pytest.mark.parametrize(
+    ("material", "density", "energy_projected_range_list"),
+    [
+        (
+            "ALUMINUM",
+            2.69890e00 * u.g / u.cm**3,
+            [
+                (500 * u.keV, 5.57 * u.um),
+                (1 * u.MeV, 14.62 * u.um),
+                (10 * u.MeV, 631.74 * u.um),
+            ],
+        ),
+        (
+            "SILICON",
+            2.33000e00 * u.g / u.cm**3,
+            [
+                (500 * u.keV, 6.18 * u.um),
+                (1 * u.MeV, 16.46 * u.um),
+                (10 * u.MeV, 714.59 * u.um),
+            ],
+        ),
+    ],
+)
+def test_NIST_particle_stopping(
+    material: str,
+    density: u.Quantity[u.kg / u.m**3],
+    energy_projected_range_list: list[tuple[u.Quantity[u.J], u.Quantity[u.m]]],
+):
+    r"""
+    Test to ensure that the simulated stopping range matches the SRIM output
+    for various proton energies.
+    """
+
+    # Apply uniform units and cast to quantity array
+    energies: u.Quantity = [v[0].si.value for v in energy_projected_range_list] * u.J
+    projected_ranges = [v[1].si.value for v in energy_projected_range_list] * u.m
+
+    # Calculate the relativistic speed of the particles as a function of their
+    # kinetic energy
+    speeds = const.c * np.sqrt(
+        1 - (const.m_p * const.c**2 / (energies + const.m_p * const.c**2)) ** 2
+    )
+
+    width = np.max(projected_ranges) * 1.1
+    stopping_grid = CartesianGrid(
+        [-0.2, 0.0, -0.2] * u.cm, [0.2, width.to(u.cm).value, 0.2] * u.cm, num=100
+    )
+
+    rho = np.ones(stopping_grid.shape) * density
+    stopping_grid.add_quantities(rho=rho)
+
+    source: u.Quantity = [0, -10, 0] * u.mm
+    detector: u.Quantity = [0, 100, 0] * u.mm
+
+    sim = cpr.Tracker(
+        [stopping_grid],
+        source,
+        detector,
+        field_weighting="volume averaged",
+        verbose=True,
+    )
+
+    # Initialize the position array with shape [nparticles, 3] and use `source` as fill_value
+    x = np.full(
+        shape=(energies.shape[0] * PARTICLES_PER_CONFIGURATION, 3),
+        fill_value=source.si.value,
+    )
+    # Add noise [-1, 1] mm in the XZ plane
+    x[
+        :,
+        (
+            0,
+            2,
+        ),
+    ] += (
+        rng.normal(size=(energies.shape[0] * PARTICLES_PER_CONFIGURATION, 2)) * u.mm
+    ).si.value
+
+    # Initialize the velocity array with shape [3, nparticles_per_energy, n_energies] and fill with zero
+    # This ordering allows the initial speeds to be populated trivially using only two lines
+    v = np.zeros(shape=(3, PARTICLES_PER_CONFIGURATION, energies.shape[0]))
+
+    # Copy the previously calculated speed into the relevant component of the velocity
+    # This is simplified by the fact that we have dedicated the third axis to the energy values
+    v[1, :, :] = speeds.si.value
+
+    # Swapping the first and third axes we get the more intuitive [n_energies, nparticles_per_energy, 3] array
+    v = np.swapaxes(v, 0, 2)
+    # Reshape the result of the previous swap into the necessary [n_particles, 3] array
+    # where n_particles = n_energy * nparticles_per_energy
+    v = np.reshape(v, newshape=(energies.shape[0] * PARTICLES_PER_CONFIGURATION, 3))
+
+    # Apply units
+    x *= u.m
+    v *= u.m / u.s
+
+    sim.load_particles(x, v, Particle("p+"))
+    sim.add_stopping(method="NIST", materials=[material])
+    sim.run()
+
+    x_final = (
+        np.reshape(
+            sim.x[:, 1], newshape=(energies.shape[0], PARTICLES_PER_CONFIGURATION)
+        )
+        * u.m
+    )
+
+    assert np.isclose(np.median(x_final, axis=-1), projected_ranges, rtol=0.05).all()
