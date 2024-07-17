@@ -437,24 +437,6 @@ more, check out the `type hints cheat sheet`_.
    hints do play a role at runtime, such as in functions decorated by
    |particle_input| and/or |validate_quantities|.
 
-Quantity type hints
--------------------
-
-When a function accepts a |Quantity|, the annotation should additionally
-include the corresponding unit in brackets. When the function is
-|decorated| with |validate_quantities|, then the |Quantity| provided to
-and/or returned by the function will be converted to that unit.
-
-.. code-block:: python
-
-import astropy.units as u
-from plasmapy.utils.decorators import validate_quantities
-
-
-@validate_quantities
-def speed(distance: u.Quantity[u.m], time: u.Quantity[u.s]) -> u.Quantity[u.m / u.s]:
-    return distance / time
-
 Automatically adding type hint annotations
 ------------------------------------------
 
@@ -546,6 +528,43 @@ a particular error.
    PlasmaPy only recently added |mypy| to its continuous integration
    suite. If you run into |mypy| errors that frequently need to be
    ignored, please bring them up in :issue:`2589`.
+
+Quantity type hints
+-------------------
+
+When a function accepts a |Quantity|, the annotation should additionally
+include the corresponding unit in brackets. When the function is
+|decorated| with |validate_quantities|, then the |Quantity| provided to
+and/or returned by the function will be converted to that unit.
+
+.. code-block:: python
+
+import astropy.units as u
+from plasmapy.utils.decorators import validate_quantities
+
+
+@validate_quantities
+def speed(distance: u.Quantity[u.m], time: u.Quantity[u.s]) -> u.Quantity[u.m / u.s]:
+    return distance / time
+
+Particle type hints
+-------------------
+
+Functions that accept particles or particle collections should annotate
+the corresponding function with |ParticleLike| or |ParticleListLike|.
+When the function is decorated with |particle_input|, then it will
+convert the function to the corresponding |Particle|, |CustomParticle|,
+or |ParticleList|.
+
+.. code-block:: python
+
+   from plasmapy.particles.decorators import particle_input
+   from plasmapy.particles.particle_class import CustomParticle, Particle, ParticleLike
+
+
+   @particle_input
+   def get_particle_object(particle: ParticleLike) -> Particle | CustomParticle:
+       return particle  # type: ignore[]
 
 Project infrastructure
 ======================
