@@ -417,25 +417,86 @@ Type hint annotations
 PlasmaPy uses |type hint annotations| and |mypy| to perform
 |static type checking|.
 
-Type hint annotations are used to specify the expected types of
-arguments and return values. A function that accepts a `float` or `str`
-and returns a `str` may be written as:
+Type hint annotations specify the expected types of arguments and return
+values. A function that accepts a `float` or `str` and returns a `str`
+may be written as:
 
 .. code-block:: python
 
-   def f(x: float | str) -> str:
-       ...
+   def f(x: float | str) -> bool:
+       return str(x)
 
-The :py:`|` operator is used to represent unions between types.
+The :py:`|` operator is used to represent unions between types. To learn
+more, check out the `type hints cheat sheet`_.
 
-Type hint annotations are by default not enforced at runtime. Instead,
-type hints are used by developers to indicate that a function accepts or
-returns different types.
+.. note::
 
-To learn more, check out the `type hints cheat sheet`_.
+   Type hint annotations are by default not enforced at runtime, and
+   instead are used to _indicate_ the types that a function or method
+   accepts and returns. However, there are some situations where type
+   hints do play a role at runtime, such as in functions decorated by
+   |particle_input| and/or |validate_quantities|.
+
+Automatically adding type hint annotations
+------------------------------------------
+
+PlasmaPy has defined multiple |Nox| sessions that can automatically add
+type hints using autotyping_ and MonkeyType_.
+
+The ``autotyping(safe)`` session uses autotyping_ to automatically add
+type hints for common patterns, while producing very few incorrect
+annotations:
+
+.. code-block:: shell
+
+   nox -s 'autotyping(safe)'
+
+The ``autotyping(aggressive)`` session uses autotyping_ to automatically
+add even more type hints than ``autotyping(safe)``. Because it is less
+reliable, the newly added type hints should be carefully checked:
+
+.. code-block:: shell
+
+   nox -s 'autotyping(aggressive)'
+
+The ``monkeytype`` session automatically adds type hint annotations to a
+module based on the types of variables that were observed when running
+`pytest`. Like ``autotyping(aggressive)``, it can add incorrect or
+incomplete type hints. It is run for a single module at a time:
+
+.. code-block:: shell
+
+   nox -s monkeytype -- plasmapy.particles.atomic
+
+Static type checking
+--------------------
+
+PlasmaPy uses |mypy| to perform |static type checking| to detect
+incorrect or inconsistent |type hint annotations|. We can perform
+static type checking by running:
+
+.. code-block:: shell
+
+   nox -s mypy
+
+The configuration for |mypy| is in |mypy.ini|_.
+
+Using |mypy| helps us identify errors and fix problems. For example,
+suppose we run |mypy| on the following function:
+
+.. code-block:: python
+
+   def return_object(x: int | str) -> int:
+       return x
+
+We will then get the following error:
+
+.. code-block::
+
+   Incompatible return value type (got "int | str", expected "int")  [return-value]
 
 Ignoring mypy errors
---------------------
+~~~~~~~~~~~~~~~~~~~~
 
 Static type checkers like |mypy| are unable to follow the behavior of
 functions that dynamically change the types of objects, which occurs in
@@ -989,12 +1050,14 @@ Up-to-date instructions on running the benchmark suite will be located
 in the README file of `benchmarks-repo`_.
 
 .. _ASCII: https://en.wikipedia.org/wiki/ASCII
+.. _autotyping: https://github.com/JelleZijlstra/autotyping
 .. _cognitive complexity: https://docs.codeclimate.com/docs/cognitive-complexity
 .. _Cython: https://cython.org
 .. _equivalencies: https://docs.astropy.org/en/stable/units/equivalencies.html
 .. _example notebook on particles: ../notebooks/getting_started/particles.ipynb
 .. _example notebook on units: ../notebooks/getting_started/units.ipynb
 .. _extract function refactoring pattern: https://refactoring.guru/extract-method
+.. _MonkeyType: https://monkeytype.readthedocs.io
 .. _NEP 29: https://numpy.org/neps/nep-0029-deprecation_policy.html
 .. _not a number: https://en.wikipedia.org/wiki/NaN
 .. _NumPy Enhancement Proposal 29: https://numpy.org/neps/nep-0029-deprecation_policy.html
@@ -1006,6 +1069,10 @@ in the README file of `benchmarks-repo`_.
 
 .. _`astropy.units`: https://docs.astropy.org/en/stable/units/index.html
 .. |astropy.units| replace:: `astropy.units`
+
+.. _`mypy.ini`: https://github.com/PlasmaPy/PlasmaPy/blob/main/mypy.ini
+.. |mypy.ini| replace:: :file:`mypy.ini`
+
 
 .. _`pyproject.toml`: https://github.com/PlasmaPy/PlasmaPy/blob/main/pyproject.toml
 .. |pyproject.toml| replace:: :file:`pyproject.toml`
