@@ -1093,6 +1093,16 @@ class Tracker(ParticleTracker):
             "v0": v0,
         }
 
+    def _enforce_particle_creation(self) -> None:
+        """Ensure the array position array `x` has been populated."""
+
+        # Check to make sure particles have already been generated
+        if not hasattr(self, "x"):
+            raise ValueError(
+                "Either the create_particles or load_particles method must be "
+                "called before running the particle tracing algorithm."
+            )
+
 
 # *************************************************************************
 # Synthetic diagnostic methods (creating output)

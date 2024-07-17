@@ -117,9 +117,15 @@ class ParticleTracker:
         everywhere. A warning will be raised if any of the additional
         required quantities are missing and are set to zero.
 
+    seed : int, optional, default : `None`
+        The seed used to create an instance of the `~numpy.random.Generator`
+        object. If no value is provided then fresh entropy will be pulled from
+        the OS. The resulting `~numpy.random.Generator` is used to sample
+        distributions for stopping and scattering functionalities.
+
     verbose : bool, optional
         If true, updates on the status of the program will be printed
-        into the standard output while running. The default is True.
+        into the standard output while running. The default is `True`.
 
     Warns
     -----
@@ -1304,7 +1310,8 @@ class ParticleTracker:
                 self._raised_relativity_warning = True
 
                 warnings.warn(
-                    f"Particles have reached {beta_max}% of the speed of light. Consider using a relativistic integrator for more accurate results.",
+                    f"Particles have reached {beta_max}% of the speed of light. Consider using "
+                    f"a relativistic integrator for more accurate results.",
                     RelativityWarning,
                 )
 
@@ -1364,8 +1371,8 @@ class ParticleTracker:
         # Check to make sure particles have already been generated
         if not hasattr(self, "x"):
             raise ValueError(
-                "Either the create_particles or load_particles method must be "
-                "called before running the particle tracing algorithm."
+                "The create_particles method must be called before running the particle "
+                "tracing algorithm."
             )
 
     def _enforce_order(self) -> None:
