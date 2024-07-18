@@ -10,7 +10,7 @@ argon2-cffi==23.1.0
     #   notebook
 argon2-cffi-bindings==21.2.0
     # via argon2-cffi
-asteval==1.0.0
+asteval==1.0.1
     # via lmfit
 astropy==5.1
     # via plasmapy (pyproject.toml)
@@ -25,7 +25,7 @@ beautifulsoup4==4.12.3
     # via nbconvert
 bleach==6.1.0
     # via nbconvert
-certifi==2024.6.2
+certifi==2024.7.4
     # via requests
 cffi==1.16.0
     # via argon2-cffi-bindings
@@ -35,7 +35,7 @@ charset-normalizer==2.0.12
     # via requests
 colorlog==6.8.2
     # via nox
-coverage==7.5.4
+coverage==7.6.0
     # via pytest-cov
 cycler==0.12.1
     # via matplotlib
@@ -47,7 +47,7 @@ distlib==0.3.8
     # via virtualenv
 entrypoints==0.4
     # via nbconvert
-exceptiongroup==1.2.1
+exceptiongroup==1.2.2
     # via
     #   anyio
     #   hypothesis
@@ -61,13 +61,13 @@ fastjsonschema==2.20.0
     # via nbformat
 filelock==3.15.4
     # via virtualenv
-fonttools==4.53.0
+fonttools==4.53.1
     # via matplotlib
 h5py==3.7.0
     # via plasmapy (pyproject.toml)
 hypothesis==6.97.4
     # via plasmapy (pyproject.toml)
-identify==2.5.36
+identify==2.6.0
     # via pre-commit
 idna==3.7
     # via
@@ -99,7 +99,7 @@ jinja2==3.1.4
     #   jupyter-server
     #   nbconvert
     #   notebook
-jsonschema==4.22.0
+jsonschema==4.23.0
     # via nbformat
 jsonschema-specifications==2023.12.1
     # via jsonschema
@@ -290,7 +290,7 @@ referencing==0.35.1
     #   jsonschema-specifications
 requests==2.28.0
     # via plasmapy (pyproject.toml)
-rpds-py==0.18.1
+rpds-py==0.19.0
     # via
     #   jsonschema
     #   referencing
@@ -356,7 +356,7 @@ typing-extensions==4.12.2
     # via
     #   ipython
     #   mypy
-uncertainties==3.2.1
+uncertainties==3.2.2
     # via lmfit
 urllib3==1.26.19
     # via requests

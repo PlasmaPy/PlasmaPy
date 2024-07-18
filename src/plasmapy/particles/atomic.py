@@ -22,6 +22,7 @@ __all__ = [
     "stopping_power",
 ]
 
+from collections.abc import Callable
 from numbers import Integral
 from typing import Any, Literal
 
@@ -1134,7 +1135,7 @@ def _is_electron(arg: Any) -> bool:
     # TODO: Remove _is_electron from all parts of code.
 
     return (
-        arg in ("e", "e-") or arg.lower() == "electron"
+        arg in {"e", "e-"} or arg.lower() == "electron"
         if isinstance(arg, str)
         else False
     )
@@ -1146,8 +1147,12 @@ def stopping_power(
     incident_particle: ParticleLike,
     material: str,
     energies: u.Quantity[u.MeV] | None = None,
+    return_interpolator: bool = False,
     component: Literal["total", "electronic", "nuclear"] = "total",
-) -> tuple[u.Quantity, u.Quantity]:
+) -> (
+    tuple[u.Quantity, u.Quantity]
+    | Callable[[u.Quantity[u.J]], u.Quantity[u.MeV * u.cm**2 / u.g]]
+):
     """
     Calculate stopping powers for a provided particle in a provided
     material.
@@ -1165,6 +1170,13 @@ def stopping_power(
     energies : `~astropy.units.Quantity`, default: See notes.
         The particle kinetic energies for which the stopping power is
         calculated.
+
+    return_interpolator : `bool`, default: `False`
+        The function will by default return a tuple of energies and their
+        associated stopping power. By setting this argument to `True`, the
+        function will instead return a `Callable`, which takes in energies and
+        will return the associated stopping energies. Under the hood, this is
+        just a wrapped instance of `~scipy.interpolate.CubicSpline` with units.
 
     component : {"total", "electronic", "nuclear"}, default: ``total``
         The component of the stopping power to be calculated. Supported
@@ -1184,7 +1196,6 @@ def stopping_power(
     Valid materials can be found on the NIST STAR website. The default energies
     are taken from the data points in the STAR database.
     """
-
     # TODO: figure out a better way of handling the Downloader() here
     nist_data_path = Downloader().get_file("NIST_STAR.hdf5")
 
@@ -1196,7 +1207,7 @@ def stopping_power(
             raise NotImplementedError(
                 "Stopping calculations for electrons have not been implemented yet!"
             )
-        elif incident_particle == Particle("H+"):
+        elif incident_particle in {Particle("H+"), Particle("p+")}:
             group_name = "protons"
         else:
             raise ValueError(
@@ -1229,17 +1240,25 @@ def stopping_power(
                 f"Please specify one of: total, electronic, or nuclear for component! (Got {component}.)"
             )
 
-        if energies is not None:
-            # Interpolate NIST data to the user-provided energy values. Uses log-log scale fed into a cubic spline.
-            cs = CubicSpline(
-                x=np.log(baseline_energies_data), y=np.log(relevant_stopping_data)
+        if energies is None and not return_interpolator:
+            return (
+                baseline_energies_data * u.MeV,
+                relevant_stopping_data * u.MeV * u.cm**2 / u.g,
             )
 
-            return energies, np.exp(
-                cs(np.log(energies.to("MeV").value))
-            ) * u.MeV * u.cm**2 / u.g
+        # Interpolate NIST data to the user-provided energy values. Uses log-log scale fed into a cubic spline.
+        cs = CubicSpline(
+            x=np.log(baseline_energies_data), y=np.log(relevant_stopping_data)
+        )
+
+        # If it has been indicated that the user wants the interpolator, construct
+        # an anonymous function to handle units and sanitize IO
+        if return_interpolator:
+            return (
+                lambda x: np.exp(cs(np.log(x.to(u.MeV).value))) * u.MeV * u.cm**2 / u.g
+            )
 
         return (
-            baseline_energies_data * u.MeV,
-            relevant_stopping_data * u.MeV * u.cm**2 / u.g,
+            energies,
+            np.exp(cs(np.log(energies.to("MeV").value))) * u.MeV * u.cm**2 / u.g,  # type: ignore[union-attr]
         )

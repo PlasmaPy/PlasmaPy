@@ -262,41 +262,38 @@ To test that a function raises an appropriate exception, use
 Test independence and parametrization
 -------------------------------------
 
-In this section, we'll discuss the issue of parametrization based on an
-example of a :wikipedia:`proof <Riemann_hypothesis#Excluded_middle>` of
-Gauss's class number conjecture.
-
-The proof goes along these lines:
-
-* If the generalized Riemann hypothesis is true, the conjecture is true.
-
-* If the generalized Riemann hypothesis is false, the conjecture is also
-  true.
-
-* Therefore, the conjecture is true.
-
-One way to use pytest would be to write sequential test in a single
-function.
+Sometimes we want to test how a function handles many different inputs.
+For example, take this simple function that checks if a number is less
+than 1000:
 
 .. code-block:: python
 
-   def test_proof_by_riemann_hypothesis() -> None:
-       assert proof_by_riemann(False)
-       assert proof_by_riemann(True)  # will only be run if the previous test passes
+   def less_than_1000(x: int) -> bool:
+       return True if x < 1000 else False
 
-If the first test were to fail, then the second test would never be run.
+Let's say we want to test both positive and negative numbers that are less
+than 1000. One way to use pytest would be to write sequential tests in a
+single function.
+
+.. code-block:: python
+
+   def test_less_than_1000() -> None:
+       assert less_than_1000(999)
+       assert less_than_1000(-1000)  # will only be run if the previous test passes
+
+If the first test were to fail, then the subsequent test would never be run.
 We would therefore not know the potentially useful results of the second
 test. This drawback can be avoided by making independent tests so that
 both will be run.
 
 .. code-block:: python
 
-   def test_proof_if_riemann_false() -> None:
-       assert proof_by_riemann(False)
+   def test_less_than_1000_positive_number() -> None:
+       assert less_than_1000(999)
 
 
-   def test_proof_if_riemann_true() -> None:
-       assert proof_by_riemann(True)
+   def test_less_than_1000_negative_number() -> None:
+       assert less_than_1000(-1000)
 
 However, this approach can lead to cumbersome, repeated code if you are
 calling the same function over and over. If you wish to run multiple
@@ -305,12 +302,12 @@ tests for the same function, the preferred method is to decorate it with
 
 .. code-block:: python
 
-   @pytest.mark.parametrize("truth_value", [True, False])
-   def test_proof_if_riemann(truth_value: bool) -> None:
-       assert proof_by_riemann(truth_value)
+   @pytest.mark.parametrize("number_to_test", [999, -1000])
+   def test_less_than_1000(number_to_test: int) -> None:
+       assert less_than_1000(number_to_test)
 
-This code snippet will run :py:`proof_by_riemann(truth_value)` for each
-``truth_value`` in :py:`[True, False]`. Both of the above tests will be
+This code snippet will run :py:`less_than_1000(number_to_test)` for each
+``number_to_test`` in :py:`[999, -1000]`. Both of the above tests will be
 run regardless of failures. This approach is much cleaner for long lists
 of arguments, and has the advantage that you would only need to change
 the function call in one place if the function changes.
@@ -320,9 +317,11 @@ functions or pass in tuples containing inputs and expected values.
 
 .. code-block:: python
 
-   @pytest.mark.parametrize("truth_value, expected", [(True, True), (False, True)])
-   def test_proof_if_riemann(truth_value: bool, expected: bool) -> None:
-       assert proof_by_riemann(truth_value) == expected
+   @pytest.mark.parametrize(
+       "number_to_test, expected", [(999, True), (-1000, True), (1000, False)]
+   )
+   def test_less_than_1000(number_to_test: int, expected: bool) -> None:
+       assert less_than_1000(number_to_test) == expected
 
 Test parametrization with argument unpacking
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -535,19 +534,18 @@ Running tests
 
 PlasmaPy's tests can be run in the following ways:
 
-1. Creating and updating a pull request on |GitHub|.
-2. Running `pytest` from the command line.
-3. Running |Nox| from the command line.
+1. Creating and updating a pull request on |GitHub|
+2. Running `pytest` from the command line
+3. Running |Nox| from the command line
 4. Running tests from an :wikipedia:`integrated development environment
-   <integrated_development_environment>` (IDE).
+   <integrated_development_environment>` (IDE)
 
 We recommend that new contributors perform tests via a pull request on
-GitHub. Creating a draft pull request and keeping it updated ensures
-that all necessary checks are run frequently.
+GitHub. Creating a draft pull request early and keeping it updated
+ensures that all necessary checks are run frequently.
 
-Experienced contributors may find it useful to run tests from the
-command line using `pytest` or |Nox|, or via an IDE. In particular,
-using |Nox| ensures that tests are run in the same way as in CI.
+To run tests locally via the command line, we recommend using |Nox| to
+ensure that tests are run in the same was as in CI.
 
 Using GitHub
 ------------
@@ -569,94 +567,76 @@ on *Details* for information about why a particular check failed.
    :align: center
    :alt: Continuous integration test results during a pull request
 
-The following checks are performed with each pull request.
+Checks run on every pull request
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-* Checks with labels like **CI / Python 3.x (pull request)** verify that
-  PlasmaPy works with different versions of Python and other
-  dependencies, and on different operating systems. These tests are set
-  up using |Nox| and run with `pytest` via |GitHub Actions|. When
-  multiple tests fail, investigate these tests first.
+The following is an incomplete list of checks performed for every pull
+request. These checks change frequently, so the names may be slightly
+different. These checks are defined in :file:`.github/workflows/ci.yml`,
+and usually invoke |Nox| sessions defined in :file:`noxfile.py`.
+
+* Checks with labels beginning with **CI / Tests, Python 3.x** verify
+  that PlasmaPy's test suite passes when run using different versions of
+  Python or on different operating systems. These tests are set up using
+  |Nox| and run with `pytest` via |GitHub Actions|.
 
   .. tip::
 
-     `Python 3.10 <https://docs.python.org/3.10/whatsnew/3.10.html>`__,
-     `Python 3.11 <https://docs.python.org/3.11/whatsnew/3.11.html>`__,
-     and
-     `Python 3.12 <https://docs.python.org/3.12/whatsnew/3.12.html>`__
-     include (or will include) significant improvements to common error
-     messages.
+     To take advantage of recent improvements in error messages, start
+     by checking test failures for the newest version of Python.
 
-* The **CI / Documentation (pull_request)** check verifies that
+* The **CI / Documentation** check verifies that
   |PlasmaPy's documentation| is able to build correctly from the pull
   request. Warnings are treated as errors.
 
 * The **docs/readthedocs.org:plasmapy** check allows us to preview
   how the documentation will appear if the pull request is merged.
-  Click on *Details* to access this preview.
-
-* The check labeled **changelog: found** or **changelog: absent**
-  indicates whether or not a changelog entry with the correct number
-  is present, unless the pull request has been labeled with "No
-  changelog entry needed".
-
-  * The :file:`changelog/README.rst` file describes the process for
-    adding a changelog entry to a pull request.
-
-* The **codecov/patch** and **codecov/project** checks generate test
-  coverage reports that show which lines of code are run by the test
-  suite and which are not. Codecov_ will automatically post its report
-  as a comment to the pull request. The Codecov_ checks will be marked
-  as passing when the test coverage is satisfactorily high. For more
-  information, see the section on :ref:`code-coverage`.
-
-* The **CI / Importing PlasmaPy (pull_request)** checks that it is
-  possible to run :py:`import plasmapy`.
-
-* PlasmaPy uses |black| to format code and |isort| to sort ``import``
-  statements. The **CI / Linters (pull_request)** and
-  **pre-commit.ci - pr** checks verify that the pull request meets these
-  style requirements. These checks will fail when inconsistencies with
-  the output from |black| or |isort| are found or when there are syntax
-  errors. These checks can usually be ignored until the pull request is
-  nearing completion.
 
   .. tip::
 
-     The required formatting fixes can be applied automatically by
-     writing a comment with the message ``pre-commit.ci autofix`` to the
-     *Conversation* tab on a pull request, as long as there are no
-     syntax errors. This approach is much more efficient than making the
-     style fixes manually. Remember to ``git pull`` afterwards!
+     Click on :guilabel:`Details` next to the
+     **docs/readthedocs.org:plasmapy** check to access a preview of the
+     documentation.
 
-  .. note::
+* The **Changelog** check verifies whether a changelog entry with the
+  correct number is present in :file:`changelog/` (unless the pull
+  request has been labeled with "no changelog entry needed" or "skip
+  changelog checks").
 
-     When using pre-commit, a hook for codespell_ will check for and fix
-     common misspellings. If you encounter any words caught by
-     codespell_ that should *not* be fixed, please add these false
-     positives to ``ignore-words-list`` under ``codespell`` in
-     :file:`pyproject.toml`.
+  .. tip::
 
-* The **CI / Packaging (pull request)** check verifies that no errors
-  arise that would prevent an official release of PlasmaPy from being
-  made.
+     The |changelog guide| describes the process for adding a changelog
+     entry to a pull request.
 
-* The **Pull Request Labeler / triage (pull_request_target)** check
-  applies appropriate |GitHub| labels to pull requests.
+* The **pre-commit.ci - pr** check runs linters, autoformatters, and
+  other quality assurance tools via |pre-commit|. PlasmaPy's
+  :ref:`pre-commit troubleshooting guide <pre-commit-troubleshooting>`
+  describes how to deal with common |pre-commit| failures.
+
+  .. tip::
+
+     Auto-fixes from |pre-commit| can be applied by writing a comment
+     that says ``pre-commit.ci autofix`` to the :guilabel:`Conversation`
+     tab on a pull request. Remember to ``git pull`` afterwards!
+
+* The **codecov/patch** and **codecov/project** checks generate test
+  coverage reports that show which lines of code are run by the test
+  suite and which are not (see also the section on
+  :ref:`code-coverage`.). Codecov_ will automatically post its report as
+  a comment to the pull request. The Codecov_ checks will be marked as
+  passing when the test coverage is satisfactorily high.
+
+* The **CI / Packaging** check verifies that no errors arise that would
+  prevent an official release of PlasmaPy from being made.
+
+* The **CI / Static type checking with mypy** check performs
+  |static type checking| of |type hint annotations| with |mypy|.
 
 .. note::
 
-   For first-time contributors, existing maintainers `may need to
-   manually enable your `GitHub Action test runs
+   For first-time contributors, a maintainer `may need to manually
+   enable your `GitHub Action test runs
    <https://docs.github.com/en/actions/managing-workflow-runs/approving-workflow-runs-from-public-forks>`__.
-   This is, believe it or not, indirectly caused by the invention of
-   cryptocurrencies.
-
-.. note::
-
-   The continuous integration (CI) checks performed for pull requests change
-   frequently. If you notice that the above list has become out-of-date,
-   please `submit an issue that this section needs updating
-   <https://github.com/PlasmaPy/PlasmaPy/issues/new?title=Update%20information%20on%20GitHub%20checks%20in%20testing%20guide&labels=Documentation>`__.
 
 Using pytest
 ------------
@@ -785,6 +765,9 @@ Line coverage reports show which lines of code have been used in a test
 and which have not. These reports show which lines of code remain to be
 tested, and sometimes indicate sections of code that are unreachable.
 
+PlasmaPy uses `coverage.py`_ and the `pytest-cov`_ plugin for `pytest` to
+measure code coverage and Codecov_ to provide reports on GitHub.
+
 .. tip::
 
    Use test coverage reports to write tests that target untested
@@ -796,9 +779,6 @@ tested, and sometimes indicate sections of code that are unreachable.
    adequately tested, a high value does not necessarily indicate that
    the testing is sufficient. A test that makes no assertions has little
    value, but could still have high test coverage.
-
-PlasmaPy uses `coverage.py`_ and the `pytest-cov`_ plugin for `pytest` to
-measure code coverage and Codecov_ to provide reports on GitHub.
 
 Generating coverage reports with pytest
 ---------------------------------------
@@ -861,7 +841,6 @@ popular IDEs:
 
 .. _Atom: https://atom.io
 .. _Codecov: https://about.codecov.io
-.. _codespell: https://github.com/codespell-project/codespell
 .. _`coverage.py`: https://coverage.readthedocs.io
 .. _`create a pull request`: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests
 .. _fixtures: https://docs.pytest.org/en/latest/explanation/fixtures.html
