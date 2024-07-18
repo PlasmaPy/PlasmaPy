@@ -169,7 +169,9 @@ def generate_rst_author_list(authors: list[dict[str, str]]) -> str:
     return "\n".join(author_lines)
 
 
-def main(cff_file="../CITATION.cff", rst_file="about/_authors.rst", verbose=False):
+def generate_rst_file(
+    cff_file="../CITATION.cff", rst_file="about/_authors.rst", verbose=False
+):
     """
     Parse :file:`CITATION.cff` file and generate a reStructuredText
     formatted list of authors.
@@ -198,6 +200,6 @@ if __name__ == "__main__":
 
     .. code-block: bash
 
-        python _cff_to_rst.py
+        python _author_list_from_cff.py
     """
-    main(verbose=True)
+    generate_rst_file(verbose=True)

@@ -84,7 +84,8 @@ docs = [
   "numpydoc >= 1.6.0",
   "pillow >= 10.2.0",
   "pygments >= 2.17.2",
-  "sphinx >= 7.3.7",
+  # See #2764
+  "sphinx == 7.3.7",
   "sphinx-changelog >= 1.5.0",
   "sphinx-codeautolink >= 0.15.0",
   "sphinx-copybutton >= 0.5.2",
@@ -524,4 +525,5 @@ ignore = [
   ".mailmap",
   "docs/*build/**",
   "Untitled*",
+  "src/plasmapy/_version.py",
 ]
