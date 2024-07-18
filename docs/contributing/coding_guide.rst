@@ -29,8 +29,8 @@ style changes. Please feel free to propose revisions to this guide by
 a community meeting.
 
 PlasmaPy generally follows the :pep:`8` style guide for Python code,
-while using tools like |pre-commit|, |ruff|, and the |ruff| formatter to
-perform autoformatting, code quality checks, and automatic fixes.
+while using tools like |pre-commit| and |ruff| to perform
+autoformatting, code quality checks, and automatic fixes.
 
 Coding guidelines
 =================
