@@ -133,6 +133,10 @@ docs/about/_authors.rst
 docs/contributing/_global_substitutions_table.rst
 docs/notebooks/*.md
 
+# Allow contributors to create a custom requirements.txt file for
+# their own use.
+requirements.txt
+
 # Version file
 _version.py
 tags
