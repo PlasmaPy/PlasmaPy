@@ -480,28 +480,28 @@ Dependencies and requirements
     their initial release.
 
 * The |ci_requirements/|_ directory contains pinned requirements files
-  that for use in continuous integration tests (see
+  for use in continuous integration tests (see
   |ci_requirements/README.md|_).
 
   - These files are updated periodically via pull requests created by a
     GitHub workflow to `update pinned requirements`_.
 
   - When updating requirements in |pyproject.toml|_, run
-    ``nox -s requirements`` to update the pinned requirements files.
+    :bash:`nox -s requirements` to update the pinned requirements files.
 
 * Even if a dependency is unlikely to be shared with packages installed
-  alongside PlasmaPy, that dependency can have strict requirements that
+  alongside PlasmaPy, that dependency may have strict requirements that
   do cause conflicts. For example, requiring the newest version of
   voila_ once caused dependency conflicts with other packages in the
   heliopythoniverse because voila_ had strict dependencies on packages
   in the Jupyter ecosystem.
 
-* Only set maximum or exact requirements (e.g., ``numpy <= 1.26.0`` or
+* Only set maximum or exact requirements (e.g., ``numpy <= 2.0.0`` or
   ``scipy == 1.13.1``) when absolutely necessary. After setting a
   maximum or exact requirement, create a GitHub issue to loosen that
   requirement.
 
-  .. tip::
+  .. important::
 
      Maximum requirements can lead to version conflicts when installed
      alongside other packages. It is preferable to update PlasmaPy to
@@ -513,8 +513,8 @@ Dependencies and requirements
 
 * The ``tests`` and ``docs`` dependency sets are required for running
   tests and building documentation, but are not required for package
-  installation. Consequently, it is not necessary to support older
-  versions of packages that are only in these optional dependency sets.
+  installation. Consequently, we can require much newer versions of the
+  packages in these dependency sets.
 
 .. tip::
 
