@@ -423,7 +423,7 @@ may be written as:
 
 .. code-block:: python
 
-   def f(x: float | str) -> bool:
+   def f(x: float | str) -> str:
        return str(x)
 
 The :py:`|` operator is used to represent unions between types. To learn
@@ -564,7 +564,7 @@ or |ParticleList|.
 
    @particle_input
    def get_particle_object(particle: ParticleLike) -> Particle | CustomParticle:
-       return particle  # type: ignore[]
+       return particle  # type: ignore[return-value]
 
 Project infrastructure
 ======================
