@@ -1,1 +1,1 @@
-Add axes removed by ``np.squeeze`` to arrays in `~plasmapy.dispersion.analytical.mhd_waves_`
+Add axes removed by `numpy.squeeze` to arrays in `~plasmapy.dispersion.analytical.mhd_waves_`
