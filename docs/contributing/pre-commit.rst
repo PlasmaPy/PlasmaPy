@@ -16,16 +16,17 @@ PlasmaPy uses |pre-commit| to automate code quality checks and perform
 automated fixes. The configuration for pre-commit is in
 |.pre-commit-config.yaml|_.
 
+.. _pre-commit-troubleshooting:
+
 Troubleshooting pre-commit failures
 ===================================
 
 Many common |pre-commit| test failures related to formatting can be
 automatically fixed by adding a comment on a pull request that says
-``pre-commit.ci autofix`` (like in
-`this comment
+``pre-commit.ci autofix`` (like in `this comment
 <https://github.com/PlasmaPy/PlasmaPy/pull/1500#issuecomment-1216865989>`__).
-This comment will lead to a new commit to the pull request branch that
-applies the automatic fixes made by the different pre-commit hooks.
+This comment will produce a new commit that applies the automatic fixes
+made by the different pre-commit hooks.
 
 After doing this, please do a :bash:`git pull` in your clone of
 PlasmaPy's repository to pull back the auto fixes to your computer.
@@ -90,17 +91,18 @@ statements (PLR0915_) by adding the following ``noqa`` comment:
    maintain. We should only add ``noqa`` statements when we have a good
    reason to.
 
-codespell
----------
+Spellchecks
+-----------
 
-PlasmaPy uses codespell_ to find typos in source code. Rather than
-checking if each word matches a dictionary entry, codespell tries to
-match words to a set of common misspellings. This approach greatly
-reduces the number of false positives, but will occasionally miss some
-uncommon misspellings.
+PlasmaPy uses codespell_ and typos_ to spellcheck source code. While
+these tools generally work well, occasionally there will be false
+positives.
 
-If you encounter a false positive with codespell, add it to
-``ignore-words-list`` under ``[codespell]`` in :file:`pyproject.toml`.
+* If you encounter a false positive with codespell, add it to
+  ``ignore-words-list`` under ``[codespell]`` in :file:`pyproject.toml`.
+
+* False positives from typos_ should be added to :file:`_typos.toml`.
+
 
 Using pre-commit locally
 ========================
@@ -190,6 +192,7 @@ will be necessary to redo :bash:`git add` on the changed files and
 .. _PLR0912: https://docs.astral.sh/ruff/rules/too-many-branches
 .. _PLR0915: https://docs.astral.sh/ruff/rules/too-many-statements
 .. _ruff's documentation page on rules: https://docs.astral.sh/ruff/rules
+.. _typos: https://github.com/crate-ci/typos
 
 .. _`.pre-commit-config.yaml`: https://github.com/PlasmaPy/PlasmaPy/blob/main/.pre-commit-config.yaml
 .. |.pre-commit-config.yaml| replace:: :file:`.pre-commit-config.yaml`

@@ -571,10 +571,9 @@ Checks run on every pull request
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The following is an incomplete list of checks performed for every pull
-request. These checks change frequently, so the list below may be
-out-of-date. These checks are defined in
-:file:`.github/workflows/ci.yml`, and usually run |Nox| sessions defined
-in :file:`noxfile.py`.
+request. These checks change frequently, so the names may be slightly
+different. These checks are defined in :file:`.github/workflows/ci.yml`,
+and usually invoke |Nox| sessions defined in :file:`noxfile.py`.
 
 * Checks with labels beginning with **CI / Tests, Python 3.x** verify
   that PlasmaPy's test suite passes when run using different versions of
@@ -610,34 +609,22 @@ in :file:`noxfile.py`.
      entry to a pull request.
 
 * The **pre-commit.ci - pr** check runs linters, autoformatters, and
-  other quality assurance tools via |pre-commit|.
+  other quality assurance tools via |pre-commit|. PlasmaPy's
+  :ref:`pre-commit troubleshooting guide <pre-commit-troubleshooting>`
+  describes how to deal with common |pre-commit| failures.
 
   .. tip::
 
-     The required formatting fixes can be applied automatically by
-     writing a comment with the message ``pre-commit.ci autofix`` to the
-     *Conversation* tab on a pull request, as long as there are no
-     syntax errors. This approach is much more efficient than making the
-     style fixes manually. Remember to ``git pull`` afterwards!
-
-  .. note::
-
-     The |pre-commit| hooks for codespell_ and typos_ both look for
-     misspellings, but sometimes result in false positives. If you
-     encounter any words caught by codespell_ that should *not* be
-     fixed, please add these false positives to ``ignore-words-list``
-     under ``codespell`` in :file:`pyproject.toml`. False positives
-     from typos_ should be added to :file:`_typos.toml`.
+     Auto-fixes from |pre-commit| can be applied by writing a comment
+     that says ``pre-commit.ci autofix`` to the :guilabel:`Conversation`
+     tab on a pull request. Remember to ``git pull`` afterwards!
 
 * The **codecov/patch** and **codecov/project** checks generate test
   coverage reports that show which lines of code are run by the test
-  suite and which are not. Codecov_ will automatically post its report
-  as a comment to the pull request. The Codecov_ checks will be marked
-  as passing when the test coverage is satisfactorily high. For more
-  information, see the section on :ref:`code-coverage`.
-
-* The **CI / Importing PlasmaPy (pull_request)** checks that it is
-  possible to run :py:`import plasmapy`.
+  suite and which are not (see also the section on
+  :ref:`code-coverage`.). Codecov_ will automatically post its report as
+  a comment to the pull request. The Codecov_ checks will be marked as
+  passing when the test coverage is satisfactorily high.
 
 * The **CI / Packaging** check verifies that no errors arise that would
   prevent an official release of PlasmaPy from being made.
@@ -778,6 +765,9 @@ Line coverage reports show which lines of code have been used in a test
 and which have not. These reports show which lines of code remain to be
 tested, and sometimes indicate sections of code that are unreachable.
 
+PlasmaPy uses `coverage.py`_ and the `pytest-cov`_ plugin for `pytest` to
+measure code coverage and Codecov_ to provide reports on GitHub.
+
 .. tip::
 
    Use test coverage reports to write tests that target untested
@@ -789,9 +779,6 @@ tested, and sometimes indicate sections of code that are unreachable.
    adequately tested, a high value does not necessarily indicate that
    the testing is sufficient. A test that makes no assertions has little
    value, but could still have high test coverage.
-
-PlasmaPy uses `coverage.py`_ and the `pytest-cov`_ plugin for `pytest` to
-measure code coverage and Codecov_ to provide reports on GitHub.
 
 Generating coverage reports with pytest
 ---------------------------------------
@@ -854,7 +841,6 @@ popular IDEs:
 
 .. _Atom: https://atom.io
 .. _Codecov: https://about.codecov.io
-.. _codespell: https://github.com/codespell-project/codespell
 .. _`coverage.py`: https://coverage.readthedocs.io
 .. _`create a pull request`: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests
 .. _fixtures: https://docs.pytest.org/en/latest/explanation/fixtures.html
@@ -872,6 +858,5 @@ popular IDEs:
 .. _`test discovery conventions`: https://docs.pytest.org/en/latest/goodpractices.html#conventions-for-python-test-discovery
 .. _`test warnings`: https://docs.pytest.org/en/latest/warnings.html#warns
 .. _`test exceptions`: https://docs.pytest.org/en/latest/assert.html#assertions-about-expected-exceptions
-.. _typos: https://github.com/crate-ci/typos
 .. _unpacking: https://docs.python.org/3/tutorial/controlflow.html#unpacking-argument-lists
 .. _`Visual Studio`: https://visualstudio.microsoft.com
