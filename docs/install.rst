@@ -211,7 +211,7 @@ package should also be installed.
    and create branches so that you may make contributions via pull
    requests.
 
-.. _Anaconda Navigator: https://docs.anaconda.com/free/navigator
+.. _Anaconda Navigator: https://docs.anaconda.com/navigator
 .. _clone a repository using SSH: https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories#cloning-with-ssh-urls
 .. _Conda: https://docs.conda.io
 .. _conda-forge: https://conda-forge.org
@@ -220,10 +220,10 @@ package should also be installed.
 .. _from PyPI: https://pypi.org/project/plasmapy
 .. _from Zenodo: https://doi.org/10.5281/zenodo.6774349
 .. _improving Conda performance: https://docs.conda.io/projects/conda/en/latest/user-guide/concepts/conda-performance.html#improving-conda-performance
-.. _installing Anaconda Navigator: https://docs.anaconda.com/free/navigator/install
+.. _installing Anaconda Navigator: https://docs.anaconda.com/navigator/install
 .. _installing Conda: https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html
 .. _installing packages: https://packaging.python.org/en/latest/tutorials/installing-packages/#installing-from-vcs
-.. _getting started with Anaconda Navigator: https://docs.anaconda.com/free/navigator/getting-started
+.. _getting started with Anaconda Navigator: https://docs.anaconda.com/navigator/getting-started
 .. _miniconda: https://docs.conda.io/en/latest/miniconda.html
 .. _releases: https://github.com/PlasmaPy/PlasmaPy/releases
 .. _ZIP: https://en.wikipedia.org/wiki/ZIP_(file_format)
