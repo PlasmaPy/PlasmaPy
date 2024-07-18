@@ -29,7 +29,7 @@ style changes. Please feel free to propose revisions to this guide by
 a community meeting.
 
 PlasmaPy generally follows the :pep:`8` style guide for Python code,
-while using tools like |pre-commit|, |ruff|, and the |ruff formatter| to
+while using tools like |pre-commit|, |ruff|, and the |ruff| formatter to
 perform autoformatting, code quality checks, and automatic fixes.
 
 Coding guidelines
@@ -539,13 +539,13 @@ and/or returned by the function will be converted to that unit.
 
 .. code-block:: python
 
-import astropy.units as u
-from plasmapy.utils.decorators import validate_quantities
+   import astropy.units as u
+   from plasmapy.utils.decorators import validate_quantities
 
 
-@validate_quantities
-def speed(distance: u.Quantity[u.m], time: u.Quantity[u.s]) -> u.Quantity[u.m / u.s]:
-    return distance / time
+   @validate_quantities
+   def speed(distance: u.Quantity[u.m], time: u.Quantity[u.s]) -> u.Quantity[u.m / u.s]:
+       return distance / time
 
 Particle type hints
 -------------------
