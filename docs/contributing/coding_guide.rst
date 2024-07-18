@@ -575,9 +575,6 @@ The :py:`# type: ignore[return-value]` comment for |mypy| is needed
 because |particle_input| dynamically (rather than statically) changes
 the type of ``particle``.
 
-Project infrastructure
-======================
-
 Imports
 -------
 
