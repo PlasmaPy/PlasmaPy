@@ -130,6 +130,7 @@ VIRTUAL/
 # Documentation files
 auto_examples
 docs/about/_authors.rst
+docs/changelog/index.rst
 docs/contributing/_global_substitutions_table.rst
 docs/notebooks/*.md
 
