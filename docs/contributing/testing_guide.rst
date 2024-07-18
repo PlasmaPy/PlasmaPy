@@ -534,19 +534,18 @@ Running tests
 
 PlasmaPy's tests can be run in the following ways:
 
-1. Creating and updating a pull request on |GitHub|.
-2. Running `pytest` from the command line.
-3. Running |Nox| from the command line.
+1. Creating and updating a pull request on |GitHub|
+2. Running `pytest` from the command line
+3. Running |Nox| from the command line
 4. Running tests from an :wikipedia:`integrated development environment
-   <integrated_development_environment>` (IDE).
+   <integrated_development_environment>` (IDE)
 
 We recommend that new contributors perform tests via a pull request on
-GitHub. Creating a draft pull request and keeping it updated ensures
-that all necessary checks are run frequently.
+GitHub. Creating a draft pull request early and keeping it updated
+ensures that all necessary checks are run frequently.
 
-Experienced contributors may find it useful to run tests from the
-command line using `pytest` or |Nox|, or via an IDE. In particular,
-using |Nox| ensures that tests are run in the same way as in CI.
+To run tests locally via the command line, we recommend using |Nox| to
+ensure that tests are run in the same was as in CI.
 
 Using GitHub
 ------------
@@ -568,56 +567,50 @@ on *Details* for information about why a particular check failed.
    :align: center
    :alt: Continuous integration test results during a pull request
 
-The following checks are performed with each pull request.
+Checks run on every pull request
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-* Checks with labels like **CI / Python 3.x (pull request)** verify that
-  PlasmaPy works with different versions of Python and other
-  dependencies, and on different operating systems. These tests are set
-  up using |Nox| and run with `pytest` via |GitHub Actions|. When
-  multiple tests fail, investigate these tests first.
+The following is an incomplete list of checks performed for every pull
+request. These checks change frequently, so the list below may be
+out-of-date. These checks are defined in
+:file:`.github/workflows/ci.yml`, and usually run |Nox| sessions defined
+in :file:`noxfile.py`.
+
+* Checks with labels beginning with **CI / Tests, Python 3.x** verify
+  that PlasmaPy's test suite passes when run using different versions of
+  Python or on different operating systems. These tests are set up using
+  |Nox| and run with `pytest` via |GitHub Actions|.
 
   .. tip::
 
-     `Python 3.10 <https://docs.python.org/3.10/whatsnew/3.10.html>`__,
-     `Python 3.11 <https://docs.python.org/3.11/whatsnew/3.11.html>`__,
-     and
-     `Python 3.12 <https://docs.python.org/3.12/whatsnew/3.12.html>`__
-     include (or will include) significant improvements to common error
-     messages.
+     To take advantage of recent improvements in error messages, start
+     by checking test failures for the newest version of Python.
 
-* The **CI / Documentation (pull_request)** check verifies that
+* The **CI / Documentation** check verifies that
   |PlasmaPy's documentation| is able to build correctly from the pull
   request. Warnings are treated as errors.
 
 * The **docs/readthedocs.org:plasmapy** check allows us to preview
   how the documentation will appear if the pull request is merged.
-  Click on *Details* to access this preview.
 
-* The check labeled **changelog: found** or **changelog: absent**
-  indicates whether or not a changelog entry with the correct number
-  is present, unless the pull request has been labeled with "No
-  changelog entry needed".
+  .. tip::
 
-  * The :file:`changelog/README.rst` file describes the process for
-    adding a changelog entry to a pull request.
+     Click on :guilabel:`Details` next to the
+     **docs/readthedocs.org:plasmapy** check to access a preview of the
+     documentation.
 
-* The **codecov/patch** and **codecov/project** checks generate test
-  coverage reports that show which lines of code are run by the test
-  suite and which are not. Codecov_ will automatically post its report
-  as a comment to the pull request. The Codecov_ checks will be marked
-  as passing when the test coverage is satisfactorily high. For more
-  information, see the section on :ref:`code-coverage`.
+* The **Changelog** check verifies whether a changelog entry with the
+  correct number is present in :file:`changelog/` (unless the pull
+  request has been labeled with "no changelog entry needed" or "skip
+  changelog checks").
 
-* The **CI / Importing PlasmaPy (pull_request)** checks that it is
-  possible to run :py:`import plasmapy`.
+  .. tip::
 
-* PlasmaPy uses |black| to format code and |isort| to sort ``import``
-  statements. The **CI / Linters (pull_request)** and
-  **pre-commit.ci - pr** checks verify that the pull request meets these
-  style requirements. These checks will fail when inconsistencies with
-  the output from |black| or |isort| are found or when there are syntax
-  errors. These checks can usually be ignored until the pull request is
-  nearing completion.
+     The |changelog guide| describes the process for adding a changelog
+     entry to a pull request.
+
+* The **pre-commit.ci - pr** check runs linters, autoformatters, and
+  other quality assurance tools via |pre-commit|.
 
   .. tip::
 
@@ -629,33 +622,34 @@ The following checks are performed with each pull request.
 
   .. note::
 
-     When using pre-commit, a hook for codespell_ will check for and fix
-     common misspellings. If you encounter any words caught by
-     codespell_ that should *not* be fixed, please add these false
-     positives to ``ignore-words-list`` under ``codespell`` in
-     :file:`pyproject.toml`.
+     The |pre-commit| hooks for codespell_ and typos_ both look for
+     misspellings, but sometimes result in false positives. If you
+     encounter any words caught by codespell_ that should *not* be
+     fixed, please add these false positives to ``ignore-words-list``
+     under ``codespell`` in :file:`pyproject.toml`. False positives
+     from typos_ should be added to :file:`_typos.toml`.
 
-* The **CI / Packaging (pull request)** check verifies that no errors
-  arise that would prevent an official release of PlasmaPy from being
-  made.
+* The **codecov/patch** and **codecov/project** checks generate test
+  coverage reports that show which lines of code are run by the test
+  suite and which are not. Codecov_ will automatically post its report
+  as a comment to the pull request. The Codecov_ checks will be marked
+  as passing when the test coverage is satisfactorily high. For more
+  information, see the section on :ref:`code-coverage`.
 
-* The **Pull Request Labeler / triage (pull_request_target)** check
-  applies appropriate |GitHub| labels to pull requests.
+* The **CI / Importing PlasmaPy (pull_request)** checks that it is
+  possible to run :py:`import plasmapy`.
+
+* The **CI / Packaging** check verifies that no errors arise that would
+  prevent an official release of PlasmaPy from being made.
+
+* The **CI / Static type checking with mypy** check performs
+  |static type checking| of |type hint annotations| with |mypy|.
 
 .. note::
 
-   For first-time contributors, existing maintainers `may need to
-   manually enable your `GitHub Action test runs
+   For first-time contributors, a maintainer `may need to manually
+   enable your `GitHub Action test runs
    <https://docs.github.com/en/actions/managing-workflow-runs/approving-workflow-runs-from-public-forks>`__.
-   This is, believe it or not, indirectly caused by the invention of
-   cryptocurrencies.
-
-.. note::
-
-   The continuous integration (CI) checks performed for pull requests change
-   frequently. If you notice that the above list has become out-of-date,
-   please `submit an issue that this section needs updating
-   <https://github.com/PlasmaPy/PlasmaPy/issues/new?title=Update%20information%20on%20GitHub%20checks%20in%20testing%20guide&labels=Documentation>`__.
 
 Using pytest
 ------------
@@ -878,5 +872,6 @@ popular IDEs:
 .. _`test discovery conventions`: https://docs.pytest.org/en/latest/goodpractices.html#conventions-for-python-test-discovery
 .. _`test warnings`: https://docs.pytest.org/en/latest/warnings.html#warns
 .. _`test exceptions`: https://docs.pytest.org/en/latest/assert.html#assertions-about-expected-exceptions
+.. _typos: https://github.com/crate-ci/typos
 .. _unpacking: https://docs.python.org/3/tutorial/controlflow.html#unpacking-argument-lists
 .. _`Visual Studio`: https://visualstudio.microsoft.com
