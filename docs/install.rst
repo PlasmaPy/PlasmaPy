@@ -211,7 +211,7 @@ package should also be installed.
    and create branches so that you may make contributions via pull
    requests.
 
-.. _Anaconda Navigator: https://docs.anaconda.com/free/navigator
+.. _Anaconda Navigator: https://docs.anaconda.com/navigator
 .. _clone a repository using SSH: https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories#cloning-with-ssh-urls
 .. _Conda: https://docs.conda.io
 .. _conda-forge: https://conda-forge.org
