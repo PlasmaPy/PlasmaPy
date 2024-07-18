@@ -453,8 +453,7 @@ Imports
 Requirements
 ------------
 
-* Package requirements are specified in |pyproject.toml|_. |tox.ini|_
-  also contains a testing environment for the minimal dependencies.
+* Package requirements are specified in |pyproject.toml|_.
 
 * Each release of PlasmaPy should support all minor versions of
   Python that have been released in the prior 42 months, and all minor
