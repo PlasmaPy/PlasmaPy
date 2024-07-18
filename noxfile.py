@@ -421,6 +421,43 @@ def autotyping(session: nox.Session, options: tuple[str, ...]) -> None:
 
 
 @nox.session
+def monkeytype(session: nox.Session) -> None:
+    """
+    Add type hints to a module based on variable types from running pytest.
+
+    Examples
+    --------
+    nox -s monkeytype -- plasmapy.particles.atomic
+    """
+
+    if not session.posargs:
+        session.error(
+            "Please add at least one module using a command like: "
+            "`nox -s monkeytype -- plasmapy.particles.atomic`"
+        )
+
+    session.install(".[tests]")
+    session.install("MonkeyType", "pytest-monkeytype", "pre-commit")
+
+    database = pathlib.Path("./monkeytype.sqlite3")
+
+    if not database.exists():
+        session.log(f"File {database.absolute()} not found. Running MonkeyType.")
+        session.run("pytest", f"--monkeytype-output={database.absolute()}")
+    else:
+        session.log(f"File {database.absolute()} found.")
+
+    for module in session.posargs:
+        session.run("monkeytype", "apply", module)
+
+    session.run("pre-commit", "run", "ruff", "--all-files")
+    session.run("pre-commit", "run", "ruff-format", "--all-files")
+
+    session.log("Please inspect newly added type hints for correctness.")
+    session.log("Check new type hints with `nox -s mypy`.")
+
+
+@nox.session
 def cff(session: nox.Session) -> None:
     """Validate CITATION.cff against the metadata standard."""
     session.install("cffconvert")

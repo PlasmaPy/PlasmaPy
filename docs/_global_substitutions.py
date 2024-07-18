@@ -192,7 +192,7 @@ def make_global_substitutions_table(
             f"``{global_substitutions[substitution].rstrip()}``",
             f"|{substitution}|",
         )
-        for substitution in sorted(global_substitutions)
+        for substitution in sorted(global_substitutions, key=lambda x: x.lower())
     ]
     lines = [
         ".. list-table:: Global Substitutions",
