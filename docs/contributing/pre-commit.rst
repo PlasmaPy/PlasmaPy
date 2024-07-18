@@ -13,7 +13,7 @@ Introduction
 ============
 
 PlasmaPy uses |pre-commit| to automate code quality checks and perform
-automated fixes. The configuration for pre-commit is in
+auto-fixes. The configuration for pre-commit is in
 |.pre-commit-config.yaml|_.
 
 .. _pre-commit-troubleshooting:
@@ -29,17 +29,11 @@ This comment will produce a new commit that applies the automatic fixes
 made by the different pre-commit hooks.
 
 After doing this, please do a :bash:`git pull` in your clone of
-PlasmaPy's repository to pull back the auto fixes to your computer.
+PlasmaPy's repository to pull back the auto-fixes to your computer.
 
 The following sections contain suggestions for how to fix pre-commit
 failures that were not corrected by commenting ``pre-commit.ci autofix``
 on the issue.
-
-.. tip::
-
-   Make sure all other tests are passing before manually fixing
-   |pre-commit| test failures. Failures from pre-commit should generally
-   be fixed after making sure all other tests are passing.
 
 ruff
 ----
