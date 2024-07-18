@@ -414,8 +414,6 @@ frustration.
 * Write error messages that are friendly, supportive, and helpful. Error
   message should never be condescending or blame the user.
 
-<<<<<<< HEAD
-=======
 Type hint annotations
 =====================
 
