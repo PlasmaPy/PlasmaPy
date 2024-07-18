@@ -10,7 +10,7 @@ argon2-cffi==23.1.0
     #   notebook
 argon2-cffi-bindings==21.2.0
     # via argon2-cffi
-asteval==0.9.33
+asteval==1.0.1
     # via lmfit
 astropy==5.1
     # via plasmapy (pyproject.toml)
@@ -25,23 +25,17 @@ beautifulsoup4==4.12.3
     # via nbconvert
 bleach==6.1.0
     # via nbconvert
-cachetools==5.3.3
-    # via tox
-certifi==2024.6.2
+certifi==2024.7.4
     # via requests
 cffi==1.16.0
     # via argon2-cffi-bindings
 cfgv==3.4.0
     # via pre-commit
-chardet==5.2.0
-    # via tox
 charset-normalizer==2.0.12
     # via requests
-colorama==0.4.6
-    # via tox
 colorlog==6.8.2
     # via nox
-coverage==7.5.4
+coverage==7.6.0
     # via pytest-cov
 cycler==0.12.1
     # via matplotlib
@@ -53,7 +47,7 @@ distlib==0.3.8
     # via virtualenv
 entrypoints==0.4
     # via nbconvert
-exceptiongroup==1.2.1
+exceptiongroup==1.2.2
     # via
     #   anyio
     #   hypothesis
@@ -66,16 +60,14 @@ executing==2.0.1
 fastjsonschema==2.20.0
     # via nbformat
 filelock==3.15.4
-    # via
-    #   tox
-    #   virtualenv
-fonttools==4.53.0
+    # via virtualenv
+fonttools==4.53.1
     # via matplotlib
 h5py==3.7.0
     # via plasmapy (pyproject.toml)
 hypothesis==6.97.4
     # via plasmapy (pyproject.toml)
-identify==2.5.36
+identify==2.6.0
     # via pre-commit
 idna==3.7
     # via
@@ -107,7 +99,7 @@ jinja2==3.1.4
     #   jupyter-server
     #   nbconvert
     #   notebook
-jsonschema==4.22.0
+jsonschema==4.23.0
     # via nbformat
 jsonschema-specifications==2023.12.1
     # via jsonschema
@@ -200,7 +192,7 @@ numpy==1.23.0
     #   pyerfa
     #   scipy
     #   xarray
-packaging==23.2
+packaging==22.0
     # via
     #   plasmapy (pyproject.toml)
     #   astropy
@@ -208,12 +200,9 @@ packaging==23.2
     #   matplotlib
     #   nbconvert
     #   nox
-    #   pyproject-api
     #   pytest
     #   pytest-filter-subpackage
     #   pytest-rerunfailures
-    #   tox
-    #   tox-uv
     #   xarray
 pandas==1.4.0
     # via
@@ -230,12 +219,9 @@ pillow==10.4.0
 platformdirs==4.2.2
     # via
     #   jupyter-core
-    #   tox
     #   virtualenv
 pluggy==1.5.0
-    # via
-    #   pytest
-    #   tox
+    # via pytest
 pre-commit==3.6.0
     # via plasmapy (pyproject.toml)
 prometheus-client==0.20.0
@@ -260,8 +246,6 @@ pygments==2.18.0
     #   nbconvert
 pyparsing==3.1.2
     # via matplotlib
-pyproject-api==1.6.1
-    # via tox
 pytest==8.0.2
     # via
     #   plasmapy (pyproject.toml)
@@ -306,7 +290,7 @@ referencing==0.35.1
     #   jsonschema-specifications
 requests==2.28.0
     # via plasmapy (pyproject.toml)
-rpds-py==0.18.1
+rpds-py==0.19.0
     # via
     #   jsonschema
     #   referencing
@@ -345,9 +329,7 @@ tomli==2.0.1
     #   coverage
     #   mypy
     #   nox
-    #   pyproject-api
     #   pytest
-    #   tox
 tornado==6.4.1
     # via
     #   ipykernel
@@ -355,12 +337,6 @@ tornado==6.4.1
     #   jupyter-server
     #   notebook
     #   terminado
-tox==4.14.0
-    # via
-    #   plasmapy (pyproject.toml)
-    #   tox-uv
-tox-uv==1.7.0
-    # via plasmapy (pyproject.toml)
 tqdm==4.60.0
     # via plasmapy (pyproject.toml)
 traitlets==5.14.3
@@ -380,17 +356,14 @@ typing-extensions==4.12.2
     # via
     #   ipython
     #   mypy
-uncertainties==3.2.1
+uncertainties==3.2.2
     # via lmfit
 urllib3==1.26.19
     # via requests
-uv==0.2.18
-    # via tox-uv
 virtualenv==20.26.3
     # via
     #   nox
     #   pre-commit
-    #   tox
 voila==0.2.7
     # via plasmapy (pyproject.toml)
 wcwidth==0.2.13

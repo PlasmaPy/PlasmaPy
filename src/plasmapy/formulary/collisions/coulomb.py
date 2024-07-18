@@ -149,7 +149,7 @@ def Coulomb_logarithm(
 
     .. math::
 
-        \ln{Λ} \equiv \ln\left( \frac{b_{max}}{b_{min}} \right)
+        \ln{Λ} ≡ \ln\left( \frac{b_{max}}{b_{min}} \right)
 
     Options 5–7 are hyperbolic Landau-Spitzer (``"hls..."``) methods in
     which the trajectory of a Coulomb collision is modeled as a
@@ -158,7 +158,7 @@ def Coulomb_logarithm(
 
     .. math::
 
-        \ln{Λ} \equiv \frac{1}{2} \ln\left(1 + \frac{b_{max}^2}{b_{min}^2} \right)
+        \ln{Λ} ≡ \frac{1}{2} \ln\left(1 + \frac{b_{max}^2}{b_{min}^2} \right)
 
     For all 7 methods, :math:`b_{min}` and :math:`b_{max}` are the inner
     impact parameter and the outer impact parameter, respectively, for
@@ -193,21 +193,21 @@ def Coulomb_logarithm(
 
         .. math::
 
-            \ln{Λ} \equiv \ln\left( \frac{b_{max}}{b_{min}} \right)
+            \ln{Λ} ≡ \ln\left( \frac{b_{max}}{b_{min}} \right)
 
         .. math::
 
-            b_{min} \equiv
+            b_{min} ≡
             \left\{
                 \begin{array}{ll}
-                           λ_{de Broglie} & \mbox{if } λ_{de Broglie} \geq ρ_⟂ \\
-                           ρ_⟂         & \mbox{if } ρ_⟂ \geq λ_{de Broglie}
+                           λ_{de Broglie} & \mbox{if } λ_{de Broglie} ≥ ρ_⟂ \\
+                           ρ_⟂         & \mbox{if } ρ_⟂ ≥ λ_{de Broglie}
                 \end{array}
             \right.
 
         .. math::
 
-            b_{max} \equiv λ_{Debye}
+            b_{max} ≡ λ_{Debye}
 
         The inner impact parameter (:math:`b_{min}`) is the higher of
         :math:`λ_{de Broglie}` and :math:`ρ_⟂` because for impact
@@ -243,15 +243,15 @@ def Coulomb_logarithm(
 
         .. math::
 
-            \ln{Λ} \equiv \ln\left( \frac{b_{max}}{b_{min}} \right)
+            \ln{Λ} ≡ \ln\left( \frac{b_{max}}{b_{min}} \right)
 
         .. math::
 
-            b_{min} \equiv \sqrt{λ_{de Broglie}^2 + ρ_⟂^2}
+            b_{min} ≡ \sqrt{λ_{de Broglie}^2 + ρ_⟂^2}
 
         .. math::
 
-            b_{max} \equiv λ_{Debye}
+            b_{max} ≡ λ_{Debye}
 
         This method is invalid if :math:`\ln{Λ} < 0`, which may be true
         if the coupling parameter is high (such as for nonideal, dense,
@@ -272,15 +272,15 @@ def Coulomb_logarithm(
 
         .. math::
 
-            \ln{Λ} \equiv \ln\left( \frac{b_{max}}{b_{min}} \right)
+            \ln{Λ} ≡ \ln\left( \frac{b_{max}}{b_{min}} \right)
 
         .. math::
 
-            b_{min} \equiv \sqrt{λ_{de Broglie}^2 + ρ_⟂^2}
+            b_{min} ≡ \sqrt{λ_{de Broglie}^2 + ρ_⟂^2}
 
         .. math::
 
-            b_{max} \equiv \sqrt{λ_{Debye}^2 + a_i^2}
+            b_{max} ≡ \sqrt{λ_{Debye}^2 + a_i^2}
 
         This method is invalid if :math:`\ln{Λ} < 0`, which may be true
         if the coupling parameter is high (such as for nonideal, dense,
@@ -303,24 +303,24 @@ def Coulomb_logarithm(
 
         .. math::
 
-            \ln{Λ} \equiv
+            \ln{Λ} ≡
             \left\{
                \begin{array}{ll}
                   \ln\left(\frac{b_{max}}{b_{min}} \right)
                      & \mbox{if } \ln\left( \frac{b_{max}}{b_{min}}\right)
-                  \geq 2 \\
+                  ≥ 2 \\
                   2 & \mbox{if } \ln\left( \frac{b_{max}}{b_{min}} \right)
-                  \leq 2
+                  ≤ 2
                 \end{array}
             \right.
 
         .. math::
 
-            b_{min} \equiv \sqrt{λ_{de Broglie}^2 + ρ_⟂^2}
+            b_{min} ≡ \sqrt{λ_{de Broglie}^2 + ρ_⟂^2}
 
         .. math::
 
-            b_{max} \equiv λ_{Debye}
+            b_{max} ≡ λ_{Debye}
 
         This method is valid for any plasma because it is impossible for
         :math:`\ln{Λ} < 0` by this method, even if the coupling
@@ -340,16 +340,16 @@ def Coulomb_logarithm(
 
         .. math::
 
-            \ln{Λ} \equiv \frac{1}{2} \ln\left(1 +
+            \ln{Λ} ≡ \frac{1}{2} \ln\left(1 +
             \frac{b_{max}^2}{b_{min}^2} \right)
 
         .. math::
 
-            b_{min} \equiv \sqrt{λ_{de Broglie}^2 + ρ_⟂^2}
+            b_{min} ≡ \sqrt{λ_{de Broglie}^2 + ρ_⟂^2}
 
         .. math::
 
-            b_{max} \equiv λ_{Debye}
+            b_{max} ≡ λ_{Debye}
 
         This method is valid for any plasma because it is impossible for
         :math:`\ln{Λ} < 0` by this method, even if the coupling
@@ -368,16 +368,16 @@ def Coulomb_logarithm(
 
         .. math::
 
-            \ln{Λ} \equiv \frac{1}{2} \ln\left(1 +
+            \ln{Λ} ≡ \frac{1}{2} \ln\left(1 +
             \frac{b_{max}^2}{b_{min}^2} \right)
 
         .. math::
 
-            b_{min} \equiv ρ_⟂
+            b_{min} ≡ ρ_⟂
 
         .. math::
 
-            b_{max} \equiv \sqrt{λ_{Debye}^2 + a_i^2}
+            b_{max} ≡ \sqrt{λ_{Debye}^2 + a_i^2}
 
         This method is valid for any plasma because it is impossible for
         :math:`\ln{Λ} < 0` by this method, even if the coupling
@@ -402,16 +402,16 @@ def Coulomb_logarithm(
 
         .. math::
 
-            \ln{Λ} \equiv \frac{1}{2} \ln\left(1 +
+            \ln{Λ} ≡ \frac{1}{2} \ln\left(1 +
             \frac{b_{max}^2}{b_{min}^2} \right)
 
         .. math::
 
-            b_{min} \equiv \sqrt{λ_{de Broglie}^2 + ρ_⟂^2}
+            b_{min} ≡ \sqrt{λ_{de Broglie}^2 + ρ_⟂^2}
 
         .. math::
 
-            b_{max} \equiv \sqrt{λ_{Debye}^2 + a_i^2}
+            b_{max} ≡ \sqrt{λ_{Debye}^2 + a_i^2}
 
         This method is valid for any plasma because it is impossible for
         :math:`\ln{Λ} < 0` by this method, even if the coupling
@@ -440,30 +440,30 @@ def Coulomb_logarithm(
         T=T, n_e=n_e, species=species, z_mean=z_mean, V=V, method=method
     )
 
-    if method in (
+    if method in {
         "classical",
         "ls",
         "ls_min_interp",
         "GMS-1",
         "ls_full_interp",
         "GMS-2",
-    ):
+    }:
         ln_Lambda = np.log(bmax / bmin)
-    elif method in ("ls_clamp_mininterp", "GMS-3"):
+    elif method in {"ls_clamp_mininterp", "GMS-3"}:
         ln_Lambda = np.log(bmax / bmin)
         if np.any(ln_Lambda < 2):
             if np.isscalar(ln_Lambda.value):
                 ln_Lambda = 2 * u.dimensionless_unscaled
             else:
                 ln_Lambda[ln_Lambda < 2] = 2 * u.dimensionless_unscaled
-    elif method in (
+    elif method in {
         "hls_min_interp",
         "GMS-4",
         "hls_max_interp",
         "GMS-5",
         "hls_full_interp",
         "GMS-6",
-    ):
+    }:
         ln_Lambda = 0.5 * np.log(1 + bmax**2 / bmin**2)
     else:
         raise ValueError(
@@ -478,14 +478,14 @@ def Coulomb_logarithm(
 
     min_ln_Lambda = np.nanmin(ln_Lambda)
 
-    if min_ln_Lambda < 2 and method in (
+    if min_ln_Lambda < 2 and method in {
         "classical",
         "ls",
         "ls_min_interp",
         "GMS-1",
         "ls_full_interp",
         "GMS-2",
-    ):
+    }:
         warnings.warn(
             f"The calculation of the Coulomb logarithm has found a value of "
             f"min(ln Λ) = {min_ln_Lambda:.4f} which is likely to be inaccurate "

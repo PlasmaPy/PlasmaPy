@@ -76,12 +76,12 @@ def impact_parameter_perp(
 
     Notes
     -----
-    The distance of closest approach, impact_parameter_perp, is given by
-    (see Ch. 5 of :cite:t:`chen:2016`):
+    The distance of closest approach, ``impact_parameter_perp``, is
+    given by (see Ch. 5 of :cite:t:`chen:2016`):
 
     .. math::
 
-        b_⟂ = \frac{Z_1 Z_2}{4 π \epsilon_0 m v^2}
+        b_⟂ = \frac{Z_1 Z_2}{4 π ε_0 m v^2}
 
     Examples
     --------
@@ -197,8 +197,8 @@ def impact_parameter(  # noqa: C901
     length.
 
     For quantum plasmas the maximum impact parameter can be the
-    quadratic sum of the debye length and ion radius (Wigner_Seitz)
-    :cite:p:`gericke:2002`
+    quadratic sum of the debye length and ion radius
+    (``Wigner_Seitz_radius``) :cite:p:`gericke:2002`:
 
     .. math::
 
@@ -230,14 +230,14 @@ def impact_parameter(  # noqa: C901
     )
     # catching error where mean charge state is not given for non-classical
     # methods that require the ion density
-    if method in (
+    if method in {
         "ls_full_interp",
         "GMS-2",
         "hls_max_interp",
         "GMS-5",
         "hls_full_interp",
         "GMS-6",
-    ) and np.isnan(z_mean):
+    } and np.isnan(z_mean):
         raise ValueError(
             'Must provide a z_mean for "ls_full_interp", '
             '"hls_max_interp", and "hls_full_interp" methods.'
@@ -251,7 +251,7 @@ def impact_parameter(  # noqa: C901
 
     # obtaining minimum and maximum impact parameters depending on which
     # method is requested
-    if method in ("classical", "ls"):
+    if method in {"classical", "ls"}:
         bmax = lambdaDe
         # Coulomb-style collisions will not happen for impact parameters
         # shorter than either of these two impact parameters, so we choose
@@ -267,14 +267,14 @@ def impact_parameter(  # noqa: C901
         except ValueError:  # both lambdaBroglie and bPerp are arrays
             bmin = lambdaBroglie
             bmin[bPerp > lambdaBroglie] = bPerp[bPerp > lambdaBroglie]
-    elif method in ("ls_min_interp", "GMS-1"):
+    elif method in {"ls_min_interp", "GMS-1"}:
         # 1st method listed in Table 1 of reference [1]
         # This is just another form of the classical Landau-Spitzer
         # approach, but bmin is interpolated between the de Broglie
         # wavelength and distance of the closest approach.
         bmax = lambdaDe
         bmin = (lambdaBroglie**2 + bPerp**2) ** (1 / 2)
-    elif method in ("ls_full_interp", "GMS-2"):
+    elif method in {"ls_full_interp", "GMS-2"}:
         # 2nd method listed in Table 1 of reference [1]
         # Another Landau-Spitzer like approach, but now bmax is also
         # being interpolated. The interpolation is between the Debye
@@ -286,17 +286,17 @@ def impact_parameter(  # noqa: C901
         ionRadius = Wigner_Seitz_radius(n_i)
         bmax = (lambdaDe**2 + ionRadius**2) ** (1 / 2)
         bmin = (lambdaBroglie**2 + bPerp**2) ** (1 / 2)
-    elif method in ("ls_clamp_mininterp", "GMS-3"):
+    elif method in {"ls_clamp_mininterp", "GMS-3"}:
         # 3rd method listed in Table 1 of reference [1]
         # same as GMS-1, but not Lambda has a clamp at Lambda_min = 2
         # where Lambda is the argument to the Coulomb logarithm.
         bmax = lambdaDe
         bmin = (lambdaBroglie**2 + bPerp**2) ** (1 / 2)
-    elif method in ("hls_min_interp", "GMS-4"):
+    elif method in {"hls_min_interp", "GMS-4"}:
         # 4th method listed in Table 1 of reference [1]
         bmax = lambdaDe
         bmin = (lambdaBroglie**2 + bPerp**2) ** (1 / 2)
-    elif method in ("hls_max_interp", "GMS-5"):
+    elif method in {"hls_max_interp", "GMS-5"}:
         # 5th method listed in Table 1 of reference [1]
         # Mean ion density.
         n_i = n_e / z_mean
@@ -304,7 +304,7 @@ def impact_parameter(  # noqa: C901
         ionRadius = Wigner_Seitz_radius(n_i)
         bmax = (lambdaDe**2 + ionRadius**2) ** (1 / 2)
         bmin = bPerp
-    elif method in ("hls_full_interp", "GMS-6"):
+    elif method in {"hls_full_interp", "GMS-6"}:
         # 6th method listed in Table 1 of reference [1]
         # Mean ion density.
         n_i = n_e / z_mean

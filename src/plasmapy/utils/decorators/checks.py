@@ -238,10 +238,10 @@ class CheckValues(CheckBase):
             # e.g. in foo(x, y, *args, d=None, **kwargs) variable arguments
             #      *args and **kwargs will NOT be checked
             #
-            if param.kind in (
+            if param.kind in {
                 inspect.Parameter.VAR_KEYWORD,
                 inspect.Parameter.VAR_POSITIONAL,
-            ):
+            }:
                 continue
 
             # grab the checks dictionary for the desired parameter
@@ -565,10 +565,10 @@ class CheckUnits(CheckBase):
             # e.g. in foo(x, y, *args, d=None, **kwargs) variable arguments
             #      *args and **kwargs will NOT be checked
             #
-            if param.kind in (
+            if param.kind in {
                 inspect.Parameter.VAR_KEYWORD,
                 inspect.Parameter.VAR_POSITIONAL,
-            ):
+            }:
                 continue
 
             # grab the checks dictionary for the desired parameter

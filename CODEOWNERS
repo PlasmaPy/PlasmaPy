@@ -27,7 +27,7 @@ dispersion/ @ejohnson-96
 # documentation
 
 .readthedocs.yml @namurphy
-docs/_cff_to_rst.py @namurphy
+docs/_author_list_from_cff.py @namurphy
 docs/_global_substitutions.py @namurphy
 docs/conf.py @namurphy
 docs/contributing/ @namurphy

@@ -1,0 +1,1 @@
+Added a ``return_interpolator`` keyword to `~plasmapy.particles.atomic.stopping_power` to allow the user to specify the return of an interpolator function (`~scipy.interpolate.CubicSpline` under the hood).
