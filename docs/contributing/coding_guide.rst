@@ -563,8 +563,12 @@ or |ParticleList|.
 
 
    @particle_input
-   def get_particle_object(particle: ParticleLike) -> Particle | CustomParticle:
+   def get_particle(particle: ParticleLike) -> Particle | CustomParticle:
        return particle  # type: ignore[return-value]
+
+The :py:`# type: ignore[return-value]` comment for |mypy| is needed
+because |particle_input| dynamically (rather than statically) changes
+the type of ``particle``.
 
 Project infrastructure
 ======================
