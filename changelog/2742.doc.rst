@@ -1,0 +1,1 @@
+Added :file:`README.md` files in the :file:`src/plasmapy`, :file:`tests`, :file:`docs`, :file:`type_stubs`, :file:`.github/content`, :file:`.github/scripts`, and :file:`.github/workflows` directories. The contents of these files now appear as local documentation for each of these directories in |PlasmaPy's GitHub repository|.

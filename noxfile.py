@@ -22,6 +22,8 @@ Some of the checks require the most recent supported version of Python
 to be installed.
 """
 
+# Documentation: https://nox.thea.codes
+
 import os
 import pathlib
 import sys
