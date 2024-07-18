@@ -965,6 +965,3 @@ in the README file of `benchmarks-repo`_.
 
 .. _`pyproject.toml`: https://github.com/PlasmaPy/PlasmaPy/blob/main/pyproject.toml
 .. |pyproject.toml| replace:: :file:`pyproject.toml`
-
-.. _`tox.ini`: https://github.com/PlasmaPy/PlasmaPy/blob/main/tox.ini
-.. |tox.ini| replace:: :file:`tox.ini`
