@@ -399,7 +399,19 @@ AUTOTYPING_RISKY: tuple[str, ...] = (
 @nox.session
 @nox.parametrize("draft", [nox.param(True, id="draft"), nox.param(False, id="final")])
 def changelog(session: nox.Session, draft: str) -> None:
-    """Build the changelog with towncrier."""
+    """
+    Build the changelog with towncrier.
+
+     - 'final': build the combined changelog for the release, and delete
+       the individual changelog entries in `changelog`.
+     - 'draft': print the draft changelog to standard output, without
+       writing to files
+
+    When executing this session, provide the version of the release, as
+    in this example:
+
+       nox -s 'changelog(final)' -- 2024.7.0
+    """
 
     if len(session.posargs) != 1:
         raise TypeError(
