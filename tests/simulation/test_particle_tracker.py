@@ -12,18 +12,23 @@ from hypothesis import given, settings
 from hypothesis import strategies as st
 from scipy.optimize import fsolve
 
+from plasmapy.formulary.collisions.misc import Mott_Bethe_mean_squared_scattering
 from plasmapy.formulary.frequencies import gyrofrequency
 from plasmapy.formulary.lengths import gyroradius
-from plasmapy.particles.particle_class import CustomParticle, Particle
+from plasmapy.formulary.relativity import RelativisticBody
+from plasmapy.particles import particle_input
+from plasmapy.particles.particle_class import CustomParticle, Particle, ParticleLike
 from plasmapy.plasma import Plasma
 from plasmapy.plasma.grids import CartesianGrid
 from plasmapy.simulation.particle_integrators import BorisIntegrator
 from plasmapy.simulation.particle_tracker.particle_tracker import ParticleTracker
 from plasmapy.simulation.particle_tracker.save_routines import IntervalSaveRoutine
 from plasmapy.simulation.particle_tracker.termination_conditions import (
+    AllParticlesOffGridTerminationCondition,
     NoParticlesOnGridsTerminationCondition,
     TimeElapsedTerminationCondition,
 )
+from plasmapy.utils.decorators import validate_quantities
 from plasmapy.utils.exceptions import PhysicsWarning, RelativityWarning
 
 rng = np.random.default_rng()
@@ -559,6 +564,132 @@ def test_particle_tracker_Bethe_warning(
         PhysicsWarning, match="The Bethe model is only valid for high energy particles."
     ):
         simulation.run()
+
+
+PARTICLES_PER_ENERGY = 100
+
+
+@pytest.mark.parametrize(
+    (
+        "target_material",
+        "target_density",
+        "target_temperature",
+        "NIST_material_string",
+        "beam_energies",
+        "stopping_ranges",
+        "expected_lateral_scattering",
+    ),
+    [
+        (
+            "Al-27 0+",
+            2.69890e00 * u.g / u.cm**3,
+            298 * u.K,
+            "ALUMINUM",
+            [1, 5, 10] * u.MeV,
+            [16.33, 215.93, 709.23] * u.um,
+            [0.9972, 10.29, 31.70] * u.um,
+        )
+    ],
+)
+@particle_input
+@validate_quantities
+def test_particle_tracker_ranges_straggling(
+    target_material: ParticleLike,
+    target_density: u.Quantity[u.kg / u.m**3],
+    target_temperature: u.Quantity[u.K],
+    NIST_material_string: str,
+    beam_energies: u.Quantity[u.J],
+    stopping_ranges: u.Quantity[u.m],
+    expected_lateral_scattering: u.m,
+):
+    """
+    Test both the stopping range and scattering distribution of the particle
+    tracker for a variety of materials and energies.
+
+    """
+    # TODO: add implementation-specific details to this docstring
+
+    # Calculate the number density of the relevant atom
+    n_s = target_density / target_material.mass
+
+    beam_particle = Particle("p+")
+
+    # Calculate the number density of the relevant atom
+    n_s = target_density / target_material.mass
+
+    # Let the width of the grid be dynamic between materials based on the
+    # maximum stopping range
+    width = np.max(stopping_ranges)
+    grid = CartesianGrid(
+        [-0.2, 0.0, -0.2] * u.cm, [0.2, width.to(u.cm).value, 0.2] * u.cm
+    )
+
+    # Construct the quantity arrays for the grid
+    grid_shape_identity = np.ones(grid.shape)
+    number_density = grid_shape_identity * n_s
+    rho = grid_shape_identity * target_density
+    temperature = grid_shape_identity * target_temperature
+    grid.add_quantities(rho=rho, n_e=number_density, T_e=temperature)
+
+    # Create the simulation
+    termination_condition = AllParticlesOffGridTerminationCondition()
+    sim = ParticleTracker(grid, termination_condition=termination_condition, seed=42)
+
+    # Load particles as a beam source collinear with the y-axis
+    nparticles = beam_energies.shape[0] * PARTICLES_PER_ENERGY
+
+    x0 = np.zeros(shape=(nparticles, 3))
+    v0 = np.zeros(shape=(beam_energies.shape[0], PARTICLES_PER_ENERGY, 3))
+
+    initial_speed = RelativisticBody(
+        particle=beam_particle, kinetic_energy=beam_energies
+    ).velocity
+
+    # The speed value should be copied into the y-component along the second
+    # axis
+    # TODO: figure out a cleaner way of doing this
+    for i, speed in enumerate(initial_speed):
+        v0[i, :, 1] = speed.si.value
+
+    v0 = np.reshape(v0, newshape=(nparticles, 3))
+    sim.load_particles(x0 * u.m, v0 * u.m / u.s, particle=beam_particle)
+
+    # Add stopping and scattering to the simulation
+    sim.add_stopping("NIST", [NIST_material_string])
+    sim.add_scattering(
+        target_material,
+        scatter_routine=Mott_Bethe_mean_squared_scattering,
+        scatter_routine_type="mean square rate",
+    )
+
+    sim.run()
+
+    # Extract the component of the position that is collinear with the detector normal
+    # Reshape the result into an array of shape [energies, particles_per_energy]
+    x_final = (
+        np.reshape(sim.x[:, 1], newshape=(beam_energies.shape[0], PARTICLES_PER_ENERGY))
+        * u.m
+    )
+
+    assert np.isclose(np.mean(x_final, axis=-1), stopping_ranges, rtol=0.15).all()
+
+    xloc, yloc = sim.x[:, 0], sim.x[:, 2]
+    xloc, yloc = (
+        np.reshape(xloc, newshape=(beam_energies.shape[0], PARTICLES_PER_ENERGY)),
+        np.reshape(yloc, newshape=(beam_energies.shape[0], PARTICLES_PER_ENERGY)),
+    )
+
+    not_nan_mask = ~(np.isnan(xloc) | np.isnan(yloc))
+
+    lat_straggling = np.zeros(shape=beam_energies.shape[0])
+
+    lat_straggling = np.sqrt(
+        np.nansum(((np.abs(xloc) + np.abs(yloc)) / 2) ** 2, axis=1)
+        / np.sum(not_nan_mask, axis=1)
+    )
+    lat_straggling *= u.m
+
+    assert np.isclose(lat_straggling.T, expected_lateral_scattering, rtol=0.25).all()
 
 
 class TestParticleTrajectory:

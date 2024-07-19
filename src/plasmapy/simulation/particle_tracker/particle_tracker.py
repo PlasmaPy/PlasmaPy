@@ -455,7 +455,7 @@ class ParticleTracker:
         v : `~astropy.units.Quantity`, shape (N,3)
             Velocities for N particles
 
-        particle : |particle-like|
+        particle : `~plasmapy.particles.particle_class.ParticleLike`
             Representation of the particle species as either a |Particle| object
             or a string representation.
         """
@@ -608,42 +608,51 @@ class ParticleTracker:
     @validate_quantities
     def add_scattering(
         self,
-        target: ParticleLike,
-        differential_cross_section: (
+        target: ParticleLike,  # TODO: enforce requirement that a charge is specified
+        scatter_routine: (
             Callable[
                 [
-                    u.Quantity[u.rad],  # Theta
+                    u.Quantity[u.rad] | None,  # Theta
                     u.Quantity[u.m / u.s],  # Speed
                     ParticleLike,  # Beam
                     ParticleLike,  # Target
                     u.Quantity[u.K],  # Electron Temperature
                     u.Quantity[1 / u.m**3],  # Electron Number Density
                 ],
-                u.Quantity[u.m**2 / u.sr],  # Differential cross-section
-            ]
-            | None
-        ) = None,
-        mean_square_scatter_rate: (
-            Callable[
-                [
-                    u.Quantity[u.m / u.s],  # Speed
-                    ParticleLike,  # Beam
-                    ParticleLike,  # Target
-                    u.Quantity[u.K],  # Electron Temperature
-                    u.Quantity[1 / u.m**3],  # Electron Number Density
-                ],
-                u.Quantity[
+                u.Quantity[u.m**2 / u.sr]
+                | u.Quantity[
                     u.rad**2 / u.s
-                ],  # Mean-square scatter rate in radians^2 per second
+                ],  # Differential cross-section or Mean-square scatter rate in radians^2 per second
             ]
-            | None
-        ) = None,
+        ),
+        scatter_routine_type: Literal["differential cross-section", "mean square rate"],
     ):
         r"""
         Enable particle scattering by numeric integration of the provided
         differential cross-section.
 
+        Parameters
+        ----------
+        target : |ParticleLike|
+            A |particle-like| representation of the target material. A net charge should be included.
 
+        scatter_routine : `callable`
+            A function implementation used to calculate the scattering distribution.
+            Relevant keyword arguments are passed to the provided function, where
+            the defined keywords depend on the value of ``scatter_routine_type``. If
+            ``scatter_routine_type`` is set to ``differential cross-section``
+            then the function receives the following keyword arguments: ``theta``,
+            ``speed``, ``beam_material``, ``target_material``, ``T_s``, and ``n_s``.
+            When ``scatter_routine_type`` is set to ``mean square rate``,
+            the passed function receives the following keyword arguments: ``speed``,
+            ``beam_material``, ``target_material``, ``T_s``, and ``n_s``.
+
+        scatter_routine_type : `str`
+            Determines the role of the function passed to ``scatter_routine``.
+            Must be either ``differential cross-section`` or ``mean square rate``.
+            If set to ``differential cross-section``, the provided function must return
+            a `~astropy.units.Quantity` object with units convertible to square meters
+            per steradian.
         """
 
         # For scattering calculations, a multidimensional interpolator must be
@@ -673,12 +682,17 @@ class ParticleTracker:
             grid.require_quantities(["n_e", "T_e"], replace_with_zeros=True)
             self._required_quantities.update({"n_e", "T_e"})
 
-        if differential_cross_section is not None:
-            self._scattering_method = "differential cross section"
-            self._scattering_routine = differential_cross_section
-        elif mean_square_scatter_rate is not None:
-            self._scattering_method = "mean square scatter rate"
-            self._scattering_routine = mean_square_scatter_rate
+        if scatter_routine_type not in [
+            "differential cross-section",
+            "mean square rate",
+        ]:
+            raise ValueError(
+                "Please pass one of 'differential cross-section' or 'mean square rate' "
+                "for the scatter routine keyword."
+            )
+
+        self._scattering_method = scatter_routine_type
+        self._scattering_routine = scatter_routine
 
         self._target = target
         self._do_scattering = True
@@ -688,6 +702,7 @@ class ParticleTracker:
         # # TODO: make sure these expressions are working
         # # TODO: make sure that this method of interpolation is accurate
         # #  (i.e. as opposed to something like a log spline)
+        # #  include profiling & accuracy analysis on PR
         # max_electron_temperature = np.log10(
         #     np.max([grid["T_e"] for grid in self.grids])
         # )
@@ -828,11 +843,12 @@ class ParticleTracker:
 
     @property
     def fract_entered(self):
-        """The fraction of particles that have entered the grid.
-        The denominator of this fraction is based off the number of tracked
-        particles, and therefore does not include stopped or removed particles.
+        """The fraction of particles that have entered any grid.
+
+        The denominator of this fraction is based off the number of total
+        particles.
         """
-        return self.num_entered / self.nparticles_tracked
+        return self.num_entered / self.nparticles
 
     def _remove_grid_values(self, particles_to_remove) -> None:
         """Remove the specified particles from the internal grid
@@ -1095,6 +1111,14 @@ class ParticleTracker:
 
         pos_tracked = self.x[self._tracked_particle_mask]
         vel_tracked = self.v[self._tracked_particle_mask]
+
+        # If `dt` is an array then only take the tracked particles
+        # otherwise, if it's just a scalar then we can use dt directly
+        if isinstance(self.dt, np.ndarray) and self.dt.size > 1:
+            dt = self.dt[self._tracked_particle_mask]
+        else:
+            dt = self.dt
+
         x_results, v_results = self._integrator.push(
             pos_tracked,
             vel_tracked,
@@ -1102,7 +1126,7 @@ class ParticleTracker:
             E,
             self.q,
             self.m,
-            self.dt[self._tracked_particle_mask],
+            dt,
         )
 
         self.x[self._tracked_particle_mask], self.v[self._tracked_particle_mask] = (
@@ -1202,12 +1226,12 @@ class ParticleTracker:
                     return (
                         theta_prime**2
                         * self._scattering_routine(
-                            theta_prime,
-                            speed,
-                            self._particle,
-                            self._target,
-                            T_e,
-                            n_e,
+                            theta=theta_prime,
+                            speed=speed,
+                            beam_particle=self._particle,
+                            target_particle=self._target,
+                            T_s=T_e,
+                            n_s=n_e,
                         )
                     ).si.value
 
@@ -1245,13 +1269,13 @@ class ParticleTracker:
                         strict=False,
                     )
                 ]  # Quad returns a tuple, we only care about the result
-            case "mean square scatter rate":
+            case "mean square rate":
                 mean_square_scatter_rate = self._scattering_routine(
-                    speeds,
-                    self._particle,
-                    self._target,
-                    self._total_grid_values["T_e"].si.value,
-                    self._total_grid_values["n_e"].si.value,
+                    speed=speeds,
+                    beam_particle=self._particle,
+                    target_particle=self._target,
+                    T_s=self._total_grid_values["T_e"].si.value,
+                    n_s=self._total_grid_values["n_e"].si.value,
                 )
 
         mean_square_scatter_rate = np.reshape(
@@ -1319,6 +1343,11 @@ class ParticleTracker:
         # Update velocities to reflect stopping
         if self._do_stopping:
             self._update_velocity_stopping()
+
+        # It is possible for all particles to have been stopped. This could cause
+        # an error for certain numpy operations if the event loop were to continue
+        if self.nparticles_tracked == 0:
+            return
 
         if self._do_scattering:
             self._update_velocity_scattering()
