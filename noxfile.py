@@ -82,7 +82,7 @@ def requirements(session) -> None:
     continuous integration checks.
     """
 
-    session.install("uv >= 0.2.23")
+    session.install("uv >= 0.2.26")
 
     category_version_resolution: list[tuple[str, str, str]] = [
         ("tests", version, "highest") for version in supported_python_versions

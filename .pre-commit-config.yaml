@@ -41,7 +41,7 @@ repos:
   - id: forbid-bidi-controls
 
 - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
-  rev: v2.13.0
+  rev: v2.14.0
   hooks:
   - id: pretty-format-ini
     args: [--autofix]
@@ -79,7 +79,7 @@ repos:
     - tomli
 
 - repo: https://github.com/crate-ci/typos
-  rev: v1.23.2
+  rev: typos-v0.10.26
   hooks:
   - id: typos
     name: typos (add false positives to _typos.toml)
