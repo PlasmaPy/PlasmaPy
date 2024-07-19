@@ -460,20 +460,21 @@ Example notebooks
 -----------------
 
 PlasmaPy's documentation includes an |example gallery| of |Jupyter|
-notebooks. The notebooks are included as :file:`.ipynb` files in
-|docs/notebooks|_.
+notebooks. The notebooks are located in |docs/notebooks|_. The example
+gallery is built using |nbsphinx|.
 
-To add a notebook to the |example gallery|, include it in the
-appropriate subdirectory of |docs/notebooks|_.
+To add a notebook to the |example gallery|, include the :file:`.ipynb`
+file in the appropriate subdirectory of |docs/notebooks|_. The notebook
+must be included in an ``nbgallery`` directive in |docs/examples.rst|_
+(though this contains wildcards for most existing directories, so no
+additional step may be required).
 
 Before adding the Jupyter notebook, open it and run
 :menuselection:`Kernel --> Restart Kernel and Clear Outputs of All Cells`
 and then :menuselection:`File --> Save Notebook` before committing the
-and pushing change. Doing this will signal |nbsphinx| that it should
-execute the notebook during the documentation build.
-
-However, if the notebook is computationally
-intensive, instead pre-execute the notebook with
+and pushing the change. Doing this will signal |nbsphinx| that it should
+execute the notebook during the documentation build. However, if the
+notebook is computationally intensive, instead pre-execute it with
 :menuselection:`Kernel --> Restart Kernel and Run All Cells` before
 doing ``git commit``. Doing this will reduce documentation build times.
 
@@ -481,8 +482,28 @@ If a notebook makes use of a Python package that is not included in
 PlasmaPy's requirements, included in the ``docs`` dependencies set as
 defined in |pyproject.toml|_.
 
-Definitions
------------
+There are two methods for using markup in non-code cells in a Jupyter
+notebook in the gallery:
+
+- In "raw" cells, we can make use of |reStructuredText| formatting and
+  thus enable linking to code objects.
+
+- In Markdown_ cells, we can make use of Markdown formatting. However,
+  to link to a code object, we must include a link to the actual
+  documentation page. Be sure to link to the ``stable`` version of the
+  documentation (as opposed to ``latest``), even if the link does not
+  exist on ``stable`` yet. For example, a link to `plasmapy.formulary`
+  can be accomplished with
+
+  .. code-block:: markdown
+
+     [`plasmapy.formulary`](https://docs.plasmapy.org/en/stable/formulary/index.html)`
+
+If a code cell in a notebook intentionally raises an exception, add a
+metadata tag entitled "raises-exception" to that cell.
+
+Glossary definitions
+--------------------
 
 Define important terms in PlasmaPy's :ref:`glossary`, which is located
 at |docs/glossary.rst|_. Here is an example of a term defined within the
@@ -1560,6 +1581,9 @@ For example Jupyter notebooks, the tables of contents are in
 
 .. _`docs/conf.py`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/conf.py
 .. |docs/conf.py| replace:: :file:`docs/conf.py`
+
+.. _`docs/examples.rst`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/glossary.rst
+.. |docs/glossary.rst| replace:: :file:`docs/examples.rst`
 
 .. _`docs/glossary.rst`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/glossary.rst
 .. |docs/glossary.rst| replace:: :file:`docs/glossary.rst`
