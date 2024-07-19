@@ -23,7 +23,6 @@ to be installed.
 """
 
 # Documentation: https://nox.thea.codes
-
 import os
 import pathlib
 import re
@@ -397,8 +396,8 @@ AUTOTYPING_RISKY: tuple[str, ...] = (
 
 
 @nox.session
-@nox.parametrize("draft", [nox.param(True, id="draft"), nox.param(False, id="final")])
-def changelog(session: nox.Session, draft: str) -> None:
+@nox.parametrize("draft", [nox.param(False, id="draft"), nox.param(True, id="final")])
+def changelog(session: nox.Session, final: str) -> None:
     """
     Build the changelog with towncrier.
 
@@ -419,6 +418,16 @@ def changelog(session: nox.Session, draft: str) -> None:
             "(i.e., `nox -s changelog -- 2024.9.0`"
         )
 
+    source_directory = pathlib.Path("./changelog")
+
+    extraneous_files = source_directory.glob("changelog/*[0-9]*.*.rst?*")
+    if final and extraneous_files:
+        session.error(
+            "Please delete the following extraneous files before "
+            "proceeding, as the presence of these files may cause "
+            f"towncrier errors: {extraneous_files}"
+        )
+
     version = session.posargs[0]
 
     year_pattern = r"(202[4-9]|20[3-9][0-9]|2[1-9][0-9]{2}|[3-9][0-9]{3,})"
@@ -436,9 +445,10 @@ def changelog(session: nox.Session, draft: str) -> None:
     session.install(".")
     session.install("towncrier")
 
-    options = ("--draft", "--keep") if draft else ("--yes",)
+    options = ("--yes",) if final else ("--draft", "--keep")
 
     session.install("towncrier")
+
     session.run(
         "towncrier",
         "build",
@@ -451,15 +461,10 @@ def changelog(session: nox.Session, draft: str) -> None:
         *options,
     )
 
-    if not draft:
+    if final:
         original_file = pathlib.Path("./CHANGELOG.rst")
         destination = pathlib.Path(f"./docs/changelog/{version}.rst")
         original_file.rename(destination)
-
-        # TODO: Add newly added changelog to docs/changelog/index.rst
-
-        # TODO: Make it so that "unreleased changes" doesn't show up in changelog
-        #       index for releases, but still on main.
 
 
 @nox.session
