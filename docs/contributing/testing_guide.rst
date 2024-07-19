@@ -48,7 +48,7 @@ Writing tests
 * All functionality in PlasmaPy must have tests.
 
 * Tests are located in the top-level |tests|_ directory. For example,
-  tests of `plasmapy.formulary` are in :file:`tests/formulary/`.
+  tests of `plasmapy.formulary` are in |tests/formulary|_.
 
 * The names of test files begin with :file:`test_`.
 
@@ -99,7 +99,7 @@ multiple software components work together as intended.
 
 PlasmaPy's tests are run using `pytest` and |Nox|. Tests are located in
 the |tests|_ directory. For example, tests of `plasmapy.formulary`
-are located in :file:`tests/formulary` and tests of
+are located in |tests/formulary|_ and tests of
 `plasmapy.formulary.speeds` are located in
 :file:`tests/formulary/test_speeds.py`.
 
@@ -861,9 +861,11 @@ popular IDEs:
 .. _unpacking: https://docs.python.org/3/tutorial/controlflow.html#unpacking-argument-lists
 .. _`Visual Studio`: https://visualstudio.microsoft.com
 
-
 .. _`src/plasmapy`: https://github.com/PlasmaPy/PlasmaPy/tree/main/src/plasmapy
-
 
 .. _`tests`: https://github.com/PlasmaPy/PlasmaPy/tree/main/tests
 .. |tests| replace:: :file:`tests`
+
+
+.. _`tests/formulary`: https://github.com/PlasmaPy/PlasmaPy/tree/main/tests/formulary
+.. |tests/formulary| replace:: :file:`tests/formulary`
