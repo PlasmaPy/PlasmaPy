@@ -993,7 +993,7 @@ The |docs/conf.py|_ file contains the configuration information needed
 to customize |Sphinx| behavior. The documentation for |Sphinx| lists the
 `configuration options`_ that can be set.
 
-The |docs/_static/css/|_ directory contains CSS_ files with `style
+The |docs/_static/css|_ directory contains CSS_ files with `style
 overrides`_ for the `Read the Docs Sphinx Theme`_ to customize the look
 and feel of the online documentation.
 
@@ -1592,10 +1592,7 @@ example Jupyter notebooks, the tables of contents are in
 .. |docs/conf.py| replace:: :file:`docs/conf.py`
 
 .. _`docs/examples.rst`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/glossary.rst
-.. |docs/glossary.rst| replace:: :file:`docs/examples.rst`
-
-.. _`docs/glossary.rst`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/glossary.rst
-.. |docs/glossary.rst| replace:: :file:`docs/glossary.rst`
+.. |docs/examples.rst| replace:: :file:`docs/examples.rst`
 
 .. _`docs/bibliography.bib`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/bibliography.bib
 .. |docs/bibliography.bib| replace:: :file:`docs/bibliography.bib`
