@@ -38,7 +38,6 @@ PlasmaPy generally follows the :pep:`8` style guide for Python code,
 while using tools like |pre-commit| and |ruff| to perform
 autoformatting, code quality checks, and automatic fixes.
 
-
 Coding guidelines
 =================
 
@@ -425,7 +424,10 @@ Type hint annotations
 =====================
 
 PlasmaPy uses |type hint annotations| and |mypy| to perform
-|static type checking|.
+|static type checking|. Type hints improve readability and
+maintainability by clarifying the types that a function accepts and
+returns. Type hints also help Jupyter notebooks and IDEs provide better
+tooltips and perform auto-completion.
 
 Type hint annotations specify the expected types of arguments and return
 values. A function that accepts a `float` or `str` and returns a `str`
@@ -463,7 +465,7 @@ annotations:
 
 The ``autotyping(aggressive)`` session uses autotyping_ to automatically
 add even more type hints than ``autotyping(safe)``. Because it is less
-reliable, the newly added type hints should be carefully checked:
+reliable, the newly added type hints should be carefully reviewed:
 
 .. code-block:: shell
 
@@ -472,18 +474,27 @@ reliable, the newly added type hints should be carefully checked:
 The ``monkeytype`` session automatically adds type hint annotations to a
 module based on the types of variables that were observed when running
 `pytest`. Like ``autotyping(aggressive)``, it can add incorrect or
-incomplete type hints. It is run for a single module at a time:
+incomplete type hints, so newly added type hints should be carefully
+reviewed. It is run for a single module at a time:
 
 .. code-block:: shell
 
    nox -s monkeytype -- plasmapy.particles.atomic
 
+.. tip::
+
+   Run :bash:`nox -s 'autotyping(safe)'` and commit the changes before
+   executing the ``autotyping(aggressive)`` or ``monkeytype`` sessions.
+
 Static type checking
 --------------------
 
 PlasmaPy uses |mypy| to perform |static type checking| to detect
-incorrect or inconsistent |type hint annotations|. We can perform
-static type checking by running:
+incorrect or inconsistent |type hint annotations|. Static type checking
+helps us find type related errors during the development process, and
+thus improve code quality.
+
+We can perform static type checking by running:
 
 .. code-block:: shell
 
@@ -531,7 +542,7 @@ a particular error.
 .. important::
 
    Because type hints are easier to add while writing code, please use
-   :py:`# type ignore` comments sparingly.
+   :py:`# type ignore` comments sparingly!
 
 .. note::
 
