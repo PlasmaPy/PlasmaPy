@@ -22,6 +22,7 @@ Sphinx extensions (built-in):
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 
+import logging
 import os
 import sys
 import warnings
@@ -29,7 +30,7 @@ from datetime import datetime, timezone
 
 from sphinx.application import Sphinx
 
-from plasmapy import __version__
+from plasmapy import __version__ as version
 
 # isort: off
 sys.path.insert(0, os.path.abspath(".."))  # noqa: PTH100
@@ -40,17 +41,25 @@ import _author_list_from_cff
 import _changelog_index
 import _global_substitutions
 
+now = datetime.now(timezone.utc)
+
 # Project metadata
 
 project = "PlasmaPy"
 author = "PlasmaPy Community"
-copyright = f"2015–{datetime.now(timezone.utc).year}, {author}"  # noqa: A001
+copyright = f"2015–{now.year}, {author}"  # noqa: A001
 language = "en"
-release = __version__
-version = __version__
 
-if release.startswith("0"):
-    warnings.warn(f"Incorrect version in documentation build ({release = })")
+if "dev" in version or version.startswith("0"):
+    # We've had some problems with setuptools_scm providing an incorrect
+    # version for non-releases, so base it on the date and git hash
+    # instead.
+    git_hash = version.split("dev")[-1].split("+")[-1].split(".")[0]
+    version = f"{now.year}.{now.month}.{now.day}.dev+{git_hash}"
+    msg = f"Setting {version = !r}"
+    logging.info(msg)
+
+release = version
 
 # Define global substitutions in docs/_global_substitutions.py
 
