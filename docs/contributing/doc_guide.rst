@@ -15,7 +15,7 @@ Documentation Guide
 .. role:: rst(code)
    :language: rst
 
-<!-- Escape backticks with a \ in arguments provided to :rst: (like :rst:`:math:\`5+6\``) -->
+.. Escape backticks with a \ in arguments provided to :rst: (like :rst:`:math:\`5+6\``)
 
 Introduction
 ============
@@ -453,6 +453,33 @@ where the output varies or an exception is raised.
        0.8905444
        >>> raise ValueError  # doctest: +SKIP
        """
+
+.. _doc-guide-notebooks:
+
+Example notebooks
+-----------------
+
+PlasmaPy's documentation includes an |example gallery| of |Jupyter|
+notebooks. The notebooks are included as :file:`.ipynb` files in
+|docs/notebooks|_.
+
+To add a notebook to the |example gallery|, include it in the
+appropriate subdirectory of |docs/notebooks|_.
+
+Before adding the Jupyter notebook, open it and run
+:menuselection:`Kernel --> Restart Kernel and Clear Outputs of All Cells`
+and then :menuselection:`File --> Save Notebook` before committing the
+and pushing change. Doing this will signal |nbsphinx| that it should
+execute the notebook during the documentation build.
+
+However, if the notebook is computationally
+intensive, instead pre-execute the notebook with
+:menuselection:`Kernel --> Restart Kernel and Run All Cells` before
+doing ``git commit``. Doing this will reduce documentation build times.
+
+If a notebook makes use of a Python package that is not included in
+PlasmaPy's requirements, included in the ``docs`` dependencies set as
+defined in |pyproject.toml|_.
 
 Definitions
 -----------
@@ -1400,8 +1427,8 @@ If this warning occurs in the "Examples" section of a docstring, put
 :pr:`2554`). These warnings sometimes only show up when rebuilding
 the documentation.
 
-A related warning is "Could not match transformation of _ on source
-lines _-_".
+A related warning is ``Could not match transformation of _ on source
+lines``.
 
 Errors that are unrelated to a pull request
 -------------------------------------------
@@ -1517,6 +1544,8 @@ For example Jupyter notebooks, the tables of contents are in
    nitpick_ignore_regex in docs/conf.py so that it doesn't get counted
    as an error.
 
+.. |example gallery| replace:: :ref:`example gallery <examples>`
+
 .. _`docs/_static/`: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/_static
 .. |docs/_static/| replace:: :file:`docs/_static/`
 
@@ -1540,6 +1569,9 @@ For example Jupyter notebooks, the tables of contents are in
 
 .. _`docs/_global_substitutions.py`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/_global_substitutions.py
 .. |docs/_global_substitutions.py| replace:: :file:`docs/_global_subtitutions.py`
+
+.. _docs/notebooks: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/notebooks
+.. |docs/notebooks| replace:: :file:`docs/notebooks`
 
 .. _`IPython.sphinxext.ipython_console_highlighting`: https://ipython.readthedocs.io/en/stable/sphinxext.html?highlight=IPython.sphinxext.ipython_console_highlighting#ipython-sphinx-directive-module
 .. |IPython.sphinxext.ipython_console_highlighting| replace:: `IPython.sphinxext.ipython_console_highlighting`
@@ -1573,3 +1605,6 @@ For example Jupyter notebooks, the tables of contents are in
 
 .. _`sphinx-toolbox`: https://sphinx-toolbox.readthedocs.io
 .. |sphinx-toolbox| replace:: `sphinx-toolbox`
+
+.. _`pyproject.toml`: https://github.com/PlasmaPy/PlasmaPy/blob/main/pyproject.toml
+.. |pyproject.toml| replace:: :file:`pyproject.toml`

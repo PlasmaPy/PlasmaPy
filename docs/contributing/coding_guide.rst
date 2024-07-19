@@ -1060,40 +1060,6 @@ an angular frequency to get a length scale:
 
    d_i = (c/omega_pi).to(u.m, equivalencies=u.dimensionless_angles())  # doctest: +SKIP
 
-.. _example_notebooks:
-
-Example notebooks
-=================
-
-.. _docs/notebooks: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/notebooks
-
-Examples in PlasmaPy are written as Jupyter notebooks, taking advantage
-of their mature ecosystems. They are located in `docs/notebooks`_.
-|nbsphinx| takes care of executing them at documentation build time and
-including them in the documentation.
-
-Please note that it is necessary to store notebooks with their outputs
-stripped
-(use the "Edit -> Clear all" option in JupyterLab and the "Cell -> All
-Output -> Clear" option in the "classic" Jupyter Notebook). This
-accomplishes two goals:
-
-1. helps with versioning the notebooks, as binary image data is not stored in
-   the notebook
-2. signals |nbsphinx| that it should execute the notebook.
-
-.. note::
-
-  In the future, verifying and running this step may be automated via a GitHub bot.
-  Currently, reviewers should ensure that submitted notebooks have outputs stripped.
-
-If you have an example notebook that includes packages unavailable in
-the documentation building environment (e.g., :py:`bokeh`) or runs some
-heavy computation that should not be executed on every commit, *keep the
-outputs in the notebook* but store it in the repository with a
-:file:`preexecuted_` prefix (e.g.,
-:file:`preexecuted_full_3d_mhd_chaotic_turbulence_simulation.ipynb`).
-
 .. _ASCII: https://en.wikipedia.org/wiki/ASCII
 .. _autotyping: https://github.com/JelleZijlstra/autotyping
 .. _cognitive complexity: https://docs.codeclimate.com/docs/cognitive-complexity
