@@ -50,14 +50,18 @@ author = "PlasmaPy Community"
 copyright = f"2015–{now.year}, {author}"  # noqa: A001
 language = "en"
 
-if "dev" in version or version.startswith("0"):
+if "dev" in version:
     # We've had some problems with setuptools_scm providing an incorrect
     # version for non-releases, so base it on the date and git hash
     # instead.
     git_hash = version.split("dev")[-1].split("+")[-1].split(".")[0]
     version = f"{now.year}.{now.month}.{now.day}.dev+{git_hash}"
-    msg = f"Setting {version = !r}"
-    logging.info(msg)
+    version_info_message = f"Setting {version = !r}"
+    logging.info(version_info_message)
+
+if version.startswith("0"):
+    version_warning_message = f"Incorrect {version = !r}"
+    logging.warning(version_warning_message)
 
 release = version
 
