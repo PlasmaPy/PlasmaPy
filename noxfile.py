@@ -23,10 +23,10 @@ to be installed.
 """
 
 # Documentation: https://nox.thea.codes
-
 import os
 import pathlib
 import platform
+import re
 import sys
 from typing import Literal
 
@@ -414,6 +414,78 @@ AUTOTYPING_RISKY: tuple[str, ...] = (
     "--bytes-param",
     "--annotate-imprecise-magics",
 )
+
+
+@nox.session
+@nox.parametrize("draft", [nox.param(False, id="draft"), nox.param(True, id="final")])
+def changelog(session: nox.Session, final: str) -> None:
+    """
+    Build the changelog with towncrier.
+
+     - 'final': build the combined changelog for the release, and delete
+       the individual changelog entries in `changelog`.
+     - 'draft': print the draft changelog to standard output, without
+       writing to files
+
+    When executing this session, provide the version of the release, as
+    in this example:
+
+       nox -s 'changelog(final)' -- 2024.7.0
+    """
+
+    if len(session.posargs) != 1:
+        raise TypeError(
+            "Please provide the version of PlasmaPy to be released "
+            "(i.e., `nox -s changelog -- 2024.9.0`"
+        )
+
+    source_directory = pathlib.Path("./changelog")
+
+    extraneous_files = source_directory.glob("changelog/*[0-9]*.*.rst?*")
+    if final and extraneous_files:
+        session.error(
+            "Please delete the following extraneous files before "
+            "proceeding, as the presence of these files may cause "
+            f"towncrier errors: {extraneous_files}"
+        )
+
+    version = session.posargs[0]
+
+    year_pattern = r"(202[4-9]|20[3-9][0-9]|2[1-9][0-9]{2}|[3-9][0-9]{3,})"
+    month_pattern = r"(1[0-2]|[1-9])"
+    patch_pattern = r"(0?[0-9]|[1-9][0-9])"
+    version_pattern = rf"^{year_pattern}\.{month_pattern}\.{patch_pattern}$"
+
+    if not re.match(version_pattern, version):
+        raise ValueError(
+            "Please provide a version of the form YYYY.M.PATCH, where "
+            "YYYY is the year past 2024, M is the one or two digit month, "
+            "and PATCH is a non-negative integer."
+        )
+
+    session.install(".")
+    session.install("towncrier")
+
+    options = ("--yes",) if final else ("--draft", "--keep")
+
+    session.install("towncrier")
+
+    session.run(
+        "towncrier",
+        "build",
+        "--config",
+        "pyproject.toml",
+        "--dir",
+        ".",
+        "--version",
+        version,
+        *options,
+    )
+
+    if final:
+        original_file = pathlib.Path("./CHANGELOG.rst")
+        destination = pathlib.Path(f"./docs/changelog/{version}.rst")
+        original_file.rename(destination)
 
 
 @nox.session
