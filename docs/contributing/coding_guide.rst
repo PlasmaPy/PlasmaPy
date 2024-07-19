@@ -35,8 +35,12 @@ PlasmaPy generally follows the :pep:`8` style guide for Python code,
 while using tools like |pre-commit| and |ruff| to perform
 autoformatting, code quality checks, and automatic fixes.
 
+
 Coding guidelines
 =================
+
+Writing clean code
+------------------
 
 * Write short functions that do exactly one thing with no side effects.
 
