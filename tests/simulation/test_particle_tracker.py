@@ -566,6 +566,42 @@ def test_particle_tracker_Bethe_warning(
         simulation.run()
 
 
+def test_particle_tracker_scattering_warning(
+    no_particles_on_grids_instantiated, memory_interval_save_routine_instantiated
+):
+    L = 1 * u.m
+
+    num = 2
+    dt = 1e-2 * u.s
+
+    grid = CartesianGrid(-L, L, num=num)
+    grid_shape = (num,) * 3
+
+    x = [[0, 0, 0]] * u.m
+    v = [[0, 0, 0]] * u.m / u.s
+
+    termination_condition = no_particles_on_grids_instantiated
+    save_routine = memory_interval_save_routine_instantiated
+
+    simulation = ParticleTracker(grid, termination_condition, save_routine, dt=dt)
+    simulation.load_particles(x, v, Particle("p+"))
+
+    with pytest.warns(
+        RuntimeWarning,
+        match="The electron number density is not defined on any of the provided grids!",
+    ):
+        simulation.add_scattering("Al-27 0+", lambda: 42, "mean square rate")
+
+    n_e = np.full(grid_shape, 1) * u.m**-3
+    grid.add_quantities(n_e=n_e)
+
+    with pytest.warns(
+        RuntimeWarning,
+        match="The electron temperature is not defined on any of the provided grids!",
+    ):
+        simulation.add_scattering("Al-27 0+", lambda: 42, "mean square rate")
+
+
 PARTICLES_PER_ENERGY = 100
 
 
