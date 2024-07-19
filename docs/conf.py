@@ -55,7 +55,7 @@ if "dev" in version:
     # version for non-releases, so base it on the date and git hash
     # instead.
     git_hash = version.split("dev")[-1].split("+")[-1].split(".")[0]
-    version = f"{now.year}.{now.month}.{now.day}.dev+{git_hash}"
+    version = f"{now.year}.{now.month}.0.dev+{git_hash}"
     version_info_message = f"Setting {version = !r}"
     logging.info(version_info_message)
 
