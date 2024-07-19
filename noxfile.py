@@ -26,12 +26,14 @@ to be installed.
 
 import os
 import pathlib
+import platform
 import sys
 from typing import Literal
 
 import nox
 
 supported_python_versions: tuple[str, ...] = ("3.10", "3.11", "3.12")
+supported_operating_systems: tuple[str, ...] = ("linux", "macos", "windows")
 
 maxpython = max(supported_python_versions)
 minpython = min(supported_python_versions)
@@ -48,6 +50,7 @@ def _get_requirements_filepath(
     category: Literal["docs", "tests", "all"],
     version: Literal["3.10", "3.11", "3.12", "3.13", "3.14", "3.15"],
     resolution: Literal["highest", "lowest-direct", "lowest"] = "highest",
+    os_platform: Literal["linux", "macos", "windows"] | None = None,
 ) -> str:
     """
     Return the file path to the requirements file.
@@ -63,9 +66,22 @@ def _get_requirements_filepath(
 
     resolution : str
         The resolution strategy used by uv.
+
+    os_platform : str, optional
+        The name of the target platform. By default, it will attempt to find the
+        requirement file associated with the current platform.
     """
+
+    if os_platform is None:
+        current_platform = platform.system().lower()
+        os_platform = (
+            current_platform
+            if current_platform in supported_operating_systems
+            else "linux"
+        )
+
     requirements_directory = "ci_requirements"
-    specifiers = [category, version]
+    specifiers = [category, version, os_platform]
     if resolution != "highest":
         specifiers.append(resolution)
     return f"{requirements_directory}/{'-'.join(specifiers)}.txt"
@@ -113,19 +129,24 @@ def requirements(session) -> None:
         "nox -s requirements",
     )
 
-    for category, version, resolution in category_version_resolution:
-        filename = _get_requirements_filepath(category, version, resolution)
-        session.run(
-            *command,
-            "--python-version",
-            version,
-            *category_flags[category],
-            "--output-file",
-            filename,
-            "--resolution",
-            resolution,
-            *session.posargs,
-        )
+    for os_platform in supported_operating_systems:
+        for category, version, resolution in category_version_resolution:
+            filename = _get_requirements_filepath(
+                category, version, resolution, os_platform
+            )
+            session.run(
+                *command,
+                "--python-version",
+                version,
+                *category_flags[category],
+                "--output-file",
+                filename,
+                "--resolution",
+                resolution,
+                *session.posargs,
+                "--python-platform",
+                os,
+            )
 
 
 pytest_command: tuple[str, ...] = (
