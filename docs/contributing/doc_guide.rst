@@ -1172,7 +1172,7 @@ more details, please refer to `Sphinx's templating page`_.
    horrible workaround that can take hours to figure out. This has given
    rise to the saying:
 
-      *Sphinx rabbit holes often have dragons in them.* 🐇 🕳️ 🐉
+      *Sphinx rabbit holes often have dragons in them.*
 
    Remember: your happiness and well-being are more important than
    `nested inline markup`_!
@@ -1312,7 +1312,7 @@ Troubleshooting
 ===============
 
 This section describes how to fix common documentation errors and
-warnings. 🛠️
+warnings.
 
 .. _missing-target:
 
@@ -1457,9 +1457,9 @@ version of the package that can be revisited later.
 .. tip::
 
    When dealing with this kind of error, procrastination often pays off!
-   🎈 These errors usually get resolved after the upstream package makes
+   These errors usually get resolved after the upstream package makes
    a bugfix release, so it is typically better to wait a week before
-   spending a large amount of time trying to fix it. 🕒
+   spending a large amount of time trying to fix it.
 
 Document isn't included in any toctree
 --------------------------------------
