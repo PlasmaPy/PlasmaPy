@@ -121,7 +121,6 @@ astropy_subs: dict[str, str] = {
 
 links_to_become_subs: dict[str, str] = {
     "Astropy": "https://docs.astropy.org",
-    "black": "https://black.readthedocs.io",
     "Citation File Format": "https://citation-file-format.github.io/",
     "DOI": "https://www.doi.org",
     "editable installation": "https://pip.pypa.io/en/stable/topics/local-project-installs/#editable-installs",
@@ -130,7 +129,6 @@ links_to_become_subs: dict[str, str] = {
     "GitHub": "https://github.com",
     "h5py": "https://www.h5py.org",
     "intersphinx": "https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html",
-    "isort": "https://pycqa.github.io/isort",
     "Jupyter": "https://jupyter.org",
     "lmfit": "https://lmfit.github.io/lmfit-py/",
     "matplotlib": "https://matplotlib.org",
@@ -192,7 +190,7 @@ def make_global_substitutions_table(
             f"``{global_substitutions[substitution].rstrip()}``",
             f"|{substitution}|",
         )
-        for substitution in sorted(global_substitutions)
+        for substitution in sorted(global_substitutions, key=lambda x: x.lower())
     ]
     lines = [
         ".. list-table:: Global Substitutions",
