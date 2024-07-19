@@ -21,14 +21,14 @@ Introduction
 ============
 
 Documentation that is up-to-date and understandable is vital to the
-health of a software project. This page describes the documentation
+health of a software project. 📚 This page describes the documentation
 requirements and guidelines to be followed during the development of
 PlasmaPy and affiliated packages.
 
 .. tip::
 
    Updating documentation is one of the best ways to make a first
-   contribution to an open source software project.
+   contribution to an open source software project. 🔰
 
 .. note::
 
@@ -48,7 +48,7 @@ available at these locations:
 * The documentation corresponding to the ongoing development on the
   ``main`` branch in |PlasmaPy's GitHub repository|, which is often
   ahead of the most recent release, is labeled ``latest`` and can be
-  found at https://docs.plasmapy.org/en/latest.
+  found at https://docs.plasmapy.org/en/latest. 🏗️
 
 .. tip::
 
@@ -506,8 +506,8 @@ Glossary definitions
 --------------------
 
 Define important terms in PlasmaPy's :ref:`glossary`, which is located
-at |docs/glossary.rst|_. Here is an example of a term defined within the
-:rst:dir:`glossary` |directive|.
+at |docs/glossary.rst|_. 🏷️ Here is an example of a term defined within
+the :rst:dir:`glossary` |directive|.
 
 .. code-block:: rst
 
@@ -582,12 +582,12 @@ documentation for PlasmaPy and affiliated packages.
   .. note::
 
      Studies typically show that line lengths of 50–75 characters are
-     optimal for readability.
+     optimal for readability. 📄
 
 * Use indentations of 3 spaces for |reStructuredText| blocks.
 
 * Store images within the |docs/_static|_ directory, except for images
-  that are generated during the |Sphinx| build. The |docs/_static|_
+  that are generated during the |Sphinx| build. 🖼️ The |docs/_static|_
   directory contains files that are used for the online documentation
   but are not generated during the |Sphinx| build.
 
@@ -597,7 +597,7 @@ documentation for PlasmaPy and affiliated packages.
   * When including references, use a link that includes a
     :wikipedia:`persistent identifier <persistent_identifier>` such as a
     digital object identifier (|DOI|) when one is available (e.g.,
-    https://doi.org/10.5281/zenodo.4602818\ ).
+    https://doi.org/10.5281/zenodo.4602818\ ). 🔗
 
   * Wikipedia_ articles may be linked to when they contain a
     well-developed and accurate description of a concept.
@@ -809,7 +809,7 @@ The type specification should not include information about the
   |ParticleList|.
 
 * Use :rst:`|atom-like|` to indicate that an argument must be
-  |atom-like| (i.e., an element, isotope, and/or ion).
+  |atom-like| (i.e., an element, isotope, and/or ion). ⚛️
 
 * When the array must be :math:`n`\ -dimensional, precede the type by
   :samp:`{n}D` where :samp:`{n}` is replaced by the number of
@@ -843,6 +843,12 @@ The type specification should not include information about the
      {"classical postmodernist", "retro-futuristic"}
      {"p+", "e-"}, default: "p+"
      {1, 2, 3, 4}, default: 3
+
+  .. tip::
+
+     Use `typing.Literal` in |type hint annotations| when a parameter
+     should only be provided with specific values (e.g.,
+     :py:`x: Literal{1, 2, 3, 4}`).
 
 * If a default is given, it is not necessary to state that the parameter
   is optional. When the default is `None`, use ``optional`` instead of
@@ -995,7 +1001,7 @@ Sphinx extensions
 -----------------
 
 |PlasmaPy's documentation| is built with the following |Sphinx|
-extensions:
+extensions: 🔌
 
 * `sphinx.ext.autodoc` for including documentation from docstrings.
 * `sphinx.ext.extlinks` for shortening links to external sites (e.g.,
@@ -1035,7 +1041,7 @@ Cross-referencing external packages
 -----------------------------------
 
 Intersphinx_ allows the automatic generation of links to the
-documentation of objects in other projects. This cross-package linking
+documentation of objects in other projects. 🔗 This cross-package linking
 is made possible with the `sphinx.ext.intersphinx` extension and proper
 package indexing by the external package using `sphinx.ext.autodoc`.
 
@@ -1193,7 +1199,7 @@ more details, please refer to `Sphinx's templating page`_.
    horrible workaround that can take hours to figure out. This has given
    rise to the saying:
 
-      *Sphinx rabbit holes often have dragons in them.*
+      *Sphinx rabbit holes often have dragons in them.* 🐇 🕳️ 🐉
 
    Remember: your happiness and well-being are more important than
    `nested inline markup`_!
@@ -1333,7 +1339,7 @@ Troubleshooting
 ===============
 
 This section describes how to fix common documentation errors and
-warnings.
+warnings. 🛠️
 
 .. _missing-target:
 
@@ -1478,9 +1484,9 @@ version of the package that can be revisited later.
 .. tip::
 
    When dealing with this kind of error, procrastination often pays off!
-   These errors usually get resolved after the upstream package makes
+   🎈 These errors usually get resolved after the upstream package makes
    a bugfix release, so it is typically better to wait a week before
-   spending a large amount of time trying to fix it.
+   spending a large amount of time trying to fix it. 🕒
 
 Document isn't included in any toctree
 --------------------------------------
