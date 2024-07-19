@@ -1148,7 +1148,13 @@ class ParticleTracker:
         velocity_unit_vectors = np.multiply(
             1 / current_speeds, self.v[self._tracked_particle_mask]
         )
-        dx = np.multiply(current_speeds, self.dt[self._tracked_particle_mask])
+
+        if isinstance(self.dt, np.ndarray) and self.dt.size > 1:
+            dt = self.dt[self._tracked_particle_mask]
+        else:
+            dt = self.dt
+
+        dx = np.multiply(current_speeds, dt)
 
         stopping_power = np.zeros((self.nparticles_tracked, 1))
         relevant_kinetic_energy = (
@@ -1186,7 +1192,7 @@ class ParticleTracker:
                     self._raised_energy_warning = True
 
                     warnings.warn(
-                        "The Bethe model is only valid for high energy particles. Consider using"
+                        "The Bethe model is only valid for high energy particles. Consider using "
                         "NIST stopping if you require accurate stopping powers at lower energies.",
                         category=PhysicsWarning,
                     )
