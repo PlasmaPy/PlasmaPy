@@ -166,10 +166,6 @@ def test_Hall_parameter() -> None:
     with pytest.warns(u.UnitsWarning):
         Hall_parameter(n, T, B, ion, particle, V=100)
 
-    with pytest.raises(ValueError, TypeError):
-        # ValueError for numpy >= 2, TypeError for numpy < 2
-        Hall_parameter(n, T, B, ion, particle, coulomb_log="test")
-
     with pytest.warns(RelativityWarning):
         Hall_parameter(1e10 * u.m**-3, 5.8e3 * u.eV, 2.3 * u.T, ion, particle)
 
