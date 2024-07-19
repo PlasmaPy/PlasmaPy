@@ -9,6 +9,9 @@ Coding Guide
    :local:
    :backlinks: none
 
+.. role:: bash(code)
+   :language: bash
+
 .. role:: toml(code)
    :language: TOML
 
