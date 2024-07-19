@@ -9,6 +9,12 @@ Coding Guide
    :local:
    :backlinks: none
 
+.. role:: bash(code)
+   :language: bash
+
+.. role:: toml(code)
+   :language: TOML
+
 Introduction
 ============
 
@@ -32,8 +38,12 @@ PlasmaPy generally follows the :pep:`8` style guide for Python code,
 while using tools like |pre-commit| and |ruff| to perform
 autoformatting, code quality checks, and automatic fixes.
 
+
 Coding guidelines
 =================
+
+Writing clean code
+------------------
 
 * Write short functions that do exactly one thing with no side effects.
 
@@ -205,7 +215,7 @@ code is supposed to be doing.
   indicates gyration but :py:`Larmor_frequency` does not.
 
 * It is *usually* preferable to name a variable after its name rather
-  than its symbol.  An object named :py:`Debye_length` is more broadly
+  than its symbol. An object named :py:`Debye_length` is more broadly
   understandable and searchable than :py:`lambda_D`. However, there are
   some exceptions to this guideline.
 
@@ -290,7 +300,7 @@ unmaintained comment may contain inaccurate or misleading information
   works :cite:p:`wilson:2014`.
 
 * Instead of using a comment to define a variable, rename the variable
-  to encode its meaning and intent.  For example, code like:
+  to encode its meaning and intent. For example, code like:
 
   .. code-block:: python
 
@@ -387,7 +397,7 @@ frustration.
   providing enough information for the user to troubleshoot it. When
   possible, make it clear what the user should do next.
 
-* Include diagnostic information when appropriate.  For example, if an
+* Include diagnostic information when appropriate. For example, if an
   error occurred at a single index in an array operation, then including
   the index where the error happened can help the user better understand
   the cause of the error.
@@ -570,9 +580,6 @@ The :py:`# type: ignore[return-value]` comment for |mypy| is needed
 because |particle_input| dynamically (rather than statically) changes
 the type of ``particle``.
 
-Project infrastructure
-======================
-
 Imports
 -------
 
@@ -606,42 +613,83 @@ Imports
 * Do not use star imports (e.g., :py:`from package.subpackage import *`),
   except in very limited situations.
 
-Requirements
-------------
+Project infrastructure
+======================
 
 * Package requirements are specified in |pyproject.toml|_.
 
-* Each release of PlasmaPy should support all minor versions of
-  Python that have been released in the prior 42 months, and all minor
-  versions of |NumPy| that have been released in the last 24 months.
-  This schedule was proposed in `NumPy Enhancement Proposal 29`_ for
-  the scientific Python ecosystem, and has been adopted by upstream
-  packages such as |NumPy|, |matplotlib|, and |Astropy|.
+For general information about Python packaging, check out the
+`Python Packaging User Guide`_.
 
-  .. tip::
+Configuration
+-------------
 
-     Tools like pyupgrade_ help automatically upgrade the code base to
-     the minimum supported version of Python for the next release.
+PlasmaPy's main configuration file is |pyproject.toml|_ (which is
+written in the TOML_ format). The Python Packaging User Guide contains
+a page on `writing your pyproject.toml file`_. The :toml:`project`
+table defines overall project metadata, while tables like
+:toml:`[tool.ruff]` include the configuration for tools like |ruff|.
 
-* PlasmaPy should generally allow all feature releases of required
-  dependencies made in the last ≲ 24 months, unless a more recent
-  release includes a needed feature or bugfix.
+Dependencies and requirements
+-----------------------------
 
-* Only set maximum or exact requirements (e.g., ``numpy <= 1.22.3`` or
-  ``scipy == 1.7.2``) when absolutely necessary. After setting a maximum
-  or exact requirement, create a GitHub issue to remove that
+* PlasmaPy's dependencies and requirements are specified in
+  |pyproject.toml|_ under :toml:`[project.dependencies]` (i.e., in the
+  :toml:`dependencies` array in the :toml:`[project]` table).
+
+* PlasmaPy releases should follow the recommendations in `SPEC 0`_,
+  including that:
+
+  - Support for Python versions be dropped **3 years** after their
+    initial release.
+  - Support for core package dependencies be dropped **2 years** after
+    their initial release.
+
+* The |ci_requirements/|_ directory contains pinned requirements files
+  for use in continuous integration tests (see
+  |ci_requirements/README.md|_).
+
+  - These files are updated periodically via pull requests created by a
+    GitHub workflow to `update pinned requirements`_.
+
+  - When updating requirements in |pyproject.toml|_, run
+    :bash:`nox -s requirements` to update the pinned requirements files.
+
+* Even if a dependency is unlikely to be shared with packages installed
+  alongside PlasmaPy, that dependency may have strict requirements that
+  do cause conflicts. For example, requiring the newest version of
+  voila_ once caused dependency conflicts with other packages in the
+  heliopythoniverse because voila_ had strict dependencies on packages
+  in the Jupyter ecosystem.
+
+* Only set maximum or exact requirements (e.g., ``numpy <= 2.0.0`` or
+  ``scipy == 1.13.1``) when absolutely necessary. After setting a
+  maximum or exact requirement, create a GitHub issue to loosen that
   requirement.
 
-  .. tip::
+  .. important::
 
      Maximum requirements can lead to version conflicts when installed
      alongside other packages. It is preferable to update PlasmaPy to
      become compatible with the latest versions of its dependencies than
      to set a maximum requirement.
 
-* Minor versions of Python are generally released in October of each
-  year. However, it may take a few months before packages like |NumPy|
-  and |Numba| become compatible with the newest minor version of |Python|.
+* It sometimes takes a few months for packages like |Numba| to become
+  compatible with the newest minor version of |Python|.
+
+* The ``tests`` and ``docs`` dependency sets are required for running
+  tests and building documentation, but are not required for package
+  installation. Consequently, we can require much newer versions of the
+  packages in these dependency sets.
+
+.. tip::
+
+   Packages that depend on PlasmaPy should periodically run their tests
+   against the ``main`` branch of PlasmaPy. Similarly, PlasmaPy has
+   |Nox| sessions used in GitHub workflows that run its test suite
+   against the development versions of important dependencies such as
+   NumPy and Astropy. Such tests can help find problems before
+   they are included in an official release.
 
 Decorators
 ==========
@@ -718,7 +766,7 @@ would be defined in :file:`src/plasmapy/subpackage/module.py`.
 
 * Aliases should only be defined for frequently used plasma parameters
   which already have a symbol that is widely used in the community's
-  literature.  This is to ensure that the abbreviated function name is
+  literature. This is to ensure that the abbreviated function name is
   still reasonably understandable. For example,
   `~plasmapy.formulary.lengths.cwp_` is a shortcut for :math:`c/ω_p`\ .
 
@@ -822,14 +870,14 @@ that corresponds to :py:`function` as would be defined in
 
 * If a :term:`lite-function` is decorated with something like
   :py:`@njit`, then it should also be decorated with
-  `~plasmapy.utils.decorators.helpers.preserve_signature`.  This
+  `~plasmapy.utils.decorators.helpers.preserve_signature`. This
   preserves the function signature so interpreters can still
   give hints about function arguments.
 
 * When possible, a :term:`lite-function` should incorporate `numba's
   just-in-time compilation
   <https://numba.pydata.org/numba-doc/latest/reference/jit-compilation.html>`__
-  or utilize Cython_.  At a minimum any "extra" code beyond the raw
+  or utilize Cython_. At a minimum any "extra" code beyond the raw
   calculation should be removed.
 
 * The name of the original function should be included in :py:`__all__`
@@ -1035,77 +1083,13 @@ outputs in the notebook* but store it in the repository with a
 :file:`preexecuted_` prefix (e.g.,
 :file:`preexecuted_full_3d_mhd_chaotic_turbulence_simulation.ipynb`).
 
-Python and dependency version support
-=====================================
-
-PlasmaPy releases will generally abide by the following standards, which
-are adapted from `NEP 29`_ and `SPEC 0`_ for the support of old versions
-of |Python|, |NumPy|, |Astropy|, and other dependencies.
-
-* PlasmaPy should support the minor versions of Python initially
-  released 42 months prior to a release. Because :pep:`602` establishes
-  that Python releases will generally occur in October of each year,
-  the minimum required version of Python should be increased for the
-  first release of PlasmaPy after April each year.
-
-* PlasmaPy should support minor versions of its dependencies that were
-  released in the 24 months prior to each release of PlasmaPy.
-  Exceptions to this guideline should only be made when there are good
-  reasons to do so, such as impactful bugfixes or major improvements to
-  upstream functionality.
-
-  .. caution::
-
-     Even if a dependency is unlikely to be shared with packages
-     installed alongside PlasmaPy, that dependency can have strict
-     requirements that do cause conflicts. For example, requiring the
-     newest version of voila_ once caused dependency conflicts with
-     other packages in the heliopythoniverse because voila_ had strict
-     dependencies on packages in the Jupyter ecosystem.
-
-* PlasmaPy should support at least the 3 latest minor versions of
-  |NumPy| and |Astropy|.
-
-* The required major and minor version numbers of upstream packages may
-  only change during major or minor releases of PlasmaPy, and not during
-  patch releases.
-
-* The ``tests`` and ``docs`` dependency sets are required for running
-  tests and building documentation, but are not required for package
-  installation. Consequently, it is not necessary to support older
-  versions of packages that are only in these optional dependency sets.
-
-.. tip::
-
-   Packages that depend on PlasmaPy should periodically run their tests
-   against the ``main`` branch of PlasmaPy. Similarly, PlasmaPy has
-   GitHub workflows that run its test suite against the development
-   versions of NumPy and Astropy; and build the documentation using the
-   newest version of Sphinx. Such tests can help find problems before
-   they are included in an official release.
-
-Benchmarks
-==========
-
-.. _benchmarks: https://www.plasmapy.org/plasmapy-benchmarks
-.. _benchmarks-repo: https://github.com/PlasmaPy/plasmapy-benchmarks
-.. _asv: https://github.com/airspeed-velocity/asv
-.. _asv-docs: https://asv.readthedocs.io/en/stable
-
-PlasmaPy has a set of asv_ benchmarks that monitor performance of its
-functionalities.  This is meant to protect the package from performance
-regressions. The benchmarks can be viewed at benchmarks_. They are
-generated from results located in `benchmarks-repo`_. Detailed
-instructions on writing such benchmarks can be found at `asv-docs`_.
-Up-to-date instructions on running the benchmark suite will be located
-in the README file of `benchmarks-repo`_.
-
 .. _ASCII: https://en.wikipedia.org/wiki/ASCII
 .. _autotyping: https://github.com/JelleZijlstra/autotyping
 .. _cognitive complexity: https://docs.codeclimate.com/docs/cognitive-complexity
 .. _Cython: https://cython.org
 .. _equivalencies: https://docs.astropy.org/en/stable/units/equivalencies.html
 .. _error codes enabled by default: https://mypy.readthedocs.io/en/stable/error_code_list.html
+.. _error codes for optional checks: https://mypy.readthedocs.io/en/stable/error_code_list2.html
 .. _example notebook on particles: ../notebooks/getting_started/particles.ipynb
 .. _example notebook on units: ../notebooks/getting_started/units.ipynb
 .. _extract function refactoring pattern: https://refactoring.guru/extract-method
@@ -1113,15 +1097,24 @@ in the README file of `benchmarks-repo`_.
 .. _NEP 29: https://numpy.org/neps/nep-0029-deprecation_policy.html
 .. _not a number: https://en.wikipedia.org/wiki/NaN
 .. _NumPy Enhancement Proposal 29: https://numpy.org/neps/nep-0029-deprecation_policy.html
+.. _Python Packaging User Guide: https://packaging.python.org
 .. _pyupgrade: https://github.com/asottile/pyupgrade
 .. _rename refactoring in PyCharm: https://www.jetbrains.com/help/pycharm/rename-refactorings.html
 .. _SPEC 0: https://scientific-python.org/specs/spec-0000
+.. _TOML: https://toml.io/en/v1.0.0
 .. _type hints cheat sheet: https://mypy.readthedocs.io/en/stable/cheat_sheet_py3.html
+.. _update pinned requirements: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/update-pinned-reqs.yml
 .. _voila: https://voila.readthedocs.io
-.. _error codes for optional checks: https://mypy.readthedocs.io/en/stable/error_code_list2.html
+.. _writing your pyproject.toml file: https://packaging.python.org/en/latest/guides/writing-pyproject-toml/
 
 .. _`astropy.units`: https://docs.astropy.org/en/stable/units/index.html
 .. |astropy.units| replace:: `astropy.units`
+
+.. _`ci_requirements/`: https://github.com/PlasmaPy/PlasmaPy/blob/main/ci_requirements
+.. |ci_requirements/| replace:: :file:`ci_requirements/`
+
+.. _`ci_requirements/README.md`: https://github.com/PlasmaPy/PlasmaPy/blob/main/ci_requirements/README.md
+.. |ci_requirements/README.md| replace:: :file:`ci_requirements/README.md`
 
 .. _`mypy.ini`: https://github.com/PlasmaPy/PlasmaPy/blob/main/mypy.ini
 .. |mypy.ini| replace:: :file:`mypy.ini`
