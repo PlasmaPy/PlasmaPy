@@ -1,6 +1,8 @@
 """Tests of `plasmapy.utils._units_helpers`."""
 
 from collections import namedtuple
+from collections.abc import Iterable
+from typing import Any
 
 import astropy.units as u
 import pytest
@@ -21,10 +23,10 @@ velocity = u.get_physical_type("velocity")
 mass = u.get_physical_type("mass")
 dimensionless = u.get_physical_type(1)
 
-test_case = namedtuple("case", ["collection", "kwargs", "expected"])
+test_case = namedtuple("test_case", ["collection", "kwargs", "expected"])
 
 
-test_cases = [
+test_cases: list[test_case] = [
     test_case(
         collection=(c, m_e),
         kwargs={},
@@ -59,12 +61,16 @@ test_cases = [
 
 
 @pytest.mark.parametrize(("collection", "kwargs", "expected"), test_cases)
-def test_get_physical_type_dict(collection, kwargs, expected) -> None:
+def test_get_physical_type_dict(
+    collection: Iterable[object],
+    kwargs: dict[str, Any],
+    expected: dict[u.PhysicalType, u.Quantity],
+) -> None:
     physical_type_dict = _get_physical_type_dict(collection, **kwargs)
     assert physical_type_dict == expected
 
 
-test_cases_exceptions = [
+test_cases_exceptions: list[test_case] = [
     test_case(
         collection=(u.m, 5 * u.m),
         kwargs={},
@@ -89,6 +95,10 @@ test_cases_exceptions = [
 
 
 @pytest.mark.parametrize(("collection", "kwargs", "expected"), test_cases_exceptions)
-def test_get_physical_type_dict_exceptions(collection, kwargs, expected) -> None:
+def test_get_physical_type_dict_exceptions(
+    collection: Iterable[object],
+    kwargs: dict[str, Any],
+    expected: type,
+) -> None:
     with pytest.raises(expected):
         _get_physical_type_dict(collection, **kwargs)

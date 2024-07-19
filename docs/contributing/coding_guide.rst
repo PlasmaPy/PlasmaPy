@@ -29,8 +29,8 @@ style changes. Please feel free to propose revisions to this guide by
 a community meeting.
 
 PlasmaPy generally follows the :pep:`8` style guide for Python code,
-using auto-formatters such as |black| and |isort| that are executed using
-|pre-commit|.
+while using tools like |pre-commit| and |ruff| to perform
+autoformatting, code quality checks, and automatic fixes.
 
 Coding guidelines
 =================
@@ -411,6 +411,165 @@ frustration.
 * Write error messages that are friendly, supportive, and helpful. Error
   message should never be condescending or blame the user.
 
+Type hint annotations
+=====================
+
+PlasmaPy uses |type hint annotations| and |mypy| to perform
+|static type checking|.
+
+Type hint annotations specify the expected types of arguments and return
+values. A function that accepts a `float` or `str` and returns a `str`
+may be written as:
+
+.. code-block:: python
+
+   def f(x: float | str) -> str:
+       return str(x)
+
+The :py:`|` operator is used to represent unions between types. To learn
+more, check out the `type hints cheat sheet`_.
+
+.. note::
+
+   Type hint annotations are by default not enforced at runtime, and
+   instead are used to _indicate_ the types that a function or method
+   accepts and returns. However, there are some situations where type
+   hints do play a role at runtime, such as in functions decorated by
+   |particle_input| and/or |validate_quantities|.
+
+Automatically adding type hint annotations
+------------------------------------------
+
+PlasmaPy has defined multiple |Nox| sessions that can automatically add
+type hints using autotyping_ and MonkeyType_.
+
+The ``autotyping(safe)`` session uses autotyping_ to automatically add
+type hints for common patterns, while producing very few incorrect
+annotations:
+
+.. code-block:: shell
+
+   nox -s 'autotyping(safe)'
+
+The ``autotyping(aggressive)`` session uses autotyping_ to automatically
+add even more type hints than ``autotyping(safe)``. Because it is less
+reliable, the newly added type hints should be carefully checked:
+
+.. code-block:: shell
+
+   nox -s 'autotyping(aggressive)'
+
+The ``monkeytype`` session automatically adds type hint annotations to a
+module based on the types of variables that were observed when running
+`pytest`. Like ``autotyping(aggressive)``, it can add incorrect or
+incomplete type hints. It is run for a single module at a time:
+
+.. code-block:: shell
+
+   nox -s monkeytype -- plasmapy.particles.atomic
+
+Static type checking
+--------------------
+
+PlasmaPy uses |mypy| to perform |static type checking| to detect
+incorrect or inconsistent |type hint annotations|. We can perform
+static type checking by running:
+
+.. code-block:: shell
+
+   nox -s mypy
+
+The configuration for |mypy| is in |mypy.ini|_.
+
+Using |mypy| helps us identify errors and fix problems. For example,
+suppose we run |mypy| on the following function:
+
+.. code-block:: python
+
+   def return_object(x: int | str) -> int:
+       return x
+
+We will then get the following error:
+
+.. code-block::
+
+   Incompatible return value type (got "int | str", expected "int")  [return-value]
+
+.. tip::
+
+   To learn more about a particular |mypy| error code, search for it in
+   its documentation pages on `error codes enabled by default`_ and
+   `error codes for optional checks`_.
+
+Ignoring mypy errors
+~~~~~~~~~~~~~~~~~~~~
+
+Static type checkers like |mypy| are unable to follow the behavior of
+functions that dynamically change the types of objects, which occurs in
+functions decorated by |particle_input|. In situations like this, we can
+use a :py:`# type: ignore` comment to indicate that |mypy| should ignore
+a particular error.
+
+.. code-block:: python
+
+   from plasmapy.particles import particle_input, ParticleLike
+
+   @particle_input
+   def f(particle: ParticleLike) -> Particle | CustomParticle | ParticleList:
+       return particle  # type: ignore[return-value]
+
+.. important::
+
+   Because type hints are easier to add while writing code, please use
+   :py:`# type ignore` comments sparingly.
+
+.. note::
+
+   PlasmaPy only recently added |mypy| to its continuous integration
+   suite. If you run into |mypy| errors that frequently need to be
+   ignored, please bring them up in :issue:`2589`.
+
+Quantity type hints
+-------------------
+
+When a function accepts a |Quantity|, the annotation should additionally
+include the corresponding unit in brackets. When the function is
+|decorated| with |validate_quantities|, then the |Quantity| provided to
+and/or returned by the function will be converted to that unit.
+
+.. code-block:: python
+
+   import astropy.units as u
+   from plasmapy.utils.decorators import validate_quantities
+
+
+   @validate_quantities
+   def speed(distance: u.Quantity[u.m], time: u.Quantity[u.s]) -> u.Quantity[u.m / u.s]:
+       return distance / time
+
+Particle type hints
+-------------------
+
+Functions that accept particles or particle collections should annotate
+the corresponding function with |ParticleLike| or |ParticleListLike|.
+When the function is decorated with |particle_input|, then it will
+convert the function to the corresponding |Particle|, |CustomParticle|,
+or |ParticleList|.
+
+.. code-block:: python
+
+   from plasmapy.particles.decorators import particle_input
+   from plasmapy.particles.particle_class import CustomParticle, Particle, ParticleLike
+
+
+   @particle_input
+   def get_particle(particle: ParticleLike) -> Particle | CustomParticle:
+       return particle  # type: ignore[return-value]
+
+The :py:`# type: ignore[return-value]` comment for |mypy| is needed
+because |particle_input| dynamically (rather than statically) changes
+the type of ``particle``.
+
 Project infrastructure
 ======================
 
@@ -427,21 +586,18 @@ Imports
      import numpy as np
      import pandas as pd
 
-* PlasmaPy uses |isort| to organize import statements via a |pre-commit|
+* PlasmaPy uses |ruff| to organize import statements via a |pre-commit|
   hook.
 
-* For infrequently used objects, import the package, subpackage, or
-  module rather than the individual code object. Including more of the
-  namespace provides contextual information that can make code easier to
-  read. For example, :py:`json.loads` is more readable than using only
+* For most objects, import the package, subpackage, or module rather
+  than the individual code object. Including more of the namespace
+  provides contextual information that can make code easier to read. For
+  example, :py:`json.loads` is more readable than using only
   :py:`loads`.
 
-* For frequently used objects (e.g., |Particle|) and type hint
-  annotations (e.g., `~typing.Optional` and `~numbers.Real`), import the
-  object directly instead of importing the package, subpackage, or
-  module. Including more of the namespace would increase clutter and
-  decrease readability without providing commensurately more
-  information.
+* For the most frequently used PlasmaPy objects (e.g., |Particle|) and
+  |type hint annotations| (e.g., `~typing.Optional`), import the object
+  directly instead of importing the package, subpackage, or module.
 
 * Use absolute imports (e.g., :py:`from plasmapy.particles import
   Particle`) rather than relative imports (e.g., :py:`from ..particles
@@ -453,8 +609,7 @@ Imports
 Requirements
 ------------
 
-* Package requirements are specified in |pyproject.toml|_. |tox.ini|_
-  also contains a testing environment for the minimal dependencies.
+* Package requirements are specified in |pyproject.toml|_.
 
 * Each release of PlasmaPy should support all minor versions of
   Python that have been released in the prior 42 months, and all minor
@@ -775,11 +930,11 @@ notebook on particles`_.
 
   .. code-block:: python
 
-     from plasmapy.particles import ParticleLike, particle_input
+     from plasmapy.particles import Particle, ParticleLike, particle_input
 
 
      @particle_input
-     def get_particle(particle: ParticleLike):
+     def get_particle(particle: ParticleLike) -> Particle:
          return particle
 
   If we use :py:`get_particle` on something |particle-like|, it will
@@ -890,7 +1045,7 @@ of |Python|, |NumPy|, |Astropy|, and other dependencies.
 * PlasmaPy should support the minor versions of Python initially
   released 42 months prior to a release. Because :pep:`602` establishes
   that Python releases will generally occur in October of each year,
-  the minimum required version fo Python should be increased for the
+  the minimum required version of Python should be increased for the
   first release of PlasmaPy after April each year.
 
 * PlasmaPy should support minor versions of its dependencies that were
@@ -946,25 +1101,30 @@ Up-to-date instructions on running the benchmark suite will be located
 in the README file of `benchmarks-repo`_.
 
 .. _ASCII: https://en.wikipedia.org/wiki/ASCII
+.. _autotyping: https://github.com/JelleZijlstra/autotyping
 .. _cognitive complexity: https://docs.codeclimate.com/docs/cognitive-complexity
 .. _Cython: https://cython.org
 .. _equivalencies: https://docs.astropy.org/en/stable/units/equivalencies.html
+.. _error codes enabled by default: https://mypy.readthedocs.io/en/stable/error_code_list.html
 .. _example notebook on particles: ../notebooks/getting_started/particles.ipynb
 .. _example notebook on units: ../notebooks/getting_started/units.ipynb
 .. _extract function refactoring pattern: https://refactoring.guru/extract-method
+.. _MonkeyType: https://monkeytype.readthedocs.io
 .. _NEP 29: https://numpy.org/neps/nep-0029-deprecation_policy.html
 .. _not a number: https://en.wikipedia.org/wiki/NaN
 .. _NumPy Enhancement Proposal 29: https://numpy.org/neps/nep-0029-deprecation_policy.html
-.. _SPEC 0: https://scientific-python.org/specs/spec-0000
 .. _pyupgrade: https://github.com/asottile/pyupgrade
 .. _rename refactoring in PyCharm: https://www.jetbrains.com/help/pycharm/rename-refactorings.html
+.. _SPEC 0: https://scientific-python.org/specs/spec-0000
+.. _type hints cheat sheet: https://mypy.readthedocs.io/en/stable/cheat_sheet_py3.html
 .. _voila: https://voila.readthedocs.io
+.. _error codes for optional checks: https://mypy.readthedocs.io/en/stable/error_code_list2.html
 
 .. _`astropy.units`: https://docs.astropy.org/en/stable/units/index.html
 .. |astropy.units| replace:: `astropy.units`
 
+.. _`mypy.ini`: https://github.com/PlasmaPy/PlasmaPy/blob/main/mypy.ini
+.. |mypy.ini| replace:: :file:`mypy.ini`
+
 .. _`pyproject.toml`: https://github.com/PlasmaPy/PlasmaPy/blob/main/pyproject.toml
 .. |pyproject.toml| replace:: :file:`pyproject.toml`
-
-.. _`tox.ini`: https://github.com/PlasmaPy/PlasmaPy/blob/main/tox.ini
-.. |tox.ini| replace:: :file:`tox.ini`

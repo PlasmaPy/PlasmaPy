@@ -96,7 +96,7 @@ Features
 - Added the |RelativisticBody| class to facilitate calculation of the
   relativistic properties of a body in motion. (:pr:`1540`)
 - Added ``inplace`` as an optional argument to
-  `~plasmapy.simulation.particle_integrators.boris_push`. (:pr:`1556`)
+  ``plasmapy.simulation.particle_integrators.boris_push``. (:pr:`1556`)
 - Added a function to calculate the dimensionless Lundquist number.
   (:pr:`1642`)
 - Created the `plasmapy.formulary.densities` module. (:pr:`1664`)
@@ -256,7 +256,7 @@ Trivial/Internal Changes
 - Made ``pytest`` an ``install`` requirement instead of a ``testing``
   requirement. (:pr:`1749`)
 - Added a step to validate :file:`CITATION.cff` as part of the ``linters``
-  |tox| testing environment. (:pr:`1771`)
+  tox testing environment. (:pr:`1771`)
 - Added ``cffconvert`` to the ``testing`` requirements. (:pr:`1771`)
 - Deleted :file:`codemeta.json`, which recorded project metadata using
   the `CodeMeta <https://codemeta.github.io>`__ metadata

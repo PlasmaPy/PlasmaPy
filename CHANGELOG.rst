@@ -1,3 +1,172 @@
+PlasmaPy v2024.5.0 (2024-05-08)
+===============================
+
+New Features
+------------
+
+- Added the `~plasmapy.particles.particle_class.Particle.nucleus` attribute of
+  |Particle|. (:pr:`2538`)
+- Replaced ``plasmapy.utils.data.downloader.get_file`` with a
+  new class `~plasmapy.utils.data.downloader.Downloader` with a
+  method `~plasmapy.utils.data.downloader.Downloader.get_file` which
+  downloads resource files from |PlasmaPy's data repository|. (:pr:`2570`)
+- Added support for new ``background``, ``ion_mu`` and ``ion_z`` fitting
+  parameters to the `~plasmapy.diagnostics.thomson.spectral_density_model`
+  function. (:pr:`2636`)
+
+
+Documentation Improvements
+--------------------------
+
+- Added the ``internal`` category for changelog entries, which will be used to
+  denote
+  refactorings with minimal impact on the API, and updated the |changelog
+  guide| to
+  reflect these changes. (:pr:`2441`)
+- Updated the docstring of |particle_input| to indicate that annotations
+  for optional parameters should now be :py:`ParticleLike | None` or
+  :py:`ParticleListLike | None`. (:pr:`2505`)
+- Added known limitations of |particle_input| to its docstring. (:pr:`2516`)
+- Removed references to PlasmaPy's Twitter account, which is no longer used.
+  (:pr:`2522`)
+- Updated the docstring for `~plasmapy.formulary.lengths.gyroradius` to finish
+  an unfinished sentence. (:pr:`2560`)
+- Updated the instructions in the |documentation guide| on how to build
+  PlasmaPy's documentation locally. (:pr:`2565`)
+- Fix typo in description of `~plasmapy.formulary.densities.mass_density`.
+  (:pr:`2588`)
+- Updated the |testing guide| to reflect recent performance improvements with
+  tox
+  via the ``tox-uv`` extension, and the |documentation guide| to reflect that
+  the
+  documentation is now built with |Nox| instead of tox (:pr:`2590`)
+- Add examples to the docstring for
+  `~plasmapy.formulary.radiation.thermal_bremsstrahlung`. (:pr:`2618`)
+- Update the dependency version support policy in the |coding guide|.
+  (:pr:`2670`)
+
+
+Backwards Incompatible Changes
+------------------------------
+
+- Changed the minimum required version of Python from 3.9 to 3.10. (:pr:`2501`)
+- Modified `~plasmapy.particles.atomic.common_isotopes`,
+  `~plasmapy.particles.atomic.known_isotopes`,
+  and `~plasmapy.particles.atomic.known_isotopes` to each return a
+  |ParticleList|. (:pr:`2559`)
+- Added a new keyword ``particlewise`` to the method
+  `~plasmapy.particles.particle_collections.ParticleList.is_category` of
+  |ParticleList|,
+  which now causes the function to return a `bool` for the whole list by
+  default.  The old functionality is still available
+  by setting ``particlewise`` to `True`. (:pr:`2648`)
+
+
+Bug Fixes
+---------
+
+- Fixed an error when :py:`lorentzfactor` and multiple particles are provided
+  to `~plasmapy.formulary.lengths.gyroradius`. (:pr:`2542`)
+- Required UTF-8 encoding to be used for generating citation output.
+  (:pr:`2578`)
+- Fixed a bug in |particle_input| where particle categorization criteria
+  had not been applied to arguments that became a |ParticleList|. (:pr:`2594`)
+- Made `~plasmapy.diagnostics.thomson.spectral_density_model` compatible with
+  the
+  new version of ``lmfit==1.3.0``. (:pr:`2623`)
+- Fixed a bug when `~plasmapy.formulary.radiation.thermal_bremsstrahlung`
+  is given multiple input density values. (:pr:`2627`)
+- Fixed the requirements file used by binder to open notebooks. (:pr:`2672`)
+
+
+Internal Changes and Refactorings
+---------------------------------
+
+- Changed type hint annotations to be consistent with :pep:`604`. Most type
+  unions are now made using the ``|`` operator rather than with
+  `typing.Union`. (:pr:`2504`)
+- Refactored, parametrized, and expanded the tests
+  for `~plasmapy.formulary.lengths.Debye_length`. (:pr:`2509`)
+- Changed type hint annotations that used `numbers.Integral`, `numbers.Real`,
+  or `numbers.Complex` to instead use `int`, `float`, or `complex`,
+  respectively. (:pr:`2520`)
+- Created a tox environment for regenerating requirements files used
+  in continuous integration (CI) and by integrated development environments
+  (IDEs). This environment is now what is being used in the automated pull
+  requests to regenerate requirements files. Switching from ``pip-compile``
+  to ``uv pip compile`` now allows requirements files to be created for
+  multiple
+  versions of Python, as well as for minimal versions of dependencies.
+  (:pr:`2523`)
+- Reduced the :wikipedia:`cognitive complexity`
+  of `~plasmapy.formulary.lengths.gyroradius`. (:pr:`2542`)
+- Added and updated type hint annotations within `plasmapy.formulary`.
+  (:pr:`2543`)
+- Applied caching through |GitHub Actions| to speed up continuous
+  integration tests and documentation builds. Because the Python environments
+  used
+  by tox to run tests no longer need to be recreated every time tests are
+  run,
+  caching speeds up several continuous integration tests by ∼2–3 minutes.
+  See :issue:`2585` to learn more about recent efforts to drastically
+  speed up PlasmaPy's continuous integraiton checks. (:pr:`2552`)
+- Removed :file:`setup.py`. (:pr:`2558`)
+- Added ``sphinx-lint`` as a |pre-commit| hook to find
+  reStructuredText errors. (:pr:`2561`)
+- Enabled the ``tox-uv`` plugin to tox, so that package installation,
+  caching, and the creation of virtual environments will be handled by
+  |uv| instead of |pip|. This change makes it faster to run tests both
+  locally and via |GitHub Actions|. (:pr:`2584`)
+  - Changed the project structure to an `src
+  layout
+  <https://packaging.python.org/en/latest/discussions/src-layout-vs-flat-layout/>`__
+  to follow the updated recommendation from the Python Packaging
+  Authority's `packaging guide <https://packaging.python.org/>`__. The
+  motivation for this change is described in :issue:`2581`. Source code
+  previously in :file:`plasmapy/` is now located in |src/plasmapy/| and
+  tests are now in a separate |tests/| directory. Tests previously in
+  :file:`plasmapy/**/tests/` are now in :file:`tests/**/`, where
+  :file:`**` refers to an arbitrary number of subdirectories. For example,
+  the source code of `plasmapy.formulary` is now located in
+  :file:`src/plasmapy/formulary/` and the tests for `plasmapy.formulary`
+  are now in :file:`tests/formulary/`. (:pr:`2598`)
+- Reconfigured the auto-generated requirements files used during
+  continuous integration and for documentation builds, while adding
+  corresponding documentation.  (:pr:`2650`)
+- Added :file:`noxfile.py` as a configuration file for |Nox|. This
+  file initially contains environments for building documentation,
+  checking hyperlinks, and performing static type checking with |mypy|
+  (:pr:`2654`)
+- Began using |Nox| for some testing environments in |GitHub Actions|,
+  including for the documentation build and static type
+  checking. (:pr:`2656`)
+
+
+Additional Changes
+------------------
+
+- Updated type hint annotations in `plasmapy.particles`. (:pr:`2458`)
+- Added ``pytest-rerunfailures`` to the ``tests`` set of dependencies
+  defined in :file:`pyproject.toml`, and applied it to a test that
+  experiences intermittent failures. (:pr:`2483`)
+- Added a flag to `~plasmapy.plasma.grids.AbstractGrid.require_quantities`
+  to silence warnings when a quantity is not provided and is assumed to be
+  zero everywhere. Modified
+  `~plasmapy.simulation.particle_tracker.ParticleTracker` to
+  not display this warning for the :math:`\mathbf{E}` and :math:`\mathbf{B}`
+  field components, since one of these is often not explicitly provided.
+  (:pr:`2519`)
+- Removed |pytest| as a runtime dependency. (:pr:`2525`)
+- Removed the unused ``py310-conda`` tox environment. (:pr:`2526`)
+- Exposed `~plasmapy.formulary.dielectric.StixTensorElements`
+  and `~plasmapy.formulary.dielectric.RotatingTensorElements`
+  to the public API. (:pr:`2543`)
+- Added tests to verify correctness of two properties
+  in
+  `~plasmapy.formulary.collisions.frequencies.MaxwellianCollisionFrequencies`.
+  (:pr:`2614`)
+
+
 PlasmaPy v2024.2.0 (2024-02-06)
 ===============================
 
@@ -69,7 +238,7 @@ Trivial/Internal Changes
   (:pr:`2402`)
 - Added an initial configuration for |mypy| that temporarily ignores existing
   errors. (:pr:`2424`)
-- Added a |tox| environment for running |mypy|. (:pr:`2431`)
+- Added a tox environment for running |mypy|. (:pr:`2431`)
 - Added |mypy| to the suite of continuous integration checks. (:pr:`2432`)
 - Used ``autotyping`` to implement |type hint annotations| for special
   methods like ``__init__`` and ``__str__``, and changed ``-> typing.NoReturn``
@@ -862,7 +1031,7 @@ Trivial/Internal Changes
 - Made ``pytest`` an ``install`` requirement instead of a ``testing``
   requirement. (:pr:`1749`)
 - Added a step to validate :file:`CITATION.cff` as part of the ``linters``
-  |tox| testing environment. (:pr:`1771`)
+  tox testing environment. (:pr:`1771`)
 - Added ``cffconvert`` to the ``testing`` requirements. (:pr:`1771`)
 - Deleted :file:`codemeta.json`, which recorded project metadata using
   the `CodeMeta <https://codemeta.github.io>`__ metadata
@@ -1172,9 +1341,9 @@ Improved Documentation
 - Added an example notebook that calculates plasma parameters associated
   with the Magnetospheric Multiscale Mission (MMS). (`#1568 <https://github.com/plasmapy/plasmapy/pull/1568>`__)
 - Added an example notebook that discusses Coulomb collisions. (`#1569 <https://github.com/plasmapy/plasmapy/pull/1569>`__)
-- Increased the strictness of the ``build_docs`` |tox| environment so that
+- Increased the strictness of the ``build_docs`` tox environment so that
   broken |reStructuredText| links now emit warnings which are then treated as errors,
-  fixed the new errors, removed the ``build_docs_nitpicky`` |tox|
+  fixed the new errors, removed the ``build_docs_nitpicky`` tox
   environment, and updated the |documentation guide| accordingly. (`#1587 <https://github.com/plasmapy/plasmapy/pull/1587>`__)
 - Renamed the :file:`magnetic_statics.ipynb` notebook to
   :file:`magnetostatics.ipynb`, and made some minor edits to its text
@@ -1291,7 +1460,7 @@ Trivial/Internal Changes
 - Added a test that ``import plasmapy`` does not raise an exception. (`#1501 <https://github.com/plasmapy/plasmapy/pull/1501>`__)
 - Added a GitHub Action for `codespell
   <https://github.com/codespell-project/codespell>`__, and updated the
-  corresponding |tox| environment to print out contextual information. (`#1530 <https://github.com/plasmapy/plasmapy/pull/1530>`__)
+  corresponding tox environment to print out contextual information. (`#1530 <https://github.com/plasmapy/plasmapy/pull/1530>`__)
 - Added :file:`plasmapy/utils/units_definitions.py` to precompute units
   which were applied to optimize functionality in
   :file:`plasmapy/formulary/distribution.py`. (`#1531 <https://github.com/plasmapy/plasmapy/pull/1531>`__)
@@ -1520,7 +1689,7 @@ Improved Documentation
   so that the release of PlasmaPy on |PyPI| gets installed when opening
   example notebooks from the stable and release branches of the online
   documentation. (`#1205 <https://github.com/plasmapy/plasmapy/pull/1205>`__)
-- Updated the documentation guide to include updates to |tox| environments
+- Updated the documentation guide to include updates to tox environments
   for building the documentation. (`#1206 <https://github.com/plasmapy/plasmapy/pull/1206>`__)
 - Fixed numerous broken |reStructuredText| links in prior changelogs. (`#1207 <https://github.com/plasmapy/plasmapy/pull/1207>`__)
 - Improve the docstring for `plasmapy.online_help`. (`#1213 <https://github.com/plasmapy/plasmapy/pull/1213>`__)
@@ -1591,10 +1760,10 @@ Trivial/Internal Changes
   now determines the default detector size to be the smallest detector
   plane centered on the origin that includes all particles. (`#1134 <https://github.com/plasmapy/plasmapy/pull/1134>`__)
 - Added ion velocity input to the :file:`thomson.ipynb` diagnostics notebook. (`#1171 <https://github.com/plasmapy/plasmapy/pull/1171>`__)
-- Added |tox| and removed `pytest` as extra requirements. (`#1195 <https://github.com/plasmapy/plasmapy/pull/1195>`__)
-- Updated |tox| test environments for building the documentation. Added the
+- Added tox and removed `pytest` as extra requirements. (`#1195 <https://github.com/plasmapy/plasmapy/pull/1195>`__)
+- Updated tox test environments for building the documentation. Added the
   ``build_docs_nitpicky`` environment to check for broken |reStructuredText| links. (`#1206 <https://github.com/plasmapy/plasmapy/pull/1206>`__)
-- Added the ``--keep-going`` flag to the ``build_docs*`` |tox| environments with
+- Added the ``--keep-going`` flag to the ``build_docs*`` tox environments with
   the ``-W`` option so that test failures will not stop after the first warning
   (that is treated as an error). (`#1206 <https://github.com/plasmapy/plasmapy/pull/1206>`__)
 - Make queries to `plasmapy.online_help` for ``"quantity"`` or ``"quantities"`` redirect to the
@@ -1615,7 +1784,7 @@ Trivial/Internal Changes
 - Switched usage of `str.format` to formatted string literals (f-strings)
   in several files. (`#1281 <https://github.com/plasmapy/plasmapy/pull/1281>`__)
 - Added `flake8-absolute-import <https://github.com/bskinn/flake8-absolute-import>`_
-  to the ``linters`` |tox| environment. (`#1283 <https://github.com/plasmapy/plasmapy/pull/1283>`__)
+  to the ``linters`` tox environment. (`#1283 <https://github.com/plasmapy/plasmapy/pull/1283>`__)
 - Removed unused imports, and changed several imports from relative to absolute. (`#1283 <https://github.com/plasmapy/plasmapy/pull/1283>`__)
 - Added |pre-commit| hooks to auto-format :file:`.ini`,
   :file:`.toml`, and :file:`.yaml` files, and applied changes from
@@ -2079,7 +2248,7 @@ Improved Documentation
 
 - Added real-world examples to examples/plot_physics.py and adjusted the plots to be more human-friendly. (`#448 <https://github.com/plasmapy/plasmapy/pull/448>`__)
 - Add examples images to the top of the main doc page in `docs\index.rst` (`#655 <https://github.com/plasmapy/plasmapy/pull/655>`__)
-- Added exampes to the documentation to mass_density
+- Added examples to the documentation to mass_density
    and Hall_parameter functions (`#709 <https://github.com/plasmapy/plasmapy/pull/709>`__)
 - Add docstrings to decorator :func:`plasmapy.utils.decorators.converter.angular_freq_to_hz`. (`#729 <https://github.com/plasmapy/plasmapy/pull/729>`__)
 

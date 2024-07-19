@@ -183,7 +183,7 @@ def two_fluid(
                 \frac{1}{3} \cos^{-1}\left(
                     \frac{3q}{2p} \sqrt{-\frac{3}{p}}
                 \right)
-                - \frac{2 \pi}{3}j
+                - \frac{2π}{3}j
             \right)
             + \frac{Λ A}{3}
         }
@@ -255,7 +255,7 @@ def two_fluid(
 
     # validate argument k
     k = k.squeeze()
-    if k.ndim not in (0, 1):
+    if k.ndim not in {0, 1}:
         raise ValueError(
             f"Argument 'k' needs to be a single valued or 1D array astropy Quantity,"
             f" got array of shape {k.shape}."
@@ -265,7 +265,7 @@ def two_fluid(
 
     # validate argument theta
     theta = theta.squeeze()
-    if theta.ndim not in (0, 1):
+    if theta.ndim not in {0, 1}:
         raise ValueError(
             f"Argument 'theta' needs to be a single valued or 1D array astropy "
             f"Quantity, got array of shape {k.shape}."

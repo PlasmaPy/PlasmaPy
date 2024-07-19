@@ -1,0 +1,1 @@
+Enabled tests to pass with ``numpy == 2.0.0``.

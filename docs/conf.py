@@ -24,37 +24,46 @@ Sphinx extensions (built-in):
 
 import os
 import sys
+import warnings
+from datetime import datetime, timezone
+
+from sphinx.application import Sphinx
+
+from plasmapy import __version__
 
 # isort: off
 sys.path.insert(0, os.path.abspath(".."))  # noqa: PTH100
 sys.path.insert(0, os.path.abspath("."))  # noqa: PTH100
 # isort: on
 
-from datetime import datetime
-
-import _cff_to_rst
-import pkg_resources  # deprecated; after removal, drop setuptools dependency for docs
-from _global_substitutions import global_substitutions
-from sphinx.application import Sphinx
-
-# Generate author list from CITATION.cff
-
-_cff_to_rst.main()
-
-from plasmapy import __version__ as release
+import _author_list_from_cff
+import _changelog_index
+import _global_substitutions
 
 # Project metadata
 
 project = "PlasmaPy"
 author = "PlasmaPy Community"
-copyright = f"2015–{datetime.utcnow().year}, {author}"  # noqa: A001, DTZ003
+copyright = f"2015–{datetime.now(timezone.utc).year}, {author}"  # noqa: A001
 language = "en"
+release = __version__
+version = __version__
 
-release = "" if release == "unknown" else release
-parsed_version = pkg_resources.parse_version(release)  # deprecated
-release = parsed_version.public
-version = ".".join(release.split(".")[:2])  # short X.Y version
-revision = parsed_version.local[1:] if parsed_version.local is not None else ""
+if release.startswith("0"):
+    warnings.warn(f"Incorrect version in documentation build ({release = })")
+
+# Define global substitutions in docs/_global_substitutions.py
+
+_global_substitutions.make_global_substitutions_table()
+global_substitutions = _global_substitutions.global_substitutions
+
+# Regenerate the changelog index file
+
+_changelog_index.main()
+
+# Generate author list from CITATION.cff
+
+_author_list_from_cff.generate_rst_file()
 
 # Sphinx configuration variables
 
@@ -89,6 +98,8 @@ exclude_patterns = [
     "**.ipynb_checkpoints",
     "**Untitled*",
     ".DS_Store",
+    ".nox",
+    ".tox",
     "_build",
     "notebooks/langmuir_samples",
     "plasmapy_sphinx",
@@ -99,10 +110,11 @@ default_role = "py:obj"
 html_extra_path = ["robots.txt"]
 html_favicon = "./_static/icon.ico"
 modindex_common_prefix = ["plasmapy."]
-pygments_style = "default"  # code highlighting style to meet WCAG AA contrast standard
+pygments_style = "default"  # code highlighting to meet WCAG AA contrast standard
 root_doc = "index"
 source_suffix = ".rst"
 templates_path = ["_templates"]
+maximum_signature_line_length = 90
 
 # Specify patterns to ignore when doing a nitpicky documentation build.
 # These may include common expressions like "real number" as well as
@@ -301,16 +313,16 @@ redirects = {
     "development/testing_guide": "../contributing/testing_guide.html",
     "whatsnew": "../changelog/",
     "whatsnew/0.1.0": "../changelog/0.1.0.html",
-    "whatsnew/0.1.1": "../changelog/0.1.0.html",
-    "whatsnew/0.2.0": "../changelog/0.1.0.html",
-    "whatsnew/0.3.1": "../changelog/0.1.0.html",
-    "whatsnew/0.4.0": "../changelog/0.1.0.html",
-    "whatsnew/0.5.0": "../changelog/0.1.0.html",
-    "whatsnew/0.6.0": "../changelog/0.1.0.html",
-    "whatsnew/0.7.0": "../changelog/0.1.0.html",
-    "whatsnew/0.8.1": "../changelog/0.1.0.html",
-    "whatsnew/0.9.0": "../changelog/0.1.0.html",
-    "whatsnew/0.9.1": "../changelog/0.1.0.html",
+    "whatsnew/0.1.1": "../changelog/0.1.1.html",
+    "whatsnew/0.2.0": "../changelog/0.2.0.html",
+    "whatsnew/0.3.1": "../changelog/0.3.1.html",
+    "whatsnew/0.4.0": "../changelog/0.4.0.html",
+    "whatsnew/0.5.0": "../changelog/0.5.0.html",
+    "whatsnew/0.6.0": "../changelog/0.6.0.html",
+    "whatsnew/0.7.0": "../changelog/0.7.0.html",
+    "whatsnew/0.8.1": "../changelog/0.8.1.html",
+    "whatsnew/0.9.0": "../changelog/0.9.0.html",
+    "whatsnew/0.9.1": "../changelog/0.9.1.html",
     "whatsnew/2023.1.0": "../changelog/2023.1.0.html",
     "whatsnew/index": "../changelog/index.html",
 }

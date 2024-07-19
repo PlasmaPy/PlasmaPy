@@ -1,1 +1,0 @@
-Removed references to PlasmaPy's Twitter account, which is no longer used.

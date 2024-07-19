@@ -79,7 +79,7 @@ class HDF5Reader(GenericPlasma):
         exc_type: type[BaseException] | None,
         exc_value: BaseException | None,
         traceback: TracebackType | None,
-    ):
+    ) -> None:
         self.h5.close()
 
     def _check_valid_openpmd_version(self) -> bool:

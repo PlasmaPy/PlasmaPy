@@ -464,10 +464,10 @@ Improved Documentation
   <https://github.com/plasmapy/plasmapy/pull/1568>`__)
 - Added an example notebook that discusses Coulomb collisions. (`#1569
   <https://github.com/plasmapy/plasmapy/pull/1569>`__)
-- Increased the strictness of the ``build_docs`` |tox| environment so
+- Increased the strictness of the ``build_docs`` tox environment so
   that broken |reStructuredText| links now emit warnings which are then treated as
   errors, fixed the new errors, removed the ``build_docs_nitpicky``
-  |tox| environment, and updated the |documentation guide|
+  tox environment, and updated the |documentation guide|
   accordingly. (`#1587
   <https://github.com/plasmapy/plasmapy/pull/1587>`__)
 - Renamed the :file:`magnetic_statics.ipynb` notebook to
@@ -632,7 +632,7 @@ Trivial/Internal Changes
   <https://github.com/plasmapy/plasmapy/pull/1501>`__)
 - Added a GitHub Action for `codespell
   <https://github.com/codespell-project/codespell>`__, and updated the
-  corresponding |tox| environment to print out contextual
+  corresponding tox environment to print out contextual
   information. (`#1530
   <https://github.com/plasmapy/plasmapy/pull/1530>`__)
 - Added :file:`plasmapy/utils/units_definitions.py` to precompute
