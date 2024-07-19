@@ -98,9 +98,9 @@ doc_subs: dict[str, str] = {
     "particle-list-like": r":term:`particle-list-like`\ ",
     "plasma-calculator": r":ref:`plasmapy-calculator`\ ",
     "release guide": r":ref:`release guide`\ ",
-    "src/plasmapy/": r":file:`src/plasmapy/`\ ",
+    "src/plasmapy": r":file:`src/plasmapy`\ ",
     "testing guide": r":ref:`testing guide`\ ",
-    "tests/": r":file:`tests/`\ ",
+    "tests": r":file:`tests`\ ",
 }
 
 numpy_subs: dict[str, str] = {

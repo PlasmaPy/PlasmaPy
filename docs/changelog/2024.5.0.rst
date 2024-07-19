@@ -125,7 +125,7 @@ Internal Changes and Refactorings
   Authority's `packaging guide <https://packaging.python.org/>`__. The
   motivation for this change is described in :issue:`2581`. Source
   code previously in :file:`plasmapy/` is now located in
-  |src/plasmapy/| and tests are now in a separate |tests/|
+  |src/plasmapy| and tests are now in a separate |tests|_
   directory. Tests previously in :file:`plasmapy/**/tests/` are now in
   :file:`tests/**/`, where :file:`**` refers to an arbitrary number of
   subdirectories. For example, the source code of `plasmapy.formulary`

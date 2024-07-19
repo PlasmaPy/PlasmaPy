@@ -47,7 +47,7 @@ Writing tests
 
 * All functionality in PlasmaPy must have tests.
 
-* Tests are located in the top-level |tests/| directory. For example,
+* Tests are located in the top-level |tests|_ directory. For example,
   tests of `plasmapy.formulary` are in :file:`tests/formulary/`.
 
 * The names of test files begin with :file:`test_`.
@@ -98,7 +98,7 @@ does it in isolation from other tests :cite:p:`khorikov:2020`. A typical
 multiple software components work together as intended.
 
 PlasmaPy's tests are run using `pytest` and |Nox|. Tests are located in
-the |tests/| directory. For example, tests of `plasmapy.formulary`
+the |tests|_ directory. For example, tests of `plasmapy.formulary`
 are located in :file:`tests/formulary` and tests of
 `plasmapy.formulary.speeds` are located in
 :file:`tests/formulary/test_speeds.py`.
@@ -117,8 +117,8 @@ write a test.
 Locating tests
 --------------
 
-Tests are located in the top-level |tests/| directory. The directory
-structure of |tests/| largely mirrors that of |src/plasmapy/|, which
+Tests are located in the top-level |tests|_ directory. The directory
+structure of |tests|_ largely mirrors that of |src/plasmapy|_, which
 contains the source code of PlasmaPy.
 
 The tests of a subpackage named :samp:`plasmapy.{subpackage}` are
@@ -860,3 +860,10 @@ popular IDEs:
 .. _`test exceptions`: https://docs.pytest.org/en/latest/assert.html#assertions-about-expected-exceptions
 .. _unpacking: https://docs.python.org/3/tutorial/controlflow.html#unpacking-argument-lists
 .. _`Visual Studio`: https://visualstudio.microsoft.com
+
+
+.. _`src/plasmapy`: https://github.com/PlasmaPy/PlasmaPy/tree/main/src/plasmapy
+
+
+.. _`tests`: https://github.com/PlasmaPy/PlasmaPy/tree/main/tests
+.. |tests| replace:: :file:`tests`
