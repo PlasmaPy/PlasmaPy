@@ -586,8 +586,8 @@ documentation for PlasmaPy and affiliated packages.
 
 * Use indentations of 3 spaces for |reStructuredText| blocks.
 
-* Store images within the |docs/_static/|_ directory, except for images
-  that are generated during the |Sphinx| build. The |docs/_static/|_
+* Store images within the |docs/_static|_ directory, except for images
+  that are generated during the |Sphinx| build. The |docs/_static|_
   directory contains files that are used for the online documentation
   but are not generated during the |Sphinx| build.
 
@@ -1146,7 +1146,7 @@ Creating a documentation stub file for a new module
 When the narrative documentation does not index a subpackage (a
 directory) or module (a :file:`.py` file) with ``automodule``,
 ``automodapi``, or the like, then a stub file must be created for that
-particular subpackage or module in |docs/api_static/|_. For example, the
+particular subpackage or module in |docs/api_static|_. For example, the
 stub file for `plasmapy.particles.atomic` is placed at
 :file:`docs/api_static/plasmapy.particles.atomic.rst` and its contents
 look like:
@@ -1274,7 +1274,7 @@ sphinx-build_. We recommend starting with |Nox|.
       building and rebuilding the documentation.
 
       If make_ is installed, we can build the documentation by entering
-      the :file:`docs/` directory and running:
+      the |docs|_ directory and running:
 
       .. code-block:: bash
 
@@ -1385,7 +1385,7 @@ Missing documentation pages for new modules
 -------------------------------------------
 
 When a new module or subpackage is created, it is usually necessary to
-:ref:`create a stub file <api-static>` for it in |docs/api_static/|_. A
+:ref:`create a stub file <api-static>` for it in |docs/api_static|_. A
 missing stub file can lead to either a ``reference target not found``
 error or missing documentation pages.
 
@@ -1503,10 +1503,10 @@ This warning can be resolved by:
 * Adding the ``orphan`` `metadata field`_ at the top of the file (not
   recommended in most situations).
 
-In the :file:`docs/` folder, the tables of contents are generally
-located in :file:`index.rst` in the same directory as the source files.
-For example Jupyter notebooks, the tables of contents are in
-:file:`docs/examples.rst`.
+In the |docs|_ directory, the tables of contents are generally located
+in :file:`index.rst` in the same directory as the source files. For
+example Jupyter notebooks, the tables of contents are in
+|docs/examples.rst|_.
 
 .. |role| replace:: :term:`role`
 .. |roles| replace:: :term:`roles <role>`
@@ -1567,17 +1567,20 @@ For example Jupyter notebooks, the tables of contents are in
 
 .. |example gallery| replace:: :ref:`example gallery <examples>`
 
-.. _`docs/_static/`: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/_static
-.. |docs/_static/| replace:: :file:`docs/_static/`
+.. _`docs`: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs
+.. |docs| replace:: :file:`docs`
 
-.. _`docs/_static/css/`: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/_static/css
-.. |docs/_static/css/| replace:: :file:`docs/_static/css/`
+.. _`docs/_static`: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/_static
+.. |docs/_static| replace:: :file:`docs/_static`
+
+.. _`docs/_static/css`: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/_static/css
+.. |docs/_static/css| replace:: :file:`docs/_static/css`
 
 .. _`docs/about/credits.rst`: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/about/credits.rst
 .. |docs/about/credits.rst| replace:: :file:`docs/about/credits.rst`
 
-.. _`docs/api_static/`: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/api_static
-.. |docs/api_static/| replace:: :file:`docs/api_static/`
+.. _`docs/api_static`: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/api_static
+.. |docs/api_static| replace:: :file:`docs/api_static`
 
 .. _`docs/conf.py`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/conf.py
 .. |docs/conf.py| replace:: :file:`docs/conf.py`
