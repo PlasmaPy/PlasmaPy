@@ -145,7 +145,7 @@ def requirements(session) -> None:
                 resolution,
                 *session.posargs,
                 "--python-platform",
-                os,
+                os_platform,
             )
 
 
