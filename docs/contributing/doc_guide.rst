@@ -1079,6 +1079,7 @@ extensions:
   :rst:role:`issue`, :rst:role:`pr`, and :rst:role:`user`).
 * |sphinx-reredirects|_ to enable hyperlink redirects.
 * |sphinx-toolbox|_ for handy tools for |Sphinx| documentation
+* |sphinxemoji|_ for emoji substitutions
 * `plasmapy_sphinx` for customizations created for use in PlasmaPy and
   affiliated packages. Note that `plasmapy_sphinx` is expected to be
   broken out into its own package in the future.
@@ -1161,6 +1162,28 @@ summarized in the following table.
    substitutions should not be used in docstrings when it is important
    that users have quick access to the full path of the `object` (such
    as in the ``See Also`` section).
+
+Emoji
+-----
+
+Emojis in software documentation help enhance readability, convey
+emotions, and make the content friendlier and less intimidating. Emojis
+improve comprehension by providing visual cues, such as |:atom:| for
+`plasmapy.particles`, |:ocean:| for `plasmapy.dispersion`,
+|:stethoscope:| for `plasmapy.diagnostics`, and |:abacus:| (or perhaps
+|:baby_bottle:|?) for `plasmapy.formulary`.
+
+Not all text editors, terminals, or :abbr:`IDEs (integrated development
+environments)` have the ability to display emojis properly. PlasmaPy's
+documentation makes use of the |sphinxemoji|_ extension which adds
+substitutions for emojis. For example, we can denote good first issues
+with :rest:`|:beginner:|` for |:beginner:|. Click here for the full list
+of supported codes by |sphinxemoji|_.
+
+.. tip::
+
+   Add emojis to journal submissions to strike up conversations with
+   referees and editors! |:sweat_smile:|
 
 .. _citation-instructions:
 
@@ -1693,6 +1716,9 @@ example Jupyter notebooks, the tables of contents are in
 
 .. _`sphinx-toolbox`: https://sphinx-toolbox.readthedocs.io
 .. |sphinx-toolbox| replace:: `sphinx-toolbox`
+
+.. _`sphinxemoji`: https://sphinxemojicodes.readthedocs.io
+.. |sphinxemoji| replace:: `sphinxemoji`
 
 .. _`pyproject.toml`: https://github.com/PlasmaPy/PlasmaPy/blob/main/pyproject.toml
 .. |pyproject.toml| replace:: :file:`pyproject.toml`
