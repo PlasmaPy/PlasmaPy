@@ -46,7 +46,7 @@ class BorisIntegrator(AbstractIntegrator):
     """The explicit Boris pusher."""
 
     @property
-    def is_relativistic(self):
+    def is_relativistic(self) -> bool:
         r"""
         The explicit Boris pusher is not relativistic.
         """
@@ -186,7 +186,7 @@ class RelativisticBorisIntegrator(AbstractIntegrator):
     """The explicit Boris pusher, including relativistic corrections."""
 
     @property
-    def is_relativistic(self):
+    def is_relativistic(self) -> bool:
         r"""
         The push implementation of the Boris push algorithm includes relativistic
         corrections.
