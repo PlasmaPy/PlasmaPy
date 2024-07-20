@@ -1011,6 +1011,7 @@ PARTICLES_PER_CONFIGURATION = 100
         ),
     ],
 )
+@pytest.mark.slow()
 def test_NIST_particle_stopping(
     material: str,
     density: u.Quantity[u.kg / u.m**3],

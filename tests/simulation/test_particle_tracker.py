@@ -221,6 +221,7 @@ class TestParticleTrackerGyroradius:
         assert np.isclose(initial_kinetic_energies, simulation_kinetic_energies).all()
 
 
+@pytest.mark.slow()
 @given(st.integers(1, 10), st.integers(1, 10), st.integers(1, 10), st.integers(1, 10))
 @settings(deadline=2e4, max_examples=10)
 def test_particle_tracker_potential_difference(
@@ -662,6 +663,7 @@ class TestParticleTrajectory:
             (0.9, Particle("e-")),
         ],
     )
+    @pytest.mark.slow()
     def test_relativistic_Boris_integrator_fitting(cls, regime, particle) -> None:
         """
         Fit the results of the relativistic Boris integrator using
@@ -877,6 +879,7 @@ class TestParticleTrajectory:
             (0.9, Particle("e-")),
         ],
     )
+    @pytest.mark.slow()
     def test_relativity_warning(cls, regime, particle) -> None:
         """
         Fit the results of the non-relativistic Boris integrator using
