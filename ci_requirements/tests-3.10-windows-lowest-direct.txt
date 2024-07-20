@@ -10,7 +10,7 @@ argon2-cffi==23.1.0
     #   notebook
 argon2-cffi-bindings==21.2.0
     # via argon2-cffi
-asteval==0.9.33
+asteval==1.0.1
     # via lmfit
 astropy==5.1
     # via plasmapy (pyproject.toml)
@@ -25,23 +25,25 @@ beautifulsoup4==4.12.3
     # via nbconvert
 bleach==6.1.0
     # via nbconvert
-cachetools==5.3.3
-    # via tox
-certifi==2024.6.2
+certifi==2024.7.4
     # via requests
 cffi==1.16.0
     # via argon2-cffi-bindings
 cfgv==3.4.0
     # via pre-commit
-chardet==5.2.0
-    # via tox
 charset-normalizer==2.0.12
     # via requests
 colorama==0.4.6
-    # via tox
+    # via
+    #   colorlog
+    #   ipython
+    #   pytest
+    #   tqdm
 colorlog==6.8.2
     # via nox
-coverage==7.5.3
+contourpy==1.2.1
+    # via matplotlib
+coverage==7.6.0
     # via pytest-cov
 cycler==0.12.1
     # via matplotlib
@@ -53,23 +55,27 @@ distlib==0.3.8
     # via virtualenv
 entrypoints==0.4
     # via nbconvert
+exceptiongroup==1.2.2
+    # via
+    #   anyio
+    #   hypothesis
+    #   ipython
+    #   pytest
 execnet==2.1.1
     # via pytest-xdist
 executing==2.0.1
     # via stack-data
 fastjsonschema==2.20.0
     # via nbformat
-filelock==3.15.3
-    # via
-    #   tox
-    #   virtualenv
-fonttools==4.53.0
+filelock==3.15.4
+    # via virtualenv
+fonttools==4.53.1
     # via matplotlib
 h5py==3.7.0
     # via plasmapy (pyproject.toml)
-hypothesis==6.97.4
+hypothesis==6.108.2
     # via plasmapy (pyproject.toml)
-identify==2.5.36
+identify==2.6.0
     # via pre-commit
 idna==3.7
     # via
@@ -83,7 +89,7 @@ ipykernel==5.5.6
     #   ipywidgets
     #   nbclassic
     #   notebook
-ipython==8.25.0
+ipython==8.26.0
     # via
     #   ipykernel
     #   ipywidgets
@@ -101,7 +107,7 @@ jinja2==3.1.4
     #   jupyter-server
     #   nbconvert
     #   notebook
-jsonschema==4.22.0
+jsonschema==4.23.0
     # via nbformat
 jsonschema-specifications==2023.12.1
     # via jsonschema
@@ -137,7 +143,7 @@ markupsafe==2.1.5
     # via
     #   jinja2
     #   nbconvert
-matplotlib==3.5.1
+matplotlib==3.6.0
     # via plasmapy (pyproject.toml)
 matplotlib-inline==0.1.7
     # via ipython
@@ -145,6 +151,10 @@ mistune==0.8.4
     # via nbconvert
 mpmath==1.2.1
     # via plasmapy (pyproject.toml)
+mypy==1.11.0
+    # via plasmapy (pyproject.toml)
+mypy-extensions==1.0.0
+    # via mypy
 nbclassic==1.1.0
     # via notebook
 nbclient==0.5.13
@@ -178,10 +188,11 @@ nox==2024.4.15
     # via plasmapy (pyproject.toml)
 numba==0.57.0
     # via plasmapy (pyproject.toml)
-numpy==1.23.0
+numpy==1.24.0
     # via
     #   plasmapy (pyproject.toml)
     #   astropy
+    #   contourpy
     #   h5py
     #   lmfit
     #   matplotlib
@@ -190,7 +201,7 @@ numpy==1.23.0
     #   pyerfa
     #   scipy
     #   xarray
-packaging==23.2
+packaging==22.0
     # via
     #   plasmapy (pyproject.toml)
     #   astropy
@@ -198,14 +209,11 @@ packaging==23.2
     #   matplotlib
     #   nbconvert
     #   nox
-    #   pyproject-api
     #   pytest
     #   pytest-filter-subpackage
     #   pytest-rerunfailures
-    #   tox
-    #   tox-uv
     #   xarray
-pandas==1.4.0
+pandas==1.5.0
     # via
     #   plasmapy (pyproject.toml)
     #   xarray
@@ -213,19 +221,14 @@ pandocfilters==1.5.1
     # via nbconvert
 parso==0.8.4
     # via jedi
-pexpect==4.9.0
-    # via ipython
-pillow==10.3.0
+pillow==10.4.0
     # via matplotlib
 platformdirs==4.2.2
     # via
     #   jupyter-core
-    #   tox
     #   virtualenv
 pluggy==1.5.0
-    # via
-    #   pytest
-    #   tox
+    # via pytest
 pre-commit==3.6.0
     # via plasmapy (pyproject.toml)
 prometheus-client==0.20.0
@@ -234,10 +237,6 @@ prometheus-client==0.20.0
     #   notebook
 prompt-toolkit==3.0.47
     # via ipython
-ptyprocess==0.7.0
-    # via
-    #   pexpect
-    #   terminado
 pure-eval==0.2.2
     # via stack-data
 pycparser==2.22
@@ -250,9 +249,7 @@ pygments==2.18.0
     #   nbconvert
 pyparsing==3.1.2
     # via matplotlib
-pyproject-api==1.6.1
-    # via tox
-pytest==8.0.2
+pytest==8.3.1
     # via
     #   plasmapy (pyproject.toml)
     #   pytest-cov
@@ -269,9 +266,9 @@ pytest-filter-subpackage==0.2.0
     # via plasmapy (pyproject.toml)
 pytest-regressions==2.5.0
     # via plasmapy (pyproject.toml)
-pytest-rerunfailures==13.0
+pytest-rerunfailures==14.0
     # via plasmapy (pyproject.toml)
-pytest-xdist==3.5.0
+pytest-xdist==3.6.1
     # via plasmapy (pyproject.toml)
 python-dateutil==2.9.0.post0
     # via
@@ -280,6 +277,12 @@ python-dateutil==2.9.0.post0
     #   pandas
 pytz==2024.1
     # via pandas
+pywin32==306
+    # via jupyter-core
+pywinpty==2.0.13
+    # via
+    #   jupyter-server
+    #   terminado
 pyyaml==6.0.1
     # via
     #   astropy
@@ -296,11 +299,11 @@ referencing==0.35.1
     #   jsonschema-specifications
 requests==2.28.0
     # via plasmapy (pyproject.toml)
-rpds-py==0.18.1
+rpds-py==0.19.0
     # via
     #   jsonschema
     #   referencing
-scipy==1.9.2
+scipy==1.9.0
     # via
     #   plasmapy (pyproject.toml)
     #   lmfit
@@ -330,7 +333,12 @@ terminado==0.18.1
 tinycss2==1.3.0
     # via nbconvert
 tomli==2.0.1
-    # via plasmapy (pyproject.toml)
+    # via
+    #   plasmapy (pyproject.toml)
+    #   coverage
+    #   mypy
+    #   nox
+    #   pytest
 tornado==6.4.1
     # via
     #   ipykernel
@@ -338,13 +346,7 @@ tornado==6.4.1
     #   jupyter-server
     #   notebook
     #   terminado
-tox==4.14.0
-    # via
-    #   plasmapy (pyproject.toml)
-    #   tox-uv
-tox-uv==1.7.0
-    # via plasmapy (pyproject.toml)
-tqdm==4.60.0
+tqdm==4.65.0
     # via plasmapy (pyproject.toml)
 traitlets==5.14.3
     # via
@@ -359,17 +361,18 @@ traitlets==5.14.3
     #   nbconvert
     #   nbformat
     #   notebook
-uncertainties==3.2.1
+typing-extensions==4.12.2
+    # via
+    #   ipython
+    #   mypy
+uncertainties==3.2.2
     # via lmfit
 urllib3==1.26.19
     # via requests
-uv==0.2.13
-    # via tox-uv
-virtualenv==20.26.2
+virtualenv==20.26.3
     # via
     #   nox
     #   pre-commit
-    #   tox
 voila==0.2.7
     # via plasmapy (pyproject.toml)
 wcwidth==0.2.13
@@ -384,5 +387,5 @@ widgetsnbextension==2.0.1
     # via ipywidgets
 wrapt==1.14.0
     # via plasmapy (pyproject.toml)
-xarray==2022.3.0
+xarray==2022.6.0
     # via plasmapy (pyproject.toml)
