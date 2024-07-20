@@ -1170,19 +1170,19 @@ Emojis in software documentation help enhance readability, convey
 emotions, and make the content friendlier and less intimidating. Emojis
 improve comprehension by providing visual cues, such as |:atom:| for
 `plasmapy.particles`, |:ocean:| for `plasmapy.dispersion`,
-|:stethoscope:| for `plasmapy.diagnostics`, and |:abacus:| (or perhaps
-|:baby_bottle:|?) for `plasmapy.formulary`.
+|:stethoscope:| for `plasmapy.diagnostics`, and |:abacus:| for
+`plasmapy.formulary`.
 
 Not all text editors, terminals, or :abbr:`IDEs (integrated development
 environments)` have the ability to display emojis properly. PlasmaPy's
 documentation makes use of the |sphinxemoji|_ extension which adds
 substitutions for emojis. For example, we can denote good first issues
-with :rest:`|:beginner:|` for |:beginner:|. Click here for the full list
-of supported codes by |sphinxemoji|_.
+with :rest:`|:beginner:|` for |:beginner:|. Click here for the `full list
+of emoji codes`_ supported by |sphinxemoji|_.
 
 .. tip::
 
-   Add emojis to journal submissions to strike up conversations with
+   Add emojis to research articles to strike up conversations with
    referees and editors! |:sweat_smile:|
 
 .. _citation-instructions:
@@ -1604,6 +1604,7 @@ example Jupyter notebooks, the tables of contents are in
 .. _CSS: https://www.w3schools.com:443/css
 .. _define substitutions: https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#substitution-definitions
 .. _doctests: https://docs.pytest.org/en/6.2.x/doctest.html
+.. _full list of emoji codes: https://sphinxemojicodes.readthedocs.io/en/stable/#supported-codes
 .. _GitHub Flavored Markdown: https://github.github.com/gfm
 .. _Graphviz: https://graphviz.org
 .. _intersphinx: https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html
