@@ -4,8 +4,9 @@
 Contributor Guide
 *****************
 
-Thank you for your interest in contributing to PlasmaPy! ✨ The future of
-the project depends on people like you, so we deeply appreciate it! 🌱
+Thank you for your interest in contributing to PlasmaPy! |:sparkles:|
+The future of the project depends on people like you, so we deeply
+appreciate it! |:seedling:|
 
 Please feel free to reach out to us in PlasmaPy's |Matrix chat room| or
 during PlasmaPy's weekly |office hours|. The PlasmaPy community abides
@@ -36,4 +37,4 @@ suggest checking out:
    pre-commit
 
 The contributions are made to |PlasmaPy's GitHub repository|. Thank you
-again! 😸
+again!

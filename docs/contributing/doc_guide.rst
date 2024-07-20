@@ -25,14 +25,14 @@ Introduction
 ============
 
 Documentation that is up-to-date and understandable is vital to the
-health of a software project. 📚 This page describes the documentation
-requirements and guidelines to be followed during the development of
-PlasmaPy and affiliated packages.
+health of a software project. |:books:| This page describes the
+documentation requirements and guidelines to be followed during the
+development of PlasmaPy and affiliated packages.
 
 .. tip::
 
    Updating documentation is one of the best ways to make a first
-   contribution to an open source software project. 🔰
+   contribution to an open source software project. |:beginner:|
 
 .. note::
 
@@ -52,7 +52,8 @@ available at these locations:
 * The documentation corresponding to the ongoing development on the
   ``main`` branch in |PlasmaPy's GitHub repository|, which is often
   ahead of the most recent release, is labeled ``latest`` and can be
-  found at https://docs.plasmapy.org/en/latest. 🏗️
+  found at https://docs.plasmapy.org/en/latest.
+  |:building_construction:|
 
 .. tip::
 
@@ -545,7 +546,7 @@ notebook in the gallery:
 
   .. code-block:: markdown
 
-     [`plasmapy.formulary`](https://docs.plasmapy.org/en/stable/formulary/index.html)`
+     [`plasmapy.formulary`](https://docs.plasmapy.org/en/stable/formulary/index.html)
 
 If a code cell in a notebook intentionally raises an exception, add a
 metadata tag entitled "raises-exception" to that cell.
@@ -554,8 +555,8 @@ Glossary definitions
 --------------------
 
 Define important terms in PlasmaPy's :ref:`glossary`, which is located
-at |docs/glossary.rst|_. 🏷️ Here is an example of a term defined within
-the :rst:dir:`glossary` |directive|.
+at |docs/glossary.rst|_. |:label:|️ Here is an example of a term defined
+within the :rst:dir:`glossary` |directive|.
 
 .. code-block:: rst
 
@@ -565,8 +566,8 @@ the :rst:dir:`glossary` |directive|.
          An abbreviation for keyword arguments.
 
 Using the :rst:role:`term` |role| allows us to link to the definitions
-of terms. Using :rest:`:term:\`kwargs\`` will link to :term:`kwargs` in the
-:ref:`glossary`. We can also refer to terms defined in the projects
+of terms. Using :rest:`:term:\`kwargs\`` will link to :term:`kwargs` in
+the :ref:`glossary`. We can also refer to terms defined in the projects
 connected via |intersphinx| if they have not already been defined in
 PlasmaPy's :ref:`glossary`. Using :rest:`:term:\`role\`` will link to
 |role| and :rest:`:term:\`directive\`` will link to |directive| in
@@ -630,14 +631,14 @@ documentation for PlasmaPy and affiliated packages.
   .. note::
 
      Studies typically show that line lengths of 50–75 characters are
-     optimal for readability. 📄
+     optimal for readability. |:page_facing_up:|
 
 * Use indentations of 3 spaces for |reStructuredText| blocks.
 
 * Store images within the |docs/_static|_ directory, except for images
-  that are generated during the |Sphinx| build. 🖼️ The |docs/_static|_
-  directory contains files that are used for the online documentation
-  but are not generated during the |Sphinx| build.
+  that are generated during the |Sphinx| build. |:frame_photo:| The
+  |docs/_static|_ directory contains files that are used for the online
+  documentation but are not generated during the |Sphinx| build.
 
 * Avoid linking to websites that might disappear due to :wikipedia:`link
   rot <link_rot>` such as documents hosted on personal websites.
@@ -645,7 +646,7 @@ documentation for PlasmaPy and affiliated packages.
   * When including references, use a link that includes a
     :wikipedia:`persistent identifier <persistent_identifier>` such as a
     digital object identifier (|DOI|) when one is available (e.g.,
-    https://doi.org/10.5281/zenodo.4602818\ ). 🔗
+    https://doi.org/10.5281/zenodo.4602818\ ). |:link:|
 
   * Wikipedia_ articles may be linked to when they contain a
     well-developed and accurate description of a concept.
@@ -661,6 +662,7 @@ documentation for PlasmaPy and affiliated packages.
 
 * Start the names of all physical units with a lower case letter, except
   at the beginning of a sentence and for "degree Celsius".
+  |:thermometer:|
 
 * Physical unit symbols should not be formatted as math. If units are
   needed inside a math block, use LaTeX_'s ``\text`` command as in the
@@ -1090,9 +1092,10 @@ Cross-referencing external packages
 -----------------------------------
 
 Intersphinx_ allows the automatic generation of links to the
-documentation of objects in other projects. 🔗 This cross-package linking
-is made possible with the `sphinx.ext.intersphinx` extension and proper
-package indexing by the external package using `sphinx.ext.autodoc`.
+documentation of objects in other projects. |:link:| This cross-package
+linking is made possible with the `sphinx.ext.intersphinx` extension and
+proper package indexing by the external package using
+`sphinx.ext.autodoc`.
 
 When we include ```astropy.units.Quantity``` in the documentation, it
 will show up as `astropy.units.Quantity` with a link to the appropriate
@@ -1535,9 +1538,10 @@ version of the package that can be revisited later.
 .. tip::
 
    When dealing with this kind of error, procrastination often pays off!
-   🎈 These errors usually get resolved after the upstream package makes
-   a bugfix release, so it is typically better to wait a week before
-   spending a large amount of time trying to fix it. 🕒
+   |:balloon:| These errors usually get resolved after the upstream
+   package makes a bugfix release, so it is typically better to wait a
+   week before spending a large amount of time trying to fix it.
+   |:stopwatch:|
 
 Document isn't included in any toctree
 --------------------------------------

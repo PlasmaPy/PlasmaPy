@@ -59,7 +59,7 @@ Writing clean code
 * Some plasma parameters depend on more than one |Quantity| of the same
   physical type. For example, when reading the following line of code,
   we cannot immediately tell which is the electron temperature and which
-  is the ion temperature.
+  is the ion temperature. |:thermometer:|
 
   .. code-block:: python
 
@@ -213,7 +213,7 @@ code is supposed to be doing.
 
 * If a plasma parameter has multiple names, then use the name that
   provides the most physical insight. For example, :py:`gyrofrequency`
-  indicates gyration but :py:`Larmor_frequency` does not.
+  indicates gyration but :py:`Larmor_frequency` does not. |:dizzy:|
 
 * It is *usually* preferable to name a variable after its name rather
   than its symbol. An object named :py:`Debye_length` is more broadly
