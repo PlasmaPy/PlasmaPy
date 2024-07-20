@@ -638,7 +638,7 @@ and usually invoke |Nox| sessions defined in |noxfile.py|_.
 
 .. note::
 
-   For first-time contributors, a maintainer `may need to manually
+   For first-time contributors, a maintainer may need to manually
    enable your `GitHub Action test runs
    <https://docs.github.com/en/actions/managing-workflow-runs/approving-workflow-runs-from-public-forks>`__.
 

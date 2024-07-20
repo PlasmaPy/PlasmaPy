@@ -90,10 +90,10 @@ Example highlights
    contributing/getting_ready
    contributing/workflow
    contributing/coding_guide
-   contributing/pre-commit
-   contributing/changelog_guide
-   contributing/doc_guide
    contributing/testing_guide
+   contributing/doc_guide
+   contributing/changelog_guide
+   contributing/pre-commit
 
 .. _new discussion on GitHub: https://github.com/PlasmaPy/PlasmaPy/discussions/new/choose
 .. _on GitHub: https://github.com/PlasmaPy/PlasmaPy

@@ -30,9 +30,9 @@ suggest checking out:
    :maxdepth: 2
 
    coding_guide
-   changelog_guide
    testing_guide
    doc_guide
+   changelog_guide
    pre-commit
 
 The contributions are made to |PlasmaPy's GitHub repository|. Thank you
