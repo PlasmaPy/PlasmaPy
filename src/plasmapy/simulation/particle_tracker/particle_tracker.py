@@ -154,9 +154,9 @@ class ParticleTracker:
         particle_integrator: type[AbstractIntegrator] | None = None,
         dt=None,
         dt_range=None,
-        field_weighting="volume averaged",
+        field_weighting: str = "volume averaged",
         req_quantities=None,
-        verbose=True,
+        verbose: bool = True,
     ) -> None:
         # Instantiate the integrator object for use in the _push() method
         self._integrator: AbstractIntegrator = (

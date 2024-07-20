@@ -579,8 +579,14 @@ class TestParticleTrajectory:
         )
 
     @classmethod
-    def ExB_trajectory_case_one(
-        cls, t, E, B, q=const.e.si, m=const.m_p.si, is_relativistic=True
+    def ExB_trajectory_case_one(  # noqa: ANN206
+        cls,
+        t,
+        E,
+        B,
+        q=const.e.si,
+        m=const.m_p.si,
+        is_relativistic: bool = True,
     ):
         """
         Calculates the relativistically-correct ExB drift trajectory for a
