@@ -85,9 +85,11 @@ doc_subs: dict[str, str] = {
     "expect-api-changes": "This feature is under development. Breaking changes may occur in the future.",
     "getting ready to contribute": r":ref:`getting ready to contribute`\ ",
     "glossary": r":ref:`glossary`\ ",
+    "IDE": r":abbr:`IDE (Integrated Development Environment)`\ ",
     "keyword-only": r":term:`keyword-only`\ ",
     "lite-function": r":term:`lite-function`\ ",
     "lite-functions": r":term:`lite-functions`\ ",
+    "many ways to contribute": r":ref:`many ways`\ ",
     "maxpython": "3.12",
     "minpython": "3.10",
     "open a terminal": r":ref:`open a terminal <opening-a-terminal>`\ ",
@@ -97,10 +99,9 @@ doc_subs: dict[str, str] = {
     "particle-like": r":term:`particle-like`\ ",
     "particle-list-like": r":term:`particle-list-like`\ ",
     "plasma-calculator": r":ref:`plasmapy-calculator`\ ",
-    "release guide": r":ref:`release guide`\ ",
-    "src/plasmapy/": r":file:`src/plasmapy/`\ ",
+    "src/plasmapy": r":file:`src/plasmapy`\ ",
     "testing guide": r":ref:`testing guide`\ ",
-    "tests/": r":file:`tests/`\ ",
+    "tests": r":file:`tests`\ ",
 }
 
 numpy_subs: dict[str, str] = {

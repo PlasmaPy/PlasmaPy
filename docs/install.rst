@@ -12,6 +12,9 @@ Installing PlasmaPy
 .. contents:: Contents
    :local:
 
+.. role:: bash(code)
+   :language: bash
+
 Installing Python
 =================
 
@@ -74,7 +77,7 @@ into an activated Conda_ environment by opening a terminal and running:
 
    conda install -c conda-forge plasmapy
 
-Here ``-c conda-forge`` indicates that `plasmapy` should be installed
+Here :bash:`-c conda-forge` indicates that `plasmapy` should be installed
 from the conda-forge_ channel.
 
 To install `plasmapy` into another existing Conda_ environment, append
@@ -144,7 +147,7 @@ to solve package specifications.
 To test the installation, click on the :guilabel:`▶` icon that should be
 present next to the activated environment, and select
 :guilabel:`Open terminal`. Enter ``python`` in the terminal, and then
-``import plasmapy`` to make sure it works.
+:py:`import plasmapy` to make sure it works.
 
 Installing PlasmaPy from source code
 ====================================
@@ -165,7 +168,7 @@ If you have |git| installed on your computer, you may clone
 |PlasmaPy's GitHub repository| and access the source code from the most
 recent development version by running:
 
-.. code:: bash
+.. code-block:: bash
 
    git clone https://github.com/PlasmaPy/PlasmaPy.git
 
@@ -185,13 +188,13 @@ Building and installing
 To install the downloaded version of `plasmapy`, enter the
 :file:`PlasmaPy` directory and run:
 
-.. code:: bash
+.. code-block:: bash
 
    pip install .
 
 If you expect to occasionally edit the source code, instead run:
 
-.. code:: bash
+.. code-block:: bash
 
    pip install -e ".[tests,docs]"
 
