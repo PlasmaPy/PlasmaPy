@@ -21,7 +21,7 @@ to an open source project! Some of the possibilities are:
 * |:globe_with_meridians:| Improve |PlasmaPy's website|.
 * |:calendar_spiral:| Help organize events such as |Plasma Hack Week| or the `PlasmaPy
   Summer School`_.
-* |:speed_balloon:| Provide feedback on how existing functionality could be improved.
+* |:speech_balloon:| Provide feedback on how existing functionality could be improved.
 * |:motorway:| Help update PlasmaPy's development roadmap. ️
 * |:busts_in_silhouette:| Be part of the PlasmaPy community!
 

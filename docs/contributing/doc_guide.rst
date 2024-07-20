@@ -555,8 +555,8 @@ Glossary definitions
 --------------------
 
 Define important terms in PlasmaPy's :ref:`glossary`, which is located
-at |docs/glossary.rst|_. |:label:|️ Here is an example of a term defined
-within the :rst:dir:`glossary` |directive|.
+at |docs/glossary.rst|_. Here is an example of a term defined within the
+:rst:dir:`glossary` |directive|.
 
 .. code-block:: rst
 
