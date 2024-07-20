@@ -1062,9 +1062,40 @@ an angular frequency to get a length scale:
 
    d_i = (c/omega_pi).to(u.m, equivalencies=u.dimensionless_angles())  # doctest: +SKIP
 
+.. _release guide:
+
+Performing releases
+===================
+
+Before beginning the release process, first run the workflow to `create
+a release issue`_ (i.e., :issue:`2723`). The resulting issue will
+include the `release checklist`_ which describes the release process in
+detail.
+
+The overall process of performing a release is:
+
+* `Create a release issue`_.
+* Make code quality and documentation updates.
+* Run the workflows for CI and weekly tests.
+* Reserve a DOI on Zenodo.
+* Run the workflow to `mint a release`_ to build the changelog, create a
+  release branch, and tag the version for the release.
+* Create a release on GitHub based on that tag. This step will trigger
+  the workflow to publish to the Python Package Index.
+* Create a pull request to merge the release back into ``main`` (but do
+  not squash merge it).
+* Download the :file:`.tar.gz` file for the tagged version on GitHub and
+  upload it to Zenodo (while updating metadata).
+* Make sure that the automated pull request to the conda-forge feedstock
+  is merged successfully
+* Activate the release on Read the Docs.
+* Test the release.
+* Update the `release checklist`_.
+
 .. _ASCII: https://en.wikipedia.org/wiki/ASCII
 .. _autotyping: https://github.com/JelleZijlstra/autotyping
 .. _cognitive complexity: https://docs.codeclimate.com/docs/cognitive-complexity
+.. _create a release issue: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/create-release-issue.yml
 .. _Cython: https://cython.org
 .. _equivalencies: https://docs.astropy.org/en/stable/units/equivalencies.html
 .. _error codes enabled by default: https://mypy.readthedocs.io/en/stable/error_code_list.html
@@ -1072,12 +1103,14 @@ an angular frequency to get a length scale:
 .. _example notebook on particles: ../notebooks/getting_started/particles.ipynb
 .. _example notebook on units: ../notebooks/getting_started/units.ipynb
 .. _extract function refactoring pattern: https://refactoring.guru/extract-method
+.. _mint a release:
 .. _MonkeyType: https://monkeytype.readthedocs.io
 .. _NEP 29: https://numpy.org/neps/nep-0029-deprecation_policy.html
 .. _not a number: https://en.wikipedia.org/wiki/NaN
 .. _NumPy Enhancement Proposal 29: https://numpy.org/neps/nep-0029-deprecation_policy.html
 .. _Python Packaging User Guide: https://packaging.python.org
 .. _pyupgrade: https://github.com/asottile/pyupgrade
+.. _release checklist: https://github.com/PlasmaPy/PlasmaPy/blob/main/.github/content/release-checklist.md
 .. _rename refactoring in PyCharm: https://www.jetbrains.com/help/pycharm/rename-refactorings.html
 .. _SPEC 0: https://scientific-python.org/specs/spec-0000
 .. _TOML: https://toml.io/en/v1.0.0
