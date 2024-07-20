@@ -83,9 +83,9 @@ Example highlights
 
 .. toctree::
    :maxdepth: 1
-   :caption: Contributor Guide
+   :caption: Contributing
 
-   Overview <contributing/index>
+   Contributor Guide <contributing/index>
    contributing/many_ways
    contributing/getting_ready
    contributing/workflow
