@@ -19,7 +19,8 @@
 [release history]: https://pypi.org/project/plasmapy/#history
 [tests]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/tests.yml
 [Update pinned requirements]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/update-pinned-reqs.yml
-[weekly tests]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/weekly-tests.yml
+[weekly tests]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/weekly.yml
+[this record]: https://zenodo.org/doi/10.5281/zenodo.6774349
 [Zenodo]: https://zenodo.org/me/uploads
 [stable documentation build]: https://docs.plasmapy.org/en/stable
 [`stable`]: https://github.com/PlasmaPy/PlasmaPy/tree/stable
@@ -31,7 +32,7 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
 ### Planning the release
 
  - [x] [Create an issue for the release].
- - [ ] Update [milestones] for issues & pull requests (PRs).
+ - [ ] Update [milestones] for issues & pull requests (PRs). 🛣️
 
 <!-- We have had less need of a feature freeze as the package has become more mature, but we may wish to add this back in the future.
  - [ ] About three weeks before a minor or major release, announce that a feature freeze will occur one week before the anticipated release date. Only pull requests with a limited scope that do not significantly change functionality should be merged during the feature freeze.
@@ -40,31 +41,36 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
 
 ### Code quality updates
 
- - [ ] Revise changelog entries to make sure that they are understandable, necessary, and correctly categorized. Add the `no changelog entry needed` label to skip doing changelog checks.
- - [ ] Run the [GitHub Action for checking hyperlinks] and update broken links. Use `linkcheck_allowed_redirects` in [`docs/conf.py`] to allow redirects (e.g., from `doi.org`). Update or delete the `alias` field for authors in [`CITATION.cff`] who have changed their GitHub username.
- - [ ] Update [`.mailmap`] with new contributors <!-- delete this file? -->
- - [ ] [Update pinned requirements] and perform `pre-commit autoupdate`.
+ - [ ] Revise changelog entries to make sure that they are understandable, necessary, and correctly categorized. Add the `no changelog entry needed` label to skip doing changelog checks. 📜
+ - [ ] Run the [GitHub Action for checking hyperlinks] 🔗, and update broken links. Use `linkcheck_allowed_redirects` in [`docs/conf.py`] to allow redirects (e.g., from `doi.org`). Update or delete the `alias` field for authors in [`CITATION.cff`] who have changed their GitHub username.
+ - [ ] Run `git log --format="%aN <%aE>" | sort -u`, and update [`.mailmap`] if there are any duplicate contributors in the output. 📧
+ - [ ] [Update pinned requirements]. 📍
+ - [ ] Run `pre-commit autoupdate` followed by `pre-commit run --all-files`. Fix any new errors and commit the changes.
 
 ### Make sure that all tests are passing on `main`
 
  - [ ] Run the [tests]. [![CI](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/tests.yml)
- - [ ] Run the [weekly tests]. [![weekly tests](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/weekly-tests.yml/badge.svg?branch=main)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/weekly-tests.yml)
- - [ ] Fix any failures and repeat.
+ - [ ] Run the [weekly tests]. [![weekly tests](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/weekly.yml/badge.svg?branch=main)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/weekly-tests.yml)
+ - [ ] ✅ Fix any failures and repeat.
 
 ### Perform the release
 
- - [ ] Begin an upload to [Zenodo] for the new release using the `team@plasmapy.org` login, and reserve a DOI.
- - [ ] Run the GitHub Action to [mint a release]. Specify the version (i.e., `2024.5.0` or `2024.5.0rc1` for a release candidate) and copy/paste the reserved DOI from Zenodo.  This action will update the DOI, build the changelog, and tag the release.
- - [ ] [Create a release on GitHub].
-   - Choose the newly created tag (e.g., `v2024.5.0`), and use it as the title. (The release will be performed from the tag, so it is not necessary to select the branch.)
-   - Select the option to automatically generate release notes.
+ - [ ] Begin an upload to [Zenodo] for a new version of [this record], using the `team@plasmapy.org` login. Reserve a DOI.
+ - [ ] Run the GitHub Action to [mint a release]. Specify the version (i.e., `2024.5.0` or `2024.5.0rc1` for a release candidate) and copy/paste the reserved DOI from Zenodo.  This action will update the DOI, build the changelog, and tag the release. 🏷️
+ - [ ] [Create a release on GitHub]. 🚀
+   - Choose the newly created tag (e.g., `v2024.5.0`), and use it as the title. (The release will be performed from the tag, so it is not necessary to select the branch.) 🏷️
+   - Select the option to automatically generate release notes. 📜
    - Select the option to create a discussion for the release under the _General_ category.
    - For official releases, make sure the checkbox is selected for _Set as the latest release_. For beta releases or release candidates (e.g., `v2024.5.0rc1`), specify it as a pre-release.
-   - Click on _Publish release_, which will create the GitHub release and trigger the GitHub workflow to [publish to PyPI].
-   - Check the [release history] on PyPI to make sure that the release was successful.
+   - Click on _Publish release_, which will create the GitHub release and trigger the GitHub workflow to [publish to PyPI]. 🚀
+   - Check the [release history] on PyPI to make sure that the release was successful. 🆕
  - [ ] [Create a pull request] to merge the tag for the release back into main. Under the box for _compare_, select _Tags_, choose the tag for this release (e.g., `v2024.7.0`), and then click on _Create pull request_.
  - [ ] Merge **but do not squash** this PR back into `main`.
-   - _Squashing_ this pull request can cause problems by removing the tagged release commit from the history of `main` (e.g., #2630).
+
+> [!CAUTION]
+> Squashing the pull request back into `main` can cause problems by removing the tagged release commit from the history of `main`.
+
+<!-- This happened in #2630. -->
 
 <!-- Creating the pull request *from the tag* prevents us from accidentally deleting the release branch. -->
 <!-- We might be able to modify the `mint-release.yml` workflow by having it automatically create the pull request back into `main`, but we'd want to keep a note *not to squash merge* the resulting PRs. -->
@@ -81,7 +87,7 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
 
  - [ ] Delete the [`stable`] branch on GitHub, if it exists.
  - [ ] Activate the current and prior release on the [versions page on RTD], if necessary. If the documentation fails to build for a release, activate the corresponding branch (e.g., activate the `v2023.10.x` branch instead of the `v2023.10.0` tag). <!-- true example! -->
- - [ ] Check that the [documentation] builds correctly for the release branch. If the documentation build fails, create a new [`stable`] branch from the release branch (e.g., `2024.5.x`) and fix any problems with the documentation build. The [`stable`] branch is needed if the documentation build for the release fails or if we make any changes to the documentation between releases. The [stable documentation build] will point to the [`stable`] branch on GitHub if it exists. Otherwise, it will point to the most recent release on GitHub.
+ - [ ] Check that the [documentation] builds correctly for the release branch. If the documentation build fails, create a new [`stable`] branch from the release branch (e.g., `2024.5.x`) and fix any problems with the documentation build. The [`stable`] branch is needed if the documentation build for the release fails or if we make any changes to the documentation between releases. The [stable documentation build] will point to the [`stable`] branch on GitHub if it exists. Otherwise, it will point to the most recent release on GitHub. 📚
  - [ ] Verify that the [citation page] is up-to-date and the DOI link points to the most recent release.
 
 ## Test the release
@@ -94,6 +100,6 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
 ## After the release
 
  - [ ] Announce the release at the [community meeting].
- - [ ] [Create an issue for the release] to occur ∼3–4 months after this one.
  - [ ] Update the [release checklist], as needed.
+ - [ ] [Create an issue for the release] to occur ∼3–4 months after this one.
  - [ ] Close this issue.

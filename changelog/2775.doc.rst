@@ -1,0 +1,1 @@
+Based the version of PlasmaPy that gets included in development documentation builds on the current date and most recent git hash.

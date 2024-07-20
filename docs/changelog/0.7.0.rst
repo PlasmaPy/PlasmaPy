@@ -184,7 +184,7 @@ Improved Documentation
 
 - Improved consistency of documentation style and made
   |reStructuredText| fixes in several subpackages. (`#1073 <https://github.com/plasmapy/plasmapy/pull/1073>`__)
-- Added a pre-release section to the |release guide|.
+- Added a pre-release section to the release guide.
   This section now includes steps for having a feature freeze about a week before the release,
   followed by a code freeze about two days before the release. (`#1081 <https://github.com/plasmapy/plasmapy/pull/1081>`__)
 - Created the |Sphinx| extension package `plasmapy_sphinx` and used it to replace
@@ -218,7 +218,7 @@ Improved Documentation
 - Make `plasmapy.analysis.fit_functions.AbstractFitFunction.FitParamTuple` a
   property to fix the documentation build warning caused by the release
   of |Sphinx| ``v4.1.0``. (`#1199 <https://github.com/plasmapy/plasmapy/pull/1199>`__)
-- Included a step in the |release guide| to update Binder requirements
+- Included a step in the release guide to update Binder requirements
   so that the release of PlasmaPy on |PyPI| gets installed when opening
   example notebooks from the stable and release branches of the online
   documentation. (`#1205 <https://github.com/plasmapy/plasmapy/pull/1205>`__)

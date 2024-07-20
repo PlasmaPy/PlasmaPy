@@ -154,7 +154,7 @@ Initial setup
    new directory called :file:`repos/` in your home directory (denoted
    by :bash:`~`), run:
 
-   .. code-block::
+   .. code-block:: bash
 
       mkdir ~/repos
       cd ~/repos
@@ -283,7 +283,7 @@ when you :py:`import plasmapy`.
 
       Replace ``py`` with ``python`` if you are not using conda.
 
-   The :bash:`-e` specifies that this will be an
+   The :bash:`-e` flag specifies that this will be an
    |editable installation|.
 
    .. tip::

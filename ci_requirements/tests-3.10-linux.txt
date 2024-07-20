@@ -151,7 +151,7 @@ kiwisolver==1.4.5
     # via matplotlib
 llvmlite==0.43.0
     # via numba
-lmfit==1.3.1
+lmfit==1.3.2
     # via plasmapy (pyproject.toml)
 markupsafe==2.1.5
     # via
@@ -167,7 +167,7 @@ mistune==3.0.2
     # via nbconvert
 mpmath==1.3.0
     # via plasmapy (pyproject.toml)
-mypy==1.10.1
+mypy==1.11.0
     # via plasmapy (pyproject.toml)
 mypy-extensions==1.0.0
     # via mypy
@@ -263,7 +263,7 @@ pygments==2.18.0
     #   nbconvert
 pyparsing==3.1.2
     # via matplotlib
-pytest==8.2.2
+pytest==8.3.1
     # via
     #   plasmapy (pyproject.toml)
     #   pytest-cov
@@ -332,7 +332,7 @@ scipy==1.14.0
     #   lmfit
 send2trash==1.8.3
     # via jupyter-server
-setuptools==71.0.3
+setuptools==71.0.4
     # via plasmapy (pyproject.toml)
 six==1.16.0
     # via

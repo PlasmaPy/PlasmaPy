@@ -1,0 +1,1 @@
+Added a new page to the |contributor guide| on |many ways to contribute| to an open source project.
