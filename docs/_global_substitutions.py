@@ -85,6 +85,7 @@ doc_subs: dict[str, str] = {
     "expect-api-changes": "This feature is under development. Breaking changes may occur in the future.",
     "getting ready to contribute": r":ref:`getting ready to contribute`\ ",
     "glossary": r":ref:`glossary`\ ",
+    "IDE": r":abbr:`IDE (Integrated Development Environment)`\ ",
     "keyword-only": r":term:`keyword-only`\ ",
     "lite-function": r":term:`lite-function`\ ",
     "lite-functions": r":term:`lite-functions`\ ",
