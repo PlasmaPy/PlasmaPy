@@ -1145,7 +1145,7 @@ more details, please refer to `Sphinx's templating page`_.
    horrible workaround that can take hours to figure out. This has given
    rise to the saying:
 
-      *Sphinx rabbit holes often have dragons in them.* 🐇 🕳️ 🐉
+      *Sphinx rabbit holes often have dragons in them.* |:rabbit2:| |:hole:| |:dragon:|
 
    Remember: your happiness and well-being are more important than
    `nested inline markup`_!
@@ -1285,7 +1285,7 @@ Troubleshooting
 ===============
 
 This section describes how to fix common documentation errors and
-warnings. 🛠️
+warnings. |:tools:|
 
 .. _missing-target:
 
