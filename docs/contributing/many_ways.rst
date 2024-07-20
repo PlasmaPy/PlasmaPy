@@ -32,3 +32,5 @@ to an open source project:
 
 .. _How to Contribute to Open Source: https://opensource.guide/how-to-contribute
 .. _PlasmaPy Summer School: https://www.plasmapy.org/meetings/summer-school-2024
+.. _report bugs: https://github.com/PlasmaPy/PlasmaPy/issues/new?assignees=&labels=Bug&template=bug_report.yml
+.. _request new features: https://github.com/PlasmaPy/PlasmaPy/issues/new?assignees=&labels=Feature+request&template=feature_request.yml

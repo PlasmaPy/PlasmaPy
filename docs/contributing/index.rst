@@ -23,6 +23,7 @@ If you are becoming a first-time contributor, we recommend starting with:
    workflow
 
 After gaining some familiarity with the code contribution workflow, we
+suggest checking out:
 
 .. toctree::
    :caption: Contributing to PlasmaPy
@@ -34,5 +35,5 @@ After gaining some familiarity with the code contribution workflow, we
    doc_guide
    pre-commit
 
-.. _request new features: https://github.com/PlasmaPy/PlasmaPy/issues/new?assignees=&labels=Feature+request&template=feature_request.yml
-.. _report bugs: https://github.com/PlasmaPy/PlasmaPy/issues/new?assignees=&labels=Bug&template=bug_report.yml
+The contributions are made to |PlasmaPy's GitHub repository|. Thank you
+again! 😸
