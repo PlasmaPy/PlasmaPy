@@ -509,7 +509,7 @@ suppose we run |mypy| on the following function:
 
 .. code-block:: python
 
-   def return_object(x: int | str) -> int:
+   def return_object(x: int | str) -> int:  # should be: -> int | str
        return x
 
 We will then get the following error:
@@ -703,44 +703,6 @@ Dependencies and requirements
    against the development versions of important dependencies such as
    NumPy and Astropy. Such tests can help find problems before
    they are included in an official release.
-
-Decorators
-==========
-
-.. _particle_inputs:
-
-Transforming particle-like arguments into particle objects
-----------------------------------------------------------
-
-Use |particle_input| to transform arguments to relevant |Particle|,
-|CustomParticle|, or |ParticleList| objects (see :ref:`particles`).
-
-.. _validating_quantities:
-
-Validating Quantity arguments
------------------------------
-
-Use |validate_quantities| to enforce |Quantity| type hints:
-
-.. code-block:: python
-
-   @validate_quantities
-   def magnetic_pressure(B: u.Quantity[u.T]) -> u.Quantity[u.Pa]:
-       return B**2 / (2 * const.mu0)
-
-Use |validate_quantities| to verify function arguments and impose
-relevant restrictions:
-
-.. code-block:: python
-
-   from plasmapy.utils.decorators.validators import validate_quantities
-
-   @validate_quantities(
-       n={"can_be_negative": False},
-       validations_on_return={"equivalencies": u.dimensionless_angles()},
-   )
-   def inertial_length(n: u.Quantity[u.m**-3], particle) -> u.Quantity[u.m]:
-       ...
 
 Special function categories
 ===========================
@@ -961,7 +923,32 @@ adjacent fields such as astronomy and heliophysics. To get started with
   beginning of a sentence, including when they are named after a person.
   The sole exception is "degree Celsius".
 
-.. _particles:
+.. _validating_quantities:
+
+Validating quantities
+~~~~~~~~~~~~~~~~~~~~~
+
+Use |validate_quantities| to enforce |Quantity| type hints:
+
+.. code-block:: python
+
+   @validate_quantities
+   def magnetic_pressure(B: u.Quantity[u.T]) -> u.Quantity[u.Pa]:
+       return B**2 / (2 * const.mu0)
+
+Use |validate_quantities| to verify function arguments and impose
+relevant restrictions:
+
+.. code-block:: python
+
+   from plasmapy.utils.decorators.validators import validate_quantities
+
+   @validate_quantities(
+       n={"can_be_negative": False},
+       validations_on_return={"equivalencies": u.dimensionless_angles()},
+   )
+   def inertial_length(n: u.Quantity[u.m**-3], particle) -> u.Quantity[u.m]:
+       ...
 
 Particles
 ---------
@@ -981,13 +968,31 @@ basic particle data. |Particle| accepts |particle-like| inputs.
 To get started with `plasmapy.particles`, check out this `example
 notebook on particles`_.
 
-* Avoid using implicit default particle assumptions for function
-  arguments (see issue :issue:`453`).
+.. caution::
+
+   When an element is provided to a PlasmaPy function without isotope
+   information, it is assumed that the mass is given by the standard
+   atomic weight. While :py:`Particle("p+")` represents a proton,
+   :py:`Particle("H+")` includes some deuterons.
+
+.. tip::
+
+   Avoid using implicit default particle assumptions for function
+   arguments (see :issue:`453`).
+
+.. _particle-like-arguments:
+
+Transforming particle-like arguments
+------------------------------------
 
 * The |particle_input| decorator can automatically transform a
   |particle-like| |argument| into a |Particle|, |CustomParticle|, or
   |ParticleList| instance when the corresponding |parameter| is
-  decorated with |ParticleLike|.
+  annotated with |ParticleLike|.
+
+* For |particle-list-like| parameters, use |ParticleListLike| as the
+  annotation so that the corresponding argument is transformed into a
+  |ParticleList|.
 
   .. code-block:: python
 
