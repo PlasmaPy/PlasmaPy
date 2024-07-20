@@ -8,22 +8,22 @@ While this |contributor guide| primarily describes the process of contributing c
 documentation, and tests to PlasmaPy, there are many ways to contribute
 to an open source project! Some of the possibilities are:
 
-* 💻 Contribute new code, documentation, and tests.
-* ♻️ Refactor existing code and tests.
-* 📝 Improve the description of plasma physics in |PlasmaPy's documentation|.
-* 📘 Write educational |Jupyter| notebook that introduce plasma concepts
+* |:computer:| Contribute new code, documentation, and tests.
+* |:recycle:| Refactor existing code and tests.
+* |:memo:| Improve the description of plasma physics in |PlasmaPy's documentation|.
+* |:books:| Write educational |Jupyter| notebook that introduce plasma concepts
   using PlasmaPy.
-* 🎥 Create videos that show how to use PlasmaPy.
-* ✅ Participate in code reviews.
-* 📋 Help with project management.
-* 💡 `Request new features`_.
-* 🐞 `Report bugs`_.
-* 🌐 Improve |PlasmaPy's website|.
-* 🗓️ Help organize events such as |Plasma Hack Week| or the `PlasmaPy
+* |:movie_camera:| Create videos that show how to use PlasmaPy.
+* |:white_check_mark:| Participate in code reviews.
+* |:clipboard:| Help with project management.
+* |:bulb:| `Request new features`_.
+* |:lady_beetle:| `Report bugs`_.
+* |:globe_with_meridians:| Improve |PlasmaPy's website|.
+* |:calendar_spiral:| Help organize events such as |Plasma Hack Week| or the `PlasmaPy
   Summer School`_.
-* 💬 Provide feedback on how existing functionality could be improved.
-* 🛣 Help update PlasmaPy's development roadmap. ️
-* 👥 Be part of the PlasmaPy community!
+* |:speed_balloon:| Provide feedback on how existing functionality could be improved.
+* |:motorway:| Help update PlasmaPy's development roadmap. ️
+* |:busts_in_silhouette:| Be part of the PlasmaPy community!
 
 .. tip::
 

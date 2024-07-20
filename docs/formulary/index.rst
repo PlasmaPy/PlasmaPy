@@ -5,7 +5,7 @@ Formulary (`plasmapy.formulary`)
 ********************************
 
 `plasmapy.formulary` provides theoretical formulas for calculation of
-physical quantities helpful for plasma physics.
+physical quantities helpful for plasma physics. |:abacus:|
 
 .. table::
    :widths: 5 16
