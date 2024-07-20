@@ -4,9 +4,9 @@
 Many Ways to Contribute
 ***********************
 
-WHile this guide primarily describes the process of contributing code,
+While this |contributor guide| primarily describes the process of contributing code,
 documentation, and tests to PlasmaPy, there are many ways to contribute
-to an open source project:
+to an open source project! Some of the possibilities are:
 
 * 💻 Contribute new code, documentation, and tests.
 * ♻️ Refactor existing code and tests.
