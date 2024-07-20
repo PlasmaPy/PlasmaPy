@@ -20,9 +20,7 @@ Contributor Guide
 Thank you for your interest in contributing to PlasmaPy! ✨ The future of
 the project depends on people like you, so we deeply appreciate it! 🌱
 
-This guide describes the fundamentals of contributing to PlasmaPy. If
-you are becoming a first-time contributor, we recommend starting with
-the pages on:
+If you are becoming a first-time contributor, we recommend starting with:
 
 * :ref:`Getting ready to contribute <Getting Ready to Contribute>`, and then
 * The :ref:`code contribution workflow <workflow>`.
