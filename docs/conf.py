@@ -104,6 +104,7 @@ extensions = [
     "sphinx_tabs.tabs",
     "sphinx_collapse",
     "sphinxcontrib.bibtex",
+    "sphinxemoji.sphinxemoji",
     "sphinxcontrib.globalsubs",
 ]
 
@@ -128,6 +129,7 @@ root_doc = "index"
 source_suffix = ".rst"
 templates_path = ["_templates"]
 maximum_signature_line_length = 90
+sphinxemoji_style = "twemoji"
 
 # Specify patterns to ignore when doing a nitpicky documentation build.
 # These may include common expressions like "real number" as well as
