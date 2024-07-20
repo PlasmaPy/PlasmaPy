@@ -69,7 +69,7 @@ fonttools==4.53.1
     # via matplotlib
 h5py==3.7.0
     # via plasmapy (pyproject.toml)
-hypothesis==6.97.4
+hypothesis==6.108.2
     # via plasmapy (pyproject.toml)
 identify==2.6.0
     # via pre-commit
@@ -147,7 +147,7 @@ mistune==0.8.4
     # via nbconvert
 mpmath==1.2.1
     # via plasmapy (pyproject.toml)
-mypy==1.10.0
+mypy==1.11.0
     # via plasmapy (pyproject.toml)
 mypy-extensions==1.0.0
     # via mypy
@@ -251,7 +251,7 @@ pygments==2.18.0
     #   nbconvert
 pyparsing==3.1.2
     # via matplotlib
-pytest==8.0.2
+pytest==8.3.1
     # via
     #   plasmapy (pyproject.toml)
     #   pytest-cov
@@ -268,9 +268,9 @@ pytest-filter-subpackage==0.2.0
     # via plasmapy (pyproject.toml)
 pytest-regressions==2.5.0
     # via plasmapy (pyproject.toml)
-pytest-rerunfailures==13.0
+pytest-rerunfailures==14.0
     # via plasmapy (pyproject.toml)
-pytest-xdist==3.5.0
+pytest-xdist==3.6.1
     # via plasmapy (pyproject.toml)
 python-dateutil==2.9.0.post0
     # via
