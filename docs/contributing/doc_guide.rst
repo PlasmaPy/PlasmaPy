@@ -465,6 +465,10 @@ Roles
 The following are |roles| that are customized for PlasmaPy or come from
 various |Sphinx| extensions.
 
+.. rst:role:: commit
+
+   Links to a GitHub commit.
+
 .. rst:role:: issue
 
    Links to a GitHub issue.
@@ -1448,7 +1452,7 @@ in a :file:`__init__.py` file. For example, the error
 
 .. ChatGPT suggested the `diff` pygments language for error/warning messages
 
-.. code-block:: dmesg
+.. code-block:: diff
 
    AttributeError: module 'plasmapy.subpackage' has no attribute 'module'
 
@@ -1461,7 +1465,7 @@ List ends without a blank line
 
 Warnings like the following:
 
-.. code-block:: dmesg
+.. code-block:: diff
 
    WARNING: :40: (WARNING/2) Bullet list ends without a blank line; unexpected unindent.
    WARNING: :47: (WARNING/2) Definition list ends without a blank line; unexpected unindent.
@@ -1542,7 +1546,7 @@ In general, each source file in the documentation must be included in a
 table of contents (toctree_). Otherwise, |Sphinx| will issue a warning
 like:
 
-.. code-block:: dmesg
+.. code-block:: diff
 
    WARNING: document isn't included in any toctree
 

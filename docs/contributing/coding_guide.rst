@@ -514,7 +514,7 @@ suppose we run |mypy| on the following function:
 
 We will then get the following error:
 
-.. code-block:: dmesg
+.. code-block:: diff
 
    Incompatible return value type (got "int | str", expected "int")  [return-value]
 
