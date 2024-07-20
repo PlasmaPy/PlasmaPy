@@ -68,7 +68,7 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
  - [ ] Merge **but do not squash** this PR back into `main`.
 
 > [!CAUTION]
-> Squashing_ the pull request back into `main` can cause problems by removing the tagged release commit from the history of `main`.
+> Squashing the pull request back into `main` can cause problems by removing the tagged release commit from the history of `main`.
 
 <!-- This happened in #2630. -->
 
