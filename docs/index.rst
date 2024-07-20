@@ -86,6 +86,7 @@ Example highlights
    :caption: Contributor Guide
 
    Overview <contributing/index>
+   contributing/many_ways
    contributing/getting_ready
    contributing/workflow
    contributing/coding_guide
@@ -93,7 +94,6 @@ Example highlights
    contributing/changelog_guide
    contributing/doc_guide
    contributing/testing_guide
-   contributing/release_guide
 
 .. _new discussion on GitHub: https://github.com/PlasmaPy/PlasmaPy/discussions/new/choose
 .. _on GitHub: https://github.com/PlasmaPy/PlasmaPy
