@@ -92,7 +92,7 @@ jobs:
         path: |
           .nox
         # Changing pyproject.toml or requirements invalidates the cache
-        key: ${{ matrix.nox_session }}-${{ matrix.python }}-${{ runner.os }}-${{ hashFiles('pyproject.toml', 'ci_requirements/all-3.12.txt') }}
+        key: ${{ matrix.nox_session }}-${{ matrix.python }}-${{ runner.os }}-${{ hashFiles('pyproject.toml', 'ci_requirements/all-3.12-linux.txt') }}
 
     - name: Run Nox session
       run: nox -s '${{ matrix.nox_session }}'
