@@ -13,23 +13,27 @@ Introduction
 ============
 
 PlasmaPy uses |pre-commit| to automate code quality checks and perform
-auto-fixes. The configuration for pre-commit is in
-|.pre-commit-config.yaml|_.
+auto-fixes.
 
 .. _pre-commit-troubleshooting:
 
 Troubleshooting pre-commit failures
 ===================================
 
-Many common |pre-commit| test failures related to formatting can be
-automatically fixed by adding a comment on a pull request that says
-``pre-commit.ci autofix`` (like in `this comment
-<https://github.com/PlasmaPy/PlasmaPy/pull/1500#issuecomment-1216865989>`__).
-This comment will produce a new commit that applies the automatic fixes
-made by the different pre-commit hooks.
+.. tip::
 
-After doing this, please do a :bash:`git pull` in your clone of
-PlasmaPy's repository to pull back the auto-fixes to your computer.
+   Many common |pre-commit| test failures related to formatting can be
+   automatically fixed by adding a comment on a pull request that says:
+
+      pre-commit.ci autofix
+
+   This comment will produce a new commit to applies auto-fixes from
+   pre-commit. For an example, see
+   `this comment
+   <https://github.com/PlasmaPy/PlasmaPy/pull/1500#issuecomment-1216865989>`__.
+
+   After doing this, don't forget to do a :bash:`git pull` in your clone
+   of the repository to pull back the changes to your computer.
 
 The following sections contain suggestions for how to fix pre-commit
 failures that were not corrected by commenting ``pre-commit.ci autofix``
@@ -143,9 +147,9 @@ To enable pre-commit on your computer:
 
             python -m pip install pre-commit
 
-#. Navigate to the :file:`PlasmaPy/` directory that contains your clone
+#. Navigate to the :file:`PlasmaPy` directory that contains your clone
    of PlasmaPy's repository. For example, if you cloned PlasmaPy into
-   the :file:`~/repos/` directory, then run:
+   the :file:`~/repos` directory, then run:
 
    .. code-block:: bash
 

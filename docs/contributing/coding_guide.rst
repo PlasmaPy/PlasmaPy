@@ -9,6 +9,8 @@ Coding Guide
    :local:
    :backlinks: none
 
+.. Define roles for in-line code formatting with pygments
+
 .. role:: bash(code)
    :language: bash
 
@@ -37,7 +39,6 @@ a community meeting.
 PlasmaPy generally follows the :pep:`8` style guide for Python code,
 while using tools like |pre-commit| and |ruff| to perform
 autoformatting, code quality checks, and automatic fixes.
-
 
 Coding guidelines
 =================
@@ -271,9 +272,9 @@ code is supposed to be doing.
 
 .. tip::
 
-   It is common for an :wikipedia:`integrated development environment`
-   (IDE) to have a built-in tool for simultaneously renaming a variable
-   throughout a project. For example, a `rename refactoring in PyCharm
+   It is common for an |IDE| to have a built-in tool for simultaneously
+   renaming a variable throughout a project. For example, a `rename
+   refactoring in PyCharm
    <https://www.jetbrains.com/help/pycharm/rename-refactorings.html>`__
    can be done with :kbd:`Shift+F6` on Windows or Linux, and :kbd:`⇧F6`
    or :kbd:`⌥⌘R` on macOS.
@@ -425,7 +426,10 @@ Type hint annotations
 =====================
 
 PlasmaPy uses |type hint annotations| and |mypy| to perform
-|static type checking|.
+|static type checking|. Type hints improve readability and
+maintainability by clarifying the types that a function accepts and
+returns. Type hints also help Jupyter notebooks and IDEs provide better
+tooltips and perform auto-completion.
 
 Type hint annotations specify the expected types of arguments and return
 values. A function that accepts a `float` or `str` and returns a `str`
@@ -450,8 +454,8 @@ more, check out the `type hints cheat sheet`_.
 Automatically adding type hint annotations
 ------------------------------------------
 
-PlasmaPy has defined multiple |Nox| sessions that can automatically add
-type hints using autotyping_ and MonkeyType_.
+PlasmaPy has defined multiple |Nox| sessions in |noxfile.py|_ that can
+automatically add type hints using autotyping_ and MonkeyType_.
 
 The ``autotyping(safe)`` session uses autotyping_ to automatically add
 type hints for common patterns, while producing very few incorrect
@@ -463,7 +467,7 @@ annotations:
 
 The ``autotyping(aggressive)`` session uses autotyping_ to automatically
 add even more type hints than ``autotyping(safe)``. Because it is less
-reliable, the newly added type hints should be carefully checked:
+reliable, the newly added type hints should be carefully reviewed:
 
 .. code-block:: shell
 
@@ -472,18 +476,27 @@ reliable, the newly added type hints should be carefully checked:
 The ``monkeytype`` session automatically adds type hint annotations to a
 module based on the types of variables that were observed when running
 `pytest`. Like ``autotyping(aggressive)``, it can add incorrect or
-incomplete type hints. It is run for a single module at a time:
+incomplete type hints, so newly added type hints should be carefully
+reviewed. It is run for a single module at a time:
 
 .. code-block:: shell
 
    nox -s monkeytype -- plasmapy.particles.atomic
 
+.. tip::
+
+   Run :bash:`nox -s 'autotyping(safe)'` and commit the changes before
+   executing the ``autotyping(aggressive)`` or ``monkeytype`` sessions.
+
 Static type checking
 --------------------
 
 PlasmaPy uses |mypy| to perform |static type checking| to detect
-incorrect or inconsistent |type hint annotations|. We can perform
-static type checking by running:
+incorrect or inconsistent |type hint annotations|. Static type checking
+helps us find type related errors during the development process, and
+thus improve code quality.
+
+We can perform static type checking by running:
 
 .. code-block:: shell
 
@@ -496,12 +509,12 @@ suppose we run |mypy| on the following function:
 
 .. code-block:: python
 
-   def return_object(x: int | str) -> int:
+   def return_object(x: int | str) -> int:  # should be: -> int | str
        return x
 
 We will then get the following error:
 
-.. code-block::
+.. code-block:: diff
 
    Incompatible return value type (got "int | str", expected "int")  [return-value]
 
@@ -531,7 +544,7 @@ a particular error.
 .. important::
 
    Because type hints are easier to add while writing code, please use
-   :py:`# type ignore` comments sparingly.
+   :py:`# type ignore` comments sparingly!
 
 .. note::
 
@@ -690,44 +703,6 @@ Dependencies and requirements
    against the development versions of important dependencies such as
    NumPy and Astropy. Such tests can help find problems before
    they are included in an official release.
-
-Decorators
-==========
-
-.. _particle_inputs:
-
-Transforming particle-like arguments into particle objects
-----------------------------------------------------------
-
-Use |particle_input| to transform arguments to relevant |Particle|,
-|CustomParticle|, or |ParticleList| objects (see :ref:`particles`).
-
-.. _validating_quantities:
-
-Validating Quantity arguments
------------------------------
-
-Use |validate_quantities| to enforce |Quantity| type hints:
-
-.. code-block:: python
-
-   @validate_quantities
-   def magnetic_pressure(B: u.Quantity[u.T]) -> u.Quantity[u.Pa]:
-       return B**2 / (2 * const.mu0)
-
-Use |validate_quantities| to verify function arguments and impose
-relevant restrictions:
-
-.. code-block:: python
-
-   from plasmapy.utils.decorators.validators import validate_quantities
-
-   @validate_quantities(
-       n={"can_be_negative": False},
-       validations_on_return={"equivalencies": u.dimensionless_angles()},
-   )
-   def inertial_length(n: u.Quantity[u.m**-3], particle) -> u.Quantity[u.m]:
-       ...
 
 Special function categories
 ===========================
@@ -948,7 +923,32 @@ adjacent fields such as astronomy and heliophysics. To get started with
   beginning of a sentence, including when they are named after a person.
   The sole exception is "degree Celsius".
 
-.. _particles:
+.. _validating_quantities:
+
+Validating quantities
+~~~~~~~~~~~~~~~~~~~~~
+
+Use |validate_quantities| to enforce |Quantity| type hints:
+
+.. code-block:: python
+
+   @validate_quantities
+   def magnetic_pressure(B: u.Quantity[u.T]) -> u.Quantity[u.Pa]:
+       return B**2 / (2 * const.mu0)
+
+Use |validate_quantities| to verify function arguments and impose
+relevant restrictions:
+
+.. code-block:: python
+
+   from plasmapy.utils.decorators.validators import validate_quantities
+
+   @validate_quantities(
+       n={"can_be_negative": False},
+       validations_on_return={"equivalencies": u.dimensionless_angles()},
+   )
+   def inertial_length(n: u.Quantity[u.m**-3], particle) -> u.Quantity[u.m]:
+       ...
 
 Particles
 ---------
@@ -968,13 +968,31 @@ basic particle data. |Particle| accepts |particle-like| inputs.
 To get started with `plasmapy.particles`, check out this `example
 notebook on particles`_.
 
-* Avoid using implicit default particle assumptions for function
-  arguments (see issue :issue:`453`).
+.. caution::
+
+   When an element is provided to a PlasmaPy function without isotope
+   information, it is assumed that the mass is given by the standard
+   atomic weight. While :py:`Particle("p+")` represents a proton,
+   :py:`Particle("H+")` includes some deuterons.
+
+.. tip::
+
+   Avoid using implicit default particle assumptions for function
+   arguments (see :issue:`453`).
+
+.. _particle-like-arguments:
+
+Transforming particle-like arguments
+------------------------------------
 
 * The |particle_input| decorator can automatically transform a
   |particle-like| |argument| into a |Particle|, |CustomParticle|, or
   |ParticleList| instance when the corresponding |parameter| is
-  decorated with |ParticleLike|.
+  annotated with |ParticleLike|.
+
+* For |particle-list-like| parameters, use |ParticleListLike| as the
+  annotation so that the corresponding argument is transformed into a
+  |ParticleList|.
 
   .. code-block:: python
 
@@ -1049,43 +1067,40 @@ an angular frequency to get a length scale:
 
    d_i = (c/omega_pi).to(u.m, equivalencies=u.dimensionless_angles())  # doctest: +SKIP
 
-.. _example_notebooks:
+.. _performing releases:
 
-Example notebooks
-=================
+Performing releases
+===================
 
-.. _docs/notebooks: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/notebooks
+Before beginning the release process, first run the workflow to `create
+a release issue`_ (i.e., :issue:`2723`). The resulting issue will
+include the `release checklist`_ which describes the release process in
+detail.
 
-Examples in PlasmaPy are written as Jupyter notebooks, taking advantage
-of their mature ecosystems. They are located in `docs/notebooks`_.
-|nbsphinx| takes care of executing them at documentation build time and
-including them in the documentation.
+The overall process of performing a release is:
 
-Please note that it is necessary to store notebooks with their outputs
-stripped
-(use the "Edit -> Clear all" option in JupyterLab and the "Cell -> All
-Output -> Clear" option in the "classic" Jupyter Notebook). This
-accomplishes two goals:
-
-1. helps with versioning the notebooks, as binary image data is not stored in
-   the notebook
-2. signals |nbsphinx| that it should execute the notebook.
-
-.. note::
-
-  In the future, verifying and running this step may be automated via a GitHub bot.
-  Currently, reviewers should ensure that submitted notebooks have outputs stripped.
-
-If you have an example notebook that includes packages unavailable in
-the documentation building environment (e.g., :py:`bokeh`) or runs some
-heavy computation that should not be executed on every commit, *keep the
-outputs in the notebook* but store it in the repository with a
-:file:`preexecuted_` prefix (e.g.,
-:file:`preexecuted_full_3d_mhd_chaotic_turbulence_simulation.ipynb`).
+* `Create a release issue`_.
+* Make code quality and documentation updates.
+* Run the workflows for CI and weekly tests.
+* Reserve a DOI on Zenodo.
+* Run the workflow to `mint a release`_ to build the changelog, create a
+  release branch, and tag the version for the release.
+* Create a release on GitHub based on that tag. This step will trigger
+  the workflow to publish to the Python Package Index.
+* Create a pull request to merge the release back into ``main`` (but do
+  not squash merge it).
+* Download the :file:`.tar.gz` file for the tagged version on GitHub and
+  upload it to Zenodo (while updating metadata).
+* Make sure that the automated pull request to the conda-forge feedstock
+  is merged successfully
+* Activate the release on Read the Docs.
+* Test the release.
+* Update the `release checklist`_.
 
 .. _ASCII: https://en.wikipedia.org/wiki/ASCII
 .. _autotyping: https://github.com/JelleZijlstra/autotyping
 .. _cognitive complexity: https://docs.codeclimate.com/docs/cognitive-complexity
+.. _create a release issue: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/create-release-issue.yml
 .. _Cython: https://cython.org
 .. _equivalencies: https://docs.astropy.org/en/stable/units/equivalencies.html
 .. _error codes enabled by default: https://mypy.readthedocs.io/en/stable/error_code_list.html
@@ -1093,12 +1108,14 @@ outputs in the notebook* but store it in the repository with a
 .. _example notebook on particles: ../notebooks/getting_started/particles.ipynb
 .. _example notebook on units: ../notebooks/getting_started/units.ipynb
 .. _extract function refactoring pattern: https://refactoring.guru/extract-method
+.. _mint a release:
 .. _MonkeyType: https://monkeytype.readthedocs.io
 .. _NEP 29: https://numpy.org/neps/nep-0029-deprecation_policy.html
 .. _not a number: https://en.wikipedia.org/wiki/NaN
 .. _NumPy Enhancement Proposal 29: https://numpy.org/neps/nep-0029-deprecation_policy.html
 .. _Python Packaging User Guide: https://packaging.python.org
 .. _pyupgrade: https://github.com/asottile/pyupgrade
+.. _release checklist: https://github.com/PlasmaPy/PlasmaPy/blob/main/.github/content/release-checklist.md
 .. _rename refactoring in PyCharm: https://www.jetbrains.com/help/pycharm/rename-refactorings.html
 .. _SPEC 0: https://scientific-python.org/specs/spec-0000
 .. _TOML: https://toml.io/en/v1.0.0
@@ -1118,6 +1135,9 @@ outputs in the notebook* but store it in the repository with a
 
 .. _`mypy.ini`: https://github.com/PlasmaPy/PlasmaPy/blob/main/mypy.ini
 .. |mypy.ini| replace:: :file:`mypy.ini`
+
+.. _`noxfile.py`: https://github.com/PlasmaPy/PlasmaPy/tree/main/noxfile.py
+.. |noxfile.py| replace:: :file:`noxfile.py`
 
 .. _`pyproject.toml`: https://github.com/PlasmaPy/PlasmaPy/blob/main/pyproject.toml
 .. |pyproject.toml| replace:: :file:`pyproject.toml`

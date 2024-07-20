@@ -106,7 +106,7 @@ Add and commit changes
 
 Next we can go through the cycle of making changes, which is usually
 repeated multiple times. To get a better idea of what is being done in
-each step, try running ``git status``.
+each step, try running :bash:`git status`.
 
 #. Edit a file and save the changes.
 
@@ -118,9 +118,9 @@ each step, try running ``git status``.
       git add filename
 
    where :samp:`{filename}` is replaced with the name of the edited
-   file(s). Use ``git add *`` to add all files in the directory (except
-   for files specified in :file:`.gitignore`. This step lets us line up
-   the changes that we want to record as a snapshot in history.
+   file(s). Use :bash:`git add *` to add all files in the directory
+   (except for files specified in |.gitignore|_. This step lets us line
+   up the changes that we want to record as a snapshot in history.
 
 #. To commit the changes, run:
 
@@ -133,16 +133,15 @@ each step, try running ``git status``.
    Committing a change is like preserving a snapshot of what each file
    looks like at this point in history.
 
-
    .. hint::
 
       If it has been installed, |pre-commit| will perform automated
       checks and possibly auto-fixes. If pre-commit fails, then
       it'll be necessary to fix any remaining problems and do the
-      ``git add`` and ``git commit`` steps once more. Try using
-      ``git diff`` and ``git diff --cached`` to view the changes, and
-      :guilabel:`↑` and :guilabel:`↓` to scroll through previous
-      commands in a terminal.
+      :bash:`git add` and :bash:`git commit` steps once more. Try using
+      :bash:`git diff` and :bash:`git diff --cached` to view the
+      changes, and :guilabel:`↑` and :guilabel:`↓` to scroll through
+      previous commands in a terminal.
 
 #. To push the changes to GitHub, run:
 
@@ -258,7 +257,7 @@ If any of the changes conflict with each other, it will be necessary to
       - given-names: <given names>
         family-names: <family names>
         affiliation: <affiliation>
-        orcid: https://orcid.org/<ORCiD-iD>
+        orcid: https://orcid.org/<ORCID-iD>
         alias: <GitHub username>
 
    All fields are optional except ``alias``, which is your GitHub
@@ -279,3 +278,6 @@ If any of the changes conflict with each other, it will be necessary to
 
 .. _`CITATION.cff`: https://github.com/PlasmaPy/PlasmaPy/blob/main/CITATION.cff
 .. |CITATION.cff| replace:: :file:`CITATION.cff`
+
+.. _`.gitignore`: https://github.com/PlasmaPy/PlasmaPy/blob/main/.gitignore
+.. |.gitignore| replace:: :file:`.gitignore`

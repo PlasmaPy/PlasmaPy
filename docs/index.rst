@@ -83,17 +83,17 @@ Example highlights
 
 .. toctree::
    :maxdepth: 1
-   :caption: Contributor Guide
+   :caption: Contributing
 
-   Overview <contributing/index>
+   Contributor Guide <contributing/index>
+   contributing/many_ways
    contributing/getting_ready
    contributing/workflow
    contributing/coding_guide
-   contributing/pre-commit
-   contributing/changelog_guide
-   contributing/doc_guide
    contributing/testing_guide
-   contributing/release_guide
+   contributing/doc_guide
+   contributing/changelog_guide
+   contributing/pre-commit
 
 .. _new discussion on GitHub: https://github.com/PlasmaPy/PlasmaPy/discussions/new/choose
 .. _on GitHub: https://github.com/PlasmaPy/PlasmaPy
