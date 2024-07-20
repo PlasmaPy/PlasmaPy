@@ -9,6 +9,8 @@ Coding Guide
    :local:
    :backlinks: none
 
+.. Define roles for in-line code formatting with pygments
+
 .. role:: bash(code)
    :language: bash
 

@@ -9,15 +9,17 @@ Documentation Guide
    :local:
    :backlinks: none
 
+.. Define roles for in-line code formatting with pygments
+
 .. role:: bash(code)
    :language: bash
-
-.. Use :rest: to avoid conflicting with :rst:role: and :rst:dir:
 
 .. role:: rest(code)
    :language: rst
 
-.. Escape backticks with a \ in arguments provided to :rest: (like :rest:`:math:\`5+6\``)
+.. Use :rest: to avoid conflicting with :rst:role: and :rst:dir:.
+   Escape backticks with a \ in arguments provided to :rest: (like
+   :rest:`:math:\`5+6\``)
 
 Introduction
 ============
@@ -479,6 +481,14 @@ various |Sphinx| extensions.
 
    Used for in-line Python code formatting. Defined using
    :confval:`rst_prolog` in |docs/conf.py|_.
+
+.. rst:role:: sub
+
+   For subscripts.
+
+.. rst:role:: sup
+
+   For superscripts.
 
 .. rst:role:: user
 
