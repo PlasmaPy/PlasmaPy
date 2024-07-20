@@ -67,8 +67,8 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
  - [ ] [Create a pull request] to merge the tag for the release back into main. Under the box for _compare_, select _Tags_, choose the tag for this release (e.g., `v2024.7.0`), and then click on _Create pull request_.
  - [ ] Merge **but do not squash** this PR back into `main`.
 
-   > [!CAUTION]
-   > Squashing_ the pull request back into `main` can cause problems by removing the tagged release commit from the history of `main`.  <!-- This happened in #2630. -->
+> [!CAUTION]
+> Squashing_ the pull request back into `main` can cause problems by removing the tagged release commit from the history of `main`.  <!-- This happened in #2630. -->
 
 <!-- Creating the pull request *from the tag* prevents us from accidentally deleting the release branch. -->
 <!-- We might be able to modify the `mint-release.yml` workflow by having it automatically create the pull request back into `main`, but we'd want to keep a note *not to squash merge* the resulting PRs. -->
