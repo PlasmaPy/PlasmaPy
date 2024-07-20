@@ -270,9 +270,9 @@ code is supposed to be doing.
 
 .. tip::
 
-   It is common for an :wikipedia:`integrated development environment`
-   (IDE) to have a built-in tool for simultaneously renaming a variable
-   throughout a project. For example, a `rename refactoring in PyCharm
+   It is common for an |IDE| to have a built-in tool for simultaneously
+   renaming a variable throughout a project. For example, a `rename
+   refactoring in PyCharm
    <https://www.jetbrains.com/help/pycharm/rename-refactorings.html>`__
    can be done with :kbd:`Shift+F6` on Windows or Linux, and :kbd:`⇧F6`
    or :kbd:`⌥⌘R` on macOS.
@@ -452,8 +452,8 @@ more, check out the `type hints cheat sheet`_.
 Automatically adding type hint annotations
 ------------------------------------------
 
-PlasmaPy has defined multiple |Nox| sessions that can automatically add
-type hints using autotyping_ and MonkeyType_.
+PlasmaPy has defined multiple |Nox| sessions in |noxfile.py|_ that can
+automatically add type hints using autotyping_ and MonkeyType_.
 
 The ``autotyping(safe)`` session uses autotyping_ to automatically add
 type hints for common patterns, while producing very few incorrect
@@ -1095,6 +1095,9 @@ an angular frequency to get a length scale:
 
 .. _`mypy.ini`: https://github.com/PlasmaPy/PlasmaPy/blob/main/mypy.ini
 .. |mypy.ini| replace:: :file:`mypy.ini`
+
+.. _`noxfile.py`: https://github.com/PlasmaPy/PlasmaPy/tree/main/noxfile.py
+.. |noxfile.py| replace:: :file:`noxfile.py`
 
 .. _`pyproject.toml`: https://github.com/PlasmaPy/PlasmaPy/blob/main/pyproject.toml
 .. |pyproject.toml| replace:: :file:`pyproject.toml`

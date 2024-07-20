@@ -833,12 +833,12 @@ of |pyproject.toml|_. Codecov_ configurations are given in
 Using an integrated development environment
 -------------------------------------------
 
-Most IDEs have built-in tools that simplify software testing. IDEs like
-PyCharm_ and `Visual Studio`_ allow test configurations to be run with a
-click of the mouse or a few keystrokes. While IDEs require time to
-learn, they are among the most efficient methods to interactively
-perform tests. Here are instructions for running tests in several
-popular IDEs:
+An |IDE| typically has built-in tools that simplify software testing.
+IDEs like PyCharm_ and `Visual Studio`_ allow test configurations to be
+run with a click of the mouse or a few keystrokes. While IDEs require
+time to learn, they are among the most efficient methods to
+interactively perform tests. Here are instructions for running tests in
+several popular IDEs:
 
 * `Python testing in PyCharm
   <https://www.jetbrains.com/help/pycharm/testing-your-first-python-application.html>`__
