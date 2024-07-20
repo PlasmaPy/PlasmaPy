@@ -135,8 +135,8 @@ and end with a description of the behavior that is being tested. For
 example, a test to checks that a |Particle| can be turned into an
 antiparticle might be named :py:`:test_create_antiparticle_from_particle`.
 Because |Particle| is defined in
-:file:`src/plasmapy/particles/particle_class.py`, this test would be
-located in :file:`tests/particles/test_particle_class.py`.
+|src/plasmapy/particles/particle_class.py|_, this test would be
+located in |tests/particles/test_particle_class.py|_.
 
 Closely related tests may be `grouped into classes`_. The name of a
 test class begins with ``Test`` and the methods to be tested begin with
@@ -887,8 +887,14 @@ several popular IDEs:
 
 .. _`src/plasmapy`: https://github.com/PlasmaPy/PlasmaPy/tree/main/src/plasmapy
 
+.. _`src/plasmapy/particles/particle_class.py`: https://github.com/PlasmaPy/PlasmaPy/tree/main/tests/src/plasmapy/particles/particle_class.py
+.. |src/plasmapy/particles/particle_class.py| replace:: :file:`src/plasmapy/particles/particle_class.py`
+
 .. _`tests`: https://github.com/PlasmaPy/PlasmaPy/tree/main/tests
 .. |tests| replace:: :file:`tests`
+
+.. _`tests/particles/particle_class.py`: https://github.com/PlasmaPy/PlasmaPy/tree/main/tests/particles/particle_class.py
+.. |tests/particles/particle_class.py| replace:: :file:`tests/particles/particle_class.py`
 
 .. _`tests/formulary`: https://github.com/PlasmaPy/PlasmaPy/tree/main/tests/formulary
 .. |tests/formulary| replace:: :file:`tests/formulary`
