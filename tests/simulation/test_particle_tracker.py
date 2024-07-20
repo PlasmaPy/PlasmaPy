@@ -656,7 +656,7 @@ class TestParticleTrajectory:
             (0.9, Particle("e-")),
         ],
     )
-    def test_relativistic_Boris_integrator_fitting(cls, regime, particle):
+    def test_relativistic_Boris_integrator_fitting(cls, regime, particle) -> None:
         """
         Fit the results of the relativistic Boris integrator using
         relativistic models developed in https://www.sciencedirect.com/science/article/pii/S163107211400148X
@@ -774,7 +774,7 @@ class TestParticleTrajectory:
             (0.1, Particle("e-")),
         ],
     )
-    def test_classical_Boris_integrator_fitting(cls, regime, particle):
+    def test_classical_Boris_integrator_fitting(cls, regime, particle) -> None:
         """
         Fit the results of the non-relativistic Boris integrator using
         relativistic models developed in https://www.sciencedirect.com/science/article/pii/S163107211400148X
@@ -871,7 +871,7 @@ class TestParticleTrajectory:
             (0.9, Particle("e-")),
         ],
     )
-    def test_relativity_warning(cls, regime, particle):
+    def test_relativity_warning(cls, regime, particle) -> None:
         """
         Fit the results of the non-relativistic Boris integrator using
         relativistic models developed in https://www.sciencedirect.com/science/article/pii/S163107211400148X

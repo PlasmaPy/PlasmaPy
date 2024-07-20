@@ -40,7 +40,7 @@ check_database_connection = pytest.mark.skipif(
         )
     ],
 )
-def test_Bethe_stopping(material, rho, I, n_e, T2):  # noqa: E741
+def test_Bethe_stopping(material, rho, I, n_e, T2) -> None:  # noqa: E741
     """
     The NIST PSTAR and ASTAR databases should have stopping powers similar
     to those calculated by the Bethe formula beyond a material-dependent

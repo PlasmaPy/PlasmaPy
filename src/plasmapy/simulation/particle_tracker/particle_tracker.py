@@ -866,7 +866,7 @@ class ParticleTracker:
 
         return dt
 
-    def _update_position(self, summed_field_values):
+    def _update_position(self, summed_field_values) -> None:
         r"""
         Update the positions and velocities of the simulated particles using the
         integrator provided at instantiation.
@@ -901,7 +901,7 @@ class ParticleTracker:
             v_results,
         )
 
-    def _update_velocity_stopping(self, summed_field_values):
+    def _update_velocity_stopping(self, summed_field_values) -> None:
         r"""
         Apply stopping to the simulated particles using the provided stopping
         routine. The stopping is applied to the simulation by calculating the
