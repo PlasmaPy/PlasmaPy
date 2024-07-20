@@ -9,6 +9,12 @@ Using pre-commit
    :local:
    :backlinks: none
 
+.. role:: bash(code)
+   :language: bash
+
+.. role:: toml(code)
+   :language: TOML
+
 Introduction
 ============
 
@@ -93,7 +99,8 @@ these tools generally work well, occasionally there will be false
 positives.
 
 * If you encounter a false positive with codespell, add it to
-  ``ignore-words-list`` under ``[codespell]`` in :file:`pyproject.toml`.
+  ``ignore-words-list`` under :toml:`[codespell]` in
+  :file:`pyproject.toml`.
 
 * False positives from typos_ should be added to :file:`_typos.toml`.
 

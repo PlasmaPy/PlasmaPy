@@ -9,6 +9,9 @@ Testing Guide
    :local:
    :backlinks: none
 
+.. role:: toml(code)
+   :language: TOML
+
 Summary
 =======
 
