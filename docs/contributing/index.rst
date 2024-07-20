@@ -16,7 +16,7 @@ If you are becoming a first-time contributor, we recommend starting with:
 
 .. toctree::
    :caption: Getting started
-   :maxdepth: 2
+   :maxdepth: 1
 
    many_ways
    getting_ready
@@ -27,7 +27,7 @@ suggest checking out:
 
 .. toctree::
    :caption: Contributing to PlasmaPy
-   :maxdepth: 4
+   :maxdepth: 2
 
    coding_guide
    changelog_guide

@@ -89,6 +89,7 @@ doc_subs: dict[str, str] = {
     "keyword-only": r":term:`keyword-only`\ ",
     "lite-function": r":term:`lite-function`\ ",
     "lite-functions": r":term:`lite-functions`\ ",
+    "many ways to contribute": r":ref:`many ways`\ ",
     "maxpython": "3.12",
     "minpython": "3.10",
     "open a terminal": r":ref:`open a terminal <opening-a-terminal>`\ ",
