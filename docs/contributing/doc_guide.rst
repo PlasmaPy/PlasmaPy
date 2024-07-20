@@ -1591,8 +1591,11 @@ example Jupyter notebooks, the tables of contents are in
 .. _`docs/conf.py`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/conf.py
 .. |docs/conf.py| replace:: :file:`docs/conf.py`
 
-.. _`docs/examples.rst`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/glossary.rst
+.. _`docs/examples.rst`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/examples.rst
 .. |docs/examples.rst| replace:: :file:`docs/examples.rst`
+
+.. _`docs/glossary.rst`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/glossary.rst
+.. |docs/glossary.rst| replace:: :file:`docs/glossary.rst`
 
 .. _`docs/bibliography.bib`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/bibliography.bib
 .. |docs/bibliography.bib| replace:: :file:`docs/bibliography.bib`

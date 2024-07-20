@@ -893,11 +893,11 @@ several popular IDEs:
 .. _`tests`: https://github.com/PlasmaPy/PlasmaPy/tree/main/tests
 .. |tests| replace:: :file:`tests`
 
-.. _`tests/particles/particle_class.py`: https://github.com/PlasmaPy/PlasmaPy/tree/main/tests/particles/particle_class.py
-.. |tests/particles/particle_class.py| replace:: :file:`tests/particles/particle_class.py`
+.. _`tests/particles/test_particle_class.py`: https://github.com/PlasmaPy/PlasmaPy/tree/main/tests/particles/test_particle_class.py
+.. |tests/particles/test_particle_class.py| replace:: :file:`tests/particles/test_particle_class.py`
 
 .. _`tests/formulary`: https://github.com/PlasmaPy/PlasmaPy/tree/main/tests/formulary
 .. |tests/formulary| replace:: :file:`tests/formulary`
 
-.. _`tests/formulary/speeds.py`: https://github.com/PlasmaPy/PlasmaPy/tree/main/tests/formulary/test_speeds.py
-.. |tests/formulary/speeds.py| replace:: :file:`tests/formulary/test_speeds.py`
+.. _`tests/formulary/test_speeds.py`: https://github.com/PlasmaPy/PlasmaPy/tree/main/tests/formulary/test_speeds.py
+.. |tests/formulary/test_speeds.py| replace:: :file:`tests/formulary/test_speeds.py`
