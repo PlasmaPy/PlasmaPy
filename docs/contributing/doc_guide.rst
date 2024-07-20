@@ -873,7 +873,7 @@ The type specification should not include information about the
   brackets. The options may be listed with the default value first,
   sorted alphanumerically, or ordered so as to maximize readability.
 
-  .. code-block::
+  .. code-block:: rst
 
      {"classical postmodernist", "retro-futuristic"}
      {"p+", "e-"}, default: "p+"
@@ -1360,7 +1360,7 @@ To check hyperlinks locally, run:
 
    .. group-tab:: sphinx-build
 
-      .. code-block::
+      .. code-block:: bash
 
          sphinx-build docs docs/_build/_html -b linkcheck
 
@@ -1436,7 +1436,9 @@ Missing attribute errors
 An `AttributeError` may occur when an :py:`import` statement is missing
 in a :file:`__init__.py` file. For example, the error
 
-.. code-block::
+.. ChatGPT suggested the `diff` pygments language for error/warning messages
+
+.. code-block:: dmesg
 
    AttributeError: module 'plasmapy.subpackage' has no attribute 'module'
 
@@ -1449,7 +1451,7 @@ List ends without a blank line
 
 Warnings like the following:
 
-.. code-block::
+.. code-block:: dmesg
 
    WARNING: :40: (WARNING/2) Bullet list ends without a blank line; unexpected unindent.
    WARNING: :47: (WARNING/2) Definition list ends without a blank line; unexpected unindent.
@@ -1530,7 +1532,7 @@ In general, each source file in the documentation must be included in a
 table of contents (toctree_). Otherwise, |Sphinx| will issue a warning
 like:
 
-.. code-block::
+.. code-block:: dmesg
 
    WARNING: document isn't included in any toctree
 

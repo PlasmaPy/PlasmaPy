@@ -154,7 +154,7 @@ Initial setup
    new directory called :file:`repos/` in your home directory (denoted
    by :bash:`~`), run:
 
-   .. code-block::
+   .. code-block:: bash
 
       mkdir ~/repos
       cd ~/repos

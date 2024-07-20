@@ -722,7 +722,7 @@ top-level directory of the repository and run:
 
 To find out what Nox sessions are defined, run:
 
-.. code-block::
+.. code-block:: bash
 
    nox -l
 
