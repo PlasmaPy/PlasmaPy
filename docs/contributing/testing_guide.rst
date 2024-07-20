@@ -22,20 +22,20 @@ install |Nox| and |uv|:
 
    .. group-tab:: macOS, Linux, or WSL
 
-      .. code-block:: console
+      .. code-block:: bash
 
          python -m pip install nox uv
 
    .. group-tab:: Windows
 
-      .. code-block:: console
+      .. code-block:: bash
 
          py -m pip install nox uv
 
 To run tests, navigate to a directory within your local clone of
 PlasmaPy and run:
 
-.. code-block:: console
+.. code-block:: bash
 
    nox
 
@@ -645,14 +645,14 @@ Using pytest
 To install the packages necessary to run tests on your local computer
 (including |Nox| and pytest_), run:
 
-.. code-block:: console
+.. code-block:: bash
 
    pip install -e .[tests]
 
 To run PlasmaPy's tests from the command line, go to a directory within
 PlasmaPy's repository and run:
 
-.. code-block:: console
+.. code-block:: bash
 
    pytest
 
@@ -662,7 +662,7 @@ PlasmaPy's tests, it is usually most convenient to specify that only a
 subset of the tests be run. To run the tests contained within a
 particular file or directory, include its name after `pytest`.
 
-.. code-block:: console
+.. code-block:: bash
 
    pytest tests/particles/test_atomic.py
 
@@ -672,7 +672,7 @@ particular file or directory, include its name after `pytest`.
    flag to specify a subpackage (directory) that tests should be run
    for. To perform tests for `plasmapy.particles`, run:
 
-   .. code-block:: console
+   .. code-block:: bash
 
       pytest -P particles
 
@@ -716,7 +716,7 @@ CI.
 To run PlasmaPy's tests (except for those marked as slow), enter the
 top-level directory of the repository and run:
 
-.. code-block:: console
+.. code-block:: bash
 
    nox
 
@@ -728,7 +728,7 @@ To find out what Nox sessions are defined, run:
 
 To run PlasmaPy's tests for a particular session, run:
 
-.. code-block:: console
+.. code-block:: bash
 
    nox -s '<session>'
 
@@ -738,7 +738,7 @@ parentheses.
 
 For example, static type checking with |mypy| can be run locally with
 
-.. code-block:: console
+.. code-block:: bash
 
    nox -s mypy
 
@@ -796,7 +796,7 @@ Code coverage reports may be generated on your local computer to show
 which lines of code are covered by tests and which are not. To generate
 an HTML report, use the ``--cov`` flag for `pytest`:
 
-.. code-block:: console
+.. code-block:: bash
 
    pytest --cov
    coverage html
