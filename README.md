@@ -36,7 +36,7 @@
 [Gitter]: https://gitter.im/PlasmaPy/Lobby
 [good first issues]: https://github.com/PlasmaPy/PlasmaPy/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22
 [Google Summer of Code]: https://summerofcode.withgoogle.com
-[**installing PlasmaPy**]: https://docs.plasmapy.org/en/stable/install.html
+[**install PlasmaPy**]: https://docs.plasmapy.org/en/stable/install.html
 [GitHub repository]: https://github.com/PlasmaPy/PlasmaPy
 [mailing list]: https://groups.google.com/forum/#!forum/plasmapy
 [Matrix]: https://app.element.io/#/room/#plasmapy:openastronomy.org
@@ -76,8 +76,8 @@ check out PlasmaPy's [contributor guide].
 
 ## Installing PlasmaPy
 
-PlasmaPy's online documentation has detailed instructions on [**how to
-install PlasmaPy**].
+PlasmaPy's online documentation has detailed instructions on how to
+[**install PlasmaPy**].
 
 To install PlasmaPy on macOS or Linux, open a terminal and run:
 ```Shell
