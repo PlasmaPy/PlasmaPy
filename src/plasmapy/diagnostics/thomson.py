@@ -561,7 +561,7 @@ def spectral_density(  # noqa: C901, PLR0912, PLR0915
         eval_w = np.linspace(-wspan, wspan, num=wavelengths.size)
         instr_func_arr = instr_func(eval_w)
 
-        if type(instr_func_arr) != np.ndarray:
+        if type(instr_func_arr) is not np.ndarray:
             raise ValueError(
                 "instr_func must be a function that returns a "
                 "np.ndarray, but the provided function returns "
@@ -966,7 +966,7 @@ def spectral_density_model(  # noqa: C901, PLR0912, PLR0915
         eval_w = np.linspace(-wspan, wspan, num=wavelengths.size)
         instr_func_arr = instr_func(eval_w * u.m)
 
-        if type(instr_func_arr) != np.ndarray:
+        if type(instr_func_arr) is not np.ndarray:
             raise ValueError(
                 "instr_func must be a function that returns a "
                 "np.ndarray, but the provided function returns "
