@@ -68,7 +68,9 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
  - [ ] Merge **but do not squash** this PR back into `main`.
 
 > [!CAUTION]
-> Squashing_ the pull request back into `main` can cause problems by removing the tagged release commit from the history of `main`.  <!-- This happened in #2630. -->
+> Squashing_ the pull request back into `main` can cause problems by removing the tagged release commit from the history of `main`.
+
+<!-- This happened in #2630. -->
 
 <!-- Creating the pull request *from the tag* prevents us from accidentally deleting the release branch. -->
 <!-- We might be able to modify the `mint-release.yml` workflow by having it automatically create the pull request back into `main`, but we'd want to keep a note *not to squash merge* the resulting PRs. -->
