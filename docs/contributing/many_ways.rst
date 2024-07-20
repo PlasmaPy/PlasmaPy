@@ -1,10 +1,12 @@
+.. _many ways:
 
-Many ways to contribute
-=======================
+***********************
+Many Ways to Contribute
+***********************
 
-While this guide describes the process of contributing code,
-documentation, and tests to PlasmaPy, there are many other ways to
-contribute. Some of the many possibilities are to:
+WHile this guide primarily describes the process of contributing code,
+documentation, and tests to PlasmaPy, there are many ways to contribute
+to an open source project:
 
 * 💻 Contribute new code, documentation, and tests.
 * ♻️ Refactor existing code and tests.
@@ -17,7 +19,16 @@ contribute. Some of the many possibilities are to:
 * 💡 `Request new features`_.
 * 🐞 `Report bugs`_.
 * 🌐 Improve |PlasmaPy's website|.
-* 🗓️ Help organize events such as |Plasma Hack Week|.
+* 🗓️ Help organize events such as |Plasma Hack Week| or the `PlasmaPy
+  Summer School`_.
 * 💬 Provide feedback on how existing functionality could be improved.
 * 🛣 Help update PlasmaPy's development roadmap. ️
 * 👥 Be part of the PlasmaPy community!
+
+.. tip::
+
+   To learn more, please check out this community guide on `How to
+   Contribute to Open Source`_.
+
+.. _How to Contribute to Open Source: https://opensource.guide/how-to-contribute
+.. _PlasmaPy Summer School: https://www.plasmapy.org/meetings/summer-school-2024

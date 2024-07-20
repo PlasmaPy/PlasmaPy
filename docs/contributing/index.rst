@@ -26,7 +26,7 @@ After gaining some familiarity with the code contribution workflow, we
 
 .. toctree::
    :caption: Contributing to PlasmaPy
-   :maxdepth: 3
+   :maxdepth: 4
 
    coding_guide
    changelog_guide
