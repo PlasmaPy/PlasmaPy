@@ -1,2 +1,0 @@
-Applied |type hint annotations| using ``autotyping``, and made other updates to type
-hint annotations and docstrings.

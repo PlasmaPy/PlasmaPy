@@ -1,3 +1,0 @@
-Added a |Nox| session that invokes ``autotyping`` to automatically
-add |type hint annotations|, using either the ``--safe`` or
-``--aggressive`` options.

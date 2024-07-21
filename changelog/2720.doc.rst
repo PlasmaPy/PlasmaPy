@@ -1,1 +1,0 @@
-Updated the section in the |coding guide| about requirements and dependencies.

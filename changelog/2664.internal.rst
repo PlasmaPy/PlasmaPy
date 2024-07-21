@@ -1,2 +1,0 @@
-Converted the tox environment for regenerating the requirements files
-used in continuous integration checks to |Nox|.
