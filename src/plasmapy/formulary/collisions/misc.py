@@ -5,6 +5,7 @@ Module of miscellaneous parameters related to collisions.
 __all__ = [
     "mobility",
     "Bethe_stopping",
+    "Mott_Bethe_mean_squared_scattering",
     "Spitzer_resistivity",
 ]
 __lite_funcs__ = ["Bethe_stopping_lite"]
@@ -338,8 +339,8 @@ def Mott_Bethe_mean_squared_scattering(
     n_s: u.Quantity[1 / u.m**3],
 ) -> u.Quantity[u.Hz]:
     r"""
-    Calculate the mean squared rate of scattering for protons scattering
-    through a screened (is this right?) Coulomb potential.
+    Calculate the mean-squared rate of scattering for protons scattering
+    through a screened Coulomb potential.
 
     Parameters
     ----------
@@ -364,12 +365,18 @@ def Mott_Bethe_mean_squared_scattering(
 
     .. math::
         \frac{d\langle \Delta \theta^2 \rangle}{dt} = \frac{n_s q_{\alpha}^2 q_{\beta}^2}
-        {2 \pi \epsilon_0 m_{\alpha}^2 v_{\alpha}^3} \ln{\left(\bar{\Lambda}\right)}
+        {2 \pi \epsilon_0 m_{\alpha}^2 v_{\alpha}^3} \ln{(\bar{\Lambda})}
         \Phi{\left( \frac{v_{\alpha}}{v_{\beta T}} \right)}
 
-    where :math:`n_s` is the number density of scatterers, :math:`\ln{\left(\bar{\Lambda}\right)}`,
-    :math:`q` represents the charge of species $\alpha$ and $\beta$ where $\alpha$ is the beam species
-    and $\beta$ is the target species. is the average Coulomb logarithm given by :math:`\ln{\left(\lambda_D / \langle b_0 \rangle\right)}`
+    where :math:`n_s` is the number density of scatterers, :math:`\ln{(\bar{\Lambda})}`,
+    :math:`q_{\alpha, \beta}`, :math:`m_{\alpha, \beta}` and :math:`v_{\alpha, \beta}` are the particle charge,
+    mass, and velocity in the rest frame, respectively. The subscript :math:`\alpha`
+    refers to the beam species whereas :math:`\beta` refers to the target species.
+    :math:`\ln{\left(\bar{\Lambda}\right)}` is the averaged Coulomb logarithm, given by :math:`\ln{(\lambda_D / \langle b_0 \rangle)}`
+    where :math:`\lambda_D` is the Debye length and :math:`\langle b_0 \rangle` is the
+    average value for the distance of closest approach associated with the
+    classical Coulomb potential in the center of mass frame, given as :math:`b_0 = q_{\alpha}
+    q_{\beta} / 4 \pi \eps_0 \mu \bar{u}^2`, where :math:`\bar{u}` is the average relative velocity.
     """
     mu = reduced_mass(target_particle, beam_particle)
 

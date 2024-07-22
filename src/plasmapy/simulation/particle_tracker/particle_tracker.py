@@ -1129,7 +1129,9 @@ class ParticleTracker:
             dt,
         )
 
-        self.x[self._tracked_particle_mask], self.v[self._tracked_particle_mask] = (
+        tracked_particle_mask = self._tracked_particle_mask
+
+        self.x[tracked_particle_mask], self.v[tracked_particle_mask] = (
             x_results,
             v_results,
         )
