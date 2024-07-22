@@ -226,6 +226,7 @@ class TestParticleTrackerGyroradius:
         assert np.isclose(initial_kinetic_energies, simulation_kinetic_energies).all()
 
 
+@pytest.mark.slow()
 @given(st.integers(1, 10), st.integers(1, 10), st.integers(1, 10), st.integers(1, 10))
 @settings(deadline=2e4, max_examples=10)
 def test_particle_tracker_potential_difference(
@@ -755,8 +756,14 @@ class TestParticleTrajectory:
         )
 
     @classmethod
-    def ExB_trajectory_case_one(
-        cls, t, E, B, q=const.e.si, m=const.m_p.si, is_relativistic=True
+    def ExB_trajectory_case_one(  # noqa: ANN206
+        cls,
+        t,
+        E,
+        B,
+        q=const.e.si,
+        m=const.m_p.si,
+        is_relativistic: bool = True,
     ):
         """
         Calculates the relativistically-correct ExB drift trajectory for a
@@ -832,7 +839,8 @@ class TestParticleTrajectory:
             (0.9, Particle("e-")),
         ],
     )
-    def test_relativistic_Boris_integrator_fitting(cls, regime, particle):
+    @pytest.mark.slow()
+    def test_relativistic_Boris_integrator_fitting(cls, regime, particle) -> None:
         """
         Fit the results of the relativistic Boris integrator using
         relativistic models developed in https://www.sciencedirect.com/science/article/pii/S163107211400148X
@@ -950,7 +958,7 @@ class TestParticleTrajectory:
             (0.1, Particle("e-")),
         ],
     )
-    def test_classical_Boris_integrator_fitting(cls, regime, particle):
+    def test_classical_Boris_integrator_fitting(cls, regime, particle) -> None:
         """
         Fit the results of the non-relativistic Boris integrator using
         relativistic models developed in https://www.sciencedirect.com/science/article/pii/S163107211400148X
@@ -1047,7 +1055,8 @@ class TestParticleTrajectory:
             (0.9, Particle("e-")),
         ],
     )
-    def test_relativity_warning(cls, regime, particle):
+    @pytest.mark.slow()
+    def test_relativity_warning(cls, regime, particle) -> None:
         """
         Fit the results of the non-relativistic Boris integrator using
         relativistic models developed in https://www.sciencedirect.com/science/article/pii/S163107211400148X

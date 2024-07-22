@@ -606,6 +606,7 @@ def test_invalid_inputs_to_ion_list2(element, min_charge, max_charge) -> None:
         ionic_levels(element, min_charge, max_charge)
 
 
+@pytest.mark.slow()
 @pytest.mark.parametrize(
     ("incident_particle", "material", "kwargs", "expected_error"),
     [

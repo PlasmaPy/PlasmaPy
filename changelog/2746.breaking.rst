@@ -1,1 +1,0 @@
-Convert ``particle`` to a required argument of the `~plasmapy.simulation.particle_tracker.particle_tracker.ParticleTracker.load_particles` method of |ParticleTracker|.

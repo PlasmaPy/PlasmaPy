@@ -163,7 +163,7 @@ class ParticleTracker:
         particle_integrator: type[AbstractIntegrator] | None = None,
         dt=None,
         dt_range=None,
-        field_weighting="volume averaged",
+        field_weighting: str = "volume averaged",
         req_quantities=None,
         seed: int | None = None,
         verbose=True,
