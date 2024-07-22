@@ -382,6 +382,7 @@ def Mott_Bethe_mean_squared_scattering(
 
     b_0 = (
         target_particle.atomic_number
+        * beam_particle.atomic_number
         * const.e.si**2
         / (4 * np.pi * const.eps0 * mu * speed**2)
     )
@@ -391,7 +392,8 @@ def Mott_Bethe_mean_squared_scattering(
 
     result = (
         n_s
-        * (target_particle.atomic_number * const.e.si**2) ** 2
+        * (beam_particle.atomic_number * target_particle.atomic_number * const.e.si**2)
+        ** 2
         / (2 * np.pi * const.eps0**2 * beam_particle.mass**2 * speed**3)
         * L
         * erf((speed / thermal_speed(T_s * u.K, target_particle)).si.value)
