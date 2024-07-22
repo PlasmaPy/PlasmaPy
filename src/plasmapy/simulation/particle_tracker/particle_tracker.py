@@ -609,22 +609,20 @@ class ParticleTracker:
     def add_scattering(
         self,
         target: ParticleLike,  # TODO: enforce requirement that a charge is specified
-        scatter_routine: (
-            Callable[
-                [
-                    u.Quantity[u.rad] | None,  # Theta
-                    u.Quantity[u.m / u.s],  # Speed
-                    ParticleLike,  # Beam
-                    ParticleLike,  # Target
-                    u.Quantity[u.K],  # Electron Temperature
-                    u.Quantity[1 / u.m**3],  # Electron Number Density
-                ],
-                u.Quantity[u.m**2 / u.sr]
-                | u.Quantity[
-                    u.rad**2 / u.s
-                ],  # Differential cross-section or Mean-square scatter rate in radians^2 per second
-            ]
-        ),
+        scatter_routine: Callable[
+            [
+                u.Quantity[u.rad] | None,  # Theta
+                u.Quantity[u.m / u.s],  # Speed
+                ParticleLike,  # Beam
+                ParticleLike,  # Target
+                u.Quantity[u.K],  # Electron Temperature
+                u.Quantity[1 / u.m**3],  # Electron Number Density
+            ],
+            u.Quantity[u.m**2 / u.sr]
+            | u.Quantity[
+                u.rad**2 / u.s
+            ],  # Differential cross-section or Mean-square scatter rate in radians^2 per second
+        ],
         scatter_routine_type: Literal["differential cross-section", "mean square rate"],
     ):
         r"""
@@ -1243,7 +1241,8 @@ class ParticleTracker:
                 # Calculate the minimum scattering angle based on screening
                 mu = reduced_mass(self._target, self._particle)
                 b_0 = (
-                    self._particle.electron_number
+                    self._particle.atomic_number
+                    * self._target.atomic_number
                     * const.e.si**2
                     / (4 * np.pi * const.eps0 * mu * speeds**2)
                 )
@@ -1294,6 +1293,8 @@ class ParticleTracker:
             ),
             size=(self.nparticles_tracked, 1),
         )
+
+        theta = np.nan_to_num(theta, 0)
 
         # Generate a vector that lies somewhere in the plane perpendicular to the velocity
         k = np.cross(
