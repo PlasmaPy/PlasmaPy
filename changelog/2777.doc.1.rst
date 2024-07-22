@@ -1,1 +1,0 @@
-Moved the |contributor guide| section on example Jupyter notebooks from the |coding guide| to the |documentation guide|.

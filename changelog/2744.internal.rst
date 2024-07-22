@@ -1,1 +1,0 @@
-Added a |Nox| session for building the changelog.

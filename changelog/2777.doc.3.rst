@@ -1,1 +1,0 @@
-Merged the release guide into the |coding guide|.
