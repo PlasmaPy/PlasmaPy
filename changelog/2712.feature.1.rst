@@ -1,1 +1,0 @@
-Added the ability to enable particle stopping in the |ParticleTracker|.

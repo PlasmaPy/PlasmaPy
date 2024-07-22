@@ -1216,7 +1216,7 @@ def test_fit_with_instr_func(epw_single_species_settings_params) -> None:
 
     # Warns that data should not include any NaNs
     # This is taken care of in run_fit by deleting the notch region rather than
-    # replacing it with np.NaN
+    # replacing it with np.nan
     with pytest.warns(UserWarning, match="If an instrument function is included,"):
         run_fit(
             wavelengths,

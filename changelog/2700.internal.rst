@@ -1,1 +1,0 @@
-Added ``typos`` as a |pre-commit| hook to perform spellchecking.

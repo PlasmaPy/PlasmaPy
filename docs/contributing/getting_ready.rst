@@ -154,7 +154,7 @@ Initial setup
    new directory called :file:`repos/` in your home directory (denoted
    by :bash:`~`), run:
 
-   .. code-block::
+   .. code-block:: bash
 
       mkdir ~/repos
       cd ~/repos
@@ -283,7 +283,7 @@ when you :py:`import plasmapy`.
 
       Replace ``py`` with ``python`` if you are not using conda.
 
-   The :bash:`-e` specifies that this will be an
+   The :bash:`-e` flag specifies that this will be an
    |editable installation|.
 
    .. tip::
@@ -312,7 +312,7 @@ when you :py:`import plasmapy`.
       >>> reload(plasmapy)
 
 .. _Add a new SSH key to your GitHub account: https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account
-.. _Anaconda Navigator: https://docs.anaconda.com/free/navigator
+.. _Anaconda Navigator: https://docs.anaconda.com/navigator
 .. _Anaconda: https://docs.anaconda.com
 .. _clone: https://github.com/git-guides/git-clone
 .. _Conda: https://docs.conda.io
@@ -324,12 +324,12 @@ when you :py:`import plasmapy`.
 .. _install git: https://git-scm.com/book/en/v2/Getting-Started-Installing-Git
 .. _install Graphviz: https://graphviz.org/download
 .. _install pandoc: https://pandoc.org/installing.html
-.. _installing Anaconda Navigator: https://docs.anaconda.com/free/navigator/install
+.. _installing Anaconda Navigator: https://docs.anaconda.com/navigator/install
 .. _installing Conda: https://conda.io/projects/conda/en/latest/user-guide/install/index.html
 .. _installing Python: https://realpython.com/installing-python
 .. _installing WSL: https://learn.microsoft.com/en-us/windows/wsl/install
 .. _miniconda: https://docs.conda.io/en/latest/miniconda.html
-.. _opening Powershell: https://learn.microsoft.com/en-us/powershell/scripting/windows-powershell/starting-windows-powershell?view=powershell-7.3
+.. _opening Powershell: https://learn.microsoft.com/en-us/powershell/scripting/windows-powershell/starting-windows-powershell?view=powershell-7.4
 .. _powershell: https://learn.microsoft.com/en-us/powershell
 .. _Real Python: https://realpython.com
 .. _remote: https://github.com/git-guides/git-remote

@@ -64,7 +64,7 @@ Trivial/Internal Changes
   in the |contributor guide|. (:pr:`2376`)
 - Separated the GitHub Action for checking hyperlinks in the
   documentation into its own GitHub Action. (:pr:`2392`)
-- Replaced |black| with |ruff| in the |pre-commit|
+- Replaced ``black`` with |ruff| in the |pre-commit|
   configuration. (:pr:`2394`)
 - Modified the ``__exit__`` method of ``HDF5Reader`` for context
   management.  (:pr:`2402`)

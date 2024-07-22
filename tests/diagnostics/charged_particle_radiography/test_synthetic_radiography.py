@@ -1011,11 +1011,12 @@ PARTICLES_PER_CONFIGURATION = 100
         ),
     ],
 )
+@pytest.mark.slow()
 def test_NIST_particle_stopping(
     material: str,
     density: u.Quantity[u.kg / u.m**3],
     energy_projected_range_list: list[tuple[u.Quantity[u.J], u.Quantity[u.m]]],
-):
+) -> None:
     r"""
     Test to ensure that the simulated stopping range matches the SRIM output
     for various proton energies.

@@ -1,1 +1,0 @@
-Created a parametrized |Nox| session to run tests.

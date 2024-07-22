@@ -22,6 +22,7 @@ Sphinx extensions (built-in):
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 
+import logging
 import os
 import sys
 import warnings
@@ -29,7 +30,7 @@ from datetime import datetime, timezone
 
 from sphinx.application import Sphinx
 
-from plasmapy import __version__
+from plasmapy import __version__ as version
 
 # isort: off
 sys.path.insert(0, os.path.abspath(".."))  # noqa: PTH100
@@ -37,22 +38,41 @@ sys.path.insert(0, os.path.abspath("."))  # noqa: PTH100
 # isort: on
 
 import _author_list_from_cff
+import _changelog_index
 import _global_substitutions
+
+now = datetime.now(timezone.utc)
 
 # Project metadata
 
 project = "PlasmaPy"
 author = "PlasmaPy Community"
-copyright = f"2015–{datetime.now(timezone.utc).year}, {author}"  # noqa: A001
+copyright = f"2015–{now.year}, {author}"  # noqa: A001
 language = "en"
-release = __version__
-version = __version__
 
-if release.startswith("0"):
-    warnings.warn(f"Incorrect version in documentation build ({release = })")
+if "dev" in version:
+    # We've had some problems with setuptools_scm providing an incorrect
+    # version for non-releases, so base it on the date and git hash
+    # instead.
+    git_hash = version.split("dev")[-1].split("+")[-1].split(".")[0]
+    version = f"{now.year}.{now.month}.0.dev+{git_hash}"
+    version_info_message = f"Setting {version = !r}"
+    logging.info(version_info_message)
+
+if version.startswith("0"):
+    version_warning_message = f"Incorrect {version = !r}"
+    logging.warning(version_warning_message)
+
+release = version
+
+# Define global substitutions in docs/_global_substitutions.py
 
 _global_substitutions.make_global_substitutions_table()
 global_substitutions = _global_substitutions.global_substitutions
+
+# Regenerate the changelog index file
+
+_changelog_index.main()
 
 # Generate author list from CITATION.cff
 
@@ -84,6 +104,7 @@ extensions = [
     "sphinx_tabs.tabs",
     "sphinx_collapse",
     "sphinxcontrib.bibtex",
+    "sphinxemoji.sphinxemoji",
     "sphinxcontrib.globalsubs",
 ]
 
@@ -108,6 +129,7 @@ root_doc = "index"
 source_suffix = ".rst"
 templates_path = ["_templates"]
 maximum_signature_line_length = 90
+sphinxemoji_style = "twemoji"
 
 # Specify patterns to ignore when doing a nitpicky documentation build.
 # These may include common expressions like "real number" as well as
@@ -306,16 +328,16 @@ redirects = {
     "development/testing_guide": "../contributing/testing_guide.html",
     "whatsnew": "../changelog/",
     "whatsnew/0.1.0": "../changelog/0.1.0.html",
-    "whatsnew/0.1.1": "../changelog/0.1.0.html",
-    "whatsnew/0.2.0": "../changelog/0.1.0.html",
-    "whatsnew/0.3.1": "../changelog/0.1.0.html",
-    "whatsnew/0.4.0": "../changelog/0.1.0.html",
-    "whatsnew/0.5.0": "../changelog/0.1.0.html",
-    "whatsnew/0.6.0": "../changelog/0.1.0.html",
-    "whatsnew/0.7.0": "../changelog/0.1.0.html",
-    "whatsnew/0.8.1": "../changelog/0.1.0.html",
-    "whatsnew/0.9.0": "../changelog/0.1.0.html",
-    "whatsnew/0.9.1": "../changelog/0.1.0.html",
+    "whatsnew/0.1.1": "../changelog/0.1.1.html",
+    "whatsnew/0.2.0": "../changelog/0.2.0.html",
+    "whatsnew/0.3.1": "../changelog/0.3.1.html",
+    "whatsnew/0.4.0": "../changelog/0.4.0.html",
+    "whatsnew/0.5.0": "../changelog/0.5.0.html",
+    "whatsnew/0.6.0": "../changelog/0.6.0.html",
+    "whatsnew/0.7.0": "../changelog/0.7.0.html",
+    "whatsnew/0.8.1": "../changelog/0.8.1.html",
+    "whatsnew/0.9.0": "../changelog/0.9.0.html",
+    "whatsnew/0.9.1": "../changelog/0.9.1.html",
     "whatsnew/2023.1.0": "../changelog/2023.1.0.html",
     "whatsnew/index": "../changelog/index.html",
 }

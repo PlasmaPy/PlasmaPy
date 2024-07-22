@@ -1,2 +1,0 @@
-Switched the GitHub workflows for running tests from using tox environments
-to using |Nox| sessions.
