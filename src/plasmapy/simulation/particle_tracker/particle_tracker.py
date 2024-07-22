@@ -817,16 +817,13 @@ class ParticleTracker:
 
             # The state of a step is saved after each time step by calling `post_push_hook`
             # The save routine may choose to do nothing with this information
-            if self.save_routine is not None:
-                self.save_routine.post_push_hook()
+            self.save_routine.post_push_hook()
 
         # Simulation has finished running
         self._has_run = True
 
-        # Force save of the final state of the simulation if a save routine is
-        # provided
-        if self.save_routine is not None:
-            self.save_routine.save()
+        # Force save of the final state of the simulation
+        self.save_routine.save()
 
         pbar.close()
 

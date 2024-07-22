@@ -601,6 +601,15 @@ def test_particle_tracker_scattering_warning(
     ):
         simulation.add_scattering("Al-27 0+", lambda: 42, "mean square rate")
 
+    T_e = np.full(grid_shape, 1) * u.K
+    grid.add_quantities(T_e=T_e)
+
+    with pytest.raises(
+        ValueError,
+        match="Please pass one of 'differential cross-section' or 'mean square rate'",
+    ):
+        simulation.add_scattering("Al-27 0+", lambda: 42, "Lorem ipsum")
+
 
 PARTICLES_PER_ENERGY = 100
 
