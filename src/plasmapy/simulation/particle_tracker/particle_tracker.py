@@ -609,6 +609,7 @@ class ParticleTracker:
     def add_scattering(
         self,
         target: ParticleLike,  # TODO: enforce requirement that a charge is specified
+        target_rho: u.Quantity[u.kg / u.m**3],
         scatter_routine: Callable[
             [
                 u.Quantity[u.rad] | None,  # Theta
@@ -657,15 +658,15 @@ class ParticleTracker:
         # constructed to obtain the mean-square scattering rate as a function of
         # velocity and number density.
 
-        if not self._is_quantity_defined_on_one_grid("n_e"):
-            warnings.warn(
-                "The electron number density is not defined on any of the provided grids! "
-                "Particle scattering will not be calculated.",
-                RuntimeWarning,
-            )
-
-            return
-        elif not self._is_quantity_defined_on_one_grid("T_e"):
+        # if not self._is_quantity_defined_on_one_grid("n_e"):
+        #     warnings.warn(
+        #         "The electron number density is not defined on any of the provided grids! "
+        #         "Particle scattering will not be calculated.",
+        #         RuntimeWarning,
+        #     )
+        #
+        #     return
+        if not self._is_quantity_defined_on_one_grid("T_e"):
             warnings.warn(
                 "The electron temperature is not defined on any of the provided grids! "
                 "Particle scattering will not be calculated.",
@@ -677,8 +678,8 @@ class ParticleTracker:
             return
 
         for grid in self.grids:
-            grid.require_quantities(["n_e", "T_e"], replace_with_zeros=True)
-            self._required_quantities.update({"n_e", "T_e"})
+            grid.require_quantities(["T_e"], replace_with_zeros=True)
+            self._required_quantities.update({"T_e"})
 
         if scatter_routine_type not in [
             "differential cross-section",
@@ -693,6 +694,8 @@ class ParticleTracker:
         self._scattering_routine = scatter_routine
 
         self._target = target
+        self._target_rho = target_rho
+        self._target_number_density = target_rho / target.mass
         self._do_scattering = True
 
         # For now the integrals will be evaluated every time step
@@ -1274,12 +1277,16 @@ class ParticleTracker:
                     )
                 ]  # Quad returns a tuple, we only care about the result
             case "mean square rate":
-                mean_square_scatter_rate = self._scattering_routine(
-                    speed=speeds,
+                # TODO: update this to support multiple grids
+                mean_square_scatter_rate = np.zeros(shape=self.nparticles_tracked)
+                on_grid_input = self._total_grid_values["T_e"] != 0
+
+                mean_square_scatter_rate[on_grid_input] = self._scattering_routine(
+                    speed=speeds[on_grid_input],
                     beam_particle=self._particle,
                     target_particle=self._target,
-                    T_s=self._total_grid_values["T_e"].si.value,
-                    n_s=self._total_grid_values["n_e"].si.value,
+                    T_s=self._total_grid_values["T_e"][on_grid_input].si.value,
+                    n_s=self._target_number_density.si.value,
                 )
 
         mean_square_scatter_rate = np.reshape(
