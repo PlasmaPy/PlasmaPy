@@ -1277,9 +1277,21 @@ class ParticleTracker:
                     )
                 ]  # Quad returns a tuple, we only care about the result
             case "mean square rate":
-                # TODO: update this to support multiple grids
+                # Ensure there are no particles on multiple grids
+                if (np.sum(self.particles_on_grid, axis=-1) > 1).any():
+                    warnings.warn(
+                        "Detected particles existing in the domain of multiple grids. This will "
+                        "lead to undefined behavior in scattering results.",
+                        category=RuntimeWarning,
+                    )
+
                 mean_square_scatter_rate = np.zeros(shape=self.nparticles_tracked)
-                on_grid_input = self._total_grid_values["T_e"] != 0
+
+                on_grid_input = np.logical_and(
+                    self._total_grid_values["T_e"] != 0,
+                    np.sum(self.particles_on_grid[self._tracked_particle_mask], axis=-1)
+                    == 1,
+                )
 
                 mean_square_scatter_rate[on_grid_input] = self._scattering_routine(
                     speed=speeds[on_grid_input],
