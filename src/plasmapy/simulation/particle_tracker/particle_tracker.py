@@ -22,8 +22,10 @@ from tqdm import tqdm
 
 from plasmapy.formulary.collisions.misc import Bethe_stopping_lite
 from plasmapy.formulary.lengths import Debye_length
-from plasmapy.particles import Particle, ParticleLike, particle_input
 from plasmapy.particles.atomic import reduced_mass, stopping_power
+from plasmapy.particles.decorators import particle_input
+from plasmapy.particles.particle_class import Particle, ParticleLike
+from plasmapy.particles.particle_collections import ParticleList
 from plasmapy.plasma.grids import AbstractGrid
 from plasmapy.plasma.plasma_base import BasePlasma
 from plasmapy.simulation.particle_integrators import (
@@ -490,56 +492,67 @@ class ParticleTracker:
 
     def _validate_stopping_inputs(
         self,
-        method: Literal["NIST", "Bethe"],
-        materials: list[str] | None = None,
-        I: u.Quantity[u.J] | None = None,  # noqa: E741
+        method: Literal["NIST", "Bethe"] | None,
+        target: ParticleList | None,
+        target_rho: u.Quantity[u.kg / u.m**2] | None,
+        NIST_target_string: list[str] | str | None,
+        I: u.Quantity[u.J] | None,  # noqa: E741
     ) -> bool:
         r"""
         Validate inputs to the `add_stopping` method. Raises errors if the
         proper keyword arguments are not provided for a given method.
         """
 
+        if len({len(self.grids), len(target), target_rho.shape}) == 1:
+            raise ValueError(
+                "Please provide an array of length ngrids for the materials and densities."
+            )
+
         match method:
             case "NIST":
-                if materials is None or len(materials) != len(self.grids):
+                if NIST_target_string is None:
                     raise ValueError(
-                        "Please provide an array of length ngrids for the materials."
+                        "Please specify the associated NIST material string to use NIST stopping!"
                     )
 
-                if not self._is_quantity_defined_on_one_grid("rho"):
-                    warnings.warn(
-                        "The density is not defined on any of the provided grids! Particle stopping will not be "
-                        "calculated.",
-                        RuntimeWarning,
-                    )
+                if isinstance(NIST_target_string, str):
+                    NIST_target_string = list(NIST_target_string)
 
-                    # Don't set `_do_stopping`. The push loop does not have to do stopping
-                    # calculations
-                    return False
+                if len(NIST_target_string) != len(self.grids):
+                    raise ValueError(
+                        "Please specify an array of NIST material strings with length equal to the"
+                        "number of grids."
+                    )
             case "Bethe":
-                if I is None or len(I) != len(self.grids):
+                I_shape = I.shape if I.shape != () else 1
+
+                if I_shape != len(self.grids):
                     raise ValueError(
-                        "Please provide an array of length ngrids for the mean excitation energy."
+                        "Please specify a mean excitations energy array with length equal to the"
+                        "number of grids."
                     )
-
-                if not self._is_quantity_defined_on_one_grid("n_e"):
-                    warnings.warn(
-                        "The electron number density is not defined on any of the provided grids! "
-                        "Particle stopping will not be calculated.",
-                        RuntimeWarning,
-                    )
-
-                    # Don't set `_do_stopping`. The push loop does not have to do stopping
-                    # calculations
-                    return False
+            case _:
+                raise ValueError(
+                    f"Please provide one of 'NIST' or 'Bethe' for the method keyword. (Got: {method})"
+                )
 
         return True
 
+    def _set_target_attributes(
+        self, target: ParticleList, target_rho: u.Quantity[u.kg / u.m**3]
+    ):
+        self._target = target
+        self._target_rho = target_rho
+        self._target_number_density = target_rho / target.mass
+
+    @particle_input
     @validate_quantities
     def add_stopping(
         self,
         method: Literal["NIST", "Bethe"],
-        materials: list[str] | None = None,
+        target: ParticleList | None = None,
+        target_rho: u.Quantity[u.kg / u.m**3] | None = None,
+        NIST_target_string: str | None = None,
         I: u.Quantity[u.J] | None = None,  # noqa: E741
     ):
         r"""
@@ -554,35 +567,31 @@ class ParticleTracker:
         # Check inputs for user error and raise respective exceptions/warnings if
         # necessary. Returns `True` if no errors were detected. If a "falsy" value
         # is returned then the add_stopping method will abort.
-        if not self._validate_stopping_inputs(method, materials, I):
+        if not self._validate_stopping_inputs(
+            method, target, target_rho, NIST_target_string, I
+        ):
             return
+
+        self._set_target_attributes(target, target_rho)
 
         match method:
             case "NIST":
-                # Require that each grid has a defined mass density
-                for grid in self.grids:
-                    grid.require_quantities(["rho"], replace_with_zeros=True)
-
-                self._required_quantities.update({"rho"})
                 stopping_power_interpolators = [
-                    stopping_power(self._particle, material, return_interpolator=True)
-                    for material in materials
+                    stopping_power(
+                        self._particle, NIST_material, return_interpolator=True
+                    )
+                    for NIST_material in NIST_target_string
                 ]
 
             case "Bethe":
-                # Require that each grid has a defined electron number density
-                for grid in self.grids:
-                    grid.require_quantities(["n_e"], replace_with_zeros=True)
-
-                self._required_quantities.update({"n_e"})
                 self._raised_energy_warning = False
 
                 # These functions are used to represent that the mean excitation energy
                 # does not change over space for a given grid.
                 def wrapped_Bethe_stopping(I_grid):
-                    def inner_Bethe_stopping(v, n_e):
+                    def inner_Bethe_stopping(v, n_i):
                         return Bethe_stopping_lite(
-                            I_grid, n_e, v, self._particle.charge_number
+                            I_grid, n_i, v, self._particle.charge_number
                         )
 
                     return inner_Bethe_stopping
@@ -590,11 +599,6 @@ class ParticleTracker:
                 stopping_power_interpolators = [
                     wrapped_Bethe_stopping(I_grid.si.value) for I_grid in I
                 ]
-
-            case _:
-                raise ValueError(
-                    f"Please provide one of 'NIST' or 'Bethe' for the method keyword. (Got: {method})"
-                )
 
         self._do_stopping = True
         self._stopping_method = method
@@ -608,7 +612,7 @@ class ParticleTracker:
     @validate_quantities
     def add_scattering(
         self,
-        target: ParticleLike,  # TODO: enforce requirement that a charge is specified
+        target: ParticleList,
         target_rho: u.Quantity[u.kg / u.m**3],
         scatter_routine: Callable[
             [
@@ -658,17 +662,9 @@ class ParticleTracker:
         # constructed to obtain the mean-square scattering rate as a function of
         # velocity and number density.
 
-        # if not self._is_quantity_defined_on_one_grid("n_e"):
-        #     warnings.warn(
-        #         "The electron number density is not defined on any of the provided grids! "
-        #         "Particle scattering will not be calculated.",
-        #         RuntimeWarning,
-        #     )
-        #
-        #     return
-        if not self._is_quantity_defined_on_one_grid("T_e"):
+        if not self._is_quantity_defined_on_one_grid("T_i"):
             warnings.warn(
-                "The electron temperature is not defined on any of the provided grids! "
+                "The ion temperature is not defined on any of the provided grids! "
                 "Particle scattering will not be calculated.",
                 RuntimeWarning,
             )
@@ -678,8 +674,8 @@ class ParticleTracker:
             return
 
         for grid in self.grids:
-            grid.require_quantities(["T_e"], replace_with_zeros=True)
-            self._required_quantities.update({"T_e"})
+            grid.require_quantities(["T_i"], replace_with_zeros=True)
+            self._required_quantities.update({"T_i"})
 
         if scatter_routine_type not in [
             "differential cross-section",
@@ -693,9 +689,7 @@ class ParticleTracker:
         self._scattering_method = scatter_routine_type
         self._scattering_routine = scatter_routine
 
-        self._target = target
-        self._target_rho = target_rho
-        self._target_number_density = target_rho / target.mass
+        self._set_target_attributes(target, target_rho)
         self._do_scattering = True
 
         # For now the integrals will be evaluated every time step
@@ -1178,7 +1172,7 @@ class ParticleTracker:
                 for cs in self._stopping_power_interpolators:
                     interpolation_result = cs(
                         current_speeds,
-                        self._total_grid_values["n_e"].si.value[:, np.newaxis],
+                        self._total_grid_values["n_i"].si.value[:, np.newaxis],
                     )
 
                     stopping_power += interpolation_result
@@ -1228,7 +1222,7 @@ class ParticleTracker:
             # Numerically integrate the scattering integral to construct the mean square scatter rate
             case "differential cross section":
                 # `theta_prime` dummy variable introduced to prevent global shadow of `theta`
-                def mean_squared_integrand(theta_prime, speed, T_e, n_e):
+                def mean_squared_integrand(theta_prime, speed, T_i, n_i):
                     return (
                         theta_prime**2
                         * self._scattering_routine(
@@ -1236,8 +1230,8 @@ class ParticleTracker:
                             speed=speed,
                             beam_particle=self._particle,
                             target_particle=self._target,
-                            T_s=T_e,
-                            n_s=n_e,
+                            T_s=T_i,
+                            n_s=n_i,
                         )
                     ).si.value
 
@@ -1250,7 +1244,7 @@ class ParticleTracker:
                     / (4 * np.pi * const.eps0 * mu * speeds**2)
                 )
                 lambda_D = Debye_length(
-                    self._total_grid_values["T_e"], self._total_grid_values["n_e"]
+                    self._total_grid_values["T_i"], self._total_grid_values["n_i"]
                 )
                 theta_min = 2 * b_0 / lambda_D
 
@@ -1259,18 +1253,18 @@ class ParticleTracker:
                     (
                         2
                         * np.pi
-                        * n_e
+                        * n_i
                         * speed
                         * quad(
                             mean_squared_integrand,
                             lower_bound,
                             np.pi,
-                            args=(speed, T_e, n_e),
+                            args=(speed, T_i, n_i),
                         )[0]
                     )
-                    for (T_e, n_e, speed, lower_bound) in zip(
-                        self._total_grid_values["T_e"],
-                        self._total_grid_values["n_e"],
+                    for (T_i, n_i, speed, lower_bound) in zip(
+                        self._total_grid_values["T_i"],
+                        self._total_grid_values["n_i"],
                         speeds,
                         theta_min.value,
                         strict=False,
@@ -1288,7 +1282,7 @@ class ParticleTracker:
                 mean_square_scatter_rate = np.zeros(shape=self.nparticles_tracked)
 
                 on_grid_input = np.logical_and(
-                    self._total_grid_values["T_e"] != 0,
+                    self._total_grid_values["T_i"] != 0,
                     np.sum(self.particles_on_grid[self._tracked_particle_mask], axis=-1)
                     == 1,
                 )
@@ -1297,7 +1291,7 @@ class ParticleTracker:
                     speed=speeds[on_grid_input],
                     beam_particle=self._particle,
                     target_particle=self._target,
-                    T_s=self._total_grid_values["T_e"][on_grid_input].si.value,
+                    T_s=self._total_grid_values["T_i"][on_grid_input].si.value,
                     n_s=self._target_number_density.si.value,
                 )
 
