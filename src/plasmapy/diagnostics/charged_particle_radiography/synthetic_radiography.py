@@ -204,7 +204,7 @@ class Tracker(ParticleTracker):
             "volume averaged", "nearest neighbor"
         ] = "volume averaged",
         detector_hdir=None,
-        output_file: Path | None = None,
+        output_directory: Path | None = None,
         fraction_exited_threshold: float = 0.999,
         verbose: bool = True,
     ) -> None:
@@ -212,8 +212,8 @@ class Tracker(ParticleTracker):
         # The particle tracker class ensures that the provided grid argument has the proper type and
         # that the necessary grid quantities are created if they are not already specified
         save_routine = (
-            _SyntheticRadiographySaveRoutine(output_file)
-            if output_file is not None
+            _SyntheticRadiographySaveRoutine(output_directory)
+            if output_directory is not None
             else None
         )
 
