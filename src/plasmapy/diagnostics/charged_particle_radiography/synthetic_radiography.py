@@ -98,6 +98,8 @@ class _SyntheticRadiographySaveRoutine(SaveOnceOnCompletion):
 
         if self.output_directory is None:
             return
+        elif isinstance(self.output_directory, str):
+            self.output_directory = Path(self.output_directory)
 
         output_file_path = self.output_directory / "output.hdf5"
 
@@ -1109,7 +1111,7 @@ class Tracker(ParticleTracker):
 # *************************************************************************
 
 
-def synthetic_radiograph(  # noqa: C901
+def synthetic_radiograph(  # noqa: C901, PLR0912
     obj, size=None, bins=None, ignore_grid: bool = False, optical_density: bool = False
 ):
     r"""
@@ -1121,10 +1123,10 @@ def synthetic_radiograph(  # noqa: C901
 
     Parameters
     ----------
-    obj: `dict` or |Tracker|
-        Either a |Tracker|
-        object that has been run, or a dictionary equivalent to
-        |results_dict|.
+    obj: `dict`, |Tracker|, or `~pathlib.Path`
+        Either a |Tracker| object that has been run, or a dictionary equivalent
+        to |results_dict|. A path to an hdf5 file containing information
+        equivalent to the |results_dict| dictionary can also be passed.
 
     size : `~astropy.units.Quantity`, shape ``(2, 2)``, optional
         The size of the detector array, specified as the minimum
@@ -1174,6 +1176,36 @@ def synthetic_radiograph(  # noqa: C901
         d = obj.results_dict
     elif isinstance(obj, dict):
         d = obj
+    elif isinstance(obj, str | Path):
+        # Attempt to create a `results_dict` dictionary from the provided hdf5 path
+        """
+        self._quantities = {
+            "source": (u.m, "attribute"),
+            "detector": (u.m, "attribute"),
+            "mag": (u.m, "attribute"),
+            "max_deflection": (None, "attribute"),
+            "nparticles": (None, "attribute"),
+            "x": (u.m, "dataset"),
+            "y": (u.m, "dataset"),
+            "v": (u.m / u.s, "dataset"),
+            "x0": (u.m, "dataset"),
+            "y0": (u.m, "dataset"),
+            "v0": (u.m, "dataset"),
+        }
+        """
+
+        d = {}
+
+        with h5py.File(obj, "r") as file:
+
+            def set_result(key, value):
+                d[key] = value[:]
+
+            file.visititems(set_result)
+
+            for attribute, attribute_value in file.attrs.items():
+                d[attribute] = attribute_value
+
     else:
         raise TypeError(
             f"Expected type dict or {Tracker} for argument `obj`, but "
