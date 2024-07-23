@@ -1178,22 +1178,6 @@ def synthetic_radiograph(  # noqa: C901, PLR0912
         d = obj
     elif isinstance(obj, str | Path):
         # Attempt to create a `results_dict` dictionary from the provided hdf5 path
-        """
-        self._quantities = {
-            "source": (u.m, "attribute"),
-            "detector": (u.m, "attribute"),
-            "mag": (u.m, "attribute"),
-            "max_deflection": (None, "attribute"),
-            "nparticles": (None, "attribute"),
-            "x": (u.m, "dataset"),
-            "y": (u.m, "dataset"),
-            "v": (u.m / u.s, "dataset"),
-            "x0": (u.m, "dataset"),
-            "y0": (u.m, "dataset"),
-            "v0": (u.m, "dataset"),
-        }
-        """
-
         d = {}
 
         with h5py.File(obj, "r") as file:
