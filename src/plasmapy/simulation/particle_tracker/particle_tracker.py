@@ -520,7 +520,7 @@ class ParticleTracker:
 
                 if len(NIST_target_string) != len(self.grids):
                     raise ValueError(
-                        "Please specify an array of NIST material strings with length equal to the"
+                        "Please specify an array of NIST material strings with length equal to the "
                         "number of grids."
                     )
             case "Bethe":
@@ -978,7 +978,7 @@ class ParticleTracker:
     @property
     def particles_on_grid(self):
         r"""
-        Returns a boolean mask of shape [ngrids, nparticles] corresponding to
+        Returns a boolean mask of shape [nparticles, ngrids] corresponding to
         whether or not the particle is on the associated grid.
         """
 
@@ -990,11 +990,16 @@ class ParticleTracker:
     @property
     def _particle_kinetic_energy(self):
         r"""
-        Return the non-relativistic kinetic energy of the particles.
+        Return the relativistic kinetic energy of the particles.
         """
+        current_speeds = np.linalg.norm(
+            self.v[self._tracked_particle_mask], axis=-1, keepdims=True
+        )
 
-        # TODO: how should the relativistic case be handled?
-        return 0.5 * self.m * np.square(np.linalg.norm(self.v, axis=-1, keepdims=True))
+        beta = current_speeds / _c.si.value
+        gamma = np.sqrt(1 / (1 - beta**2))
+
+        return (gamma - 1) * self.m * _c.si.value**2
 
     def _interpolate_grid(self):
         # Get a list of positions (input for interpolator)
