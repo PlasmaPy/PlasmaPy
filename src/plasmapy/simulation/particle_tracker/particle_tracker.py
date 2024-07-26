@@ -25,7 +25,7 @@ from plasmapy.formulary.lengths import Debye_length
 from plasmapy.particles.atomic import reduced_mass, stopping_power
 from plasmapy.particles.decorators import particle_input
 from plasmapy.particles.particle_class import Particle, ParticleLike
-from plasmapy.particles.particle_collections import ParticleList, ParticleListLike
+from plasmapy.particles.particle_collections import ParticleList
 from plasmapy.plasma.grids import AbstractGrid
 from plasmapy.plasma.plasma_base import BasePlasma
 from plasmapy.simulation.particle_integrators import (
@@ -551,12 +551,12 @@ class ParticleTracker:
             newshape=(self.num_grids, 1),
         )
 
-    @particle_input
+    @particle_input(require="isotope")
     @validate_quantities
     def add_stopping(
         self,
         method: Literal["NIST", "Bethe"],
-        target: ParticleListLike,
+        target: Particle,
         target_rho: u.Quantity[u.kg / u.m**3],
         NIST_target_string: str | None = None,
         I: u.Quantity[u.J] | None = None,  # noqa: E741
@@ -602,9 +602,19 @@ class ParticleTracker:
 
                     return inner_Bethe_stopping
 
+                # TODO: make this compatible with a `ParticleList` object of targets
+                target_electron_number_density = (
+                    const.N_A
+                    * target[0].atomic_number
+                    * target_rho
+                    / (target[0].mass_number * u.kg / u.mol)
+                )
+
                 stopping_power_interpolators = [
                     wrapped_Bethe_stopping(I_grid.si.value, n_i)
-                    for I_grid, n_i in zip(I, self._target_number_density, strict=True)
+                    for I_grid, n_i in zip(
+                        I, target_electron_number_density.value, strict=True
+                    )
                 ]
 
         self._do_stopping = True
@@ -1234,6 +1244,9 @@ class ParticleTracker:
             tracked_particles_to_be_stopped_mask
         )
 
+        # Set negative energies equal to zero to prevent sqrt warnings
+        E[E < 0] = 0
+
         rest_energy = self.m * _c.si.value**2
         new_speeds = _c.si.value * np.sqrt(1 - ((E / rest_energy) + 1) ** (-2))
 
@@ -1390,6 +1403,9 @@ class ParticleTracker:
                     f"a relativistic integrator for more accurate results.",
                     RelativityWarning,
                 )
+
+        if self.nparticles_tracked == 0:
+            return
 
         # Update velocities to reflect stopping
         if self._do_stopping:

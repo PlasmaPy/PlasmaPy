@@ -543,13 +543,13 @@ def test_particle_tracker_Bethe_warning(
     grid = CartesianGrid(-L, L, num=num)
 
     x = [[0, 0, 0]] * u.m
-    v = [[100, 0, 0]] * u.m / u.s
+    v = [[10, 0, 0]] * u.m / u.s
 
     termination_condition = no_particles_on_grids_instantiated
     save_routine = memory_interval_save_routine_instantiated
 
     simulation = ParticleTracker(
-        grid, termination_condition, save_routine, dt=1e-9 * u.s
+        grid, termination_condition, save_routine, dt=1e-5 * u.s
     )
     simulation.load_particles(x, v, Particle("p+"))
 
