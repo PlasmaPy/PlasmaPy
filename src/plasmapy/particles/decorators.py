@@ -590,9 +590,10 @@ class _ParticleInput:
             # Apply casting to arguments annotated with ParticleList and ParticleListLike
             # If the argument is already an iterable, it will be cast to a ParticleList
             # otherwise, cast it to a list
-            if not isinstance(argument, ParticleList) and not isinstance(
-                argument, Iterable
-            ):
+            if (
+                not isinstance(argument, ParticleList)
+                and (not isinstance(argument, Iterable) or isinstance(argument, str))
+            ):  # TODO: figure out the python hierarchy for arrays like this so we can find the difference Iterable \ str
                 argument = [argument]
 
         if annotation in _basic_particle_input_annotations and argument is None:
