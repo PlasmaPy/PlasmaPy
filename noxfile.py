@@ -283,7 +283,7 @@ def docs(session: nox.Session) -> None:
     """
     if running_on_ci:
         session.debug(doc_troubleshooting_message)
-    session.install("-r", docs_requirements, ".")
+    session.install("-r", docs_requirements, ".[docs]")
     session.run(*sphinx_commands, *build_html, *session.posargs)
     landing_page = (
         pathlib.Path(session.invoked_from) / "docs" / "build" / "html" / "index.html"
@@ -337,8 +337,7 @@ def linkcheck(session: nox.Session) -> None:
     """Check hyperlinks in documentation."""
     if running_on_ci:
         session.debug(LINKCHECK_TROUBLESHOOTING)
-    session.install("-r", docs_requirements)
-    session.install(".")
+    session.install("-r", docs_requirements, ".[docs]")
     session.run(*sphinx_commands, *check_hyperlinks, *session.posargs)
 
 
@@ -463,12 +462,9 @@ def changelog(session: nox.Session, final: str) -> None:
             "and PATCH is a non-negative integer."
         )
 
-    session.install(".")
-    session.install("towncrier")
+    session.install(".", "towncrier")
 
     options = ("--yes",) if final else ("--draft", "--keep")
-
-    session.install("towncrier")
 
     session.run(
         "towncrier",
