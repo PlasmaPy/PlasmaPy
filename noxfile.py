@@ -400,7 +400,7 @@ def validate_requirements(session: nox.Session) -> None:
     )
     session.install("uv")
     session.debug(
-        "⚠️ If this check fails, regenerate the pinned requirements files "
+        "⚠ If this check fails, regenerate the pinned requirements files "
         "with `nox -s requirements` (see `ci_requirements/README.md`)."
     )
     session.run(
