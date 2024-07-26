@@ -97,7 +97,7 @@ idna==3.7
     #   requests
 imagesize==1.4.1
     # via sphinx
-incremental==24.7.0
+incremental==22.10.0
     # via towncrier
 ipykernel==6.29.5
     # via plasmapy (pyproject.toml)
@@ -334,9 +334,7 @@ scipy==1.14.0
 send2trash==1.8.3
     # via jupyter-server
 setuptools==71.1.0
-    # via
-    #   plasmapy (pyproject.toml)
-    #   incremental
+    # via plasmapy (pyproject.toml)
 six==1.16.0
     # via
     #   asttokens
@@ -350,7 +348,7 @@ snowballstemmer==2.2.0
     # via sphinx
 soupsieve==2.5
     # via beautifulsoup4
-sphinx==7.4.7
+sphinx==7.3.7
     # via
     #   plasmapy (pyproject.toml)
     #   nbsphinx
