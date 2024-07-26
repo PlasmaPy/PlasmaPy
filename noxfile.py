@@ -399,22 +399,19 @@ def validate_requirements(session: nox.Session) -> None:
         resolution="highest",
     )
     session.install("uv")
-    try:
-        session.run(
-            "uv",
-            "pip",
-            "install",
-            "-r",
-            requirements_file,
-            ".[docs,tests]",
-            "--dry-run",
-        )
-    except nox.command.CommandFailed:
-        session.debug(
-            "⚠️ To fix this failure, regenerate the pinned requirements files "
-            "with `nox -s requirements` (see `ci_requirements/README.md`)."
-        )
-        raise
+    session.debug(
+        "⚠️ If this check fails, regenerate the pinned requirements files "
+        "with `nox -s requirements` (see `ci_requirements/README.md`)."
+    )
+    session.run(
+        "uv",
+        "pip",
+        "install",
+        "-r",
+        requirements_file,
+        ".[docs,tests]",
+        "--dry-run",
+    )
 
 
 @nox.session
