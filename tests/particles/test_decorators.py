@@ -675,7 +675,7 @@ def test_creating_mean_particle_for_parameter_named_ion() -> None:
 
 @pytest.mark.parametrize("particle", [("p+"), ("p+", "D+")])
 @particle_input
-def test_particle_list_input(particle: ParticleListLike):
+def test_particle_list_input(particle: ParticleListLike) -> None:
     assert isinstance(particle, ParticleList)
 
 
