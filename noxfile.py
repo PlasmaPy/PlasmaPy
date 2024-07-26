@@ -98,7 +98,7 @@ def requirements(session) -> None:
     continuous integration checks.
     """
 
-    session.install("uv >= 0.2.26")
+    session.install("uv")
 
     category_version_resolution: list[tuple[str, str, str]] = [
         ("tests", version, "highest") for version in supported_python_versions
@@ -388,6 +388,33 @@ def try_import(session: nox.Session) -> None:
     """Install PlasmaPy and import it."""
     session.install(".")
     session.run("python", "-c", "import plasmapy", *session.posargs)
+
+
+@nox.session
+def validate_requirements(session: nox.Session) -> None:
+    """Verify that the pinned requirements are consistent with pyproject.toml."""
+    requirements_file = _get_requirements_filepath(
+        category="all",
+        version=maxpython,
+        resolution="highest",
+    )
+    session.install("uv")
+    try:
+        session.run(
+            "uv",
+            "pip",
+            "install",
+            "-r",
+            requirements_file,
+            ".[docs,tests]",
+            "--dry-run",
+        )
+    except nox.command.CommandFailed:
+        session.debug(
+            "⚠️ To fix this failure, regenerate the pinned requirements files "
+            "with `nox -s requirements` (see `ci_requirements/README.md`)."
+        )
+        raise
 
 
 @nox.session
