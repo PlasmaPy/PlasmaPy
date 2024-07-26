@@ -270,7 +270,7 @@ def Bethe_stopping_lite(
 
     beta = v / _c.si.value
 
-    return np.asarray(
+    return -np.asarray(
         4
         * np.pi
         * n
