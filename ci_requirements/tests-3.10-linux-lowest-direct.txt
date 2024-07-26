@@ -237,7 +237,7 @@ ptyprocess==0.7.0
     # via
     #   pexpect
     #   terminado
-pure-eval==0.2.2
+pure-eval==0.2.3
     # via stack-data
 pycparser==2.22
     # via cffi
@@ -293,7 +293,7 @@ referencing==0.35.1
     #   jsonschema-specifications
 requests==2.28.0
     # via plasmapy (pyproject.toml)
-rpds-py==0.19.0
+rpds-py==0.19.1
     # via
     #   jsonschema
     #   referencing
