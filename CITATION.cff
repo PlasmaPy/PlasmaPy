@@ -634,3 +634,10 @@ authors:
 - given-names: Shauna
   family-names: Gordon-McKeon
   alias: shaunagm
+
+- given-names: Jaime
+  family-names: Hoyos
+  email: jhhoyos@udemedellin.edu.co
+  affiliation: University of Medellin, Colombia, South America
+  orcid: https://orcid.org/0000-0003-2142-1448
+  alias: jhhoyosb
