@@ -1,0 +1,17 @@
+codecov:
+  token: 85c13d8a-e9e1-49fd-97d4-7ba103f3e830
+  notify:
+    wait_for_ci: false
+  require_ci_to_pass: false
+coverage:
+  range: 90..98
+  status:
+    project:
+      default:
+        # Temporarily allow a greater project coverage threshold; see #2757
+        threshold: 0.9%
+        removed_code_behavior: adjust_base
+    patch:
+      default:
+        threshold: 0.5%
+        removed_code_behavior: adjust_base

@@ -1,0 +1,39 @@
+name: Feature request 💡
+description: |
+  Help shape the future of PlasmaPy by requesting a new feature.
+labels: [feature request]
+body:
+- type: textarea
+  id: description
+  attributes:
+    label: Feature description
+    description: >
+      What new capability should we add to PlasmaPy?
+  validations:
+    required: true
+
+- type: textarea
+  id: motivation
+  attributes:
+    label: Motivation
+    description: >
+      What are the benefits from adding this feature? What problems or
+      limitations would be solved? (optional)
+
+- type: textarea
+  id: solution
+  attributes:
+    label: Implementation strategy
+    description: >
+      How might we go about implementing this new capability? (optional)
+  validations:
+    required: false
+
+- type: textarea
+  id: additional-context
+  attributes:
+    label: Additional context
+    description: >
+      Please provide any additional helpful details or related issues here. (optional)
+  validations:
+    required: false

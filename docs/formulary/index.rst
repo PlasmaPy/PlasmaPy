@@ -5,7 +5,7 @@ Formulary (`plasmapy.formulary`)
 ********************************
 
 `plasmapy.formulary` provides theoretical formulas for calculation of
-physical quantities helpful for plasma physics.
+physical quantities helpful for plasma physics. |:abacus:|
 
 .. table::
    :widths: 5 16
@@ -15,6 +15,9 @@ physical quantities helpful for plasma physics.
    |    :maxdepth: 1                                        |                                         |
    +--------------------------------------------------------+-----------------------------------------+
    | .. toctree:: Collisions <collisions>                   | `plasmapy.formulary.collisions`         |
+   |    :maxdepth: 1                                        |                                         |
+   +--------------------------------------------------------+-----------------------------------------+
+   | .. toctree:: Densities <densities>                     | `plasmapy.formulary.densities`          |
    |    :maxdepth: 1                                        |                                         |
    +--------------------------------------------------------+-----------------------------------------+
    | .. toctree:: Dielectrics <dielectric>                  | `plasmapy.formulary.dielectric`         |
@@ -45,9 +48,6 @@ physical quantities helpful for plasma physics.
    |    :maxdepth: 1                                        |                                         |
    +--------------------------------------------------------+-----------------------------------------+
    | .. toctree:: Miscellaneous Parameters <misc>           | `plasmapy.formulary.misc`               |
-   |    :maxdepth: 1                                        |                                         |
-   +--------------------------------------------------------+-----------------------------------------+
-   | .. toctree:: Plasma Parameters <parameters>            | `plasmapy.formulary.parameters`         |
    |    :maxdepth: 1                                        |                                         |
    +--------------------------------------------------------+-----------------------------------------+
    | .. toctree:: Quantum Relations <quantum>               | `plasmapy.formulary.quantum`            |

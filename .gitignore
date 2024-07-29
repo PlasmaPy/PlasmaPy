@@ -1,10 +1,10 @@
 # Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
 *$py.class
 *.a
 *.o
+*.py[cod]
 *.so
+__pycache__/
 MANIFEST
 
 # Ignore .c files by default to avoid including generated code. If you want to
@@ -12,23 +12,26 @@ MANIFEST
 *.c
 
 # Distribution / packaging
+*.egg
+*.egg-info/
+.eggs/
+.installed.cfg
 .Python
-env/
 build/
 develop-eggs/
 dist/
 downloads/
 eggs/
-.eggs/
+env/
 lib/
 lib64/
 parts/
 sdist/
 var/
 wheels/
-*.egg-info/
-.installed.cfg
-*.egg
+
+# Downloaded files
+src/plasmapy/utils/data/downloads/
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -37,20 +40,20 @@ wheels/
 *.spec
 
 # Installer logs
-pip-log.txt
 pip-delete-this-directory.txt
+pip-log.txt
 
 # Unit test / coverage reports
-htmlcov/
-.tox/
+*,cover
+.cache
 .coverage
 .coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*,cover
 .hypothesis/
 .pytest_cache
+.tox/
+coverage.xml
+htmlcov/
+nosetests.xml
 
 # Translations
 *.mo
@@ -61,8 +64,8 @@ coverage.xml
 local_settings.py
 
 # Flask stuff:
-instance/
 .webassets-cache
+instance/
 
 # Scrapy stuff:
 .scrapy
@@ -90,11 +93,12 @@ celerybeat-schedule
 
 # dotenv
 .env
+env
 
 # virtualenv
 .venv
-venv/
 ENV/
+venv/
 
 # Spyder project settings
 .spyderproject
@@ -110,33 +114,47 @@ ENV/
 
 # Auxiliary files associated with emacs
 *#
-*~
 *.#
+*~
 .#*
 
-# Auxilliary files associated with vim
+# Auxiliary files associated with vim
 *.swp
 VIRTUAL/
 
 # LaTeX and bibtex auxiliary files
-
 *.aux
 *.bbl
 *.blg
 
-# Miscellaneous files
-.idea/
-Untitled*
-untitled*
-*debuglog*
-.DS_Store
-*/cython_version.py
-.mypy_cache
-
 # Documentation files
 auto_examples
+docs/about/_authors.rst
+docs/changelog/index.rst
+docs/contributing/_global_substitutions_table.rst
+docs/notebooks/*.md
+
+# Allow contributors to create a custom requirements.txt file for
+# their own use.
+requirements.txt
 
 # Version file
-plasmapy/version.py
+_version.py
 tags
-docs/notebooks/*.md
+
+# Miscellaneous files
+cython_version.py
+*debuglog*
+.dmypy.json
+.DS_Store
+.idea/
+.mypy_cache
+.pyre
+.pytype
+cython_debug
+dmypy.json
+monkeytype.sqlite3
+node_modules
+package-lock.json
+Untitled*
+untitled*

@@ -7,6 +7,19 @@ Simulation (`plasmapy.simulation`)
 .. py:module:: plasmapy.simulation
 .. currentmodule:: plasmapy.simulation
 
+.. toctree::
+   :maxdepth: 1
+   :caption: Sub-Packages & Modules
+
+   Particle Tracker <particle_tracker/index>
+   abstractions
+   particle_integrators
+
+
+.. attention::
+
+   |expect-api-changes|
+
 Introduction
 ============
 
@@ -18,5 +31,5 @@ API
 ===
 
 .. automodapi:: plasmapy.simulation
+   :heading-chars: ^~
    :noindex:
-   :no-main-docstring:
