@@ -1,0 +1,1 @@
+Added the option to pass np.inf to Particle.ionize, which returns the nucleus of the particle
