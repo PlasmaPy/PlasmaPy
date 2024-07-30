@@ -109,7 +109,7 @@ idna==3.7
     #   requests
 imagesize==1.4.1
     # via sphinx
-incremental==24.7.1
+incremental==24.7.2
     # via towncrier
 iniconfig==2.0.0
     # via pytest
@@ -383,7 +383,7 @@ scipy==1.14.0
     #   lmfit
 send2trash==1.8.3
     # via jupyter-server
-setuptools==72.0.0
+setuptools==72.1.0
     # via
     #   plasmapy (pyproject.toml)
     #   incremental
