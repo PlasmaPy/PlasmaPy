@@ -245,8 +245,8 @@ def beta(
     .. math::
         β = \frac{p_{th}}{p_{mag}} = \frac{n k_B T}{B^2/2\mu_0}
 
-    where :math:`p_{th}` is the thermal pressure of the plasma
-    and :math:`p_{mag}` is the magnetic pressure of the plasma.
+    where :math:`p_{th}` is the '~plasmapy.formularly.misc.thermal_pressure' of the plasma
+    and :math:`p_{mag}` is the '~plasmapy.forumulary.misc.magnetic_pressure' of the plasma.
 
     Parameters
     ----------
