@@ -14,9 +14,9 @@ arrow==1.3.0
     # via isoduration
 asteval==1.0.1
     # via lmfit
-astropy==6.1.1
+astropy==6.1.2
     # via plasmapy (pyproject.toml)
-astropy-iers-data==0.2024.7.15.0.31.42
+astropy-iers-data==0.2024.7.29.0.32.7
     # via astropy
 asttokens==2.4.1
     # via stack-data
@@ -90,7 +90,7 @@ idna==3.7
     #   requests
 imagesize==1.4.1
     # via sphinx
-incremental==22.10.0
+incremental==24.7.2
     # via towncrier
 ipykernel==6.29.5
     # via plasmapy (pyproject.toml)
@@ -198,7 +198,7 @@ nox==2024.4.15
     # via plasmapy (pyproject.toml)
 numba==0.60.0
     # via plasmapy (pyproject.toml)
-numpy==2.0.0
+numpy==2.0.1
     # via
     #   plasmapy (pyproject.toml)
     #   astropy
@@ -256,7 +256,7 @@ ptyprocess==0.7.0
     # via
     #   pexpect
     #   terminado
-pure-eval==0.2.2
+pure-eval==0.2.3
     # via stack-data
 pybtex==0.24.0
     # via
@@ -315,7 +315,7 @@ rfc3986-validator==0.1.1
     # via
     #   jsonschema
     #   jupyter-events
-rpds-py==0.19.0
+rpds-py==0.19.1
     # via
     #   jsonschema
     #   referencing
@@ -325,8 +325,10 @@ scipy==1.14.0
     #   lmfit
 send2trash==1.8.3
     # via jupyter-server
-setuptools==71.0.4
-    # via plasmapy (pyproject.toml)
+setuptools==72.1.0
+    # via
+    #   plasmapy (pyproject.toml)
+    #   incremental
 six==1.16.0
     # via
     #   asttokens
@@ -368,7 +370,7 @@ sphinx-collapse==0.1.3
     # via plasmapy (pyproject.toml)
 sphinx-copybutton==0.5.2
     # via plasmapy (pyproject.toml)
-sphinx-gallery==0.16.0
+sphinx-gallery==0.17.0
     # via plasmapy (pyproject.toml)
 sphinx-hoverxref==1.4.0
     # via plasmapy (pyproject.toml)
@@ -382,15 +384,15 @@ sphinx-rtd-theme==2.0.0
     # via plasmapy (pyproject.toml)
 sphinx-tabs==3.4.5
     # via plasmapy (pyproject.toml)
-sphinxcontrib-applehelp==1.0.8
+sphinxcontrib-applehelp==2.0.0
     # via sphinx
 sphinxcontrib-bibtex==2.6.2
     # via plasmapy (pyproject.toml)
-sphinxcontrib-devhelp==1.0.6
+sphinxcontrib-devhelp==2.0.0
     # via sphinx
 sphinxcontrib-globalsubs==0.1.1
     # via plasmapy (pyproject.toml)
-sphinxcontrib-htmlhelp==2.0.6
+sphinxcontrib-htmlhelp==2.1.0
     # via sphinx
 sphinxcontrib-jquery==4.1
     # via
@@ -398,9 +400,9 @@ sphinxcontrib-jquery==4.1
     #   sphinx-rtd-theme
 sphinxcontrib-jsmath==1.0.1
     # via sphinx
-sphinxcontrib-qthelp==1.0.8
+sphinxcontrib-qthelp==2.0.0
     # via sphinx
-sphinxcontrib-serializinghtml==1.1.10
+sphinxcontrib-serializinghtml==2.0.0
     # via sphinx
 sphinxemoji==0.3.1
     # via plasmapy (pyproject.toml)
