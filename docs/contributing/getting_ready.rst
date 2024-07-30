@@ -1,7 +1,7 @@
 .. _getting ready to contribute:
 
 ***************************
-Getting Ready to Contribute
+🎉🎉Getting Ready to Contribute🎉🎉
 ***************************
 
 .. contents:: Table of Contents
