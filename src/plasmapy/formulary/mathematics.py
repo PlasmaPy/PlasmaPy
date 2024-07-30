@@ -86,6 +86,32 @@ def rot_a_to_b(a: np.ndarray, b: np.ndarray) -> np.ndarray:
     r"""
     Calculates the 3D rotation matrix that will rotate vector ``a`` to
     be aligned with vector ``b``.
+    
+    Parameters
+    ----------
+    a : `~numpy.ndarray`, shape (3,)
+        Vector to be rotated.  Should be a 1D, 3-element unit vector. If
+        ``a`` is not normalized, then it will be normalized.
+
+    b : `~numpy.ndarray`, shape (3,)
+        Vector representing the desired orientation after rotation.
+        Should be a 1D, 3-element unit vector.  If ``b`` is not
+        normalized, then it will be.
+        
+    Returns
+    -------
+    R : `~numpy.ndarray`, shape (3,3)
+        The rotation matrix that will rotate vector ``a`` onto vector
+        ``b``.
+        
+    Raises
+    ------
+
+    `ValueError`
+        If the argument is not of shape (3,).
+        
+    Notes
+    -----
 
     The rotation matrix is calculated as follows. Let
 
@@ -123,23 +149,22 @@ def rot_a_to_b(a: np.ndarray, b: np.ndarray) -> np.ndarray:
     This algorithm is based on `this discussion
     <https://math.stackexchange.com/questions/180418/calculate-rotation-matrix-to-align-vector-a-to-vector-b-in-3d/476311#476311>`_
     on StackExchange.
+    
+    Examples
+    --------
+    >>> a = np.array([0., 1., 0.])
+    >>> b = np.array([1., 0., 0.])
+    >>> rot_a_to_b(a, b)
+    array([[ 0., -1.,  0.],
+           [ 1.,  0.,  0.],
+           [ 0.,  0.,  1.]])
+    >>> a = np.array([-0.14, 2.2, 3.98]) 
+    >>> b = np.array([9.10, 4.17, -9.35])
+    >>> rot_a_to_b(a, b)  
+    array([[ 0.20118147, -0.9613676 , -0.18787857],
+           [-0.30014001,  0.12207629, -0.94605145],
+           [ 0.93243873,  0.2467179 , -0.2639854 ]])
 
-    Parameters
-    ----------
-    a : `~numpy.ndarray`, shape (3,)
-        Vector to be rotated.  Should be a 1D, 3-element unit vector. If
-        ``a`` is not normalized, then it will be normalized.
-
-    b : `~numpy.ndarray`, shape (3,)
-        Vector representing the desired orientation after rotation.
-        Should be a 1D, 3-element unit vector.  If ``b`` is not
-        normalized, then it will be.
-
-    Returns
-    -------
-    R : `~numpy.ndarray`, shape (3,3)
-        The rotation matrix that will rotate vector ``a`` onto vector
-        ``b``.
     """
 
     # Normalize and validate both vectors
