@@ -418,7 +418,7 @@ Best practices
 ==============
 
 The following list contains suggested practices for testing scientific
-software and making tests easier to run and maintain. These guidelines
+software and making tests easier to run and maintain ✅. These guidelines
 are not rigid, and should be treated as general principles should be
 balanced with each other rather than absolute principles.
 
