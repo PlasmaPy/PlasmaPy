@@ -1824,7 +1824,7 @@ class Particle(AbstractPhysicalParticle):
             relative to the original |Particle|.  If ``inplace`` is
             `False`, instead return `None`.
             If np.inf is passed as n, the particle will be fully ionized,
-            and the result will be the nucleus of the ion. 
+            and the result will be the nucleus of the ion.
 
         Raises
         ------
@@ -1854,7 +1854,7 @@ class Particle(AbstractPhysicalParticle):
                 f"Cannot ionize {self.symbol} because it is not a "
                 f"neutral atom or ion."
             )
-        
+
         if np.isinf(n):
             if inplace:
                 self.__init__(self.nucleus.symbol)
