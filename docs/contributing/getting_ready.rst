@@ -257,7 +257,7 @@ when you :py:`import plasmapy`.
 
       conda activate plasmapy-dev
 
-4. Run the command to install PlasmaPy for your operating system:
+4. Run 🏃 the command to install PlasmaPy for your operating system:
 
    .. tabs::
 
