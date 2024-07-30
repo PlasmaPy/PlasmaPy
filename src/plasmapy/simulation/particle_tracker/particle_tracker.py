@@ -10,7 +10,7 @@ import collections
 import sys
 import typing
 import warnings
-from collections.abc import Callable, Iterable
+from collections.abc import Callable, Iterable, Sequence
 from typing import Literal
 
 import astropy.constants as const
@@ -25,7 +25,7 @@ from plasmapy.formulary.lengths import Debye_length
 from plasmapy.particles.atomic import reduced_mass, stopping_power
 from plasmapy.particles.decorators import particle_input
 from plasmapy.particles.particle_class import Particle, ParticleLike
-from plasmapy.particles.particle_collections import ParticleList
+from plasmapy.particles.particle_collections import ParticleList, ParticleListLike
 from plasmapy.plasma.grids import AbstractGrid
 from plasmapy.plasma.plasma_base import BasePlasma
 from plasmapy.simulation.particle_integrators import (
@@ -495,7 +495,7 @@ class ParticleTracker:
         method: Literal["NIST", "Bethe"],
         target: ParticleList | None,
         target_rho: u.Quantity[u.kg / u.m**2],
-        NIST_target_string: list[str] | str | None,
+        NIST_target_string: Sequence[str] | None,
         I: u.Quantity[u.J] | None,  # noqa: E741
     ) -> bool:
         r"""
@@ -515,12 +515,9 @@ class ParticleTracker:
                         "Please specify the associated NIST material string to use NIST stopping!"
                     )
 
-                if isinstance(NIST_target_string, str):
-                    NIST_target_string = list(NIST_target_string)
-
                 if len(NIST_target_string) != len(self.grids):
                     raise ValueError(
-                        "Please specify an array of NIST material strings with length equal to the "
+                        "Please specify a list of NIST material strings with length equal to the "
                         "number of grids."
                     )
             case "Bethe":
@@ -551,14 +548,15 @@ class ParticleTracker:
             newshape=(self.num_grids, 1),
         )
 
+    # TODO: add NIST PSTAR & "composition of materials used in STAR databases" references
     @particle_input(require="isotope")
     @validate_quantities
     def add_stopping(
         self,
         method: Literal["NIST", "Bethe"],
-        target: Particle,
+        target: ParticleListLike,
         target_rho: u.Quantity[u.kg / u.m**3],
-        NIST_target_string: str | None = None,
+        NIST_target_string: str | Sequence[str] | None = None,
         I: u.Quantity[u.J] | None = None,  # noqa: E741
     ):
         r"""
@@ -568,7 +566,45 @@ class ParticleTracker:
         PSTAR database. This information is combined with the mass density
         quantity provided in the grids to calculate the energy loss over the
         distance travelled during a timestep.
+
+        Parameters
+        ----------
+        method : str
+            The routine to be used to calculate the stopping power. Acceptable
+            options include ``NIST``, which draws data from the NIST PSTAR database,
+            and ``Bethe``, which uses the Bethe formula to calculate the stopping
+            power for the material.
+
+        target : `~plasmapy.particles.particle_collections.ParticleListLike`
+            A `~plasmapy.particles.particle_collections.ParticleListLike` representation of the target material(s).
+            The atomic mass of each particle must be specified (i.e. ``Al-27``).
+
+        target_rho : `~astropy.units.Quantity`
+            The density of the material in units convertible to kg/m\ :sup:`3`.
+
+        NIST_target_string : str | Sequence[str] | None, optional
+            A string representation of the material(s) in the NIST database. This is
+            required if ``method`` is ``NIST``. For a complete list of materials,
+            see the NIST database.
+
+        I : `astropy.units.Quantity`
+            The mean excitation energy of the material(s) in units convertible to
+            Joules. This is required if ``method`` is ``Bethe``. Common values for
+            the mean excitation energy can be found in the NIST materials
+            composition database.
+
         """
+
+        # If the target string is just a string, cast it to a list
+        if isinstance(NIST_target_string, str):
+            NIST_target_string = [NIST_target_string]
+
+        # If the passed quantity does not have an array value, cast it to one
+        if not isinstance(target_rho.value, np.ndarray):
+            target_rho = np.asarray([target_rho.value]) * target_rho.unit
+
+        if not isinstance(I.value, np.ndarray):
+            I = np.asarray([I.value]) * I.unit  # noqa: E741
 
         # Check inputs for user error and raise respective exceptions/warnings if
         # necessary. Returns `True` if no errors were detected. If a "falsy" value
@@ -625,11 +661,11 @@ class ParticleTracker:
     # TODO: is this signature too much?
     # TODO: find a way to create a type for the signature of the Callable parameters
     #  (preferably using only one expression)
-    # @particle_input
+    @particle_input(require="isotope")
     @validate_quantities
     def add_scattering(
         self,
-        target: ParticleList,
+        target: ParticleListLike,
         target_rho: u.Quantity[u.kg / u.m**3],
         scatter_routine: Callable[
             [
@@ -643,7 +679,7 @@ class ParticleTracker:
             u.Quantity[u.m**2 / u.sr]
             | u.Quantity[
                 u.rad**2 / u.s
-            ],  # Differential cross-section or Mean-square scatter rate in radians^2 per second
+            ],  # Differential cross-section or mean-square scatter rate in radians^2 per second
         ],
         scatter_routine_type: Literal["differential cross-section", "mean square rate"],
     ):
@@ -653,8 +689,9 @@ class ParticleTracker:
 
         Parameters
         ----------
-        target : |ParticleLike|
-            A |particle-like| representation of the target material. A net charge should be included.
+        target : `~plasmapy.particles.particle_collections.ParticleListLike`
+            A `~plasmapy.particles.particle_collections.ParticleListLike` representation of the target material(s).
+            The atomic mass of each particle must be specified (i.e. ``Al-27``).
 
         scatter_routine : `callable`
             A function implementation used to calculate the scattering distribution.
