@@ -49,7 +49,7 @@ def Alfven_speed(
     mass_numb: int | None = None,
     Z: float | None = None,
 ) -> u.Quantity[u.m / u.s]:
-    r"""Calculate the Alfvén speed.
+    r"""Calculate the Alfvén speed. 🏎️💨
 
     The Alfvén speed :math:`V_A` is the typical propagation speed of
     magnetic disturbances in a quasineutral plasma, and is given by:
