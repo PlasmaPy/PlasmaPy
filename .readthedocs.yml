@@ -22,4 +22,4 @@ python:
     path: .
     extra_requirements:
       - docs
-#  - requirements: requirements/requirements_docs_py312.txt
+#  - requirements: ci_requirements/docs-3.12-linux.txt

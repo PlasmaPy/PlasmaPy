@@ -351,12 +351,18 @@ class _ParticleInput:
         must_be_charged = self.require is not None and "charged" in self.require
         must_have_charge_info = self.any_of == {"charged", "uncharged"}
 
-        uncharged = particle.is_category("uncharged")
-        lacks_charge_info = particle.is_category(exclude={"charged", "uncharged"})
+        if isinstance(particle, ParticleList):
+            uncharged = particle.is_category("uncharged", particlewise=True)
+            lacks_charge_info = particle.is_category(
+                exclude={"charged", "uncharged"}, particlewise=True
+            )
+        else:
+            uncharged = particle.is_category("uncharged")
+            lacks_charge_info = particle.is_category(exclude={"charged", "uncharged"})
 
         if isinstance(uncharged, Iterable):
             uncharged = any(uncharged)
-            lacks_charge_info = any(lacks_charge_info)  # type: ignore[arg-type]
+            lacks_charge_info = any(lacks_charge_info)
 
         if must_be_charged and (uncharged or must_have_charge_info):
             raise ChargeError(f"{self.callable_} can only accept charged particles.")
@@ -425,11 +431,12 @@ class _ParticleInput:
         --------
         ~plasmapy.particles.particle_class.Particle.is_category
         """
-        if not particle.is_category(
+        particle_in_category = particle.is_category(
             require=self.require,
             any_of=self.any_of,
             exclude=self.exclude,
-        ):
+        )
+        if not particle_in_category:
             errmsg = self.category_errmsg(
                 particle,
                 self.require,
@@ -453,7 +460,7 @@ class _ParticleInput:
             and not np.isnan(particle.charge)
             and particle.mass.value > 0
         ):
-            return
+            return None
 
         name_categorization_exception: list[
             tuple[str, dict[str, str | Iterable[str] | None], type]
@@ -471,7 +478,12 @@ class _ParticleInput:
             if parameter != name or particle is None:
                 continue
 
-            meets_name_criteria = particle.is_category(**categorization)
+            if isinstance(particle, ParticleList):
+                meets_name_criteria = particle.is_category(
+                    **categorization, particlewise=True
+                )
+            else:
+                meets_name_criteria = particle.is_category(**categorization)
 
             if isinstance(particle, Iterable) and not isinstance(particle, str):
                 meets_name_criteria = all(meets_name_criteria)  # type: ignore[arg-type]
@@ -505,7 +517,7 @@ class _ParticleInput:
         if (
             not self.allow_custom_particles
             and isinstance(particle, ParticleList)
-            and any(particle.is_category("custom"))
+            and any(particle.is_category("custom", particlewise=True))  # type: ignore[arg-type]
         ):
             raise InvalidParticleError(
                 f"{self.callable_.__name__} does not accept CustomParticle "
@@ -944,7 +956,6 @@ def particle_input(
     ...     return isotope.mass_number
     >>> mass_number("D")
     2
-
     """
 
     # The following pattern comes from the docs for wrapt, and requires

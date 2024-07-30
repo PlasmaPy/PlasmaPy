@@ -22,41 +22,61 @@ Sphinx extensions (built-in):
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 
+import logging
 import os
 import sys
+import warnings
+from datetime import datetime, timezone
+
+from sphinx.application import Sphinx
+
+from plasmapy import __version__ as version
 
 # isort: off
 sys.path.insert(0, os.path.abspath(".."))  # noqa: PTH100
 sys.path.insert(0, os.path.abspath("."))  # noqa: PTH100
 # isort: on
 
-from datetime import datetime
+import _author_list_from_cff
+import _changelog_index
+import _global_substitutions
 
-import _cff_to_rst
-from _global_substitutions import global_substitutions
-from packaging.version import Version
-from sphinx.application import Sphinx
-
-# Generate author list from CITATION.cff
-
-_cff_to_rst.main()
-
-from plasmapy import __version__ as release
+now = datetime.now(timezone.utc)
 
 # Project metadata
 
 project = "PlasmaPy"
 author = "PlasmaPy Community"
-copyright = f"2015–{datetime.utcnow().year}, {author}"  # noqa: A001, DTZ003
+copyright = f"2015–{now.year}, {author}"  # noqa: A001
 language = "en"
 
-release = "" if release == "unknown" else release
-revision = ""
-if release != "":
-    pv = Version(release)
-    release = pv.public
-    revision = "" if pv.local is None else pv.local[1:]
-version = ".".join(release.split(".")[:2])  # short X.Y version
+if "dev" in version:
+    # We've had some problems with setuptools_scm providing an incorrect
+    # version for non-releases, so base it on the date and git hash
+    # instead.
+    git_hash = version.split("dev")[-1].split("+")[-1].split(".")[0]
+    version = f"{now.year}.{now.month}.0.dev+{git_hash}"
+    version_info_message = f"Setting {version = !r}"
+    logging.info(version_info_message)
+
+if version.startswith("0"):
+    version_warning_message = f"Incorrect {version = !r}"
+    logging.warning(version_warning_message)
+
+release = version
+
+# Define global substitutions in docs/_global_substitutions.py
+
+_global_substitutions.make_global_substitutions_table()
+global_substitutions = _global_substitutions.global_substitutions
+
+# Regenerate the changelog index file
+
+_changelog_index.main()
+
+# Generate author list from CITATION.cff
+
+_author_list_from_cff.generate_rst_file()
 
 # Sphinx configuration variables
 
@@ -87,6 +107,7 @@ extensions = [
     "sphinx_tabs.tabs",
     "sphinx_collapse",
     "sphinxcontrib.bibtex",
+    "sphinxemoji.sphinxemoji",
     "sphinxcontrib.globalsubs",
 ]
 
@@ -94,6 +115,8 @@ exclude_patterns = [
     "**.ipynb_checkpoints",
     "**Untitled*",
     ".DS_Store",
+    ".nox",
+    ".tox",
     "_build",
     "notebooks/langmuir_samples",
     "Thumbs.db",
@@ -103,9 +126,12 @@ default_role = "py:obj"
 html_extra_path = ["robots.txt"]
 html_favicon = "./_static/icon.ico"
 modindex_common_prefix = ["plasmapy."]
-pygments_style = "default"  # code highlighting style to meet WCAG AA contrast standard
+pygments_style = "default"  # code highlighting to meet WCAG AA contrast standard
 root_doc = "index"
 source_suffix = ".rst"
+templates_path = ["_templates"]
+maximum_signature_line_length = 90
+sphinxemoji_style = "twemoji"
 
 # Specify patterns to ignore when doing a nitpicky documentation build.
 # These may include common expressions like "real number" as well as
@@ -302,16 +328,16 @@ redirects = {
     "development/testing_guide": "../contributing/testing_guide.html",
     "whatsnew": "../changelog/",
     "whatsnew/0.1.0": "../changelog/0.1.0.html",
-    "whatsnew/0.1.1": "../changelog/0.1.0.html",
-    "whatsnew/0.2.0": "../changelog/0.1.0.html",
-    "whatsnew/0.3.1": "../changelog/0.1.0.html",
-    "whatsnew/0.4.0": "../changelog/0.1.0.html",
-    "whatsnew/0.5.0": "../changelog/0.1.0.html",
-    "whatsnew/0.6.0": "../changelog/0.1.0.html",
-    "whatsnew/0.7.0": "../changelog/0.1.0.html",
-    "whatsnew/0.8.1": "../changelog/0.1.0.html",
-    "whatsnew/0.9.0": "../changelog/0.1.0.html",
-    "whatsnew/0.9.1": "../changelog/0.1.0.html",
+    "whatsnew/0.1.1": "../changelog/0.1.1.html",
+    "whatsnew/0.2.0": "../changelog/0.2.0.html",
+    "whatsnew/0.3.1": "../changelog/0.3.1.html",
+    "whatsnew/0.4.0": "../changelog/0.4.0.html",
+    "whatsnew/0.5.0": "../changelog/0.5.0.html",
+    "whatsnew/0.6.0": "../changelog/0.6.0.html",
+    "whatsnew/0.7.0": "../changelog/0.7.0.html",
+    "whatsnew/0.8.1": "../changelog/0.8.1.html",
+    "whatsnew/0.9.0": "../changelog/0.9.0.html",
+    "whatsnew/0.9.1": "../changelog/0.9.1.html",
     "whatsnew/2023.1.0": "../changelog/2023.1.0.html",
     "whatsnew/index": "../changelog/index.html",
 }
@@ -339,13 +365,21 @@ linkcheck_anchors_ignore = [
     "L[0-9].+",
     "!forum/plasmapy",
 ]
+
+# The default value of linkcheck_report_timeouts_as_broken will default
+# to False for Sphinx 8.0, so the following line can be removed.
+linkcheck_report_timeouts_as_broken = False
+
 linkcheck_allowed_redirects = {
     r"https://doi\.org/.+": r"https://.+",  # DOI links are persistent
-    r"https://docs.+\.org": r"https://docs.+\.org/en/.+",
+    r"https://.+\.org": r"https://.+\.org/en/.+",
     r"https://docs.+\.io": r"https://docs.+\.io/en/.+",
     r"https://docs.+\.com": r"https://docs.+\.com/en/.+",
+    r"https://.+\.codes": r"https://.+\.codes/en/.+",
     r"https://docs.+\.dev": r"https://docs.+\.dev/en/.+",
     r"https://github\.com/sponsors/.+": r"https://github\.com/.+",
+    # Allow :issue: role from sphinx-issues to point to GitHub discussions
+    r"https://github\.com/.+/issues/.+": r"https://github\.com/.+/discussions/.+",
     r"https://en.wikipedia.org/wiki.+": "https://en.wikipedia.org/wiki.+",
     r"https://.+\.readthedocs\.io": r"https://.+\.readthedocs\.io/en/.+",
     r"https://www\.sphinx-doc\.org": r"https://www\.sphinx-doc\.org/en/.+",

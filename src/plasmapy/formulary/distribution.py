@@ -29,7 +29,7 @@ from plasmapy.utils._units_definitions import (
 )
 
 
-def _v_drift_conversion(v_drift):
+def _v_drift_conversion(v_drift: float | u.Quantity[u.m / u.s]):
     # Helper method to assign equivalent value in SPEED_UNITS and/or remove units
     if isinstance(v_drift, u.Quantity):
         v_drift = v_drift.to_value(SPEED_UNITS)
@@ -41,9 +41,9 @@ def Maxwellian_1D(
     v,
     T,
     particle: ParticleLike = "e-",
-    v_drift=0,
+    v_drift: float | u.Quantity[u.m / u.s] = 0,
     vTh=np.nan,
-    units="units",
+    units: str = "units",
     *,
     mass_numb=None,
     Z=None,
@@ -115,8 +115,8 @@ def Maxwellian_1D(
 
     .. math::
 
-        f = \sqrt{\frac{m}{2 \pi k_B T}} e^{-\frac{m}{2 k_B T} (v-V)^2}
-        \equiv \frac{1}{\sqrt{\pi v_{Th}^2}} e^{-(v - v_{drift})^2 / v_{Th}^2}
+        f = \sqrt{\frac{m}{2π k_B T}} e^{-\frac{m}{2 k_B T} (v-V)^2}
+        \equiv \frac{1}{\sqrt{π v_{Th}^2}} e^{-(v - v_{drift})^2 / v_{Th}^2}
 
     where :math:`v_{Th} = \sqrt{2 k_B T / m}` is the thermal speed
 
@@ -168,10 +168,10 @@ def Maxwellian_velocity_2D(
     vy,
     T,
     particle: ParticleLike = "e-",
-    vx_drift=0,
-    vy_drift=0,
+    vx_drift: float | u.Quantity[u.m / u.s] = 0,
+    vy_drift: float | u.Quantity[u.m / u.s] = 0,
     vTh=np.nan,
-    units="units",
+    units: str = "units",
     *,
     mass_numb=None,
     Z=None,
@@ -251,7 +251,7 @@ def Maxwellian_velocity_2D(
 
     .. math::
 
-        f = (\pi v_{Th}^2)^{-1} \exp \left [-(\vec{v} -
+        f = (π v_{Th}^2)^{-1} \exp \left [-(\vec{v} -
         \vec{V}_{drift})^2 / v_{Th}^2 \right ]
 
     where :math:`v_{Th} = \sqrt{2 k_B T / m}` is the thermal speed.
@@ -319,11 +319,11 @@ def Maxwellian_velocity_3D(
     vz,
     T,
     particle: ParticleLike = "e-",
-    vx_drift=0,
-    vy_drift=0,
-    vz_drift=0,
+    vx_drift: float | u.Quantity[u.m / u.s] = 0,
+    vy_drift: float | u.Quantity[u.m / u.s] = 0,
+    vz_drift: float | u.Quantity[u.m / u.s] = 0,
     vTh=np.nan,
-    units="units",
+    units: str = "units",
     *,
     mass_numb=None,
     Z=None,
@@ -409,7 +409,7 @@ def Maxwellian_velocity_3D(
 
     .. math::
 
-        f = (\pi v_{Th}^2)^{-3/2} \exp \left [-(\vec{v} -
+        f = (π v_{Th}^2)^{-3/2} \exp \left [-(\vec{v} -
         \vec{V}_{drift})^2 / v_{Th}^2 \right ]
 
     where :math:`v_{Th} = \sqrt{2 k_B T / m}` is the thermal speed.
@@ -483,9 +483,9 @@ def Maxwellian_speed_1D(
     v,
     T,
     particle: ParticleLike = "e-",
-    v_drift=0,
+    v_drift: float | u.Quantity[u.m / u.s] = 0,
     vTh=np.nan,
-    units="units",
+    units: str = "units",
     *,
     mass_numb=None,
     Z=None,
@@ -609,9 +609,9 @@ def Maxwellian_speed_2D(
     v,
     T,
     particle: ParticleLike = "e-",
-    v_drift=0,
+    v_drift: float | u.Quantity[u.m / u.s] = 0,
     vTh=np.nan,
-    units="units",
+    units: str = "units",
     *,
     mass_numb=None,
     Z=None,
@@ -743,9 +743,9 @@ def Maxwellian_speed_3D(
     v,
     T,
     particle: ParticleLike = "e-",
-    v_drift=0,
+    v_drift: float | u.Quantity[u.m / u.s] = 0,
     vTh=np.nan,
-    units="units",
+    units: str = "units",
     *,
     mass_numb=None,
     Z=None,
@@ -878,9 +878,9 @@ def kappa_velocity_1D(
     T,
     kappa,
     particle: ParticleLike = "e-",
-    v_drift=0,
+    v_drift: float | u.Quantity[u.m / u.s] = 0,
     vTh=np.nan,
-    units="units",
+    units: str = "units",
     *,
     mass_numb=None,
     Z=None,
@@ -1035,11 +1035,11 @@ def kappa_velocity_3D(
     T,
     kappa,
     particle: ParticleLike = "e-",
-    vx_drift=0,
-    vy_drift=0,
-    vz_drift=0,
+    vx_drift: float | u.Quantity[u.m / u.s] = 0,
+    vy_drift: float | u.Quantity[u.m / u.s] = 0,
+    vz_drift: float | u.Quantity[u.m / u.s] = 0,
     vTh=np.nan,
-    units="units",
+    units: str = "units",
     *,
     mass_numb=None,
     Z=None,
@@ -1133,7 +1133,7 @@ def kappa_velocity_3D(
        \vec{V_{drift}})^2}{κ v_{Th},κ^2}\right)^{-(κ + 1)}
 
     where :math:`v_{Th},κ` is the kappa thermal speed
-    and :math:`A_κ = \frac{1}{2 π (κ v_{Th},κ^2)^{3/2}}
+    and :math:`A_κ = \frac{1}{2π (κ v_{Th},κ^2)^{3/2}}
     \frac{Γ(κ + 1)}{Γ(κ - 1/2) Γ(3/2)}` is the
     normalization constant.
 

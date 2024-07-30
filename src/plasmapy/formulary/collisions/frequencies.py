@@ -92,7 +92,7 @@ class SingleParticleCollisionFrequencies:
         + ψ' \left( x^{α \backslash β} \right) \right]
         ν_0^{α \backslash β}`
 
-        parallel diffusion: :math:`ν_{||}^{α \backslash β}
+        parallel diffusion: :math:`ν_{∥}^{α \backslash β}
         = \left[ \frac{ψ \left( x^{α \backslash β} \right)
         }{x^{α \backslash β}} \right] ν_{0}^{α \backslash β}`
 
@@ -620,7 +620,7 @@ def collision_frequency(
     species,
     z_mean: float = np.nan,
     V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
-    method="classical",
+    method: str = "classical",
 ) -> u.Quantity[u.Hz]:
     r"""
     Collision frequency of particles in a plasma.
@@ -754,7 +754,7 @@ def collision_frequency(
     # reduced mass
     V_reduced = V_r
 
-    if species[0] in ("e", "e-") and species[1] in ("e", "e-"):
+    if species[0] in {"e", "e-"} and species[1] in {"e", "e-"}:
         # electron-electron collision
         # if a velocity was passed, we use that instead of the reduced
         # thermal velocity
@@ -765,7 +765,7 @@ def collision_frequency(
         )
         # impact parameter for 90° collision
         bPerp = lengths.impact_parameter_perp(T=T, species=species, V=V_reduced)
-    elif species[0] in ("e", "e-") or species[1] in ("e", "e-"):
+    elif species[0] in {"e", "e-"} or species[1] in {"e", "e-"}:
         # electron-ion collision
         # Need to manually pass electron thermal velocity to obtain
         # correct perpendicular collision radius
@@ -810,7 +810,7 @@ def fundamental_electron_collision_freq(
     ion,
     coulomb_log=None,
     V=None,
-    coulomb_log_method="classical",
+    coulomb_log_method: str = "classical",
 ) -> u.Quantity[u.s**-1]:
     r"""
     Average momentum relaxation rate for a slowly flowing Maxwellian
@@ -970,7 +970,7 @@ def fundamental_ion_collision_freq(
     ion,
     coulomb_log=None,
     V=None,
-    coulomb_log_method="classical",
+    coulomb_log_method: str = "classical",
 ) -> u.Quantity[u.s**-1]:
     r"""
     Average momentum relaxation rate for a slowly flowing Maxwellian

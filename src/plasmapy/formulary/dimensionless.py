@@ -157,9 +157,9 @@ def Hall_parameter(
 
     particle : `~plasmapy.particles.particle_class.Particle`
         The particle species for which the Hall parameter is calculated
-        for.  Representation of the particle species (e.g., ``'p+'`` for
+        for. Representation of the particle species (e.g., ``'p+'`` for
         protons, ``'D+'`` for deuterium, or ``'He-4 +1'`` for singly
-        ionized helium-4).  If no charge state information is provided,
+        ionized helium-4). If no charge state information is provided,
         then the particles are assumed to be singly charged.
 
     coulomb_log : `float`, optional
@@ -167,7 +167,7 @@ def Hall_parameter(
         purposes.
 
     V : `~astropy.units.quantity.Quantity`
-        The relative velocity between ``particle`` and ``ion``.  If not
+        The relative velocity between ``particle`` and ``ion``. If not
         provided, then the ``particle`` thermal velocity is assumed
         (`~plasmapy.formulary.speeds.thermal_speed`).
 
@@ -178,7 +178,7 @@ def Hall_parameter(
         6 supported methods are ``"ls_min_interp"``,
         ``"ls_full_interp"``, ``"ls_clamp_mininterp"``,
         ``"hls_min_interp"``, ``"hls_max_interp"``, and
-        ``"hls_full_interp"``.  Please refer to the docstring of
+        ``"hls_full_interp"``. Please refer to the docstring of
         `~plasmapy.formulary.collisions.coulomb.Coulomb_logarithm` for
         more information about these methods.
 
@@ -446,20 +446,22 @@ def Lundquist_number(
     z_mean: float | None = None,
 ) -> u.Quantity[u.dimensionless_unscaled]:
     r"""
-    Compute the Lundquist number.
+    Compute the ratio of the Alfén wave crossing timescale to the
+    magnetic diffusion timescale.
 
-    The Lundquist number :math:`S` is a dimensionless quantity that compares the
-    Alfvén wave crossing timescale to the magnetic diffusion timescale in a
-    conducting medium. It is given by
+    The Lundquist number :math:`S` is a dimensionless quantity that
+    compares the Alfvén wave crossing timescale to the magnetic
+    diffusion timescale in a conducting medium. It is given by
 
     .. math::
 
         S = \frac{L V_A}{η}
 
-    where L is the length scale, :math:`V_A = B / \sqrt{\mu_0 \rho}` is the Alfvén
-    speed, :math:`B` is the magnetic field, :math:`\rho` is the mass density,
-    :math:`μ_0` is the permeability of free space, :math:`η = 1 / (μ_0 \sigma)` is
-    the magnetic diffusivity, and :math:`\sigma` is the electrical conductivity.
+    where L is the length scale, :math:`V_A = B / \sqrt{μ_0 ρ}` is the
+    Alfvén speed, :math:`B` is the magnetic field, :math:`ρ` is the mass
+    density, :math:`μ_0` is the permeability of free space,
+    :math:`η = 1 / (μ_0 σ)` is the magnetic diffusivity, and :math:`σ`
+    is the electrical conductivity.
 
     Parameters
     ----------
@@ -470,26 +472,27 @@ def Lundquist_number(
         The magnetic field magnitude in units convertible to tesla.
 
     density : `~astropy.units.Quantity`
-        Either the ion number density :math:`n_i` in units convertible to
-        m\ :sup:`-3` or the total mass density :math:`ρ` in units
+        Either the ion number density :math:`n_i` in units convertible
+        to m\ :sup:`-3` or the total mass density :math:`ρ` in units
         convertible to kg m\ :sup:`-3`\ .
 
     sigma : `~astropy.units.Quantity`
         The conductivity of the plasma.
 
     ion : `~plasmapy.particles.particle_class.Particle`, optional
-        Representation of the ion species (e.g., ``'p+'`` for protons, ``'D+'`` for
-        deuterium, ``'He-4 +1'`` for singly ionized helium-4, etc.). If no charge
-        state information is provided, then the ions are assumed to be singly
-        ionized. If the density is an ion number density, then this parameter
-        is required in order to convert to mass density.
+        Representation of the ion species (e.g., ``'p+'`` for protons,
+        ``'D+'`` for deuterium, ``'He-4 +1'`` for singly ionized
+        helium-4, etc.). If no charge state information is provided,
+        then the ions are assumed to be singly ionized. If the density
+        is an ion number density, then this parameter is required in
+        order to convert to mass density.
 
     z_mean : `float`, optional
-        The average ionization state (arithmetic mean) of the ``ion`` composing
-        the plasma.  This is used in calculating the mass density
-        :math:`ρ = n_i (m_i + Z_{mean} m_e)`.  ``z_mean`` is ignored if
-        ``density`` is passed as a mass density and overrides any charge state
-        info provided by ``ion``.
+        The average ionization state (arithmetic mean) of the ``ion``
+        composing the plasma. This is used in calculating the mass
+        density :math:`ρ = n_i (m_i + Z_{mean} m_e)`. ``z_mean`` is
+        ignored if ``density`` is passed as a mass density and overrides
+        any charge state info provided by ``ion``.
 
     Warns
     -----
@@ -502,11 +505,12 @@ def Lundquist_number(
     Raises
     ------
     `~plasmapy.utils.exceptions.RelativityError`
-        If the Alfvén velocity is greater than or equal to the speed of light.
+        If the Alfvén velocity is greater than or equal to the speed of
+        light.
 
     `TypeError`
         If ``B`` and/or ``density`` are not of type `~astropy.units.Quantity`,
-        or convertible.
+        or convertible to one.
 
     `TypeError`
         If ``ion`` is not of type or convertible to
@@ -536,14 +540,14 @@ def Lundquist_number(
     magnetic reconnection. For example, reconnection rates in both the
     Sweet-Parker and Petschek models of magnetic reconnection can be expressed
     in terms of the Lundquist number. In the Sweet-Parker model, a current
-    sheet with half-width :math:`L`, conductivity :math:`\sigma`, magnetic
-    diffusivity :math:`\eta = 1 / (\mu_0 \sigma)`, and Alfvén speed :math:`V_A`
+    sheet with half-width :math:`L`, conductivity :math:`σ`, magnetic
+    diffusivity :math:`η = 1 / (μ_0 σ)`, and Alfvén speed :math:`V_A`
     at the inflow has a Lundquist number of
-    :math:`S = LV_A / \eta`. The dimensionless reconnection rate :math:`R`,
+    :math:`S = L V_A / η`. The dimensionless reconnection rate :math:`R`,
     i.e., the ratio of the inflow to outflow speeds, can then be expressed as
     :math:`R \sim 1 / \sqrt{S}`. Similarly, the maximum reconnection rate
     in the Petschek model can be expressed as approximately
-    :math:`\pi / (8 \ln S)` :cite:p:`priest:2000`.
+    :math:`π / (8 \ln S)` :cite:p:`priest:2000`.
 
     Examples
     --------

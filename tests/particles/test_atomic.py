@@ -24,6 +24,7 @@ from plasmapy.particles.atomic import (
     reduced_mass,
     stable_isotopes,
     standard_atomic_weight,
+    stopping_power,
 )
 from plasmapy.particles.exceptions import (
     ChargeError,
@@ -603,3 +604,105 @@ def test_ion_list2(particle, min_charge, max_charge, expected_charge_numbers) ->
 def test_invalid_inputs_to_ion_list2(element, min_charge, max_charge) -> None:
     with pytest.raises(ChargeError):
         ionic_levels(element, min_charge, max_charge)
+
+
+@pytest.mark.slow()
+@pytest.mark.parametrize(
+    ("incident_particle", "material", "kwargs", "expected_error"),
+    [
+        # ESTAR not implemented
+        (Particle("e-"), "OXYGEN", {}, NotImplementedError),
+        # Invalid incident particle
+        (Particle("O"), "OXYGEN", {}, ValueError),
+        # Invalid material
+        (Particle("H+"), "BENZENE", {}, ValueError),
+        # Invalid component
+        (Particle("H+"), "OXYGEN", {"component": "Lorem Ipsum"}, ValueError),
+    ],
+)
+def test_stopping_power_errors(
+    incident_particle, material, kwargs, expected_error
+) -> None:
+    with pytest.raises(expected_error):
+        stopping_power(incident_particle, material, **kwargs)
+
+
+@pytest.mark.parametrize(
+    (
+        "incident_particle",
+        "material",
+        "energies",
+        "component",
+        "expected_stopping_power",
+    ),
+    [
+        # Test ASTAR interpolation
+        (
+            Particle("He-4"),
+            "OXYGEN",
+            [1.25e-3, 1.25e-2, 1.25e-1, 1.25, 1.25e1, 1.25e2] * u.MeV,
+            "total",
+            [2.383e2, 4.055e2, 1.048e3, 1.669e3, 3.837e2, 6.273e1]
+            * u.MeV
+            * u.cm**2
+            / u.g,
+        ),
+        # Test PSTAR interpolation
+        (
+            Particle("H+"),
+            "HYDROGEN",
+            [1.25e-3, 1.25e-2, 1.25e-1, 1.25, 1.25e1, 1.25e2] * u.MeV,
+            "total",
+            [1.030e3, 2.621e3, 3.188e3, 5.673e2, 8.44e1, 1.295e1]
+            * u.MeV
+            * u.cm**2
+            / u.g,
+        ),
+        # Test electronic component
+        (
+            Particle("H+"),
+            "ACETYLENE",
+            [1.25e-3, 1.25e-2, 1.25e-1, 1.25, 1.25e1, 1.25e2] * u.MeV,
+            "electronic",
+            [2.073e2, 6.002e2, 8.871e2, 2.307e2, 3.859e1, 6.185]
+            * u.MeV
+            * u.cm**2
+            / u.g,
+        ),
+        # Test nuclear component
+        (
+            Particle("He-4"),
+            "POLYSTYRENE",
+            [1.25e-3, 1.25e-2, 1.25e-1, 1.25, 1.25e1, 1.25e2] * u.MeV,
+            "nuclear",
+            [2.143e2, 7.921e1, 1.526e1, 2.244, 2.936e-1, 3.450e-2]
+            * u.MeV
+            * u.cm**2
+            / u.g,
+        ),
+        # # Test no interpolation
+        # (
+        #     Particle("H+"),
+        #     "COPPER",
+        #     None,
+        #     "total",
+        #     [0, 0, 0, 0, 0, 0] * u.MeV * u.cm**2 / u.g,
+        # ),
+    ],
+)
+def test_stopping_power_interpolation(
+    incident_particle, material, energies, component, expected_stopping_power
+) -> None:
+    """Test the interpolation functionality of the stopping power function against NIST values"""
+    _, actual_stopping_power = stopping_power(
+        incident_particle, material, energies, component=component
+    )
+
+    # NIST data is given to four significant figures: use a tolerance of 1 part in 1000
+    assert np.isclose(actual_stopping_power, expected_stopping_power, rtol=0.001).all()
+
+
+def test_stopping_power_no_interpolation() -> None:
+    result = stopping_power(Particle("H+"), "COPPER")
+
+    assert type(result) is tuple

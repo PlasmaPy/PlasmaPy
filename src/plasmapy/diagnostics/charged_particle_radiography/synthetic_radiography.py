@@ -7,21 +7,25 @@ original fields (under some set of assumptions).
 
 __all__ = ["Tracker", "synthetic_radiograph"]
 
-import collections
-import sys
 import warnings
 from collections.abc import Iterable
+from pathlib import Path
+from typing import Literal
 
 import astropy.constants as const
 import astropy.units as u
+import h5py
 import numpy as np
-from tqdm import tqdm
 
 from plasmapy import particles
 from plasmapy.formulary.mathematics import rot_a_to_b
 from plasmapy.particles import Particle
 from plasmapy.plasma.grids import AbstractGrid
-from plasmapy.simulation.particle_integrators import boris_push
+from plasmapy.simulation.particle_tracker.particle_tracker import ParticleTracker
+from plasmapy.simulation.particle_tracker.save_routines import SaveOnceOnCompletion
+from plasmapy.simulation.particle_tracker.termination_conditions import (
+    AllParticlesOffGridTerminationCondition,
+)
 
 
 def _coerce_to_cartesian_si(pos):
@@ -70,7 +74,42 @@ def _coerce_to_cartesian_si(pos):
     return pos_out
 
 
-class Tracker:
+class _SyntheticRadiographySaveRoutine(SaveOnceOnCompletion):
+    def __init__(self, output_directory: Path) -> None:
+        super().__init__(output_directory=output_directory)
+
+        self._quantities = {
+            "source": (u.m, "attribute"),
+            "detector": (u.m, "attribute"),
+            "mag": (u.m, "attribute"),
+            "max_deflection": (None, "attribute"),
+            "nparticles": (None, "attribute"),
+            "x": (u.m, "dataset"),
+            "y": (u.m, "dataset"),
+            "v": (u.m / u.s, "dataset"),
+            "x0": (u.m, "dataset"),
+            "y0": (u.m, "dataset"),
+            "v0": (u.m, "dataset"),
+        }
+
+    def save(self) -> None:
+        result_dictionary = self._particle_tracker.results_dict
+
+        if self.output_directory is None:
+            return
+
+        output_file_path = self.output_directory / "output.hdf5"
+
+        with h5py.File(output_file_path, "w") as output_file:
+            for key, (_units, data_type) in self._quantities.items():  # noqa: B007
+                match data_type:
+                    case "attribute":
+                        output_file.attrs.create(key, result_dictionary[key])
+                    case "dataset":
+                        output_file.create_dataset(key, data=result_dictionary[key])
+
+
+class Tracker(ParticleTracker):
     r"""
     Represents a charged particle radiography experiment with simulated or
     calculated E and B fields given at positions defined by a grid of spatial
@@ -89,7 +128,7 @@ class Tracker:
     source : `~astropy.units.Quantity`, shape (3)
         A vector pointing from the origin of the grid to the location
         of the particle source. This vector will be interpreted as
-        being in either cartesian, cylindrical, or spherical coordinates
+        being in either Cartesian, cylindrical, or spherical coordinates
         based on its units. Valid geometries are:
 
         * Cartesian (x,y,z) : (meters, meters, meters)
@@ -102,8 +141,28 @@ class Tracker:
         A vector pointing from the origin of the grid to the center
         of the detector plane. The vector from the source point to this
         point defines the normal vector of the detector plane. This vector
-        can also be specified in cartesian, cylindrical, or spherical
+        can also be specified in Cartesian, cylindrical, or spherical
         coordinates (see the ``source`` keyword).
+
+    dt : `~astropy.units.Quantity`, optional
+        An explicitly set time step in units convertible to seconds.
+        Setting this optional keyword overrules the adaptive time step
+        capability and forces the use of this time step throughout.
+
+    dt_range : tuple of shape (2,) of `~astropy.units.Quantity`, optional
+        If specified, the calculated adaptive time step will be clamped
+        between the first and second values.
+
+    field_weighting : str, default: ``"volume averaged"``
+        String that selects the field weighting algorithm used to determine
+        what fields are felt by the particles. Options are:
+
+        * ``"nearest neighbor"``:
+            Particles are assigned the fields on the grid vertex closest to
+            them.
+        * ``"volume averaged"``:
+            The fields experienced by a particle are a volume-average of the
+            eight grid points surrounding them.
 
     detector_hdir : `numpy.ndarray`, shape (3), optional
         A unit vector (in Cartesian coordinates) defining the horizontal
@@ -117,8 +176,17 @@ class Tracker:
         to be orthogonal to both the source-to-detector vector and the
         detector horizontal axis.
 
+    output_directory : `~pathlib.Path`, optional
+        Directory for objects that are saved to disk. If a directory is not
+        specified then a memory save routine is used.
+
+    fraction_exited_threshold : float, optional
+        The fraction of particles that must leave the grids to terminate the
+        simulation. This does not include particles that have never entered
+        the grids. By default, this is set to ``0.999`` (corresponding to 99.9%).
+
     verbose : bool, optional
-        If true, updates on the status of the program will be printed
+        If `True`, updates on the status of the program will be printed
         into the standard output while running.
     """
 
@@ -127,22 +195,38 @@ class Tracker:
         grids: AbstractGrid | Iterable[AbstractGrid],
         source: u.Quantity[u.m],
         detector: u.Quantity[u.m],
+        dt=None,
+        dt_range=None,
+        field_weighting: Literal[
+            "volume averaged", "nearest neighbor"
+        ] = "volume averaged",
         detector_hdir=None,
+        output_file: Path | None = None,
+        fraction_exited_threshold: float = 0.999,
         verbose: bool = True,
     ) -> None:
-        # self.grid is the grid object
-        if isinstance(grids, AbstractGrid):
-            self.grids = [
-                grids,
-            ]
-        elif isinstance(grids, collections.abc.Iterable):
-            self.grids = grids
-        else:
-            raise TypeError("Type of argument `grids` not recognized.")
+        # The synthetic radiography class handles logging, so we can disable logging for the particle tracker
+        # The particle tracker class ensures that the provided grid argument has the proper type and
+        # that the necessary grid quantities are created if they are not already specified
+        save_routine = (
+            _SyntheticRadiographySaveRoutine(output_file)
+            if output_file is not None
+            else None
+        )
 
-        # self.grid_arr is the grid positions in si units. This is created here
-        # so that it isn't continuously called later
-        self.grids_arr = [grid.grid.to(u.m).value for grid in self.grids]
+        termination_condition = AllParticlesOffGridTerminationCondition(
+            fraction_exited_threshold=fraction_exited_threshold
+        )
+
+        super().__init__(
+            grids,
+            termination_condition,
+            save_routine,
+            dt=dt,
+            dt_range=dt_range,
+            field_weighting=field_weighting,
+            verbose=False,
+        )
 
         self.verbose = verbose
 
@@ -150,9 +234,6 @@ class Tracker:
         # Particles that would hit these meshes will be removed at runtime
         # by _apply_wire_mesh
         self.mesh_list = []
-
-        # This flag records whether the simulation has been run
-        self._has_run = False
 
         # ************************************************************************
         # Setup the source and detector geometries
@@ -205,60 +286,6 @@ class Tracker:
         # Calculate the detector vdir
         ny = np.cross(self.det_hdir, self.det_n)
         self.det_vdir = -ny / np.linalg.norm(ny)
-
-        # *********************************************************************
-        # Validate the E and B fields
-        # *********************************************************************
-
-        req_quantities = ["E_x", "E_y", "E_z", "B_x", "B_y", "B_z"]
-
-        for grid in self.grids:
-            grid.require_quantities(req_quantities, replace_with_zeros=True)
-
-            for rq in req_quantities:
-                # Check that there are no infinite values
-                if not np.isfinite(grid[rq].value).all():
-                    raise ValueError(
-                        f"Input arrays must be finite: {rq} contains "
-                        "either NaN or infinite values."
-                    )
-
-                # Check that the max values on the edges of the arrays are
-                # small relative to the maximum values on that grid
-                #
-                # Array must be dimensionless to re-assemble it into an array
-                # of max values like this
-                arr = np.abs(grid[rq]).value
-                edge_max = np.max(
-                    np.array(
-                        [
-                            np.max(a)
-                            for a in (
-                                arr[0, :, :],
-                                arr[-1, :, :],
-                                arr[:, 0, :],
-                                arr[:, -1, :],
-                                arr[:, :, 0],
-                                arr[:, :, -1],
-                            )
-                        ]
-                    )
-                )
-
-                if edge_max > 1e-3 * np.max(arr):
-                    unit = grid.recognized_quantities[rq].unit
-                    warnings.warn(
-                        "Fields should go to zero at edges of grid to avoid "
-                        f"non-physical effects, but a value of {edge_max:.2E} {unit} was "
-                        f"found on the edge of the {rq} array. Consider applying a "
-                        "envelope function to force the fields at the edge to go to "
-                        "zero.",
-                        RuntimeWarning,
-                    )
-
-    @property
-    def num_grids(self):  # noqa: D102
-        return len(self.grids)
 
     def _default_detector_hdir(self):
         """
@@ -510,18 +537,14 @@ class Tracker:
                 f"The wire diameter ({2*wire_radius}) may be too large."
             )
 
-        self.x = self.x[keep_these_particles, :]
-        self.v = self.v[keep_these_particles, :]
-        self.theta = self.theta[
-            keep_these_particles
-        ]  # Important to apply here to get correct grid_ind
-        self.nparticles = number_kept_particles
+        self._stop_particles(~keep_these_particles)
 
     # *************************************************************************
     # Particle creation methods
     # *************************************************************************
 
-    def _angles_monte_carlo(self, random_seed=None):
+    @staticmethod
+    def _angles_monte_carlo(nparticles, max_theta, random_seed=None):
         """
         Generates angles for each particle randomly such that the flux
         per solid angle is uniform.
@@ -529,7 +552,7 @@ class Tracker:
         # Create a probability vector for the theta distribution
         # Theta must follow a sine distribution in order for the particle
         # flux per solid angle to be uniform.
-        arg = np.linspace(0, self.max_theta, num=int(1e5))
+        arg = np.linspace(0, max_theta, num=int(1e5))
         prob = np.sin(arg)
         prob *= 1 / np.sum(prob)
 
@@ -537,14 +560,15 @@ class Tracker:
         rng = np.random.default_rng(seed=random_seed)
 
         # Randomly choose theta's weighted with the sine probabilities
-        theta = rng.choice(arg, size=self.nparticles, replace=True, p=prob)
+        theta = rng.choice(arg, size=nparticles, replace=True, p=prob)
 
         # Also generate a uniform phi distribution
-        phi = rng.uniform(high=2 * np.pi, size=self.nparticles)
+        phi = rng.uniform(high=2 * np.pi, size=nparticles)
 
         return theta, phi
 
-    def _angles_uniform(self):
+    @staticmethod
+    def _angles_uniform(nparticles, max_theta):
         """
         Generates angles for each particle such that their velocities are
         uniformly distributed on a grid in theta and phi. This method
@@ -553,14 +577,11 @@ class Tracker:
         than the provided `nparticles`.
         """
         # Calculate the approximate square root
-        n_per = np.floor(np.sqrt(self.nparticles)).astype(np.int32)
-
-        # Set new nparticles to be a perfect square
-        self.nparticles = n_per**2
+        n_per = np.floor(np.sqrt(nparticles)).astype(np.int32)
 
         # Create an imaginary grid positioned 1 unit from the source
         # and spanning max_theta at the corners
-        extent = np.sin(self.max_theta) / np.sqrt(2)
+        extent = np.sin(max_theta) / np.sqrt(2)
         arr = np.linspace(-extent, extent, num=n_per)
         harr, varr = np.meshgrid(arr, arr, indexing="ij")
 
@@ -578,7 +599,7 @@ class Tracker:
         particle_energy,
         max_theta=None,
         particle: Particle = Particle("p+"),  # noqa: B008
-        distribution="monte-carlo",
+        distribution: Literal["monte-carlo", "uniform"] = "monte-carlo",
         random_seed=None,
     ) -> None:
         r"""
@@ -634,8 +655,6 @@ class Tracker:
         random_seed : int, optional
             A random seed to be used when generating random particle
             distributions, e.g. with the ``monte-carlo`` distribution.
-
-
         """
         self._log("Creating Particles")
 
@@ -643,37 +662,38 @@ class Tracker:
         self._enforce_order()
 
         # Load inputs
-        self.nparticles = int(nparticles)
-        self.particle_energy = particle_energy.to(u.eV).value
-        self.q = particle.charge.to(u.C).value
-        self.m = particle.mass.to(u.kg).value
+        nparticles = int(nparticles)
+
+        particle_energy = particle_energy.to(u.eV).value
+        m = particle.mass.to(u.kg).value
 
         # If max_theta is not specified, make a guess based on the grid size
         if max_theta is None:
-            self.max_theta = np.clip(
-                1.5 * self.max_theta_hit_grid, 0.01, 0.99 * np.pi / 2
-            )
+            max_theta = np.clip(1.5 * self.max_theta_hit_grid, 0.01, 0.99 * np.pi / 2)
         else:
-            self.max_theta = max_theta.to(u.rad).value
+            max_theta = max_theta.to(u.rad).value
 
         # Calculate the velocity corresponding to the particle energy
-        ER = self.particle_energy * 1.6e-19 / (self.m * self._c**2)
+        ER = particle_energy * 1.6e-19 / (m * self._c**2)
         v0 = self._c * np.sqrt(1 - 1 / (ER + 1) ** 2)
 
         if distribution == "monte-carlo":
-            theta, phi = self._angles_monte_carlo(random_seed=random_seed)
+            theta, phi = self._angles_monte_carlo(
+                nparticles, max_theta, random_seed=random_seed
+            )
         elif distribution == "uniform":
-            theta, phi = self._angles_uniform()
+            theta, phi = self._angles_uniform(nparticles, max_theta)
 
-        # Temporarily save theta to later determine which particles
-        # should be tracked
-        self.theta = theta
+        # Adjust nparticles to reflex what the distribution function returned.
+        # Some distributions will modify the number of particles to meet the
+        # necessary criteria of the distribution.
+        nparticles = theta.shape[0]  # TODO: make sure this works
 
         # Construct the velocity distribution around the z-axis
-        self.v = np.zeros([self.nparticles, 3])
-        self.v[:, 0] = v0 * np.sin(theta) * np.cos(phi)
-        self.v[:, 1] = v0 * np.sin(theta) * np.sin(phi)
-        self.v[:, 2] = v0 * np.cos(theta)
+        v = np.zeros([nparticles, 3])
+        v[:, 0] = v0 * np.sin(theta) * np.cos(phi)
+        v[:, 1] = v0 * np.sin(theta) * np.sin(phi)
+        v[:, 2] = v0 * np.cos(theta)
 
         # Calculate the rotation matrix that rotates the z-axis
         # onto the source-detector axis
@@ -682,10 +702,14 @@ class Tracker:
         rot = rot_a_to_b(a, b)
 
         # Apply rotation matrix to calculated velocity distribution
-        self.v = np.matmul(self.v, rot)
+        v = np.matmul(v, rot)
 
         # Place particles at the source
-        self.x = np.tile(self.source, (self.nparticles, 1))
+        x = np.tile(self.source, (nparticles, 1))
+
+        # Call the underlying load method to ensure consistency with
+        # other properties within the ParticleTracker
+        self.load_particles(x * u.m, v * u.m / u.s, particle=particle)
 
     @particles.particle_input
     def load_particles(
@@ -693,7 +717,7 @@ class Tracker:
         x,
         v,
         particle: Particle = Particle("p+"),  # noqa: B008
-    ):
+    ) -> None:
         r"""
         Load arrays of particle positions and velocities.
 
@@ -708,42 +732,11 @@ class Tracker:
         particle : |particle-like|, optional
             Representation of the particle species as either a |Particle| object
             or a string representation. The default particle is protons.
-
-        distribution: str
-            A keyword which determines how particles will be distributed
-            in velocity space. Options are:
-
-                - 'monte-carlo': velocities will be chosen randomly,
-                    such that the flux per solid angle is uniform.
-
-                - 'uniform': velocities will be distributed such that,
-                   left unperturbed,they will form a uniform pattern
-                   on the detection plane.
-
-            Simulations run in the ``'uniform'`` mode will imprint a grid pattern
-            on the image, but will well-sample the field grid with a
-            smaller number of particles. The default is ``'monte-carlo'``.
-
-
         """
-        # Raise an error if the run method has already been called.
-        self._enforce_order()
+        # Load particles for particle tracker class
+        super().load_particles(x, v, particle)
 
-        self.q = particle.charge.to(u.C).value
-        self.m = particle.mass.to(u.kg).value
-
-        if x.shape[0] != v.shape[0]:
-            raise ValueError(
-                "Provided x and v arrays have inconsistent numbers "
-                " of particles "
-                f"({x.shape[0]} and {v.shape[0]} respectively)."
-            )
-        else:
-            self.nparticles = x.shape[0]
-
-        self.x = x.to(u.m).value
-        self.v = v.to(u.m / u.s).value
-
+        # But also calculate geometry-dependent variables
         self.theta = np.arccos(
             np.inner(self.v, self.src_n) / np.linalg.norm(self.v, axis=-1)
         )
@@ -761,54 +754,6 @@ class Tracker:
     # Run/push loop methods
     # *************************************************************************
 
-    def _adaptive_dt(self, Ex, Ey, Ez, Bx, By, Bz):  # noqa: ARG002
-        r"""
-        Calculate the appropriate dt for each grid based on a number of
-        considerations
-        including the local grid resolution (ds) and the gyroperiod of the
-        particles in the current fields.
-        """
-        # If dt was explicitly set, skip the rest of this function
-        if self.dt.size == 1:
-            return self.dt
-
-        # candidate timesteps includes one per grid (based on the grid resolution)
-        # plus additional candidates based on the field at each particle
-        candidates = np.ones([self.nparticles_grid, self.num_grids + 1]) * np.inf
-
-        # Compute the timestep indicated by the grid resolution
-        ds = np.array([grid.grid_resolution.to(u.m).value for grid in self.grids])
-        gridstep = 0.5 * (ds / self.vmax)
-
-        # Wherever a particle is on a grid, include that grid's gridstep
-        # in the list of candidate timesteps
-        for i, _grid in enumerate(self.grids):  # noqa: B007
-            candidates[:, i] = np.where(self.on_grid[:, i] > 0, gridstep[i], np.inf)
-
-        # If not, compute a number of possible timesteps
-        # Compute the cyclotron gyroperiod
-        Bmag = np.max(np.sqrt(Bx**2 + By**2 + Bz**2)).to(u.T).value
-        # Compute the gyroperiod
-        if Bmag == 0:
-            gyroperiod = np.inf
-        else:
-            gyroperiod = 2 * np.pi * self.m / (self.q * np.max(Bmag))
-
-        candidates[:, self.num_grids] = gyroperiod / 12
-
-        # TODO: introduce a minimum timestep based on electric fields too!
-
-        # Enforce limits on dt
-        candidates = np.clip(candidates, self.dt[0], self.dt[1])
-
-        # dt is the min of all the candidates for each particle
-        # a separate dt is returned for each particle
-        dt = np.min(candidates, axis=-1)
-
-        # dt should never actually be infinite, so replace any infinities
-        # with the largest gridstep
-        return np.where(dt == np.inf, np.max(gridstep), dt)
-
     def _coast_to_grid(self) -> None:
         r"""
         Coasts all particles to the timestep when the first particle should
@@ -820,16 +765,20 @@ class Tracker:
             np.min(np.linalg.norm(arr - self.source, axis=3)) for arr in self.grids_arr
         )
 
+        tracked_mask = self._tracked_particle_mask
+
         # Find speed of each particle towards the grid.
-        vmax = np.dot(self.v, self.src_n)
+        vmax = np.dot(self.v[tracked_mask], self.src_n)
 
         # Time for each particle to reach the grid
         t = dist / vmax
 
         # Coast the particles to the advanced position
-        self.x = self.x + self.v * t[:, np.newaxis]
+        self.x[tracked_mask] = (
+            self.x[tracked_mask] + self.v[tracked_mask] * t[:, np.newaxis]
+        )
 
-    def _coast_to_plane(self, center, hdir, vdir, x=None):
+    def _coast_to_plane(self, center, hdir, vdir, x=None, mask=None):
         """
         Calculates the positions where the current trajectories of each
         particle impact a plane, described by the plane's center and
@@ -845,25 +794,51 @@ class Tracker:
         self._coast_to_plane(self.detector, self.det_hdir, self.det_vdir, x
                              = self.x)
 
+        Parameters
+        ----------
+        center : float
+            The center of the plane towards which the particles are advanced
+
+        hdir : `numpy.ndarray`, shape (3)
+            A unit vector (in Cartesian coordinates) defining the horizontal
+            direction of the plane.
+
+        vdir : `numpy.ndarray`, shape (3)
+            A unit vector (in Cartesian coordinates) defining the vertical
+            direction of the plane.
+
+        x : `numpy.ndarray`, shape (nparticles), optional
+            The array to which the resulting particle positions are stored.
+            By default, the current position array will be used.
+
+        mask : `numpy.ndarray`, shape (nparticles), optional
+            A boolean mask representing the particles to perform the coasting
+            operation. By default, only the tracked particles (i.e. those that
+            are going to hit the grids) will be coasted.
         """
 
         normal = np.cross(hdir, vdir)
 
+        if mask is None:
+            mask = self._tracked_particle_mask
+
         # Calculate the time required to evolve each particle into the
         # plane
-        t = np.inner(center[np.newaxis, :] - self.x, normal) / np.inner(self.v, normal)
+        t = np.inner(center[np.newaxis, :] - self.x[mask], normal) / np.inner(
+            self.v[mask], normal
+        )
 
         # Calculate particle positions in the plane
         if x is None:
             # If no output array is provided, preallocate
-            x = np.empty_like(self.x)
+            x = np.copy(self.x)
 
-        x[...] = self.x + self.v * t[:, np.newaxis]
+        x[mask] = self.x[mask] + self.v[mask] * t[:, np.newaxis]
 
         # Check that all points are now in the plane
         # (Eq. of a plane is nhat*x + d = 0)
         plane_eq = np.dot(x - center, normal)
-        assert np.allclose(plane_eq, 0, atol=1e-6)
+        assert np.allclose(plane_eq[mask], 0, atol=1e-6)
 
         return x
 
@@ -885,10 +860,7 @@ class Tracker:
         ind = np.logical_not((v_towards_det < 0) & (dist_remaining > 0)).nonzero()[0]
 
         # Drop the other particles
-        self.x = self.x[ind, :]
-        self.v = self.v[ind, :]
-        self.v_init = self.v_init[ind, :]
-        self.nparticles_grid = self.x.shape[0]
+        self._remove_particles((v_towards_det < 0) & (dist_remaining > 0))
 
         # Store the number of particles deflected
         self.fract_deflected = (self.nparticles - ind.size) / self.nparticles
@@ -903,150 +875,10 @@ class Tracker:
                 RuntimeWarning,
             )
 
-    def _push(self) -> None:
-        r"""
-        Advance particles using an implementation of the time-centered
-        Boris algorithm.
-        """
-        # Get a list of positions (input for interpolator)
-        pos = self.x[self.grid_ind, :] * u.m
-
-        # Update the list of particles on and off the grid
-        # shape [nparticles, ngrids]
-        self.on_grid = np.array([grid.on_grid(pos) for grid in self.grids]).T
-
-        # entered_grid is zero at the end if a particle has never
-        # entered any grid
-        self.entered_grid += np.sum(self.on_grid, axis=-1)
-
-        Ex = np.zeros(self.nparticles_grid) * u.V / u.m
-        Ey = np.zeros(self.nparticles_grid) * u.V / u.m
-        Ez = np.zeros(self.nparticles_grid) * u.V / u.m
-        Bx = np.zeros(self.nparticles_grid) * u.T
-        By = np.zeros(self.nparticles_grid) * u.T
-        Bz = np.zeros(self.nparticles_grid) * u.T
-        for grid in self.grids:
-            # Estimate the E and B fields for each particle
-            # Note that this interpolation step is BY FAR the slowest part of the push
-            # loop. Any speed improvements will have to come from here.
-            if self.field_weighting == "volume averaged":
-                _Ex, _Ey, _Ez, _Bx, _By, _Bz = grid.volume_averaged_interpolator(
-                    pos,
-                    "E_x",
-                    "E_y",
-                    "E_z",
-                    "B_x",
-                    "B_y",
-                    "B_z",
-                    persistent=True,
-                )
-            elif self.field_weighting == "nearest neighbor":
-                _Ex, _Ey, _Ez, _Bx, _By, _Bz = grid.nearest_neighbor_interpolator(
-                    pos,
-                    "E_x",
-                    "E_y",
-                    "E_z",
-                    "B_x",
-                    "B_y",
-                    "B_z",
-                    persistent=True,
-                )
-
-            # Interpret any NaN values (points off the grid) as zero
-            # Do this before adding to the totals, because 0 + nan = nan
-            _Ex = np.nan_to_num(_Ex, nan=0.0 * u.V / u.m)
-            _Ey = np.nan_to_num(_Ey, nan=0.0 * u.V / u.m)
-            _Ez = np.nan_to_num(_Ez, nan=0.0 * u.V / u.m)
-            _Bx = np.nan_to_num(_Bx, nan=0.0 * u.T)
-            _By = np.nan_to_num(_By, nan=0.0 * u.T)
-            _Bz = np.nan_to_num(_Bz, nan=0.0 * u.T)
-
-            # Add the values interpolated for this grid to the totals
-            Ex += _Ex
-            Ey += _Ey
-            Ez += _Ez
-            Bx += _Bx
-            By += _By
-            Bz += _Bz
-
-        # Create arrays of E and B as required by push algorithm
-        E = np.array(
-            [Ex.to(u.V / u.m).value, Ey.to(u.V / u.m).value, Ez.to(u.V / u.m).value]
-        )
-        E = np.moveaxis(E, 0, -1)
-        B = np.array([Bx.to(u.T).value, By.to(u.T).value, Bz.to(u.T).value])
-        B = np.moveaxis(B, 0, -1)
-
-        # Calculate the adaptive timestep from the fields currently experienced
-        # by the particles
-        # If user sets dt explicitly, that's handled in _adaptive_dt
-        dt = self._adaptive_dt(Ex, Ey, Ez, Bx, By, Bz)
-
-        # TODO: Test v/c and implement relativistic Boris push when required
-        # vc = np.max(v)/_c
-
-        # If dt is not a scalar, make sure it can be multiplied by an
-        # [nparticles, 3] shape field array
-        if dt.size > 1:
-            dt = dt[:, np.newaxis]
-
-        x = self.x[self.grid_ind, :]
-        v = self.v[self.grid_ind, :]
-        boris_push(x, v, B, E, self.q, self.m, dt)
-        self.x[self.grid_ind, :] = x
-        self.v[self.grid_ind, :] = v
-
-    @property
-    def on_any_grid(self):
-        """
-        Binary array for each particle indicating whether it is currently
-        on ANY grid.
-        """
-        return np.sum(self.on_grid, axis=-1) > 0
-
-    def _stop_condition(self) -> bool:
-        r"""
-        The stop condition is that most of the particles have entered the grid
-        and almost all have now left it.
-        """
-        # Count the number of particles who have entered, which is the
-        # number of non-zero entries in entered_grid
-        self.num_entered = np.nonzero(self.entered_grid)[0].size
-
-        # How many of the particles have entered the grid
-        self.fract_entered = np.sum(self.num_entered) / self.nparticles_grid
-
-        # Of the particles that have entered the grid, how many are currently
-        # on the grid?
-        # if/else avoids dividing by zero
-        if np.sum(self.num_entered) > 0:
-            # Normalize to the number that have entered a grid
-            still_on = np.sum(self.on_any_grid) / np.sum(self.num_entered)
-        else:
-            still_on = 0.0
-
-        if self.fract_entered <= 0.1 or still_on >= 0.001:
-            return False
-
-        # Warn user if < 10% of the particles ended up on the grid
-        if self.num_entered < 0.1 * self.nparticles:
-            warnings.warn(
-                f"Only {100*self.num_entered/self.nparticles:.2f}% of "
-                "particles entered the field grid: consider "
-                "decreasing the max_theta to increase this "
-                "number.",
-                RuntimeWarning,
-            )
-
-        return True
-
-    def run(
-        self,
-        dt=None,
-        field_weighting="volume averaged",
-    ):
+    def run(self) -> None:
         r"""
         Runs a particle-tracing simulation.
+
         Timesteps are adaptively calculated based on the
         local grid resolution of the particles and the electric and magnetic
         fields they are experiencing. After all particles
@@ -1054,53 +886,12 @@ class Tracker:
         detector plane where they can be used to construct a synthetic
         diagnostic image.
 
-        Parameters
-        ----------
-        dt : `~astropy.units.Quantity`, optional
-            An explicitly set timestep in units convertible to seconds.
-            Setting this optional keyword overrules the adaptive time step
-            capability and forces the use of this timestep throughout. If a tuple
-            of timesteps is provided, the adaptive timestep will be clamped
-            between the first and second values.
-
-        field_weighting : str
-            String that selects the field weighting algorithm used to determine
-            what fields are felt by the particles. Options are:
-
-            * 'nearest neighbor': Particles are assigned the fields on
-                the grid vertex closest to them.
-            * 'volume averaged' : The fields experienced by a particle are a
-                volume-average of the eight grid points surrounding them.
-
-            The default is 'volume averaged'.
-
         Returns
         -------
         None
-
         """
 
-        # Load and validate inputs
-        field_weightings = ["volume averaged", "nearest neighbor"]
-        if field_weighting in field_weightings:
-            self.field_weighting = field_weighting
-        else:
-            raise ValueError(
-                f"{field_weighting} is not a valid option for ",
-                "field_weighting. Valid choices are",
-                f"{field_weightings}",
-            )
-
-        # By default, set dt as an infinite range (auto dt with no restrictions)
-        self.dt = np.array([0.0, np.inf]) * u.s if dt is None else dt
-        self.dt = (self.dt).to(u.s).value
-
-        # Check to make sure particles have already been generated
-        if not hasattr(self, "x"):
-            raise ValueError(
-                "Either the create_particles or load_particles method must be "
-                "called before running the particle tracing algorithm."
-            )
+        self._enforce_particle_creation()
 
         # If meshes have been added, apply them now
         for mesh in self.mesh_list:
@@ -1110,53 +901,41 @@ class Tracker:
         # This will be used later to calculate the maximum deflection
         self.v_init = np.copy(self.v)
 
-        # Calculate the maximum velocity
-        # Used for determining the grid crossing maximum timestep
-        self.vmax = np.max(np.linalg.norm(self.v, axis=-1))
+        # These particles will not be pushed through the fields
+        # but instead will be automatically advanced
+        # to the detector plane
+        theta_mask = self.theta >= self.max_theta_hit_grid
 
-        # Determine which particles should be tracked
-        # This array holds the indices of all particles that WILL hit the grid
-        # Only these particles will actually be pushed through the fields
-        self.grid_ind = np.where(self.theta < self.max_theta_hit_grid)[0]
-        self.nparticles_grid = len(self.grid_ind)
-        self.fract_tracked = self.nparticles_grid / self.nparticles
-
-        # Create flags for tracking when particles during the simulation
-        # on_grid -> zero if the particle is off grid, 1
-        # shape [nparticles, ngrids]
-        self.on_grid = np.zeros([self.nparticles_grid, self.num_grids])
-        # Entered grid -> non-zero if particle EVER entered a grid
-        self.entered_grid = np.zeros([self.nparticles_grid])
+        # Take the intersection of the theta mask and the tracked particle mask
+        # This must be done because some particles could have already been stopped
+        # by _apply_wire_mesh
+        self.x = self._coast_to_plane(
+            self.detector,
+            self.det_hdir,
+            self.det_vdir,
+            mask=theta_mask & self._tracked_particle_mask,
+        )
+        self._stop_particles(theta_mask)
+        self.fract_tracked = self.nparticles_tracked / self.nparticles
 
         # Generate a null distribution of points (the result in the absence of
         # any fields) for statistical comparison
         self.x0 = self._coast_to_plane(self.detector, self.det_hdir, self.det_vdir)
 
-        # Advance the particles to the near the start of the grid
+        # Advance the tracked particles to the near the start of the grid
         self._coast_to_grid()
+        self.coasted_particles = np.copy(self.x)
 
-        # Initialize a "progress bar" (really more of a meter)
-        # Setting sys.stdout lets this play nicely with regular print()
-        pbar = tqdm(
-            initial=0,
-            total=self.nparticles_grid + 1,
-            disable=not self.verbose,
-            desc="Particles on grid",
-            unit="particles",
-            bar_format="{l_bar}{bar}{n:.1e}/{total:.1e} {unit}",
-            file=sys.stdout,
-        )
+        super().run()
 
-        # Push the particles until the stop condition is satisfied
-        # (no more particles on the simulation grid)
-        while not self._stop_condition():
-            n_on_grid = np.sum(self.on_any_grid)
-            pbar.n = n_on_grid
-            pbar.last_print_n = n_on_grid
-            pbar.update()
-
-            self._push()
-        pbar.close()
+        if self.num_entered < 0.1 * self.nparticles:
+            warnings.warn(
+                f"Only {100 * self.num_entered / self.nparticles:.2f}% of "
+                "particles entered the field grid: consider "
+                "decreasing the max_theta to increase this "
+                "number.",
+                RuntimeWarning,
+            )
 
         # Remove particles that will never reach the detector
         self._remove_deflected_particles()
@@ -1164,8 +943,9 @@ class Tracker:
         # Advance the particles to the image plane
         self._coast_to_plane(self.detector, self.det_hdir, self.det_vdir, x=self.x)
 
-        # Log a summary of the run
+        self.save_routine.save()
 
+        # Log a summary of the run
         self._log("Run completed")
 
         self._log(f"Fraction of particles tracked: {self.fract_tracked:.1%}")
@@ -1181,8 +961,31 @@ class Tracker:
             f"{self.fract_deflected*100}%"
         )
 
-        # Simulation has not run, because creating new particles changes the simulation
-        self._has_run = True
+    @property
+    def max_deflection(self):
+        """
+        The maximum deflection experienced by one of the particles, determined
+        by comparing their initial and final velocity vectors.
+
+        This value can be used to determine the charged particle radiography regime
+        using the dimensionless number defined by Kugland et al. 2012
+
+        Returns
+        -------
+        max_deflection : float
+            The maximum deflection in radians.
+        """
+        # Normalize the initial and final velocities
+        v_norm = self.v / np.linalg.norm(self.v, axis=1, keepdims=True)
+        v_init_norm = self.v_init / np.linalg.norm(self.v_init, axis=1, keepdims=True)
+        # Compute the dot product
+        proj = np.sum(v_norm * v_init_norm, axis=1)
+        # In case of numerical errors, make sure the output is within the domain of
+        # arccos
+        proj = np.where(proj > 1, 1, proj)
+        max_deflection = np.nanmax(np.arccos(proj))
+
+        return max_deflection * u.rad
 
     @property
     def results_dict(self):
@@ -1245,7 +1048,6 @@ class Tracker:
                The velocity is in a coordinate system relative to the
                detector plane. The components are [normal, horizontal,
                vertical] relative to the detector plane coordinates.
-
         """
 
         if not self._has_run:
@@ -1288,71 +1090,6 @@ class Tracker:
             "y0": y0loc,
             "v0": v0,
         }
-
-    def save_results(self, path) -> None:
-        """
-        Save the simulations results :attr:`results_dict` to a `numpy`
-        ``.npz`` file format (see `numpy.lib.format`) using `numpy.savez`.
-
-        Parameters
-        ----------
-        path : `str` or `os.path`
-            Either the filename (string) or an open file (file-like object)
-            where the data will be saved. If file is a string or a Path,
-            the ``.npz`` extension will be appended to the filename if
-            it is not already there.
-
-        Notes
-        -----
-        Useful for saving the results from a simulation so they can be
-        loaded at a later time and passed into
-        `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography.synthetic_radiograph`.
-
-        """
-
-        np.savez(path, **self.results_dict)
-
-    @property
-    def max_deflection(self):
-        """
-        The maximum deflection experienced by one of the particles, determined
-        by comparing their initial and final velocity vectors.
-
-        This value can be used to determine the charged particle radiography regime
-        using the dimensionless number defined by Kugland et al. 2012
-
-        Returns
-        -------
-        max_deflection : float
-            The maximum deflection in radians
-
-        """
-        # Normalize the initial and final velocities
-        v_norm = self.v / np.linalg.norm(self.v, axis=1, keepdims=True)
-        v_init_norm = self.v_init / np.linalg.norm(self.v_init, axis=1, keepdims=True)
-        # Compute the dot product
-        proj = np.sum(v_norm * v_init_norm, axis=1)
-        # In case of numerical errors, make sure the output is within the domain of
-        # arccos
-        proj = np.where(proj > 1, 1, proj)
-        max_deflection = np.max(np.arccos(proj))
-
-        return max_deflection * u.rad
-
-    def _enforce_order(self):
-        r"""
-        The `Tracker` methods could give strange results if setup methods
-        are used again after the simulation has run. This method
-        raises an error if the simulation has already been run.
-
-        """
-
-        if self._has_run:
-            raise RuntimeError(
-                "Modifying the `Tracker` object after running the "
-                "simulation is not supported. Create a new `Tracker` "
-                "object for a new simulation."
-            )
 
 
 # *************************************************************************
@@ -1417,7 +1154,6 @@ def synthetic_radiograph(  # noqa: C901
 
     intensity : `~numpy.ndarray`, shape ``(hbins, vbins)``
         The number of particles counted in each bin of the histogram.
-
     """
 
     # condition `obj` input
@@ -1450,7 +1186,7 @@ def synthetic_radiograph(  # noqa: C901
     if size is None:
         # If a detector size is not given, choose a size based on the
         # particle positions
-        w = np.max([np.max(np.abs(xloc)), np.max(np.abs(yloc))])
+        w = np.max([np.nanmax(np.abs(xloc)), np.nanmax(np.abs(yloc))])
         size = np.array([[-w, w], [-w, w]]) * u.m
     elif not isinstance(size, u.Quantity):
         raise TypeError(
@@ -1464,8 +1200,14 @@ def synthetic_radiograph(  # noqa: C901
             f"Argument `size` must have shape (2, 2), but got {size.shape}."
         )
 
+    nan_mask = np.logical_or(np.isnan(xloc), np.isnan(yloc))
+    sanitized_xloc = xloc[~nan_mask]
+    sanitized_yloc = yloc[~nan_mask]
+
     # Generate the histogram
-    intensity, h, v = np.histogram2d(xloc, yloc, range=size.to(u.m).value, bins=bins)
+    intensity, h, v = np.histogram2d(
+        sanitized_xloc, sanitized_yloc, range=size.to(u.m).value, bins=bins
+    )
 
     # h, v are the bin edges: compute the centers to produce arrays
     # of the right length (then trim off the extra point)

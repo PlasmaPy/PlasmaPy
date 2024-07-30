@@ -12,6 +12,9 @@ Installing PlasmaPy
 .. contents:: Contents
    :local:
 
+.. role:: bash(code)
+   :language: bash
+
 Installing Python
 =================
 
@@ -74,7 +77,7 @@ into an activated Conda_ environment by opening a terminal and running:
 
    conda install -c conda-forge plasmapy
 
-Here ``-c conda-forge`` indicates that `plasmapy` should be installed
+Here :bash:`-c conda-forge` indicates that `plasmapy` should be installed
 from the conda-forge_ channel.
 
 To install `plasmapy` into another existing Conda_ environment, append
@@ -144,7 +147,7 @@ to solve package specifications.
 To test the installation, click on the :guilabel:`▶` icon that should be
 present next to the activated environment, and select
 :guilabel:`Open terminal`. Enter ``python`` in the terminal, and then
-``import plasmapy`` to make sure it works.
+:py:`import plasmapy` to make sure it works.
 
 Installing PlasmaPy from source code
 ====================================
@@ -165,7 +168,7 @@ If you have |git| installed on your computer, you may clone
 |PlasmaPy's GitHub repository| and access the source code from the most
 recent development version by running:
 
-.. code:: bash
+.. code-block:: bash
 
    git clone https://github.com/PlasmaPy/PlasmaPy.git
 
@@ -185,13 +188,13 @@ Building and installing
 To install the downloaded version of `plasmapy`, enter the
 :file:`PlasmaPy` directory and run:
 
-.. code:: bash
+.. code-block:: bash
 
    pip install .
 
 If you expect to occasionally edit the source code, instead run:
 
-.. code:: bash
+.. code-block:: bash
 
    pip install -e ".[tests,docs]"
 
@@ -211,7 +214,7 @@ package should also be installed.
    and create branches so that you may make contributions via pull
    requests.
 
-.. _Anaconda Navigator: https://docs.anaconda.com/free/navigator
+.. _Anaconda Navigator: https://docs.anaconda.com/navigator
 .. _clone a repository using SSH: https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories#cloning-with-ssh-urls
 .. _Conda: https://docs.conda.io
 .. _conda-forge: https://conda-forge.org
@@ -220,10 +223,10 @@ package should also be installed.
 .. _from PyPI: https://pypi.org/project/plasmapy
 .. _from Zenodo: https://doi.org/10.5281/zenodo.6774349
 .. _improving Conda performance: https://docs.conda.io/projects/conda/en/latest/user-guide/concepts/conda-performance.html#improving-conda-performance
-.. _installing Anaconda Navigator: https://docs.anaconda.com/free/navigator/install
+.. _installing Anaconda Navigator: https://docs.anaconda.com/navigator/install
 .. _installing Conda: https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html
 .. _installing packages: https://packaging.python.org/en/latest/tutorials/installing-packages/#installing-from-vcs
-.. _getting started with Anaconda Navigator: https://docs.anaconda.com/free/navigator/getting-started
+.. _getting started with Anaconda Navigator: https://docs.anaconda.com/navigator/getting-started
 .. _miniconda: https://docs.conda.io/en/latest/miniconda.html
 .. _releases: https://github.com/PlasmaPy/PlasmaPy/releases
 .. _ZIP: https://en.wikipedia.org/wiki/ZIP_(file_format)

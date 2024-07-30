@@ -74,6 +74,8 @@ These properties are often returned as a |Quantity| in SI units.
 <Quantity 3.888e+08 s>
 >>> iron56.binding_energy.to('GeV')
 <Quantity 0.49225958 GeV>
+>>> hydrogen.ionization_energy
+<Quantity 2.17870942e-18 J>
 
 Strings representing particles may be accessed using the
 `~plasmapy.particles.particle_class.Particle.symbol`,
@@ -258,6 +260,18 @@ and/or |ParticleList| objects together.
 
 >>> helium_ions + cp + proton
 ParticleList(['He-4 0+', 'He-4 1+', 'He-4 2+', 'Fe 9.5+', 'p+'])
+
+As with an individual |Particle| and |CustomParticle|, we can check whether
+all the particles in a list fall within a category using |is_category|.
+
+>>> helium_ions.is_category("ion")
+False
+
+We may also check each particle in the list individually by setting
+the keyword ``particlewise`` to `True`.
+
+>>> helium_ions.is_category("ion", particlewise=True)
+[False, True, True]
 
 The machinery contained with |ParticleList| lets us calculate plasma
 parameters from `plasmapy.formulary` for multiple particles at once.
