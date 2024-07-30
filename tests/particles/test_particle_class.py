@@ -1703,5 +1703,9 @@ def test_infnite_ionization() -> None:
     helium.ionize(n=np.inf, inplace=True)
     assert h_nucleus == helium
     assert h_nucleus == Particle("He-4 2+")
+    helium = Particle("He-4 0+")
+    pytest.raises(TypeError, helium.ionize, n=0.5)
+    pytest.raises(ValueError, helium.ionize, n=-1)
+    
 
     
