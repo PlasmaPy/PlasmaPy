@@ -582,6 +582,7 @@ equivalent_particles_table: list[list[ParticleLike]] = [
     ["tau", "tau-"],
     [Particle("Fe 5+"), Particle("Fe 4+").ionize()],
     [Particle("He-4 0+"), Particle("alpha").recombine(2)],
+    #[Particle("He-4 2+"), Particle("He-4 0+").ionize(np.inf)]
 ]
 
 
@@ -1695,3 +1696,12 @@ def test_isotope_ion_electron_binding_energy() -> None:
     assert C_12.electron_binding_energy == C_13.electron_binding_energy
     assert C_12.electron_binding_energy == C_14.electron_binding_energy
     assert C_13.electron_binding_energy == C_14.electron_binding_energy
+
+def test_infnite_ionization() -> None:
+    helium = Particle("He-4 0+")
+    h_nucleus = helium.ionize(n=np.inf)
+    helium.ionize(n=np.inf, inplace=True)
+    assert h_nucleus == helium
+    assert h_nucleus == Particle("He-4 2+")
+
+    
