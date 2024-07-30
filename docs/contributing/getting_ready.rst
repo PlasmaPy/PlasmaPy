@@ -228,8 +228,8 @@ environment`_ instead.
    open a terminal, or can be added to the appropriate configuration
    file (i.e., :file:`.bashrc` for bash or :file:`.zshrc` for zsh).
 
-Installing your clone of PlasmaPy
-=================================
+Installing your clone of PlasmaPy 🦹
+===================================
 
 This section covers how to make an |editable installation| of your
 clone of PlasmaPy. Making the PlasmaPy installation *editable* means
