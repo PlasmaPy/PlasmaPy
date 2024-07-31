@@ -15,7 +15,7 @@ from typing import Tuple
 
 
 def compute_bfield(bdot_data: np.ndarray, times: np.ndarray, loop_area: float) -> np.ndarray:
-    """
+    r"""
     Returns array of the magnetic field and the corresponding time array
 
     Parameters
@@ -23,20 +23,24 @@ def compute_bfield(bdot_data: np.ndarray, times: np.ndarray, loop_area: float) -
     bdot_data: `numpy.ndarray`
         A data array containing voltage fluctuations from a bdot probe. The
         array values are proportional to time changing magnetic field via Faradays Law
+        The input values are assumed to be in volts.
 
     times: `numpy.ndarray`
-        The time series to the data collection.
+        The time series to the data collection in units of seconds.
 
     loop_area: float
-        The area through which the changing flux is measured. 
+        The area through which the changing flux is measured in units of meters squared.
 
     Returns
     -------
     field_arr: `numpy.ndarray`
         The array containing the magnetic field fluctuations. 
-
-    new_time: `numpy.ndarray`
-        The corresponding time series.   
+        
+    Notes
+    -----
+    Faraday's Law states that the time change in flux through an area generates a voltage around a loop,
+    .. math::
+       V = -\frac{d\Phi}{dt}
     """
     if len(bdot_data) != len(times):
         raise Exception("length of time and voltage arrays in not equal\n")
