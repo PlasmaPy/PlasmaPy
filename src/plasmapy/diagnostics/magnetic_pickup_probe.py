@@ -13,10 +13,11 @@ import astropy.units as u
 from plasmapy.utils.decorators import validate_quantities
 from typing import Tuple
 
-
+@validate_quantities
 def compute_bfield(bdot_data: np.ndarray, times: np.ndarray, loop_area: float) -> np.ndarray:
     r"""
-    Returns array of the magnetic field and the corresponding time array
+    Takes the voltage output of a magnetic pickup probe (Bdot probe) and time base and 
+    returns the associated array of the magnetic field as a function of time
 
     Parameters
     ----------
@@ -38,9 +39,22 @@ def compute_bfield(bdot_data: np.ndarray, times: np.ndarray, loop_area: float) -
         
     Notes
     -----
-    Faraday's Law states that the time change in flux through an area generates a voltage around a loop,
+    The integral form of Faraday's Law states that the time change in flux through an area generates a voltage around a loop,
     .. math::
-       V = -\frac{d\Phi}{dt}
+       V = -N\frac{d\Phi}{dt}
+    where :math:`\Phi` is the magnetic flux
+    .. math::
+        \Phi = \int{BdA}
+    and N is the number of loops.
+    A magnetic pickup probe works by providing a fixed area loop or loops using a length of conducting wire through 
+    which magnetic fields penetrate. As these fields change in time, a voltage is generated that can be measured
+    by some kind of data aquisition device (such as an ossciloscope). We can also assume that the loop is small 
+    enough that the magnetic field through the loop is constant everywhere in the loop (and only changes in time).
+    Given this, we can write
+    .. math::
+        V = -A\frac{dB}{dt}
+    where the voltage becomes preportional only to the change in magnetic field and the area of the loop. Magnetic
+    field as a function of time can be recovered by time integrating :math:`V(t)/A`.
     """
     if len(bdot_data) != len(times):
         raise Exception("length of time and voltage arrays in not equal\n")
