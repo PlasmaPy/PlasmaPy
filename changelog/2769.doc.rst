@@ -1,0 +1,1 @@
+Defined ``html_baseurl`` and ``html_context`` for compatibility with Read the Docs Addons.
