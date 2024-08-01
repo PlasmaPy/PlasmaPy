@@ -10,9 +10,12 @@ __all__ = [
     "CFL_limit_electromagnetic_yee",
 ]
 
-import numpy as np
+
 import astropy.units as u
+import numpy as np
+
 from astropy.constants.si import c
+
 from plasmapy.utils.decorators import validate_quantities
 
 
@@ -28,6 +31,7 @@ def CFL_limit_electromagnetic_yee(dx: u.Quantity[u.m]) -> u.Quantity[u.s]:
     r"""
     Calculates the limiting time-step for a finite difference time-domain
     electromagnetic Yee solver which uses a Cartesian grid.
+
     This limit is defined by the Courant-Friederichs-Lewy (CFL) Condition:
 
     .. math::
@@ -66,5 +70,4 @@ def CFL_limit_electromagnetic_yee(dx: u.Quantity[u.m]) -> u.Quantity[u.s]:
     <Quantity 1.4295604079920803e-17 s>
     """
 
-    dt = 1 / (c * np.sqrt(np.sum(1 / (dx**2))))
-    return dt
+    return 1 / (c * np.sqrt(np.sum(1 / (dx**2))))
