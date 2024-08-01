@@ -39,6 +39,11 @@ def Fermi_integral(
     `ValueError`
         If the argument is not entirely finite.
 
+    Warnings
+    --------
+    At present this function is limited to relatively small arguments
+    due to limitations in ``mpmath.polylog``.
+
     Notes
     -----
     The `complete Fermi-Dirac integral
@@ -55,11 +60,6 @@ def Fermi_integral(
 
     .. math::
         F_j (x) = -Li_{j+1}\left(-e^{x}\right)
-
-    Warnings
-    --------
-    At present this function is limited to relatively small arguments
-    due to limitations in ``mpmath.polylog``.
 
     Examples
     --------
