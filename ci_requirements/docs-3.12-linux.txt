@@ -342,7 +342,7 @@ snowballstemmer==2.2.0
     # via sphinx
 soupsieve==2.5
     # via beautifulsoup4
-sphinx==7.3.7
+sphinx==7.4.7
     # via
     #   plasmapy (pyproject.toml)
     #   nbsphinx
@@ -376,7 +376,7 @@ sphinx-hoverxref==1.4.0
     # via plasmapy (pyproject.toml)
 sphinx-issues==4.1.0
     # via plasmapy (pyproject.toml)
-sphinx-notfound-page==1.0.2
+sphinx-notfound-page==1.0.4
     # via plasmapy (pyproject.toml)
 sphinx-reredirects==0.1.5
     # via plasmapy (pyproject.toml)
@@ -476,5 +476,5 @@ widgetsnbextension==4.0.11
     # via ipywidgets
 wrapt==1.16.0
     # via plasmapy (pyproject.toml)
-xarray==2024.6.0
+xarray==2024.7.0
     # via plasmapy (pyproject.toml)

@@ -558,7 +558,7 @@ class AutomodsummOptions:
             qualnames.extend(mod_objs[group]["qualnames"])
 
         content = [
-            qualname
+            name
             for name, qualname in sorted(
                 zip(names, qualnames), key=lambda x: str.casefold(x[0])
             )

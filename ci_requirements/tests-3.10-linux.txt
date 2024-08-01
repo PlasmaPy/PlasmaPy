@@ -167,7 +167,7 @@ mistune==3.0.2
     # via nbconvert
 mpmath==1.3.0
     # via plasmapy (pyproject.toml)
-mypy==1.11.0
+mypy==1.11.1
     # via plasmapy (pyproject.toml)
 mypy-extensions==1.0.0
     # via mypy
@@ -421,5 +421,5 @@ widgetsnbextension==4.0.11
     # via ipywidgets
 wrapt==1.16.0
     # via plasmapy (pyproject.toml)
-xarray==2024.6.0
+xarray==2024.7.0
     # via plasmapy (pyproject.toml)

@@ -190,7 +190,7 @@ mistune==3.0.2
     # via nbconvert
 mpmath==1.3.0
     # via plasmapy (pyproject.toml)
-mypy==1.11.0
+mypy==1.11.1
     # via plasmapy (pyproject.toml)
 mypy-extensions==1.0.0
     # via mypy
@@ -395,7 +395,7 @@ sortedcontainers==2.4.0
     # via hypothesis
 soupsieve==2.5
     # via beautifulsoup4
-sphinx==7.3.7
+sphinx==7.4.7
     # via
     #   plasmapy (pyproject.toml)
     #   nbsphinx
@@ -429,7 +429,7 @@ sphinx-hoverxref==1.4.0
     # via plasmapy (pyproject.toml)
 sphinx-issues==4.1.0
     # via plasmapy (pyproject.toml)
-sphinx-notfound-page==1.0.2
+sphinx-notfound-page==1.0.4
     # via plasmapy (pyproject.toml)
 sphinx-reredirects==0.1.5
     # via plasmapy (pyproject.toml)
@@ -535,5 +535,5 @@ widgetsnbextension==4.0.11
     # via ipywidgets
 wrapt==1.16.0
     # via plasmapy (pyproject.toml)
-xarray==2024.6.0
+xarray==2024.7.0
     # via plasmapy (pyproject.toml)
