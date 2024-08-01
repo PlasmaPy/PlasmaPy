@@ -634,3 +634,8 @@ authors:
 - given-names: Shauna
   family-names: Gordon-McKeon
   alias: shaunagm
+
+- given-names: Camilo
+  family-names: Bedoya-López
+  orcid: https://orcid.org/0000-0002-3634-2729
+  alias: Stray235
