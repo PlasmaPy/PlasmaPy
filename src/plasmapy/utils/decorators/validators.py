@@ -8,7 +8,7 @@ import functools
 import inspect
 import warnings
 from collections.abc import Iterable
-from typing import Any, Callable
+from typing import Any
 
 import astropy.units as u
 
@@ -388,9 +388,7 @@ class ValidateQuantities(CheckUnits, CheckValues):
         return self._validations
 
 
-def validate_quantities(
-    func=None, validations_on_return=None, **validations
-) -> Callable:
+def validate_quantities(func=None, validations_on_return=None, **validations):
     """
     A decorator to 'validate' — control and convert — the units and values
     of input and return arguments to a function or method.  Arguments are expected to
