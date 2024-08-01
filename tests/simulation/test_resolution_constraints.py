@@ -1,9 +1,10 @@
 """Tests for functionality contained in `plasmapy.simulation.test_resolution_constraints`."""
 
-import astropy.units as u
-import pytest
-import numpy as np
 import warnings
+
+import astropy.units as u
+import numpy as np
+import pytest
 
 from plasmapy.simulation.resolution_constraints import CFL_limit_electromagnetic_yee
 
