@@ -502,7 +502,9 @@ def validate_quantities(func=None, validations_on_return=None, **validations):
 
     Allow `None` values to pass::
 
-        @validate_quantities(arg2={"none_shall_pass": True}, validations_on_return=[u.cm, None])
+        @validate_quantities(
+            arg2={"none_shall_pass": True}, validations_on_return=[u.cm, None]
+        )
         def foo(arg1: u.cm, arg2: u.cm = None):
             return None
 
