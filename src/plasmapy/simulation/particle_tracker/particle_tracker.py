@@ -133,6 +133,30 @@ class ParticleTracker:
     If the particle's position is not ``NaN``, but the velocity is ``NaN``, the particle has been stopped
     (i.e. it is still in the simulation but is no longer evolved.)
     If both the particle's position and velocity are set to ``NaN``, then the particle has been removed from the simulation.
+    
+    Example
+    -----
+    >>> from plasmapy.particles import CustomParticle
+    >>> from plasmapy.plasma.grids import CartesianGrid
+    >>> from plasmapy.simulation.particle_tracker.particle_tracker import ParticleTracker
+    >>> from plasmapy.simulation.particle_tracker.save_routines import IntervalSaveRoutine
+    >>> from plasmapy.simulation.particle_tracker.termination_conditions import TimeElapsedTerminationCondition
+    >>> import astropy.units as u
+    >>> import numpy as np
+    >>> example_particle = CustomParticle(mass = 1*u.kg, charge = 1*u.C)
+    >>> grid = CartesianGrid(-1e6*u.m,1e6*u.m, num=2)
+    >>> grid_shape = (2,2,2)
+    >>> Bz = np.full(grid_shape, 1) * u.T
+    >>> grid.add_quantities(B_z=Bz)
+    >>> x = [[0, 0, 0]] * u.m
+    >>> v = [[1, 0, 0]] * u.m / u.s
+    >>> termination_condition = TimeElapsedTerminationCondition(6.28*u.s)
+    >>> save_routine = IntervalSaveRoutine(6.28*u.s/10)
+    >>> simulation = ParticleTracker(grid, termination_condition, dt=1e-2*u.s, save_routine=save_routine, field_weighting="nearest neighbor")
+    >>> simulation.load_particles(x, v, example_particle)
+    >>> simulation.run()
+    >>> print(simulation.save_routine.results)["time"]
+    6.29999999999991 s [[ 0.01676071 -0.00022429  0.        ]] m
     """
 
     # Some quantities are necessary for the particle tracker to function
