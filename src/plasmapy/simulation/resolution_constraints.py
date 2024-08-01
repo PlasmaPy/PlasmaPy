@@ -13,7 +13,6 @@ __all__ = [
 
 import astropy.units as u
 import numpy as np
-
 from astropy.constants.si import c
 
 from plasmapy.utils.decorators import validate_quantities
@@ -66,7 +65,7 @@ def CFL_limit_electromagnetic_yee(dx: u.Quantity[u.m]) -> u.Quantity[u.s]:
     >>> from plasmapy.simulation.amazing import CFL_limit_electromagnetic
     >>> CFL_limit_electromagnetic(10 * u.nm)
     <Quantity 3.335640951981521e-17 s>
-    >>> CFL_limit_electromagnetic(np.array([5,  10, 15]) * u.nm)
+    >>> CFL_limit_electromagnetic(np.array([5, 10, 15]) * u.nm)
     <Quantity 1.4295604079920803e-17 s>
     """
 
