@@ -11,7 +11,6 @@ from jinja2 import TemplateNotFound
 from sphinx.ext.autodoc.mock import mock
 from sphinx.ext.autosummary import get_rst_suffix, import_by_name, import_ivar_by_name
 from sphinx.ext.autosummary.generate import (
-    find_autosummary_in_files,
     AutosummaryEntry,
     AutosummaryRenderer,
     generate_autosummary_content,
@@ -19,7 +18,7 @@ from sphinx.ext.autosummary.generate import (
 from sphinx.locale import __
 from sphinx.util import logging
 from sphinx.util.osutil import ensuredir
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List
 
 from ..utils import templates_dir
 
@@ -271,7 +270,7 @@ class GenDocsFromAutomodsumm:
         template = AutomodsummRenderer(app)
 
         # read
-        items = find_autosummary_in_files(source_filenames)
+        items = self.find_in_files(source_filenames)
 
         # keep track of new files
         new_files = []
@@ -369,6 +368,167 @@ class GenDocsFromAutomodsumm:
             with open(filename, encoding="utf-8", errors="ignore") as f:
                 lines = f.read().splitlines()
                 documented.extend(self.find_in_lines(lines, filename=filename))
+        return documented
+
+    def find_in_lines(
+        self,
+        lines: List[str],
+        filename: str = None,
+    ) -> List[AutomodsummEntry]:
+        """
+        Search a list of strings for the :rst:dir:`automodapi` and
+        :rst:dir:`automodsumm` directives and generate a list of
+        `~plasmapy_sphinx.automodsumm.generate.AutomodsummEntry`'s indicating which stub
+        files need to be generated.
+
+        Parameters
+        ----------
+        lines : List[str]
+            List of strings to be searched.
+
+        filename : str
+            The file from which ``lines`` came from.
+
+
+        .. note:: Adapted from
+                  :func:`sphinx.ext.autosummary.generate.find_autosummary_in_lines`.
+        """
+
+        from ..autodoc.automodapi import AutomodapiOptions
+        from .core import AutomodsummOptions
+
+        documented = []  # type: List[AutomodsummEntry]
+
+        current_module = None
+        modname = ""
+
+        options = {}  # type: Dict[str, Any]
+
+        _option_cls = None
+
+        in_automodapi_directive = False
+        gather_objs = False
+
+        last_line = False
+        nlines = len(lines)
+
+        for ii, line in enumerate(lines):
+            if ii == nlines - 1:
+                last_line = True
+
+            # looking for option `   :option: option_args`
+            if in_automodapi_directive:
+                match = self._re["option"].search(line)
+                if match is not None:
+                    option_name = match.group(2)
+                    option_args = match.group(3)
+                    try:
+                        option_args = _option_cls.option_spec[option_name](option_args)
+                        options[option_name] = option_args
+                    except (KeyError, TypeError):
+                        pass
+                else:
+                    # done reading options
+                    in_automodapi_directive = False
+                    gather_objs = True
+
+                if last_line:
+                    # end of lines reached
+                    in_automodapi_directive = False
+                    gather_objs = True
+
+                if in_automodapi_directive:
+                    continue
+
+            # looking for `.. automodsumm:: <modname>`
+            match = self._re["automodsumm"].search(line)
+            if match is not None:
+                in_automodapi_directive = True
+                # base_indent = match.group(1)
+                modname = match.group(2)
+
+                if current_module is None or modname == current_module:
+                    pass
+                elif not modname.startswith(f"{current_module}."):
+                    modname = f"{current_module}.{modname}"
+                _option_cls = AutomodsummOptions
+                self.logger.info(f"[automodsumm] {modname}")
+
+                if last_line:
+                    # end of lines reached
+                    in_automodapi_directive = False
+                    gather_objs = True
+                else:
+                    continue
+
+            # looking for `.. automodapi:: <modname>`
+            match = self._re["automodapi"].search(line)
+            if match is not None:
+                in_automodapi_directive = True
+                # base_indent = match.group(1)
+                modname = match.group(2)
+
+                if current_module is None or modname == current_module:
+                    pass
+                elif not modname.startswith(f"{current_module}."):
+                    modname = f"{current_module}.{modname}"
+                _option_cls = AutomodapiOptions
+
+                if last_line:
+                    # end of lines reached
+                    in_automodapi_directive = False
+                    gather_objs = True
+                else:
+                    continue
+
+            # looking for `.. py:currentmodule:: <current_module>`
+            match = self._re["currentmodule"].search(line)
+            if match is not None:
+                current_module = match.group(3)
+                continue
+
+            # gather objects and update documented list
+            if gather_objs:
+                process_options = _option_cls(
+                    self.app,
+                    modname,
+                    options,
+                    docname=filename,
+                    _warn=self.logger.warning,
+                )
+                options = {
+                    "toctree": process_options.toctree["abspath"],
+                    "template": process_options.options.get("template", None),
+                    "recursive": process_options.options.get("recursive", False),
+                }
+
+                exclude_modules = (
+                    not self.app.config.automodapi_generate_module_stub_files
+                )
+                obj_list = process_options.generate_obj_list(
+                    exclude_modules=exclude_modules
+                )
+
+                for name in obj_list:
+                    documented.append(
+                        AutomodsummEntry(
+                            name=f"{modname}.{name}",
+                            path=options["toctree"],
+                            template=options["template"],
+                            recursive=options["recursive"],
+                        )
+                    )
+
+                self.logger.info(
+                    f"[automodsumm stub file gen] collected {len(obj_list):4d} "
+                    f"object(s) in '{modname}'"
+                )
+
+                # reset for next search
+                options = {}
+                gather_objs = False
+                _option_cls = None
+
         return documented
 
     @staticmethod
