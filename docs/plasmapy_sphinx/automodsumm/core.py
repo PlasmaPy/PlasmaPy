@@ -529,7 +529,7 @@ class AutomodsummOptions:
             }
         return mod_objs
 
-    def generate_obj_list(self, exclude_modules: bool = False, return_qualified_string: bool = False) -> List[str]:
+    def generate_obj_list(self, exclude_modules: bool = False, return_qualified_string: bool = True) -> List[str]:
         """
         Take :attr:`mod_objs_option_filtered` and generated a list of the fully
         qualified object names.  The list is sorted based on the casefolded
@@ -582,13 +582,10 @@ class Automodsumm(Autosummary):
         its options, and its content to get the desired rendered outcome.
         """
         env = self.env
-        modname = self.arguments[0]
 
-        # for some reason, even though ``currentmodule`` is substituted in,
-        # sphinx doesn't necessarily recognize this fact.  So we just force
-        # it internally, and that seems to fix things
-        env.temp_data["py:module"] = modname
-        env.ref_context["py:module"] = modname
+        # set modules to 'None' to ensure no prefixing
+        env.temp_data["py:module"] = None
+        env.ref_context["py:module"] = None
 
         nodelist = []
 
@@ -597,7 +594,7 @@ class Automodsumm(Autosummary):
             self.options["toctree"] = self.option_processor().options["toctree"]
 
         # define additional content
-        content = self.option_processor().generate_obj_list(return_qualified_string=False)
+        content = self.option_processor().generate_obj_list(return_qualified_string=True)
         for ii, modname in enumerate(content):
             if not modname.startswith("~"):
                 content[ii] = "~" + modname
