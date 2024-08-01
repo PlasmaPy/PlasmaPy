@@ -155,7 +155,7 @@ class ParticleTracker:
     >>> simulation = ParticleTracker(grid, termination_condition, dt=1e-2*u.s, save_routine=save_routine, field_weighting="nearest neighbor")
     >>> simulation.load_particles(x, v, example_particle)
     >>> simulation.run()
-    >>> print(simulation.save_routine.results)["time"]
+    >>> print(simulation.save_routine.results["time"][-1], simulation.save_routine.results["x"][-1])
     6.29999999999991 s [[ 0.01676071 -0.00022429  0.        ]] m
     """
 
