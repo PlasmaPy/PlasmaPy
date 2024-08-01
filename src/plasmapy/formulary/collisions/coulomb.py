@@ -132,7 +132,7 @@ def Coulomb_logarithm(
     --------
     ~plasmapy.formulary.collisions.lengths.impact_parameter : Computes
         :math:`b_{min}` and :math:`b_{max}`.
-    
+
     Notes
     -----
     **Summary of Supported Methods of Computing the Coulomb Logarithm**
