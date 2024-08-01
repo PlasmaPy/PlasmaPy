@@ -7,7 +7,7 @@ Grid and time resolution constraints for numerical simulations.
 """
 
 __all__ = [
-    "CFL_limit_electromagnetic",
+    "CFL_limit_electromagnetic_yee",
 ]
 
 import numpy as np
