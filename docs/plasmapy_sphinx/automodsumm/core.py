@@ -529,7 +529,7 @@ class AutomodsummOptions:
             }
         return mod_objs
 
-    def generate_obj_list(self, exclude_modules: bool = False) -> List[str]:
+    def generate_obj_list(self, exclude_modules: bool = False, return_qualified_string: bool = False) -> List[str]:
         """
         Take :attr:`mod_objs_option_filtered` and generated a list of the fully
         qualified object names.  The list is sorted based on the casefolded
@@ -558,7 +558,7 @@ class AutomodsummOptions:
             qualnames.extend(mod_objs[group]["qualnames"])
 
         content = [
-            name
+            qualname if return_qualified_string else name
             for name, qualname in sorted(
                 zip(names, qualnames), key=lambda x: str.casefold(x[0])
             )
@@ -597,7 +597,7 @@ class Automodsumm(Autosummary):
             self.options["toctree"] = self.option_processor().options["toctree"]
 
         # define additional content
-        content = self.option_processor().generate_obj_list()
+        content = self.option_processor().generate_obj_list(return_qualified_string=False)
         for ii, modname in enumerate(content):
             if not modname.startswith("~"):
                 content[ii] = "~" + modname

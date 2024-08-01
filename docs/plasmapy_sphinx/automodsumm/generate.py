@@ -506,13 +506,14 @@ class GenDocsFromAutomodsumm:
                     not self.app.config.automodapi_generate_module_stub_files
                 )
                 obj_list = process_options.generate_obj_list(
-                    exclude_modules=exclude_modules
+                    exclude_modules=exclude_modules,
+                    return_qualified_string=True
                 )
 
                 for name in obj_list:
                     documented.append(
                         AutomodsummEntry(
-                            name=f"{modname}.{name}",
+                            name=name,
                             path=options["toctree"],
                             template=options["template"],
                             recursive=options["recursive"],
