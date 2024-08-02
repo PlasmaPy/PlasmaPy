@@ -73,7 +73,7 @@ which the data match its plasma data structure.
 
 .. automodapi:: plasmapy.plasma
    :noindex:
-   :no-main-docstring:
+   :no-main-docstr:
    :exclude-groups: modules, variables
 
 .. _plasma-sources:
@@ -174,5 +174,4 @@ API
 
 .. automodapi:: plasmapy.plasma
    :noindex:
-   :no-main-docstring:
-   :heading-chars: "^~"
+   :no-main-docstr:
