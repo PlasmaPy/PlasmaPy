@@ -13,6 +13,7 @@ __lite_funcs__ = ["thermal_speed_lite"]
 
 import warnings
 from numbers import Real
+from typing import Literal
 
 import astropy.units as u
 import numpy as np
@@ -48,7 +49,7 @@ def Alfven_speed(
     mass_numb: int | None = None,
     Z: float | None = None,
 ) -> u.Quantity[u.m / u.s]:
-    r"""Calculate the Alfvén speed.
+    r"""Calculate the Alfvén speed 🏎️💨.
 
     The Alfvén speed :math:`V_A` is the typical propagation speed of
     magnetic disturbances in a quasineutral plasma, and is given by:
@@ -195,8 +196,8 @@ def ion_sound_speed(
     ion: ParticleLike,
     n_e: u.Quantity[u.m**-3] = None,
     k: u.Quantity[u.m**-1] = None,
-    gamma_e=1,
-    gamma_i=3,
+    gamma_e: float = 1,
+    gamma_i: float = 3,
     Z=None,
 ) -> u.Quantity[u.m / u.s]:
     r"""
@@ -538,9 +539,9 @@ def thermal_speed_lite(T: float, mass: float, coeff: float) -> float:
 def thermal_speed(
     T: u.Quantity[u.K],
     particle: ParticleLike,
-    method="most_probable",
+    method: Literal["most_probable", "rms", "mean_magnitude", "nrl"] = "most_probable",
     mass: u.Quantity[u.kg] = None,
-    ndim=3,
+    ndim: int = 3,
 ) -> u.Quantity[u.m / u.s]:
     r"""
     Calculate the speed of thermal motion for particles with a Maxwellian
@@ -655,10 +656,10 @@ def thermal_speed(
           To do this we first define another function :math:`g(v)` given by
 
           .. math::
-             \int_{0}^{\infty} g(v) dv
-                = \int_{-\infty}^{\infty} f(\mathbf{v}) d^3\mathbf{v}
+             \int_{0}^{∞} g(v) dv
+                = \int_{-∞}^{∞} f(\mathbf{v}) d^3\mathbf{v}
                 \quad \rightarrow \quad
-                g(v) = 4 \pi v^2 f(v)
+                g(v) = 4 π v^2 f(v)
 
           then
 
@@ -682,7 +683,7 @@ def thermal_speed(
 
           .. math::
              v_{th} = \int |\mathbf{v}| f(\mathbf{v}) d^3 \mathbf{v}
-                         = \sqrt{\frac{8 k_B T}{\pi m}}
+                         = \sqrt{\frac{8 k_B T}{π m}}
 
 
         - **NRL Formulary** ``method = "nrl"``
@@ -743,9 +744,9 @@ def kappa_thermal_speed(
     T: u.Quantity[u.K],
     kappa,
     particle: ParticleLike,
-    method="most_probable",
+    method: Literal["most_probable", "rms", "mean_magnitude"] = "most_probable",
     *,
-    mass_numb: float | None = None,
+    mass_numb: int | None = None,
     Z: float | None = None,
 ) -> u.Quantity[u.m / u.s]:
     r"""
@@ -769,9 +770,9 @@ def kappa_thermal_speed(
         Representation of the particle species (e.g., ``'p+'`` for protons,
         ``'D+'`` for deuterium, or 'He-4 +1' for singly ionized helium-4).
 
-    method : `str`, optional
+    method : `str`, default: ``"most_probable"``
         Method to be used for calculating the thermal speed. Options are
-        ``'most_probable'`` (default), ``'rms'``, and ``'mean_magnitude'``.
+        ``'most_probable'``, ``'rms'``, and ``'mean_magnitude'``.
 
     mass_numb : integer, optional
         The mass number corresponding to ``particle``.

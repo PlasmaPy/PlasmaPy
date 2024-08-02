@@ -18,7 +18,7 @@ from plasmapy.particles.exceptions import (
     ParticleError,
 )
 from plasmapy.particles.particle_class import CustomParticle, Particle, ParticleLike
-from plasmapy.particles.particle_collections import ParticleList
+from plasmapy.particles.particle_collections import ParticleList, ParticleListLike
 from plasmapy.utils.code_repr import call_string
 from plasmapy.utils.decorators.validators import validate_quantities
 from plasmapy.utils.exceptions import PlasmaPyDeprecationWarning
@@ -748,3 +748,31 @@ def test_particle_input_with_pos_and_var_positional_arguments() -> None:
     expected = (a, args, Particle(particle))
     actual = function_with_pos_and_var_positional_arguments(a, *args, particle=particle)
     assert actual == expected
+
+
+@pytest.mark.parametrize(
+    ("criteria", "kwargs", "exception"),
+    [
+        ({"require": "ion"}, {"particle": ["p+", "He"]}, ParticleError),
+        ({"require": "isotope"}, {"particle": ["p+", "He"]}, ParticleError),
+        (
+            {"any_of": {"lepton", "neutrino"}},
+            {"particle": ["p+", "alpha"]},
+            ParticleError,
+        ),
+        ({"exclude": "lepton"}, {"particle": ["p+", "e-"]}, ParticleError),
+    ],
+)
+def test_particle_categorization_of_particle_lists(
+    criteria: dict[str, str | Iterable[str]],
+    kwargs: dict[str, ParticleListLike],
+    exception: Exception,
+) -> None:
+    @particle_input(**criteria)  # type: ignore[arg-type]
+    def get_particle(
+        particle: ParticleLike,
+    ) -> Particle | ParticleList | CustomParticle:
+        return particle  # type: ignore[return-value]
+
+    with pytest.raises(exception):  # type: ignore[call-overload]
+        get_particle(**kwargs)

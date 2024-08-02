@@ -225,7 +225,7 @@ def test_single_species_collective_spectrum(single_species_collective_spectrum) 
         (np.array([np.array([520, 525]), np.array([530, 540])]) * u.nm, 2),
     ],
 )
-def test_notched_spectrum(notch, notch_num, single_species_collective_args):
+def test_notched_spectrum(notch, notch_num, single_species_collective_args) -> None:
     """
     Compares notched and unnotched spectra
     """
@@ -279,7 +279,7 @@ def test_notched_spectrum(notch, notch_num, single_species_collective_args):
         (np.array([530, 531, 533]) * u.nm),  # Not exactly 2 elements
     ],
 )
-def test_notch_errors(notch, single_species_collective_args):
+def test_notch_errors(notch, single_species_collective_args) -> None:
     """
     Check notch input validation
     """
@@ -364,14 +364,14 @@ def multiple_species_collective_args():
         "n": 5e17 * u.cm**-3,
         "T_e": 10 * u.eV,
     }
-    kwargs["T_i"] = np.array([5, 5]) * u.eV
+    kwargs["T_i"] = np.array([25, 25]) * u.eV
     kwargs["ions"] = [Particle("p+"), Particle("C-12 5+")]
     kwargs["probe_vec"] = np.array([1, 0, 0])
     kwargs["scatter_vec"] = np.array([0, 1, 0])
     kwargs["efract"] = np.array([1.0])
     kwargs["ifract"] = np.array([0.7, 0.3])
-    kwargs["electron_vel"] = np.array([[300, 0, 0]]) * u.km / u.s
-    kwargs["ion_vel"] = np.array([[-500, 0, 0], [0, 500, 0]]) * u.km / u.s
+    kwargs["electron_vel"] = np.array([[0, 0, 0]]) * u.km / u.s
+    kwargs["ion_vel"] = np.array([[-100, 0, 0], [0, 100, 0]]) * u.km / u.s
 
     return kwargs
 
@@ -418,26 +418,27 @@ def test_multiple_species_collective_spectrum(
 
     # Compute the width and max of the spectrum, and the wavelength
     # of the max (sensitive to ion vel)
-    width = width_at_value(wavelength.value, Skw.value, 0.2e-11)
-    max_skw = np.max(Skw.value)
+    max_skw = np.nanmax(Skw.value)
+    width = width_at_value(wavelength.value, Skw.value, 2e-12)
+
     max_wavelength = wavelength.value[np.argmax(Skw.value)]
 
     # Check width
-    assert np.isclose(width, 0.14, 1e-2), (
+    assert np.isclose(width, 0.17, 1e-2), (
         f"Multiple ion species case spectrum width is {width} instead of "
-        "expected 0.14"
+        "expected 0.17"
     )
 
     # Check max value
-    assert np.isclose(max_skw, 2.4e-11, 1e-11), (
+    assert np.isclose(max_skw, 6e-12, 1e-11), (
         f"Multiple ion species case spectrum max is {max_skw} instead of "
-        "expected 2.4e-11"
+        "expected 6e-12"
     )
 
     # Check max peak location
-    assert np.isclose(max_wavelength, 530.799, 1e-2), (
+    assert np.isclose(max_wavelength, 532, 1e-2), (
         "Multiple ion species case spectrum peak wavelength is "
-        f"{max_wavelength} instead of expected 530.79"
+        f"{max_wavelength} instead of expected 532"
     )
 
 
@@ -750,17 +751,21 @@ def run_fit(
     params,
     settings,
     noise_amp: float = 0.05,
-    fit_method="differential_evolution",
+    fit_method: str = "differential_evolution",
     fit_kws={},  # noqa: B006
     max_iter=None,
     check_errors: bool = True,  # noqa: ARG001
-    require_redchi=1,
+    require_redchi: float = 1.0,
     # If false, don't perform the actual fit but instead just create the Model
     run_fit: bool = True,
 ) -> None:
     """
     Take a Parameters object, generate some synthetic data near it,
     perturb the initial values, then try a fit.
+
+    Note: `ions` is passed in settings here (instead of parameters)
+    because we need the full ions list to make the spectrum. They are then
+    moved to parameters later in this function.
     """
 
     wavelengths = (wavelengths * u.m).to(u.nm)
@@ -931,7 +936,7 @@ def epw_single_species_settings_params():
     kwargs = {"probe_wavelength": probe_wavelength.to(u.m).value}
     kwargs["probe_vec"] = np.array([1, 0, 0])
     kwargs["scatter_vec"] = scatter_vec
-    kwargs["notch"] = notch.to(u.m).value
+    kwargs["notch"] = notch
     kwargs["ions"] = ["H+"]
 
     kwargs["n"] = Parameter(
@@ -969,7 +974,7 @@ def epw_multi_species_settings_params():
 
     kwargs["probe_vec"] = probe_vec
     kwargs["scatter_vec"] = scatter_vec
-    kwargs["notch"] = notch.to(u.m).value
+    kwargs["notch"] = notch
     kwargs["ions"] = ["H+"]
 
     kwargs["n"] = Parameter(
@@ -1153,6 +1158,25 @@ def test_fit_iaw_instr_func(iaw_single_species_settings_params) -> None:
 
 
 @pytest.mark.slow()
+def test_fit_ion_mu_and_z(iaw_single_species_settings_params) -> None:
+    """
+    Tests fitting with ion parameters explicitly set and allowed to vary
+    """
+    wavelengths, params, settings = spectral_density_model_settings_params(
+        iaw_single_species_settings_params
+    )
+
+    for i, ion in enumerate(settings["ions"]):
+        _ion = Particle(ion)
+        mass = _ion.mass.to(u.kg).value
+        Z = _ion.charge_number
+        params.add(f"ion_mu_{i!s}", value=mass, vary=True, min=0.5, max=10)
+        params.add(f"ion_z_{i!s}", value=Z, vary=True, min=1, max=10)
+
+    run_fit(wavelengths, params, settings)
+
+
+@pytest.mark.slow()
 def test_fit_iaw_multi_species(iaw_multi_species_settings_params) -> None:
     wavelengths, params, settings = spectral_density_model_settings_params(
         iaw_multi_species_settings_params
@@ -1188,11 +1212,11 @@ def test_fit_with_instr_func(epw_single_species_settings_params) -> None:
     )
 
     settings["instr_func"] = example_instr_func
-    settings["notch"] = np.array([531, 533]) * 1e-9
+    settings["notch"] = np.array([531, 533]) * 1e-9 * u.nm
 
     # Warns that data should not include any NaNs
     # This is taken care of in run_fit by deleting the notch region rather than
-    # replacing it with np.NaN
+    # replacing it with np.nan
     with pytest.warns(UserWarning, match="If an instrument function is included,"):
         run_fit(
             wavelengths,
@@ -1233,7 +1257,7 @@ def test_fit_with_minimal_parameters() -> None:
     w0 = probe_wavelength.value
     wavelengths = np.linspace(w0 - 5, w0 + 5, num=512) * u.nm
 
-    ions = ["H+"]
+    ions = [Particle("H+")]
     n = 2e17 * u.cm**-3
     T_i = 20 * u.eV
     T_e = 10 * u.eV
@@ -1264,6 +1288,8 @@ def test_fit_with_minimal_parameters() -> None:
 
     params.add("T_e_0", value=T_e.value, vary=False, min=5, max=20)
     params.add("T_i_0", value=T_i.value, vary=True, min=5, max=70)
+    params.add("ion_mu_0", value=1, vary=False)
+    params.add("ion_z_0", value=ions[0].charge_number, vary=False)
 
     # Try creating model: will raise exception because required values
     # are missing in settings, eg. 'probe_wavelength'
@@ -1342,22 +1368,6 @@ def test_fit_with_minimal_parameters() -> None:
             {"ion_speed_0": Parameter("ion_speed_0", 1e5), "ion_vdir": None},
             ValueError,
             "ion_vdir must be set if ion_speeds",
-        ),
-        # Test different input types for ``ions``
-        ({"ions": ParticleList(["H+", "H+", "He+"])}, None, None),
-        # Error if no particles are provided
-        ({"ions": []}, ValueError, "At least one ion species needs to be defined."),
-        # Error if an ion is negative
-        (
-            {"ions": ParticleList(["H+", "H+", "e-"])},
-            ValueError,
-            "All ions must be positively charged.",
-        ),
-        # Error if an ion charge information is not given
-        (
-            {"ions": ParticleList(["H+", "H+", "He"])},
-            ValueError,
-            "All ions must be positively charged.",
         ),
     ],
 )

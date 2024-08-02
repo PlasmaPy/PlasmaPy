@@ -1,0 +1,75 @@
+name: Changelog
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited, labeled, unlabeled]
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+env:
+  CHANGELOG_INSTRUCTIONS: "⚠️ Please add a changelog entry at `changelog/NUMBER.TYPE.rst`, where `NUMBER` is the pull request number and `TYPE` is one of `feature`, `trivial`, `doc`, `internal`, `bugfix`, `breaking`, or `removal`.\n\nMinor change such as typo fixes and hyperlink updates do not need a changelog entry.\n\nFor details, see: https://docs.plasmapy.org/en/latest/contributing/changelog_guide.html#adding-a-changelog-entry"
+
+
+jobs:
+  add-no-changelog-label:
+    name: Add no changelog label
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+
+    steps:
+
+    - name: Add no changelog label
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          // Regular expression to match the PR title pattern "Bump * from * to *"
+          const bumpPattern = /^Bump .* from .* to .*/;
+
+          // Fetch the PR
+          const { data: pullRequest } = await github.rest.pulls.get({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            pull_number: context.issue.number,
+          });
+
+          if (
+            pullRequest.title.includes('autoupdate') ||
+            pullRequest.title.includes('Minor') ||
+            pullRequest.title.includes('Fix typo') ||
+            pullRequest.title.includes('Update changelog entries') ||
+            pullRequest.title.includes('Update changelog prior to') ||
+            pullRequest.title.includes('Update pinned requirements') ||
+            pullRequest.title.includes('Update release checklist') ||
+            bumpPattern.test(pullRequest.title)
+          ) {
+            // If yes, then apply the label "no changelog entry needed"
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              labels: ['no changelog entry needed'],
+            });
+          }
+
+  changelog-checker:
+    name: Validate towncrier changelog entry
+    runs-on: ubuntu-latest
+    needs: add-no-changelog-label
+    steps:
+    - uses: scientific-python/action-towncrier-changelog@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        BOT_USERNAME: changelog-bot
+
+    - name: Print troubleshooting information
+      if: ${{ failure() }}
+      run: |
+        echo -e $CHANGELOG_INSTRUCTIONS
+        exit 1

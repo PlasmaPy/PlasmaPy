@@ -1,6 +1,0 @@
-Created a |tox| environment for regenerating requirements files used
-in continuous integration (CI) and by integrated development environments
-(IDEs). This environment is now what is being used in the automated pull
-requests to regenerate requirements files. Switching from ``pip-compile``
-to ``uv pip compile`` now allows requirements files to be created for multiple
-versions of Python, as well as for minimal versions of dependencies.

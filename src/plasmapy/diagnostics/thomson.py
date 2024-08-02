@@ -111,7 +111,7 @@ def spectral_density_lite(
         species.
 
     ion_mass : (Ni,) `~numpy.ndarray`
-        An `~numpy.ndarray` of the mass of each ion species in kg.
+        An `~numpy.ndarray` of the mass number of each ion species in kg.
 
     electron_vel : (Ne, 3) `~numpy.ndarray`
         Velocity of each electron population in the rest frame (in m/s).
@@ -244,7 +244,8 @@ def spectral_density_lite(
         icontr[m, :] = ifract[m] * (
             2
             * np.sqrt(np.pi)
-            * ion_z[m]
+            * ion_z[m] ** 2
+            / zbar
             / k
             / vT_i[m]
             * np.power(np.abs(np.sum(chiE, axis=0) / epsilon), 2)
@@ -262,13 +263,17 @@ def spectral_density_lite(
     if notch is not None:
         # If only one notch is included, create a dummy second dimension
         if np.ndim(notch) == 1:
-            notch = np.array([notch])
+            notch = np.array(
+                [
+                    notch,
+                ]
+            )
 
         for notch_i in notch:
             # For each notch, identify the index for the beginning and end
             # wavelengths and set Skw to zero between those indices
-            x0 = np.argwhere(wavelengths > notch_i[0])[0][0]
-            x1 = np.argwhere(wavelengths > notch_i[1])[0][0]
+            x0 = np.argmin(np.abs(wavelengths - notch_i[0]))
+            x1 = np.argmin(np.abs(wavelengths - notch_i[1]))
             Skw[x0:x1] = 0
 
     return np.mean(alpha), Skw
@@ -399,14 +404,14 @@ def spectral_density(  # noqa: C901, PLR0912, PLR0915
         S(k,ω) = \sum_e \frac{2π}{k}
         \bigg |1 - \frac{χ_e}{ε} \bigg |^2
         f_{e0,e} \bigg (\frac{ω}{k} \bigg ) +
-        \sum_i \frac{2π Z_i}{k}
+        \sum_i \frac{2π}{k} \frac{Z_i^2}{\bar Z}
         \bigg |\frac{χ_e}{ε} \bigg |^2 f_{i0,i}
         \bigg ( \frac{ω}{k} \bigg )
 
     where :math:`χ_e` is the electron population susceptibility of the
     plasma and :math:`ε = 1 + ∑_e χ_e + ∑_i χ_i` is the total plasma
     dielectric function (with :math:`χ_i` being the ion population of
-    the susceptibility), :math:`Z_i` is the charge of each ion,
+    the susceptibility),
     :math:`k` is the scattering wavenumber, :math:`ω` is the scattering
     frequency, and :math:`f_{e0,e}` and :math:`f_{i0,i}` are the
     electron and ion velocity distribution functions, respectively. In
@@ -429,6 +434,11 @@ def spectral_density(  # noqa: C901, PLR0912, PLR0915
 
     .. math::
         \sum_e F_e = 1
+
+    and
+
+    .. math::
+        \bar Z = \sum_k F_k Z_k
 
     The plasma is assumed to be quasineutral, and therefore the number
     density of the i\ :sup:`th` ion population is
@@ -540,10 +550,6 @@ def spectral_density(  # noqa: C901, PLR0912, PLR0915
             f"T_e ({T_e.size}), or electron velocity ({electron_vel.shape[0]})."
         )
 
-    # Create arrays of ion Z and mass from particles given
-    ion_z = ions.charge_number
-    ion_mass = ions.mass
-
     probe_vec = probe_vec / np.linalg.norm(probe_vec)
     scatter_vec = scatter_vec / np.linalg.norm(scatter_vec)
 
@@ -555,7 +561,7 @@ def spectral_density(  # noqa: C901, PLR0912, PLR0915
         eval_w = np.linspace(-wspan, wspan, num=wavelengths.size)
         instr_func_arr = instr_func(eval_w)
 
-        if type(instr_func_arr) != np.ndarray:
+        if type(instr_func_arr) is not np.ndarray:
             raise ValueError(
                 "instr_func must be a function that returns a "
                 "np.ndarray, but the provided function returns "
@@ -600,8 +606,8 @@ def spectral_density(  # noqa: C901, PLR0912, PLR0915
         T_i.to(u.K).value,
         efract=efract,
         ifract=ifract,
-        ion_z=ion_z,
-        ion_mass=ion_mass.to(u.kg).value,
+        ion_z=ions.charge_number,
+        ion_mass=ions.mass.to(u.kg).value,
         ion_vel=ion_vel.to(u.m / u.s).value,
         electron_vel=electron_vel.to(u.m / u.s).value,
         probe_vec=probe_vec,
@@ -682,8 +688,6 @@ def _spectral_density_model(wavelengths, settings=None, **params):
     """
 
     # LOAD FROM SETTINGS
-    ion_z = settings["ion_z"]
-    ion_mass = settings["ion_mass"]
     probe_vec = settings["probe_vec"]
     scatter_vec = settings["scatter_vec"]
     electron_vdir = settings["electron_vdir"]
@@ -694,8 +698,11 @@ def _spectral_density_model(wavelengths, settings=None, **params):
 
     # LOAD FROM PARAMS
     n = params["n"]
+    background = params["background"]
     T_e = _params_to_array(params, "T_e")
     T_i = _params_to_array(params, "T_i")
+    ion_mu = _params_to_array(params, "ion_mu")
+    ion_z = _params_to_array(params, "ion_z")
     efract = _params_to_array(params, "efract")
     ifract = _params_to_array(params, "ifract")
 
@@ -708,6 +715,9 @@ def _spectral_density_model(wavelengths, settings=None, **params):
     # Convert temperatures from eV to kelvin (required by fast_spectral_density)
     T_e *= 11604.51812155
     T_i *= 11604.51812155
+
+    # lite function takes ion mass, not mu=m_i/m_p
+    ion_mass = ion_mu * m_p_si_unitless
 
     alpha, model_Skw = spectral_density_lite(
         wavelengths,
@@ -728,6 +738,9 @@ def _spectral_density_model(wavelengths, settings=None, **params):
     )
 
     model_Skw *= 1 / np.max(model_Skw)
+
+    # Add background after normalization
+    model_Skw += background
 
     return model_Skw
 
@@ -755,7 +768,10 @@ def spectral_density_model(  # noqa: C901, PLR0912, PLR0915
         - ``"ions"`` : list of particle strings,
           `~plasmapy.particles.particle_class.Particle` objects, or a
           `~plasmapy.particles.particle_collections.ParticleList`
-          describing each ion species. All ions must be positive.
+          describing each ion species. All ions must be positive. Ion mass
+          and charge number from this list will be automatically
+          added as fixed parameters, overridden by any ``ion_mass`` or ``ion_z``
+          parameters explicitly created.
 
         and may contain the following optional variables:
 
@@ -791,6 +807,9 @@ def spectral_density_model(  # noqa: C901, PLR0912, PLR0915
           sum to 1)
         - :samp:`"electron_speed_{e#}"` : Electron speed in m/s
         - :samp:`"ion_speed_{ei}"` : Ion speed in m/s
+        - :samp:`"ion_mu_{i#}"` : Ion mass number, :math:`μ = m_i/m_p`
+        - :samp:`"ion_z_{i#}"` : Ion charge number
+        - :samp:`"background"` : Background level, as fraction of max signal
 
         These quantities can be either fixed or varying.
 
@@ -813,7 +832,6 @@ def spectral_density_model(  # noqa: C901, PLR0912, PLR0915
         "probe_wavelength",
         "probe_vec",
         "scatter_vec",
-        "ions",
     }
 
     if missing_settings := required_settings - set(settings):
@@ -828,6 +846,25 @@ def spectral_density_model(  # noqa: C901, PLR0912, PLR0915
             f"The following required parameters were not provided in the "
             f"'params': {missing_params}"
         )
+
+    # Add background if not provided
+    if "background" not in params:
+        params.add("background", value=0.0, vary=False)
+
+    # Add ion values as fixed parameters if a particle list is provided
+    # in settings
+    # Do not override any existing parameters
+    if "ions" in settings:
+        for i, ion in enumerate(settings["ions"]):
+            _ion = Particle(ion)
+            if f"ion_mu_{i!s}" not in params:
+                params.add(
+                    f"ion_mu_{i!s}",
+                    value=_ion.mass.to(u.kg).value / m_p_si_unitless,
+                    vary=False,
+                )
+            if f"ion_z_{i!s}" not in params:
+                params.add(f"ion_z_{i!s}", value=_ion.charge_number, vary=False)
 
     # **********************
     # Count number of populations
@@ -844,53 +881,15 @@ def spectral_density_model(  # noqa: C901, PLR0912, PLR0915
     # **********************
     # Required settings and parameters per population
     # **********************
-    for p, nums in zip(["T_e", "T_i"], [num_e, num_i], strict=False):
+    for p, nums in zip(
+        ["T_e", "T_i", "ion_mu", "ion_z"], [num_e, num_i, num_i, num_i], strict=False
+    ):
         for num in range(nums):
             key = f"{p}_{num!s}"
             if key not in params:
                 raise ValueError(
                     f"{p} was not provided in kwarg 'parameters', but is required."
                 )
-
-    # **************
-    # ions
-    # **************
-
-    ions = settings["ions"]
-    # Condition ions
-    # If a single value is provided, turn into a particle list
-    if isinstance(ions, ParticleList):
-        pass
-    elif isinstance(ions, str):
-        ions = ParticleList([Particle(ions)])
-    # If a list is provided, ensure all values are Particles, then convert
-    # to a ParticleList
-    elif isinstance(ions, list):
-        for ii, ion in enumerate(ions):
-            if isinstance(ion, Particle):
-                continue
-            ions[ii] = Particle(ion)
-        ions = ParticleList(ions)
-    else:
-        raise TypeError(
-            "The type of object provided to the ``ions`` keyword "
-            f"is not supported: {type(ions)}"
-        )
-
-    # Validate ions
-    if len(ions) == 0:
-        raise ValueError("At least one ion species needs to be defined.")
-
-    try:
-        if sum(ion.charge_number <= 0 for ion in ions):
-            raise ValueError("All ions must be positively charged.")
-    # Catch error if charge information is missing
-    except ChargeError as ex:
-        raise ValueError("All ions must be positively charged.") from ex
-
-    # Create arrays of ion Z and mass from particles given
-    settings["ion_z"] = ions.charge_number
-    settings["ion_mass"] = ions.mass
 
     # **************
     # efract and ifract
@@ -967,7 +966,7 @@ def spectral_density_model(  # noqa: C901, PLR0912, PLR0915
         eval_w = np.linspace(-wspan, wspan, num=wavelengths.size)
         instr_func_arr = instr_func(eval_w * u.m)
 
-        if type(instr_func_arr) != np.ndarray:
+        if type(instr_func_arr) is not np.ndarray:
             raise ValueError(
                 "instr_func must be a function that returns a "
                 "np.ndarray, but the provided function returns "

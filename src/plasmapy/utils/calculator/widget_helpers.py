@@ -60,7 +60,7 @@ class _GenericWidget(abc.ABC):
     """
 
     def __init__(
-        self, property_name: str, property_alias="", values_cont=values_container
+        self, property_name: str, property_alias: str = "", values_cont=values_container
     ) -> None:
         self.property_name = property_name
         self.property_alias = property_alias or property_name
@@ -575,7 +575,7 @@ class _FunctionInfo:
                     self.error_message(self.sig)
 
 
-def _create_label(label: str, color="black"):
+def _create_label(label: str, color: str = "black"):
     """
     Creates a label widget with the given text and color.
 
