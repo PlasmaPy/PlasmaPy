@@ -646,6 +646,12 @@ authors:
   orcid: https://orcid.org/0000-0002-7860-9567
   alias: pvalarcon
 
+- given-names: Shelley
+  family-names: Sugiharto, Kerr
+  affiliation: Texas A&M University
+  orcid: https://orcid.org/0009-0003-3159-0541
+  alias: ShelleySugiharto
+
 - given-names: David
   family-names: Schaffner
   alias: dschaffner
