@@ -14,7 +14,7 @@ If you use PlasmaPy for a project that results in a publication,
 please cite the |Zenodo| record for the specific version of PlasmaPy
 used in your project. Citing a software package promotes scientific
 reproducibility, gives credit to its developers, and highlights the
-importance of software as a vital research product.
+importance of software as a vital research product. 📝
 
 Version |version_to_cite| of PlasmaPy may be cited with the following
 reference:
