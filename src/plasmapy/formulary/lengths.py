@@ -68,6 +68,10 @@ def Debye_length(T_e: u.Quantity[u.K], n_e: u.Quantity[u.m**-3]) -> u.Quantity[u
     : `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed.
 
+    See Also
+    --------
+    ~plasmapy.formulary.dimensionless.Debye_number
+
     Notes
     -----
     Plasmas will generally be quasineutral on length scales
@@ -76,10 +80,6 @@ def Debye_length(T_e: u.Quantity[u.K], n_e: u.Quantity[u.m**-3]) -> u.Quantity[u
     The electrical potential will drop by a factor of
     :math:`∼\frac{1}{e}` every Debye length away from the vicinity of a
     charged particle.
-
-    See Also
-    --------
-    ~plasmapy.formulary.dimensionless.Debye_number
 
     Examples
     --------

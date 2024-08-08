@@ -549,6 +549,12 @@ authors:
   family-names: Smirnov
   alias: Nismirno
 
+- given-names: Joseph
+  family-names: Smith
+  affiliation: Marietta College
+  orcid: https://orcid.org/0000-0002-5978-6840
+  alias: josephrhsmith
+
 - given-names: Stuart
   family-names: Sobeske
   affiliation: University of Michigan
@@ -639,6 +645,16 @@ authors:
   family-names: Bedoya-López
   orcid: https://orcid.org/0000-0002-3634-2729
   alias: Stray235
+
+- given-names: Shanshan
+  family-names: Rodriguez
+  alias: slrodriguez
+
+- given-names: Shelley
+  family-names: Sugiharto, Kerr
+  affiliation: Texas A&M University
+  orcid: https://orcid.org/0009-0003-3159-0541
+  alias: ShelleySugiharto
 
 - given-names: David
   family-names: Schaffner
