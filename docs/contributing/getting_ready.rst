@@ -230,7 +230,7 @@ environment`_ instead.
 
 Installing your clone of PlasmaPy
 =================================
-
+🏁
 This section covers how to make an |editable installation| of your
 clone of PlasmaPy. Making the PlasmaPy installation *editable* means
 that if you modify the source code, then those changes will be included
