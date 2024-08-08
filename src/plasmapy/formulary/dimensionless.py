@@ -242,10 +242,11 @@ def beta(
     The beta (:math:`β`) of a plasma is defined by
 
     .. math::
-        β = \frac{p_{th}}{p_{mag}}
+        β = \frac{p_{th}}{p_{mag}} = \frac{n k_B T}{B^2/2\mu_0}
 
-    where :math:`p_{th}` is the thermal pressure of the plasma
-    and :math:`p_{mag}` is the magnetic pressure of the plasma.
+    where :math:`p_{th}` is the `~plasmapy.formulary.misc.thermal_pressure`
+    of the plasma and :math:`p_{mag}` is the
+    `~plasmapy.formulary.misc.magnetic_pressure` of the plasma.
 
     Parameters
     ----------
