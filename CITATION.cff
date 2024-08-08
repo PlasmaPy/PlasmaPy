@@ -156,6 +156,13 @@ authors:
   family-names: Choubey
   alias: apooravc
 
+- given-names: Sebastian
+  family-names: Colom
+  email: sebastian.v.colom@nasa.gov
+  affiliation: NASA Ames Research Center
+  orcid: https://orcid.org/0009-0006-0863-0180
+  alias: Cool-Whiskers
+
 - given-names: Jacob
   family-names: Deal
   alias: Jac0bDeal
@@ -645,6 +652,10 @@ authors:
   family-names: Alarcon
   orcid: https://orcid.org/0000-0002-7860-9567
   alias: pvalarcon
+
+- given-names: Shanshan
+  family-names: Rodriguez
+  alias: slrodriguez
 
 - given-names: Shelley
   family-names: Sugiharto, Kerr

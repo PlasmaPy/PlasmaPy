@@ -350,7 +350,6 @@ def ion_sound_speed(
     <Quantity 203155... m / s>
     >>> ion_sound_speed(T_e=500 * u.eV, T_i=200 * u.eV, n_e=n, k=k_1, ion="D+")
     <Quantity 229585... m / s>
-
     """
     for gamma, species in zip([gamma_e, gamma_i], ["electrons", "ions"], strict=False):
         if not isinstance(gamma, Real):
@@ -806,6 +805,11 @@ def kappa_thermal_speed(
     : `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed.
 
+    See Also
+    --------
+    ~plasmapy.formulary.speeds.kappa_thermal_speed
+    ~plasmapy.formulary.distribution.kappa_velocity_1D
+
     Notes
     -----
     The particle thermal speed is given by:
@@ -826,11 +830,6 @@ def kappa_thermal_speed(
     <Quantity 37905.47... m / s>
     >>> kappa_thermal_speed(5 * u.eV, 4, "p", "mean_magnitude")
     <Quantity 34922.98... m / s>
-
-    See Also
-    --------
-    ~plasmapy.formulary.speeds.kappa_thermal_speed
-    ~plasmapy.formulary.distribution.kappa_velocity_1D
     """
     # Checking thermal units
     if kappa <= 3 / 2:

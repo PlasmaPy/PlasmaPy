@@ -243,6 +243,10 @@ def Maxwellian_velocity_2D(
         If the temperature is negative, or the particle mass or charge state
         cannot be found.
 
+    See Also
+    --------
+    Maxwellian_1D
+
     Notes
     -----
     In 2D, the Maxwellian velocity distribution function describing
@@ -255,10 +259,6 @@ def Maxwellian_velocity_2D(
         \vec{V}_{drift})^2 / v_{Th}^2 \right ]
 
     where :math:`v_{Th} = \sqrt{2 k_B T / m}` is the thermal speed.
-
-    See Also
-    --------
-    Maxwellian_1D
 
     Examples
     --------
@@ -401,6 +401,10 @@ def Maxwellian_velocity_3D(
         If the temperature is negative, or the particle mass or charge state
         cannot be found.
 
+    See Also
+    --------
+    Maxwellian_1D
+
     Notes
     -----
     In 3D, the Maxwellian speed distribution function describing
@@ -413,10 +417,6 @@ def Maxwellian_velocity_3D(
         \vec{V}_{drift})^2 / v_{Th}^2 \right ]
 
     where :math:`v_{Th} = \sqrt{2 k_B T / m}` is the thermal speed.
-
-    See Also
-    --------
-    Maxwellian_1D
 
     Examples
     --------
@@ -677,6 +677,10 @@ def Maxwellian_speed_2D(
         If the temperature is negative, or the particle mass or charge
         state cannot be found.
 
+    See Also
+    --------
+    Maxwellian_speed_1D
+
     Notes
     -----
     In 2D, the Maxwellian speed distribution function describing the
@@ -688,10 +692,6 @@ def Maxwellian_speed_2D(
        f = 2 π v (π v_{Th}^2)^{-1} \exp(-v^2 / v_{Th}^2)
 
     where :math:`v_{Th} = \sqrt{2 k_B T / m}` is the thermal speed.
-
-    See Also
-    --------
-    Maxwellian_speed_1D
 
     Examples
     --------
@@ -811,6 +811,10 @@ def Maxwellian_speed_3D(
         If the temperature is negative, or the particle mass or charge state
         cannot be found.
 
+    See Also
+    --------
+    Maxwellian_speed_1D
+
     Notes
     -----
     In 3D, the Maxwellian speed distribution function describing
@@ -822,10 +826,6 @@ def Maxwellian_speed_3D(
        f = 4 π v^{2} (π v_{Th}^2)^{-3/2} \exp(-v^{2} / v_{Th}^2)
 
     where :math:`v_{Th} = \sqrt{2 k_B T / m}` is the thermal speed.
-
-    See Also
-    --------
-    Maxwellian_speed_1D
 
     Examples
     --------
@@ -950,6 +950,11 @@ def kappa_velocity_1D(
         If the temperature is negative, or the particle mass or charge state
         cannot be found.
 
+    See Also
+    --------
+    kappa_velocity_3D
+    ~plasmapy.formulary.speeds.kappa_thermal_speed
+
     Notes
     -----
     In one dimension, the Kappa velocity distribution function describing
@@ -982,11 +987,6 @@ def kappa_velocity_1D(
     ...     v_drift=0 * u.m / u.s,
     ... )
     <Quantity 6.75549...e-07 s / m>
-
-    See Also
-    --------
-    kappa_velocity_3D
-    ~plasmapy.formulary.speeds.kappa_thermal_speed
     """
     # must have kappa > 3/2 for distribution function to be valid
     if kappa <= 3 / 2:
@@ -1121,6 +1121,11 @@ def kappa_velocity_3D(
         If the temperature is negative, or the particle mass or charge state
         cannot be found.
 
+    See Also
+    --------
+    kappa_velocity_1D
+    ~plasmapy.formulary.speeds.kappa_thermal_speed
+
     Notes
     -----
     In three dimensions, the Kappa velocity distribution function describing
@@ -1139,11 +1144,6 @@ def kappa_velocity_3D(
 
     As :math:`κ → ∞`, the kappa distribution function converges to the
     Maxwellian distribution function.
-
-    See Also
-    --------
-    kappa_velocity_1D
-    ~plasmapy.formulary.speeds.kappa_thermal_speed
 
     Examples
     --------

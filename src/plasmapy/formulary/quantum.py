@@ -221,6 +221,10 @@ def Fermi_energy(n_e: u.Quantity[u.m**-3]) -> u.Quantity[u.J]:
     : `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed.
 
+    See Also
+    --------
+    Thomas_Fermi_length
+
     Notes
     -----
     The Fermi energy is the kinetic energy in a degenerate electron gas
@@ -233,10 +237,6 @@ def Fermi_energy(n_e: u.Quantity[u.m**-3]) -> u.Quantity[u.J]:
 
     This quantity is often used in place of thermal energy for analysis
     of cold, dense plasmas (e.g. warm dense matter, condensed matter).
-
-    See Also
-    --------
-    Thomas_Fermi_length
 
     Examples
     --------
@@ -286,6 +286,11 @@ def Thomas_Fermi_length(n_e: u.Quantity[u.m**-3]) -> u.Quantity[u.m]:
     : `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed.
 
+    See Also
+    --------
+    ~plasmapy.formulary.quantum.Fermi_energy
+    ~plasmapy.formulary.lengths.Debye_length
+
     Notes
     -----
     The Thomas-Fermi screening length is the exponential scale length for
@@ -306,17 +311,11 @@ def Thomas_Fermi_length(n_e: u.Quantity[u.m**-3]) -> u.Quantity[u.m]:
     Plasmas will generally be quasineutral on length scales significantly
     larger than the Thomas-Fermi screening length.
 
-    See Also
-    --------
-    ~plasmapy.formulary.quantum.Fermi_energy
-    ~plasmapy.formulary.lengths.Debye_length
-
     Examples
     --------
     >>> import astropy.units as u
     >>> Thomas_Fermi_length(1e23 * u.cm**-3)
     <Quantity 5.37991409e-11 m>
-
     """
     energy_F = Fermi_energy(n_e)
     return np.sqrt(2 * eps0 * energy_F / (3 * n_e * e**2))
@@ -363,6 +362,10 @@ def Wigner_Seitz_radius(n: u.Quantity[u.m**-3]) -> u.Quantity[u.m]:
     : `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed.
 
+    See Also
+    --------
+    ~plasmapy.formulary.quantum.Fermi_energy
+
     Notes
     -----
     The Wigner-Seitz radius approximates the interparticle spacing.
@@ -372,16 +375,11 @@ def Wigner_Seitz_radius(n: u.Quantity[u.m**-3]) -> u.Quantity[u.m]:
     .. math::
         r = \left(\frac{3}{4 π n}\right)^{1/3}
 
-    See Also
-    --------
-    ~plasmapy.formulary.quantum.Fermi_energy
-
     Examples
     --------
     >>> import astropy.units as u
     >>> Wigner_Seitz_radius(1e29 * u.m**-3)
     <Quantity 1.33650462e-10 m>
-
     """
     return (3 / (4 * np.pi * n)) ** (1 / 3)
 
@@ -552,7 +550,6 @@ def _chemical_potential_interp(n_e, T):
     >>> import astropy.units as u
     >>> _chemical_potential_interp(n_e=1e23 * u.cm**-3, T=11000 * u.K)
     <Quantity 8.17649>
-
     """
     A = 0.25945
     B = 0.072
@@ -594,21 +591,13 @@ def quantum_theta(
     n_e : `~astropy.units.Quantity`
           The electron number density of the plasma.
 
-    Examples
-    --------
-    >>> import astropy.units as u
-    >>> quantum_theta(1 * u.eV, 1e20 * u.m**-3)
-    <Quantity 127290.619...>
-    >>> quantum_theta(1 * u.eV, 1e16 * u.m**-3)
-    <Quantity 59083071...>
-    >>> quantum_theta(1 * u.eV, 1e26 * u.m**-3)
-    <Quantity 12.72906...>
-    >>> quantum_theta(1 * u.K, 1e26 * u.m**-3)
-    <Quantity 0.00109...>
-
     Returns
     -------
     theta : `~astropy.units.Quantity`
+
+    See Also
+    --------
+    ~plasmapy.formulary.quantum.Fermi_energy
 
     Notes
     -----
@@ -620,9 +609,17 @@ def quantum_theta(
     where :math:`k_B` is the Boltzmann constant
     and :math:`T` is the temperature of the plasma.
 
-    See Also
+    Examples
     --------
-    ~plasmapy.formulary.quantum.Fermi_energy
+    >>> import astropy.units as u
+    >>> quantum_theta(1 * u.eV, 1e20 * u.m**-3)
+    <Quantity 127290.619...>
+    >>> quantum_theta(1 * u.eV, 1e16 * u.m**-3)
+    <Quantity 59083071...>
+    >>> quantum_theta(1 * u.eV, 1e26 * u.m**-3)
+    <Quantity 12.72906...>
+    >>> quantum_theta(1 * u.K, 1e26 * u.m**-3)
+    <Quantity 0.00109...>
     """
     fermi_energy = Fermi_energy(n_e)
     thermal_energy = k_B * T
