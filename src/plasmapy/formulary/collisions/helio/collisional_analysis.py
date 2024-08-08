@@ -196,7 +196,7 @@ def temp_ratio(  # noqa: C901
     >>> helio.temp_ratio(
     ...     r_0=r_0, r_n=r_n, n_1=n_1, n_2=n_2, v_1=v_1, T_1=T_1, T_2=T_2, ions=ions
     ... )
-    [2.78928645832..., 1.04007368797..., 1.06914450183...]
+    [np.float64(2.78928645...), np.float64(1.04007...), np.float64(1.06914...)]
     """
 
     # Validate ions argument
