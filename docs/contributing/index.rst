@@ -30,7 +30,7 @@ suggest checking out:
    :caption: Contributing to PlasmaPy
    :maxdepth: 2
 
-   coding_guide
+   coding_guide👾
    testing_guide
    doc_guide
    changelog_guide
