@@ -155,14 +155,6 @@ class ClassicalTransport:
 
        |expect-api-changes|
 
-    Notes
-    -----
-    Given that many of the transport variables share a lot of the same
-    computation and many are often needed to be calculated
-    simultaneously, this class can be initialized once with all of the
-    variables necessary for calculation. It then provides all of the
-    functionality as methods (please refer to their documentation).
-
     Parameters
     ----------
     T_e : `~astropy.units.Quantity`
@@ -285,6 +277,14 @@ class ClassicalTransport:
 
     `~plasmapy.utils.exceptions.PhysicsError`
         If input or calculated values for Coulomb logarithms are nonphysical.
+
+    Notes
+    -----
+    Given that many of the transport variables share a lot of the same
+    computation and many are often needed to be calculated
+    simultaneously, this class can be initialized once with all of the
+    variables necessary for calculation. It then provides all of the
+    functionality as methods (please refer to their documentation).
 
     Examples
     --------
@@ -471,6 +471,10 @@ class ClassicalTransport:
         :math:`τ_e` is the fundamental electron collision period of the plasma,
         and :math:`m_e` is the mass of an electron.
 
+        Returns
+        -------
+        `~astropy.units.quantity.Quantity`
+
         Notes
         -----
         The resistivity here is defined similarly to solid conductors, and thus
@@ -485,11 +489,6 @@ class ClassicalTransport:
         resistance calculated here, for reasons such as the occurrence
         of plasma sheath layers at the electrodes or the plasma not
         satisfying the classical assumptions.
-
-        Returns
-        -------
-        `~astropy.units.quantity.Quantity`
-
         """
         alpha_hat = _nondim_resistivity(
             self.hall_e, self.Z, self.e_particle, self.model, self.field_orientation
@@ -510,14 +509,13 @@ class ClassicalTransport:
             The thermoelectric conductivity (:math:`\hat{β}`) of a plasma
             is defined by...
 
-        Notes
-        -----
-        To be improved.
-
         Returns
         -------
         `~astropy.units.quantity.Quantity`
 
+        Notes
+        -----
+        To be improved.
         """
         beta_hat = _nondim_te_conductivity(
             self.hall_e, self.Z, self.e_particle, self.model, self.field_orientation
@@ -543,6 +541,14 @@ class ClassicalTransport:
         :math:`τ_i` is the fundamental ion collision period of the plasma,
         and :math:`m_i` is the mass of an ion of the plasma.
 
+        Returns
+        -------
+        `~astropy.units.quantity.Quantity`
+
+        See Also
+        --------
+        electron_thermal_conductivity
+
         Notes
         -----
         This is the classical plasma ions' ability to conduct energy and heat,
@@ -553,15 +559,6 @@ class ClassicalTransport:
         temperature gradient. In lab plasmas, typically the energy is flowing
         out of your high-temperature plasma to something else, like the walls
         of your device, and you are sad about this.
-
-        Returns
-        -------
-        `~astropy.units.quantity.Quantity`
-
-        See Also
-        --------
-        electron_thermal_conductivity
-
         """
         kappa_hat = _nondim_thermal_conductivity(
             self.hall_i,
@@ -597,6 +594,14 @@ class ClassicalTransport:
         :math:`τ_e` is the fundamental electron collision period of the plasma,
         and :math:`m_e` is the mass of an electron.
 
+        Returns
+        -------
+        `~astropy.units.quantity.Quantity`
+
+        See Also
+        --------
+        ion_thermal_conductivity
+
         Notes
         -----
         This is quite similar to the ion thermal conductivity, except that it's
@@ -619,15 +624,6 @@ class ClassicalTransport:
         The ultimate rate must typically be in between the individual rates for
         electrons and ions, so at least you can get some bounds from this type
         of analysis.
-
-        Returns
-        -------
-        `~astropy.units.quantity.Quantity`
-
-        See Also
-        --------
-        ion_thermal_conductivity
-
         """
         kappa_hat = _nondim_thermal_conductivity(
             self.hall_e,
@@ -653,14 +649,6 @@ class ClassicalTransport:
         .. todo::
             The ion viscosity (:math:`η`) of a plasma is defined by...
 
-        Notes
-        -----
-        This is the dynamic viscosity that you find for ions in the classical
-        plasma, similar to the viscosity of air or water or honey. The big
-        effect is the :math:`T^{5/2}` dependence, so as classical plasmas
-        get hotter they become dramatically more viscous. The ion
-        viscosity typically dominates over the electron viscosity.
-
         Returns
         -------
         `~astropy.units.quantity.Quantity`
@@ -669,6 +657,13 @@ class ClassicalTransport:
         --------
         electron_viscosity
 
+        Notes
+        -----
+        This is the dynamic viscosity that you find for ions in the classical
+        plasma, similar to the viscosity of air or water or honey. The big
+        effect is the :math:`T^{5/2}` dependence, so as classical plasmas
+        get hotter they become dramatically more viscous. The ion
+        viscosity typically dominates over the electron viscosity.
         """
         eta_hat = _nondim_viscosity(
             self.hall_i,
@@ -701,14 +696,6 @@ class ClassicalTransport:
         .. todo::
             The electron viscosity (:math:`η`) of a plasma is defined by...
 
-        Notes
-        -----
-        This is the dynamic viscosity that you find for electrons in the
-        classical plasma, similar to the viscosity of air or water or honey.
-        The big effect is the :math:`T^{5/2}` dependence, so as classical
-        plasmas get hotter they become dramatically more viscous. The
-        ion viscosity typically dominates over the electron viscosity.
-
         Returns
         -------
         `~astropy.units.quantity.Quantity`
@@ -716,6 +703,14 @@ class ClassicalTransport:
         See Also
         --------
         ~plasmapy.formulary.braginskii.ClassicalTransport.ion_viscosity
+
+        Notes
+        -----
+        This is the dynamic viscosity that you find for electrons in the
+        classical plasma, similar to the viscosity of air or water or honey.
+        The big effect is the :math:`T^{5/2}` dependence, so as classical
+        plasmas get hotter they become dramatically more viscous. The
+        ion viscosity typically dominates over the electron viscosity.
         """
         eta_hat = _nondim_viscosity(
             self.hall_e,
@@ -816,6 +811,10 @@ def resistivity(
     :math:`τ_e` is the fundamental electron collision period of the plasma,
     and :math:`m_e` is the mass of an electron.
 
+    Returns
+    -------
+    `~astropy.units.quantity.Quantity`
+
     Notes
     -----
     The resistivity here is defined similarly to solid conductors, and thus
@@ -830,11 +829,6 @@ def resistivity(
     calculated here, for reasons such as the occurrence of plasma sheath
     layers at the electrodes or the plasma not satisfying the classical
     assumptions.
-
-    Returns
-    -------
-    `~astropy.units.quantity.Quantity`
-
     """
     ct = ClassicalTransport(
         T_e,
@@ -929,6 +923,14 @@ def ion_thermal_conductivity(
     :math:`τ_i` is the fundamental ion collision period of the plasma,
     and :math:`m_i` is the mass of an ion of the plasma.
 
+    Returns
+    -------
+    `~astropy.units.quantity.Quantity`
+
+    See Also
+    --------
+    electron_thermal_conductivity
+
     Notes
     -----
     This is the classical plasma ions' ability to conduct energy and heat,
@@ -939,15 +941,6 @@ def ion_thermal_conductivity(
     gradient. In laboratory plasmas, typically the energy is flowing out of your
     high-temperature plasma to something else, like the walls of your device,
     and you are sad about this.
-
-    Returns
-    -------
-    `~astropy.units.quantity.Quantity`
-
-    See Also
-    --------
-    electron_thermal_conductivity
-
     """
     ct = ClassicalTransport(
         T_e,
@@ -1000,6 +993,14 @@ def electron_thermal_conductivity(
     :math:`τ_e` is the fundamental electron collision period of the
     plasma, and :math:`m_e` is the mass of an electron.
 
+    Returns
+    -------
+    `~astropy.units.quantity.Quantity`
+
+    See Also
+    --------
+    ion_thermal_conductivity
+
     Notes
     -----
     This is quite similar to the ion thermal conductivity, except that it's for
@@ -1022,14 +1023,6 @@ def electron_thermal_conductivity(
     The ultimate rate must typically be in between the individual rates for
     electrons and ions, so at least you can get some bounds from this type of
     analysis.
-
-    Returns
-    -------
-    `~astropy.units.quantity.Quantity`
-
-    See Also
-    --------
-    ion_thermal_conductivity
     """
     ct = ClassicalTransport(
         T_e,
@@ -1071,14 +1064,6 @@ def ion_viscosity(
     .. todo::
         The ion viscosity (:math:`η`) of a plasma is defined by...
 
-    Notes
-    -----
-    This is the dynamic viscosity that you find for ions in the classical
-    plasma, similar to the viscosity of air or water or honey. The big
-    effect is the :math:`T^{5/2}` dependence, so as classical plasmas get hotter they
-    become dramatically more viscous. The ion viscosity typically dominates
-    over the electron viscosity.
-
     Returns
     -------
     `~astropy.units.quantity.Quantity`
@@ -1087,6 +1072,13 @@ def ion_viscosity(
     --------
     electron_viscosity
 
+    Notes
+    -----
+    This is the dynamic viscosity that you find for ions in the classical
+    plasma, similar to the viscosity of air or water or honey. The big
+    effect is the :math:`T^{5/2}` dependence, so as classical plasmas get hotter they
+    become dramatically more viscous. The ion viscosity typically dominates
+    over the electron viscosity.
     """
     ct = ClassicalTransport(
         T_e,
@@ -1128,14 +1120,6 @@ def electron_viscosity(
     .. todo::
         The electron viscosity (:math:`η`) of a plasma is defined by...
 
-    Notes
-    -----
-    This is the dynamic viscosity that you find for electrons in the
-    classical plasma, similar to the viscosity of air or water or honey.
-    The big effect is the :math:`T^{5/2}` dependence, so as classical plasmas get
-    hotter they become dramatically more viscous. The ion viscosity
-    typically dominates over the electron viscosity.
-
     Returns
     -------
     `~astropy.units.quantity.Quantity`
@@ -1144,6 +1128,13 @@ def electron_viscosity(
     --------
     ion_viscosity
 
+    Notes
+    -----
+    This is the dynamic viscosity that you find for electrons in the
+    classical plasma, similar to the viscosity of air or water or honey.
+    The big effect is the :math:`T^{5/2}` dependence, so as classical plasmas get
+    hotter they become dramatically more viscous. The ion viscosity
+    typically dominates over the electron viscosity.
     """
     ct = ClassicalTransport(
         T_e,

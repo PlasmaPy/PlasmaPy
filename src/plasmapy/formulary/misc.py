@@ -36,7 +36,6 @@ def _grab_charge(ion: ParticleLike, z_mean=None):
     float
         if ``z_mean`` was passed, ``z_mean``, otherwise, the charge number
         of ``ion``.
-
     """
     return particles.charge_number(ion) if z_mean is None else z_mean
 
@@ -148,6 +147,11 @@ def magnetic_energy_density(B: u.Quantity[u.T]) -> u.Quantity[u.J / u.m**3]:
     : `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed
 
+    See Also
+    --------
+    magnetic_pressure : Returns an equivalent `~astropy.units.Quantity`,
+        except in units of pascals.
+
     Notes
     -----
     The magnetic energy density is given by:
@@ -160,17 +164,11 @@ def magnetic_energy_density(B: u.Quantity[u.T]) -> u.Quantity[u.J / u.m**3]:
     insight into the physics that are being considered by the user and
     thus more readable code.
 
-    See Also
-    --------
-    magnetic_pressure : Returns an equivalent `~astropy.units.Quantity`,
-        except in units of pascals.
-
     Examples
     --------
     >>> import astropy.units as u
     >>> magnetic_energy_density(0.1 * u.T)
     <Quantity 3978.87... J / m3>
-
     """
     return magnetic_pressure(B)
 
@@ -213,6 +211,11 @@ def magnetic_pressure(B: u.Quantity[u.T]) -> u.Quantity[u.Pa]:
     : `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed.
 
+    See Also
+    --------
+    magnetic_energy_density : returns an equivalent `~astropy.units.Quantity`,
+        except in units of joules per cubic meter.
+
     Notes
     -----
     The magnetic pressure is given by:
@@ -225,17 +228,11 @@ def magnetic_pressure(B: u.Quantity[u.T]) -> u.Quantity[u.Pa]:
     insight into the physics that are being considered by the user and
     thus more readable code.
 
-    See Also
-    --------
-    magnetic_energy_density : returns an equivalent `~astropy.units.Quantity`,
-        except in units of joules per cubic meter.
-
     Examples
     --------
     >>> import astropy.units as u
     >>> magnetic_pressure(0.1 * u.T).to(u.Pa)
     <Quantity 3978.87... Pa>
-
     """
     return (B**2) / (2 * mu0)
 
@@ -262,14 +259,6 @@ def thermal_pressure(T: u.Quantity[u.K], n: u.Quantity[u.m**-3]) -> u.Quantity[u
     n : `~astropy.units.Quantity`
         The particle number density in units convertible to m\ :sup:`-3`\ .
 
-    Examples
-    --------
-    >>> import astropy.units as u
-    >>> thermal_pressure(1 * u.eV, 1e20 / u.m**3)
-    <Quantity 16.021... Pa>
-    >>> thermal_pressure(10 * u.eV, 1e20 / u.m**3)
-    <Quantity 160.21... Pa>
-
     Returns
     -------
     p_th : `~astropy.units.Quantity`
@@ -290,6 +279,14 @@ def thermal_pressure(T: u.Quantity[u.K], n: u.Quantity[u.m**-3]) -> u.Quantity[u
 
     .. math::
         T_{th} = n k_B T
+
+    Examples
+    --------
+    >>> import astropy.units as u
+    >>> thermal_pressure(1 * u.eV, 1e20 / u.m**3)
+    <Quantity 16.021... Pa>
+    >>> thermal_pressure(10 * u.eV, 1e20 / u.m**3)
+    <Quantity 160.21... Pa>
     """
     return n * k_B * T
 

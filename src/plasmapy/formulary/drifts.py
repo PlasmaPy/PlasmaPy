@@ -44,17 +44,6 @@ def diamagnetic_drift(
     v: `~astropy.units.Quantity`
         Drift velocity, in m/s
 
-    Examples
-    --------
-    >>> import astropy.units as u
-    >>> import numpy as np
-    >>> dp = np.array([0, -1, 0]) * u.Pa / u.m
-    >>> b = np.array([0, 0, 1]) * u.T
-    >>> n = 1 / u.m**3
-    >>> q = 1 * u.C
-    >>> diamagnetic_drift(dp, b, n, q)
-    <Quantity [ 1., -0., -0.] m / s>
-
     Notes
     -----
     The diamagnetic drift is given by
@@ -65,6 +54,17 @@ def diamagnetic_drift(
 
     This is the velocity component of a fluid element perpendicular to
     the magnetic field.
+
+    Examples
+    --------
+    >>> import astropy.units as u
+    >>> import numpy as np
+    >>> dp = np.array([0, -1, 0]) * u.Pa / u.m
+    >>> b = np.array([0, 0, 1]) * u.T
+    >>> n = 1 / u.m**3
+    >>> q = 1 * u.C
+    >>> diamagnetic_drift(dp, b, n, q)
+    <Quantity [ 1., -0., -0.] m / s>
     """
     cross = np.cross(dp, B)
     return -cross / q / n / (B * B).sum(-1)
@@ -93,6 +93,16 @@ def ExB_drift(E: u.Quantity[u.V / u.m], B: u.Quantity[u.T]) -> u.Quantity[u.m / 
     v: `~astropy.units.Quantity`
         Drift velocity, in m/s
 
+    Notes
+    -----
+    The E × B drift is given by
+
+    .. math::
+
+        \vec{v} = \frac{\vec{E} × \vec{B}}{|B|^2}
+
+    and is independent of particle charge.
+
     Examples
     --------
     >>> import astropy.units as u
@@ -104,16 +114,6 @@ def ExB_drift(E: u.Quantity[u.V / u.m], B: u.Quantity[u.T]) -> u.Quantity[u.m / 
     <Quantity [0., 0., 0.] m / s>
     >>> ExB_drift(ex * u.V / u.m, 100 * ey * u.T)
     <Quantity [0.  , 0.  , 0.01] m / s>
-
-    Notes
-    -----
-    The E × B drift is given by
-
-    .. math::
-
-        \vec{v} = \frac{\vec{E} × \vec{B}}{|B|^2}
-
-    and is independent of particle charge.
     """
 
     # np.cross drops units right now, thus this hack: see
@@ -144,19 +144,6 @@ def force_drift(
     q : `~astropy.units.Quantity`
         Particle charge
 
-    Examples
-    --------
-    >>> import astropy.units as u
-    >>> from astropy.constants.si import g0, e, m_e
-    >>> ex = np.array([1, 0, 0])
-    >>> ez = np.array([0, 0, 1])
-    >>> force_drift(-ez * g0 * m_e, ex * 0.01 * u.T, e)
-    <Quantity [ 0.0000000e+00, -5.5756984e-09,  0.0000000e+00] m / s>
-    >>> force_drift(-ez * g0 * m_e, ez * 0.01 * u.T, e)
-    <Quantity [ 0., -0.,  0.] m / s>
-    >>> force_drift(-ez * g0 * m_e, ex * u.T, e)
-    <Quantity [ 0.0000000e+00, -5.5756984e-11,  0.0000000e+00] m / s>
-
     Returns
     -------
     v: `~astropy.units.Quantity`
@@ -172,6 +159,19 @@ def force_drift(
         \vec{v} = \frac{\vec{F} × \vec{B}}{q |B|^2}
 
     Note the charge dependency.
+
+    Examples
+    --------
+    >>> import astropy.units as u
+    >>> from astropy.constants.si import g0, e, m_e
+    >>> ex = np.array([1, 0, 0])
+    >>> ez = np.array([0, 0, 1])
+    >>> force_drift(-ez * g0 * m_e, ex * 0.01 * u.T, e)
+    <Quantity [ 0.0000000e+00, -5.5756984e-09,  0.0000000e+00] m / s>
+    >>> force_drift(-ez * g0 * m_e, ez * 0.01 * u.T, e)
+    <Quantity [ 0., -0.,  0.] m / s>
+    >>> force_drift(-ez * g0 * m_e, ex * u.T, e)
+    <Quantity [ 0.0000000e+00, -5.5756984e-11,  0.0000000e+00] m / s>
     """
     cross = np.cross(F.si.value, B.si.value) * F.unit * B.unit
     return cross / (q * (B * B).sum(-1))

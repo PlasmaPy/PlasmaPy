@@ -156,6 +156,13 @@ authors:
   family-names: Choubey
   alias: apooravc
 
+- given-names: Sebastian
+  family-names: Colom
+  email: sebastian.v.colom@nasa.gov
+  affiliation: NASA Ames Research Center
+  orcid: https://orcid.org/0009-0006-0863-0180
+  alias: Cool-Whiskers
+
 - given-names: Jacob
   family-names: Deal
   alias: Jac0bDeal
@@ -549,6 +556,12 @@ authors:
   family-names: Smirnov
   alias: Nismirno
 
+- given-names: Joseph
+  family-names: Smith
+  affiliation: Marietta College
+  orcid: https://orcid.org/0000-0002-5978-6840
+  alias: josephrhsmith
+
 - given-names: Stuart
   family-names: Sobeske
   affiliation: University of Michigan
@@ -634,3 +647,17 @@ authors:
 - given-names: Shauna
   family-names: Gordon-McKeon
   alias: shaunagm
+
+- given-names: Shanshan
+  family-names: Rodriguez
+  alias: slrodriguez
+
+- given-names: Shelley
+  family-names: Sugiharto, Kerr
+  affiliation: Texas A&M University
+  orcid: https://orcid.org/0009-0003-3159-0541
+  alias: ShelleySugiharto
+
+- given-names: David
+  family-names: Schaffner
+  alias: dschaffner
