@@ -14,6 +14,7 @@ Simulation (`plasmapy.simulation`)
    Particle Tracker <particle_tracker/index>
    abstractions
    particle_integrators
+   resolution_constraints
 
 
 .. attention::
