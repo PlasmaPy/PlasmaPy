@@ -64,7 +64,7 @@ def Lorentz_factor(V: u.Quantity[u.m / u.s]):
     >>> import astropy.units as u
     >>> velocity = 1.4e8 * u.m / u.s
     >>> Lorentz_factor(velocity)
-    1.130885603948959
+     np.float64(1.1308856039...)
     >>> Lorentz_factor(299792458 * u.m / u.s)
     inf
     """
@@ -255,9 +255,9 @@ class RelativisticBody:
     >>> relativistic_proton.velocity
     <Quantity 1.03697...e+08 m / s>
     >>> relativistic_proton.v_over_c
-    0.3458980898746...
+    np.longdouble('0.34589808987468...')
     >>> relativistic_proton.lorentz_factor
-    1.0657889247888...
+    np.longdouble('1.06578892478889...')
     >>> relativistic_proton.mass_energy.to("GeV")
     <Quantity 0.93827... GeV>
     >>> relativistic_proton.total_energy.to("GeV")
