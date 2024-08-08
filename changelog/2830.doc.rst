@@ -1,1 +1,1 @@
-Added the |force-free| definition to the |glossary|.(:pr:`2323`)
+Added the :term:`force-free` definition to the |glossary|.

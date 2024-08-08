@@ -68,7 +68,6 @@ Documentation Improvements
 - Moved the |contributor guide| section on example Jupyter notebooks from the
   |coding guide| to the |documentation guide|. (:pr:`2777`)
 - Added ``sphinxemoji`` as a |Sphinx| extension. (:pr:`2781`)
-- Added the |force-free| definition to the |glossary|.(:pr:`2323`)
 
 Backwards Incompatible Changes
 ------------------------------
