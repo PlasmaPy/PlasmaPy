@@ -128,6 +128,11 @@ def Coulomb_logarithm(
     : `~plasmapy.utils.exceptions.RelativityWarning`
         If the input velocity is greater than 5% of the speed of light.
 
+    See Also
+    --------
+    ~plasmapy.formulary.collisions.lengths.impact_parameter : Computes
+        :math:`b_{min}` and :math:`b_{max}`.
+
     Notes
     -----
     **Summary of Supported Methods of Computing the Coulomb Logarithm**
