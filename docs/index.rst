@@ -7,9 +7,9 @@
    :align: right
    :scale: 40%
 
-######################
-PlasmaPy Documentation
-######################
+########################
+PlasmaPy Documentation🌱
+########################
 
 |PlasmaPy| is an open source community-developed |Python| |minpython|\ +
 package for plasma research and education. PlasmaPy is a platform by
