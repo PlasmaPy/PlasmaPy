@@ -136,7 +136,7 @@ class ParticleTracker:
 
     Example
     -----
-    >>> from plasmapy.particles import CustomParticle
+    >>> from plasmapy.particles import Particle
     >>> from plasmapy.plasma.grids import CartesianGrid
     >>> from plasmapy.simulation.particle_tracker.particle_tracker import (
     ...     ParticleTracker,
@@ -149,7 +149,7 @@ class ParticleTracker:
     ... )
     >>> import astropy.units as u
     >>> import numpy as np
-    >>> example_particle = CustomParticle(mass=1 * u.kg, charge=1 * u.C)
+    >>> example_particle = Particle("p+")
     >>> grid = CartesianGrid(-1e6 * u.m, 1e6 * u.m, num=2)
     >>> grid_shape = (2, 2, 2)
     >>> Bz = np.full(grid_shape, 1) * u.T
@@ -171,7 +171,7 @@ class ParticleTracker:
     ...     simulation.save_routine.results["time"][-1],
     ...     simulation.save_routine.results["x"][-1],
     ... )
-    6.29999999999991 s [[ 0.01676071 -0.00022429  0.        ]] m
+    6.29999999999991 s [[-1.73302335e-08  1.31539878e-05  0.00000000e+00]] m
     """
 
     # Some quantities are necessary for the particle tracker to function
