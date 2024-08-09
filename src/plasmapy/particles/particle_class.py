@@ -1823,7 +1823,7 @@ class Particle(AbstractPhysicalParticle):
             A new |Particle| object that has been ionized ``n`` times
             relative to the original |Particle|.  If ``inplace`` is
             `False`, instead return `None`.
-            If np.inf is passed as n, the particle will be fully ionized,
+            If |inf| is passed as ``n``, the particle will be fully ionized,
             and the result will be the nucleus of the ion.
 
         Raises
