@@ -69,7 +69,6 @@ Documentation Improvements
   |coding guide| to the |documentation guide|. (:pr:`2777`)
 - Added ``sphinxemoji`` as a |Sphinx| extension. (:pr:`2781`)
 
-
 Backwards Incompatible Changes
 ------------------------------
 
