@@ -14,28 +14,34 @@ from plasmapy.utils.decorators import validate_quantities
 from typing import Tuple
 
 @validate_quantities
-def compute_bfield(bdot_data: np.ndarray, times: np.ndarray, loop_area: float) -> np.ndarray:
+def compute_bfield(bdot_voltage: u.Quantity[u.volt], time_array: u.Quantity[u.s], loop_area: u.Quantity[u.m**2], num_loop: int = 1, gain: float = 1.0) -> u.Quantity[u.T]:
     r"""
     Takes the voltage output of a magnetic pickup probe (Bdot probe) and time base and 
     returns the associated array of the magnetic field as a function of time
 
     Parameters
     ----------
-    bdot_data: `numpy.ndarray`
+    bdot_voltage: `astropy.units.Quantity`
         A data array containing voltage fluctuations from a bdot probe. The
         array values are proportional to time changing magnetic field via Faradays Law
         The input values are assumed to be in volts.
 
-    times: `numpy.ndarray`
+    time_array: `astropy.units.Quantity`
         The time series to the data collection in units of seconds.
 
-    loop_area: float
+    loop_area: 'astropy.units.Quantity'
         The area through which the changing flux is measured in units of meters squared.
 
+    num_loop: int
+        The number of loops of the Bdot probe (assumed to be all the same area)
+        
+    gain: float
+        Any gains that need to be applied
+        
     Returns
     -------
-    field_arr: `numpy.ndarray`
-        The array containing the magnetic field fluctuations. 
+    magnetic_field_array: `astropy.units.Quantity`
+        The array containing the magnetic field in Tesla as a function of time in seconds. 
         
     Notes
     -----
@@ -54,52 +60,34 @@ def compute_bfield(bdot_data: np.ndarray, times: np.ndarray, loop_area: float) -
     .. math::
         V = -A\frac{dB}{dt}
     where the voltage becomes preportional only to the change in magnetic field and the area of the loop. Magnetic
-    field as a function of time can be recovered by time integrating :math:`V(t)/A`.
+    field as a function of time can be recovered by time integrating :math:`V(t)/NA`.
+    
+    Examples
+    --------
+    >>> import numpy as np
+    >>> import astropy.units as u
+    time_array = np.linspace(0,4*np.pi,100) #create an time array
+    bdot_voltage = np.sin(time_array) #create a sine wave representing a voltage oscillation
+    loop_area = 1 #define a loop with area that will be in meters squared
+    num_loop = 1
+    gain = 1
+    bdot_voltage = bdot_voltage * u.volt
+    time_array = time_array * u.s
+    loop_area = loop_area * u.m**2
+    bfield = compute_bfield(
+                bdot_voltage,
+                time_array,
+                loop_area,
+                num_loop=num_loop,
+                gain=gain)
     """
-    if len(bdot_data) != len(times):
+    if len(bdot_voltage) != len(time_array):
         raise Exception("length of time and voltage arrays in not equal\n")
+    
+    bdot_voltage = bdot_voltage.value
+    loop_area = loop_area.value
+    time_array = time_array.value
+    bdot_voltage /= (loop_area*num_loop*gain)
+    magnetic_field_array = sp.cumtrapz(bdot_voltage, time_array, initial=0)  # Tesla
 
-    bdot_data /= loop_area
-    field_arr = sp.cumtrapz(bdot_data, times, initial=0)  # Tesla
-
-    return field_arr
-
-class Bdot:
-    """Class representing a basic magnetic pickup probe (Bdot probe)
-
-    """
-    _settings = {}
-    _signal = None
-    _time = None
-    _area = None
-
-    @validate_quantities
-    def __init__(
-        self,
-        signal: u.volt,
-        time: u.s,
-        area: u.m**2,
-        *,
-        nloops,
-        gain,
-    ):
-        self._signal = signal.value
-        self._time = time.value
-        self._area = area.value
-        self._settings = {
-            "nloops": nloops,
-            "gain": gain,
-        }
-
-    @validate_quantities
-    def calc_bfield(self) -> u.T:
-        """_summary_
-
-        """
-        bfield = compute_bfield(
-            self._signal,
-            self._time,
-            self._area,
-            #    ** self._settings,
-        )
-        return bfield * u.T
+    return magnetic_field_array * u.T
