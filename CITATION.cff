@@ -227,6 +227,12 @@ authors:
   family-names: Gangadharan
   alias: RAJAGOPALAN-GANGADHARAN
 
+- given-names: Seth
+  family-names: Gerow
+  affiliation: Embry-Riddle Aeronautical University
+  orcid: https://orcid.org/0009-0008-3588-0497
+  alias: s-gerow
+
 - given-names: Brian
   family-names: Goodall
   alias: goodab
