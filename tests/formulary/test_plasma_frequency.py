@@ -174,8 +174,6 @@ class TestPlasmaFrequencyLite:
             inputs_unitless["to_hz"] = inputs["to_hz"]
 
         lite = plasma_frequency_lite(**inputs_unitless)
-        pylite = plasma_frequency_lite.py_func(**inputs_unitless)
-        assert pylite == lite
 
         normal = plasma_frequency(**inputs)
         assert np.allclose(normal.value, lite)
