@@ -2,7 +2,7 @@
 #    nox -s requirements
 anyio==4.4.0
     # via jupyter-server
-argcomplete==3.4.0
+argcomplete==3.5.0
     # via nox
 argon2-cffi==23.1.0
     # via jupyter-server
@@ -10,20 +10,20 @@ argon2-cffi-bindings==21.2.0
     # via argon2-cffi
 arrow==1.3.0
     # via isoduration
-asteval==1.0.1
+asteval==1.0.2
     # via lmfit
 astropy==6.1.2
     # via plasmapy (pyproject.toml)
-astropy-iers-data==0.2024.7.29.0.32.7
+astropy-iers-data==0.2024.8.27.10.28.29
     # via astropy
 asttokens==2.4.1
     # via stack-data
-attrs==23.2.0
+attrs==24.2.0
     # via
     #   hypothesis
     #   jsonschema
     #   referencing
-babel==2.15.0
+babel==2.16.0
     # via jupyterlab-server
 beautifulsoup4==4.12.3
     # via nbconvert
@@ -31,7 +31,7 @@ bleach==6.1.0
     # via nbconvert
 certifi==2024.7.4
     # via requests
-cffi==1.16.0
+cffi==1.17.0
     # via argon2-cffi-bindings
 cfgv==3.4.0
     # via pre-commit
@@ -43,13 +43,13 @@ comm==0.2.2
     # via
     #   ipykernel
     #   ipywidgets
-contourpy==1.2.1
+contourpy==1.3.0
     # via matplotlib
-coverage==7.6.0
+coverage==7.6.1
     # via pytest-cov
 cycler==0.12.1
     # via matplotlib
-debugpy==1.8.2
+debugpy==1.8.5
     # via ipykernel
 decorator==5.1.1
     # via ipython
@@ -73,11 +73,11 @@ fqdn==1.5.1
     # via jsonschema
 h5py==3.11.0
     # via plasmapy (pyproject.toml)
-hypothesis==6.108.5
+hypothesis==6.111.2
     # via plasmapy (pyproject.toml)
 identify==2.6.0
     # via pre-commit
-idna==3.7
+idna==3.8
     # via
     #   anyio
     #   jsonschema
@@ -90,7 +90,7 @@ ipython==8.26.0
     # via
     #   ipykernel
     #   ipywidgets
-ipywidgets==8.1.3
+ipywidgets==8.1.5
     # via plasmapy (pyproject.toml)
 isoduration==20.11.0
     # via jsonschema
@@ -139,7 +139,7 @@ jupyterlab-pygments==0.3.0
     # via nbconvert
 jupyterlab-server==2.27.3
     # via voila
-jupyterlab-widgets==3.0.11
+jupyterlab-widgets==3.0.13
     # via ipywidgets
 kiwisolver==1.4.5
     # via matplotlib
@@ -151,7 +151,7 @@ markupsafe==2.1.5
     # via
     #   jinja2
     #   nbconvert
-matplotlib==3.9.1
+matplotlib==3.9.2
     # via plasmapy (pyproject.toml)
 matplotlib-inline==0.1.7
     # via
@@ -161,7 +161,7 @@ mistune==3.0.2
     # via nbconvert
 mpmath==1.3.0
     # via plasmapy (pyproject.toml)
-mypy==1.11.0
+mypy==1.11.2
     # via plasmapy (pyproject.toml)
 mypy-extensions==1.0.0
     # via mypy
@@ -186,7 +186,7 @@ nox==2024.4.15
     # via plasmapy (pyproject.toml)
 numba==0.60.0
     # via plasmapy (pyproject.toml)
-numpy==2.0.1
+numpy==2.0.2
     # via
     #   plasmapy (pyproject.toml)
     #   astropy
@@ -255,7 +255,7 @@ pygments==2.18.0
     # via
     #   ipython
     #   nbconvert
-pyparsing==3.1.2
+pyparsing==3.1.4
     # via matplotlib
 pytest==8.3.2
     # via
@@ -288,13 +288,13 @@ python-json-logger==2.0.7
     # via jupyter-events
 pytz==2024.1
     # via pandas
-pyyaml==6.0.1
+pyyaml==6.0.2
     # via
     #   astropy
     #   jupyter-events
     #   pre-commit
     #   pytest-regressions
-pyzmq==26.0.3
+pyzmq==26.2.0
     # via
     #   ipykernel
     #   jupyter-client
@@ -316,17 +316,17 @@ rfc3986-validator==0.1.1
     # via
     #   jsonschema
     #   jupyter-events
-rpds-py==0.19.1
+rpds-py==0.20.0
     # via
     #   jsonschema
     #   referencing
-scipy==1.14.0
+scipy==1.14.1
     # via
     #   plasmapy (pyproject.toml)
     #   lmfit
 send2trash==1.8.3
     # via jupyter-server
-setuptools==72.1.0
+setuptools==74.0.0
     # via plasmapy (pyproject.toml)
 six==1.16.0
     # via
@@ -338,7 +338,7 @@ sniffio==1.3.1
     # via anyio
 sortedcontainers==2.4.0
     # via hypothesis
-soupsieve==2.5
+soupsieve==2.6
     # via beautifulsoup4
 stack-data==0.6.3
     # via ipython
@@ -356,7 +356,7 @@ tornado==6.4.1
     #   jupyter-client
     #   jupyter-server
     #   terminado
-tqdm==4.66.4
+tqdm==4.66.5
     # via plasmapy (pyproject.toml)
 traitlets==5.14.3
     # via
@@ -373,7 +373,7 @@ traitlets==5.14.3
     #   nbconvert
     #   nbformat
     #   voila
-types-python-dateutil==2.9.0.20240316
+types-python-dateutil==2.9.0.20240821
     # via arrow
 typing-extensions==4.12.2
     # via mypy
@@ -393,7 +393,7 @@ voila==0.5.7
     # via plasmapy (pyproject.toml)
 wcwidth==0.2.13
     # via prompt-toolkit
-webcolors==24.6.0
+webcolors==24.8.0
     # via jsonschema
 webencodings==0.5.1
     # via
@@ -401,11 +401,11 @@ webencodings==0.5.1
     #   tinycss2
 websocket-client==1.8.0
     # via jupyter-server
-websockets==12.0
+websockets==13.0
     # via voila
-widgetsnbextension==4.0.11
+widgetsnbextension==4.0.13
     # via ipywidgets
 wrapt==1.16.0
     # via plasmapy (pyproject.toml)
-xarray==2024.6.0
+xarray==2024.7.0
     # via plasmapy (pyproject.toml)
