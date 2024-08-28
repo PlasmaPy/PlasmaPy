@@ -64,7 +64,6 @@ dependencies = [
   "lmfit >= 1.1.0",
   "matplotlib >= 3.6.0",
   "mpmath >= 1.2.1",
-  "numba >= 0.57.0",
   "numpy >= 1.24.0",
   "packaging >= 22.0",
   "pandas >= 1.5.0",

@@ -127,8 +127,6 @@ jupyterlab-pygments==0.3.0
     # via nbconvert
 kiwisolver==1.4.5
     # via matplotlib
-llvmlite==0.40.1
-    # via numba
 lmfit==1.1.0
     # via plasmapy (pyproject.toml)
 lxml==5.3.0
@@ -180,8 +178,6 @@ notebook-shim==0.2.4
     # via nbclassic
 nox==2024.4.15
     # via plasmapy (pyproject.toml)
-numba==0.57.0
-    # via plasmapy (pyproject.toml)
 numpy==1.24.0
     # via
     #   plasmapy (pyproject.toml)
@@ -190,7 +186,6 @@ numpy==1.24.0
     #   h5py
     #   lmfit
     #   matplotlib
-    #   numba
     #   pandas
     #   pyerfa
     #   scipy
