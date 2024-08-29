@@ -657,7 +657,7 @@ class TestSyntheticRadiograph:
         assert isinstance(histogram, np.ndarray)
         assert histogram.shape == expected["bins"]
 
- 
+
 @pytest.mark.slow()
 @pytest.mark.parametrize(
     "case",

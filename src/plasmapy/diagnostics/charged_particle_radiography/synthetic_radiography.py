@@ -1097,9 +1097,7 @@ class Tracker(ParticleTracker):
 # *************************************************************************
 
 
-def synthetic_radiograph(  # noqa: C901
-    obj, size=None, bins=None, ignore_grid: bool = False
-):
+def synthetic_radiograph(obj, size=None, bins=None, ignore_grid: bool = False):
     r"""
     Calculate a "synthetic radiograph" (particle count histogram in the
     image plane).
