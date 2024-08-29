@@ -1186,11 +1186,11 @@ def synthetic_radiograph(  # noqa: C901
     if ignore_grid:
         xloc = d["x0"]
         yloc = d["y0"]
-        v = d["v0"]
+        v =  np.linalg.norm(d["v0"])
     else:
         xloc = d["x"]
         yloc = d["y"]
-        v = d["v"]
+        v = np.linalg.norm(d["v"])
 
     if size is None:
         # If a detector size is not given, choose a size based on the
