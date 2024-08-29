@@ -1,2 +1,2 @@
-Patched a bug in `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography` in which particles stopped 
-before the detector were still included in synthetic radiographs. 
+Patched a bug in `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography` in which particles stopped
+before the detector were still included in synthetic radiographs.

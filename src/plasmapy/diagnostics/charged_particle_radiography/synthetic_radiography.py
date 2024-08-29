@@ -1154,13 +1154,13 @@ def synthetic_radiograph(  # noqa: C901
 
     intensity : `~numpy.ndarray`, shape ``(hbins, vbins)``
         The number of particles counted in each bin of the histogram.
-        
-        
+
+
     Notes
     -----
-    This function ignores any particles that are stopped or removed before 
+    This function ignores any particles that are stopped or removed before
     reaching the detector plane.
-        
+
     """
 
     # condition `obj` input
@@ -1186,7 +1186,7 @@ def synthetic_radiograph(  # noqa: C901
     if ignore_grid:
         xloc = d["x0"]
         yloc = d["y0"]
-        v =  np.linalg.norm(d["v0"])
+        v = np.linalg.norm(d["v0"])
     else:
         xloc = d["x"]
         yloc = d["y"]
@@ -1209,9 +1209,9 @@ def synthetic_radiograph(  # noqa: C901
             f"Argument `size` must have shape (2, 2), but got {size.shape}."
         )
 
-    # Exclude NaN positions (deleted particles) and velocities 
+    # Exclude NaN positions (deleted particles) and velocities
     # (stopped particles)
-    nan_mask = np.isnan(xloc)*np.isnan(yloc)*np.isnan(v)
+    nan_mask = np.isnan(xloc) * np.isnan(yloc) * np.isnan(v)
     sanitized_xloc = xloc[~nan_mask]
     sanitized_yloc = yloc[~nan_mask]
 
