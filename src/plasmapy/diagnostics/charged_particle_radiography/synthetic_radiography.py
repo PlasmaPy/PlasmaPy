@@ -1186,11 +1186,11 @@ def synthetic_radiograph(  # noqa: C901
     if ignore_grid:
         xloc = d["x0"]
         yloc = d["y0"]
-        v = np.linalg.norm(d["v0"])
+        v = d["v0"][:,0]
     else:
         xloc = d["x"]
         yloc = d["y"]
-        v = np.linalg.norm(d["v"])
+        v = d["v"][:,0]
 
     if size is None:
         # If a detector size is not given, choose a size based on the
@@ -1211,9 +1211,9 @@ def synthetic_radiograph(  # noqa: C901
 
     # Exclude NaN positions (deleted particles) and velocities
     # (stopped particles)
-    nan_mask = np.isnan(xloc) * np.isnan(yloc) * np.isnan(v)
-    sanitized_xloc = xloc[~nan_mask]
-    sanitized_yloc = yloc[~nan_mask]
+    nan_mask = ~np.isnan(xloc) * ~np.isnan(yloc) * ~np.isnan(v)
+    sanitized_xloc = xloc[nan_mask]
+    sanitized_yloc = yloc[nan_mask]
 
     # Generate the histogram
     intensity, h, v = np.histogram2d(
