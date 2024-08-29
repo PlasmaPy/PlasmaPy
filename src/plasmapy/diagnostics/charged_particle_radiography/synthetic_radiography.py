@@ -1098,7 +1098,7 @@ class Tracker(ParticleTracker):
 
 
 def synthetic_radiograph(  # noqa: C901
-    obj, size=None, bins=None, ignore_grid: bool = False, optical_density: bool = False
+    obj, size=None, bins=None, ignore_grid: bool = False
 ):
     r"""
     Calculate a "synthetic radiograph" (particle count histogram in the
@@ -1129,20 +1129,6 @@ def synthetic_radiograph(  # noqa: C901
     ignore_grid: `bool`
         If `True`, returns the intensity in the image plane in the absence
         of simulated fields.
-
-    optical_density: `bool`
-        If `True`, return the optical density rather than the intensity
-
-        .. math::
-            OD = -log_{10}(Intensity/I_0)
-
-        where :math:`Intensity` is the simulation intensity on the
-        detector plane and :math:`I_0` is the intensity on the detector
-        plane in the absence of simulated fields. Default is `False`.
-        If the :math:`Intensity` histogram contains zeros, then the
-        corresponding values in :math:`OD` will be `numpy.inf`. When
-        plotting :math:`OD` the `~numpy.inf` values can be replaced
-        using ``numpy.nan_to_num(OD, neginf=0, posinf=0)``.
 
     Returns
     -------
@@ -1235,18 +1221,5 @@ def synthetic_radiograph(  # noqa: C901
             "the size to include more.",
             RuntimeWarning,
         )
-
-    if optical_density:
-        # Generate the null radiograph
-        x, y, I0 = synthetic_radiograph(obj, size=size, bins=bins, ignore_grid=True)
-
-        # Calculate I0 as the mean of the non-zero values in the null
-        # histogram. Zeros are just outside of the illuminate area.
-        I0 = np.mean(I0[I0 != 0])
-
-        # Calculate the optical_density
-        # ignore any errors resulting from zero values in intensity
-        with np.errstate(divide="ignore"):
-            intensity = -np.log10(intensity / I0)
 
     return h * u.m, v * u.m, intensity
