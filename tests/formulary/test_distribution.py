@@ -521,7 +521,7 @@ class Test_Maxwellian_velocity_2D:
             )
 
 
-@pytest.mark.slow()
+@pytest.mark.slow
 class Test_Maxwellian_speed_2D:
     @classmethod
     def setup_class(cls) -> None:
@@ -1229,7 +1229,7 @@ class Test_kappa_velocity_1D:
             )
 
 
-@pytest.mark.slow()
+@pytest.mark.slow
 class Test_kappa_velocity_3D:
     @classmethod
     def setup_class(cls) -> None:

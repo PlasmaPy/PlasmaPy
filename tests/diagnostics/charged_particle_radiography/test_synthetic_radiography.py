@@ -136,7 +136,7 @@ def _test_grid(  # noqa: C901, PLR0912
     return grid
 
 
-@pytest.mark.slow()
+@pytest.mark.slow
 @pytest.mark.filterwarnings("ignore::RuntimeWarning")
 def test_multiple_grids() -> None:
     """
@@ -247,7 +247,7 @@ def run_mesh_example(
     return sim
 
 
-@pytest.mark.slow()
+@pytest.mark.slow
 def test_1D_deflections() -> None:
     # Check B-deflection
     hax, lineout = run_1D_example("constant_bz")
@@ -260,7 +260,7 @@ def test_1D_deflections() -> None:
     assert np.isclose(loc.si.value, 0.0335, 0.005)
 
 
-@pytest.mark.slow()
+@pytest.mark.slow
 def test_coordinate_systems() -> None:
     """
     Check that specifying the same point in different coordinate systems
@@ -290,7 +290,7 @@ def test_coordinate_systems() -> None:
     assert np.allclose(sim2.detector, sim3.detector, atol=1e-2)
 
 
-@pytest.mark.slow()
+@pytest.mark.slow
 def test_input_validation() -> None:
     """
     Intentionally raise a number of errors.
@@ -374,7 +374,7 @@ def test_input_validation() -> None:
         hax, vax, values = cpr.synthetic_radiograph(sim, size=size)
 
 
-@pytest.mark.slow()
+@pytest.mark.slow
 def test_init() -> None:
     grid = _test_grid("electrostatic_gaussian_sphere", num=50)
 
@@ -401,7 +401,7 @@ def test_init() -> None:
     assert all(sim.det_hdir == np.array([1, 0, 0]))
 
 
-@pytest.mark.slow()
+@pytest.mark.slow
 def test_create_particles() -> None:
     grid = _test_grid("electrostatic_gaussian_sphere", num=50)
 
@@ -427,7 +427,7 @@ def test_create_particles() -> None:
     sim.create_particles(1e3, 15 * u.MeV, particle="e-", random_seed=42)
 
 
-@pytest.mark.slow()
+@pytest.mark.slow
 def test_load_particles() -> None:
     grid = _test_grid("electrostatic_gaussian_sphere", num=50)
 
@@ -464,7 +464,7 @@ def test_load_particles() -> None:
     sim.run()
 
 
-@pytest.mark.slow()
+@pytest.mark.slow
 def test_run_options() -> None:
     grid = _test_grid("electrostatic_gaussian_sphere", num=50)
 
@@ -557,7 +557,7 @@ def create_tracker_obj(**kwargs) -> cpr.Tracker:
     return sim
 
 
-@pytest.mark.slow()
+@pytest.mark.slow
 class TestSyntheticRadiograph:
     """
     Tests for
@@ -685,7 +685,7 @@ class TestSyntheticRadiograph:
         assert np.all(np.isposinf(od_results[2][zero_mask]))
 
 
-@pytest.mark.slow()
+@pytest.mark.slow
 @pytest.mark.parametrize(
     "case",
     ["creating particles", "loading particles", "adding a wire mesh"],
@@ -716,7 +716,7 @@ def test_cannot_modify_simulation_after_running(case) -> None:
             pytest.fail(f"Unrecognized test case '{case}'.")
 
 
-@pytest.mark.slow()
+@pytest.mark.slow
 def test_gaussian_sphere_analytical_comparison() -> None:
     """
     Run a known example problem and compare it to a theoretical
@@ -812,7 +812,7 @@ def test_gaussian_sphere_analytical_comparison() -> None:
     assert np.isclose(max_deflection, sim.max_deflection.to(u.rad).value, atol=1e-3)
 
 
-@pytest.mark.slow()
+@pytest.mark.slow
 def test_add_wire_mesh() -> None:
     # ************************************************************
     # Test various input configurations
@@ -924,7 +924,7 @@ def test_add_wire_mesh() -> None:
     assert np.isclose(measured_spacing, true_spacing, 0.5)
 
 
-@pytest.mark.slow()
+@pytest.mark.slow
 @pytest.mark.filterwarnings("ignore::RuntimeWarning")
 def test_multiple_grids2() -> None:
     """
@@ -1011,7 +1011,7 @@ PARTICLES_PER_CONFIGURATION = 100
         ),
     ],
 )
-@pytest.mark.slow()
+@pytest.mark.slow
 def test_NIST_particle_stopping(
     material: str,
     density: u.Quantity[u.kg / u.m**3],
