@@ -85,7 +85,7 @@ repos:
     name: typos (add false positives to _typos.toml)
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.6.3
+  rev: v0.5.7
   hooks:
   - id: ruff
     name: ruff (see https://docs.astral.sh/ruff/rules)
