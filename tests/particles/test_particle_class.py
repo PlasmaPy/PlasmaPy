@@ -761,7 +761,7 @@ def test_particle_class_mass_nuclide_mass(isotope: str, ion: str) -> None:
         )
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 def test_particle_half_life_string() -> None:
     """
     Find the first isotope where the half-life is stored as a string

@@ -29,27 +29,27 @@ from plasmapy.utils.exceptions import PhysicsWarning, RelativityWarning
 rng = np.random.default_rng()
 
 
-@pytest.fixture
+@pytest.fixture()
 def no_particles_on_grids_instantiated():
     return NoParticlesOnGridsTerminationCondition()
 
 
-@pytest.fixture
+@pytest.fixture()
 def time_elapsed_termination_condition_instantiated():
     return TimeElapsedTerminationCondition(1 * u.s)
 
 
-@pytest.fixture
+@pytest.fixture()
 def disk_interval_save_routine_instantiated(tmp_path):
     return IntervalSaveRoutine(1 * u.s, output_directory=tmp_path)
 
 
-@pytest.fixture
+@pytest.fixture()
 def memory_interval_save_routine_instantiated():
     return IntervalSaveRoutine(1 * u.s)
 
 
-@pytest.fixture
+@pytest.fixture()
 def grid_with_inf_entry():
     grid = CartesianGrid(-1 * u.m, 1 * u.m)
     entry = np.full(grid.shape, np.nan) * u.V / u.m
@@ -221,7 +221,7 @@ class TestParticleTrackerGyroradius:
         assert np.isclose(initial_kinetic_energies, simulation_kinetic_energies).all()
 
 
-@pytest.mark.slow
+@pytest.mark.slow()
 @given(st.integers(1, 10), st.integers(1, 10), st.integers(1, 10), st.integers(1, 10))
 @settings(deadline=2e4, max_examples=10)
 def test_particle_tracker_potential_difference(
@@ -663,7 +663,7 @@ class TestParticleTrajectory:
             (0.9, Particle("e-")),
         ],
     )
-    @pytest.mark.slow
+    @pytest.mark.slow()
     def test_relativistic_Boris_integrator_fitting(cls, regime, particle) -> None:
         """
         Fit the results of the relativistic Boris integrator using
@@ -879,7 +879,7 @@ class TestParticleTrajectory:
             (0.9, Particle("e-")),
         ],
     )
-    @pytest.mark.slow
+    @pytest.mark.slow()
     def test_relativity_warning(cls, regime, particle) -> None:
         """
         Fit the results of the non-relativistic Boris integrator using

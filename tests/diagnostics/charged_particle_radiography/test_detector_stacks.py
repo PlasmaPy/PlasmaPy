@@ -21,14 +21,14 @@ check_database_connection = pytest.mark.skipif(
 )
 
 
-@pytest.fixture
+@pytest.fixture()
 def downloader(tmpdir_factory):
     path = tmpdir_factory.mktemp("data")
     # Turn off validation so API calls aren't used
     return Downloader(directory=path, validate=False)
 
 
-@pytest.fixture
+@pytest.fixture()
 def hdv2_stack(downloader):
     """
     A Stack object representing a stack of HDV2 radiochromic film.
