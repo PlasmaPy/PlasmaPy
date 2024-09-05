@@ -712,7 +712,9 @@ class ParticleTracker:
         The denominator of this fraction is based off the number of tracked
         particles, and therefore does not include stopped or removed particles.
         """
-        return self.num_entered / self.nparticles_tracked
+        return (
+            self.num_entered - self.nparticles_removed - self.nparticles_stopped
+        ) / self.nparticles_tracked
 
     def _stop_particles(self, particles_to_stop_mask) -> None:
         """Stop tracking the particles specified by the stop mask.
@@ -1014,6 +1016,8 @@ class ParticleTracker:
             tracked_particles_to_be_stopped_mask
         )
 
+        # Eliminate negative energies before calculating new speeds
+        E = np.where(E < 0, 0, E)
         new_speeds = np.sqrt(2 * E / self.m)
         self.v[self._tracked_particle_mask] = np.multiply(
             new_speeds, velocity_unit_vectors
@@ -1084,6 +1088,36 @@ class ParticleTracker:
         That is, they do not have NaN position or velocity.
         """
         return int(self._tracked_particle_mask.sum())
+
+    @property
+    def _stopped_particle_mask(self) -> NDArray[np.bool_]:
+        """
+        Calculates a boolean mask corresponding to particles that have not been stopped or removed.
+        """
+        # See Class docstring for definition of `stopped` and `removed`
+        return np.logical_and(~np.isnan(self.x[:, 0]), np.isnan(self.v[:, 0]))
+
+    @property
+    def nparticles_stopped(self) -> int:
+        """Return the number of particles currently being tracked.
+        That is, they do not have NaN position or velocity.
+        """
+        return int(self._stopped_particle_mask.sum())
+
+    @property
+    def _removed_particle_mask(self) -> NDArray[np.bool_]:
+        """
+        Calculates a boolean mask corresponding to particles that have not been stopped or removed.
+        """
+        # See Class docstring for definition of `stopped` and `removed`
+        return np.logical_and(np.isnan(self.x[:, 0]), np.isnan(self.v[:, 0]))
+
+    @property
+    def nparticles_removed(self) -> int:
+        """Return the number of particles currently being tracked.
+        That is, they do not have NaN position or velocity.
+        """
+        return int(self._removed_particle_mask.sum())
 
     @property
     def is_adaptive_time_step(self) -> bool:
