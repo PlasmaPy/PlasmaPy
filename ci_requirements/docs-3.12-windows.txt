@@ -14,9 +14,9 @@ arrow==1.3.0
     # via isoduration
 asteval==1.0.2
     # via lmfit
-astropy==6.1.2
+astropy==6.1.3
     # via plasmapy (pyproject.toml)
-astropy-iers-data==0.2024.8.27.10.28.29
+astropy-iers-data==0.2024.9.2.0.33.23
     # via astropy
 asttokens==2.4.1
     # via stack-data
@@ -34,9 +34,9 @@ beautifulsoup4==4.12.3
     #   sphinx-codeautolink
 bleach==6.1.0
     # via nbconvert
-certifi==2024.7.4
+certifi==2024.8.30
     # via requests
-cffi==1.17.0
+cffi==1.17.1
     # via argon2-cffi-bindings
 charset-normalizer==3.3.2
     # via requests
@@ -78,11 +78,11 @@ docutils==0.20.1
     #   sphinx-rtd-theme
     #   sphinx-tabs
     #   sphinxcontrib-bibtex
-executing==2.0.1
+executing==2.1.0
     # via stack-data
 fastjsonschema==2.20.0
     # via nbformat
-filelock==3.15.4
+filelock==3.16.0
     # via virtualenv
 fonttools==4.53.1
     # via matplotlib
@@ -99,7 +99,7 @@ imagesize==1.4.1
     # via sphinx
 ipykernel==6.29.5
     # via plasmapy (pyproject.toml)
-ipython==8.26.0
+ipython==8.27.0
     # via
     #   ipykernel
     #   ipywidgets
@@ -158,12 +158,10 @@ jupyterlab-server==2.27.3
     # via voila
 jupyterlab-widgets==3.0.13
     # via ipywidgets
-kiwisolver==1.4.5
+kiwisolver==1.4.7
     # via matplotlib
 latexcodec==3.0.0
     # via pybtex
-llvmlite==0.43.0
-    # via numba
 lmfit==1.3.2
     # via plasmapy (pyproject.toml)
 markupsafe==2.1.5
@@ -201,9 +199,7 @@ nest-asyncio==1.6.0
     # via ipykernel
 nox==2024.4.15
     # via plasmapy (pyproject.toml)
-numba==0.60.0
-    # via plasmapy (pyproject.toml)
-numpy==2.0.2
+numpy==2.1.1
     # via
     #   plasmapy (pyproject.toml)
     #   astropy
@@ -211,7 +207,6 @@ numpy==2.0.2
     #   h5py
     #   lmfit
     #   matplotlib
-    #   numba
     #   pandas
     #   pyerfa
     #   scipy
@@ -245,7 +240,7 @@ pillow==10.4.0
     #   plasmapy (pyproject.toml)
     #   matplotlib
     #   sphinx-gallery
-platformdirs==4.2.2
+platformdirs==4.3.2
     # via
     #   jupyter-core
     #   virtualenv
@@ -331,7 +326,7 @@ scipy==1.14.1
     #   lmfit
 send2trash==1.8.3
     # via jupyter-server
-setuptools==74.0.0
+setuptools==74.1.2
     # via plasmapy (pyproject.toml)
 six==1.16.0
     # via
@@ -376,7 +371,7 @@ sphinx-copybutton==0.5.2
     # via plasmapy (pyproject.toml)
 sphinx-gallery==0.17.1
     # via plasmapy (pyproject.toml)
-sphinx-hoverxref==1.4.0
+sphinx-hoverxref==1.4.1
     # via plasmapy (pyproject.toml)
 sphinx-issues==4.1.0
     # via plasmapy (pyproject.toml)
@@ -448,7 +443,7 @@ traitlets==5.14.3
     #   nbformat
     #   nbsphinx
     #   voila
-types-python-dateutil==2.9.0.20240821
+types-python-dateutil==2.9.0.20240906
     # via arrow
 tzdata==2024.1
     # via pandas
@@ -460,7 +455,7 @@ uri-template==1.3.0
     # via jsonschema
 urllib3==2.2.2
     # via requests
-virtualenv==20.26.3
+virtualenv==20.26.4
     # via nox
 voila==0.5.7
     # via plasmapy (pyproject.toml)
@@ -474,7 +469,7 @@ webencodings==0.5.1
     #   tinycss2
 websocket-client==1.8.0
     # via jupyter-server
-websockets==13.0
+websockets==13.0.1
     # via voila
 widgetsnbextension==4.0.13
     # via ipywidgets

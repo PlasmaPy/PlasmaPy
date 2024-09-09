@@ -14,7 +14,6 @@ __lite_funcs__ = ["plasma_frequency_lite"]
 import astropy.units as u
 import numpy as np
 from astropy.constants.si import e, eps0
-from numba import njit
 
 from plasmapy import particles
 from plasmapy.particles.decorators import particle_input
@@ -156,7 +155,6 @@ wc_ = gyrofrequency
 
 
 @preserve_signature
-@njit
 def plasma_frequency_lite(
     n: float,
     mass: float,
