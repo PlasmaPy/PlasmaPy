@@ -112,6 +112,10 @@ authors:
   family-names: Bedmutha
   alias: manasbedmutha98
 
+- given-names: Camilo
+  family-names: Bedoya-Lopez
+  alias: Stray235
+
 - given-names: Justin
   family-names: Bergeron
   alias: Justin-Bergeron
@@ -253,6 +257,10 @@ authors:
   affiliation: Embry-Riddle Aeronautical University
   orcid: https://orcid.org/0009-0008-3588-0497
   alias: s-gerow
+
+- given-names: Jessica
+  family-names: Gonzalez
+  alias: stinkymonke
 
 - given-names: Brian
   family-names: Goodall
@@ -605,10 +613,6 @@ authors:
   orcid: https://orcid.org/0000-0002-5978-6840
   alias: josephrhsmith
 
-- given-names: Camilo
-  family-names Bedoya-Lopez
-  alias: Stray235
-
 - given-names: Stuart
   family-names: Sobeske
   affiliation: University of Michigan
@@ -668,11 +672,6 @@ authors:
   affiliation: UCLA
   orcid: https://orcid.org/0000-0002-6468-5710
   alias: svincena
-
-- given-names: Jessica
-  family-names: Gonzalez
-  affiliation: UCLA
-  alias: stinkymonke
 
 - alias: WineDarkMoon
 
