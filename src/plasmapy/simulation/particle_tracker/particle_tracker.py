@@ -133,6 +133,45 @@ class ParticleTracker:
     If the particle's position is not ``NaN``, but the velocity is ``NaN``, the particle has been stopped
     (i.e. it is still in the simulation but is no longer evolved.)
     If both the particle's position and velocity are set to ``NaN``, then the particle has been removed from the simulation.
+
+    Example
+    -----
+    >>> from plasmapy.particles import Particle
+    >>> from plasmapy.plasma.grids import CartesianGrid
+    >>> from plasmapy.simulation.particle_tracker.particle_tracker import (
+    ...     ParticleTracker,
+    ... )
+    >>> from plasmapy.simulation.particle_tracker.save_routines import (
+    ...     IntervalSaveRoutine,
+    ... )
+    >>> from plasmapy.simulation.particle_tracker.termination_conditions import (
+    ...     TimeElapsedTerminationCondition,
+    ... )
+    >>> import astropy.units as u
+    >>> import numpy as np
+    >>> example_particle = Particle("p+")
+    >>> grid = CartesianGrid(-1e6 * u.m, 1e6 * u.m, num=2)
+    >>> grid_shape = (2, 2, 2)
+    >>> Bz = np.full(grid_shape, 1) * u.T
+    >>> grid.add_quantities(B_z=Bz)
+    >>> x = [[0, 0, 0]] * u.m
+    >>> v = [[1, 0, 0]] * u.m / u.s
+    >>> termination_condition = TimeElapsedTerminationCondition(6.28 * u.s)
+    >>> save_routine = IntervalSaveRoutine(6.28 * u.s / 10)
+    >>> simulation = ParticleTracker(
+    ...     grid,
+    ...     termination_condition,
+    ...     dt=1e-2 * u.s,
+    ...     save_routine=save_routine,
+    ...     field_weighting="nearest neighbor",
+    ... )
+    >>> simulation.load_particles(x, v, example_particle)
+    >>> simulation.run()
+    >>> print(
+    ...     simulation.save_routine.results["time"][-1],
+    ...     simulation.save_routine.results["x"][-1],
+    ... )
+    6.29999999999991 s [[-1.73302335e-08  1.31539878e-05  0.00000000e+00]] m
     """
 
     # Some quantities are necessary for the particle tracker to function
@@ -673,7 +712,9 @@ class ParticleTracker:
         The denominator of this fraction is based off the number of tracked
         particles, and therefore does not include stopped or removed particles.
         """
-        return self.num_entered / self.nparticles_tracked
+        return (
+            self.num_entered - self.nparticles_removed - self.nparticles_stopped
+        ) / self.nparticles_tracked
 
     def _stop_particles(self, particles_to_stop_mask) -> None:
         """Stop tracking the particles specified by the stop mask.
@@ -975,6 +1016,8 @@ class ParticleTracker:
             tracked_particles_to_be_stopped_mask
         )
 
+        # Eliminate negative energies before calculating new speeds
+        E = np.where(E < 0, 0, E)
         new_speeds = np.sqrt(2 * E / self.m)
         self.v[self._tracked_particle_mask] = np.multiply(
             new_speeds, velocity_unit_vectors
@@ -1045,6 +1088,36 @@ class ParticleTracker:
         That is, they do not have NaN position or velocity.
         """
         return int(self._tracked_particle_mask.sum())
+
+    @property
+    def _stopped_particle_mask(self) -> NDArray[np.bool_]:
+        """
+        Calculates a boolean mask corresponding to particles that have not been stopped or removed.
+        """
+        # See Class docstring for definition of `stopped` and `removed`
+        return np.logical_and(~np.isnan(self.x[:, 0]), np.isnan(self.v[:, 0]))
+
+    @property
+    def nparticles_stopped(self) -> int:
+        """Return the number of particles currently being tracked.
+        That is, they do not have NaN position or velocity.
+        """
+        return int(self._stopped_particle_mask.sum())
+
+    @property
+    def _removed_particle_mask(self) -> NDArray[np.bool_]:
+        """
+        Calculates a boolean mask corresponding to particles that have not been stopped or removed.
+        """
+        # See Class docstring for definition of `stopped` and `removed`
+        return np.logical_and(np.isnan(self.x[:, 0]), np.isnan(self.v[:, 0]))
+
+    @property
+    def nparticles_removed(self) -> int:
+        """Return the number of particles currently being tracked.
+        That is, they do not have NaN position or velocity.
+        """
+        return int(self._removed_particle_mask.sum())
 
     @property
     def is_adaptive_time_step(self) -> bool:

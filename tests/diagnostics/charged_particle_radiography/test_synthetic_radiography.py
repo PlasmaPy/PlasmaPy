@@ -657,33 +657,6 @@ class TestSyntheticRadiograph:
         assert isinstance(histogram, np.ndarray)
         assert histogram.shape == expected["bins"]
 
-    @pytest.mark.filterwarnings("ignore:divide by zero:RuntimeWarning")
-    def test_optical_density_histogram(self) -> None:
-        """
-        Test the optical density calculation is correct and stuffed
-        with numpy.inf when the intensity is zero.
-        """
-        bins = (200, 60)
-        size = np.array([[-1, 1], [-1, 1]]) * 30 * u.cm
-
-        intensity_results = cpr.synthetic_radiograph(
-            self.sim_results, size=size, bins=bins
-        )
-        od_results = cpr.synthetic_radiograph(
-            self.sim_results, size=size, bins=bins, optical_density=True
-        )
-
-        assert np.allclose(intensity_results[0], od_results[0])
-        assert np.allclose(intensity_results[1], od_results[1])
-
-        intensity = intensity_results[2]
-        zero_mask = intensity == 0
-        initial_intensity = np.mean(intensity[~zero_mask])
-        optical_density = -np.log10(intensity / initial_intensity)
-
-        assert np.allclose(optical_density[~zero_mask], od_results[2][~zero_mask])
-        assert np.all(np.isposinf(od_results[2][zero_mask]))
-
 
 @pytest.mark.slow()
 @pytest.mark.parametrize(

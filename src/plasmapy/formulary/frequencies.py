@@ -14,7 +14,6 @@ __lite_funcs__ = ["plasma_frequency_lite"]
 import astropy.units as u
 import numpy as np
 from astropy.constants.si import e, eps0
-from numba import njit
 
 from plasmapy import particles
 from plasmapy.particles.decorators import particle_input
@@ -156,7 +155,6 @@ wc_ = gyrofrequency
 
 
 @preserve_signature
-@njit
 def plasma_frequency_lite(
     n: float,
     mass: float,
@@ -516,7 +514,6 @@ def upper_hybrid_frequency(
     <Quantity 4.00459...e+11 rad / s>
     >>> upper_hybrid_frequency(0.2 * u.T, n_e=5e19 * u.m**-3, to_hz=True)
     <Quantity 6.37350...e+10 Hz>
-
     """
     omega_pe = plasma_frequency(n=n_e, particle="e-")
     omega_ce = gyrofrequency(B, "e-")
