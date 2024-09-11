@@ -101,7 +101,7 @@ class _SyntheticRadiographySaveRoutine(SaveOnceOnCompletion):
         output_file_path = self.output_directory / "output.hdf5"
 
         with h5py.File(output_file_path, "w") as output_file:
-            for key, (_units, data_type) in self._quantities.items():  # noqa: B007
+            for key, (_units, data_type) in self._quantities.items():
                 match data_type:
                     case "attribute":
                         output_file.attrs.create(key, result_dictionary[key])
@@ -308,7 +308,7 @@ class Tracker(ParticleTracker):
         """
         theta = np.zeros([8, self.num_grids])
 
-        for i, _grid in enumerate(self.grids):  # noqa: B007
+        for i, _grid in enumerate(self.grids):
             ind = 0
             for x in (0, -1):
                 for y in (0, -1):

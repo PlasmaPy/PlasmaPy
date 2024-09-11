@@ -403,7 +403,7 @@ class TestCheckUnits:
         ]
 
         # perform tests
-        for _ii, case in enumerate(_cases):  # noqa: B007
+        for _ii, case in enumerate(_cases):
             sig = inspect.signature(case["setup"]["function"])
             bound_args = sig.bind(*case["setup"]["args"], **case["setup"]["kwargs"])
 
