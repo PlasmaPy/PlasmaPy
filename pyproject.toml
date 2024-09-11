@@ -403,7 +403,7 @@ ignore = [
   "W191", # tab-indentation (formatter conflict)
   "W291", # trailing-whitespace (handled by formatter)
 ]
-dummy-variable-rgx = "^(Z|mass_numb|request|event|_*)$"
+dummy-variable-rgx = "^(Z|mass_numb|request|event|_.*)$"
 
 [tool.ruff.lint.flake8-annotations]
 allow-star-arg-any = true
