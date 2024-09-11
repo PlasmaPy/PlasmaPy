@@ -339,6 +339,8 @@ extend-select = [
   "RUF018", # assignment-in-assert
   "RUF019", # unnecessary-key-check
   "RUF020", # never-union
+  "RUF024", # mutable-fromkeys-value
+  "RUF026", # default-factory-kwarg
   "RUF100", # unused-noqa
   "RUF200", # invalid-pyproject-toml
   "S", # flake8-bandit
