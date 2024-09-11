@@ -326,6 +326,9 @@ extend-select = [
   "PYI", # flake8-pyi
   "RET", # flake8-return
   "RSE", # flake8-raise
+  "RUF001", # ambiguous-unicode-character-string
+  "RUF002", # ambiguous-unicode-character-docstring
+  "RUF003", # ambiguous-unicode-character-comment
   "RUF005", # collection-literal-concatenation
   "RUF006", # asyncio-dangling-task
   "RUF007", # pairwise-over-zipped
@@ -403,6 +406,7 @@ ignore = [
   "W191", # tab-indentation (formatter conflict)
   "W291", # trailing-whitespace (handled by formatter)
 ]
+allowed-confusables = ["α"]
 dummy-variable-rgx = "^(Z|mass_numb|request|event|_.*)$"
 
 [tool.ruff.lint.flake8-annotations]
