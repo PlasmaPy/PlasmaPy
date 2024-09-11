@@ -297,6 +297,7 @@ extend-select = [
   "C90", # mccabe
   "COM818", # trailing-comma-on-bare-tuple
   "D", # pydocstyle
+  "DOC",
   "DTZ", # flake8-datetimez
   "EM", # flake8-errmsg
   "EXE", # flake8-executable
@@ -402,7 +403,7 @@ ignore = [
   "W191", # tab-indentation (formatter conflict)
   "W291", # trailing-whitespace (handled by formatter)
 ]
-dummy-variable-rgx = "Z|mass_numb|request|event"
+dummy-variable-rgx = "Z|mass_numb|request|event|_"
 
 [tool.ruff.lint.flake8-annotations]
 allow-star-arg-any = true
@@ -465,9 +466,8 @@ max-complexity = 10
 "src/plasmapy/formulary/braginskii.py" = ["C901", "RET503", "RET504"]
 "src/plasmapy/plasma/sources/*.py" = ["D102"]
 "src/plasmapy/utils/_pytest_helpers/pytest_helpers.py" = ["BLE001", "PLR", "SLF001"]
-"test_*" = ["D100", "D101", "D102", "D103", "D104", "D209", "D400", "D401", "N801", "RUF012", "SLF001"]
 "tests/**/__init__.py" = ["D104"]
-"tests/**/*.py" = ["INP001"]
+"tests/**/test_*.py" = ["D100", "D101", "D102", "D103", "D104", "D209", "D400", "D401", "DOC201", "DOC501", "INP001", "N801",  "PLC2701", "PLR6301", "RUF012", "SLF001"]
 "tests/formulary/test_distribution.py" = ["ARG005"]
 "tests/particles/test_decorators.py" = ["ARG001", "ARG002"]
 "tests/utils/_pytest_helpers/test_pytest_helpers.py" = ["BLE001", "TRY002"]
