@@ -346,6 +346,7 @@ extend-select = [
   "RUF024", # mutable-fromkeys-value
   "RUF026", # default-factory-kwarg
   "RUF100", # unused-noqa
+  "RUF101", # redirected-noqa
   "RUF200", # invalid-pyproject-toml
   "S", # flake8-bandit
   "SIM", # flake8-simplify
