@@ -765,7 +765,7 @@ class ParticleTracker:
 
         # Wherever a particle is on a grid, include that grid's grid step
         # in the list of candidate time steps
-        for i, _grid in enumerate(self.grids):  # noqa: B007
+        for i, _grid in enumerate(self.grids):
             candidates[:, i] = np.where(
                 self.particles_on_grid[:, i] > 0, gridstep[i], np.inf
             )

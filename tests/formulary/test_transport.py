@@ -48,7 +48,7 @@ def count_decimal_places(digits):
     return len(fractional)
 
 
-@pytest.mark.slow()
+@pytest.mark.slow
 class Test_classical_transport:
     @classmethod
     def setup_class(cls) -> None:
