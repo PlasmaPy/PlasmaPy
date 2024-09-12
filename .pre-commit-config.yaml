@@ -79,13 +79,13 @@ repos:
     - tomli
 
 - repo: https://github.com/crate-ci/typos
-  rev: typos-dict-v0.11.27
+  rev: v1.24.5
   hooks:
   - id: typos
     name: typos (add false positives to _typos.toml)
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.5.7
+  rev: v0.6.4
   hooks:
   - id: ruff
     name: ruff (see https://docs.astral.sh/ruff/rules)
@@ -104,15 +104,6 @@ repos:
     - black==24.4.2
 
 - repo: https://github.com/sphinx-contrib/sphinx-lint
-  rev: v0.9.1
+  rev: v1.0.0
   hooks:
   - id: sphinx-lint
-
-- repo: https://github.com/nbQA-dev/nbQA
-  rev: 1.8.7
-  hooks:
-  - id: nbqa-check-ast
-    name: validate Python notebooks
-  - id: nbqa-ruff
-    name: ruff for notebooks (see https://docs.astral.sh/ruff/rules)
-    args: [--fix, '--select=A,ARG,B,BLE,C,C4,E,F,FLY,I,INT,ISC,PERF,PIE,PLC,PLE,PYI,Q003,RET,RSE,SIM,TID,TRY,UP,W', '--ignore=B007,B008,B015,B018,E402,E501,E741,F401,PLC2401,PLC2403,SIM114']

@@ -238,7 +238,7 @@ class Test_locate_null_point:
         ).all()
 
 
-@pytest.mark.slow()
+@pytest.mark.slow
 def test_null_point_find1() -> None:
     r"""Test `~plasmapy.analysis.nullpoint.null_point_find`."""
     # Uniform grid
@@ -255,7 +255,7 @@ def test_null_point_find1() -> None:
     assert np.isclose(loc, [5.5, 5.5, 5.5], atol=_EQUALITY_ATOL).all()
 
 
-@pytest.mark.slow()
+@pytest.mark.slow
 def test_null_point_find2() -> None:
     r"""Test `~plasmapy.analysis.nullpoint.null_point_find`."""
     # Non-uniform grid
@@ -289,7 +289,7 @@ def test_null_point_find3() -> None:
     assert np.isclose(loc3, [5.5, 5.5, 5.5], atol=_EQUALITY_ATOL).all()
 
 
-@pytest.mark.slow()
+@pytest.mark.slow
 def test_null_point_find4() -> None:
     r"""Test `~plasmapy.analysis.nullpoint.null_point_find`."""
     # Two null points
@@ -308,7 +308,7 @@ def test_null_point_find4() -> None:
     assert np.isclose(second_loc4, [5.5, 5.5, 5.5], atol=_EQUALITY_ATOL).all()
 
 
-@pytest.mark.slow()
+@pytest.mark.slow
 @pytest.mark.filterwarnings(
     "ignore::plasmapy.analysis.nullpoint.MultipleNullPointWarning"
 )
@@ -342,7 +342,7 @@ def test_null_point_find5() -> None:
             )
 
 
-@pytest.mark.slow()
+@pytest.mark.slow
 @pytest.mark.filterwarnings(
     "ignore::plasmapy.analysis.nullpoint.MultipleNullPointWarning"
 )
@@ -360,7 +360,7 @@ def test_null_point_find6() -> None:
     assert len(npoints6) == 0
 
 
-@pytest.mark.slow()
+@pytest.mark.slow
 def test_null_point_find7() -> None:
     r"""Test `~plasmapy.analysis.nullpoint.null_point_find`."""
     # No null points, discriminant less than zero
@@ -375,7 +375,7 @@ def test_null_point_find7() -> None:
     assert len(npoints7) == 0
 
 
-@pytest.mark.slow()
+@pytest.mark.slow
 def test_null_point_find8() -> None:
     r"""Test `~plasmapy.analysis.nullpoint.null_point_find`."""
     # Non-linear field
@@ -394,7 +394,7 @@ def test_null_point_find8() -> None:
     assert np.allclose(loc2, [5.5, 5.5, 5.5], atol=_TESTING_ATOL)
 
 
-@pytest.mark.slow()
+@pytest.mark.slow
 @pytest.mark.filterwarnings(
     "ignore::plasmapy.analysis.nullpoint.MultipleNullPointWarning"
 )
@@ -482,7 +482,7 @@ def test_null_point_find9() -> None:
 
 
 # Tests that capture the degenerate nulls/2D nulls
-@pytest.mark.slow()
+@pytest.mark.slow
 @pytest.mark.filterwarnings(
     "ignore::plasmapy.analysis.nullpoint.MultipleNullPointWarning"
 )
@@ -508,7 +508,7 @@ def test_null_point_find10() -> None:
             assert p.classification == "Continuous concentric ellipses"
 
 
-@pytest.mark.slow()
+@pytest.mark.slow
 @pytest.mark.filterwarnings(
     "ignore::plasmapy.analysis.nullpoint.MultipleNullPointWarning"
 )

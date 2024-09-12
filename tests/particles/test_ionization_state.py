@@ -332,7 +332,7 @@ def test_getitem(test_ionization_state) -> None:
         pytest.fail(str.join("", errors))
 
 
-@pytest.fixture()
+@pytest.fixture
 def He_ionization_state():
     return IonizationState(
         particle="He",
@@ -428,7 +428,7 @@ expected_properties = {
 }
 
 
-@pytest.fixture()
+@pytest.fixture
 def instance():
     kwargs = {
         "particle": "He-4",
