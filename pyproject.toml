@@ -406,8 +406,9 @@ ignore = [
   "W191", # tab-indentation (formatter conflict)
   "W291", # trailing-whitespace (handled by formatter)
 ]
-allowed-confusables = ["α"]
 dummy-variable-rgx = "^(Z|mass_numb|request|event|_.*)$"
+# Allow potentially ambiguous Unicode characters with valid uses in plasma science
+allowed-confusables = ["–", "α", "β", "γ", "ι", "ν", "ο", "ρ", "σ", "τ", "υ", "×", "′", "∼", "∪", "⊤", "∨", "ℂ", "ℕ", "ℚ", "ℝ", "ℤ", "ℑ", "ℒ", "ℓ", "ℳ", "ℜ", "ℱ", "ℎ", "ℰ", "𝒪", "ℐ"]
 
 [tool.ruff.lint.flake8-annotations]
 allow-star-arg-any = true
