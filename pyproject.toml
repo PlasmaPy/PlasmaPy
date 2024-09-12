@@ -297,7 +297,7 @@ extend-select = [
   "C90", # mccabe
   "COM818", # trailing-comma-on-bare-tuple
   "D", # pydocstyle
-  "DOC",
+#  "DOC", # pydoclint (enable this rule set when it is no longer in preview)
   "DTZ", # flake8-datetimez
   "EM", # flake8-errmsg
   "EXE", # flake8-executable
