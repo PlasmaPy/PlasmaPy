@@ -34,7 +34,9 @@ _allowed_physical_types = {
 
 @particle_input
 def _resolve_ion(
-    ion: ParticleLike, Z: float | None = None, mass_numb: int | None = None
+    ion: ParticleLike,
+    Z: float | None = None,
+    mass_numb: int | None = None,
 ) -> Particle | CustomParticle:
     """
     Take particle-like arguments and return the corresponding ion object.
@@ -108,7 +110,7 @@ class MHDNormalizations(AbstractNormalizations):
 
     .. math::
 
-        \frac{∂𝐁 \mathbf{B}}{∂t} = - ∇ × \mathbf{B}
+        \frac{∂\mathbf{B} \mathbf{B}}{∂t} = - ∇ × \mathbf{B}
 
     The generalized Ohm's law is:
 
@@ -290,7 +292,7 @@ class MHDNormalizations(AbstractNormalizations):
     @property
     def heat_flux(self) -> u.Quantity[u.J * u.m**-2 * u.s**-1]:
         r"""
-        The heat flux :term:`normalization`,
+        The |normalization constant| for heat flux,
         :math:`q_⭑ ≡ \frac{n_⋆ e_⋆ L_⋆}{t_⋆}`.
 
         .. danger::
@@ -331,7 +333,7 @@ class MHDNormalizations(AbstractNormalizations):
     @property
     def length(self) -> u.Quantity[u.m]:
         r"""
-        The length :term:`normalization`, :math:`L_⭑`\ .
+        The length |normalization constant|, :math:`L_⭑`\ .
 
         Returns
         -------
@@ -342,7 +344,7 @@ class MHDNormalizations(AbstractNormalizations):
     @property
     def magnetic_field(self) -> u.Quantity[u.T]:
         r"""
-        The magnetic field :term:`normalization`, :math:`B_⭑`\ .
+        The magnetic field |normalization constant|, :math:`B_⭑`\ .
 
         Returns
         -------
@@ -353,7 +355,7 @@ class MHDNormalizations(AbstractNormalizations):
     @property
     def magnetic_flux(self) -> u.Quantity[u.Wb]:
         r"""
-        The magnetic flux :term:`normalization`, :math:`Φ_⋆ ≡ B_⋆ A_⋆`.
+        The magnetic flux |normalization constant|, :math:`Φ_⋆ ≡ B_⋆ A_⋆`.
 
         Returns
         -------
@@ -435,7 +437,7 @@ class MHDNormalizations(AbstractNormalizations):
     @property
     def temperature(self) -> u.Quantity[u.K]:
         r"""
-        The temperature :term:`normalization`,
+        The temperature |normalization constant|,
         :math:`T_⭑ ≡ \frac{B_⭑^2}{k_B μ_0 n_⭑}`.
 
         Returns
@@ -447,7 +449,7 @@ class MHDNormalizations(AbstractNormalizations):
     @property
     def thermal_conductivity(self) -> u.Quantity[u.W * u.K**-1 * u.m**-1]:
         r"""
-        The thermal conduction :term:`normalization`.
+        The thermal conduction |normalization constant|.
 
         Returns
         -------
@@ -460,7 +462,7 @@ class MHDNormalizations(AbstractNormalizations):
     @property
     def time(self) -> u.Quantity[u.s]:
         r"""
-        The time :term:`normalization`, :math:`t_⭑ ≡ \frac{L_⭑}{V_⭑}`.
+        The time |normalization constant|, :math:`t_⭑ ≡ \frac{L_⭑}{V_⭑}`.
 
         Returns
         -------
@@ -471,8 +473,7 @@ class MHDNormalizations(AbstractNormalizations):
     @property
     def velocity(self) -> u.Quantity[u.m / u.s]:
         r"""
-        The velocity :term:`normalization`,
-        :math:`V_⭑ ≡ \frac{B_⭑}{\sqrt{μ_0 ρ_⭑}}`.
+        The velocity |normalization constant|, :math:`V_⭑ ≡ \frac{B_⭑}{\sqrt{μ_0 ρ_⭑}}`.
 
         Returns
         -------
@@ -483,7 +484,7 @@ class MHDNormalizations(AbstractNormalizations):
     @property
     def volume(self) -> u.Quantity[u.m**3]:
         r"""
-        The volume :term:`normalization`, :math:`𝒱 ≡ L_⭑^3`.
+        The volume |normalization constant|, :math:`V_⭑ ≡ L_⭑^3`.
 
         Returns
         -------
@@ -493,7 +494,7 @@ class MHDNormalizations(AbstractNormalizations):
     @property
     def wavenumber(self) -> u.Quantity[u.m**-1]:
         r"""
-        The wavenumber :term:`normalization`, :math:`k_⭑ ≡ \frac{1}{L_⭑}`.
+        The wavenumber |normalization constant|, :math:`k_⭑ ≡ \frac{1}{L_⭑}`.
 
         Returns
         -------

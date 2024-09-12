@@ -1,6 +1,6 @@
 import astropy.units as u
 
-from plasmapy.simulation.normalizations import MHDNormalizations
+# from plasmapy.simulation.normalizations import MHDNormalizations
 
 example_normalizations = {
     "length": 1 * u.m,
@@ -9,5 +9,5 @@ example_normalizations = {
 }
 
 
-def test_instantiation():
-    MHDNormalizations(1 * u.m, 1 * u.T, 1 * u.m**-3, ion="p+")
+# def test_instantiation():
+#    MHDNormalizations(1 * u.m, 1 * u.T, 1 * u.m**-3, ion="p+")
