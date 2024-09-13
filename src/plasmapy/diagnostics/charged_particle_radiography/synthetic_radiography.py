@@ -101,7 +101,7 @@ class _SyntheticRadiographySaveRoutine(SaveOnceOnCompletion):
         output_file_path = self.output_directory / "output.hdf5"
 
         with h5py.File(output_file_path, "w") as output_file:
-            for key, (_units, data_type) in self._quantities.items():  # noqa: B007
+            for key, (_units, data_type) in self._quantities.items():
                 match data_type:
                     case "attribute":
                         output_file.attrs.create(key, result_dictionary[key])
@@ -308,7 +308,7 @@ class Tracker(ParticleTracker):
         """
         theta = np.zeros([8, self.num_grids])
 
-        for i, _grid in enumerate(self.grids):  # noqa: B007
+        for i, _grid in enumerate(self.grids):
             ind = 0
             for x in (0, -1):
                 for y in (0, -1):
@@ -1097,9 +1097,7 @@ class Tracker(ParticleTracker):
 # *************************************************************************
 
 
-def synthetic_radiograph(  # noqa: C901
-    obj, size=None, bins=None, ignore_grid: bool = False, optical_density: bool = False
-):
+def synthetic_radiograph(obj, size=None, bins=None, ignore_grid: bool = False):
     r"""
     Calculate a "synthetic radiograph" (particle count histogram in the
     image plane).
@@ -1130,20 +1128,6 @@ def synthetic_radiograph(  # noqa: C901
         If `True`, returns the intensity in the image plane in the absence
         of simulated fields.
 
-    optical_density: `bool`
-        If `True`, return the optical density rather than the intensity
-
-        .. math::
-            OD = -log_{10}(Intensity/I_0)
-
-        where :math:`Intensity` is the simulation intensity on the
-        detector plane and :math:`I_0` is the intensity on the detector
-        plane in the absence of simulated fields. Default is `False`.
-        If the :math:`Intensity` histogram contains zeros, then the
-        corresponding values in :math:`OD` will be `numpy.inf`. When
-        plotting :math:`OD` the `~numpy.inf` values can be replaced
-        using ``numpy.nan_to_num(OD, neginf=0, posinf=0)``.
-
     Returns
     -------
     hax : `~astropy.units.Quantity` array shape ``(hbins,)``
@@ -1154,6 +1138,13 @@ def synthetic_radiograph(  # noqa: C901
 
     intensity : `~numpy.ndarray`, shape ``(hbins, vbins)``
         The number of particles counted in each bin of the histogram.
+
+
+    Notes
+    -----
+    This function ignores any particles that are stopped or removed before
+    reaching the detector plane.
+
     """
 
     # condition `obj` input
@@ -1179,9 +1170,11 @@ def synthetic_radiograph(  # noqa: C901
     if ignore_grid:
         xloc = d["x0"]
         yloc = d["y0"]
+        v = d["v0"][:, 0]
     else:
         xloc = d["x"]
         yloc = d["y"]
+        v = d["v"][:, 0]
 
     if size is None:
         # If a detector size is not given, choose a size based on the
@@ -1200,9 +1193,11 @@ def synthetic_radiograph(  # noqa: C901
             f"Argument `size` must have shape (2, 2), but got {size.shape}."
         )
 
-    nan_mask = np.logical_or(np.isnan(xloc), np.isnan(yloc))
-    sanitized_xloc = xloc[~nan_mask]
-    sanitized_yloc = yloc[~nan_mask]
+    # Exclude NaN positions (deleted particles) and velocities
+    # (stopped particles)
+    nan_mask = ~np.isnan(xloc) * ~np.isnan(yloc) * ~np.isnan(v)
+    sanitized_xloc = xloc[nan_mask]
+    sanitized_yloc = yloc[nan_mask]
 
     # Generate the histogram
     intensity, h, v = np.histogram2d(
@@ -1224,18 +1219,5 @@ def synthetic_radiograph(  # noqa: C901
             "the size to include more.",
             RuntimeWarning,
         )
-
-    if optical_density:
-        # Generate the null radiograph
-        x, y, I0 = synthetic_radiograph(obj, size=size, bins=bins, ignore_grid=True)
-
-        # Calculate I0 as the mean of the non-zero values in the null
-        # histogram. Zeros are just outside of the illuminate area.
-        I0 = np.mean(I0[I0 != 0])
-
-        # Calculate the optical_density
-        # ignore any errors resulting from zero values in intensity
-        with np.errstate(divide="ignore"):
-            intensity = -np.log10(intensity / I0)
 
     return h * u.m, v * u.m, intensity

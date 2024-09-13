@@ -29,7 +29,7 @@ attributes = [
 ]
 
 
-@pytest.fixture()
+@pytest.fixture
 def various_particles():
     """A sample `ParticleList` with several different valid particles."""
     return ParticleList(

@@ -18,7 +18,6 @@ from typing import Literal
 import astropy.units as u
 import numpy as np
 from astropy.constants.si import k_B, mu0
-from numba import njit
 
 from plasmapy.formulary import lengths
 from plasmapy.particles import electron
@@ -475,7 +474,6 @@ def thermal_speed_coefficients(method: str, ndim: int) -> float:
 
 
 @preserve_signature
-@njit
 def thermal_speed_lite(T: float, mass: float, coeff: float) -> float:
     r"""
     The :term:`lite-function` for
