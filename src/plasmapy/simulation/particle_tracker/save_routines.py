@@ -96,7 +96,7 @@ class AbstractSaveRoutine(ABC):
         path = self.output_directory / f"{self.tracker.iteration_number}.hdf5"
 
         with h5py.File(path, "w") as output_file:
-            for key, (_units, data_type) in self._quantities.items():  # noqa: B007
+            for key, (_units, data_type) in self._quantities.items():
                 match data_type:
                     case "attribute":
                         output_file.attrs.create(key, self._results[key])
@@ -121,7 +121,7 @@ class AbstractSaveRoutine(ABC):
         """
         results_copy = self._results.copy()
 
-        for quantity, (units, _data_type) in self._quantities.items():  # noqa: B007
+        for quantity, (units, _data_type) in self._quantities.items():
             # Only apply units if they are specified
             # otherwise assume the quantity is dimensionless
             if units is not None:
