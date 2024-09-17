@@ -9,8 +9,6 @@ import functools
 import inspect
 from collections.abc import Callable
 
-from numba.extending import is_jitted
-
 
 class _LiteFuncDict(dict):
     """
@@ -95,9 +93,7 @@ def bind_lite_func(lite_func, attrs: dict[str, Callable] | None = None):
             " the 'lite_func' argument."
         )
 
-    if inspect.isbuiltin(lite_func) or not (
-        is_jitted(lite_func) or inspect.isfunction(lite_func)
-    ):
+    if inspect.isbuiltin(lite_func) or not inspect.isfunction(lite_func):
         raise ValueError("The given lite-function is not a user-defined function.")
 
     def decorator(f):
@@ -110,7 +106,7 @@ def bind_lite_func(lite_func, attrs: dict[str, Callable] | None = None):
         attrs["lite"] = lite_func
         for bound_name, attr in attrs.items():
             # only allow functions or jitted functions
-            if not (inspect.isfunction(attr) or is_jitted(attr)):
+            if not inspect.isfunction(attr):
                 raise ValueError(
                     f"Can not bind obj '{attr}' to function '{wrapper.__name__}'."
                     f"  Only functions are allowed to be bound. Skipping."

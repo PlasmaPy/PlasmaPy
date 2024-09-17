@@ -114,7 +114,7 @@ class ValidateQuantities(CheckUnits, CheckValues):
 
     Allow `None` values to pass::
 
-        @ValidateQuantities(checks_on_return=[u.cm, None])
+        @ValidateQuantities(validations_on_return=[u.cm, None])
         def foo(arg1: u.cm = None):
             return arg1
 
@@ -122,7 +122,7 @@ class ValidateQuantities(CheckUnits, CheckValues):
 
         @ValidateQuantities(
             arg1={"units": u.cm},
-            checks_on_return={"units": u.km, "pass_equivalent_units": True},
+            validations_on_return={"units": u.km, "pass_equivalent_units": True},
         )
         def foo(arg1):
             return arg1
@@ -502,7 +502,9 @@ def validate_quantities(func=None, validations_on_return=None, **validations):
 
     Allow `None` values to pass::
 
-        @validate_quantities(arg2={"none_shall_pass": True}, checks_on_return=[u.cm, None])
+        @validate_quantities(
+            arg2={"none_shall_pass": True}, validations_on_return=[u.cm, None]
+        )
         def foo(arg1: u.cm, arg2: u.cm = None):
             return None
 
@@ -510,7 +512,7 @@ def validate_quantities(func=None, validations_on_return=None, **validations):
 
         @validate_quantities(
             arg1={"units": u.cm},
-            checks_on_return={"units": u.km, "pass_equivalent_units": True},
+            validations_on_return={"units": u.km, "pass_equivalent_units": True},
         )
         def foo(arg1):
             return arg1

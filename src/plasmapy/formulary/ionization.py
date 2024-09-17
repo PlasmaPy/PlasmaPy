@@ -50,10 +50,11 @@ def ionization_balance(
     n : `~astropy.units.Quantity`
         The electron number density of the plasma.
 
-    Warns
-    -----
-    : `~astropy.units.UnitsWarning`
-        If units are not provided, SI units are assumed.
+    Returns
+    -------
+    Z : `~astropy.units.Quantity`
+        The average ionization state of the ions in the plasma
+        assuming that the numbers of ions in each state are equal.
 
     Raises
     ------
@@ -63,6 +64,11 @@ def ionization_balance(
 
     `~astropy.units.UnitConversionError`
         If either of ``T_e`` or ``n`` is not in appropriate units.
+
+    Warns
+    -----
+    : `~astropy.units.UnitsWarning`
+        If units are not provided, SI units are assumed.
 
     Examples
     --------
@@ -75,13 +81,6 @@ def ionization_balance(
     >>> n = 1e10 * u.m**-3
     >>> ionization_balance(n, T_e)
     <Quantity 12.615...>
-
-    Returns
-    -------
-    Z : `~astropy.units.Quantity`
-        The average ionization state of the ions in the plasma
-        assuming that the numbers of ions in each state are equal.
-
     """
     E_H = 1 * u.Ry
 
@@ -141,10 +140,11 @@ def Saha(
     n_e : `~astropy.units.Quantity`
         The electron number density of the plasma.
 
-    Warns
-    -----
-    : `~astropy.units.UnitsWarning`
-        If units are not provided, SI units are assumed.
+    Returns
+    -------
+    ratio : `~astropy.units.Quantity`
+        The ratio of population of ions in ionization state :math:`j` to
+        state :math:`k`\ .
 
     Raises
     ------
@@ -155,11 +155,20 @@ def Saha(
     `~astropy.units.UnitConversionError`
         If any of ``T_e``, ``E_jk``, or ``n`` is not in appropriate units.
 
-    Returns
-    -------
-    ratio : `~astropy.units.Quantity`
-        The ratio of population of ions in ionization state :math:`j` to
-        state :math:`k`\ .
+    Warns
+    -----
+    : `~astropy.units.UnitsWarning`
+        If units are not provided, SI units are assumed.
+
+    Notes
+    -----
+    For reference to this function and for more information regarding
+    the Saha equation, see chapter 3 of R. Paul Drake's book,
+    "High-Energy-Density Physics: Foundation of Inertial Fusion and
+    Experimental Astrophysics" (`DOI: 10.1007/978-3-319-67711-8_3`_).
+
+    .. _`Drake`: https://doi.org/10.1007/978-3-319-67711-8
+    .. _`DOI: 10.1007/978-3-319-67711-8_3`: https://doi.org/10.1007/978-3-319-67711-8_3
 
     Examples
     --------
@@ -175,16 +184,6 @@ def Saha(
     >>> n = 1e23 * u.m**-3
     >>> Saha(g_j, g_k, n, E_jk, T_e)
     <Quantity 1114595.586...>
-
-    Notes
-    -----
-    For reference to this function and for more information regarding
-    the Saha equation, see chapter 3 of R. Paul Drake's book,
-    "High-Energy-Density Physics: Foundation of Inertial Fusion and
-    Experimental Astrophysics" (`DOI: 10.1007/978-3-319-67711-8_3`_).
-
-    .. _`Drake`: https://doi.org/10.1007/978-3-319-67711-8
-    .. _`DOI: 10.1007/978-3-319-67711-8_3`: https://doi.org/10.1007/978-3-319-67711-8_3
     """
     E_h = 1 * u.Ry
 
