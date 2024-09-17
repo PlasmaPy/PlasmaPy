@@ -188,7 +188,6 @@ nitpick_ignore_regex = [
     (python_role, "lmfit"),
     (python_role, "mpmath"),
     (python_role, "nbsphinx"),
-    (python_role, "numba"),
     (python_role, "xarray"),
     # plasmapy_sphinx
     (python_role, "automod.*"),
@@ -253,7 +252,6 @@ intersphinx_mapping = {
     "astropy": ("https://docs.astropy.org/en/stable/", None),
     "lmfit": ("https://lmfit.github.io/lmfit-py/", None),
     "matplotlib": ("https://matplotlib.org/stable/", None),
-    "numba": ("https://numba.readthedocs.io/en/stable/", None),
     "numpy": ("https://numpy.org/doc/stable/", None),
     "pandas": ("https://pandas.pydata.org/pandas-docs/stable/", None),
     "pytest": ("https://docs.pytest.org/en/stable/", None),
