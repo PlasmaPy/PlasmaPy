@@ -459,6 +459,11 @@ authors:
 
 - alias: nrb1234
 
+- given-names: Carlos
+  family-names: Ortiz
+  affiliation: University of Wisconsin
+  alias: ciortiz
+
 - given-names: Oscar
   alias: 0scvr
 

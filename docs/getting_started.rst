@@ -1,9 +1,9 @@
 Getting Started 🦥
 ==================
 
-This page includes example 🚀 notebooks intended for new users of PlasmaPy ✨,
-including notebooks that introduce `astropy.units` and
-`plasmapy.particles`...
+This page includes example 🚀 notebooks intended for new users 👶 of
+PlasmaPy ✨, including notebooks that introduce `astropy.units` and
+`plasmapy.particles`.
 
 .. nbgallery::
 
