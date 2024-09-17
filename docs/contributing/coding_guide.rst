@@ -687,7 +687,7 @@ Dependencies and requirements
      become compatible with the latest versions of its dependencies than
      to set a maximum requirement.
 
-* It sometimes takes a few months for packages like |Numba| to become
+* It sometimes takes a few months for packages like Numba to become
   compatible with the newest minor version of |Python|.
 
 * The ``tests`` and ``docs`` dependency sets are required for running
