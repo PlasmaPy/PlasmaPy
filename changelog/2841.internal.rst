@@ -1,0 +1,1 @@
+Removed Numba as a project dependency. Consequently, `~plasmapy.formulary.frequencies.plasma_frequency_lite` and `~plasmapy.formulary.speeds.thermal_speed_lite` are no longer just-in-time compiled by Numba.

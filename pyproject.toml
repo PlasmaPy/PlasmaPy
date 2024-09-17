@@ -64,7 +64,6 @@ dependencies = [
   "lmfit >= 1.1.0",
   "matplotlib >= 3.6.0",
   "mpmath >= 1.2.1",
-  "numba >= 0.57.0",
   "numpy >= 1.24.0",
   "packaging >= 22.0",
   "pandas >= 1.5.0",
@@ -298,6 +297,7 @@ extend-select = [
   "C90", # mccabe
   "COM818", # trailing-comma-on-bare-tuple
   "D", # pydocstyle
+#  "DOC", # pydoclint (enable this rule set when it is no longer in preview)
   "DTZ", # flake8-datetimez
   "EM", # flake8-errmsg
   "EXE", # flake8-executable
@@ -326,6 +326,9 @@ extend-select = [
   "PYI", # flake8-pyi
   "RET", # flake8-return
   "RSE", # flake8-raise
+  "RUF001", # ambiguous-unicode-character-string
+  "RUF002", # ambiguous-unicode-character-docstring
+  "RUF003", # ambiguous-unicode-character-comment
   "RUF005", # collection-literal-concatenation
   "RUF006", # asyncio-dangling-task
   "RUF007", # pairwise-over-zipped
@@ -340,7 +343,10 @@ extend-select = [
   "RUF018", # assignment-in-assert
   "RUF019", # unnecessary-key-check
   "RUF020", # never-union
+  "RUF024", # mutable-fromkeys-value
+  "RUF026", # default-factory-kwarg
   "RUF100", # unused-noqa
+  "RUF101", # redirected-noqa
   "RUF200", # invalid-pyproject-toml
   "S", # flake8-bandit
   "SIM", # flake8-simplify
@@ -401,7 +407,9 @@ ignore = [
   "W191", # tab-indentation (formatter conflict)
   "W291", # trailing-whitespace (handled by formatter)
 ]
-dummy-variable-rgx = "Z|mass_numb|request|event"
+dummy-variable-rgx = "^(Z|mass_numb|request|event|_.*)$"
+# Allow potentially ambiguous Unicode characters with valid uses in plasma science
+allowed-confusables = ["–", "α", "β", "γ", "ι", "ν", "ο", "ρ", "σ", "τ", "υ", "×", "′", "∼", "∪", "⊤", "∨", "ℂ", "ℕ", "ℚ", "ℝ", "ℤ", "ℑ", "ℒ", "ℓ", "ℳ", "ℜ", "ℱ", "ℎ", "ℰ", "𝒪", "ℐ"]
 
 [tool.ruff.lint.flake8-annotations]
 allow-star-arg-any = true
@@ -464,13 +472,30 @@ max-complexity = 10
 "src/plasmapy/formulary/braginskii.py" = ["C901", "RET503", "RET504"]
 "src/plasmapy/plasma/sources/*.py" = ["D102"]
 "src/plasmapy/utils/_pytest_helpers/pytest_helpers.py" = ["BLE001", "PLR", "SLF001"]
-"test_*" = ["D100", "D101", "D102", "D103", "D104", "D209", "D400", "D401", "N801", "RUF012", "SLF001"]
 "tests/**/__init__.py" = ["D104"]
-"tests/**/*.py" = ["INP001"]
+"tests/**/test_*.py" = ["D100", "D101", "D102", "D103", "D104", "D209", "D400", "D401", "DOC201", "DOC501", "INP001", "N801",  "PLC2701", "PLR6301", "RUF012", "SLF001"]
 "tests/formulary/test_distribution.py" = ["ARG005"]
 "tests/particles/test_decorators.py" = ["ARG001", "ARG002"]
 "tests/utils/_pytest_helpers/test_pytest_helpers.py" = ["BLE001", "TRY002"]
 "tests/utils/decorators/test_converters.py" = ["ARG001", "ARG005"]
+"**/*.ipynb" = ["T201", "T203"]
+"src/plasmapy/utils/calculator/plasma_calculator.ipynb" = ["SLF001"]
+# The ruff rule violations in the following notebooks should eventually be fixed
+"docs/notebooks/analysis/fit_functions.ipynb" = ["NPY002"]
+"docs/notebooks/analysis/nullpoint.ipynb" = ["D103"]
+"docs/notebooks/analysis/swept_langmuir/find_floating_potential.ipynb" = ["FBT003"]
+"docs/notebooks/diagnostics/charged_particle_radiography_film_stacks.ipynb" = ["B007", "PTH123"]
+"docs/notebooks/diagnostics/charged_particle_radiography_particle_tracing.ipynb" = ["D103", "E741"]
+"docs/notebooks/diagnostics/charged_particle_radiography_particle_tracing_custom_source.ipynb" = ["NPY002"]
+"docs/notebooks/diagnostics/charged_particle_radiography_particle_tracing_wire_mesh.ipynb" = ["D103"]
+"docs/notebooks/diagnostics/thomson_fitting.ipynb" = ["NPY002", "PD011"]
+"docs/notebooks/dispersion/dispersion_function.ipynb" = ["D103"]
+"docs/notebooks/dispersion/stix_dispersion.ipynb" = ["FBT003"]
+"docs/notebooks/formulary/cold_plasma_tensor_elements.ipynb" = ["FBT003"]
+"docs/notebooks/formulary/ExB_drift.ipynb" = ["B008", "D103"]
+"docs/notebooks/langmuir_samples/_generate_noisy.ipynb" = ["NPY002", "PTH123"]
+"docs/notebooks/plasma/grids_cartesian.ipynb" = ["NPY002", "PLW2901"]
+"docs/notebooks/plasma/grids_nonuniform.ipynb" = ["NPY002"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "numpy"

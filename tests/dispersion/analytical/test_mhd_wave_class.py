@@ -1,5 +1,4 @@
 import astropy.units as u
-import astropy.units.core
 import numpy as np
 import pytest
 
@@ -56,7 +55,7 @@ class TestMHDWave:
             ),
             ({"k": 0 * u.rad / u.m, "theta": 45 * u.deg}, ValueError),
             ({"k": -1.0 * u.rad / u.m, "theta": 45 * u.deg}, ValueError),
-            ({"k": 1e-5 * u.eV, "theta": 45 * u.deg}, astropy.units.core.UnitTypeError),
+            ({"k": 1e-5 * u.eV, "theta": 45 * u.deg}, u.UnitTypeError),
             ({"k": 1e-5 * u.rad / u.m, "theta": np.ones((3, 2)) * u.deg}, ValueError),
             ({"k": 1e-5 * u.rad / u.m, "theta": 5 * u.eV}, u.UnitTypeError),
         ],

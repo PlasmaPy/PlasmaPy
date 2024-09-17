@@ -554,7 +554,7 @@ def test_Particle_class(arg, kwargs, expected_dict):
 
         else:
             try:
-                result = eval(f"particle.{key}")  # noqa: PGH001, S307
+                result = eval(f"particle.{key}")  # noqa: S307
                 assert result == expected or u.isclose(result, expected, equal_nan=True)
             except AssertionError:
                 errmsg += (
@@ -761,7 +761,7 @@ def test_particle_class_mass_nuclide_mass(isotope: str, ion: str) -> None:
         )
 
 
-@pytest.mark.slow()
+@pytest.mark.slow
 def test_particle_half_life_string() -> None:
     """
     Find the first isotope where the half-life is stored as a string
