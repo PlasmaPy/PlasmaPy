@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Literal
 
 __all__ = [
     "AbstractParticle",
@@ -1793,7 +1793,9 @@ class Particle(AbstractPhysicalParticle):
         """
         return self.is_category("ion")
 
-    def ionize(self, n: int = 1, inplace: bool = False) -> Particle | None:
+    def ionize(
+        self, n: int | Literal[np.inf] = 1, inplace: bool = False
+    ) -> Particle | None:
         """
         Create a new |Particle| instance corresponding to the current
         |Particle| after being ionized ``n`` times.
