@@ -496,6 +496,12 @@ authors:
   family-names: Pérez
   alias: RoberTnf
 
+- given-names: Preston
+  family-names: Pitzer
+  affiliation : Virginia Tech
+  orcid : https://orcid.org/0009-0007-0655-1347
+  alias: PrestonPitzerVT
+
 - given-names: Ramiz
   family-names: Qudsi
   affiliation: Boston University
