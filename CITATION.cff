@@ -157,6 +157,8 @@ authors:
   family-names: Choudhary
   alias: martha889
 
+- alias: cicciope
+
 - given-names: Christian
   family-names: Clauss
   alias: cclauss
@@ -457,6 +459,11 @@ authors:
 
 - alias: nrb1234
 
+- given-names: Carlos
+  family-names: Ortiz
+  affiliation: University of Wisconsin
+  alias: ciortiz
+
 - given-names: Oscar
   alias: 0scvr
 
@@ -488,6 +495,12 @@ authors:
 - given-names: Roberto Díaz
   family-names: Pérez
   alias: RoberTnf
+
+- given-names: Preston
+  family-names: Pitzer
+  affiliation : Virginia Tech
+  orcid : https://orcid.org/0009-0007-0655-1347
+  alias: PrestonPitzerVT
 
 - given-names: Ramiz
   family-names: Qudsi
@@ -667,6 +680,11 @@ authors:
   affiliation: University of Michigan
   alias: tranqver
 
+- given-names: Mychal
+  family-names: Valle
+  affiliation: UCLA
+  alias: Mychal-Valle
+
 - given-names: Steve
   family-names: Vincena
   affiliation: UCLA
@@ -692,3 +710,5 @@ authors:
 - given-names: Carol
   family-names: Zhang
   alias: carolyz
+
+- alias: CBrown345
