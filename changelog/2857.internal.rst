@@ -1,0 +1,1 @@
+Adjust Sphinx config to account for recent deprecations in ReadTheDocs.
