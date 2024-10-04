@@ -9,6 +9,9 @@ Testing Guide
    :local:
    :backlinks: none
 
+.. role:: toml(code)
+   :language: TOML
+
 Summary
 =======
 
@@ -22,38 +25,33 @@ install |Nox| and |uv|:
 
    .. group-tab:: macOS, Linux, or WSL
 
-      .. code-block:: console
+      .. code-block:: bash
 
          python -m pip install nox uv
 
    .. group-tab:: Windows
 
-      .. code-block:: console
+      .. code-block:: bash
 
          py -m pip install nox uv
 
 To run tests, navigate to a directory within your local clone of
 PlasmaPy and run:
 
-.. code-block:: console
+.. code-block:: bash
 
    nox
 
 This command will invoke `pytest` to run PlasmaPy's tests, excluding the
 tests marked as slow.
 
-.. important::
-
-   PlasmaPy is in the process of switching its test runner from |tox| to
-   |Nox|. |tox| is still used for defining weekly tests.
-
 Writing tests
 -------------
 
 * All functionality in PlasmaPy must have tests.
 
-* Tests are located in the top-level |tests/| directory. For example,
-  tests of `plasmapy.formulary` are in :file:`tests/formulary/`.
+* Tests are located in the top-level |tests|_ directory. For example,
+  tests of `plasmapy.formulary` are in |tests/formulary|_.
 
 * The names of test files begin with :file:`test_`.
 
@@ -103,10 +101,11 @@ does it in isolation from other tests :cite:p:`khorikov:2020`. A typical
 multiple software components work together as intended.
 
 PlasmaPy's tests are run using `pytest` and |Nox|. Tests are located in
-the |tests/| directory. For example, tests of `plasmapy.formulary`
-are located in :file:`tests/formulary` and tests of
+the |tests|_ directory, which has subdirectories for each of the
+subpackages. For example, tests of `plasmapy.formulary`
+are located in |tests/formulary|_ and tests of
 `plasmapy.formulary.speeds` are located in
-:file:`tests/formulary/test_speeds.py`.
+|tests/formulary/test_speeds.py|_.
 
 .. _writing-tests:
 
@@ -122,25 +121,25 @@ write a test.
 Locating tests
 --------------
 
-Tests are located in the top-level |tests/| directory. The directory
-structure of |tests/| largely mirrors that of |src/plasmapy/|, which
+Tests are located in the top-level |tests|_ directory. The directory
+structure of |tests|_ largely mirrors that of |src/plasmapy|_, which
 contains the source code of PlasmaPy.
 
 The tests of a subpackage named :samp:`plasmapy.{subpackage}` are
 located in the :samp:`tests/{subpackage}/` directory. Tests for a module
 named :samp:`plasmapy.{subpackage}.{module}` are generally located in
 :samp:`tests/{subpackage}/test_{module}.py`. For example, tests for
-`plasmapy.formulary` are located in :file:`tests/formulary`, and tests
+`plasmapy.formulary` are located in |tests/formulary|_, and tests
 of `plasmapy.formulary.speeds` are located in
-:file:`tests/formulary/test_speeds.py`.
+|tests/formulary/test_speeds.py|_.
 
 Test functions within each file have names that begin with :py:`test_`
 and end with a description of the behavior that is being tested. For
 example, a test to checks that a |Particle| can be turned into an
 antiparticle might be named :py:`:test_create_antiparticle_from_particle`.
 Because |Particle| is defined in
-:file:`src/plasmapy/particles/particle_class.py`, this test would be
-located in :file:`tests/particles/test_particle_class.py`.
+|src/plasmapy/particles/particle_class.py|_, this test would be
+located in |tests/particles/test_particle_class.py|_.
 
 Closely related tests may be `grouped into classes`_. The name of a
 test class begins with ``Test`` and the methods to be tested begin with
@@ -213,14 +212,14 @@ Floating point comparisons
 In order to avoid these difficulties, use
 `numpy.testing.assert_allclose` when comparing floating point numbers
 and arrays, and ``astropy.tests.helper.assert_quantity_allclose`` when
-comparing |Quantity| instances. The ``rtol`` keyword for each of these
+comparing |Quantity| instances. The ``rtol`` parameter for each of these
 functions sets the acceptable relative tolerance. The value of ``rtol``
 should be set ∼1–2 orders of magnitude greater than the expected
 relative uncertainty. For mathematical functions, a value of
-``rtol=1e-14`` is often appropriate. For quantities that depend on
-physical constants, a value between ``rtol=1e-8`` and ``rtol=1e-5`` may
-be required, depending on how much the accepted values for fundamental
-constants are likely to change.
+:py:`rtol=1e-14` is often appropriate. For quantities that depend on
+physical constants, a value between :py:`rtol=1e-8` and :py:`rtol=1e-5`
+may be required, depending on how much the accepted values for
+fundamental constants are likely to change.
 
 Testing warnings and exceptions
 -------------------------------
@@ -267,67 +266,66 @@ To test that a function raises an appropriate exception, use
 Test independence and parametrization
 -------------------------------------
 
-In this section, we'll discuss the issue of parametrization based on an
-example of a :wikipedia:`proof <Riemann_hypothesis#Excluded_middle>` of
-Gauss's class number conjecture.
-
-The proof goes along these lines:
-
-* If the generalized Riemann hypothesis is true, the conjecture is true.
-
-* If the generalized Riemann hypothesis is false, the conjecture is also
-  true.
-
-* Therefore, the conjecture is true.
-
-One way to use pytest would be to write sequential test in a single
-function.
+Sometimes we want to test how a function handles many different inputs.
+For example, take this simple function that checks if a number is less
+than 1000:
 
 .. code-block:: python
 
-   def test_proof_by_riemann_hypothesis() -> None:
-       assert proof_by_riemann(False)
-       assert proof_by_riemann(True)  # will only be run if the previous test passes
+   def less_than_1000(x: int) -> bool:
+       return True if x < 1000 else False
 
-If the first test were to fail, then the second test would never be run.
-We would therefore not know the potentially useful results of the second
-test. This drawback can be avoided by making independent tests so that
-both will be run.
+Let's say we want to test both positive and negative numbers that are
+less than 1000. One way to use pytest would be to write sequential tests
+in a single function.
 
 .. code-block:: python
 
-   def test_proof_if_riemann_false() -> None:
-       assert proof_by_riemann(False)
+   def test_less_than_1000() -> None:
+       assert less_than_1000(999)
+       assert less_than_1000(-1000)  # will only be run if the previous test passes
+
+If the first test were to fail, then the subsequent test would never be
+run. We would therefore not know the potentially useful results of the
+second test. This drawback can be avoided by making independent tests so
+that both will be run.
+
+.. code-block:: python
+
+   def test_less_than_1000_positive_number() -> None:
+       assert less_than_1000(999)
 
 
-   def test_proof_if_riemann_true() -> None:
-       assert proof_by_riemann(True)
+   def test_less_than_1000_negative_number() -> None:
+       assert less_than_1000(-1000)
 
 However, this approach can lead to cumbersome, repeated code if you are
-calling the same function over and over. If you wish to run multiple
-tests for the same function, the preferred method is to decorate it with
+calling the same function over and over. To run multiple tests for the
+same function, the preferred method is to decorate it with
 :py:`@pytest.mark.parametrize`.
 
 .. code-block:: python
 
-   @pytest.mark.parametrize("truth_value", [True, False])
-   def test_proof_if_riemann(truth_value: bool) -> None:
-       assert proof_by_riemann(truth_value)
+   @pytest.mark.parametrize("number_to_test", [999, -1000])
+   def test_less_than_1000(number_to_test: int) -> None:
+       assert less_than_1000(number_to_test)
 
-This code snippet will run :py:`proof_by_riemann(truth_value)` for each
-``truth_value`` in :py:`[True, False]`. Both of the above tests will be
-run regardless of failures. This approach is much cleaner for long lists
-of arguments, and has the advantage that you would only need to change
-the function call in one place if the function changes.
+This code snippet will run :py:`less_than_1000(number_to_test)` for each
+``number_to_test`` in :py:`[999, -1000]`. Both of the above tests will
+be run regardless of failures. This approach is much cleaner for long
+lists of arguments, and has the advantage that you would only need to
+change the function call in one place if the function changes.
 
 With qualitatively different tests you would use either separate
 functions or pass in tuples containing inputs and expected values.
 
 .. code-block:: python
 
-   @pytest.mark.parametrize("truth_value, expected", [(True, True), (False, True)])
-   def test_proof_if_riemann(truth_value: bool, expected: bool) -> None:
-       assert proof_by_riemann(truth_value) == expected
+   @pytest.mark.parametrize(
+       "number_to_test, expected", [(999, True), (-1000, True), (1000, False)]
+   )
+   def test_less_than_1000(number_to_test: int, expected: bool) -> None:
+       assert less_than_1000(number_to_test) == expected
 
 Test parametrization with argument unpacking
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -349,9 +347,8 @@ positional arguments (``a`` and ``b``) and one optional keyword argument
 .. hint::
 
    This function uses |type hint annotations| to indicate that ``a`` and
-   ``b`` can be either a :py:`float` or :py:`str`, :py:`reverse_order`
-   should be a :py:`bool`, and :py:`add` should return a :py:`float` or
-   :py:`str`.
+   ``b`` can be either a `float` or `str`, :py:`reverse_order` should be
+   a `bool`, and :py:`add` should return a `float` or `str`.
 
 Argument unpacking_ lets us provide positional arguments in a `tuple` or
 `list` (commonly referred to as :term:`args`) and keyword arguments in a
@@ -421,7 +418,7 @@ Best practices
 ==============
 
 The following list contains suggested practices for testing scientific
-software and making tests easier to run and maintain. These guidelines
+software and making tests easier to run and maintain. ✅ These guidelines
 are not rigid, and should be treated as general principles should be
 balanced with each other rather than absolute principles.
 
@@ -447,7 +444,8 @@ balanced with each other rather than absolute principles.
 
   .. tip::
 
-     Decorate tests with :py:`@pytest.mark.slow` if they take ≳0.3 seconds.
+     Decorate tests with :py:`@pytest.mark.slow` if they take
+     :math:`≳ 0.3` seconds.
 
      .. code-block:: python
 
@@ -540,19 +538,17 @@ Running tests
 
 PlasmaPy's tests can be run in the following ways:
 
-1. Creating and updating a pull request on |GitHub|.
-2. Running `pytest` from the command line.
-3. Running |Nox| from the command line.
-4. Running tests from an :wikipedia:`integrated development environment
-   <integrated_development_environment>` (IDE).
+1. Creating and updating a pull request on |GitHub|
+2. Running `pytest` from the command line
+3. Running |Nox| from the command line
+4. Running tests from an |IDE| such as PyCharm_ or `Visual Studio`_.
 
 We recommend that new contributors perform tests via a pull request on
-GitHub. Creating a draft pull request and keeping it updated ensures
-that all necessary checks are run frequently.
+GitHub. Creating a draft pull request early and keeping it updated
+ensures that all necessary checks are run frequently.
 
-Experienced contributors may find it useful to run tests from the
-command line using `pytest` or |Nox|, or via an IDE. In particular,
-using |Nox| ensures that tests are run in the same way as in CI.
+To run tests locally via the command line, we recommend using |Nox| to
+ensure that tests are run in the same environment as in CI.
 
 Using GitHub
 ------------
@@ -574,94 +570,77 @@ on *Details* for information about why a particular check failed.
    :align: center
    :alt: Continuous integration test results during a pull request
 
-The following checks are performed with each pull request.
+Checks run on every pull request
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-* Checks with labels like **CI / Python 3.x (pull request)** verify that
-  PlasmaPy works with different versions of Python and other
-  dependencies, and on different operating systems. These tests are set
-  up using |Nox| and run with `pytest` via |GitHub Actions|. When
-  multiple tests fail, investigate these tests first.
+The following is an incomplete list of checks performed for every pull
+request. These checks change frequently, so the names may be slightly
+different. These checks are defined in |.github/workflows/ci.yml|_,
+and usually invoke |Nox| sessions defined in |noxfile.py|_.
+
+* Checks with labels beginning with **CI / Tests, Python 3.x** verify
+  that PlasmaPy's test suite passes when run using different versions of
+  Python or on different operating systems. These tests are set up using
+  |Nox| and run with `pytest` via |GitHub Actions|.
 
   .. tip::
 
-     `Python 3.10 <https://docs.python.org/3.10/whatsnew/3.10.html>`__,
-     `Python 3.11 <https://docs.python.org/3.11/whatsnew/3.11.html>`__,
-     and
-     `Python 3.12 <https://docs.python.org/3.12/whatsnew/3.12.html>`__
-     include (or will include) significant improvements to common error
-     messages.
+     To take advantage of recent improvements in error messages, start
+     by checking test failures for the newest version of Python.
 
-* The **CI / Documentation (pull_request)** check verifies that
+* The **CI / Documentation** check verifies that
   |PlasmaPy's documentation| is able to build correctly from the pull
   request. Warnings are treated as errors.
 
 * The **docs/readthedocs.org:plasmapy** check allows us to preview
   how the documentation will appear if the pull request is merged.
-  Click on *Details* to access this preview.
-
-* The check labeled **changelog: found** or **changelog: absent**
-  indicates whether or not a changelog entry with the correct number
-  is present, unless the pull request has been labeled with "No
-  changelog entry needed".
-
-  * The :file:`changelog/README.rst` file describes the process for
-    adding a changelog entry to a pull request.
-
-* The **codecov/patch** and **codecov/project** checks generate test
-  coverage reports that show which lines of code are run by the test
-  suite and which are not. Codecov_ will automatically post its report
-  as a comment to the pull request. The Codecov_ checks will be marked
-  as passing when the test coverage is satisfactorily high. For more
-  information, see the section on :ref:`code-coverage`.
-
-* The **CI / Importing PlasmaPy (pull_request)** checks that it is
-  possible to run :py:`import plasmapy`.
-
-* PlasmaPy uses |black| to format code and |isort| to sort ``import``
-  statements. The **CI / Linters (pull_request)** and
-  **pre-commit.ci - pr** checks verify that the pull request meets these
-  style requirements. These checks will fail when inconsistencies with
-  the output from |black| or |isort| are found or when there are syntax
-  errors. These checks can usually be ignored until the pull request is
-  nearing completion.
 
   .. tip::
 
-     The required formatting fixes can be applied automatically by
-     writing a comment with the message ``pre-commit.ci autofix`` to the
-     *Conversation* tab on a pull request, as long as there are no
-     syntax errors. This approach is much more efficient than making the
-     style fixes manually. Remember to ``git pull`` afterwards!
+     Click on :guilabel:`Details` next to the
+     **docs/readthedocs.org:plasmapy** check to access a preview of the
+     documentation.
 
-  .. note::
+* The **Changelog** check verifies whether a changelog entry with the
+  correct number is present in the |changelog|_ directory (unless the
+  pull request has been labeled with
+  :guilabel:`no changelog entry needed` or
+  :guilabel:`skip changelog checks`).
 
-     When using pre-commit, a hook for codespell_ will check for and fix
-     common misspellings. If you encounter any words caught by
-     codespell_ that should *not* be fixed, please add these false
-     positives to ``ignore-words-list`` under ``codespell`` in
-     :file:`pyproject.toml`.
+  .. tip::
 
-* The **CI / Packaging (pull request)** check verifies that no errors
-  arise that would prevent an official release of PlasmaPy from being
-  made.
+     The |changelog guide| describes the process for adding a changelog
+     entry to a pull request.
 
-* The **Pull Request Labeler / triage (pull_request_target)** check
-  applies appropriate |GitHub| labels to pull requests.
+* The **pre-commit.ci** check runs linters, autoformatters, and other
+  quality assurance tools via |pre-commit|. PlasmaPy's
+  :ref:`pre-commit troubleshooting guide <pre-commit-troubleshooting>`
+  describes how to deal with common |pre-commit| failures.
+
+  .. important::
+
+     Auto-fixes from |pre-commit| can be applied by writing a comment
+     that says ``pre-commit.ci autofix`` to the :guilabel:`Conversation`
+     tab on a pull request. Remember to ``git pull`` afterwards!
+
+* The **codecov/patch** and **codecov/project** checks generate test
+  coverage reports that show which lines of code are run by the test
+  suite and which are not (see also the section on
+  :ref:`code-coverage`.). Codecov_ will automatically post its report as
+  a comment to the pull request. The Codecov_ checks will be marked as
+  passing when the test coverage is satisfactorily high.
+
+* The **CI / Packaging** check verifies that no errors arise that would
+  prevent an official release of PlasmaPy from being made.
+
+* The **CI / Static type checking with mypy** check performs
+  |static type checking| of |type hint annotations| with |mypy|.
 
 .. note::
 
-   For first-time contributors, existing maintainers `may need to
-   manually enable your `GitHub Action test runs
+   For first-time contributors, a maintainer may need to manually
+   enable your `GitHub Action test runs
    <https://docs.github.com/en/actions/managing-workflow-runs/approving-workflow-runs-from-public-forks>`__.
-   This is, believe it or not, indirectly caused by the invention of
-   cryptocurrencies.
-
-.. note::
-
-   The continuous integration (CI) checks performed for pull requests change
-   frequently. If you notice that the above list has become out-of-date,
-   please `submit an issue that this section needs updating
-   <https://github.com/PlasmaPy/PlasmaPy/issues/new?title=Update%20information%20on%20GitHub%20checks%20in%20testing%20guide&labels=Documentation>`__.
 
 Using pytest
 ------------
@@ -669,14 +648,14 @@ Using pytest
 To install the packages necessary to run tests on your local computer
 (including |Nox| and pytest_), run:
 
-.. code-block:: console
+.. code-block:: bash
 
    pip install -e .[tests]
 
 To run PlasmaPy's tests from the command line, go to a directory within
 PlasmaPy's repository and run:
 
-.. code-block:: console
+.. code-block:: bash
 
    pytest
 
@@ -686,21 +665,23 @@ PlasmaPy's tests, it is usually most convenient to specify that only a
 subset of the tests be run. To run the tests contained within a
 particular file or directory, include its name after `pytest`.
 
-.. code-block:: console
+.. code-block:: bash
 
    pytest tests/particles/test_atomic.py
 
-The ``pytest-filter-subpackage`` extension lets us use the ``-P`` flag
-to specify a subpackage (directory) that tests should be run for. To
-perform tests for `plasmapy.particles`, run:
+.. tip::
 
-.. code-block:: console
+   The ``pytest-filter-subpackage`` extension lets us use the ``-P``
+   flag to specify a subpackage (directory) that tests should be run
+   for. To perform tests for `plasmapy.particles`, run:
 
-   pytest -P particles
+   .. code-block:: bash
+
+      pytest -P particles
 
 The documentation for `pytest` describes `how to invoke pytest`_ and
 specify which tests will or will not be run. A few useful examples of
-flags you can use with it:
+flags you can use with `pytest` are:
 
 * Use the ``--tb=short`` to shorten traceback reports, which is useful
   when there are multiple related errors. Use ``--tb=long`` for
@@ -722,50 +703,56 @@ Using Nox
 ---------
 
 PlasmaPy's continuous integration checks on |GitHub| are typically run
-using |Nox|, a Python tool for automating tasks such as running software
-tests, building documentation, and performing other checks. Using |Nox|
-simplifies testing PlasmaPy with different releases of Python, with
-different versions of PlasmaPy's dependencies, and on different
-operating systems. Testing with |Nox| is more robust than testing with
-`pytest` alone because |Nox| creates its own virtual environments and
-ensures that tests are run the same way as in CI.
+using |Nox|, a versatile Python tool for automating tasks such as
+running software tests, building documentation, running code quality
+checks, and performing other development tasks. Nox sessions are
+defined via functions decorated with :py:`@nox.session` in
+|noxfile.py|_.
 
-.. tip::
+Using Nox simplifies testing PlasmaPy with different releases of
+Python, with different versions of PlasmaPy's dependencies, and on
+different operating systems. Testing with Nox is more robust than
+testing with `pytest` alone because Nox creates its own virtual
+environments and ensures that tests are run locally the same way as in
+CI.
 
-   Installing |uv| alongside |Nox| leads to significantly faster
-   dependency resolution and improved caching.
+To run PlasmaPy's tests (except for those marked as slow), enter the
+top-level directory of the repository and run:
 
-To run PlasmaPy's tests (except for those marked as slow), run:
-
-.. code-block:: console
+.. code-block:: bash
 
    nox
 
-To find out what |Nox| sessions are defined, run:
+To find out what Nox sessions are defined, run:
 
-.. code-block::
+.. code-block:: bash
 
    nox -l
 
 To run PlasmaPy's tests for a particular session, run:
 
-.. code-block:: console
+.. code-block:: bash
 
    nox -s '<session>'
 
-where ``<session>`` is replaced with the name of the |Nox| session. The
+where ``<session>`` is replaced with the name of the Nox session. The
 quotes are only needed if ``<session>`` contains special characters like
 parentheses.
 
 For example, static type checking with |mypy| can be run locally with
 
-.. code-block:: console
+.. code-block:: bash
 
    nox -s mypy
 
-Commands using |Nox| must be run in the top-level directory of the
+Commands using Nox must be run in the top-level directory of the
 PlasmaPy repository, which is the directory containing
-:file:`noxfile.py`.
+|noxfile.py|_.
+
+.. tip::
+
+   Installing |uv| alongside Nox leads to significantly faster
+   dependency resolution and improved caching.
 
 .. _code-coverage:
 
@@ -790,6 +777,9 @@ Line coverage reports show which lines of code have been used in a test
 and which have not. These reports show which lines of code remain to be
 tested, and sometimes indicate sections of code that are unreachable.
 
+PlasmaPy uses `coverage.py`_ and the `pytest-cov`_ plugin for `pytest` to
+measure code coverage and Codecov_ to provide reports on GitHub.
+
 .. tip::
 
    Use test coverage reports to write tests that target untested
@@ -802,9 +792,6 @@ tested, and sometimes indicate sections of code that are unreachable.
    the testing is sufficient. A test that makes no assertions has little
    value, but could still have high test coverage.
 
-PlasmaPy uses `coverage.py`_ and the `pytest-cov`_ plugin for `pytest` to
-measure code coverage and Codecov_ to provide reports on GitHub.
-
 Generating coverage reports with pytest
 ---------------------------------------
 
@@ -812,7 +799,7 @@ Code coverage reports may be generated on your local computer to show
 which lines of code are covered by tests and which are not. To generate
 an HTML report, use the ``--cov`` flag for `pytest`:
 
-.. code-block:: console
+.. code-block:: bash
 
    pytest --cov
    coverage html
@@ -832,7 +819,7 @@ yet able to handle correctly.
 To exclude a line from a coverage report, end it with
 ``# coverage: ignore``. Alternatively, we may add a line to
 ``exclude_lines`` in the ``[tool.coverage.report]`` section of
-:file:`pyproject.toml` that consists of a
+|pyproject.toml|_ that consists of a
 a pattern that indicates that a line be excluded from coverage reports.
 In general, untested lines of code should remain marked as untested to
 give future developers a better idea of where tests should be added in
@@ -842,19 +829,19 @@ Coverage configurations
 -----------------------
 
 Configurations for coverage tests are given in the
-``[tool.coverage.report]`` and ``[tool.coverage.run]`` sections of
-:file:`pyproject.toml`. Codecov_ configurations are given in
-:file:`codecov.yml`.
+:toml:`[tool.coverage.report]` and :toml:`[tool.coverage.run]` sections
+of |pyproject.toml|_. Codecov_ configurations are given in
+|codecov.yml|_.
 
 Using an integrated development environment
 -------------------------------------------
 
-Most IDEs have built-in tools that simplify software testing. IDEs like
-PyCharm_ and `Visual Studio`_ allow test configurations to be run with a
-click of the mouse or a few keystrokes. While IDEs require time to
-learn, they are among the most efficient methods to interactively
-perform tests. Here are instructions for running tests in several
-popular IDEs:
+An |IDE| typically has built-in tools that simplify software testing.
+IDEs like PyCharm_ and `Visual Studio`_ allow test configurations to be
+run with a click of the mouse or a few keystrokes. While IDEs require
+time to learn, they are among the most efficient methods to
+interactively perform tests. Here are instructions for running tests in
+several popular IDEs:
 
 * `Python testing in PyCharm
   <https://www.jetbrains.com/help/pycharm/testing-your-first-python-application.html>`__
@@ -866,7 +853,6 @@ popular IDEs:
 
 .. _Atom: https://atom.io
 .. _Codecov: https://about.codecov.io
-.. _codespell: https://github.com/codespell-project/codespell
 .. _`coverage.py`: https://coverage.readthedocs.io
 .. _`create a pull request`: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests
 .. _fixtures: https://docs.pytest.org/en/latest/explanation/fixtures.html
@@ -886,3 +872,35 @@ popular IDEs:
 .. _`test exceptions`: https://docs.pytest.org/en/latest/assert.html#assertions-about-expected-exceptions
 .. _unpacking: https://docs.python.org/3/tutorial/controlflow.html#unpacking-argument-lists
 .. _`Visual Studio`: https://visualstudio.microsoft.com
+
+.. _`.github/workflows/ci.yml`: https://github.com/PlasmaPy/PlasmaPy/tree/main/.github/workflows/ci.yml
+.. |.github/workflows/ci.yml| replace:: :file:`.github/workflows/ci.yml`
+
+.. _`changelog`: https://github.com/PlasmaPy/PlasmaPy/tree/main/changelog
+.. |changelog| replace:: :file:`changelog`
+
+.. _`codecov.yml`: https://github.com/PlasmaPy/PlasmaPy/tree/main/codecov.yml
+.. |codecov.yml| replace:: :file:`codecov.yml`
+
+.. _`noxfile.py`: https://github.com/PlasmaPy/PlasmaPy/tree/main/noxfile.py
+.. |noxfile.py| replace:: :file:`noxfile.py`
+
+.. _`pyproject.toml`: https://github.com/PlasmaPy/PlasmaPy/tree/main/pyproject.toml
+.. |pyproject.toml| replace:: :file:`pyproject.toml`
+
+.. _`src/plasmapy`: https://github.com/PlasmaPy/PlasmaPy/tree/main/src/plasmapy
+
+.. _`src/plasmapy/particles/particle_class.py`: https://github.com/PlasmaPy/PlasmaPy/tree/main/tests/src/plasmapy/particles/particle_class.py
+.. |src/plasmapy/particles/particle_class.py| replace:: :file:`src/plasmapy/particles/particle_class.py`
+
+.. _`tests`: https://github.com/PlasmaPy/PlasmaPy/tree/main/tests
+.. |tests| replace:: :file:`tests`
+
+.. _`tests/particles/test_particle_class.py`: https://github.com/PlasmaPy/PlasmaPy/tree/main/tests/particles/test_particle_class.py
+.. |tests/particles/test_particle_class.py| replace:: :file:`tests/particles/test_particle_class.py`
+
+.. _`tests/formulary`: https://github.com/PlasmaPy/PlasmaPy/tree/main/tests/formulary
+.. |tests/formulary| replace:: :file:`tests/formulary`
+
+.. _`tests/formulary/test_speeds.py`: https://github.com/PlasmaPy/PlasmaPy/tree/main/tests/formulary/test_speeds.py
+.. |tests/formulary/test_speeds.py| replace:: :file:`tests/formulary/test_speeds.py`

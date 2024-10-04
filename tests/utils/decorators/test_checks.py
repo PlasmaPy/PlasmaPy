@@ -5,6 +5,7 @@ change them).
 
 import inspect
 from types import LambdaType
+from typing import Any
 from unittest import mock
 
 import astropy.units as u
@@ -402,7 +403,7 @@ class TestCheckUnits:
         ]
 
         # perform tests
-        for _ii, case in enumerate(_cases):  # noqa: B007
+        for _ii, case in enumerate(_cases):
             sig = inspect.signature(case["setup"]["function"])
             bound_args = sig.bind(*case["setup"]["args"], **case["setup"]["kwargs"])
 
@@ -728,7 +729,7 @@ class TestCheckValues:
         return x + y
 
     @staticmethod
-    def foo_stars(x, *args, y=3, **kwargs):
+    def foo_stars(x, *args, y: Any = 3, **kwargs) -> Any:
         return x + y
 
     def test_inheritance(self) -> None:

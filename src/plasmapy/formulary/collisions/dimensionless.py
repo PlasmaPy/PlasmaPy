@@ -7,6 +7,7 @@ __all__ = [
     "Knudsen_number",
 ]
 
+from typing import Literal
 
 import astropy.units as u
 import numpy as np
@@ -33,13 +34,13 @@ def coupling_parameter(
     species,
     z_mean: float = np.nan,
     V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
-    method="classical",
+    method: Literal["classical", "quantum"] = "classical",
 ) -> u.Quantity[u.dimensionless_unscaled]:
     r"""
     Ratio of the Coulomb energy to the kinetic (usually thermal) energy.
 
     Classical plasmas are weakly coupled (:math:`Γ ≪ 1`, where :math:`Γ`
-    is the coupling parameter).  Dense plasmas tend to have significant
+    is the coupling parameter). Dense plasmas tend to have significant
     to strong coupling (:math:`Γ ≥ 1`\ ).  For more details, see the
     notes section below.
 
@@ -72,11 +73,10 @@ def coupling_parameter(
         thermal velocity is assumed: :math:`μ V^2 \sim 2 k_B T` where
         :math:`μ` is the reduced mass.
 
-    method : `str`, optional
+    method : {``"classical"``, ``"quantum"``}, default: "classical"
         The method by which to compute the coupling parameter: either
-        ``"classical"`` or ``"quantum"``. The default method is
-        ``"classical"``.  The Notes section of this docstring has more
-        information about these two methods.
+        ``"classical"`` or ``"quantum"``. The Notes section of this
+        docstring has more information about these two methods.
 
     Returns
     -------
@@ -230,7 +230,7 @@ def Knudsen_number(
     species,
     z_mean: float = np.nan,
     V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
-    method="classical",
+    method: str = "classical",
 ) -> u.Quantity[u.dimensionless_unscaled]:
     r"""
     Knudsen number (dimensionless).

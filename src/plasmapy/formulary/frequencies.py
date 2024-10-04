@@ -14,7 +14,6 @@ __lite_funcs__ = ["plasma_frequency_lite"]
 import astropy.units as u
 import numpy as np
 from astropy.constants.si import e, eps0
-from numba import njit
 
 from plasmapy import particles
 from plasmapy.particles.decorators import particle_input
@@ -101,7 +100,7 @@ def gyrofrequency(
     gyration around magnetic field lines and is given by:
 
     .. math::
-        ω_{c} = \frac{|Z| e B}{m}
+        ω_c = \frac{|Z| e B}{m}
 
     If ``signed`` is `True`, then :math:`|Z|` is replaced with
     :math:`Z`. A particle's gyrofrequency is also known as its
@@ -156,7 +155,6 @@ wc_ = gyrofrequency
 
 
 @preserve_signature
-@njit
 def plasma_frequency_lite(
     n: float,
     mass: float,
@@ -165,7 +163,7 @@ def plasma_frequency_lite(
 ) -> float:
     r"""
     The :term:`lite-function` for
-    `~plasmapy.formulary.frequencies.plasma_frequency`.  Performs the
+    `~plasmapy.formulary.frequencies.plasma_frequency`. Performs the
     same plasma frequency calculation as
     `~plasmapy.formulary.frequencies.plasma_frequency`, but is intended
     for computational use and, thus, has all data conditioning
@@ -181,7 +179,7 @@ def plasma_frequency_lite(
 
     Z : `float`
         The average ionization (arithmetic mean) for the particle
-        species in the plasma.  For example, a proton would have a value
+        species in the plasma. For example, a proton would have a value
         of ``Z=1``.
 
     to_hz : `bool`, default: `False`.
@@ -191,7 +189,7 @@ def plasma_frequency_lite(
     Returns
     -------
     wp : `float`
-        The particle plasma frequency in radians per second.  Setting
+        The particle plasma frequency in radians per second. Setting
         keyword ``to_hz=True`` will apply the factor of :math:`1/2π`
         and yield a value in Hz.
 
@@ -267,7 +265,7 @@ def plasma_frequency(
     Returns
     -------
     `~astropy.units.Quantity`
-        The particle plasma frequency in radians per second.  Setting
+        The particle plasma frequency in radians per second. Setting
         keyword ``to_hz=True`` will apply the factor of :math:`1/2π`
         and yield a value in Hz.
 
@@ -516,7 +514,6 @@ def upper_hybrid_frequency(
     <Quantity 4.00459...e+11 rad / s>
     >>> upper_hybrid_frequency(0.2 * u.T, n_e=5e19 * u.m**-3, to_hz=True)
     <Quantity 6.37350...e+10 Hz>
-
     """
     omega_pe = plasma_frequency(n=n_e, particle="e-")
     omega_ce = gyrofrequency(B, "e-")
@@ -600,10 +597,10 @@ def Buchsbaum_frequency(
     -----
     In a magnetized plasma, the presence of two ion species allows the
     perpendicular component of the cold-plasma dielectric coefficient
-    :math:`\epsilon_{\perp}` to vanish at an angular frequency referred
+    :math:`ε_⟂` to vanish at an angular frequency referred
     to as the Buchsbaum frequency :cite:p:`buchsbaum:1960`, also called
     the bi-ion hybrid resonance frequency :cite:p:`thompson:1995`, or
-    ion-ion hybrid frequency :cite:p:`vincena:2013`.  This frequency
+    ion-ion hybrid frequency :cite:p:`vincena:2013`. This frequency
     can be defined as:
 
     .. math::

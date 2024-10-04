@@ -300,7 +300,7 @@ class TestValidateQuantities:
         vq.f = self.foo
 
         # perform tests
-        for _ii, case in enumerate(_cases):  # noqa: B007
+        for _ii, case in enumerate(_cases):
             arg, arg_name = case["input"]["args"]
             validations = case["input"]["validations"]
 

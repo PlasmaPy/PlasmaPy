@@ -1037,7 +1037,7 @@ def test_unnamed_tests_exceptions(tested_object, args, kwargs, expected) -> None
         tested_object(*args, **kwargs)
 
     if hasattr(expected, "expected_exception"):
-        assert type(expected.expected_exception()) == exc_info.type
+        assert type(expected.expected_exception()) is exc_info.type
 
     if hasattr(expected, "expected_warning"):
         for expected_warning, recorded_warning in zip(

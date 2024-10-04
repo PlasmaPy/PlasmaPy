@@ -54,6 +54,12 @@ def Debye_number(
     n_e : `~astropy.units.Quantity`
         Electron number density.
 
+    Returns
+    -------
+    N_D : `~astropy.units.Quantity`
+        Number of electrons within a sphere with a radius of the Debye
+        length.
+
     Raises
     ------
     `TypeError`
@@ -70,11 +76,9 @@ def Debye_number(
     : `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed.
 
-    Returns
-    -------
-    N_D : `~astropy.units.Quantity`
-        Number of electrons within a sphere with a radius of the Debye
-        length.
+    See Also
+    --------
+    ~plasmapy.formulary.lengths.Debye_length
 
     Notes
     -----
@@ -88,17 +92,12 @@ def Debye_number(
 
     Collective behavior requires :math:`N_D ≫ 1`\ .
 
-    See Also
-    --------
-    ~plasmapy.formulary.lengths.Debye_length
-
     Examples
     --------
     >>> import astropy.units as u
     >>> from astropy.constants.si import m_p, m_e
     >>> Debye_number(5e6 * u.K, 5e9 * u.cm**-3)
     <Quantity 2.17658...e+08>
-
     """
 
     lambda_D = lengths.Debye_length(T_e, n_e)
@@ -157,9 +156,9 @@ def Hall_parameter(
 
     particle : `~plasmapy.particles.particle_class.Particle`
         The particle species for which the Hall parameter is calculated
-        for.  Representation of the particle species (e.g., ``'p+'`` for
+        for. Representation of the particle species (e.g., ``'p+'`` for
         protons, ``'D+'`` for deuterium, or ``'He-4 +1'`` for singly
-        ionized helium-4).  If no charge state information is provided,
+        ionized helium-4). If no charge state information is provided,
         then the particles are assumed to be singly charged.
 
     coulomb_log : `float`, optional
@@ -167,7 +166,7 @@ def Hall_parameter(
         purposes.
 
     V : `~astropy.units.quantity.Quantity`
-        The relative velocity between ``particle`` and ``ion``.  If not
+        The relative velocity between ``particle`` and ``ion``. If not
         provided, then the ``particle`` thermal velocity is assumed
         (`~plasmapy.formulary.speeds.thermal_speed`).
 
@@ -178,9 +177,14 @@ def Hall_parameter(
         6 supported methods are ``"ls_min_interp"``,
         ``"ls_full_interp"``, ``"ls_clamp_mininterp"``,
         ``"hls_min_interp"``, ``"hls_max_interp"``, and
-        ``"hls_full_interp"``.  Please refer to the docstring of
+        ``"hls_full_interp"``. Please refer to the docstring of
         `~plasmapy.formulary.collisions.coulomb.Coulomb_logarithm` for
         more information about these methods.
+
+    Returns
+    -------
+    `~astropy.units.quantity.Quantity`
+        Hall parameter for ``particle``.
 
     See Also
     --------
@@ -188,11 +192,6 @@ def Hall_parameter(
     ~plasmapy.formulary.collisions.frequencies.fundamental_electron_collision_freq
     ~plasmapy.formulary.collisions.frequencies.fundamental_ion_collision_freq
     ~plasmapy.formulary.collisions.coulomb.Coulomb_logarithm
-
-    Returns
-    -------
-    `~astropy.units.quantity.Quantity`
-        Hall parameter for ``particle``.
 
     Notes
     -----
@@ -243,10 +242,11 @@ def beta(
     The beta (:math:`β`) of a plasma is defined by
 
     .. math::
-        β = \frac{p_{th}}{p_{mag}}
+        β = \frac{p_{th}}{p_{mag}} = \frac{n k_B T}{B^2/2\mu_0}
 
-    where :math:`p_{th}` is the thermal pressure of the plasma
-    and :math:`p_{mag}` is the magnetic pressure of the plasma.
+    where :math:`p_{th}` is the `~plasmapy.formulary.misc.thermal_pressure`
+    of the plasma and :math:`p_{mag}` is the
+    `~plasmapy.formulary.misc.magnetic_pressure` of the plasma.
 
     Parameters
     ----------
@@ -259,14 +259,6 @@ def beta(
     B : `~astropy.units.Quantity`
         The magnetic field in the plasma.
 
-    Examples
-    --------
-    >>> import astropy.units as u
-    >>> beta(1 * u.eV, 1e20 * u.m**-3, 1 * u.T)
-    <Quantity 4.0267...e-05>
-    >>> beta(8.8e3 * u.eV, 1e20 * u.m**-3, 5.3 * u.T)
-    <Quantity 0.01261...>
-
     Returns
     -------
     beta: `~astropy.units.Quantity`
@@ -276,6 +268,14 @@ def beta(
     --------
     ~plasmapy.formulary.misc.thermal_pressure
     ~plasmapy.formulary.misc.magnetic_pressure
+
+    Examples
+    --------
+    >>> import astropy.units as u
+    >>> beta(1 * u.eV, 1e20 * u.m**-3, 1 * u.T)
+    <Quantity 4.0267...e-05>
+    >>> beta(8.8e3 * u.eV, 1e20 * u.m**-3, 5.3 * u.T)
+    <Quantity 0.01261...>
     """
     thermal_pressure = misc.thermal_pressure(T, n)
     magnetic_pressure = misc.magnetic_pressure(B)
@@ -318,10 +318,10 @@ def Reynolds_number(
     mu : `~astropy.units.Quantity`
         The dynamic viscosity of the plasma.
 
-    Warns
-    -----
-    : `~astropy.units.UnitsWarning`
-        If units are not provided, SI units are assumed.
+    Returns
+    -------
+    Re: `~astropy.units.Quantity`
+        Dimensionless quantity.
 
     Raises
     ------
@@ -334,6 +334,11 @@ def Reynolds_number(
 
     :exc:`~plasmapy.utils.exceptions.RelativityError`
         If ``U`` is greater than the speed of light.
+
+    Warns
+    -----
+    : `~astropy.units.UnitsWarning`
+        If units are not provided, SI units are assumed.
 
     Examples
     --------
@@ -350,12 +355,6 @@ def Reynolds_number(
     >>> mu = 10 * u.kg / (u.m * u.s)
     >>> Reynolds_number(rho, U, L, mu)
     <Quantity 0.745>
-
-    Returns
-    -------
-    Re: `~astropy.units.Quantity`
-        Dimensionless quantity.
-
     """
     return abs(rho * U * L / mu)
 
@@ -395,10 +394,10 @@ def Mag_Reynolds(
     sigma : `~astropy.units.Quantity`
         The conductivity of the plasma.
 
-    Warns
-    -----
-    : `~astropy.units.UnitsWarning`
-        If units are not provided, SI units are assumed.
+    Returns
+    -------
+    Rm : `~astropy.units.Quantity`
+        The magnetic Reynolds number.
 
     Raises
     ------
@@ -408,6 +407,11 @@ def Mag_Reynolds(
 
     `~astropy.units.UnitConversionError`
         If ``U`` is not in appropriate units.
+
+    Warns
+    -----
+    : `~astropy.units.UnitsWarning`
+        If units are not provided, SI units are assumed.
 
     Examples
     --------
@@ -422,12 +426,6 @@ def Mag_Reynolds(
     >>> L = 0.05 * u.m
     >>> Mag_Reynolds(U, L, sigma)
     <Quantity 0.37447784>
-
-    Returns
-    -------
-    Rm : `~astropy.units.Quantity`
-        The magnetic Reynolds number.
-
     """
     eta = 1 / (mu0 * sigma)
     return abs(U * L / eta)
@@ -446,20 +444,22 @@ def Lundquist_number(
     z_mean: float | None = None,
 ) -> u.Quantity[u.dimensionless_unscaled]:
     r"""
-    Compute the Lundquist number.
+    Compute the ratio of the Alfén wave crossing timescale to the
+    magnetic diffusion timescale.
 
-    The Lundquist number :math:`S` is a dimensionless quantity that compares the
-    Alfvén wave crossing timescale to the magnetic diffusion timescale in a
-    conducting medium. It is given by
+    The Lundquist number :math:`S` is a dimensionless quantity that
+    compares the Alfvén wave crossing timescale to the magnetic
+    diffusion timescale in a conducting medium. It is given by
 
     .. math::
 
         S = \frac{L V_A}{η}
 
-    where L is the length scale, :math:`V_A = B / \sqrt{\mu_0 \rho}` is the Alfvén
-    speed, :math:`B` is the magnetic field, :math:`\rho` is the mass density,
-    :math:`μ_0` is the permeability of free space, :math:`η = 1 / (μ_0 \sigma)` is
-    the magnetic diffusivity, and :math:`\sigma` is the electrical conductivity.
+    where L is the length scale, :math:`V_A = B / \sqrt{μ_0 ρ}` is the
+    Alfvén speed, :math:`B` is the magnetic field, :math:`ρ` is the mass
+    density, :math:`μ_0` is the permeability of free space,
+    :math:`η = 1 / (μ_0 σ)` is the magnetic diffusivity, and :math:`σ`
+    is the electrical conductivity.
 
     Parameters
     ----------
@@ -470,43 +470,42 @@ def Lundquist_number(
         The magnetic field magnitude in units convertible to tesla.
 
     density : `~astropy.units.Quantity`
-        Either the ion number density :math:`n_i` in units convertible to
-        m\ :sup:`-3` or the total mass density :math:`ρ` in units
+        Either the ion number density :math:`n_i` in units convertible
+        to m\ :sup:`-3` or the total mass density :math:`ρ` in units
         convertible to kg m\ :sup:`-3`\ .
 
     sigma : `~astropy.units.Quantity`
         The conductivity of the plasma.
 
     ion : `~plasmapy.particles.particle_class.Particle`, optional
-        Representation of the ion species (e.g., ``'p+'`` for protons, ``'D+'`` for
-        deuterium, ``'He-4 +1'`` for singly ionized helium-4, etc.). If no charge
-        state information is provided, then the ions are assumed to be singly
-        ionized. If the density is an ion number density, then this parameter
-        is required in order to convert to mass density.
+        Representation of the ion species (e.g., ``'p+'`` for protons,
+        ``'D+'`` for deuterium, ``'He-4 +1'`` for singly ionized
+        helium-4, etc.). If no charge state information is provided,
+        then the ions are assumed to be singly ionized. If the density
+        is an ion number density, then this parameter is required in
+        order to convert to mass density.
 
     z_mean : `float`, optional
-        The average ionization state (arithmetic mean) of the ``ion`` composing
-        the plasma.  This is used in calculating the mass density
-        :math:`ρ = n_i (m_i + Z_{mean} m_e)`.  ``z_mean`` is ignored if
-        ``density`` is passed as a mass density and overrides any charge state
-        info provided by ``ion``.
+        The average ionization state (arithmetic mean) of the ``ion``
+        composing the plasma. This is used in calculating the mass
+        density :math:`ρ = n_i (m_i + Z_{mean} m_e)`. ``z_mean`` is
+        ignored if ``density`` is passed as a mass density and overrides
+        any charge state info provided by ``ion``.
 
-    Warns
-    -----
-    : `~plasmapy.utils.exceptions.RelativityWarning`
-        If the Alfvén velocity exceeds 5% of the speed of light.
-
-    : `~astropy.units.UnitsWarning`
-        If units are not provided, SI units are assumed.
+    Returns
+    -------
+    S : `~astropy.units.Quantity`
+        The Lundquist number.
 
     Raises
     ------
     `~plasmapy.utils.exceptions.RelativityError`
-        If the Alfvén velocity is greater than or equal to the speed of light.
+        If the Alfvén velocity is greater than or equal to the speed of
+        light.
 
     `TypeError`
         If ``B`` and/or ``density`` are not of type `~astropy.units.Quantity`,
-        or convertible.
+        or convertible to one.
 
     `TypeError`
         If ``ion`` is not of type or convertible to
@@ -526,6 +525,14 @@ def Lundquist_number(
     `ValueError`
         If ``density`` is negative.
 
+    Warns
+    -----
+    : `~plasmapy.utils.exceptions.RelativityWarning`
+        If the Alfvén velocity exceeds 5% of the speed of light.
+
+    : `~astropy.units.UnitsWarning`
+        If units are not provided, SI units are assumed.
+
     Notes
     -----
     For calculating the Alfvén speed `~plasmapy.formulary.speeds.Alfven_speed`
@@ -536,14 +543,14 @@ def Lundquist_number(
     magnetic reconnection. For example, reconnection rates in both the
     Sweet-Parker and Petschek models of magnetic reconnection can be expressed
     in terms of the Lundquist number. In the Sweet-Parker model, a current
-    sheet with half-width :math:`L`, conductivity :math:`\sigma`, magnetic
-    diffusivity :math:`\eta = 1 / (\mu_0 \sigma)`, and Alfvén speed :math:`V_A`
+    sheet with half-width :math:`L`, conductivity :math:`σ`, magnetic
+    diffusivity :math:`η = 1 / (μ_0 σ)`, and Alfvén speed :math:`V_A`
     at the inflow has a Lundquist number of
-    :math:`S = LV_A / \eta`. The dimensionless reconnection rate :math:`R`,
+    :math:`S = L V_A / η`. The dimensionless reconnection rate :math:`R`,
     i.e., the ratio of the inflow to outflow speeds, can then be expressed as
     :math:`R \sim 1 / \sqrt{S}`. Similarly, the maximum reconnection rate
     in the Petschek model can be expressed as approximately
-    :math:`\pi / (8 \ln S)` :cite:p:`priest:2000`.
+    :math:`π / (8 \ln S)` :cite:p:`priest:2000`.
 
     Examples
     --------
@@ -565,11 +572,6 @@ def Lundquist_number(
     >>> sigma = 10**-2 * u.S / u.m
     >>> Lundquist_number(L, B, n, sigma, ion="He", z_mean=1.8)
     <Quantity 43481.96672...>
-
-    Returns
-    -------
-    S : `~astropy.units.Quantity`
-        The Lundquist number.
     """
     alfven = speeds.Alfven_speed(B, density, ion=ion, Z=z_mean)
     return Mag_Reynolds(alfven, L, sigma)

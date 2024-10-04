@@ -55,7 +55,7 @@ test_Particle_table = [
             "lepton_number": 0,
             "mass": m_n,
             "nuclide_mass": m_n,
-            "binding_energy": 0 * u.J,
+            "nuclear_binding_energy": 0 * u.J,
             "periodic_table.group": InvalidElementError,
         },
     ),
@@ -95,7 +95,7 @@ test_Particle_table = [
             "periodic_table.block": "s",
             "periodic_table.period": 1,
             "periodic_table.category": "nonmetal",
-            "binding_energy": 0 * u.J,
+            "nuclear_binding_energy": 0 * u.J,
             "recombine()": "H-1 0+",
         },
     ),
@@ -135,7 +135,7 @@ test_Particle_table = [
             "periodic_table.block": "s",
             "periodic_table.period": 1,
             "periodic_table.category": "nonmetal",
-            "binding_energy": 0 * u.J,
+            "nuclear_binding_energy": 0 * u.J,
             "recombine()": "H-1 0+",
         },
     ),
@@ -210,7 +210,7 @@ test_Particle_table = [
             "baryon_number": 0,
             "__str__()": "e-",
             "__repr__()": 'Particle("e-")',
-            "binding_energy": InvalidIsotopeError,
+            "nuclear_binding_energy": InvalidIsotopeError,
             "periodic_table.group": InvalidElementError,
             "periodic_table.block": InvalidElementError,
             "periodic_table.period": InvalidElementError,
@@ -554,7 +554,7 @@ def test_Particle_class(arg, kwargs, expected_dict):
 
         else:
             try:
-                result = eval(f"particle.{key}")  # noqa: PGH001, S307
+                result = eval(f"particle.{key}")  # noqa: S307
                 assert result == expected or u.isclose(result, expected, equal_nan=True)
             except AssertionError:
                 errmsg += (
@@ -761,7 +761,7 @@ def test_particle_class_mass_nuclide_mass(isotope: str, ion: str) -> None:
         )
 
 
-@pytest.mark.slow()
+@pytest.mark.slow
 def test_particle_half_life_string() -> None:
     """
     Find the first isotope where the half-life is stored as a string
@@ -1100,6 +1100,25 @@ def test_customized_particle_repr(cls, kwargs, expected_repr) -> None:
             f"from_str: {from_str}"
             f"from_repr: {from_repr}"
         )
+
+
+custom_particle_str_table = [
+    (
+        {"mass": 5.12 * u.kg, "charge": 6.2 * u.C},
+        "CustomParticle(mass=5.12 kg, charge=6.2 C)",
+    ),
+    (
+        {"mass": 5.12 * u.kg, "charge": 6.2 * u.C, "symbol": "I2"},
+        "I2",
+    ),
+]
+
+
+@pytest.mark.parametrize(("kwargs", "expected_str"), custom_particle_str_table)
+def test_custom_particle_str(kwargs, expected_str) -> None:
+    """Test the string representation of a custom particle."""
+    instance = CustomParticle(**kwargs)
+    assert str(instance) == expected_str
 
 
 @pytest.mark.parametrize("cls", [CustomParticle, DimensionlessParticle])
@@ -1619,17 +1638,71 @@ def test_deuterium_ionization_energy() -> None:
         ("Li", u.Quantity((5.391714996 * u.eV).to(u.J).value, u.J)),
     ],
 )
-def test_particle_ionization_energy(particle_symbol, expected_ionization_energy):
+def test_particle_ionization_energy(
+    particle_symbol, expected_ionization_energy
+) -> None:
     particle = Particle(particle_symbol)
     assert u.isclose(
         particle.ionization_energy, expected_ionization_energy, rtol=1e-4
     ), f"Expected {expected_ionization_energy}, got {particle.ionization_energy}"
 
 
-def test_undefined_ionization_energy():
+def test_undefined_ionization_energy() -> None:
     particle = Particle("tau neutrino")
     try:
         energy = particle.ionization_energy
         pytest.fail(f"Expected MissingParticleDataError, got {energy}")
     except MissingParticleDataError:
         pass
+
+
+def test_undefined_electron_binding_energy() -> None:
+    particle = Particle("tau neutrino")
+    try:
+        energy = particle.electron_binding_energy
+        pytest.fail(f"Expected MissingParticleDataError, got {energy}")
+    except MissingParticleDataError:
+        pass
+
+
+def test_warning_on_use_of_binding_energy() -> None:
+    with pytest.warns(FutureWarning):
+        particle = Particle("n")
+        assert particle.binding_energy == particle.nuclear_binding_energy
+
+
+def test_deuterium_electron_binding_energy() -> None:
+    D = Particle("D")
+    H_2 = Particle("H-2")
+    H = Particle("H")
+    assert D.electron_binding_energy == H_2.electron_binding_energy
+    assert D.electron_binding_energy != H.electron_binding_energy
+
+
+def test_other_isotopes_electron_binding_energy() -> None:
+    C_12 = Particle("C-12")
+    C_13 = Particle("C-13")
+    C_14 = Particle("C-14")
+    assert C_12.electron_binding_energy == C_13.electron_binding_energy
+    assert C_12.electron_binding_energy == C_14.electron_binding_energy
+    assert C_13.electron_binding_energy == C_14.electron_binding_energy
+
+
+def test_isotope_ion_electron_binding_energy() -> None:
+    C_12 = Particle("C-12 +1")
+    C_13 = Particle("C-13 +1")
+    C_14 = Particle("C-14 +1")
+    assert C_12.electron_binding_energy == C_13.electron_binding_energy
+    assert C_12.electron_binding_energy == C_14.electron_binding_energy
+    assert C_13.electron_binding_energy == C_14.electron_binding_energy
+
+
+def test_infinite_ionization() -> None:
+    helium = Particle("He-4 0+")
+    h_nucleus = helium.ionize(n=np.inf)
+    helium.ionize(n=np.inf, inplace=True)
+    assert h_nucleus == helium
+    assert h_nucleus == Particle("He-4 2+")
+    helium = Particle("He-4 0+")
+    pytest.raises(TypeError, helium.ionize, n=0.5)
+    pytest.raises(ValueError, helium.ionize, n=-1)

@@ -9,24 +9,30 @@ Documentation Guide
    :local:
    :backlinks: none
 
+.. Define roles for in-line code formatting with pygments
+
 .. role:: bash(code)
    :language: bash
 
 .. role:: rest(code)
    :language: rst
 
+.. Use :rest: to avoid conflicting with :rst:role: and :rst:dir:.
+   Escape backticks with a \ in arguments provided to :rest: (like
+   :rest:`:math:\`5+6\``)
+
 Introduction
 ============
 
 Documentation that is up-to-date and understandable is vital to the
-health of a software project. This page describes the documentation
-requirements and guidelines to be followed during the development of
-PlasmaPy and affiliated packages.
+health of a software project. |:books:| This page describes the
+documentation requirements and guidelines to be followed during the
+development of PlasmaPy and affiliated packages.
 
 .. tip::
 
    Updating documentation is one of the best ways to make a first
-   contribution to an open source software project.
+   contribution to an open source software project. |:beginner:|
 
 .. note::
 
@@ -47,6 +53,7 @@ available at these locations:
   ``main`` branch in |PlasmaPy's GitHub repository|, which is often
   ahead of the most recent release, is labeled ``latest`` and can be
   found at https://docs.plasmapy.org/en/latest.
+  |:building_construction:|
 
 .. tip::
 
@@ -106,8 +113,7 @@ linking will work for |Python| objects as well as certain packages like
 |NumPy|, |SciPy|, |Astropy|, and |pandas|. This linking is described in the
 section on :ref:`external-references`. In-line code samples are
 typically enclosed in double backticks. To get inline code highlighting,
-use the :rest:`:py:` role for Python code or :rest:`:bash:` for code run
-in a terminal.
+use the :rest:`:py:` role for Python code.
 
 .. code-block:: rst
 
@@ -262,14 +268,14 @@ the numpydoc_ standard for docstrings. Docstring conventions for
 .. tip::
 
    If a docstring contains math that utilizes LaTeX_ syntax, begin the
-   docstring with ``r"""`` instead of ``"""``.
+   docstring with :py:`r"""` instead of :py:`"""`.
 
    In a normal string, backslashes are used to begin escape sequences,
    and a single backslash needs to be represented with ``\\``. This
-   complication is avoided by beginning the docstring with ``r"""``,
+   complication is avoided by beginning the docstring with :py:`r"""`,
    which denotes the docstring as a `raw string`_. For example, the `raw
-   string`_ ``r""":math:`\alpha`"""`` will render the same as the normal
-   string ``""":math:`\\alpha`"""``.
+   string`_  ``r""":math:`\alpha`"""`` will render the same as the
+   normal string ``""":math:`\\alpha`"""``.
 
 .. _example docstring:
 
@@ -452,8 +458,101 @@ where the output varies or an exception is raised.
        >>> raise ValueError  # doctest: +SKIP
        """
 
-Definitions
------------
+.. _rst-roles:
+
+Roles
+~~~~~
+
+The following are |roles| that are customized for PlasmaPy or come from
+various |Sphinx| extensions.
+
+.. rst:role:: commit
+
+   Links to a GitHub commit.
+
+.. rst:role:: issue
+
+   Links to a GitHub issue.
+
+.. rst:role:: orcid
+
+   Links to an ORCID account.
+
+.. rst:role:: pr
+
+   Links to a GitHub pull request.
+
+.. rst:role:: py
+
+   Used for in-line Python code formatting. Defined using
+   :confval:`rst_prolog` in |docs/conf.py|_.
+
+.. rst:role:: sub
+
+   For subscripts.
+
+.. rst:role:: sup
+
+   For superscripts.
+
+.. rst:role:: user
+
+   Links to a GitHub username.
+
+.. rst:role:: wikipedia
+
+   Links to a Wikipedia article.
+
+.. _doc-guide-notebooks:
+
+Example notebooks
+-----------------
+
+PlasmaPy's documentation includes an |example gallery| of |Jupyter|
+notebooks. The notebooks are located in |docs/notebooks|_. The example
+gallery is built using |nbsphinx|.
+
+To add a notebook to the |example gallery|, include the :file:`.ipynb`
+file in the appropriate subdirectory of |docs/notebooks|_. The notebook
+must be included in an ``nbgallery`` directive in |docs/examples.rst|_
+(though this contains wildcards for most existing directories, so no
+additional step may be required).
+
+Before adding the Jupyter notebook, open it and run
+:menuselection:`Kernel --> Restart Kernel and Clear Outputs of All Cells`
+and then :menuselection:`File --> Save Notebook` before committing the
+and pushing the change. Doing this will signal |nbsphinx| that it should
+execute the notebook during the documentation build. However, if the
+notebook is computationally intensive, instead pre-execute it with
+:menuselection:`Kernel --> Restart Kernel and Run All Cells` before
+doing ``git commit``. Doing this will reduce documentation build times.
+
+If a notebook makes use of a Python package that is not included in
+PlasmaPy's requirements, included in the ``docs`` dependencies set as
+defined in |pyproject.toml|_.
+
+There are two methods for using markup in non-code cells in a Jupyter
+notebook in the gallery:
+
+- In "raw" cells, we can make use of |reStructuredText| formatting and
+  thus enable linking to code objects.
+
+- In Markdown_ cells, we can make use of Markdown formatting. However,
+  to link to a code object, we must include a link to the actual
+  documentation page. Be sure to link to the ``stable`` version of the
+  documentation (as opposed to ``latest``), even if the link does not
+  exist on ``stable`` yet. For example, a link to `plasmapy.formulary`
+  can be accomplished with
+
+  .. code-block:: markdown
+
+     [`plasmapy.formulary`](https://docs.plasmapy.org/en/stable/formulary/index.html)
+
+If a code cell in a notebook intentionally raises an exception, add a
+metadata tag entitled "raises-exception" to that cell.
+
+Glossary definitions
+--------------------
 
 Define important terms in PlasmaPy's :ref:`glossary`, which is located
 at |docs/glossary.rst|_. Here is an example of a term defined within the
@@ -467,12 +566,12 @@ at |docs/glossary.rst|_. Here is an example of a term defined within the
          An abbreviation for keyword arguments.
 
 Using the :rst:role:`term` |role| allows us to link to the definitions
-of terms. Using ``:term:`kwargs``` will link to :term:`kwargs` in the
-:ref:`glossary`. We can also refer to terms defined in the projects
+of terms. Using :rest:`:term:\`kwargs\`` will link to :term:`kwargs` in
+the :ref:`glossary`. We can also refer to terms defined in the projects
 connected via |intersphinx| if they have not already been defined in
-PlasmaPy's :ref:`glossary`. Using ``:term:`role``` will link to |role|
-and ``:term:`directive``` will link to |directive| in `Sphinx's
-glossary`_.
+PlasmaPy's :ref:`glossary`. Using :rest:`:term:\`role\`` will link to
+|role| and :rest:`:term:\`directive\`` will link to |directive| in
+`Sphinx's glossary`_.
 
 Documentation guidelines
 ========================
@@ -532,14 +631,14 @@ documentation for PlasmaPy and affiliated packages.
   .. note::
 
      Studies typically show that line lengths of 50–75 characters are
-     optimal for readability.
+     optimal for readability. |:page_facing_up:|
 
 * Use indentations of 3 spaces for |reStructuredText| blocks.
 
-* Store images within the |docs/_static/|_ directory, except for images
-  that are generated during the |Sphinx| build. The |docs/_static/|_
-  directory contains files that are used for the online documentation
-  but are not generated during the |Sphinx| build.
+* Store images within the |docs/_static|_ directory, except for images
+  that are generated during the |Sphinx| build. |:frame_photo:| The
+  |docs/_static|_ directory contains files that are used for the online
+  documentation but are not generated during the |Sphinx| build.
 
 * Avoid linking to websites that might disappear due to :wikipedia:`link
   rot <link_rot>` such as documents hosted on personal websites.
@@ -547,7 +646,7 @@ documentation for PlasmaPy and affiliated packages.
   * When including references, use a link that includes a
     :wikipedia:`persistent identifier <persistent_identifier>` such as a
     digital object identifier (|DOI|) when one is available (e.g.,
-    https://doi.org/10.5281/zenodo.4602818\ ).
+    https://doi.org/10.5281/zenodo.4602818\ ). |:link:|
 
   * Wikipedia_ articles may be linked to when they contain a
     well-developed and accurate description of a concept.
@@ -563,6 +662,7 @@ documentation for PlasmaPy and affiliated packages.
 
 * Start the names of all physical units with a lower case letter, except
   at the beginning of a sentence and for "degree Celsius".
+  |:thermometer:|
 
 * Physical unit symbols should not be formatted as math. If units are
   needed inside a math block, use LaTeX_'s ``\text`` command as in the
@@ -589,7 +689,8 @@ documentation for PlasmaPy and affiliated packages.
   of a sentence.
 
 * Particle and chemical symbols should be formatted as regular text. Use
-  :rest:`:sub:` for subscripts and :rest:`:sup:` for superscripts.
+  :rst:role:`sub` for subscripts and :rst:role:`sup` for
+  superscripts.
 
   Because interpreted text must normally be surrounded by whitespace or
   punctuation, use a backslash followed by a space for the interpreted
@@ -656,8 +757,8 @@ Docstring guidelines
   attribute of a class decorated with `property`) should not begin with
   a verb and should end with a period.
 
-* Keep the docstring indented at the same level as the ``r"""`` or
-  ``"""`` that begins the docstring, except for |reStructuredText|
+* Keep the docstring indented at the same level as the :py:`r"""` or
+  :py:`"""` that begins the docstring, except for |reStructuredText|
   constructs like lists, math, and code blocks. Use an indentation of
   four spaces more than the declaration of the object.
 
@@ -747,19 +848,19 @@ The type specification should not include information about the
    |Quantity| [length], default: 10 m
    |Quantity| [temperature, energy], |keyword-only|, default: 0 K
 
-* Use the substitution ``|array_like|`` to indicate that an |argument|
-  must be |array_like| (i.e., convertible into an |ndarray|).
+* Use the substitution :rest:`|array_like|` to indicate that an
+  |argument| must be |array_like| (i.e., convertible into an |ndarray|).
 
-* Use the substitution ``|particle-like|`` to indicate that a
-  |particle-like| argument should be convertible into a |Particle|,
-  |CustomParticle|, or |ParticleList|.
+* Use :rest:`|particle-like|` to indicate that a |particle-like|
+  argument should be convertible into a |Particle|, |CustomParticle|, or
+  |ParticleList|.
 
-* Use the ``|particle-list-like|`` to indicate that a
+* Use :rest:`|particle-list-like|` to indicate that a
   |particle-list-like| argument should be convertible into a
   |ParticleList|.
 
-* Use ``|atom-like|`` to indicate that an argument must be |atom-like|
-  (i.e., an element, isotope, and/or ion).
+* Use :rest:`|atom-like|` to indicate that an argument must be
+  |atom-like| (i.e., an element, isotope, and/or ion). ⚛️
 
 * When the array must be :math:`n`\ -dimensional, precede the type by
   :samp:`{n}D` where :samp:`{n}` is replaced by the number of
@@ -788,11 +889,17 @@ The type specification should not include information about the
   brackets. The options may be listed with the default value first,
   sorted alphanumerically, or ordered so as to maximize readability.
 
-  .. code-block::
+  .. code-block:: rst
 
      {"classical postmodernist", "retro-futuristic"}
      {"p+", "e-"}, default: "p+"
      {1, 2, 3, 4}, default: 3
+
+  .. tip::
+
+     Use `typing.Literal` in |type hint annotations| when a parameter
+     should only be provided with specific values (e.g.,
+     :py:`x: Literal{1, 2, 3, 4}`).
 
 * If a default is given, it is not necessary to state that the parameter
   is optional. When the default is `None`, use ``optional`` instead of
@@ -828,8 +935,8 @@ include type information when:
 
 For functions that accept an arbitrary number of positional and/or
 keyword arguments, include them in the "Parameters_" section with the
-preceding asterisk(s). Order ``*args`` and ``**kwargs`` as they appear
-in the signature.
+preceding asterisk(s). Order :py:`*args` and :py:`**kwargs` as they
+appear in the signature.
 
 .. code-block:: rst
 
@@ -891,7 +998,7 @@ Attributes
 * When an attribute in a class has both a getter (which is the method
   decorated with `property`) and a ``setter`` decoration, then the
   getter and ``setter`` functionality should be documented in the
-  docstring of the attribute decorated with ``@property``.
+  docstring of the attribute decorated with :py:`@property`.
 
   .. code-block:: python
 
@@ -937,7 +1044,7 @@ The |docs/conf.py|_ file contains the configuration information needed
 to customize |Sphinx| behavior. The documentation for |Sphinx| lists the
 `configuration options`_ that can be set.
 
-The |docs/_static/css/|_ directory contains CSS_ files with `style
+The |docs/_static/css|_ directory contains CSS_ files with `style
 overrides`_ for the `Read the Docs Sphinx Theme`_ to customize the look
 and feel of the online documentation.
 
@@ -949,7 +1056,7 @@ extensions:
 
 * `sphinx.ext.autodoc` for including documentation from docstrings.
 * `sphinx.ext.extlinks` for shortening links to external sites (e.g.,
-  ``:orcid:`` and ``:wikipedia:``).
+  :rst:role:`orcid` and :rst:role:`wikipedia`).
 * `sphinx.ext.graphviz` to allow Graphviz_ graphs to be included.
 * `sphinx.ext.intersphinx` for linking to other projects' documentation.
 * `sphinx.ext.mathjax` for math rendering with MathJax_.
@@ -968,10 +1075,11 @@ extensions:
   of the documentation.
 * |sphinx-notfound-page|_ to add a :wikipedia:`404 <HTTP_404>` page for
   the documentation.
-* |sphinx-issues|_ to add roles for linking to GitHub (``:commit:``,
-  ``:issue:``, ``:pr:``, and ``:user:``).
+* |sphinx-issues|_ to add roles for linking to GitHub (:rst:role:`commit`,
+  :rst:role:`issue`, :rst:role:`pr`, and :rst:role:`user`).
 * |sphinx-reredirects|_ to enable hyperlink redirects.
-* |sphinx-toolbox|_ for handy tools for Sphinx_ documentation
+* |sphinx-toolbox|_ for handy tools for |Sphinx| documentation
+* |sphinxemoji|_ for emoji substitutions
 * `plasmapy_sphinx` for customizations created for use in PlasmaPy and
   affiliated packages. Note that `plasmapy_sphinx` is expected to be
   broken out into its own package in the future.
@@ -985,9 +1093,10 @@ Cross-referencing external packages
 -----------------------------------
 
 Intersphinx_ allows the automatic generation of links to the
-documentation of objects in other projects. This cross-package linking
-is made possible with the `sphinx.ext.intersphinx` extension and proper
-package indexing by the external package using `sphinx.ext.autodoc`.
+documentation of objects in other projects. |:link:| This cross-package
+linking is made possible with the `sphinx.ext.intersphinx` extension and
+proper package indexing by the external package using
+`sphinx.ext.autodoc`.
 
 When we include ```astropy.units.Quantity``` in the documentation, it
 will show up as `astropy.units.Quantity` with a link to the appropriate
@@ -1029,24 +1138,52 @@ documentation. |reStructuredText| allows us to `define substitutions`_
 
    .. |Particle| replace:: `~plasmapy.particles.particle_class.Particle`
 
-Here whenever ``|Particle|`` is used |Sphinx| will replace it with
+Here whenever :rest:`|Particle|` is used |Sphinx| will replace it with
 ```~plasmapy.particles.particle_class.Particle``` during build time.
 
-PlasmaPy has certain common substitutions pre-defined so that they can
-be used elsewhere in the documentation. For example, we can write
-``|Quantity|`` instead of ```~astropy.units.Quantity```, and
-``|Particle|`` instead of
-```~plasmapy.particles.particle_class.Particle```. For an up-to-date
-list of substitutions, please refer to |docs/_global_substitutions.py|_.
+PlasmaPy contains pre-defined global substitutions that can be used
+elsewhere in the documentation. For example, we can write :rest:`|Quantity|`
+instead of ```~astropy.units.Quantity```, and :rest:`|Particle|` instead of
+```~plasmapy.particles.particle_class.Particle```. These global
+substitutions are defined in |docs/_global_substitutions.py|_, and are
+summarized in the following table.
 
-Since substitutions are performed by |Sphinx| when the documentation is
-built, any substitution used in docstrings will not show up when using
-Python's `help` function (or the like). For example, when ``|Particle|``
-is used in a docstring, `help` will show it as ``|Particle|`` rather
-than ```~plasmapy.particles.particle_class.Particle```. Consequently,
-substitutions should not be used in docstrings when it is important that
-users have quick access to the full path of the `object` (such as in the
-``See Also`` section).
+.. collapse:: Click here to expand/collapse table of global substitutions
+
+   .. include:: _global_substitutions_table.rst
+
+.. note::
+
+   Since substitutions are executed by |Sphinx| when the documentation
+   is built, any substitution used in docstrings will not show up when
+   using `help`. For example, when :rest:`|Particle|` is used in a
+   docstring, `help` will show it as :rest:`|Particle|` rather than
+   ```~plasmapy.particles.particle_class.Particle```. Consequently,
+   substitutions should not be used in docstrings when it is important
+   that users have quick access to the full path of the `object` (such
+   as in the ``See Also`` section).
+
+Emoji
+-----
+
+Emojis in software documentation help enhance readability, convey
+emotions, and make the content friendlier and less intimidating. Emojis
+improve comprehension by providing visual cues, such as |:atom:| for
+`plasmapy.particles`, |:ocean:| for `plasmapy.dispersion`,
+|:stethoscope:| for `plasmapy.diagnostics`, and |:abacus:| for
+`plasmapy.formulary`.
+
+Not all text editors, terminals, or :abbr:`IDEs (integrated development
+environments)` have the ability to display emojis properly. PlasmaPy's
+documentation makes use of the |sphinxemoji|_ extension which adds
+substitutions for emojis. For example, we can denote good first issues
+with :rest:`|:beginner:|` for |:beginner:|. Click here for the `full list
+of emoji codes`_ supported by |sphinxemoji|_.
+
+.. tip::
+
+   Add emojis to research articles to strike up conversations with
+   referees and editors! |:sweat_smile:|
 
 .. _citation-instructions:
 
@@ -1072,14 +1209,15 @@ and alphabetize references by the surname of the first author. To
 preserve capitalization, enclose words or phrases within curly brackets
 (e.g., ``{NumPy}``).
 
-Use ``:cite:p:`citekey``` to create a parenthetical citation and
-``:cite:t:`citekey``` to create a textual citation, where ``citekey`` is
-replaced with the BibTeX_ citekey. Multiple citekeys can also be used
-when separated by commas, like ``:cite:p:`citekey1, citekey2```. For
-example, ``:cite:p:`wilson:2014``` will show up as
-:cite:p:`wilson:2014`, ``:cite:t:`wilson:2014``` will show up as
-:cite:t:`wilson:2014`, and ``:cite:p:`wilson:2014, wilson:2017``` will
-show up as :cite:p:`wilson:2014, wilson:2017`.
+Use :rest:`:cite:p:\`citekey\`` to create a parenthetical citation and
+:rest:`:cite:t:\`citekey\`` to create a textual citation, where
+``citekey`` is replaced with the BibTeX_ citekey. Multiple citekeys can
+also be used when separated by commas, like
+:rest:`:cite:p:\`citekey1, citekey2\``. For example,
+:rest:`:cite:p:`wilson:2014\`` will show up as
+:cite:p:`wilson:2014`, :rest:`:cite:t:\`wilson:2014\`` will show up as
+:cite:t:`wilson:2014`, and :rest:`:cite:p:\`wilson:2014, wilson:2017\``
+will show up as :cite:p:`wilson:2014, wilson:2017`.
 
 .. _api-static:
 
@@ -1089,7 +1227,7 @@ Creating a documentation stub file for a new module
 When the narrative documentation does not index a subpackage (a
 directory) or module (a :file:`.py` file) with ``automodule``,
 ``automodapi``, or the like, then a stub file must be created for that
-particular subpackage or module in |docs/api_static/|_. For example, the
+particular subpackage or module in |docs/api_static|_. For example, the
 stub file for `plasmapy.particles.atomic` is placed at
 :file:`docs/api_static/plasmapy.particles.atomic.rst` and its contents
 look like:
@@ -1113,9 +1251,9 @@ error or the absence of the module in the documentation build.
    If a pull request adds a new subpackage *and* a new module, then a
    stub file must be created for both of them.
 
-   For example, suppose a pull request creates the ``plasmapy.io``
+   For example, suppose a pull request creates the :py:`plasmapy.io`
    subpackage in the :file:`src/plasmapy/io/` directory and the
-   ``plasmapy.io.readers`` module via :file:`src/plasmapy/io/readers.py`. It
+   :py:`plasmapy.io.readers` module via :file:`src/plasmapy/io/readers.py`. It
    will then be necessary to create stub files at both
    :file:`docs/api_static/plasmapy.io.rst` and
    :file:`docs/api_static/plasmapy.io.readers.rst`.
@@ -1136,7 +1274,7 @@ more details, please refer to `Sphinx's templating page`_.
    horrible workaround that can take hours to figure out. This has given
    rise to the saying:
 
-      *Sphinx rabbit holes often have dragons in them.* 🐇 🕳️ 🐉
+      *Sphinx rabbit holes often have dragons in them.* |:rabbit2:| |:hole:| |:dragon:|
 
    Remember: your happiness and well-being are more important than
    `nested inline markup`_!
@@ -1217,7 +1355,7 @@ sphinx-build_. We recommend starting with |Nox|.
       building and rebuilding the documentation.
 
       If make_ is installed, we can build the documentation by entering
-      the :file:`docs/` directory and running:
+      the |docs|_ directory and running:
 
       .. code-block:: bash
 
@@ -1262,7 +1400,7 @@ To check hyperlinks locally, run:
 
    .. group-tab:: sphinx-build
 
-      .. code-block::
+      .. code-block:: bash
 
          sphinx-build docs docs/_build/_html -b linkcheck
 
@@ -1276,7 +1414,7 @@ Troubleshooting
 ===============
 
 This section describes how to fix common documentation errors and
-warnings. 🛠️
+warnings. |:tools:|
 
 .. _missing-target:
 
@@ -1302,7 +1440,7 @@ typo and changing it to ```plasmapy.particles```.
    For PlasmaPy objects, use the full namespace of the object (i.e., use
    ```plasmapy.particles.particle_class.Particle``` instead of
    ```plasmapy.particles.Particle```) or a :ref:`reStructuredText
-   substitution <substitutions>` like ``|Particle|`` as defined in
+   substitution <substitutions>` like :rest:`|Particle|` as defined in
    |docs/_global_substitutions.py|_.
 
 This warning may occur when a new module or subpackage is created
@@ -1328,7 +1466,7 @@ Missing documentation pages for new modules
 -------------------------------------------
 
 When a new module or subpackage is created, it is usually necessary to
-:ref:`create a stub file <api-static>` for it in |docs/api_static/|_. A
+:ref:`create a stub file <api-static>` for it in |docs/api_static|_. A
 missing stub file can lead to either a ``reference target not found``
 error or missing documentation pages.
 
@@ -1338,7 +1476,9 @@ Missing attribute errors
 An `AttributeError` may occur when an :py:`import` statement is missing
 in a :file:`__init__.py` file. For example, the error
 
-.. code-block::
+.. ChatGPT suggested the `diff` pygments language for error/warning messages
+
+.. code-block:: diff
 
    AttributeError: module 'plasmapy.subpackage' has no attribute 'module'
 
@@ -1351,7 +1491,7 @@ List ends without a blank line
 
 Warnings like the following:
 
-.. code-block::
+.. code-block:: diff
 
    WARNING: :40: (WARNING/2) Bullet list ends without a blank line; unexpected unindent.
    WARNING: :47: (WARNING/2) Definition list ends without a blank line; unexpected unindent.
@@ -1383,16 +1523,16 @@ object to its corresponding documentation. Double check that the code is
 correct, and consider adding any missing :py:`import` statements. The
 documentation for this extension contains `examples
 <https://sphinx-codeautolink.readthedocs.io/en/latest/examples.html>`__
-on how to skip blocks with ``.. autolink-skip::`` and how to do
-invisible imports with ``.. autolink-preface::``.
+on how to skip blocks with :rest:`.. autolink-skip::` and how to do
+invisible imports with :rest:`.. autolink-preface::`.
 
 If this warning occurs in the "Examples" section of a docstring, put
-``.. autolink-skip: section`` at the beginning of that section (see
+:rest:`.. autolink-skip: section` at the beginning of that section (see
 :pr:`2554`). These warnings sometimes only show up when rebuilding
 the documentation.
 
-A related warning is "Could not match transformation of _ on source
-lines _-_".
+A related warning is ``Could not match transformation of _ on source
+lines``.
 
 Errors that are unrelated to a pull request
 -------------------------------------------
@@ -1421,18 +1561,19 @@ version of the package that can be revisited later.
 .. tip::
 
    When dealing with this kind of error, procrastination often pays off!
-   🎈 These errors usually get resolved after the upstream package makes
-   a bugfix release, so it is typically better to wait a week before
-   spending a large amount of time trying to fix it. 🕒
+   |:balloon:| These errors usually get resolved after the upstream
+   package makes a bugfix release, so it is typically better to wait a
+   week before spending a large amount of time trying to fix it.
+   |:stopwatch:|
 
 Document isn't included in any toctree
 --------------------------------------
 
 In general, each source file in the documentation must be included in a
-table of contents (toctree_). Otherwise, Sphinx_ will issue a warning
+table of contents (toctree_). Otherwise, |Sphinx| will issue a warning
 like:
 
-.. code-block::
+.. code-block:: diff
 
    WARNING: document isn't included in any toctree
 
@@ -1446,10 +1587,10 @@ This warning can be resolved by:
 * Adding the ``orphan`` `metadata field`_ at the top of the file (not
   recommended in most situations).
 
-In the :file:`docs/` folder, the tables of contents are generally
-located in :file:`index.rst` in the same directory as the source files.
-For example Jupyter notebooks, the tables of contents are in
-:file:`docs/examples.rst`.
+In the |docs|_ directory, the tables of contents are generally located
+in :file:`index.rst` in the same directory as the source files. For
+example Jupyter notebooks, the tables of contents are in
+|docs/examples.rst|_.
 
 .. |role| replace:: :term:`role`
 .. |roles| replace:: :term:`roles <role>`
@@ -1463,6 +1604,7 @@ For example Jupyter notebooks, the tables of contents are in
 .. _CSS: https://www.w3schools.com:443/css
 .. _define substitutions: https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#substitution-definitions
 .. _doctests: https://docs.pytest.org/en/6.2.x/doctest.html
+.. _full list of emoji codes: https://sphinxemojicodes.readthedocs.io/en/stable/#supported-codes
 .. _GitHub Flavored Markdown: https://github.github.com/gfm
 .. _Graphviz: https://graphviz.org
 .. _intersphinx: https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html
@@ -1508,20 +1650,28 @@ For example Jupyter notebooks, the tables of contents are in
    nitpick_ignore_regex in docs/conf.py so that it doesn't get counted
    as an error.
 
-.. _`docs/_static/`: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/_static
-.. |docs/_static/| replace:: :file:`docs/_static/`
+.. |example gallery| replace:: :ref:`example gallery <examples>`
 
-.. _`docs/_static/css/`: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/_static/css
-.. |docs/_static/css/| replace:: :file:`docs/_static/css/`
+.. _`docs`: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs
+.. |docs| replace:: :file:`docs`
+
+.. _`docs/_static`: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/_static
+.. |docs/_static| replace:: :file:`docs/_static`
+
+.. _`docs/_static/css`: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/_static/css
+.. |docs/_static/css| replace:: :file:`docs/_static/css`
 
 .. _`docs/about/credits.rst`: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/about/credits.rst
 .. |docs/about/credits.rst| replace:: :file:`docs/about/credits.rst`
 
-.. _`docs/api_static/`: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/api_static
-.. |docs/api_static/| replace:: :file:`docs/api_static/`
+.. _`docs/api_static`: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/api_static
+.. |docs/api_static| replace:: :file:`docs/api_static`
 
 .. _`docs/conf.py`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/conf.py
 .. |docs/conf.py| replace:: :file:`docs/conf.py`
+
+.. _`docs/examples.rst`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/examples.rst
+.. |docs/examples.rst| replace:: :file:`docs/examples.rst`
 
 .. _`docs/glossary.rst`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/glossary.rst
 .. |docs/glossary.rst| replace:: :file:`docs/glossary.rst`
@@ -1531,6 +1681,9 @@ For example Jupyter notebooks, the tables of contents are in
 
 .. _`docs/_global_substitutions.py`: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/_global_substitutions.py
 .. |docs/_global_substitutions.py| replace:: :file:`docs/_global_subtitutions.py`
+
+.. _docs/notebooks: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/notebooks
+.. |docs/notebooks| replace:: :file:`docs/notebooks`
 
 .. _`IPython.sphinxext.ipython_console_highlighting`: https://ipython.readthedocs.io/en/stable/sphinxext.html?highlight=IPython.sphinxext.ipython_console_highlighting#ipython-sphinx-directive-module
 .. |IPython.sphinxext.ipython_console_highlighting| replace:: `IPython.sphinxext.ipython_console_highlighting`
@@ -1564,3 +1717,9 @@ For example Jupyter notebooks, the tables of contents are in
 
 .. _`sphinx-toolbox`: https://sphinx-toolbox.readthedocs.io
 .. |sphinx-toolbox| replace:: `sphinx-toolbox`
+
+.. _`sphinxemoji`: https://sphinxemojicodes.readthedocs.io
+.. |sphinxemoji| replace:: `sphinxemoji`
+
+.. _`pyproject.toml`: https://github.com/PlasmaPy/PlasmaPy/blob/main/pyproject.toml
+.. |pyproject.toml| replace:: :file:`pyproject.toml`

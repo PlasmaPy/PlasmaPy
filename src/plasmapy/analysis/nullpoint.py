@@ -26,7 +26,6 @@ import numpy as np
 # Declare Constants & global variables
 _EQUALITY_ATOL = 1e-10
 _MAX_RECURSION_LEVEL = 10
-global _recursion_level
 _recursion_level = 0
 
 
@@ -1295,7 +1294,7 @@ def _locate_null_point(vspace, cell, n, err):
     for x0 in starting_pos:
         x0 = np.array(x0)  # noqa: PLW2901
         x0 = x0.reshape(3, 1)  # noqa: PLW2901
-        for _i in range(n):  # noqa: B007
+        for _i in range(n):
             locx = tlApprox(x0[0], x0[1], x0[2])[0]
             locy = tlApprox(x0[0], x0[1], x0[2])[1]
             locz = tlApprox(x0[0], x0[1], x0[2])[2]
@@ -1416,7 +1415,7 @@ def _classify_null_point(vspace, cell, loc):
     return null_point_type
 
 
-def _vspace_iterator(vspace, maxiter=500, err: float = 1e-10):
+def _vspace_iterator(vspace, maxiter: int = 500, err: float = 1e-10):
     r"""
     Returns an array of null point objects, representing the null points
     of the given vector space.
@@ -1466,7 +1465,7 @@ def null_point_find(
     u_arr=None,
     v_arr=None,
     w_arr=None,
-    maxiter=500,
+    maxiter: int = 500,
     err: float = 1e-10,
 ):
     r"""
@@ -1550,7 +1549,7 @@ def uniform_null_point_find(
     z_range,
     func: Callable,
     precision=(0.05, 0.05, 0.05),
-    maxiter=500,
+    maxiter: int = 500,
     err: float = 1e-10,
 ):
     r"""

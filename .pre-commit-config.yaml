@@ -28,12 +28,12 @@ repos:
   - id: check-yaml
 
 - repo: https://github.com/python-jsonschema/check-jsonschema
-  rev: 0.28.2
+  rev: 0.29.2
   hooks:
   - id: check-github-workflows
 
 - repo: https://github.com/sirosen/texthooks
-  rev: 0.6.6
+  rev: 0.6.7
   hooks:
   - id: fix-smartquotes
   - id: fix-spaces
@@ -41,7 +41,7 @@ repos:
   - id: forbid-bidi-controls
 
 - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
-  rev: v2.13.0
+  rev: v2.14.0
   hooks:
   - id: pretty-format-ini
     args: [--autofix]
@@ -57,7 +57,7 @@ repos:
   rev: v1.0.5
   hooks:
   - id: search-and-replace
-    exclude: changelog/.*|docs/changelog/.*|.sourcery.yaml|docs/_global_substitutions.py|CHANGELOG.rst
+    exclude: changelog/README.rst|docs/changelog/.*|.sourcery.yaml|docs/_global_substitutions.py|CHANGELOG.rst|docs/contributing/doc_guide.rst
 
 - repo: https://github.com/pre-commit/pygrep-hooks
   rev: v1.10.0
@@ -70,7 +70,7 @@ repos:
   - id: text-unicode-replacement-char
 
 - repo: https://github.com/codespell-project/codespell
-  rev: v2.2.6
+  rev: v2.3.0
   hooks:
   - id: codespell
     name: codespell (add false positives to pyproject.toml)
@@ -78,38 +78,32 @@ repos:
     additional_dependencies:
     - tomli
 
+- repo: https://github.com/crate-ci/typos
+  rev: v1.24.5
+  hooks:
+  - id: typos
+    name: typos (add false positives to _typos.toml)
+
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.4.3
+  rev: v0.6.4
   hooks:
   - id: ruff
     name: ruff (see https://docs.astral.sh/ruff/rules)
     args: [--fix]
   - id: ruff-format
-    name: autoformat source code with ruff formatter
+    name: autoformat source code with ruff-format
 
 - repo: https://github.com/asottile/blacken-docs
-  rev: 1.16.0
+  rev: 1.18.0
   hooks:
   - id: blacken-docs
     name: autoformat code blocks in docs
     # docstrings are formatted using the ruff-format hook
     exclude: docs/contributing/coding_guide.rst|.*\.py
     additional_dependencies:
-    - black==24.3.0
+    - black==24.4.2
 
 - repo: https://github.com/sphinx-contrib/sphinx-lint
-  rev: v0.9.1
+  rev: v1.0.0
   hooks:
   - id: sphinx-lint
-
-- repo: https://github.com/nbQA-dev/nbQA
-  rev: 1.8.5
-  hooks:
-  - id: nbqa-check-ast
-    name: validate Python notebooks
-  - id: nbqa-ruff
-    name: ruff for notebooks (see https://docs.astral.sh/ruff/rules)
-    args: [--fix, '--select=A,ARG,B,BLE,C,C4,E,F,FLY,I,INT,ISC,PERF,PIE,PLC,PLE,PYI,Q003,RET,RSE,SIM,TID,TRY,UP,W', '--ignore=B007,B008,B015,B018,E402,E501,E741,SIM114']
-    additional_dependencies:
-    # remove ruff dependency after 0.3.5 is released
-    - ruff !=0.3.3, !=0.3.4
