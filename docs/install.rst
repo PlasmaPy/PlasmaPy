@@ -70,7 +70,7 @@ that are isolated from each other and the system's |Python|
 installation. In addition, |uv| provides a `pip drop-in interface`_ for
 common |pip| commands so that |Python| packages on |PyPI| may be
 installed into |uv|-managed
-`virtual environments<virtual environment_>`_ without installing |pip|.
+`virtual environments <virtual environment_>`_ without installing |pip|.
 
 In a virtual environment
 ------------------------
