@@ -59,16 +59,89 @@ Python |minpython|\ + release that has been installed on your computer.
 For more detailed information, please refer to this tutorial on
 `installing packages`_.
 
+.. _install-uv:
+
+Installing PlasmaPy with uv
+===========================
+
+|uv| is "an extremely fast |Python| package and project manager, written
+in Rust". |uv| lets us create and switch between |Python| environments
+that are isolated from each other and the system's |Python|
+installation. In addition, |uv| provides a `pip drop-in interface`_ for
+common |pip| commands so that |Python| packages on |PyPI| may be
+installed into |uv|-managed
+`virtual environments<virtual environment_>`_ without installing |pip|.
+
+In a virtual environment
+------------------------
+
+After `installing uv`_, a `virtual environment`_ with |Python| version
+|maxpython| can be created by openning a terminal and running:
+
+.. code-block:: bash
+
+   uv venv --python |maxpython|
+
+|uv| will automatically download the |Python| binary and symlink it to
+the `virtual environment`_'s directory at (by default) `.venv`. The
+environment can then be activated by running:
+
+.. code-block:: bash
+
+   source .venv/bin/activate
+
+Then, to install `plasmapy` into the activated environment, run:
+
+.. code-block:: bash
+
+   uv pip install plasmapy
+
+In a python project
+-------------------
+
+|uv| also supports managing |Python| projects. A `Python project`_
+is a collection of |Python| code or package(s) and additional files,
+e.g. `pyproject.toml`, which contains the `project metadata`_. To make a
+`Python project`_ reproducible across many platforms, |uv| reads
+`pyproject.toml` and generates a lockfile name `uv.lock`, which in
+turn can be read by |uv| on a different machine to create the same
+`Python project`_ and its dependencies.
+
+To initialize a `Python project`_ named `project-with-plasmapy` with
+|Python| version |maxpython|, run with |uv|:
+
+.. code-block:: bash
+
+   uv init --python |maxpython|
+
+By default, |uv| will generate a `pyproject.toml` and many other
+metadata files (see `uv init options`_). Then, to add `plasmapy` as a
+dependency, run:
+
+.. code-block:: bash
+
+   uv add plasmapy
+
+|uv| will add `plasmapy` to `pyproject.toml` and create a `virtual
+environment`_ in `.venv` with `plasmapy` and its dependencies already
+installed. So, it is no longer needed to use the `pip drop-in
+interface`_. To activate the |Python| environment with `plasmapy`
+installed, run:
+
+.. code-block::bash
+
+   source .venv/bin/activate
+
 .. _install-conda:
 
 Installing PlasmaPy with Conda
 ==============================
 
 Conda_ is a package management system and environment manager that is
-commonly used in the scientific |Python| ecosystem. Conda_ lets us create
-and switch between |Python| environments that are isolated from each
-other and the system installation. Conda_ can also be used for packages
-written in languages other than |Python|.
+commonly used in the scientific |Python| ecosystem. Similar to |uv|,
+Conda_ is used to create and manage isolated virtual |Python| environments.
+However, Conda_ can also be used for packages written in languages other
+than |Python|.
 
 After `installing Conda`_ or miniconda_, `plasmapy` can be installed
 into an activated Conda_ environment by opening a terminal and running:
@@ -226,7 +299,14 @@ package should also be installed.
 .. _installing Anaconda Navigator: https://docs.anaconda.com/navigator/install
 .. _installing Conda: https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html
 .. _installing packages: https://packaging.python.org/en/latest/tutorials/installing-packages/#installing-from-vcs
+.. _installing uv: https://docs.astral.sh/uv/getting-started/installation/#installing-uv
 .. _getting started with Anaconda Navigator: https://docs.anaconda.com/navigator/getting-started
 .. _miniconda: https://docs.conda.io/en/latest/miniconda.html
+.. _pip drop-in interface: https://docs.astral.sh/uv/pip/#the-pip-interface
+.. _publish a package: https://docs.astral.sh/uv/guides/publish/#publishing-a-package
+.. _project metadata: https://docs.astral.sh/uv/concepts/projects/#project-metadata
+.. _Python project: https://docs.astral.sh/uv/concepts/projects/#projects
 .. _releases: https://github.com/PlasmaPy/PlasmaPy/releases
+.. _uv init options: https://docs.astral.sh/uv/reference/cli/#uv-init
+.. _virtual environment: https://realpython.com/python-virtual-environments-a-primer
 .. _ZIP: https://en.wikipedia.org/wiki/ZIP_(file_format)
