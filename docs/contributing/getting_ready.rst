@@ -1,8 +1,8 @@
 .. _getting ready to contribute:
 
-***************************
-Getting Ready to Contribute
-***************************
+******************************
+Getting Ready to Contribute 🎉
+******************************
 
 .. contents:: Table of Contents
    :depth: 2
@@ -258,7 +258,7 @@ when you :py:`import plasmapy`.
 
       conda activate plasmapy-dev
 
-4. Run the command to install PlasmaPy for your operating system:
+4. Run 🏃 the command to install PlasmaPy for your operating system:
 
    .. tabs::
 

@@ -1,8 +1,8 @@
 .. _plasmapy-install:
 
-*******************
-Installing PlasmaPy
-*******************
+**********************
+Installing PlasmaPy ☀️
+**********************
 
 .. note::
 

@@ -1695,3 +1695,14 @@ def test_isotope_ion_electron_binding_energy() -> None:
     assert C_12.electron_binding_energy == C_13.electron_binding_energy
     assert C_12.electron_binding_energy == C_14.electron_binding_energy
     assert C_13.electron_binding_energy == C_14.electron_binding_energy
+
+
+def test_infinite_ionization() -> None:
+    helium = Particle("He-4 0+")
+    h_nucleus = helium.ionize(n=np.inf)
+    helium.ionize(n=np.inf, inplace=True)
+    assert h_nucleus == helium
+    assert h_nucleus == Particle("He-4 2+")
+    helium = Particle("He-4 0+")
+    pytest.raises(TypeError, helium.ionize, n=0.5)
+    pytest.raises(ValueError, helium.ionize, n=-1)
