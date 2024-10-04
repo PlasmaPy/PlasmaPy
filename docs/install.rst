@@ -83,7 +83,7 @@ After `installing uv`_, a `virtual environment`_ with |Python| version
    uv venv --python |maxpython|
 
 |uv| will automatically download the |Python| binary and symlink it to
-the `virtual environment`_'s directory at (by default) `.venv`. The
+the `virtual environment`_'s directory at (by default) ``.venv``. The
 environment can then be activated by running:
 
 .. code-block:: bash
@@ -101,20 +101,20 @@ In a python project
 
 |uv| also supports managing |Python| projects. A `Python project`_
 is a collection of |Python| code or package(s) and additional files,
-e.g. `pyproject.toml`, which contains the `project metadata`_. To make a
-`Python project`_ reproducible across many platforms, |uv| reads
-`pyproject.toml` and generates a lockfile name `uv.lock`, which in
+e.g. ``pyproject.toml``, which contains the `project metadata`_. To make
+a `Python project`_ reproducible across many platforms, |uv| reads
+``pyproject.toml`` and generates a lockfile name ``uv.lock``, which in
 turn can be read by |uv| on a different machine to create the same
 `Python project`_ and its dependencies.
 
-To initialize a `Python project`_ named `project-with-plasmapy` with
+To initialize a `Python project`_ named ``project-with-plasmapy`` with
 |Python| version |maxpython|, run with |uv|:
 
 .. code-block:: bash
 
-   uv init --python |maxpython|
+   uv init --name project-with-plasmapy --python |maxpython|
 
-By default, |uv| will generate a `pyproject.toml` and many other
+By default, |uv| will generate a ``pyproject.toml`` and many other
 metadata files (see `uv init options`_). Then, to add `plasmapy` as a
 dependency, run:
 
@@ -122,8 +122,8 @@ dependency, run:
 
    uv add plasmapy
 
-|uv| will add `plasmapy` to `pyproject.toml` and create a `virtual
-environment`_ in `.venv` with `plasmapy` and its dependencies already
+|uv| will add `plasmapy` to ``pyproject.toml`` and create a `virtual
+environment`_ in ``.venv`` with `plasmapy` and its dependencies already
 installed. So, it is no longer needed to use the `pip drop-in
 interface`_. To activate the |Python| environment with `plasmapy`
 installed, run:
