@@ -76,7 +76,7 @@ In a virtual environment
 ------------------------
 
 After `installing uv`_, a `virtual environment`_ with |Python| version
-|maxpython| can be created by openning a terminal and running:
+|maxpython| can be created by opening a terminal and running:
 
 .. code-block:: bash
 
