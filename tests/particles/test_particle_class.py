@@ -554,7 +554,7 @@ def test_Particle_class(arg, kwargs, expected_dict):
 
         else:
             try:
-                result = eval(f"particle.{key}")  # noqa: PGH001, S307
+                result = eval(f"particle.{key}")  # noqa: S307
                 assert result == expected or u.isclose(result, expected, equal_nan=True)
             except AssertionError:
                 errmsg += (
@@ -761,7 +761,7 @@ def test_particle_class_mass_nuclide_mass(isotope: str, ion: str) -> None:
         )
 
 
-@pytest.mark.slow()
+@pytest.mark.slow
 def test_particle_half_life_string() -> None:
     """
     Find the first isotope where the half-life is stored as a string
@@ -1695,3 +1695,14 @@ def test_isotope_ion_electron_binding_energy() -> None:
     assert C_12.electron_binding_energy == C_13.electron_binding_energy
     assert C_12.electron_binding_energy == C_14.electron_binding_energy
     assert C_13.electron_binding_energy == C_14.electron_binding_energy
+
+
+def test_infinite_ionization() -> None:
+    helium = Particle("He-4 0+")
+    h_nucleus = helium.ionize(n=np.inf)
+    helium.ionize(n=np.inf, inplace=True)
+    assert h_nucleus == helium
+    assert h_nucleus == Particle("He-4 2+")
+    helium = Particle("He-4 0+")
+    pytest.raises(TypeError, helium.ionize, n=0.5)
+    pytest.raises(ValueError, helium.ionize, n=-1)

@@ -3,8 +3,8 @@
 Acknowledging and Citing
 ========================
 
-.. |version_to_cite| replace:: 2024.5.0
-.. |doi_hyperlink| replace:: https://doi.org/10.5281/zenodo.11154884
+.. |version_to_cite| replace:: 2024.7.0
+.. |doi_hyperlink| replace:: https://doi.org/10.5281/zenodo.12788848
 .. |citation_year| replace:: 2024
 
 .. These substitutions are automatically updated by the GitHub Action
@@ -14,7 +14,7 @@ If you use PlasmaPy for a project that results in a publication,
 please cite the |Zenodo| record for the specific version of PlasmaPy
 used in your project. Citing a software package promotes scientific
 reproducibility, gives credit to its developers, and highlights the
-importance of software as a vital research product.
+importance of software as a vital research product. 📝
 
 Version |version_to_cite| of PlasmaPy may be cited with the following
 reference:

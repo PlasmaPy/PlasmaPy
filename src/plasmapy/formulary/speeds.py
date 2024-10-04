@@ -18,7 +18,6 @@ from typing import Literal
 import astropy.units as u
 import numpy as np
 from astropy.constants.si import k_B, mu0
-from numba import njit
 
 from plasmapy.formulary import lengths
 from plasmapy.particles import electron
@@ -49,7 +48,7 @@ def Alfven_speed(
     mass_numb: int | None = None,
     Z: float | None = None,
 ) -> u.Quantity[u.m / u.s]:
-    r"""Calculate the Alfvén speed.
+    r"""Calculate the Alfvén speed 🏎️💨.
 
     The Alfvén speed :math:`V_A` is the typical propagation speed of
     magnetic disturbances in a quasineutral plasma, and is given by:
@@ -350,7 +349,6 @@ def ion_sound_speed(
     <Quantity 203155... m / s>
     >>> ion_sound_speed(T_e=500 * u.eV, T_i=200 * u.eV, n_e=n, k=k_1, ion="D+")
     <Quantity 229585... m / s>
-
     """
     for gamma, species in zip([gamma_e, gamma_i], ["electrons", "ions"], strict=False):
         if not isinstance(gamma, Real):
@@ -476,7 +474,6 @@ def thermal_speed_coefficients(method: str, ndim: int) -> float:
 
 
 @preserve_signature
-@njit
 def thermal_speed_lite(T: float, mass: float, coeff: float) -> float:
     r"""
     The :term:`lite-function` for
@@ -656,10 +653,10 @@ def thermal_speed(
           To do this we first define another function :math:`g(v)` given by
 
           .. math::
-             \int_{0}^{\infty} g(v) dv
-                = \int_{-\infty}^{\infty} f(\mathbf{v}) d^3\mathbf{v}
+             \int_{0}^{∞} g(v) dv
+                = \int_{-∞}^{∞} f(\mathbf{v}) d^3\mathbf{v}
                 \quad \rightarrow \quad
-                g(v) = 4 \pi v^2 f(v)
+                g(v) = 4 π v^2 f(v)
 
           then
 
@@ -683,7 +680,7 @@ def thermal_speed(
 
           .. math::
              v_{th} = \int |\mathbf{v}| f(\mathbf{v}) d^3 \mathbf{v}
-                         = \sqrt{\frac{8 k_B T}{\pi m}}
+                         = \sqrt{\frac{8 k_B T}{π m}}
 
 
         - **NRL Formulary** ``method = "nrl"``
@@ -806,6 +803,11 @@ def kappa_thermal_speed(
     : `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed.
 
+    See Also
+    --------
+    ~plasmapy.formulary.speeds.kappa_thermal_speed
+    ~plasmapy.formulary.distribution.kappa_velocity_1D
+
     Notes
     -----
     The particle thermal speed is given by:
@@ -826,11 +828,6 @@ def kappa_thermal_speed(
     <Quantity 37905.47... m / s>
     >>> kappa_thermal_speed(5 * u.eV, 4, "p", "mean_magnitude")
     <Quantity 34922.98... m / s>
-
-    See Also
-    --------
-    ~plasmapy.formulary.speeds.kappa_thermal_speed
-    ~plasmapy.formulary.distribution.kappa_velocity_1D
     """
     # Checking thermal units
     if kappa <= 3 / 2:

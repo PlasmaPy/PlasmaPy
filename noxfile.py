@@ -22,14 +22,18 @@ Some of the checks require the most recent supported version of Python
 to be installed.
 """
 
+# Documentation: https://nox.thea.codes
 import os
 import pathlib
+import platform
+import re
 import sys
 from typing import Literal
 
 import nox
 
 supported_python_versions: tuple[str, ...] = ("3.10", "3.11", "3.12")
+supported_operating_systems: tuple[str, ...] = ("linux", "macos", "windows")
 
 maxpython = max(supported_python_versions)
 minpython = min(supported_python_versions)
@@ -46,6 +50,7 @@ def _get_requirements_filepath(
     category: Literal["docs", "tests", "all"],
     version: Literal["3.10", "3.11", "3.12", "3.13", "3.14", "3.15"],
     resolution: Literal["highest", "lowest-direct", "lowest"] = "highest",
+    os_platform: Literal["linux", "macos", "windows"] | None = None,
 ) -> str:
     """
     Return the file path to the requirements file.
@@ -61,9 +66,22 @@ def _get_requirements_filepath(
 
     resolution : str
         The resolution strategy used by uv.
+
+    os_platform : str, optional
+        The name of the target platform. By default, it will attempt to find the
+        requirement file associated with the current platform.
     """
+
+    if os_platform is None:
+        current_platform = platform.system().lower()
+        os_platform = (
+            current_platform
+            if current_platform in supported_operating_systems
+            else "linux"
+        )
+
     requirements_directory = "ci_requirements"
-    specifiers = [category, version]
+    specifiers = [category, version, os_platform]
     if resolution != "highest":
         specifiers.append(resolution)
     return f"{requirements_directory}/{'-'.join(specifiers)}.txt"
@@ -80,7 +98,7 @@ def requirements(session) -> None:
     continuous integration checks.
     """
 
-    session.install("uv >= 0.2.23")
+    session.install("uv")
 
     category_version_resolution: list[tuple[str, str, str]] = [
         ("tests", version, "highest") for version in supported_python_versions
@@ -111,19 +129,24 @@ def requirements(session) -> None:
         "nox -s requirements",
     )
 
-    for category, version, resolution in category_version_resolution:
-        filename = _get_requirements_filepath(category, version, resolution)
-        session.run(
-            *command,
-            "--python-version",
-            version,
-            *category_flags[category],
-            "--output-file",
-            filename,
-            "--resolution",
-            resolution,
-            *session.posargs,
-        )
+    for os_platform in supported_operating_systems:
+        for category, version, resolution in category_version_resolution:
+            filename = _get_requirements_filepath(
+                category, version, resolution, os_platform
+            )
+            session.run(
+                *command,
+                "--python-version",
+                version,
+                *category_flags[category],
+                "--output-file",
+                filename,
+                "--resolution",
+                resolution,
+                *session.posargs,
+                "--python-platform",
+                os_platform,
+            )
 
 
 pytest_command: tuple[str, ...] = (
@@ -260,7 +283,7 @@ def docs(session: nox.Session) -> None:
     """
     if running_on_ci:
         session.debug(doc_troubleshooting_message)
-    session.install("-r", docs_requirements, ".")
+    session.install("-r", docs_requirements, ".[docs]")
     session.run(*sphinx_commands, *build_html, *session.posargs)
     landing_page = (
         pathlib.Path(session.invoked_from) / "docs" / "build" / "html" / "index.html"
@@ -314,8 +337,7 @@ def linkcheck(session: nox.Session) -> None:
     """Check hyperlinks in documentation."""
     if running_on_ci:
         session.debug(LINKCHECK_TROUBLESHOOTING)
-    session.install("-r", docs_requirements)
-    session.install(".")
+    session.install("-r", docs_requirements, ".[docs]")
     session.run(*sphinx_commands, *check_hyperlinks, *session.posargs)
 
 
@@ -368,6 +390,30 @@ def try_import(session: nox.Session) -> None:
 
 
 @nox.session
+def validate_requirements(session: nox.Session) -> None:
+    """Verify that the pinned requirements are consistent with pyproject.toml."""
+    requirements_file = _get_requirements_filepath(
+        category="all",
+        version=maxpython,
+        resolution="highest",
+    )
+    session.install("uv")
+    session.debug(
+        "🛡 If this check fails, regenerate the pinned requirements files "
+        "with `nox -s requirements` (see `ci_requirements/README.md`)."
+    )
+    session.run(
+        "uv",
+        "pip",
+        "install",
+        "-r",
+        requirements_file,
+        ".[docs,tests]",
+        "--dry-run",
+    )
+
+
+@nox.session
 def build(session: nox.Session) -> None:
     """Build & verify the source distribution and wheel."""
     session.install("twine", "build")
@@ -391,6 +437,75 @@ AUTOTYPING_RISKY: tuple[str, ...] = (
     "--bytes-param",
     "--annotate-imprecise-magics",
 )
+
+
+@nox.session
+@nox.parametrize("draft", [nox.param(False, id="draft"), nox.param(True, id="final")])
+def changelog(session: nox.Session, final: str) -> None:
+    """
+    Build the changelog with towncrier.
+
+     - 'final': build the combined changelog for the release, and delete
+       the individual changelog entries in `changelog`.
+     - 'draft': print the draft changelog to standard output, without
+       writing to files
+
+    When executing this session, provide the version of the release, as
+    in this example:
+
+       nox -s 'changelog(final)' -- 2024.7.0
+    """
+
+    if len(session.posargs) != 1:
+        raise TypeError(
+            "Please provide the version of PlasmaPy to be released "
+            "(i.e., `nox -s changelog -- 2024.9.0`"
+        )
+
+    source_directory = pathlib.Path("./changelog")
+
+    extraneous_files = source_directory.glob("changelog/*[0-9]*.*.rst?*")
+    if final and extraneous_files:
+        session.error(
+            "Please delete the following extraneous files before "
+            "proceeding, as the presence of these files may cause "
+            f"towncrier errors: {extraneous_files}"
+        )
+
+    version = session.posargs[0]
+
+    year_pattern = r"(202[4-9]|20[3-9][0-9]|2[1-9][0-9]{2}|[3-9][0-9]{3,})"
+    month_pattern = r"(1[0-2]|[1-9])"
+    patch_pattern = r"(0?[0-9]|[1-9][0-9])"
+    version_pattern = rf"^{year_pattern}\.{month_pattern}\.{patch_pattern}$"
+
+    if not re.match(version_pattern, version):
+        raise ValueError(
+            "Please provide a version of the form YYYY.M.PATCH, where "
+            "YYYY is the year past 2024, M is the one or two digit month, "
+            "and PATCH is a non-negative integer."
+        )
+
+    session.install(".", "towncrier")
+
+    options = ("--yes",) if final else ("--draft", "--keep")
+
+    session.run(
+        "towncrier",
+        "build",
+        "--config",
+        "pyproject.toml",
+        "--dir",
+        ".",
+        "--version",
+        version,
+        *options,
+    )
+
+    if final:
+        original_file = pathlib.Path("./CHANGELOG.rst")
+        destination = pathlib.Path(f"./docs/changelog/{version}.rst")
+        original_file.rename(destination)
 
 
 @nox.session
@@ -418,6 +533,43 @@ def autotyping(session: nox.Session, options: tuple[str, ...]) -> None:
     DEFAULT_PATHS = ("src", "tests", "tools", "*.py", ".github", "docs/*.py")
     paths = session.posargs or DEFAULT_PATHS
     session.run("python", "-m", "autotyping", *options, *paths)
+
+
+@nox.session
+def monkeytype(session: nox.Session) -> None:
+    """
+    Add type hints to a module based on variable types from running pytest.
+
+    Examples
+    --------
+    nox -s monkeytype -- plasmapy.particles.atomic
+    """
+
+    if not session.posargs:
+        session.error(
+            "Please add at least one module using a command like: "
+            "`nox -s monkeytype -- plasmapy.particles.atomic`"
+        )
+
+    session.install(".[tests]")
+    session.install("MonkeyType", "pytest-monkeytype", "pre-commit")
+
+    database = pathlib.Path("./monkeytype.sqlite3")
+
+    if not database.exists():
+        session.log(f"File {database.absolute()} not found. Running MonkeyType.")
+        session.run("pytest", f"--monkeytype-output={database.absolute()}")
+    else:
+        session.log(f"File {database.absolute()} found.")
+
+    for module in session.posargs:
+        session.run("monkeytype", "apply", module)
+
+    session.run("pre-commit", "run", "ruff", "--all-files")
+    session.run("pre-commit", "run", "ruff-format", "--all-files")
+
+    session.log("Please inspect newly added type hints for correctness.")
+    session.log("Check new type hints with `nox -s mypy`.")
 
 
 @nox.session

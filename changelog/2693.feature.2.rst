@@ -1,1 +1,0 @@
-Renamed the `~plasmapy.particles.particle_class.Particle.binding_energy` attribute of |Particle| to `~plasmapy.particles.particle_class.Particle.nuclear_binding_energy` to avoid confusion with `~plasmapy.particles.particle_class.Particle.electron_binding_energy`.

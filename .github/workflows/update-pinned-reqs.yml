@@ -2,7 +2,7 @@ name: Update pinned requirements
 
 on:
   schedule:
-  - cron: 0 12 */14 * 1
+  - cron: 0 12 * * 1
   workflow_dispatch:
 
 jobs:
@@ -44,7 +44,7 @@ jobs:
         private_key: ${{ secrets.APP_PRIVATE_KEY }}
 
     - name: Create pull request
-      uses: peter-evans/create-pull-request@v6
+      uses: peter-evans/create-pull-request@v7
       with:
         token: ${{ steps.generate_token.outputs.token }}
         commit-message: Update requirements with 'nox -s requirements'
