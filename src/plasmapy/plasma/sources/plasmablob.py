@@ -11,6 +11,7 @@ import astropy.units as u
 from plasmapy.formulary import coupling_parameter, quantum_theta
 from plasmapy.formulary.misc import _grab_charge
 from plasmapy.particles import particle_mass
+from plasmapy.particles.particle_class import ParticleLike
 from plasmapy.plasma.plasma_base import GenericPlasma
 from plasmapy.utils import code_repr
 from plasmapy.utils.decorators import validate_quantities
@@ -24,7 +25,7 @@ class PlasmaBlob(GenericPlasma):
     """
 
     @validate_quantities(T_e=u.K, n_e=u.m**-3)
-    def __init__(self, T_e, n_e, Z=None, particle="p+") -> None:
+    def __init__(self, T_e, n_e, Z=None, particle: ParticleLike = "p+") -> None:
         """
         Initialize plasma parameters.
         The most basic description is composition (ion), temperature,

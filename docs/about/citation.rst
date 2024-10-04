@@ -3,8 +3,8 @@
 Acknowledging and Citing
 ========================
 
-.. |version_to_cite| replace:: 2024.2.0
-.. |doi_hyperlink| replace:: https://doi.org/10.5281/zenodo.10613904
+.. |version_to_cite| replace:: 2024.7.0
+.. |doi_hyperlink| replace:: https://doi.org/10.5281/zenodo.12788848
 .. |citation_year| replace:: 2024
 
 .. These substitutions are automatically updated by the GitHub Action
@@ -14,7 +14,7 @@ If you use PlasmaPy for a project that results in a publication,
 please cite the |Zenodo| record for the specific version of PlasmaPy
 used in your project. Citing a software package promotes scientific
 reproducibility, gives credit to its developers, and highlights the
-importance of software as a vital research product.
+importance of software as a vital research product. 📝
 
 Version |version_to_cite| of PlasmaPy may be cited with the following
 reference:
@@ -56,4 +56,4 @@ on, such as `Astropy <https://www.astropy.org/acknowledging.html>`__,
 .. note::
 
    All public releases of PlasmaPy are openly archived in the `PlasmaPy
-   Community <https://zenodo.org/communities/plasmapy>`__ on |Zenodo|.
+   Community <https://zenodo.org/communities/plasmapy/records>`__ on |Zenodo|.

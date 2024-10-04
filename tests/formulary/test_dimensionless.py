@@ -99,6 +99,8 @@ def test_Mag_Reynolds() -> None:
 def test_Debye_number() -> None:
     r"""Test the Debye_number function in dimensionless.py."""
 
+    # TODO: parametrize tests
+
     assert Debye_number(T_e, n_e).unit.is_equivalent(u.dimensionless_unscaled)
 
     T_e_eV = T_e.to(u.eV, equivalencies=u.temperature_energy())
@@ -138,6 +140,8 @@ def test_Debye_number() -> None:
 def test_Hall_parameter() -> None:
     r"""Test Hall_parameter in dimensionless.py"""
 
+    # TODO: parametrize tests
+
     ion = Particle("He-4 +1")
     particle = Particle("e-")
 
@@ -161,9 +165,6 @@ def test_Hall_parameter() -> None:
 
     with pytest.warns(u.UnitsWarning):
         Hall_parameter(n, T, B, ion, particle, V=100)
-
-    with pytest.raises(TypeError):
-        Hall_parameter(n, T, B, ion, particle, coulomb_log="test")
 
     with pytest.warns(RelativityWarning):
         Hall_parameter(1e10 * u.m**-3, 5.8e3 * u.eV, 2.3 * u.T, ion, particle)

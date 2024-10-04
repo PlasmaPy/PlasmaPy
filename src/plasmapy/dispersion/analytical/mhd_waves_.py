@@ -118,7 +118,7 @@ class AbstractMHDWave(ABC):
         """Validate and return wavenumber and angle."""
         # validate argument k
         k = k.squeeze()
-        if k.ndim not in [0, 1]:
+        if k.ndim not in {0, 1}:
             raise ValueError(
                 f"Argument 'k' needs to be a single-valued or 1D array astropy Quantity,"
                 f" got array of shape {k.shape}."
@@ -128,7 +128,7 @@ class AbstractMHDWave(ABC):
 
         # validate argument theta
         theta = theta.squeeze()
-        if theta.ndim not in [0, 1]:
+        if theta.ndim not in {0, 1}:
             raise ValueError(
                 f"Argument 'theta' needs to be a single-valued or 1D array astropy "
                 f"Quantity, got array of shape {k.shape}."
@@ -252,9 +252,9 @@ class AbstractMHDWave(ABC):
 
         .. math::
 
-        \mathbf{v}_g = \frac{d\omega}{d\mathbf{k}}
-            = \hat{\mathbf{k}} \frac{\partial\omega}{\partial k}
-                + \hat{\mathbf{\theta}} \frac{\partial v_{ph}}{\partial\theta}
+        \mathbf{v}_g = \frac{dω}{d\mathbf{k}}
+            = \hat{\mathbf{k}} \frac{∂ω}{∂ k}
+                + \hat{\mathbf{θ}} \frac{∂ v_{ph}}{∂θ}
 
         where :math:`ω` is the angular frequency, :math:`\mathbf{k}` is
         the wavevector, :math:`θ` is the angle between :math:`\mathbf{k}`
@@ -308,6 +308,12 @@ class AbstractMHDWave(ABC):
         """
         angular_frequency = self.angular_frequency(k, theta)
         theta, k = self._validate_k_theta(k, theta)
+
+        if theta.shape[1] == 1:
+            # np.squeeze will have removed this axis from angular_frequency,
+            # so it must be added back
+            angular_frequency = np.expand_dims(angular_frequency, axis=1)
+
         return np.squeeze(angular_frequency / k)
 
 
@@ -484,7 +490,7 @@ class AlfvenWave(AbstractMHDWave):
         -------
         group_velocity : `~astropy.units.Quantity` of shape ``(2, N, M)``
             An array of group_velocities in units m/s with shape
-            :math:`2 \times N \times M`. The first dimension maps to the
+            :math:`2 × N × M`. The first dimension maps to the
             two coordinate arrays in the direction of ``k`` and in
             the direction of increasing ``theta``, the second
             dimension maps to the ``k`` array, and the third dimension
@@ -514,8 +520,8 @@ class AlfvenWave(AbstractMHDWave):
 
         .. math::
 
-        \mathbf{v}_g = \frac{d\omega}{d\mathbf{k}}
-            = \pm \hat{\mathbf{B}} v_{A}
+        \mathbf{v}_g = \frac{dω}{d\mathbf{k}}
+            = ± \hat{\mathbf{B}} v_{A}
 
         where :math:`\hat{\mathbf{B}}` is the unit vector in the
         direction of the unperturbed magnetic field and :math:`v_A` is
@@ -523,9 +529,17 @@ class AlfvenWave(AbstractMHDWave):
         """
         phase_velocity = self.phase_velocity(k, theta)
         theta, k = super()._validate_k_theta(k, theta)
+
+        if theta.shape[1] == 1:
+            # np.squeeze will have removed this axis from phase_velocity,
+            # so it must be added back
+            phase_velocity_s = np.expand_dims(phase_velocity, axis=1)
+        else:
+            phase_velocity_s = phase_velocity
+
         return [
             phase_velocity,
-            -phase_velocity * np.tan(theta),
+            np.squeeze(-phase_velocity_s * np.tan(theta)),
         ]
 
 
@@ -725,7 +739,7 @@ class FastMagnetosonicWave(AbstractMHDWave):
         -------
         group_velocity : `~astropy.units.Quantity` of shape ``(2, N, M)``
             An array of group_velocities in units m/s with shape
-            :math:`2 \times N \times M`. The first dimension maps to the
+            :math:`2 × N × M`. The first dimension maps to the
             two coordinate arrays in the direction of ``k`` and in
             the direction of increasing ``theta``, the second
             dimension maps to the ``k`` array, and the third dimension
@@ -755,9 +769,9 @@ class FastMagnetosonicWave(AbstractMHDWave):
 
         .. math::
 
-        \mathbf{v}_g = \frac{d\omega}{d\mathbf{k}}
+        \mathbf{v}_g = \frac{dω}{d\mathbf{k}}
             = \hat{\mathbf{k}} v_{ph}
-                + \hat{\mathbf{\theta}} \frac{\partial v_{ph}}{\partial\theta}
+                + \hat{\mathbf{θ}} \frac{∂ v_{ph}}{∂θ}
 
         where :math:`ω` is the angular frequency, :math:`\mathbf{k}` is
         the wavevector, :math:`θ` is the angle between :math:`\mathbf{k}`
@@ -766,6 +780,14 @@ class FastMagnetosonicWave(AbstractMHDWave):
         """
         phase_velocity = self.phase_velocity(k, theta)
         theta, k = super()._validate_k_theta(k, theta)
+
+        if theta.shape[1] == 1:
+            # np.squeeze will have removed this axis from phase_velocity,
+            # so it must be added back
+            phase_velocity_s = np.expand_dims(phase_velocity, axis=1)
+        else:
+            phase_velocity_s = phase_velocity
+
         return [
             phase_velocity,
             np.squeeze(
@@ -774,8 +796,8 @@ class FastMagnetosonicWave(AbstractMHDWave):
                 * np.sin(theta)
                 * np.cos(theta)
                 / (
-                    phase_velocity
-                    * (2 * phase_velocity**2 - self._magnetosonic_speed**2)
+                    phase_velocity_s
+                    * (2 * phase_velocity_s**2 - self._magnetosonic_speed**2)
                 )
             ),
         ]
@@ -968,7 +990,7 @@ class SlowMagnetosonicWave(AbstractMHDWave):
         -------
         group_velocity : `~astropy.units.Quantity` of shape ``(2, N, M)``
             An array of group_velocities in units m/s with shape
-            :math:`2 \times N \times M`. The first dimension maps to the
+            :math:`2 × N × M`. The first dimension maps to the
             two coordinate arrays in the direction of ``k`` and in
             the direction of increasing ``theta``, the second
             dimension maps to the ``k`` array, and the third dimension
@@ -998,9 +1020,9 @@ class SlowMagnetosonicWave(AbstractMHDWave):
 
         .. math::
 
-        \mathbf{v}_g = \frac{d\omega}{d\mathbf{k}}
+        \mathbf{v}_g = \frac{dω}{d\mathbf{k}}
             = \hat{\mathbf{k}} v_{ph}
-                + \hat{\mathbf{\theta}} \frac{\partial v_{ph}}{\partial\theta}
+                + \hat{\mathbf{θ}} \frac{∂ v_{ph}}{∂θ}
 
         where :math:`ω` is the angular frequency, :math:`\mathbf{k}` is
         the wavevector, :math:`θ` is the angle between :math:`\mathbf{k}`
@@ -1008,24 +1030,29 @@ class SlowMagnetosonicWave(AbstractMHDWave):
         phase velocity.
         """
         phase_velocity = self.phase_velocity(k, theta)
-
         theta, k = super()._validate_k_theta(k, theta)
+
+        if theta.shape[1] == 1:
+            # np.squeeze will have removed this axis from phase_velocity,
+            # so it must be added back
+            phase_velocity_s = np.expand_dims(phase_velocity, axis=1)
+        else:
+            phase_velocity_s = phase_velocity
+
         group_velocity = np.ones(k.shape) * (0 * u.m / u.s)
-        np.squeeze(
-            np.divide(
-                self._Alfven_speed**2
-                * self._sound_speed**2
-                * np.sin(theta)
-                * np.cos(theta),
-                phase_velocity * (2 * phase_velocity**2 - self._magnetosonic_speed**2),
-                out=group_velocity,
-                where=phase_velocity != 0,
-            )
+        np.divide(
+            self._Alfven_speed**2
+            * self._sound_speed**2
+            * np.sin(theta)
+            * np.cos(theta),
+            phase_velocity_s * (2 * phase_velocity_s**2 - self._magnetosonic_speed**2),
+            out=group_velocity,
+            where=phase_velocity != 0,
         )
 
         return [
             phase_velocity,
-            group_velocity,
+            np.squeeze(group_velocity),
         ]
 
 

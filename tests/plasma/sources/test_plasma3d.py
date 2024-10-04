@@ -60,7 +60,7 @@ def test_Plasma3D_setup(grid_dimensions, expected_size: int) -> None:
     assert test_plasma.electric_field.si.unit == u.V / u.m
 
 
-@pytest.mark.slow()
+@pytest.mark.slow
 def test_Plasma3D_derived_vars() -> None:
     r"""Function to test derived variables of the Plasma3D class.
 

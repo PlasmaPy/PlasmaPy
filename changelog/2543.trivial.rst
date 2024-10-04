@@ -1,3 +1,0 @@
-Exposed `~plasmapy.formulary.dielectric.StixTensorElements`
-and `~plasmapy.formulary.dielectric.RotatingTensorElements`
-to the public API.

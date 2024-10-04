@@ -29,7 +29,7 @@ def parse_arguments():
 yaml = YAML()
 
 
-def update_citation_files(args):
+def update_citation_files(args) -> None:
     citation_cff_file = pathlib.Path(args.citation_cff_file)
     with citation_cff_file.open() as f:
         d = yaml.load(f)
@@ -65,18 +65,6 @@ def update_citation_files(args):
         f.write(citation_rst_text)
 
 
-def update_whatsnew(args):
-    whatsnew_index_rst_file = pathlib.Path(args.whatsnew_index_rst_file)
-    whatsnew_index_text = whatsnew_index_rst_file.read_text()
-    whatsnew_index_text = re.compile(r".. toctree::\n   :maxdepth: 1\n\n   dev").sub(
-        f".. toctree::\n   :maxdepth: 1\n\n   dev\n   {args.version}",
-        whatsnew_index_text,
-    )
-    with whatsnew_index_rst_file.open("w") as f:
-        f.write(whatsnew_index_text)
-
-
 if __name__ == "__main__":
     args = parse_arguments()
     update_citation_files(args)
-    update_whatsnew(args)

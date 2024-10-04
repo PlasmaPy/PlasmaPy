@@ -1,0 +1,112 @@
+# This file invokes Nox sessions to run tests, build documentation, and
+# perform other continuous integration (CI) checks. The Nox sessions are
+# defined in noxfile.py.
+
+name: CI
+
+on:
+  push:
+    branches:
+    - main
+    - stable
+    - v*.*.*
+    tags:
+    - v*
+  pull_request:
+  workflow_dispatch:
+
+env:
+  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+jobs:
+
+  tests:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+        include:
+
+        - name: Tests, Python 3.12, skip slow tests, doctests, Ubuntu
+          os: ubuntu-latest
+          python: '3.12'
+          nox_session: tests-3.12(skipslow)
+
+        - name: Tests, Python 3.11, with code coverage, macOS
+          os: macos-latest
+          python: '3.11'
+          nox_session: tests-3.11(cov)
+
+        - name: Tests, Python 3.10, lowest direct dependencies, Windows
+          os: windows-latest
+          python: '3.10'
+          nox_session: tests-3.10(lowest-direct)
+
+        - name: Documentation, Python 3.12, Ubuntu
+          os: ubuntu-latest
+          python: '3.12'
+          nox_session: docs
+
+        - name: Static type checking with mypy, Python 3.12, Ubuntu
+          os: ubuntu-latest
+          python: '3.12'
+          nox_session: mypy
+
+        - name: Packaging, Python 3.12, Ubuntu
+          os: ubuntu-latest
+          python: '3.12'
+          nox_session: build
+
+        - name: Validate CITATION.cff
+          os: ubuntu-latest
+          python: '3.12'
+          nox_session: cff
+
+        - name: Check consistency of pinned & project requirements
+          os: ubuntu-latest
+          python: '3.12'
+          nox_session: validate_requirements
+
+    steps:
+
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python }}
+        cache: pip
+
+    - name: Install graphviz and pandoc for documentation builds
+      if: startsWith(matrix.name, 'Documentation')
+      run: sudo apt-get install graphviz pandoc
+
+    - name: Install Nox and uv
+      run: python -m pip install --progress-bar off --upgrade nox uv
+
+    - name: Cache .nox to shorten virtual environment creation time
+      uses: actions/cache@v4
+      with:
+        path: |
+          .nox
+        # Changing pyproject.toml or requirements invalidates the cache
+        key: ${{ matrix.nox_session }}-${{ matrix.python }}-${{ runner.os }}-${{ hashFiles('pyproject.toml', 'ci_requirements/all-3.12-linux.txt') }}
+
+    - name: Run Nox session
+      run: nox -s '${{ matrix.nox_session }}'
+
+    - name: Upload coverage reports to Codecov
+      if: ${{ contains(matrix.nox_session, 'cov') }}
+      uses: codecov/codecov-action@v4
+      with:
+        file: ./coverage.xml
+        fail_ci_if_error: false
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

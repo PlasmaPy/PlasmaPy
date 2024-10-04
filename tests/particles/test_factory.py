@@ -52,7 +52,7 @@ test_cases = [
 def test_physical_particle_factory(args, kwargs, expected) -> None:
     result = _physical_particle_factory(*args, **kwargs)
     assert result == expected
-    assert type(result) == type(expected)
+    assert type(result) is type(expected)
 
 
 test_cases_for_exceptions = [
