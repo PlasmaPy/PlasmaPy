@@ -101,9 +101,9 @@ In a Python project
 
 |uv| also supports managing |Python| projects. A `Python project`_
 is a collection of |Python| code or package(s) and additional files,
-e.g. ``pyproject.toml``, which contains the `project metadata`_. To make
+e.g. :file:`pyproject.toml`, which contains the `project metadata`_. To make
 a `Python project`_ reproducible across many platforms, |uv| reads
-``pyproject.toml`` and generates a lockfile name ``uv.lock``, which in
+:file:`pyproject.toml` and generates a lockfile name :file:`uv.lock`, which in
 turn can be read by |uv| on a different machine to create the same
 `Python project`_ and its dependencies.
 
