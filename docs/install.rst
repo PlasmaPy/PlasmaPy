@@ -72,15 +72,12 @@ common |pip| commands so that |Python| packages on |PyPI| may be
 installed into |uv|-managed
 `virtual environments <virtual environment_>`_ without installing |pip|.
 
-In a virtual environment
-------------------------
-
 After `installing uv`_, a `virtual environment`_ with |Python| version
-|maxpython| can be created by opening a terminal and running:
+3.12 can be created by opening a terminal and running:
 
 .. code-block:: bash
 
-   uv venv --python |maxpython|
+   uv venv --python 3.12
 
 |uv| will automatically download |Python| and link it to
 the `virtual environment`_'s directory at (by default) :file:`.venv`. The
@@ -95,42 +92,6 @@ Then, to install `plasmapy` into the activated environment, run:
 .. code-block:: bash
 
    uv pip install plasmapy
-
-In a Python project
--------------------
-
-|uv| also supports managing |Python| projects. A `Python project`_
-is a collection of |Python| code or package(s) and additional files,
-e.g. :file:`pyproject.toml`, which contains the `project metadata`_. To make
-a `Python project`_ reproducible across many platforms, |uv| reads
-:file:`pyproject.toml` and generates a lockfile name :file:`uv.lock`, which in
-turn can be read by |uv| on a different machine to create the same
-`Python project`_ and its dependencies.
-
-To initialize a `Python project`_ named ``project-with-plasmapy`` with
-|Python| version |maxpython|, run with |uv|:
-
-.. code-block:: bash
-
-   uv init --name project-with-plasmapy --python |maxpython|
-
-By default, |uv| will generate a :file:`pyproject.toml` and many other
-metadata files (see `uv init options`_). Then, to add `plasmapy` as a
-dependency, run:
-
-.. code-block:: bash
-
-   uv add plasmapy
-
-|uv| will add `plasmapy` to :file:`pyproject.toml` and create a `virtual
-environment`_ in :file:`.venv` with `plasmapy` and its dependencies already
-installed. So, it is no longer needed to use the `pip drop-in
-interface`_. To activate the |Python| environment with `plasmapy`
-installed, run:
-
-.. code-block::bash
-
-   source .venv/bin/activate
 
 .. _install-conda:
 
