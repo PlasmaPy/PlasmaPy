@@ -114,7 +114,7 @@ To initialize a `Python project`_ named ``project-with-plasmapy`` with
 
    uv init --name project-with-plasmapy --python |maxpython|
 
-By default, |uv| will generate a ``pyproject.toml`` and many other
+By default, |uv| will generate a :file:`pyproject.toml` and many other
 metadata files (see `uv init options`_). Then, to add `plasmapy` as a
 dependency, run:
 
