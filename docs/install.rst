@@ -82,7 +82,7 @@ After `installing uv`_, a `virtual environment`_ with |Python| version
 
    uv venv --python |maxpython|
 
-|uv| will automatically download the |Python| binary and symlink it to
+|uv| will automatically download |Python| and link it to
 the `virtual environment`_'s directory at (by default) :file:`.venv`. The
 environment can then be activated by running:
 
