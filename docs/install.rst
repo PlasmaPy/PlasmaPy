@@ -96,7 +96,7 @@ Then, to install `plasmapy` into the activated environment, run:
 
    uv pip install plasmapy
 
-In a python project
+In a Python project
 -------------------
 
 |uv| also supports managing |Python| projects. A `Python project`_
