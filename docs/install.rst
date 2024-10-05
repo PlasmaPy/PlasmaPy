@@ -122,8 +122,8 @@ dependency, run:
 
    uv add plasmapy
 
-|uv| will add `plasmapy` to ``pyproject.toml`` and create a `virtual
-environment`_ in ``.venv`` with `plasmapy` and its dependencies already
+|uv| will add `plasmapy` to :file:`pyproject.toml` and create a `virtual
+environment`_ in :file:`.venv` with `plasmapy` and its dependencies already
 installed. So, it is no longer needed to use the `pip drop-in
 interface`_. To activate the |Python| environment with `plasmapy`
 installed, run:
