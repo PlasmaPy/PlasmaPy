@@ -2,7 +2,7 @@
 #    nox -s requirements
 anyio==3.7.1
     # via jupyter-server
-argcomplete==3.5.0
+argcomplete==3.5.1
     # via nox
 argon2-cffi==23.1.0
     # via
@@ -272,7 +272,7 @@ python-dateutil==2.9.0.post0
     #   pandas
 pytz==2024.2
     # via pandas
-pywin32==306
+pywin32==307
     # via jupyter-core
 pywinpty==2.0.13
     # via
