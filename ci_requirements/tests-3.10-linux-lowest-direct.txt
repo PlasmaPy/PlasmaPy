@@ -2,7 +2,7 @@
 #    nox -s requirements
 anyio==3.7.1
     # via jupyter-server
-argcomplete==3.5.0
+argcomplete==3.5.1
     # via nox
 argon2-cffi==23.1.0
     # via
