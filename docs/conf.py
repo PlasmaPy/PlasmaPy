@@ -297,12 +297,19 @@ hoverxref_role_types = {
     "term": "tooltip",
 }
 
+
 if building_on_readthedocs := os.environ.get("READTHEDOCS"):
     # Using the proxied API endpoint is a Read the Docs strategy to
     # avoid a cross-site request forgery block for docs using a custom
     # domain. See conf.py for sphinx-hoverxref.
     use_proxied_api_endpoint = os.environ.get("PROXIED_API_ENDPOINT")
     hoverxref_api_host = "/_" if use_proxied_api_endpoint else "https://readthedocs.org"
+
+    # Set canonical URL from the Read the Docs Domain
+    html_baseurl = os.environ.get("READTHEDOCS_CANONICAL_URL", "")
+
+    # Tell Jinja2 templates the build is running on Read the Docs
+    html_context = {"READTHEDOCS": True}
 
 # sphinx-issues
 
