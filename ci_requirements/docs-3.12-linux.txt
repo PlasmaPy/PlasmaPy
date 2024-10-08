@@ -4,7 +4,7 @@ alabaster==0.7.16
     # via sphinx
 anyio==4.6.0
     # via jupyter-server
-argcomplete==3.5.0
+argcomplete==3.5.1
     # via nox
 argon2-cffi==23.1.0
     # via jupyter-server
@@ -16,7 +16,7 @@ asteval==1.0.5
     # via lmfit
 astropy==6.1.4
     # via plasmapy (pyproject.toml)
-astropy-iers-data==0.2024.9.30.0.32.59
+astropy-iers-data==0.2024.10.7.0.32.46
     # via astropy
 asttokens==2.4.1
     # via stack-data
@@ -62,7 +62,7 @@ dill==0.3.9
     # via lmfit
 distlib==0.3.8
     # via virtualenv
-docutils==0.20.1
+docutils==0.21.2
     # via
     #   plasmapy (pyproject.toml)
     #   nbsphinx
@@ -192,7 +192,7 @@ nest-asyncio==1.6.0
     # via ipykernel
 nox==2024.4.15
     # via plasmapy (pyproject.toml)
-numpy==2.1.1
+numpy==2.1.2
     # via
     #   plasmapy (pyproject.toml)
     #   astropy
@@ -373,7 +373,7 @@ sphinx-notfound-page==1.0.4
     # via plasmapy (pyproject.toml)
 sphinx-reredirects==0.1.5
     # via plasmapy (pyproject.toml)
-sphinx-rtd-theme==2.0.0
+sphinx-rtd-theme==3.0.0
     # via plasmapy (pyproject.toml)
 sphinx-tabs==3.4.5
     # via plasmapy (pyproject.toml)
