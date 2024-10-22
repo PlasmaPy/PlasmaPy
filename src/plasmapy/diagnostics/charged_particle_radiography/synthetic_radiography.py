@@ -100,7 +100,7 @@ class _SyntheticRadiographySaveRoutine(SaveOnceOnCompletion):
         if self.output_directory is None:
             return
 
-        output_file_path = self.output_directory / f"{self.output_name}.h5"
+        output_file_path = self.output_directory / Path(f"{self.output_name}.h5")
 
         with h5py.File(output_file_path, "w") as output_file:
             for key, (_units, data_type) in self._quantities.items():
@@ -1113,7 +1113,7 @@ def synthetic_radiograph(obj, size=None, bins=None, ignore_grid: bool = False):
 
     Parameters
     ----------
-    obj: `dict` or `Path` or |Tracker|
+    obj: `dict` or `~pathlib.Path` or |Tracker|
         Either a |Tracker|
         object that has been run, a dictionary equivalent to
         |results_dict|, or path to a saved output file
