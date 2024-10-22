@@ -1,8 +1,8 @@
 Save routines in `~plasmapy.simulation.particle_tracker.save_routines` now take an optional keyword argument ``output_name``
 that sets the basename of the saved file(s).
 
-`~plasmapy.diagnostic.charged_particle_radiography.synthetic_radiography.Tracker` now also accepts an ``output_name`` keyword.
+`~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography.Tracker` now also accepts an ``output_name`` keyword.
 
-`~plasmapy.diagnostic.charged_particle_radiography.synthetic_radiography.synthetic_radiograph` now accepts a file path to an
-HDF5 file saved by `~plasmapy.diagnostic.charged_particle_radiography.synthetic_radiography.Tracker` as input to create
+`~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography.synthetic_radiograph` now accepts a file path to an
+HDF5 file saved by `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography.Tracker` as input to create
 a synthetic radiograph.
