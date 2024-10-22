@@ -1113,10 +1113,11 @@ def synthetic_radiograph(obj, size=None, bins=None, ignore_grid: bool = False):
 
     Parameters
     ----------
-    obj: `dict` or |Tracker|
+    obj: `dict` or `Path` or |Tracker|
         Either a |Tracker|
-        object that has been run, or a dictionary equivalent to
-        |results_dict|.
+        object that has been run, a dictionary equivalent to
+        |results_dict|, or path to a saved output file
+        from a |Tracker| object (HDF5 file).
 
     size : `~astropy.units.Quantity`, shape ``(2, 2)``, optional
         The size of the detector array, specified as the minimum
@@ -1157,11 +1158,24 @@ def synthetic_radiograph(obj, size=None, bins=None, ignore_grid: bool = False):
     if isinstance(obj, Tracker):
         # results_dict raises an error if the simulation has not been run.
         d = obj.results_dict
+
     elif isinstance(obj, dict):
         d = obj
+
+    elif isinstance(obj, str | Path):
+        d = {}
+        obj = Path(obj)
+        # Create a dictionary of all of the datasets and attributes in the save file
+        # Equivalent to |results_dict|
+        with h5py.File(obj, "r") as f:
+            for k in f:
+                d[k] = f[k][...]
+            for k in f.attrs:
+                d[k] = f.attrs[k][...]
+
     else:
         raise TypeError(
-            f"Expected type dict or {Tracker} for argument `obj`, but "
+            f"Expected type `Path`, `dict` or {Tracker} for argument `obj`, but "
             f"got type {type(obj)}."
         )
 

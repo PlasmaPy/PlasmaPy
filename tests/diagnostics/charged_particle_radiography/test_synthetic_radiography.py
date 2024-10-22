@@ -2,6 +2,8 @@
 Tests for proton radiography functions
 """
 
+from pathlib import Path
+
 import astropy.constants as const
 import astropy.units as u
 import numpy as np
@@ -945,9 +947,24 @@ def test_radiography_disk_save_routine(tmp_path) -> None:
         detector,
         field_weighting="nearest neighbor",
         output_directory=tmp_path,
+        output_name="test_output",
     )
     sim.create_particles(1e3, 15 * u.MeV, max_theta=8 * u.deg, random_seed=42)
     sim.run()
+
+    path = tmp_path / Path("test_output.h5")
+
+    # Assert the file has been saved
+    assert path.is_file()
+
+    # Make synthetic radiograph from sim object
+    h, v, i1 = cpr.synthetic_radiograph(sim)
+
+    # Load from tmppath and make synthetic radiograph
+    h, v, i2 = cpr.synthetic_radiograph(path)
+
+    # The two synthetic radiographs should be identical
+    assert np.allclose(i1, i2)
 
 
 def test_radiography_memory_save_routine() -> None:
