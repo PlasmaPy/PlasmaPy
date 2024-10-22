@@ -1157,22 +1157,21 @@ def synthetic_radiograph(obj, size=None, bins=None, ignore_grid: bool = False):
     # condition `obj` input
     if isinstance(obj, Tracker):
         # results_dict raises an error if the simulation has not been run.
-        d = obj.results_dict
+        results_dict = obj.results_dict
 
     elif isinstance(obj, dict):
-        d = obj
+        results_dict = obj
 
     elif isinstance(obj, str | Path):
-        d = {}
+        results_dict = {}
         obj = Path(obj)
         # Create a dictionary of all of the datasets and attributes in the save file
         # Equivalent to |results_dict|
         with h5py.File(obj, "r") as f:
             for k in f:
-                d[k] = f[k][...]
+                results_dict[k] = f[k][...]
             for k in f.attrs:
-                d[k] = f.attrs[k][...]
-
+                results_dict[k] = f.attrs[k][...]
     else:
         raise TypeError(
             f"Expected type `Path`, `dict` or {Tracker} for argument `obj`, but "
@@ -1188,13 +1187,13 @@ def synthetic_radiograph(obj, size=None, bins=None, ignore_grid: bool = False):
     # If ignore_grid is True, use the predicted positions in the absence of
     # simulated fields
     if ignore_grid:
-        xloc = d["x0"]
-        yloc = d["y0"]
-        v = d["v0"][:, 0]
+        xloc = results_dict["x0"]
+        yloc = results_dict["y0"]
+        v = results_dict["v0"][:, 0]
     else:
-        xloc = d["x"]
-        yloc = d["y"]
-        v = d["v"][:, 0]
+        xloc = results_dict["x"]
+        yloc = results_dict["y"]
+        v = results_dict["v"][:, 0]
 
     if size is None:
         # If a detector size is not given, choose a size based on the
@@ -1231,7 +1230,7 @@ def synthetic_radiograph(obj, size=None, bins=None, ignore_grid: bool = False):
 
     # Throw a warning if < 50% of the particles are included on the
     # histogram
-    percentage = np.sum(intensity) / d["nparticles"]
+    percentage = np.sum(intensity) / results_dict["nparticles"]
     if percentage < 0.5:
         warnings.warn(
             f"Only {percentage:.2%} of the particles are shown "
