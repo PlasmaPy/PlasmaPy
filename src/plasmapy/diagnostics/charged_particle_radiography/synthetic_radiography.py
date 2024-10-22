@@ -1103,7 +1103,7 @@ class Tracker(ParticleTracker):
 # *************************************************************************
 
 
-def synthetic_radiograph(obj, size=None, bins=None, ignore_grid: bool = False):
+def synthetic_radiograph(obj, size=None, bins=None, ignore_grid: bool = False):  # noqa: C901, PLR0912
     r"""
     Calculate a "synthetic radiograph" (particle count histogram in the
     image plane).
@@ -1168,10 +1168,10 @@ def synthetic_radiograph(obj, size=None, bins=None, ignore_grid: bool = False):
         # Create a dictionary of all of the datasets and attributes in the save file
         # Equivalent to |results_dict|
         with h5py.File(obj, "r") as f:
-            for k in f:
-                results_dict[k] = f[k][...]
-            for k in f.attrs:
-                results_dict[k] = f.attrs[k][...]
+            for key in f:
+                results_dict[key] = f[key][...]
+            for key in f.attrs:
+                results_dict[key] = f.attrs[key][...]
     else:
         raise TypeError(
             f"Expected type `Path`, `dict` or {Tracker} for argument `obj`, but "
