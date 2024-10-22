@@ -30,6 +30,9 @@ class AbstractSaveRoutine(ABC):
         Output for objects that are saved to disk. If a directory is not specified
         then a memory save routine is used.
 
+    output_name : `str`, optional
+        Optional string basename for saved files.
+
 
     Notes
     -----
@@ -38,8 +41,11 @@ class AbstractSaveRoutine(ABC):
     Then, the hook calls `save_now` to determine whether or not the simulation state should be saved.
     """
 
-    def __init__(self, output_directory: Path | None = None) -> None:
+    def __init__(
+        self, output_directory: Path | None = None, output_name: str = "output"
+    ) -> None:
         self.output_directory = output_directory
+        self.output_name = output_name
 
         self._results = {}
         self._quantities = {
@@ -93,7 +99,10 @@ class AbstractSaveRoutine(ABC):
     def _save_to_disk(self) -> None:
         """Save a hdf5 file containing simulation positions and velocities."""
 
-        path = self.output_directory / f"{self.tracker.iteration_number}.hdf5"
+        path = (
+            self.output_directory
+            / f"{self.output_name}_iter{self.tracker.iteration_number}.h5"
+        )
 
         with h5py.File(path, "w") as output_file:
             for key, (_units, data_type) in self._quantities.items():
@@ -171,8 +180,10 @@ class SaveOnceOnCompletion(AbstractSaveRoutine):
     bypassing the ``save_now()`` criteria.
     """
 
-    def __init__(self, output_directory: Path | None = None) -> None:
-        super().__init__(output_directory)
+    def __init__(
+        self, output_directory: Path | None = None, output_name: str = "output"
+    ) -> None:
+        super().__init__(output_directory, output_name)
 
     @property
     def save_now(self) -> bool:

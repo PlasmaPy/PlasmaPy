@@ -75,8 +75,10 @@ def _coerce_to_cartesian_si(pos):
 
 
 class _SyntheticRadiographySaveRoutine(SaveOnceOnCompletion):
-    def __init__(self, output_directory: Path) -> None:
-        super().__init__(output_directory=output_directory)
+    def __init__(
+        self, output_directory: Path | None = None, output_name: str = "output"
+    ) -> None:
+        super().__init__(output_directory=output_directory, output_name=output_name)
 
         self._quantities = {
             "source": (u.m, "attribute"),
@@ -98,7 +100,7 @@ class _SyntheticRadiographySaveRoutine(SaveOnceOnCompletion):
         if self.output_directory is None:
             return
 
-        output_file_path = self.output_directory / "output.hdf5"
+        output_file_path = self.output_directory / f"{self.output_name}.h5"
 
         with h5py.File(output_file_path, "w") as output_file:
             for key, (_units, data_type) in self._quantities.items():
@@ -180,6 +182,9 @@ class Tracker(ParticleTracker):
         Directory for objects that are saved to disk. If a directory is not
         specified then a memory save routine is used.
 
+    output_name : `str`, optional
+        Optional base name for output files.
+
     fraction_exited_threshold : float, optional
         The fraction of particles that must leave the grids to terminate the
         simulation. This does not include particles that have never entered
@@ -201,7 +206,8 @@ class Tracker(ParticleTracker):
             "volume averaged", "nearest neighbor"
         ] = "volume averaged",
         detector_hdir=None,
-        output_file: Path | None = None,
+        output_directory: Path | None = None,
+        output_name: str = "output",
         fraction_exited_threshold: float = 0.999,
         verbose: bool = True,
     ) -> None:
@@ -209,8 +215,8 @@ class Tracker(ParticleTracker):
         # The particle tracker class ensures that the provided grid argument has the proper type and
         # that the necessary grid quantities are created if they are not already specified
         save_routine = (
-            _SyntheticRadiographySaveRoutine(output_file)
-            if output_file is not None
+            _SyntheticRadiographySaveRoutine(output_directory, output_name)
+            if output_directory is not None
             else None
         )
 
