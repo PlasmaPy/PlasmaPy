@@ -1,3 +1,3 @@
-Save routines in `~plasmapy.simulation.particle_tracker.save_routines` now take an optional keyword argument ``output_name``
+Save routines in `~plasmapy.simulation.particle_tracker.save_routines` now take an optional keyword argument ``output_basename``
 that sets the basename of the saved file(s). `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography.Tracker` now
-also accepts an ``output_name`` keyword, which is passed to the save routine.
+also accepts an ``output_basename`` keyword, which is passed to the save routine.

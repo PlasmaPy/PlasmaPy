@@ -29,7 +29,7 @@ def time_elapsed_termination_condition_instantiated():
 @pytest.fixture
 def disk_interval_save_routine_instantiated(tmp_path):
     return IntervalSaveRoutine(
-        1 * u.s, output_directory=tmp_path, output_name="test_name"
+        1 * u.s, output_directory=tmp_path, output_basename="test_name"
     )
 
 

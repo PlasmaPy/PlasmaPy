@@ -30,7 +30,7 @@ class AbstractSaveRoutine(ABC):
         Output for objects that are saved to disk. If a directory is not specified
         then a memory save routine is used.
 
-    output_name : `str`, optional
+    output_basename : `str`, optional
         Optional string basename for saved files.
 
 
@@ -42,10 +42,10 @@ class AbstractSaveRoutine(ABC):
     """
 
     def __init__(
-        self, output_directory: Path | None = None, output_name: str = "output"
+        self, output_directory: Path | None = None, output_basename: str = "output"
     ) -> None:
         self.output_directory = output_directory
-        self.output_name = output_name
+        self.output_basename = output_basename
 
         self._results = {}
         self._quantities = {
@@ -101,7 +101,7 @@ class AbstractSaveRoutine(ABC):
 
         path = (
             self.output_directory
-            / f"{self.output_name}_iter{self.tracker.iteration_number}.h5"
+            / f"{self.output_basename}_iter{self.tracker.iteration_number}.h5"
         )
 
         with h5py.File(path, "w") as output_file:
@@ -181,9 +181,9 @@ class SaveOnceOnCompletion(AbstractSaveRoutine):
     """
 
     def __init__(
-        self, output_directory: Path | None = None, output_name: str = "output"
+        self, output_directory: Path | None = None, output_basename: str = "output"
     ) -> None:
-        super().__init__(output_directory, output_name)
+        super().__init__(output_directory, output_basename)
 
     @property
     def save_now(self) -> bool:
