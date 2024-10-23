@@ -75,8 +75,12 @@ def _coerce_to_cartesian_si(pos):
 
 
 class _SyntheticRadiographySaveRoutine(SaveOnceOnCompletion):
-    def __init__(self, output_directory: Path) -> None:
-        super().__init__(output_directory=output_directory)
+    def __init__(
+        self, output_directory: Path | None = None, output_basename: str = "output"
+    ) -> None:
+        super().__init__(
+            output_directory=output_directory, output_basename=output_basename
+        )
 
         self._quantities = {
             "source": (u.m, "attribute"),
@@ -98,7 +102,7 @@ class _SyntheticRadiographySaveRoutine(SaveOnceOnCompletion):
         if self.output_directory is None:
             return
 
-        output_file_path = self.output_directory / "output.hdf5"
+        output_file_path = self.output_directory / Path(f"{self.output_basename}.h5")
 
         with h5py.File(output_file_path, "w") as output_file:
             for key, (_units, data_type) in self._quantities.items():
@@ -180,6 +184,9 @@ class Tracker(ParticleTracker):
         Directory for objects that are saved to disk. If a directory is not
         specified then a memory save routine is used.
 
+    output_basename : `str`, optional
+        Optional base name for output files.
+
     fraction_exited_threshold : float, optional
         The fraction of particles that must leave the grids to terminate the
         simulation. This does not include particles that have never entered
@@ -201,7 +208,8 @@ class Tracker(ParticleTracker):
             "volume averaged", "nearest neighbor"
         ] = "volume averaged",
         detector_hdir=None,
-        output_file: Path | None = None,
+        output_directory: Path | None = None,
+        output_basename: str = "output",
         fraction_exited_threshold: float = 0.999,
         verbose: bool = True,
     ) -> None:
@@ -209,8 +217,8 @@ class Tracker(ParticleTracker):
         # The particle tracker class ensures that the provided grid argument has the proper type and
         # that the necessary grid quantities are created if they are not already specified
         save_routine = (
-            _SyntheticRadiographySaveRoutine(output_file)
-            if output_file is not None
+            _SyntheticRadiographySaveRoutine(output_directory, output_basename)
+            if output_directory is not None
             else None
         )
 
@@ -1097,7 +1105,7 @@ class Tracker(ParticleTracker):
 # *************************************************************************
 
 
-def synthetic_radiograph(obj, size=None, bins=None, ignore_grid: bool = False):
+def synthetic_radiograph(obj, size=None, bins=None, ignore_grid: bool = False):  # noqa: C901, PLR0912
     r"""
     Calculate a "synthetic radiograph" (particle count histogram in the
     image plane).
@@ -1107,10 +1115,11 @@ def synthetic_radiograph(obj, size=None, bins=None, ignore_grid: bool = False):
 
     Parameters
     ----------
-    obj: `dict` or |Tracker|
+    obj: `dict` or `~pathlib.Path` or |Tracker|
         Either a |Tracker|
-        object that has been run, or a dictionary equivalent to
-        |results_dict|.
+        object that has been run, a dictionary equivalent to
+        |results_dict|, or path to a saved output file
+        from a |Tracker| object (HDF5 file).
 
     size : `~astropy.units.Quantity`, shape ``(2, 2)``, optional
         The size of the detector array, specified as the minimum
@@ -1150,12 +1159,24 @@ def synthetic_radiograph(obj, size=None, bins=None, ignore_grid: bool = False):
     # condition `obj` input
     if isinstance(obj, Tracker):
         # results_dict raises an error if the simulation has not been run.
-        d = obj.results_dict
+        results_dict = obj.results_dict
+
     elif isinstance(obj, dict):
-        d = obj
+        results_dict = obj
+
+    elif isinstance(obj, str | Path):
+        results_dict = {}
+        obj = Path(obj)
+        # Create a dictionary of all of the datasets and attributes in the save file
+        # Equivalent to |results_dict|
+        with h5py.File(obj, "r") as f:
+            for key in f:
+                results_dict[key] = f[key][...]
+            for key in f.attrs:
+                results_dict[key] = f.attrs[key][...]
     else:
         raise TypeError(
-            f"Expected type dict or {Tracker} for argument `obj`, but "
+            f"Expected type `Path`, `dict` or {Tracker} for argument `obj`, but "
             f"got type {type(obj)}."
         )
 
@@ -1168,13 +1189,13 @@ def synthetic_radiograph(obj, size=None, bins=None, ignore_grid: bool = False):
     # If ignore_grid is True, use the predicted positions in the absence of
     # simulated fields
     if ignore_grid:
-        xloc = d["x0"]
-        yloc = d["y0"]
-        v = d["v0"][:, 0]
+        xloc = results_dict["x0"]
+        yloc = results_dict["y0"]
+        v = results_dict["v0"][:, 0]
     else:
-        xloc = d["x"]
-        yloc = d["y"]
-        v = d["v"][:, 0]
+        xloc = results_dict["x"]
+        yloc = results_dict["y"]
+        v = results_dict["v"][:, 0]
 
     if size is None:
         # If a detector size is not given, choose a size based on the
@@ -1211,7 +1232,7 @@ def synthetic_radiograph(obj, size=None, bins=None, ignore_grid: bool = False):
 
     # Throw a warning if < 50% of the particles are included on the
     # histogram
-    percentage = np.sum(intensity) / d["nparticles"]
+    percentage = np.sum(intensity) / results_dict["nparticles"]
     if percentage < 0.5:
         warnings.warn(
             f"Only {percentage:.2%} of the particles are shown "
