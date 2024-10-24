@@ -3,8 +3,8 @@
 Feedback and Communication
 ==========================
 
-Matrix chat room
-----------------
+Matrix chat room 💬
+-------------------
 
 The primary communication channel for PlasmaPy is our `Matrix chat
 room`_. There is also a `Gitter bridge`_ to this chat room.
