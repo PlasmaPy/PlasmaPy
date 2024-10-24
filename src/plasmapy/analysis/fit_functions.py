@@ -365,15 +365,7 @@ class AbstractFitFunction(ABC):
         >>> func.param_errors = (0.0, 0.0)
         >>> roots = fsolve(func, -4.0, full_output=True)
         >>> roots
-        (array([-5.]),
-         {'nfev': 4,
-          'fjac': array([[-1.]]),
-          'r': array([-1.]),
-          'qtf': array([2.18...e-12]),
-          'fvec': 0.0},
-         1,
-         'The solution converged.')
-
+        (array([-5.]), {'nfev': 6, 'fjac': array([[-1.]]), 'r': array([-1.]), 'qtf': array([2.1813662e-12]), 'fvec': np.float64(0.0)}, 1, 'The solution converged.')
         """
         results = fsolve(self.func, x0, args=self.params)
 

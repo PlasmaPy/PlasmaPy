@@ -431,9 +431,14 @@ def Coulomb_logarithm(
     >>> n_e = 1e19 * u.m**-3
     >>> T = 1e6 * u.K
     >>> Coulomb_logarithm(T, n_e, ('e-', 'p+'))
-    14.545527...
+    np.float64(14.545527556...)
     >>> Coulomb_logarithm(T, n_e, ('e-', 'p+'), V = 1e6 * u.m / u.s)
-    11.363478...
+    np.float64(11.363478378...)
+
+    See Also
+    --------
+    ~plasmapy.formulary.collisions.lengths.impact_parameter : Computes
+        :math:`b_{min}` and :math:`b_{max}`.
     """
     # fetching impact min and max impact parameters
     bmin, bmax = lengths.impact_parameter(

@@ -446,7 +446,7 @@ def thermal_speed_coefficients(method: str, ndim: int) -> float:
     Examples
     --------
     >>> thermal_speed_coefficients(method="most_probable", ndim=3)
-    1.414213...
+    np.float64(1.414213...)
     """
     _coefficients = {
         (1, "most_probable"): 0,
