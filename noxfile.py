@@ -32,7 +32,7 @@ from typing import Literal
 
 import nox
 
-supported_python_versions: tuple[str, ...] = ("3.10", "3.11", "3.12")
+supported_python_versions: tuple[str, ...] = ("3.10", "3.11", "3.12", "3.13")
 supported_operating_systems: tuple[str, ...] = ("linux", "macos", "windows")
 
 maxpython = max(supported_python_versions)
