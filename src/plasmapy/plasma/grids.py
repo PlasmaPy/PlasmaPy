@@ -136,9 +136,8 @@ class AbstractGrid(ABC):
     for _rq in _recognized_quantities_list:
         _recognized_quantities[_rq.key] = _rq
 
-   
-    @property
-    def recognized_quantities(self):
+    @classmethod
+    def recognized_quantities(cls):
         r"""
         A dictionary of standard key names representing particular physical
         quantities. Using these keys allows these
@@ -146,7 +145,7 @@ class AbstractGrid(ABC):
         Each entry contains a tuple containing a description and the unit
         associated with the quantity.
         """
-        return self._recognized_quantities
+        return cls._recognized_quantities
 
     def require_quantities(
         self,
@@ -194,7 +193,7 @@ class AbstractGrid(ABC):
                         f"{rq} is not specified for the provided "
                         "grid but is required."
                     )
-                elif rq not in self.recognized_quantities:
+                elif rq not in self.recognized_quantities():
                     raise KeyError(
                         f"{rq} is not a recognized key, and "
                         "so cannot be automatically assumed "
@@ -208,7 +207,7 @@ class AbstractGrid(ABC):
                         RuntimeWarning,
                     )
 
-                unit = self.recognized_quantities[rq].unit
+                unit = self.recognized_quantities()[rq].unit
                 arg = {rq: np.zeros(self.shape) * unit}
                 self.add_quantities(**arg)
 
@@ -242,8 +241,8 @@ class AbstractGrid(ABC):
             s += f"\t-> {coords[i]} ({ax_units[i]}) {ax_dtypes[i]} ({shape[i]},)\n"
 
         keys = self.quantities
-        rkeys = [k for k in keys if k in list(self.recognized_quantities.keys())]
-        nrkeys = [k for k in keys if k not in list(self.recognized_quantities.keys())]
+        rkeys = [k for k in keys if k in list(self.recognized_quantities().keys())]
+        nrkeys = [k for k in keys if k not in list(self.recognized_quantities().keys())]
 
         s += line_sep + "Recognized Quantities:\n"
         if not rkeys:
@@ -635,14 +634,14 @@ class AbstractGrid(ABC):
             # Check key against a list of "known" keys with pre-defined
             # meanings (eg. E_x, n_e) and raise a warning if a "non-standard"
             # key is being used so the user is aware.
-            if key in self.recognized_quantities:
+            if key in self.recognized_quantities():
                 try:
-                    quantity.to(self.recognized_quantities[key].unit)
+                    quantity.to(self.recognized_quantities()[key].unit)
                 except u.UnitConversionError as ex:
                     raise ValueError(
                         f"Units provided for {key} ({quantity.unit}) "
                         "are not compatible with the correct units "
-                        f"for that recognized key ({self.recognized_quantities[key]})."
+                        f"for that recognized key ({self.recognized_quantities()[key]})."
                     ) from ex
 
             else:
