@@ -136,9 +136,9 @@ class AbstractGrid(ABC):
     for _rq in _recognized_quantities_list:
         _recognized_quantities[_rq.key] = _rq
 
-    @classmethod
+   
     @property
-    def recognized_quantities(cls):
+    def recognized_quantities(self):
         r"""
         A dictionary of standard key names representing particular physical
         quantities. Using these keys allows these
@@ -146,7 +146,7 @@ class AbstractGrid(ABC):
         Each entry contains a tuple containing a description and the unit
         associated with the quantity.
         """
-        return cls._recognized_quantities
+        return self._recognized_quantities
 
     def require_quantities(
         self,
