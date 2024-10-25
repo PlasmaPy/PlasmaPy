@@ -894,7 +894,7 @@ class ParticleTracker:
                 summed_field_values["B_z"],
             )
         else:
-            dt = self.dt
+            dt = self.dt  # type: ignore[assignment]
 
         # Make sure the time step can be multiplied by a [nparticles, 3] shape field array
         if isinstance(dt, np.ndarray) and dt.size > 1:
@@ -956,7 +956,7 @@ class ParticleTracker:
         velocity_unit_vectors = np.multiply(
             1 / current_speeds, self.v[self._tracked_particle_mask]
         )
-        dx = np.multiply(current_speeds, self.dt)
+        dx = np.multiply(current_speeds, self.dt)  # type: ignore[arg-type]
 
         stopping_power = np.zeros((self.nparticles_tracked, 1))
         relevant_kinetic_energy = (

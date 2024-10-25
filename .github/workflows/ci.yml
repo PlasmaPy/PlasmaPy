@@ -31,6 +31,11 @@ jobs:
       matrix:
         include:
 
+        - name: Tests, Python 3.13, skip slow tests, doctests, Ubuntu
+          os: ubuntu-latest
+          python: '3.13'
+          nox_session: tests-3.13(skipslow)
+
         - name: Tests, Python 3.12, skip slow tests, doctests, Ubuntu
           os: ubuntu-latest
           python: '3.12'

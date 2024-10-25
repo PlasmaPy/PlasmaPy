@@ -32,7 +32,7 @@ from typing import Literal
 
 import nox
 
-supported_python_versions: tuple[str, ...] = ("3.10", "3.11", "3.12")
+supported_python_versions: tuple[str, ...] = ("3.10", "3.11", "3.12", "3.13")
 supported_operating_systems: tuple[str, ...] = ("linux", "macos", "windows")
 
 maxpython = max(supported_python_versions)
@@ -274,7 +274,7 @@ PlasmaPy's documentation guide at:
 """
 
 
-@nox.session(python=maxpython)
+@nox.session(python="3.12")
 def docs(session: nox.Session) -> None:
     """
     Build documentation with Sphinx.
