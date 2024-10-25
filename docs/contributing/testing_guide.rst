@@ -150,7 +150,7 @@ Writing Tests
 
 Every code contribution that adds new functionality requires both tests
 and documentation in order to be merged. Here we describe the process of
-write a test.
+writing a test.
 
 Assertions
 ----------
