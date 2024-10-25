@@ -131,7 +131,7 @@ def _test_grid(  # noqa: C901, PLR0912
 
     for q in req_quantities:
         if q not in list(grid.ds.data_vars):
-            unit = grid.recognized_quantities[q].unit
+            unit = grid.recognized_quantities()[q].unit
             arg = {q: np.zeros(grid.shape) * unit}
             grid.add_quantities(**arg)
 
