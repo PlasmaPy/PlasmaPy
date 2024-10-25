@@ -274,7 +274,7 @@ PlasmaPy's documentation guide at:
 """
 
 
-@nox.session(python=maxpython)
+@nox.session(python="3.12")
 def docs(session: nox.Session) -> None:
     """
     Build documentation with Sphinx.
