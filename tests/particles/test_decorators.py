@@ -389,7 +389,7 @@ def test_preserving_signature_with_stacked_decorators(
 
 @pytest.mark.skipif(
     not sys.version_info < (3, 13),
-    reason="Class methods can no longer wrap other descriptors.",
+    reason="Class methods can no longer wrap other descriptors. See #2873.",
 )
 def test_annotated_classmethod() -> None:
     """
