@@ -1,4 +1,4 @@
 The property `~plasmapy.plasma.grids.AbstractGrid.recognized_quantities` of `~plasmapy.plasma.grids.AbstractGrid` is now a class method
 instead of a class property, as using `classmethod` and `property` decorators together is no longer
 allowed in Python 3.13. The syntax for accessing this dictionary has therefore changed
-from :py:`AbstractGrid.recognized_quantities`` to :py:`AbstractGrid.recognized_quantities()`.
+from :py:`AbstractGrid.recognized_quantities` to :py:`AbstractGrid.recognized_quantities()`.
