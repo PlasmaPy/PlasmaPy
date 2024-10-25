@@ -635,20 +635,23 @@ class AbstractGrid(ABC):
             # Check key against a list of "known" keys with pre-defined
             # meanings (eg. E_x, n_e) and raise a warning if a "non-standard"
             # key is being used so the user is aware.
-            if key in self.recognized_quantities:
-                try:
-                    quantity.to(self.recognized_quantities[key].unit)
-                except u.UnitConversionError as ex:
-                    raise ValueError(
-                        f"Units provided for {key} ({quantity.unit}) "
-                        "are not compatible with the correct units "
-                        f"for that recognized key ({self.recognized_quantities[key]})."
-                    ) from ex
+            try:
+                if key in self.recognized_quantities:
+                    try:
+                        quantity.to(self.recognized_quantities[key].unit)
+                    except u.UnitConversionError as ex:
+                        raise ValueError(
+                            f"Units provided for {key} ({quantity.unit}) "
+                            "are not compatible with the correct units "
+                            f"for that recognized key ({self.recognized_quantities[key]})."
+                        ) from ex
 
-            else:
-                warnings.warn(
-                    f"Warning: {key} is not recognized quantity key", stacklevel=2
-                )
+                else:
+                    warnings.warn(
+                        f"Warning: {key} is not recognized quantity key", stacklevel=2
+                    )
+            except TypeError as exc:
+                raise ValueError(f"{key = }") from exc
 
             if self.is_uniform:
                 dims = ["ax0", "ax1", "ax2"]
