@@ -442,7 +442,7 @@ class ParticleTracker:
                 )
 
                 if edge_max > 1e-3 * np.max(arr):
-                    unit = grid.recognized_quantities[rq].unit
+                    unit = grid.recognized_quantities()[rq].unit
                     warnings.warn(
                         "Quantities should go to zero at edges of grid to avoid "
                         f"non-physical effects, but a value of {edge_max:.2E} {unit} was "
@@ -845,7 +845,7 @@ class ParticleTracker:
         # initialized as a zeros array with its respective units
         total_grid_values = {
             field_name: np.zeros(self.nparticles_tracked)
-            * AbstractGrid.recognized_quantities[field_name].unit
+            * AbstractGrid.recognized_quantities()[field_name].unit
             for field_name in self._required_quantities
         }
 
@@ -871,7 +871,7 @@ class ParticleTracker:
             ):
                 total_grid_values[grid_name] += np.nan_to_num(
                     grid_value,
-                    0.0 * AbstractGrid.recognized_quantities[grid_name].unit,
+                    0.0 * AbstractGrid.recognized_quantities()[grid_name].unit,
                 )
 
         return total_grid_values
