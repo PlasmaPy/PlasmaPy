@@ -651,7 +651,7 @@ class AbstractGrid(ABC):
                         f"Warning: {key} is not recognized quantity key", stacklevel=2
                     )
             except TypeError as exc:
-                raise ValueError(f"{key = }") from exc
+                raise ValueError(f"{key = }, {self.recognized_quantities = }") from exc
 
             if self.is_uniform:
                 dims = ["ax0", "ax1", "ax2"]
