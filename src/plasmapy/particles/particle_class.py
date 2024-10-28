@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Literal
 
 __all__ = [
     "AbstractParticle",
@@ -842,8 +842,7 @@ class Particle(AbstractPhysicalParticle):
             for key in _ionization_energy.data_about_ionization_energy:
                 if key.startswith(element_key + " "):
                     charge = int(key.split()[-1].replace("+", ""))
-                    if charge > max_charge:
-                        max_charge = charge
+                    max_charge = max(charge, max_charge)
 
             if charge_number <= max_charge:
                 ions = [
@@ -1794,7 +1793,9 @@ class Particle(AbstractPhysicalParticle):
         """
         return self.is_category("ion")
 
-    def ionize(self, n: int = 1, inplace: bool = False) -> Particle | None:
+    def ionize(
+        self, n: int | Literal[np.inf] = 1, inplace: bool = False
+    ) -> Particle | None:
         """
         Create a new |Particle| instance corresponding to the current
         |Particle| after being ionized ``n`` times.
@@ -1823,6 +1824,8 @@ class Particle(AbstractPhysicalParticle):
             A new |Particle| object that has been ionized ``n`` times
             relative to the original |Particle|.  If ``inplace`` is
             `False`, instead return `None`.
+            If |inf| is passed as ``n``, the particle will be fully ionized,
+            and the result will be the nucleus of the ion.
 
         Raises
         ------
@@ -1852,6 +1855,13 @@ class Particle(AbstractPhysicalParticle):
                 f"Cannot ionize {self.symbol} because it is not a "
                 f"neutral atom or ion."
             )
+
+        if np.isinf(n):
+            if inplace:
+                self.__init__(self.nucleus.symbol)
+                return None
+            else:
+                return self.nucleus
         assumed_charge_number = (
             self.charge_number
             if self.is_category(any_of={"charged", "uncharged"})
@@ -1862,6 +1872,7 @@ class Particle(AbstractPhysicalParticle):
                 f"The particle {self.symbol} is already fully "
                 f"ionized and cannot be ionized further."
             )
+
         if not isinstance(n, Integral):
             raise TypeError("n must be a positive integer.")
         if n <= 0:

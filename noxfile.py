@@ -32,7 +32,7 @@ from typing import Literal
 
 import nox
 
-supported_python_versions: tuple[str, ...] = ("3.10", "3.11", "3.12")
+supported_python_versions: tuple[str, ...] = ("3.10", "3.11", "3.12", "3.13")
 supported_operating_systems: tuple[str, ...] = ("linux", "macos", "windows")
 
 maxpython = max(supported_python_versions)
@@ -98,7 +98,7 @@ def requirements(session) -> None:
     continuous integration checks.
     """
 
-    session.install("uv >= 0.2.26")
+    session.install("uv")
 
     category_version_resolution: list[tuple[str, str, str]] = [
         ("tests", version, "highest") for version in supported_python_versions
@@ -274,7 +274,7 @@ PlasmaPy's documentation guide at:
 """
 
 
-@nox.session(python=maxpython)
+@nox.session(python="3.12")
 def docs(session: nox.Session) -> None:
     """
     Build documentation with Sphinx.
@@ -387,6 +387,30 @@ def try_import(session: nox.Session) -> None:
     """Install PlasmaPy and import it."""
     session.install(".")
     session.run("python", "-c", "import plasmapy", *session.posargs)
+
+
+@nox.session
+def validate_requirements(session: nox.Session) -> None:
+    """Verify that the pinned requirements are consistent with pyproject.toml."""
+    requirements_file = _get_requirements_filepath(
+        category="all",
+        version=maxpython,
+        resolution="highest",
+    )
+    session.install("uv")
+    session.debug(
+        "🛡 If this check fails, regenerate the pinned requirements files "
+        "with `nox -s requirements` (see `ci_requirements/README.md`)."
+    )
+    session.run(
+        "uv",
+        "pip",
+        "install",
+        "-r",
+        requirements_file,
+        ".[docs,tests]",
+        "--dry-run",
+    )
 
 
 @nox.session

@@ -30,6 +30,9 @@ class AbstractSaveRoutine(ABC):
         Output for objects that are saved to disk. If a directory is not specified
         then a memory save routine is used.
 
+    output_basename : `str`, optional
+        Optional string basename for saved files.
+
 
     Notes
     -----
@@ -38,8 +41,11 @@ class AbstractSaveRoutine(ABC):
     Then, the hook calls `save_now` to determine whether or not the simulation state should be saved.
     """
 
-    def __init__(self, output_directory: Path | None = None) -> None:
+    def __init__(
+        self, output_directory: Path | None = None, output_basename: str = "output"
+    ) -> None:
         self.output_directory = output_directory
+        self.output_basename = output_basename
 
         self._results = {}
         self._quantities = {
@@ -93,10 +99,13 @@ class AbstractSaveRoutine(ABC):
     def _save_to_disk(self) -> None:
         """Save a hdf5 file containing simulation positions and velocities."""
 
-        path = self.output_directory / f"{self.tracker.iteration_number}.hdf5"
+        path = (
+            self.output_directory
+            / f"{self.output_basename}_iter{self.tracker.iteration_number}.h5"
+        )
 
         with h5py.File(path, "w") as output_file:
-            for key, (_units, data_type) in self._quantities.items():  # noqa: B007
+            for key, (_units, data_type) in self._quantities.items():
                 match data_type:
                     case "attribute":
                         output_file.attrs.create(key, self._results[key])
@@ -121,7 +130,7 @@ class AbstractSaveRoutine(ABC):
         """
         results_copy = self._results.copy()
 
-        for quantity, (units, _data_type) in self._quantities.items():  # noqa: B007
+        for quantity, (units, _data_type) in self._quantities.items():
             # Only apply units if they are specified
             # otherwise assume the quantity is dimensionless
             if units is not None:
@@ -171,8 +180,10 @@ class SaveOnceOnCompletion(AbstractSaveRoutine):
     bypassing the ``save_now()`` criteria.
     """
 
-    def __init__(self, output_directory: Path | None = None) -> None:
-        super().__init__(output_directory)
+    def __init__(
+        self, output_directory: Path | None = None, output_basename: str = "output"
+    ) -> None:
+        super().__init__(output_directory, output_basename)
 
     @property
     def save_now(self) -> bool:

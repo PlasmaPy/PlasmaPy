@@ -75,8 +75,12 @@ def _coerce_to_cartesian_si(pos):
 
 
 class _SyntheticRadiographySaveRoutine(SaveOnceOnCompletion):
-    def __init__(self, output_directory: Path) -> None:
-        super().__init__(output_directory=output_directory)
+    def __init__(
+        self, output_directory: Path | None = None, output_basename: str = "output"
+    ) -> None:
+        super().__init__(
+            output_directory=output_directory, output_basename=output_basename
+        )
 
         self._quantities = {
             "source": (u.m, "attribute"),
@@ -98,10 +102,10 @@ class _SyntheticRadiographySaveRoutine(SaveOnceOnCompletion):
         if self.output_directory is None:
             return
 
-        output_file_path = self.output_directory / "output.hdf5"
+        output_file_path = self.output_directory / Path(f"{self.output_basename}.h5")
 
         with h5py.File(output_file_path, "w") as output_file:
-            for key, (_units, data_type) in self._quantities.items():  # noqa: B007
+            for key, (_units, data_type) in self._quantities.items():
                 match data_type:
                     case "attribute":
                         output_file.attrs.create(key, result_dictionary[key])
@@ -180,6 +184,9 @@ class Tracker(ParticleTracker):
         Directory for objects that are saved to disk. If a directory is not
         specified then a memory save routine is used.
 
+    output_basename : `str`, optional
+        Optional base name for output files.
+
     fraction_exited_threshold : float, optional
         The fraction of particles that must leave the grids to terminate the
         simulation. This does not include particles that have never entered
@@ -201,7 +208,8 @@ class Tracker(ParticleTracker):
             "volume averaged", "nearest neighbor"
         ] = "volume averaged",
         detector_hdir=None,
-        output_file: Path | None = None,
+        output_directory: Path | None = None,
+        output_basename: str = "output",
         fraction_exited_threshold: float = 0.999,
         verbose: bool = True,
     ) -> None:
@@ -209,8 +217,8 @@ class Tracker(ParticleTracker):
         # The particle tracker class ensures that the provided grid argument has the proper type and
         # that the necessary grid quantities are created if they are not already specified
         save_routine = (
-            _SyntheticRadiographySaveRoutine(output_file)
-            if output_file is not None
+            _SyntheticRadiographySaveRoutine(output_directory, output_basename)
+            if output_directory is not None
             else None
         )
 
@@ -308,7 +316,7 @@ class Tracker(ParticleTracker):
         """
         theta = np.zeros([8, self.num_grids])
 
-        for i, _grid in enumerate(self.grids):  # noqa: B007
+        for i, _grid in enumerate(self.grids):
             ind = 0
             for x in (0, -1):
                 for y in (0, -1):
@@ -1097,9 +1105,7 @@ class Tracker(ParticleTracker):
 # *************************************************************************
 
 
-def synthetic_radiograph(  # noqa: C901
-    obj, size=None, bins=None, ignore_grid: bool = False, optical_density: bool = False
-):
+def synthetic_radiograph(obj, size=None, bins=None, ignore_grid: bool = False):  # noqa: C901, PLR0912
     r"""
     Calculate a "synthetic radiograph" (particle count histogram in the
     image plane).
@@ -1109,10 +1115,11 @@ def synthetic_radiograph(  # noqa: C901
 
     Parameters
     ----------
-    obj: `dict` or |Tracker|
+    obj: `dict` or `~pathlib.Path` or |Tracker|
         Either a |Tracker|
-        object that has been run, or a dictionary equivalent to
-        |results_dict|.
+        object that has been run, a dictionary equivalent to
+        |results_dict|, or path to a saved output file
+        from a |Tracker| object (HDF5 file).
 
     size : `~astropy.units.Quantity`, shape ``(2, 2)``, optional
         The size of the detector array, specified as the minimum
@@ -1130,20 +1137,6 @@ def synthetic_radiograph(  # noqa: C901
         If `True`, returns the intensity in the image plane in the absence
         of simulated fields.
 
-    optical_density: `bool`
-        If `True`, return the optical density rather than the intensity
-
-        .. math::
-            OD = -log_{10}(Intensity/I_0)
-
-        where :math:`Intensity` is the simulation intensity on the
-        detector plane and :math:`I_0` is the intensity on the detector
-        plane in the absence of simulated fields. Default is `False`.
-        If the :math:`Intensity` histogram contains zeros, then the
-        corresponding values in :math:`OD` will be `numpy.inf`. When
-        plotting :math:`OD` the `~numpy.inf` values can be replaced
-        using ``numpy.nan_to_num(OD, neginf=0, posinf=0)``.
-
     Returns
     -------
     hax : `~astropy.units.Quantity` array shape ``(hbins,)``
@@ -1154,17 +1147,36 @@ def synthetic_radiograph(  # noqa: C901
 
     intensity : `~numpy.ndarray`, shape ``(hbins, vbins)``
         The number of particles counted in each bin of the histogram.
+
+
+    Notes
+    -----
+    This function ignores any particles that are stopped or removed before
+    reaching the detector plane.
+
     """
 
     # condition `obj` input
     if isinstance(obj, Tracker):
         # results_dict raises an error if the simulation has not been run.
-        d = obj.results_dict
+        results_dict = obj.results_dict
+
     elif isinstance(obj, dict):
-        d = obj
+        results_dict = obj
+
+    elif isinstance(obj, str | Path):
+        results_dict = {}
+        obj = Path(obj)
+        # Create a dictionary of all of the datasets and attributes in the save file
+        # Equivalent to |results_dict|
+        with h5py.File(obj, "r") as f:
+            for key in f:
+                results_dict[key] = f[key][...]
+            for key in f.attrs:
+                results_dict[key] = f.attrs[key][...]
     else:
         raise TypeError(
-            f"Expected type dict or {Tracker} for argument `obj`, but "
+            f"Expected type `Path`, `dict` or {Tracker} for argument `obj`, but "
             f"got type {type(obj)}."
         )
 
@@ -1177,11 +1189,13 @@ def synthetic_radiograph(  # noqa: C901
     # If ignore_grid is True, use the predicted positions in the absence of
     # simulated fields
     if ignore_grid:
-        xloc = d["x0"]
-        yloc = d["y0"]
+        xloc = results_dict["x0"]
+        yloc = results_dict["y0"]
+        v = results_dict["v0"][:, 0]
     else:
-        xloc = d["x"]
-        yloc = d["y"]
+        xloc = results_dict["x"]
+        yloc = results_dict["y"]
+        v = results_dict["v"][:, 0]
 
     if size is None:
         # If a detector size is not given, choose a size based on the
@@ -1200,9 +1214,11 @@ def synthetic_radiograph(  # noqa: C901
             f"Argument `size` must have shape (2, 2), but got {size.shape}."
         )
 
-    nan_mask = np.logical_or(np.isnan(xloc), np.isnan(yloc))
-    sanitized_xloc = xloc[~nan_mask]
-    sanitized_yloc = yloc[~nan_mask]
+    # Exclude NaN positions (deleted particles) and velocities
+    # (stopped particles)
+    nan_mask = ~np.isnan(xloc) * ~np.isnan(yloc) * ~np.isnan(v)
+    sanitized_xloc = xloc[nan_mask]
+    sanitized_yloc = yloc[nan_mask]
 
     # Generate the histogram
     intensity, h, v = np.histogram2d(
@@ -1216,7 +1232,7 @@ def synthetic_radiograph(  # noqa: C901
 
     # Throw a warning if < 50% of the particles are included on the
     # histogram
-    percentage = np.sum(intensity) / d["nparticles"]
+    percentage = np.sum(intensity) / results_dict["nparticles"]
     if percentage < 0.5:
         warnings.warn(
             f"Only {percentage:.2%} of the particles are shown "
@@ -1224,18 +1240,5 @@ def synthetic_radiograph(  # noqa: C901
             "the size to include more.",
             RuntimeWarning,
         )
-
-    if optical_density:
-        # Generate the null radiograph
-        x, y, I0 = synthetic_radiograph(obj, size=size, bins=bins, ignore_grid=True)
-
-        # Calculate I0 as the mean of the non-zero values in the null
-        # histogram. Zeros are just outside of the illuminate area.
-        I0 = np.mean(I0[I0 != 0])
-
-        # Calculate the optical_density
-        # ignore any errors resulting from zero values in intensity
-        with np.errstate(divide="ignore"):
-            intensity = -np.log10(intensity / I0)
 
     return h * u.m, v * u.m, intensity

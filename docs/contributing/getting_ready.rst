@@ -1,8 +1,8 @@
 .. _getting ready to contribute:
 
-***************************
-Getting Ready to Contribute
-***************************
+******************************
+Getting Ready to Contribute 🎉
+******************************
 
 .. contents:: Table of Contents
    :depth: 2
@@ -228,10 +228,11 @@ environment`_ instead.
    open a terminal, or can be added to the appropriate configuration
    file (i.e., :file:`.bashrc` for bash or :file:`.zshrc` for zsh).
 
-Installing your clone of PlasmaPy
-=================================
 
-This section covers how to make an |editable installation| of your
+Installing your clone of PlasmaPy 🦹
+====================================
+
+🏁 This section covers how to make an |editable installation| of your
 clone of PlasmaPy. Making the PlasmaPy installation *editable* means
 that if you modify the source code, then those changes will be included
 when you :py:`import plasmapy`.
@@ -257,7 +258,7 @@ when you :py:`import plasmapy`.
 
       conda activate plasmapy-dev
 
-4. Run the command to install PlasmaPy for your operating system:
+4. Run 🏃 the command to install PlasmaPy for your operating system:
 
    .. tabs::
 
