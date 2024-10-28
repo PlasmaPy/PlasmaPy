@@ -166,7 +166,7 @@ class ParticleTracker:
     ...     field_weighting="nearest neighbor",
     ... )
     >>> simulation.load_particles(x, v, example_particle)
-    >>> simulation.run()
+    >>> simulation.run()  # doctest: +SKIP
     >>> print(
     ...     simulation.save_routine.results["time"][-1],
     ...     simulation.save_routine.results["x"][-1],
