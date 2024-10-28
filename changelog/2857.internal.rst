@@ -1,1 +1,1 @@
-Adjusted the Sphinx configuration to account for recent deprecations in ReadTheDocs.
+Adjusted the Sphinx configuration to account for recent deprecations in Read the Docs.
