@@ -1,0 +1,1 @@
+Implemented `~plasmapy.simulation.resolution_constraints.CFL_limit_electromagnetic_yee` to calculate the CFL condition for electromagnetic simulations.
