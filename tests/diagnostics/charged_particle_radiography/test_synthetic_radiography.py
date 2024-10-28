@@ -2,6 +2,8 @@
 Tests for proton radiography functions
 """
 
+from pathlib import Path
+
 import astropy.constants as const
 import astropy.units as u
 import numpy as np
@@ -129,7 +131,7 @@ def _test_grid(  # noqa: C901, PLR0912
 
     for q in req_quantities:
         if q not in list(grid.ds.data_vars):
-            unit = grid.recognized_quantities[q].unit
+            unit = grid.recognized_quantities()[q].unit
             arg = {q: np.zeros(grid.shape) * unit}
             grid.add_quantities(**arg)
 
@@ -598,6 +600,12 @@ class TestSyntheticRadiograph:
         with pytest.warns(RuntimeWarning):
             cpr.synthetic_radiograph(sim_results)
 
+    def test_ignore_grid(self):
+        """
+        Verifies that the no grid option runs - no good tests for whether it is correct currently
+        """
+        x, y, i = cpr.synthetic_radiograph(self.sim_results, ignore_grid=True)
+
     @pytest.mark.parametrize(
         ("args", "kwargs", "expected"),
         [
@@ -940,10 +948,29 @@ def test_radiography_disk_save_routine(tmp_path) -> None:
     detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
 
     sim = cpr.Tracker(
-        grid, source, detector, field_weighting="nearest neighbor", output_file=tmp_path
+        grid,
+        source,
+        detector,
+        field_weighting="nearest neighbor",
+        output_directory=tmp_path,
+        output_basename="test_output",
     )
     sim.create_particles(1e3, 15 * u.MeV, max_theta=8 * u.deg, random_seed=42)
     sim.run()
+
+    path = tmp_path / Path("test_output.h5")
+
+    # Assert the file has been saved
+    assert path.is_file()
+
+    # Make synthetic radiograph from sim object
+    h, v, i1 = cpr.synthetic_radiograph(sim)
+
+    # Load from tmppath and make synthetic radiograph
+    h, v, i2 = cpr.synthetic_radiograph(path)
+
+    # The two synthetic radiographs should be identical
+    assert np.allclose(i1, i2)
 
 
 def test_radiography_memory_save_routine() -> None:

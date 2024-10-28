@@ -1,0 +1,3 @@
+`~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography.synthetic_radiograph` now accepts a file path to an
+HDF5 file saved by `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography.Tracker` as input to create
+a synthetic radiograph.

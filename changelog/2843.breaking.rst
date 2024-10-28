@@ -1,1 +1,1 @@
-Removed the optical_density keyword in `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography`.
+Removed the ``optical_density`` keyword argument in `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography`.
