@@ -16,7 +16,7 @@ asteval==1.0.5
     # via lmfit
 astropy==6.1.4
     # via plasmapy (pyproject.toml)
-astropy-iers-data==0.2024.10.21.0.33.21
+astropy-iers-data==0.2024.10.28.0.34.7
     # via astropy
 asttokens==2.4.1
     # via stack-data
