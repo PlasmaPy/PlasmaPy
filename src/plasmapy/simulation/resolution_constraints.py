@@ -37,7 +37,7 @@ def CFL_limit_electromagnetic_yee(dx: u.Quantity[u.m]) -> u.Quantity[u.s]:
         \Delta t = \frac{1}{c\sqrt{{\sum_{i=1}^{n} \Delta x_i^{-2}}}}
 
     where :math:`\Delta x_i` corresponds to the grid resolution along the
-    :math:`i`\ -th dimension and :math:`n` is the number of dimensions
+    :math:`i`\ -th dimension and :math:`n` is the number of dimensions.
     For example, in 3D this corresponds to:
 
     .. math::
