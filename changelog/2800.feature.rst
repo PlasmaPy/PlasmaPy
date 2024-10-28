@@ -1,1 +1,1 @@
-Added the option to pass |inf| to the `~plasmapy.particles.particle_class.Particle.ionize` method of |Particle|, which returns the nucleus of the particle.
+Added the option to pass |inf| to the `~plasmapy.particles.particle_class.Particle.ionize` method of |Particle| to return the nucleus of the particle.

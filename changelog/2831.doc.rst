@@ -1,1 +1,1 @@
-Updated the formulary documentation, restructuring the headers.
+Updated docstrings in `plasmapy.formulary` to follow the numpydoc standard.

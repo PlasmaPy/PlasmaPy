@@ -1,1 +1,1 @@
-Added example use to |ParticleTracker| docstring.
+Added examples to the |ParticleTracker| docstring.
