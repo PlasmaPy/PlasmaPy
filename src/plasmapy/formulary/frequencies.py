@@ -322,9 +322,9 @@ def plasma_frequency(
     >>> from plasmapy.particles import Particle
     >>> mass = Particle("p+").mass.value
     >>> plasma_frequency.lite(n=1e19, mass=mass, Z=1)
-    416329...
+    np.float64(4163294534.0...)
     >>> plasma_frequency.lite(n=1e19, mass=mass, Z=1, to_hz=True)
-    662608...
+    np.float64(662608904.6...)
     """
     return (
         plasma_frequency_lite(
