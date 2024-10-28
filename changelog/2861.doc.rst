@@ -1,2 +1,2 @@
-Added section in installation instructions for installing PlasmaPy with
+Added a section in the installation instructions for installing PlasmaPy with
 |uv|.
