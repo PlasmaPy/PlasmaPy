@@ -1115,7 +1115,7 @@ The overall process of performing a release is:
 .. _`astropy.units`: https://docs.astropy.org/en/stable/units/index.html
 .. |astropy.units| replace:: `astropy.units`
 
-.. _`ci_requirements/`: https://github.com/PlasmaPy/PlasmaPy/blob/main/ci_requirements
+.. _`ci_requirements/`: https://github.com/PlasmaPy/PlasmaPy/tree/main/ci_requirements
 .. |ci_requirements/| replace:: :file:`ci_requirements/`
 
 .. _`ci_requirements/README.md`: https://github.com/PlasmaPy/PlasmaPy/blob/main/ci_requirements/README.md
