@@ -1130,13 +1130,13 @@ The overall process of performing a release is:
 .. _`ci_requirements/`: https://github.com/PlasmaPy/PlasmaPy/blob/main/ci_requirements
 .. |ci_requirements/| replace:: :file:`ci_requirements/`
 
-.. _`ci_requirements/README.md`: https://github.com/PlasmaPy/PlasmaPy/tree/main/ci_requirements/README.md
+.. _`ci_requirements/README.md`: https://github.com/PlasmaPy/PlasmaPy/blob/main/ci_requirements/README.md
 .. |ci_requirements/README.md| replace:: :file:`ci_requirements/README.md`
 
 .. _`mypy.ini`: https://github.com/PlasmaPy/PlasmaPy/blob/main/mypy.ini
 .. |mypy.ini| replace:: :file:`mypy.ini`
 
-.. _`noxfile.py`: https://github.com/PlasmaPy/PlasmaPy/tree/main/noxfile.py
+.. _`noxfile.py`: https://github.com/PlasmaPy/PlasmaPy/blob/main/noxfile.py
 .. |noxfile.py| replace:: :file:`noxfile.py`
 
 .. _`pyproject.toml`: https://github.com/PlasmaPy/PlasmaPy/blob/main/pyproject.toml
