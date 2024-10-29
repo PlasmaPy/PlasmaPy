@@ -32,7 +32,7 @@ from typing import Literal
 
 import nox
 
-supported_python_versions: tuple[str, ...] = ("3.10", "3.11", "3.12", "3.13")
+supported_python_versions: tuple[str, ...] = ("3.11", "3.12", "3.13")
 supported_operating_systems: tuple[str, ...] = ("linux", "macos", "windows")
 
 maxpython = max(supported_python_versions)
@@ -48,7 +48,7 @@ running_on_ci = os.getenv("CI")
 
 def _get_requirements_filepath(
     category: Literal["docs", "tests", "all"],
-    version: Literal["3.10", "3.11", "3.12", "3.13", "3.14", "3.15"],
+    version: Literal["3.11", "3.12", "3.13", "3.14", "3.15"],
     resolution: Literal["highest", "lowest-direct", "lowest"] = "highest",
     os_platform: Literal["linux", "macos", "windows"] | None = None,
 ) -> str:

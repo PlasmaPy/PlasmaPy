@@ -25,7 +25,7 @@ keywords = [
 # SPEC 0 recommends that projects drop support for Python versions 3
 # years after their initial release. See:
 # https://scientific-python.org/specs/spec-0000
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 
 # Add classifiers from https://pypi.org/classifiers
 classifiers = [
@@ -36,7 +36,6 @@ classifiers = [
   "Natural Language :: English",
   "Operating System :: OS Independent",
   "Programming Language :: Python :: 3",
-  "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
@@ -398,7 +397,6 @@ ignore = [
   "RET505", # superfluous-else-return (enable later?)
   "RET506", # superfluous-else-raise (enable later?)
   "S101", # asserts
-  "SIM117", # multiple-with-statements (remove for Python 3.10+)
   "SIM300", # yoda-conditions
   "TD002", # missing-todo-author
   "TD003", # missing-todo-link
