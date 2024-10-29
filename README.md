@@ -86,14 +86,14 @@ python -m pip install plasmapy
 
 > [!NOTE]
 > On some systems, it might be necessary to specify the Python version
-> number, for example by using `python3` or `python3.12` instead of
+> number, for example by using `python3` or `python3.13` instead of
 > `python`.
 
 To install PlasmaPy on Windows, open a terminal and run
 ```Shell
-py -3.12 -m pip install plasmapy
+py -3.13 -m pip install plasmapy
 ```
-The `3.12` may be replaced by any version of Python that is installed
+The `3.13` may be replaced by any version of Python that is installed
 and supported by PlasmaPy.
 
 ## Citing PlasmaPy
