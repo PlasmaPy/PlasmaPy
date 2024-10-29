@@ -40,6 +40,13 @@ minpython = min(supported_python_versions)
 
 current_python = f"{sys.version_info.major}.{sys.version_info.minor}"
 
+# The documentation should be build always using the same version of
+# Python, which should be the latest version of Python supported by Read
+# the Docs. Because Read the Docs takes some time to support new
+# releases of Python, we should not link docpython to maxpython.
+
+docpython = "3.12"
+
 nox.options.sessions: list[str] = [f"tests-{current_python}(skipslow)"]
 nox.options.default_venv_backend = "uv|virtualenv"
 
@@ -274,7 +281,7 @@ PlasmaPy's documentation guide at:
 """
 
 
-@nox.session(python=maxpython)
+@nox.session(python=docpython)
 def docs(session: nox.Session) -> None:
     """
     Build documentation with Sphinx.
@@ -295,7 +302,7 @@ def docs(session: nox.Session) -> None:
         session.debug(f"Documentation preview landing page not found: {landing_page}")
 
 
-@nox.session(python=maxpython)
+@nox.session(python=docpython)
 @nox.parametrize(
     ["site", "repository"],
     [
@@ -332,7 +339,7 @@ These variables are in the form of Python regular expressions:
 """
 
 
-@nox.session(python=maxpython)
+@nox.session(python=docpython)
 def linkcheck(session: nox.Session) -> None:
     """Check hyperlinks in documentation."""
     if running_on_ci:
