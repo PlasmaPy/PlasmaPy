@@ -29,7 +29,12 @@ jobs:
       matrix:
         include:
 
-        - name: Tests, Python 3.12, doctests, macOS
+        - name: Tests, Python 3.13, doctests, macOS
+          os: macos-latest
+          python: '3.13'
+          nox_session: tests-3.13(all)
+
+        - name: Tests, Python 3.12, macOS
           os: macos-latest
           python: '3.12'
           nox_session: tests-3.12(all)

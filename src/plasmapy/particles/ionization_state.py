@@ -219,9 +219,9 @@ class IonizationState:
     >>> import astropy.units as u
     >>> states = IonizationState("H", [0.6, 0.4], n_elem=1 * u.cm**-3, T_e=11000 * u.K)
     >>> states.ionic_fractions[0]  # fraction of hydrogen that is neutral
-    0.6
+    np.float64(0.6)
     >>> states.ionic_fractions[1]  # fraction of hydrogen that is ionized
-    0.4
+    np.float64(0.4)
     >>> states.n_e  # electron number density
     <Quantity 400000. 1 / m3>
     >>> states.n_elem  # element number density
@@ -393,11 +393,11 @@ class IonizationState:
         >>> IonizationState("H", [1, 0], tol=1e-6) == IonizationState(
         ...     "H", [1, 1e-6], tol=1e-6
         ... )  # noqa: W505
-        True
+        np.True_
         >>> IonizationState("H", [1, 0], tol=1e-8) == IonizationState(
         ...     "H", [1, 1e-6], tol=1e-5
         ... )  # noqa: W505
-        False
+        np.False_
         """
         if not isinstance(other, IonizationState):
             return False

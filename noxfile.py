@@ -203,7 +203,7 @@ def tests(session: nox.Session, test_specifier: nox._parametrize.Param) -> None:
     # Doctests are only run with the most recent versions of Python and
     # other dependencies because there may be subtle differences in the
     # output between different versions of Python, NumPy, and Astropy.
-    if session.python == maxpython and test_specifier in {"all", "skipslow"}:
+    if session.python == maxpython and test_specifier not in {"lowest-direct", "cov"}:
         options += with_doctests
 
     if gh_token := os.getenv("GH_TOKEN"):

@@ -63,9 +63,9 @@ def CFL_limit_electromagnetic_yee(dx: u.Quantity[u.m]) -> u.Quantity[u.s]:
     >>> import astropy.units as u
     >>> import numpy as np
     >>> CFL_limit_electromagnetic_yee(10 * u.nm)
-    <Quantity 3.335640951981521e-17 s>
+    <Quantity 3.33564...e-17 s>
     >>> CFL_limit_electromagnetic_yee(np.array([5, 10, 15]) * u.nm)
-    <Quantity 1.4295604079920803e-17 s>
+    <Quantity 1.42956...e-17 s>
     """
 
     return 1 / (c * np.sqrt(np.sum(1 / (dx**2))))
