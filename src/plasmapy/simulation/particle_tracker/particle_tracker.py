@@ -164,9 +164,10 @@ class ParticleTracker:
     ...     dt=1e-2 * u.s,
     ...     save_routine=save_routine,
     ...     field_weighting="nearest neighbor",
+    ...     verbose=False,
     ... )
     >>> simulation.load_particles(x, v, example_particle)
-    >>> simulation.run()  # doctest: +SKIP
+    >>> simulation.run()
     >>> print(
     ...     simulation.save_routine.results["time"][-1],
     ...     simulation.save_routine.results["x"][-1],
