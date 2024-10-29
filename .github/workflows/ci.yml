@@ -52,29 +52,29 @@ jobs:
           python: '3.10'
           nox_session: tests-3.10(lowest-direct)
 
-        - name: Documentation, Python 3.12, Ubuntu
+        - name: Documentation, Python 3.13, Ubuntu
           os: ubuntu-latest
-          python: '3.12'
+          python: '3.13'
           nox_session: docs
 
-        - name: Static type checking with mypy, Python 3.12, Ubuntu
+        - name: Static type checking with mypy, Python 3.13, Ubuntu
           os: ubuntu-latest
-          python: '3.12'
+          python: '3.13'
           nox_session: mypy
 
-        - name: Packaging, Python 3.12, Ubuntu
+        - name: Packaging, Python 3.13, Ubuntu
           os: ubuntu-latest
-          python: '3.12'
+          python: '3.13'
           nox_session: build
 
         - name: Validate CITATION.cff
           os: ubuntu-latest
-          python: '3.12'
+          python: '3.13'
           nox_session: cff
 
         - name: Check consistency of pinned & project requirements
           os: ubuntu-latest
-          python: '3.12'
+          python: '3.13'
           nox_session: validate_requirements
 
     steps:
