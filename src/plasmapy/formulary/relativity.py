@@ -254,10 +254,10 @@ class RelativisticBody:
     Particle("p+")
     >>> relativistic_proton.velocity
     <Quantity 1.03697...e+08 m / s>
-    >>> relativistic_proton.v_over_c
-    np.longdouble('0.34589808987468...')
-    >>> relativistic_proton.lorentz_factor
-    np.longdouble('1.06578892478889...')
+    >>> print(relativistic_proton.v_over_c)
+    0.34589808987468...
+    >>> print(relativistic_proton.lorentz_factor)
+    1.06578892478889...
     >>> relativistic_proton.mass_energy.to("GeV")
     <Quantity 0.93827... GeV>
     >>> relativistic_proton.total_energy.to("GeV")
