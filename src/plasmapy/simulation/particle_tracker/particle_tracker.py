@@ -172,7 +172,7 @@ class ParticleTracker:
     ...     simulation.save_routine.results["time"][-1],
     ...     simulation.save_routine.results["x"][-1],
     ... )
-    6.29999999999991 s [[-1.73302335e-08  1.31539878e-05  0.00000000e+00]] m
+    6.2999999999... s [[-1.73302...e-08  1.31539...e-05  0.00000...e+00]] m
     """
 
     # Some quantities are necessary for the particle tracker to function
