@@ -182,7 +182,6 @@ class TestCheckUnits:
             cu._normalize_equivalencies([("cm", u.cm)])
 
     def test_cu_method__get_unit_checks(self) -> None:
-        # sourcery skip: de-morgan
         """
         Test functionality/behavior of the method `_get_unit_checks` on `CheckUnits`.
         This method reviews the decorator `checks` arguments and wrapped function
