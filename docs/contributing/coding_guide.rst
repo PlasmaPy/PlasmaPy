@@ -800,14 +800,11 @@ that corresponds to :py:`function` as would be defined in
 
    from numbers import Real
 
-   from numba import njit
-   from plasmapy.utils.decorators import bind_lite_func, preserve_signature
+   from plasmapy.utils.decorators import bind_lite_func
 
    __all__ += __lite_funcs__
 
 
-   @preserve_signature
-   @njit
    def function_lite(v: float) -> float:
        """
        The lite-function which accepts and returns real numbers in
@@ -843,17 +840,8 @@ that corresponds to :py:`function` as would be defined in
   allows the :term:`lite-function` to also be accessed like
   :py:`thermal_speed.lite()`.
 
-* If a :term:`lite-function` is decorated with something like
-  :py:`@njit`, then it should also be decorated with
-  `~plasmapy.utils.decorators.helpers.preserve_signature`. This
-  preserves the function signature so interpreters can still
-  give hints about function arguments.
-
-* When possible, a :term:`lite-function` should incorporate `numba's
-  just-in-time compilation
-  <https://numba.pydata.org/numba-doc/latest/reference/jit-compilation.html>`__
-  or utilize Cython_. At a minimum any "extra" code beyond the raw
-  calculation should be removed.
+* A :term:`lite-function` should not include any "extra" code beyond the
+  raw calculation. In the future
 
 * The name of the original function should be included in :py:`__all__`
   near the top of each module, and the name of the :term:`lite-function`
