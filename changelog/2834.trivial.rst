@@ -1,1 +1,0 @@
-Tentatively reverted :pr:`2715` because it introduced doctest errors during a time when doctests were not enabled.

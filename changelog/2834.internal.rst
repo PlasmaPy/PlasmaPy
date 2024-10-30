@@ -1,3 +1,0 @@
-Fixed a bug in the |Nox| session for running tests that prevented
-doctests from being run, and fixed doctest errors that were introduced
-while doctests were not enabled.
