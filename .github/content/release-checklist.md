@@ -31,7 +31,7 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
 
 ### Planning the release
 
- - [x] [Create an issue for the release].
+ - [x] [Create an issue for the release]. ✅
  - [ ] Update [milestones] for issues & pull requests (PRs). 🛣️
 
 ### Code quality updates
@@ -71,10 +71,20 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
 ### Following the release
 
  - [ ] Download a `.tar.gz` file of the tagged release from the [list of tagged versions] on GitHub, and upload it to [Zenodo].
-   - [ ] Update the author list with new authors from the automatically generated release notes or [`CITATION.cff`].
-   - [ ] Update the bibliography, and publish the release to Zenodo.
+   - [ ] Update the version number and release date in the record.
+   - [ ] Update the author list with new authors from the automatically generated release notes or [`CITATION.cff`]. To compare this file between two tags, use: ``
+   - [ ] Update the bibliography.
+   - [ ] Publish the record.
  - [ ] Fix any problems with the automated pull request to [conda-forge feedstock], if necessary. This step should be automatic, but may take a while.
  - [ ] Update requirements in the [conda-forge feedstock] in `recipe/meta.yaml`, in particular when there is a new version of Python.
+
+> [!TIP]
+> To compare two files across different tags, use commands like:
+>
+> ```shell
+> git diff v2024.7.0:CITATION.cff v2024.10.0:CITATION.cff
+> git diff v2024.7.0:docs/bibliography.bib v2024.10.0:docs/bibliography.bib
+> ```
 
 ### Update documentation
 
