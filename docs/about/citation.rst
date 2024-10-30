@@ -3,8 +3,8 @@
 Acknowledging and Citing
 ========================
 
-.. |version_to_cite| replace:: 2024.7.0
-.. |doi_hyperlink| replace:: https://doi.org/10.5281/zenodo.12788848
+.. |version_to_cite| replace:: 2024.10.0
+.. |doi_hyperlink| replace:: https://doi.org/10.5281/zenodo.14010450
 .. |citation_year| replace:: 2024
 
 .. These substitutions are automatically updated by the GitHub Action

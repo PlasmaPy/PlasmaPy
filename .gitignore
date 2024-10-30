@@ -153,6 +153,7 @@ cython_version.py
 .pytype
 cython_debug
 dmypy.json
+gitlog
 monkeytype.sqlite3
 node_modules
 package-lock.json
