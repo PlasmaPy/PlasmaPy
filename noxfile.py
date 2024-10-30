@@ -23,6 +23,7 @@ to be installed.
 """
 
 # Documentation: https://nox.thea.codes
+
 import os
 import pathlib
 import platform
@@ -31,6 +32,12 @@ import sys
 from typing import Literal
 
 import nox
+
+# SPEC 0 indicates that scientific Python packages should support
+# versions of Python that have been released in the last 3 years, or
+# equivalently the most three recently released versions of Python.
+# The minimum version of Python should be incremented immediately
+# following the first release after October of each year.
 
 supported_python_versions: tuple[str, ...] = ("3.11", "3.12", "3.13")
 supported_operating_systems: tuple[str, ...] = ("linux", "macos", "windows")
