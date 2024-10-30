@@ -1,1 +1,2 @@
-Dropped support for Python 3.10. The minimum supported version of Python is now Python 3.11.
+Dropped support for Python 3.10 and bumped the minimum required
+versions of several dependencies following |SPEC 0|.
