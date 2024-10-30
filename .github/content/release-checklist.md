@@ -59,7 +59,10 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
    - For official releases, make sure the checkbox is selected for _Set as the latest release_. For beta releases or release candidates (e.g., `v2024.10.0rc1`), specify it as a pre-release.
    - Click on _Publish release_, which will create the GitHub release and trigger the GitHub workflow to [publish to PyPI]. 🚀
    - Check the [release history] on PyPI to make sure that the release was successful. 🆕
- - [ ] [Create a pull request] to merge the `v2024.10.x` branch back into main, with a title like "Merge changes back in from v2024.10.x" and a description like "This PR merges changes back in from the v2024.10.0 release. This PR should be merged rather than squashed, and the corresponding branch should not be deleted."
+ - [ ] [Create a pull request] to merge the `v2024.10.x` branch back into main.
+   - An example title is: "Merge changes back in from v2024.10.x"
+   - An example description is: "This PR merges changes back in from the v2024.10.0 release. This PR should be merged rather than squashed, and the corresponding branch should not be deleted."
+   - No changelog entry is needed.
  - [ ] Merge **but do not squash** this PR back into `main`, and **do not delete** the `v2024.10.x` branch.
 
 > [!CAUTION]
@@ -91,5 +94,6 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
 
  - [ ] Announce the release at the [community meeting].
  - [ ] Update the [release checklist], as needed.
+   - An example changelog entry is: "Updated the release checklist following the ``v2024.10.0`` release."
  - [ ] [Create an issue for the release] to occur ∼3–4 months after this one.
  - [ ] Close this issue.
