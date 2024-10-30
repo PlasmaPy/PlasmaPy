@@ -1,1 +1,0 @@
-Restructured sections in the `~plasmapy.formulary.mathematics.rot_a_to_b` docstring to be consistent with other docstrings, and added 'Raises' and 'Examples' sections.

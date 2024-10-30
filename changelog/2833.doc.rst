@@ -1,1 +1,0 @@
-Added examples to the |ParticleTracker| docstring.

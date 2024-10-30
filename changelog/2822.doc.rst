@@ -1,4 +1,0 @@
-Updated the docstring of `~plasmapy.formulary.dimensionless.beta` to explicitly
-use definitions of :math:`p_{th}` and :math:`p_{mag}`, and added links
-to `~plasmapy.formulary.misc.thermal_pressure`
-and `~plasmapy.formulary.misc.magnetic_pressure`.

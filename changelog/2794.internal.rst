@@ -1,1 +1,0 @@
-Added a |Nox| session to verify that the pinned requirements files used in continuous integration tests are consistent with the requirements in :file:`pyproject.toml`.
