@@ -873,34 +873,34 @@ several popular IDEs:
 .. _unpacking: https://docs.python.org/3/tutorial/controlflow.html#unpacking-argument-lists
 .. _`Visual Studio`: https://visualstudio.microsoft.com
 
-.. _`.github/workflows/ci.yml`: https://github.com/PlasmaPy/PlasmaPy/tree/main/.github/workflows/ci.yml
+.. _`.github/workflows/ci.yml`: https://github.com/PlasmaPy/PlasmaPy/blob/main/.github/workflows/ci.yml
 .. |.github/workflows/ci.yml| replace:: :file:`.github/workflows/ci.yml`
 
 .. _`changelog`: https://github.com/PlasmaPy/PlasmaPy/tree/main/changelog
 .. |changelog| replace:: :file:`changelog`
 
-.. _`codecov.yml`: https://github.com/PlasmaPy/PlasmaPy/tree/main/codecov.yml
+.. _`codecov.yml`: https://github.com/PlasmaPy/PlasmaPy/blob/main/codecov.yml
 .. |codecov.yml| replace:: :file:`codecov.yml`
 
-.. _`noxfile.py`: https://github.com/PlasmaPy/PlasmaPy/tree/main/noxfile.py
+.. _`noxfile.py`: https://github.com/PlasmaPy/PlasmaPy/blob/main/noxfile.py
 .. |noxfile.py| replace:: :file:`noxfile.py`
 
-.. _`pyproject.toml`: https://github.com/PlasmaPy/PlasmaPy/tree/main/pyproject.toml
+.. _`pyproject.toml`: https://github.com/PlasmaPy/PlasmaPy/blob/main/pyproject.toml
 .. |pyproject.toml| replace:: :file:`pyproject.toml`
 
 .. _`src/plasmapy`: https://github.com/PlasmaPy/PlasmaPy/tree/main/src/plasmapy
 
-.. _`src/plasmapy/particles/particle_class.py`: https://github.com/PlasmaPy/PlasmaPy/tree/main/tests/src/plasmapy/particles/particle_class.py
+.. _`src/plasmapy/particles/particle_class.py`: https://github.com/PlasmaPy/PlasmaPy/blob/main/src/plasmapy/particles/particle_class.py
 .. |src/plasmapy/particles/particle_class.py| replace:: :file:`src/plasmapy/particles/particle_class.py`
 
 .. _`tests`: https://github.com/PlasmaPy/PlasmaPy/tree/main/tests
 .. |tests| replace:: :file:`tests`
 
-.. _`tests/particles/test_particle_class.py`: https://github.com/PlasmaPy/PlasmaPy/tree/main/tests/particles/test_particle_class.py
+.. _`tests/particles/test_particle_class.py`: https://github.com/PlasmaPy/PlasmaPy/blob/main/tests/particles/test_particle_class.py
 .. |tests/particles/test_particle_class.py| replace:: :file:`tests/particles/test_particle_class.py`
 
 .. _`tests/formulary`: https://github.com/PlasmaPy/PlasmaPy/tree/main/tests/formulary
 .. |tests/formulary| replace:: :file:`tests/formulary`
 
-.. _`tests/formulary/test_speeds.py`: https://github.com/PlasmaPy/PlasmaPy/tree/main/tests/formulary/test_speeds.py
+.. _`tests/formulary/test_speeds.py`: https://github.com/PlasmaPy/PlasmaPy/blob/main/tests/formulary/test_speeds.py
 .. |tests/formulary/test_speeds.py| replace:: :file:`tests/formulary/test_speeds.py`

@@ -451,7 +451,7 @@ authors:
 - given-names: Leo
   family-names: Murphy
   affiliation: College of William & Mary
-  alias: LeoMurphyWM24
+  alias: LeoMurphy037
 
 - given-names: Suzanne
   family-names: Nie
@@ -487,7 +487,7 @@ authors:
 
 - given-names: Francisco Silva
   family-names: Pavon
-  alias: silvafrancisco
+  alias: silvapavon
 
 - given-names: Jakub
   family-names: Polak
@@ -646,7 +646,7 @@ authors:
   alias: 14tstinson
 
 - given-names: Shelley
-  family-names: Sugiharto, Kerr
+  family-names: Sugiharto
   affiliation: Texas A&M University
   orcid: https://orcid.org/0009-0003-3159-0541
   alias: ShelleySugiharto
