@@ -1,10 +1,10 @@
 title: PlasmaPy
 type: software
-version: 2024.7.0
+version: 2024.10.0
 identifiers:
 - type: doi
-  value: 10.5281/zenodo.12788848
-date-released: '2024-07-21'
+  value: 10.5281/zenodo.14010450
+date-released: '2024-10-30'
 message: >-
   Please cite the specific version of PlasmaPy used
   during a research project.
@@ -498,8 +498,8 @@ authors:
 
 - given-names: Preston
   family-names: Pitzer
-  affiliation : Virginia Tech
-  orcid : https://orcid.org/0009-0007-0655-1347
+  affiliation: Virginia Tech
+  orcid: https://orcid.org/0009-0007-0655-1347
   alias: PrestonPitzerVT
 
 - given-names: Ramiz
