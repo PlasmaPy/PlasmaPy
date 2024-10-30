@@ -70,6 +70,18 @@ authors:
   affiliation: Chandigarh University
   alias: ritiek
 
+- given-names: David
+  family-names: Schaffner
+  affiliation: Bryn Mawr College
+  orcid: https://orcid.org/0000-0002-9180-6565
+  alias: dschaffner
+
+- given-names: Steve
+  family-names: Vincena
+  affiliation: UCLA
+  orcid: https://orcid.org/0000-0002-6468-5710
+  alias: svincena
+
 - given-names: Mel
   family-names: Abler
   orcid: https://orcid.org/0000-0003-2528-8752
@@ -576,12 +588,6 @@ authors:
   orcid: https://orcid.org/0000-0002-5598-046X
   alias: savcheva
 
-- given-names: David
-  family-names: Schaffner
-  affiliation: Bryn Mawr College
-  orcid: https://orcid.org/0000-0002-9180-6565
-  alias: dschaffner
-
 - given-names: Cora
   family-names: Schneck
   alias: cyschneck
@@ -704,12 +710,6 @@ authors:
   affiliation: Laboratory for Atmospheric and Space Physics
   orcid: https://orcid.org/0000-0002-8335-1441
   alias: tien-vo
-
-- given-names: Steve
-  family-names: Vincena
-  affiliation: UCLA
-  orcid: https://orcid.org/0000-0002-6468-5710
-  alias: svincena
 
 - alias: WineDarkMoon
 
