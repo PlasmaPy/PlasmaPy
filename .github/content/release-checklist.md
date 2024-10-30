@@ -89,11 +89,12 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
  - [ ] Open Python and run `import plasmapy`, `dir(plasmapy)`, and `plasmapy.__version__`.
  - [ ] Run `plasma-calculator` from the command line.
  - [ ] Verify that the new version can be installed with conda.
+ - [ ] Verify that the new version can be installed with uv.
 
 ## After the release
 
  - [ ] Announce the release at the [community meeting].
  - [ ] Update the [release checklist], as needed.
    - An example changelog entry is: "Updated the release checklist following the ``v2024.10.0`` release."
- - [ ] [Create an issue for the release] to occur ∼3–4 months after this one.
+ - [ ] [Create an issue for the release] to occur in ∼3–4 months.
  - [ ] Close this issue.
