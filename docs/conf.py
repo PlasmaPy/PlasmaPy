@@ -25,7 +25,6 @@ Sphinx extensions (built-in):
 import logging
 import os
 import sys
-import warnings
 from datetime import datetime, timezone
 
 from sphinx.application import Sphinx
