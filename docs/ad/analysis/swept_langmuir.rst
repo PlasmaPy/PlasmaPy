@@ -11,8 +11,9 @@ Example notebooks
 -----------------
 
 .. nbgallery::
+   :glob:
 
-   /notebooks/analysis/swept_langmuir
+   /notebooks/analysis/swept_langmuir/*
 
 API
 ---

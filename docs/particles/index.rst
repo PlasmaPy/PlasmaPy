@@ -29,8 +29,10 @@ Example notebooks
 -----------------
 
 .. nbgallery::
+    :glob:
 
     /notebooks/getting_started/particles
+    /notebooks/particles/*
 
 See Also
 ========

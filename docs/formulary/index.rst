@@ -81,8 +81,9 @@ Example notebooks
 -----------------
 
 .. nbgallery::
+    :glob:
 
-    ../notebooks/formulary
+    ../notebooks/formulary/*
 
 API
 ===
