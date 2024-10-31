@@ -11,5 +11,6 @@ Example Notebooks
 -----------------
 
 .. nbgallery::
+    :caption: Examples
 
     /notebooks/dispersion/hollweg_dispersion

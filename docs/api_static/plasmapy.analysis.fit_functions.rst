@@ -7,9 +7,7 @@
 
 .. automodapi:: plasmapy.analysis.fit_functions
 
-Example Notebook
-----------------
-
 .. nbgallery::
+   :caption: Examples
 
    /notebooks/analysis/fit_functions
