@@ -6,3 +6,7 @@
 .. currentmodule:: plasmapy.particles.ionization_state
 
 .. automodapi::  plasmapy.particles.ionization_state
+
+.. nbgallery::
+
+   notebooks/particles/ACE
