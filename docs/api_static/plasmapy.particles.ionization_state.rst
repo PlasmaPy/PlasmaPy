@@ -7,6 +7,9 @@
 
 .. automodapi::  plasmapy.particles.ionization_state
 
+Example notebooks
+-----------------
+
 .. nbgallery::
 
    /notebooks/particles/ace

@@ -12,4 +12,4 @@ Example notebooks
 
 .. nbgallery::
 
-    /notebooks/dispersion/dispersion_function
+   /notebooks/dispersion/dispersion_function

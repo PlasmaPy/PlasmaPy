@@ -12,4 +12,4 @@ Example notebooks
 
 .. nbgallery::
 
-    /notebooks/dispersion/two_fluid_dispersion
+   /notebooks/dispersion/two_fluid_dispersion

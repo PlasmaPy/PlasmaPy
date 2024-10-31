@@ -12,4 +12,4 @@ Example notebooks
 
 .. nbgallery::
 
-    /notebooks/dispersion/stix_dispersion
+   /notebooks/dispersion/stix_dispersion

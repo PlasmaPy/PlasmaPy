@@ -10,4 +10,6 @@
 Example notebooks
 -----------------
 
-/notebooks/analysis/nullpoint
+.. nbgallery::
+
+   /notebooks/analysis/nullpoint

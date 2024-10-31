@@ -12,5 +12,5 @@ Example notebooks
 
 .. nbgallery::
 
-    /notebooks/plasma/grids_cartesian
-    /notebooks/plasma/grids_nonuniform
+   /notebooks/plasma/grids_cartesian
+   /notebooks/plasma/grids_nonuniform
