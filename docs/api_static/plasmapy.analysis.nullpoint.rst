@@ -10,4 +10,4 @@
 Example notebooks
 -----------------
 
-../notebooks/analysis/nullpoint
+/notebooks/analysis/nullpoint

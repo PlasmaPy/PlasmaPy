@@ -12,4 +12,4 @@ Example notebooks
 
 .. nbgallery::
 
-   ../notebooks/getting_started/particles
+   /notebooks/getting_started/particles
