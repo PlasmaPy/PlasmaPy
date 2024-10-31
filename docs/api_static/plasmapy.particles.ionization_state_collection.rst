@@ -9,4 +9,4 @@
 
 .. nbgallery::
 
-   notebooks/particles/ACE
+   notebooks/particles/ace
