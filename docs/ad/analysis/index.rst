@@ -20,10 +20,9 @@ Example notebooks
 -----------------
 
 .. nbgallery::
-   :glob:
    :reversed:
 
-   /notebooks/analysis/*
+   /notebooks/analysis
 
 API
 ---

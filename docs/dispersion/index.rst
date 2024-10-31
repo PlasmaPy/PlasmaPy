@@ -6,9 +6,10 @@ Dispersion (`plasmapy.dispersion`)
 
 .. automodapi:: plasmapy.dispersion
 
+Example notebooks
+-----------------
+
 .. nbgallery::
-   :caption: Example notebooks
-   :glob:
    :reversed:
 
-   /notebooks/dispersion/*
+   /notebooks/dispersion
