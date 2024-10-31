@@ -1,6 +1,5 @@
 """
-The `~plasmapy.formulary.collisions.helio` subpackage contains
-functionality for heliospheric plasma science, including the
+Functionality related to heliospheric plasma science, such as for the
 solar wind.
 """
 

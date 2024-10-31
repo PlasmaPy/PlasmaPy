@@ -1,5 +1,5 @@
 r"""
-Functions to calculate classical transport coefficients.
+Functionality to calculate classical transport coefficients.
 
 .. nbgallery::
 
