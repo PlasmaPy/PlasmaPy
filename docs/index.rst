@@ -55,7 +55,7 @@ PlasmaPy is developed openly `on GitHub`_, where you can
 
 .. toctree::
    :maxdepth: 1
-   :caption: Package Features
+   :caption: Package features
 
    ad/index
    Dispersion <dispersion/index>
@@ -68,7 +68,7 @@ PlasmaPy is developed openly `on GitHub`_, where you can
 
 .. toctree::
    :maxdepth: 1
-   :caption: Project Details
+   :caption: Project details
 
    changelog/index
    about/credits
