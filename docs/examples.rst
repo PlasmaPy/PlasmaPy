@@ -11,60 +11,46 @@ for the various functionality contained in `plasmapy`.
 
 .. _getting-started-notebooks:
 
-Getting started
----------------
-
 .. nbgallery::
+   :caption: Getting started
 
    notebooks/getting_started/units
    notebooks/getting_started/particles
 
-Analyses & Diagnostics
-----------------------
-
 .. nbgallery::
+   :caption: Analyses & diagnostics
    :glob:
 
    notebooks/analysis/*
    notebooks/analysis/*/*
    notebooks/diagnostics/*
 
-Dispersion
-----------
-
 .. nbgallery::
+   :caption: Dispersion
    :glob:
 
    notebooks/dispersion/*
 
-Formulary
----------
-
 .. nbgallery::
+   :caption: Formulary
    :glob:
 
    notebooks/formulary/*
 
-Particles
----------
-
 .. nbgallery::
+   :caption: Particles
    :glob:
 
    notebooks/particles/*
 
-Plasma Objects
---------------
-
 .. nbgallery::
+   :caption: Plasma objects
    :glob:
 
    notebooks/plasma/*
 
-Simulation
-----------
-
 .. nbgallery::
+   :caption: Simulation
    :glob:
 
    notebooks/simulation/*
