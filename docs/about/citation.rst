@@ -1,7 +1,7 @@
 .. _citation:
 
-Acknowledging and Citing
-========================
+Acknowledging and citing PlasmaPy
+=================================
 
 .. |version_to_cite| replace:: 2024.10.0
 .. |doi_hyperlink| replace:: https://doi.org/10.5281/zenodo.14010450
