@@ -33,33 +33,39 @@ Dispersion
 ----------
 
 .. nbgallery::
+   :glob:
 
-   notebooks/dispersion
+   notebooks/dispersion/*
 
 Formulary
 ---------
 
 .. nbgallery::
+   :glob:
 
-   notebooks/formulary
+   notebooks/formulary/*
 
 Particles
 ---------
 
 .. nbgallery::
+   :glob:
 
-   notebooks/particles
+   notebooks/getting_started/particles
+   notebooks/particles/*
 
 Plasma objects
 --------------
 
 .. nbgallery::
+   :glob:
 
-   notebooks/plasma
+   notebooks/plasma/*
 
 Simulation
 ----------
 
 .. nbgallery::
+   :glob:
 
-   notebooks/simulation
+   notebooks/simulation/*
