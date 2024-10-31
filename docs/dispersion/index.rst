@@ -10,6 +10,6 @@ Example notebooks
 -----------------
 
 .. nbgallery::
-   :reversed:
+   :glob:
 
-   /notebooks/dispersion
+   /notebooks/dispersion/*
