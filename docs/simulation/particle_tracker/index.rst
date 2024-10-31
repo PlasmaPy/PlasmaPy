@@ -9,7 +9,7 @@
 
 .. toctree::
    :maxdepth: 1
-   :caption: Sub-Packages & Modules
+   :caption: Subpackages & Modules
 
 API
 ---
