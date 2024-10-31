@@ -72,6 +72,11 @@ __citation__ = (
     "in the online documentation at: "
     "https://docs.plasmapy.org/en/stable/about/citation.html"
 )
+"""Describes how to cite and acknowledge PlasmaPy in publications."""
+
+
+__version__  # noqa: B018
+"""The version of PlasmaPy."""
 
 
 def online_help(query: str) -> None:  # coverage: ignore
