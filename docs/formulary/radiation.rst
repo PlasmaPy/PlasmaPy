@@ -8,8 +8,10 @@ Electromagnetic Radiation Functions (`plasmapy.formulary.radiation`)
 
 .. automodapi:: plasmapy.formulary.radiation
 
+Example notebooks
+-----------------
+
 .. nbgallery::
-    :caption: Example notebooks
 
     /notebooks/formulary/thermal_bremsstrahlung
 

@@ -8,8 +8,10 @@ Frequency Plasma Parameters (`plasmapy.formulary.frequencies`)
 
 .. automodapi:: plasmapy.formulary.frequencies
 
+Example notebooks
+-----------------
+
 .. nbgallery::
-    :caption: Example notebooks
 
     /notebooks/formulary/ExB_drift
     /notebooks/formulary/iter

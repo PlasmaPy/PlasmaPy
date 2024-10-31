@@ -25,8 +25,10 @@ Submodules
    ionization_states
    decorators
 
+Example notebooks
+-----------------
+
 .. nbgallery::
-    :caption: Example notebooks
 
     /notebooks/getting_started/particles
 

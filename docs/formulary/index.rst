@@ -77,11 +77,12 @@ appropriate units. If that happens, you will be notified via a
 Please note that well-maintained physical constant data with units and
 uncertainties can be found in `astropy.constants`.
 
-.. nbgallery::
-    :caption: Example notebooks
-    :glob:
+Example notebooks
+-----------------
 
-    ../notebooks/formulary/*
+.. nbgallery::
+
+    ../notebooks/formulary
 
 API
 ===

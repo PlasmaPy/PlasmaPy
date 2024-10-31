@@ -7,8 +7,10 @@
 
 .. automodapi::  plasmapy.plasma.grids
 
+Example notebooks
+-----------------
+
 .. nbgallery::
-    :caption: Example notebooks
 
     /notebooks/plasma/grids_cartesian
     /notebooks/plasma/grids_nonuniform

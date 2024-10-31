@@ -16,8 +16,10 @@
    Swept Langmuir <swept_langmuir>
    Null Point Finder </api_static/plasmapy.analysis.nullpoint>
 
+Example notebooks
+-----------------
+
 .. nbgallery::
-   :caption: Example notebooks
    :glob:
    :reversed:
 
