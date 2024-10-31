@@ -1,4 +1,4 @@
-"""Defines the Langmuir analysis module as part of the diagnostics package."""
+"""Functionality to analyze Langmuir probe data."""
 
 __all__ = [
     "Characteristic",
