@@ -13,4 +13,4 @@ Example notebooks
 
 .. nbgallery::
 
-    /notebooks/formulary/solar_plasma_beta
+   /notebooks/formulary/solar_plasma_beta

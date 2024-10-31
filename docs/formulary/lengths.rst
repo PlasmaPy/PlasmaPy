@@ -13,6 +13,6 @@ Example notebooks
 
 .. nbgallery::
 
-    /notebooks/formulary/ExB_drift
-    /notebooks/formulary/iter
-    /notebooks/formulary/magnetosphere
+   /notebooks/formulary/ExB_drift
+   /notebooks/formulary/iter
+   /notebooks/formulary/magnetosphere

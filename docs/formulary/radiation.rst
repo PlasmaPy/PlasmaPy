@@ -13,7 +13,7 @@ Example notebooks
 
 .. nbgallery::
 
-    /notebooks/formulary/thermal_bremsstrahlung
+   /notebooks/formulary/thermal_bremsstrahlung
 
 See Also
 ========

@@ -13,4 +13,4 @@ Example notebooks
 
 .. nbgallery::
 
-    /notebooks/formulary/cold_plasma_tensor_elements
+   /notebooks/formulary/cold_plasma_tensor_elements

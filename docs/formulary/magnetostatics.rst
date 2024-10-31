@@ -13,4 +13,4 @@ Example notebooks
 
 .. nbgallery::
 
-    /notebooks/formulary/magnetostatics
+   /notebooks/formulary/magnetostatics

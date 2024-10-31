@@ -13,5 +13,5 @@ Example notebooks
 
 .. nbgallery::
 
-    /notebooks/formulary/ExB_drift
-    /notebooks/formulary/iter
+   /notebooks/formulary/ExB_drift
+   /notebooks/formulary/iter

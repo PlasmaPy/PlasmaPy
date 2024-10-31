@@ -13,6 +13,6 @@ Example notebooks
 
 .. nbgallery::
 
-    /notebooks/formulary/distribution
-    /notebooks/formulary/iter
-    /notebooks/formulary/thermal_speed
+   /notebooks/formulary/distribution
+   /notebooks/formulary/iter
+   /notebooks/formulary/thermal_speed
