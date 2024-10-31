@@ -78,7 +78,7 @@ Please note that well-maintained physical constant data with units and
 uncertainties can be found in `astropy.constants`.
 
 .. nbgallery::
-    :caption: Examples
+    :caption: Example notebooks
     :glob:
 
     ../notebooks/formulary/*

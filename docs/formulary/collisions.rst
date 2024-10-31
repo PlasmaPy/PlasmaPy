@@ -9,6 +9,6 @@ Collisions (`plasmapy.formulary.collisions`)
 .. automodapi:: plasmapy.formulary.collisions
 
 .. nbgallery::
-    :caption: Examples
+    :caption: Example notebooks
 
     /notebooks/formulary/coulomb

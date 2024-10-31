@@ -8,7 +8,7 @@ Synthetic Charged Particle Radiography
 .. automodapi:: plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography
 
 .. nbgallery::
-    :caption: Examples
+    :caption: Example notebooks
 
     /notebooks/diagnostics/charged_particle_radiography_particle_tracing
     /notebooks/diagnostics/charged_particle_radiography_particle_tracing_custom_source

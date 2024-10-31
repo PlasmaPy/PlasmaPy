@@ -8,6 +8,6 @@
 .. automodapi:: plasmapy.analysis.fit_functions
 
 .. nbgallery::
-   :caption: Examples
+   :caption: Example notebooks
 
    /notebooks/analysis/fit_functions

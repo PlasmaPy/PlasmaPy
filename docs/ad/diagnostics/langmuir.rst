@@ -14,6 +14,6 @@ Langmuir analysis
 .. automodapi:: plasmapy.diagnostics.langmuir
 
 .. nbgallery::
-    :caption: Examples
+    :caption: Example notebooks
 
     /notebooks/diagnostics/langmuir_analysis

@@ -8,6 +8,6 @@
 .. automodapi:: plasmapy.dispersion.dispersion_functions
 
 .. nbgallery::
-    :caption: Examples
+    :caption: Example notebooks
 
     /notebooks/dispersion/dispersion_function

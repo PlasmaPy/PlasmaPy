@@ -9,7 +9,7 @@ Thomson scattering
 .. automodapi:: plasmapy.diagnostics.thomson
 
 .. nbgallery::
-    :caption: Examples
+    :caption: Example notebooks
 
     /notebooks/diagnostics/thomson
     /notebooks/diagnostics/thomson_fitting

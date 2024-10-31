@@ -9,6 +9,6 @@ Classical transport theory (`plasmapy.formulary.braginskii`)
 .. automodapi:: plasmapy.formulary.braginskii
 
 .. nbgallery::
-    :caption: Examples
+    :caption: Example notebooks
 
     /notebooks/formulary/braginskii

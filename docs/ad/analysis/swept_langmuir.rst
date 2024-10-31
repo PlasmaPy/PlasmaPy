@@ -8,7 +8,7 @@ Swept Langmuir Analysis Module
 .. automodule:: plasmapy.analysis.swept_langmuir
 
 .. nbgallery::
-   :caption: Examples
+   :caption: Example notebooks
    :glob:
    :reversed:
 

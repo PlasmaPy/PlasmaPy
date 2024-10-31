@@ -26,7 +26,7 @@ Submodules
    decorators
 
 .. nbgallery::
-    :caption: Examples
+    :caption: Example notebooks
 
     /notebooks/getting_started/particles
 

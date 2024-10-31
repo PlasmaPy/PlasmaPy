@@ -7,7 +7,7 @@ Dispersion (`plasmapy.dispersion`)
 .. automodapi:: plasmapy.dispersion
 
 .. nbgallery::
-   :caption: Examples
+   :caption: Example notebooks
    :glob:
    :reversed:
 

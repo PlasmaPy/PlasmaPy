@@ -9,6 +9,6 @@ Magnetostatics (`plasmapy.formulary.magnetostatics`)
 .. automodapi:: plasmapy.formulary.magnetostatics
 
 .. nbgallery::
-    :caption: Examples
+    :caption: Example notebooks
 
     /notebooks/formulary/magnetostatics

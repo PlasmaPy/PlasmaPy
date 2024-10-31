@@ -43,7 +43,7 @@ PlasmaPy is developed openly `on GitHub`_, where you can
    about/citation
 
 .. nbgallery::
-   :caption: Examples
+   :caption: Example notebooks
    :hidden:
 
    notebooks/getting_started/particles

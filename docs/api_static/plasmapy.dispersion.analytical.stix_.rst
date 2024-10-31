@@ -8,6 +8,6 @@
 .. automodapi:: plasmapy.dispersion.analytical.stix_
 
 .. nbgallery::
-    :caption: Examples
+    :caption: Example notebooks
 
     /notebooks/dispersion/stix_dispersion

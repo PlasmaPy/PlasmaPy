@@ -17,7 +17,7 @@
    Null Point Finder </api_static/plasmapy.analysis.nullpoint>
 
 .. nbgallery::
-   :caption: Examples
+   :caption: Example notebooks
    :glob:
    :reversed:
 

@@ -9,6 +9,6 @@ Dielectric functions (`plasmapy.formulary.dielectric`)
 .. automodapi:: plasmapy.formulary.dielectric
 
 .. nbgallery::
-    :caption: Examples
+    :caption: Example notebooks
 
     /notebooks/formulary/cold_plasma_tensor_elements

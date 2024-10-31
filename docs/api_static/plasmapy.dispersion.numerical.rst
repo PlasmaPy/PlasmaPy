@@ -7,10 +7,7 @@
 
 .. automodapi:: plasmapy.dispersion.numerical
 
-Example Notebooks
------------------
-
 .. nbgallery::
-    :caption: Examples
+    :caption: Example notebooks
 
     /notebooks/dispersion/hollweg_dispersion
