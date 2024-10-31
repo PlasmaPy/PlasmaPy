@@ -1,6 +1,5 @@
 """
-The `~plasmapy.dispersion.analytical` subpackage contains functionality
-associated with analytical dispersion solutions.
+Functionality associated with analytical dispersion solutions.
 
 .. attention::
 

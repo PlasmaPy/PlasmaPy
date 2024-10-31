@@ -1,6 +1,4 @@
-"""
-Objects for representing magnetohydrodynamic (MHD) waves.
-"""
+"""Functionality for representing magnetohydrodynamic (MHD) waves."""
 
 __all__ = [
     "AbstractMHDWave",
