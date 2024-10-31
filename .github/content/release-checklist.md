@@ -72,7 +72,7 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
 
  - [ ] Download a `.tar.gz` file of the tagged release from the [list of tagged versions] on GitHub, and upload it to [Zenodo].
    - [ ] Update the version number and release date in the record.
-   - [ ] Update the author list with new authors from the automatically generated release notes or [`CITATION.cff`]. To compare this file between two tags, use: ``
+   - [ ] Update the author list with new authors from the automatically generated release notes or [`CITATION.cff`].
    - [ ] Update the bibliography.
    - [ ] Publish the record.
  - [ ] Fix any problems with the automated pull request to [conda-forge feedstock], if necessary. This step should be automatic, but may take a while.
