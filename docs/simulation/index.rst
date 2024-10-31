@@ -27,6 +27,14 @@ The `~plasmapy.simulation` subpackage provides basic, didactic reference
 implementations of popular methods of simulating plasmas, and interfaces
 to common simulation tools.
 
+Example notebooks
+=================
+
+.. nbgallery::
+   :glob:
+
+   ../notebooks/simulation/*
+
 API
 ===
 
