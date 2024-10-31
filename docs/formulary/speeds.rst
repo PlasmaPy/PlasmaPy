@@ -8,9 +8,6 @@ Speed Plasma Parameters (`plasmapy.formulary.speeds`)
 
 .. automodapi:: plasmapy.formulary.speeds
 
-Examples
-========
-
 .. nbgallery::
     :caption: Examples
 

@@ -8,9 +8,6 @@ Dimensionless parameters (`plasmapy.formulary.dimensionless`)
 
 .. automodapi:: plasmapy.formulary.dimensionless
 
-Examples
-========
-
 .. nbgallery::
     :caption: Examples
 

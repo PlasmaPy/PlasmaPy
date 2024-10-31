@@ -6,10 +6,8 @@ Dispersion (`plasmapy.dispersion`)
 
 .. automodapi:: plasmapy.dispersion
 
-Examples
-========
-
 .. nbgallery::
+   :caption: Examples
    :glob:
    :reversed:
 

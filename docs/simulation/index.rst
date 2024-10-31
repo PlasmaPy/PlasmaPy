@@ -16,7 +16,6 @@ Simulation (`plasmapy.simulation`)
    particle_integrators
    resolution_constraints
 
-
 .. attention::
 
    |expect-api-changes|

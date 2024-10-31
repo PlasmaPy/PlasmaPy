@@ -8,9 +8,6 @@ Distribution functions (`plasmapy.formulary.distribution`)
 
 .. automodapi:: plasmapy.formulary.distribution
 
-Examples
-========
-
 .. nbgallery::
     :caption: Examples
 

@@ -8,9 +8,6 @@ Magnetostatics (`plasmapy.formulary.magnetostatics`)
 
 .. automodapi:: plasmapy.formulary.magnetostatics
 
-Examples
-========
-
 .. nbgallery::
     :caption: Examples
 

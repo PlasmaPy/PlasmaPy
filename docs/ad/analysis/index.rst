@@ -10,16 +10,14 @@
 
 .. toctree::
    :maxdepth: 1
-   :caption: Sub-Packages & Modules
+   :caption: Subpackages & Modules
 
    Fit Functions </api_static/plasmapy.analysis.fit_functions>
    Swept Langmuir <swept_langmuir>
    Null Point Finder </api_static/plasmapy.analysis.nullpoint>
 
-Notebooks
----------
-
 .. nbgallery::
+   :caption: Examples
    :glob:
    :reversed:
 

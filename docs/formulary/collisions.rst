@@ -8,9 +8,6 @@ Collisions (`plasmapy.formulary.collisions`)
 
 .. automodapi:: plasmapy.formulary.collisions
 
-Examples
-========
-
 .. nbgallery::
     :caption: Examples
 

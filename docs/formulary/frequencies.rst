@@ -8,9 +8,6 @@ Frequency Plasma Parameters (`plasmapy.formulary.frequencies`)
 
 .. automodapi:: plasmapy.formulary.frequencies
 
-Examples
-========
-
 .. nbgallery::
     :caption: Examples
 
