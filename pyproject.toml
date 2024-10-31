@@ -198,12 +198,6 @@ exclude_lines = [
   "ImportError",
   "ModuleNotFoundError",
   "raise NotImplementedError",
-  "@vectorize",
-  "@numba.vectorize",
-  "@numba.jit",
-  "@jit",
-  "@numba.njit",
-  "@njit",
   "@abstractmethod",
 ]
 
