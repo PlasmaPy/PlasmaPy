@@ -42,10 +42,8 @@ PlasmaPy is developed openly `on GitHub`_, where you can
    Code of Conduct <CODE_OF_CONDUCT.rst>
    about/citation
 
-Example highlights
-------------------
-
 .. nbgallery::
+   :caption: Examples
    :hidden:
 
    notebooks/getting_started/particles
