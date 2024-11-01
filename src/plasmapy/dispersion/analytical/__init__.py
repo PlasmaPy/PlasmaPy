@@ -1,5 +1,5 @@
 """
-Functionality associated with analytical dispersion solutions.
+Analytical plasma wave dispersion relations.
 
 .. attention::
 
