@@ -1,5 +1,5 @@
 """
-Particle movement integrators, for particle simulations.
+Particle movement integrators.
 
 These do not have `astropy.units` support, choosing instead to
 limit overhead and increase performance.
