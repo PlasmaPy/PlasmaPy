@@ -1,4 +1,4 @@
-"""Functionality for defining a plasma on a grid."""
+"""For defining a plasma on a grid."""
 
 from collections.abc import Sequence
 
