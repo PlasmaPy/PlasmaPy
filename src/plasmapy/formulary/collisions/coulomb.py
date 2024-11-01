@@ -1,5 +1,5 @@
 """
-Functionality for calculating Coulomb logarithms and related parameters.
+Calculation of Coulomb logarithms and cross-sections.
 
 Coulomb collisions are collisions where the interaction force is
 conveyed via the electric field, instead of any kind of contact force.
