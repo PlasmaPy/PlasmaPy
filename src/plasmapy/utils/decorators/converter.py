@@ -1,4 +1,4 @@
-"""Decorators to convert units."""
+"""Decorators for convert units."""
 
 __all__ = ["angular_freq_to_hz"]
 

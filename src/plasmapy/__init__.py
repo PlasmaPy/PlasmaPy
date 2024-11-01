@@ -1,6 +1,5 @@
 """
-PlasmaPy is an open source Python package for plasma research and
-education.
+An open source Python package for plasma research and education.
 
 For more information about the software, please check out `PlasmaPy's
 online documentation <https://docs.plasmapy.org>`__ or use

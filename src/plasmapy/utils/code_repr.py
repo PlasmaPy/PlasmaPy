@@ -1,4 +1,4 @@
-"""Tools for formatting strings, including for error messages."""
+"""Functionality for creating string representations of function and method calls."""
 
 __all__ = ["call_string", "attribute_call_string", "method_call_string"]
 
