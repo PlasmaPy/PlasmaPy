@@ -70,7 +70,7 @@ Features
 - Created the `~plasmapy.simulation.abstractions.AbstractNormalizations` class
   to serve as an abstract interface for future classes that represent normalizations. (`#859 <https://github.com/plasmapy/plasmapy/pull/859>`__)
 - Create the analysis sub-package `plasmapy.analysis.swept_langmuir` for analysis
-  code related to analyzing swept Langmuir traces.  Sub-package is initiated with
+  code related to analyzing swept Langmuir traces.  Subpackage is initiated with
   functionality for calculating the floating potential,
   `~plasmapy.analysis.swept_langmuir.floating_potential.find_floating_potential`. (`#889 <https://github.com/plasmapy/plasmapy/pull/889>`__)
 - Added a proton radiography diagnostic module containing a tool for generating synthetic proton radiographs from simulated or calculated fields using a particle tracking algorithm. (`#895 <https://github.com/plasmapy/plasmapy/pull/895>`__)

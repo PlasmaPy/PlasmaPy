@@ -7,9 +7,9 @@
    :align: right
    :scale: 40%
 
-########################
-PlasmaPy Documentation🌱
-########################
+######################
+PlasmaPy Documentation
+######################
 
 |PlasmaPy| is an open source community-developed |Python| |minpython|\ +
 package for plasma research and education. PlasmaPy is a platform by
@@ -32,7 +32,7 @@ PlasmaPy is developed openly `on GitHub`_, where you can
    :ref:`cite or acknowledge <citation>` PlasmaPy.
 
 .. toctree::
-   :caption: First Steps
+   :caption: First steps
    :maxdepth: 1
 
    Installing <install>
@@ -42,8 +42,8 @@ PlasmaPy is developed openly `on GitHub`_, where you can
    Code of Conduct <CODE_OF_CONDUCT.rst>
    about/citation
 
-Example highlights
-------------------
+Example notebooks
+-----------------
 
 .. nbgallery::
    :hidden:
@@ -70,7 +70,7 @@ Example highlights
 
 .. toctree::
    :maxdepth: 1
-   :caption: All the Rest
+   :caption: Project details
 
    changelog/index
    about/credits

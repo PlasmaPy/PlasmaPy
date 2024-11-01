@@ -2,9 +2,9 @@
 
 .. _plasmapy-utils:
 
-*****************************************
-Core package utilities (`plasmapy.utils`)
-*****************************************
+************************************
+Package utilities (`plasmapy.utils`)
+************************************
 
 .. currentmodule:: plasmapy.utils
 
