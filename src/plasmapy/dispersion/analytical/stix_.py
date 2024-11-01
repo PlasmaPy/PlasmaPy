@@ -1,5 +1,5 @@
 """
-Functionality for calculating the numerical solutions to the Stix cold
+Functionality for calculating numerical solutions to the Stix cold
 plasma function.
 """
 

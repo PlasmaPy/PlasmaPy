@@ -1,6 +1,6 @@
 """
-Functionality for calculating various analytical solutions to the two
-fluid dispersion relation.
+Functionality for calculating analytical solutions to the two-fluid
+dispersion relation.
 """
 
 __all__ = ["two_fluid"]
