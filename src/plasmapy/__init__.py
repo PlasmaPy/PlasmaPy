@@ -67,6 +67,9 @@ except Exception:  # coverage: ignore  # noqa: BLE001
 
     del warnings
 
+__version__  # noqa: B018
+"""PlasmaPy's version."""
+
 __citation__ = (
     "Instructions on how to cite and acknowledge PlasmaPy are provided "
     "in the online documentation at: "
