@@ -186,6 +186,7 @@ norecursedirs = [
   'docs',
   'licenses',
   'node_modules',
+  'tools',
   'venv',
   '.venv',
 ]
