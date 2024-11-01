@@ -1,5 +1,5 @@
 """
-Functionality for calculating dispersion relations for plasma waves.
+Plasma wave dispersion relations.
 
 .. attention::
 
