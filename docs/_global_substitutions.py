@@ -146,7 +146,7 @@ links_to_become_subs: dict[str, str] = {
     "PlasmaPy": "https://www.plasmapy.org",
     "PlasmaPy's data repository": "https://github.com/PlasmaPy/PlasmaPy-data",
     "PlasmaPy's documentation": "https://docs.plasmapy.org/en/stable",
-    "PlasmaPy's GitHub repository": "https://github.com/PlasmaPy/plasmapy",
+    "PlasmaPy's GitHub repository": "https://github.com/PlasmaPy/PlasmaPy",
     "PlasmaPy's Matrix chat room": "https://app.element.io/#/room/#plasmapy:openastronomy.org",
     "PlasmaPy's website": "https://www.plasmapy.org",
     "pre-commit": "https://pre-commit.com",
