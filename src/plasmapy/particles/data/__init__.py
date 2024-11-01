@@ -8,6 +8,6 @@ functionality contained in ``plasmapy.particles._elements``.
 :file:`isotopes.json` contains isotope data that is loaded by the
 functionality contained in ``plasmapy.particles._isotopes``.
 :file:`ionization_energy.json` contains ionization energy data that is
- loaded by the functionality contained in
+loaded by the functionality contained in
 ``plasmapy.particles._ionization_energy``.
 """

@@ -6,4 +6,4 @@ Functionality to analyze swept Langmuir probe data.
    |expect-api-changes|
 """
 
-__all__ = []
+__all__: list[str] = []
