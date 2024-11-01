@@ -1,5 +1,5 @@
 """
-Functionality to calculate running moments of time series.
+For calculating running moments of time series.
 
 .. attention::
 

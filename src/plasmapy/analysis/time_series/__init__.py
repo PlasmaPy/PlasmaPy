@@ -1,5 +1,5 @@
 """
-Subpackage containing routines for analyzing time series.
+For analyzing time series data.
 
 .. attention::
 
