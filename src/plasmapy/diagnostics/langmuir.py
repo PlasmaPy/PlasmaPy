@@ -1,4 +1,4 @@
-"""Functionality to analyze Langmuir probe data."""
+"""Langmuir probe data analysis."""
 
 __all__ = [
     "Characteristic",

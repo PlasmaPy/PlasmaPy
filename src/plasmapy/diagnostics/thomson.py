@@ -1,4 +1,4 @@
-"""Functionality to analyze Thomson scattering data."""
+"""Thomson scattering data analysis."""
 
 __all__ = [
     "spectral_density",
