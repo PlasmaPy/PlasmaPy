@@ -1,8 +1,8 @@
 """
 Functionality to calculate dimensionless plasma parameters.
 
-Dimensionless plasma parameters determine what regime a plasma is in.
-For example, plasma :math:`β` is the ratio of thermal pressure to
+Dimensionless plasma parameters help us determine what regime a plasma
+is in. For example, plasma :math:`β` is the ratio of thermal pressure to
 magnetic pressure in a plasma. When :math:`β ≫ 1`, thermal pressure is
 more important to dynamical behavior than magnetic pressure.  When
 :math:`β ≪ 1`, magnetic pressure becomes more important than thermal

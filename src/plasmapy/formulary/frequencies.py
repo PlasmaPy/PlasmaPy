@@ -1,4 +1,4 @@
-"""Functions to calculate fundamental plasma frequency parameters."""
+"""Functionality to calculate fundamental frequencies for a plasma."""
 
 __all__ = [
     "gyrofrequency",

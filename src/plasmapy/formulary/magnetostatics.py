@@ -1,7 +1,4 @@
-"""
-Define MagneticStatics class to calculate common static magnetic fields
-as first raised in issue #100.
-"""
+"""Functionality to calculate magnetostatic fields from known currents."""
 
 __all__ = [
     "CircularWire",

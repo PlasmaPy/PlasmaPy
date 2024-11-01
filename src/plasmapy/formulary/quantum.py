@@ -1,7 +1,6 @@
 """
-Functions for quantum parameters, including electron degenerate
-gases and warm dense matter.
-
+Functionality to calculate quantum parameters, including electron
+degenerate plasmas and warm dense matter.
 """
 
 __all__ = [

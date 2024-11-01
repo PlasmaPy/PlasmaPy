@@ -1,5 +1,5 @@
 """
-Functions for calculating quantities associated with electromagnetic
+Functionality for calculating quantities associated with electromagnetic
 radiation.
 """
 

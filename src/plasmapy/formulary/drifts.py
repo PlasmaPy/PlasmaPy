@@ -1,4 +1,4 @@
-"""Functions for calculating particle drifts."""
+"""Functionality for calculating particle drifts."""
 
 __all__ = [
     "diamagnetic_drift",
