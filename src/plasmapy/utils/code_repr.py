@@ -1,4 +1,4 @@
-"""Functionality for creating string representations of function and method calls."""
+"""Creation of string representations of function and method calls."""
 
 __all__ = ["call_string", "attribute_call_string", "method_call_string"]
 
