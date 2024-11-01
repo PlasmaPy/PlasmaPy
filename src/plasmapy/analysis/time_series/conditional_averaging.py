@@ -1,4 +1,10 @@
-"""For calculating conditional averages and conditional variances of a time series."""
+"""
+Conditional averages and conditional variances of time series.
+
+.. attention::
+
+   |expect-api-changes|
+"""
 
 __all__ = ["ConditionalEvents"]
 

@@ -1,5 +1,5 @@
 """
-For calculating excess statistics of time series data.
+Performing excess statistics analyses of time series.
 
 .. attention::
 

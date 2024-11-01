@@ -1,5 +1,5 @@
 """
-For analyzing time series data.
+Analysis of time series data.
 
 .. attention::
 
