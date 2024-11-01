@@ -1,4 +1,7 @@
-"""Decorators that transform |particle-like| |arguments| into particle objects."""
+"""
+Defines a decorator that transforms |particle-like| |arguments| into
+particle objects.
+"""
 
 __all__ = ["particle_input"]
 

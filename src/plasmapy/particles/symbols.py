@@ -1,4 +1,4 @@
-"""Functionality that provides string representations of particles."""
+"""Provides string representations of particles."""
 
 __all__ = [
     "atomic_symbol",
