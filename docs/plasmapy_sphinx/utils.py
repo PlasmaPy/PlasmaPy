@@ -26,7 +26,7 @@ templates_dir = os.path.join(package_dir, "templates")
 
 default_grouping_info = OrderedDict(
     {
-        "modules": {"title": "Sub-Packages & Modules"},
+        "modules": {"title": "Subpackages & Modules"},
         "classes": {"title": "Classes"},
         "exceptions": {"title": "Exceptions"},
         "warnings": {"title": "Warnings"},

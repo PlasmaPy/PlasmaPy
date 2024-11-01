@@ -36,7 +36,7 @@ from plasmapy.utils.decorators import validate_quantities
 def _langmuir_futurewarning() -> None:
     warnings.warn(
         "The plasmapy.diagnostics.langmuir module will be deprecated in favor of "
-        "the plasmapy.analysis.swept_langmuir sub-package and phased out over "
+        "the plasmapy.analysis.swept_langmuir subpackage and phased out over "
         "2021.  The plasmapy.analysis package was released in v0.5.0.",
         FutureWarning,
     )
