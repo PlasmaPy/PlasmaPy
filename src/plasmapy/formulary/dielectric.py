@@ -1,4 +1,4 @@
-"""Functionality to calculate plasma dielectric parameters."""
+"""Plasma dielectric parameters."""
 
 __all__ = [
     "cold_plasma_permittivity_SDP",

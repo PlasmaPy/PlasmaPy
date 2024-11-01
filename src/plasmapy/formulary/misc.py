@@ -1,4 +1,4 @@
-"""Functionality to calculate miscellaneous plasma parameters."""
+"""Miscellaneous plasma parameters."""
 
 __all__ = [
     "Bohm_diffusion",

@@ -1,4 +1,4 @@
-"""Functionality to calculate magnetostatic fields from known currents."""
+"""Calculation of static magnetic fields from known current configurations."""
 
 __all__ = [
     "CircularWire",

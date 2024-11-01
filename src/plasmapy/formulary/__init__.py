@@ -2,7 +2,7 @@
 Commonly used formulas for plasma science.
 
 Many of these formulas come from the NRL Plasma Formulary
-:cite:p:`nrlformulary:2019`.
+:cite:p:`nrlformulary`.
 """
 
 __all__: list[str] = []

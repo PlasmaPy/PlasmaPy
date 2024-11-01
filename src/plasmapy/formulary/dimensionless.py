@@ -1,5 +1,5 @@
 """
-Functionality to calculate dimensionless plasma parameters.
+Dimensionless plasma parameters.
 
 Dimensionless plasma parameters help us determine what regime a plasma
 is in. For example, plasma :math:`β` is the ratio of thermal pressure to

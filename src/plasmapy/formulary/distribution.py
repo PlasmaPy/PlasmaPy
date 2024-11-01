@@ -1,7 +1,4 @@
-"""
-Functionality to calculate distribution functions in a plasma, including
-Maxwellian and Kappa distributions.
-"""
+"""Distribution functions, including Maxwellian and Kappa distributions."""
 
 __all__ = [
     "Maxwellian_1D",
