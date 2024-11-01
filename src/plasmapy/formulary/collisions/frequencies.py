@@ -1,4 +1,4 @@
-"""Frequency parameters related to collisions."""
+"""Functionality to calculate frequency parameters related to collisions."""
 
 __all__ = [
     "SingleParticleCollisionFrequencies",

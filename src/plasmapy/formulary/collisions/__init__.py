@@ -1,4 +1,4 @@
-"""Commonly used formulas related to plasma collisions."""
+"""Functionality related to plasma collisions."""
 
 import inspect
 
