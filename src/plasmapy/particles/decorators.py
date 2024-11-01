@@ -1,4 +1,4 @@
-"""Decorators for `plasmapy.particles`."""
+"""Decorators that transform |particle-like| |arguments| into particle objects."""
 
 __all__ = ["particle_input"]
 
