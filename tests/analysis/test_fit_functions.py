@@ -303,7 +303,7 @@ class BaseFFTests(ABC):
             (0, {}, does_not_raise()),
             (1.0, {}, does_not_raise()),
             (np.linspace(10, 30, num=20), {}, does_not_raise()),
-            ([4, 5, 6], {"x_err": 0.1, "rety": True}, does_not_raise()),
+            ([4, 5, 6], {"x_err": 0.1, "retry": True}, does_not_raise()),
             ("hello", {}, pytest.raises(TypeError)),
             (5, {"x_err": "goodbye"}, pytest.raises(TypeError)),
             (5, {"x_err": [0.1, 0.1]}, pytest.raises(ValueError)),
@@ -317,7 +317,7 @@ class BaseFFTests(ABC):
 
         with with_condition:
             results = ff_obj.func_err(x, **kwargs)
-            if kwargs.get("rety"):
+            if kwargs.get("retry"):
                 y_err, y = results
             else:
                 y_err = results

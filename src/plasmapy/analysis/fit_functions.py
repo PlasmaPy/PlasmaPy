@@ -95,7 +95,7 @@ class AbstractFitFunction(ABC):
             :math:`\\delta y`
         """
         if reterr:
-            y_err, y = self.func_err(x, x_err=x_err, rety=True)
+            y_err, y = self.func_err(x, x_err=x_err, retry=True)
 
             return y, y_err
 
@@ -149,7 +149,7 @@ class AbstractFitFunction(ABC):
         * When sub-classing the definition should look something like::
 
             @modify_docstring(append=AbstractFitFunction.func_err.__original_doc__)
-            def func_err(self, x, x_err=None, rety=False):
+            def func_err(self, x, x_err=None, retry=False):
                 '''
                 A simple docstring giving the equation for error propagation, but
                 excluding the parameter descriptions.  The @modify_docstring
@@ -162,14 +162,14 @@ class AbstractFitFunction(ABC):
 
                 # calculate error
 
-                if rety:
+                if retry:
                     y = self.func(x, a, b, c)
                     return err, y
 
                 return err
         """,
     )
-    def func_err(self, x, x_err=None, rety: bool = False):
+    def func_err(self, x, x_err=None, retry: bool = False):
         """
         Parameters
         ----------
@@ -180,7 +180,7 @@ class AbstractFitFunction(ABC):
             Errors associated with the independent variables ``x``.  Must be of
             size one or equal to the size of ``x``.
 
-        rety : bool
+        retry : bool
             Set to `True` to also return the associated dependent variables
             :math:`y = f(x)`.
 
@@ -191,7 +191,7 @@ class AbstractFitFunction(ABC):
             variables (:math:`y = f(x)`) of the independent variables ``x``.
 
         y : `numpy.ndarray`, optional
-            (if ``rety == True``) The associated dependent variables
+            (if ``retry == True``) The associated dependent variables
             :math:`y = f(x)`.
 
         Notes
@@ -513,7 +513,7 @@ class Linear(AbstractFitFunction):
         return m * x + b
 
     @modify_docstring(append=AbstractFitFunction.func_err.__original_doc__)
-    def func_err(self, x, x_err=None, rety: bool = False):
+    def func_err(self, x, x_err=None, retry: bool = False):
         """
         Calculate dependent variable uncertainties :math:`\\delta y` for
         dependent variables :math:`y=f(x)`.
@@ -537,7 +537,7 @@ class Linear(AbstractFitFunction):
             err += x_term
         err = np.sqrt(err)
 
-        if rety:
+        if retry:
             y = self.func(x, m, b)
             return err, y
 
@@ -701,7 +701,7 @@ class Exponential(AbstractFitFunction):
         return a * np.exp(alpha * x)
 
     @modify_docstring(append=AbstractFitFunction.func_err.__original_doc__)
-    def func_err(self, x, x_err=None, rety: bool = False):
+    def func_err(self, x, x_err=None, retry: bool = False):
         """
         Calculate dependent variable uncertainties :math:`\\delta y` for
         dependent variables :math:`y=f(x)`.
@@ -731,7 +731,7 @@ class Exponential(AbstractFitFunction):
 
         err = np.abs(y) * np.sqrt(err)
 
-        return (err, y) if rety else err
+        return (err, y) if retry else err
 
     def root_solve(self, *args, **kwargs):
         """
@@ -865,7 +865,7 @@ class ExponentialPlusLinear(AbstractFitFunction):
         return exp_term + lin_term
 
     @modify_docstring(append=AbstractFitFunction.func_err.__original_doc__)
-    def func_err(self, x, x_err=None, rety: bool = False):
+    def func_err(self, x, x_err=None, retry: bool = False):
         """
         Calculate dependent variable uncertainties :math:`\\delta y` for
         dependent variables :math:`y=f(x)`.
@@ -898,7 +898,7 @@ class ExponentialPlusLinear(AbstractFitFunction):
             err += blend_err
         err = np.sqrt(err)
 
-        return (err, exp_y + lin_y) if rety else err
+        return (err, exp_y + lin_y) if retry else err
 
 
 class ExponentialPlusOffset(AbstractFitFunction):
@@ -998,7 +998,7 @@ class ExponentialPlusOffset(AbstractFitFunction):
         return self._explin.func(x, a, alpha, 0.0, b)
 
     @modify_docstring(append=AbstractFitFunction.func_err.__original_doc__)
-    def func_err(self, x, x_err=None, rety: bool = False):
+    def func_err(self, x, x_err=None, retry: bool = False):
         """
         Calculate dependent variable uncertainties :math:`\\delta y` for
         dependent variables :math:`y=f(x)`.
@@ -1014,7 +1014,7 @@ class ExponentialPlusOffset(AbstractFitFunction):
                 + (\\delta b)^2
 
         """
-        return self._explin.func_err(x, x_err=x_err, rety=rety)
+        return self._explin.func_err(x, x_err=x_err, retry=retry)
 
     def root_solve(self, *args, **kwargs):
         """
