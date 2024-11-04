@@ -32,5 +32,5 @@ Bug Fixes
 Changes to API
 --------------
 
-- Moveed ``plasmapy.transport`` from ``plasmapy.physics`` to its own
+- Moved ``plasmapy.transport`` from ``plasmapy.physics`` to its own
   subpackage.

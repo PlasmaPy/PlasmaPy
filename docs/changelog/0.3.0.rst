@@ -62,7 +62,7 @@ Trivial/Internal Changes
 - Added a Codemeta file (:file:`codemeta.json`) (`#676 <https://github.com/plasmapy/plasmapy/pull/676>`__)
 - Overhauled and simplified CI, added Python 3.8 to tests, bumped minimal required package versions, and fixed docs. (`#712 <https://github.com/plasmapy/plasmapy/pull/712>`__)
 - Updated communication channels in docs (`#715 <https://github.com/plasmapy/plasmapy/pull/715>`__)
-- Coded style fixes to the ``atomic`` subpackage (`#716 <https://github.com/plasmapy/plasmapy/pull/716>`__)
+- Code style fixes to the ``atomic`` subpackage (`#716 <https://github.com/plasmapy/plasmapy/pull/716>`__)
 - Cleaned up main package namespace, removing ``plasmapy.test`` (`#718 <https://github.com/plasmapy/plasmapy/pull/718>`__)
 - Reduced precision of tests and doctests to allow for refinements of
   fundamental constants. (`#731 <https://github.com/plasmapy/plasmapy/pull/731>`__)
