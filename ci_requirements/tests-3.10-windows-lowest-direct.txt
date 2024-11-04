@@ -294,7 +294,7 @@ referencing==0.35.1
     #   jsonschema-specifications
 requests==2.28.0
     # via plasmapy (pyproject.toml)
-rpds-py==0.20.0
+rpds-py==0.20.1
     # via
     #   jsonschema
     #   referencing
