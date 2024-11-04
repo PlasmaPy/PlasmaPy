@@ -93,8 +93,8 @@ Backwards Incompatible Changes
 Bug Fixes
 ---------
 
-- - Enabled |validate_quantities| to be compatible with postponed evaluation of
-    annotations (see :pep:`563`). (:pr:`2479`) (:pr:`2506`)
+- Enabled |validate_quantities| to be compatible with postponed evaluation of
+  annotations (see :pep:`563`). (:pr:`2479`, :pr:`2506`)
 - Changed the |charge number| (:math:`Z`) dependence of the ion contribution to
   the optical Thomson scattering
   spectral density function in
@@ -103,7 +103,7 @@ Bug Fixes
   :cite:t:`sheffield:2011`.
   The result is a small change in the ion acoustic wave spectrum for plasmas
   with multiple ion species. (:pr:`2699`)
-- Add axes removed by `numpy.squeeze` to arrays in
+- Added axes removed by `numpy.squeeze` to arrays in
   `~plasmapy.dispersion.analytical.mhd_waves_` (:pr:`2715`)
 
 
