@@ -34,25 +34,20 @@ jobs:
           python: '3.13'
           nox_session: tests-3.13(all)
 
-        - name: Tests, Python 3.12, macOS
-          os: macos-latest
-          python: '3.12'
-          nox_session: tests-3.12(all)
-
-        - name: Tests, Python 3.11, with code coverage, Windows
+        - name: Tests, Python 3.12, with code coverage, Windows
           os: windows-latest
+          python: '3.12'
+          nox_session: tests-3.12(cov)
+
+        - name: Tests, Python 3.11, Ubuntu
+          os: ubuntu-latest
           python: '3.11'
-          nox_session: tests-3.11(cov)
+          nox_session: tests-3.11(all)
 
-        - name: Tests, Python 3.10, Ubuntu
+        - name: Tests, Python 3.11, lowest direct dependencies, Ubuntu
           os: ubuntu-latest
-          python: '3.10'
-          nox_session: tests-3.10(all)
-
-        - name: Tests, Python 3.10, lowest direct dependencies, Ubuntu
-          os: ubuntu-latest
-          python: '3.10'
-          nox_session: tests-3.10(lowest-direct)
+          python: '3.11'
+          nox_session: tests-3.11(lowest-direct)
 
         - name: Tests, Python 3.13, astropy-dev, Ubuntu
           os: ubuntu-latest
@@ -196,7 +191,7 @@ jobs:
       uses: conda-incubator/setup-miniconda@v3
       with:
         auto-update-conda: true
-        python-version: '3.10'
+        python-version: '3.11'
 
     - name: Use conda to install PlasmaPy from conda-forge
       run: conda install -c conda-forge --yes plasmapy

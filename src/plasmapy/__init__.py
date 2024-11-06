@@ -26,7 +26,7 @@ __all__ = [
 
 import sys
 
-if sys.version_info < (3, 9):  # coverage: ignore # noqa: UP036
+if sys.version_info < (3, 11):  # coverage: ignore
     raise ImportError(
         "This version of PlasmaPy does not support Python "
         f"{sys.version.split()[0]}. Please upgrade to a newer version "

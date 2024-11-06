@@ -650,7 +650,7 @@ Dependencies and requirements
   |pyproject.toml|_ under :toml:`[project.dependencies]` (i.e., in the
   :toml:`dependencies` array in the :toml:`[project]` table).
 
-* PlasmaPy releases should follow the recommendations in `SPEC 0`_,
+* PlasmaPy releases should follow the recommendations in |SPEC 0|,
   including that:
 
   - Support for Python versions be dropped **3 years** after their
@@ -1105,7 +1105,6 @@ The overall process of performing a release is:
 .. _pyupgrade: https://github.com/asottile/pyupgrade
 .. _release checklist: https://github.com/PlasmaPy/PlasmaPy/blob/main/.github/content/release-checklist.md
 .. _rename refactoring in PyCharm: https://www.jetbrains.com/help/pycharm/rename-refactorings.html
-.. _SPEC 0: https://scientific-python.org/specs/spec-0000
 .. _TOML: https://toml.io/en/v1.0.0
 .. _type hints cheat sheet: https://mypy.readthedocs.io/en/stable/cheat_sheet_py3.html
 .. _update pinned requirements: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/update-pinned-reqs.yml

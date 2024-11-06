@@ -8,12 +8,11 @@ Speed Plasma Parameters (`plasmapy.formulary.speeds`)
 
 .. automodapi:: plasmapy.formulary.speeds
 
-Examples
-========
+Example notebooks
+-----------------
 
 .. nbgallery::
-    :caption: Examples
 
-    /notebooks/formulary/distribution
-    /notebooks/formulary/iter
-    /notebooks/formulary/thermal_speed
+   /notebooks/formulary/distribution
+   /notebooks/formulary/iter
+   /notebooks/formulary/thermal_speed

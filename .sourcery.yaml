@@ -24,7 +24,7 @@ rule_settings:
   - refactoring
   - suggestion
   - comment
-  python_version: '3.9'
+  python_version: '3.11'
 
 rules:
 - id: plasmapy-capitalization

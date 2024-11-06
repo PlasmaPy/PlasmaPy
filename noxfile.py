@@ -23,6 +23,7 @@ to be installed.
 """
 
 # Documentation: https://nox.thea.codes
+
 import os
 import pathlib
 import platform
@@ -32,7 +33,13 @@ from typing import Literal
 
 import nox
 
-supported_python_versions: tuple[str, ...] = ("3.10", "3.11", "3.12", "3.13")
+# SPEC 0 indicates that scientific Python packages should support
+# versions of Python that have been released in the last 3 years, or
+# equivalently the most three recently released versions of Python.
+# The minimum version of Python should be incremented immediately
+# following the first release after October of each year.
+
+supported_python_versions: tuple[str, ...] = ("3.11", "3.12", "3.13")
 supported_operating_systems: tuple[str, ...] = ("linux", "macos", "windows")
 
 maxpython = max(supported_python_versions)
@@ -55,7 +62,7 @@ running_on_ci = os.getenv("CI")
 
 def _get_requirements_filepath(
     category: Literal["docs", "tests", "all"],
-    version: Literal["3.10", "3.11", "3.12", "3.13", "3.14", "3.15"],
+    version: Literal["3.11", "3.12", "3.13"],
     resolution: Literal["highest", "lowest-direct", "lowest"] = "highest",
     os_platform: Literal["linux", "macos", "windows"] | None = None,
 ) -> str:
