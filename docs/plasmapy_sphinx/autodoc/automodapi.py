@@ -190,8 +190,8 @@ directive and its :ref:`supporting configuration values <automodapi-confvals>`.
 
             I am the main docstring
 
-            Sub-Packages & Modules
-            ~~~~~~~~~~~~~~~~~~~~~~
+            Subpackages & Modules
+            ~~~~~~~~~~~~~~~~~~~~~
 
             .. automodsumm:: foo.bar
                :toctree: api

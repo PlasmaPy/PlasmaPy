@@ -3,6 +3,8 @@ A class for storing ionization state data for multiple elements or
 isotopes.
 """
 
+from collections.abc import Iterator
+
 __all__ = ["IonizationStateCollection"]
 
 from numbers import Integral, Real
@@ -225,7 +227,7 @@ class IonizationStateCollection:
                 number_density=self.number_densities[particle][int_charge],
             )
 
-    def __setitem__(self, key, value):  # noqa: C901, PLR0912
+    def __setitem__(self, key, value) -> None:  # noqa: C901, PLR0912
         errmsg = (
             f"Cannot set item for this IonizationStateCollection instance for "
             f"key = {key!r} and value = {value!r}"
@@ -331,7 +333,7 @@ class IonizationStateCollection:
 
         self._ionic_fractions[particle][:] = new_fractions.copy()
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator:
         yield from [self[key] for key in self.ionic_fractions]
 
     def __eq__(self, other) -> bool:

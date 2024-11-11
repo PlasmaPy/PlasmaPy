@@ -10,6 +10,7 @@ __all__ = ["Tracker", "synthetic_radiograph"]
 import warnings
 from collections.abc import Iterable
 from pathlib import Path
+from typing import Literal
 
 import astropy.constants as const
 import astropy.units as u
@@ -74,8 +75,12 @@ def _coerce_to_cartesian_si(pos):
 
 
 class _SyntheticRadiographySaveRoutine(SaveOnceOnCompletion):
-    def __init__(self, output_directory: Path):
-        super().__init__(output_directory=output_directory)
+    def __init__(
+        self, output_directory: Path | None = None, output_basename: str = "output"
+    ) -> None:
+        super().__init__(
+            output_directory=output_directory, output_basename=output_basename
+        )
 
         self._quantities = {
             "source": (u.m, "attribute"),
@@ -97,10 +102,10 @@ class _SyntheticRadiographySaveRoutine(SaveOnceOnCompletion):
         if self.output_directory is None:
             return
 
-        output_file_path = self.output_directory / "output.hdf5"
+        output_file_path = self.output_directory / Path(f"{self.output_basename}.h5")
 
         with h5py.File(output_file_path, "w") as output_file:
-            for key, (_units, data_type) in self._quantities.items():  # noqa: B007
+            for key, (_units, data_type) in self._quantities.items():
                 match data_type:
                     case "attribute":
                         output_file.attrs.create(key, result_dictionary[key])
@@ -152,18 +157,16 @@ class Tracker(ParticleTracker):
         If specified, the calculated adaptive time step will be clamped
         between the first and second values.
 
-    field_weighting : str
+    field_weighting : str, default: ``"volume averaged"``
         String that selects the field weighting algorithm used to determine
         what fields are felt by the particles. Options are:
 
-        * 'nearest neighbor':
+        * ``"nearest neighbor"``:
             Particles are assigned the fields on the grid vertex closest to
             them.
-        * 'volume averaged':
+        * ``"volume averaged"``:
             The fields experienced by a particle are a volume-average of the
             eight grid points surrounding them.
-
-        The default is 'volume averaged'.
 
     detector_hdir : `numpy.ndarray`, shape (3), optional
         A unit vector (in Cartesian coordinates) defining the horizontal
@@ -181,10 +184,13 @@ class Tracker(ParticleTracker):
         Directory for objects that are saved to disk. If a directory is not
         specified then a memory save routine is used.
 
+    output_basename : `str`, optional
+        Optional base name for output files.
+
     fraction_exited_threshold : float, optional
         The fraction of particles that must leave the grids to terminate the
         simulation. This does not include particles that have never entered
-        the grids.
+        the grids. By default, this is set to ``0.999`` (corresponding to 99.9%).
 
     verbose : bool, optional
         If `True`, updates on the status of the program will be printed
@@ -198,18 +204,21 @@ class Tracker(ParticleTracker):
         detector: u.Quantity[u.m],
         dt=None,
         dt_range=None,
-        field_weighting="volume averaged",
+        field_weighting: Literal[
+            "volume averaged", "nearest neighbor"
+        ] = "volume averaged",
         detector_hdir=None,
-        output_file: Path | None = None,
-        fraction_exited_threshold: float = 0.001,
+        output_directory: Path | None = None,
+        output_basename: str = "output",
+        fraction_exited_threshold: float = 0.999,
         verbose: bool = True,
     ) -> None:
         # The synthetic radiography class handles logging, so we can disable logging for the particle tracker
         # The particle tracker class ensures that the provided grid argument has the proper type and
         # that the necessary grid quantities are created if they are not already specified
         save_routine = (
-            _SyntheticRadiographySaveRoutine(output_file)
-            if output_file is not None
+            _SyntheticRadiographySaveRoutine(output_directory, output_basename)
+            if output_directory is not None
             else None
         )
 
@@ -307,7 +316,7 @@ class Tracker(ParticleTracker):
         """
         theta = np.zeros([8, self.num_grids])
 
-        for i, _grid in enumerate(self.grids):  # noqa: B007
+        for i, _grid in enumerate(self.grids):
             ind = 0
             for x in (0, -1):
                 for y in (0, -1):
@@ -542,7 +551,8 @@ class Tracker(ParticleTracker):
     # Particle creation methods
     # *************************************************************************
 
-    def _angles_monte_carlo(self, random_seed=None):
+    @staticmethod
+    def _angles_monte_carlo(nparticles, max_theta, random_seed=None):
         """
         Generates angles for each particle randomly such that the flux
         per solid angle is uniform.
@@ -550,7 +560,7 @@ class Tracker(ParticleTracker):
         # Create a probability vector for the theta distribution
         # Theta must follow a sine distribution in order for the particle
         # flux per solid angle to be uniform.
-        arg = np.linspace(0, self.max_theta, num=int(1e5))
+        arg = np.linspace(0, max_theta, num=int(1e5))
         prob = np.sin(arg)
         prob *= 1 / np.sum(prob)
 
@@ -558,14 +568,15 @@ class Tracker(ParticleTracker):
         rng = np.random.default_rng(seed=random_seed)
 
         # Randomly choose theta's weighted with the sine probabilities
-        theta = rng.choice(arg, size=self.nparticles, replace=True, p=prob)
+        theta = rng.choice(arg, size=nparticles, replace=True, p=prob)
 
         # Also generate a uniform phi distribution
-        phi = rng.uniform(high=2 * np.pi, size=self.nparticles)
+        phi = rng.uniform(high=2 * np.pi, size=nparticles)
 
         return theta, phi
 
-    def _angles_uniform(self):
+    @staticmethod
+    def _angles_uniform(nparticles, max_theta):
         """
         Generates angles for each particle such that their velocities are
         uniformly distributed on a grid in theta and phi. This method
@@ -574,14 +585,11 @@ class Tracker(ParticleTracker):
         than the provided `nparticles`.
         """
         # Calculate the approximate square root
-        n_per = np.floor(np.sqrt(self.nparticles)).astype(np.int32)
-
-        # Set new nparticles to be a perfect square
-        self.nparticles = n_per**2
+        n_per = np.floor(np.sqrt(nparticles)).astype(np.int32)
 
         # Create an imaginary grid positioned 1 unit from the source
         # and spanning max_theta at the corners
-        extent = np.sin(self.max_theta) / np.sqrt(2)
+        extent = np.sin(max_theta) / np.sqrt(2)
         arr = np.linspace(-extent, extent, num=n_per)
         harr, varr = np.meshgrid(arr, arr, indexing="ij")
 
@@ -599,7 +607,7 @@ class Tracker(ParticleTracker):
         particle_energy,
         max_theta=None,
         particle: Particle = Particle("p+"),  # noqa: B008
-        distribution="monte-carlo",
+        distribution: Literal["monte-carlo", "uniform"] = "monte-carlo",
         random_seed=None,
     ) -> None:
         r"""
@@ -655,8 +663,6 @@ class Tracker(ParticleTracker):
         random_seed : int, optional
             A random seed to be used when generating random particle
             distributions, e.g. with the ``monte-carlo`` distribution.
-
-
         """
         self._log("Creating Particles")
 
@@ -664,37 +670,38 @@ class Tracker(ParticleTracker):
         self._enforce_order()
 
         # Load inputs
-        self.nparticles = int(nparticles)
-        self.particle_energy = particle_energy.to(u.eV).value
-        self.q = particle.charge.to(u.C).value
-        self.m = particle.mass.to(u.kg).value
+        nparticles = int(nparticles)
+
+        particle_energy = particle_energy.to(u.eV).value
+        m = particle.mass.to(u.kg).value
 
         # If max_theta is not specified, make a guess based on the grid size
         if max_theta is None:
-            self.max_theta = np.clip(
-                1.5 * self.max_theta_hit_grid, 0.01, 0.99 * np.pi / 2
-            )
+            max_theta = np.clip(1.5 * self.max_theta_hit_grid, 0.01, 0.99 * np.pi / 2)
         else:
-            self.max_theta = max_theta.to(u.rad).value
+            max_theta = max_theta.to(u.rad).value
 
         # Calculate the velocity corresponding to the particle energy
-        ER = self.particle_energy * 1.6e-19 / (self.m * self._c**2)
+        ER = particle_energy * 1.6e-19 / (m * self._c**2)
         v0 = self._c * np.sqrt(1 - 1 / (ER + 1) ** 2)
 
         if distribution == "monte-carlo":
-            theta, phi = self._angles_monte_carlo(random_seed=random_seed)
+            theta, phi = self._angles_monte_carlo(
+                nparticles, max_theta, random_seed=random_seed
+            )
         elif distribution == "uniform":
-            theta, phi = self._angles_uniform()
+            theta, phi = self._angles_uniform(nparticles, max_theta)
 
-        # Temporarily save theta to later determine which particles
-        # should be tracked
-        self.theta = theta
+        # Adjust nparticles to reflex what the distribution function returned.
+        # Some distributions will modify the number of particles to meet the
+        # necessary criteria of the distribution.
+        nparticles = theta.shape[0]  # TODO: make sure this works
 
         # Construct the velocity distribution around the z-axis
-        self.v = np.zeros([self.nparticles, 3])
-        self.v[:, 0] = v0 * np.sin(theta) * np.cos(phi)
-        self.v[:, 1] = v0 * np.sin(theta) * np.sin(phi)
-        self.v[:, 2] = v0 * np.cos(theta)
+        v = np.zeros([nparticles, 3])
+        v[:, 0] = v0 * np.sin(theta) * np.cos(phi)
+        v[:, 1] = v0 * np.sin(theta) * np.sin(phi)
+        v[:, 2] = v0 * np.cos(theta)
 
         # Calculate the rotation matrix that rotates the z-axis
         # onto the source-detector axis
@@ -703,10 +710,14 @@ class Tracker(ParticleTracker):
         rot = rot_a_to_b(a, b)
 
         # Apply rotation matrix to calculated velocity distribution
-        self.v = np.matmul(self.v, rot)
+        v = np.matmul(v, rot)
 
         # Place particles at the source
-        self.x = np.tile(self.source, (self.nparticles, 1))
+        x = np.tile(self.source, (nparticles, 1))
+
+        # Call the underlying load method to ensure consistency with
+        # other properties within the ParticleTracker
+        self.load_particles(x * u.m, v * u.m / u.s, particle=particle)
 
     @particles.particle_input
     def load_particles(
@@ -714,7 +725,7 @@ class Tracker(ParticleTracker):
         x,
         v,
         particle: Particle = Particle("p+"),  # noqa: B008
-    ):
+    ) -> None:
         r"""
         Load arrays of particle positions and velocities.
 
@@ -729,23 +740,6 @@ class Tracker(ParticleTracker):
         particle : |particle-like|, optional
             Representation of the particle species as either a |Particle| object
             or a string representation. The default particle is protons.
-
-        distribution: str
-            A keyword which determines how particles will be distributed
-            in velocity space. Options are:
-
-                - 'monte-carlo': velocities will be chosen randomly,
-                    such that the flux per solid angle is uniform.
-
-                - 'uniform': velocities will be distributed such that,
-                   left unperturbed,they will form a uniform pattern
-                   on the detection plane.
-
-            Simulations run in the ``'uniform'`` mode will imprint a grid pattern
-            on the image, but will well-sample the field grid with a
-            smaller number of particles. The default is ``'monte-carlo'``.
-
-
         """
         # Load particles for particle tracker class
         super().load_particles(x, v, particle)
@@ -889,9 +883,10 @@ class Tracker(ParticleTracker):
                 RuntimeWarning,
             )
 
-    def run(self):
+    def run(self) -> None:
         r"""
         Runs a particle-tracing simulation.
+
         Timesteps are adaptively calculated based on the
         local grid resolution of the particles and the electric and magnetic
         fields they are experiencing. After all particles
@@ -902,7 +897,6 @@ class Tracker(ParticleTracker):
         Returns
         -------
         None
-
         """
 
         self._enforce_particle_creation()
@@ -987,8 +981,7 @@ class Tracker(ParticleTracker):
         Returns
         -------
         max_deflection : float
-            The maximum deflection in radians
-
+            The maximum deflection in radians.
         """
         # Normalize the initial and final velocities
         v_norm = self.v / np.linalg.norm(self.v, axis=1, keepdims=True)
@@ -1063,7 +1056,6 @@ class Tracker(ParticleTracker):
                The velocity is in a coordinate system relative to the
                detector plane. The components are [normal, horizontal,
                vertical] relative to the detector plane coordinates.
-
         """
 
         if not self._has_run:
@@ -1113,9 +1105,7 @@ class Tracker(ParticleTracker):
 # *************************************************************************
 
 
-def synthetic_radiograph(  # noqa: C901
-    obj, size=None, bins=None, ignore_grid: bool = False, optical_density: bool = False
-):
+def synthetic_radiograph(obj, size=None, bins=None, ignore_grid: bool = False):  # noqa: C901, PLR0912
     r"""
     Calculate a "synthetic radiograph" (particle count histogram in the
     image plane).
@@ -1125,10 +1115,11 @@ def synthetic_radiograph(  # noqa: C901
 
     Parameters
     ----------
-    obj: `dict` or |Tracker|
+    obj: `dict` or `~pathlib.Path` or |Tracker|
         Either a |Tracker|
-        object that has been run, or a dictionary equivalent to
-        |results_dict|.
+        object that has been run, a dictionary equivalent to
+        |results_dict|, or path to a saved output file
+        from a |Tracker| object (HDF5 file).
 
     size : `~astropy.units.Quantity`, shape ``(2, 2)``, optional
         The size of the detector array, specified as the minimum
@@ -1146,20 +1137,6 @@ def synthetic_radiograph(  # noqa: C901
         If `True`, returns the intensity in the image plane in the absence
         of simulated fields.
 
-    optical_density: `bool`
-        If `True`, return the optical density rather than the intensity
-
-        .. math::
-            OD = -log_{10}(Intensity/I_0)
-
-        where :math:`Intensity` is the simulation intensity on the
-        detector plane and :math:`I_0` is the intensity on the detector
-        plane in the absence of simulated fields. Default is `False`.
-        If the :math:`Intensity` histogram contains zeros, then the
-        corresponding values in :math:`OD` will be `numpy.inf`. When
-        plotting :math:`OD` the `~numpy.inf` values can be replaced
-        using ``numpy.nan_to_num(OD, neginf=0, posinf=0)``.
-
     Returns
     -------
     hax : `~astropy.units.Quantity` array shape ``(hbins,)``
@@ -1171,17 +1148,35 @@ def synthetic_radiograph(  # noqa: C901
     intensity : `~numpy.ndarray`, shape ``(hbins, vbins)``
         The number of particles counted in each bin of the histogram.
 
+
+    Notes
+    -----
+    This function ignores any particles that are stopped or removed before
+    reaching the detector plane.
+
     """
 
     # condition `obj` input
     if isinstance(obj, Tracker):
         # results_dict raises an error if the simulation has not been run.
-        d = obj.results_dict
+        results_dict = obj.results_dict
+
     elif isinstance(obj, dict):
-        d = obj
+        results_dict = obj
+
+    elif isinstance(obj, str | Path):
+        results_dict = {}
+        obj = Path(obj)
+        # Create a dictionary of all of the datasets and attributes in the save file
+        # Equivalent to |results_dict|
+        with h5py.File(obj, "r") as f:
+            for key in f:
+                results_dict[key] = f[key][...]
+            for key in f.attrs:
+                results_dict[key] = f.attrs[key][...]
     else:
         raise TypeError(
-            f"Expected type dict or {Tracker} for argument `obj`, but "
+            f"Expected type `Path`, `dict` or {Tracker} for argument `obj`, but "
             f"got type {type(obj)}."
         )
 
@@ -1194,11 +1189,13 @@ def synthetic_radiograph(  # noqa: C901
     # If ignore_grid is True, use the predicted positions in the absence of
     # simulated fields
     if ignore_grid:
-        xloc = d["x0"]
-        yloc = d["y0"]
+        xloc = results_dict["x0"]
+        yloc = results_dict["y0"]
+        v = results_dict["v0"][:, 0]
     else:
-        xloc = d["x"]
-        yloc = d["y"]
+        xloc = results_dict["x"]
+        yloc = results_dict["y"]
+        v = results_dict["v"][:, 0]
 
     if size is None:
         # If a detector size is not given, choose a size based on the
@@ -1217,9 +1214,11 @@ def synthetic_radiograph(  # noqa: C901
             f"Argument `size` must have shape (2, 2), but got {size.shape}."
         )
 
-    nan_mask = np.logical_or(np.isnan(xloc), np.isnan(yloc))
-    sanitized_xloc = xloc[~nan_mask]
-    sanitized_yloc = yloc[~nan_mask]
+    # Exclude NaN positions (deleted particles) and velocities
+    # (stopped particles)
+    nan_mask = ~np.isnan(xloc) * ~np.isnan(yloc) * ~np.isnan(v)
+    sanitized_xloc = xloc[nan_mask]
+    sanitized_yloc = yloc[nan_mask]
 
     # Generate the histogram
     intensity, h, v = np.histogram2d(
@@ -1233,7 +1232,7 @@ def synthetic_radiograph(  # noqa: C901
 
     # Throw a warning if < 50% of the particles are included on the
     # histogram
-    percentage = np.sum(intensity) / d["nparticles"]
+    percentage = np.sum(intensity) / results_dict["nparticles"]
     if percentage < 0.5:
         warnings.warn(
             f"Only {percentage:.2%} of the particles are shown "
@@ -1241,18 +1240,5 @@ def synthetic_radiograph(  # noqa: C901
             "the size to include more.",
             RuntimeWarning,
         )
-
-    if optical_density:
-        # Generate the null radiograph
-        x, y, I0 = synthetic_radiograph(obj, size=size, bins=bins, ignore_grid=True)
-
-        # Calculate I0 as the mean of the non-zero values in the null
-        # histogram. Zeros are just outside of the illuminate area.
-        I0 = np.mean(I0[I0 != 0])
-
-        # Calculate the optical_density
-        # ignore any errors resulting from zero values in intensity
-        with np.errstate(divide="ignore"):
-            intensity = -np.log10(intensity / I0)
 
     return h * u.m, v * u.m, intensity

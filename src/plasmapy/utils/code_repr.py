@@ -54,7 +54,7 @@ def _code_repr_of_quantity(arg: u.Quantity, max_items=np.inf) -> str:
     if isinstance(arg.value, np.ndarray):
         formatted = _code_repr_of_ndarray(arg.value, max_items=max_items)
     else:
-        formatted = repr(arg.value)
+        formatted = str(arg.value)
 
     if arg.unit == u.dimensionless_unscaled:
         formatted += "*u.dimensionless_unscaled"

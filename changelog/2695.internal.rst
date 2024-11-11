@@ -1,2 +1,0 @@
-Added the ``lint`` and ``manifest`` sessions for |Nox| to run |pre-commit| on all files
-and verify :file:`MANIFEST.in` with ``check-manifest``, respectively.

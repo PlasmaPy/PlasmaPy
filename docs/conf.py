@@ -22,39 +22,61 @@ Sphinx extensions (built-in):
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 
+import logging
 import os
 import sys
+import warnings
+from datetime import datetime, timezone
+
+from sphinx.application import Sphinx
+
+from plasmapy import __version__ as version
 
 # isort: off
 sys.path.insert(0, os.path.abspath(".."))  # noqa: PTH100
 sys.path.insert(0, os.path.abspath("."))  # noqa: PTH100
 # isort: on
 
-from datetime import datetime
+import _author_list_from_cff
+import _changelog_index
+import _global_substitutions
 
-import _cff_to_rst
-import pkg_resources  # deprecated; after removal, drop setuptools dependency for docs
-from _global_substitutions import global_substitutions
-from sphinx.application import Sphinx
-
-# Generate author list from CITATION.cff
-
-_cff_to_rst.main()
-
-from plasmapy import __version__ as release
+now = datetime.now(timezone.utc)
 
 # Project metadata
 
 project = "PlasmaPy"
 author = "PlasmaPy Community"
-copyright = f"2015–{datetime.utcnow().year}, {author}"  # noqa: A001, DTZ003
+copyright = f"2015–{now.year}, {author}"  # noqa: A001
 language = "en"
 
-release = "" if release == "unknown" else release
-parsed_version = pkg_resources.parse_version(release)  # deprecated
-release = parsed_version.public
-version = ".".join(release.split(".")[:2])  # short X.Y version
-revision = parsed_version.local[1:] if parsed_version.local is not None else ""
+if "dev" in version:
+    # We've had some problems with setuptools_scm providing an incorrect
+    # version for non-releases, so base it on the date and git hash
+    # instead.
+    git_hash = version.split("dev")[-1].split("+")[-1].split(".")[0]
+    version = f"{now.year}.{now.month}.0.dev+{git_hash}"
+    version_info_message = f"Setting {version = !r}"
+    logging.info(version_info_message)
+
+if version.startswith("0"):
+    version_warning_message = f"Incorrect {version = !r}"
+    logging.warning(version_warning_message)
+
+release = version
+
+# Define global substitutions in docs/_global_substitutions.py
+
+_global_substitutions.make_global_substitutions_table()
+global_substitutions = _global_substitutions.global_substitutions
+
+# Regenerate the changelog index file
+
+_changelog_index.main()
+
+# Generate author list from CITATION.cff
+
+_author_list_from_cff.generate_rst_file()
 
 # Sphinx configuration variables
 
@@ -82,6 +104,7 @@ extensions = [
     "sphinx_tabs.tabs",
     "sphinx_collapse",
     "sphinxcontrib.bibtex",
+    "sphinxemoji.sphinxemoji",
     "sphinxcontrib.globalsubs",
 ]
 
@@ -105,6 +128,8 @@ pygments_style = "default"  # code highlighting to meet WCAG AA contrast standar
 root_doc = "index"
 source_suffix = ".rst"
 templates_path = ["_templates"]
+maximum_signature_line_length = 90
+sphinxemoji_style = "twemoji"
 
 # Specify patterns to ignore when doing a nitpicky documentation build.
 # These may include common expressions like "real number" as well as
@@ -163,7 +188,6 @@ nitpick_ignore_regex = [
     (python_role, "lmfit"),
     (python_role, "mpmath"),
     (python_role, "nbsphinx"),
-    (python_role, "numba"),
     (python_role, "xarray"),
     # plasmapy_sphinx
     (python_role, "automod.*"),
@@ -228,7 +252,6 @@ intersphinx_mapping = {
     "astropy": ("https://docs.astropy.org/en/stable/", None),
     "lmfit": ("https://lmfit.github.io/lmfit-py/", None),
     "matplotlib": ("https://matplotlib.org/stable/", None),
-    "numba": ("https://numba.readthedocs.io/en/stable/", None),
     "numpy": ("https://numpy.org/doc/stable/", None),
     "pandas": ("https://pandas.pydata.org/pandas-docs/stable/", None),
     "pytest": ("https://docs.pytest.org/en/stable/", None),
@@ -303,16 +326,16 @@ redirects = {
     "development/testing_guide": "../contributing/testing_guide.html",
     "whatsnew": "../changelog/",
     "whatsnew/0.1.0": "../changelog/0.1.0.html",
-    "whatsnew/0.1.1": "../changelog/0.1.0.html",
-    "whatsnew/0.2.0": "../changelog/0.1.0.html",
-    "whatsnew/0.3.1": "../changelog/0.1.0.html",
-    "whatsnew/0.4.0": "../changelog/0.1.0.html",
-    "whatsnew/0.5.0": "../changelog/0.1.0.html",
-    "whatsnew/0.6.0": "../changelog/0.1.0.html",
-    "whatsnew/0.7.0": "../changelog/0.1.0.html",
-    "whatsnew/0.8.1": "../changelog/0.1.0.html",
-    "whatsnew/0.9.0": "../changelog/0.1.0.html",
-    "whatsnew/0.9.1": "../changelog/0.1.0.html",
+    "whatsnew/0.1.1": "../changelog/0.1.1.html",
+    "whatsnew/0.2.0": "../changelog/0.2.0.html",
+    "whatsnew/0.3.1": "../changelog/0.3.1.html",
+    "whatsnew/0.4.0": "../changelog/0.4.0.html",
+    "whatsnew/0.5.0": "../changelog/0.5.0.html",
+    "whatsnew/0.6.0": "../changelog/0.6.0.html",
+    "whatsnew/0.7.0": "../changelog/0.7.0.html",
+    "whatsnew/0.8.1": "../changelog/0.8.1.html",
+    "whatsnew/0.9.0": "../changelog/0.9.0.html",
+    "whatsnew/0.9.1": "../changelog/0.9.1.html",
     "whatsnew/2023.1.0": "../changelog/2023.1.0.html",
     "whatsnew/index": "../changelog/index.html",
 }
@@ -377,44 +400,49 @@ linkcheck_ignore = [
     r"https://doi\.org/10\.1007/978-3-319-67711-8.*",
     r"https://doi\.org/10\.1007/s11207-014-0526-6",
     r"https://doi\.org/10\.1007/s41116-019-0021-0",
+    r"https://doi\.org/10\.1016/0032-0633(94)00197-Y",
     r"https://doi\.org/10\.1016/0032-0633\(94\)00197-Y",
+    r"https://doi\.org/10\.1016/b978-0-12-374877-5\.00003-8",
     r"https://doi\.org/10\.1016/c2009-0-20048-1",
     r"https://doi\.org/10\.1016/c2013-0-12176-9",
     r"https://doi\.org/10\.1016/j\.physleta\.2004\.08\.021",
+    r"https://doi\.org/10\.1029/95ja03712",
     r"https://doi\.org/10\.1029/1998ja900132",
     r"https://doi\.org/10\.1029/2011ja016674",
     r"https://doi\.org/10\.1029/2012ja017856",
     r"https://doi\.org/10\.1029/9503712",
-    r"https://doi\.org/10\.1029/95ja03712",
     r"https://doi\.org/10\.1038/150405d0",
+    r"https://doi\.org/10\.1063/1\.865901",
+    r"https://doi\.org/10\.1063/1\.871810",
     r"https://doi\.org/10\.1063/1\.1706052",
     r"https://doi\.org/10\.1063/1\.2756751",
     r"https://doi\.org/10\.1063/1\.4775777",
     r"https://doi\.org/10\.1063/1\.4801022",
-    r"https://doi\.org/10\.1063/1\.865901",
-    r"https://doi\.org/10\.1063/1\.871810",
     r"https://doi\.org/10\.1086/523671",
     r"https://doi\.org/10\.1088/0004-637X/751/1/20",
     r"https://doi\.org/10\.1088/0368-3281/5/2/304",
     r"https://doi\.org/10\.1103/PhysRev\.89\.977",
     r"https://doi\.org/10\.1103/PhysRevE\.65\.036418",
     r"https://doi\.org/10\.1103/physrevlett\.111\.241101",
+    r"https://doi\.org/10\.1140/epjd/s10053-021-00305-2",
     r"https://doi\.org/10\.1146/annurev-astro-082708-101726",
     r"https://doi\.org/10\.1201/9781315275048",
     r"https://doi\.org/10\.1371/journal\.pbio\.1001745",
     r"https://doi\.org/10\.1371/journal\.pcbi\.1005510",
     r"https://doi\.org/10\.2172/5259641",
-    r"https://doi\.org/10\.5281/zenodo\.3766933",
     r"https://doi\.org/10\.3847/1538-4357/accc32",
     r"https://doi\.org/10\.5281/zenodo\.1436011",
     r"https://doi\.org/10\.5281/zenodo\.1460977",
     r"https://doi\.org/10\.5281/zenodo\.3406803",
+    r"https://doi\.org/10\.5281/zenodo\.3766933",
     r"https://doi\.org/10\.5281/zenodo\.4602818",
     r"https://doi\.org/10\.5281/zenodo\.7734998",
     r"https://doi\.org/10\.5281/zenodo\.8015753",
+    r"https://doi\.org/10\.18434/T4NC7P",
     r"https://github\.com/PlasmaPy/PlasmaPy/settings/secrets/actions",
     r"https://orcid\.org/0000-0001-5050-6606",
     r"https://orcid\.org/0000-0001-5270-7487",
+    r"https://orcid\.org/0000-0001-5308-6870",
     r"https://orcid\.org/0000-0001-5394-9445",
     r"https://orcid\.org/0000-0001-6079-8307",
     r"https://orcid\.org/0000-0001-6291-8843",
@@ -429,26 +457,50 @@ linkcheck_ignore = [
     r"https://orcid\.org/0000-0002-1073-6383",
     r"https://orcid\.org/0000-0002-1192-2057",
     r"https://orcid\.org/0000-0002-1365-1908",
+    r"https://orcid\.org/0000-0002-1444-9680",
     r"https://orcid\.org/0000-0002-1984-7303",
+    r"https://orcid\.org/0000-0002-2105-0280",
     r"https://orcid\.org/0000-0002-2160-7288",
+    r"https://orcid\.org/0000-0002-2373-8927",
     r"https://orcid\.org/0000-0002-3056-6334",
     r"https://orcid\.org/0000-0002-3713-6337",
+    r"https://orcid\.org/0000-0002-4227-2544",
     r"https://orcid\.org/0000-0002-4237-2211",
     r"https://orcid\.org/0000-0002-4914-6612",
     r"https://orcid\.org/0000-0002-5598-046X",
+    r"https://orcid\.org/0000-0002-5978-6840",
     r"https://orcid\.org/0000-0002-6468-5710",
     r"https://orcid\.org/0000-0002-7616-0946",
     r"https://orcid\.org/0000-0002-7757-5879",
+    r"https://orcid\.org/0000-0002-7860-9567",
+    r"https://orcid\.org/0000-0002-8078-214X",
     r"https://orcid\.org/0000-0002-8335-1441",
+    r"https://orcid\.org/0000-0002-8475-8606",
     r"https://orcid\.org/0000-0002-8644-8118",
     r"https://orcid\.org/0000-0002-8676-1710",
+    r"https://orcid\.org/0000-0002-9180-6565",
     r"https://orcid\.org/0000-0002-9258-4490",
     r"https://orcid\.org/0000-0003-0079-4114",
     r"https://orcid\.org/0000-0003-0223-7004",
     r"https://orcid\.org/0000-0003-0602-8381",
+    r"https://orcid\.org/0000-0003-1439-4218",
+    r"https://orcid\.org/0000-0003-2528-8752",
     r"https://orcid\.org/0000-0003-2892-6924",
+    r"https://orcid\.org/0000-0003-2944-0424",
+    r"https://orcid\.org/0000-0003-3309-3939",
     r"https://orcid\.org/0000-0003-3530-7910",
     r"https://orcid\.org/0000-0003-4217-4642",
+    r"https://orcid\.org/0000-0003-4230-6916",
+    r"https://orcid\.org/0000-0003-4397-027X",
+    r"https://orcid\.org/0000-0003-4739-1152",
+    r"https://orcid\.org/0009-0000-3029-8619",
+    r"https://orcid\.org/0009-0002-5918-4652",
+    r"https://orcid\.org/0009-0003-3159-0541",
+    r"https://orcid\.org/0009-0004-6699-4869",
+    r"https://orcid\.org/0009-0006-0863-0180",
+    r"https://orcid\.org/0009-0007-0655-1347",
+    r"https://orcid\.org/0009-0008-3588-0497",
+    r"https://orcid\.org/0009-0008-5134-6171",
     r"https://orcid\.org/0009-0009-9490-5284",
     r"https://hdl\.handle\.net/10037/29416",
     r"https://www\.iter\.org/",
@@ -558,6 +610,16 @@ automodapi_group_order = (
     "lite-functions",
     "variables",
 )
+
+# following https://about.readthedocs.com/blog/2024/07/addons-by-default/
+# Define the canonical URL if you are using a custom domain on Read the Docs
+html_baseurl = os.environ.get("READTHEDOCS_CANONICAL_URL", "")
+
+# Tell Jinja2 templates the build is running on Read the Docs
+if os.environ.get("READTHEDOCS", "") == "True":
+    if "html_context" not in globals():
+        html_context = {}
+    html_context["READTHEDOCS"] = True
 
 
 def setup(app: Sphinx) -> None:

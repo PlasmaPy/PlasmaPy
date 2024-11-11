@@ -154,8 +154,8 @@ False
 True
 .. _particle-class-antiparticles:
 
-Returning antiparticles
------------------------
+Antiparticles
+-------------
 
 The antiparticle of an elementary particle or antiparticle may be found
 by either using Python's unary invert operator (``~``) or the

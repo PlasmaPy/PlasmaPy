@@ -58,6 +58,16 @@ Glossary
       `~plasmapy.analysis.fit_functions.AbstractFitFunction`.  Also see
       module `~plasmapy.analysis.fit_functions`.
 
+
+   force-free
+      In plasma physics, a **force-free magnetic field** is a magnetic
+      field where the Lorentz force is zero, meaning the magnetic
+      pressure greatly exceeds the plasma pressure, allowing
+      non-magnetic forces to be neglected. This condition is often
+      approximated in the Sun's corona.
+
+      For more details, visit the `Wikipedia page <https://en.wikipedia.org/wiki/Force-free_magnetic_field>`_.
+
    integration test
       An **integration test** verifies that multiple software
       components work together as intended.

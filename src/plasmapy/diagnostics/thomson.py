@@ -214,14 +214,14 @@ def spectral_density_lite(
 
     # Calculate the susceptibilities
     chiE = np.zeros([efract.size, w.size], dtype=np.complex128)
-    for i, _fract in enumerate(efract):  # noqa: B007
+    for i, _fract in enumerate(efract):
         wpe = plasma_frequency_lite(ne[i], m_e_si_unitless, 1)
         chiE[i, :] = permittivity_1D_Maxwellian_lite(w_e[i, :], k, vT_e[i], wpe)
 
     # Treatment of multiple species is an extension of the discussion in
     # Sheffield Sec. 5.1
     chiI = np.zeros([ifract.size, w.size], dtype=np.complex128)
-    for i, _fract in enumerate(ifract):  # noqa: B007
+    for i, _fract in enumerate(ifract):
         wpi = plasma_frequency_lite(ni[i], ion_mass[i], ion_z[i])
         chiI[i, :] = permittivity_1D_Maxwellian_lite(w_i[i, :], k, vT_i[i], wpi)
 
@@ -561,7 +561,7 @@ def spectral_density(  # noqa: C901, PLR0912, PLR0915
         eval_w = np.linspace(-wspan, wspan, num=wavelengths.size)
         instr_func_arr = instr_func(eval_w)
 
-        if type(instr_func_arr) != np.ndarray:
+        if type(instr_func_arr) is not np.ndarray:
             raise ValueError(
                 "instr_func must be a function that returns a "
                 "np.ndarray, but the provided function returns "
@@ -807,7 +807,7 @@ def spectral_density_model(  # noqa: C901, PLR0912, PLR0915
           sum to 1)
         - :samp:`"electron_speed_{e#}"` : Electron speed in m/s
         - :samp:`"ion_speed_{ei}"` : Ion speed in m/s
-        - :samp:`"ion_mu_{i#}"` : Ion mass number, :math:`\mu = m_i/m_p`
+        - :samp:`"ion_mu_{i#}"` : Ion mass number, :math:`μ = m_i/m_p`
         - :samp:`"ion_z_{i#}"` : Ion charge number
         - :samp:`"background"` : Background level, as fraction of max signal
 
@@ -966,7 +966,7 @@ def spectral_density_model(  # noqa: C901, PLR0912, PLR0915
         eval_w = np.linspace(-wspan, wspan, num=wavelengths.size)
         instr_func_arr = instr_func(eval_w * u.m)
 
-        if type(instr_func_arr) != np.ndarray:
+        if type(instr_func_arr) is not np.ndarray:
             raise ValueError(
                 "instr_func must be a function that returns a "
                 "np.ndarray, but the provided function returns "

@@ -4,22 +4,33 @@ Module of miscellaneous parameters related to collisions.
 
 __all__ = [
     "mobility",
+    "Bethe_stopping",
     "Spitzer_resistivity",
 ]
+__lite_funcs__ = ["Bethe_stopping_lite"]
 
+from typing import Any
 
+import astropy.constants as const
 import astropy.units as u
 import numpy as np
-from astropy.constants.si import e
+import numpy.typing as npt
 
 from plasmapy.formulary.collisions import frequencies
 from plasmapy.formulary.speeds import thermal_speed
 from plasmapy.particles.atomic import reduced_mass
 from plasmapy.particles.decorators import particle_input
 from plasmapy.particles.particle_class import Particle
-from plasmapy.utils.decorators import validate_quantities
+from plasmapy.utils.decorators import bind_lite_func, validate_quantities
 from plasmapy.utils.decorators.checks import _check_relativistic
 from plasmapy.utils.exceptions import PhysicsError
+
+__all__ += __lite_funcs__
+
+_c = const.c
+_e = const.e.si
+_eps0 = const.eps0
+_m_e = const.m_e
 
 
 @validate_quantities(T={"equivalencies": u.temperature_energy()})
@@ -91,7 +102,7 @@ def mobility(
     species,
     z_mean: float = np.nan,
     V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
-    method="classical",
+    method: str = "classical",
 ) -> u.Quantity[u.m**2 / (u.V * u.s)]:
     r"""
     Return the electrical mobility.
@@ -207,8 +218,111 @@ def mobility(
     # already has a _process_inputs check and we are doing this just
     # to recover the charges, mass, etc.
     T, masses, charges, reduced_mass_, V = _process_inputs(T=T, species=species, V=V)
-    z_val = (charges[0] + charges[1]) / 2 if np.isnan(z_mean) else z_mean * e
+    z_val = (charges[0] + charges[1]) / 2 if np.isnan(z_mean) else z_mean * _e
     return z_val / (reduced_mass_ * freq)
+
+
+def Bethe_stopping_lite(
+    I: npt.NDArray[np.integer[Any] | np.floating[Any]],  # noqa: E741
+    n: npt.NDArray[np.integer[Any] | np.floating[Any]],
+    v: npt.NDArray[np.integer[Any] | np.floating[Any]],
+    z: int,
+) -> npt.NDArray[np.integer[Any] | np.floating[Any]]:
+    r"""
+    The :term:`lite-function` version of `~plasmapy.formulary.collisions.misc.Bethe_stopping`. Performs the same
+    calculations as `~plasmapy.formulary.collisions.misc.Bethe_stopping`, but is intended for computational use
+    and thus has data conditioning safeguards removed.
+
+    The theoretical electronic stopping power for swift charged particles
+    calculated from the Bethe formula.
+
+    The Bethe formula should only be used for high energy particles, as
+    higher order corrections become non-negligible for smaller energies.
+
+    By convention, this function returns a positive value for the stopping
+    energy.
+
+    Parameters
+    ----------
+    I: `~numpy.ndarray`
+        The mean excitation energy for the material in which the particle is
+        being stopped. Expressed in units of energy.
+
+    n: `~numpy.ndarray`
+        The electron number density of the material. Expressed in units of number density.
+
+    v: `~numpy.ndarray`
+        The velocity of the particle being stopped. Expressed in units of speed.
+
+    z: `int`
+        The charge of the charged particle in multiples of the electron charge.
+        Expressed only as an integer.
+
+    Returns
+    -------
+    dEdx : `~numpy.ndarray`
+        The stopping power of the material given the particle's energy.
+
+    """
+
+    beta = v / _c.si.value
+
+    return np.asarray(
+        4
+        * np.pi
+        * n
+        * z**2
+        / (_m_e.si.value * _c.si.value**2 * beta**2)
+        * (_e.si.value**2 / (4 * np.pi * _eps0.si.value)) ** 2
+        * (
+            np.log(2 * _m_e.si.value * _c.si.value**2 * beta**2 / (I * (1 - beta**2)))
+            - beta**2
+        )
+    )
+
+
+@bind_lite_func(Bethe_stopping_lite)
+@validate_quantities()
+def Bethe_stopping(
+    I: u.Quantity[u.J],  # noqa: E741
+    n: u.Quantity[1 / u.m**3],
+    v: u.Quantity[u.m / u.s],
+    z: int,
+) -> u.Quantity[u.J / u.m]:
+    r"""
+    The theoretical electronic stopping power for swift charged particles
+    calculated from the Bethe formula.
+
+    The Bethe formula should only be used for high energy particles, as
+    higher order corrections become non-negligible for smaller energies.
+
+    By convention, this function returns a positive value for the stopping
+    energy.
+
+    Parameters
+    ----------
+    I: `~astropy.units.Quantity`
+        The mean excitation energy for the material in which the particle is
+        being stopped. Expressed in units of energy.
+
+    n: `~astropy.units.Quantity`
+        The electron number density of the material. Expressed in units of number density.
+
+    v: `~astropy.units.Quantity`
+        The velocity of the particle being stopped. Expressed in units of speed.
+
+    z: `int`
+        The charge of the charged particle in multiples of the electron charge.
+        Expressed only as an integer.
+
+    Returns
+    -------
+    dEdx : `~astropy.units.Quantity`
+        The stopping power of the material given the particle's energy.
+
+    """
+
+    return Bethe_stopping_lite(I.si.value, n.si.value, v.si.value, z) * u.J / u.m
 
 
 @validate_quantities(
@@ -221,7 +335,7 @@ def Spitzer_resistivity(
     species,
     z_mean: float = np.nan,
     V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
-    method="classical",
+    method: str = "classical",
 ) -> u.Quantity[u.Ohm * u.m]:
     r"""
     Spitzer resistivity of a plasma.
@@ -229,9 +343,10 @@ def Spitzer_resistivity(
     Parameters
     ----------
     T : `~astropy.units.Quantity`
-        Temperature in units of temperature.  This should be the
+        Temperature in units of Kelvin or eV.  This should be the
         electron temperature for electron-electron and electron-ion
-        collisions, and the ion temperature for ion-ion collisions.
+        collisions, and the ion temperature for ion-ion collisions. An
+        example of temperature given in eV can be found below.
 
     n : `~astropy.units.Quantity`
         The density in units convertible to per cubic meter.  This
@@ -327,6 +442,10 @@ def Spitzer_resistivity(
     <Quantity 2.4915...e-06 Ohm m>
     >>> Spitzer_resistivity(T, n, species, V=1e6 * u.m / u.s)  # doctest: +SKIP
     <Quantity 0.000324... Ohm m>
+    >>> T_eV = 86.173 * u.eV
+    >>> T_K = (T_eV).to("K", equivalencies=u.temperature_energy())
+    >>> Spitzer_resistivity(T_K, n, species)
+    <Quantity 2.49158...e-06 Ohm m>
     """
     # collisional frequency
     freq = frequencies.collision_frequency(
@@ -337,5 +456,5 @@ def Spitzer_resistivity(
     return (
         freq * reduced_mass_ / (n * charges[0] * charges[1])
         if np.isnan(z_mean)
-        else freq * reduced_mass_ / (n * (z_mean * e) ** 2)
+        else freq * reduced_mass_ / (n * (z_mean * _e) ** 2)
     )

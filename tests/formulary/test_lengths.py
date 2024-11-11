@@ -54,7 +54,7 @@ mu = m_p.to(u.u).value
     ],
 )
 @pytest.mark.filterwarnings("ignore::astropy.units.UnitsWarning")
-def test_Debye_length(T_e, n_e, expected):
+def test_Debye_length(T_e, n_e, expected) -> None:
     result = Debye_length(T_e=T_e, n_e=n_e)
     assert_quantity_allclose(result, expected, rtol=1e-6, equal_nan=True, verbose=True)
     assert result.unit == u.m
@@ -69,7 +69,7 @@ def test_Debye_length(T_e, n_e, expected):
         (1 * u.kg, 5 * u.m**-3, u.UnitTypeError),
     ],
 )
-def test_Debye_length_errors(T_e, n_e, expected):
+def test_Debye_length_errors(T_e, n_e, expected) -> None:
     with pytest.raises(expected):
         Debye_length(T_e=T_e, n_e=n_e)
 
@@ -81,7 +81,7 @@ def test_Debye_length_errors(T_e, n_e, expected):
         (5 * u.K, 5, u.UnitsWarning),
     ],
 )
-def test_Deybe_length_warnings(T_e, n_e, expected_warning):
+def test_Deybe_length_warnings(T_e, n_e, expected_warning) -> None:
     with pytest.warns(expected_warning):
         Debye_length(T_e=T_e, n_e=n_e)
 

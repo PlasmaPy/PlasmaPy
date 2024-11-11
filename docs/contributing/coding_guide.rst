@@ -1,13 +1,21 @@
 .. _coding guide:
 
-************
-Coding Guide
-************
+***************
+Coding Guide 👾
+***************
 
 .. contents:: Table of Contents
    :depth: 2
    :local:
    :backlinks: none
+
+.. Define roles for in-line code formatting with pygments
+
+.. role:: bash(code)
+   :language: bash
+
+.. role:: toml(code)
+   :language: TOML
 
 Introduction
 ============
@@ -29,11 +37,14 @@ style changes. Please feel free to propose revisions to this guide by
 a community meeting.
 
 PlasmaPy generally follows the :pep:`8` style guide for Python code,
-using auto-formatters such as |black| and |isort| that are executed using
-|pre-commit|.
+while using tools like |pre-commit| and |ruff| to perform
+autoformatting, code quality checks, and automatic fixes.
 
 Coding guidelines
 =================
+
+Writing clean code
+------------------
 
 * Write short functions that do exactly one thing with no side effects.
 
@@ -48,7 +59,7 @@ Coding guidelines
 * Some plasma parameters depend on more than one |Quantity| of the same
   physical type. For example, when reading the following line of code,
   we cannot immediately tell which is the electron temperature and which
-  is the ion temperature.
+  is the ion temperature. |:thermometer:|
 
   .. code-block:: python
 
@@ -202,10 +213,10 @@ code is supposed to be doing.
 
 * If a plasma parameter has multiple names, then use the name that
   provides the most physical insight. For example, :py:`gyrofrequency`
-  indicates gyration but :py:`Larmor_frequency` does not.
+  indicates gyration but :py:`Larmor_frequency` does not. |:dizzy:|
 
 * It is *usually* preferable to name a variable after its name rather
-  than its symbol.  An object named :py:`Debye_length` is more broadly
+  than its symbol. An object named :py:`Debye_length` is more broadly
   understandable and searchable than :py:`lambda_D`. However, there are
   some exceptions to this guideline.
 
@@ -261,9 +272,9 @@ code is supposed to be doing.
 
 .. tip::
 
-   It is common for an :wikipedia:`integrated development environment`
-   (IDE) to have a built-in tool for simultaneously renaming a variable
-   throughout a project. For example, a `rename refactoring in PyCharm
+   It is common for an |IDE| to have a built-in tool for simultaneously
+   renaming a variable throughout a project. For example, a `rename
+   refactoring in PyCharm
    <https://www.jetbrains.com/help/pycharm/rename-refactorings.html>`__
    can be done with :kbd:`Shift+F6` on Windows or Linux, and :kbd:`⇧F6`
    or :kbd:`⌥⌘R` on macOS.
@@ -290,7 +301,7 @@ unmaintained comment may contain inaccurate or misleading information
   works :cite:p:`wilson:2014`.
 
 * Instead of using a comment to define a variable, rename the variable
-  to encode its meaning and intent.  For example, code like:
+  to encode its meaning and intent. For example, code like:
 
   .. code-block:: python
 
@@ -387,7 +398,7 @@ frustration.
   providing enough information for the user to troubleshoot it. When
   possible, make it clear what the user should do next.
 
-* Include diagnostic information when appropriate.  For example, if an
+* Include diagnostic information when appropriate. For example, if an
   error occurred at a single index in an array operation, then including
   the index where the error happened can help the user better understand
   the cause of the error.
@@ -411,8 +422,176 @@ frustration.
 * Write error messages that are friendly, supportive, and helpful. Error
   message should never be condescending or blame the user.
 
-Project infrastructure
-======================
+Type hint annotations
+=====================
+
+PlasmaPy uses |type hint annotations| and |mypy| to perform
+|static type checking|. Type hints improve readability and
+maintainability by clarifying the types that a function accepts and
+returns. Type hints also help Jupyter notebooks and IDEs provide better
+tooltips and perform auto-completion.
+
+Type hint annotations specify the expected types of arguments and return
+values. A function that accepts a `float` or `str` and returns a `str`
+may be written as:
+
+.. code-block:: python
+
+   def f(x: float | str) -> str:
+       return str(x)
+
+The :py:`|` operator is used to represent unions between types. To learn
+more, check out the `type hints cheat sheet`_.
+
+.. note::
+
+   Type hint annotations are by default not enforced at runtime, and
+   instead are used to _indicate_ the types that a function or method
+   accepts and returns. However, there are some situations where type
+   hints do play a role at runtime, such as in functions decorated by
+   |particle_input| and/or |validate_quantities|.
+
+Automatically adding type hint annotations
+------------------------------------------
+
+PlasmaPy has defined multiple |Nox| sessions in |noxfile.py|_ that can
+automatically add type hints using autotyping_ and MonkeyType_.
+
+The ``autotyping(safe)`` session uses autotyping_ to automatically add
+type hints for common patterns, while producing very few incorrect
+annotations:
+
+.. code-block:: shell
+
+   nox -s 'autotyping(safe)'
+
+The ``autotyping(aggressive)`` session uses autotyping_ to automatically
+add even more type hints than ``autotyping(safe)``. Because it is less
+reliable, the newly added type hints should be carefully reviewed:
+
+.. code-block:: shell
+
+   nox -s 'autotyping(aggressive)'
+
+The ``monkeytype`` session automatically adds type hint annotations to a
+module based on the types of variables that were observed when running
+`pytest`. Like ``autotyping(aggressive)``, it can add incorrect or
+incomplete type hints, so newly added type hints should be carefully
+reviewed. It is run for a single module at a time:
+
+.. code-block:: shell
+
+   nox -s monkeytype -- plasmapy.particles.atomic
+
+.. tip::
+
+   Run :bash:`nox -s 'autotyping(safe)'` and commit the changes before
+   executing the ``autotyping(aggressive)`` or ``monkeytype`` sessions.
+
+Static type checking
+--------------------
+
+PlasmaPy uses |mypy| to perform |static type checking| to detect
+incorrect or inconsistent |type hint annotations|. Static type checking
+helps us find type related errors during the development process, and
+thus improve code quality.
+
+We can perform static type checking by running:
+
+.. code-block:: shell
+
+   nox -s mypy
+
+The configuration for |mypy| is in |mypy.ini|_.
+
+Using |mypy| helps us identify errors and fix problems. For example,
+suppose we run |mypy| on the following function:
+
+.. code-block:: python
+
+   def return_object(x: int | str) -> int:  # should be: -> int | str
+       return x
+
+We will then get the following error:
+
+.. code-block:: diff
+
+   Incompatible return value type (got "int | str", expected "int")  [return-value]
+
+.. tip::
+
+   To learn more about a particular |mypy| error code, search for it in
+   its documentation pages on `error codes enabled by default`_ and
+   `error codes for optional checks`_.
+
+Ignoring mypy errors
+~~~~~~~~~~~~~~~~~~~~
+
+Static type checkers like |mypy| are unable to follow the behavior of
+functions that dynamically change the types of objects, which occurs in
+functions decorated by |particle_input|. In situations like this, we can
+use a :py:`# type: ignore` comment to indicate that |mypy| should ignore
+a particular error.
+
+.. code-block:: python
+
+   from plasmapy.particles import particle_input, ParticleLike
+
+   @particle_input
+   def f(particle: ParticleLike) -> Particle | CustomParticle | ParticleList:
+       return particle  # type: ignore[return-value]
+
+.. important::
+
+   Because type hints are easier to add while writing code, please use
+   :py:`# type ignore` comments sparingly!
+
+.. note::
+
+   PlasmaPy only recently added |mypy| to its continuous integration
+   suite. If you run into |mypy| errors that frequently need to be
+   ignored, please bring them up in :issue:`2589`.
+
+Quantity type hints
+-------------------
+
+When a function accepts a |Quantity|, the annotation should additionally
+include the corresponding unit in brackets. When the function is
+|decorated| with |validate_quantities|, then the |Quantity| provided to
+and/or returned by the function will be converted to that unit.
+
+.. code-block:: python
+
+   import astropy.units as u
+   from plasmapy.utils.decorators import validate_quantities
+
+
+   @validate_quantities
+   def speed(distance: u.Quantity[u.m], time: u.Quantity[u.s]) -> u.Quantity[u.m / u.s]:
+       return distance / time
+
+Particle type hints
+-------------------
+
+Functions that accept particles or particle collections should annotate
+the corresponding function with |ParticleLike| or |ParticleListLike|.
+When the function is decorated with |particle_input|, then it will
+convert the function to the corresponding |Particle|, |CustomParticle|,
+or |ParticleList|.
+
+.. code-block:: python
+
+   from plasmapy.particles.decorators import particle_input
+   from plasmapy.particles.particle_class import CustomParticle, Particle, ParticleLike
+
+
+   @particle_input
+   def get_particle(particle: ParticleLike) -> Particle | CustomParticle:
+       return particle  # type: ignore[return-value]
+
+The :py:`# type: ignore[return-value]` comment for |mypy| is needed
+because |particle_input| dynamically (rather than statically) changes
+the type of ``particle``.
 
 Imports
 -------
@@ -427,21 +606,18 @@ Imports
      import numpy as np
      import pandas as pd
 
-* PlasmaPy uses |isort| to organize import statements via a |pre-commit|
+* PlasmaPy uses |ruff| to organize import statements via a |pre-commit|
   hook.
 
-* For infrequently used objects, import the package, subpackage, or
-  module rather than the individual code object. Including more of the
-  namespace provides contextual information that can make code easier to
-  read. For example, :py:`json.loads` is more readable than using only
+* For most objects, import the package, subpackage, or module rather
+  than the individual code object. Including more of the namespace
+  provides contextual information that can make code easier to read. For
+  example, :py:`json.loads` is more readable than using only
   :py:`loads`.
 
-* For frequently used objects (e.g., |Particle|) and type hint
-  annotations (e.g., `~typing.Optional` and `~numbers.Real`), import the
-  object directly instead of importing the package, subpackage, or
-  module. Including more of the namespace would increase clutter and
-  decrease readability without providing commensurately more
-  information.
+* For the most frequently used PlasmaPy objects (e.g., |Particle|) and
+  |type hint annotations| (e.g., `~typing.Optional`), import the object
+  directly instead of importing the package, subpackage, or module.
 
 * Use absolute imports (e.g., :py:`from plasmapy.particles import
   Particle`) rather than relative imports (e.g., :py:`from ..particles
@@ -450,81 +626,83 @@ Imports
 * Do not use star imports (e.g., :py:`from package.subpackage import *`),
   except in very limited situations.
 
-Requirements
-------------
+Project infrastructure
+======================
 
-* Package requirements are specified in |pyproject.toml|_. |tox.ini|_
-  also contains a testing environment for the minimal dependencies.
+* Package requirements are specified in |pyproject.toml|_.
 
-* Each release of PlasmaPy should support all minor versions of
-  Python that have been released in the prior 42 months, and all minor
-  versions of |NumPy| that have been released in the last 24 months.
-  This schedule was proposed in `NumPy Enhancement Proposal 29`_ for
-  the scientific Python ecosystem, and has been adopted by upstream
-  packages such as |NumPy|, |matplotlib|, and |Astropy|.
+For general information about Python packaging, check out the
+`Python Packaging User Guide`_.
 
-  .. tip::
+Configuration
+-------------
 
-     Tools like pyupgrade_ help automatically upgrade the code base to
-     the minimum supported version of Python for the next release.
+PlasmaPy's main configuration file is |pyproject.toml|_ (which is
+written in the TOML_ format). The Python Packaging User Guide contains
+a page on `writing your pyproject.toml file`_. The :toml:`project`
+table defines overall project metadata, while tables like
+:toml:`[tool.ruff]` include the configuration for tools like |ruff|.
 
-* PlasmaPy should generally allow all feature releases of required
-  dependencies made in the last ≲ 24 months, unless a more recent
-  release includes a needed feature or bugfix.
+Dependencies and requirements
+-----------------------------
 
-* Only set maximum or exact requirements (e.g., ``numpy <= 1.22.3`` or
-  ``scipy == 1.7.2``) when absolutely necessary. After setting a maximum
-  or exact requirement, create a GitHub issue to remove that
+* PlasmaPy's dependencies and requirements are specified in
+  |pyproject.toml|_ under :toml:`[project.dependencies]` (i.e., in the
+  :toml:`dependencies` array in the :toml:`[project]` table).
+
+* PlasmaPy releases should follow the recommendations in `SPEC 0`_,
+  including that:
+
+  - Support for Python versions be dropped **3 years** after their
+    initial release.
+  - Support for core package dependencies be dropped **2 years** after
+    their initial release.
+
+* The |ci_requirements/|_ directory contains pinned requirements files
+  for use in continuous integration tests (see
+  |ci_requirements/README.md|_).
+
+  - These files are updated periodically via pull requests created by a
+    GitHub workflow to `update pinned requirements`_.
+
+  - When updating requirements in |pyproject.toml|_, run
+    :bash:`nox -s requirements` to update the pinned requirements files.
+
+* Even if a dependency is unlikely to be shared with packages installed
+  alongside PlasmaPy, that dependency may have strict requirements that
+  do cause conflicts. For example, requiring the newest version of
+  voila_ once caused dependency conflicts with other packages in the
+  heliopythoniverse because voila_ had strict dependencies on packages
+  in the Jupyter ecosystem.
+
+* Only set maximum or exact requirements (e.g., ``numpy <= 2.0.0`` or
+  ``scipy == 1.13.1``) when absolutely necessary. After setting a
+  maximum or exact requirement, create a GitHub issue to loosen that
   requirement.
 
-  .. tip::
+  .. important::
 
      Maximum requirements can lead to version conflicts when installed
      alongside other packages. It is preferable to update PlasmaPy to
      become compatible with the latest versions of its dependencies than
      to set a maximum requirement.
 
-* Minor versions of Python are generally released in October of each
-  year. However, it may take a few months before packages like |NumPy|
-  and |Numba| become compatible with the newest minor version of |Python|.
+* It sometimes takes a few months for packages like Numba to become
+  compatible with the newest minor version of |Python|.
 
-Decorators
-==========
+* The ``tests`` and ``docs`` dependency sets are required for running
+  tests and building documentation, but are not required for package
+  installation. Consequently, we can require much newer versions of the
+  packages in these dependency sets.
 
-.. _particle_inputs:
+.. tip::
 
-Transforming particle-like arguments into particle objects
-----------------------------------------------------------
-
-Use |particle_input| to transform arguments to relevant |Particle|,
-|CustomParticle|, or |ParticleList| objects (see :ref:`particles`).
-
-.. _validating_quantities:
-
-Validating Quantity arguments
------------------------------
-
-Use |validate_quantities| to enforce |Quantity| type hints:
-
-.. code-block:: python
-
-   @validate_quantities
-   def magnetic_pressure(B: u.Quantity[u.T]) -> u.Quantity[u.Pa]:
-       return B**2 / (2 * const.mu0)
-
-Use |validate_quantities| to verify function arguments and impose
-relevant restrictions:
-
-.. code-block:: python
-
-   from plasmapy.utils.decorators.validators import validate_quantities
-
-   @validate_quantities(
-       n={"can_be_negative": False},
-       validations_on_return={"equivalencies": u.dimensionless_angles()},
-   )
-   def inertial_length(n: u.Quantity[u.m**-3], particle) -> u.Quantity[u.m]:
-       ...
+   Packages that depend on PlasmaPy should periodically run their tests
+   against the ``main`` branch of PlasmaPy. Similarly, PlasmaPy has
+   |Nox| sessions used in GitHub workflows that run its test suite
+   against the development versions of important dependencies such as
+   NumPy and Astropy. Such tests can help find problems before
+   they are included in an official release.
 
 Special function categories
 ===========================
@@ -563,7 +741,7 @@ would be defined in :file:`src/plasmapy/subpackage/module.py`.
 
 * Aliases should only be defined for frequently used plasma parameters
   which already have a symbol that is widely used in the community's
-  literature.  This is to ensure that the abbreviated function name is
+  literature. This is to ensure that the abbreviated function name is
   still reasonably understandable. For example,
   `~plasmapy.formulary.lengths.cwp_` is a shortcut for :math:`c/ω_p`\ .
 
@@ -622,14 +800,11 @@ that corresponds to :py:`function` as would be defined in
 
    from numbers import Real
 
-   from numba import njit
-   from plasmapy.utils.decorators import bind_lite_func, preserve_signature
+   from plasmapy.utils.decorators import bind_lite_func
 
    __all__ += __lite_funcs__
 
 
-   @preserve_signature
-   @njit
    def function_lite(v: float) -> float:
        """
        The lite-function which accepts and returns real numbers in
@@ -665,17 +840,8 @@ that corresponds to :py:`function` as would be defined in
   allows the :term:`lite-function` to also be accessed like
   :py:`thermal_speed.lite()`.
 
-* If a :term:`lite-function` is decorated with something like
-  :py:`@njit`, then it should also be decorated with
-  `~plasmapy.utils.decorators.helpers.preserve_signature`.  This
-  preserves the function signature so interpreters can still
-  give hints about function arguments.
-
-* When possible, a :term:`lite-function` should incorporate `numba's
-  just-in-time compilation
-  <https://numba.pydata.org/numba-doc/latest/reference/jit-compilation.html>`__
-  or utilize Cython_.  At a minimum any "extra" code beyond the raw
-  calculation should be removed.
+* A :term:`lite-function` should not include any "extra" code beyond the
+  raw calculation. In the future
 
 * The name of the original function should be included in :py:`__all__`
   near the top of each module, and the name of the :term:`lite-function`
@@ -745,7 +911,32 @@ adjacent fields such as astronomy and heliophysics. To get started with
   beginning of a sentence, including when they are named after a person.
   The sole exception is "degree Celsius".
 
-.. _particles:
+.. _validating_quantities:
+
+Validating quantities
+~~~~~~~~~~~~~~~~~~~~~
+
+Use |validate_quantities| to enforce |Quantity| type hints:
+
+.. code-block:: python
+
+   @validate_quantities
+   def magnetic_pressure(B: u.Quantity[u.T]) -> u.Quantity[u.Pa]:
+       return B**2 / (2 * const.mu0)
+
+Use |validate_quantities| to verify function arguments and impose
+relevant restrictions:
+
+.. code-block:: python
+
+   from plasmapy.utils.decorators.validators import validate_quantities
+
+   @validate_quantities(
+       n={"can_be_negative": False},
+       validations_on_return={"equivalencies": u.dimensionless_angles()},
+   )
+   def inertial_length(n: u.Quantity[u.m**-3], particle) -> u.Quantity[u.m]:
+       ...
 
 Particles
 ---------
@@ -765,21 +956,39 @@ basic particle data. |Particle| accepts |particle-like| inputs.
 To get started with `plasmapy.particles`, check out this `example
 notebook on particles`_.
 
-* Avoid using implicit default particle assumptions for function
-  arguments (see issue :issue:`453`).
+.. caution::
+
+   When an element is provided to a PlasmaPy function without isotope
+   information, it is assumed that the mass is given by the standard
+   atomic weight. While :py:`Particle("p+")` represents a proton,
+   :py:`Particle("H+")` includes some deuterons.
+
+.. tip::
+
+   Avoid using implicit default particle assumptions for function
+   arguments (see :issue:`453`).
+
+.. _particle-like-arguments:
+
+Transforming particle-like arguments
+------------------------------------
 
 * The |particle_input| decorator can automatically transform a
   |particle-like| |argument| into a |Particle|, |CustomParticle|, or
   |ParticleList| instance when the corresponding |parameter| is
-  decorated with |ParticleLike|.
+  annotated with |ParticleLike|.
+
+* For |particle-list-like| parameters, use |ParticleListLike| as the
+  annotation so that the corresponding argument is transformed into a
+  |ParticleList|.
 
   .. code-block:: python
 
-     from plasmapy.particles import ParticleLike, particle_input
+     from plasmapy.particles import Particle, ParticleLike, particle_input
 
 
      @particle_input
-     def get_particle(particle: ParticleLike):
+     def get_particle(particle: ParticleLike) -> Particle:
          return particle
 
   If we use :py:`get_particle` on something |particle-like|, it will
@@ -846,125 +1055,77 @@ an angular frequency to get a length scale:
 
    d_i = (c/omega_pi).to(u.m, equivalencies=u.dimensionless_angles())  # doctest: +SKIP
 
-.. _example_notebooks:
+.. _performing releases:
 
-Example notebooks
-=================
+Performing releases
+===================
 
-.. _docs/notebooks: https://github.com/PlasmaPy/PlasmaPy/tree/main/docs/notebooks
+Before beginning the release process, first run the workflow to `create
+a release issue`_ (i.e., :issue:`2723`). The resulting issue will
+include the `release checklist`_ which describes the release process in
+detail.
 
-Examples in PlasmaPy are written as Jupyter notebooks, taking advantage
-of their mature ecosystems. They are located in `docs/notebooks`_.
-|nbsphinx| takes care of executing them at documentation build time and
-including them in the documentation.
+The overall process of performing a release is:
 
-Please note that it is necessary to store notebooks with their outputs
-stripped
-(use the "Edit -> Clear all" option in JupyterLab and the "Cell -> All
-Output -> Clear" option in the "classic" Jupyter Notebook). This
-accomplishes two goals:
-
-1. helps with versioning the notebooks, as binary image data is not stored in
-   the notebook
-2. signals |nbsphinx| that it should execute the notebook.
-
-.. note::
-
-  In the future, verifying and running this step may be automated via a GitHub bot.
-  Currently, reviewers should ensure that submitted notebooks have outputs stripped.
-
-If you have an example notebook that includes packages unavailable in
-the documentation building environment (e.g., :py:`bokeh`) or runs some
-heavy computation that should not be executed on every commit, *keep the
-outputs in the notebook* but store it in the repository with a
-:file:`preexecuted_` prefix (e.g.,
-:file:`preexecuted_full_3d_mhd_chaotic_turbulence_simulation.ipynb`).
-
-Python and dependency version support
-=====================================
-
-PlasmaPy releases will generally abide by the following standards, which
-are adapted from `NEP 29`_ and `SPEC 0`_ for the support of old versions
-of |Python|, |NumPy|, |Astropy|, and other dependencies.
-
-* PlasmaPy should support the minor versions of Python initially
-  released 42 months prior to a release. Because :pep:`602` establishes
-  that Python releases will generally occur in October of each year,
-  the minimum required version of Python should be increased for the
-  first release of PlasmaPy after April each year.
-
-* PlasmaPy should support minor versions of its dependencies that were
-  released in the 24 months prior to each release of PlasmaPy.
-  Exceptions to this guideline should only be made when there are good
-  reasons to do so, such as impactful bugfixes or major improvements to
-  upstream functionality.
-
-  .. caution::
-
-     Even if a dependency is unlikely to be shared with packages
-     installed alongside PlasmaPy, that dependency can have strict
-     requirements that do cause conflicts. For example, requiring the
-     newest version of voila_ once caused dependency conflicts with
-     other packages in the heliopythoniverse because voila_ had strict
-     dependencies on packages in the Jupyter ecosystem.
-
-* PlasmaPy should support at least the 3 latest minor versions of
-  |NumPy| and |Astropy|.
-
-* The required major and minor version numbers of upstream packages may
-  only change during major or minor releases of PlasmaPy, and not during
-  patch releases.
-
-* The ``tests`` and ``docs`` dependency sets are required for running
-  tests and building documentation, but are not required for package
-  installation. Consequently, it is not necessary to support older
-  versions of packages that are only in these optional dependency sets.
-
-.. tip::
-
-   Packages that depend on PlasmaPy should periodically run their tests
-   against the ``main`` branch of PlasmaPy. Similarly, PlasmaPy has
-   GitHub workflows that run its test suite against the development
-   versions of NumPy and Astropy; and build the documentation using the
-   newest version of Sphinx. Such tests can help find problems before
-   they are included in an official release.
-
-Benchmarks
-==========
-
-.. _benchmarks: https://www.plasmapy.org/plasmapy-benchmarks
-.. _benchmarks-repo: https://github.com/PlasmaPy/plasmapy-benchmarks
-.. _asv: https://github.com/airspeed-velocity/asv
-.. _asv-docs: https://asv.readthedocs.io/en/stable
-
-PlasmaPy has a set of asv_ benchmarks that monitor performance of its
-functionalities.  This is meant to protect the package from performance
-regressions. The benchmarks can be viewed at benchmarks_. They are
-generated from results located in `benchmarks-repo`_. Detailed
-instructions on writing such benchmarks can be found at `asv-docs`_.
-Up-to-date instructions on running the benchmark suite will be located
-in the README file of `benchmarks-repo`_.
+* `Create a release issue`_.
+* Make code quality and documentation updates.
+* Run the workflows for CI and weekly tests.
+* Reserve a DOI on Zenodo.
+* Run the workflow to `mint a release`_ to build the changelog, create a
+  release branch, and tag the version for the release.
+* Create a release on GitHub based on that tag. This step will trigger
+  the workflow to publish to the Python Package Index.
+* Create a pull request to merge the release back into ``main`` (but do
+  not squash merge it).
+* Download the :file:`.tar.gz` file for the tagged version on GitHub and
+  upload it to Zenodo (while updating metadata).
+* Make sure that the automated pull request to the conda-forge feedstock
+  is merged successfully
+* Activate the release on Read the Docs.
+* Test the release.
+* Update the `release checklist`_.
 
 .. _ASCII: https://en.wikipedia.org/wiki/ASCII
+.. _autotyping: https://github.com/JelleZijlstra/autotyping
 .. _cognitive complexity: https://docs.codeclimate.com/docs/cognitive-complexity
+.. _create a release issue: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/create-release-issue.yml
 .. _Cython: https://cython.org
 .. _equivalencies: https://docs.astropy.org/en/stable/units/equivalencies.html
+.. _error codes enabled by default: https://mypy.readthedocs.io/en/stable/error_code_list.html
+.. _error codes for optional checks: https://mypy.readthedocs.io/en/stable/error_code_list2.html
 .. _example notebook on particles: ../notebooks/getting_started/particles.ipynb
 .. _example notebook on units: ../notebooks/getting_started/units.ipynb
 .. _extract function refactoring pattern: https://refactoring.guru/extract-method
+.. _mint a release:
+.. _MonkeyType: https://monkeytype.readthedocs.io
 .. _NEP 29: https://numpy.org/neps/nep-0029-deprecation_policy.html
 .. _not a number: https://en.wikipedia.org/wiki/NaN
 .. _NumPy Enhancement Proposal 29: https://numpy.org/neps/nep-0029-deprecation_policy.html
-.. _SPEC 0: https://scientific-python.org/specs/spec-0000
+.. _Python Packaging User Guide: https://packaging.python.org
 .. _pyupgrade: https://github.com/asottile/pyupgrade
+.. _release checklist: https://github.com/PlasmaPy/PlasmaPy/blob/main/.github/content/release-checklist.md
 .. _rename refactoring in PyCharm: https://www.jetbrains.com/help/pycharm/rename-refactorings.html
+.. _SPEC 0: https://scientific-python.org/specs/spec-0000
+.. _TOML: https://toml.io/en/v1.0.0
+.. _type hints cheat sheet: https://mypy.readthedocs.io/en/stable/cheat_sheet_py3.html
+.. _update pinned requirements: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/update-pinned-reqs.yml
 .. _voila: https://voila.readthedocs.io
+.. _writing your pyproject.toml file: https://packaging.python.org/en/latest/guides/writing-pyproject-toml/
 
 .. _`astropy.units`: https://docs.astropy.org/en/stable/units/index.html
 .. |astropy.units| replace:: `astropy.units`
 
+.. _`ci_requirements/`: https://github.com/PlasmaPy/PlasmaPy/tree/main/ci_requirements
+.. |ci_requirements/| replace:: :file:`ci_requirements/`
+
+.. _`ci_requirements/README.md`: https://github.com/PlasmaPy/PlasmaPy/blob/main/ci_requirements/README.md
+.. |ci_requirements/README.md| replace:: :file:`ci_requirements/README.md`
+
+.. _`mypy.ini`: https://github.com/PlasmaPy/PlasmaPy/blob/main/mypy.ini
+.. |mypy.ini| replace:: :file:`mypy.ini`
+
+.. _`noxfile.py`: https://github.com/PlasmaPy/PlasmaPy/blob/main/noxfile.py
+.. |noxfile.py| replace:: :file:`noxfile.py`
+
 .. _`pyproject.toml`: https://github.com/PlasmaPy/PlasmaPy/blob/main/pyproject.toml
 .. |pyproject.toml| replace:: :file:`pyproject.toml`
-
-.. _`tox.ini`: https://github.com/PlasmaPy/PlasmaPy/blob/main/tox.ini
-.. |tox.ini| replace:: :file:`tox.ini`

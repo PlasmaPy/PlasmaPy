@@ -345,7 +345,7 @@ def test_particle_mass_equivalent_args(arg1, kwargs1, arg2, kwargs2, expected) -
         )
 
 
-@pytest.mark.slow()
+@pytest.mark.slow
 def test_known_common_stable_isotopes() -> None:
     """Test that `known_isotopes`, `common_isotopes`, and
     `stable_isotopes` return the correct values for hydrogen."""
@@ -423,7 +423,7 @@ def test_known_common_stable_isotopes_cases() -> None:
     assert "He-4" in common_isotopes("He", most_common_only=True)
 
 
-@pytest.mark.slow()
+@pytest.mark.slow
 def test_known_common_stable_isotopes_len() -> None:
     """Test that `known_isotopes`, `common_isotopes`, and
     `stable_isotopes` each return a `list` of the expected length.
@@ -606,6 +606,7 @@ def test_invalid_inputs_to_ion_list2(element, min_charge, max_charge) -> None:
         ionic_levels(element, min_charge, max_charge)
 
 
+@pytest.mark.slow
 @pytest.mark.parametrize(
     ("incident_particle", "material", "kwargs", "expected_error"),
     [
@@ -619,7 +620,9 @@ def test_invalid_inputs_to_ion_list2(element, min_charge, max_charge) -> None:
         (Particle("H+"), "OXYGEN", {"component": "Lorem Ipsum"}, ValueError),
     ],
 )
-def test_stopping_power_errors(incident_particle, material, kwargs, expected_error):
+def test_stopping_power_errors(
+    incident_particle, material, kwargs, expected_error
+) -> None:
     with pytest.raises(expected_error):
         stopping_power(incident_particle, material, **kwargs)
 
@@ -689,7 +692,7 @@ def test_stopping_power_errors(incident_particle, material, kwargs, expected_err
 )
 def test_stopping_power_interpolation(
     incident_particle, material, energies, component, expected_stopping_power
-):
+) -> None:
     """Test the interpolation functionality of the stopping power function against NIST values"""
     _, actual_stopping_power = stopping_power(
         incident_particle, material, energies, component=component
@@ -699,7 +702,7 @@ def test_stopping_power_interpolation(
     assert np.isclose(actual_stopping_power, expected_stopping_power, rtol=0.001).all()
 
 
-def test_stopping_power_no_interpolation():
+def test_stopping_power_no_interpolation() -> None:
     result = stopping_power(Particle("H+"), "COPPER")
 
     assert type(result) is tuple

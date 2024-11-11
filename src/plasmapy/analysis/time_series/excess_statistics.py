@@ -49,9 +49,9 @@ class ExcessStatistics:
     >>> excess_statistics.number_of_crossings
     [2, 1, 0]
     >>> excess_statistics.average_times
-    [1.5, 1.0, 0]
+    [np.float64(1.5), np.float64(1.0), 0]
     >>> excess_statistics.rms_times
-    [0.5, 0.0, 0]
+    [np.float64(0.5), np.float64(0.0), 0]
     """
 
     def __init__(self, signal, thresholds, time_step) -> None:
@@ -112,7 +112,7 @@ class ExcessStatistics:
 
             self.events_per_threshold.update({threshold: self._times_above_threshold})
 
-    def hist(self, bins=32):
+    def hist(self, bins: int = 32):
         """
         Computes the probability density function of the time above each value
         in ``thresholds``.

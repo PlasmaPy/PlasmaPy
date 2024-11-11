@@ -32,7 +32,7 @@ PlasmaPy is developed openly `on GitHub`_, where you can
    :ref:`cite or acknowledge <citation>` PlasmaPy.
 
 .. toctree::
-   :caption: First Steps
+   :caption: First steps
    :maxdepth: 1
 
    Installing <install>
@@ -42,8 +42,8 @@ PlasmaPy is developed openly `on GitHub`_, where you can
    Code of Conduct <CODE_OF_CONDUCT.rst>
    about/citation
 
-Example highlights
-------------------
+Example notebooks
+-----------------
 
 .. nbgallery::
    :hidden:
@@ -70,7 +70,7 @@ Example highlights
 
 .. toctree::
    :maxdepth: 1
-   :caption: All the Rest
+   :caption: Project details
 
    changelog/index
    about/credits
@@ -83,17 +83,17 @@ Example highlights
 
 .. toctree::
    :maxdepth: 1
-   :caption: Contributor Guide
+   :caption: Contributing
 
-   Overview <contributing/index>
+   Contributor Guide <contributing/index>
+   contributing/many_ways
    contributing/getting_ready
    contributing/workflow
    contributing/coding_guide
-   contributing/pre-commit
-   contributing/changelog_guide
-   contributing/doc_guide
    contributing/testing_guide
-   contributing/release_guide
+   contributing/doc_guide
+   contributing/changelog_guide
+   contributing/pre-commit
 
 .. _new discussion on GitHub: https://github.com/PlasmaPy/PlasmaPy/discussions/new/choose
 .. _on GitHub: https://github.com/PlasmaPy/PlasmaPy

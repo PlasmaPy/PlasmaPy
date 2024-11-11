@@ -1,2 +1,0 @@
-Added ``pytest-filter-subpackage`` to the ``tests`` dependency set. This dependency enables
-us to run, for example, ``pytest -P particles`` to invoke tests for `plasmapy.particles`.

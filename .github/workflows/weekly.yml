@@ -1,0 +1,202 @@
+name: weekly tests
+
+on:
+  schedule:
+  - cron: 37 7 * * 1
+  workflow_dispatch:
+  pull_request:
+    types: [labeled, opened, synchronize, reopened]
+    branches:
+    - main
+
+
+env:
+  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+jobs:
+
+  weekly:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'run weekly tests in CI')) ||
+      (github.event_name == 'schedule' && github.repository == 'PlasmaPy/PlasmaPy' && github.ref == 'refs/heads/main')
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+        include:
+
+        - name: Tests, Python 3.13, doctests, macOS
+          os: macos-latest
+          python: '3.13'
+          nox_session: tests-3.13(all)
+
+        - name: Tests, Python 3.12, macOS
+          os: macos-latest
+          python: '3.12'
+          nox_session: tests-3.12(all)
+
+        - name: Tests, Python 3.11, with code coverage, Windows
+          os: windows-latest
+          python: '3.11'
+          nox_session: tests-3.11(cov)
+
+        - name: Tests, Python 3.10, Ubuntu
+          os: ubuntu-latest
+          python: '3.10'
+          nox_session: tests-3.10(all)
+
+        - name: Tests, Python 3.10, lowest direct dependencies, Ubuntu
+          os: ubuntu-latest
+          python: '3.10'
+          nox_session: tests-3.10(lowest-direct)
+
+        - name: Tests, Python 3.13, astropy-dev, Ubuntu
+          os: ubuntu-latest
+          python: '3.13'
+          nox_session: run_tests_with_dev_version_of(astropy)
+
+        - name: Tests, Python 3.13, numpy-dev, Ubuntu
+          os: ubuntu-latest
+          python: '3.13'
+          nox_session: run_tests_with_dev_version_of(numpy)
+
+        - name: Tests, Python 3.13, xarray-dev, Ubuntu
+          os: ubuntu-latest
+          python: '3.13'
+          nox_session: run_tests_with_dev_version_of(xarray)
+
+        - name: Tests, Python 3.13, pandas-dev, Ubuntu
+          os: ubuntu-latest
+          python: '3.13'
+          nox_session: run_tests_with_dev_version_of(pandas)
+
+        - name: Tests, Python 3.13, lmfit-dev, Ubuntu
+          os: ubuntu-latest
+          python: '3.13'
+          nox_session: run_tests_with_dev_version_of(lmfit)
+
+        - name: Documentation, Python 3.12, Ubuntu
+          os: ubuntu-latest
+          python: '3.12'
+          nox_session: docs
+
+        - name: Documentation, Python 3.12, sphinx-dev, Ubuntu
+          os: ubuntu-latest
+          python: '3.12'
+          nox_session: build_docs_with_dev_version_of(sphinx)
+
+        - name: Documentation, Python 3.12, sphinx_rtd_theme-dev, Ubuntu
+          os: ubuntu-latest
+          python: '3.12'
+          nox_session: build_docs_with_dev_version_of(sphinx_rtd_theme)
+
+        - name: Documentation, Python 3.12, nbsphinx-dev, Ubuntu
+          os: ubuntu-latest
+          python: '3.12'
+          nox_session: build_docs_with_dev_version_of(nbsphinx)
+
+        - name: Static type checking with mypy, Python 3.13, Windows
+          os: windows-latest
+          python: '3.13'
+          nox_session: mypy
+
+        - name: Packaging, Python 3.13, Windows
+          os: windows-latest
+          python: '3.13'
+          nox_session: build
+
+        - name: Packaging, Python 3.12, Ubuntu
+          os: ubuntu-latest
+          python: '3.12'
+          nox_session: build
+
+        - name: Packaging, Python 3.11, macOS
+          os: macos-latest
+          python: '3.11'
+          nox_session: build
+
+        - name: Import PlasmaPy, Python 3.13, macOS
+          os: macos-latest
+          python: '3.13'
+          nox_session: import
+
+        - name: Import PlasmaPy, Python 3.12, Ubuntu
+          os: ubuntu-latest
+          python: '3.12'
+          nox_session: import
+
+        - name: Import PlasmaPy, Python 3.11, Windows
+          os: windows-latest
+          python: '3.11'
+          nox_session: import
+
+        - name: Check MANIFEST.in
+          os: ubuntu-latest
+          python: '3.13'
+          nox_session: manifest
+
+        - name: Lint
+          os: ubuntu-latest
+          python: '3.13'
+          nox_session: lint
+
+    steps:
+
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python }}
+        cache: pip
+
+    - name: Install graphviz and pandoc for documentation builds
+      if: startsWith(matrix.name, 'Documentation')
+      # This step only works with Ubuntu
+      run: sudo apt-get install graphviz pandoc
+
+    - name: Install Nox and uv
+      run: python -m pip install --progress-bar off --upgrade nox uv
+
+    - name: Cache .nox to shorten virtual environment creation time
+      uses: actions/cache@v4
+      with:
+        path: |
+          .nox
+        # Changing pyproject.toml or requirements invalidates the cache
+        key: ${{ matrix.nox_session }}-${{ matrix.python }}-${{ runner.os }}-${{ hashFiles('pyproject.toml', 'ci_requirements/all-3.12-linux.txt') }}
+
+    - name: Run Nox session
+      run: nox -s '${{ matrix.nox_session }}'
+
+    - name: Upload coverage reports to Codecov
+      if: ${{ contains(matrix.nox_session, 'cov') }}
+      uses: codecov/codecov-action@v4
+      with:
+        file: ./coverage.xml
+        fail_ci_if_error: false
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+  install-via-conda-forge:
+    name: Install PlasmaPy from conda-forge
+    runs-on: ubuntu-latest
+    if: (github.repository == 'PlasmaPy/PlasmaPy' && github.ref == 'refs/heads/main' && github.event_name != 'pull_request') || github.event_name == 'workflow_dispatch'
+
+    steps:
+
+    - name: Set up miniconda
+      uses: conda-incubator/setup-miniconda@v3
+      with:
+        auto-update-conda: true
+        python-version: '3.10'
+
+    - name: Use conda to install PlasmaPy from conda-forge
+      run: conda install -c conda-forge --yes plasmapy
