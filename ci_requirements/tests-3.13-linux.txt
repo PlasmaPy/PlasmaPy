@@ -12,9 +12,9 @@ arrow==1.3.0
     # via isoduration
 asteval==1.0.5
     # via lmfit
-astropy==6.1.4
+astropy==6.1.5
     # via plasmapy (pyproject.toml)
-astropy-iers-data==0.2024.11.4.0.33.34
+astropy-iers-data==0.2024.11.11.0.32.38
     # via astropy
 asttokens==2.4.1
     # via stack-data
@@ -49,7 +49,7 @@ coverage==7.6.4
     # via pytest-cov
 cycler==0.12.1
     # via matplotlib
-debugpy==1.8.7
+debugpy==1.8.8
     # via ipykernel
 decorator==5.1.1
     # via ipython
@@ -73,9 +73,9 @@ fqdn==1.5.1
     # via jsonschema
 h5py==3.12.1
     # via plasmapy (pyproject.toml)
-hypothesis==6.116.0
+hypothesis==6.118.7
     # via plasmapy (pyproject.toml)
-identify==2.6.1
+identify==2.6.2
     # via pre-commit
 idna==3.10
     # via
@@ -94,14 +94,14 @@ ipywidgets==8.1.5
     # via plasmapy (pyproject.toml)
 isoduration==20.11.0
     # via jsonschema
-jedi==0.19.1
+jedi==0.19.2
     # via ipython
 jinja2==3.1.4
     # via
     #   jupyter-server
     #   jupyterlab-server
     #   nbconvert
-json5==0.9.25
+json5==0.9.27
     # via jupyterlab-server
 jsonpointer==3.0.0
     # via jsonschema
@@ -196,7 +196,7 @@ numpy==2.1.3
     #   xarray
 overrides==7.7.0
     # via jupyter-server
-packaging==24.1
+packaging==24.2
     # via
     #   plasmapy (pyproject.toml)
     #   astropy
@@ -311,7 +311,7 @@ rfc3986-validator==0.1.1
     # via
     #   jsonschema
     #   jupyter-events
-rpds-py==0.20.1
+rpds-py==0.21.0
     # via
     #   jsonschema
     #   referencing
@@ -350,7 +350,7 @@ tornado==6.4.1
     #   jupyter-client
     #   jupyter-server
     #   terminado
-tqdm==4.66.6
+tqdm==4.67.0
     # via plasmapy (pyproject.toml)
 traitlets==5.14.3
     # via
@@ -387,7 +387,7 @@ voila==0.5.8
     # via plasmapy (pyproject.toml)
 wcwidth==0.2.13
     # via prompt-toolkit
-webcolors==24.8.0
+webcolors==24.11.1
     # via jsonschema
 webencodings==0.5.1
     # via
@@ -395,7 +395,7 @@ webencodings==0.5.1
     #   tinycss2
 websocket-client==1.8.0
     # via jupyter-server
-websockets==13.1
+websockets==14.0
     # via voila
 widgetsnbextension==4.0.13
     # via ipywidgets
