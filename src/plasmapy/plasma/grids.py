@@ -79,6 +79,9 @@ class AbstractGrid(ABC):
 
     """
 
+    # TODO: Add a method that applies a mask to soften the edges of the quantity grids
+    # so they go to zero, e.g. a pair of error functions in each direction.
+
     def __init__(self, *seeds: Sequence[u.Quantity], num: int = 100, **kwargs) -> None:
         # Initialize some variables
         self._interpolator = None
@@ -1068,7 +1071,7 @@ class CartesianGrid(AbstractGrid):
                     f"grid: {self.units}."
                 ) from ex
 
-    @property
+    @cached_property
     def grid_resolution(self):
         r"""
         A scalar estimate of the grid resolution, calculated as the

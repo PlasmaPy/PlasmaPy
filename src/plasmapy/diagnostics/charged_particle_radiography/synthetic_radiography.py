@@ -233,10 +233,8 @@ class Tracker(ParticleTracker):
             dt=dt,
             dt_range=dt_range,
             field_weighting=field_weighting,
-            verbose=False,
+            verbose=verbose,
         )
-
-        self.verbose = verbose
 
         # A list of wire meshes added to the grid with add_wire_mesh
         # Particles that would hit these meshes will be removed at runtime

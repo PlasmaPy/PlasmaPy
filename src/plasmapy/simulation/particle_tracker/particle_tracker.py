@@ -309,6 +309,10 @@ class ParticleTracker:
             # Initialize default values for time steps per gyroperiod and Courant parameter
             self.setup_adaptive_time_step()
 
+        sync = "synchronized" if self._is_synchronized_time_step else "asynchronous"
+        adaptive = "adaptive" if self._is_adaptive_time_step else "fixed-value"
+        self._log(f"Tracker setup using a {sync} {adaptive} timestep setup")
+
     def setup_adaptive_time_step(
         self,
         time_steps_per_gyroperiod: int | None = 12,
@@ -459,8 +463,8 @@ class ParticleTracker:
         return len(self.grids)
 
     def _log(self, msg) -> None:
-        if self.verbose:
-            print(msg)  # noqa: T201
+        # if self.verbose:
+        print(msg)  # noqa: T201
 
     @particle_input
     def load_particles(
@@ -498,7 +502,7 @@ class ParticleTracker:
                 f"({x.shape[0]} and {v.shape[0]} respectively)."
             )
         else:
-            self.nparticles: int = x.shape[0]
+            self.num_particles: int = x.shape[0]
 
         self.x = x.to(u.m).value
         self.v = v.to(u.m / u.s).value
@@ -532,15 +536,11 @@ class ParticleTracker:
                     )
 
                 if not self._is_quantity_defined_on_one_grid("rho"):
-                    warnings.warn(
-                        "The density is not defined on any of the provided grids! Particle stopping will not be "
-                        "calculated.",
-                        RuntimeWarning,
+                    raise ValueError(
+                        "The density is not defined on any of the provided grids! Particle stopping cannot be "
+                        "calculated."
                     )
 
-                    # Don't set `_do_stopping`. The push loop does not have to do stopping
-                    # calculations
-                    return False
             case "Bethe":
                 if I is None or len(I) != len(self.grids):
                     raise ValueError(
@@ -548,15 +548,10 @@ class ParticleTracker:
                     )
 
                 if not self._is_quantity_defined_on_one_grid("n_e"):
-                    warnings.warn(
+                    raise ValueError(
                         "The electron number density is not defined on any of the provided grids! "
-                        "Particle stopping will not be calculated.",
-                        RuntimeWarning,
+                        "Particle stopping cannot be calculated."
                     )
-
-                    # Don't set `_do_stopping`. The push loop does not have to do stopping
-                    # calculations
-                    return False
 
         return True
 
@@ -573,7 +568,27 @@ class ParticleTracker:
         PSTAR database. This information is combined with the mass density
         quantity provided in the grids to calculate the energy loss over the
         distance travelled during a timestep.
+
+        Parameters
+        ----------
+        method : str
+            Sets the method for calculating particle stopping powers. Valid inputs
+            are 'Bethe' and 'NIST'.
+
+        materials : list[str]
+            A list of materials (one per grid) required when using the NIST
+            stopping power table method.
+
+        I : `~astropy.units.Quantity`
+            The mean excitation energy ``I`` in the Bethe stopping model,
+            only required when using the 'Bethe' stopping method. In the
+            Bethe model, ``I`` completely describes the material, and is
+            approximately equal to 10 eV * A, where A is the atomic
+            number of the atoms in the material.
+
+
         """
+        # TODO: Add a reference somewhere to the valid material strings?
 
         # Check inputs for user error and raise respective exceptions/warnings if
         # necessary. Returns `True` if no errors were detected. If a "falsy" value
@@ -624,6 +639,8 @@ class ParticleTracker:
         self._stopping_method = method
         self._stopping_power_interpolators = stopping_power_interpolators
 
+        self._log(f"Stopping module activated using the {method} method")
+
     def run(self) -> None:
         r"""
         Runs a particle-tracing simulation.
@@ -646,13 +663,19 @@ class ParticleTracker:
         # The time state of a simulation with synchronized time step can be described
         # by a single number. Otherwise, a time value is required for each particle.
         self.time: NDArray[np.float64] | float = (
-            np.zeros((self.nparticles, 1)) if not self.is_synchronized_time_step else 0
+            np.zeros((self.num_particles, 1))
+            if not self.is_synchronized_time_step
+            else 0
         )
 
-        # Entered grid -> non-zero if particle EVER entered any grid
-        self.entered_grid: NDArray[np.bool_] = np.zeros([self.nparticles]).astype(
-            np.bool_
-        )
+        self.on_grid: NDArray[np.bool_] = np.zeros(
+            [self.num_particles, self.num_grids]
+        ).astype(np.bool_)
+
+        # non-zero if particle EVER entered ANY grid
+        self.ever_entered_any_grid: NDArray[np.bool_] = np.zeros(
+            [self.num_particles]
+        ).astype(np.bool_)
 
         # Initialize a "progress bar" (really more of a meter)
         # Setting sys.stdout lets this play nicely with regular print()
@@ -666,10 +689,12 @@ class ParticleTracker:
             file=sys.stdout,
         )
 
+        self._update_masks()
+
         # Push the particles until the termination condition is satisfied
         # or the number of particles being evolved is zero
         is_finished = False
-        while not (is_finished or self.nparticles_tracked == 0):
+        while not (is_finished or self.num_particles_tracked == 0):
             is_finished = self.termination_condition.is_finished
             progress = min(
                 self.termination_condition.progress, self.termination_condition.total
@@ -705,7 +730,7 @@ class ParticleTracker:
         entered grid array.
         """
 
-        return (self.entered_grid > 0).sum()
+        return (self.ever_entered_any_grid > 0).sum()
 
     @property
     def fract_entered(self):
@@ -714,8 +739,8 @@ class ParticleTracker:
         particles, and therefore does not include stopped or removed particles.
         """
         return (
-            self.num_entered - self.nparticles_removed - self.nparticles_stopped
-        ) / self.nparticles_tracked
+            self.num_entered - self.num_particles_removed - self.num_particles_stopped
+        ) / self.num_particles_tracked
 
     def _stop_particles(self, particles_to_stop_mask) -> None:
         """Stop tracking the particles specified by the stop mask.
@@ -758,7 +783,7 @@ class ParticleTracker:
 
         # candidate time steps includes one per grid (based on the grid resolution)
         # plus additional candidates based on the field at each particle
-        candidates = np.ones([self.nparticles, self.num_grids + 1]) * np.inf
+        candidates = np.ones([self.num_particles, self.num_grids + 1]) * np.inf
 
         # Compute the time step indicated by the grid resolution
         ds = np.array([grid.grid_resolution.to(u.m).value for grid in self.grids])
@@ -809,7 +834,7 @@ class ParticleTracker:
     @property
     def particles_on_grid(self):
         r"""
-        Returns a boolean mask of shape [ngrids, nparticles] corresponding to
+        Returns a boolean mask of shape [ngrids, num_particles] corresponding to
         whether or not the particle is on the associated grid.
         """
 
@@ -837,7 +862,9 @@ class ParticleTracker:
 
         # entered_grid is zero at the end if a particle has never
         # entered any grid
-        self.entered_grid += np.sum(self.particles_on_grid, axis=-1).astype(np.bool_)
+        self.ever_entered_any_grid += np.sum(self.particles_on_grid, axis=-1).astype(
+            np.bool_
+        )
 
         # TODO: how should we handle unrecognized quantities?
 
@@ -845,7 +872,7 @@ class ParticleTracker:
         # This is accomplished using a dictionary comprehension. Each quantity is
         # initialized as a zeros array with its respective units
         total_grid_values = {
-            field_name: np.zeros(self.nparticles_tracked)
+            field_name: np.zeros(self.num_particles_tracked)
             * AbstractGrid.recognized_quantities()[field_name].unit
             for field_name in self._required_quantities
         }
@@ -897,7 +924,7 @@ class ParticleTracker:
         else:
             dt = self.dt  # type: ignore[assignment]
 
-        # Make sure the time step can be multiplied by a [nparticles, 3] shape field array
+        # Make sure the time step can be multiplied by a [num_particles, 3] shape field array
         if isinstance(dt, np.ndarray) and dt.size > 1:
             dt = dt[self._tracked_particle_mask, np.newaxis]
 
@@ -959,7 +986,7 @@ class ParticleTracker:
         )
         dx = np.multiply(current_speeds, self.dt)  # type: ignore[arg-type]
 
-        stopping_power = np.zeros((self.nparticles_tracked, 1))
+        stopping_power = np.zeros((self.num_particles_tracked, 1))
         relevant_kinetic_energy = (
             self._particle_kinetic_energy[self._tracked_particle_mask] * u.J
         )
@@ -1032,6 +1059,9 @@ class ParticleTracker:
         Boris algorithm.
         """
 
+        # Initialize masks
+        self._update_masks()
+
         # Interpolate fields at particle positions
         total_grid_values = self._interpolate_grid()
 
@@ -1071,54 +1101,37 @@ class ParticleTracker:
 
         This quantity is used for determining the grid crossing maximum time step.
         """
-        tracked_mask = self._tracked_particle_mask
+        return float(
+            np.max(np.linalg.norm(self.v[self._tracked_particle_mask], axis=-1))
+        )
 
-        return float(np.max(np.linalg.norm(self.v[tracked_mask], axis=-1)))
+    def _update_masks(self) -> None:
+        """
+        Update the tracked, stopped, and removed particle masks.
 
-    @property
-    def _tracked_particle_mask(self) -> NDArray[np.bool_]:
+        This method is called once at the beginning of each
+        push cycle.
+
+        Notes
+        -----
+        Previously these were properties - hopefully calculating them every cycle
+        instead of on every call will reduce runtime?
         """
-        Calculates a boolean mask corresponding to particles that have not been stopped or removed.
-        """
+
         # See Class docstring for definition of `stopped` and `removed`
-        return ~np.logical_or(np.isnan(self.x[:, 0]), np.isnan(self.v[:, 0]))
+        self._tracked_particle_mask = ~np.logical_or(
+            np.isnan(self.x[:, 0]), np.isnan(self.v[:, 0])
+        )
+        self._stopped_particle_mask = np.logical_and(
+            ~np.isnan(self.x[:, 0]), np.isnan(self.v[:, 0])
+        )
+        self._removed_particle_mask = np.logical_and(
+            np.isnan(self.x[:, 0]), np.isnan(self.v[:, 0])
+        )
 
-    @property
-    def nparticles_tracked(self) -> int:
-        """Return the number of particles currently being tracked.
-        That is, they do not have NaN position or velocity.
-        """
-        return int(self._tracked_particle_mask.sum())
-
-    @property
-    def _stopped_particle_mask(self) -> NDArray[np.bool_]:
-        """
-        Calculates a boolean mask corresponding to particles that have not been stopped or removed.
-        """
-        # See Class docstring for definition of `stopped` and `removed`
-        return np.logical_and(~np.isnan(self.x[:, 0]), np.isnan(self.v[:, 0]))
-
-    @property
-    def nparticles_stopped(self) -> int:
-        """Return the number of particles currently being tracked.
-        That is, they do not have NaN position or velocity.
-        """
-        return int(self._stopped_particle_mask.sum())
-
-    @property
-    def _removed_particle_mask(self) -> NDArray[np.bool_]:
-        """
-        Calculates a boolean mask corresponding to particles that have not been stopped or removed.
-        """
-        # See Class docstring for definition of `stopped` and `removed`
-        return np.logical_and(np.isnan(self.x[:, 0]), np.isnan(self.v[:, 0]))
-
-    @property
-    def nparticles_removed(self) -> int:
-        """Return the number of particles currently being tracked.
-        That is, they do not have NaN position or velocity.
-        """
-        return int(self._removed_particle_mask.sum())
+        self.num_particles_tracked = int(self._tracked_particle_mask.sum())
+        self.num_particles_stopped = int(self._stopped_particle_mask.sum())
+        self.num_particles_removed = int(self._removed_particle_mask.sum())
 
     @property
     def is_adaptive_time_step(self) -> bool:
