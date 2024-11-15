@@ -24,6 +24,7 @@ import pandas as pd
 import scipy.interpolate as interp
 import xarray as xr
 from scipy.spatial import distance
+from scipy.special import erf
 
 from plasmapy.utils.decorators.helpers import modify_docstring
 
@@ -78,9 +79,6 @@ class AbstractGrid(ABC):
        will be passed directly to `~numpy.linspace`.
 
     """
-
-    # TODO: Add a method that applies a mask to soften the edges of the quantity grids
-    # so they go to zero, e.g. a pair of error functions in each direction.
 
     def __init__(self, *seeds: Sequence[u.Quantity], num: int = 100, **kwargs) -> None:
         # Initialize some variables
@@ -1109,6 +1107,43 @@ class CartesianGrid(AbstractGrid):
         Tmax = np.min(Tmax)
 
         return Tmin < Tmax
+
+    def soften_edges(self, width: u.Quantity | None = None) -> None:
+        """
+        Applies a mask to soften the edges of the quantity arrays.
+
+        Ensures that quantities go to zero near the boundaries of the grid.
+
+        Parameters
+        ----------
+        width : `~astropy.units.Quantity` (optional)
+            Width of the transition region.
+            Defaults to 10% of the size of the grid.
+
+        """
+        if isinstance(width, u.Quantity):
+            width = [
+                width,
+            ] * 3
+
+        mask = np.ones(self.shape)
+        for i, pts in enumerate([self.pts0, self.pts1, self.pts2]):
+            w = 0.1 * (np.max(pts) - np.min(pts)) if width is None else width[i]
+
+            sigma = w / 4
+            pad = 2
+            x1 = np.min(pts) + pad * sigma
+            x2 = np.max(pts) - pad * sigma
+            mask *= (
+                0.5
+                * (erf((pts - x1) / sigma) + 1)
+                * -0.5
+                * (erf((pts - x2) / sigma) - 1)
+            )
+
+        # Apply the mask
+        for q in self.quantities:
+            self.ds[q].data = self.ds[q].data * mask
 
     @modify_docstring(prepend=AbstractGrid.nearest_neighbor_interpolator.__doc__)
     def nearest_neighbor_interpolator(

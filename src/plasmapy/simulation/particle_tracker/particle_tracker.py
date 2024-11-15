@@ -11,6 +11,7 @@ import sys
 import typing
 import warnings
 from collections.abc import Iterable
+from functools import cached_property
 from typing import Literal
 
 import astropy.constants as const
@@ -829,34 +830,9 @@ class ParticleTracker:
 
         return dt
 
-    @property
-    def particles_on_grid(self):
-        r"""
-        Returns a boolean mask of shape [ngrids, num_particles] corresponding to
-        whether or not the particle is on the associated grid.
-        """
-
-        all_particles = np.array([grid.on_grid(self.x * u.m) for grid in self.grids]).T
-        all_particles[~self._tracked_particle_mask] = False
-
-        return all_particles
-
-    @property
-    def _particle_kinetic_energy(self):
-        r"""
-        Return the non-relativistic kinetic energy of the particles.
-        """
-
-        # TODO: how should the relativistic case be handled?
-        return 0.5 * self.m * np.square(np.linalg.norm(self.v, axis=-1, keepdims=True))
-
     def _interpolate_grid(self):
         # Get a list of positions (input for interpolator)
-        tracked_mask = self._tracked_particle_mask
-
-        self.iteration_number += 1
-
-        pos_tracked = self.x[tracked_mask]
+        pos_tracked = self.x[self._tracked_particle_mask]
 
         # entered_grid is zero at the end if a particle has never
         # entered any grid
@@ -1056,6 +1032,8 @@ class ParticleTracker:
         Advance particles using an implementation of the time-centered
         Boris algorithm.
         """
+        self.iteration_number += 1
+
         # Interpolate fields at particle positions
         total_grid_values = self._interpolate_grid()
 
@@ -1070,18 +1048,55 @@ class ParticleTracker:
             beta_max = self.vmax / const.c.si.value
 
             if beta_max >= 0.001:
-                self._raised_relativity_warning = True
-
                 warnings.warn(
                     f"Particles have reached {beta_max}% of the speed of light. Consider using a relativistic integrator for more accurate results.",
                     RelativityWarning,
                 )
 
+                self._raised_relativity_warning = True
+
         # Update velocities to reflect stopping
         if self._do_stopping:
             self._update_velocity_stopping(total_grid_values)
 
-    @property
+        # Reset cached properties that need to be re-calculated for each
+        # push cycle.
+        self._reset_cache()
+
+    def _reset_cache(self):
+        """
+        Reset the cached properties - called after each push cycle.
+        """
+        properties = [
+            "particles_on_grid",
+            "on_any_grid",
+            "vmax",
+            "_particle_kinetic_energy",
+            "_tracked_particle_mask",
+            "num_particles_tracked",
+            "_stopped_particle_mask",
+            "num_particles_stopped",
+            "_removed_particle_mask",
+            "num_particles_removed",
+        ]
+
+        for prop in properties:
+            if prop in self.__dict__:
+                del self.__dict__[prop]
+
+    @cached_property
+    def particles_on_grid(self):
+        r"""
+        Returns a boolean mask of shape [ngrids, num_particles] corresponding to
+        whether or not the particle is on the associated grid.
+        """
+
+        all_particles = np.array([grid.on_grid(self.x * u.m) for grid in self.grids]).T
+        all_particles[~self._tracked_particle_mask] = False
+
+        return all_particles
+
+    @cached_property
     def on_any_grid(self) -> NDArray[np.bool_]:
         """
         Binary array for each particle indicating whether it is currently
@@ -1089,7 +1104,7 @@ class ParticleTracker:
         """
         return np.sum(self.particles_on_grid, axis=-1) > 0
 
-    @property
+    @cached_property
     def vmax(self) -> float:
         """The maximum velocity of any particle in the simulation.
 
@@ -1099,7 +1114,16 @@ class ParticleTracker:
             np.max(np.linalg.norm(self.v[self._tracked_particle_mask], axis=-1))
         )
 
-    @property
+    @cached_property
+    def _particle_kinetic_energy(self):
+        r"""
+        Return the non-relativistic kinetic energy of the particles.
+        """
+
+        # TODO: how should the relativistic case be handled?
+        return 0.5 * self.m * np.square(np.linalg.norm(self.v, axis=-1, keepdims=True))
+
+    @cached_property
     def _tracked_particle_mask(self) -> NDArray[np.bool_]:
         """
         Calculates a boolean mask corresponding to particles that have not been stopped or removed.
@@ -1107,14 +1131,14 @@ class ParticleTracker:
         # See Class docstring for definition of `stopped` and `removed`
         return ~np.logical_or(np.isnan(self.x[:, 0]), np.isnan(self.v[:, 0]))
 
-    @property
+    @cached_property
     def num_particles_tracked(self) -> int:
         """Return the number of particles currently being tracked.
         That is, they do not have NaN position or velocity.
         """
         return int(self._tracked_particle_mask.sum())
 
-    @property
+    @cached_property
     def _stopped_particle_mask(self) -> NDArray[np.bool_]:
         """
         Calculates a boolean mask corresponding to particles that have not been stopped or removed.
@@ -1122,14 +1146,14 @@ class ParticleTracker:
         # See Class docstring for definition of `stopped` and `removed`
         return np.logical_and(~np.isnan(self.x[:, 0]), np.isnan(self.v[:, 0]))
 
-    @property
+    @cached_property
     def num_particles_stopped(self) -> int:
         """Return the number of particles currently being tracked.
         That is, they do not have NaN position or velocity.
         """
         return int(self._stopped_particle_mask.sum())
 
-    @property
+    @cached_property
     def _removed_particle_mask(self) -> NDArray[np.bool_]:
         """
         Calculates a boolean mask corresponding to particles that have not been stopped or removed.
@@ -1137,7 +1161,7 @@ class ParticleTracker:
         # See Class docstring for definition of `stopped` and `removed`
         return np.logical_and(np.isnan(self.x[:, 0]), np.isnan(self.v[:, 0]))
 
-    @property
+    @cached_property
     def num_particles_removed(self) -> int:
         """Return the number of particles currently being tracked.
         That is, they do not have NaN position or velocity.
