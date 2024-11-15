@@ -519,8 +519,8 @@ def test_particle_tracker_add_stopping_errors(
     with pytest.raises(expected_error, match=re.escape(match_string)):
         simulation.add_stopping(**kwargs)
 
-    with pytest.warns(
-        RuntimeWarning, match="The density is not defined on any of the provided grids!"
+    with pytest.raises(
+        ValueError, match="The density is not defined on any of the provided grids!"
     ):
         simulation.add_stopping(method="NIST", materials=["ALUMINUM"])
 
@@ -548,9 +548,7 @@ def test_particle_tracker_Bethe_warning(
     simulation = ParticleTracker(grid, termination_condition, save_routine, dt=dt)
     simulation.load_particles(x, v, Particle("p+"))
 
-    with pytest.warns(
-        RuntimeWarning, match="The electron number density is not defined"
-    ):
+    with pytest.raises(ValueError, match="The electron number density is not defined"):
         simulation.add_stopping(method="Bethe", I=[0] * u.eV)
 
     grid.add_quantities(n_e=n_e)

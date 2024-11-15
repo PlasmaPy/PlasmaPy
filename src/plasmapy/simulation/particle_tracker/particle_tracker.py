@@ -689,8 +689,6 @@ class ParticleTracker:
             file=sys.stdout,
         )
 
-        self._update_masks()
-
         # Push the particles until the termination condition is satisfied
         # or the number of particles being evolved is zero
         is_finished = False
@@ -1058,10 +1056,6 @@ class ParticleTracker:
         Advance particles using an implementation of the time-centered
         Boris algorithm.
         """
-
-        # Initialize masks
-        self._update_masks()
-
         # Interpolate fields at particle positions
         total_grid_values = self._interpolate_grid()
 
@@ -1105,33 +1099,50 @@ class ParticleTracker:
             np.max(np.linalg.norm(self.v[self._tracked_particle_mask], axis=-1))
         )
 
-    def _update_masks(self) -> None:
+    @property
+    def _tracked_particle_mask(self) -> NDArray[np.bool_]:
         """
-        Update the tracked, stopped, and removed particle masks.
-
-        This method is called once at the beginning of each
-        push cycle.
-
-        Notes
-        -----
-        Previously these were properties - hopefully calculating them every cycle
-        instead of on every call will reduce runtime?
+        Calculates a boolean mask corresponding to particles that have not been stopped or removed.
         """
-
         # See Class docstring for definition of `stopped` and `removed`
-        self._tracked_particle_mask = ~np.logical_or(
-            np.isnan(self.x[:, 0]), np.isnan(self.v[:, 0])
-        )
-        self._stopped_particle_mask = np.logical_and(
-            ~np.isnan(self.x[:, 0]), np.isnan(self.v[:, 0])
-        )
-        self._removed_particle_mask = np.logical_and(
-            np.isnan(self.x[:, 0]), np.isnan(self.v[:, 0])
-        )
+        return ~np.logical_or(np.isnan(self.x[:, 0]), np.isnan(self.v[:, 0]))
 
-        self.num_particles_tracked = int(self._tracked_particle_mask.sum())
-        self.num_particles_stopped = int(self._stopped_particle_mask.sum())
-        self.num_particles_removed = int(self._removed_particle_mask.sum())
+    @property
+    def num_particles_tracked(self) -> int:
+        """Return the number of particles currently being tracked.
+        That is, they do not have NaN position or velocity.
+        """
+        return int(self._tracked_particle_mask.sum())
+
+    @property
+    def _stopped_particle_mask(self) -> NDArray[np.bool_]:
+        """
+        Calculates a boolean mask corresponding to particles that have not been stopped or removed.
+        """
+        # See Class docstring for definition of `stopped` and `removed`
+        return np.logical_and(~np.isnan(self.x[:, 0]), np.isnan(self.v[:, 0]))
+
+    @property
+    def num_particles_stopped(self) -> int:
+        """Return the number of particles currently being tracked.
+        That is, they do not have NaN position or velocity.
+        """
+        return int(self._stopped_particle_mask.sum())
+
+    @property
+    def _removed_particle_mask(self) -> NDArray[np.bool_]:
+        """
+        Calculates a boolean mask corresponding to particles that have not been stopped or removed.
+        """
+        # See Class docstring for definition of `stopped` and `removed`
+        return np.logical_and(np.isnan(self.x[:, 0]), np.isnan(self.v[:, 0]))
+
+    @property
+    def num_particles_removed(self) -> int:
+        """Return the number of particles currently being tracked.
+        That is, they do not have NaN position or velocity.
+        """
+        return int(self._removed_particle_mask.sum())
 
     @property
     def is_adaptive_time_step(self) -> bool:
