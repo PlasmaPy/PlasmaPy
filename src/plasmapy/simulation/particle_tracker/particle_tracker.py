@@ -199,6 +199,16 @@ class ParticleTracker:
         req_quantities=None,
         verbose: bool = True,
     ) -> None:
+        # Verbose flag controls whether or not output is printed to stdout
+        self.verbose = verbose
+
+        # This flag records whether the simulation has been run
+        self._has_run = False
+
+        # Should the tracker update particle energies after every time step to
+        # reflect stopping?
+        self._do_stopping = False
+
         # Instantiate the integrator object for use in the _push() method
         self._integrator: AbstractIntegrator = (
             RelativisticBorisIntegrator()
@@ -228,15 +238,6 @@ class ParticleTracker:
             raise ValueError(
                 "Specifying a time step range is only possible for an adaptive time step."
             )
-
-        self.verbose = verbose
-
-        # This flag records whether the simulation has been run
-        self._has_run = False
-
-        # Should the tracker update particle energies after every time step to
-        # reflect stopping?
-        self._do_stopping = False
 
         # Raise a ValueError if a synchronized dt is required by termination condition or save routine but one is
         # not given. This is only the case if an array with differing entries is specified for dt
@@ -754,6 +755,9 @@ class ParticleTracker:
 
         self.v[particles_to_stop_mask] = np.nan
 
+        # Reset the cache to update the particle masks
+        self._reset_cache()
+
     def _remove_particles(self, particles_to_remove_mask) -> None:
         """Remove the specified particles from the simulation.
 
@@ -768,6 +772,9 @@ class ParticleTracker:
 
         self.x[particles_to_remove_mask] = np.nan
         self.v[particles_to_remove_mask] = np.nan
+
+        # Reset the cache to update the particle masks
+        self._reset_cache()
 
     # *************************************************************************
     # Run/push loop methods
