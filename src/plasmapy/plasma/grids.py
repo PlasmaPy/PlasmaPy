@@ -9,7 +9,6 @@ __all__ = [
     "CartesianGrid",
     "NonUniformCartesianGrid",
 ]
-
 import contextlib
 import warnings
 from abc import ABC, abstractmethod
@@ -392,7 +391,7 @@ class AbstractGrid(ABC):
     # *************************************************************************
     # 1D axes and step sizes (valid only for uniform grids)
     # *************************************************************************
-    @property
+    @cached_property
     def si_scale_factors(self) -> list[float]:
         """
         3-element list containing unitless scale factors for converting
@@ -445,7 +444,7 @@ class AbstractGrid(ABC):
         ax = self._get_ax(axis=axis, si=si)
         return np.mean(np.gradient(ax))
 
-    @property
+    @cached_property
     def _ax0_si(self):
         """
         The :attr:`ax0` axis without units, but scaled such that its values
@@ -455,7 +454,7 @@ class AbstractGrid(ABC):
         """
         return self._get_ax(axis=0, si=True)
 
-    @property
+    @cached_property
     def ax0(self):
         r"""
         First axis of the grid.
@@ -464,7 +463,7 @@ class AbstractGrid(ABC):
         """
         return self._get_ax(axis=0)
 
-    @property
+    @cached_property
     def _ax1_si(self):
         """
         The :attr:`ax1` axis without units, but scaled such that its values
@@ -474,7 +473,7 @@ class AbstractGrid(ABC):
         """
         return self._get_ax(axis=1, si=True)
 
-    @property
+    @cached_property
     def ax1(self):
         r"""
         Second axis of the grid.
@@ -483,7 +482,7 @@ class AbstractGrid(ABC):
         """
         return self._get_ax(axis=1)
 
-    @property
+    @cached_property
     def _ax2_si(self):
         """
         The :attr:`ax2` axis without units, but scaled such that its values
@@ -493,7 +492,7 @@ class AbstractGrid(ABC):
         """
         return self._get_ax(axis=2, si=True)
 
-    @property
+    @cached_property
     def ax2(self):
         r"""
         Third axis of the grid.
@@ -502,7 +501,7 @@ class AbstractGrid(ABC):
         """
         return self._get_ax(axis=2)
 
-    @property
+    @cached_property
     def _dax0_si(self):
         """
         Grid step size along axis :attr:`ax0` without units and scaled such
@@ -512,7 +511,7 @@ class AbstractGrid(ABC):
         """
         return self._get_dax(axis=0, si=True)
 
-    @property
+    @cached_property
     def dax0(self):
         r"""
         Grid step size along axis :attr:`ax0`.
@@ -521,7 +520,7 @@ class AbstractGrid(ABC):
         """
         return self._get_dax(axis=0)
 
-    @property
+    @cached_property
     def _dax1_si(self):
         """
         Grid step size along axis :attr:`ax1` without units and scaled such
@@ -531,7 +530,7 @@ class AbstractGrid(ABC):
         """
         return self._get_dax(axis=1, si=True)
 
-    @property
+    @cached_property
     def dax1(self):
         r"""
         Grid step size along axis :attr:`ax1`.
@@ -540,7 +539,7 @@ class AbstractGrid(ABC):
         """
         return self._get_dax(axis=1)
 
-    @property
+    @cached_property
     def _dax2_si(self):
         """
         Grid step size along axis :attr:`ax2` without units and scaled such
@@ -550,7 +549,7 @@ class AbstractGrid(ABC):
         """
         return self._get_dax(axis=2, si=True)
 
-    @property
+    @cached_property
     def dax2(self):
         r"""
         Grid step size along axis :attr:`ax2`.

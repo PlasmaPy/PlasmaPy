@@ -289,9 +289,11 @@ class ParticleTracker:
             # Initialize default values for time steps per gyroperiod and Courant parameter
             self.setup_adaptive_time_step()
 
-        sync = "synchronized" if self._is_synchronized_time_step else "asynchronous"
+        sync = (
+            "a synchronized" if self._is_synchronized_time_step else "an asynchronous"
+        )
         adaptive = "adaptive" if self._is_adaptive_time_step else "fixed-value"
-        self._log(f"Tracker setup using a {sync} {adaptive} timestep setup")
+        self._log(f"Tracker setup using {sync} {adaptive} timestep setup")
 
     def setup_adaptive_time_step(
         self,
@@ -837,7 +839,7 @@ class ParticleTracker:
 
             # Use the keys of `total_grid_values` as input quantity strings to the interpolator
             grid_values = interpolation_method(
-                pos_tracked * u.m,
+                pos_tracked,
                 *self._interpolated_quantities_per_grid[i],
                 persistent=True,
             )
