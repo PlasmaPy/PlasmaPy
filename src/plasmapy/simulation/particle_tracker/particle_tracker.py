@@ -421,16 +421,6 @@ class ParticleTracker:
         self.x = x.to(u.m).value
         self.v = v.to(u.m / u.s).value
 
-    def _is_quantity_defined_on_one_grid(self, quantity: str) -> bool:
-        r"""
-        Check to ensure the provided quantity string is defined on at least one grid.
-
-        Returns ``True`` if the quantity is defined on at least one grid and
-        ``False`` if none of the grids have defined the specified quantity.
-        """
-
-        return any(quantity in grid.quantities for grid in self.grids)
-
     def _validate_stopping_inputs(
         self,
         method: Literal["NIST", "Bethe"],
