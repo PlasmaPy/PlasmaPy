@@ -839,7 +839,7 @@ class ParticleTracker:
 
             # Use the keys of `total_grid_values` as input quantity strings to the interpolator
             grid_values = interpolation_method(
-                pos_tracked,
+                pos_tracked * u.m,
                 *self._interpolated_quantities_per_grid[i],
                 persistent=True,
             )

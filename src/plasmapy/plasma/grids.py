@@ -1140,9 +1140,17 @@ class CartesianGrid(AbstractGrid):
                 * (erf((pts - x2) / sigma) - 1)
             )
 
+        edge_mask = np.ones(self.shape)
+        edge_mask[0, :, :] = 0
+        edge_mask[-1, :, :] = 0
+        edge_mask[:, 0, :] = 0
+        edge_mask[:, 1, :] = 0
+        edge_mask[:, :, 0] = 0
+        edge_mask[:, :, -1] = 0
+
         # Apply the mask
         for q in self.quantities:
-            self.ds[q].data = self.ds[q].data * mask
+            self.ds[q].data = self.ds[q].data * mask * edge_mask
 
     @modify_docstring(prepend=AbstractGrid.nearest_neighbor_interpolator.__doc__)
     def nearest_neighbor_interpolator(
