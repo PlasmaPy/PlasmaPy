@@ -432,8 +432,8 @@ class ParticleTracker:
     def _validate_stopping_inputs(
         self,
         method: Literal["NIST", "Bethe"],
-        materials: list[str] | None = None,
-        I: u.Quantity[u.J] | None = None,  # noqa: E741
+        materials: list[str | None] | None = None,
+        I: list[u.Quantity[u.J] | None] | None = None,  # noqa: E741
     ) -> bool:
         r"""
         Validate inputs to the `add_stopping` method. Raises errors if the
@@ -447,11 +447,12 @@ class ParticleTracker:
                         "Please provide an array of length ngrids for the materials."
                     )
 
-                if not self._is_quantity_defined_on_one_grid("rho"):
-                    raise ValueError(
-                        "The density is not defined on any of the provided grids! Particle stopping cannot be "
-                        "calculated."
-                    )
+                for i, grid in enumerate(self.grids):
+                    if materials[i] is not None and "rho" not in grid.quantities:
+                        raise ValueError(
+                            f"Material {materials[i]} was provided for stopping on grid {i},"
+                            " but quantity ``rho`` is not defined on that grid."
+                        )
 
             case "Bethe":
                 if I is None or len(I) != len(self.grids):
@@ -459,19 +460,20 @@ class ParticleTracker:
                         "Please provide an array of length ngrids for the mean excitation energy."
                     )
 
-                if not self._is_quantity_defined_on_one_grid("n_e"):
-                    raise ValueError(
-                        "The electron number density is not defined on any of the provided grids! "
-                        "Particle stopping cannot be calculated."
-                    )
+                for i, grid in enumerate(self.grids):
+                    if I[i] is not None and "n_e" not in grid.quantities:
+                        raise ValueError(
+                            f"I={I[i]} was provided for stopping on grid {i},"
+                            " but quantity ``n_e`` is not defined on that grid."
+                        )
 
         return True
 
     def add_stopping(
         self,
         method: Literal["NIST", "Bethe"],
-        materials: list[str] | None = None,
-        I: u.Quantity[u.J] | None = None,  # noqa: E741
+        materials: list[str | None] | None = None,
+        I: list[u.Quantity[u.J] | None] | None = None,  # noqa: E741
     ):
         r"""
         Enable particle stopping using experimental stopping powers.
@@ -487,11 +489,12 @@ class ParticleTracker:
             Sets the method for calculating particle stopping powers. Valid inputs
             are 'Bethe' and 'NIST'.
 
-        materials : list[str]
+        materials : list[str|None]
             A list of materials (one per grid) required when using the NIST
-            stopping power table method.
+            stopping power table method. Grids with no stopping material
+            should be set to ``None``.
 
-        I : `~astropy.units.Quantity`
+        I : list[`~astropy.units.Quantity`|None]
             The mean excitation energy ``I`` in the Bethe stopping model,
             only required when using the 'Bethe' stopping method. In the
             Bethe model, ``I`` completely describes the material, and is
@@ -513,6 +516,8 @@ class ParticleTracker:
                 self._required_quantities += ["rho"]
                 stopping_power_interpolators = [
                     stopping_power(self._particle, material, return_interpolator=True)
+                    if material is not None
+                    else None
                     for material in materials
                 ]
 
@@ -531,7 +536,10 @@ class ParticleTracker:
                     return inner_Bethe_stopping
 
                 stopping_power_interpolators = [
-                    wrapped_Bethe_stopping(I_grid.si.value) for I_grid in I
+                    wrapped_Bethe_stopping(I_grid.si.value)
+                    if I_grid is not None
+                    else None
+                    for I_grid in I
                 ]
 
             case _:
@@ -962,27 +970,32 @@ class ParticleTracker:
             self._particle_kinetic_energy[self._tracked_particle_mask] * u.J
         )
 
-        # TODO: how can we reorganize this if we decide to add more stopping
-        #  routines in the future?
+        # Apply all previously created stopping power interpolators
+        # These are created prior to run, for each grid where they apply
+        # in add_stopping()
         match self._stopping_method:
             case "NIST":
                 for cs in self._stopping_power_interpolators:
-                    interpolation_result = cs(relevant_kinetic_energy).si.value
-
-                    stopping_power += interpolation_result
+                    if cs is not None:
+                        stopping_power += cs(relevant_kinetic_energy).si.value
 
                 energy_loss_per_length = np.multiply(
                     stopping_power,
-                    self._total_grid_values["rho"].si.value[:, np.newaxis],
+                    self._total_grid_values["rho"].si.value[
+                        self._tracked_particle_mask, np.newaxis
+                    ],
                 )
             case "Bethe":
                 for cs in self._stopping_power_interpolators:
-                    interpolation_result = cs(
-                        current_speeds,
-                        self._total_grid_values["n_e"].si.value[:, np.newaxis],
-                    )
+                    if cs is not None:
+                        interpolation_result = cs(
+                            current_speeds,
+                            self._total_grid_values["n_e"].si.value[
+                                self._tracked_particle_mask, np.newaxis
+                            ],
+                        )
 
-                    stopping_power += interpolation_result
+                        stopping_power += interpolation_result
 
                 energy_loss_per_length = stopping_power
 
