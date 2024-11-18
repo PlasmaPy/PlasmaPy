@@ -517,18 +517,14 @@ def test_run_options() -> None:
     source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
     detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
 
-    # Expect warnings because these fields aren't well-behaved at the edges
-    with pytest.warns(
-        RuntimeWarning, match="Quantities should go to zero at edges of grid to avoid "
-    ):
-        sim = cpr.Tracker(
-            grid,
-            source,
-            detector,
-            field_weighting="nearest neighbor",
-            dt=1e-12 * u.s,
-            verbose=False,
-        )
+    sim = cpr.Tracker(
+        grid,
+        source,
+        detector,
+        field_weighting="nearest neighbor",
+        dt=1e-12 * u.s,
+        verbose=False,
+    )
     sim.create_particles(1e4, 3 * u.MeV, max_theta=0.1 * u.deg, random_seed=42)
     with pytest.warns(
         RuntimeWarning,

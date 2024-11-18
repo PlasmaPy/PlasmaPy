@@ -442,7 +442,7 @@ class ParticleTracker:
 
         match method:
             case "NIST":
-                if materials is None or len(materials) != len(self.grids):
+                if materials is None or len(materials) != self.num_grids:
                     raise ValueError(
                         "Please provide an array of length ngrids for the materials."
                     )
@@ -455,7 +455,7 @@ class ParticleTracker:
                         )
 
             case "Bethe":
-                if I is None or len(I) != len(self.grids):
+                if I is None or len(I) != self.num_grids:
                     raise ValueError(
                         "Please provide an array of length ngrids for the mean excitation energy."
                     )
@@ -506,10 +506,9 @@ class ParticleTracker:
         # TODO: Add a reference somewhere to the valid material strings?
 
         # Check inputs for user error and raise respective exceptions/warnings if
-        # necessary. Returns `True` if no errors were detected. If a "falsy" value
-        # is returned then the add_stopping method will abort.
-        if not self._validate_stopping_inputs(method, materials, I):
-            return
+        # necessary.
+
+        self._validate_stopping_inputs(method, materials, I)
 
         match method:
             case "NIST":
@@ -903,41 +902,41 @@ class ParticleTracker:
         E_x = (
             self._total_grid_values["E_x"].to(u.V / u.m).value
             if "E_x" in self._total_grid_values
-            else 0
+            else np.zeros(self.num_particles)
         )
         E_y = (
             self._total_grid_values["E_y"].to(u.V / u.m).value
             if "E_y" in self._total_grid_values
-            else 0
+            else np.zeros(self.num_particles)
         )
         E_z = (
             self._total_grid_values["E_z"].to(u.V / u.m).value
             if "E_z" in self._total_grid_values
-            else 0
+            else np.zeros(self.num_particles)
         )
 
         B_x = (
             self._total_grid_values["B_x"].to(u.T).value
             if "B_x" in self._total_grid_values
-            else 0
+            else np.zeros(self.num_particles)
         )
         B_y = (
             self._total_grid_values["B_y"].to(u.T).value
             if "B_y" in self._total_grid_values
-            else 0
+            else np.zeros(self.num_particles)
         )
         B_z = (
             self._total_grid_values["B_z"].to(u.T).value
             if "B_z" in self._total_grid_values
-            else 0
+            else np.zeros(self.num_particles)
         )
 
         # Create arrays of E and B as required by push algorithm
         E = np.moveaxis(np.array([E_x, E_y, E_z]), 0, -1)
         B = np.moveaxis(np.array([B_x, B_y, B_z]), 0, -1)
 
-        E = E[self._tracked_particle_mask] if E.size > 3 else np.zeros((1, 3))
-        B = B[self._tracked_particle_mask] if B.size > 3 else np.zeros((1, 3))
+        E = E[self._tracked_particle_mask]
+        B = B[self._tracked_particle_mask]
         pos_tracked = self.x[self._tracked_particle_mask]
         vel_tracked = self.v[self._tracked_particle_mask]
         x_results, v_results = self._integrator.push(

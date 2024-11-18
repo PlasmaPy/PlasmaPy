@@ -3,6 +3,7 @@ Tests for particle_tracker.py
 """
 
 import re
+import warnings
 
 import astropy.constants as const
 import astropy.units as u
@@ -92,14 +93,6 @@ def grid_with_inf_entry():
             {"dt": 1e-2 * u.s, "dt_range": [1e-2 * u.s, 5e-2 * u.s]},
             ValueError,
         ),
-        # Infinite/NaN entry in grid object
-        (
-            "grid_with_inf_entry",
-            "no_particles_on_grids_instantiated",
-            None,
-            {},
-            ValueError,
-        ),
         # Invalid field weighting
         (
             CartesianGrid(-1 * u.m, 1 * u.m),
@@ -139,7 +132,7 @@ def test_particle_tracker_constructor_errors(
             CartesianGrid(-1 * u.m, 1 * u.m),
             "no_particles_on_grids_instantiated",
             None,
-            {"req_quantities": ["rho"]},
+            {},
         ),
     ],
 )
@@ -520,7 +513,7 @@ def test_particle_tracker_add_stopping_errors(
         simulation.add_stopping(**kwargs)
 
     with pytest.raises(
-        ValueError, match="The density is not defined on any of the provided grids!"
+        ValueError, match="quantity ``rho`` is not defined on that grid"
     ):
         simulation.add_stopping(method="NIST", materials=["ALUMINUM"])
 
@@ -548,11 +541,16 @@ def test_particle_tracker_Bethe_warning(
     simulation = ParticleTracker(grid, termination_condition, save_routine, dt=dt)
     simulation.load_particles(x, v, Particle("p+"))
 
-    with pytest.raises(ValueError, match="The electron number density is not defined"):
-        simulation.add_stopping(method="Bethe", I=[0] * u.eV)
+    with pytest.raises(
+        ValueError, match="quantity ``n_e`` is not defined on that grid"
+    ):
+        simulation.add_stopping(method="Bethe", I=[1 * u.eV])
 
     grid.add_quantities(n_e=n_e)
-    simulation.add_stopping(method="Bethe", I=[166] * u.eV)
+    simulation.add_stopping(method="Bethe", I=[166 * u.eV])
+
+    # Ignore this warning - this grid doesn't need to go to zero at the edges
+    warnings.filterwarnings("ignore", message="should go to zero at edges of grid")
 
     with pytest.warns(
         PhysicsWarning, match="The Bethe model is only valid for high energy particles."
