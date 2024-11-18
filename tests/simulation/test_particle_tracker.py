@@ -116,6 +116,9 @@ def test_particle_tracker_constructor_errors(
         save_routine = request.getfixturevalue(save_routine)
 
     with pytest.raises(expected_exception):
+        warnings.filterwarnings(
+            "ignore", message="Quantities should go to zero at edges of grid"
+        )
         ParticleTracker(grids, termination_condition, save_routine, **kwargs)
 
 
@@ -144,7 +147,11 @@ def test_particle_tracker_construction(
     if save_routine is not None:
         save_routine = request.getfixturevalue(save_routine)
 
-    ParticleTracker(grids, termination_condition, save_routine, **kwargs)
+    with warnings.catch_warnings():
+        warnings.filterwarnings(
+            "ignore", message="Quantities should go to zero at edges of grid"
+        )
+        ParticleTracker(grids, termination_condition, save_routine, **kwargs)
 
 
 def test_particle_tracker_load_particles_shape_error(
@@ -189,7 +196,13 @@ class TestParticleTrackerGyroradius:
     termination_condition = TimeElapsedTerminationCondition(termination_time)
     save_routine = IntervalSaveRoutine(termination_time / 10)
 
-    simulation = ParticleTracker(grid, termination_condition, save_routine)
+    # Ignore non-zero boundary values of grid
+    with warnings.catch_warnings():
+        warnings.filterwarnings(
+            "ignore", message="Quantities should go to zero at edges of grid"
+        )
+        simulation = ParticleTracker(grid, termination_condition, save_routine)
+
     simulation.setup_adaptive_time_step(time_steps_per_gyroperiod=100)
     simulation.load_particles(x, v, point_particle)
 
@@ -200,7 +213,7 @@ class TestParticleTrackerGyroradius:
         positions = self.save_routine.results["x"]
         distances = np.linalg.norm(positions, axis=-1)
 
-        assert np.isclose(distances, self.R_L, rtol=5e-2).all()
+        assert np.allclose(distances, self.R_L, rtol=5e-2)
 
     def test_kinetic_energy(self) -> None:
         """Test to ensure particles maintain their gyroradius over time"""
@@ -245,13 +258,17 @@ def test_particle_tracker_potential_difference(
     )
     save_routine = request.getfixturevalue("memory_interval_save_routine_instantiated")
 
-    simulation = ParticleTracker(
-        grid,
-        termination_condition,
-        save_routine,
-        dt=dt,
-        field_weighting="nearest neighbor",
-    )
+    with warnings.catch_warnings():
+        warnings.filterwarnings(
+            "ignore", message="Quantities should go to zero at edges of grid"
+        )
+        simulation = ParticleTracker(
+            grid,
+            termination_condition,
+            save_routine,
+            dt=dt,
+            field_weighting="nearest neighbor",
+        )
     simulation.load_particles(x, v, point_particle)
 
     simulation.run()
@@ -291,7 +308,11 @@ def test_asynchronous_time_step(no_particles_on_grids_instantiated) -> None:
 
     termination_condition = no_particles_on_grids_instantiated
 
-    simulation = ParticleTracker(grid, termination_condition)
+    with warnings.catch_warnings():
+        warnings.filterwarnings(
+            "ignore", message="Quantities should go to zero at edges of grid"
+        )
+        simulation = ParticleTracker(grid, termination_condition)
 
     # Particles not loaded error
     with pytest.raises(ValueError):
@@ -326,6 +347,9 @@ def test_asynchronous_time_step_error(
     save_routine = memory_interval_save_routine_instantiated
 
     with pytest.raises(ValueError):
+        warnings.filterwarnings(
+            "ignore", message="Quantities should go to zero at edges of grid"
+        )
         ParticleTracker(
             grid, termination_condition, save_routine, dt=[1e-2, 2e-2] * u.s
         )
@@ -354,9 +378,13 @@ def test_nearest_neighbor_interpolation(
 
     termination_condition = time_elapsed_termination_condition_instantiated
 
-    simulation = ParticleTracker(
-        grid, termination_condition, field_weighting="nearest neighbor"
-    )
+    with warnings.catch_warnings():
+        warnings.filterwarnings(
+            "ignore", message="Quantities should go to zero at edges of grid"
+        )
+        simulation = ParticleTracker(
+            grid, termination_condition, field_weighting="nearest neighbor"
+        )
     simulation.load_particles(x, v, point_particle)
 
     simulation.run()
@@ -385,7 +413,12 @@ def test_setup_adaptive_time_step(
 
     termination_condition = time_elapsed_termination_condition_instantiated
 
-    simulation = ParticleTracker(grid, termination_condition)
+    with warnings.catch_warnings():
+        warnings.filterwarnings(
+            "ignore", message="Quantities should go to zero at edges of grid"
+        )
+        simulation = ParticleTracker(grid, termination_condition)
+
     simulation.load_particles(x, v, point_particle)
 
     simulation.setup_adaptive_time_step(
@@ -420,7 +453,12 @@ def test_particle_tracker_stop_particles(request) -> None:
     )
     save_routine = request.getfixturevalue("memory_interval_save_routine_instantiated")
 
-    simulation = ParticleTracker(grid, termination_condition, save_routine, dt=dt)
+    with warnings.catch_warnings():
+        warnings.filterwarnings(
+            "ignore", message="Quantities should go to zero at edges of grid"
+        )
+        simulation = ParticleTracker(grid, termination_condition, save_routine, dt=dt)
+
     simulation.load_particles(x, v, point_particle)
 
     # Not an adaptive time step error
@@ -506,7 +544,12 @@ def test_particle_tracker_add_stopping_errors(
     termination_condition = no_particles_on_grids_instantiated
     save_routine = memory_interval_save_routine_instantiated
 
-    simulation = ParticleTracker(grid, termination_condition, save_routine, dt=dt)
+    with warnings.catch_warnings():
+        warnings.filterwarnings(
+            "ignore", message="Quantities should go to zero at edges of grid"
+        )
+        simulation = ParticleTracker(grid, termination_condition, save_routine, dt=dt)
+
     simulation.load_particles(x, v, Particle("p+"))
 
     with pytest.raises(expected_error, match=re.escape(match_string)):
@@ -538,7 +581,12 @@ def test_particle_tracker_Bethe_warning(
     termination_condition = no_particles_on_grids_instantiated
     save_routine = memory_interval_save_routine_instantiated
 
-    simulation = ParticleTracker(grid, termination_condition, save_routine, dt=dt)
+    with warnings.catch_warnings():
+        warnings.filterwarnings(
+            "ignore", message="Quantities should go to zero at edges of grid"
+        )
+        simulation = ParticleTracker(grid, termination_condition, save_routine, dt=dt)
+
     simulation.load_particles(x, v, Particle("p+"))
 
     with pytest.raises(
@@ -708,11 +756,15 @@ class TestParticleTrajectory:
 
         save_routine = IntervalSaveRoutine(period / 10)
 
-        simulation = ParticleTracker(
-            grids=fields,
-            save_routine=save_routine,
-            termination_condition=termination_condition,
-        )
+        with warnings.catch_warnings():
+            warnings.filterwarnings(
+                "ignore", message="Quantities should go to zero at edges of grid"
+            )
+            simulation = ParticleTracker(
+                grids=fields,
+                save_routine=save_routine,
+                termination_condition=termination_condition,
+            )
 
         simulation.load_particles(
             x=[np.zeros(3)] * u.m,
@@ -826,12 +878,16 @@ class TestParticleTrajectory:
 
         save_routine = IntervalSaveRoutine(period / 10)
 
-        simulation = ParticleTracker(
-            grids=fields,
-            save_routine=save_routine,
-            termination_condition=termination_condition,
-            particle_integrator=BorisIntegrator,
-        )
+        with warnings.catch_warnings():
+            warnings.filterwarnings(
+                "ignore", message="Quantities should go to zero at edges of grid"
+            )
+            simulation = ParticleTracker(
+                grids=fields,
+                save_routine=save_routine,
+                termination_condition=termination_condition,
+                particle_integrator=BorisIntegrator,
+            )
 
         simulation.load_particles(
             x=[np.zeros(3)] * u.m,
@@ -924,12 +980,16 @@ class TestParticleTrajectory:
 
         save_routine = IntervalSaveRoutine(period / 10)
 
-        simulation = ParticleTracker(
-            grids=fields,
-            save_routine=save_routine,
-            termination_condition=termination_condition,
-            particle_integrator=BorisIntegrator,
-        )
+        with warnings.catch_warnings():
+            warnings.filterwarnings(
+                "ignore", message="Quantities should go to zero at edges of grid"
+            )
+            simulation = ParticleTracker(
+                grids=fields,
+                save_routine=save_routine,
+                termination_condition=termination_condition,
+                particle_integrator=BorisIntegrator,
+            )
 
         simulation.load_particles(
             x=[np.zeros(3)] * u.m,

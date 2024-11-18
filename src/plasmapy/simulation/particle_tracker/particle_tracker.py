@@ -203,6 +203,8 @@ class ParticleTracker:
         # self.grid is the grid object
         self.grids = self._grid_factory(grids)
 
+        self._validate_grids()
+
         # Errors for unsupported grid types are raised in the validate constructor inputs method
 
         # Instantiate the "do not save" save routine if no save routine was specified
@@ -552,27 +554,10 @@ class ParticleTracker:
 
         self._log(f"Stopping module activated using the {method} method")
 
-    def _preprocess_grids(self) -> None:
-        """Validate grids and prepare for interpolation.
-
-        This will be called at the beginning of run, since the required
-        quantities depends on how the Tracker has been set up.
-        """
-
-        # Determine which quantities should be interpolated from each grid
-        # This set contains all quantities defined on any grid
-        self._interpolated_quantities = set()
-        # This list of sets contains all quantities defined on each grid
-        self._interpolated_quantities_per_grid = []
+    def _validate_grids(self) -> None:
+        """Validate input grids."""
         for i, grid in enumerate(self.grids):
-            quantities = set(self._required_quantities).intersection(grid.quantities)
-            self._interpolated_quantities_per_grid.append(quantities)
-            self._interpolated_quantities = self._interpolated_quantities.union(
-                quantities
-            )
-            self._log(f"On grid {i}, interpolating: {quantities}")
-
-            for q in quantities:
+            for q in grid.quantities:
                 # Check that there are no infinite values
                 if not np.isfinite(grid[q].value).all():
                     raise ValueError(
@@ -607,15 +592,31 @@ class ParticleTracker:
                     warnings.warn(
                         "Quantities should go to zero at edges of grid to avoid "
                         f"non-physical effects, but a value of {edge_max:.2E} {unit} was "
-                        f"found on the edge of the {q} array. Consider applying a "
+                        f"found on the edge of the {q} array of grid {i}. Consider applying a "
                         "envelope function to force the quantities at the edge to go to "
                         "zero.",
                         RuntimeWarning,
                     )
-        # TODO: Store E, B in [n,3] arrays instead of as scalars, to avoid
-        # re-shaping them on every push
 
-        # TODO: raise exception of only partial arrays of E or B are provided
+    def _setup_for_interpolator(self) -> None:
+        """Prepare grids for interpolation.
+
+        This will be called at the beginning of run, since the required
+        quantities depends on how the Tracker has been set up.
+        """
+
+        # Determine which quantities should be interpolated from each grid
+        # This set contains all quantities defined on any grid
+        self._interpolated_quantities = set()
+        # This list of sets contains all quantities defined on each grid
+        self._interpolated_quantities_per_grid = []
+        for i, grid in enumerate(self.grids):
+            quantities = set(self._required_quantities).intersection(grid.quantities)
+            self._interpolated_quantities_per_grid.append(quantities)
+            self._interpolated_quantities = self._interpolated_quantities.union(
+                quantities
+            )
+            self._log(f"On grid {i}, interpolating: {quantities}")
 
         # Construct a dictionary to store the interpolation results
         #  Each quantity is initialized as a zeros array with its respective units
@@ -626,6 +627,18 @@ class ParticleTracker:
             * AbstractGrid.recognized_quantities()[field_name].unit
             for field_name in self._interpolated_quantities
         }
+
+        # Make sure the complete set of E, B arrays are available
+        for key in ["E_x", "E_y", "E_z"]:
+            if key not in self._total_grid_values:
+                self._total_grid_values[key] = 0.0 * u.V / u.m
+        for key in ["B_x", "B_y", "B_z"]:
+            if key not in self._total_grid_values:
+                self._total_grid_values[key] = 0.0 * u.T
+
+        # Initialize some variables for interpolator
+        self._E = np.zeros((self.num_particles, 3))
+        self._B = np.zeros((self.num_particles, 3))
 
     def run(self) -> None:
         r"""
@@ -640,9 +653,9 @@ class ParticleTracker:
 
         """
 
-        self._preprocess_grids()
-
         self._enforce_particle_creation()
+
+        self._setup_for_interpolator()
 
         # Keep track of how many push steps have occurred for trajectory tracing
         # This number is independent of the current "time" of the simulation
@@ -790,25 +803,18 @@ class ParticleTracker:
 
         # If not, compute a number of possible time steps
         # Compute the cyclotron gyroperiod
-        if "B_x" in self._total_grid_values:
-            Bx = self._total_grid_values["B_x"]
-            By = self._total_grid_values["B_y"]
-            Bz = self._total_grid_values["B_z"]
-
-            Bmag = np.max(np.sqrt(Bx**2 + By**2 + Bz**2)).to(u.T).value
-            # Compute the gyroperiod
-            if Bmag == 0:
-                gyroperiod = np.inf
-            else:
-                gyroperiod = (
-                    2 * np.pi * self.m / (np.abs(self.q) * np.max(Bmag))
-                )  # Account for negative charges!
-
-            # Subdivide the gyroperiod into a provided number of steps
-            # Use the result as the candidate associated with gyration in B field
-            candidates[:, self.num_grids] = gyroperiod / self._steps_per_gyroperiod
+        Bmag = np.max(np.linalg.norm(self._B, axis=-1))
+        # Compute the gyroperiod
+        if Bmag == 0:
+            gyroperiod = np.inf
         else:
-            candidates[:, self.num_grids] = np.inf
+            gyroperiod = (
+                2 * np.pi * self.m / (np.abs(self.q) * np.max(Bmag))
+            )  # Account for negative charges!
+
+        # Subdivide the gyroperiod into a provided number of steps
+        # Use the result as the candidate associated with gyration in B field
+        candidates[:, self.num_grids] = gyroperiod / self._steps_per_gyroperiod
 
         # TODO: introduce a minimum time step based on electric fields too!
 
@@ -871,6 +877,13 @@ class ParticleTracker:
                         0.0 * AbstractGrid.recognized_quantities()[field_name].unit,
                     )
                 )
+        self._E[:, 0] = self._total_grid_values["E_x"].to(u.V / u.m).value
+        self._E[:, 1] = self._total_grid_values["E_y"].to(u.V / u.m).value
+        self._E[:, 2] = self._total_grid_values["E_z"].to(u.V / u.m).value
+
+        self._B[:, 0] = self._total_grid_values["B_x"].to(u.T).value
+        self._B[:, 1] = self._total_grid_values["B_y"].to(u.T).value
+        self._B[:, 2] = self._total_grid_values["B_z"].to(u.T).value
 
     def _update_time(self):
         r"""
@@ -899,48 +912,14 @@ class ParticleTracker:
         Update the positions and velocities of the simulated particles using the
         integrator provided at instantiation.
         """
-        E_x = (
-            self._total_grid_values["E_x"].to(u.V / u.m).value
-            if "E_x" in self._total_grid_values
-            else np.zeros(self.num_particles)
-        )
-        E_y = (
-            self._total_grid_values["E_y"].to(u.V / u.m).value
-            if "E_y" in self._total_grid_values
-            else np.zeros(self.num_particles)
-        )
-        E_z = (
-            self._total_grid_values["E_z"].to(u.V / u.m).value
-            if "E_z" in self._total_grid_values
-            else np.zeros(self.num_particles)
-        )
-
-        B_x = (
-            self._total_grid_values["B_x"].to(u.T).value
-            if "B_x" in self._total_grid_values
-            else np.zeros(self.num_particles)
-        )
-        B_y = (
-            self._total_grid_values["B_y"].to(u.T).value
-            if "B_y" in self._total_grid_values
-            else np.zeros(self.num_particles)
-        )
-        B_z = (
-            self._total_grid_values["B_z"].to(u.T).value
-            if "B_z" in self._total_grid_values
-            else np.zeros(self.num_particles)
-        )
-
-        # Create arrays of E and B as required by push algorithm
-        E = np.moveaxis(np.array([E_x, E_y, E_z]), 0, -1)
-        B = np.moveaxis(np.array([B_x, B_y, B_z]), 0, -1)
-
-        E = E[self._tracked_particle_mask]
-        B = B[self._tracked_particle_mask]
-        pos_tracked = self.x[self._tracked_particle_mask]
-        vel_tracked = self.v[self._tracked_particle_mask]
         x_results, v_results = self._integrator.push(
-            pos_tracked, vel_tracked, B, E, self.q, self.m, self.dt
+            self.x[self._tracked_particle_mask],
+            self.v[self._tracked_particle_mask],
+            self._B[self._tracked_particle_mask],
+            self._E[self._tracked_particle_mask],
+            self.q,
+            self.m,
+            self.dt,
         )
 
         self.x[self._tracked_particle_mask], self.v[self._tracked_particle_mask] = (

@@ -190,10 +190,11 @@ def run_1D_example(name: str):
 
     # Expect warnings because these fields aren't well-behaved at the edges
     with pytest.warns(
-        RuntimeWarning, match="Quantities should go to zero at edges of grid to avoid "
+        RuntimeWarning, match="Quantities should go to zero at edges of grid"
     ):
         sim = cpr.Tracker(grid, source, detector, verbose=False)
     sim.create_particles(1e4, 3 * u.MeV, max_theta=0.1 * u.deg, random_seed=42)
+
     sim.run()
 
     size = np.array([[-1, 1], [-1, 1]]) * 10 * u.cm
@@ -592,7 +593,7 @@ class TestSyntheticRadiograph:
         Test warning when less than half the particles reach the detector plane.
         """
         sim_results = self.sim_results.copy()
-        sim_results["nparticles"] = 3 * sim_results["nparticles"]
+        sim_results["num_particles"] = 3 * sim_results["num_particles"]
         with pytest.warns(RuntimeWarning):
             cpr.synthetic_radiograph(sim_results)
 
