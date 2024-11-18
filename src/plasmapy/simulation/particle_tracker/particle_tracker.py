@@ -844,6 +844,13 @@ class ParticleTracker:
                 persistent=True,
             )
 
+            # If only a single quantity is defined on the grid, the interpolator does not
+            # wrap it in a tuple, so we do so here
+            if not isinstance(grid_values, tuple):
+                grid_values = [
+                    grid_values,
+                ]
+
             # Iterate through the interpolated fields and add them to the running sum
             # NaN values are zeroed
             for grid_value, field_name in zip(
