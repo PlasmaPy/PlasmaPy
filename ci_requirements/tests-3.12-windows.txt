@@ -213,6 +213,7 @@ packaging==24.2
     #   nbconvert
     #   nox
     #   pytest
+    #   pytest-doctestplus
     #   pytest-filter-subpackage
     #   pytest-rerunfailures
     #   xarray
@@ -257,6 +258,7 @@ pytest==8.3.3
     #   plasmapy (pyproject.toml)
     #   pytest-cov
     #   pytest-datadir
+    #   pytest-doctestplus
     #   pytest-filter-subpackage
     #   pytest-regressions
     #   pytest-rerunfailures
@@ -265,6 +267,8 @@ pytest-cov==6.0.0
     # via plasmapy (pyproject.toml)
 pytest-datadir==1.5.0
     # via pytest-regressions
+pytest-doctestplus==1.2.1
+    # via plasmapy (pyproject.toml)
 pytest-filter-subpackage==0.2.0
     # via plasmapy (pyproject.toml)
 pytest-regressions==2.5.0
@@ -329,7 +333,9 @@ scipy==1.14.1
 send2trash==1.8.3
     # via jupyter-server
 setuptools==75.6.0
-    # via plasmapy (pyproject.toml)
+    # via
+    #   plasmapy (pyproject.toml)
+    #   pytest-doctestplus
 six==1.16.0
     # via
     #   asttokens
