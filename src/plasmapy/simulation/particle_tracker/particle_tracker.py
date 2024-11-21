@@ -689,19 +689,21 @@ class ParticleTracker:
                 self.termination_condition.progress, self.termination_condition.total
             )
 
-            desc = (
-                f"Iter. {self.iteration_number}, "
-                f"Pos=({np.nanmean(self.x[:,0])*1e3:.2f},{np.nanmean(self.x[:,1])*1e3:.2f},{np.nanmean(self.x[:,2])*1e3:.2f}) mm "
-                f"Vel=({np.nanmean(self.v[:,0])*1e03:.2f},{np.nanmean(self.v[:,1])*1e-3:.2f},{np.nanmean(self.v[:,2])*1e-3:.2f}) km/s "
-                f"{self.termination_condition.progress_description}"
-            )
-            pbar.set_description(desc)
-
             pbar.n = progress
             pbar.last_print_n = progress
             pbar.update(0)
 
             self._push()
+
+            if self.verbose:
+                desc = (
+                    f"Iter. {self.iteration_number},  "
+                    f"Avg. Pos.=({np.nanmean(self.x[:,0]):.1e},{np.nanmean(self.x[:,1]):.1e},{np.nanmean(self.x[:,2]):.1e}) m, "
+                    f"Avg. Vel.=({np.nanmean(self.v[:,0]):.1e},{np.nanmean(self.v[:,1]):.1e},{np.nanmean(self.v[:,2]):.1e}) m/s, "
+                    f"dt range = ({np.min(self.dt):.1e},{np.max(self.dt):.1e}) s, "
+                    f"{self.termination_condition.progress_description}"
+                )
+                pbar.set_description(desc)
 
             # The state of a step is saved after each time step by calling `post_push_hook`
             # The save routine may choose to do nothing with this information
