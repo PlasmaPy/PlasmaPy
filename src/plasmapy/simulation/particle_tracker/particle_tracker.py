@@ -689,6 +689,14 @@ class ParticleTracker:
                 self.termination_condition.progress, self.termination_condition.total
             )
 
+            desc = (
+                f"Iter. {self.iteration_number}, "
+                f"Pos=({np.nanmean(self.x[:,0])*1e3:.2f},{np.nanmean(self.x[:,1])*1e3:.2f},{np.nanmean(self.x[:,2])*1e3:.2f}) mm "
+                f"Vel=({np.nanmean(self.v[:,0])*1e03:.2f},{np.nanmean(self.v[:,1])*1e-3:.2f},{np.nanmean(self.v[:,2])*1e-3:.2f}) km/s "
+                f"{self.termination_condition.progress_description}"
+            )
+            pbar.set_description(desc)
+
             pbar.n = progress
             pbar.last_print_n = progress
             pbar.update(0)
@@ -783,24 +791,23 @@ class ParticleTracker:
         # Compute the time step indicated by the grid resolution
         ds = np.array([grid.grid_resolution.to(u.m).value for grid in self.grids])
         gridstep = self._Courant_parameter * (ds / self.vmax)
+        min_gridstep = np.min(gridstep)
 
         # Wherever a particle is on a grid, include that grid's grid step
-        # in the list of candidate time steps
+        # in the list of candidate time steps. If the particle is on no grid,
+        # give it the grid step of the highest resolution grid
         for i, _grid in enumerate(self.grids):
             candidates[:, i] = np.where(
-                self.particles_on_grid[:, i] > 0, gridstep[i], np.inf
+                self.particles_on_grid[:, i] > 0, gridstep[i], min_gridstep
             )
 
         # If not, compute a number of possible time steps
-        # Compute the cyclotron gyroperiod
-        Bmag = np.max(np.linalg.norm(self._B, axis=-1))
-        # Compute the gyroperiod
-        if Bmag == 0:
-            gyroperiod = np.inf
-        else:
-            gyroperiod = (
-                2 * np.pi * self.m / (np.abs(self.q) * np.max(Bmag))
-            )  # Account for negative charges!
+
+        # Compute the cyclotron gyroperiod for each particle
+        Bmag = np.linalg.norm(self._B, axis=-1)
+        gyroperiod = np.where(
+            Bmag == 0, np.inf, 2 * np.pi * self.m / (np.abs(self.q) * Bmag)
+        )
 
         # Subdivide the gyroperiod into a provided number of steps
         # Use the result as the candidate associated with gyration in B field
@@ -823,6 +830,9 @@ class ParticleTracker:
             # a single value for dt is returned
             # this is the time step used for all particles
             dt = np.min(candidates)
+
+        if np.min(dt) <= 0:
+            raise ValueError("Adaptive dt is <= 0")
 
         return dt
 
