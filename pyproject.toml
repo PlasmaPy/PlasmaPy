@@ -111,7 +111,7 @@ docs = [
 # requirements to ensure that tests are run in consistent environments.
 tests = [
   "hypothesis >= 6.109.3",
-  "mypy >= 1.13.0",
+  "mypy >= 1.11.0",
   "nox >= 2024.10.9",
   "pre-commit >= 4.0.1",
   "pytest >= 8.3.3",
