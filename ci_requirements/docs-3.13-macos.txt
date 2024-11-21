@@ -16,9 +16,9 @@ arrow==1.3.0
     # via isoduration
 asteval==1.0.5
     # via lmfit
-astropy==6.1.5
+astropy==6.1.6
     # via plasmapy (pyproject.toml)
-astropy-iers-data==0.2024.11.11.0.32.38
+astropy-iers-data==0.2024.11.18.0.35.2
     # via astropy
 asttokens==2.4.1
     # via stack-data
@@ -50,7 +50,7 @@ comm==0.2.2
     # via
     #   ipykernel
     #   ipywidgets
-contourpy==1.3.0
+contourpy==1.3.1
     # via matplotlib
 cycler==0.12.1
     # via matplotlib
@@ -79,7 +79,7 @@ fastjsonschema==2.20.0
     # via nbformat
 filelock==3.16.1
     # via virtualenv
-fonttools==4.54.1
+fonttools==4.55.0
     # via matplotlib
 fqdn==1.5.1
     # via jsonschema
@@ -113,7 +113,7 @@ jinja2==3.1.4
     #   nbsphinx
     #   sphinx
     #   towncrier
-json5==0.9.27
+json5==0.9.28
     # via jupyterlab-server
 jsonpointer==3.0.0
     # via jsonschema
@@ -261,7 +261,7 @@ pybtex-docutils==1.0.3
     # via sphinxcontrib-bibtex
 pycparser==2.22
     # via cffi
-pyerfa==2.0.1.4
+pyerfa==2.0.1.5
     # via astropy
 pygments==2.18.0
     # via
@@ -320,7 +320,7 @@ scipy==1.14.1
     #   lmfit
 send2trash==1.8.3
     # via jupyter-server
-setuptools==75.3.0
+setuptools==75.6.0
     # via
     #   plasmapy (pyproject.toml)
     #   sphinxcontrib-bibtex
@@ -366,7 +366,7 @@ sphinx-copybutton==0.5.2
     # via plasmapy (pyproject.toml)
 sphinx-gallery==0.18.0
     # via plasmapy (pyproject.toml)
-sphinx-hoverxref==1.4.1
+sphinx-hoverxref==1.4.2
     # via plasmapy (pyproject.toml)
 sphinx-issues==5.0.0
     # via plasmapy (pyproject.toml)
@@ -374,7 +374,7 @@ sphinx-notfound-page==1.0.4
     # via plasmapy (pyproject.toml)
 sphinx-reredirects==0.1.5
     # via plasmapy (pyproject.toml)
-sphinx-rtd-theme==3.0.1
+sphinx-rtd-theme==3.0.2
     # via plasmapy (pyproject.toml)
 sphinx-tabs==3.4.7
     # via plasmapy (pyproject.toml)
@@ -464,7 +464,7 @@ webencodings==0.5.1
     #   tinycss2
 websocket-client==1.8.0
     # via jupyter-server
-websockets==14.0
+websockets==14.1
     # via voila
 widgetsnbextension==4.0.13
     # via ipywidgets
