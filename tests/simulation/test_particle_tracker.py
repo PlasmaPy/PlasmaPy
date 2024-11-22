@@ -391,7 +391,10 @@ def test_nearest_neighbor_interpolation(
             "ignore", message="Quantities should go to zero at edges of grid"
         )
         simulation = ParticleTracker(
-            grid, termination_condition, field_weighting="nearest neighbor"
+            grid,
+            termination_condition,
+            field_weighting="nearest neighbor",
+            verbose=False,
         )
     simulation.load_particles(x, v, point_particle)
 

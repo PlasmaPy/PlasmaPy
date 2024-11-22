@@ -852,9 +852,6 @@ class ParticleTracker:
             # this is the time step used for all particles
             dt = np.min(candidates)
 
-        if np.min(dt) <= 0:
-            raise ValueError("Adaptive dt is <= 0")
-
         return dt
 
     def _interpolate_grid(self):
