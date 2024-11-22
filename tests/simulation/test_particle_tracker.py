@@ -209,7 +209,12 @@ class TestParticleTrackerGyroradius:
         warnings.filterwarnings(
             "ignore", message="Quantities should go to zero at edges of grid"
         )
-        simulation = ParticleTracker(grid, termination_condition, save_routine)
+        simulation = ParticleTracker(
+            grid,
+            termination_condition,
+            save_routine,
+            field_weighting="nearest neighbor",
+        )
 
     simulation.setup_adaptive_time_step(time_steps_per_gyroperiod=100)
     simulation.load_particles(x, v, point_particle)
@@ -320,7 +325,9 @@ def test_asynchronous_time_step(no_particles_on_grids_instantiated) -> None:
         warnings.filterwarnings(
             "ignore", message="Quantities should go to zero at edges of grid"
         )
-        simulation = ParticleTracker(grid, termination_condition)
+        simulation = ParticleTracker(
+            grid, termination_condition, field_weighting="nearest neighbor"
+        )
 
     # Particles not loaded error
     with pytest.raises(ValueError):
@@ -359,11 +366,15 @@ def test_asynchronous_time_step_error(
             "ignore", message="Quantities should go to zero at edges of grid"
         )
         ParticleTracker(
-            grid, termination_condition, save_routine, dt=[1e-2, 2e-2] * u.s
+            grid,
+            termination_condition,
+            save_routine,
+            field_weighting="nearest neighbor",
+            dt=[1e-2, 2e-2] * u.s,
         )
 
 
-def test_nearest_neighbor_interpolation(
+def test_volume_averaged_interpolation(
     time_elapsed_termination_condition_instantiated,
 ) -> None:
     E_strength = 1 * u.V / u.m
@@ -393,7 +404,7 @@ def test_nearest_neighbor_interpolation(
         simulation = ParticleTracker(
             grid,
             termination_condition,
-            field_weighting="nearest neighbor",
+            field_weighting="volume averaged",
             verbose=False,
         )
     simulation.load_particles(x, v, point_particle)
@@ -428,7 +439,9 @@ def test_setup_adaptive_time_step(
         warnings.filterwarnings(
             "ignore", message="Quantities should go to zero at edges of grid"
         )
-        simulation = ParticleTracker(grid, termination_condition)
+        simulation = ParticleTracker(
+            grid, termination_condition, field_weighting="nearest neighbor"
+        )
 
     simulation.load_particles(x, v, point_particle)
 
@@ -468,7 +481,13 @@ def test_particle_tracker_stop_particles(request) -> None:
         warnings.filterwarnings(
             "ignore", message="Quantities should go to zero at edges of grid"
         )
-        simulation = ParticleTracker(grid, termination_condition, save_routine, dt=dt)
+        simulation = ParticleTracker(
+            grid,
+            termination_condition,
+            save_routine,
+            dt=dt,
+            field_weighting="nearest neighbor",
+        )
 
     simulation.load_particles(x, v, point_particle)
 
@@ -559,7 +578,13 @@ def test_particle_tracker_add_stopping_errors(
         warnings.filterwarnings(
             "ignore", message="Quantities should go to zero at edges of grid"
         )
-        simulation = ParticleTracker(grid, termination_condition, save_routine, dt=dt)
+        simulation = ParticleTracker(
+            grid,
+            termination_condition,
+            save_routine,
+            dt=dt,
+            field_weighting="nearest neighbor",
+        )
 
     simulation.load_particles(x, v, Particle("p+"))
 
@@ -596,7 +621,13 @@ def test_particle_tracker_Bethe_warning(
         warnings.filterwarnings(
             "ignore", message="Quantities should go to zero at edges of grid"
         )
-        simulation = ParticleTracker(grid, termination_condition, save_routine, dt=dt)
+        simulation = ParticleTracker(
+            grid,
+            termination_condition,
+            save_routine,
+            dt=dt,
+            field_weighting="nearest neighbor",
+        )
 
     simulation.load_particles(x, v, Particle("p+"))
 
@@ -775,6 +806,7 @@ class TestParticleTrajectory:
                 grids=fields,
                 save_routine=save_routine,
                 termination_condition=termination_condition,
+                field_weighting="nearest neighbor",
             )
 
         simulation.load_particles(
@@ -898,6 +930,7 @@ class TestParticleTrajectory:
                 save_routine=save_routine,
                 termination_condition=termination_condition,
                 particle_integrator=BorisIntegrator,
+                field_weighting="nearest neighbor",
             )
 
         simulation.load_particles(
@@ -1000,6 +1033,7 @@ class TestParticleTrajectory:
                 save_routine=save_routine,
                 termination_condition=termination_condition,
                 particle_integrator=BorisIntegrator,
+                field_weighting="nearest neighbor",
             )
 
         simulation.load_particles(

@@ -192,7 +192,9 @@ def run_1D_example(name: str):
     with pytest.warns(
         RuntimeWarning, match="Quantities should go to zero at edges of grid"
     ):
-        sim = cpr.Tracker(grid, source, detector, verbose=False)
+        sim = cpr.Tracker(
+            grid, source, detector, verbose=False, field_weighting="nearest neighbor"
+        )
     sim.create_particles(1e4, 3 * u.MeV, max_theta=0.1 * u.deg, random_seed=42)
 
     sim.run()
@@ -362,7 +364,9 @@ def test_input_validation() -> None:
     # ************************************************************************
     # During runtime
     # ************************************************************************
-    sim = cpr.Tracker(grid, source, detector, verbose=False)
+    sim = cpr.Tracker(
+        grid, source, detector, verbose=False, field_weighting="nearest neighbor"
+    )
     sim.create_particles(1e3, 15 * u.MeV)
 
     # SYNTHETIC RADIOGRAPH ERRORS
@@ -488,7 +492,9 @@ def test_run_options() -> None:
     with pytest.raises(ValueError):
         sim.run()
 
-    sim = cpr.Tracker(grid, source, detector, verbose=True)
+    sim = cpr.Tracker(
+        grid, source, detector, verbose=True, field_weighting="nearest neighbor"
+    )
     sim.create_particles(1e4, 3 * u.MeV, max_theta=10 * u.deg, random_seed=42)
 
     # Try running with nearest neighbor interpolator
@@ -733,7 +739,9 @@ def test_gaussian_sphere_analytical_comparison() -> None:
     with pytest.warns(
         RuntimeWarning, match="Quantities should go to zero at edges of grid to avoid "
     ):
-        sim = cpr.Tracker(grid, source, detector, verbose=False)
+        sim = cpr.Tracker(
+            grid, source, detector, verbose=False, field_weighting="nearest neighbor"
+        )
 
     sim.create_particles(1e3, W * u.eV, max_theta=12 * u.deg, random_seed=42)
     sim.run()
@@ -1076,7 +1084,7 @@ def test_NIST_particle_stopping(
     v = np.swapaxes(v, 0, 2)
     # Reshape the result of the previous swap into the necessary [n_particles, 3] array
     # where n_particles = n_energy * nparticles_per_energy
-    v = np.reshape(v, newshape=(energies.shape[0] * PARTICLES_PER_CONFIGURATION, 3))
+    v = np.reshape(v, shape=(energies.shape[0] * PARTICLES_PER_CONFIGURATION, 3))
 
     # Apply units
     x *= u.m
@@ -1087,9 +1095,7 @@ def test_NIST_particle_stopping(
     sim.run()
 
     x_final = (
-        np.reshape(
-            sim.x[:, 1], newshape=(energies.shape[0], PARTICLES_PER_CONFIGURATION)
-        )
+        np.reshape(sim.x[:, 1], shape=(energies.shape[0], PARTICLES_PER_CONFIGURATION))
         * u.m
     )
 
