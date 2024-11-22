@@ -93,6 +93,14 @@ def grid_with_inf_entry():
             {"dt": 1e-2 * u.s, "dt_range": [1e-2 * u.s, 5e-2 * u.s]},
             ValueError,
         ),
+        # Infinite/NaN entry in grid object raises ValueError
+        (
+            "grid_with_inf_entry",
+            "no_particles_on_grids_instantiated",
+            None,
+            {},
+            ValueError,
+        ),
         # Invalid field weighting
         (
             CartesianGrid(-1 * u.m, 1 * u.m),
