@@ -196,9 +196,9 @@ class ParticleTracker:
 
         self._raised_relativity_warning = False
 
-        # Quantities required for calculations - if they are not defined on a grid
+        # Quantities required for tracking - if they are not defined on a grid
         # they will be assumed to be zero
-        self._required_quantities = []
+        self._required_quantities: list[str] = []
 
         # self.grid is the grid object
         self.grids = self._grid_factory(grids)
@@ -484,7 +484,7 @@ class ParticleTracker:
         materials : list[str|None]
             A list of materials (one per grid) required when using the NIST
             stopping power table method. Grids with no stopping material
-            should be set to ``None``.
+            should be set to None.
 
         I : list[`~astropy.units.Quantity`|None]
             The mean excitation energy ``I`` in the Bethe stopping model,
@@ -492,7 +492,6 @@ class ParticleTracker:
             Bethe model, ``I`` completely describes the material, and is
             approximately equal to 10 eV * A, where A is the atomic
             number of the atoms in the material.
-
 
         """
         # TODO: Add a reference somewhere to the valid material strings?
@@ -601,14 +600,15 @@ class ParticleTracker:
 
         # Determine which quantities should be interpolated from each grid
         # This set contains all quantities defined on any grid
-        self._interpolated_quantities = set()
+        self._interpolated_quantities_any_grid: set[str] = set()
         # This list of sets contains all quantities defined on each grid
-        self._interpolated_quantities_per_grid = []
+        self._interpolated_quantities_per_grid: list[str] = []
+
         for i, grid in enumerate(self.grids):
             quantities = set(self._required_quantities).intersection(grid.quantities)
             self._interpolated_quantities_per_grid.append(quantities)
-            self._interpolated_quantities = self._interpolated_quantities.union(
-                quantities
+            self._interpolated_quantities_any_grid = (
+                self._interpolated_quantities_any_grid.union(quantities)
             )
             self._log(f"On grid {i}, interpolating: {quantities}")
 
@@ -619,7 +619,7 @@ class ParticleTracker:
         self._total_grid_values = {
             field_name: np.zeros(self.num_particles)
             * AbstractGrid.recognized_quantities()[field_name].unit
-            for field_name in self._interpolated_quantities
+            for field_name in self._interpolated_quantities_any_grid
         }
 
         # These variables indicate whether any E or B fields exist
@@ -911,7 +911,7 @@ class ParticleTracker:
         # by the particles
         # If user sets dt explicitly, that's handled in _adaptive_dt
 
-        dt = self._adaptive_dt() if self._is_adaptive_time_step else self.dt  # type: ignore[assignment]
+        dt = self._adaptive_dt() if self._is_adaptive_time_step else self.dt
 
         # Make sure the time step can be multiplied by a [num_particles, 3] shape field array
         if isinstance(dt, np.ndarray) and dt.size > 1:
