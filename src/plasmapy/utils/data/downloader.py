@@ -214,7 +214,7 @@ class Downloader:
             warnings.warn(
                 "URL did not return the expected JSON file: "
                 f"{self._API_BASE_URL}. "
-                f"Response content: {reply.content}. Exception: {err}"
+                f"Response content: {reply.content.decode('utf-8')}. Exception: {err}"
             )
             self._validate = False
             return None

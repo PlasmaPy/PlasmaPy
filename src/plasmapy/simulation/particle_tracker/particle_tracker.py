@@ -486,12 +486,15 @@ class ParticleTracker:
             stopping power table method. Grids with no stopping material
             should be set to None.
 
-        I : list[`~astropy.units.Quantity`|None]
+        I : list[ `~astropy.units.Quantity` | None]
             The mean excitation energy ``I`` in the Bethe stopping model,
             only required when using the 'Bethe' stopping method. In the
             Bethe model, ``I`` completely describes the material, and is
-            approximately equal to 10 eV * A, where A is the atomic
-            number of the atoms in the material.
+            approximately equal to
+
+            .. math:: I = 10 eV * A
+
+            where A is the atomic number of the atoms in the material.
 
         """
         # TODO: Add a reference somewhere to the valid material strings?
