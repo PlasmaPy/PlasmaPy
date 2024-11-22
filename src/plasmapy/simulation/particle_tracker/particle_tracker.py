@@ -948,6 +948,9 @@ class ParticleTracker:
             v_results,
         )
 
+        # Reset cached properties since particles may have moved off-grid
+        self._reset_cache()
+
     def _update_velocity_stopping(self) -> None:
         r"""
         Apply stopping to the simulated particles using the provided stopping
@@ -1034,6 +1037,7 @@ class ParticleTracker:
             new_speeds, velocity_unit_vectors
         )
 
+        # Stop particles, which resets the cache
         self._stop_particles(particles_to_be_stopped_mask)
 
     def _push(self) -> None:
@@ -1074,13 +1078,14 @@ class ParticleTracker:
             np.bool_
         )
 
-        # Reset cached properties that need to be re-calculated for each
-        # push cycle.
-        self._reset_cache()
-
     def _reset_cache(self):
         """
-        Reset the cached properties - called after each push cycle.
+        Reset the cached properties.
+
+        Called after any method that updates the particle positions or
+        velocities. This includes the ``_update_positions`` and
+        the ``_stop_particles`` and ``_remove_particles`` methods,
+        which set some positions or velocities to NaN.
         """
         properties = [
             "particles_on_grid",
