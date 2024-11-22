@@ -302,7 +302,7 @@ class ParticleTracker:
         time_steps_per_gyroperiod: int | None = 12,
         Courant_parameter: float | None = 0.5,
     ) -> None:
-        """Set parameters for the adaptive time step self._dt_candidates.
+        """Set parameters for the adaptive time step candidates.
 
         Parameters
         ----------
@@ -317,7 +317,7 @@ class ParticleTracker:
 
         Notes
         -----
-        Two self._dt_candidates are calculated for the adaptive time step: a time step based on the gyroradius
+        Two candidates are calculated for the adaptive time step: a time step based on the gyroradius
         of the particle and a time step based on the resolution of the grid. The candidate associated
         with the gyroradius of the particle takes a ``time_steps_per_gyroperiod`` parameter that specifies
         how many times the orbit of a gyrating particles will be subdivided. The other candidate,
@@ -594,6 +594,10 @@ class ParticleTracker:
         This will be called at the beginning of run, since the required
         quantities depends on how the Tracker has been set up.
         """
+        # Assemble an array of the resolutions of all of the grids
+        self._grid_resolutions = np.array(
+            [grid.grid_resolution.to(u.m).value for grid in self.grids]
+        )
 
         # Determine which quantities should be interpolated from each grid
         # This set contains all quantities defined on any grid
@@ -617,6 +621,15 @@ class ParticleTracker:
             * AbstractGrid.recognized_quantities()[field_name].unit
             for field_name in self._interpolated_quantities
         }
+
+        # These variables indicate whether any E or B fields exist
+        # on any of the grids
+        self._E_on_grids = any(
+            k in self._total_grid_values for k in ["E_x", "E_y", "E_z"]
+        )
+        self._B_on_grids = any(
+            k in self._total_grid_values for k in ["B_x", "B_y", "B_z"]
+        )
 
         # Make sure the complete set of E, B arrays are available
         for key in ["E_x", "E_y", "E_z"]:
@@ -784,58 +797,56 @@ class ParticleTracker:
         considerations including the local grid resolution (ds) and the
         gyroperiod of the particles in the current fields.
         """
-        if self.iteration_number == 1:
-            # candidate time steps includes one per grid (based on the grid resolution)
-            # plus additional _dt_candidates based on the field at each particle
-            self._dt_candidates = (
-                np.ones([self.num_particles, self.num_grids + 1]) * np.inf
-            )
 
-            # Compute the time step indicated by the grid resolution
-            ds = np.array([grid.grid_resolution.to(u.m).value for grid in self.grids])
-            self._gridstep = self._Courant_parameter * np.abs(ds / self.vmax)
-            self._max_gridstep = np.max(self._gridstep)
-            self._min_gridstep = np.min(self._gridstep)
+        # candidate time steps includes one per grid (based on the grid resolution)
+        # plus additional _dt_candidates based on the field at each particle
+        candidates = np.full(
+            (self.num_particles, self.num_grids + 1), fill_value=np.inf
+        )
+
+        # Compute the time step indicated by the grid resolution
+        _gridstep = self._Courant_parameter * np.abs(self._grid_resolutions / self.vmax)
+        _max_gridstep = np.max(_gridstep)
+        _min_gridstep = np.min(_gridstep)
 
         # Wherever a particle is on a grid, include that grid's grid step
         # in the list of candidate time steps. If the particle is on no grid,
         # give it the grid step of the highest resolution grid
         for i, _grid in enumerate(self.grids):
-            self._dt_candidates[:, i] = np.where(
-                self.particles_on_grid[:, i] > 0, self._gridstep[i], self._min_gridstep
+            candidates[:, i] = np.where(
+                self.particles_on_grid[:, i] > 0, _gridstep[i], _min_gridstep
             )
 
         # If not, compute a number of possible time steps
 
         # Compute the cyclotron gyroperiod for each particle
-        Bmag = np.linalg.norm(self._B, axis=-1)
-        mask = Bmag != 0
-        gyroperiod = np.full(Bmag.shape, fill_value=np.inf)
-        gyroperiod[mask] = 2 * np.pi * self.m / (np.abs(self.q) * Bmag[mask])
+        if self._B_on_grids:
+            Bmag = np.linalg.norm(self._B, axis=-1)
+            mask = Bmag != 0
+            gyroperiod = np.full(Bmag.shape, fill_value=np.inf)
+            gyroperiod[mask] = 2 * np.pi * self.m / (np.abs(self.q) * Bmag[mask])
 
-        # Subdivide the gyroperiod into a provided number of steps
-        # Use the result as the candidate associated with gyration in B field
-        self._dt_candidates[:, self.num_grids] = gyroperiod / self._steps_per_gyroperiod
+            # Subdivide the gyroperiod into a provided number of steps
+            # Use the result as the candidate associated with gyration in B field
+            candidates[:, self.num_grids] = gyroperiod / self._steps_per_gyroperiod
 
         # TODO: introduce a minimum time step based on electric fields too!
 
         # Enforce limits on dt
-        self._dt_candidates = np.clip(
-            self._dt_candidates, self.dt_range[0], self.dt_range[1]
-        )
+        candidates = np.clip(candidates, self.dt_range[0], self.dt_range[1])
 
         if not self._is_synchronized_time_step:
-            # dt is the min of all the self._dt_candidates for each particle
+            # dt is the min of all the candidates for each particle
             # a separate dt is returned for each particle
-            dt = np.min(self._dt_candidates, axis=-1)
+            dt = np.min(candidates, axis=-1)
 
             # dt should never actually be infinite, so replace any infinities
             # with the largest gridstep
-            dt[dt == np.inf] = self._max_gridstep
+            dt[dt == np.inf] = _max_gridstep
         else:
             # a single value for dt is returned
             # this is the time step used for all particles
-            dt = np.min(self._dt_candidates)
+            dt = np.min(candidates)
 
         if np.min(dt) <= 0:
             raise ValueError("Adaptive dt is <= 0")
