@@ -374,8 +374,8 @@ class ParticleTracker:
         return len(self.grids)
 
     def _log(self, msg) -> None:
-        # if self.verbose:
-        print(msg)  # noqa: T201
+        if self.verbose:
+            print(msg)  # noqa: T201
 
     @particle_input
     def load_particles(
