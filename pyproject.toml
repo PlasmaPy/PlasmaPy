@@ -56,7 +56,7 @@ dynamic = ["version"]
 # pinned requirements files. See also `ci_requirements/README.txt`.
 
 dependencies = [
-  "astropy >= 5.2",
+  "astropy >= 5.2,<7.0",
   "h5py >= 3.8.0",
   # Minimum version of ipykernel should not exceed what's used by Google Colab
   "ipykernel >= 5.5.6",
