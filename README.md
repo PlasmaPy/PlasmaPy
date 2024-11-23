@@ -84,10 +84,9 @@ To install PlasmaPy on macOS or Linux, open a terminal and run:
 python -m pip install plasmapy
 ```
 
-> [!NOTE]
-> On some systems, it might be necessary to specify the Python version
-> number, for example by using `python3` or `python3.13` instead of
-> `python`.
+On some systems, it might be necessary to specify the Python version
+number, for example by using `python3` or `python3.13` instead of
+`python`.
 
 To install PlasmaPy on Windows, open a terminal and run
 ```Shell
