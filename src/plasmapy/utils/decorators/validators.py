@@ -114,7 +114,7 @@ class ValidateQuantities(CheckUnits, CheckValues):
 
     Allow `None` values to pass::
 
-        @ValidateQuantities(checks_on_return=[u.cm, None])
+        @ValidateQuantities(validations_on_return=[u.cm, None])
         def foo(arg1: u.cm = None):
             return arg1
 
@@ -122,7 +122,7 @@ class ValidateQuantities(CheckUnits, CheckValues):
 
         @ValidateQuantities(
             arg1={"units": u.cm},
-            checks_on_return={"units": u.km, "pass_equivalent_units": True},
+            validations_on_return ={"units": u.km, "pass_equivalent_units": True},
         )
         def foo(arg1):
             return arg1
@@ -146,9 +146,9 @@ class ValidateQuantities(CheckUnits, CheckValues):
     def __init__(
         self, validations_on_return=None, **validations: dict[str, Any]
     ) -> None:
-        if "checks_on_return" in validations:
+        if "validations_on_return" in validations:
             raise TypeError(
-                "keyword argument 'checks_on_return' is not allowed, "
+                "keyword argument 'validations_on_return' is not allowed, "
                 "use 'validations_on_return' to set validations "
                 "on the return variable"
             )
@@ -158,7 +158,7 @@ class ValidateQuantities(CheckUnits, CheckValues):
         checks = validations.copy()
         if validations_on_return is not None:
             self._validations["validations_on_return"] = validations_on_return
-            checks["checks_on_return"] = validations_on_return
+            checks["validations_on_return"] = validations_on_return
 
         super().__init__(**checks)
 
@@ -281,8 +281,8 @@ class ValidateQuantities(CheckUnits, CheckValues):
             # update the validations dictionary
             validations[arg_name].update(value_checks[arg_name])
 
-        if "checks_on_return" in validations:
-            validations["validations_on_return"] = validations.pop("checks_on_return")
+        if "validations_on_return" in validations:
+            validations["validations_on_return"] = validations.pop("validations_on_return")
 
         return validations
 
@@ -318,10 +318,10 @@ class ValidateQuantities(CheckUnits, CheckValues):
         """
         # rename to work with "check" methods
         if arg_name == "validations_on_return":
-            arg_name = "checks_on_return"
+            arg_name = "validations_on_return"
 
         # initialize str for error message
-        if arg_name == "checks_on_return":
+        if arg_name == "validations_on_return":
             err_msg = "The return value  "
         else:
             err_msg = f"The argument '{arg_name}' "
@@ -502,7 +502,7 @@ def validate_quantities(func=None, validations_on_return=None, **validations):
 
     Allow `None` values to pass::
 
-        @validate_quantities(arg2={"none_shall_pass": True}, checks_on_return=[u.cm, None])
+        @validate_quantities(arg2={"none_shall_pass": True}, validations_on_return=[u.cm, None])
         def foo(arg1: u.cm, arg2: u.cm = None):
             return None
 
@@ -510,7 +510,7 @@ def validate_quantities(func=None, validations_on_return=None, **validations):
 
         @validate_quantities(
             arg1={"units": u.cm},
-            checks_on_return={"units": u.km, "pass_equivalent_units": True},
+            validations_on_return={"units": u.km, "pass_equivalent_units": True},
         )
         def foo(arg1):
             return arg1
