@@ -1,7 +1,11 @@
 """
 The `~plasmapy.dispersion` subpackage contains functionality associated
 with plasma dispersion relations, including numerical solvers and
-`~plasmapy.dispersion.analytical` solutions.
+`~plasmapy.dispersion.analytical` solutions. Plasa dispersion dispersion 
+refers to the dependence of a wave’s phase velocity and group velocity on 
+its frequency. This is a crucial aspect when studying wave propagation in 
+plasmas, as it influences phenomena like wave-particle interactions, energy
+transport, and the stability of plasma configurations.
 
 .. attention::
 
