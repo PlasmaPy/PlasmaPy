@@ -68,3 +68,6 @@
 
 - search: '``~plasmapy'
   description: Either enclose the namespace with single backticks to make it a link, or remove the tilde and keep it a literal
+
+- search: /astropy\.unit\./
+  replacement: 'astropy.units.'
