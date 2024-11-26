@@ -991,9 +991,9 @@ class CheckUnits(CheckBase):
         Notes
         -----
         * the code here was copied and modified from
-          :func:`astropy.units.core._normalize_equivalencies` from AstroPy
+          :func:`astropy.units.core._normalize_equivalencies` from Astropy
           version 3.2.3
-        * this will work on both the old style list equivalencies (pre AstroPy v3.2.1)
+        * this will work on both the old style list equivalencies (pre Astropy v3.2.1)
           and the modern equivalencies defined with the
           :class:`~astropy.units.Equivalency` class
         """
