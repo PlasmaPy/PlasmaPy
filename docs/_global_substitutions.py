@@ -122,6 +122,7 @@ astropy_subs: dict[str, str] = {
 
 links_to_become_subs: dict[str, str] = {
     "Astropy": "https://docs.astropy.org",
+    "Astropy Equivalencies": "https://docs.astropy.org/en/stable/units/equivalencies.html",
     "Citation File Format": "https://citation-file-format.github.io/",
     "DOI": "https://www.doi.org",
     "editable installation": "https://pip.pypa.io/en/stable/topics/local-project-installs/#editable-installs",
