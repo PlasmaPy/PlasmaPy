@@ -1,4 +1,4 @@
-Fix references to the ``astropy.units.equivalencies`` module in the docs. Astropy now considers
+Fixed references to the ``astropy.units.equivalencies`` module in the docs. Astropy now considers
 this file to be private API, and wants its contents imported through the ``units`` module namespace,
-which breaks our intersphinx links. This PR changes those links to a direct URL to the page in the
+which broke PlasmaPy's intersphinx links. This PR changes those links to a direct URL to the page in the
 astropy docs: |Astropy Equivalencies|.
