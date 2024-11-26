@@ -31,7 +31,7 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
 
 ### Planning the release
 
- - [x] [Create an issue for the release].
+ - [x] [Create an issue for the release]. ✅
  - [ ] Update [milestones] for issues & pull requests (PRs). 🛣️
 
 ### Code quality updates
@@ -54,12 +54,15 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
  - [ ] Run the GitHub Action to [mint a release] 🍬, specifying the version (i.e., `2024.10.0` or `2024.10.0rc1` for a release candidate) and copying the reserved DOI from Zenodo. This workflow will update metadata, build the changelog, create the release branch (i.e., `2024.10.x`), and tag the release.
  - [ ] [Create a release on GitHub]. 🚀
    - Choose the newly created tag (e.g., `v2024.10.0`), and use it as the title. (The release will be performed from the tag, so it is not necessary to select the branch.) 🏷️
-   - Select the option to automatically generate release notes. 📜
+   - Set the tag for the previous release, and select the option to automatically generate release notes. 📜
    - Select the option to create a discussion for the release under the _General_ category.
    - For official releases, make sure the checkbox is selected for _Set as the latest release_. For beta releases or release candidates (e.g., `v2024.10.0rc1`), specify it as a pre-release.
    - Click on _Publish release_, which will create the GitHub release and trigger the GitHub workflow to [publish to PyPI]. 🚀
    - Check the [release history] on PyPI to make sure that the release was successful. 🆕
  - [ ] [Create a pull request] to merge the `v2024.10.x` branch back into main.
+   - An example title is: "Merge changes back in from v2024.10.x"
+   - An example description is: "This PR merges changes back in from the v2024.10.0 release. This PR should be merged rather than squashed, and the corresponding branch should not be deleted."
+   - No changelog entry is needed.
  - [ ] Merge **but do not squash** this PR back into `main`, and **do not delete** the `v2024.10.x` branch.
 
 > [!CAUTION]
@@ -68,10 +71,20 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
 ### Following the release
 
  - [ ] Download a `.tar.gz` file of the tagged release from the [list of tagged versions] on GitHub, and upload it to [Zenodo].
+   - [ ] Update the version number and release date in the record.
    - [ ] Update the author list with new authors from the automatically generated release notes or [`CITATION.cff`].
-   - [ ] Update the bibliography, and publish the release to Zenodo.
+   - [ ] Update the bibliography.
+   - [ ] Publish the record.
  - [ ] Fix any problems with the automated pull request to [conda-forge feedstock], if necessary. This step should be automatic, but may take a while.
  - [ ] Update requirements in the [conda-forge feedstock] in `recipe/meta.yaml`, in particular when there is a new version of Python.
+
+> [!TIP]
+> To compare two files across different tags, use commands like:
+>
+> ```shell
+> git diff v2024.7.0:CITATION.cff v2024.10.0:CITATION.cff
+> git diff v2024.7.0:docs/bibliography.bib v2024.10.0:docs/bibliography.bib
+> ```
 
 ### Update documentation
 
@@ -86,10 +99,12 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
  - [ ] Open Python and run `import plasmapy`, `dir(plasmapy)`, and `plasmapy.__version__`.
  - [ ] Run `plasma-calculator` from the command line.
  - [ ] Verify that the new version can be installed with conda.
+ - [ ] Verify that the new version can be installed with uv.
 
 ## After the release
 
  - [ ] Announce the release at the [community meeting].
  - [ ] Update the [release checklist], as needed.
- - [ ] [Create an issue for the release] to occur ∼3–4 months after this one.
+   - An example changelog entry is: "Updated the release checklist following the ``v2024.10.0`` release."
+ - [ ] [Create an issue for the release] to occur in ∼3–4 months.
  - [ ] Close this issue.
