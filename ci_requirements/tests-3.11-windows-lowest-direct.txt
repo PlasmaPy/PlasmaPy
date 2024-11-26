@@ -69,7 +69,7 @@ h5py==3.8.0
     # via plasmapy (pyproject.toml)
 hypothesis==6.108.2
     # via plasmapy (pyproject.toml)
-identify==2.6.2
+identify==2.6.3
     # via pre-commit
 idna==3.10
     # via
@@ -356,7 +356,7 @@ uncertainties==3.2.2
     # via lmfit
 urllib3==1.26.20
     # via requests
-virtualenv==20.27.1
+virtualenv==20.28.0
     # via
     #   nox
     #   pre-commit
