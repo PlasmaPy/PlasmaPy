@@ -57,7 +57,7 @@ dynamic = ["version"]
 
 dependencies = [
   # Astropy upper limit described in #2883
-  "astropy >= 5.2, < 7.0.0",
+  "astropy >= 5.2, <= 6.1.5",
   "h5py >= 3.8.0",
   # Minimum version of ipykernel should not exceed what's used by Google Colab
   "ipykernel >= 5.5.6",

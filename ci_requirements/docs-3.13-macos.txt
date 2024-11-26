@@ -16,7 +16,7 @@ arrow==1.3.0
     # via isoduration
 asteval==1.0.5
     # via lmfit
-astropy==6.1.7
+astropy==6.1.5
     # via plasmapy (pyproject.toml)
 astropy-iers-data==0.2024.11.25.0.34.48
     # via astropy
