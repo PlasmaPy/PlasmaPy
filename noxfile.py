@@ -172,7 +172,11 @@ pytest_command: tuple[str, ...] = (
     "--dist=loadfile",
 )
 
-with_doctests: tuple[str, ...] = ("--doctest-modules", "--doctest-continue-on-failure")
+with_doctests: tuple[str, ...] = (
+    "--doctest-plus",
+    "--doctest-rst",
+    "--doctest-continue-on-failure",
+)
 
 with_coverage: tuple[str, ...] = (
     "--cov=plasmapy",
