@@ -84,10 +84,9 @@ To install PlasmaPy on macOS or Linux, open a terminal and run:
 python -m pip install plasmapy
 ```
 
-> [!NOTE]
-> On some systems, it might be necessary to specify the Python version
-> number, for example by using `python3` or `python3.13` instead of
-> `python`.
+On some systems, it might be necessary to specify the Python version
+number, for example by using `python3` or `python3.13` instead of
+`python`.
 
 To install PlasmaPy on Windows, open a terminal and run
 ```Shell
@@ -138,10 +137,10 @@ the [meetings] page of PlasmaPy's website.
 
 Our weekly informal [office hours] are an opportunity to chat with
 active members of the PlasmaPy community about topics related to
-Python and plasma science. If you'd like to learn more about PlasmaPy,
-our office hours are one of the best places to start. As of July
-2024, our office hours are on most Thursdays at 3 pm Eastern. Please
-feel free to come by!
+Python and plasma physics. If you'd like to learn more about PlasmaPy,
+our office hours are one of the best places to start. As of July 2024,
+our office hours are on most Thursdays at 3 pm Eastern. Please feel
+free to come by!
 
 ### Community meetings
 
