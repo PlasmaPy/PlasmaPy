@@ -287,7 +287,10 @@ class Downloader:
         # Only send GitHub api authorization if querying GitHub
         # auth = self._api_auth if "github.com" in url else None
 
-        headers = {"Content-Type": "application/json"}
+        headers = {
+            "Content-Type": "application/json",
+            "User-Agent": "PlasmaPy.utils.Downloader",
+        }
 
         if self._api_token is not None:
             headers["authorization"] = f"Bearer {self._api_token}"
