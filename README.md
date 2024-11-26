@@ -137,10 +137,10 @@ the [meetings] page of PlasmaPy's website.
 
 Our weekly informal [office hours] are an opportunity to chat with
 active members of the PlasmaPy community about topics related to
-Python and plasma science. If you'd like to learn more about PlasmaPy,
-our office hours are one of the best places to start. As of July
-2024, our office hours are on most Thursdays at 3 pm Eastern. Please
-feel free to come by!
+Python and plasma physics. If you'd like to learn more about PlasmaPy,
+our office hours are one of the best places to start. As of July 2024,
+our office hours are on most Thursdays at 3 pm Eastern. Please feel
+free to come by!
 
 ### Community meetings
 

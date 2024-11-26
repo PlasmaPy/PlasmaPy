@@ -50,8 +50,7 @@ class ValidateQuantities(CheckUnits, CheckValues):
         equivalencies                  | [DEFAULT `None`] A list of equivalent pairs to
                                          try if
                                        | the units are not directly convertible.
-                                       | (see :mod:`~astropy.units.equivalencies`,
-                                         and/or `astropy equivalencies`_)
+                                       | (see |Astropy Equivalencies|)
         pass_equivalent_units  `bool`  | [DEFAULT `False`] allow equivalent units
                                        | to pass
         can_be_negative        `bool`  [DEFAULT `True`] values can be negative
@@ -425,8 +424,7 @@ def validate_quantities(func=None, validations_on_return=None, **validations):
         equivalencies                  | [DEFAULT `None`] A list of equivalent pairs to
                                          try if
                                        | the units are not directly convertible.
-                                       | (see :mod:`~astropy.units.equivalencies`,
-                                         and/or `astropy equivalencies`_)
+                                       | (see |Astropy Equivalencies|)
         pass_equivalent_units  `bool`  | [DEFAULT `False`] allow equivalent units
                                        | to pass
         can_be_negative        `bool`  [DEFAULT `True`] values can be negative
