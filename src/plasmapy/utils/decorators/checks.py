@@ -374,8 +374,7 @@ class CheckUnits(CheckBase):
         equivalencies                  | [DEFAULT `None`] A list of equivalent pairs to
                                          try if
                                        | the units are not directly convertible.
-                                       | (see :mod:`~astropy.units.Equivalency`,
-                                         and/or `astropy equivalencies`_)
+                                       | (see |Astropy Equivalencies|)
         pass_equivalent_units  `bool`  | [DEFAULT `False`] allow equivalent units
                                        | to pass
         ====================== ======= ================================================
@@ -812,7 +811,7 @@ class CheckUnits(CheckBase):
               checks fail
             * `unit` is the identified astropy :mod:`~astropy.units` that `arg`
               can be converted to or `None` if none exist
-            * `equivalencies` is the astropy :mod:`~astropy.units.Equivalency`
+            * `equivalencies` is the astropy :class:`~astropy.units.Equivalency`
               used for the unit conversion or `None`
             * `error` is the `Exception` associated with the failed unit checks
               or `None` for successful unit checks
@@ -982,7 +981,7 @@ class CheckUnits(CheckBase):
         Parameters
         ----------
         equivalencies: list of equivalent pairs
-            list of astropy :mod:`~astropy.units.Equivalency` to be normalized
+            list of astropy |Astropy Equivalencies| to be normalized
 
         Raises
         ------
@@ -1036,12 +1035,12 @@ class CheckUnits(CheckBase):
         Parameters
         ----------
         elist: list
-            list of astropy :mod:`~astropy.units.Equivalency` to be flattened
+            list of astropy |Astropy Equivalencies| to be flattened
 
         Returns
         -------
         list
-            a flattened list of astropy :mod:`~astropy.units.Equivalency`
+            a flattened list of |Astropy Equivalencies|
 
         """
         new_list = []
@@ -1094,8 +1093,7 @@ def check_units(
         equivalencies                  | [DEFAULT `None`] A list of equivalent pairs to
                                          try if
                                        | the units are not directly convertible.
-                                       | (see :mod:`~astropy.units.Equivalency`,
-                                         and/or `astropy equivalencies`_)
+                                       | (|Astropy Equivalencies|)
         pass_equivalent_units  `bool`  | [DEFAULT `False`] allow equivalent units
                                        | to pass
         ====================== ======= ================================================
@@ -1173,9 +1171,6 @@ def check_units(
         )
         def foo(arg1):
             return arg1
-
-    .. _astropy equivalencies:
-        https://docs.astropy.org/en/stable/units/equivalencies.html
     """
     if checks_on_return is not None:
         checks["checks_on_return"] = checks_on_return
