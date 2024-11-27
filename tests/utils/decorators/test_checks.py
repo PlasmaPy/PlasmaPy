@@ -177,7 +177,7 @@ class TestCheckUnits:
         with pytest.raises(ValueError):
             cu._normalize_equivalencies([(u.cm,)])
 
-        # input is not a astropy.unit.Unit
+        # input is not a astropy.units.Unit
         with pytest.raises(ValueError):
             cu._normalize_equivalencies([("cm", u.cm)])
 

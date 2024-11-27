@@ -12,9 +12,9 @@ arrow==1.3.0
     # via isoduration
 asteval==1.0.5
     # via lmfit
-astropy==6.1.5
+astropy==6.1.7
     # via plasmapy (pyproject.toml)
-astropy-iers-data==0.2024.11.11.0.32.38
+astropy-iers-data==0.2024.11.25.0.34.48
     # via astropy
 asttokens==2.4.1
     # via stack-data
@@ -49,13 +49,13 @@ comm==0.2.2
     # via
     #   ipykernel
     #   ipywidgets
-contourpy==1.3.0
+contourpy==1.3.1
     # via matplotlib
-coverage==7.6.4
+coverage==7.6.8
     # via pytest-cov
 cycler==0.12.1
     # via matplotlib
-debugpy==1.8.8
+debugpy==1.8.9
     # via ipykernel
 decorator==5.1.1
     # via ipython
@@ -73,15 +73,15 @@ fastjsonschema==2.20.0
     # via nbformat
 filelock==3.16.1
     # via virtualenv
-fonttools==4.54.1
+fonttools==4.55.0
     # via matplotlib
 fqdn==1.5.1
     # via jsonschema
 h5py==3.12.1
     # via plasmapy (pyproject.toml)
-hypothesis==6.118.7
+hypothesis==6.119.4
     # via plasmapy (pyproject.toml)
-identify==2.6.2
+identify==2.6.3
     # via pre-commit
 idna==3.10
     # via
@@ -107,7 +107,7 @@ jinja2==3.1.4
     #   jupyter-server
     #   jupyterlab-server
     #   nbconvert
-json5==0.9.27
+json5==0.10.0
     # via jupyterlab-server
 jsonpointer==3.0.0
     # via jsonschema
@@ -244,7 +244,7 @@ pure-eval==0.2.3
     # via stack-data
 pycparser==2.22
     # via cffi
-pyerfa==2.0.1.4
+pyerfa==2.0.1.5
     # via astropy
 pygments==2.18.0
     # via
@@ -269,7 +269,7 @@ pytest-filter-subpackage==0.2.0
     # via plasmapy (pyproject.toml)
 pytest-regressions==2.5.0
     # via plasmapy (pyproject.toml)
-pytest-rerunfailures==14.0
+pytest-rerunfailures==15.0
     # via plasmapy (pyproject.toml)
 pytest-xdist==3.6.1
     # via plasmapy (pyproject.toml)
@@ -328,7 +328,7 @@ scipy==1.14.1
     #   lmfit
 send2trash==1.8.3
     # via jupyter-server
-setuptools==75.3.0
+setuptools==75.6.0
     # via plasmapy (pyproject.toml)
 six==1.16.0
     # via
@@ -349,17 +349,17 @@ terminado==0.18.1
     #   jupyter-server-terminals
 tinycss2==1.4.0
     # via nbconvert
-tomli==2.0.2
+tomli==2.1.0
     # via
     #   plasmapy (pyproject.toml)
     #   coverage
-tornado==6.4.1
+tornado==6.4.2
     # via
     #   ipykernel
     #   jupyter-client
     #   jupyter-server
     #   terminado
-tqdm==4.67.0
+tqdm==4.67.1
     # via plasmapy (pyproject.toml)
 traitlets==5.14.3
     # via
@@ -390,7 +390,7 @@ uri-template==1.3.0
     # via jsonschema
 urllib3==2.2.3
     # via requests
-virtualenv==20.27.1
+virtualenv==20.28.0
     # via
     #   nox
     #   pre-commit
@@ -406,11 +406,11 @@ webencodings==0.5.1
     #   tinycss2
 websocket-client==1.8.0
     # via jupyter-server
-websockets==14.0
+websockets==14.1
     # via voila
 widgetsnbextension==4.0.13
     # via ipywidgets
-wrapt==1.16.0
+wrapt==1.17.0
     # via plasmapy (pyproject.toml)
 xarray==2024.10.0
     # via plasmapy (pyproject.toml)

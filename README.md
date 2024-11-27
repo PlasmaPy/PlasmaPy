@@ -19,7 +19,7 @@
 [![Read the Docs Status](https://readthedocs.org/projects/plasmapy/badge/?version=latest)](http://plasmapy.readthedocs.io/en/latest/?badge=latest)
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1436011.svg)](https://doi.org/10.5281/zenodo.1436011)
-[![astropy](http://img.shields.io/badge/powered%20by-AstroPy-orange.svg?style=flat&logo=astropy)](http://www.astropy.org/)
+[![astropy](http://img.shields.io/badge/powered%20by-Astropy-orange.svg?style=flat&logo=astropy)](http://www.astropy.org/)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
 
 [Astropy]: https://www.astropy.org

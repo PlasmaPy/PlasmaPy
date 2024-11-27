@@ -30,7 +30,7 @@ from plasmapy.simulation.particle_tracker.termination_conditions import (
 
 def _coerce_to_cartesian_si(pos):
     """
-    Takes a tuple of `astropy.unit.Quantity` values representing a position
+    Takes a tuple of `astropy.units.Quantity` values representing a position
     in space in either Cartesian, cylindrical, or spherical coordinates, and
     returns a numpy array representing the same point in Cartesian
     coordinates and units of meters.
