@@ -2,6 +2,8 @@
 Tests for save_routines.py
 """
 
+import warnings
+
 import astropy.units as u
 import numpy as np
 import pytest
@@ -78,4 +80,7 @@ def test_interval_save_routine(request, stop_condition, save_routine) -> None:
     simulation = ParticleTracker(grid, termination_condition, save_routine)
     simulation.load_particles(x, v, point_particle)
 
-    simulation.run()
+    with warnings.catch_warnings():
+        # Ignore warning raises by this special small grid
+        warnings.filterwarnings("ignore", message="Quantities should go to zero")
+        simulation.run()
