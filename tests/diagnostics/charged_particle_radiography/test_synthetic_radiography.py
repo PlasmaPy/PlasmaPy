@@ -1084,7 +1084,7 @@ def test_NIST_particle_stopping(
     v = np.swapaxes(v, 0, 2)
     # Reshape the result of the previous swap into the necessary [n_particles, 3] array
     # where n_particles = n_energy * nparticles_per_energy
-    v = np.reshape(v, shape=(energies.shape[0] * PARTICLES_PER_CONFIGURATION, 3))
+    v = np.reshape(v, (energies.shape[0] * PARTICLES_PER_CONFIGURATION, 3))
 
     # Apply units
     x *= u.m
@@ -1095,8 +1095,7 @@ def test_NIST_particle_stopping(
     sim.run()
 
     x_final = (
-        np.reshape(sim.x[:, 1], shape=(energies.shape[0], PARTICLES_PER_CONFIGURATION))
-        * u.m
+        np.reshape(sim.x[:, 1], (energies.shape[0], PARTICLES_PER_CONFIGURATION)) * u.m
     )
 
     assert np.isclose(np.median(x_final, axis=-1), projected_ranges, rtol=0.05).all()
