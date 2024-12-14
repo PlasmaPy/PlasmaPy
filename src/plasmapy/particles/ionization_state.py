@@ -523,7 +523,7 @@ class IonizationState:
         This method may be used, for example, to correct for rounding
         errors.
         """
-        self._ionic_fractions = self._ionic_fractions / np.sum(self._ionic_fractions)
+        self._ionic_fractions = self._ionic_fractions / np.sum(self._ionic_fractions)  # type: ignore[assignment]
 
     @property
     @validate_quantities
