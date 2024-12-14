@@ -454,8 +454,8 @@ class IonizationStateCollection:
                 )
 
         if isinstance(inputs, dict):
-            original_keys = inputs.keys()
-            ionfrac_types = {type(inputs[key]) for key in original_keys}
+            original_particles = inputs.keys()
+            ionfrac_types = {type(inputs[particle]) for particle in original_particles}
             inputs_have_quantities = u.Quantity in ionfrac_types
 
             if inputs_have_quantities and len(ionfrac_types) != 1:
@@ -466,7 +466,9 @@ class IonizationStateCollection:
                 )
 
             try:
-                particles = {key: Particle(key) for key in original_keys}
+                particles = {
+                    particle: Particle(particle) for particle in original_particles
+                }
             except (InvalidParticleError, TypeError) as exc:
                 raise ParticleError(
                     "Unable to create IonizationStateCollection instance "
@@ -476,15 +478,13 @@ class IonizationStateCollection:
             # The particles whose ionization states are to be recorded
             # should be elements or isotopes but not ions or neutrals.
 
-            for key in particles:
-                is_element = particles[key].is_category("element")
-                has_charge_info = particles[key].is_category(
-                    any_of=["charged", "uncharged"]
-                )
+            for particle in particles:
+                is_element = particle.is_category("element")
+                has_charge_info = particle.is_category(any_of=["charged", "uncharged"])
 
                 if not is_element or has_charge_info:
                     raise ParticleError(
-                        f"{key} is not an element or isotope without "
+                        f"{particle} is not an element or isotope without "
                         f"charge information."
                     )
 
@@ -498,8 +498,8 @@ class IonizationStateCollection:
                     particles[k].mass_number if particles[k].isotope else 0,
                 )
 
-            sorted_keys = sorted(
-                original_keys, key=_sort_entries_by_atomic_and_mass_numbers
+            sorted_particles = sorted(
+                original_particles, key=_sort_entries_by_atomic_and_mass_numbers
             )
 
             _elements_and_isotopes = []
@@ -509,58 +509,58 @@ class IonizationStateCollection:
             if inputs_have_quantities:
                 n_elems = {}
 
-            for key in sorted_keys:
-                new_key = particles[key].symbol
-                _particle_instances.append(particles[key])
-                if new_key in _elements_and_isotopes:
+            for particle in sorted_particles:
+                new_particle = particles[particle].symbol
+                _particle_instances.append(particles[particle])
+                if new_particle in _elements_and_isotopes:
                     raise ParticleError(
                         "Repeated particles in IonizationStateCollection."
                     )
 
-                nstates_input = len(inputs[key])
-                nstates = particles[key].atomic_number + 1
+                nstates_input = len(inputs[particle])
+                nstates = particles[particle].atomic_number + 1
                 if nstates != nstates_input:
                     raise ParticleError(
-                        f"The ionic fractions array for {key} must "
+                        f"The ionic fractions array for {particle} must "
                         f"have a length of {nstates}."
                     )
 
-                _elements_and_isotopes.append(new_key)
+                _elements_and_isotopes.append(new_particle)
                 if inputs_have_quantities:
                     try:
-                        number_densities = inputs[key].to(u.m**-3)
+                        number_densities = inputs[particle].to(u.m**-3)
                         n_elem = np.sum(number_densities)
-                        new_ionic_fractions[new_key] = np.array(
+                        new_ionic_fractions[new_particle] = np.array(
                             number_densities / n_elem
                         )
-                        n_elems[key] = n_elem
+                        n_elems[particle] = n_elem
                     except u.UnitConversionError as exc:
                         raise ParticleError("Units are not inverse volume.") from exc
                 elif (
-                    isinstance(inputs[key], np.ndarray)
-                    and inputs[key].dtype.kind == "f"
+                    isinstance(inputs[particle], np.ndarray)
+                    and inputs[particle].dtype.kind == "f"
                 ):
-                    new_ionic_fractions[particles[key].symbol] = inputs[key]
+                    new_ionic_fractions[particles[particle].symbol] = inputs[particle]
                 else:
                     try:
-                        new_ionic_fractions[particles[key].symbol] = np.array(
-                            inputs[key], dtype=float
+                        new_ionic_fractions[particles[particle].symbol] = np.array(
+                            inputs[particle], dtype=float
                         )
                     except ValueError as exc:
                         raise ParticleError(
-                            f"Inappropriate ionic fractions for {key}."
+                            f"Inappropriate ionic fractions for {particle}."
                         ) from exc
 
-            for key in _elements_and_isotopes:
-                fractions = new_ionic_fractions[key]
+            for particle in _elements_and_isotopes:
+                fractions = new_ionic_fractions[particle]
                 if not np.all(np.isnan(fractions)):
                     if np.min(fractions) < 0 or np.max(fractions) > 1:
                         raise ParticleError(
-                            f"Ionic fractions for {key} are not between 0 and 1."
+                            f"Ionic fractions for {particle} are not between 0 and 1."
                         )
                     if not np.isclose(np.sum(fractions), 1, atol=self.tol, rtol=0):
                         raise ParticleError(
-                            f"Ionic fractions for {key} are not normalized to 1."
+                            f"Ionic fractions for {particle} are not normalized to 1."
                         )
 
             # When the inputs provide the densities, the abundances must
@@ -577,13 +577,13 @@ class IonizationStateCollection:
             if inputs_have_quantities:
                 if np.isnan(self.n0):
                     new_n = 0 * u.m**-3
-                    for key in _elements_and_isotopes:
-                        new_n += n_elems[key]
+                    for particle in _elements_and_isotopes:
+                        new_n += n_elems[particle]
                     self.n0 = new_n
 
                 new_abundances = {}
-                for key in _elements_and_isotopes:
-                    new_abundances[key] = float(n_elems[key] / self.n0)
+                for particle in _elements_and_isotopes:
+                    new_abundances[particle] = float(n_elems[particle] / self.n0)
 
                 self._pars["abundances"] = new_abundances
 
