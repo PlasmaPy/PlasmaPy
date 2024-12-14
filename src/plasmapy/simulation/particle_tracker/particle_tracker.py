@@ -900,11 +900,9 @@ class ParticleTracker:
         # Make sure the time step can be multiplied by a [nparticles, 3] shape field array
         if isinstance(dt, np.ndarray) and dt.size > 1:
             dt = dt[self._tracked_particle_mask, np.newaxis]
-
-            # Increment the tracked particles' time by dt
             self.time[self._tracked_particle_mask] += dt
         else:
-            self.time += dt
+            self.time += dt  # type: ignore[assignment]
 
         return dt
 
