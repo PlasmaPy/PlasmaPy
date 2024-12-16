@@ -16,7 +16,7 @@ astropy==5.2
     # via plasmapy (pyproject.toml)
 asttokens==3.0.0
     # via stack-data
-attrs==24.2.0
+attrs==24.3.0
     # via
     #   hypothesis
     #   jsonschema
@@ -25,7 +25,7 @@ beautifulsoup4==4.12.3
     # via nbconvert
 bleach==6.2.0
     # via nbconvert
-certifi==2024.8.30
+certifi==2024.12.14
     # via requests
 cffi==1.17.1
     # via argon2-cffi-bindings
@@ -57,7 +57,7 @@ fastjsonschema==2.21.1
     # via nbformat
 filelock==3.16.1
     # via virtualenv
-fonttools==4.55.2
+fonttools==4.55.3
     # via matplotlib
 h5py==3.8.0
     # via plasmapy (pyproject.toml)
