@@ -37,7 +37,7 @@ colorlog==6.9.0
     # via nox
 contourpy==1.3.1
     # via matplotlib
-coverage==7.6.9
+coverage==7.6.10
     # via pytest-cov
 cycler==0.12.1
     # via matplotlib
@@ -63,7 +63,7 @@ h5py==3.8.0
     # via plasmapy (pyproject.toml)
 hypothesis==6.108.2
     # via plasmapy (pyproject.toml)
-identify==2.6.3
+identify==2.6.4
     # via pre-commit
 idna==3.10
     # via
@@ -119,7 +119,7 @@ jupyter-server==1.24.0
     #   voila
 jupyterlab-pygments==0.3.0
     # via nbconvert
-kiwisolver==1.4.7
+kiwisolver==1.4.8
     # via matplotlib
 lmfit==1.1.0
     # via plasmapy (pyproject.toml)
