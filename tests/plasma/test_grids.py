@@ -505,6 +505,12 @@ def uniform_cartesian_grid():
     return grid
 
 
+def test_soften_edges(uniform_cartesian_grid):
+    grid = uniform_cartesian_grid
+    grid.soften_edges()
+    assert grid["x"][0, 0, 0] == 0
+
+
 create_args_uniform_cartesian = [
     # Same start, stop and num for each axis
     ([-1 * u.cm, 1 * u.cm], {"num": 10}, (10, 10, 10), None),
