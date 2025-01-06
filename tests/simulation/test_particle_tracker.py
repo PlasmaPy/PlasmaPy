@@ -566,7 +566,7 @@ class TestParticleTrajectory:
     @staticmethod
     def laboratory_time_case_one(𝜏, vd, γd, ν):
         """
-        Fsolve optimization function
+        `fsolve` optimization function.
         Eq. 72 in the Friedman paper
 
         """
