@@ -682,7 +682,7 @@ def _params_to_array(
 
 def _spectral_density_model(wavelengths, settings=None, **params):
     """
-    lmfit Model function for fitting Thomson spectra.
+    Lmfit Model function for fitting Thomson spectra.
 
     For descriptions of arguments, see the `thomson_model` function.
     """
