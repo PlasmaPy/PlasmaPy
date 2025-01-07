@@ -62,11 +62,6 @@ available at these locations:
   to the checks at the bottom of a pull request, and clicking on
   :guilabel:`docs/readthedocs.org:plasmapy`.
 
-.. image:: ../_static/contributor_guide/readthedocs_preview_link.png
-   :width: 700
-   :align: center
-   :alt: Access to the preview of the documentation after a pull request
-
 Markup Languages
 ================
 
