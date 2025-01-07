@@ -30,7 +30,8 @@ narrative documentation. The configuration file is [`docs/conf.py`].
 
 > [!TIP]
 > When making a pull request, the documentation can be previewed by
-> clicking on **docs/readthedocs.org:plasmapy** in the list of checks.
+> clicking on **docs/readthedocs.org:plasmapy** in the list of checks
+> at the bottom of each pull request.
 
 Building PlasmaPy's documentation requires using the most recent version
 of Python supported by PlasmaPy. Prior to building documentation
