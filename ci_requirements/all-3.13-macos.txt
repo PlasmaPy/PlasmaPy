@@ -289,7 +289,7 @@ pycparser==2.22
     # via cffi
 pyerfa==2.0.1.5
     # via astropy
-pygments==2.18.0
+pygments==2.19.1
     # via
     #   plasmapy (pyproject.toml)
     #   ipython
