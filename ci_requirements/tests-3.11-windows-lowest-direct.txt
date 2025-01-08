@@ -2,7 +2,7 @@
 #    nox -s requirements
 anyio==3.7.1
     # via jupyter-server
-argcomplete==3.5.2
+argcomplete==3.5.3
     # via nox
 argon2-cffi==23.1.0
     # via
@@ -69,7 +69,7 @@ h5py==3.8.0
     # via plasmapy (pyproject.toml)
 hypothesis==6.108.2
     # via plasmapy (pyproject.toml)
-identify==2.6.4
+identify==2.6.5
     # via pre-commit
 idna==3.10
     # via
@@ -210,7 +210,7 @@ pandocfilters==1.5.1
     # via nbconvert
 parso==0.8.4
     # via jedi
-pillow==11.0.0
+pillow==11.1.0
     # via matplotlib
 platformdirs==4.3.6
     # via
@@ -232,11 +232,11 @@ pycparser==2.22
     # via cffi
 pyerfa==2.0.1.5
     # via astropy
-pygments==2.18.0
+pygments==2.19.1
     # via
     #   ipython
     #   nbconvert
-pyparsing==3.2.0
+pyparsing==3.2.1
     # via matplotlib
 pytest==8.3.1
     # via
@@ -354,7 +354,7 @@ uncertainties==3.2.2
     # via lmfit
 urllib3==1.26.20
     # via requests
-virtualenv==20.28.0
+virtualenv==20.28.1
     # via
     #   nox
     #   pre-commit
