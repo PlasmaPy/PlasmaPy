@@ -261,7 +261,7 @@ pycparser==2.22
     # via cffi
 pyerfa==2.0.1.5
     # via astropy
-pygments==2.19.0
+pygments==2.19.1
     # via
     #   plasmapy (pyproject.toml)
     #   ipython
@@ -318,7 +318,7 @@ scipy==1.15.0
     #   lmfit
 send2trash==1.8.3
     # via jupyter-server
-setuptools==75.7.0
+setuptools==75.8.0
     # via
     #   plasmapy (pyproject.toml)
     #   sphinxcontrib-bibtex
