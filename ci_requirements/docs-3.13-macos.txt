@@ -2,11 +2,11 @@
 #    nox -s requirements
 alabaster==0.7.16
     # via sphinx
-anyio==4.7.0
+anyio==4.8.0
     # via jupyter-server
 appnope==0.1.4
     # via ipykernel
-argcomplete==3.5.2
+argcomplete==3.5.3
     # via nox
 argon2-cffi==23.1.0
     # via jupyter-server
@@ -18,7 +18,7 @@ asteval==1.0.5
     # via lmfit
 astropy==6.1.7
     # via plasmapy (pyproject.toml)
-astropy-iers-data==0.2024.12.23.0.33.24
+astropy-iers-data==0.2025.1.6.0.33.42
     # via astropy
 asttokens==3.0.0
     # via stack-data
@@ -40,7 +40,7 @@ certifi==2024.12.14
     # via requests
 cffi==1.17.1
     # via argon2-cffi-bindings
-charset-normalizer==3.4.0
+charset-normalizer==3.4.1
     # via requests
 click==8.1.8
     # via towncrier
@@ -153,7 +153,7 @@ jupyterlab-server==2.27.3
     # via voila
 jupyterlab-widgets==3.0.13
     # via ipywidgets
-kiwisolver==1.4.7
+kiwisolver==1.4.8
     # via matplotlib
 latexcodec==3.0.0
     # via pybtex
@@ -169,7 +169,7 @@ matplotlib-inline==0.1.7
     # via
     #   ipykernel
     #   ipython
-mistune==3.0.2
+mistune==3.1.0
     # via nbconvert
 mpmath==1.3.0
     # via plasmapy (pyproject.toml)
@@ -177,7 +177,7 @@ nbclient==0.10.2
     # via
     #   nbconvert
     #   voila
-nbconvert==7.16.4
+nbconvert==7.16.5
     # via
     #   jupyter-server
     #   nbsphinx
@@ -188,7 +188,7 @@ nbformat==5.10.4
     #   nbclient
     #   nbconvert
     #   nbsphinx
-nbsphinx==0.9.5
+nbsphinx==0.9.6
     # via plasmapy (pyproject.toml)
 nest-asyncio==1.6.0
     # via ipykernel
@@ -232,7 +232,7 @@ parso==0.8.4
     # via jedi
 pexpect==4.9.0
     # via ipython
-pillow==11.0.0
+pillow==11.1.0
     # via
     #   plasmapy (pyproject.toml)
     #   matplotlib
@@ -270,7 +270,7 @@ pygments==2.18.0
     #   nbconvert
     #   sphinx
     #   sphinx-tabs
-pyparsing==3.2.0
+pyparsing==3.2.1
     # via matplotlib
 python-dateutil==2.9.0.post0
     # via
@@ -314,13 +314,13 @@ rpds-py==0.22.3
     # via
     #   jsonschema
     #   referencing
-scipy==1.14.1
+scipy==1.15.0
     # via
     #   plasmapy (pyproject.toml)
     #   lmfit
 send2trash==1.8.3
     # via jupyter-server
-setuptools==75.6.0
+setuptools==75.8.0
     # via
     #   plasmapy (pyproject.toml)
     #   sphinxcontrib-bibtex
@@ -408,7 +408,7 @@ terminado==0.18.1
     #   jupyter-server
     #   jupyter-server-terminals
 tinycss2==1.4.0
-    # via nbconvert
+    # via bleach
 tornado==6.4.2
     # via
     #   ipykernel
@@ -449,7 +449,7 @@ uri-template==1.3.0
     # via jsonschema
 urllib3==2.3.0
     # via requests
-virtualenv==20.28.0
+virtualenv==20.28.1
     # via nox
 voila==0.5.8
     # via plasmapy (pyproject.toml)
