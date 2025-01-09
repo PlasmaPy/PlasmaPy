@@ -20,7 +20,6 @@ from numpy.typing import NDArray
 from tqdm import tqdm
 
 from plasmapy.formulary.collisions.misc import Bethe_stopping_lite
-from plasmapy.formulary.frequencies import gyrofrequency
 from plasmapy.particles import Particle, particle_input
 from plasmapy.particles.atomic import stopping_power
 from plasmapy.plasma.grids import AbstractGrid
@@ -829,7 +828,9 @@ class ParticleTracker:
             Bmag = np.linalg.norm(self._B, axis=-1)
             mask = Bmag != 0
             gyroperiod = np.full(Bmag.shape, fill_value=np.inf)
-            gyroperiod[mask] = 2 * np.pi /gyrofrequency(Bmag[mask], self._particle)
+            # TODO: Replace with formulary gyrofrequency lite function once available
+            gyroperiod[mask] = 2 * np.pi * self.m / (np.abs(self.q) * Bmag[mask])
+           
 
 
             # Subdivide the gyroperiod into a provided number of steps
