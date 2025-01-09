@@ -168,9 +168,20 @@ def tests(session: nox.Session, test_specifier: nox._parametrize.Param) -> None:
     if gh_token := os.getenv("GH_TOKEN"):
         session.env["GH_TOKEN"] = gh_token
 
-    session.install("-r", requirements, ".[tests]")
-    session.run(*pytest_command, *options, *session.posargs)
+    match test_specifier:
+        case "lowest-direct":
+            session.install(".[tests]", "--resolution=lowest-direct")
+        case _:
+            session.run_install(
+                "uv",
+                "sync",
+                "--extra=tests",
+                env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
+            )
+            session.run_install("which", "python")
 
+
+    session.run(*pytest_command, *options, *session.posargs)
 
 @nox.session(python=maxpython)
 @nox.parametrize(
