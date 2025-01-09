@@ -1,0 +1,8 @@
+The internal structure of `~plasmapy.simulation.particle_tracker.particle_tracker.ParticleTracker` was
+optimized by caching some variables (e.g., ``tracked_particle_mask``) which are then reset after every
+push cycle by a ``_reset_cache`` method. Instead of adding zero arrays for missing quantities, only
+quantities provided on the grid are interpolated, and other required quantities are filled in with an
+array of zeros automatically. Particle stopping can now be enabled on a subset of the provided grids.
+Adaptive time steps do not include magnetic field candidates if a magnetic field does not exist on the grid.
+The adaptive timestep is now set to that of the highest resolution grid for particles that are not
+currently on any grid.

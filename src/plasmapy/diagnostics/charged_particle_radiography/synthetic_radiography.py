@@ -87,7 +87,7 @@ class _SyntheticRadiographySaveRoutine(SaveOnceOnCompletion):
             "detector": (u.m, "attribute"),
             "mag": (u.m, "attribute"),
             "max_deflection": (None, "attribute"),
-            "nparticles": (None, "attribute"),
+            "num_particles": (None, "attribute"),
             "x": (u.m, "dataset"),
             "y": (u.m, "dataset"),
             "v": (u.m / u.s, "dataset"),
@@ -127,7 +127,10 @@ class Tracker(ParticleTracker):
         A Grid object or list of grid objects containing the required
         quantities [E_x, E_y, E_z, B_x, B_y, B_z].
         If any of these quantities are missing, a warning will be given and that
-        quantity will be assumed to be zero everywhere.
+        quantity will be assumed to be zero everywhere. Grids with large values at
+        the edges can cause numerical artifacts.
+        The `~plasmapy.plasma.grids.CartesianGrid.soften_edges` method provides
+        one way of smoothing this discontinuity out.
 
     source : `~astropy.units.Quantity`, shape (3)
         A vector pointing from the origin of the grid to the location
@@ -233,10 +236,8 @@ class Tracker(ParticleTracker):
             dt=dt,
             dt_range=dt_range,
             field_weighting=field_weighting,
-            verbose=False,
+            verbose=verbose,
         )
-
-        self.verbose = verbose
 
         # A list of wire meshes added to the grid with add_wire_mesh
         # Particles that would hit these meshes will be removed at runtime
@@ -495,7 +496,7 @@ class Tracker(ParticleTracker):
 
         # Create an array in which True indicates that a particle has hit
         # a wire and False indicates that it has not
-        hit = np.zeros(self.nparticles, dtype=bool)
+        hit = np.zeros(self.num_particles, dtype=bool)
 
         # Mark particles that overlap vertical or horizontal position with
         # a wire
@@ -537,9 +538,9 @@ class Tracker(ParticleTracker):
         # all of the arrays
         keep_these_particles = ~hit
         number_kept_particles = keep_these_particles.sum()
-        nremoved = self.nparticles - number_kept_particles
+        nremoved = self.num_particles - number_kept_particles
 
-        if self.nparticles - nremoved <= 0:
+        if self.num_particles - nremoved <= 0:
             raise ValueError(
                 "The specified mesh is blocking all of the particles. "
                 f"The wire diameter ({2*wire_radius}) may be too large."
@@ -552,7 +553,7 @@ class Tracker(ParticleTracker):
     # *************************************************************************
 
     @staticmethod
-    def _angles_monte_carlo(nparticles, max_theta, random_seed=None):
+    def _angles_monte_carlo(num_particles, max_theta, random_seed=None):
         """
         Generates angles for each particle randomly such that the flux
         per solid angle is uniform.
@@ -568,24 +569,24 @@ class Tracker(ParticleTracker):
         rng = np.random.default_rng(seed=random_seed)
 
         # Randomly choose theta's weighted with the sine probabilities
-        theta = rng.choice(arg, size=nparticles, replace=True, p=prob)
+        theta = rng.choice(arg, size=num_particles, replace=True, p=prob)
 
         # Also generate a uniform phi distribution
-        phi = rng.uniform(high=2 * np.pi, size=nparticles)
+        phi = rng.uniform(high=2 * np.pi, size=num_particles)
 
         return theta, phi
 
     @staticmethod
-    def _angles_uniform(nparticles, max_theta):
+    def _angles_uniform(num_particles, max_theta):
         """
         Generates angles for each particle such that their velocities are
         uniformly distributed on a grid in theta and phi. This method
-        requires that `nparticles` be a perfect square. If it is not,
-        `nparticles` will be set as the largest perfect square smaller
-        than the provided `nparticles`.
+        requires that `num_particles` be a perfect square. If it is not,
+        `num_particles` will be set as the largest perfect square smaller
+        than the provided `num_particles`.
         """
         # Calculate the approximate square root
-        n_per = np.floor(np.sqrt(nparticles)).astype(np.int32)
+        n_per = np.floor(np.sqrt(num_particles)).astype(np.int32)
 
         # Create an imaginary grid positioned 1 unit from the source
         # and spanning max_theta at the corners
@@ -603,7 +604,7 @@ class Tracker(ParticleTracker):
     @particles.particle_input
     def create_particles(
         self,
-        nparticles,
+        num_particles,
         particle_energy,
         max_theta=None,
         particle: Particle = Particle("p+"),  # noqa: B008
@@ -622,7 +623,7 @@ class Tracker(ParticleTracker):
 
         Parameters
         ----------
-        nparticles : integer
+        num_particles : integer
             The number of particles to include in the simulation. The default
             is 1e5.
 
@@ -652,9 +653,9 @@ class Tracker(ParticleTracker):
                 - 'uniform': velocities will be distributed such that,
                    left unperturbed,they will form a uniform pattern
                    on the detection plane. This method
-                   requires that ``nparticles`` be a perfect square. If it is not,
-                   ``nparticles`` will be set as the largest perfect square smaller
-                   than the provided ``nparticles``.
+                   requires that ``num_particles`` be a perfect square. If it is not,
+                   ``num_particles`` will be set as the largest perfect square smaller
+                   than the provided ``num_particles``.
 
             Simulations run in the ``'uniform'`` mode will imprint a grid pattern
             on the image, but will well-sample the field grid with a
@@ -670,7 +671,7 @@ class Tracker(ParticleTracker):
         self._enforce_order()
 
         # Load inputs
-        nparticles = int(nparticles)
+        num_particles = int(num_particles)
 
         particle_energy = particle_energy.to(u.eV).value
         m = particle.mass.to(u.kg).value
@@ -687,18 +688,18 @@ class Tracker(ParticleTracker):
 
         if distribution == "monte-carlo":
             theta, phi = self._angles_monte_carlo(
-                nparticles, max_theta, random_seed=random_seed
+                num_particles, max_theta, random_seed=random_seed
             )
         elif distribution == "uniform":
-            theta, phi = self._angles_uniform(nparticles, max_theta)
+            theta, phi = self._angles_uniform(num_particles, max_theta)
 
-        # Adjust nparticles to reflex what the distribution function returned.
+        # Adjust num_particles to reflex what the distribution function returned.
         # Some distributions will modify the number of particles to meet the
         # necessary criteria of the distribution.
-        nparticles = theta.shape[0]  # TODO: make sure this works
+        num_particles = theta.shape[0]  # TODO: make sure this works
 
         # Construct the velocity distribution around the z-axis
-        v = np.zeros([nparticles, 3])
+        v = np.zeros([num_particles, 3])
         v[:, 0] = v0 * np.sin(theta) * np.cos(phi)
         v[:, 1] = v0 * np.sin(theta) * np.sin(phi)
         v[:, 2] = v0 * np.cos(theta)
@@ -713,7 +714,7 @@ class Tracker(ParticleTracker):
         v = np.matmul(v, rot)
 
         # Place particles at the source
-        x = np.tile(self.source, (nparticles, 1))
+        x = np.tile(self.source, (num_particles, 1))
 
         # Call the underlying load method to ensure consistency with
         # other properties within the ParticleTracker
@@ -752,7 +753,7 @@ class Tracker(ParticleTracker):
         n_wrong_way = np.sum(np.where(self.theta > np.pi / 2, 1, 0))
         if n_wrong_way > 1:
             warnings.warn(
-                f"{100*n_wrong_way/self.nparticles:.2f}% of particles "
+                f"{100*n_wrong_way/self.num_particles:.2f}% of particles "
                 "initialized are heading away from the grid. Check the "
                 " orientation of the provided velocity vectors.",
                 RuntimeWarning,
@@ -792,7 +793,7 @@ class Tracker(ParticleTracker):
         particle impact a plane, described by the plane's center and
         horizontal and vertical unit vectors.
 
-        Returns an [nparticles, 3] array of the particle positions in the plane
+        Returns an [num_particles, 3] array of the particle positions in the plane
 
         By default this function does not alter self.x. The optional keyword
         x can be used to pass in an output array that will used to hold
@@ -815,11 +816,11 @@ class Tracker(ParticleTracker):
             A unit vector (in Cartesian coordinates) defining the vertical
             direction of the plane.
 
-        x : `numpy.ndarray`, shape (nparticles), optional
+        x : `numpy.ndarray`, shape (num_particles), optional
             The array to which the resulting particle positions are stored.
             By default, the current position array will be used.
 
-        mask : `numpy.ndarray`, shape (nparticles), optional
+        mask : `numpy.ndarray`, shape (num_particles), optional
             A boolean mask representing the particles to perform the coasting
             operation. By default, only the tracked particles (i.e. those that
             are going to hit the grids) will be coasted.
@@ -845,8 +846,9 @@ class Tracker(ParticleTracker):
 
         # Check that all points are now in the plane
         # (Eq. of a plane is nhat*x + d = 0)
-        plane_eq = np.dot(x - center, normal)
-        assert np.allclose(plane_eq[mask], 0, atol=1e-6)
+        plane_eq = np.dot(x[mask] - center, normal)
+        if not np.allclose(plane_eq, 0, atol=1e-6):
+            raise ValueError("Coasting particles to plane failed.")
 
         return x
 
@@ -871,7 +873,7 @@ class Tracker(ParticleTracker):
         self._remove_particles((v_towards_det < 0) & (dist_remaining > 0))
 
         # Store the number of particles deflected
-        self.fract_deflected = (self.nparticles - ind.size) / self.nparticles
+        self.fract_deflected = (self.num_particles - ind.size) / self.num_particles
 
         # Warn the user if a large number of particles are being deflected
         if self.fract_deflected > 0.05:
@@ -903,12 +905,10 @@ class Tracker(ParticleTracker):
 
         # If meshes have been added, apply them now
         for mesh in self.mesh_list:
+            self._log("Applying meshes")
             self._apply_wire_mesh(**mesh)
 
-        # Store a copy of the initial velocity distribution in memory
-        # This will be used later to calculate the maximum deflection
-        self.v_init = np.copy(self.v)
-
+        self._log("Coasting untracked particles to the detector plane")
         # These particles will not be pushed through the fields
         # but instead will be automatically advanced
         # to the detector plane
@@ -924,21 +924,26 @@ class Tracker(ParticleTracker):
             mask=theta_mask & self._tracked_particle_mask,
         )
         self._stop_particles(theta_mask)
-        self.fract_tracked = self.nparticles_tracked / self.nparticles
+        self.fract_tracked = self.num_particles_tracked / self.num_particles
 
+        self._log("Generating null distribution in detector plane")
+        # Store a copy of the initial velocity distribution in memory
+        # This will be used later to calculate the maximum deflection
+        self.v0 = np.copy(self.v)
         # Generate a null distribution of points (the result in the absence of
         # any fields) for statistical comparison
         self.x0 = self._coast_to_plane(self.detector, self.det_hdir, self.det_vdir)
 
+        self._log("Advancing tracked particles to the start of the grid")
         # Advance the tracked particles to the near the start of the grid
         self._coast_to_grid()
         self.coasted_particles = np.copy(self.x)
 
         super().run()
 
-        if self.num_entered < 0.1 * self.nparticles:
+        if self.num_entered < 0.1 * self.num_particles:
             warnings.warn(
-                f"Only {100 * self.num_entered / self.nparticles:.2f}% of "
+                f"Only {100 * self.num_entered / self.num_particles:.2f}% of "
                 "particles entered the field grid: consider "
                 "decreasing the max_theta to increase this "
                 "number.",
@@ -985,9 +990,9 @@ class Tracker(ParticleTracker):
         """
         # Normalize the initial and final velocities
         v_norm = self.v / np.linalg.norm(self.v, axis=1, keepdims=True)
-        v_init_norm = self.v_init / np.linalg.norm(self.v_init, axis=1, keepdims=True)
+        v0_norm = self.v0 / np.linalg.norm(self.v0, axis=1, keepdims=True)
         # Compute the dot product
-        proj = np.sum(v_norm * v_init_norm, axis=1)
+        proj = np.sum(v_norm * v0_norm, axis=1)
         # In case of numerical errors, make sure the output is within the domain of
         # arccos
         proj = np.where(proj > 1, 1, proj)
@@ -1017,7 +1022,7 @@ class Tracker(ParticleTracker):
            * - ``"mag"``
              - `float`
              - The system magnification.
-           * - ``"nparticles"``
+           * - ``"num_particles"``
              - `int`
              - Number of particles in the simulation.
            * - ``"max_deflection"``
@@ -1025,32 +1030,32 @@ class Tracker(ParticleTracker):
              - The maximum deflection experienced by a particle in the
                simulation, in radians.
            * - ``"x"``
-             - `~numpy.ndarray`, [``nparticles``,]
+             - `~numpy.ndarray`, [``num_particles``,]
              - The x-coordinate location where each particle hit the
                detector plane, in meters.
            * - ``"y"``
-             - `~numpy.ndarray`, [``nparticles``,]
+             - `~numpy.ndarray`, [``num_particles``,]
              - The y-coordinate location where each particle hit the
                detector plane, in meters.
            * - ``"v"``
-             - `~numpy.ndarray`, [``nparticles``, 3]
+             - `~numpy.ndarray`, [``num_particles``, 3]
              - The velocity of each particle when it hits the detector
                plane, in meters per second. The velocity is in a
                coordinate system relative to the detector plane. The
                components are [normal, horizontal, vertical] relative
                to the detector plane coordinates.
            * - ``"x0"``
-             - `~numpy.ndarray`, [``nparticles``,]
+             - `~numpy.ndarray`, [``num_particles``,]
              - The x-coordinate location where each particle would have
                hit the detector plane if the grid fields were zero, in
                meters. Useful for calculating the source profile.
            * - ``"y0"``
-             - `~numpy.ndarray`, [``nparticles``,]
+             - `~numpy.ndarray`, [``num_particles``,]
              - The y-coordinate location where each particle would have
                hit the detector plane if the grid fields were zero, in
                meters. Useful for calculating the source profile.
            * - ``"v0"``
-             - `~numpy.ndarray`, [``nparticles``, 3]
+             - `~numpy.ndarray`, [``num_particles``, 3]
              - The velocity of each particle when it hit the detector
                plan if the grid fields were zero, in meters per second.
                The velocity is in a coordinate system relative to the
@@ -1081,15 +1086,15 @@ class Tracker(ParticleTracker):
         v[:, 2] = np.dot(self.v, self.det_vdir)
 
         v0 = np.zeros(self.v.shape)
-        v0[:, 0] = np.dot(self.v_init, self.det_n)
-        v0[:, 1] = np.dot(self.v_init, self.det_hdir)
-        v0[:, 2] = np.dot(self.v_init, self.det_vdir)
+        v0[:, 0] = np.dot(self.v0, self.det_n)
+        v0[:, 1] = np.dot(self.v0, self.det_hdir)
+        v0[:, 2] = np.dot(self.v0, self.det_vdir)
 
         return {
             "source": self.source,
             "detector": self.detector,
             "mag": self.mag,
-            "nparticles": self.nparticles,
+            "num_particles": self.num_particles,
             "max_deflection": self.max_deflection.to(u.rad).value,
             "x": xloc,
             "y": yloc,
@@ -1232,7 +1237,7 @@ def synthetic_radiograph(obj, size=None, bins=None, ignore_grid: bool = False): 
 
     # Throw a warning if < 50% of the particles are included on the
     # histogram
-    percentage = np.sum(intensity) / results_dict["nparticles"]
+    percentage = np.sum(intensity) / results_dict["num_particles"]
     if percentage < 0.5:
         warnings.warn(
             f"Only {percentage:.2%} of the particles are shown "
