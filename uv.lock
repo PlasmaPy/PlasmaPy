@@ -643,15 +643,15 @@ wheels = [
 
 [[package]]
 name = "hypothesis"
-version = "6.123.9"
+version = "6.123.10"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "attrs" },
     { name = "sortedcontainers" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/e5/64/72a149f6493157761671fe51d8f73fb50c91f16c95f7f62eba9fc9b68826/hypothesis-6.123.9.tar.gz", hash = "sha256:0f924bd9513daa9ecddbfe8abe8b3f7598d4d09234fe1027b19b4cd717adba05", size = 421127 }
+sdist = { url = "https://files.pythonhosted.org/packages/d9/ea/0b1788638ce4e7aa26802e8942ac22410dd89b7aafe85e0d169f01058e12/hypothesis-6.123.10.tar.gz", hash = "sha256:6def65bedd171a6ebb451e4aa086cdf7968e07619af53fe191d1add6cf850144", size = 421118 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/55/c2/6459368a7e35c99d09640e357fb79862d5984e31873ceec36b0f3d8ac606/hypothesis-6.123.9-py3-none-any.whl", hash = "sha256:aca6a2f7aeef85e5201079ab93156fca137a8cabcf5cc39ea2a3b7147432fe89", size = 483460 },
+    { url = "https://files.pythonhosted.org/packages/20/7a/cf836411943e707bf1a7ff26e6ce209166d4af668aff3f1090263aff730b/hypothesis-6.123.10-py3-none-any.whl", hash = "sha256:c3c10ea18d3d7d4db9e2393a96894d3e6bcba311480cdd9d1aa59bd65043bbab", size = 483471 },
 ]
 
 [[package]]
@@ -1529,7 +1529,7 @@ wheels = [
 
 [[package]]
 name = "plasmapy"
-version = "2024.10.1.dev31+gfcb706cca"
+version = "2024.10.1.dev33+g5ca4e7f27.d20250109"
 source = { editable = "." }
 dependencies = [
     { name = "astropy" },
