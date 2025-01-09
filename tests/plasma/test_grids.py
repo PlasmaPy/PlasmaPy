@@ -510,12 +510,12 @@ def uniform_cartesian_grid():
 def test_soften_edges(uniform_cartesian_grid, width):
     grid = uniform_cartesian_grid
     grid.soften_edges(width=width)
-    assert_quantity_allclose(grid["rho"][0, :, :], 0)
-    assert_quantity_allclose(grid["rho"][:, 0, :], 0)
-    assert_quantity_allclose(grid["rho"][:, :, 0], 0)
-    assert_quantity_allclose(grid["rho"][-1, :, :], 0)
-    assert_quantity_allclose(grid["rho"][:, -1, :], 0)
-    assert_quantity_allclose(grid["rho"][:, :, -1], 0)
+    assert_quantity_allclose(grid["rho"][0, :, :], 0*u.kg/u.m**3)
+    assert_quantity_allclose(grid["rho"][:, 0, :], 0*u.kg/u.m**3)
+    assert_quantity_allclose(grid["rho"][:, :, 0], 0*u.kg/u.m**3)
+    assert_quantity_allclose(grid["rho"][-1, :, :], 0*u.kg/u.m**3)
+    assert_quantity_allclose(grid["rho"][:, -1, :], 0*u.kg/u.m**3)
+    assert_quantity_allclose(grid["rho"][:, :, -1], 0*u.kg/u.m**3)
 
 
 create_args_uniform_cartesian = [
