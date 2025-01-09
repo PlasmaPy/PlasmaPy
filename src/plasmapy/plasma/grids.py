@@ -1118,8 +1118,8 @@ class CartesianGrid(AbstractGrid):
 
         Parameters
         ----------
-        width : `~astropy.units.Quantity` (optional)
-            Width of the transition region.
+        width : `~astropy.units.Quantity`, optional
+            Width of the transition region in units of length.
             Defaults to 10% of the size of the grid.
 
         """
@@ -1147,13 +1147,13 @@ class CartesianGrid(AbstractGrid):
         edge_mask[0, :, :] = 0
         edge_mask[-1, :, :] = 0
         edge_mask[:, 0, :] = 0
-        edge_mask[:, 1, :] = 0
+        edge_mask[:, -1, :] = 0
         edge_mask[:, :, 0] = 0
         edge_mask[:, :, -1] = 0
 
         # Apply the mask
-        for q in self.quantities:
-            self.ds[q].data = self.ds[q].data * mask * edge_mask
+        for quantity in self.quantities:
+            self.ds[quantity].data = self.ds[quantity].data * mask * edge_mask
 
     @modify_docstring(prepend=AbstractGrid.nearest_neighbor_interpolator.__doc__)
     def nearest_neighbor_interpolator(

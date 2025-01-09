@@ -859,7 +859,7 @@ class ParticleTracker:
         pos_tracked = self.x[self._tracked_particle_mask]
 
         # Zero out the array of results
-        self._total_grid_values = {k: v * 0 for k, v in self._total_grid_values.items()}
+        self._total_grid_values = {field_name: required_quantity * 0 for field_name, required_quantity in self._total_grid_values.items()}
 
         for i, grid in enumerate(self.grids):
             match self.field_weighting:
@@ -878,9 +878,7 @@ class ParticleTracker:
             # If only a single quantity is defined on the grid, the interpolator does not
             # wrap it in a tuple, so we do so here
             if not isinstance(grid_values, tuple):
-                grid_values = [
-                    grid_values,
-                ]
+                grid_values = (grid_values,)
 
             # Iterate through the interpolated fields and add them to the running sum
             # NaN values are zeroed
