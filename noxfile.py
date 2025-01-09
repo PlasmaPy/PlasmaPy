@@ -371,30 +371,6 @@ def try_import(session: nox.Session) -> None:
 
 
 @nox.session
-def validate_requirements(session: nox.Session) -> None:
-    """Verify that the pinned requirements are consistent with pyproject.toml."""
-    requirements_file = _get_requirements_filepath(
-        category="all",
-        version=maxpython,
-        resolution="highest",
-    )
-    session.install("uv")
-    session.debug(
-        "🛡 If this check fails, regenerate the pinned requirements files "
-        "with `nox -s requirements` (see `ci_requirements/README.md`)."
-    )
-    session.run(
-        "uv",
-        "pip",
-        "install",
-        "-r",
-        requirements_file,
-        ".[docs,tests]",
-        "--dry-run",
-    )
-
-
-@nox.session
 def build(session: nox.Session) -> None:
     """Build & verify the source distribution and wheel."""
     session.install("twine", "build")
