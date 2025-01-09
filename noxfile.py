@@ -60,6 +60,9 @@ nox.options.default_venv_backend = "uv|virtualenv"
 running_on_ci = os.getenv("CI")
 
 
+uv_sync = ("uv", "sync", "--no-progress", "--frozen")
+
+
 def _get_requirements_filepath(
     category: Literal["docs", "tests", "all"],
     version: Literal["3.11", "3.12", "3.13"],
@@ -173,16 +176,14 @@ def tests(session: nox.Session, test_specifier: nox._parametrize.Param) -> None:
             session.install(".[tests]", "--resolution=lowest-direct")
         case _:
             session.run_install(
-                "uv",
-                "sync",
-                "--no-progress",
+                *uv_sync,
                 "--extra=tests",
                 env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
             )
             session.run_install("which", "python")
 
-
     session.run(*pytest_command, *options, *session.posargs)
+
 
 @nox.session(python=maxpython)
 @nox.parametrize(
@@ -255,9 +256,7 @@ def docs(session: nox.Session) -> None:
         session.debug(doc_troubleshooting_message)
 
     session.run_install(
-        "uv",
-        "sync",
-        "--no-progress",
+        *uv_sync,
         "--extra=docs",
         env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
     )
