@@ -108,7 +108,7 @@ def _get_requirements_filepath(
 def requirements(session) -> None:
     """
     Regenerate the uv.lock file for running tests and building the
-    documentatation.
+    documentation.
     """
     session.install("uv")
     session.run(
