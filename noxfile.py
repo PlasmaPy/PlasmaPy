@@ -341,8 +341,16 @@ mypy error code. Please use sparingly!
 @nox.session(python=maxpython)
 def mypy(session: nox.Session) -> None:
     """Perform static type checking."""
+    
     if running_on_ci:
         session.debug(MYPY_TROUBLESHOOTING)
+
+    session.run_install(
+        *uv_sync,
+        "--extra=tests",
+        env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
+    )
+
     MYPY_COMMAND: tuple[str, ...] = (
         "mypy",
         ".",
@@ -353,13 +361,6 @@ def mypy(session: nox.Session) -> None:
         "--pretty",
     )
 
-    requirements = _get_requirements_filepath(
-        category="tests",
-        version=session.python,
-        resolution="highest",
-    )
-    session.install("pip")
-    session.install("-r", requirements, ".[tests]")
     session.run(*MYPY_COMMAND, *session.posargs)
 
 
