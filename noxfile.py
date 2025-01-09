@@ -175,6 +175,7 @@ def tests(session: nox.Session, test_specifier: nox._parametrize.Param) -> None:
             session.run_install(
                 "uv",
                 "sync",
+                "--no-progress",
                 "--extra=tests",
                 env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
             )
@@ -233,7 +234,6 @@ sphinx_commands: tuple[str, ...] = (
 
 build_html: tuple[str, ...] = ("--builder", "html")
 check_hyperlinks: tuple[str, ...] = ("--builder", "linkcheck")
-docs_requirements = _get_requirements_filepath(category="docs", version=maxpython)
 
 doc_troubleshooting_message = """
 
@@ -253,8 +253,16 @@ def docs(session: nox.Session) -> None:
     """
     if running_on_ci:
         session.debug(doc_troubleshooting_message)
-    session.install("-r", docs_requirements, ".[docs]")
+
+    session.run_install(
+        "uv",
+        "sync",
+        "--no-progress",
+        "--extra=docs",
+        env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
+    )
     session.run(*sphinx_commands, *build_html, *session.posargs)
+
     landing_page = (
         pathlib.Path(session.invoked_from) / "docs" / "build" / "html" / "index.html"
     )
