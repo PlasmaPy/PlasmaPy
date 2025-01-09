@@ -67,11 +67,6 @@ jobs:
           python: '3.13'
           nox_session: cff
 
-        - name: Check consistency of pinned & project requirements
-          os: ubuntu-latest
-          python: '3.13'
-          nox_session: validate_requirements
-
     steps:
 
     - name: Checkout code
