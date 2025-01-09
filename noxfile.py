@@ -314,7 +314,11 @@ def linkcheck(session: nox.Session) -> None:
     """Check hyperlinks in documentation."""
     if running_on_ci:
         session.debug(LINKCHECK_TROUBLESHOOTING)
-    session.install("-r", docs_requirements, ".[docs]")
+    session.run_install(
+        *uv_sync,
+        "--extra=docs",
+        env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
+    )
     session.run(*sphinx_commands, *check_hyperlinks, *session.posargs)
 
 
