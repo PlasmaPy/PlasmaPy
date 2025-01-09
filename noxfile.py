@@ -104,63 +104,16 @@ def _get_requirements_filepath(
 @nox.session
 def requirements(session) -> None:
     """
-    Regenerate the pinned requirements files used in CI.
-
-    This session uses `uv pip compile` to regenerate the pinned
-    requirements files in `ci_requirements/` for use by the Nox sessions
-    for running tests, building documentation, and performing other
-    continuous integration checks.
+    Regenerate the uv.lock file for running tests and building the
+    documentatation.
     """
-
     session.install("uv")
-
-    category_version_resolution: list[tuple[str, str, str]] = [
-        ("tests", version, "highest") for version in supported_python_versions
-    ]
-
-    category_version_resolution += [
-        ("tests", minpython, "lowest-direct"),
-        ("docs", maxpython, "highest"),
-        ("all", maxpython, "highest"),
-    ]
-
-    category_flags: dict[str, tuple[str, ...]] = {
-        "all": ("--all-extras",),
-        "docs": ("--extra", "docs"),
-        "tests": ("--extra", "tests"),
-    }
-
-    command: tuple[str, ...] = (
-        "python",
-        "-m",
+    session.run(
         "uv",
-        "pip",
-        "compile",
-        "pyproject.toml",
+        "lock",
         "--upgrade",
-        "--quiet",
-        "--custom-compile-command",  # defines command to be included in file header
-        "nox -s requirements",
+        "--no-progress",
     )
-
-    for os_platform in supported_operating_systems:
-        for category, version, resolution in category_version_resolution:
-            filename = _get_requirements_filepath(
-                category, version, resolution, os_platform
-            )
-            session.run(
-                *command,
-                "--python-version",
-                version,
-                *category_flags[category],
-                "--output-file",
-                filename,
-                "--resolution",
-                resolution,
-                *session.posargs,
-                "--python-platform",
-                os_platform,
-            )
 
 
 pytest_command: tuple[str, ...] = (
@@ -197,14 +150,6 @@ test_specifiers: list = [
 @nox.parametrize("test_specifier", test_specifiers)
 def tests(session: nox.Session, test_specifier: nox._parametrize.Param) -> None:
     """Run tests with pytest."""
-
-    resolution = "lowest-direct" if test_specifier == "lowest-direct" else "highest"
-
-    requirements = _get_requirements_filepath(
-        category="tests",
-        version=session.python,
-        resolution=resolution,
-    )
 
     options: list[str] = []
 
