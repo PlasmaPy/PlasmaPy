@@ -504,10 +504,10 @@ def uniform_cartesian_grid():
 
     return grid
 
-
-def test_soften_edges(uniform_cartesian_grid):
+@pytest.mark.parametrize( ("width"), [None, .1*u.cm, ])
+def test_soften_edges(uniform_cartesian_grid, width):
     grid = uniform_cartesian_grid
-    grid.soften_edges()
+    grid.soften_edges(width=width)
     assert grid["x"][0, 0, 0] == 0
 
 

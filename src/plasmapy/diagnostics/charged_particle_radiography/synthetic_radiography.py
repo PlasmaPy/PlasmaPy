@@ -844,7 +844,8 @@ class Tracker(ParticleTracker):
         # Check that all points are now in the plane
         # (Eq. of a plane is nhat*x + d = 0)
         plane_eq = np.dot(x[mask] - center, normal)
-        assert np.allclose(plane_eq, 0, atol=1e-6)
+        if not np.allclose(plane_eq, 0, atol=1e-6):
+            raise ValueError("Coasting particles to plane failed.")
 
         return x
 
