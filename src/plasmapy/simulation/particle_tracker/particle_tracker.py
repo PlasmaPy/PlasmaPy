@@ -830,8 +830,6 @@ class ParticleTracker:
             gyroperiod = np.full(Bmag.shape, fill_value=np.inf)
             # TODO: Replace with formulary gyrofrequency lite function once available
             gyroperiod[mask] = 2 * np.pi * self.m / (np.abs(self.q) * Bmag[mask])
-           
-
 
             # Subdivide the gyroperiod into a provided number of steps
             # Use the result as the candidate associated with gyration in B field
@@ -862,7 +860,10 @@ class ParticleTracker:
         pos_tracked = self.x[self._tracked_particle_mask]
 
         # Zero out the array of results
-        self._total_grid_values = {field_name: required_quantity * 0 for field_name, required_quantity in self._total_grid_values.items()}
+        self._total_grid_values = {
+            field_name: required_quantity * 0
+            for field_name, required_quantity in self._total_grid_values.items()
+        }
 
         for i, grid in enumerate(self.grids):
             match self.field_weighting:

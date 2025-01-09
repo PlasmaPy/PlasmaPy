@@ -1114,12 +1114,12 @@ class CartesianGrid(AbstractGrid):
         """
         Applies a mask to soften the edges of the quantity arrays.
 
-        Grid values are multipled by an error function in each dimension, ensureing
-        that quantities go to zero near the boundaries of the grid. As a result, 
+        Grid values are multiplied by an error function in each dimension, ensuring
+        that quantities go to zero near the boundaries of the grid. As a result,
         quantities in the center of the grid are multiplied by a value close to but not
-        identical to one. 
+        identical to one.
 
-        Applying this mask to vector fields may alter divergence constraints, e.g. 
+        Applying this mask to vector fields may alter divergence constraints, e.g.
         a magnetic field may no longer be divergence-free near the edges after the
         mask is applied.
 

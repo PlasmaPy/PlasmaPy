@@ -127,8 +127,8 @@ class Tracker(ParticleTracker):
         A Grid object or list of grid objects containing the required
         quantities [E_x, E_y, E_z, B_x, B_y, B_z].
         If any of these quantities are missing, a warning will be given and that
-        quantity will be assumed to be zero everywhere. Grids with large values at 
-        the edges can cause numerical artifacts. 
+        quantity will be assumed to be zero everywhere. Grids with large values at
+        the edges can cause numerical artifacts.
         The `~plasmapy.plasma.grids.CartesianGrid.soften_edges` method provides
         one way of smoothing this discontinuity out.
 
