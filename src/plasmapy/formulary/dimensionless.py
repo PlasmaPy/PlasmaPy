@@ -139,7 +139,7 @@ def Hall_parameter(
     and species :math:`s^{\prime}` (``ion``).
 
     If the Hall parameter is low, the trajectory of electrons between 
-    two encounters of heavy ions is approximately linear. If the Hall 
+    two encounters of heavy particles is approximately linear. If the Hall 
     parameter is high, the motion of the electrons is highly curved.
 
     **Aliases:** `betaH_`
