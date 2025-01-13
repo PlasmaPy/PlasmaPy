@@ -9,7 +9,6 @@ __all__ = [
     "CartesianGrid",
     "NonUniformCartesianGrid",
 ]
-
 import contextlib
 import warnings
 from abc import ABC, abstractmethod
@@ -24,6 +23,7 @@ import pandas as pd
 import scipy.interpolate as interp
 import xarray as xr
 from scipy.spatial import distance
+from scipy.special import erf
 
 from plasmapy.utils.decorators.helpers import modify_docstring
 
@@ -391,7 +391,7 @@ class AbstractGrid(ABC):
     # *************************************************************************
     # 1D axes and step sizes (valid only for uniform grids)
     # *************************************************************************
-    @property
+    @cached_property
     def si_scale_factors(self) -> list[float]:
         """
         3-element list containing unitless scale factors for converting
@@ -444,7 +444,7 @@ class AbstractGrid(ABC):
         ax = self._get_ax(axis=axis, si=si)
         return np.mean(np.gradient(ax))
 
-    @property
+    @cached_property
     def _ax0_si(self):
         """
         The :attr:`ax0` axis without units, but scaled such that its values
@@ -454,7 +454,7 @@ class AbstractGrid(ABC):
         """
         return self._get_ax(axis=0, si=True)
 
-    @property
+    @cached_property
     def ax0(self):
         r"""
         First axis of the grid.
@@ -463,7 +463,7 @@ class AbstractGrid(ABC):
         """
         return self._get_ax(axis=0)
 
-    @property
+    @cached_property
     def _ax1_si(self):
         """
         The :attr:`ax1` axis without units, but scaled such that its values
@@ -473,7 +473,7 @@ class AbstractGrid(ABC):
         """
         return self._get_ax(axis=1, si=True)
 
-    @property
+    @cached_property
     def ax1(self):
         r"""
         Second axis of the grid.
@@ -482,7 +482,7 @@ class AbstractGrid(ABC):
         """
         return self._get_ax(axis=1)
 
-    @property
+    @cached_property
     def _ax2_si(self):
         """
         The :attr:`ax2` axis without units, but scaled such that its values
@@ -492,7 +492,7 @@ class AbstractGrid(ABC):
         """
         return self._get_ax(axis=2, si=True)
 
-    @property
+    @cached_property
     def ax2(self):
         r"""
         Third axis of the grid.
@@ -501,7 +501,7 @@ class AbstractGrid(ABC):
         """
         return self._get_ax(axis=2)
 
-    @property
+    @cached_property
     def _dax0_si(self):
         """
         Grid step size along axis :attr:`ax0` without units and scaled such
@@ -511,7 +511,7 @@ class AbstractGrid(ABC):
         """
         return self._get_dax(axis=0, si=True)
 
-    @property
+    @cached_property
     def dax0(self):
         r"""
         Grid step size along axis :attr:`ax0`.
@@ -520,7 +520,7 @@ class AbstractGrid(ABC):
         """
         return self._get_dax(axis=0)
 
-    @property
+    @cached_property
     def _dax1_si(self):
         """
         Grid step size along axis :attr:`ax1` without units and scaled such
@@ -530,7 +530,7 @@ class AbstractGrid(ABC):
         """
         return self._get_dax(axis=1, si=True)
 
-    @property
+    @cached_property
     def dax1(self):
         r"""
         Grid step size along axis :attr:`ax1`.
@@ -539,7 +539,7 @@ class AbstractGrid(ABC):
         """
         return self._get_dax(axis=1)
 
-    @property
+    @cached_property
     def _dax2_si(self):
         """
         Grid step size along axis :attr:`ax2` without units and scaled such
@@ -549,7 +549,7 @@ class AbstractGrid(ABC):
         """
         return self._get_dax(axis=2, si=True)
 
-    @property
+    @cached_property
     def dax2(self):
         r"""
         Grid step size along axis :attr:`ax2`.
@@ -1071,7 +1071,7 @@ class CartesianGrid(AbstractGrid):
                     f"grid: {self.units}."
                 ) from ex
 
-    @property
+    @cached_property
     def grid_resolution(self):
         r"""
         A scalar estimate of the grid resolution, calculated as the
@@ -1109,6 +1109,58 @@ class CartesianGrid(AbstractGrid):
         Tmax = np.min(Tmax)
 
         return Tmin < Tmax
+
+    def soften_edges(self, width: u.Quantity | None = None) -> None:
+        """
+        Applies a mask to soften the edges of the quantity arrays.
+
+        Grid values are multiplied by an error function in each dimension, ensuring
+        that quantities go to zero near the boundaries of the grid. As a result,
+        quantities in the center of the grid are multiplied by a value close to but not
+        identical to one.
+
+        Applying this mask to vector fields may alter divergence constraints, e.g.
+        a magnetic field may no longer be divergence-free near the edges after the
+        mask is applied.
+
+        Parameters
+        ----------
+        width : `~astropy.units.Quantity`, optional
+            Width of the transition region in units of length.
+            Defaults to 10% of the size of the grid.
+
+        """
+        if isinstance(width, u.Quantity):
+            width = [
+                width,
+            ] * 3
+
+        mask = np.ones(self.shape)
+        for i, pts in enumerate([self.pts0, self.pts1, self.pts2]):
+            w = 0.1 * (np.max(pts) - np.min(pts)) if width is None else width[i]
+
+            sigma = w / 4
+            pad = 2
+            x1 = np.min(pts) + pad * sigma
+            x2 = np.max(pts) - pad * sigma
+            mask *= (
+                0.5
+                * (erf((pts - x1) / sigma) + 1)
+                * -0.5
+                * (erf((pts - x2) / sigma) - 1)
+            )
+
+        edge_mask = np.ones(self.shape)
+        edge_mask[0, :, :] = 0
+        edge_mask[-1, :, :] = 0
+        edge_mask[:, 0, :] = 0
+        edge_mask[:, -1, :] = 0
+        edge_mask[:, :, 0] = 0
+        edge_mask[:, :, -1] = 0
+
+        # Apply the mask
+        for quantity in self.quantities:
+            self.ds[quantity].data = self.ds[quantity].data * mask * edge_mask
 
     @modify_docstring(prepend=AbstractGrid.nearest_neighbor_interpolator.__doc__)
     def nearest_neighbor_interpolator(
