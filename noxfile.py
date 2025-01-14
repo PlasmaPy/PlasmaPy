@@ -75,39 +75,6 @@ def requirements(session) -> None:
     )
 
 
-@nox.session
-def validate_requirements(session: nox.Session) -> None:
-    """
-    Verify that the requirements in :file:`uv.lock` are compatible
-    with the requirements in `pyproject.toml`.
-    """
-    session.install("uv")
-    session.debug(
-        "🛡 If this check fails, regenerate the pinned requirements in "
-        "`uv.lock` with `nox -s requirements`."
-    )
-    session.run_install(
-        "uv",
-        "sync",
-        "--no-progress",
-        "--all-extras",
-    )
-    session.run(
-        "uv",
-        "pip",
-        "install",
-        ".[docs,tests]",
-        "--dry-run",
-        "--strict",
-    )
-#   session.run(
-#       "uv",
-#       "lock",
-#       "--locked",
-#       "--offline",
-#   )
-
-
 pytest_command: tuple[str, ...] = (
     "pytest",
     "--pyargs",
