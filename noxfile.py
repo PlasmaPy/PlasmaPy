@@ -169,7 +169,6 @@ def tests(session: nox.Session, test_specifier: nox._parametrize.Param) -> None:
                 "--extra=tests",
                 env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
             )
-            session.run_install("which", "python")
 
     session.run(*pytest_command, *options, *session.posargs)
 
