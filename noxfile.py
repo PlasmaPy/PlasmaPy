@@ -59,49 +59,7 @@ nox.options.default_venv_backend = "uv|virtualenv"
 
 running_on_ci = os.getenv("CI")
 
-
 uv_sync = ("uv", "sync", "--no-progress", "--frozen")
-
-
-def _get_requirements_filepath(
-    category: Literal["docs", "tests", "all"],
-    version: Literal["3.11", "3.12", "3.13"],
-    resolution: Literal["highest", "lowest-direct", "lowest"] = "highest",
-    os_platform: Literal["linux", "macos", "windows"] | None = None,
-) -> str:
-    """
-    Return the file path to the requirements file.
-
-    Parameters
-    ----------
-    category : str
-        The name of the optional dependency set, as defined in
-        :file:`pyproject.toml`.
-
-    version : str
-        The supported version of Python.
-
-    resolution : str
-        The resolution strategy used by uv.
-
-    os_platform : str, optional
-        The name of the target platform. By default, it will attempt to find the
-        requirement file associated with the current platform.
-    """
-
-    if os_platform is None:
-        current_platform = platform.system().lower()
-        os_platform = (
-            current_platform
-            if current_platform in supported_operating_systems
-            else "linux"
-        )
-
-    requirements_directory = "ci_requirements"
-    specifiers = [category, version, os_platform]
-    if resolution != "highest":
-        specifiers.append(resolution)
-    return f"{requirements_directory}/{'-'.join(specifiers)}.txt"
 
 
 @nox.session
