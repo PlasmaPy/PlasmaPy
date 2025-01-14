@@ -76,6 +76,35 @@ def requirements(session) -> None:
         "--no-progress",
     )
 
+@nox.session
+def validate_requirements(session: nox.Session) -> None:
+    """
+    Verify that the requirements in :file:`uv.lock` are compatible
+    with the requirements in `pyproject.toml`.
+    """
+    session.install("uv")
+    session.debug(
+        "🛡 If this check fails, regenerate the pinned requirements in "
+        "`uv.lock` with `nox -s requirements`."
+    )
+    session.run_install(
+        "uv",
+        "pip",
+        "sync",
+        "uv.lock",
+        "--no-progress",
+    )
+    session.run(
+        "uv",
+        "pip",
+        "install",
+        ".[docs,tests]",
+        "--all-extras",
+        "--dry-run",
+        "--strict",
+        "--no-progress",
+    )
+
 
 pytest_command: tuple[str, ...] = (
     "pytest",
@@ -299,7 +328,7 @@ mypy error code. Please use sparingly!
 @nox.session(python=maxpython)
 def mypy(session: nox.Session) -> None:
     """Perform static type checking."""
-    
+
     if running_on_ci:
         session.debug(MYPY_TROUBLESHOOTING)
 
