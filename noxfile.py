@@ -67,13 +67,10 @@ def requirements(session) -> None:
     documentation.
     """
     session.install("uv")
-    session.run(
-        "uv",
-        "lock",
-        "--upgrade",
-        "--no-progress",
-    )
-
+    # If it becomes possible to exclude the current project when using
+    # `uv lock`, we should do so here. That would allow us to add a Nox
+    # session to validate the requirements back in.
+    session.run("uv", "lock", "--upgrade", "--no-progress")
 
 pytest_command: tuple[str, ...] = (
     "pytest",
