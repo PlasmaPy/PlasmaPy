@@ -74,6 +74,7 @@ def requirements(session) -> None:
         "--no-progress",
     )
 
+
 @nox.session
 def validate_requirements(session: nox.Session) -> None:
     """
@@ -85,22 +86,23 @@ def validate_requirements(session: nox.Session) -> None:
         "🛡 If this check fails, regenerate the pinned requirements in "
         "`uv.lock` with `nox -s requirements`."
     )
-    session.run_install(
+    session.run(
         "uv",
-        "pip",
         "sync",
-        "uv.lock",
         "--no-progress",
+        "--all-extras",
     )
     session.run(
         "uv",
         "pip",
         "install",
-        ".[docs,tests]",
+        ".",
+        "--requirements",
+        "pyproject.toml",
         "--all-extras",
         "--dry-run",
-        "--strict",
         "--no-progress",
+        "--strict",
     )
 
 
