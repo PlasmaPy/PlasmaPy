@@ -190,9 +190,8 @@ def run_tests_with_dev_version_of(session: nox.Session, repository: str) -> None
     Running this session helps us catch problems resulting from breaking
     changes in an upstream dependency before its official release.
     """
-    if repository != "numpy":
-        session.install(f"git+{repository}")
-    else:
+
+    if repository == "numpy":
         # From: https://numpy.org/doc/1.26/dev/depending_on_numpy.html
         session.run_install(
             "uv",
@@ -206,6 +205,9 @@ def run_tests_with_dev_version_of(session: nox.Session, repository: str) -> None
             "https://pypi.anaconda.org/scientific-python-nightly-wheels/simple",
             "numpy",
         )
+    else:
+        session.install(f"git+{repository}")
+
     session.install(".[tests]")
     session.run(*pytest_command, *session.posargs)
 
