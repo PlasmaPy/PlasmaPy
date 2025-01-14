@@ -55,8 +55,6 @@ nox.options.sessions: list[str] = [f"tests-{current_python}(skipslow)"]
 
 nox.options.default_venv_backend = "uv|virtualenv"
 
-running_on_ci = os.getenv("CI")
-
 uv_sync = ("uv", "sync", "--no-progress", "--frozen")
 
 running_on_ci = os.getenv("CI")
