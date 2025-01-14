@@ -26,10 +26,8 @@ to be installed.
 
 import os
 import pathlib
-import platform
 import re
 import sys
-from typing import Literal
 
 import nox
 
