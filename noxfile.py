@@ -86,7 +86,7 @@ def validate_requirements(session: nox.Session) -> None:
         "🛡 If this check fails, regenerate the pinned requirements in "
         "`uv.lock` with `nox -s requirements`."
     )
-    session.run(
+    session.run_install(
         "uv",
         "sync",
         "--no-progress",
@@ -96,14 +96,16 @@ def validate_requirements(session: nox.Session) -> None:
         "uv",
         "pip",
         "install",
-        ".",
-        "--requirements",
-        "pyproject.toml",
-        "--all-extras",
+        ".[docs,tests]",
         "--dry-run",
-        "--no-progress",
         "--strict",
     )
+#   session.run(
+#       "uv",
+#       "lock",
+#       "--locked",
+#       "--offline",
+#   )
 
 
 pytest_command: tuple[str, ...] = (
