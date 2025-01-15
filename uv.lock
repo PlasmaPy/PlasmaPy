@@ -1502,7 +1502,7 @@ wheels = [
 
 [[package]]
 name = "plasmapy"
-version = "2024.10.1.dev62+g338460176.d20250115"
+version = "2024.10.1.dev65+g9a61675e5"
 source = { editable = "." }
 dependencies = [
     { name = "astropy" },
