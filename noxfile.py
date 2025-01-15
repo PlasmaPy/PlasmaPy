@@ -66,7 +66,7 @@ def requirements(session) -> None:
     Regenerate the uv.lock file for running tests and building the
     documentation.
     """
-    session.install("uv")
+    session.install("uv >= 0.5.19")
 
     # If it becomes possible to exclude the current project when using
     # `uv lock`, we should do so here. That would allow us to add a Nox
@@ -80,7 +80,7 @@ def validate_requirements(session: nox.Session) -> None:
     Verify that the requirements in :file:`uv.lock` are compatible
     with the requirements in `pyproject.toml`.
     """
-    session.install("uv")
+    session.install("uv >= 0.5.19")
     session.log(
         "🛡 If this check fails, regenerate the pinned requirements in "
         "`uv.lock` with `nox -s requirements`."
