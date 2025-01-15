@@ -405,7 +405,7 @@ websockets==14.1
     # via voila
 widgetsnbextension==4.0.13
     # via ipywidgets
-wrapt==1.17.1
+wrapt==1.17.2
     # via plasmapy (pyproject.toml)
 xarray==2024.10.0
     # via plasmapy (pyproject.toml)

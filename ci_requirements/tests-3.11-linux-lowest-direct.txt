@@ -141,7 +141,7 @@ mypy==1.11.0
     # via plasmapy (pyproject.toml)
 mypy-extensions==1.0.0
     # via mypy
-nbclassic==1.1.0
+nbclassic==1.2.0
     # via notebook
 nbclient==0.5.13
     # via
