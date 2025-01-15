@@ -72,6 +72,7 @@ def requirements(session) -> None:
     # session to validate the requirements back in.
     session.run("uv", "lock", "--upgrade", "--no-progress")
 
+
 pytest_command: tuple[str, ...] = (
     "pytest",
     "--pyargs",
