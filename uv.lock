@@ -1502,11 +1502,7 @@ wheels = [
 
 [[package]]
 name = "plasmapy"
-<<<<<<< Updated upstream
-version = "2024.10.1.dev65+g9a61675e5"
-=======
-version = "2024.10.1.dev57+g6e68b988b.d20250114"
->>>>>>> Stashed changes
+version = "2024.10.1.dev70+gd5acc6ab5.d20250115"
 source = { editable = "." }
 dependencies = [
     { name = "astropy" },
