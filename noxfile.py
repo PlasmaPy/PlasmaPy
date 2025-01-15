@@ -298,14 +298,14 @@ mypy error code. Please use sparingly!
 def mypy(session: nox.Session) -> None:
     """Perform static type checking."""
 
-    if running_on_ci:
-        session.debug(MYPY_TROUBLESHOOTING)
-
     session.run_install(
         *uv_sync,
         "--extra=tests",
         env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
     )
+
+    if running_on_ci:
+        session.debug(MYPY_TROUBLESHOOTING)
 
     MYPY_COMMAND: tuple[str, ...] = (
         "mypy",
