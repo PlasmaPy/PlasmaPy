@@ -1502,7 +1502,6 @@ wheels = [
 
 [[package]]
 name = "plasmapy"
-version = "2024.10.1.dev70+gd5acc6ab5.d20250115"
 source = { editable = "." }
 dependencies = [
     { name = "astropy" },
@@ -1585,7 +1584,7 @@ requires-dist = [
     { name = "packaging", specifier = ">=22.0" },
     { name = "pandas", specifier = ">=2.0.0" },
     { name = "pillow", marker = "extra == 'docs'", specifier = ">=10.4.0" },
-    { name = "pygments", marker = "extra == 'docs'", specifier = ">=2.18.0" },
+    { name = "pygments", marker = "extra == 'docs'", specifier = "==2.18.0" },
     { name = "pytest", marker = "extra == 'tests'", specifier = ">=8.3.1" },
     { name = "pytest-cov", marker = "extra == 'tests'", specifier = ">=5.0.0" },
     { name = "pytest-filter-subpackage", marker = "extra == 'tests'", specifier = ">=0.2.0" },
@@ -1597,7 +1596,7 @@ requires-dist = [
     { name = "setuptools", specifier = ">=66.0.0" },
     { name = "sphinx", marker = "extra == 'docs'", specifier = "==7.3.7" },
     { name = "sphinx-changelog", marker = "extra == 'docs'", specifier = ">=1.5.0" },
-    { name = "sphinx-codeautolink", marker = "extra == 'docs'", specifier = ">=0.15.2" },
+    { name = "sphinx-codeautolink", marker = "extra == 'docs'", specifier = "==0.15.2" },
     { name = "sphinx-collapse", marker = "extra == 'docs'", specifier = ">=0.1.3" },
     { name = "sphinx-copybutton", marker = "extra == 'docs'", specifier = ">=0.5.2" },
     { name = "sphinx-gallery", marker = "extra == 'docs'", specifier = ">=0.16.0" },
@@ -1747,11 +1746,11 @@ wheels = [
 
 [[package]]
 name = "pygments"
-version = "2.19.1"
+version = "2.18.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/7c/2d/c3338d48ea6cc0feb8446d8e6937e1408088a72a39937982cc6111d17f84/pygments-2.19.1.tar.gz", hash = "sha256:61c16d2a8576dc0649d9f39e089b5f02bcd27fba10d8fb4dcc28173f7a45151f", size = 4968581 }
+sdist = { url = "https://files.pythonhosted.org/packages/8e/62/8336eff65bcbc8e4cb5d05b55faf041285951b6e80f33e2bff2024788f31/pygments-2.18.0.tar.gz", hash = "sha256:786ff802f32e91311bff3889f6e9a86e81505fe99f2735bb6d60ae0c5004f199", size = 4891905 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/8a/0b/9fcc47d19c48b59121088dd6da2488a49d5f72dacf8262e2790a1d2c7d15/pygments-2.19.1-py3-none-any.whl", hash = "sha256:9ea1544ad55cecf4b8242fab6dd35a93bbce657034b0611ee383099054ab6d8c", size = 1225293 },
+    { url = "https://files.pythonhosted.org/packages/f7/3f/01c8b82017c199075f8f788d0d906b9ffbbc5a47dc9918a945e13d5a2bda/pygments-2.18.0-py3-none-any.whl", hash = "sha256:b8e6aca0523f3ab76fee51799c488e38782ac06eafcf95e7ba832985c8e7b13a", size = 1205513 },
 ]
 
 [[package]]
@@ -2260,15 +2259,15 @@ wheels = [
 
 [[package]]
 name = "sphinx-codeautolink"
-version = "0.16.1"
+version = "0.15.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "beautifulsoup4" },
     { name = "sphinx" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/f1/af/80740593461ea6651bec53ef23a25079de9a053c6bba32bb385675ffda1e/sphinx_codeautolink-0.16.1.tar.gz", hash = "sha256:1ae5d7fb44f5422fec4ce93194fdd7aea125cae5ea86b5c8f5be6f14ba58d63d", size = 52340 }
+sdist = { url = "https://files.pythonhosted.org/packages/09/4e/d0c9894b9dff38ad3db533479b845427e1c57cb3b8527b65259fed71a7a1/sphinx_codeautolink-0.15.2.tar.gz", hash = "sha256:93963a05f17642c8892b06932e013af62c1041a4949524c810dbc5ae8b3ff16d", size = 53067 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/19/27/cf4f7c4f7a89ee7eef521ae2e5555c96cca57b7ca852a47cafb3a93776d6/sphinx_codeautolink-0.16.1-py3-none-any.whl", hash = "sha256:67a93d8c8602db2ac662842fb788e18056975c26c922dcbf5121d22bac224d2c", size = 24561 },
+    { url = "https://files.pythonhosted.org/packages/b1/ef/8546618a14e5a491616950b71e9e55de2877a1fecba73e4bc76c62ab53a0/sphinx_codeautolink-0.15.2-py3-none-any.whl", hash = "sha256:44d669ad92d11fd50dd4029887ea285acd95e097cf34a9cae3c6f707c1eb4763", size = 24882 },
 ]
 
 [[package]]
@@ -2696,16 +2695,16 @@ wheels = [
 
 [[package]]
 name = "virtualenv"
-version = "20.28.1"
+version = "20.29.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "distlib" },
     { name = "filelock" },
     { name = "platformdirs" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/50/39/689abee4adc85aad2af8174bb195a819d0be064bf55fcc73b49d2b28ae77/virtualenv-20.28.1.tar.gz", hash = "sha256:5d34ab240fdb5d21549b76f9e8ff3af28252f5499fb6d6f031adac4e5a8c5329", size = 7650532 }
+sdist = { url = "https://files.pythonhosted.org/packages/5a/5d/8d625ebddf9d31c301f85125b78002d4e4401fe1c15c04dca58a54a3056a/virtualenv-20.29.0.tar.gz", hash = "sha256:6345e1ff19d4b1296954cee076baaf58ff2a12a84a338c62b02eda39f20aa982", size = 7658081 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/51/8f/dfb257ca6b4e27cb990f1631142361e4712badab8e3ca8dc134d96111515/virtualenv-20.28.1-py3-none-any.whl", hash = "sha256:412773c85d4dab0409b83ec36f7a6499e72eaf08c80e81e9576bca61831c71cb", size = 4276719 },
+    { url = "https://files.pythonhosted.org/packages/f0/d3/12687ab375bb0e077ea802a5128f7b45eb5de7a7c6cb576ccf9dd59ff80a/virtualenv-20.29.0-py3-none-any.whl", hash = "sha256:c12311863497992dc4b8644f8ea82d3b35bb7ef8ee82e6630d76d0197c39baf9", size = 4282443 },
 ]
 
 [[package]]
