@@ -67,10 +67,26 @@ def requirements(session) -> None:
     documentation.
     """
     session.install("uv")
+
     # If it becomes possible to exclude the current project when using
     # `uv lock`, we should do so here. That would allow us to add a Nox
     # session to validate the requirements back in.
     session.run("uv", "lock", "--upgrade", "--no-progress")
+
+
+@nox.session
+def validate_requirements(session: nox.Session) -> None:
+    """
+    Verify that the requirements in :file:`uv.lock` are compatible
+    with the requirements in `pyproject.toml`.
+    """
+    session.install("uv")
+    session.log(
+        "🛡 If this check fails, regenerate the pinned requirements in "
+        "`uv.lock` with `nox -s requirements`."
+    )
+
+    session.run("uv", "lock", "--locked", "--offline")
 
 
 pytest_command: tuple[str, ...] = (
@@ -209,7 +225,7 @@ def docs(session: nox.Session) -> None:
     This session may require installation of pandoc and graphviz.
     """
     if running_on_ci:
-        session.debug(doc_troubleshooting_message)
+        session.log(doc_troubleshooting_message)
 
     session.run_install(
         *uv_sync,
@@ -223,9 +239,9 @@ def docs(session: nox.Session) -> None:
     )
 
     if not running_on_ci and landing_page.exists():
-        session.debug(f"The documentation may be previewed at {landing_page}")
+        session.log(f"The documentation may be previewed at {landing_page}")
     elif not running_on_ci:
-        session.debug(f"Documentation preview landing page not found: {landing_page}")
+        session.log(f"Documentation preview landing page not found: {landing_page}")
 
 
 @nox.session(python=docpython)
@@ -269,7 +285,7 @@ These variables are in the form of Python regular expressions:
 def linkcheck(session: nox.Session) -> None:
     """Check hyperlinks in documentation."""
     if running_on_ci:
-        session.debug(LINKCHECK_TROUBLESHOOTING)
+        session.log(LINKCHECK_TROUBLESHOOTING)
     session.run_install(
         *uv_sync,
         "--extra=docs",
@@ -305,7 +321,7 @@ def mypy(session: nox.Session) -> None:
     )
 
     if running_on_ci:
-        session.debug(MYPY_TROUBLESHOOTING)
+        session.log(MYPY_TROUBLESHOOTING)
 
     MYPY_COMMAND: tuple[str, ...] = (
         "mypy",
