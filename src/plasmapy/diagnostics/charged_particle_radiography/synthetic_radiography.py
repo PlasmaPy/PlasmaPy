@@ -543,7 +543,7 @@ class Tracker(ParticleTracker):
         if self.num_particles - nremoved <= 0:
             raise ValueError(
                 "The specified mesh is blocking all of the particles. "
-                f"The wire diameter ({2*wire_radius}) may be too large."
+                f"The wire diameter ({2 * wire_radius}) may be too large."
             )
 
         self._stop_particles(~keep_these_particles)
@@ -753,7 +753,7 @@ class Tracker(ParticleTracker):
         n_wrong_way = np.sum(np.where(self.theta > np.pi / 2, 1, 0))
         if n_wrong_way > 1:
             warnings.warn(
-                f"{100*n_wrong_way/self.num_particles:.2f}% of particles "
+                f"{100 * n_wrong_way / self.num_particles:.2f}% of particles "
                 "initialized are heading away from the grid. Check the "
                 " orientation of the provided velocity vectors.",
                 RuntimeWarning,
@@ -878,7 +878,7 @@ class Tracker(ParticleTracker):
         # Warn the user if a large number of particles are being deflected
         if self.fract_deflected > 0.05:
             warnings.warn(
-                f"{100*self.fract_deflected:.1f}% particles have been "
+                f"{100 * self.fract_deflected:.1f}% particles have been "
                 "deflected away from the detector plane. The fields "
                 "provided may be too high to successfully radiograph "
                 "with this particle energy.",
@@ -965,13 +965,13 @@ class Tracker(ParticleTracker):
 
         self._log(
             "Fraction of tracked particles that entered the grid: "
-            f"{self.fract_entered*100:.1f}%"
+            f"{self.fract_entered * 100:.1f}%"
         )
 
         self._log(
             "Fraction of tracked particles deflected away from the "
             "detector plane: "
-            f"{self.fract_deflected*100}%"
+            f"{self.fract_deflected * 100}%"
         )
 
     @property
@@ -1065,8 +1065,7 @@ class Tracker(ParticleTracker):
 
         if not self._has_run:
             raise RuntimeError(
-                "The simulation must be run before a results "
-                "dictionary can be created."
+                "The simulation must be run before a results dictionary can be created."
             )
 
         # Determine locations of points in the detector plane using unit

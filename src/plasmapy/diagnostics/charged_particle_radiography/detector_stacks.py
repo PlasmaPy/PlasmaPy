@@ -95,8 +95,7 @@ class Layer:
 
         else:
             raise ValueError(
-                "Units of stopping_power keyword not recognized:"
-                f"{stopping_power.unit}"
+                f"Units of stopping_power keyword not recognized:{stopping_power.unit}"
             )
 
 

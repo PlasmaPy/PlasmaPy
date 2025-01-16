@@ -263,7 +263,7 @@ whatsnew_label = "needs changelog entry"
 whatsnew_pattern = '''changelog\/\d+\.[a-zA-Z]+(\.\d+)?\.rst'''
 
 [tool.ruff]
-target-version = "py310"
+target-version = "py311"
 namespace-packages = [".github/workflows", "docs"]
 output-format = "grouped"
 show-fixes = true
