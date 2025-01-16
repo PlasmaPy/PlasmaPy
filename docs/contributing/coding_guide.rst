@@ -667,6 +667,8 @@ Dependencies and requirements
   - When updating requirements in |pyproject.toml|_, run
     :bash:`nox -s requirements` to update the pinned requirements files.
 
+  - Validate requirements with :bash:`nox -s validate_requirements`.
+
 * Even if a dependency is unlikely to be shared with packages installed
   alongside PlasmaPy, that dependency may have strict requirements that
   do cause conflicts. For example, requiring the newest version of
