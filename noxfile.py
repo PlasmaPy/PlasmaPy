@@ -52,7 +52,7 @@ current_python = f"{sys.version_info.major}.{sys.version_info.minor}"
 # the Docs. Because Read the Docs takes some time to support new
 # releases of Python, we should not link docpython to maxpython.
 
-docpython = "3.12"
+docpython = "3.13"
 
 nox.options.sessions: list[str] = [f"tests-{current_python}(skipslow)"]
 nox.options.default_venv_backend = "uv|virtualenv"
