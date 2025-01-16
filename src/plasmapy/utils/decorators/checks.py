@@ -862,10 +862,7 @@ class CheckUnits(CheckBase):
                 else:
                     err_specifier = "no 'unit' attribute"
 
-                msg = (
-                    f"{err_msg} has {err_specifier}. "
-                    f"Use an astropy Quantity instead."
-                )
+                msg = f"{err_msg} has {err_specifier}. Use an astropy Quantity instead."
                 return None, None, None, TypeError(msg)
 
         # How many acceptable units?

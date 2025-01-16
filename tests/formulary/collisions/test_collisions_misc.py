@@ -188,8 +188,7 @@ class Test_mobility:
             )
         testTrue = not np.isclose(methodVal.si.value, fail1, rtol=1e-16, atol=0.0)
         errStr = (
-            f"Mobility value test gives {methodVal} and "
-            f"should not be equal to {fail1}."
+            f"Mobility value test gives {methodVal} and should not be equal to {fail1}."
         )
         assert testTrue, errStr
 

@@ -98,8 +98,7 @@ class IonicLevel:
 
     def __repr__(self) -> str:
         return (
-            f"IonicLevel({self.ionic_symbol!r}, "
-            f"ionic_fraction={self.ionic_fraction})"
+            f"IonicLevel({self.ionic_symbol!r}, ionic_fraction={self.ionic_fraction})"
         )
 
     @property
@@ -475,8 +474,7 @@ class IonizationState:
 
             if len(fractions) != self.atomic_number + 1:
                 raise ParticleError(
-                    "The length of ionic_fractions must be "
-                    f"{self.atomic_number + 1}."
+                    f"The length of ionic_fractions must be {self.atomic_number + 1}."
                 )
 
             if isinstance(fractions, u.Quantity):

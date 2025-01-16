@@ -310,8 +310,7 @@ class Test_Coulomb_logarithm:
             )
         testTrue = np.isclose(methodVal, self.gms1, rtol=1e-6, atol=0.0)
         errStr = (
-            f"Coulomb logarithm for GMS-1 should be "
-            f"{self.gms1} and not {methodVal}."
+            f"Coulomb logarithm for GMS-1 should be {self.gms1} and not {methodVal}."
         )
         assert testTrue, errStr
 
@@ -384,8 +383,7 @@ class Test_Coulomb_logarithm:
             )
         testTrue = np.isclose(methodVal, self.gms2, rtol=1e-6, atol=0.0)
         errStr = (
-            f"Coulomb logarithm for GMS-2 should be "
-            f"{self.gms2} and not {methodVal}."
+            f"Coulomb logarithm for GMS-2 should be {self.gms2} and not {methodVal}."
         )
         assert testTrue, errStr
 
@@ -458,8 +456,7 @@ class Test_Coulomb_logarithm:
             )
         testTrue = np.isclose(methodVal, self.gms3, rtol=1e-6, atol=0.0)
         errStr = (
-            f"Coulomb logarithm for GMS-3 should be "
-            f"{self.gms3} and not {methodVal}."
+            f"Coulomb logarithm for GMS-3 should be {self.gms3} and not {methodVal}."
         )
         assert testTrue, errStr
 
@@ -596,8 +593,7 @@ class Test_Coulomb_logarithm:
             )
         testTrue = np.isclose(methodVal, self.gms4, rtol=1e-6, atol=0.0)
         errStr = (
-            f"Coulomb logarithm for GMS-4 should be "
-            f"{self.gms4} and not {methodVal}."
+            f"Coulomb logarithm for GMS-4 should be {self.gms4} and not {methodVal}."
         )
         assert testTrue, errStr
 
@@ -686,8 +682,7 @@ class Test_Coulomb_logarithm:
             )
         testTrue = np.isclose(methodVal, self.gms5, rtol=1e-6, atol=0.0)
         errStr = (
-            f"Coulomb logarithm for GMS-5 should be "
-            f"{self.gms5} and not {methodVal}."
+            f"Coulomb logarithm for GMS-5 should be {self.gms5} and not {methodVal}."
         )
         assert testTrue, errStr
 
@@ -776,8 +771,7 @@ class Test_Coulomb_logarithm:
             )
         testTrue = np.isclose(methodVal, self.gms6, rtol=1e-6, atol=0.0)
         errStr = (
-            f"Coulomb logarithm for GMS-6 should be "
-            f"{self.gms6} and not {methodVal}."
+            f"Coulomb logarithm for GMS-6 should be {self.gms6} and not {methodVal}."
         )
         assert testTrue, errStr
 
