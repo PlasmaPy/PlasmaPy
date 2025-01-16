@@ -91,7 +91,7 @@ def gyrofrequency(
 
     Warns
     -----
-    : `~astropy.units.UnitsWarning`
+    `~astropy.units.UnitsWarning`
         If units are not provided, and SI units are assumed.
 
     Notes
@@ -284,7 +284,7 @@ def plasma_frequency(
 
     Warns
     -----
-    : `~astropy.units.UnitsWarning`
+    `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed.
 
     Notes
@@ -303,6 +303,7 @@ def plasma_frequency(
 
     Examples
     --------
+
     >>> import astropy.units as u
     >>> plasma_frequency(1e19 * u.m**-3, particle="p+")
     <Quantity 4.16329...e+09 rad / s>
@@ -392,7 +393,7 @@ def lower_hybrid_frequency(
 
     Warns
     -----
-    : `~astropy.units.UnitsWarning`
+    `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed.
 
     Notes
@@ -484,7 +485,7 @@ def upper_hybrid_frequency(
 
     Warns
     -----
-    : `~astropy.units.UnitsWarning`
+    `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed.
 
     Notes
@@ -590,7 +591,7 @@ def Buchsbaum_frequency(
 
     Warns
     -----
-    : `~astropy.units.UnitsWarning`
+    `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed.
 
     Notes
