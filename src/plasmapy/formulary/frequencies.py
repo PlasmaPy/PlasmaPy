@@ -603,11 +603,6 @@ def Buchsbaum_frequency(
     ion-ion hybrid frequency :cite:p:`vincena:2013`. This frequency
     can be defined as:
 
-    .. math::
-
-        ω_{BB} ≡ \sqrt{\frac{ω_{p1}^2 ω_{c2}^2
-        + ω_{p2}^2 ω_{c1}^2}{ω_{p2}^2 + ω_{p2}^2}}
-
     Examples
     --------
     >>> import astropy.units as u
