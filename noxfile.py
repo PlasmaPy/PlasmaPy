@@ -297,8 +297,10 @@ def docs(session: nox.Session) -> None:
     """
     if running_on_ci:
         session.debug(doc_troubleshooting_message)
+
     session.install("-r", docs_requirements, ".[docs]")
     session.run(*sphinx_commands, *build_html, *session.posargs)
+
     landing_page = (
         pathlib.Path(session.invoked_from) / "docs" / "build" / "html" / "index.html"
     )
