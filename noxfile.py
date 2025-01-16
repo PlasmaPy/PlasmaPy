@@ -58,6 +58,7 @@ nox.options.default_venv_backend = "uv|virtualenv"
 uv_sync = ("uv", "sync", "--no-progress", "--frozen")
 
 running_on_ci = os.getenv("CI")
+uv_requirement = "uv >= 0.5.20"
 
 
 @nox.session
@@ -66,7 +67,7 @@ def requirements(session) -> None:
     Regenerate the uv.lock file for running tests and building the
     documentation.
     """
-    session.install("uv >= 0.5.19")
+    session.install(uv_requirement)
 
     # If it becomes possible to exclude the current project when using
     # `uv lock`, we should do so here. That would allow us to add a Nox
@@ -80,7 +81,7 @@ def validate_requirements(session: nox.Session) -> None:
     Verify that the requirements in :file:`uv.lock` are compatible
     with the requirements in `pyproject.toml`.
     """
-    session.install("uv >= 0.5.19")
+    session.install(uv_requirement)
     session.log(
         "🛡 If this check fails, regenerate the pinned requirements in "
         "`uv.lock` with `nox -s requirements`."
@@ -133,6 +134,8 @@ test_specifiers: list = [
 def tests(session: nox.Session, test_specifier: nox._parametrize.Param) -> None:
     """Run tests with pytest."""
 
+    session.install(uv_requirement)
+
     options: list[str] = []
 
     if test_specifier == "skip slow tests":
@@ -182,6 +185,8 @@ def run_tests_with_dev_version_of(session: nox.Session, repository: str) -> None
     Running this session helps us catch problems resulting from breaking
     changes in an upstream dependency before its official release.
     """
+
+    session.install(uv_requirement)
 
     if repository == "numpy":
         # From: https://numpy.org/doc/1.26/dev/depending_on_numpy.html
@@ -233,8 +238,11 @@ def docs(session: nox.Session) -> None:
 
     This session may require installation of pandoc and graphviz.
     """
+
     if running_on_ci:
         session.log(doc_troubleshooting_message)
+
+    session.install(uv_requirement)
 
     session.run_install(
         *uv_sync,
@@ -295,6 +303,7 @@ def linkcheck(session: nox.Session) -> None:
     """Check hyperlinks in documentation."""
     if running_on_ci:
         session.log(LINKCHECK_TROUBLESHOOTING)
+    session.install(uv_requirement)
     session.run_install(
         *uv_sync,
         "--extra=docs",
@@ -323,6 +332,7 @@ mypy error code. Please use sparingly!
 def mypy(session: nox.Session) -> None:
     """Perform static type checking."""
 
+    session.install(uv_requirement)
     session.run_install(
         *uv_sync,
         "--extra=tests",
