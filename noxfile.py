@@ -272,7 +272,7 @@ sphinx_commands: tuple[str, ...] = (
     "--nitpicky",
     "--fail-on-warning",
     "--keep-going",
-#    "--quiet",
+    "--quiet",
 )
 
 build_html: tuple[str, ...] = ("--builder", "html")
