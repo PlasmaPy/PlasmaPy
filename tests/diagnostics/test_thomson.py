@@ -273,7 +273,7 @@ def test_notched_spectrum(notch, notch_num, single_species_collective_args) -> N
 @pytest.mark.parametrize(
     ("notch"),
     [
-        (np.array([533, 531]) * u.nm),  # Elements not in montonic increasing order
+        (np.array([533, 531]) * u.nm),  # Elements not in monotonic increasing order
         (np.array([530, 531, 533]) * u.nm),  # Not exactly 2 elements
     ],
 )
