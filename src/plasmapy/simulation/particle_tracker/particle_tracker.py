@@ -921,7 +921,7 @@ class ParticleTracker:
             dt = dt[self._tracked_particle_mask, np.newaxis]
             self.time[self._tracked_particle_mask] += dt
         else:
-            self.time += dt  # type: ignore[assignment]
+            self.time += dt
 
         return dt
 
