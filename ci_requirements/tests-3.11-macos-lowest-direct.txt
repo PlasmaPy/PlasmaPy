@@ -23,7 +23,7 @@ attrs==25.1.0
     #   hypothesis
     #   jsonschema
     #   referencing
-beautifulsoup4==4.13.0
+beautifulsoup4==4.13.3
     # via nbconvert
 bleach==6.2.0
     # via nbconvert
@@ -39,7 +39,7 @@ colorlog==6.9.0
     # via nox
 contourpy==1.3.1
     # via matplotlib
-coverage==7.6.10
+coverage==7.6.11
     # via pytest-cov
 cycler==0.12.1
     # via matplotlib
@@ -59,13 +59,13 @@ fastjsonschema==2.21.1
     # via nbformat
 filelock==3.17.0
     # via virtualenv
-fonttools==4.55.8
+fonttools==4.56.0
     # via matplotlib
 h5py==3.8.0
     # via plasmapy (pyproject.toml)
 hypothesis==6.108.2
     # via plasmapy (pyproject.toml)
-identify==2.6.6
+identify==2.6.7
     # via pre-commit
 idna==3.10
     # via
@@ -125,7 +125,7 @@ kiwisolver==1.4.8
     # via matplotlib
 lmfit==1.1.0
     # via plasmapy (pyproject.toml)
-lxml==5.3.0
+lxml==5.3.1
     # via nbconvert
 markupsafe==3.0.2
     # via
@@ -251,7 +251,7 @@ pytest==8.3.1
     #   pytest-xdist
 pytest-cov==5.0.0
     # via plasmapy (pyproject.toml)
-pytest-datadir==1.5.0
+pytest-datadir==1.6.1
     # via pytest-regressions
 pytest-filter-subpackage==0.2.0
     # via plasmapy (pyproject.toml)

@@ -14,7 +14,7 @@ asteval==1.0.6
     # via lmfit
 astropy==6.1.7
     # via plasmapy (pyproject.toml)
-astropy-iers-data==0.2025.2.3.0.32.42
+astropy-iers-data==0.2025.2.10.0.33.26
     # via astropy
 asttokens==3.0.0
     # via stack-data
@@ -22,10 +22,11 @@ attrs==25.1.0
     # via
     #   hypothesis
     #   jsonschema
+    #   nox
     #   referencing
 babel==2.17.0
     # via jupyterlab-server
-beautifulsoup4==4.13.0
+beautifulsoup4==4.13.3
     # via nbconvert
 bleach==6.2.0
     # via nbconvert
@@ -45,7 +46,7 @@ comm==0.2.2
     #   ipywidgets
 contourpy==1.3.1
     # via matplotlib
-coverage==7.6.10
+coverage==7.6.11
     # via pytest-cov
 cycler==0.12.1
     # via matplotlib
@@ -55,6 +56,8 @@ decorator==5.1.1
     # via ipython
 defusedxml==0.7.1
     # via nbconvert
+dependency-groups==1.3.0
+    # via nox
 dill==0.3.9
     # via lmfit
 distlib==0.3.9
@@ -67,15 +70,15 @@ fastjsonschema==2.21.1
     # via nbformat
 filelock==3.17.0
     # via virtualenv
-fonttools==4.55.8
+fonttools==4.56.0
     # via matplotlib
 fqdn==1.5.1
     # via jsonschema
 h5py==3.12.1
     # via plasmapy (pyproject.toml)
-hypothesis==6.125.1
+hypothesis==6.125.2
     # via plasmapy (pyproject.toml)
-identify==2.6.6
+identify==2.6.7
     # via pre-commit
 idna==3.10
     # via
@@ -127,7 +130,7 @@ jupyter-core==5.7.2
     #   nbconvert
     #   nbformat
     #   voila
-jupyter-events==0.11.0
+jupyter-events==0.12.0
     # via jupyter-server
 jupyter-server==2.15.0
     # via
@@ -159,7 +162,7 @@ mistune==3.1.1
     # via nbconvert
 mpmath==1.3.0
     # via plasmapy (pyproject.toml)
-mypy==1.14.1
+mypy==1.15.0
     # via plasmapy (pyproject.toml)
 mypy-extensions==1.0.0
     # via mypy
@@ -180,7 +183,7 @@ nest-asyncio==1.6.0
     # via ipykernel
 nodeenv==1.9.1
     # via pre-commit
-nox==2024.10.9
+nox==2025.2.9
     # via plasmapy (pyproject.toml)
 numpy==2.2.2
     # via
@@ -200,7 +203,9 @@ packaging==24.2
     # via
     #   plasmapy (pyproject.toml)
     #   astropy
+    #   dependency-groups
     #   ipykernel
+    #   jupyter-events
     #   jupyter-server
     #   jupyterlab-server
     #   matplotlib
@@ -263,7 +268,7 @@ pytest==8.3.4
     #   pytest-xdist
 pytest-cov==6.0.0
     # via plasmapy (pyproject.toml)
-pytest-datadir==1.5.0
+pytest-datadir==1.6.1
     # via pytest-regressions
 pytest-filter-subpackage==0.2.0
     # via plasmapy (pyproject.toml)
