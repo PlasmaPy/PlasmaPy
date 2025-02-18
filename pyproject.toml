@@ -225,6 +225,7 @@ ignore-words-list = """
 aas,
 aci,
 afe,
+anc,
 ans,
 ba,
 bale,
