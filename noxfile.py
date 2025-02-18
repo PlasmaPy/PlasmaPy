@@ -58,7 +58,7 @@ nox.options.default_venv_backend = "uv|virtualenv"
 uv_sync = ("uv", "sync", "--no-progress", "--frozen")
 
 running_on_ci = os.getenv("CI")
-uv_requirement = "uv >= 0.5.20"
+uv_requirement = "uv >= 0.6.1"
 
 
 @nox.session
