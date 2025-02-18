@@ -25,6 +25,7 @@ build:
     install:
     - uv sync --active --frozen --extra docs
     build:
-    - nox -s docs
+      html:
+      - nox -s docs
     post_build:
     - echo $'\n'⚠️ For help deciphering documentation build error messages, see:$'\n\n'\ \ https://docs.plasmapy.org/en/latest/contributing/doc_guide.html#troubleshooting
