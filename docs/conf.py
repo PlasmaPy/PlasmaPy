@@ -25,7 +25,7 @@ Sphinx extensions (built-in):
 import logging
 import os
 import sys
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 
 from sphinx.application import Sphinx
 
@@ -40,7 +40,7 @@ import _author_list_from_cff
 import _changelog_index
 import _global_substitutions
 
-now = datetime.now(timezone.utc)
+now = datetime.now(UTC)
 
 # Project metadata
 

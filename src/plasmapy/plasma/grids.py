@@ -190,8 +190,7 @@ class AbstractGrid(ABC):
                 # If missing, warn user and then replace with an array of zeros
                 if not replace_with_zeros:
                     raise KeyError(
-                        f"{rq} is not specified for the provided "
-                        "grid but is required."
+                        f"{rq} is not specified for the provided grid but is required."
                     )
                 elif rq not in self.recognized_quantities():
                     raise KeyError(
@@ -1067,8 +1066,7 @@ class CartesianGrid(AbstractGrid):
                 self.units[i].to(u.m)
             except u.UnitConversionError as ex:
                 raise ValueError(
-                    "Units of grid are not valid for a Cartesian "
-                    f"grid: {self.units}."
+                    f"Units of grid are not valid for a Cartesian grid: {self.units}."
                 ) from ex
 
     @cached_property
@@ -1385,8 +1383,7 @@ class NonUniformCartesianGrid(AbstractGrid):
                 self.units[i].to(u.m)
             except u.UnitConversionError as ex:
                 raise ValueError(
-                    "Units of grid are not valid for a Cartesian "
-                    f"grid: {self.units}."
+                    f"Units of grid are not valid for a Cartesian grid: {self.units}."
                 ) from ex
 
     @property

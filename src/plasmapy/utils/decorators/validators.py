@@ -328,8 +328,7 @@ class ValidateQuantities(CheckUnits, CheckValues):
 
         # initialize TypeError message
         typeerror_msg = (
-            f"{err_msg} should be an astropy Quantity with units"
-            f" equivalent to one of ["
+            f"{err_msg} should be an astropy Quantity with units equivalent to one of ["
         )
         for ii, unit in enumerate(arg_validations["units"]):
             typeerror_msg += f"{unit}"
