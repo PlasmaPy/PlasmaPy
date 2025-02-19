@@ -25,10 +25,10 @@ build:
     - asdf global uv latest
     - uv venv --python=3.12
     install:
-    - uv sync --group docs --frozen
+    - uv sync --extra docs --frozen
     build:
       html:
-      - uv run nox -s docs
+      - .venv/bin/nox -s docs
 
     post_build:
     - echo $'\n'⚠️ For help deciphering documentation build error messages, see:$'\n\n'\ \ https://docs.plasmapy.org/en/latest/contributing/doc_guide.html#troubleshooting
