@@ -24,17 +24,13 @@ build:
     - asdf install uv latest
     - asdf global uv latest
     - uv venv --python=3.12
+
     install:
     - uv sync --extra docs --frozen --exact
+
     build:
       html:
-#      - .venv/bin/nox -s docs
-      - uv run nox -s docs
-      - pwd
-      - echo $READTHEDOCS_OUTPUT
+      - uv run --frozen nox -s docs
 
     post_build:
-    - find . -type d -name build
-    - find . -type d -name html
-    - find . -type d -name $READTHEDOCS_OUTPUT/
     - echo $'\n'⚠️ For help deciphering documentation build error messages, see:$'\n\n'\ \ https://docs.plasmapy.org/en/latest/contributing/doc_guide.html#troubleshooting
