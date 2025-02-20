@@ -33,7 +33,7 @@ build:
       - find . -type d
       - find . -type d -name build
       - mv docs/build/html $READTHEDOCS_OUTPUT
-      -
+      - echo $READTHEDOCS_OUTPUT
 
     post_build:
     - echo $'\n'⚠️ For help deciphering documentation build error messages, see:$'\n\n'\ \ https://docs.plasmapy.org/en/latest/contributing/doc_guide.html#troubleshooting
