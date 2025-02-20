@@ -58,6 +58,7 @@ nox.options.default_venv_backend = "uv|virtualenv"
 uv_sync = ("uv", "sync", "--no-progress", "--frozen")
 
 running_on_ci = os.getenv("CI")
+running_on_read_the_docs = os.environ.get("READTHEDOCS") == "True"
 
 uv_requirement = "uv >= 0.6.1"
 
@@ -210,15 +211,21 @@ def run_tests_with_dev_version_of(session: nox.Session, repository: str) -> None
     session.run(*pytest_command, *session.posargs)
 
 
-sphinx_commands: tuple[str, ...] = (
+sphinx_base_command: list[str] = [
     "sphinx-build",
     "docs/",
     "docs/build/html",
     "--nitpicky",
-    "--fail-on-warning",
     "--keep-going",
-    "-q",
-)
+]
+
+if not running_on_read_the_docs:
+    sphinx_base_command.extend(
+        [
+            "--fail-on-warning",
+            "--quiet",
+        ]
+    )
 
 build_html: tuple[str, ...] = ("--builder", "html")
 check_hyperlinks: tuple[str, ...] = ("--builder", "linkcheck")
@@ -250,7 +257,7 @@ def docs(session: nox.Session) -> None:
         "--extra=docs",
         env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
     )
-    session.run(*sphinx_commands, *build_html, *session.posargs)
+    session.run(*sphinx_base_command, *build_html, *session.posargs)
 
     landing_page = (
         pathlib.Path(session.invoked_from) / "docs" / "build" / "html" / "index.html"
@@ -289,7 +296,7 @@ def build_docs_with_dev_version_of(
     so that they can be fixed or updated earlier rather than later.
     """
     session.install(f"git+https://{site}.com/{repository}", ".[docs]")
-    session.run(*sphinx_commands, *build_html, *session.posargs)
+    session.run(*sphinx_base_command, *build_html, *session.posargs)
 
 
 LINKCHECK_TROUBLESHOOTING = """
@@ -318,7 +325,7 @@ def linkcheck(session: nox.Session) -> None:
         "--extra=docs",
         env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
     )
-    session.run(*sphinx_commands, *check_hyperlinks, *session.posargs)
+    session.run(*sphinx_base_command, *check_hyperlinks, *session.posargs)
 
 
 MYPY_TROUBLESHOOTING = """
