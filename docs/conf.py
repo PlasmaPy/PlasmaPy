@@ -623,13 +623,6 @@ if os.environ.get("READTHEDOCS", "") == "True":
     html_context["READTHEDOCS"] = True
 
 
-import warnings
-
-warnings.warn(
-    "I temporarily added this warning to see if we could still preview "
-    "the online documentation when an RTD build fails due to a warning."
-)
-
 def setup(app: Sphinx) -> None:
     app.add_config_value("revision", "", rebuild=True)
     app.add_css_file("css/admonition_color_contrast.css")
