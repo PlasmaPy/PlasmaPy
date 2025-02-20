@@ -261,30 +261,13 @@ def docs(session: nox.Session) -> None:
     elif not running_on_ci:
         session.log(f"Documentation preview landing page not found: {landing_page}")
 
-    if running_on_rtd := os.environ.get("READTHEDOCS"):
-        session.notify("move_rtd_build")
+    # Move the documentation build to the expected directory
 
-
-@nox.session
-def move_rtd_build(session: nox.Session) -> None:
-    """Move the documentation build to the expected location on Read the Docs."""
-
-    if not os.environ.get("READTHEDOCS"):
-        session.error(
-            "The move_rtd_build is intended to be run solely after a "
-            "documentation build on Read the Docs to move the directory "
-            "to the expected location."
-        )
-
-    rtd_output_path = pathlib.Path(os.environ.get("READTHEDOCS_OUTPUT"))
-    rtd_output_path.mkdir(parents=True, exist_ok=True)
-
-    doc_build_path = pathlib.Path.cwd() / "docs" / "build" / "html"
-
-    if not doc_build_path.exists():
-        raise FileNotFoundError(f"Directory not found: {doc_build_path}")
-
-    doc_build_path.rename(rtd_output_path / "html")
+    if running_on_read_the_docs := os.environ.get("READTHEDOCS"):  # noqa: F841
+        rtd_output_path = pathlib.Path(os.environ.get("READTHEDOCS_OUTPUT"))
+        rtd_output_path.mkdir(parents=True, exist_ok=True)
+        doc_build_path = pathlib.Path.cwd() / "docs" / "build" / "html"
+        doc_build_path.rename(rtd_output_path / "html")
 
 
 @nox.session(python=docpython)
