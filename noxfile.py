@@ -264,6 +264,7 @@ def docs(session: nox.Session) -> None:
     if running_on_rtd := os.environ.get("READTHEDOCS"):
         session.notify("move_rtd_build")
 
+
 @nox.session
 def move_rtd_build(session: nox.Session) -> None:
     """Move the documentation build to the expected location on Read the Docs."""
