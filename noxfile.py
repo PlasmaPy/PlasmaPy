@@ -210,6 +210,7 @@ def run_tests_with_dev_version_of(session: nox.Session, repository: str) -> None
     session.install(".[tests]")
     session.run(*pytest_command, *session.posargs)
 
+
 doc_build_dir = "$READTHEDOCS_OUTPUT" if running_on_rtd else "docs/build/html"
 
 if running_on_rtd:
