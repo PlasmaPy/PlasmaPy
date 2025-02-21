@@ -215,7 +215,7 @@ doc_build_dir = "$READTHEDOCS_OUTPUT" if running_on_rtd else "docs/build/html"
 if running_on_rtd:
     rtd_output_path = pathlib.Path(os.environ.get("READTHEDOCS_OUTPUT")) / "html"
     rtd_output_path.mkdir(parents=True, exist_ok=True)
-    doc_build_dir = str(rtd_output_path.absolute()) 
+    doc_build_dir = str(rtd_output_path)
 else:
     doc_build_dir = "docs/build/html"
 
