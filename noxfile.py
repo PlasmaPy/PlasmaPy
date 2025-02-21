@@ -211,18 +211,6 @@ def run_tests_with_dev_version_of(session: nox.Session, repository: str) -> None
     session.run(*pytest_command, *session.posargs)
 
 
-
-    # Move the documentation build to the expected directory
-
-#    if running_on_read_the_docs := os.environ.get("READTHEDOCS"):  # noqa: F841
-#        rtd_output_path = pathlib.Path(os.environ.get("READTHEDOCS_OUTPUT"))
-#        rtd_output_path.mkdir(parents=True, exist_ok=True)
-#        doc_build_path = pathlib.Path.cwd() / "docs" / "build" / "html"
-#        doc_build_path.rename(rtd_output_path / "html")
-
-
-if running_on_rtd:
-
 doc_build_dir = "$READTHEDOCS_OUTPUT/html" if running_on_rtd else "docs/build/html"
 
 sphinx_base_command: list[str] = [
