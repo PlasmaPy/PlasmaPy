@@ -210,8 +210,14 @@ def run_tests_with_dev_version_of(session: nox.Session, repository: str) -> None
     session.install(".[tests]")
     session.run(*pytest_command, *session.posargs)
 
-
 doc_build_dir = "$READTHEDOCS_OUTPUT/html" if running_on_rtd else "docs/build/html"
+
+if running_on_rtd:
+    rtd_output_path = pathlib.Path(os.environ.get("READTHEDOCS_OUTPUT"))
+    rtd_output_path.mkdir(parents=True, exist_ok=True)
+    doc_build_dir = str(rtd_output_path.absolute())
+else:
+    doc_build_dir = "docs/build/html"
 
 sphinx_base_command: list[str] = [
     "sphinx-build",
