@@ -58,7 +58,7 @@ nox.options.default_venv_backend = "uv|virtualenv"
 uv_sync = ("uv", "sync", "--no-progress", "--frozen")
 
 running_on_ci = os.getenv("CI")
-running_on_read_the_docs = os.environ.get("READTHEDOCS") == "True"
+running_on_rtd = os.environ.get("READTHEDOCS") == "True"
 
 uv_requirement = "uv >= 0.6.1"
 
@@ -211,15 +211,29 @@ def run_tests_with_dev_version_of(session: nox.Session, repository: str) -> None
     session.run(*pytest_command, *session.posargs)
 
 
+
+    # Move the documentation build to the expected directory
+
+#    if running_on_read_the_docs := os.environ.get("READTHEDOCS"):  # noqa: F841
+#        rtd_output_path = pathlib.Path(os.environ.get("READTHEDOCS_OUTPUT"))
+#        rtd_output_path.mkdir(parents=True, exist_ok=True)
+#        doc_build_path = pathlib.Path.cwd() / "docs" / "build" / "html"
+#        doc_build_path.rename(rtd_output_path / "html")
+
+
+if running_on_rtd:
+
+doc_build_dir = "$READTHEDOCS_OUTPUT/html" if running_on_rtd else "docs/build/html"
+
 sphinx_base_command: list[str] = [
     "sphinx-build",
     "docs/",
-    "docs/build/html",
+    doc_build_dir,
     "--nitpicky",
     "--keep-going",
 ]
 
-if not running_on_read_the_docs:
+if not running_on_rtd:
     sphinx_base_command.extend(
         [
             "--fail-on-warning",
@@ -267,14 +281,6 @@ def docs(session: nox.Session) -> None:
         session.log(f"The documentation may be previewed at {landing_page}")
     elif not running_on_ci:
         session.log(f"Documentation preview landing page not found: {landing_page}")
-
-    # Move the documentation build to the expected directory
-
-    if running_on_read_the_docs := os.environ.get("READTHEDOCS"):  # noqa: F841
-        rtd_output_path = pathlib.Path(os.environ.get("READTHEDOCS_OUTPUT"))
-        rtd_output_path.mkdir(parents=True, exist_ok=True)
-        doc_build_path = pathlib.Path.cwd() / "docs" / "build" / "html"
-        doc_build_path.rename(rtd_output_path / "html")
 
 
 @nox.session(python=docpython)
