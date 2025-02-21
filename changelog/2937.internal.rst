@@ -1,1 +1,2 @@
-Began using :file:`uv.lock` to freeze the versions of requirements used in tests.
+Began using :file:`uv.lock` to pin the versions of requirements used in tests and documention builds. Previously, requirements had been stored in :file:`requirements.txt` like files that were generated with 
+:bash:`uv pip compile`.
