@@ -54,7 +54,7 @@ repos:
     exclude: .github/labeler.yml|.pre-commit-search-and-replace.yaml
 
 - repo: https://github.com/mattlqx/pre-commit-search-and-replace
-  # keep at old version
+  # keep at v1.0.5
   rev: v1.0.5
   hooks:
   - id: search-and-replace
