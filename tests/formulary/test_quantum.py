@@ -91,9 +91,9 @@ def test_thermal_deBroglie_wavelength() -> None:
         "Thermal deBroglie wavelength at 1 eV should be "
         f"{lambda_dbTh_true} and not {lambda_dbTh}"
     )
-    assert np.isclose(
-        lambda_dbTh.value, lambda_dbTh_true, rtol=1e-5, atol=0.0
-    ), expectStr
+    assert np.isclose(lambda_dbTh.value, lambda_dbTh_true, rtol=1e-5, atol=0.0), (
+        expectStr
+    )
     # testing returned units
     assert lambda_dbTh.unit == u.m
     # testing exceptions

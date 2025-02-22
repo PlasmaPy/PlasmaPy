@@ -321,8 +321,7 @@ class IonizationStateCollection:
         all_nans = np.all(np.isnan(new_fractions))
         if not all_nans and (new_fractions.min() < 0 or new_fractions.max() > 1):
             raise ValueError(
-                f"{errmsg} because the new ionic fractions are not "
-                f"all between 0 and 1."
+                f"{errmsg} because the new ionic fractions are not all between 0 and 1."
             )
 
         normalized = np.isclose(np.sum(new_fractions), 1, rtol=self.tol)

@@ -1852,8 +1852,7 @@ class Particle(AbstractPhysicalParticle):
         """
         if not self.element:
             raise InvalidElementError(
-                f"Cannot ionize {self.symbol} because it is not a "
-                f"neutral atom or ion."
+                f"Cannot ionize {self.symbol} because it is not a neutral atom or ion."
             )
 
         if np.isinf(n):

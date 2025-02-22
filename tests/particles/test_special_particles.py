@@ -6,13 +6,13 @@ def test_particle_antiparticle_pairs(particle_antiparticle_pair) -> None:
     opposite properties in the _Particles dictionary."""
     particle, antiparticle = (p.symbol for p in particle_antiparticle_pair)
 
-    assert not data_about_special_particles[particle][
-        "antimatter"
-    ], f"{particle} is incorrectly marked as antimatter."
+    assert not data_about_special_particles[particle]["antimatter"], (
+        f"{particle} is incorrectly marked as antimatter."
+    )
 
-    assert data_about_special_particles[antiparticle][
-        "antimatter"
-    ], f"{antiparticle} is incorrectly marked as matter."
+    assert data_about_special_particles[antiparticle]["antimatter"], (
+        f"{antiparticle} is incorrectly marked as matter."
+    )
 
     identical_keys = ["half-life", "spin"]
 
@@ -39,9 +39,9 @@ def test_particle_antiparticle_pairs(particle_antiparticle_pair) -> None:
     if particle not in {"e-", "n"}:
         assert data_about_special_particles[particle][
             "name"
-        ] == data_about_special_particles[antiparticle]["name"].replace(
-            "anti", ""
-        ), f"{particle} and {antiparticle} do not have same name except for 'anti'."
+        ] == data_about_special_particles[antiparticle]["name"].replace("anti", ""), (
+            f"{particle} and {antiparticle} do not have same name except for 'anti'."
+        )
 
 
 required_keys = [
@@ -70,6 +70,5 @@ def test_Particles_required_keys(particle):
 
     if missing_keys:
         raise KeyError(
-            f"_Particles[{particle!r}] is missing the following "
-            f"keys: {missing_keys}"
+            f"_Particles[{particle!r}] is missing the following keys: {missing_keys}"
         )

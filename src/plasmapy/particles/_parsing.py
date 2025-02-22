@@ -327,8 +327,7 @@ def parse_and_check_atomic_input(  # noqa: C901, PLR0912, PLR0915
             element = element_info
         else:
             raise InvalidParticleError(
-                f"The string '{element_info}' does not correspond to "
-                f"a valid element."
+                f"The string '{element_info}' does not correspond to a valid element."
             )
         return element
 
@@ -351,8 +350,7 @@ def parse_and_check_atomic_input(  # noqa: C901, PLR0912, PLR0915
 
             if isotope not in _isotopes.data_about_isotopes:
                 raise InvalidParticleError(
-                    f"The string '{isotope}' does not correspond to "
-                    f"a valid isotope."
+                    f"The string '{isotope}' does not correspond to a valid isotope."
                 )
 
         else:
@@ -433,8 +431,7 @@ def parse_and_check_atomic_input(  # noqa: C901, PLR0912, PLR0915
             )
         else:
             warnings.warn(
-                "Redundant charge information for particle "
-                f"'{argument}' with Z = {Z}.",
+                f"Redundant charge information for particle '{argument}' with Z = {Z}.",
                 ParticleWarning,
             )
 
@@ -534,8 +531,7 @@ def parse_and_check_molecule_input(argument: str, Z: int | None = None):
             )
         else:
             warnings.warn(
-                "Redundant charge information for particle "
-                f"'{argument}' with Z = {Z}.",
+                f"Redundant charge information for particle '{argument}' with Z = {Z}.",
                 ParticleWarning,
             )
 
