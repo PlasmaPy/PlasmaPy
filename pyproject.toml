@@ -342,8 +342,14 @@ extend-select = [
   "RUF018", # assignment-in-assert
   "RUF019", # unnecessary-key-check
   "RUF020", # never-union
+  "RUF021", # parenthesize-chained-operators
+  "RUF023", # unsorted-dunder-slots
   "RUF024", # mutable-fromkeys-value
   "RUF026", # default-factory-kwarg
+  "RUF030", # assert-with-print-message
+  "RUF032", # decimal-from-float-literal
+  "RUF033", # post-init-default
+  "RUF034", # useless-if-else
   "RUF100", # unused-noqa
   "RUF101", # redirected-noqa
   "RUF200", # invalid-pyproject-toml
