@@ -47,7 +47,7 @@ coverage==7.6.12
     # via pytest-cov
 cycler==0.12.1
     # via matplotlib
-decorator==5.1.1
+decorator==5.2.1
     # via ipython
 defusedxml==0.7.1
     # via nbconvert
@@ -69,7 +69,7 @@ h5py==3.8.0
     # via plasmapy (pyproject.toml)
 hypothesis==6.108.2
     # via plasmapy (pyproject.toml)
-identify==2.6.7
+identify==2.6.8
     # via pre-commit
 idna==3.10
     # via
@@ -288,7 +288,7 @@ referencing==0.36.2
     #   jsonschema-specifications
 requests==2.28.0
     # via plasmapy (pyproject.toml)
-rpds-py==0.22.3
+rpds-py==0.23.1
     # via
     #   jsonschema
     #   referencing
