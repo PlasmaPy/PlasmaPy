@@ -413,16 +413,12 @@ class IonizationState:
 
         min_tol = np.min([self.tol, other.tol])
 
-        same_T_e = (
-            np.isnan(self.T_e)
-            and np.isnan(other.T_e)
-            or u.allclose(self.T_e, other.T_e, rtol=min_tol, atol=0 * u.K)
+        same_T_e = (np.isnan(self.T_e) and np.isnan(other.T_e)) or u.allclose(
+            self.T_e, other.T_e, rtol=min_tol, atol=0 * u.K
         )
 
-        same_n_elem = (
-            np.isnan(self.n_elem)
-            and np.isnan(other.n_elem)
-            or u.allclose(self.n_elem, other.n_elem, rtol=min_tol, atol=0 * u.m**-3)
+        same_n_elem = (np.isnan(self.n_elem) and np.isnan(other.n_elem)) or u.allclose(
+            self.n_elem, other.n_elem, rtol=min_tol, atol=0 * u.m**-3
         )
 
         # For the next line, recall that np.nan == np.nan is False
