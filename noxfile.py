@@ -272,10 +272,10 @@ def docs(session: nox.Session) -> None:
         pathlib.Path(session.invoked_from) / "docs" / "_build" / "html" / "index.html"
     )
 
-    if not running_on_ci and landing_page.exists():
+    if landing_page.exists():
         session.log(f"The documentation may be previewed at {landing_page}")
-    elif not running_on_ci:
-        session.log(f"Documentation preview landing page not found: {landing_page}")
+    else:
+        session.error(f"Documentation preview landing page not found: {landing_page}")
 
 
 @nox.session(python=docpython)
