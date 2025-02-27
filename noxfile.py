@@ -211,8 +211,6 @@ def run_tests_with_dev_version_of(session: nox.Session, repository: str) -> None
     session.run(*pytest_command, *session.posargs)
 
 
-doc_build_dir = "$READTHEDOCS_OUTPUT" if running_on_rtd else "docs/_build/html"
-
 if running_on_rtd:
     rtd_output_path = pathlib.Path(os.environ.get("READTHEDOCS_OUTPUT")) / "html"
     rtd_output_path.mkdir(parents=True, exist_ok=True)
