@@ -140,11 +140,11 @@ wheels = [
 
 [[package]]
 name = "astropy-iers-data"
-version = "0.2025.2.17.0.34.13"
+version = "0.2025.2.24.0.34.4"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/90/8f/5b84d3b0cb98708d5bb8b4f1442ca9bdfd3dc1ffd4a1cde715e714e3ff85/astropy_iers_data-0.2025.2.17.0.34.13.tar.gz", hash = "sha256:34b685447a32e63f43811adcee2588bcd55dd77dfc454a05c25f0bbf80066960", size = 1893113 }
+sdist = { url = "https://files.pythonhosted.org/packages/a1/4d/b9511aba29d4330437497166a7049ab9bac53e344c54e44a35390724ca37/astropy_iers_data-0.2025.2.24.0.34.4.tar.gz", hash = "sha256:fce62431ce38129d166360f59563f506fbe37b2d1df5e0038a4ad0b0277274f7", size = 1893706 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/f2/e2/496d0136d7b1446ad2cfcd4aacae8220301d9789400a916da8d79019c487/astropy_iers_data-0.2025.2.17.0.34.13-py3-none-any.whl", hash = "sha256:2024e3251e1360cdbd978ccf19152610396d2324f5b2af19746e903e243b7566", size = 1945936 },
+    { url = "https://files.pythonhosted.org/packages/00/14/28e7254183bb53502b323b7e170eaeb86501cc774e76f82ef04216699afb/astropy_iers_data-0.2025.2.24.0.34.4-py3-none-any.whl", hash = "sha256:be8b3b75b09b1aa1d22de9b5243854e00d19936aca6d8f64466d16197c04bb28", size = 1946502 },
 ]
 
 [[package]]
@@ -488,11 +488,11 @@ wheels = [
 
 [[package]]
 name = "decorator"
-version = "5.1.1"
+version = "5.2.1"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/66/0c/8d907af351aa16b42caae42f9d6aa37b900c67308052d10fdce809f8d952/decorator-5.1.1.tar.gz", hash = "sha256:637996211036b6385ef91435e4fae22989472f9d571faba8927ba8253acbc330", size = 35016 }
+sdist = { url = "https://files.pythonhosted.org/packages/43/fa/6d96a0978d19e17b68d634497769987b16c8f4cd0a7a05048bec693caa6b/decorator-5.2.1.tar.gz", hash = "sha256:65f266143752f734b0a7cc83c46f4618af75b8c5911b00ccb61d0ac9b6da0360", size = 56711 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/d5/50/83c593b07763e1161326b3b8c6686f0f4b0f24d5526546bee538c89837d6/decorator-5.1.1-py3-none-any.whl", hash = "sha256:b8c3f85900b9dc423225913c5aace94729fe1fa9763b38939a95226f02d37186", size = 9073 },
+    { url = "https://files.pythonhosted.org/packages/4e/8c/f3147f5c4b73e7550fe5f9352eaa956ae838d5c51eb58e7a25b9f3e2643b/decorator-5.2.1-py3-none-any.whl", hash = "sha256:d316bb415a2d9e2d2b3abcc4084c6502fc09240e292cd76a76afc106a1c8e04a", size = 9190 },
 ]
 
 [[package]]
@@ -649,15 +649,15 @@ wheels = [
 
 [[package]]
 name = "hypothesis"
-version = "6.126.0"
+version = "6.127.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "attrs" },
     { name = "sortedcontainers" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/a5/8c/8281dd1408dd8374b0ed0528e63fb53a556b3d4f901382f51148345ec9fb/hypothesis-6.126.0.tar.gz", hash = "sha256:648b6215ee0468fa85eaee9dceb5b7766a5861c20ee4801bd904a2c02f1a6c9b", size = 420895 }
+sdist = { url = "https://files.pythonhosted.org/packages/03/52/cf2673c1b6aa8469e6ae0129940ed77187f1b393274b5acd8dee2a86fd5e/hypothesis-6.127.2.tar.gz", hash = "sha256:725343a65846c3627399398a6206adca3e1433786fdcfaa16ca0d114900849a5", size = 421265 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/98/fc/8e1749aa79631952bf70e57913626fb0a0556eb2ad3c530c5526f6e5ba13/hypothesis-6.126.0-py3-none-any.whl", hash = "sha256:323c58a773482a2b4ba4e35202560cfcba45e8a8e09e7ffb83c0f9bac5b544da", size = 483657 },
+    { url = "https://files.pythonhosted.org/packages/7b/a0/66c50f7c09807f6e2f7c6ce2ef152fa3875ac443db76c444fce298d42670/hypothesis-6.127.2-py3-none-any.whl", hash = "sha256:9b1b5e4e8adc82d01351d4e814ebdd38e2f3173f489de098b418c7a026f100c0", size = 484094 },
 ]
 
 [[package]]
@@ -2191,11 +2191,11 @@ wheels = [
 
 [[package]]
 name = "setuptools"
-version = "75.8.0"
+version = "75.8.2"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/92/ec/089608b791d210aec4e7f97488e67ab0d33add3efccb83a056cbafe3a2a6/setuptools-75.8.0.tar.gz", hash = "sha256:c5afc8f407c626b8313a86e10311dd3f661c6cd9c09d4bf8c15c0e11f9f2b0e6", size = 1343222 }
+sdist = { url = "https://files.pythonhosted.org/packages/d1/53/43d99d7687e8cdef5ab5f9ec5eaf2c0423c2b35133a2b7e7bc276fc32b21/setuptools-75.8.2.tar.gz", hash = "sha256:4880473a969e5f23f2a2be3646b2dfd84af9028716d398e46192f84bc36900d2", size = 1344083 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/69/8a/b9dc7678803429e4a3bc9ba462fa3dd9066824d3c607490235c6a796be5a/setuptools-75.8.0-py3-none-any.whl", hash = "sha256:e3982f444617239225d675215d51f6ba05f845d4eec313da4418fdbb56fb27e3", size = 1228782 },
+    { url = "https://files.pythonhosted.org/packages/a9/38/7d7362e031bd6dc121e5081d8cb6aa6f6fedf2b67bf889962134c6da4705/setuptools-75.8.2-py3-none-any.whl", hash = "sha256:558e47c15f1811c1fa7adbd0096669bf76c1d3f433f58324df69f3f5ecac4e8f", size = 1229385 },
 ]
 
 [[package]]
