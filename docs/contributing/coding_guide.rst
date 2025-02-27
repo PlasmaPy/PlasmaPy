@@ -662,7 +662,8 @@ Dependencies and requirements
   for use in continuous integration tests.
 
   - These files are updated periodically via pull requests created by a
-    GitHub workflow to `update pinned requirements`_.
+    GitHub workflow to `update pinned requirements`_, defined in this
+    `script <https://github.com/PlasmaPy/PlasmaPy/blob/main/.github/workflows/update-pinned-reqs.yml>`__.
 
   - When updating requirements in |pyproject.toml|_, run
     :bash:`nox -s requirements` to update the pinned requirements files.
