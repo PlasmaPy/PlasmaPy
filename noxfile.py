@@ -211,14 +211,14 @@ def run_tests_with_dev_version_of(session: nox.Session, repository: str) -> None
     session.run(*pytest_command, *session.posargs)
 
 
-doc_build_dir = "$READTHEDOCS_OUTPUT" if running_on_rtd else "docs/build/html"
+doc_build_dir = "$READTHEDOCS_OUTPUT" if running_on_rtd else "docs/_build/html"
 
 if running_on_rtd:
     rtd_output_path = pathlib.Path(os.environ.get("READTHEDOCS_OUTPUT")) / "html"
     rtd_output_path.mkdir(parents=True, exist_ok=True)
     doc_build_dir = str(rtd_output_path)
 else:
-    doc_build_dir = "docs/build/html"
+    doc_build_dir = "docs/_build/html"
 
 sphinx_base_command: list[str] = [
     "sphinx-build",
@@ -269,7 +269,7 @@ def docs(session: nox.Session) -> None:
     session.run(*sphinx_base_command, *build_html, *session.posargs)
 
     landing_page = (
-        pathlib.Path(session.invoked_from) / "docs" / "build" / "html" / "index.html"
+        pathlib.Path(session.invoked_from) / "docs" / "_build" / "html" / "index.html"
     )
 
     if not running_on_ci and landing_page.exists():
