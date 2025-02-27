@@ -266,7 +266,7 @@ def docs(session: nox.Session) -> None:
     )
     session.run(*sphinx_base_command, *build_html, *session.posargs)
 
-    landing_page = pathlib.Path(doc_build_dir / "html" / "index.html")
+    landing_page = pathlib.Path(doc_build_dir) / "html" / "index.html"
 
     if landing_page.exists():
         session.log(f"The documentation may be previewed at {landing_page}")
