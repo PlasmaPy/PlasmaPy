@@ -94,9 +94,9 @@ jobs:
       with:
         python-version: ${{ matrix.python }}
         enable-cache: true
-        cache-suffix: ${{ matrix.python }}-${{ runner.os }}
+        cache-suffix: ${{ matrix.nox_session }}-${{ matrix.python }}-${{ runner.os }}
 
-    - name: Run Nox session
+    - name: Run Nox session with uv
       run: uv run --with nox --frozen nox -s '${{ matrix.nox_session }}'
 
     - name: Upload coverage reports to Codecov
