@@ -90,6 +90,7 @@ jobs:
       uses: ts-graphviz/setup-graphviz@v2
 
     - name: Install pandoc for documentation builds
+      # This step only works on Ubuntu
       if: startsWith(matrix.name, 'Documentation')
       run: sudo apt-get install pandoc
 
