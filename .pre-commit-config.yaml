@@ -79,13 +79,13 @@ repos:
     - tomli
 
 - repo: https://github.com/crate-ci/typos
-  rev: v1.29.9
+  rev: v1.30.0
   hooks:
   - id: typos
     name: typos (add false positives to _typos.toml)
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.9.7
+  rev: v0.9.9
   hooks:
   - id: ruff
     name: ruff (see https://docs.astral.sh/ruff/rules)
