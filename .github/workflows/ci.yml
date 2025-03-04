@@ -103,10 +103,6 @@ jobs:
         # Changing pyproject.toml or requirements invalidates the cache
         key: ${{ matrix.nox_session }}-${{ matrix.python }}-${{ runner.os }}-${{ hashFiles('pyproject.toml', 'uv.lock') }}
 
-    # Adding this temporarily to see the contents of the cache
-    - name: Find all directories in cache
-      run: find ${{ runner.tool_cache }} -type d
-
     - name: Run Nox session
       run: nox -s '${{ matrix.nox_session }}'
 
@@ -118,7 +114,3 @@ jobs:
         fail_ci_if_error: false
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-
-    # Adding this temporarily to see the contents of the cache
-    - name: Find all directories in cache
-      run: find ${{ runner.tool_cache }} -type d
