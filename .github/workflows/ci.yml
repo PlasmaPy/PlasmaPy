@@ -96,7 +96,7 @@ jobs:
         cache-suffix: ${{ matrix.nox_session }}-${{ matrix.python }}-${{ runner.os }}
 
     - name: Run Nox session with uv (main step)
-      run: >
+      run: >-
         uv run
           --python ${{ matrix.python }}
           --with nox
