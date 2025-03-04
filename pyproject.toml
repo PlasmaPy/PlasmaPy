@@ -53,7 +53,7 @@ dynamic = ["version"]
 # alongside other packages, such as in the heliopythoniverse.
 
 # When updating dependencies, run `nox -s requirements` to update the
-# pinned environments.
+# pinned environments in `uv.lock`.
 
 dependencies = [
   # astropy upper limit described in https://github.com/PlasmaPy/PlasmaPy/issues/2883
