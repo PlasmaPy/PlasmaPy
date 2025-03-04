@@ -85,9 +85,15 @@ jobs:
         python-version: ${{ matrix.python }}
         cache: pip
 
-    - name: Install graphviz and pandoc for documentation builds
+    - name: Install Graphviz for doc builds
       if: startsWith(matrix.name, 'Documentation')
-      run: sudo apt-get install graphviz pandoc
+      uses: ts-graphviz/setup-graphviz@v2
+
+    - name: Install pandoc for doc builds (requires Ubuntu)
+      if: startsWith(matrix.name, 'Documentation')
+      run: |
+        sudo apt update
+        sudo apt-get install -y pandoc
 
     - name: Install Nox and uv
       run: python -m pip install --progress-bar off --upgrade nox uv
