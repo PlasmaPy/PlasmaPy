@@ -87,8 +87,6 @@ jobs:
 
     - name: Checkout code
       uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
 
     - name: Install uv
       uses: astral-sh/setup-uv@v5
@@ -97,7 +95,7 @@ jobs:
         enable-cache: true
         cache-suffix: ${{ matrix.nox_session }}-${{ matrix.python }}-${{ runner.os }}
 
-    - name: Run Nox session with uv
+    - name: Run Nox session with uv (main step)
       run: >
         uv run
           --python ${{ matrix.python }}
