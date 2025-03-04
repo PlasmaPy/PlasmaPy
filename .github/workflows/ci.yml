@@ -94,10 +94,10 @@ jobs:
       with:
         python-version: ${{ matrix.python }}
         enable-cache: true
-        cache-suffix: ${{ matrix.nox_session }}-${{ matrix.python }}-${{ runner.os }}
+        cache-suffix: ${{ matrix.python }}-${{ runner.os }}
 
-    - name: Run Nox session with uv
-      run: uv run --frozen nox -s '${{ matrix.nox_session }}'
+    - name: Run Nox session
+      run: uv run --frozen --with nox nox -s '${{ matrix.nox_session }}'
 
     - name: Upload coverage reports to Codecov
       if: ${{ contains(matrix.nox_session, 'cov') }}
