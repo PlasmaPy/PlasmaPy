@@ -74,6 +74,16 @@ jobs:
 
     steps:
 
+    - name: Install Graphviz for documentation builds
+      if: startsWith(matrix.nox_session, 'docs')
+      uses: ts-graphviz/setup-graphviz@v2
+
+    - name: Install pandoc for documentation builds (requires Ubuntu)
+      if: startsWith(matrix.nox_session, 'docs')
+      run: |
+        sudo apt update
+        sudo apt-get install -y pandoc
+
     - name: Checkout code
       uses: actions/checkout@v4
       with:
@@ -84,17 +94,7 @@ jobs:
       with:
         python-version: ${{ matrix.python }}
         enable-cache: true
-        cache-suffix: ${{ matrix.nox_session }}-${{ matrix.python }}-${{ runner.os }}-${{ hashFiles('pyproject.toml', 'uv.lock') }}
-
-    - name: Install Graphviz for doc builds
-      if: startsWith(matrix.name, 'Documentation')
-      uses: ts-graphviz/setup-graphviz@v2
-
-    - name: Install pandoc for doc builds (requires Ubuntu)
-      if: startsWith(matrix.name, 'Documentation')
-      run: |
-        sudo apt update
-        sudo apt-get install -y pandoc
+        cache-suffix: ${{ matrix.nox_session }}-${{ matrix.python }}-${{ runner.os }}
 
     - name: Run Nox session with uv
       run: uv run --frozen nox -s '${{ matrix.nox_session }}'
