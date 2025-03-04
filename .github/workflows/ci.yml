@@ -79,11 +79,12 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
+    - name: Install uv
+      uses: astral-sh/setup-uv@v5
       with:
         python-version: ${{ matrix.python }}
-        cache: pip
+        enable-cache: true
+        cache-suffix: ${{ matrix.nox_session }}-${{ matrix.python }}-${{ runner.os }}-${{ hashFiles('pyproject.toml', 'uv.lock') }}
 
     - name: Install Graphviz for doc builds
       if: startsWith(matrix.name, 'Documentation')
@@ -95,22 +96,8 @@ jobs:
         sudo apt update
         sudo apt-get install -y pandoc
 
-    - name: Install Nox and uv
-      run: python -m pip install --progress-bar off --upgrade nox uv
-
-    - name: Cache .nox to shorten virtual environment creation time
-      uses: actions/cache@v4
-      with:
-        path: |
-          .nox
-          .venv
-          .cache/uv
-          cache/uv
-        # Changing pyproject.toml or requirements invalidates the cache
-        key: ${{ matrix.nox_session }}-${{ matrix.python }}-${{ runner.os }}-${{ hashFiles('pyproject.toml', 'uv.lock') }}
-
-    - name: Run Nox session
-      run: nox -s '${{ matrix.nox_session }}'
+    - name: Run Nox session with uv
+      run: uv run --frozen nox -s '${{ matrix.nox_session }}'
 
     - name: Upload coverage reports to Codecov
       if: ${{ contains(matrix.nox_session, 'cov') }}
