@@ -76,11 +76,6 @@ jobs:
 
     - name: Checkout code
       uses: actions/checkout@v4
-      with:
-        fetch-depth: 2
-
-    - name: Display changes from previous commit
-      run: git diff HEAD~1
 
     - name: Install Graphviz for doc builds
       if: startsWith(matrix.nox_session, 'docs')
