@@ -80,7 +80,7 @@ jobs:
         fetch-depth: 2
 
     - name: Display changes from previous commit
-      run: git show
+      run: git diff HEAD~1
 
     - name: Install Graphviz for doc builds
       if: startsWith(matrix.nox_session, 'docs')
