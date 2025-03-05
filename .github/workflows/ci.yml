@@ -90,11 +90,8 @@ jobs:
       with:
         fetch-depth: 3
 
-    - name: Display changes from previous commits
-      run: |
-        git show HEAD~0
-        git show HEAD~1
-        git show HEAD~2
+    - name: Display changes from previous commit
+      run: git show
 
     - name: Install uv
       uses: astral-sh/setup-uv@v5
