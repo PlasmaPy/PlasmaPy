@@ -87,6 +87,13 @@ jobs:
 
     - name: Checkout code
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 6
+
+    - name: Display changes from previous commits
+      run: |
+        git show
+        git diff HEAD~5
 
     - name: Install uv
       uses: astral-sh/setup-uv@v5
