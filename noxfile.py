@@ -573,5 +573,6 @@ def lint(session: nox.Session) -> None:
         *session.posargs,
     )
 
+
 if __name__ == "__main__":
     nox.main()
