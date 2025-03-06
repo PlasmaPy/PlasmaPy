@@ -24,6 +24,10 @@ to be installed.
 
 # Documentation: https://nox.thea.codes
 
+# /// script
+# dependencies = ["nox"]
+# ///
+
 import os
 import pathlib
 import re
@@ -568,3 +572,6 @@ def lint(session: nox.Session) -> None:
         "--show-diff-on-failure",
         *session.posargs,
     )
+
+if __name__ == "__main__":
+    nox.main()
