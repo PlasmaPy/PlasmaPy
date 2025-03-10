@@ -63,7 +63,7 @@ running_on_rtd = os.environ.get("READTHEDOCS") == "True"
 uv_requirement = "uv >= 0.6.5"
 
 
-def _append_table_of_updated_dependencies(uv_output: str) -> None:
+def _create_pr_message_file(uv_output: str) -> None:
     """
     Append requirements updates to pull request message.
 
@@ -103,6 +103,8 @@ def requirements(session: nox.Session) -> None:
     """
     Regenerate the uv.lock file for running tests and building the
     documentation.
+
+    When running on CI, this session will
     """
     session.install(uv_requirement)
 
@@ -115,7 +117,7 @@ def requirements(session: nox.Session) -> None:
 
     if running_on_ci:
         session.log(uv_output)
-        _append_table_of_updated_dependencies(uv_output)
+        _create_pr_message_file(uv_output)
 
 
 @nox.session
