@@ -69,7 +69,8 @@ def _create_requirements_pr_message(uv_output: str) -> None:
     Create the pull request message during requirements updates.
 
     This function copies a GitHub flavored Markdown template to a new
-    file and appends a table
+    file and appends a table containing the updated requirements, with
+    links to the corresponding PyPI pages.
 
     Parameters
     ----------
