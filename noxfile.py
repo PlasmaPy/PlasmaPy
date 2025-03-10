@@ -64,7 +64,7 @@ running_on_rtd = os.environ.get("READTHEDOCS") == "True"
 uv_requirement = "uv >= 0.6.5"
 
 
-def _create_requirements_pr_message(uv_output: str) -> None:
+def _create_requirements_pr_message(uv_output: str, session: nox.Session) -> None:
     """
     Create the pull request message during requirements updates.
 
@@ -134,7 +134,7 @@ def requirements(session: nox.Session) -> None:
 
     if running_on_ci:
         session.log(uv_output)
-        _create_requirements_pr_message(uv_output)
+        _create_requirements_pr_message(uv_output=uv_output, session=session)
 
 
 @nox.session
