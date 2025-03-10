@@ -1291,7 +1291,7 @@ wheels = [
 
 [[package]]
 name = "nbsphinx"
-version = "0.9.6"
+version = "0.9.7"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "docutils" },
@@ -1301,9 +1301,9 @@ dependencies = [
     { name = "sphinx" },
     { name = "traitlets" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/62/38/6f6a0f9115b493af9d69b68335945827dd46e09de8ef525d1f58cd0870dc/nbsphinx-0.9.6.tar.gz", hash = "sha256:c2b28a2d702f1159a95b843831798e86e60a17fc647b9bff9ba1585355de54e3", size = 180213 }
+sdist = { url = "https://files.pythonhosted.org/packages/1e/84/b1856b7651ac34e965aa567a158714c7f3bd42a1b1ce76bf423ffb99872c/nbsphinx-0.9.7.tar.gz", hash = "sha256:abd298a686d55fa894ef697c51d44f24e53aa312dadae38e82920f250a5456fe", size = 180479 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/6a/8a/5dc4c8794053572a89f5c44437ef4e870f88903a6b6734500af1286f9018/nbsphinx-0.9.6-py3-none-any.whl", hash = "sha256:336b0b557945a7678ec7449b16449f854bc852a435bb53b8a72e6b5dc740d992", size = 31582 },
+    { url = "https://files.pythonhosted.org/packages/49/2d/8c8e635bcc6757573d311bb3c5445426382f280da32b8cd6d82d501ef4a4/nbsphinx-0.9.7-py3-none-any.whl", hash = "sha256:7292c3767fea29e405c60743eee5393682a83982ab202ff98f5eb2db02629da8", size = 31660 },
 ]
 
 [[package]]
