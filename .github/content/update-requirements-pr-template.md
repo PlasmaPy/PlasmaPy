@@ -15,3 +15,5 @@ This pull request (PR) regenerates the requirements files in [`uv.lock`] that ar
 
 > [!IMPORTANT]
 > When it is necessary to pin or put an upper limit on a requirement in [`pyproject.toml`], please [create an issue] to remove this upper limit before the next release.
+
+## Updated dependencies

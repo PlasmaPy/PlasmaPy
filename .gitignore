@@ -159,3 +159,7 @@ node_modules
 package-lock.json
 Untitled*
 untitled*
+
+# The following file is created when running `nox -s requirements` in CI
+
+.github/content/update-requirements-pr-body.md

@@ -20,17 +20,14 @@ Doctests are run only for the most recent versions of Python and
 PlasmaPy dependencies, and not when code coverage checks are performed.
 Some of the checks require the most recent supported version of Python
 to be installed.
+
+Nox documentation: https://nox.thea.codes
 """
-
-# Documentation: https://nox.thea.codes
-
-# /// script
-# dependencies = ["nox"]
-# ///
 
 import os
 import pathlib
 import re
+import shutil
 import sys
 
 import nox
@@ -55,7 +52,7 @@ minpython = min(supported_python_versions)
 docpython = "3.12"
 
 current_python = f"{sys.version_info.major}.{sys.version_info.minor}"
-nox.options.sessions: list[str] = [f"tests-{current_python}(skipslow)"]
+nox.options.sessions = [f"tests-{current_python}(skipslow)"]
 
 nox.options.default_venv_backend = "uv|virtualenv"
 
@@ -64,23 +61,80 @@ uv_sync = ("uv", "sync", "--no-progress", "--frozen")
 running_on_ci = os.getenv("CI")
 running_on_rtd = os.environ.get("READTHEDOCS") == "True"
 
-uv_requirement = "uv >= 0.6.1"
+uv_requirement = "uv >= 0.6.5"
+
+
+def _create_requirements_pr_message(uv_output: str) -> None:
+    """
+    Create the pull request message during requirements updates.
+
+    This function copies a GitHub flavored Markdown template to a new
+    file and appends a table containing the updated requirements, with
+    links to the corresponding PyPI pages. This file is then used as the
+    body of the pull request message used in the workflow for updating
+    requirements.
+
+    Parameters
+    ----------
+    uv_output : str
+        The multi-line output of ``session.run(..., silent=True)``.
+    """
+
+    pr_template = pathlib.Path("./.github/content/update-requirements-pr-template.md")
+    pr_message = pathlib.Path("./.github/content/update-requirements-pr-body.md")
+
+    shutil.copy(pr_template, pr_message)
+
+    lines = [
+        "",
+        "| package | old version | new version |",
+        "| :-----: | :---------: | :---------: |",
+    ]
+
+    for package_update in uv_output.splitlines():
+        if package_update.startswith("Resolved"):
+            continue
+
+        # The formats are like "Updated nbsphinx v0.9.6 -> v0.9.7"
+
+        _, package, old_version_, _, new_version_ = package_update.split()
+        old_version = f"{old_version_.removeprefix('v')}"
+        new_version = f"{new_version_.removeprefix('v')}"
+        pypi_link = f"https://pypi.org/project/{package}/{new_version}"
+        package_link = f"[`{package}`]({pypi_link})"
+
+        lines.append(f"| {package_link} | `{old_version}` | `{new_version}` |")
+
+    with pr_message.open(mode="a") as file:
+        file.write("\n".join(lines))
 
 
 @nox.session
-def requirements(session) -> None:
+def requirements(session: nox.Session) -> None:
     """
-    Regenerate the uv.lock file for running tests and building the
+    Regenerate the pinned requirements for running tests and building
     documentation.
+
+    This workflow updates :file:`uv.lock` to contain pinned requirements
+    for different versions of Python, different operating systems, and
+    different dependency sets (i.e., `docs` or `tests`).
+
+    When run in CI, this session will create a file that contains the
+    pull request message for the GitHub workflow that updates the pinned
+    requirements (:file:`.github/workflows/update-pinned-reqs.yml`).
     """
     session.install(uv_requirement)
 
-    # If we start using a different file to pin dependencies besides
-    # uv.lock, we will need to update the GitHub workflows so that the
-    # cache gets invalidated when the different file changes instead of
-    # uv.lock.
+    uv_lock_upgrade = ["uv", "lock", "--upgrade", "--no-progress"]
 
-    session.run("uv", "lock", "--upgrade", "--no-progress")
+    # When silent is `True`, `session.run()` returns a multi-line string
+    # with the standard output and standard error.
+
+    uv_output: str | bool = session.run(*uv_lock_upgrade, silent=running_on_ci)
+
+    if running_on_ci:
+        session.log(uv_output)
+        _create_requirements_pr_message(uv_output)
 
 
 @nox.session
@@ -573,6 +627,10 @@ def lint(session: nox.Session) -> None:
         *session.posargs,
     )
 
+
+# /// script
+# dependencies = ["nox"]
+# ///
 
 if __name__ == "__main__":
     nox.main()
