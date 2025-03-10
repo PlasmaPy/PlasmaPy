@@ -103,13 +103,13 @@ def _create_requirements_pr_message(uv_output: str, session: nox.Session) -> Non
             session.debug(f"Line not added to table: {package_update}:")
             continue
 
-        _, package, old_version_, _, new_version_ = package_update.split()
         old_version = f"{old_version_.removeprefix('v')}"
         new_version = f"{new_version_.removeprefix('v')}"
-        pypi_link = f"https://pypi.org/project/{package}/{new_version}"
-        package_link = f"[`{package}`]({pypi_link})"
 
-        lines.append(f"| {package_link} | `{old_version}` | `{new_version}` |")
+        pypi_link = f"https://pypi.org/project/{package_}/{new_version}"
+        package = f"[`{package_}`]({pypi_link})"
+
+        lines.append(f"| {package} | `{old_version}` | `{new_version}` |")
 
     with pr_message.open(mode="a") as file:
         file.write("\n".join(lines))
