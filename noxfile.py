@@ -28,7 +28,6 @@ import os
 import pathlib
 import re
 import sys
-import textwrap
 
 import nox
 
@@ -64,39 +63,39 @@ running_on_rtd = os.environ.get("READTHEDOCS") == "True"
 uv_requirement = "uv >= 0.6.5"
 
 
-def _include_updates_in_pr_body(uv_output: str) -> None:
+def _append_table_of_updated_dependencies(uv_output: str) -> None:
     """
     Append requirements updates to pull request message.
 
     Parameters
     ----------
     uv_output : str
-        The output of ``session.run(..., silent=True)``.
+        The multi-line output of ``session.run(..., silent=True)``.
     """
 
     pr_message = pathlib.Path("./.github/content/update-requirements-pr-body.md")
 
-    appendix = textwrap.dedent(
-        """
-        > [!NOTE]
-        > The following dependencies have been updated:
-        >
-        > | package | old version | new version |
-        > | :---: | :---: | :---: |
-        """
-    )
+    lines = [
+        "| package | old version | new version |",
+        "| :-----: | :---------: | :---------: |",
+    ]
 
-    for line in uv_output.splitlines()[1:]:
-        _, package, old, _, new = line.split()
-        old_version = f"{old.removeprefix('v')}"
-        new_version = f"{new.removeprefix('v')}"
+    for package_update in uv_output.splitlines():
+        if package_update.startswith("Resolved"):
+            continue
+
+        # The formats are like "Updated nbsphinx v0.9.6 -> v0.9.7"
+
+        _, package, old_version_, _, new_version_ = package_update.split()
+        old_version = f"{old_version_.removeprefix('v')}"
+        new_version = f"{new_version_.removeprefix('v')}"
         pypi_link = f"https://pypi.org/project/{package}/{new_version}"
         package_link = f"[`{package}`]({pypi_link})"
 
-        appendix += f"> | {package_link} | `{old_version}` | `{new_version}` |\n"
+        lines.append(f"| {package_link} | `{old_version}` | `{new_version}` |")
 
     with pr_message.open(mode="a") as file:
-        file.write(appendix)
+        file.write("\n".join(lines))
 
 
 @nox.session
@@ -109,14 +108,14 @@ def requirements(session: nox.Session) -> None:
 
     uv_lock_upgrade = ["uv", "lock", "--upgrade", "--no-progress"]
 
-    # When silent is True, session.run() returns a string with stdout
-    # and stderr. When silent is False, it returns a bool.
+    # When silent is `True`, `session.run()` returns a multi-line string
+    # with the standard output and standard error.
 
     uv_output: str | bool = session.run(*uv_lock_upgrade, silent=running_on_ci)
 
-    if running_on_ci and uv_output:
+    if running_on_ci:
         session.log(uv_output)
-        _include_updates_in_pr_body(uv_output)
+        _append_table_of_updated_dependencies(uv_output)
 
 
 @nox.session
