@@ -67,14 +67,26 @@ uv_requirement = "uv >= 0.6.5"
 
 
 def _include_updates_in_pr_body(uv_output: str) -> None:
-    """Append the updated requirements to the"""
+    """
+    Append requirements updates to pull request message.
+
+    Parameters
+    ----------
+    uv_output : str
+        The output of ``session.run(..., silent=True)``.
+    """
 
     pr_message = pathlib.Path("./.github/content/update-requirements-pr-body.md")
 
     lines = uv_output.splitlines()
 
     with pr_message.open(mode="a") as file:
-        pr_message.write_text(lines[0])
+        pr_message.write_text("")
+        pr_message.write_text("> [!NOTE]")
+        pr_message.write_text("> The following dependencies have been updated:")
+
+        for line in uv_output.splitlines()[1:]:
+            pr_message.write_text("> " + line.replace("->", "→"))
 
 
 @nox.session
