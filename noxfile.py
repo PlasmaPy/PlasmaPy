@@ -21,7 +21,6 @@ PlasmaPy dependencies, and not when code coverage checks are performed.
 Some of the checks require the most recent supported version of Python
 to be installed.
 """
-
 # Documentation: https://nox.thea.codes
 
 # /// script
@@ -74,19 +73,24 @@ def requirements(session) -> None:
     documentation.
     """
     session.install(uv_requirement)
+    uv_lock_upgrade = ["uv", "lock", "--upgrade", "--no-progress"]
 
-    if running_on_ci:
-        ...
+    result = session.run(*uv_lock_upgrade, silent=running_on_ci, external=running_on_ci)
 
-    # If we start using a different file to pin dependencies besides
-    # uv.lock, we will need to update the GitHub workflows so that the
-    # cache gets invalidated when the different file changes instead of
-    # uv.lock.
 
-    session.run("uv", "lock", "--upgrade", "--no-progress")
+#    captured_output = result.splitlines()
+#    print(f"{captured_output = }")
 
-    if running_on_ci:
-        ...
+
+#    buffer = tempfile.TemporaryFile(mode="w+") if running_on_ci else None
+#    session.run(*uv_lock_upgrade, stdout=buffer)
+
+#    if running_on_ci:
+#        buffer.seek(0)
+#        capture_output = buffer.read().splitlines()
+#        print(f"{captured_output = }"
+
+#    buffer.close()
 
 
 @nox.session
