@@ -75,21 +75,21 @@ def requirements(session) -> None:
     session.install(uv_requirement)
     uv_lock_upgrade = ["uv", "lock", "--upgrade", "--no-progress"]
 
-    result = session.run(*uv_lock_upgrade, silent=running_on_ci, external=running_on_ci)
+    if not running_on_ci:
+        session.run(*uv_lock_upgrade)
+        return
 
-#    captured_output = result.splitlines()
-#    print(f"{captured_output = }")
+    result: str = session.run(
+        *uv_lock_upgrade,
+        silent=running_on_ci,
+        external=running_on_ci,
+    )
 
+    captured_output = [
+        line for line in result.splitlines() if not line.startswith("Resolve")
+    ]
 
-#    buffer = tempfile.TemporaryFile(mode="w+") if running_on_ci else None
-#    session.run(*uv_lock_upgrade, stdout=buffer)
-
-#    if running_on_ci:
-#        buffer.seek(0)
-#        capture_output = buffer.read().splitlines()
-#        print(f"{captured_output = }"
-
-#    buffer.close()
+    print(captured_output)
 
 
 @nox.session
