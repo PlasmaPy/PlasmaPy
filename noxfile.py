@@ -20,17 +20,15 @@ Doctests are run only for the most recent versions of Python and
 PlasmaPy dependencies, and not when code coverage checks are performed.
 Some of the checks require the most recent supported version of Python
 to be installed.
-"""
-# Documentation: https://nox.thea.codes
 
-# /// script
-# dependencies = ["nox"]
-# ///
+Nox documentation: https://nox.thea.codes
+"""
 
 import os
 import pathlib
 import re
 import sys
+import textwrap
 
 import nox
 
@@ -78,16 +76,27 @@ def _include_updates_in_pr_body(uv_output: str) -> None:
 
     pr_message = pathlib.Path("./.github/content/update-requirements-pr-body.md")
 
-    lines = uv_output.splitlines()
+    appendix = textwrap.dedent(
+        """
+        > [!NOTE]
+        > The following dependencies have been updated:
+        >
+        > | package | old version | new version |
+        > | :---: | :---: | :---: |
+        """
+    )
+
+    for line in uv_output.splitlines()[1:]:
+        _, package, old, _, new = line.split()
+        old_version = f"{old.removeprefix('v')}"
+        new_version = f"{new.removeprefix('v')}"
+        pypi_link = f"https://pypi.org/project/{package}/{new_version}"
+        package_link = f"[`{package}`]({pypi_link})"
+
+        appendix += f"> | {package_link} | `{old_version}` | `{new_version}` |\n"
 
     with pr_message.open(mode="a") as file:
-        pr_message.write_text("")
-        pr_message.write_text("> [!NOTE]")
-        pr_message.write_text("> The following dependencies have been updated:")
-
-        for line in uv_output.splitlines():
-            if not line.startswith("Resolved"):
-                pr_message.write_text("> " + line.replace("->", "→"))
+        file.write(appendix)
 
 
 @nox.session
@@ -106,6 +115,7 @@ def requirements(session: nox.Session) -> None:
     uv_output: str | bool = session.run(*uv_lock_upgrade, silent=running_on_ci)
 
     if running_on_ci and uv_output:
+        session.log(uv_output)
         _include_updates_in_pr_body(uv_output)
 
 
@@ -599,6 +609,10 @@ def lint(session: nox.Session) -> None:
         *session.posargs,
     )
 
+
+# /// script
+# dependencies = ["nox"]
+# ///
 
 if __name__ == "__main__":
     nox.main()
