@@ -70,7 +70,9 @@ def _create_requirements_pr_message(uv_output: str) -> None:
 
     This function copies a GitHub flavored Markdown template to a new
     file and appends a table containing the updated requirements, with
-    links to the corresponding PyPI pages.
+    links to the corresponding PyPI pages. This file is then used as the
+    body of the pull request message used in the workflow for updating
+    requirements.
 
     Parameters
     ----------
@@ -110,10 +112,16 @@ def _create_requirements_pr_message(uv_output: str) -> None:
 @nox.session
 def requirements(session: nox.Session) -> None:
     """
-    Regenerate the uv.lock file for running tests and building the
+    Regenerate the pinned requirements for running tests and building
     documentation.
 
-    When running on CI, this session will
+    This workflow updates :file:`uv.lock` to contain pinned requirements
+    for different versions of Python, different operating systems, and
+    different dependency sets (i.e., `docs` or `tests`).
+
+    When run in CI, this session will create a file that contains the
+    pull request message for the GitHub workflow that updates the pinned
+    requirements (:file:`.github/workflows/update-pinned-reqs.yml`).
     """
     session.install(uv_requirement)
 
