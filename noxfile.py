@@ -64,7 +64,7 @@ uv_sync = ("uv", "sync", "--no-progress", "--frozen")
 running_on_ci = os.getenv("CI")
 running_on_rtd = os.environ.get("READTHEDOCS") == "True"
 
-uv_requirement = "uv >= 0.6.1"
+uv_requirement = "uv >= 0.6.5"
 
 
 @nox.session
@@ -75,12 +75,18 @@ def requirements(session) -> None:
     """
     session.install(uv_requirement)
 
+    if running_on_ci:
+        ...
+
     # If we start using a different file to pin dependencies besides
     # uv.lock, we will need to update the GitHub workflows so that the
     # cache gets invalidated when the different file changes instead of
     # uv.lock.
 
     session.run("uv", "lock", "--upgrade", "--no-progress")
+
+    if running_on_ci:
+        ...
 
 
 @nox.session
