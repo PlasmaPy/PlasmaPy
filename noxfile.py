@@ -77,8 +77,6 @@ def requirements(session) -> None:
 
     result = session.run(*uv_lock_upgrade, silent=running_on_ci, external=running_on_ci)
 
-    if False
-
 #    captured_output = result.splitlines()
 #    print(f"{captured_output = }")
 
