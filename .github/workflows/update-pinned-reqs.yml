@@ -46,12 +46,12 @@ jobs:
     - name: Create pull request
       uses: peter-evans/create-pull-request@v7
       with:
-        token: ${{ steps.generate_token.outputs.token }}
-        commit-message: Update requirements with 'nox -s requirements'
         title: Update pinned requirements 📍
-        body-path: .github/content/update-requirements-pr-body.md
         add-paths: uv.lock
+        commit-message: Update requirements with 'nox -s requirements'
+        # The PR body message is generated dynamically via `nox -s requirements` in CI
+        body-path: .github/content/update-requirements-pr-body.md
         labels: no changelog entry needed, requirements
-        delete-branch: true
         base: main
-        assignees: namurphy
+        delete-branch: true
+        token: ${{ steps.generate_token.outputs.token }}
