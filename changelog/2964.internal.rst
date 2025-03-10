@@ -1,0 +1,2 @@
+Updated the ``requirements`` session in :file:`noxfile.py` to print
+out the differences between the new and old environments.
