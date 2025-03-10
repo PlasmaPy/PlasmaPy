@@ -85,8 +85,9 @@ def _include_updates_in_pr_body(uv_output: str) -> None:
         pr_message.write_text("> [!NOTE]")
         pr_message.write_text("> The following dependencies have been updated:")
 
-        for line in uv_output.splitlines()[1:]:
-            pr_message.write_text("> " + line.replace("->", "→"))
+        for line in uv_output.splitlines():
+            if not line.startswith("Resolved"):
+                pr_message.write_text("> " + line.replace("->", "→"))
 
 
 @nox.session
