@@ -66,30 +66,35 @@ running_on_rtd = os.environ.get("READTHEDOCS") == "True"
 uv_requirement = "uv >= 0.6.5"
 
 
+def _include_updates_in_pr_body(uv_output: str) -> None:
+    """Append the updated requirements to the """
+
+    pr_message = pathlib.Path("./.github/content/update-requirements-pr-body.md")
+
+    lines = uv_output.splitlines()
+
+    with pr_message.open(mode="a") as file:
+        pr_message.write_text(lines[0])
+
+
+
 @nox.session
-def requirements(session) -> None:
+def requirements(session: nox.Session) -> None:
     """
     Regenerate the uv.lock file for running tests and building the
     documentation.
     """
     session.install(uv_requirement)
+
     uv_lock_upgrade = ["uv", "lock", "--upgrade", "--no-progress"]
 
-    if not running_on_ci:
-        session.run(*uv_lock_upgrade)
-        return
+    # When silent is True, session.run() returns a string with stdout
+    # and stderr. When silent is False, it returns a bool.
 
-    result: str = session.run(
-        *uv_lock_upgrade,
-        silent=running_on_ci,
-        external=running_on_ci,
-    )
+    uv_output: str | bool = session.run(*uv_lock_upgrade, silent=running_on_ci)
 
-    captured_output = [
-        line for line in result.splitlines() if not line.startswith("Resolve")
-    ]
-
-    print(captured_output)
+    if running_on_ci and uv_output:
+        _include_updates_in_pr_body(uv_output)
 
 
 @nox.session
