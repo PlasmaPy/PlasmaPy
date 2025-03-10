@@ -50,6 +50,7 @@ jobs:
         commit-message: Update requirements with 'nox -s requirements'
         title: Update pinned requirements 📍
         body-path: .github/content/update-requirements-pr-body.md
+        add-paths: uv.lock
         labels: no changelog entry needed, requirements
         delete-branch: true
         base: main
