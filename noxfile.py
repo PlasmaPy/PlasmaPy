@@ -67,7 +67,7 @@ uv_requirement = "uv >= 0.6.5"
 
 
 def _include_updates_in_pr_body(uv_output: str) -> None:
-    """Append the updated requirements to the """
+    """Append the updated requirements to the"""
 
     pr_message = pathlib.Path("./.github/content/update-requirements-pr-body.md")
 
@@ -75,7 +75,6 @@ def _include_updates_in_pr_body(uv_output: str) -> None:
 
     with pr_message.open(mode="a") as file:
         pr_message.write_text(lines[0])
-
 
 
 @nox.session
