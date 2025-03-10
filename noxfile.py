@@ -27,6 +27,7 @@ Nox documentation: https://nox.thea.codes
 import os
 import pathlib
 import re
+import shutil
 import sys
 
 import nox
@@ -51,7 +52,7 @@ minpython = min(supported_python_versions)
 docpython = "3.12"
 
 current_python = f"{sys.version_info.major}.{sys.version_info.minor}"
-nox.options.sessions: list[str] = [f"tests-{current_python}(skipslow)"]
+nox.options.sessions = [f"tests-{current_python}(skipslow)"]
 
 nox.options.default_venv_backend = "uv|virtualenv"
 
@@ -63,9 +64,12 @@ running_on_rtd = os.environ.get("READTHEDOCS") == "True"
 uv_requirement = "uv >= 0.6.5"
 
 
-def _create_pr_message_file(uv_output: str) -> None:
+def _create_requirements_pr_message(uv_output: str) -> None:
     """
-    Append requirements updates to pull request message.
+    Create the pull request message during requirements updates.
+
+    This function copies a GitHub flavored Markdown template to a new
+    file and appends a table
 
     Parameters
     ----------
@@ -73,9 +77,13 @@ def _create_pr_message_file(uv_output: str) -> None:
         The multi-line output of ``session.run(..., silent=True)``.
     """
 
+    pr_template = pathlib.Path("./.github/content/update-requirements-pr-template.md")
     pr_message = pathlib.Path("./.github/content/update-requirements-pr-body.md")
 
+    shutil.copy(pr_template, pr_message)
+
     lines = [
+        "",
         "| package | old version | new version |",
         "| :-----: | :---------: | :---------: |",
     ]
@@ -117,7 +125,7 @@ def requirements(session: nox.Session) -> None:
 
     if running_on_ci:
         session.log(uv_output)
-        _create_pr_message_file(uv_output)
+        _create_requirements_pr_message(uv_output)
 
 
 @nox.session
