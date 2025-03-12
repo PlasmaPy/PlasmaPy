@@ -127,19 +127,16 @@ in our GitHub repository. New contributors are very welcome!
 ## Events
 
 PlasmaPy has several [meetings] that are on our [calendar]. Events are
-usually held on PlasmaPy's [Zoom] room.
-
-Last-minute changes are usually announced on the [Matrix]/[Gitter]
-chat room. The most up-to-date information about these meetings is on
-the [meetings] page of PlasmaPy's website.
+usually held on PlasmaPy's [Zoom] room. The most up-to-date information
+about these meetings is on the [meetings] page of PlasmaPy's website.
 
 ### Community meetings
 
 PlasmaPy's weekly [community meetings] are a place to talk about code
-development. If you have an idea for a new feature or would like to
-make a code contribution, community meetings are a good place to go
-to. As of March 2025, our community meetings are on most Thursdays at
-2 pm ET.
+development, event planning, and other community happenings. If you have
+an idea for a new feature or would like to become involved in the
+PlasmaPy project, community meetings are a great place to start. As of
+March 2025, our community meetings are on most Thursdays at 2 pm ET.
 
 ### Office hours
 
@@ -151,6 +148,15 @@ our office hours are one of the best places to start. As of March
 feel free to come by!
 
 ## Community
+
+## Contact information
+
+Please feel free to reach out to us at [team@plasmapy.org] or stop by
+our [office hours] with any ideas, questions, and/or puns about
+computational magnetohydrodynamics.
+
+Please use these links to [submit a feature request] and to [submit a
+bug report] on PlasmaPy's GitHub repository.
 
 ### GitHub discussions
 
@@ -167,15 +173,6 @@ channel; Gitter uses a bridge to link the two.
 
 You can subscribe to PlasmaPy's low-volume [mailing list] to receive
 PlasmaPy newsletters and other announcements.
-
-## Contact information
-
-Please feel free to reach out to us at [team@plasmapy.org] or stop by
-our [office hours] with any ideas, questions, and/or puns about
-computational magnetohydrodynamics.
-
-Please use these links to [submit a feature request] and to [submit a
-bug report] on PlasmaPy's GitHub repository.
 
 ## License
 
