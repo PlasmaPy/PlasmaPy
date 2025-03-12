@@ -133,54 +133,35 @@ Last-minute changes are usually announced on the [Matrix]/[Gitter]
 chat room. The most up-to-date information about these meetings is on
 the [meetings] page of PlasmaPy's website.
 
-### Office hours
-
-Our weekly informal [office hours] are an opportunity to chat with
-active members of the PlasmaPy community about topics related to
-Python and plasma physics. If you'd like to learn more about PlasmaPy,
-our office hours are one of the best places to start. As of July 2024,
-our office hours are on most Thursdays at 3 pm Eastern. Please feel
-free to come by!
-
 ### Community meetings
 
 PlasmaPy's weekly [community meetings] are a place to talk about code
 development. If you have an idea for a new feature or would like to
 make a code contribution, community meetings are a good place to go
-to. As of July 2024, our community meetings are on most Tuesdays at 2 pm
-Eastern.
+to. As of March 2025, our community meetings are on most Thursdays at
+2 pm ET.
 
-<!--
-### Project meetings
+### Office hours
 
-PlasmaPy's weekly project meetings are a place to discuss education,
-outreach, and project coordination. Topics might range from creating
-educational notebooks to organizing community events. As of July
-2024, project meetings are held on most Wednesdays at 3 pm Eastern.
--->
-
-<!--
-### Working group meetings
-
-PlasmaPy has started several working groups, including on diagnostics,
-dispersion relations, and simulation. These working groups usually
-meet fortnightly, and their meeting times can be found in PlasmaPy's
-event [calendar]. If you would like to join a PlasmaPy working group
-or even start a new one, please email us at [team@plasmapy.org]!
--->
+Our weekly informal [office hours] are an opportunity to chat with
+active members of the PlasmaPy community about topics related to
+Python and plasma physics. If you'd like to learn more about PlasmaPy,
+our office hours are one of the best places to start. As of March
+2025, our office hours are on most Thursdays at 3 pm Eastern. Please
+feel free to come by!
 
 ## Community
+
+### GitHub discussions
+
+We're trying out [GitHub discussions] as a place to suggest ideas,
+bring up discussion topics, and ask questions.
 
 ### Matrix chat
 
 If you have any questions, the quickest way to get a response is to
 ask on our [Matrix]/[Gitter] channel. Both of these are the same chat
 channel; Gitter uses a bridge to link the two.
-
-### GitHub discussions
-
-We're trying out [GitHub discussions] as a place to suggest ideas,
-bring up discussion topics, and ask questions.
 
 ### Mailing list
 
