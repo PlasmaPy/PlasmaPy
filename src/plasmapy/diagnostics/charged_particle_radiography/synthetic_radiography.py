@@ -670,7 +670,7 @@ class Tracker(ParticleTracker):
             on the image, but will well-sample the field grid with a
             smaller number of particles. The default is ``'monte-carlo'``.
 
-        source_vdir : `numpy.ndarray`, shape (3), optional
+        source_vdir : (3,) |array_like|, default: None
             A unit vector (in Cartesian coordinates) defining the orientation
             of the mean of the particle velocities.  By default, the particle
             velocities will be distributed around the source-detector axis.
