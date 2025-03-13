@@ -152,10 +152,16 @@ jobs:
         python-version: ${{ matrix.python }}
         cache: pip
 
-    - name: Install graphviz and pandoc for documentation builds
+    - name: Install Graphviz for documentation builds
       if: startsWith(matrix.name, 'Documentation')
-      # This step only works with Ubuntu
-      run: sudo apt-get install graphviz pandoc
+      uses: ts-graphviz/setup-graphviz@v2
+
+    - name: Install pandoc for documentation builds
+      # This step only works on Ubuntu
+      if: startsWith(matrix.name, 'Documentation')
+      run: |
+        sudo apt update
+        sudo apt-get install -y pandoc
 
     - name: Install Nox and uv
       run: python -m pip install --progress-bar off --upgrade nox uv
@@ -165,15 +171,18 @@ jobs:
       with:
         path: |
           .nox
+          .venv
+          .cache/uv
+          cache/uv
         # Changing pyproject.toml or requirements invalidates the cache
-        key: ${{ matrix.nox_session }}-${{ matrix.python }}-${{ runner.os }}-${{ hashFiles('pyproject.toml', 'ci_requirements/all-3.12-linux.txt') }}
+        key: ${{ matrix.nox_session }}-${{ matrix.python }}-${{ runner.os }}-${{ hashFiles('pyproject.toml', 'uv.lock') }}
 
     - name: Run Nox session
       run: nox -s '${{ matrix.nox_session }}'
 
     - name: Upload coverage reports to Codecov
       if: ${{ contains(matrix.nox_session, 'cov') }}
-      uses: codecov/codecov-action@v4
+      uses: codecov/codecov-action@v5
       with:
         file: ./coverage.xml
         fail_ci_if_error: false

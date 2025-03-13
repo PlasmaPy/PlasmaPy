@@ -19,7 +19,7 @@
 [![Read the Docs Status](https://readthedocs.org/projects/plasmapy/badge/?version=latest)](http://plasmapy.readthedocs.io/en/latest/?badge=latest)
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1436011.svg)](https://doi.org/10.5281/zenodo.1436011)
-[![astropy](http://img.shields.io/badge/powered%20by-AstroPy-orange.svg?style=flat&logo=astropy)](http://www.astropy.org/)
+[![astropy](http://img.shields.io/badge/powered%20by-Astropy-orange.svg?style=flat&logo=astropy)](http://www.astropy.org/)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
 
 [Astropy]: https://www.astropy.org
@@ -84,10 +84,9 @@ To install PlasmaPy on macOS or Linux, open a terminal and run:
 python -m pip install plasmapy
 ```
 
-> [!NOTE]
-> On some systems, it might be necessary to specify the Python version
-> number, for example by using `python3` or `python3.13` instead of
-> `python`.
+On some systems, it might be necessary to specify the Python version
+number, for example by using `python3` or `python3.13` instead of
+`python`.
 
 To install PlasmaPy on Windows, open a terminal and run
 ```Shell
@@ -138,10 +137,10 @@ the [meetings] page of PlasmaPy's website.
 
 Our weekly informal [office hours] are an opportunity to chat with
 active members of the PlasmaPy community about topics related to
-Python and plasma science. If you'd like to learn more about PlasmaPy,
-our office hours are one of the best places to start. As of July
-2024, our office hours are on most Thursdays at 3 pm Eastern. Please
-feel free to come by!
+Python and plasma physics. If you'd like to learn more about PlasmaPy,
+our office hours are one of the best places to start. As of July 2024,
+our office hours are on most Thursdays at 3 pm Eastern. Please feel
+free to come by!
 
 ### Community meetings
 

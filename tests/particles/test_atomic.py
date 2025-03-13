@@ -269,16 +269,16 @@ class TestInvalidPeriodicElement:
 def test_standard_atomic_weight_value_between() -> None:
     """Test that `standard_atomic_weight` returns approximately the
     correct value for phosphorus."""
-    assert (
-        30.973 < standard_atomic_weight("P").to(u.u).value < 30.974
-    ), "Incorrect standard atomic weight for phosphorus."
+    assert 30.973 < standard_atomic_weight("P").to(u.u).value < 30.974, (
+        "Incorrect standard atomic weight for phosphorus."
+    )
 
 
 def test_particle_mass_berkelium_249() -> None:
     """Test that `particle_mass` returns the correct value for Bk-249."""
-    assert np.isclose(
-        particle_mass("berkelium-249").to(u.u).value, 249.0749877
-    ), "Incorrect isotope mass for berkelium."
+    assert np.isclose(particle_mass("berkelium-249").to(u.u).value, 249.0749877), (
+        "Incorrect isotope mass for berkelium."
+    )
 
 
 def test_particle_mass_for_hydrogen_with_no_mass_number() -> None:
@@ -502,9 +502,9 @@ def test_isotopic_abundances_sum(element, isotopes) -> None:
     """Test that the sum of isotopic abundances for each element with
     isotopic abundances is one."""
     sum_of_iso_abund = sum(isotopic_abundance(isotope) for isotope in isotopes)
-    assert np.isclose(
-        sum_of_iso_abund, 1, atol=1e-6
-    ), f"The sum of the isotopic abundances for {element} does not equal 1."
+    assert np.isclose(sum_of_iso_abund, 1, atol=1e-6), (
+        f"The sum of the isotopic abundances for {element} does not equal 1."
+    )
 
 
 class TestReducedMassInput:

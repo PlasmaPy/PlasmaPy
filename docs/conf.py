@@ -25,7 +25,7 @@ Sphinx extensions (built-in):
 import logging
 import os
 import sys
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 
 from sphinx.application import Sphinx
 
@@ -40,7 +40,7 @@ import _author_list_from_cff
 import _changelog_index
 import _global_substitutions
 
-now = datetime.now(timezone.utc)
+now = datetime.now(UTC)
 
 # Project metadata
 
@@ -244,6 +244,8 @@ bibtex_cite_id = "{key}"
 # sphinx-codeautolink
 
 codeautolink_concat_default = True
+codeautolink_warn_on_failed_resolve = False  # turn on for debugging
+codeautolink_warn_on_missing_inventory = False  # turn on for debugging
 
 # intersphinx
 

@@ -59,8 +59,7 @@ class AbstractMHDWave(ABC):
 
         if not isinstance(gamma, Real):
             raise TypeError(
-                f"Expected int or float for argument 'gamma', but got "
-                f"{type(gamma)}."
+                f"Expected int or float for argument 'gamma', but got {type(gamma)}."
             )
 
         if density.unit.physical_type == u.physical.mass_density:
