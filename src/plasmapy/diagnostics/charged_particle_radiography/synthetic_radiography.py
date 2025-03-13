@@ -175,10 +175,10 @@ class Tracker(ParticleTracker):
         A unit vector (in Cartesian coordinates) defining the horizontal
         direction on the detector plane. By default, the horizontal axis in the
         detector plane is defined to be perpendicular to both the
-        origin-to-detector vector  (such that the detector is 'looking at' the origin) 
-        and the z-axis (unless the origin-to-detector axis is parallel to the z axis, 
+        origin-to-detector vector  (such that the detector is 'looking at' the origin)
+        and the z-axis (unless the origin-to-detector axis is parallel to the z axis,
         in which case the horizontal axis is the x-axis).
-        
+
     detector_vdir : `numpy.ndarray`, shape (3), optional
         A unit vector (in Cartesian coordinates) defining the vertical
         direction on the detector plane. By default, the vertical axis in the
@@ -669,11 +669,11 @@ class Tracker(ParticleTracker):
             Simulations run in the ``'uniform'`` mode will imprint a grid pattern
             on the image, but will well-sample the field grid with a
             smaller number of particles. The default is ``'monte-carlo'``.
-            
+
         source_vdir : `numpy.ndarray`, shape (3), optional
-            A unit vector (in Cartesian coordinates) defining the direction
-            of the particle velocities. By default, the particle velocities
-            will be distributed around the source-detector axis.
+            A unit vector (in Cartesian coordinates) defining the orientation
+            of the mean of the particle velocities.  By default, the particle
+            velocities will be distributed around the source-detector axis.
 
         random_seed : int, optional
             A random seed to be used when generating random particle
@@ -683,7 +683,7 @@ class Tracker(ParticleTracker):
 
         # Raise an error if the run method has already been called.
         self._enforce_order()
-        
+
         if source_vdir is None:
             source_vdir = self.src_det / np.linalg.norm(self.src_det)
 

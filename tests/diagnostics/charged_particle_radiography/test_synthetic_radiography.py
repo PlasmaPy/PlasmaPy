@@ -393,8 +393,10 @@ def test_init() -> None:
 
     # Test manually setting hdir and vdir
     hdir = np.array([1, 0, 0])
-    vdir = np.array([0,0,1])
-    sim = cpr.Tracker(grid, source, detector, verbose=False, detector_hdir=hdir, detector_vdir=vdir)
+    vdir = np.array([0, 0, 1])
+    sim = cpr.Tracker(
+        grid, source, detector, verbose=False, detector_hdir=hdir, detector_vdir=vdir
+    )
 
     # Test special case hdir == [0,0,1]
     source = (0 * u.mm, 0 * u.mm, -10 * u.mm)
@@ -407,8 +409,6 @@ def test_init() -> None:
     detector = (0 * u.mm, 0 * u.mm, -200 * u.mm)
     sim = cpr.Tracker(grid, source, detector, verbose=False)
     assert all(sim.det_hdir == np.array([1, 0, 0]))
-
-
 
 
 @pytest.mark.slow
@@ -435,15 +435,18 @@ def test_create_particles() -> None:
 
     # Test specifying particle
     sim.create_particles(1e3, 15 * u.MeV, particle="e-", random_seed=42)
-    
+
     # Test specifying direction
-    src_vdir = np.array([.1, 1, 0])
+    src_vdir = np.array([0.1, 1, 0])
     src_vdir /= np.linalg.norm(src_vdir)
-    sim.create_particles(1e3, 15 * u.MeV, particle="p", random_seed=42, source_vdir=src_vdir)
+    sim.create_particles(
+        1e3, 15 * u.MeV, particle="p+", random_seed=42, source_vdir=src_vdir
+    )
     # Assert particle velocities are actually in that direction
     vdir = np.mean(sim.v, axis=0)
     vdir /= np.linalg.norm(vdir)
     assert np.allclose(vdir, src_vdir, atol=0.05)
+
 
 @pytest.mark.slow
 def test_load_particles() -> None:
