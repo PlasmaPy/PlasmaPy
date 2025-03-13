@@ -423,8 +423,7 @@ def test_multiple_species_collective_spectrum(
 
     # Check width
     assert np.isclose(width, 0.1499, 1e-2), (
-        f"Multiple ion species case spectrum width is {width} instead of "
-        "expected 0.17"
+        f"Multiple ion species case spectrum width is {width} instead of expected 0.17"
     )
 
     # Check max value
