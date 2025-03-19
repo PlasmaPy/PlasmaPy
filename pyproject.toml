@@ -348,6 +348,11 @@ extend-select = [
   "RUF032", # decimal-from-float-literal
   "RUF033", # post-init-default
   "RUF034", # useless-if-else
+  "RUF040", # invalid-assert-message-literal-argument
+  "RUF041", # unnecessary-nested-literal
+  "RUF046", # unnecessary-cast-to-int
+  "RUF048", # map-int-version-parsing
+  "RUF051", # if-key-in-dict-del
   "RUF100", # unused-noqa
   "RUF101", # redirected-noqa
   "RUF200", # invalid-pyproject-toml
