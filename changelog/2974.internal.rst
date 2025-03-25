@@ -1,0 +1,1 @@
+Enabled ``pyproject-fmt`` as an autoformatter and ``validate-pyproject`` as a validator for :file:`pyproject.toml`.
