@@ -298,7 +298,8 @@ lint.per-file-ignores."**/*.ipynb" = [ "T201", "T203" ]
 lint.per-file-ignores.".github/scripts/*.py" = [ "D103", "INP001" ]
 lint.per-file-ignores."__init__.py" = [ "D104", "E402", "F401", "F402", "F403" ] # ignore import errors
 lint.per-file-ignores."docs/conf.py" = [ "D100", "D103", "E402", "EXE001", "EXE005", "F401" ]
-# The ruff rule violations in the following notebooks should eventually be fixed
+
+# Most ruff rule violations in the following notebooks should eventually be fixed
 lint.per-file-ignores."docs/notebooks/analysis/fit_functions.ipynb" = [ "NPY002" ]
 lint.per-file-ignores."docs/notebooks/analysis/nullpoint.ipynb" = [ "D103" ]
 lint.per-file-ignores."docs/notebooks/analysis/swept_langmuir/find_floating_potential.ipynb" = [ "FBT003" ]
@@ -321,6 +322,7 @@ lint.per-file-ignores."docs/notebooks/formulary/ExB_drift.ipynb" = [ "B008", "D1
 lint.per-file-ignores."docs/notebooks/langmuir_samples/_generate_noisy.ipynb" = [ "NPY002", "PTH123" ]
 lint.per-file-ignores."docs/notebooks/plasma/grids_cartesian.ipynb" = [ "NPY002", "PLW2901" ]
 lint.per-file-ignores."docs/notebooks/plasma/grids_nonuniform.ipynb" = [ "NPY002" ]
+
 lint.per-file-ignores."setup.py" = [ "D100" ]
 lint.per-file-ignores."src/plasmapy/analysis/fit_functions.py" = [ "D301" ]
 lint.per-file-ignores."src/plasmapy/formulary/braginskii.py" = [ "C901", "RET503", "RET504" ]
