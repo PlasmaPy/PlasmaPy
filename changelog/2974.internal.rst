@@ -1,0 +1,2 @@
+Enabled ``pyproject-fmt`` as an autoformatter for :file:`pyproject.toml`.
+
