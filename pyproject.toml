@@ -242,7 +242,7 @@ lint.extend-select = [
   "SLOT",   # flake8-slots
   "T",      # flake8-print
   "T100",   # debugger
-#  "TCH",    # flake8-type-checking
+  "TC",    # flake8-type-checking
   "TD",     # flake8-todos
   "TID",    # flake8-tidy-imports
   "TRY",    # tryceratops
