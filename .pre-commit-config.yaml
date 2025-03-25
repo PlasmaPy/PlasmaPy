@@ -84,6 +84,11 @@ repos:
   - id: typos
     name: typos (add false positives to _typos.toml)
 
+- repo: https://github.com/woodruffw/zizmor-pre-commit
+  rev: v1.4.1
+  hooks:
+  - id: zizmor
+
 - repo: https://github.com/astral-sh/ruff-pre-commit
   rev: v0.11.0
   hooks:
