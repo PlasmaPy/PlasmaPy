@@ -161,71 +161,71 @@ show-fixes = true
 output-format = "grouped"
 format.line-ending = "lf"
 format.docstring-code-format = true
-#lint.extend-select = [
-#  "A",      # flake8-builtins
-#  "ANN204", # missing-return-type-special-method
-#  "ANN205", # missing-return-type-static-method
-#  "ANN206", # missing-return-type-class-method
-#  "ARG",    # flake8-unused-arguments
-#  "ASYNC",  # flake8-async
-#  "B",      # flake8-bugbear
-#  "BLE",    # flake8-blind-except
-#  "C4",     # flake8-comprehensions
-#  "C90",    # mccabe
-#  "COM818", # trailing-comma-on-bare-tuple
-#  "D",      # pydocstyle
-#  #  "DOC", # pydoclint (enable this rule set when it is no longer in preview)
-#  "DTZ",    # flake8-datetimez
-#  "EM",     # flake8-errmsg
-#  "EXE",    # flake8-executable
-#  "FA102",  # flake8-required-type-annotation
-#  "FBT003", # flake8-boolean-trap
-#  "FIX",    # flake8-fixme
-#  "FLY",    # flynt
-#  "G",      # flake8-logging-format
-#  "I",      # isort
-#  "ICN",    # flake8-import-conventions
-#  "INP",    # flake8-no-pep420
-#  "INT",    # flake8-gettext
-#  "ISC",    # flake8-implicit-str-concat
-#  "N",      # pep8-naming
-#  "NPY",    # numpy-deprecated-type-alias
-#  "PD",     # pandas-vet
-#  "PERF",   # perflint
-#  "PGH",    # pygrep-hooks
-#  "PIE",    # flake8-pie
-#  "PLC",    # pylint convention
-#  "PLE",    # pylint errors
-#  "PLR",    # pylint refactorings
-#  "PLW",    # pylint warnings
-#  "PT",     # flake8-pytest-style
-#  "PTH",    # flake8-use-pathlib
-#  "PYI",    # flake8-pyi
-#  "RET",    # flake8-return
-#  "RSE",    # flake8-raise
-#  "RUF001", # ambiguous-unicode-character-string
-#  "RUF002", # ambiguous-unicode-character-docstring
-#  "RUF003", # ambiguous-unicode-character-comment
-#  "RUF005", # collection-literal-concatenation
-#  "RUF006", # asyncio-dangling-task
-#  "RUF007", # pairwise-over-zipped
-#  "RUF008", # mutable-dataclass-default
-#  "RUF009", # function-call-in-dataclass-default-argument
-#  "RUF010", # explicit-f-string-type-conversion
-#  "RUF012", # mutable-class-default
-#  "RUF013", # implicit-optional
-#  "RUF015", # unnecessary-iterable-allocation-for-first-element
-#  "RUF016", # invalid-index-type
-#  "RUF017", # quadratic-list-summation
-#  "RUF018", # assignment-in-assert
-#  "RUF019", # unnecessary-key-check
-#  "RUF020", # never-union
-#  "RUF021", # parenthesize-chained-operators
-#  "RUF023", # unsorted-dunder-slots
-#  "RUF024", # mutable-fromkeys-value
-#  "RUF026", # default-factory-kwarg
-#  "RUF030", # assert-with-print-message
-#  "RUF032", # decimal-from-float-literal
+lint.extend-select = [
+  "A",      # flake8-builtins
+  "ANN204", # missing-return-type-special-method
+  "ANN205", # missing-return-type-static-method
+  "ANN206", # missing-return-type-class-method
+  "ARG",    # flake8-unused-arguments
+  "ASYNC",  # flake8-async
+  "B",      # flake8-bugbear
+  "BLE",    # flake8-blind-except
+  "C4",     # flake8-comprehensions
+  "C90",    # mccabe
+  "COM818", # trailing-comma-on-bare-tuple
+  "D",      # pydocstyle
+  #  "DOC", # pydoclint (enable this rule set when it is no longer in preview)
+  "DTZ",    # flake8-datetimez
+  "EM",     # flake8-errmsg
+  "EXE",    # flake8-executable
+  "FA102",  # flake8-required-type-annotation
+  "FBT003", # flake8-boolean-trap
+  "FIX",    # flake8-fixme
+  "FLY",    # flynt
+  "G",      # flake8-logging-format
+  "I",      # isort
+  "ICN",    # flake8-import-conventions
+  "INP",    # flake8-no-pep420
+  "INT",    # flake8-gettext
+  "ISC",    # flake8-implicit-str-concat
+  "N",      # pep8-naming
+  "NPY",    # numpy-deprecated-type-alias
+  "PD",     # pandas-vet
+  "PERF",   # perflint
+  "PGH",    # pygrep-hooks
+  "PIE",    # flake8-pie
+  "PLC",    # pylint convention
+  "PLE",    # pylint errors
+  "PLR",    # pylint refactorings
+  "PLW",    # pylint warnings
+  "PT",     # flake8-pytest-style
+  "PTH",    # flake8-use-pathlib
+  "PYI",    # flake8-pyi
+  "RET",    # flake8-return
+  "RSE",    # flake8-raise
+  "RUF001", # ambiguous-unicode-character-string
+  "RUF002", # ambiguous-unicode-character-docstring
+  "RUF003", # ambiguous-unicode-character-comment
+  "RUF005", # collection-literal-concatenation
+  "RUF006", # asyncio-dangling-task
+  "RUF007", # pairwise-over-zipped
+  "RUF008", # mutable-dataclass-default
+  "RUF009", # function-call-in-dataclass-default-argument
+  "RUF010", # explicit-f-string-type-conversion
+  "RUF012", # mutable-class-default
+  "RUF013", # implicit-optional
+  "RUF015", # unnecessary-iterable-allocation-for-first-element
+  "RUF016", # invalid-index-type
+  "RUF017", # quadratic-list-summation
+  "RUF018", # assignment-in-assert
+  "RUF019", # unnecessary-key-check
+  "RUF020", # never-union
+  "RUF021", # parenthesize-chained-operators
+  "RUF023", # unsorted-dunder-slots
+  "RUF024", # mutable-fromkeys-value
+  "RUF026", # default-factory-kwarg
+  "RUF030", # assert-with-print-message
+  "RUF032", # decimal-from-float-literal
 #  "RUF033", # post-init-default
 #  "RUF034", # useless-if-else
 #  "RUF040", # invalid-assert-message-literal-argument
@@ -249,7 +249,7 @@ format.docstring-code-format = true
 #  "UP",     # pyupgrade
 #  "W",      # pycodestyle warnings
 #  "YTT",    # flake8-2020
-#]
+]
 # The ruff rules to include or ignore for notebooks are defined
 # separately in .pre-commit-config.yaml in the hook for nbqa-ruff
 lint.ignore = [
