@@ -226,29 +226,29 @@ lint.extend-select = [
   "RUF026", # default-factory-kwarg
   "RUF030", # assert-with-print-message
   "RUF032", # decimal-from-float-literal
-#  "RUF033", # post-init-default
-#  "RUF034", # useless-if-else
-#  "RUF040", # invalid-assert-message-literal-argument
-#  "RUF041", # unnecessary-nested-literal
-#  "RUF046", # unnecessary-cast-to-int
-#  "RUF048", # map-int-version-parsing
-#  "RUF051", # if-key-in-dict-del
-#  "RUF100", # unused-noqa
-#  "RUF101", # redirected-noqa
-#  "RUF200", # invalid-pyproject-toml
-#  "S",      # flake8-bandit
-#  "SIM",    # flake8-simplify
-#  "SLF",    # flake8-self
-#  "SLOT",   # flake8-slots
-#  "T",      # flake8-print
-#  "T100",   # debugger
+  "RUF033", # post-init-default
+  "RUF034", # useless-if-else
+  "RUF040", # invalid-assert-message-literal-argument
+  "RUF041", # unnecessary-nested-literal
+  "RUF046", # unnecessary-cast-to-int
+  "RUF048", # map-int-version-parsing
+  "RUF051", # if-key-in-dict-del
+  "RUF100", # unused-noqa
+  "RUF101", # redirected-noqa
+  "RUF200", # invalid-pyproject-toml
+  "S",      # flake8-bandit
+  "SIM",    # flake8-simplify
+  "SLF",    # flake8-self
+  "SLOT",   # flake8-slots
+  "T",      # flake8-print
+  "T100",   # debugger
 #  "TCH",    # flake8-type-checking
-#  "TD",     # flake8-todos
-#  "TID",    # flake8-tidy-imports
-#  "TRY",    # tryceratops
-#  "UP",     # pyupgrade
-#  "W",      # pycodestyle warnings
-#  "YTT",    # flake8-2020
+  "TD",     # flake8-todos
+  "TID",    # flake8-tidy-imports
+  "TRY",    # tryceratops
+  "UP",     # pyupgrade
+  "W",      # pycodestyle warnings
+  "YTT",    # flake8-2020
 ]
 # The ruff rules to include or ignore for notebooks are defined
 # separately in .pre-commit-config.yaml in the hook for nbqa-ruff
