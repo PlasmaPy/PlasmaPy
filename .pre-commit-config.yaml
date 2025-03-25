@@ -107,3 +107,10 @@ repos:
   rev: v1.0.0
   hooks:
   - id: sphinx-lint
+
+- repo: https://github.com/tox-dev/pyproject-fmt
+  rev: v2.5.1
+  hooks:
+  - id: pyproject-fmt
+      # https://pyproject-fmt.readthedocs.io/en/latest/#calculating-max-supported-python-version
+    additional_dependencies: [tox>=4.9]
