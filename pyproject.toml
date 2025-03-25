@@ -250,69 +250,69 @@ format.docstring-code-format = true
 #  "W",      # pycodestyle warnings
 #  "YTT",    # flake8-2020
 #]
-## The ruff rules to include or ignore for notebooks are defined
-## separately in .pre-commit-config.yaml in the hook for nbqa-ruff
-#lint.ignore = [
-#  "B028",    # no-explicit-stacklevel
-#  "D105",    # undocumented-magic-method (enable later?)
-#  "D200",    # fits-on-one-line (incompatible with multiline short summaries)
-#  "D202",    # no-blank-line-after-function
-#  "D205",    # blank-line-after-summary (incompatible with multiline short summaries)
-#  "D206",    # indent-with-spaces (formatter conflict)
-#  "D401",    # non-imperative-mood (enable later?)
-#  "E501",    # line-too-long
-#  "EM101",   # raw-string-in-exception (enable later in focused PR)
-#  "EM102",   # f-string-in-exception (enable later in focused PR)
-#  "FIX002",  # line-contains-todo
-#  "ISC001",  # single-line-implicit-string-concatenation (formatter conflict)
-#  "N802",    # invalid-function-name
-#  "N803",    # invalid-argument-name
-#  "N806",    # non-lowercase-variable-in-function
-#  "N816",    # mixed-case-variable-in-global-scope
-#  "PERF203", # try-except-in-loop (remove when we require Python ≥ 3.11)
-#  "PLC2401", # non-ascii-name (flags variables used as mathematical symbols)
-#  "PLC2403", # non-ascii-import-name
-#  "PLE0605", # invalid-all-format (flags `__all__ += __lite_funcs`, etc.)
-#  "PLR0913", # too-many-arguments
-#  "PLR2004", # magic-value-comparison
-#  "PT007",   # pytest-parametrize-values-wrong-type
-#  "PT011",   # pytest-raises-too-broad
-#  "PT012",   # pytest-raises-multiple-statements (enable later?)
-#  "PT019",   # pytest-fixture-param-without-value (enable later?)
-#  "PYI024",  # collections-named-tuple (enable later)
-#  "RET501",  # unnecessary-return-none
-#  "RET502",  # implicit-return-value
-#  "RET505",  # superfluous-else-return (enable later?)
-#  "RET506",  # superfluous-else-raise (enable later?)
-#  "S101",    # asserts
-#  "SIM300",  # yoda-conditions
-#  "TD002",   # missing-todo-author
-#  "TD003",   # missing-todo-link
-#  "TRY003",  # raise-vanilla-args
-#  "TRY301",  # raise-within-try
-#  "UP025",   # unicode-kind-prefix
-#  "W191",    # tab-indentation (formatter conflict)
-#  "W291",    # trailing-whitespace (handled by formatter)
-#]
-#lint.per-file-ignores."**/*.ipynb" = [ "T201", "T203" ]
-#lint.per-file-ignores.".github/scripts/*.py" = [ "D103", "INP001" ]
-#lint.per-file-ignores."__init__.py" = [ "D104", "E402", "F401", "F402", "F403" ] # ignore import errors
-#lint.per-file-ignores."docs/conf.py" = [ "D100", "D103", "E402", "EXE001", "EXE005", "F401" ]
-## The ruff rule violations in the following notebooks should eventually be fixed
-#lint.per-file-ignores."docs/notebooks/analysis/fit_functions.ipynb" = [ "NPY002" ]
-#lint.per-file-ignores."docs/notebooks/analysis/nullpoint.ipynb" = [ "D103" ]
-#lint.per-file-ignores."docs/notebooks/analysis/swept_langmuir/find_floating_potential.ipynb" = [ "FBT003" ]
-#lint.per-file-ignores."docs/notebooks/diagnostics/charged_particle_radiography_film_stacks.ipynb" = [ "B007", "PTH123" ]
-#lint.per-file-ignores."docs/notebooks/diagnostics/charged_particle_radiography_particle_tracing.ipynb" = [
-#  "D103",
-#  "E741",
-#]
-#lint.per-file-ignores."docs/notebooks/diagnostics/charged_particle_radiography_particle_tracing_custom_source.ipynb" = [
-#  "NPY002",
-#]
-#lint.per-file-ignores."docs/notebooks/diagnostics/charged_particle_radiography_particle_tracing_wire_mesh.ipynb" = [
-#  "D103",
-#]
+# The ruff rules to include or ignore for notebooks are defined
+# separately in .pre-commit-config.yaml in the hook for nbqa-ruff
+lint.ignore = [
+  "B028",    # no-explicit-stacklevel
+  "D105",    # undocumented-magic-method (enable later?)
+  "D200",    # fits-on-one-line (incompatible with multiline short summaries)
+  "D202",    # no-blank-line-after-function
+  "D205",    # blank-line-after-summary (incompatible with multiline short summaries)
+  "D206",    # indent-with-spaces (formatter conflict)
+  "D401",    # non-imperative-mood (enable later?)
+  "E501",    # line-too-long
+  "EM101",   # raw-string-in-exception (enable later in focused PR)
+  "EM102",   # f-string-in-exception (enable later in focused PR)
+  "FIX002",  # line-contains-todo
+  "ISC001",  # single-line-implicit-string-concatenation (formatter conflict)
+  "N802",    # invalid-function-name
+  "N803",    # invalid-argument-name
+  "N806",    # non-lowercase-variable-in-function
+  "N816",    # mixed-case-variable-in-global-scope
+  "PERF203", # try-except-in-loop (remove when we require Python ≥ 3.11)
+  "PLC2401", # non-ascii-name (flags variables used as mathematical symbols)
+  "PLC2403", # non-ascii-import-name
+  "PLE0605", # invalid-all-format (flags `__all__ += __lite_funcs`, etc.)
+  "PLR0913", # too-many-arguments
+  "PLR2004", # magic-value-comparison
+  "PT007",   # pytest-parametrize-values-wrong-type
+  "PT011",   # pytest-raises-too-broad
+  "PT012",   # pytest-raises-multiple-statements (enable later?)
+  "PT019",   # pytest-fixture-param-without-value (enable later?)
+  "PYI024",  # collections-named-tuple (enable later)
+  "RET501",  # unnecessary-return-none
+  "RET502",  # implicit-return-value
+  "RET505",  # superfluous-else-return (enable later?)
+  "RET506",  # superfluous-else-raise (enable later?)
+  "S101",    # asserts
+  "SIM300",  # yoda-conditions
+  "TD002",   # missing-todo-author
+  "TD003",   # missing-todo-link
+  "TRY003",  # raise-vanilla-args
+  "TRY301",  # raise-within-try
+  "UP025",   # unicode-kind-prefix
+  "W191",    # tab-indentation (formatter conflict)
+  "W291",    # trailing-whitespace (handled by formatter)
+]
+lint.per-file-ignores."**/*.ipynb" = [ "T201", "T203" ]
+lint.per-file-ignores.".github/scripts/*.py" = [ "D103", "INP001" ]
+lint.per-file-ignores."__init__.py" = [ "D104", "E402", "F401", "F402", "F403" ] # ignore import errors
+lint.per-file-ignores."docs/conf.py" = [ "D100", "D103", "E402", "EXE001", "EXE005", "F401" ]
+# The ruff rule violations in the following notebooks should eventually be fixed
+lint.per-file-ignores."docs/notebooks/analysis/fit_functions.ipynb" = [ "NPY002" ]
+lint.per-file-ignores."docs/notebooks/analysis/nullpoint.ipynb" = [ "D103" ]
+lint.per-file-ignores."docs/notebooks/analysis/swept_langmuir/find_floating_potential.ipynb" = [ "FBT003" ]
+lint.per-file-ignores."docs/notebooks/diagnostics/charged_particle_radiography_film_stacks.ipynb" = [ "B007", "PTH123" ]
+lint.per-file-ignores."docs/notebooks/diagnostics/charged_particle_radiography_particle_tracing.ipynb" = [
+  "D103",
+  "E741",
+]
+lint.per-file-ignores."docs/notebooks/diagnostics/charged_particle_radiography_particle_tracing_custom_source.ipynb" = [
+  "NPY002",
+]
+lint.per-file-ignores."docs/notebooks/diagnostics/charged_particle_radiography_particle_tracing_wire_mesh.ipynb" = [
+  "D103",
+]
 lint.per-file-ignores."docs/notebooks/diagnostics/thomson_fitting.ipynb" = [ "NPY002", "PD011" ]
 lint.per-file-ignores."docs/notebooks/dispersion/dispersion_function.ipynb" = [ "D103" ]
 lint.per-file-ignores."docs/notebooks/dispersion/stix_dispersion.ipynb" = [ "FBT003" ]
