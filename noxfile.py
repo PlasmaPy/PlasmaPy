@@ -633,6 +633,12 @@ def lint(session: nox.Session) -> None:
         *session.posargs,
     )
 
+@nox.session
+def zizmor(session: nox.Session) -> None:
+    """Find common security issues in GitHub Actions."""
+    session.install("zizmor")
+    session.run("zizmor", ".github")
+
 
 # /// script
 # dependencies = ["nox"]
