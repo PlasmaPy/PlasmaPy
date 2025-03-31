@@ -79,7 +79,7 @@ repos:
     - tomli
 
 - repo: https://github.com/crate-ci/typos
-  rev: v1
+  rev: v1.30.2
   hooks:
   - id: typos
     name: typos (add false positives to _typos.toml)
