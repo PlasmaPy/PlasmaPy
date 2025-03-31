@@ -175,13 +175,17 @@ class Tracker(ParticleTracker):
         A unit vector (in Cartesian coordinates) defining the horizontal
         direction on the detector plane. By default, the horizontal axis in the
         detector plane is defined to be perpendicular to both the
-        source-to-detector vector and the z-axis (unless the source-to-detector
-        axis is parallel to the z axis, in which case the horizontal axis is
-        the x-axis).
+        origin-to-detector vector  (such that the detector is 'looking at' the origin)
+        and the z-axis (unless the origin-to-detector axis is parallel to the z axis,
+        in which case the horizontal axis is the x-axis).
 
-        The detector vertical axis is then defined
-        to be orthogonal to both the source-to-detector vector and the
-        detector horizontal axis.
+    detector_vdir : `numpy.ndarray`, shape (3), optional
+        A unit vector (in Cartesian coordinates) defining the vertical
+        direction on the detector plane. By default, the vertical axis in the
+        detector plane is defined to be perpendicular to both the
+        origin-to-detector vector (such that the detector is 'looking at' the origin)
+        and the detector horizontal axis.
+
 
     output_directory : `~pathlib.Path`, optional
         Directory for objects that are saved to disk. If a directory is not
@@ -211,6 +215,7 @@ class Tracker(ParticleTracker):
             "volume averaged", "nearest neighbor"
         ] = "volume averaged",
         detector_hdir=None,
+        detector_vdir=None,
         output_directory: Path | None = None,
         output_basename: str = "output",
         fraction_exited_threshold: float = 0.999,
@@ -293,8 +298,11 @@ class Tracker(ParticleTracker):
             self.det_hdir = self._default_detector_hdir()
 
         # Calculate the detector vdir
-        ny = np.cross(self.det_hdir, self.det_n)
-        self.det_vdir = -ny / np.linalg.norm(ny)
+        if detector_vdir is not None:
+            self.det_vdir = detector_vdir / np.linalg.norm(detector_vdir)
+        else:
+            ny = np.cross(self.det_hdir, self.det_n)
+            self.det_vdir = -ny / np.linalg.norm(ny)
 
     def _default_detector_hdir(self):
         """
@@ -609,6 +617,7 @@ class Tracker(ParticleTracker):
         max_theta=None,
         particle: Particle = Particle("p+"),  # noqa: B008
         distribution: Literal["monte-carlo", "uniform"] = "monte-carlo",
+        source_vdir=None,
         random_seed=None,
     ) -> None:
         r"""
@@ -661,6 +670,11 @@ class Tracker(ParticleTracker):
             on the image, but will well-sample the field grid with a
             smaller number of particles. The default is ``'monte-carlo'``.
 
+        source_vdir : (3,) |array_like|, default: None
+            A unit vector (in Cartesian coordinates) defining the orientation
+            of the mean of the particle velocities.  By default, the particle
+            velocities will be distributed around the source-detector axis.
+
         random_seed : int, optional
             A random seed to be used when generating random particle
             distributions, e.g. with the ``monte-carlo`` distribution.
@@ -669,6 +683,9 @@ class Tracker(ParticleTracker):
 
         # Raise an error if the run method has already been called.
         self._enforce_order()
+
+        if source_vdir is None:
+            source_vdir = self.src_det / np.linalg.norm(self.src_det)
 
         # Load inputs
         num_particles = int(num_particles)
@@ -705,10 +722,8 @@ class Tracker(ParticleTracker):
         v[:, 2] = v0 * np.cos(theta)
 
         # Calculate the rotation matrix that rotates the z-axis
-        # onto the source-detector axis
-        a = np.array([0, 0, 1])
-        b = self.detector - self.source
-        rot = rot_a_to_b(a, b)
+        # onto the vdir vector
+        rot = rot_a_to_b(np.array([0, 0, 1]), source_vdir)
 
         # Apply rotation matrix to calculated velocity distribution
         v = np.matmul(v, rot)
