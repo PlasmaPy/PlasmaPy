@@ -15,6 +15,8 @@ on:
   pull_request:
   workflow_dispatch:
 
+permissions: {}
+
 env:
   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -76,6 +78,8 @@ jobs:
 
     - name: Checkout code
       uses: actions/checkout@v4
+      with:
+        persist-credentials: false
 
     - name: Install Graphviz for doc builds
       if: startsWith(matrix.nox_session, 'docs')
