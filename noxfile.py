@@ -61,7 +61,7 @@ uv_sync = ("uv", "sync", "--no-progress", "--frozen")
 running_on_ci = os.getenv("CI")
 running_on_rtd = os.environ.get("READTHEDOCS") == "True"
 
-uv_requirement = "uv >= 0.6.5"
+uv_requirement = "uv >= 0.6.12"
 
 
 def _create_requirements_pr_message(uv_output: str, session: nox.Session) -> None:
@@ -223,12 +223,13 @@ def tests(session: nox.Session, test_specifier: nox._parametrize.Param) -> None:
 
     match test_specifier:
         case "lowest-direct":
-            session.install(".[tests]", "--resolution=lowest-direct")
+            session.install(".[tests,calculator]", "--resolution=lowest-direct")
         case _:
             # From https://nox.thea.codes/en/stable/cookbook.html#using-a-lockfile
             session.run_install(
                 *uv_sync,
                 "--extra=tests",
+                "--extra=calculator",
                 env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
             )
 
