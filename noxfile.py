@@ -223,12 +223,13 @@ def tests(session: nox.Session, test_specifier: nox._parametrize.Param) -> None:
 
     match test_specifier:
         case "lowest-direct":
-            session.install(".[tests]", "--resolution=lowest-direct")
+            session.install(".[tests,calculator]", "--resolution=lowest-direct")
         case _:
             # From https://nox.thea.codes/en/stable/cookbook.html#using-a-lockfile
             session.run_install(
                 *uv_sync,
                 "--extra=tests",
+                "--extra=calculator",
                 env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
             )
 
