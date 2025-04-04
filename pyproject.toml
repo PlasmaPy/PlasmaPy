@@ -79,7 +79,8 @@ optional-dependencies.calculator = [
   # Minimum version of ipykernel should not exceed what's used by Google Colab
   "ipykernel>=5.5.6",
   "ipywidgets>=6",
-  "voila>=0.2.7",
+  # Use the version of voila that the prototype plasma calculator was developed with
+  "voila>=0.2,<0.3",
 ]
 
 # The documentation build occurs in an isolated environment that is not
