@@ -44,20 +44,27 @@ terminal and run:
    python -m pip install plasmapy
 
 On some systems, it might be necessary to specify the |Python| version
-number by using ``python3``, ``python3.8``, ``python3.9``,
-``python3.10``, or ``python3.11`` instead of ``python``.
+number by using ``python3``, ``python3.11``, ``python3.12``, or
+``python3.13`` instead of ``python``.
 
 To install PlasmaPy on Windows, run:
 
 .. code-block:: bash
 
-   py -3.11 -m pip install plasmapy
+   py -3.13 -m pip install plasmapy
 
-The version of |Python| may be changed from ``3.11`` to another supported
+The version of |Python| may be changed from ``3.13`` to another supported
 Python |minpython|\ + release that has been installed on your computer.
 
 For more detailed information, please refer to this tutorial on
 `installing packages`_.
+
+.. note::
+
+   In order to install PlasmaPy with the dependencies needed to run the
+   prototype Plasma Calculator, it is necessary to install `plasmapy`
+   with the ``calculator`` dependency set. This can be done with the
+   command ``pip install plasmapy[calculator]``.
 
 .. _install-uv:
 
@@ -230,7 +237,7 @@ If you expect to occasionally edit the source code, instead run:
 
 .. code-block:: bash
 
-   pip install -e ".[tests,docs]"
+   pip install -e ".[docs,tests]"
 
 The ``-e`` flag makes the installation editable and ``[tests,docs]``
 specifies that all of the additional dependencies used while testing the
