@@ -1,1 +1,4 @@
-In order to enable the prototype plasma calculator, it is now necessary to install ``plasmapy`` with the ``calculator`` optional dependency set (i.e., with :py:`pip install plasmapy[calculator]`).
+In order to install the dependencies needed to run the prototype 
+Plasma Calculator, it is now necessary to specify that PlasmaPy be 
+installed with the ``calculator`` dependency set (i.e., 
+with :py:`pip install plasmapy[calculator]`).
