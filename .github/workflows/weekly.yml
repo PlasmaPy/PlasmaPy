@@ -9,6 +9,7 @@ on:
     branches:
     - main
 
+permissions: {}
 
 env:
   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -144,7 +145,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
       with:
-        fetch-depth: 0
+        persist-credentials: false
 
     - name: Set up Python
       uses: actions/setup-python@v5
