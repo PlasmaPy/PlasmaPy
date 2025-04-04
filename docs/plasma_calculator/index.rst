@@ -13,14 +13,26 @@ Plasma Calculator
 Overview
 --------
 
-The Plasma Calculator is an interactive Jupyter notebook that is
-packaged with `plasmapy`, and allows users to input a set of plasma
-properties and immediately calculate multiple plasma parameters.
+The prototype Plasma Calculator is an interactive Jupyter notebook that
+allows users to input a set of plasma properties and immediately
+calculate multiple plasma parameters.
 
 .. note::
 
    This functionality is still under development and the API may change
    in future releases.
+
+Installing the Plasma Calculator
+--------------------------------
+
+To install the dependencies needed to run the plasma calculator, it is
+necessary to specify the ``calculator`` dependency set when installing
+`plasmapy`. This step can be done, for example, with the following
+command:
+
+.. code-block:: bash
+
+   pip install plasmapy[calculator]
 
 Using Plasma Calculator
 -----------------------
