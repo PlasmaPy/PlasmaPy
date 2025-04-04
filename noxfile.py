@@ -61,7 +61,7 @@ uv_sync = ("uv", "sync", "--no-progress", "--frozen")
 running_on_ci = os.getenv("CI")
 running_on_rtd = os.environ.get("READTHEDOCS") == "True"
 
-uv_requirement = "uv >= 0.6.5"
+uv_requirement = "uv >= 0.6.12"
 
 
 def _create_requirements_pr_message(uv_output: str, session: nox.Session) -> None:
