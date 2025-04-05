@@ -80,6 +80,7 @@ PlasmaPy's online documentation has detailed instructions on how to
 [**install PlasmaPy**].
 
 To install PlasmaPy on macOS or Linux, open a terminal and run:
+
 ```Shell
 python -m pip install plasmapy
 ```
@@ -89,9 +90,11 @@ number, for example by using `python3` or `python3.13` instead of
 `python`.
 
 To install PlasmaPy on Windows, open a terminal and run
+
 ```Shell
 py -3.13 -m pip install plasmapy
 ```
+
 The `3.13` may be replaced by any version of Python that is installed
 and supported by PlasmaPy.
 
