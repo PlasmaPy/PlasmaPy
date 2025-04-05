@@ -123,6 +123,9 @@ repos:
   rev: 0.7.22
   hooks:
   - id: mdformat
+    exclude:
+    - licenses
+    - .github
     additional_dependencies:
     - mdformat-black
     - mdformat-footnote
