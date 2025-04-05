@@ -117,4 +117,14 @@ repos:
 - repo: https://github.com/tox-dev/pyproject-fmt
   rev: v2.5.1
   hooks:
-  - id: pyproject-fmt
+
+- repo: https://github.com/hukkin/mdformat
+  rev: 0.7.22
+  hooks:
+  - id: mdformat
+    additional_dependencies:
+    - mdformat-black
+    - mdformat-footnote
+    - mdformat-frontmatter
+    - mdformat-gfm
+    - mdformat-gfm-alerts
