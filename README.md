@@ -22,40 +22,6 @@
 [![astropy](http://img.shields.io/badge/powered%20by-Astropy-orange.svg?style=flat&logo=astropy)](http://www.astropy.org/)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
 
-[Astropy]: https://www.astropy.org
-[authors and credits]: https://docs.plasmapy.org/en/latest/about/credits.html
-[3-clause BSD license]: ./LICENSE.md
-[calendar]: https://calendar.google.com/calendar/embed?src=c_sqqq390s24jjfjp3q86pv41pi8%40group.calendar.google.com&ctz=America%2FNew_York
-[cite PlasmaPy]: https://docs.plasmapy.org/en/latest/about/citation.html
-[code of conduct]: http://docs.plasmapy.org/en/latest/CODE_OF_CONDUCT.html
-[community meetings]: https://www.plasmapy.org/meetings/weekly
-[contributor guide]: https://docs.plasmapy.org/en/latest/development/index.html
-[Department of Energy]: https://www.energy.gov
-[example gallery]: https://docs.plasmapy.org/en/stable/examples.html
-[GitHub discussions]: https://github.com/PlasmaPy/PlasmaPy/discussions
-[Gitter]: https://gitter.im/PlasmaPy/Lobby
-[good first issues]: https://github.com/PlasmaPy/PlasmaPy/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22
-[Google Summer of Code]: https://summerofcode.withgoogle.com
-[**install PlasmaPy**]: https://docs.plasmapy.org/en/stable/install.html
-[GitHub repository]: https://github.com/PlasmaPy/PlasmaPy
-[mailing list]: https://groups.google.com/forum/#!forum/plasmapy
-[Matrix]: https://app.element.io/#/room/#plasmapy:openastronomy.org
-[meetings]: https://www.plasmapy.org/meetings/weekly
-[NASA]: https://www.nasa.gov/
-[National Science Foundation]: https://nsf.gov
-[office hours]: http://www.plasmapy.org/meetings/office_hours
-[PlasmaPy Community on Zenodo]: https://zenodo.org/communities/plasmapy
-[PlasmaPy]: https://www.plasmapy.org
-[**documentation**]: https://docs.plasmapy.org
-[protections against software patents]: ./PATENT.md
-[Python]: https://www.python.org
-[Smithsonian Institution]: https://www.si.edu
-[submit a bug report]: https://github.com/PlasmaPy/PlasmaPy/issues/new?assignees=&labels=Bug&template=bug_report.yml
-[submit a feature request]: https://github.com/PlasmaPy/PlasmaPy/issues/new?assignees=&labels=Feature+request&template=feature_request.yml
-[team@plasmapy.org]: mailto:team@plasmapy.org
-[this video]: https://youtu.be/E8RwQF5wcXM
-[Zoom]: https://zoom.us/j/91633383503?pwd=QWNkdHpWeFhrYW1vQy91ODNTVG5Ndz09
-
 [PlasmaPy] is an open source, community-developed [Python] package for
 plasma research and education. PlasmaPy intends to be for plasma
 science what [Astropy] is for astronomy — a collection of
@@ -70,9 +36,9 @@ the [PlasmaPy Community on Zenodo].
 Please check out our online [**documentation**] to learn more about
 PlasmaPy's capabilities.
 
-If you would like an idea of what PlasmaPy can do, go to our [example
-gallery] of Jupyter notebooks. To learn more about how to contribute,
-check out PlasmaPy's [contributor guide].
+If you would like an idea of what PlasmaPy can do, go to our
+[example gallery] of Jupyter notebooks. To learn more about how to
+contribute, check out PlasmaPy's [contributor guide].
 
 ## Installing PlasmaPy
 
@@ -123,9 +89,10 @@ notice any problems. We really appreciate it!
 
 ## Contributing
 
-If you are interested in contributing, please check out our [contributor
-guide] and [code of conduct]. There are a number of [good first issues]
-in our GitHub repository. New contributors are very welcome!
+If you are interested in contributing, please check out our
+[contributor guide] and [code of conduct]. There are a number of
+[good first issues] in our GitHub repository. New contributors are very
+welcome!
 
 ## Events
 
@@ -158,8 +125,8 @@ Please feel free to reach out to us at [team@plasmapy.org] or stop by
 our [office hours] with any ideas, questions, and/or puns about
 computational magnetohydrodynamics.
 
-Please use these links to [submit a feature request] and to [submit a
-bug report] on PlasmaPy's GitHub repository.
+Please use these links to [submit a feature request] and to
+[submit a bug report] on PlasmaPy's GitHub repository.
 
 ### GitHub discussions
 
@@ -184,7 +151,40 @@ added [protections against software patents].
 
 ## Acknowledgments
 
-Development of PlasmaPy has been supported in part by the [National
-Science Foundation], [Department of Energy], [NASA], and the
+Development of PlasmaPy has been supported in part by the
+[National Science Foundation], [Department of Energy], [NASA], and the
 [Smithsonian Institution]. For more details, please see PlasmaPy's
 documentation page on [authors and credits].
+
+[**documentation**]: https://docs.plasmapy.org
+[**install plasmapy**]: https://docs.plasmapy.org/en/stable/install.html
+[3-clause bsd license]: ./LICENSE.md
+[astropy]: https://www.astropy.org
+[authors and credits]: https://docs.plasmapy.org/en/latest/about/credits.html
+[calendar]: https://calendar.google.com/calendar/embed?src=c_sqqq390s24jjfjp3q86pv41pi8%40group.calendar.google.com&ctz=America%2FNew_York
+[cite plasmapy]: https://docs.plasmapy.org/en/latest/about/citation.html
+[code of conduct]: http://docs.plasmapy.org/en/latest/CODE_OF_CONDUCT.html
+[community meetings]: https://www.plasmapy.org/meetings/weekly
+[contributor guide]: https://docs.plasmapy.org/en/latest/development/index.html
+[department of energy]: https://www.energy.gov
+[example gallery]: https://docs.plasmapy.org/en/stable/examples.html
+[github discussions]: https://github.com/PlasmaPy/PlasmaPy/discussions
+[github repository]: https://github.com/PlasmaPy/PlasmaPy
+[gitter]: https://gitter.im/PlasmaPy/Lobby
+[good first issues]: https://github.com/PlasmaPy/PlasmaPy/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22
+[mailing list]: https://groups.google.com/forum/#!forum/plasmapy
+[matrix]: https://app.element.io/#/room/#plasmapy:openastronomy.org
+[meetings]: https://www.plasmapy.org/meetings/weekly
+[nasa]: https://www.nasa.gov/
+[national science foundation]: https://nsf.gov
+[office hours]: http://www.plasmapy.org/meetings/office_hours
+[plasmapy]: https://www.plasmapy.org
+[plasmapy community on zenodo]: https://zenodo.org/communities/plasmapy
+[protections against software patents]: ./PATENT.md
+[python]: https://www.python.org
+[smithsonian institution]: https://www.si.edu
+[submit a bug report]: https://github.com/PlasmaPy/PlasmaPy/issues/new?assignees=&labels=Bug&template=bug_report.yml
+[submit a feature request]: https://github.com/PlasmaPy/PlasmaPy/issues/new?assignees=&labels=Feature+request&template=feature_request.yml
+[team@plasmapy.org]: mailto:team@plasmapy.org
+[this video]: https://youtu.be/E8RwQF5wcXM
+[zoom]: https://zoom.us/j/91633383503?pwd=QWNkdHpWeFhrYW1vQy91ODNTVG5Ndz09
