@@ -123,7 +123,7 @@ repos:
   rev: 0.7.22
   hooks:
   - id: mdformat
-    exclude: licenses/.*|.github/content/.*|LICENSE.md|PATENT.md
+    exclude: licenses/.*|LICENSE.md|PATENT.md
     additional_dependencies:
     - mdformat-black
     - mdformat-footnote
