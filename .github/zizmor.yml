@@ -1,0 +1,22 @@
+rules:
+  cache-poisoning:
+    ignore:
+      - ci.yml
+  excessive-permissions:
+    ignore:
+      - create-release-issue.yml
+      - changelog.yml
+      - check-author-included.yml
+      - ci.yml
+      - comment-on-pr.yml
+      - linkcheck.yml
+      - mint-release.yml
+      - unlabel-pr-after-merge.yml
+      - update-pinned-reqs.yml
+  template-injection:
+    ignore:
+      - create-release-issue.yml
+      - mint-release.yml
+  use-trusted-publishing:
+    ignore:
+      - publish-to-pypi.yml
