@@ -56,7 +56,7 @@ docs:
       'docs/**/*.md',
       'docs/**/*.png',
       'docs/**/*.rst',
-      'docs/**/*.svg'
+      'docs/**/*.svg',
     ]
 
 'documentation infrastructure':
@@ -72,7 +72,7 @@ docs:
       'docs/**/make.bat',
       'docs/**/Makefile',
       'docs/**/plasmapy_sphinx/**',
-      'docs/**/robots.txt'
+      'docs/**/robots.txt',
     ]
 
 feature:
@@ -110,7 +110,7 @@ notebooks:
       '**/*.ipynb',
       '**/binder/**',
       '.jupyter/**',
-      'docs/notebooks/**'
+      'docs/notebooks/**',
     ]
 
 nox:
@@ -133,7 +133,7 @@ packaging:
   - changed-files:
     - any-glob-to-any-file: [
       '**/particles/data/**',
-      '**/tools/export_ionization_energy.py'
+      '**/tools/export_ionization_energy.py',
     ]
 
 plasmapy.analysis:
@@ -182,7 +182,7 @@ release:
       '.github/content/*release*',
       '.github/workflows/*publish*',
       '.github/workflows/*pypi*',
-      '.github/workflows/*release*'
+      '.github/workflows/*release*',
     ]
 
 'static type checking':
@@ -190,7 +190,7 @@ release:
     - any-glob-to-any-file: [
       '**/*mypy*',
       '**/py.typed',
-      '**/type_stubs/**'
+      '**/type_stubs/**',
     ]
 
 testing:
