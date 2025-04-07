@@ -23,13 +23,13 @@
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
 
 [PlasmaPy] is an open source, community-developed [Python] package for
-plasma research and education. PlasmaPy intends to be for plasma
-science what [Astropy] is for astronomy — a collection of
-functionality commonly needed by plasma scientists and researchers
-globally, running within and leveraging the open source scientific
-Python ecosystem. The goals of PlasmaPy are more thoroughly described
-in [this video]. Many of our recent presentations are available from
-the [PlasmaPy Community on Zenodo].
+plasma research and education. PlasmaPy intends to be for plasma science
+what [Astropy] is for astronomy — a collection of functionality commonly
+needed by plasma scientists and researchers globally, running within and
+leveraging the open source scientific Python ecosystem. The goals of
+PlasmaPy are more thoroughly described in [this video]. Many of our
+recent presentations are available from the
+[PlasmaPy Community on Zenodo].
 
 ## Documentation
 
@@ -77,10 +77,9 @@ of PlasmaPy and other resources.
 
 ## Requesting features
 
-Please [submit a feature request] in our [GitHub repository] if you
-have an idea for new or improved functionality. PlasmaPy is
-community-driven, and feature requests really help guide the future of
-the project.
+Please [submit a feature request] in our [GitHub repository] if you have
+an idea for new or improved functionality. PlasmaPy is community-driven,
+and feature requests really help guide the future of the project.
 
 ## Submitting bug reports
 
@@ -111,11 +110,11 @@ March 2025, our community meetings are on most Thursdays at 2 pm ET.
 ### Office hours
 
 Our weekly informal [office hours] are an opportunity to chat with
-active members of the PlasmaPy community about topics related to
-Python and plasma physics. If you'd like to learn more about PlasmaPy,
-our office hours are one of the best places to start. As of March
-2025, our office hours are on most Thursdays at 3 pm Eastern. Please
-feel free to come by!
+active members of the PlasmaPy community about topics related to Python
+and plasma physics. If you'd like to learn more about PlasmaPy, our
+office hours are one of the best places to start. As of March 2025, our
+office hours are on most Thursdays at 3 pm Eastern. Please feel free to
+come by!
 
 ## Community
 
@@ -130,13 +129,13 @@ Please use these links to [submit a feature request] and to
 
 ### GitHub discussions
 
-We're trying out [GitHub discussions] as a place to suggest ideas,
-bring up discussion topics, and ask questions.
+We're trying out [GitHub discussions] as a place to suggest ideas, bring
+up discussion topics, and ask questions.
 
 ### Matrix chat
 
-If you have any questions, the quickest way to get a response is to
-ask on our [Matrix]/[Gitter] channel. Both of these are the same chat
+If you have any questions, the quickest way to get a response is to ask
+on our [Matrix]/[Gitter] channel. Both of these are the same chat
 channel; Gitter uses a bridge to link the two.
 
 ### Mailing list

@@ -20,8 +20,8 @@ Workflows associated with the release process include:
 - [`mint-release.yml`](./mint-release.yml) — preparing the repository
   for a release (triggered manually)
 - [`publish-to-pypi.yml`](./publish-to-pypi.yml) — perform the official
-  release to the Python Package Index (triggered by performing a
-  release on GitHub)
+  release to the Python Package Index (triggered by performing a release
+  on GitHub)
 
 [github actions]: https://docs.github.com/en/actions
 [nox]: https://nox.thea.codes
