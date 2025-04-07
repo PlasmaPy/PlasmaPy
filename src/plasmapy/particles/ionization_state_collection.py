@@ -689,7 +689,7 @@ class IonizationStateCollection:
         ionization states are being tracked.
         """
         if abundances_dict is None:
-            self._pars["abundances"] = {elem: np.nan for elem in self.base_particles}
+            self._pars["abundances"] = dict.fromkeys(self.base_particles, np.nan)
         elif not isinstance(abundances_dict, dict):
             raise TypeError(
                 "The abundances attribute must be a dict with "
