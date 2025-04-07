@@ -62,10 +62,13 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
 
 ### Update documentation
 
-- [ ] Delete the [`stable`] branch on GitHub, if it exists.
+- [ ] Delete the [`stable`] branch on GitHub if it exists.
 - [ ] Activate the current and prior release on the [versions page on RTD], if necessary. If the documentation fails to build for a release, activate the corresponding branch (e.g., activate the `v2023.10.x` branch instead of the `v2023.10.0` tag).
-- [ ] Check that the [documentation] builds correctly for the release branch. If the documentation build fails, create a new [`stable`] branch from the release branch (e.g., `2024.10.x`) and fix any problems with the documentation build. The [`stable`] branch is needed if the documentation build for the release fails or if we make any changes to the documentation between releases. The [stable documentation build] will point to the [`stable`] branch on GitHub if it exists. Otherwise, it will point to the most recent release on GitHub. 📚
 - [ ] Verify that the [citation page] is up-to-date and the DOI link points to the most recent release.
+- [ ] Check that the [documentation] builds correctly for the release branch.
+
+> [!TIP]
+> If the documentation build fails, create a new [`stable`] branch from the release branch (e.g., `2024.10.x`) and fix any problems with the documentation build. The [`stable`] branch is needed if the documentation build for the release fails or if we make any changes to the documentation between releases. The [stable documentation build] will point to the [`stable`] branch on GitHub if it exists. Otherwise, it will point to the most recent release on GitHub. 📚
 
 ## Test the release
 
