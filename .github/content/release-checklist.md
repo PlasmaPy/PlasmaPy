@@ -13,7 +13,7 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
 - [ ] [Update pinned requirements]. 📍
 - [ ] Run `pre-commit autoupdate` followed by `pre-commit run --all-files`. Fix any new errors and commit the changes.
 
-> [!NOTE]
+> [!CAUTION]
 > As of mid-2025, keep the `pre-commit-search-and-replace` at `v1.0.5` and keep `typos` at a specific version rather than rolling back to `v1`.
 
 ### Make sure that all tests are passing on `main`
