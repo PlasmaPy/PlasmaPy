@@ -123,6 +123,10 @@ repos:
   rev: 0.7.22
   hooks:
   - id: mdformat
+    name: Format .md files
+    # Skip wrapping line length because doing so can mess up
+    # formatting of GitHub issues created from files in
+    # .github/content, and some files use semantic line breaks.
     exclude: licenses/.*|LICENSE.md|PATENT.md
     additional_dependencies:
     - mdformat-black
