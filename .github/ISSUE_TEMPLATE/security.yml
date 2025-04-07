@@ -24,7 +24,7 @@ body:
         - "🪛 Low: Minor vulnerability"
         - "⚠️ Medium: Limited impact"
         - "🔥 High: Serious risk"
-        - "💥 Critical: Requires immediate action"
+        - "💥 Critical: Requires immediate action (please email team@plasmapy.org)"
 
 - type: textarea
   id: potential-impact
@@ -36,7 +36,7 @@ body:
   id: mitigation
   attributes:
     label: Mitigation Strategy
-    description: Do you have any suggestions for how to fix this vulnerability? (optional)
+    description: Do you have any suggestions for fixing this vulnerability? (optional)
 
 - type: textarea
   id: additional-context
