@@ -1,14 +1,5 @@
 # Tests
 
-[**testing guide**]: https://docs.plasmapy.org/en/latest/contributing/testing_guide.html
-[`src/plasmapy/formulary/speeds.py`]: ../src/plasmapy/formulary/speeds.py
-[`tests/formulary/test_speeds.py`]: formulary/test_speeds.py
-[`tests`]: .
-[`src/plasmapy`]: ../src/plasmapy
-[Nox]: https://nox.thea.codes
-[pytest]: https://docs.pytest.org
-[running tests]: https://docs.plasmapy.org/en/latest/contributing/testing_guide.html#running-tests
-
 > [!TIP]
 > To learn more about software testing in PlasmaPy, please check out the
 > [**testing guide**].
@@ -42,3 +33,12 @@ nox
 
 For more information, please see the section in the testing guide on
 [running tests].
+
+[**testing guide**]: https://docs.plasmapy.org/en/latest/contributing/testing_guide.html
+[nox]: https://nox.thea.codes
+[pytest]: https://docs.pytest.org
+[running tests]: https://docs.plasmapy.org/en/latest/contributing/testing_guide.html#running-tests
+[`src/plasmapy/formulary/speeds.py`]: ../src/plasmapy/formulary/speeds.py
+[`src/plasmapy`]: ../src/plasmapy
+[`tests/formulary/test_speeds.py`]: formulary/test_speeds.py
+[`tests`]: .

@@ -85,7 +85,7 @@ repos:
     name: typos (add false positives to _typos.toml)
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.11.2
+  rev: v0.11.4
   hooks:
   - id: ruff
     name: ruff (see https://docs.astral.sh/ruff/rules)
@@ -118,3 +118,19 @@ repos:
   rev: v2.5.1
   hooks:
   - id: pyproject-fmt
+
+- repo: https://github.com/hukkin/mdformat
+  rev: 0.7.22
+  hooks:
+  - id: mdformat
+    name: Format .md files
+    # Skip wrapping line length because doing so can mess up
+    # formatting of GitHub issues created from files in
+    # .github/content, and some files use semantic line breaks.
+    exclude: licenses/.*|LICENSE.md|PATENT.md
+    additional_dependencies:
+    - mdformat-black
+    - mdformat-footnote
+    - mdformat-frontmatter
+    - mdformat-gfm
+    - mdformat-gfm-alerts
