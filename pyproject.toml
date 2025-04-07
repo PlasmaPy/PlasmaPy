@@ -1,16 +1,15 @@
 [build-system]
 build-backend = "setuptools.build_meta"
 requires = [
-  "setuptools >= 61.2.0",
-  "setuptools-scm >= 6.3.2",
-  "wheel >= 0.37.0",
+  "setuptools>=61.2",
+  "setuptools-scm>=6.3.2",
+  "wheel>=0.37",
 ]
 
 [project]
 name = "plasmapy"
 description = "Python package for plasma science"
 readme = "README.md"
-license = {file = "LICENSE.md"}
 keywords = [
   "astronomy",
   "fusion",
@@ -22,6 +21,7 @@ keywords = [
   "space plasmas",
 ]
 
+license = { file = "LICENSE.md" }
 # SPEC 0 recommends that projects drop support for Python versions 3
 # years after their initial release. See:
 # https://scientific-python.org/specs/spec-0000
@@ -35,15 +35,15 @@ classifiers = [
   "License :: OSI Approved :: BSD License",
   "Natural Language :: English",
   "Operating System :: OS Independent",
-  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
-  "Topic :: Scientific/Engineering :: Physics",
   "Topic :: Scientific/Engineering :: Astronomy",
+  "Topic :: Scientific/Engineering :: Physics",
 ]
 
-dynamic = ["version"]
+dynamic = [ "version" ]
 
 # SPEC 0 recommends that support for core packages should be dropped 2
 # years after their initial release.
@@ -53,110 +53,434 @@ dynamic = ["version"]
 # alongside other packages, such as in the heliopythoniverse.
 
 # When updating dependencies, run `nox -s requirements` to update the
-# pinned requirements files. See also `ci_requirements/README.txt`.
+# pinned environments in `uv.lock`.
 
 dependencies = [
   # astropy upper limit described in https://github.com/PlasmaPy/PlasmaPy/issues/2883
-  "astropy >= 5.2, < 7.0.0",
-  "h5py >= 3.8.0",
+  "astropy>=5.2,<7",
+  "h5py>=3.8",
   # Minimum version of ipykernel should not exceed what's used by Google Colab
-  "ipykernel >= 5.5.6",
-  "ipywidgets >= 6.0.0",
-  "lmfit >= 1.1.0",
-  "matplotlib >= 3.7.0",
-  "mpmath >= 1.3.0",
-  "numpy >= 1.24.0",
-  "packaging >= 22.0",
-  "pandas >= 2.0.0",
-  "requests >= 2.28.0",
-  "scipy >= 1.10.0",
-  "setuptools >= 66.0.0",
-  "tqdm >= 4.65.0",
+  "ipykernel>=5.5.6",
+  "ipywidgets>=6",
+  "lmfit>=1.1",
+  "matplotlib>=3.7",
+  "mpmath>=1.3",
+  "numpy>=1.24",
+  "packaging>=22",
+  "pandas>=2",
+  "requests>=2.28",
+  "scipy>=1.10",
+  "setuptools>=66",
+  "tqdm>=4.65",
   # Use loose requirements for voila because it impacts ipykernel version
-  "voila >= 0.2.7",
-  "wrapt >= 1.15.0",
+  "voila>=0.2.7",
+  "wrapt>=1.15",
   # xarray upper limit described in: https://github.com/PlasmaPy/PlasmaPy/issues/2922
-  "xarray >= 2022.12.0, <= 2024.10.0",
+  "xarray>=2022.12,<=2024.10",
 ]
 
-[project.optional-dependencies]
 # The documentation build occurs in an isolated environment that is not
 # user-facing, so we can have stricter requirements.
-docs = [
-  "docutils >= 0.20.1",
-  "jinja2 >= 3.1.4",
-  "nbsphinx >= 0.9.4",
-  "nox >= 2024.4.15",
-  "numpydoc >= 1.7.0",
-  "pillow >= 10.4.0",
-  "pygments >= 2.18.0",
-  "sphinx == 7.3.7",
-  "sphinx-changelog >= 1.5.0",
-  "sphinx-codeautolink >= 0.15.2",
-  "sphinx-copybutton >= 0.5.2",
-  "sphinx-gallery >= 0.16.0",
-  "sphinx-hoverxref >= 1.4.0",
-  "sphinx-issues >= 4.1.0",
-  "sphinx-notfound-page >= 1.0.2",
-  "sphinx-reredirects >= 0.1.5",
-  "sphinx_collapse >= 0.1.3",
-  "sphinx_rtd_theme >= 2.0.0",
-  "sphinx_tabs >= 3.4.5",
-  "sphinxcontrib-bibtex >= 2.6.2",
-  "sphinxcontrib-globalsubs >= 0.1.1",
-  "sphinxemoji >= 0.3.1",
-  "towncrier >= 23.11.0",
-  "unidecode >= 1.3.8",
+optional-dependencies.docs = [
+  "docutils>=0.20.1",
+  "jinja2>=3.1.4",
+  "nbsphinx>=0.9.4",
+  "nox>=2024.10.9",
+  "numpydoc>=1.7",
+  "pillow>=10.4",
+  "pygments==2.18",
+  "sphinx==7.3.7",
+  "sphinx-changelog>=1.5",
+  "sphinx-codeautolink==0.15.2",
+  "sphinx-collapse>=0.1.3",
+  "sphinx-copybutton>=0.5.2",
+  "sphinx-gallery>=0.16",
+  "sphinx-hoverxref>=1.4",
+  "sphinx-issues>=4.1",
+  "sphinx-notfound-page>=1.0.2",
+  "sphinx-reredirects>=0.1.5",
+  "sphinx-rtd-theme>=2",
+  "sphinx-tabs>=3.4.5",
+  "sphinxcontrib-bibtex>=2.6.2",
+  "sphinxcontrib-globalsubs>=0.1.1",
+  "sphinxemoji>=0.3.1",
+  "towncrier>=23.11",
+  "unidecode>=1.3.8",
 ]
-
 # Test dependencies are not user-facing, so we can set stricter
 # requirements to ensure that tests are run in consistent environments.
-tests = [
-  "hypothesis >= 6.108.2",
-  "mypy >= 1.11.0",
-  "nox >= 2024.4.15",
-  "pre-commit >= 3.6.0",
-  "pytest >= 8.3.1",
-  "pytest-cov >= 5.0.0",
-  "pytest-filter-subpackage >= 0.2.0",
-  "pytest-regressions >= 2.5.0",
-  "pytest-rerunfailures >= 14.0",
-  "pytest-xdist >= 3.6.1",
-  "tomli >= 2.0.1",
+optional-dependencies.tests = [
+  "hypothesis>=6.108.2",
+  "mypy>=1.11",
+  "nox>=2024.10.9",
+  "pytest>=8.3.1",
+  "pytest-cov>=5",
+  "pytest-filter-subpackage>=0.2",
+  "pytest-regressions>=2.5",
+  "pytest-rerunfailures>=14",
+  "pytest-xdist>=3.6.1",
+  "tomli>=2.0.1",
 ]
-
-[project.urls]
-Changelog = "https://docs.plasmapy.org/en/stable/whatsnew/index.html"
-Chat = "https://plasmapy.org/chat"
-Documentation = "https://docs.plasmapy.org/"
-Issues = "https://github.com/PlasmaPy/plasmapy/issues/"
-Source = "https://github.com/PlasmaPy/plasmapy"
-website = "https://www.plasmapy.org"
-
-[project.scripts]
-plasma-calculator = "plasmapy.utils.calculator:main"
+urls.Changelog = "https://docs.plasmapy.org/en/stable/whatsnew/index.html"
+urls.Chat = "https://plasmapy.org/chat"
+urls.Documentation = "https://docs.plasmapy.org/"
+urls.Issues = "https://github.com/PlasmaPy/plasmapy/issues/"
+urls.Source = "https://github.com/PlasmaPy/plasmapy"
+urls.website = "https://www.plasmapy.org"
+scripts.plasma-calculator = "plasmapy.utils.calculator:main"
 
 [tool.setuptools]
 include-package-data = true
 
 [tool.setuptools.package-data]
-"plasmapy.particles.data" = ["*"]
-"plasmapy.tests" = ["coveragerc"]
-"plasmapy.utils.calculator" = ["*"]
+"plasmapy.particles.data" = [ "*" ]
+"plasmapy.tests" = [ "coveragerc" ]
+"plasmapy.utils.calculator" = [ "*" ]
 
 [tool.setuptools.packages.find]
-where = ["src"]
-exclude = ["docs/automodapi", "src/plasmapy/_dev"]
+where = [ "src" ]
+exclude = [ "docs/automodapi", "src/plasmapy/_dev" ]
 namespaces = false
 
 [tool.setuptools_scm]
 write_to = "src/plasmapy/_version.py"
 
+[tool.ruff]
+target-version = "py311"
+namespace-packages = [ ".github/workflows", "docs" ]
+extend-exclude = [
+  ".hypothesis",
+  ".idea",
+  ".jupyter",
+  "__pycache__",
+  "_dev",
+  "docs/plasmapy_sphinx",
+]
+
+show-fixes = true
+output-format = "grouped"
+format.line-ending = "lf"
+format.docstring-code-format = true
+lint.extend-select = [
+  "A",      # flake8-builtins
+  "ANN204", # missing-return-type-special-method
+  "ANN205", # missing-return-type-static-method
+  "ANN206", # missing-return-type-class-method
+  "ARG",    # flake8-unused-arguments
+  "ASYNC",  # flake8-async
+  "B",      # flake8-bugbear
+  "BLE",    # flake8-blind-except
+  "C4",     # flake8-comprehensions
+  "C90",    # mccabe
+  "COM818", # trailing-comma-on-bare-tuple
+  "D",      # pydocstyle
+  #  "DOC", # pydoclint (enable this rule set when it is no longer in preview)
+  "DTZ",    # flake8-datetimez
+  "EM",     # flake8-errmsg
+  "EXE",    # flake8-executable
+  "FA102",  # flake8-required-type-annotation
+  "FBT003", # flake8-boolean-trap
+  "FIX",    # flake8-fixme
+  "FLY",    # flynt
+  "G",      # flake8-logging-format
+  "I",      # isort
+  "ICN",    # flake8-import-conventions
+  "INP",    # flake8-no-pep420
+  "INT",    # flake8-gettext
+  "ISC",    # flake8-implicit-str-concat
+  "N",      # pep8-naming
+  "NPY",    # numpy-deprecated-type-alias
+  "PD",     # pandas-vet
+  "PERF",   # perflint
+  "PGH",    # pygrep-hooks
+  "PIE",    # flake8-pie
+  "PLC",    # pylint convention
+  "PLE",    # pylint errors
+  "PLR",    # pylint refactorings
+  "PLW",    # pylint warnings
+  "PT",     # flake8-pytest-style
+  "PTH",    # flake8-use-pathlib
+  "PYI",    # flake8-pyi
+  "RET",    # flake8-return
+  "RSE",    # flake8-raise
+  "RUF001", # ambiguous-unicode-character-string
+  "RUF002", # ambiguous-unicode-character-docstring
+  "RUF003", # ambiguous-unicode-character-comment
+  "RUF005", # collection-literal-concatenation
+  "RUF006", # asyncio-dangling-task
+  "RUF007", # pairwise-over-zipped
+  "RUF008", # mutable-dataclass-default
+  "RUF009", # function-call-in-dataclass-default-argument
+  "RUF010", # explicit-f-string-type-conversion
+  "RUF012", # mutable-class-default
+  "RUF013", # implicit-optional
+  "RUF015", # unnecessary-iterable-allocation-for-first-element
+  "RUF016", # invalid-index-type
+  "RUF017", # quadratic-list-summation
+  "RUF018", # assignment-in-assert
+  "RUF019", # unnecessary-key-check
+  "RUF020", # never-union
+  "RUF021", # parenthesize-chained-operators
+  "RUF023", # unsorted-dunder-slots
+  "RUF024", # mutable-fromkeys-value
+  "RUF026", # default-factory-kwarg
+  "RUF030", # assert-with-print-message
+  "RUF032", # decimal-from-float-literal
+  "RUF033", # post-init-default
+  "RUF034", # useless-if-else
+  "RUF040", # invalid-assert-message-literal-argument
+  "RUF041", # unnecessary-nested-literal
+  "RUF046", # unnecessary-cast-to-int
+  "RUF048", # map-int-version-parsing
+  "RUF051", # if-key-in-dict-del
+  "RUF100", # unused-noqa
+  "RUF101", # redirected-noqa
+  "RUF200", # invalid-pyproject-toml
+  "S",      # flake8-bandit
+  "SIM",    # flake8-simplify
+  "SLF",    # flake8-self
+  "SLOT",   # flake8-slots
+  "T",      # flake8-print
+  "T100",   # debugger
+  "TC",     # flake8-type-checking
+  "TD",     # flake8-todos
+  "TID",    # flake8-tidy-imports
+  "TRY",    # tryceratops
+  "UP",     # pyupgrade
+  "W",      # pycodestyle warnings
+  "YTT",    # flake8-2020
+]
+# The ruff rules to include or ignore for notebooks are defined
+# separately in .pre-commit-config.yaml in the hook for nbqa-ruff
+lint.ignore = [
+  "B028",    # no-explicit-stacklevel
+  "D105",    # undocumented-magic-method (enable later?)
+  "D200",    # fits-on-one-line (incompatible with multiline short summaries)
+  "D202",    # no-blank-line-after-function
+  "D205",    # blank-line-after-summary (incompatible with multiline short summaries)
+  "D206",    # indent-with-spaces (formatter conflict)
+  "D401",    # non-imperative-mood (enable later?)
+  "E501",    # line-too-long
+  "EM101",   # raw-string-in-exception (enable later in focused PR)
+  "EM102",   # f-string-in-exception (enable later in focused PR)
+  "FIX002",  # line-contains-todo
+  "ISC001",  # single-line-implicit-string-concatenation (formatter conflict)
+  "N802",    # invalid-function-name
+  "N803",    # invalid-argument-name
+  "N806",    # non-lowercase-variable-in-function
+  "N816",    # mixed-case-variable-in-global-scope
+  "PERF203", # try-except-in-loop (remove when we require Python ≥ 3.11)
+  "PLC2401", # non-ascii-name (flags variables used as mathematical symbols)
+  "PLC2403", # non-ascii-import-name
+  "PLE0605", # invalid-all-format (flags `__all__ += __lite_funcs`, etc.)
+  "PLR0913", # too-many-arguments
+  "PLR2004", # magic-value-comparison
+  "PT007",   # pytest-parametrize-values-wrong-type
+  "PT011",   # pytest-raises-too-broad
+  "PT012",   # pytest-raises-multiple-statements (enable later?)
+  "PT019",   # pytest-fixture-param-without-value (enable later?)
+  "PYI024",  # collections-named-tuple (enable later)
+  "RET501",  # unnecessary-return-none
+  "RET502",  # implicit-return-value
+  "RET505",  # superfluous-else-return (enable later?)
+  "RET506",  # superfluous-else-raise (enable later?)
+  "S101",    # asserts
+  "SIM300",  # yoda-conditions
+  "TD002",   # missing-todo-author
+  "TD003",   # missing-todo-link
+  "TRY003",  # raise-vanilla-args
+  "TRY301",  # raise-within-try
+  "UP025",   # unicode-kind-prefix
+  "W191",    # tab-indentation (formatter conflict)
+  "W291",    # trailing-whitespace (handled by formatter)
+]
+lint.per-file-ignores."**/*.ipynb" = [ "T201", "T203" ]
+lint.per-file-ignores.".github/scripts/*.py" = [ "D103", "INP001" ]
+lint.per-file-ignores."__init__.py" = [ "D104", "E402", "F401", "F402", "F403" ] # ignore import errors
+lint.per-file-ignores."docs/conf.py" = [ "D100", "D103", "E402", "EXE001", "EXE005", "F401" ]
+
+# Most ruff rule violations in the following notebooks should eventually be fixed
+lint.per-file-ignores."docs/notebooks/analysis/fit_functions.ipynb" = [ "NPY002" ]
+lint.per-file-ignores."docs/notebooks/analysis/nullpoint.ipynb" = [ "D103" ]
+lint.per-file-ignores."docs/notebooks/analysis/swept_langmuir/find_floating_potential.ipynb" = [ "FBT003" ]
+lint.per-file-ignores."docs/notebooks/diagnostics/charged_particle_radiography_film_stacks.ipynb" = [ "B007", "PTH123" ]
+lint.per-file-ignores."docs/notebooks/diagnostics/charged_particle_radiography_particle_tracing.ipynb" = [
+  "D103",
+  "E741",
+]
+lint.per-file-ignores."docs/notebooks/diagnostics/charged_particle_radiography_particle_tracing_custom_source.ipynb" = [
+  "NPY002",
+]
+lint.per-file-ignores."docs/notebooks/diagnostics/charged_particle_radiography_particle_tracing_wire_mesh.ipynb" = [
+  "D103",
+]
+lint.per-file-ignores."docs/notebooks/diagnostics/thomson_fitting.ipynb" = [ "NPY002", "PD011" ]
+lint.per-file-ignores."docs/notebooks/dispersion/dispersion_function.ipynb" = [ "D103" ]
+lint.per-file-ignores."docs/notebooks/dispersion/stix_dispersion.ipynb" = [ "FBT003" ]
+lint.per-file-ignores."docs/notebooks/formulary/cold_plasma_tensor_elements.ipynb" = [ "FBT003" ]
+lint.per-file-ignores."docs/notebooks/formulary/ExB_drift.ipynb" = [ "B008", "D103" ]
+lint.per-file-ignores."docs/notebooks/langmuir_samples/_generate_noisy.ipynb" = [ "NPY002", "PTH123" ]
+lint.per-file-ignores."docs/notebooks/plasma/grids_cartesian.ipynb" = [ "NPY002", "PLW2901" ]
+lint.per-file-ignores."docs/notebooks/plasma/grids_nonuniform.ipynb" = [ "NPY002" ]
+
+lint.per-file-ignores."setup.py" = [ "D100" ]
+lint.per-file-ignores."src/plasmapy/analysis/fit_functions.py" = [ "D301" ]
+lint.per-file-ignores."src/plasmapy/formulary/braginskii.py" = [ "C901", "RET503", "RET504" ]
+lint.per-file-ignores."src/plasmapy/plasma/sources/*.py" = [ "D102" ]
+lint.per-file-ignores."src/plasmapy/utils/_pytest_helpers/pytest_helpers.py" = [ "BLE001", "PLR", "SLF001" ]
+lint.per-file-ignores."src/plasmapy/utils/calculator/plasma_calculator.ipynb" = [ "SLF001" ]
+lint.per-file-ignores."tests/**/__init__.py" = [ "D104" ]
+lint.per-file-ignores."tests/**/test_*.py" = [
+  "D100",
+  "D101",
+  "D102",
+  "D103",
+  "D104",
+  "D209",
+  "D400",
+  "D401",
+  "DOC201",
+  "DOC501",
+  "INP001",
+  "N801",
+  "PLC2701",
+  "PLR6301",
+  "RUF012",
+  "SLF001",
+]
+lint.per-file-ignores."tests/formulary/test_distribution.py" = [ "ARG005" ]
+lint.per-file-ignores."tests/particles/test_decorators.py" = [ "ARG001", "ARG002" ]
+lint.per-file-ignores."tests/utils/_pytest_helpers/test_pytest_helpers.py" = [ "BLE001", "TRY002" ]
+lint.per-file-ignores."tests/utils/decorators/test_converters.py" = [ "ARG001", "ARG005" ]
+# Allow potentially ambiguous Unicode characters with valid uses in plasma science
+lint.allowed-confusables = [
+  "×",
+  "–",
+  "′",
+  "∨",
+  "∪",
+  "∼",
+  "⊤",
+  "α",
+  "ℂ",
+  "ℰ",
+  "ℱ",
+  "γ",
+  "ℎ",
+  "ι",
+  "ℐ",
+  "ℑ",
+  "ℒ",
+  "ℓ",
+  "ℳ",
+  "ν",
+  "ℕ",
+  "ο",
+  "𝒪",
+  "ℚ",
+  "ρ",
+  "ℜ",
+  "ℝ",
+  "σ",
+  "τ",
+  "β",
+  "υ",
+  "ℤ",
+]
+lint.dummy-variable-rgx = "^(Z|mass_numb|request|event|_.*)$"
+lint.flake8-annotations.allow-star-arg-any = true
+lint.flake8-annotations.ignore-fully-untyped = true
+lint.flake8-annotations.mypy-init-return = true
+lint.flake8-annotations.suppress-dummy-args = true
+lint.flake8-annotations.suppress-none-returning = true
+lint.flake8-import-conventions.aliases."astropy.constants" = "const"
+lint.flake8-import-conventions.aliases."astropy.units" = "u"
+lint.flake8-import-conventions.aliases."matplotlib" = "mpl"
+lint.flake8-import-conventions.aliases."matplotlib.pyplot" = "plt"
+lint.flake8-import-conventions.aliases.numpy = "np"
+lint.flake8-import-conventions.aliases.pandas = "pd"
+lint.flake8-import-conventions.banned-from = [
+  "astropy.units",
+  "matplotlib.pyplot",
+  "numpy",
+  "pytest",
+  "warnings",
+]
+lint.flake8-tidy-imports.ban-relative-imports = "all"
+lint.flake8-tidy-imports.banned-api."typing.Callable".msg = "Deprecated alias. Change to collections.abc.Callable"
+lint.flake8-tidy-imports.banned-api."typing.Collection".msg = "Deprecated alias. Change to collections.abc.Collection"
+lint.flake8-tidy-imports.banned-api."typing.DefaultDict".msg = "Deprecated alias. Change to collections.defaultdict"
+lint.flake8-tidy-imports.banned-api."typing.Dict".msg = "Deprecated alias. Change to dict"
+lint.flake8-tidy-imports.banned-api."typing.Generator".msg = "Deprecated alias. Change to collections.abc.Generator"
+lint.flake8-tidy-imports.banned-api."typing.Iterable".msg = "Deprecated alias. Change to collections.abc.Iterable"
+lint.flake8-tidy-imports.banned-api."typing.Iterator".msg = "Deprecated alias. Change to collections.abc.Iterator"
+lint.flake8-tidy-imports.banned-api."typing.List".msg = "Deprecated alias. Change to list"
+lint.flake8-tidy-imports.banned-api."typing.Mapping".msg = "Deprecated alias. Change to collections.abc.mapping"
+lint.flake8-tidy-imports.banned-api."typing.MutableMapping".msg = "Deprecated alias. Change to collections.abc.MutableMapping"
+lint.flake8-tidy-imports.banned-api."typing.Sequence".msg = "Deprecated alias. Change to collections.abc.Sequence"
+lint.flake8-tidy-imports.banned-api."typing.Set".msg = "Deprecated alias. Change to set"
+lint.flake8-tidy-imports.banned-api."typing.Tuple".msg = "Deprecated alias. Change to tuple"
+lint.flake8-tidy-imports.banned-api."typing.Type".msg = "Deprecated alias. Change to type"
+lint.flake8-unused-arguments.ignore-variadic-names = true
+lint.isort.known-first-party = [ "plasmapy" ]
+lint.mccabe.max-complexity = 10
+lint.pydocstyle.convention = "numpy"
+
+[tool.codespell]
+skip = "*.png,*cache*,*egg*,.git,.hypothesis,.idea,.nox,.tox,_build,*charged_particle*.ipynb,venv"
+# Add false positives found by codespell to ignore-words-list
+ignore-words-list = """
+aas,
+aci,
+afe,
+anc,
+ans,
+ba,
+bale,
+bu,
+circularly,
+ded,
+dne,
+ect,
+explin,
+fo,
+fof,
+gud,
+hax,
+hist,
+hve,
+ine,
+inpt,
+nd,
+noo,
+nwo,
+ot,
+recuse,
+ro,
+te,
+tru,
+ue,
+ue,
+windo"""
+
+[tool.check-manifest]
+ignore = [
+  "#*",
+  "*#",
+  "*checkpoint*",
+  "*TEMP*",
+  "*~",
+  ".mailmap",
+  "docs/*build/**",
+  "Untitled*",
+  "src/plasmapy/_version.py",
+]
+
 [tool.pytest.ini_options]
-testpaths = ['.']
+testpaths = [ '.' ]
 xfail_strict = true
 markers = [
-    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+  "slow: marks tests as slow (deselect with '-m \"not slow\"')",
 ]
 doctest_optionflags = """
 NORMALIZE_WHITESPACE
@@ -165,7 +489,7 @@ NUMBER
 IGNORE_EXCEPTION_DETAIL"""
 filterwarnings = [
   "ignore:.*deprecated in traitlets 4.2.*:DeprecationWarning",
-  "ignore:.*MultiIndex.*:DeprecationWarning",  # https://github.com/PlasmaPy/PlasmaPy/issues/2319
+  "ignore:.*MultiIndex.*:DeprecationWarning",                  # https://github.com/PlasmaPy/PlasmaPy/issues/2319
 ]
 norecursedirs = [
   '*egg-info*',
@@ -205,7 +529,7 @@ exclude_lines = [
 
 [tool.coverage.run]
 branch = true
-source = ["src"]
+source = [ "src" ]
 omit = [
   "*/plasmapy/utils/calculator/*",
   "*/plasmapy/tests/*",
@@ -213,298 +537,14 @@ omit = [
   "*/plasmapy/_dev/*",
 ]
 
-[tool.build_docs]
-source-dir = "docs"
-build-dir = "docs/_build"
-all_files = "1"
-
-[tool.codespell]
-skip = "*.png,*cache*,*egg*,.git,.hypothesis,.idea,.nox,.tox,_build,*charged_particle*.ipynb,venv"
-# Add false positives found by codespell to ignore-words-list
-ignore-words-list = """
-aas,
-aci,
-afe,
-anc,
-ans,
-ba,
-bale,
-bu,
-circularly,
-ded,
-dne,
-ect,
-explin,
-fo,
-fof,
-gud,
-hax,
-hist,
-hve,
-ine,
-inpt,
-nd,
-noo,
-nwo,
-ot,
-recuse,
-ro,
-te,
-tru,
-ue,
-ue,
-windo"""
-
-[tool.changelog-bot]
-[tool.changelog-bot.towncrier_changelog]
-enabled = true
-verify_pr_number = true
-changelog_skip_label = "no changelog entry needed"
-changelog_noop_label = "skip changelog checks"
-whatsnew_label = "needs changelog entry"
-whatsnew_pattern = '''changelog\/\d+\.[a-zA-Z]+(\.\d+)?\.rst'''
-
-[tool.ruff]
-target-version = "py311"
-namespace-packages = [".github/workflows", "docs"]
-output-format = "grouped"
-show-fixes = true
-extend-exclude = [
-  "docs/plasmapy_sphinx",
-  ".idea",
-  ".hypothesis",
-  ".jupyter",
-  "__pycache__",
-  "_dev",
-]
-
-[tool.ruff.format]
-docstring-code-format = true
-line-ending = "lf"
-
-[tool.ruff.lint]
-extend-select = [
-  "A", # flake8-builtins
-  "ANN204", # missing-return-type-special-method
-  "ANN205", # missing-return-type-static-method
-  "ANN206", # missing-return-type-class-method
-  "ARG", # flake8-unused-arguments
-  "ASYNC", # flake8-async
-  "B", # flake8-bugbear
-  "BLE", # flake8-blind-except
-  "C4", # flake8-comprehensions
-  "C90", # mccabe
-  "COM818", # trailing-comma-on-bare-tuple
-  "D", # pydocstyle
-#  "DOC", # pydoclint (enable this rule set when it is no longer in preview)
-  "DTZ", # flake8-datetimez
-  "EM", # flake8-errmsg
-  "EXE", # flake8-executable
-  "FA102", # flake8-required-type-annotation
-  "FBT003", # flake8-boolean-trap
-  "FIX", # flake8-fixme
-  "FLY", # flynt
-  "G", # flake8-logging-format
-  "I", # isort
-  "ICN", # flake8-import-conventions
-  "INP", # flake8-no-pep420
-  "INT", # flake8-gettext
-  "ISC", # flake8-implicit-str-concat
-  "N", # pep8-naming
-  "NPY", # numpy-deprecated-type-alias
-  "PD", # pandas-vet
-  "PERF", # perflint
-  "PGH", # pygrep-hooks
-  "PIE", # flake8-pie
-  "PLC", # pylint convention
-  "PLE", # pylint errors
-  "PLR", # pylint refactorings
-  "PLW", # pylint warnings
-  "PT", # flake8-pytest-style
-  "PTH", # flake8-use-pathlib
-  "PYI", # flake8-pyi
-  "RET", # flake8-return
-  "RSE", # flake8-raise
-  "RUF001", # ambiguous-unicode-character-string
-  "RUF002", # ambiguous-unicode-character-docstring
-  "RUF003", # ambiguous-unicode-character-comment
-  "RUF005", # collection-literal-concatenation
-  "RUF006", # asyncio-dangling-task
-  "RUF007", # pairwise-over-zipped
-  "RUF008", # mutable-dataclass-default
-  "RUF009", # function-call-in-dataclass-default-argument
-  "RUF010", # explicit-f-string-type-conversion
-  "RUF012", # mutable-class-default
-  "RUF013", # implicit-optional
-  "RUF015", # unnecessary-iterable-allocation-for-first-element
-  "RUF016", # invalid-index-type
-  "RUF017", # quadratic-list-summation
-  "RUF018", # assignment-in-assert
-  "RUF019", # unnecessary-key-check
-  "RUF020", # never-union
-  "RUF024", # mutable-fromkeys-value
-  "RUF026", # default-factory-kwarg
-  "RUF100", # unused-noqa
-  "RUF101", # redirected-noqa
-  "RUF200", # invalid-pyproject-toml
-  "S", # flake8-bandit
-  "SIM", # flake8-simplify
-  "SLF", # flake8-self
-  "SLOT", # flake8-slots
-  "T", # flake8-print
-  "T100", # debugger
-  "TCH", # flake8-type-checking
-  "TD", # flake8-todos
-  "TID", # flake8-tidy-imports
-  "TRY", # tryceratops
-  "UP", # pyupgrade
-  "W", # pycodestyle warnings
-  "YTT", # flake8-2020
-]
-# The ruff rules to include or ignore for notebooks are defined
-# separately in .pre-commit-config.yaml in the hook for nbqa-ruff
-ignore = [
-  "B028", # no-explicit-stacklevel
-  "D105", # undocumented-magic-method (enable later?)
-  "D200", # fits-on-one-line (incompatible with multiline short summaries)
-  "D202", # no-blank-line-after-function
-  "D205", # blank-line-after-summary (incompatible with multiline short summaries)
-  "D206", # indent-with-spaces (formatter conflict)
-  "D401", # non-imperative-mood (enable later?)
-  "E501", # line-too-long
-  "EM101", # raw-string-in-exception (enable later in focused PR)
-  "EM102", # f-string-in-exception (enable later in focused PR)
-  "FIX002", # line-contains-todo
-  "ISC001", # single-line-implicit-string-concatenation (formatter conflict)
-  "N802", # invalid-function-name
-  "N803", # invalid-argument-name
-  "N806", # non-lowercase-variable-in-function
-  "N816", # mixed-case-variable-in-global-scope
-  "PERF203", # try-except-in-loop (remove when we require Python ≥ 3.11)
-  "PLC2401", # non-ascii-name (flags variables used as mathematical symbols)
-  "PLC2403", # non-ascii-import-name
-  "PLE0605", # invalid-all-format (flags `__all__ += __lite_funcs`, etc.)
-  "PLR0913", # too-many-arguments
-  "PLR2004", # magic-value-comparison
-  "PT007", # pytest-parametrize-values-wrong-type
-  "PT011", # pytest-raises-too-broad
-  "PT012", # pytest-raises-multiple-statements (enable later?)
-  "PT019", # pytest-fixture-param-without-value (enable later?)
-  "PYI024", # collections-named-tuple (enable later)
-  "RET501", # unnecessary-return-none
-  "RET502", # implicit-return-value
-  "RET505", # superfluous-else-return (enable later?)
-  "RET506", # superfluous-else-raise (enable later?)
-  "S101", # asserts
-  "SIM300", # yoda-conditions
-  "TD002", # missing-todo-author
-  "TD003", # missing-todo-link
-  "TRY003", # raise-vanilla-args
-  "TRY301", # raise-within-try
-  "UP025", # unicode-kind-prefix
-  "W191", # tab-indentation (formatter conflict)
-  "W291", # trailing-whitespace (handled by formatter)
-]
-dummy-variable-rgx = "^(Z|mass_numb|request|event|_.*)$"
-# Allow potentially ambiguous Unicode characters with valid uses in plasma science
-allowed-confusables = ["–", "α", "β", "γ", "ι", "ν", "ο", "ρ", "σ", "τ", "υ", "×", "′", "∼", "∪", "⊤", "∨", "ℂ", "ℕ", "ℚ", "ℝ", "ℤ", "ℑ", "ℒ", "ℓ", "ℳ", "ℜ", "ℱ", "ℎ", "ℰ", "𝒪", "ℐ"]
-
-[tool.ruff.lint.flake8-annotations]
-allow-star-arg-any = true
-ignore-fully-untyped = true
-mypy-init-return = true
-suppress-dummy-args = true
-suppress-none-returning = true
-
-[tool.ruff.lint.flake8-import-conventions]
-banned-from = [
-  "astropy.units",
-  "matplotlib.pyplot",
-  "numpy",
-  "pytest",
-  "warnings",
-]
-
-[tool.ruff.lint.flake8-import-conventions.aliases]
-"astropy.constants" = "const"
-"astropy.units" = "u"
-"matplotlib" = "mpl"
-"matplotlib.pyplot" = "plt"
-numpy = "np"
-pandas = "pd"
-
-[tool.ruff.lint.flake8-unused-arguments]
-ignore-variadic-names = true
-
-[tool.ruff.lint.flake8-tidy-imports]
-ban-relative-imports = "all"
-
-[tool.ruff.lint.flake8-tidy-imports.banned-api]
-"typing.Callable".msg = "Deprecated alias. Change to collections.abc.Callable"
-"typing.Collection".msg = "Deprecated alias. Change to collections.abc.Collection"
-"typing.DefaultDict".msg = "Deprecated alias. Change to collections.defaultdict"
-"typing.Dict".msg = "Deprecated alias. Change to dict"
-"typing.Generator".msg = "Deprecated alias. Change to collections.abc.Generator"
-"typing.Iterable".msg = "Deprecated alias. Change to collections.abc.Iterable"
-"typing.Iterator".msg = "Deprecated alias. Change to collections.abc.Iterator"
-"typing.List".msg = "Deprecated alias. Change to list"
-"typing.Mapping".msg = "Deprecated alias. Change to collections.abc.mapping"
-"typing.MutableMapping".msg = "Deprecated alias. Change to collections.abc.MutableMapping"
-"typing.Sequence".msg = "Deprecated alias. Change to collections.abc.Sequence"
-"typing.Set".msg = "Deprecated alias. Change to set"
-"typing.Tuple".msg = "Deprecated alias. Change to tuple"
-"typing.Type".msg = "Deprecated alias. Change to type"
-
-[tool.ruff.lint.isort]
-known-first-party = ["plasmapy"]
-
-[tool.ruff.lint.mccabe]
-max-complexity = 10
-
-[tool.ruff.lint.per-file-ignores]
-".github/scripts/*.py" = ["D103", "INP001"]
-"__init__.py" = ["D104", "E402", "F401", "F402", "F403"] # ignore import errors
-"docs/conf.py" = ["D100", "D103", "E402", "EXE001", "EXE005", "F401"]
-"setup.py" = ["D100"]
-"src/plasmapy/analysis/fit_functions.py" = ["D301"]
-"src/plasmapy/formulary/braginskii.py" = ["C901", "RET503", "RET504"]
-"src/plasmapy/plasma/sources/*.py" = ["D102"]
-"src/plasmapy/utils/_pytest_helpers/pytest_helpers.py" = ["BLE001", "PLR", "SLF001"]
-"tests/**/__init__.py" = ["D104"]
-"tests/**/test_*.py" = ["D100", "D101", "D102", "D103", "D104", "D209", "D400", "D401", "DOC201", "DOC501", "INP001", "N801",  "PLC2701", "PLR6301", "RUF012", "SLF001"]
-"tests/formulary/test_distribution.py" = ["ARG005"]
-"tests/particles/test_decorators.py" = ["ARG001", "ARG002"]
-"tests/utils/_pytest_helpers/test_pytest_helpers.py" = ["BLE001", "TRY002"]
-"tests/utils/decorators/test_converters.py" = ["ARG001", "ARG005"]
-"**/*.ipynb" = ["T201", "T203"]
-"src/plasmapy/utils/calculator/plasma_calculator.ipynb" = ["SLF001"]
-# The ruff rule violations in the following notebooks should eventually be fixed
-"docs/notebooks/analysis/fit_functions.ipynb" = ["NPY002"]
-"docs/notebooks/analysis/nullpoint.ipynb" = ["D103"]
-"docs/notebooks/analysis/swept_langmuir/find_floating_potential.ipynb" = ["FBT003"]
-"docs/notebooks/diagnostics/charged_particle_radiography_film_stacks.ipynb" = ["B007", "PTH123"]
-"docs/notebooks/diagnostics/charged_particle_radiography_particle_tracing.ipynb" = ["D103", "E741"]
-"docs/notebooks/diagnostics/charged_particle_radiography_particle_tracing_custom_source.ipynb" = ["NPY002"]
-"docs/notebooks/diagnostics/charged_particle_radiography_particle_tracing_wire_mesh.ipynb" = ["D103"]
-"docs/notebooks/diagnostics/thomson_fitting.ipynb" = ["NPY002", "PD011"]
-"docs/notebooks/dispersion/dispersion_function.ipynb" = ["D103"]
-"docs/notebooks/dispersion/stix_dispersion.ipynb" = ["FBT003"]
-"docs/notebooks/formulary/cold_plasma_tensor_elements.ipynb" = ["FBT003"]
-"docs/notebooks/formulary/ExB_drift.ipynb" = ["B008", "D103"]
-"docs/notebooks/langmuir_samples/_generate_noisy.ipynb" = ["NPY002", "PTH123"]
-"docs/notebooks/plasma/grids_cartesian.ipynb" = ["NPY002", "PLW2901"]
-"docs/notebooks/plasma/grids_nonuniform.ipynb" = ["NPY002"]
-
-[tool.ruff.lint.pydocstyle]
-convention = "numpy"
-
 [tool.towncrier]
 package = "plasmapy"
 name = "PlasmaPy"
 filename = "CHANGELOG.rst"
 directory = "changelog"
 title_format = "{name} v{version} ({project_date})"
-issue_format = ":pr:`{issue}`" # Despite the name mismatch, we use this for linking to PRs
+# Despite the name mismatch, we use `issue_format` for linking to PRs
+issue_format = ":pr:`{issue}`"
 wrap = true
 
 [[tool.towncrier.type]]
@@ -542,15 +582,16 @@ directory = "trivial"
 name = "Additional Changes"
 showcontent = true
 
-[tool.check-manifest]
-ignore = [
-  "#*",
-  "*#",
-  "*checkpoint*",
-  "*TEMP*",
-  "*~",
-  ".mailmap",
-  "docs/*build/**",
-  "Untitled*",
-  "src/plasmapy/_version.py",
-]
+[tool.build_docs]
+source-dir = "docs"
+build-dir = "docs/_build"
+all_files = "1"
+
+[tool.changelog-bot]
+[tool.changelog-bot.towncrier_changelog]
+enabled = true
+verify_pr_number = true
+changelog_skip_label = "no changelog entry needed"
+changelog_noop_label = "skip changelog checks"
+whatsnew_label = "needs changelog entry"
+whatsnew_pattern = '''changelog\/\d+\.[a-zA-Z]+(\.\d+)?\.rst'''
