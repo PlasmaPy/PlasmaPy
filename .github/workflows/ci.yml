@@ -67,6 +67,11 @@ jobs:
           python: '3.13'
           nox_session: cff
 
+        - name: Security analysis of GitHub workflows
+          os: ubuntu-latest
+          python: '3.13'
+          nox_session: zizmor
+
         - name: Check consistency of pinned & project requirements
           os: ubuntu-latest
           python: '3.13'
