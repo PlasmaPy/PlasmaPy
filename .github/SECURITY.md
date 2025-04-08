@@ -5,7 +5,7 @@
 Security updates will only be provided for the most recent version of PlasmaPy.
 
 | Version | Supported |
-|---------|-----------|
+| ------- | --------- |
 | latest  | ✅        |
 | older   | ❌        |
 
@@ -21,5 +21,5 @@ If you believe you have found a security vulnerability, please [raise an issue] 
 > - Steps to reproduce the issue, if applicable
 > - Any relevant additional information, as needed
 
-[PlasmaPy's GitHub repository]: https://github.com/PlasmaPy/PlasmaPy
+[plasmapy's github repository]: https://github.com/PlasmaPy/PlasmaPy
 [raise an issue]: https://github.com/PlasmaPy/PlasmaPy/issues/new/choose
