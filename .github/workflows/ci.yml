@@ -82,12 +82,12 @@ jobs:
         persist-credentials: false
 
     - name: Install Graphviz for doc builds
-      if: startsWith(matrix.nox_session, 'docs')
+      if: contains(matrix.nox_session, 'docs')
       uses: ts-graphviz/setup-graphviz@v2
 
     - name: Install pandoc for doc builds
       # This step requires Ubuntu
-      if: startsWith(matrix.nox_session, 'docs')
+      if: contains(matrix.nox_session, 'docs')
       run: |
         sudo apt update
         sudo apt-get install -y pandoc
