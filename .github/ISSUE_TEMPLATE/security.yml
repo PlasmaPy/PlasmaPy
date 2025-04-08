@@ -21,10 +21,10 @@ body:
     label: Severity
     description: How severe is this vulnerability? (optional)
     options:
-        - "🪛 Low: Minor vulnerability"
-        - "⚠️ Medium: Limited impact"
-        - "🔥 High: Serious risk"
-        - "💥 Critical: Requires immediate action (please email team@plasmapy.org)"
+    - '🪛 Low: Minor vulnerability'
+    - '⚠️ Medium: Limited impact'
+    - '🔥 High: Serious risk'
+    - '💥 Critical: Requires immediate action (please email team@plasmapy.org)'
 
 - type: textarea
   id: potential-impact
