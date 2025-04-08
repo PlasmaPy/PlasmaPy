@@ -136,7 +136,7 @@ def requirements(session: nox.Session) -> None:
     # When silent is `True`, `session.run()` returns a multi-line string
     # with the standard output and standard error.
 
-    uv_output: str | bool = session.run(*uv_lock_upgrade, silent=running_on_ci)
+    uv_output: str | bool = session.run(*uv_lock_upgrade, silent=running_on_ci, *session.posargs)
 
     if running_on_ci:
         session.log(uv_output)
@@ -534,6 +534,7 @@ def changelog(session: nox.Session, final: str) -> None:
         "--version",
         version,
         *options,
+        *session.posargs,
     )
 
     if final:
@@ -566,7 +567,7 @@ def autotyping(session: nox.Session, options: tuple[str, ...]) -> None:
     session.install(".[tests,docs]", "autotyping", "typing_extensions")
     DEFAULT_PATHS = ("src", "tests", "tools", "*.py", ".github", "docs/*.py")
     paths = session.posargs or DEFAULT_PATHS
-    session.run("python", "-m", "autotyping", *options, *paths)
+    session.run("python", "-m", "autotyping", *options, *paths, *session.posargs)
 
 
 @nox.session
@@ -656,7 +657,7 @@ def zizmor(session: nox.Session) -> None:
     Configuration file: .github/zizmor.yml
     """
     session.install("zizmor")
-    session.run("zizmor", ".github")
+    session.run("zizmor", ".github", "--no-progress", "--color=auto", *session.posargs)
 
 
 # /// script
