@@ -104,6 +104,13 @@ maintenance:
       'licenses/**',
     ]
 
+security:
+  - changed-files:
+    - any-glob-to-any-file: [
+      '**/SECURITY.md',
+      '.github/ISSUE_TEMPLATE/security.yml',
+    ]
+
 notebooks:
   - changed-files:
     - any-glob-to-any-file: [
