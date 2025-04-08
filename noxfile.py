@@ -646,7 +646,15 @@ def lint(session: nox.Session) -> None:
 
 @nox.session
 def zizmor(session: nox.Session) -> None:
-    """Find common security issues in GitHub Actions."""
+    """
+    Find common security issues in GitHub Actions.
+
+    Because some of the zizmor audit rules require a GitHub token,
+    running this check locally may produce different results than
+    running it in CI.
+
+    Configuration file: .github/zizmor.yml
+    """
     session.install("zizmor")
     session.run("zizmor", ".github")
 
