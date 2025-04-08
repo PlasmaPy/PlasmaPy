@@ -318,6 +318,8 @@ def docs(session: nox.Session) -> None:
     Build documentation with Sphinx.
 
     This session may require installation of pandoc and graphviz.
+
+    Configuration file: docs/conf.py
     """
 
     if running_on_ci:
@@ -409,7 +411,11 @@ mypy error code. Please use sparingly!
 
 @nox.session(python=maxpython)
 def mypy(session: nox.Session) -> None:
-    """Perform static type checking."""
+    """
+    Perform static type checking.
+
+    Configuration file: mypy.ini
+    """
 
     session.install(uv_requirement)
     session.run_install(
@@ -623,7 +629,11 @@ def manifest(session: nox.Session) -> None:
 
 @nox.session
 def lint(session: nox.Session) -> None:
-    """Run all pre-commit hooks on all files."""
+    """
+    Run all pre-commit hooks on all files.
+
+    Configuration file: .pre-commit-config.yaml
+    """
     session.install("pre-commit")
     session.run(
         "pre-commit",
