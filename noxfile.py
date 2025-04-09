@@ -136,7 +136,11 @@ def requirements(session: nox.Session) -> None:
     # When silent is `True`, `session.run()` returns a multi-line string
     # with the standard output and standard error.
 
-    uv_output: str | bool = session.run(*uv_lock_upgrade, silent=running_on_ci, *session.posargs)
+    uv_output: str | bool = session.run(
+        *uv_lock_upgrade,
+        *session.posargs,
+        silent=running_on_ci,
+    )
 
     if running_on_ci:
         session.log(uv_output)
