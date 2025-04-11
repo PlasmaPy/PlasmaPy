@@ -16,6 +16,19 @@ def get_s_points(num_points, s_end_point):
     return np.linspace(0, s_end_point, num_points)
 
 
+def get_index_from_s(s_value, delta_s):
+    """Get the index of the `s` array that corresponds to the `s_value`.
+
+    If the `s_value` is not on a grid point then the index just before is
+    returned.
+
+    Returns
+    -------
+    index : `int`
+    """
+    return int(s_value / delta_s)
+
+
 def _large_probe_x_and_dx_ds(s_points, renormalized_probe_radius):
     r"""The values of `x` and `dx/ds` that correspond to the `s_points` for a probe of large radius.
 
