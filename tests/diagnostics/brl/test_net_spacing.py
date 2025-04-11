@@ -29,6 +29,18 @@ def test_get_s_points():
     )
 
 
+def test_get_index_from_s():
+    """Test the returned index for a given `s` value."""
+    s_value = 0.3
+    delta_s = 0.1
+
+    expect_index = 2
+
+    index = net_spacing.get_index_from_s(s_value, delta_s)
+
+    assert index == expect_index
+
+
 class Test__private_x_and_dx_ds:
     r"""Test the different available functions for getting `x` and `dx_ds`."""
 
@@ -178,7 +190,7 @@ class Test__get_x_and_dx_ds:
     )
 
     @staticmethod
-    def get_num_s_poits(ds, s_end_point):
+    def get_num_s_points(ds, s_end_point):
         return round(s_end_point / ds) + 1
 
     @pytest.mark.parametrize(
@@ -230,7 +242,7 @@ class Test__get_x_and_dx_ds:
     ):
         r"""Test that the values from Table 4 of Laframboise match our calculations."""
         s_points = net_spacing.get_s_points(
-            self.get_num_s_poits(ds, s_end_point), s_end_point
+            self.get_num_s_points(ds, s_end_point), s_end_point
         )
         x, dx_ds = net_spacing.get_x_and_dx_ds(
             s_points,
