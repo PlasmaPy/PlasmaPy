@@ -1,0 +1,41 @@
+# This configuration file should only include security errors and
+# warnings related to GitHub workflow files that we intend to fix.
+# Please avoid adding any new zizmor findings to this list.
+#
+# If we decide that a zizmor finding does not necessitate a fix, then
+# put an inline comment of the form `# zizmor: ignore[artipacked]` on
+# the appropriate line.
+#
+# Include both the row and column numbers so that we ignore specific
+# errors. Doing this makes this configuration brittle, which means that
+# we will be reminded of these errors when modifying the files.
+#
+# Documentation: https://woodruffw.github.io/zizmor/usage/#ignoring-results
+
+rules:
+  cache-poisoning:
+    ignore:
+    - ci.yml:7:1
+  excessive-permissions:
+    ignore:
+    - create-release-issue.yml:11:3
+    - changelog.yml:9:3
+    - changelog.yml:10:3
+    - check-author-included.yml:8:3
+    - ci.yml:23:3
+    - comment-on-pr.yml:8:3
+    - linkcheck.yml:17:3
+    - mint-release.yml:17:3
+    - unlabel-pr-after-merge.yml:8:3
+    - update-pinned-reqs.yml:9:3
+  template-injection:
+    ignore:
+    - create-release-issue.yml:21:7
+    - mint-release.yml:41:7
+    - mint-release.yml:47:7
+    - mint-release.yml:53:7
+    - mint-release.yml:61:7
+    - mint-release.yml:66:7
+  use-trusted-publishing:
+    ignore:
+    - publish-to-pypi.yml:36:7
