@@ -1,0 +1,1 @@
+Added a security policy and created an issue template to report non-critical security issues.
