@@ -15,7 +15,7 @@ on:
   pull_request:
   workflow_dispatch:
 
-permissions: {}
+permissions: {}  # disables all GitHub permissions for the workflow
 
 env:
   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
