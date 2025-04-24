@@ -42,9 +42,11 @@ jobs:
 
     - name: Install uv
       uses: astral-sh/setup-uv@v5
+      with:
+        python: 3.12
 
     - name: Install graphviz & pandoc
       run: sudo apt-get install graphviz pandoc
 
     - name: Check hyperlinks
-      run: uv run --python 3.12 --with nox --frozen nox -s linkcheck
+      run: uv run --with nox --frozen nox -s linkcheck
