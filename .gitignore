@@ -1,4 +1,4 @@
-### PlasmaPy custom content
+# Please put PlasmaPy-specific lines near the top of .gitignore.
 
 # The following file is created when running `nox -s requirements` in CI
 
@@ -8,13 +8,10 @@
 src/plasmapy/utils/data/downloads/
 
 # Documentation files
-auto_examples
 docs/about/_authors.rst
 docs/changelog/index.rst
 docs/contributing/_global_substitutions_table.rst
-docs/notebooks/*.md
-docs/api
-docs/gen_modules
+docs/api/
 
 # Cython files (uncomment if we adopt Cython)
 # *.[ao]
