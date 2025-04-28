@@ -1,5 +1,21 @@
 ### PlasmaPy custom content
 
+# The following file is created when running `nox -s requirements` in CI
+
+.github/content/update-requirements-pr-body.md
+
+# Downloaded files
+src/plasmapy/utils/data/downloads/
+
+# Documentation files
+auto_examples
+docs/about/_authors.rst
+docs/changelog/index.rst
+docs/contributing/_global_substitutions_table.rst
+docs/notebooks/*.md
+docs/api
+docs/gen_modules
+
 # Byte-compiled / optimized / DLL files
 *.a
 *.o
@@ -8,15 +24,8 @@
 # add a non-generated .c extension, use `git add -f filename.c`.
 *.c
 
-# Downloaded files
-src/plasmapy/utils/data/downloads/
-
 # Unit test / coverage reports
 *,cover
-
-# Sphinx documentation
-docs/api
-docs/gen_modules
 
 # Jupyter Notebook
 notebooks_for_proto
@@ -39,13 +48,6 @@ VIRTUAL/
 *.bbl
 *.blg
 
-# Documentation files
-auto_examples
-docs/about/_authors.rst
-docs/changelog/index.rst
-docs/contributing/_global_substitutions_table.rst
-docs/notebooks/*.md
-
 # Allow contributors to create a custom requirements.txt file for
 # their own use.
 requirements.txt
@@ -65,11 +67,6 @@ node_modules
 package-lock.json
 Untitled*
 untitled*
-
-# The following file is created when running `nox -s requirements` in CI
-
-.github/content/update-requirements-pr-body.md
-
 
 ### Adapted from: https://github.com/github/gitignore/blob/main/Python.gitignore
 
