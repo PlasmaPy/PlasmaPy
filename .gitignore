@@ -16,16 +16,14 @@ docs/notebooks/*.md
 docs/api
 docs/gen_modules
 
-# Cython files (if we re-adopt Cython)
-#*.[acho]
-#*.cpp
-#*.dll
-#*.pyd
-#cython_debug/
-#cython_version.py
-
-# Jupyter Notebook
-notebooks_for_proto
+# Cython files (uncomment if we adopt Cython)
+# *.[ao]
+# *.[ch]
+# *.cpp
+# *.dll
+# *.pyd
+# cython_debug/
+# cython_version.py
 
 # VS code project settings
 .vscode
