@@ -69,7 +69,7 @@ jobs:
           python: '3.13'
           nox_session: cff
 
-        - name: Security analysis of GitHub workflows
+        - name: Check workflow security with zizmor
           os: ubuntu-latest
           python: '3.13'
           nox_session: zizmor
