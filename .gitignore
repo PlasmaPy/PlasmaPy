@@ -11,7 +11,13 @@ src/plasmapy/utils/data/downloads/
 docs/about/_authors.rst
 docs/changelog/index.rst
 docs/contributing/_global_substitutions_table.rst
-docs/api/
+
+# Allow contributors to create a custom requirements.txt file for
+# their own use.
+requirements.txt
+
+# Version file
+_version.py
 
 # Cython files (uncomment if we adopt Cython)
 # *.[ao]
@@ -30,14 +36,6 @@ VIRTUAL/
 *.aux
 *.bbl
 *.blg
-
-# Allow contributors to create a custom requirements.txt file for
-# their own use.
-requirements.txt
-
-# Version file
-_version.py
-tags
 
 # Miscellaneous files
 
