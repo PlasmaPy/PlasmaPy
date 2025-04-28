@@ -29,10 +29,6 @@ _version.py
 # VS code project settings
 .vscode
 
-# Auxiliary files associated with vim
-*.swp
-VIRTUAL/
-
 # LaTeX and bibtex auxiliary files
 *.aux
 *.bbl
