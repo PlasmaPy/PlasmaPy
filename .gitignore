@@ -257,118 +257,32 @@ fabric.properties
 ### Previous .gitignore
 
 # Byte-compiled / optimized / DLL files
-*$py.class
 *.a
 *.o
-*.py[cod]
-*.so
-__pycache__/
-MANIFEST
 
 # Ignore .c files by default to avoid including generated code. If you want to
 # add a non-generated .c extension, use `git add -f filename.c`.
 *.c
 
-# Distribution / packaging
-*.egg
-*.egg-info/
-.eggs/
-.installed.cfg
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-env/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-
 # Downloaded files
 src/plasmapy/utils/data/downloads/
 
-# PyInstaller
-#  Usually these files are written by a python script from a template
-#  before PyInstaller builds the exe, so as to inject date/other infos into it.
-*.manifest
-*.spec
-
-# Installer logs
-pip-delete-this-directory.txt
-pip-log.txt
-
 # Unit test / coverage reports
 *,cover
-.cache
-.coverage
-.coverage.*
-.hypothesis/
 .pytest_cache
-.tox/
-coverage.xml
-htmlcov/
-nosetests.xml
-
-# Translations
-*.mo
-*.pot
-
-# Django stuff:
-*.log
-local_settings.py
-
-# Flask stuff:
-.webassets-cache
-instance/
-
-# Scrapy stuff:
-.scrapy
 
 # Sphinx documentation
-docs/_build/
 docs/api
 docs/gen_modules
 
-# PyBuilder
-target/
-
 # Jupyter Notebook
-.ipynb_checkpoints
 notebooks_for_proto
 
-# pyenv
-.python-version
-
-# celery beat schedule file
-celerybeat-schedule
-
-# SageMath parsed files
-*.sage.py
-
 # dotenv
-.env
 env
-
-# virtualenv
-.venv
-ENV/
-venv/
-
-# Spyder project settings
-.spyderproject
-
-# Rope project settings
-.ropeproject
 
 # VS code project settings
 .vscode
-
-# mkdocs documentation
-/site
 
 # Auxiliary files associated with emacs
 *#
@@ -403,14 +317,12 @@ tags
 # Miscellaneous files
 cython_version.py
 *debuglog*
-.dmypy.json
 .DS_Store
 .idea/
 .mypy_cache
 .pyre
 .pytype
 cython_debug
-dmypy.json
 gitlog
 monkeytype.sqlite3
 node_modules
