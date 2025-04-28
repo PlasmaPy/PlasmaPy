@@ -1,3 +1,76 @@
+### PlasmaPy custom content
+
+# Byte-compiled / optimized / DLL files
+*.a
+*.o
+
+# Ignore .c files by default to avoid including generated code. If you want to
+# add a non-generated .c extension, use `git add -f filename.c`.
+*.c
+
+# Downloaded files
+src/plasmapy/utils/data/downloads/
+
+# Unit test / coverage reports
+*,cover
+
+# Sphinx documentation
+docs/api
+docs/gen_modules
+
+# Jupyter Notebook
+notebooks_for_proto
+
+# VS code project settings
+.vscode
+
+# Auxiliary files associated with emacs
+*#
+*.#
+*~
+.#*
+
+# Auxiliary files associated with vim
+*.swp
+VIRTUAL/
+
+# LaTeX and bibtex auxiliary files
+*.aux
+*.bbl
+*.blg
+
+# Documentation files
+auto_examples
+docs/about/_authors.rst
+docs/changelog/index.rst
+docs/contributing/_global_substitutions_table.rst
+docs/notebooks/*.md
+
+# Allow contributors to create a custom requirements.txt file for
+# their own use.
+requirements.txt
+
+# Version file
+_version.py
+tags
+
+# Miscellaneous files
+cython_version.py
+*debuglog*
+.DS_Store
+cython_debug
+gitlog
+monkeytype.sqlite3
+node_modules
+package-lock.json
+Untitled*
+untitled*
+
+# The following file is created when running `nox -s requirements` in CI
+
+.github/content/update-requirements-pr-body.md
+
+
 ### Adapted from: https://github.com/github/gitignore/blob/main/Python.gitignore
 
 # Byte-compiled / optimized / DLL files
@@ -255,75 +328,3 @@ fabric.properties
 
 # Android studio 3.1+ serialized cache file
 .idea/caches/build_file_checksums.ser
-
-### PlasmaPy custom content
-
-# Byte-compiled / optimized / DLL files
-*.a
-*.o
-
-# Ignore .c files by default to avoid including generated code. If you want to
-# add a non-generated .c extension, use `git add -f filename.c`.
-*.c
-
-# Downloaded files
-src/plasmapy/utils/data/downloads/
-
-# Unit test / coverage reports
-*,cover
-
-# Sphinx documentation
-docs/api
-docs/gen_modules
-
-# Jupyter Notebook
-notebooks_for_proto
-
-# VS code project settings
-.vscode
-
-# Auxiliary files associated with emacs
-*#
-*.#
-*~
-.#*
-
-# Auxiliary files associated with vim
-*.swp
-VIRTUAL/
-
-# LaTeX and bibtex auxiliary files
-*.aux
-*.bbl
-*.blg
-
-# Documentation files
-auto_examples
-docs/about/_authors.rst
-docs/changelog/index.rst
-docs/contributing/_global_substitutions_table.rst
-docs/notebooks/*.md
-
-# Allow contributors to create a custom requirements.txt file for
-# their own use.
-requirements.txt
-
-# Version file
-_version.py
-tags
-
-# Miscellaneous files
-cython_version.py
-*debuglog*
-.DS_Store
-cython_debug
-gitlog
-monkeytype.sqlite3
-node_modules
-package-lock.json
-Untitled*
-untitled*
-
-# The following file is created when running `nox -s requirements` in CI
-
-.github/content/update-requirements-pr-body.md
