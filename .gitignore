@@ -59,7 +59,12 @@ package-lock.json
 Untitled*
 untitled*
 
-### Adapted from: https://github.com/github/gitignore/blob/main/Python.gitignore
+# Below are the contents of various .gitignore file templates, mostly
+# from https://github.com/github/gitignore. To make it easier to keep
+# track of changes in the template with `git diff`, please only copy
+# sections of templates below this line.
+
+# Adapted from: https://github.com/github/gitignore/blob/main/Python.gitignore
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
