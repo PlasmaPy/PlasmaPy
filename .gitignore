@@ -9,6 +9,7 @@ src/plasmapy/utils/data/downloads/
 
 # Generated files from documentation builds
 docs/about/_authors.rst
+docs/api/
 docs/changelog/index.rst
 docs/contributing/_global_substitutions_table.rst
 
