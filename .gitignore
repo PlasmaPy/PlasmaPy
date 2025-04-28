@@ -24,12 +24,6 @@ docs/api/
 # VS code project settings
 .vscode
 
-# Auxiliary files associated with emacs
-*#
-*.#
-*~
-.#*
-
 # Auxiliary files associated with vim
 *.swp
 VIRTUAL/
@@ -320,3 +314,14 @@ fabric.properties
 
 # Android studio 3.1+ serialized cache file
 .idea/caches/build_file_checksums.ser
+
+# Adapted from https://github.com/github/gitignore/blob/main/Global/Emacs.gitignore
+
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
