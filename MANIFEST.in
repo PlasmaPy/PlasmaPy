@@ -26,8 +26,8 @@ global-exclude _authors.rst
 global-exclude *.o *.py[cod]
 global-exclude uv.lock
 
-prune _build
-prune build
+prune **/_build
+prune **/build
 prune docs/api
 
 # The following directory is only used to get the version right for
