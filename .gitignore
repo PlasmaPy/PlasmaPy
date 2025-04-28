@@ -18,7 +18,6 @@ docs/api/
 # *.[ch]
 # *.cpp
 # *.dll
-# *.pyd
 # cython_debug/
 # cython_version.py
 
