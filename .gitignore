@@ -1,3 +1,5 @@
+### Adapted from: https://github.com/github/gitignore/blob/main/Python.gitignore
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -254,7 +256,7 @@ fabric.properties
 # Android studio 3.1+ serialized cache file
 .idea/caches/build_file_checksums.ser
 
-### Previous .gitignore
+### PlasmaPy custom content
 
 # Byte-compiled / optimized / DLL files
 *.a
@@ -269,7 +271,6 @@ src/plasmapy/utils/data/downloads/
 
 # Unit test / coverage reports
 *,cover
-.pytest_cache
 
 # Sphinx documentation
 docs/api
@@ -277,9 +278,6 @@ docs/gen_modules
 
 # Jupyter Notebook
 notebooks_for_proto
-
-# dotenv
-env
 
 # VS code project settings
 .vscode
@@ -318,10 +316,6 @@ tags
 cython_version.py
 *debuglog*
 .DS_Store
-.idea/
-.mypy_cache
-.pyre
-.pytype
 cython_debug
 gitlog
 monkeytype.sqlite3
