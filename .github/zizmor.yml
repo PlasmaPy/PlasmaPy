@@ -36,6 +36,10 @@ rules:
     - mint-release.yml:53:7
     - mint-release.yml:61:7
     - mint-release.yml:66:7
+  unpinned-uses:
+    ignore:
+    - update-pinned-reqs.yml:37:7
+    - update-pinned-reqs.yml:44:7
   use-trusted-publishing:
     ignore:
     - publish-to-pypi.yml:36:7

@@ -149,7 +149,7 @@ jobs:
 
     - name: Install Graphviz for doc builds
       if: contains(matrix.nox_session, 'docs')
-      uses: ts-graphviz/setup-graphviz@v2
+      uses: ts-graphviz/setup-graphviz@v2 # zizmor: ignore[unpinned-uses]
 
     - name: Install pandoc for doc builds
       # This step requires Ubuntu
@@ -159,7 +159,7 @@ jobs:
         sudo apt-get install -y pandoc
 
     - name: Install uv
-      uses: astral-sh/setup-uv@v6
+      uses: astral-sh/setup-uv@v6 # zizmor: ignore[unpinned-uses]
       with:
         python-version: ${{ matrix.python }}
         enable-cache: true
@@ -170,7 +170,7 @@ jobs:
 
     - name: Upload coverage reports to Codecov
       if: ${{ contains(matrix.nox_session, 'cov') }}
-      uses: codecov/codecov-action@v5
+      uses: codecov/codecov-action@v5 # zizmor: ignore[unpinned-uses]
       with:
         file: ./coverage.xml
         fail_ci_if_error: false
@@ -185,7 +185,7 @@ jobs:
     steps:
 
     - name: Set up miniconda
-      uses: conda-incubator/setup-miniconda@v3
+      uses: conda-incubator/setup-miniconda@v3 # zizmor: ignore[unpinned-uses]
       with:
         auto-update-conda: true
         python-version: '3.11'

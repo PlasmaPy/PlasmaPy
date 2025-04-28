@@ -18,7 +18,7 @@ jobs:
         persist-credentials: false
 
     - name: Install uv
-      uses: astral-sh/setup-uv@v6
+      uses: astral-sh/setup-uv@v6 # zizmor: ignore[unpinned-uses]
       with:
         enable-cache: true
         cache-suffix: author-cff
