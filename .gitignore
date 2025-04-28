@@ -20,6 +20,9 @@ requirements.txt
 # Version file
 _version.py
 
+# basedpyright (baseline files should be cached in CI if we adopt this tool)
+.basedpyright
+
 # Cython files (uncomment if we adopt Cython)
 # *.[ao]
 # *.[ch]
