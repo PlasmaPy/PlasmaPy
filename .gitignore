@@ -16,16 +16,13 @@ docs/notebooks/*.md
 docs/api
 docs/gen_modules
 
-# Byte-compiled / optimized / DLL files
-*.a
-*.o
-
-# Ignore .c files by default to avoid including generated code. If you want to
-# add a non-generated .c extension, use `git add -f filename.c`.
-*.c
-
-# Unit test / coverage reports
-*,cover
+# Cython files (if we re-adopt Cython)
+#*.[acho]
+#*.cpp
+#*.dll
+#*.pyd
+#cython_debug/
+#cython_version.py
 
 # Jupyter Notebook
 notebooks_for_proto
@@ -57,10 +54,9 @@ _version.py
 tags
 
 # Miscellaneous files
-cython_version.py
+
 *debuglog*
 .DS_Store
-cython_debug
 gitlog
 monkeytype.sqlite3
 node_modules
