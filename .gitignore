@@ -35,15 +35,14 @@ _version.py
 *.blg
 
 # Miscellaneous files
-
 *debuglog*
 .DS_Store
-gitlog
+.nfs*
+.Trash*
+[Uu]ntitled*
 monkeytype.sqlite3
 node_modules
 package-lock.json
-Untitled*
-untitled*
 
 # Below are the contents of various .gitignore file templates, mostly
 # from https://github.com/github/gitignore. To make it easier to keep
