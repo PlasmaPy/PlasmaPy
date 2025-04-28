@@ -13,18 +13,12 @@
 # Documentation: https://woodruffw.github.io/zizmor/usage/#ignoring-results
 
 rules:
-  cache-poisoning:
-    ignore:
-    - ci.yml:7:1
   excessive-permissions:
     ignore:
     - create-release-issue.yml:11:3
     - changelog.yml:9:3
     - changelog.yml:10:3
-    - check-author-included.yml:8:3
-    - ci.yml:23:3
     - comment-on-pr.yml:8:3
-    - linkcheck.yml:17:3
     - mint-release.yml:17:3
     - unlabel-pr-after-merge.yml:8:3
     - update-pinned-reqs.yml:9:3
