@@ -46,3 +46,7 @@ type_stubs/ @namurphy
 .pre-commit-config.yaml @namurphy
 codecov.yml @namurphy
 noxfile.py @namurphy
+
+# PyCharm configuration
+
+.idea/ @namurphy
