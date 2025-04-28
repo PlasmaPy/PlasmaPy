@@ -29,7 +29,8 @@ _version.py
 # *.cpp
 # *.dll
 
-# VS code project settings
+# VS Code (while a template exists, we would need a long-term VS Code
+# user to maintain appropriate settings)
 .vscode
 
 # LaTeX and bibtex auxiliary files
