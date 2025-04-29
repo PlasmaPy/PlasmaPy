@@ -1,5 +1,10 @@
 """Check that the authors of a PR are included in ``CITATION.cff``."""
 
+# /// script
+# requires-python = ">=3.13"
+# dependencies = ["requests>=2.32"]
+# ///
+
 import logging
 import os
 import pathlib
