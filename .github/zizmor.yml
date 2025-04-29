@@ -1,14 +1,19 @@
-# This configuration file should only include security errors and
-# warnings related to GitHub workflow files that we intend to fix.
-# Please avoid adding any new zizmor findings to this list.
+# This configuration file should only include **pre-existing** security
+# errors and warnings related to GitHub workflow files that we intend to
+# fix later on.
 #
-# If we decide that a zizmor finding does not necessitate a fix, then
-# put an inline comment of the form `# zizmor: ignore[artipacked]` on
-# the appropriate line.
+# ⚠️ Please do not add any new zizmor findings to this file. ⚠️
 #
-# Include both the row and column numbers so that we ignore specific
-# errors. Doing this makes this configuration brittle, which means that
-# we will be reminded of these errors when modifying the files.
+# If a potential security vulnerability does not necessitate a fix
+# (for example, if `uses:` invokes an unpinned action from a trusted
+# organization), then append `# zizmor: ignore[unpinned-uses]` to
+# the reported line (with `unpinned-uses` replaced by the appropriate
+# error code).
+#
+# Include both the row and column numbers below so that we ignore
+# specific errors. Doing this makes this configuration brittle, which
+# has the benefit(?) that we will be reminded of these errors when
+# modifying the workflow files.
 #
 # Documentation: https://woodruffw.github.io/zizmor/usage/#ignoring-results
 
