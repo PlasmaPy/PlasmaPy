@@ -1063,6 +1063,8 @@ Security policy
 ===============
 
 PlasmaPy's `security policy`_ is located at :file:`.github/SECURITY.md`.
+The GitHub repository has a link to
+`privately report security vulnerabilities`_.
 
 Performing releases
 ===================
@@ -1108,6 +1110,7 @@ The overall process of performing a release is:
 .. _NEP 29: https://numpy.org/neps/nep-0029-deprecation_policy.html
 .. _not a number: https://en.wikipedia.org/wiki/NaN
 .. _NumPy Enhancement Proposal 29: https://numpy.org/neps/nep-0029-deprecation_policy.html
+.. _privately report security vulnerabilities: https://github.com/PlasmaPy/PlasmaPy/security/advisories/new
 .. _Python Packaging User Guide: https://packaging.python.org
 .. _pyupgrade: https://github.com/asottile/pyupgrade
 .. _release checklist: https://github.com/PlasmaPy/PlasmaPy/blob/main/.github/content/release-checklist.md
