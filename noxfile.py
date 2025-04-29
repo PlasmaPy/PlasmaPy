@@ -648,6 +648,7 @@ def lint(session: nox.Session) -> None:
         *session.posargs,
     )
 
+
 zizmor_troubleshooting_message = """
 
 🪧 This check can be run locally with `nox -s zizmor` to find common
@@ -663,6 +664,7 @@ reported line (replacing `unpinned-uses` with the audit rule code).
 that we intend to fix later. Please do not add new audit rule violations
 to this file.
 """
+
 
 @nox.session
 def zizmor(session: nox.Session) -> None:
