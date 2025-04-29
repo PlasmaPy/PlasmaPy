@@ -1059,6 +1059,11 @@ an angular frequency to get a length scale:
 
 .. _performing releases:
 
+Security policy
+===============
+
+PlasmaPy's `security policy`_ is located at :file:`.github/SECURITY.md`.
+
 Performing releases
 ===================
 
@@ -1107,6 +1112,7 @@ The overall process of performing a release is:
 .. _pyupgrade: https://github.com/asottile/pyupgrade
 .. _release checklist: https://github.com/PlasmaPy/PlasmaPy/blob/main/.github/content/release-checklist.md
 .. _rename refactoring in PyCharm: https://www.jetbrains.com/help/pycharm/rename-refactorings.html
+.. _security policy: https://github.com/PlasmaPy/PlasmaPy/blob/main/.github/SECURITY.md
 .. _TOML: https://toml.io/en/v1.0.0
 .. _type hints cheat sheet: https://mypy.readthedocs.io/en/stable/cheat_sheet_py3.html
 .. _update pinned requirements: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/update-pinned-reqs.yml
