@@ -33,7 +33,7 @@ jobs:
       run: python -m build
 
     - name: Upload package to PyPI
-      uses: pypa/gh-action-pypi-publish@v1.12.4 # zizmor: ignore[unpinned-uses]
+      uses: pypa/gh-action-pypi-publish@v1.12.4
       with:
         user: __token__
         password: ${{ secrets.PYPI_API_TOKEN }}

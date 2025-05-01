@@ -88,7 +88,7 @@ jobs:
 
     - name: Install Graphviz for doc builds
       if: contains(matrix.nox_session, 'docs')
-      uses: ts-graphviz/setup-graphviz@v2 # zizmor: ignore[unpinned-uses]
+      uses: ts-graphviz/setup-graphviz@v2
 
     - name: Install pandoc for doc builds
       # This step requires Ubuntu
@@ -98,7 +98,7 @@ jobs:
         sudo apt-get install -y pandoc
 
     - name: Install uv
-      uses: astral-sh/setup-uv@v6 # zizmor: ignore[unpinned-uses]
+      uses: astral-sh/setup-uv@v6
       with:
         python-version: ${{ matrix.python }}
         enable-cache: true
@@ -109,7 +109,7 @@ jobs:
 
     - name: Upload coverage reports to Codecov
       if: ${{ contains(matrix.nox_session, 'cov') }}
-      uses: codecov/codecov-action@v5 # zizmor: ignore[unpinned-uses]
+      uses: codecov/codecov-action@v5
       with:
         file: ./coverage.xml
         fail_ci_if_error: false

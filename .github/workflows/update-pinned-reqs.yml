@@ -19,7 +19,7 @@ jobs:
         persist-credentials: false
 
     - name: Install uv
-      uses: astral-sh/setup-uv@v6 # zizmor: ignore[unpinned-uses]
+      uses: astral-sh/setup-uv@v6
       with:
         python: 3.13
 
