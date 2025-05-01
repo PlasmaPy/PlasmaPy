@@ -227,7 +227,7 @@ def tests(session: nox.Session, test_specifier: nox._parametrize.Param) -> None:
             session.run_install(
                 *uv_sync,
                 "--extra=tests",
-                "--no-default-extras",
+                "--no-default-groups",
                 f"--python={session.virtualenv.location}",
                 env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
             )
@@ -328,7 +328,7 @@ def docs(session: nox.Session) -> None:
     session.run_install(
         *uv_sync,
         "--extra=docs",
-        "--no-default-extras",
+        "--no-default-groups",
         f"--python={session.virtualenv.location}",
         env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
     )
@@ -388,7 +388,7 @@ def linkcheck(session: nox.Session) -> None:
     session.run_install(
         *uv_sync,
         "--extra=docs",
-        "--no-default-extras",
+        "--no-default-groups",
         f"--python={session.virtualenv.location}",
         env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
     )
@@ -419,7 +419,7 @@ def mypy(session: nox.Session) -> None:
     session.run_install(
         *uv_sync,
         "--extra=tests",
-        "--no-default-extras",
+        "--no-default-groups",
         f"--python={session.virtualenv.location}",
         env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
     )
