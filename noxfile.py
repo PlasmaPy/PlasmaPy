@@ -222,9 +222,8 @@ def tests(session: nox.Session, test_specifier: nox._parametrize.Param) -> None:
     match test_specifier:
         case "lowest-direct":
             session.install(
-                ".",
+                ".[tests]",
                 "--resolution=lowest-direct",
-                "--extra=tests",
                 "--no-all-extras",
                 f"--python={session.virtualenv.location}",
                 env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
