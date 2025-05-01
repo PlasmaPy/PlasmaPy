@@ -225,7 +225,7 @@ def tests(session: nox.Session, test_specifier: nox._parametrize.Param) -> None:
                 ".",
                 "--resolution=lowest-direct",
                 "--extra=tests",
-                "--no-default-groups",
+                "--no-all-extras",
                 f"--python={session.virtualenv.location}",
                 env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
             )
