@@ -76,19 +76,41 @@ installed into |uv|-managed
 `virtual environments <virtual environment_>`_ without installing |pip|.
 
 After `installing uv`_, a `virtual environment`_ with |Python| version
-3.12 can be created by opening a terminal and running:
+3.13 can be created by opening a terminal and running:
 
 .. code-block:: bash
 
-   uv venv --python 3.12
+   uv venv --python 3.13
 
 |uv| will automatically download |Python| and link it to
-the `virtual environment`_'s directory at (by default) :file:`.venv`. The
-environment can then be activated by running:
+the `virtual environment`_'s directory at (by default) :file:`.venv`.
+The command to activate the environment depends on the operating system.
 
-.. code-block:: bash
+.. tabs::
 
-   source .venv/bin/activate
+   .. group-tab:: Windows
+
+      To activate the virtual environment in Powershell, run:
+
+      .. code-block:: PowerShell
+
+         .\.venv\Scripts\activate.ps1
+
+   .. group-tab:: macOS
+
+      To activate the virtual environment on macOS, run:
+
+      .. code-block:: bash
+
+         source .venv/bin/activate
+
+   .. group-tab:: Linux/WSL
+
+      To activate the virtual environment on Linux, run:
+
+      .. code-block:: bash
+
+         source .venv/bin/activate
 
 Then, to install `plasmapy` into the activated environment, run:
 
