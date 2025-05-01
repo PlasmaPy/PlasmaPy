@@ -1603,6 +1603,7 @@ docs = [
 tests = [
     { name = "hypothesis" },
     { name = "mypy" },
+    { name = "nox", extra = ["uv"] },
     { name = "pytest" },
     { name = "pytest-cov" },
     { name = "pytest-filter-subpackage" },
@@ -1626,7 +1627,8 @@ requires-dist = [
     { name = "mpmath", specifier = ">=1.3" },
     { name = "mypy", marker = "extra == 'tests'", specifier = ">=1.11" },
     { name = "nbsphinx", marker = "extra == 'docs'", specifier = ">=0.9.4" },
-    { name = "nox", extras = ["uv"], marker = "extra == 'docs'", specifier = "==2025.5.1" },
+    { name = "nox", extras = ["uv"], marker = "extra == 'docs'", specifier = ">=2025.5.1" },
+    { name = "nox", extras = ["uv"], marker = "extra == 'tests'", specifier = ">=2025.5.1" },
     { name = "numpy", specifier = ">=1.24" },
     { name = "numpydoc", marker = "extra == 'docs'", specifier = ">=1.7" },
     { name = "packaging", specifier = ">=22" },
