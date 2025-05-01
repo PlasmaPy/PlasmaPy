@@ -657,12 +657,9 @@ security issues in GitHub Actions.
 📜 Audit rules: https://woodruffw.github.io/zizmor/audits
 
 🔗 If a reported potential vulnerability does not necessitate a fix,
-then append a comment like `# zizmor: ignore[unpinned-uses]` to the
-reported line (replacing `unpinned-uses` with the audit rule code).
-
-⚠️ `.github/zizmor.yml` contains **pre-existing** audit rule violations
-that we intend to fix later. Please do not add new audit rule violations
-to this file.
+then either append a comment like `# zizmor: ignore[unpinned-uses]` to
+the reported line (replacing `unpinned-uses` with the audit rule code),
+or add the appropriate configuration settings to: .github/zizmor.yml
 """
 
 
