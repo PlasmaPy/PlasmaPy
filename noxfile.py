@@ -651,8 +651,8 @@ def lint(session: nox.Session) -> None:
 
 zizmor_troubleshooting_message = """
 
-🪧 This check can be run locally with `nox -s zizmor` to find common
-security issues in GitHub Actions.
+🪧 Run this check locally with `nox -s zizmor` to find potential
+security vulnerabilities in GitHub workflows.
 
 📜 Audit rules: https://woodruffw.github.io/zizmor/audits
 
