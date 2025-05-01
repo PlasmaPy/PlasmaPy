@@ -7,7 +7,10 @@ rules:
       policies:
         actions/*: ref-pin
         astral-sh/setup-uv: ref-pin
-        codecov/codecov-actions: ref-pin
+        codecov/codecov-action: ref-pin
+        conda-incubator/setup-miniconda: ref-pin
+        pypa/*: ref-pin
+        scientific-python/*: ref-pin
         ts-graphviz/setup-graphviz: ref-pin
 
 # Put settings that we intend to fix later on below this line. If we
