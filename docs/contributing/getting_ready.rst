@@ -68,31 +68,28 @@ operating systems.
 
 .. _installing-python:
 
+Setting up a virtual environment with `uv`
+------------------------------------------
+
+Please follow these instructions to `install uv`_.
+
 Installing Python
 -----------------
+
+
 
 .. note::
 
    PlasmaPy requires a version of Python between |minpython| and
    |maxpython|. We recommend using Python |maxpython|.
 
-We suggest using Anaconda_ to install |Python|. Anaconda_ is a versatile
-package and environment management system which is widely used in the
-data science and scientific Python communities. Anaconda includes
-`Anaconda Navigator`_ as its graphical user interface (GUI) and Conda_
-as its command line interface (CLI).
-
-* If you prefer a GUI, follow these instructions on `installing Anaconda
-  Navigator`_.
-
-* If you prefer a CLI, follow these instructions on `installing Conda`_.
-
+We recommend using uv_ to install |Python|.
 .. note::
 
    There are many other equally good ways to install Python. Python's
    website describes how to `download Python`_. `Real Python`_ has
    instructions on `installing Python`_ for several different operating
-   systems (if working within WSL_, follow the Linux instructions).
+   systems. If working within WSL_, follow the Linux instructions.
 
 Using git and GitHub
 --------------------
@@ -339,6 +336,7 @@ when you :py:`import plasmapy`.
 .. _this xkcd comic: https://xkcd.com/1987
 .. _unix tutorial: https://www.hpc.iastate.edu/guides/unix-introduction/unix-tutorial-1
 .. _using an environment: https://docs.anaconda.com/navigator/tutorials/manage-environments/#using-an-environment
+.. _install uv: https://docs.astral.sh/uv/getting-started/installation
 .. _venv: https://docs.python.org/3/library/venv.html
 .. _virtual environment: https://realpython.com/python-virtual-environments-a-primer
 .. _Windows Subsystem for Linux: https://learn.microsoft.com/en-us/windows/wsl
