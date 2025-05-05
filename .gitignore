@@ -16,6 +16,7 @@ docs/contributing/_global_substitutions_table.rst
 # Allow contributors to create a custom requirements.txt file for
 # their own use.
 requirements.txt
+requirements/*
 
 # Version file
 _version.py
