@@ -214,14 +214,14 @@ def spectral_density_lite(
 
     # Calculate the susceptibilities
     chiE = np.zeros([efract.size, w.size], dtype=np.complex128)
-    for i, _fract in enumerate(efract):  # noqa: B007
+    for i, _fract in enumerate(efract):
         wpe = plasma_frequency_lite(ne[i], m_e_si_unitless, 1)
         chiE[i, :] = permittivity_1D_Maxwellian_lite(w_e[i, :], k, vT_e[i], wpe)
 
     # Treatment of multiple species is an extension of the discussion in
     # Sheffield Sec. 5.1
     chiI = np.zeros([ifract.size, w.size], dtype=np.complex128)
-    for i, _fract in enumerate(ifract):  # noqa: B007
+    for i, _fract in enumerate(ifract):
         wpi = plasma_frequency_lite(ni[i], ion_mass[i], ion_z[i])
         chiI[i, :] = permittivity_1D_Maxwellian_lite(w_i[i, :], k, vT_i[i], wpi)
 
@@ -682,7 +682,7 @@ def _params_to_array(
 
 def _spectral_density_model(wavelengths, settings=None, **params):
     """
-    lmfit Model function for fitting Thomson spectra.
+    `lmfit` model function for fitting Thomson spectra.
 
     For descriptions of arguments, see the `thomson_model` function.
     """

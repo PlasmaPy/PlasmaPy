@@ -1,0 +1,1 @@
+Updated the release checklist following the ``v2024.10.0`` release.

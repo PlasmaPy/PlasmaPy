@@ -34,9 +34,9 @@ def check_abundances_consistency(
 
     for element, abundance_from_abundances in abundances.items():
         abundance_from_log_abundances = 10 ** log_abundances[element]
-        assert np.isclose(
-            abundance_from_abundances, abundance_from_log_abundances
-        ), "Mismatch between abundances and log_abundances."
+        assert np.isclose(abundance_from_abundances, abundance_from_log_abundances), (
+            "Mismatch between abundances and log_abundances."
+        )
 
 
 def has_attribute(attribute, tests_dict):
@@ -107,7 +107,7 @@ tests = {
 test_names = tests.keys()
 
 
-@pytest.mark.slow()
+@pytest.mark.slow
 class TestIonizationStateCollection:
     @classmethod
     def setup_class(cls) -> None:
@@ -142,9 +142,9 @@ class TestIonizationStateCollection:
         assert (
             a == a  # noqa: PLR0124
         ), "IonizationStateCollection doesn't equal itself."
-        assert (
-            a == b
-        ), "IonizationStateCollection instance does not equal identical instance."
+        assert a == b, (
+            "IonizationStateCollection instance does not equal identical instance."
+        )
 
     @pytest.mark.parametrize(
         "test_name",
@@ -458,40 +458,40 @@ class TestIonizationStateCollectionAttributes:
     @pytest.mark.parametrize("uninitialized_attribute", ["T_e", "n0", "n_e"])
     def test_attribute_defaults_to_nan(self, uninitialized_attribute) -> None:
         command = f"self.instance.{uninitialized_attribute}"
-        default_value = eval(command)  # noqa: PGH001, S307
+        default_value = eval(command)  # noqa: S307
         assert np.isnan(default_value), (
             f"{uninitialized_attribute} does not default to nan but "
             f"instead defaults to {default_value}."
         )
 
     def test_kappa_defaults_to_inf(self) -> None:
-        assert np.isinf(
-            self.instance.kappa
-        ), "kappa does not default to a value of inf."
+        assert np.isinf(self.instance.kappa), (
+            "kappa does not default to a value of inf."
+        )
 
     @pytest.mark.parametrize(
         "uninitialized_attribute", ["number_densities", "ionic_fractions"]
     )
     def test_attribute_defaults_to_dict_of_nans(self, uninitialized_attribute) -> None:
         command = f"self.instance.{uninitialized_attribute}"
-        default_value = eval(command)  # noqa: PGH001, S307
-        assert (
-            list(default_value.keys()) == self.elements
-        ), "Incorrect base particle keys."
+        default_value = eval(command)  # noqa: S307
+        assert list(default_value.keys()) == self.elements, (
+            "Incorrect base particle keys."
+        )
         for element in self.elements:
-            assert (
-                len(default_value[element]) == atomic_number(element) + 1
-            ), f"Incorrect number of ionization levels for {element}."
-            assert np.all(
-                np.isnan(default_value[element])
-            ), f"The values do not default to an array of nans for {element}."
+            assert len(default_value[element]) == atomic_number(element) + 1, (
+                f"Incorrect number of ionization levels for {element}."
+            )
+            assert np.all(np.isnan(default_value[element])), (
+                f"The values do not default to an array of nans for {element}."
+            )
 
     @pytest.mark.parametrize(
         "uninitialized_attribute", ["abundances", "log_abundances"]
     )
     def test_abundances_default_to_nans(self, uninitialized_attribute) -> None:
         command = f"self.instance.{uninitialized_attribute}"
-        default_value = eval(command)  # noqa: PGH001, S307
+        default_value = eval(command)  # noqa: S307
         for element in self.elements:
             assert isinstance(default_value[element], Real)
             assert np.isnan(default_value[element])
@@ -540,9 +540,9 @@ class TestIonizationStateCollectionAttributes:
         self.new_fractions = [0.3, 0.7]
         self.instance["H"] = self.new_fractions
         resulting_fractions = self.instance.ionic_fractions["H"]
-        assert np.allclose(
-            self.new_fractions, resulting_fractions
-        ), "Ionic fractions for H not set using __setitem__."
+        assert np.allclose(self.new_fractions, resulting_fractions), (
+            "Ionic fractions for H not set using __setitem__."
+        )
         assert "He" in self.instance.ionic_fractions, (
             "He is missing in ionic_fractions after __setitem__ was "
             "used to set H ionic fractions."
@@ -690,11 +690,15 @@ class TestIonizationStateCollectionAttributes:
 
         assert u.quantity.allclose(
             self.instance.ionic_fractions[element], valid_ionic_fractions
-        ), "Item assignment of valid number densities did not yield correct ionic fractions."
+        ), (
+            "Item assignment of valid number densities did not yield correct ionic fractions."
+        )
 
         assert u.quantity.allclose(
             self.instance.number_densities[element], valid_number_densities
-        ), "Item assignment of valid number densities did not yield correct number densities."
+        ), (
+            "Item assignment of valid number densities did not yield correct number densities."
+        )
 
     def test_resetting_invalid_densities(self) -> None:
         """
@@ -785,8 +789,7 @@ class TestIonizationStateCollectionDensityEqualities:
         number_densities = self.instances[test_key].number_densities
         for base_particle in self.instances[test_key].base_particles:
             assert not np.any(np.isnan(number_densities[base_particle])), (
-                f"Test {test_key} should have number densities "
-                f"defined, but doesn't."
+                f"Test {test_key} should have number densities defined, but doesn't."
             )
 
     @pytest.mark.parametrize("test_key", ["no_ndens3", "no_ndens4", "no_ndens5"])
@@ -794,8 +797,7 @@ class TestIonizationStateCollectionDensityEqualities:
         number_densities = self.instances[test_key].number_densities
         for base_particle in self.instances[test_key].base_particles:
             assert np.all(np.isnan(number_densities[base_particle])), (
-                f"Test {test_key} should not have number densities "
-                f"defined, but does."
+                f"Test {test_key} should not have number densities defined, but does."
             )
 
     @pytest.mark.parametrize(

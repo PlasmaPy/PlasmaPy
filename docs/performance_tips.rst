@@ -7,7 +7,7 @@ Performance Tips
 Most of the time, readability is more important than the performance of
 scientific software. This page contains tips for improving the
 performance of PlasmaPy for situations where performance becomes a
-bottleneck.
+bottleneck 🐢.
 
 Python versions
 ===============
@@ -77,10 +77,9 @@ functions for situations when performance matters. For example,
 lite-function for `~plasmapy.formulary.frequencies.plasma_frequency`.
 
 Lite-functions accept and return NumPy arrays (assumed to be in SI
-units) instead of |Quantity| objects. Lite-functions make use of
-just-in-time (JIT) compilation via |Numba| to achieve high performance.
-Because lite-functions do not include any validation of inputs, they
-should only be used for performance-critical applications.
+units) instead of |Quantity| objects. Lite-functions have improved
+performance because they do not perform any checks on the inputs, and
+thus should be used cautiously.
 
 If you need a lite-function version of a `plasmapy.formulary` function
 that has not already been implemented, please `raise an issue`_.

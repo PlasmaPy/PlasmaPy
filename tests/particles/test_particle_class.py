@@ -554,7 +554,7 @@ def test_Particle_class(arg, kwargs, expected_dict):
 
         else:
             try:
-                result = eval(f"particle.{key}")  # noqa: PGH001, S307
+                result = eval(f"particle.{key}")  # noqa: S307
                 assert result == expected or u.isclose(result, expected, equal_nan=True)
             except AssertionError:
                 errmsg += (
@@ -761,7 +761,7 @@ def test_particle_class_mass_nuclide_mass(isotope: str, ion: str) -> None:
         )
 
 
-@pytest.mark.slow()
+@pytest.mark.slow
 def test_particle_half_life_string() -> None:
     """
     Find the first isotope where the half-life is stored as a string
@@ -825,9 +825,9 @@ class Test_antiparticle_properties_inversion:
         Test that the antiparticle of the antiparticle of a particle is
         the original particle.
         """
-        assert (
-            particle == ~~particle
-        ), f"~~{particle!r} equals {~~particle!r} instead of {particle!r}."
+        assert particle == ~~particle, (
+            f"~~{particle!r} equals {~~particle!r} instead of {particle!r}."
+        )
 
     def test_opposite_charge(self, particle, opposite) -> None:
         """
@@ -869,13 +869,13 @@ def test_particleing_a_particle(arg) -> None:
     """
     particle = Particle(arg)
 
-    assert particle == Particle(
-        particle
-    ), f"Particle({arg!r}) does not equal Particle(Particle({arg!r})."
+    assert particle == Particle(particle), (
+        f"Particle({arg!r}) does not equal Particle(Particle({arg!r})."
+    )
 
-    assert particle == Particle(
-        Particle(Particle(particle))
-    ), f"Particle({arg!r}) does not equal Particle(Particle(Particle({arg!r}))."
+    assert particle == Particle(Particle(Particle(particle))), (
+        f"Particle({arg!r}) does not equal Particle(Particle(Particle({arg!r}))."
+    )
 
     assert particle is not Particle(particle), (
         f"Particle({arg!r}) is the same object in memory as "
@@ -1227,17 +1227,17 @@ def test_custom_particles_from_json_string(
     if expected_exception is None:
         instance = cls(**kwargs)
         instance_from_json = json_loads_particle(json_string)
-        assert u.isclose(
-            instance.mass, instance_from_json.mass, equal_nan=True
-        ), pytest.fail(
-            f"Expected a mass value of {instance.mass}\n"
-            f"Received a mass value of {instance_from_json.mass}"
+        assert u.isclose(instance.mass, instance_from_json.mass, equal_nan=True), (
+            pytest.fail(
+                f"Expected a mass value of {instance.mass}\n"
+                f"Received a mass value of {instance_from_json.mass}"
+            )
         )
-        assert u.isclose(
-            instance.charge, instance_from_json.charge, equal_nan=True
-        ), pytest.fail(
-            f"Expected a charge value of {instance.charge}\n"
-            f"Received a charge value of {instance_from_json.charge}"
+        assert u.isclose(instance.charge, instance_from_json.charge, equal_nan=True), (
+            pytest.fail(
+                f"Expected a charge value of {instance.charge}\n"
+                f"Received a charge value of {instance_from_json.charge}"
+            )
         )
     else:
         with pytest.raises(expected_exception):
@@ -1261,17 +1261,17 @@ def test_custom_particles_from_json_file(
         instance = cls(**kwargs)
         test_file_object = io.StringIO(json_string)
         instance_from_json = json_load_particle(test_file_object)
-        assert u.isclose(
-            instance.mass, instance_from_json.mass, equal_nan=True
-        ), pytest.fail(
-            f"Expected a mass value of {instance.mass}\n"
-            f"Received a mass value of {instance_from_json.mass}"
+        assert u.isclose(instance.mass, instance_from_json.mass, equal_nan=True), (
+            pytest.fail(
+                f"Expected a mass value of {instance.mass}\n"
+                f"Received a mass value of {instance_from_json.mass}"
+            )
         )
-        assert u.isclose(
-            instance.charge, instance_from_json.charge, equal_nan=True
-        ), pytest.fail(
-            f"Expected a charge value of {instance.charge}\n"
-            f"Received a charge value of {instance_from_json.charge}"
+        assert u.isclose(instance.charge, instance_from_json.charge, equal_nan=True), (
+            pytest.fail(
+                f"Expected a charge value of {instance.charge}\n"
+                f"Received a charge value of {instance_from_json.charge}"
+            )
         )
     else:
         with pytest.raises(expected_exception):
@@ -1476,9 +1476,9 @@ def test_CustomParticle_cmp() -> None:
     particle2 = CustomParticle(2 * 126.90447 * u.u, 0 * u.C, "I2")
     other = CustomParticle(2 * 126.90447 * u.u, e.si, "I2 +")
 
-    assert (
-        particle1 == particle2
-    ), "CustomParticle instances that should be equal are not."
+    assert particle1 == particle2, (
+        "CustomParticle instances that should be equal are not."
+    )
     assert particle1 != other, "CustomParticle instances should not be equal, but are."
 
     assert particle1 != 1
@@ -1695,3 +1695,14 @@ def test_isotope_ion_electron_binding_energy() -> None:
     assert C_12.electron_binding_energy == C_13.electron_binding_energy
     assert C_12.electron_binding_energy == C_14.electron_binding_energy
     assert C_13.electron_binding_energy == C_14.electron_binding_energy
+
+
+def test_infinite_ionization() -> None:
+    helium = Particle("He-4 0+")
+    h_nucleus = helium.ionize(n=np.inf)
+    helium.ionize(n=np.inf, inplace=True)
+    assert h_nucleus == helium
+    assert h_nucleus == Particle("He-4 2+")
+    helium = Particle("He-4 0+")
+    pytest.raises(TypeError, helium.ionize, n=0.5)
+    pytest.raises(ValueError, helium.ionize, n=-1)

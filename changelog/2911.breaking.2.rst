@@ -1,0 +1,4 @@
+The method `~plasmapy.simulation.particle_tracker.particle_tracker.ParticleTracker.add_stopping`
+argument ``I`` must now be a list of `~astropy.units.Quantity` objects rather than a single
+`~astropy.units.Quantity` array. This is because ``None`` entries are now also accepted to that
+keyword as placeholders for grids on which stopping will not be applied.

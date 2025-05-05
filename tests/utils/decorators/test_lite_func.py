@@ -3,7 +3,6 @@ Test module for `plasmapy.utils.decorators.lite_func.bind_lite_func`.
 """
 
 import pytest
-from numba import jit, njit
 
 from plasmapy.utils.decorators.lite_func import bind_lite_func
 
@@ -47,12 +46,15 @@ def test_raises(lite_func, attrs, _error) -> None:
         bind_lite_func(lite_func, attrs=attrs)(foo)
 
 
+# If we add back Numba as a dependency, we will need to add back two
+# lines in this parametrization that tested lite functions with Numba
+# decorators. See git history.
+
+
 @pytest.mark.parametrize(
     ("lite_func", "attrs"),
     [
         (foo_lite, None),
-        (jit(foo_lite, nopython=True), None),
-        (njit(foo_lite), None),
         (foo_lite, {"bar": bar}),
     ],
 )

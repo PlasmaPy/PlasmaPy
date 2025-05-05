@@ -50,8 +50,7 @@ class ValidateQuantities(CheckUnits, CheckValues):
         equivalencies                  | [DEFAULT `None`] A list of equivalent pairs to
                                          try if
                                        | the units are not directly convertible.
-                                       | (see :mod:`~astropy.units.equivalencies`,
-                                         and/or `astropy equivalencies`_)
+                                       | (see |Astropy Equivalencies|)
         pass_equivalent_units  `bool`  | [DEFAULT `False`] allow equivalent units
                                        | to pass
         can_be_negative        `bool`  [DEFAULT `True`] values can be negative
@@ -114,7 +113,7 @@ class ValidateQuantities(CheckUnits, CheckValues):
 
     Allow `None` values to pass::
 
-        @ValidateQuantities(checks_on_return=[u.cm, None])
+        @ValidateQuantities(validations_on_return=[u.cm, None])
         def foo(arg1: u.cm = None):
             return arg1
 
@@ -122,7 +121,7 @@ class ValidateQuantities(CheckUnits, CheckValues):
 
         @ValidateQuantities(
             arg1={"units": u.cm},
-            checks_on_return={"units": u.km, "pass_equivalent_units": True},
+            validations_on_return={"units": u.km, "pass_equivalent_units": True},
         )
         def foo(arg1):
             return arg1
@@ -329,8 +328,7 @@ class ValidateQuantities(CheckUnits, CheckValues):
 
         # initialize TypeError message
         typeerror_msg = (
-            f"{err_msg} should be an astropy Quantity with units"
-            f" equivalent to one of ["
+            f"{err_msg} should be an astropy Quantity with units equivalent to one of ["
         )
         for ii, unit in enumerate(arg_validations["units"]):
             typeerror_msg += f"{unit}"
@@ -425,8 +423,7 @@ def validate_quantities(func=None, validations_on_return=None, **validations):
         equivalencies                  | [DEFAULT `None`] A list of equivalent pairs to
                                          try if
                                        | the units are not directly convertible.
-                                       | (see :mod:`~astropy.units.equivalencies`,
-                                         and/or `astropy equivalencies`_)
+                                       | (see |Astropy Equivalencies|)
         pass_equivalent_units  `bool`  | [DEFAULT `False`] allow equivalent units
                                        | to pass
         can_be_negative        `bool`  [DEFAULT `True`] values can be negative
@@ -502,7 +499,9 @@ def validate_quantities(func=None, validations_on_return=None, **validations):
 
     Allow `None` values to pass::
 
-        @validate_quantities(arg2={"none_shall_pass": True}, checks_on_return=[u.cm, None])
+        @validate_quantities(
+            arg2={"none_shall_pass": True}, validations_on_return=[u.cm, None]
+        )
         def foo(arg1: u.cm, arg2: u.cm = None):
             return None
 
@@ -510,7 +509,7 @@ def validate_quantities(func=None, validations_on_return=None, **validations):
 
         @validate_quantities(
             arg1={"units": u.cm},
-            checks_on_return={"units": u.km, "pass_equivalent_units": True},
+            validations_on_return={"units": u.km, "pass_equivalent_units": True},
         )
         def foo(arg1):
             return arg1

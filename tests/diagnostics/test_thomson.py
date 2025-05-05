@@ -146,7 +146,7 @@ def args_to_lite_args(kwargs):  # noqa: C901
     return kwargs
 
 
-@pytest.fixture()
+@pytest.fixture
 def single_species_collective_args():
     """
     Standard args
@@ -172,7 +172,7 @@ def single_species_collective_args():
     }
 
 
-@pytest.fixture()
+@pytest.fixture
 def single_species_collective_spectrum(single_species_collective_args):
     """
     Generates an example Thomson scattering spectrum in the collective regime
@@ -187,7 +187,7 @@ def single_species_collective_spectrum(single_species_collective_args):
     return (alpha, wavelengths, Skw)
 
 
-@pytest.mark.slow()
+@pytest.mark.slow
 def test_single_species_collective_spectrum(single_species_collective_spectrum) -> None:
     """
     Compares the generated spectrum to previously determined values
@@ -195,18 +195,16 @@ def test_single_species_collective_spectrum(single_species_collective_spectrum) 
     alpha, wavelength, Skw = single_species_collective_spectrum
 
     # Check that alpha is correct
-    assert np.isclose(
-        alpha, 1.801, atol=0.01
-    ), f"Collective case alpha returns {alpha} instead of expected 1.801"
+    assert np.isclose(alpha, 1.801, atol=0.01), (
+        f"Collective case alpha returns {alpha} instead of expected 1.801"
+    )
 
     i_width = width_at_value(wavelength.value, Skw.value, 2e-13)
     e_width = width_at_value(wavelength.value, Skw.value, 0.2e-13)
 
     # Check that the widths of the ion and electron features match expectations
     assert np.isclose(i_width, 0.1599, 1e-3), (
-        "Collective case ion feature "
-        f"width is {i_width}"
-        "instead of expected 0.1599"
+        f"Collective case ion feature width is {i_width}instead of expected 0.1599"
     )
 
     assert np.isclose(e_width, 17.7899, 1e-3), (
@@ -275,7 +273,7 @@ def test_notched_spectrum(notch, notch_num, single_species_collective_args) -> N
 @pytest.mark.parametrize(
     ("notch"),
     [
-        (np.array([533, 531]) * u.nm),  # Elements not in montonic increasing order
+        (np.array([533, 531]) * u.nm),  # Elements not in monotonically increasing order
         (np.array([530, 531, 533]) * u.nm),  # Not exactly 2 elements
     ],
 )
@@ -289,7 +287,7 @@ def test_notch_errors(notch, single_species_collective_args) -> None:
         alpha, Skw = thomson.spectral_density(*args, **kwargs)
 
 
-@pytest.mark.slow()
+@pytest.mark.slow
 def test_spectral_density_minimal_arguments(single_species_collective_args) -> None:
     """
     Check that spectral density runs with minimal arguments
@@ -348,7 +346,7 @@ def test_spectral_density_lite_minimal_arguments(
     alpha, Skw = thomson.spectral_density.lite(*args, **kwargs)
 
 
-@pytest.fixture()
+@pytest.fixture
 def multiple_species_collective_args():
     """
     Standard args
@@ -362,15 +360,15 @@ def multiple_species_collective_args():
         "wavelengths": np.arange(520, 545, 0.01) * u.nm,
         "probe_wavelength": 532 * u.nm,
         "n": 5e17 * u.cm**-3,
-        "T_e": 10 * u.eV,
+        "T_e": np.array([10, 50]) * u.eV,
     }
     kwargs["T_i"] = np.array([25, 25]) * u.eV
     kwargs["ions"] = [Particle("p+"), Particle("C-12 5+")]
     kwargs["probe_vec"] = np.array([1, 0, 0])
     kwargs["scatter_vec"] = np.array([0, 1, 0])
-    kwargs["efract"] = np.array([1.0])
+    kwargs["efract"] = np.array([0.4, 0.6])
     kwargs["ifract"] = np.array([0.7, 0.3])
-    kwargs["electron_vel"] = np.array([[0, 0, 0]]) * u.km / u.s
+    kwargs["electron_vel"] = np.array([[0, 0, 0], [100, 0, 0]]) * u.km / u.s
     kwargs["ion_vel"] = np.array([[-100, 0, 0], [0, 100, 0]]) * u.km / u.s
 
     return kwargs
@@ -390,7 +388,7 @@ def test_ifract_sum_error(single_species_collective_args) -> None:
         alpha, Skw = thomson.spectral_density(*args, **kwargs)
 
 
-@pytest.fixture()
+@pytest.fixture
 def multiple_species_collective_spectrum(multiple_species_collective_args):
     """
     Generates an example Thomson scattering spectrum for multiple ion species
@@ -424,15 +422,13 @@ def test_multiple_species_collective_spectrum(
     max_wavelength = wavelength.value[np.argmax(Skw.value)]
 
     # Check width
-    assert np.isclose(width, 0.17, 1e-2), (
-        f"Multiple ion species case spectrum width is {width} instead of "
-        "expected 0.17"
+    assert np.isclose(width, 0.1499, 1e-2), (
+        f"Multiple ion species case spectrum width is {width} instead of expected 0.17"
     )
 
     # Check max value
     assert np.isclose(max_skw, 6e-12, 1e-11), (
-        f"Multiple ion species case spectrum max is {max_skw} instead of "
-        "expected 6e-12"
+        f"Multiple ion species case spectrum max is {max_skw} instead of expected 6e-12"
     )
 
     # Check max peak location
@@ -442,7 +438,7 @@ def test_multiple_species_collective_spectrum(
     )
 
 
-@pytest.fixture()
+@pytest.fixture
 def single_species_non_collective_args():
     """
     Standard args
@@ -470,7 +466,7 @@ def single_species_non_collective_args():
     return kwargs
 
 
-@pytest.fixture()
+@pytest.fixture
 def single_species_non_collective_spectrum(single_species_non_collective_args):
     """
     Generates an example Thomson scattering spectrum in the non-collective
@@ -486,7 +482,7 @@ def single_species_non_collective_spectrum(single_species_non_collective_args):
     return (alpha, wavelengths, Skw)
 
 
-@pytest.mark.slow()
+@pytest.mark.slow
 def test_single_species_non_collective_spectrum(
     single_species_non_collective_spectrum,
 ) -> None:
@@ -496,9 +492,9 @@ def test_single_species_non_collective_spectrum(
     alpha, wavelength, Skw = single_species_non_collective_spectrum
 
     # Check that alpha is correct
-    assert np.isclose(
-        alpha, 0.05707, atol=0.01
-    ), f"Non-collective case alpha returns {alpha} instead of expected 0.05707"
+    assert np.isclose(alpha, 0.05707, atol=0.01), (
+        f"Non-collective case alpha returns {alpha} instead of expected 0.05707"
+    )
 
     e_width = width_at_value(wavelength.value, Skw.value, 0.2e-13)
 
@@ -621,7 +617,7 @@ def test_spectral_density_input_errors(
                 assert msg in str(excinfo.value)
 
 
-@pytest.mark.slow()
+@pytest.mark.slow
 def test_split_populations() -> None:
     """
     Make sure that splitting a single population of ions or electrons
@@ -918,7 +914,7 @@ def spectral_density_model_settings_params(kwargs):
     return wavelengths, params, settings
 
 
-@pytest.fixture()
+@pytest.fixture
 def epw_single_species_settings_params():
     """
     Standard input for the spectral_density_model function
@@ -953,7 +949,7 @@ def epw_single_species_settings_params():
     return kwargs
 
 
-@pytest.fixture()
+@pytest.fixture
 def epw_multi_species_settings_params():
     """
     Standard input for the spectral_density_model function
@@ -994,7 +990,7 @@ def epw_multi_species_settings_params():
     return kwargs
 
 
-@pytest.fixture()
+@pytest.fixture
 def iaw_single_species_settings_params():
     """
     Standard input for the spectral_density_model function
@@ -1031,7 +1027,7 @@ def iaw_single_species_settings_params():
     return kwargs
 
 
-@pytest.fixture()
+@pytest.fixture
 def iaw_multi_species_settings_params():
     """
     Standard input for the spectral_density_model function
@@ -1074,7 +1070,7 @@ def iaw_multi_species_settings_params():
     return kwargs
 
 
-@pytest.fixture()
+@pytest.fixture
 def noncollective_single_species_settings_params():
     """
     Standard input for the spectral_density_model function
@@ -1114,7 +1110,7 @@ def noncollective_single_species_settings_params():
     return kwargs
 
 
-@pytest.mark.slow()
+@pytest.mark.slow
 def test_fit_epw_single_species(epw_single_species_settings_params) -> None:
     wavelengths, params, settings = spectral_density_model_settings_params(
         epw_single_species_settings_params
@@ -1123,7 +1119,7 @@ def test_fit_epw_single_species(epw_single_species_settings_params) -> None:
     run_fit(wavelengths, params, settings)
 
 
-@pytest.mark.slow()
+@pytest.mark.slow
 def test_fit_epw_multi_species(epw_multi_species_settings_params) -> None:
     wavelengths, params, settings = spectral_density_model_settings_params(
         epw_multi_species_settings_params
@@ -1132,7 +1128,7 @@ def test_fit_epw_multi_species(epw_multi_species_settings_params) -> None:
     run_fit(wavelengths, params, settings)
 
 
-@pytest.mark.slow()
+@pytest.mark.slow
 def test_fit_iaw_single_species(iaw_single_species_settings_params) -> None:
     wavelengths, params, settings = spectral_density_model_settings_params(
         iaw_single_species_settings_params
@@ -1141,7 +1137,7 @@ def test_fit_iaw_single_species(iaw_single_species_settings_params) -> None:
     run_fit(wavelengths, params, settings)
 
 
-@pytest.mark.slow()
+@pytest.mark.slow
 @pytest.mark.filterwarnings("ignore::UserWarning")
 def test_fit_iaw_instr_func(iaw_single_species_settings_params) -> None:
     """
@@ -1157,7 +1153,7 @@ def test_fit_iaw_instr_func(iaw_single_species_settings_params) -> None:
     run_fit(wavelengths, params, settings)
 
 
-@pytest.mark.slow()
+@pytest.mark.slow
 def test_fit_ion_mu_and_z(iaw_single_species_settings_params) -> None:
     """
     Tests fitting with ion parameters explicitly set and allowed to vary
@@ -1176,7 +1172,7 @@ def test_fit_ion_mu_and_z(iaw_single_species_settings_params) -> None:
     run_fit(wavelengths, params, settings)
 
 
-@pytest.mark.slow()
+@pytest.mark.slow
 def test_fit_iaw_multi_species(iaw_multi_species_settings_params) -> None:
     wavelengths, params, settings = spectral_density_model_settings_params(
         iaw_multi_species_settings_params
@@ -1185,7 +1181,7 @@ def test_fit_iaw_multi_species(iaw_multi_species_settings_params) -> None:
     run_fit(wavelengths, params, settings)
 
 
-@pytest.mark.slow()
+@pytest.mark.slow
 def test_fit_noncollective_single_species(
     noncollective_single_species_settings_params,
 ) -> None:
@@ -1196,7 +1192,7 @@ def test_fit_noncollective_single_species(
     run_fit(wavelengths, params, settings)
 
 
-@pytest.mark.slow()
+@pytest.mark.slow
 @pytest.mark.filterwarnings("ignore::UserWarning")
 def test_fit_with_instr_func(epw_single_species_settings_params) -> None:
     """
@@ -1247,7 +1243,7 @@ def test_fit_with_invalid_instr_func(
         run_fit(wavelengths, params, settings)
 
 
-@pytest.mark.slow()
+@pytest.mark.slow
 def test_fit_with_minimal_parameters() -> None:
     # Create example data for fitting
     probe_wavelength = 532 * u.nm

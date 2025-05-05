@@ -215,8 +215,7 @@ def stix(  # noqa: C901, PLR0912, PLR0915
     B = B.squeeze()
     if B.ndim != 0:
         raise ValueError(
-            "Argument 'B' must be single valued and not an array of"
-            f" shape  {B.shape}."
+            f"Argument 'B' must be single valued and not an array of shape  {B.shape}."
         )
 
     # Validate w argument and dimension
