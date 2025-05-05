@@ -34,12 +34,3 @@ build:
 
     post_build:
     - echo $'\n'⚠️ For help deciphering documentation build error messages, see:$'\n\n'\ \ https://docs.plasmapy.org/en/latest/contributing/doc_guide.html#troubleshooting
-
-# TODO: leaving for now, but delete if workflow works properly
-#python:
-#  install:
-#  - method: pip
-#    path: .
-#    extra_requirements:
-#      - docs
-# #  - requirements: ci_requirements/docs-3.12-linux.txt
