@@ -653,15 +653,15 @@ wheels = [
 
 [[package]]
 name = "hypothesis"
-version = "6.131.9"
+version = "6.131.14"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "attrs" },
     { name = "sortedcontainers" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/10/ff/217417d065aa8a4e6815ddc39acee1222f1b67bd0e4803b85de86a837873/hypothesis-6.131.9.tar.gz", hash = "sha256:ee9b0e1403e1121c91921dbdc79d7f509fdb96d457a0389222d2a68d6c8a8f8e", size = 435415, upload-time = "2025-04-25T05:54:46.64Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/29/41/f84e4d8d7a3430bef5bbb7ae7aceebf7ff2fde7b76ba192ccad7c878b7cc/hypothesis-6.131.14.tar.gz", hash = "sha256:347edc46cfe9bfcfb0598c4c927ed8fd573edfc8bacd2162023c4cf16accb702", size = 436198, upload-time = "2025-05-07T04:12:05.747Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/bd/e5/41a6733bfe11997795669dec3b3d785c28918e06568a2540dcc29f0d3fa7/hypothesis-6.131.9-py3-none-any.whl", hash = "sha256:7c2d9d6382e98e5337b27bd34e5b223bac23956787a827e1d087e00d893561d6", size = 499853, upload-time = "2025-04-25T05:54:43.247Z" },
+    { url = "https://files.pythonhosted.org/packages/7f/9c/f8f818fc3e5e14dc291149032af5d65cc02f6bd6aeead515d7133abeea02/hypothesis-6.131.14-py3-none-any.whl", hash = "sha256:4cb939361a75c5946fe3e049d69737b00bde3908f162da6dcea5b2a326cea0a2", size = 500682, upload-time = "2025-05-07T04:12:02.606Z" },
 ]
 
 [[package]]
@@ -1630,7 +1630,7 @@ requires-dist = [
     { name = "packaging", specifier = ">=22" },
     { name = "pandas", specifier = ">=2" },
     { name = "pillow", marker = "extra == 'docs'", specifier = ">=10.4" },
-    { name = "plasmapy-sphinx", marker = "extra == 'docs'", specifier = ">=0.1.0a1" },
+    { name = "plasmapy-sphinx", marker = "extra == 'docs'", specifier = ">=0.2.0b1" },
     { name = "pygments", marker = "extra == 'docs'", specifier = "==2.18" },
     { name = "pytest", marker = "extra == 'tests'", specifier = ">=8.3.1" },
     { name = "pytest-cov", marker = "extra == 'tests'", specifier = ">=5" },
@@ -1668,18 +1668,19 @@ provides-extras = ["docs", "tests"]
 
 [[package]]
 name = "plasmapy-sphinx"
-version = "0.1.0"
+version = "0.2.0b1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "docutils" },
     { name = "jinja2" },
+    { name = "packaging" },
     { name = "sphinx" },
     { name = "sphinx-gallery" },
     { name = "sphinx-rtd-theme" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/76/f5/81ae2f0b15df5584e6e32b551ae5c11bee884486602acb9b3cc6c3484edf/plasmapy_sphinx-0.1.0.tar.gz", hash = "sha256:5b1151f3d1f037ea2e350c7596763d361f1d2c08af1635eeb7bb5986bfbc7789", size = 71976, upload-time = "2024-05-07T00:20:45.847Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/94/2f/dbba1d0dea083ddc865825087166f8f609a3593fd68b9b6c8703c29d89fb/plasmapy_sphinx-0.2.0b1.tar.gz", hash = "sha256:65a4e2a6d7c4b1dafbd5bc966aeec8a4b881174fd23399e845aed2d534171872", size = 72747, upload-time = "2025-05-07T22:24:09.674Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/44/41/820c7f570ef3638500caece656f9dcf623b5c0311629c9ce467ebca10bb3/plasmapy_sphinx-0.1.0-py3-none-any.whl", hash = "sha256:554a98a1316e4794fdb625dbf1a637dfe62f9e9f6e9ddb838e76b24d2a5bb646", size = 43205, upload-time = "2024-05-07T00:20:42.846Z" },
+    { url = "https://files.pythonhosted.org/packages/01/03/68b0ea582163cb0b5f349a362e72f8811740c6d5734601e2d4bfb221c8d7/plasmapy_sphinx-0.2.0b1-py3-none-any.whl", hash = "sha256:ca0a5bf494202b5dda4d760e5d1187306888f5637a86ecff2b2cce61203796ce", size = 43630, upload-time = "2025-05-07T22:24:07.941Z" },
 ]
 
 [[package]]
@@ -2778,16 +2779,16 @@ wheels = [
 
 [[package]]
 name = "virtualenv"
-version = "20.31.0"
+version = "20.31.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "distlib" },
     { name = "filelock" },
     { name = "platformdirs" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/d7/00/ec8056eb4a9ecc0fdbd3c13bc6a0ac9cc721a58267154c53daeac87dbafb/virtualenv-20.31.0.tar.gz", hash = "sha256:82195319e2e9394cf17ee1646780e90d8370be35065af4f98e060c9e88d2e5ba", size = 6129348, upload-time = "2025-05-05T16:18:36.563Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/53/07/655f4fb9592967f49197b00015bb5538d3ed1f8f96621a10bebc3bb822e2/virtualenv-20.31.1.tar.gz", hash = "sha256:65442939608aeebb9284cd30baca5865fcd9f12b58bb740a24b220030df46d26", size = 6076234, upload-time = "2025-05-05T22:45:39.829Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/e1/d0/1dd2f8fd94406c5a6e93ac62a63f7682cf39f1a43968e20bab9e87a2dd28/virtualenv-20.31.0-py3-none-any.whl", hash = "sha256:931d8d4c1a35e4737aa9a06bc495221c7600196e9da52dae78c318904e2d2284", size = 6111338, upload-time = "2025-05-05T16:18:34.024Z" },
+    { url = "https://files.pythonhosted.org/packages/c5/67/7d7559264a6f8ec9ce4e397ddd9157a510be1e174dc98be898b6c18eeef4/virtualenv-20.31.1-py3-none-any.whl", hash = "sha256:f448cd2f1604c831afb9ea238021060be2c0edbcad8eb0a4e8b4e14ff11a5482", size = 6057843, upload-time = "2025-05-05T22:45:37.127Z" },
 ]
 
 [[package]]
