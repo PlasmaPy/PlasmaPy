@@ -166,7 +166,7 @@ jobs:
         cache-suffix: ${{ matrix.nox_session }}-${{ matrix.python }}-${{ runner.os }}
 
     - name: Run Nox session
-      run: nox -s '${{ matrix.nox_session }}'
+      run: uv run nox -s '${{ matrix.nox_session }}'
 
     - name: Upload coverage reports to Codecov
       if: ${{ contains(matrix.nox_session, 'cov') }}
