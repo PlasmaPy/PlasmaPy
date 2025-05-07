@@ -29,8 +29,10 @@ import pathlib
 import re
 import shutil
 import sys
+import tomllib
 
 import nox
+from packaging.requirements import Requirement
 
 # SPEC 0 indicates that scientific Python packages should support
 # versions of Python that have been released in the last 3 years, or
@@ -43,6 +45,8 @@ supported_operating_systems: tuple[str, ...] = ("linux", "macos", "windows")
 
 maxpython = max(supported_python_versions)
 minpython = min(supported_python_versions)
+
+_HERE = pathlib.Path(__file__).parent
 
 # The documentation should be build always using the same version of
 # Python, which should be the latest version of Python supported by Read
@@ -113,6 +117,32 @@ def _create_requirements_pr_message(uv_output: str, session: nox.Session) -> Non
 
     with pr_message.open(mode="a") as file:
         file.write("\n".join(lines))
+
+
+def _get_dependencies_from_pyproject_toml(extras: str | None = None):
+    _PYTPROJECT_TOML = (_HERE / "pyproject.toml").resolve()
+    with _PYTPROJECT_TOML.open(mode="rb") as file:
+        data = tomllib.load(file)
+        config = data["project"]
+
+    dependencies = {Requirement(item).name: item for item in config["dependencies"]}
+
+    if (
+        extras is None
+        or "optional-dependencies" not in config
+        or not isinstance(extras, str)
+        or (extras not in config["optional-dependencies"] and extras != "all")
+    ):
+        return dependencies
+
+    extras = [extras] if extras != "all" else list(config["optional-dependencies"])
+    op_deps = {}
+    for extra in extras:
+        for dep in config["optional-dependencies"][extra]:
+            name = Requirement(dep).name
+            op_deps[name] = dep
+
+    return {**dependencies, **op_deps}
 
 
 @nox.session
@@ -358,7 +388,19 @@ def build_docs_with_dev_version_of(
     The purpose of this session is to catch bugs and breaking changes
     so that they can be fixed or updated earlier rather than later.
     """
-    session.install(f"git+https://{site}.com/{repository}", ".[docs]")
+    # Note: Individual dependencies are install in this fashion to
+    #       avoid resolution conflicts if an upper dependency limit
+    #       had been put on the target package.
+    pkg_name = repository.split("/")[-1]
+    deps = _get_dependencies_from_pyproject_toml(extras="docs")
+    deps.pop(pkg_name, None)
+
+    session.install(
+        f"git+https://{site}.com/{repository}",
+        *list(deps.values()),
+        silent=False,
+    )
+    session.install("--no-deps", ".")
     session.run(*sphinx_base_command, *build_html, *session.posargs)
 
 
