@@ -70,6 +70,7 @@ def dev(session: nox.Session) -> None:
     session.run("uv", "venv", "--python", maxpython, "--no-progress")
     session.run("uv", "sync", "--frozen", "--all-extras", "--no-progress")
 
+
 def _create_requirements_pr_message(uv_output: str, session: nox.Session) -> None:
     """
     Create the pull request message during requirements updates.
