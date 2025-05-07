@@ -31,10 +31,8 @@ import shutil
 import sys
 import tomllib
 
-from packaging.requirements import Requirement
-from typing import Optional
-
 import nox
+from packaging.requirements import Requirement
 
 # SPEC 0 indicates that scientific Python packages should support
 # versions of Python that have been released in the last 3 years, or
@@ -121,15 +119,13 @@ def _create_requirements_pr_message(uv_output: str, session: nox.Session) -> Non
         file.write("\n".join(lines))
 
 
-def _get_dependencies_from_pyproject_toml(extras: Optional[str] = None):
+def _get_dependencies_from_pyproject_toml(extras: str | None = None):
     _PYTPROJECT_TOML = (_HERE / "pyproject.toml").resolve()
-    with open(_PYTPROJECT_TOML, "rb") as file:
+    with _PYTPROJECT_TOML.open(mode="rb") as file:
         data = tomllib.load(file)
         config = data["project"]
 
-    dependencies = {
-        Requirement(item).name: item for item in config["dependencies"]
-    }
+    dependencies = {Requirement(item).name: item for item in config["dependencies"]}
 
     if (
         extras is None
@@ -393,6 +389,9 @@ def build_docs_with_dev_version_of(
     The purpose of this session is to catch bugs and breaking changes
     so that they can be fixed or updated earlier rather than later.
     """
+    # Note: Individual dependencies are install in this fashion to
+    #       avoid resolution conflicts if an upper dependency limit
+    #       had been put on the target package.
     pkg_name = repository.split("/")[-1]
     deps = _get_dependencies_from_pyproject_toml(extras="docs")
     deps.pop(pkg_name, None)
