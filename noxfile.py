@@ -393,12 +393,16 @@ def build_docs_with_dev_version_of(
     The purpose of this session is to catch bugs and breaking changes
     so that they can be fixed or updated earlier rather than later.
     """
-    session.install(".[docs]", silent=False)
+    pkg_name = repository.split("/")[-1]
+    deps = _get_dependencies_from_pyproject_toml(extras="docs")
+    deps.pop(pkg_name, None)
+
     session.install(
-        "--force-reinstall",
         f"git+https://{site}.com/{repository}",
+        *list(deps.values()),
         silent=False,
     )
+    session.install("--no-deps", "--force-install", ".")
     session.run(*sphinx_base_command, *build_html, *session.posargs)
 
 
