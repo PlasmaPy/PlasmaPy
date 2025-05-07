@@ -360,7 +360,7 @@ def build_docs_with_dev_version_of(
     so that they can be fixed or updated earlier rather than later.
     """
     session.install(".[docs]")
-    session.install("--ignore-installed", f"git+https://{site}.com/{repository}")
+    session.install("--force-reinstall", f"git+https://{site}.com/{repository}")
     session.run(*sphinx_base_command, *build_html, *session.posargs)
 
 
