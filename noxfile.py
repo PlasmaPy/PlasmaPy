@@ -359,7 +359,8 @@ def build_docs_with_dev_version_of(
     The purpose of this session is to catch bugs and breaking changes
     so that they can be fixed or updated earlier rather than later.
     """
-    session.install(f"git+https://{site}.com/{repository}", ".[docs]")
+    session.install(".[docs]")
+    session.install("--ignore-installed", f"git+https://{site}.com/{repository}")
     session.run(*sphinx_base_command, *build_html, *session.posargs)
 
 
