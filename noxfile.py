@@ -402,7 +402,7 @@ def build_docs_with_dev_version_of(
         *list(deps.values()),
         silent=False,
     )
-    session.install("--no-deps", "--force-install", ".")
+    session.install("--no-deps", ".")
     session.run(*sphinx_base_command, *build_html, *session.posargs)
 
 
