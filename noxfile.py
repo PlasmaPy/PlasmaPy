@@ -123,7 +123,7 @@ def _create_requirements_pr_message(uv_output: str, session: nox.Session) -> Non
 
 def _get_dependencies_from_pyproject_toml(extras: Optional[str] = None):
     _PYTPROJECT_TOML = (_HERE / "pyproject.toml").resolve()
-    with open(_PYTPROJECT_TOML, "rb") as file:
+    with _PYTPROJECT_TOML.open(mode="rb") as file:
         data = tomllib.load(file)
         config = data["project"]
 
