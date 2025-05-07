@@ -95,11 +95,6 @@ jobs:
           python: '3.12'
           nox_session: build_docs_with_dev_version_of(nbsphinx)
 
-        - name: Documentation, Python 3.12, plasmapy_sphinx-dev, Ubuntu
-          os: ubuntu-latest
-          python: '3.12'
-          nox_session: build_docs_with_dev_version_of(plasmapy_sphinx)
-
         - name: Static type checking with mypy, Python 3.13, Windows
           os: windows-latest
           python: '3.13'
