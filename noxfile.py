@@ -29,6 +29,10 @@ import pathlib
 import re
 import shutil
 import sys
+import tomllib
+
+from packaging.requirements import Requirement
+from typing import Optional
 
 import nox
 
@@ -43,6 +47,8 @@ supported_operating_systems: tuple[str, ...] = ("linux", "macos", "windows")
 
 maxpython = max(supported_python_versions)
 minpython = min(supported_python_versions)
+
+_HERE = pathlib.Path(__file__).parent
 
 # The documentation should be build always using the same version of
 # Python, which should be the latest version of Python supported by Read
@@ -113,6 +119,34 @@ def _create_requirements_pr_message(uv_output: str, session: nox.Session) -> Non
 
     with pr_message.open(mode="a") as file:
         file.write("\n".join(lines))
+
+
+def _get_dependencies_from_pyproject_toml(extras: Optional[str] = None):
+    _PYTPROJECT_TOML = (_HERE / "pyproject.toml").resolve()
+    with open(_PYTPROJECT_TOML, "rb") as file:
+        data = tomllib.load(file)
+        config = data["project"]
+
+    dependencies = {
+        Requirement(item).name: item for item in config["dependencies"]
+    }
+
+    if (
+        extras is None
+        or "optional-dependencies" not in config
+        or not isinstance(extras, str)
+        or (extras not in config["optional-dependencies"] and extras != "all")
+    ):
+        return dependencies
+
+    extras = [extras] if extras != "all" else list(config["optional-dependencies"])
+    op_deps = {}
+    for extra in extras:
+        for dep in config["optional-dependencies"][extra]:
+            name = Requirement(dep).name
+            op_deps[name] = dep
+
+    return {**dependencies, **op_deps}
 
 
 @nox.session
