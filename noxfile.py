@@ -393,7 +393,7 @@ def docs_bundle_htmlzip(session: nox.Session) -> None:
         "sphinx-build",
         "--show-traceback",
         "--doctree-dir",
-        f"{html_build_dir / '.doctrees'}"
+        f"{html_build_dir / '.doctrees'}",
         "--builder",
         "singlehtml",
         "--define",
