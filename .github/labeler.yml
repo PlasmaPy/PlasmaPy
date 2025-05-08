@@ -189,6 +189,7 @@ release:
   - changed-files:
     - any-glob-to-any-file: [
       '.github/workflows/*weekly*.yml',
+      'docs/conf.py',
       'noxfile.py',
     ]
 
