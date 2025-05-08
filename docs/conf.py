@@ -206,6 +206,10 @@ nitpick_ignore_regex = [
     (python_role, "plasmapy.analysis.swept_langmuir.find_floating_potential"),
     (python_role, "plasmapy.particles.particle_collections"),
     (python_role, "plasmapy.utils.decorators.lite_func"),
+    # undocumented astropy objects
+    # - astropy has no index for u.dimensionless_unscaled, which we
+    #   reference in type annotations
+    ("py:class", "dimensionless"),
 ]
 
 # The Sphinx configuration variables rst_prolog and rst_epilog contain
