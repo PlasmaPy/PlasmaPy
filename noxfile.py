@@ -370,7 +370,7 @@ def docs(session: nox.Session) -> None:
         session.error(f"Documentation preview landing page not found: {landing_page}")
 
 
-@nox.session(python=docpython)
+@nox.session(python=docpython, reuse_venv=True)
 def docs_bundle_htmlzip(session: nox.Session) -> None:
     """
     Convert html built docs to a bundle html zip file.
