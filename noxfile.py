@@ -377,6 +377,7 @@ def docs(session: nox.Session) -> None:
         nox.param("github", "sphinx-doc/sphinx", id="sphinx"),
         nox.param("github", "readthedocs/sphinx_rtd_theme", id="sphinx_rtd_theme"),
         nox.param("github", "spatialaudio/nbsphinx", id="nbsphinx"),
+        nox.param("github", "plasmapy/plasmapy_sphinx", id="plasmapy_sphinx"),
     ],
 )
 def build_docs_with_dev_version_of(
