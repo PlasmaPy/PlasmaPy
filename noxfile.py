@@ -396,7 +396,7 @@ def docs_bundle_htmlzip(session: nox.Session) -> None:
         "singlehtml",
         "--define",
         "language=en",
-        f"{html_build_dir}",  # source directory
+        f".",  # source directory
         "$READTHEDOCS_OUTPUT/htmlzip",  # output directory
     ]
     session.run(*command)
