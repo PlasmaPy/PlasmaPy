@@ -536,7 +536,7 @@ nbsphinx_thumbnails = {
 
 # This is processed by Jinja2 and inserted before each notebook
 nbsphinx_prolog = r"""
-{% set docname = 'docs/' + env.doc2path(env.docname, base=None) %}
+{% set docname = 'docs/' + env.doc2path(env.docname, base=None) | string %}
 {% set nb_base = 'tree' if env.config.revision else 'blob' %}
 {% set nb_where = env.config.revision if env.config.revision else 'main' %}
 
