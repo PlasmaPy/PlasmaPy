@@ -187,7 +187,10 @@ release:
 
 'run weekly tests in CI':
   - changed-files:
-    - any-glob-to-any-file: '.github/workflows/*weekly*.yml'
+    - any-glob-to-any-file: [
+      '.github/workflows/*weekly*.yml',
+      'noxfile.py',
+    ]
 
 'static type checking':
   - changed-files:
