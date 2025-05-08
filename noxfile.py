@@ -371,6 +371,38 @@ def docs(session: nox.Session) -> None:
 
 
 @nox.session(python=docpython)
+def docs_bundle_htmlzip(session: nox.Session) -> None:
+    """
+    Convert html built docs to a bundle html zip file.
+    """
+
+    if not running_on_rtd:
+        session.log(
+            "Process is NOT being run on Read the Docs.  Will not html ZIP file."
+        )
+        return None
+
+    html_build_dir = pathlib.Path(doc_build_dir)
+    html_landing_page = (html_build_dir / "index.html").resolve()
+    if not html_landing_page.exists():
+        session.error(
+            f"No documentation build fount at: {html_landing_page}\n"
+            f"It appears the documentation has not been built."
+        )
+    command = [
+        "sphinx-build",
+        "--show-traceback",
+        "--builder",
+        "singlehtml",
+        "--define",
+        "language=en",
+        f"{html_build_dir}",  # source directory
+        "$READTHEDOCS_OUTPUT/htmlzip",  # output directory
+    ]
+    session.run(*command)
+
+
+@nox.session(python=docpython)
 @nox.parametrize(
     ["site", "repository"],
     [
