@@ -208,7 +208,7 @@ nitpick_ignore_regex = [
     (python_role, "plasmapy.utils.decorators.lite_func"),
     # undocumented astropy objects
     # - astropy has no index for u.dimensionless_unscaled, which we
-    #   reference in type annotations
+    #   referenced in our type annotations
     ("py:class", "dimensionless"),
 ]
 
