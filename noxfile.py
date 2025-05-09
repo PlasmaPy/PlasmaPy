@@ -384,7 +384,7 @@ def docs_bundle_htmlzip(session: nox.Session) -> None:
 
     html_build_dir = pathlib.Path(doc_build_dir)
     html_landing_page = (html_build_dir / "index.html").resolve()
-    READTHEDOCS_OUTPOUT = html_build_dir.parent
+    READTHEDOCS_OUTPUT = html_build_dir.parent
     if not html_landing_page.exists():
         session.error(
             f"No documentation build fount at: {html_landing_page}\n"
@@ -401,7 +401,7 @@ def docs_bundle_htmlzip(session: nox.Session) -> None:
         "--define",
         "language=en",
         "./docs/",  # source directory
-        f"{READTHEDOCS_OUTPOUT / 'htmlzip'}",  # output directory
+        f"{READTHEDOCS_OUTPUT / 'htmlzip'}",  # output directory
     ]
     session.run(*command)
 
