@@ -413,16 +413,15 @@ def docs_bundle_htmlzip(session: nox.Session) -> None:
     # ^ this name mimics how RTD does it by default
 
     command = [
-        "cd",
-        f"{READTHEDOCS_OUTPUT / 'htmlzip'}",
-        ";",
         "zip",
         "-r",
         "-m",
         f"{zip_name}",
         ".",
     ]
+    session.chdir(f"{READTHEDOCS_OUTPUT / 'htmlzip'}")
     session.run(*command)
+    session.chdir(f"../../")
 
     session.log(f"The htmlzip was placed in: {READTHEDOCS_OUTPUT / 'htmlzip'}")
 
