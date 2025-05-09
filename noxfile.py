@@ -387,7 +387,7 @@ def docs_bundle_htmlzip(session: nox.Session) -> None:
     READTHEDOCS_OUTPUT = html_build_dir.parent
     if not html_landing_page.exists():
         session.error(
-            f"No documentation build fount at: {html_landing_page}\n"
+            f"No documentation build found at: {html_landing_page}\n"
             f"It appears the documentation has not been built."
         )
 
@@ -421,7 +421,7 @@ def docs_bundle_htmlzip(session: nox.Session) -> None:
     ]
     session.chdir(f"{READTHEDOCS_OUTPUT / 'htmlzip'}")
     session.run(*command)
-    session.chdir(f"../../")
+    session.chdir("../../")
 
     session.log(f"The htmlzip was placed in: {READTHEDOCS_OUTPUT / 'htmlzip'}")
 
