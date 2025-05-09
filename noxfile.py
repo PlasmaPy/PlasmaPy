@@ -405,6 +405,8 @@ def docs_bundle_htmlzip(session: nox.Session) -> None:
     ]
     session.run(*command)
 
+    session.log(f"The htmlzip was placed in: {READTHEDOCS_OUTPUT / 'htmlzip'}")
+
 
 @nox.session(python=docpython)
 @nox.parametrize(
