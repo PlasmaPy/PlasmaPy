@@ -405,6 +405,25 @@ def docs_bundle_htmlzip(session: nox.Session) -> None:
     ]
     session.run(*command)
 
+    # now build the zip file
+    READTHEDOCS_PROJECT = os.environ.get("READTHEDOCS_PROJECT")
+    READTHEDOCS_LANGUAGE = os.environ.get("READTHEDOCS_LANGUAGE")
+    READTHEDOCS_VERSION = os.environ.get("READTHEDOCS_VERSION")
+    zip_name = f"{READTHEDOCS_PROJECT}-{READTHEDOCS_LANGUAGE}-{READTHEDOCS_VERSION}.zip"
+    # ^ this name mimics how RTD does it by default
+
+    command = [
+        "cd",
+        f"{READTHEDOCS_OUTPUT / 'htmlzip'}",
+        ";",
+        "zip",
+        "-r",
+        "-m",
+        f"{zip_name}",
+        ".",
+    ]
+    session.run(*command)
+
     session.log(f"The htmlzip was placed in: {READTHEDOCS_OUTPUT / 'htmlzip'}")
 
 
