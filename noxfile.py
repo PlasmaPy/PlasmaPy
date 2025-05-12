@@ -370,6 +370,56 @@ def docs(session: nox.Session) -> None:
         session.error(f"Documentation preview landing page not found: {landing_page}")
 
 
+@nox.session(python=docpython, reuse_venv=True)
+def docs_bundle_htmlzip(session: nox.Session) -> None:
+    """
+    Convert html built docs to a bundle html zip file.
+    """
+
+    if not running_on_rtd:
+        session.log(
+            "Process is NOT being run on Read the Docs.  Will not html ZIP file."
+        )
+        return None
+
+    html_build_dir = pathlib.Path(doc_build_dir)
+    html_landing_page = (html_build_dir / "index.html").resolve()
+    READTHEDOCS_OUTPUT = html_build_dir.parent
+    if not html_landing_page.exists():
+        session.error(
+            f"No documentation build found at: {html_landing_page}\n"
+            f"It appears the documentation has not been built."
+        )
+
+    command = [
+        "sphinx-build",
+        "--show-traceback",
+        "--doctree-dir",
+        f"{html_build_dir / '.doctrees'}",
+        "--builder",
+        "singlehtml",
+        "--define",
+        "language=en",
+        "./docs/",  # source directory
+        f"{READTHEDOCS_OUTPUT / 'htmlzip'}",  # output directory
+    ]
+    session.run(*command)
+
+    # now build the zip file
+    READTHEDOCS_PROJECT = os.environ.get("READTHEDOCS_PROJECT")
+    READTHEDOCS_LANGUAGE = os.environ.get("READTHEDOCS_LANGUAGE")
+    READTHEDOCS_VERSION = os.environ.get("READTHEDOCS_VERSION")
+    zip_name = f"{READTHEDOCS_PROJECT}-{READTHEDOCS_LANGUAGE}-{READTHEDOCS_VERSION}.zip"
+    # ^ this name mimics how RTD does it by default
+
+    cwd = pathlib.Path.cwd()
+    session.chdir(f"{READTHEDOCS_OUTPUT / 'htmlzip'}")
+    session.run("zip", "-r", "-m", f"{zip_name}", ".")
+    session.chdir(f"{cwd}")
+
+    session.log(f"The htmlzip was placed in: {READTHEDOCS_OUTPUT / 'htmlzip'}")
+
+
 @nox.session(python=docpython)
 @nox.parametrize(
     ["site", "repository"],
