@@ -58,14 +58,12 @@ docpython = "3.12"
 current_python = f"{sys.version_info.major}.{sys.version_info.minor}"
 nox.options.sessions = [f"tests-{current_python}(skipslow)"]
 
-nox.options.default_venv_backend = "uv|virtualenv"
+nox.options.default_venv_backend = "uv"
 
 uv_sync = ("uv", "sync", "--no-progress", "--frozen")
 
 running_on_ci = os.getenv("CI")
 running_on_rtd = os.environ.get("READTHEDOCS") == "True"
-
-uv_requirement = "uv >= 0.6.5"
 
 
 def _create_requirements_pr_message(uv_output: str, session: nox.Session) -> None:
@@ -159,8 +157,6 @@ def requirements(session: nox.Session) -> None:
     pull request message for the GitHub workflow that updates the pinned
     requirements (:file:`.github/workflows/update-pinned-reqs.yml`).
     """
-    session.install(uv_requirement)
-
     uv_lock_upgrade = ["uv", "lock", "--upgrade", "--no-progress"]
 
     # When silent is `True`, `session.run()` returns a multi-line string
@@ -179,7 +175,6 @@ def validate_requirements(session: nox.Session) -> None:
     Verify that the requirements in :file:`uv.lock` are compatible
     with the requirements in `pyproject.toml`.
     """
-    session.install(uv_requirement)
     session.log(
         "🛡 If this check fails, regenerate the pinned requirements in "
         "`uv.lock` with `nox -s requirements`."
@@ -232,8 +227,6 @@ test_specifiers: list = [
 def tests(session: nox.Session, test_specifier: nox._parametrize.Param) -> None:
     """Run tests with pytest."""
 
-    session.install(uv_requirement)
-
     options: list[str] = []
 
     if test_specifier == "skip slow tests":
@@ -253,12 +246,20 @@ def tests(session: nox.Session, test_specifier: nox._parametrize.Param) -> None:
 
     match test_specifier:
         case "lowest-direct":
-            session.install(".[tests]", "--resolution=lowest-direct")
+            session.install(
+                ".[tests]",
+                "--resolution=lowest-direct",
+                "--no-all-extras",
+                f"--python={session.virtualenv.location}",
+                env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
+            )
         case _:
             # From https://nox.thea.codes/en/stable/cookbook.html#using-a-lockfile
             session.run_install(
                 *uv_sync,
                 "--extra=tests",
+                "--no-default-groups",
+                f"--python={session.virtualenv.location}",
                 env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
             )
 
@@ -283,8 +284,6 @@ def run_tests_with_dev_version_of(session: nox.Session, repository: str) -> None
     Running this session helps us catch problems resulting from breaking
     changes in an upstream dependency before its official release.
     """
-
-    session.install(uv_requirement)
 
     if repository == "numpy":
         # From: https://numpy.org/doc/1.26/dev/depending_on_numpy.html
@@ -353,11 +352,11 @@ def docs(session: nox.Session) -> None:
     if running_on_ci:
         session.log(doc_troubleshooting_message)
 
-    session.install(uv_requirement)
-
     session.run_install(
         *uv_sync,
         "--extra=docs",
+        "--no-default-groups",
+        f"--python={session.virtualenv.location}",
         env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
     )
     session.run(*sphinx_base_command, *build_html, *session.posargs)
@@ -473,14 +472,18 @@ These variables are in the form of Python regular expressions:
 @nox.session(python=docpython)
 def linkcheck(session: nox.Session) -> None:
     """Check hyperlinks in documentation."""
+
     if running_on_ci:
         session.log(LINKCHECK_TROUBLESHOOTING)
-    session.install(uv_requirement)
+
     session.run_install(
         *uv_sync,
         "--extra=docs",
+        "--no-default-groups",
+        f"--python={session.virtualenv.location}",
         env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
     )
+
     session.run(*sphinx_base_command, *check_hyperlinks, *session.posargs)
 
 
@@ -504,10 +507,11 @@ mypy error code. Please use sparingly!
 def mypy(session: nox.Session) -> None:
     """Perform static type checking."""
 
-    session.install(uv_requirement)
     session.run_install(
         *uv_sync,
         "--extra=tests",
+        "--no-default-groups",
+        f"--python={session.virtualenv.location}",
         env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
     )
 
