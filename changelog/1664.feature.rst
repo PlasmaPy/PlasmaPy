@@ -1,2 +1,0 @@
-Add the `~plasmapy.formulary.densities` submodule
-Add the `~plasmapy.formulary.densities.critical_density` function to the `~plasmapy.formulary.densities` module. This function calculates the critical density of a plasma for a given frequency of radiation.

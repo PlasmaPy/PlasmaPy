@@ -1,0 +1,7 @@
+PlasmaPy v0.3.1 (2020-02-01)
+============================
+
+Bug Fixes
+---------
+
+- Fixed various packaging issues encountered during the v0.3.1 release.

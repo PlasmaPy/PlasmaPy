@@ -1,0 +1,32 @@
+name: Check metadata
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions: {}
+
+jobs:
+  authors-included:
+    name: Author in CITATION.cff
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        persist-credentials: false
+
+    - name: Install uv
+      uses: astral-sh/setup-uv@v6
+      with:
+        enable-cache: true
+        cache-suffix: author-cff
+
+    - name: Check that author usernames are in CITATION.cff
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        GITHUB_REPOSITORY: ${{ github.repository }}
+        GITHUB_HEAD_REF: ${{ github.head_ref }}
+      run: uv run .github/scripts/authors_in_cff.py

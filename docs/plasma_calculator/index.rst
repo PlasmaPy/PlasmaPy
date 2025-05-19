@@ -6,12 +6,16 @@ Plasma Calculator
 
 .. currentmodule:: plasmapy.utils.calculator
 
+.. attention::
+
+   |expect-api-changes|
+
 Overview
 --------
 
-The Plasma Calculator is an interactive Jupyter notebook that is packaged
-with `plasmapy`, and allows users to input a set of plasma properties and
-immediately calculate multiple plasma parameters.
+The Plasma Calculator is an interactive Jupyter notebook that is
+packaged with `plasmapy`, and allows users to input a set of plasma
+properties and immediately calculate multiple plasma parameters.
 
 .. note::
 
@@ -21,9 +25,9 @@ immediately calculate multiple plasma parameters.
 Using Plasma Calculator
 -----------------------
 
-To invoke the app use ``plasma-calculator`` in the command line.
-By default this opens the app in a browser, bootstrapping
-the notebook in a light theme and using port 8866 by default.
+To invoke the app use ``plasma-calculator`` in the command line. By
+default this opens the app in a browser, bootstrapping the notebook in a
+light theme and using port 8866 by default.
 
 ``plasma-calculator`` takes optional arguments such as ``--dark``,
 ``--port``, and ``--no-browser``. Pass flag ``-h`` or ``--help`` to get

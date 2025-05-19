@@ -1,0 +1,3 @@
+Updated the ``requirements`` session for Nox so that the GitHub workflow
+now includes a table of the old and new versions of dependencies in the
+body of the pull request.

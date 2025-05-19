@@ -1,7 +1,7 @@
 :orphan:
 
-PlasmaPy: A plasma physics Python package
-=========================================
+PlasmaPy
+========
 
 .. currentmodule:: plasmapy
 

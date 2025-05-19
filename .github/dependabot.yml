@@ -1,0 +1,17 @@
+# Dependabot submits automated pull requests that update the versions of
+# GitHub actions used by PlasmaPy. For documentation, see:
+# https://docs.github.com/en/code-security/dependabot
+
+version: 2
+
+updates:
+
+- package-ecosystem: github-actions
+  directory: /.github/workflows
+  labels:
+  - GitHub Actions
+  - no changelog entry needed
+  reviewers:
+  - namurphy
+  schedule:
+    interval: daily

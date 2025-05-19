@@ -1,0 +1,1 @@
+Switched from using ``actions/setup-python`` to ``astral-sh/setup-uv`` in GitHub workflows.

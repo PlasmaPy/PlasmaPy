@@ -1,0 +1,73 @@
+# Include regular expressions between slashes. The "|" means "or".
+# If there are special characters in one of the fields, put it in single
+# quotes.
+
+- search: /Plasmapy|PlasmaPY/PlasmPy|Plasmpy|Palsmapy|PlasmaPY/
+  replacement: PlasmaPy
+  description: Fix common misspellings and use consistent capitalization for PlasmaPy
+
+- search: /plasmpy|plaspmy|plasapy|palsmapy/
+  replacement: plasmapy
+  description: Fix common misspellings of plasmapy
+
+- search: AstroPy
+  replacement: Astropy
+
+- search: from astropy import units as u
+  replacement: import astropy.units as u
+
+- search: from astropy import constants as const
+  replacement: import astropy.constants as const
+
+- search: '|array-like|'
+  replacement: '|array_like|'
+  description: NumPy uses an underscore in 'array_like'
+
+- search: ':term:`particle-like`'
+  replacement: '|particle-like|'
+  description: Apply reStructuredText substitution
+
+- search: ':term:`array_like`'
+  replacement: '|array_like|'
+  description: Apply reStructuredText substitution
+
+- search: 'optional, |keyword-only|'
+  replacement: '|keyword-only|, optional'
+  description: Keep a consistent order in type specifications
+
+- search: ', optional, default:'
+  replacement: ', default:'
+  description: No need to specify that a parameter is optional if there is a default value
+
+- search: 'the the '
+  replacement: 'the '
+  description: Fix common grammar error
+
+- search: 'MacOS'
+  replacement: 'macOS'
+
+- search: 'particle="e"'
+  replacement: 'particle="e-"'
+  description: Use canonical symbol for electron
+
+- search: 'particle="p"'
+  replacement: 'particle="p+"'
+  description: Use canonical symbol for proton
+
+- search: 'ion="p"'
+  replacement: 'ion="p+"'
+  description: Use canonical symbol for proton
+
+- search: '|nox|'
+  replacement: '|Nox|'
+  description: Nox is capitalized except when used as a command
+
+- search: 'nox -e'
+  replacement: 'nox -s'
+  description: The -s refers to Nox sessions, while the -e is from tox environments
+
+- search: '``~plasmapy'
+  description: Either enclose the namespace with single backticks to make it a link, or remove the tilde and keep it a literal
+
+- search: /astropy\.unit\./
+  replacement: 'astropy.units.'

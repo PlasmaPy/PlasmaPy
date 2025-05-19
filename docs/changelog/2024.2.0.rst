@@ -1,0 +1,97 @@
+PlasmaPy v2024.2.0 (2024-02-06)
+===============================
+
+Backwards Incompatible Changes
+------------------------------
+
+- Created new ``plasmapy.simulation.particle_tracker.ParticleTracker``
+  object for general particle pushing simulations involving
+  electromagnetic fields. The tracker replaces the old
+  ``plasmapy.simulation.particletracker.ParticleTracker``. (:pr:`2245`)
+- Imports of classes and functions from `plasmapy.utils` must now be
+  made directly from the subpackages and modules, rather than from
+  `plasmapy.utils` itself. (:pr:`2403`)
+- Moved ``mass_density`` and its alias ``rho_`` from `plasmapy.formulary.misc`
+  to `plasmapy.formulary.densities`. (:pr:`2410`)
+
+
+Features
+--------
+
+- Added a ``notch`` argument to
+  `~plasmapy.diagnostics.thomson.spectral_density`, which allows users
+  to output spectrum over one or multiple wavelength ranges to
+  correspond to a notch filter commonly applied to experimentally
+  measured Thomson scattering spectra. Changed the
+  `~plasmapy.diagnostics.thomson.spectral_density_model` function to
+  allow ``notch`` to be applied during fitting. (:pr:`2058`)
+- Changed unit annotations to |Quantity| type hint
+  annotations. (:pr:`2421`)
+- Enabled |particle_input| to decorate functions which have variadic
+  positional arguments followed by keyword arguments. (:pr:`2428`; see
+  also :issue:`2150`)
+- Added a ``random_seed`` keyword in the
+  `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography.Tracker.create_particles`
+  method of the
+  `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography.Tracker`
+  class to make the function deterministic to resolve intermittent
+  test failures.  (:pr:`2487`)
+
+
+Bug Fixes
+---------
+
+- Enabled |particle_input| to be compatible with postponed evaluation
+  of annotations (see :pep:`563`). (:pr:`2479`)
+
+
+Improved Documentation
+----------------------
+
+- Switched from ``sphinx_toolbox.collapse`` to ``sphinx_collapse`` for
+  including collapsible content in our documentation. (:pr:`2387`)
+- Added a discussion of |type hint annotations| in the |testing guide|
+  within the |contributor guide|. (:pr:`2440`)
+
+
+Trivial/Internal Changes
+------------------------
+
+- Added Python 3.12 to the suite of continuous integration
+  tests. (:pr:`2368`)
+- Added a GitHub Action that will create an issue containing a release
+  checklist, which will largely supersede the release process outlined
+  in the |contributor guide|. (:pr:`2376`)
+- Separated the GitHub Action for checking hyperlinks in the
+  documentation into its own GitHub Action. (:pr:`2392`)
+- Replaced ``black`` with |ruff| in the |pre-commit|
+  configuration. (:pr:`2394`)
+- Modified the ``__exit__`` method of ``HDF5Reader`` for context
+  management.  (:pr:`2402`)
+- Added an initial configuration for |mypy| that temporarily ignores
+  existing errors. (:pr:`2424`)
+- Added a tox environment for running |mypy|. (:pr:`2431`)
+- Added |mypy| to the suite of continuous integration
+  checks. (:pr:`2432`)
+- Used ``autotyping`` to implement |type hint annotations| for special
+  methods like ``__init__`` and ``__str__``, and changed
+  :py:`-> typing.NoReturn` annotations to :py:`-> None`. (:pr:`2437`)
+- Used ``autotyping`` to add :py:`-> None` return annotations to
+  functions and methods with no :py:`return` statement. (:pr:`2439`)
+- Added a stub file containing |type hint annotations| for
+  ``@wrapt.decorator``. (:pr:`2442`)
+- Improved |type hint annotations| for
+  `plasmapy.particles.decorators`, which includes |particle_input|,
+  and the corresponding tests. (:pr:`2443`)
+- Dropped the |pre-commit| hook for ``isort`` and enabled all
+  ``isort`` rules in |ruff|. (:pr:`2453`)
+- Added a :file:`py.typed` marker file to indicate that PlasmaPy
+  contains type hint annotations as per :pep:`561`. (:pr:`2473`)
+- Changed ``_nearest_neighbor_interpolator`` method in
+  `~plasmapy.plasma.grids` to interpolate quantities array instead of
+  producing an intermediate index.  (:pr:`2475`)
+- Enabled the ``sphinx`` linkchecker in quiet mode to make it easier
+  to find problem links from the console output. (:pr:`2476`)
+- Bumped the minimum versions of dependencies to drop support for
+  minor releases older than two years old. In particular, the minimum
+  version of NumPy was bumped to ``1.23.0``. (:pr:`2488`)

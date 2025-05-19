@@ -1,0 +1,1 @@
+Updated author metadata in :file:`CITATION.cff`.

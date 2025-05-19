@@ -1,9 +1,52 @@
-# in decreasing order of priority
+# Define individuals or teams who are responsible for code in a
+# repository (i.e. who gets requested for a review by default).
 
-# any file, anywhere
-*                                                        @PlasmaPy/plasmapy-reviewers
+# Order is important; the last matching pattern takes the most
+# precedence.
 
-# any conftest.py, anywhere
-conftest.py                                              @StanczakDominik
+# Tip: IDEs like PyCharm may have features or extensions that validate
+# CODEOWNERS files and check that paths that are listed match any files.
 
-plasmapy/diagnostics/proton_radiography.py               @pheuer
+* @PlasmaPy/plasmapy-reviewers
+
+# subpackages
+
+*pytest_helpers/ @namurphy
+analysis/ @rocco8773
+diagnostics/ @rocco8773
+**/diagnostics/charged_particle_radiography/ @pheuer
+dispersion/ @ejohnson-96
+**/utils/decorators/ @rocco8773
+
+# subpackage files (with wildcards to include tests)
+
+**/analysis/*nullpoint.py @namurphy
+**/diagnostics/*thomson.py @pheuer
+**/formulary/*relativity.py @namurphy
+
+# documentation
+
+.readthedocs.yml @namurphy
+docs/_author_list_from_cff.py @namurphy
+docs/_global_substitutions.py @namurphy
+docs/conf.py @namurphy
+docs/contributing/ @namurphy
+docs/plasmapy_sphinx/ @rocco8773
+
+# project files
+
+uv.lock @namurphy
+mypy.ini @namurphy
+pyproject.toml @namurphy
+type_stubs/ @namurphy
+
+# tests, linters, CI
+
+.github/ @namurphy
+.pre-commit-config.yaml @namurphy
+codecov.yml @namurphy
+noxfile.py @namurphy
+
+# PyCharm configuration
+
+.idea/ @namurphy
