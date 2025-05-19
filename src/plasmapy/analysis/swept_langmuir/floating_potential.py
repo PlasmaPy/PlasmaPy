@@ -7,17 +7,15 @@ __all__ = ["find_floating_potential", "plot_floating_potential", "VFExtras"]
 __aliases__ = ["find_vf_"]
 
 import numbers
-import warnings
-from typing import NamedTuple
-
 import numpy as np
+import warnings
+from typing import NamedTuple, TYPE_CHECKING
 
 from plasmapy.analysis import fit_functions as ffuncs
 from plasmapy.analysis.swept_langmuir.helpers import check_sweep
 from plasmapy.utils.exceptions import PlasmaPyWarning
 
-if False:
-    # noqa
+if TYPE_CHECKING:
     # for annotation, does not need real import
     from matplotlib.axes import Axes
 
