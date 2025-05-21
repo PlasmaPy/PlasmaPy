@@ -390,18 +390,42 @@ def plot_floating_potential(
     """
     import matplotlib.pyplot as plt
 
+    # check inputs
+    # check axes object
     if ax is None:
-        ax = plt.gcf()
+        ax = plt.gca()
     elif not isinstance(ax, plt.Axes):
-        raise ValueError
+        raise TypeError(
+            f"Argument 'ax' expected be an instance of matplotlib.axes.Axes, "
+            f"but got type {type(ax)}."
+        )
 
+    # check vf_extras
     if not isinstance(vf_extras, VFExtras):
-        raise ValueError
+        raise TypeError(
+            f"Argument 'vf_extras' expected be an instance of {VFExtras}, "
+            f"but got type {type(vf_extras)}."
+        )
+
+    # check vf
+    if isinstance(vf, float):
+        # Note: isinstance(np.nan, float) == True
+        pass
+    elif isinstance(vf, int) or isinstance(vf, np.floating):
+        vf = float(vf)
+    else:
+        raise TypeError(
+            f"Argument 'vf' expected to an an instance of float or numpy.floating, "
+            f"but got {type(vf)}."
+        )
 
     # calc island points
     isl_pts = np.array([], dtype=np.int64)
     for isl in vf_extras.islands:
         isl_pts = np.concatenate((isl_pts, np.r_[isl]))
+    # check arrays
+    voltage, current = check_sweep(voltage, current, strip_units=True)
+
 
     # calc xrange for plot
     xlim = [
