@@ -523,7 +523,7 @@ def plot_floating_potential(  # noqa: PLR0915
     txt += f"$r^2 = {rsq:.3f}$"
     txt_xloc = 0.5 * (ax.get_xlim()[1] - ax.get_xlim()[0]) if np.isnan(vf) else vf
     txt_yloc = ax.get_ylim()[1]
-    txt_loc = [txt_xloc, txt_yloc]
+    txt_loc = np.asanyarray([txt_xloc, txt_yloc])
     txt_loc = ax.transData.transform(txt_loc)
     txt_loc = ax.transAxes.inverted().transform(txt_loc).tolist()
     txt_loc[0] -= 0.02
