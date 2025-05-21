@@ -9,7 +9,7 @@ __aliases__ = ["find_vf_"]
 import numbers
 import numpy as np
 import warnings
-from typing import NamedTuple, TYPE_CHECKING
+from typing import NamedTuple, Optional, TYPE_CHECKING
 
 from plasmapy.analysis import fit_functions as ffuncs
 from plasmapy.analysis.swept_langmuir.helpers import check_sweep
@@ -352,8 +352,13 @@ Alias to
 
 
 def plot_floating_potential(
-    voltage, current, *, vf, vf_extras: VFExtras, ax: "Axes" = None
-):
+    voltage: np.ndarray[tuple[int], np.floating],
+    current: np.ndarray[tuple[int], np.floating],
+    *,
+    vf: float | np.floating,
+    vf_extras: VFExtras,
+    ax: Optional["Axes"] = None,
+) -> "Axes":
     import matplotlib.pyplot as plt
 
     if ax is None:
