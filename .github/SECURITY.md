@@ -2,14 +2,18 @@
 
 ## Supported versions
 
-Security updates will only be provided for the most recent version of PlasmaPy.
+Security updates will only be provided for the most recent release of PlasmaPy.
 
 | Version | Supported |
-| ------- | --------- |
-| latest  | ✅        |
-| older   | ❌        |
+| ------- |-----------|
+| latest  | ✅         |
+| older   | ❌         |
 
-## Finding vulnerabilities via continuous integration
+## Reporting security vulnerabilities
+
+Please use this link to [privately report a security vulnerability].
+
+## Finding security vulnerabilities via continuous integration
 
 PlasmaPy has an extensive suite of continuous integration checks,
 including several that identify and flag common security vulnerabilities.
@@ -26,22 +30,6 @@ The configurations for most of these tools are located in [`pyproject.toml`],
 but may have a dedicated configuration file
 (for `zizmor`, this would be at [`.github/zizmor.yml`])
 
-## Reporting a vulnerability
-
-If you believe you have found a security vulnerability, please [raise an issue] on [PlasmaPy's GitHub repository].
-
-> [!IMPORTANT]
-> Please report critical vulnerabilities to team@plasmapy.org instead of creating a GitHub issue.
-> When doing so, please include:
->
-> - A description of the vulnerability,
-> - Steps to reproduce the issue (if applicable), and
-> - Any relevant additional information (if needed).
-
-[nox]: https://nox.thea.codes
-[plasmapy's github repository]: https://github.com/PlasmaPy/PlasmaPy
-[raise an issue]: https://github.com/PlasmaPy/PlasmaPy/issues/new/choose
-[rule sets]: https://docs.astral.sh/ruff/rules
 [`.github/workflows/`]: https://github.com/PlasmaPy/PlasmaPy/tree/main/.github/workflows
 [`.github/zizmor.yml`]: https://github.com/PlasmaPy/PlasmaPy/blob/main/.github/zizmor.yml
 [`.pre-commit-config.yaml`]: https://github.com/PlasmaPy/PlasmaPy/blob/main/.pre-commit-config.yaml
@@ -51,3 +39,6 @@ If you believe you have found a security vulnerability, please [raise an issue] 
 [`pyproject.toml`]: https://github.com/PlasmaPy/PlasmaPy/blob/main/pyproject.toml
 [`ruff`]: https://docs.astral.sh/ruff
 [`zizmor`]: https://github.com/woodruffw/zizmor
+[nox]: https://nox.thea.codes
+[privately report a security vulnerability]: https://github.com/plasmapy/plasmapy/security/advisories/new
+[rule sets]: https://docs.astral.sh/ruff/rules
