@@ -8,7 +8,7 @@ __aliases__ = ["find_vf_"]
 
 import numbers
 import warnings
-from typing import Any, TYPE_CHECKING, NamedTuple, Optional
+from typing import TYPE_CHECKING, Any, NamedTuple, Optional
 
 import numpy as np
 import numpy.typing as npt
