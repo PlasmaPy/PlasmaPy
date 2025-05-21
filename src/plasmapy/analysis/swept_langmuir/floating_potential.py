@@ -351,7 +351,7 @@ Alias to
 """
 
 
-def plot_floating_potential(
+def plot_floating_potential(  # noqa: PLR0915
     voltage: np.ndarray[tuple[int], np.floating],
     current: np.ndarray[tuple[int], np.floating],
     *,
@@ -411,7 +411,7 @@ def plot_floating_potential(
     if isinstance(vf, float):
         # Note: isinstance(np.nan, float) == True
         pass
-    elif isinstance(vf, int) or isinstance(vf, np.floating):
+    elif isinstance(vf, (int, np.floating)):
         vf = float(vf)
     else:
         raise TypeError(
@@ -487,7 +487,7 @@ def plot_floating_potential(
     else:
         label = "Fit"
 
-    ax.autoscale(False)
+    ax.autoscale(enable=False)
     ax.plot(vfit, ifit, color="orange", zorder=13, label=label)
     ax.fill_between(
         vfit,
