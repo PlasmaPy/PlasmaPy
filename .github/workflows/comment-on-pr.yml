@@ -20,13 +20,11 @@ jobs:
             issue_number: context.issue.number,
             owner: context.repo.owner,
             repo: context.repo.repo,
-            body: `Thank you for submitting this pull request (PR)! ✨ PlasmaPy depends on contributors like you, so we deeply appreciate it!
+            body: `Thank you for submitting this pull request (PR)! ✨
 
-            Below are checks that are being run for this PR. ✅ Don't worry if something broke! We break stuff all the time. 😅 Click on the name of a check to learn why it didn't pass. Please feel free to ask for help. We do that all the time as well! 🌸 We invite you to our weekly [**community meeting**](https://www.plasmapy.org/meetings/weekly) (2 pm ET on most Thursdays) and [**office hours**](https://www.plasmapy.org/meetings/office_hours) (3 pm ET on most Thursdays).
+            Below are checks that are being run for this PR. Click on the name of a check to learn why it didn't pass. ✅ Don't worry if something broke! We break stuff all the time. 😅
 
-            After this PR is marked as ready for review, someone should stop by to provide a code review and offer suggestions soon. 👥 If we don't provide a review within a few days, please send us a reminder. 🎗
-
-            [**PlasmaPy's contributor guide**](https://docs.plasmapy.org/en/latest/contributing/index.html) has information on:
+            [**PlasmaPy's contributor guide**](https://docs.plasmapy.org/en/latest/contributing/index.html) has pages on:
 
              - 🌱 [Getting ready to contribute](https://docs.plasmapy.org/en/latest/contributing/getting_ready.html#getting-ready-to-contribute)
              - 🔧 [Code contribution workflow](https://docs.plasmapy.org/en/latest/contributing/workflow.html#code-contribution-workflow)
