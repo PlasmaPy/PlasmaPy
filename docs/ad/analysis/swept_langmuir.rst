@@ -6,7 +6,7 @@ Swept Langmuir Analysis Module
 ==============================
 
 .. automodapi:: plasmapy.analysis.swept_langmuir
-   :nogroups:
+   :no-groups:
 
 Example notebooks
 -----------------
