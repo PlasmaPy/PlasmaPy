@@ -412,7 +412,7 @@ def plot_floating_potential(  # noqa: PLR0915
     if isinstance(vf, float):
         # Note: isinstance(np.nan, float) == True
         pass
-    elif isinstance(vf, (int, np.floating)):
+    elif isinstance(vf, int | np.floating):
         vf = float(vf)
     else:
         raise TypeError(
