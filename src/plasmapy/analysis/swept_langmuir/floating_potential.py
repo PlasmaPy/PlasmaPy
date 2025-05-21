@@ -7,10 +7,10 @@ __all__ = ["find_floating_potential", "plot_floating_potential", "VFExtras"]
 __aliases__ = ["find_vf_"]
 
 import numbers
-import numpy as np
 import warnings
+from typing import TYPE_CHECKING, NamedTuple, Optional
 
-from typing import NamedTuple, Optional, TYPE_CHECKING
+import numpy as np
 
 from plasmapy.analysis import fit_functions as ffuncs
 from plasmapy.analysis.swept_langmuir.helpers import check_sweep
@@ -461,7 +461,7 @@ def plot_floating_potential(  # noqa: PLR0915
         voltage[vf_extras.fitted_indices],
         current[vf_extras.fitted_indices],
         linewidth=2,
-        s=6 ** 2,
+        s=6**2,
         facecolors="deepskyblue",
         edgecolors="deepskyblue",
         zorder=11,
@@ -473,7 +473,7 @@ def plot_floating_potential(  # noqa: PLR0915
         voltage[island_indices],
         current[island_indices],
         linewidth=2,
-        s=8 ** 2,
+        s=8**2,
         facecolors="deepskyblue",
         edgecolors="black",
         zorder=12,
