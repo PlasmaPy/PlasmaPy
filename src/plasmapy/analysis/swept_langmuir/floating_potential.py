@@ -501,22 +501,24 @@ def plot_floating_potential(
 
     # plot fiducia
     ax.axhline(0.0, color="r", linestyle="--")
-    ax.fill_between(
-        [vf - vf_extras.vf_err, vf + vf_extras.vf_err],
-        ax.get_ylim()[0],
-        ax.get_ylim()[1],
-        color="grey",
-        alpha=0.1,
-    )
-    ax.axvline(vf, color="grey")
-
-    ax.legend(fontsize=12)
+    if not np.isnan(vf):
+        # only plot vf fiducia if not NaN
+        ax.fill_between(
+            [vf - vf_extras.vf_err, vf + vf_extras.vf_err],
+            ax.get_ylim()[0],
+            ax.get_ylim()[1],
+            color="grey",
+            alpha=0.1,
+        )
+        ax.axvline(vf, color="grey")
 
     # add text
     rsq = vf_extras.rsq
-    txt = f"$V_f = {vf:.2f} \\pm {vf_extras.vf_err:.2f}$ V\n"
+    txt = "" if np.isnan(vf) else f"$V_f = {vf:.2f} \\pm {vf_extras.vf_err:.2f}$ V\n"
     txt += f"$r^2 = {rsq:.3f}$"
-    txt_loc = [vf, ax.get_ylim()[1]]
+    txt_xloc = 0.5 * (ax.get_xlim()[1] - ax.get_xlim()[0]) if np.isnan(vf) else vf
+    txt_yloc = ax.get_ylim()[1]
+    txt_loc = [txt_xloc, txt_yloc]
     txt_loc = ax.transData.transform(txt_loc)
     txt_loc = ax.transAxes.inverted().transform(txt_loc)
     txt_loc[0] -= 0.02
@@ -529,5 +531,7 @@ def plot_floating_potential(
         transform=ax.transAxes,
         ha="right",
     )
+
+    ax.legend(fontsize=12)
 
     return ax
