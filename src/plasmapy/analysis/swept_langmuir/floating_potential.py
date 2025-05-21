@@ -393,12 +393,13 @@ def plot_floating_potential(  # noqa: PLR0915
         The `~matplotlib.axes.Axes` object the plot was drawn on.
     """
     import matplotlib.pyplot as plt
+    from matplotlib.axes import Axes
 
     # check inputs
     # check axes object
     if ax is None:
         ax = plt.gca()
-    elif not isinstance(ax, plt.Axes):
+    elif not isinstance(ax, Axes):
         raise TypeError(
             f"Argument 'ax' expected be an instance of matplotlib.axes.Axes, "
             f"but got type {type(ax)}."
