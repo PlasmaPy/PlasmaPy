@@ -9,6 +9,7 @@ __aliases__ = ["find_vf_"]
 import numbers
 import numpy as np
 import warnings
+
 from typing import NamedTuple, Optional, TYPE_CHECKING
 
 from plasmapy.analysis import fit_functions as ffuncs
@@ -64,7 +65,7 @@ def find_floating_potential(  # noqa: C901, PLR0912, PLR0915
     voltage: np.ndarray[tuple[int], np.floating],
     current: np.ndarray[tuple[int], np.floating],
     threshold: int = 1,
-    min_points: float | int | None = None,
+    min_points: float | None = None,
     fit_type: str = "exponential",
 ) -> tuple[np.floating | float, VFExtras]:
     """
