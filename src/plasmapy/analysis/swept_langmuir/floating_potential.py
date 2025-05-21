@@ -8,7 +8,7 @@ __aliases__ = ["find_vf_"]
 
 import numbers
 import warnings
-from typing import TYPE_CHECKING, NamedTuple, Optional
+from typing import Any, TYPE_CHECKING, NamedTuple, Optional
 
 import numpy as np
 
@@ -62,12 +62,12 @@ class VFExtras(NamedTuple):
 
 
 def find_floating_potential(  # noqa: C901, PLR0912, PLR0915
-    voltage: np.ndarray[tuple[int], np.floating],
-    current: np.ndarray[tuple[int], np.floating],
+    voltage: np.ndarray[tuple[int], np.floating[Any]],
+    current: np.ndarray[tuple[int], np.floating[Any]],
     threshold: int = 1,
     min_points: float | None = None,
     fit_type: str = "exponential",
-) -> tuple[np.floating | float, VFExtras]:
+) -> tuple[np.floating[Any] | float, VFExtras]:
     """
     Determine the floating potential (:math:`V_f`) for a given
     current-voltage (IV) curve obtained from a swept Langmuir probe.
@@ -353,10 +353,10 @@ Alias to
 
 
 def plot_floating_potential(  # noqa: PLR0915
-    voltage: np.ndarray[tuple[int], np.floating],
-    current: np.ndarray[tuple[int], np.floating],
+    voltage: np.ndarray[tuple[int], np.floating[Any]],
+    current: np.ndarray[tuple[int], np.floating[Any]],
     *,
-    vf: float | np.floating,
+    vf: float | np.floating[Any],
     vf_extras: VFExtras,
     ax: Optional["Axes"] = None,
 ) -> "Axes":
