@@ -107,8 +107,9 @@ maintenance:
 security:
   - changed-files:
     - any-glob-to-any-file: [
-      '**/SECURITY.md',
-      '.github/ISSUE_TEMPLATE/security.yml',
+      '**/*security*',
+      '**/*SECURITY*',
+      '**/*zizmor*',
     ]
 
 notebooks:
