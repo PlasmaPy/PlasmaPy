@@ -61,12 +61,12 @@ class VFExtras(NamedTuple):
 
 
 def find_floating_potential(  # noqa: C901, PLR0912, PLR0915
-    voltage: np.ndarray,
-    current: np.ndarray,
+    voltage: np.ndarray[tuple[int], np.floating],
+    current: np.ndarray[tuple[int], np.floating],
     threshold: int = 1,
     min_points: float | int | None = None,
     fit_type: str = "exponential",
-) -> tuple[np.floating, VFExtras]:
+) -> tuple[np.floating | float, VFExtras]:
     """
     Determine the floating potential (:math:`V_f`) for a given
     current-voltage (IV) curve obtained from a swept Langmuir probe.
@@ -122,7 +122,7 @@ def find_floating_potential(  # noqa: C901, PLR0912, PLR0915
 
     Returns
     -------
-    vf: `float` or `numpy.nan`
+    vf: `float` or `numpy.floating`
         The calculated floating potential (same units as the
         ``voltage`` array).  Returns `numpy.nan` if the floating
         potential can not be determined.
