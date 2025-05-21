@@ -27,7 +27,7 @@ The checks are usually either run as [`pre-commit`] hooks
 or as [Nox] sessions (defined in [`noxfile.py`])
 invoked during GitHub workflows (located in [`.github/workflows/`]).
 The configurations for most of these tools are located in [`pyproject.toml`],
-but may have a dedicated configuration file
+but some have a dedicated configuration file
 (for `zizmor`, this would be at [`.github/zizmor.yml`])
 
 [`.github/workflows/`]: https://github.com/PlasmaPy/PlasmaPy/tree/main/.github/workflows
