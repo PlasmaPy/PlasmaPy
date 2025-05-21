@@ -1,1 +1,1 @@
-Added a security policy and created an issue template to report non-critical security issues.
+Added a security policy at :file:`.github/SECURITY.md` and enabled private security reporting through GitHub.
