@@ -11,6 +11,7 @@ import warnings
 from typing import Any, TYPE_CHECKING, NamedTuple, Optional
 
 import numpy as np
+import numpy.typing as npt
 
 from plasmapy.analysis import fit_functions as ffuncs
 from plasmapy.analysis.swept_langmuir.helpers import check_sweep
@@ -62,8 +63,8 @@ class VFExtras(NamedTuple):
 
 
 def find_floating_potential(  # noqa: C901, PLR0912, PLR0915
-    voltage: np.ndarray[tuple[int], np.floating[Any]],
-    current: np.ndarray[tuple[int], np.floating[Any]],
+    voltage: npt.NDArray[np.floating[Any]],
+    current: npt.NDArray[np.floating[Any]],
     threshold: int = 1,
     min_points: float | None = None,
     fit_type: str = "exponential",
@@ -353,8 +354,8 @@ Alias to
 
 
 def plot_floating_potential(  # noqa: PLR0915
-    voltage: np.ndarray[tuple[int], np.floating[Any]],
-    current: np.ndarray[tuple[int], np.floating[Any]],
+    voltage: npt.NDArray[np.floating[Any]],
+    current: npt.NDArray[np.floating[Any]],
     *,
     vf: float | np.floating[Any],
     vf_extras: VFExtras,
