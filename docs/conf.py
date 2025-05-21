@@ -203,7 +203,6 @@ nitpick_ignore_regex = [
     (python_role, "[Ss]phinx.*"),  # also for reStructuredText workarounds
     # The following patterns still need to be fixed.
     (python_role, "json.decoder.JSONDecoder"),
-    (python_role, "plasmapy.analysis.swept_langmuir.find_floating_potential"),
     (python_role, "plasmapy.particles.particle_collections"),
     (python_role, "plasmapy.utils.decorators.lite_func"),
     # undocumented astropy objects
