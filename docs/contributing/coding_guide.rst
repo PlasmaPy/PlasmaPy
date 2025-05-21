@@ -186,7 +186,7 @@ code is supposed to be doing.
 
 * Avoid unnecessary abbreviations, as these make code harder to read.
   Prefer clarity over brevity, except for code that is used frequently
-  and interactively (e.g., :command:`cd` or :command:`ls`).
+  and interactively (e.g., ``cd`` or ``ls``).
 
   .. tip::
 

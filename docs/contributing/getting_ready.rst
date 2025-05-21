@@ -21,8 +21,8 @@ contributors can take to get set up to contribute to PlasmaPy. After
 taking these steps, you'll be ready to go through the :ref:`code
 contribution workflow <workflow>`.
 
-If you run into any problems, please feel free to reach out to us in our
-|Matrix chat room| or during our weekly |office hours|.
+If you run into any problems, please feel free to reach out to us during
+one of our |community meetings|.
 
 Pre-requisites
 ==============
