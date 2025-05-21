@@ -419,13 +419,13 @@ def plot_floating_potential(
             f"but got {type(vf)}."
         )
 
-    # calc island points
-    isl_pts = np.array([], dtype=np.int64)
-    for isl in vf_extras.islands:
-        isl_pts = np.concatenate((isl_pts, np.r_[isl]))
     # check arrays
     voltage, current = check_sweep(voltage, current, strip_units=True)
 
+    # gather island points
+    island_indices = np.array([], dtype=np.int64)
+    for island in vf_extras.islands:
+        island_indices = np.concatenate((island_indices, np.r_[island]))
 
     # calc xrange for plot
     xlim = [
@@ -435,9 +435,9 @@ def plot_floating_potential(
     xlim_pad = 0.25 * (xlim[1] - xlim[0])
     xlim = [xlim[0] - xlim_pad, xlim[1] + xlim_pad]
 
-    # calc data points for fit curve
-    mask1 = np.where(voltage >= xlim[0], True, False)
-    mask2 = np.where(voltage <= xlim[1], True, False)
+    # generated fitted curve
+    mask1 = voltage >= xlim[0]
+    mask2 = voltage <= xlim[1]
     mask = np.logical_and(mask1, mask2)
     vfit = np.linspace(xlim[0], xlim[1], 201, endpoint=True)
     ifit, ifit_err = vf_extras.fitted_func(vfit, reterr=True)
@@ -469,8 +469,8 @@ def plot_floating_potential(
 
     # highlight crossing islands
     ax.scatter(
-        voltage[isl_pts],
-        current[isl_pts],
+        voltage[island_indices],
+        current[island_indices],
         linewidth=2,
         s=8 ** 2,
         facecolors="deepskyblue",
@@ -520,7 +520,7 @@ def plot_floating_potential(
     txt_yloc = ax.get_ylim()[1]
     txt_loc = [txt_xloc, txt_yloc]
     txt_loc = ax.transData.transform(txt_loc)
-    txt_loc = ax.transAxes.inverted().transform(txt_loc)
+    txt_loc = ax.transAxes.inverted().transform(txt_loc).tolist()
     txt_loc[0] -= 0.02
     txt_loc[1] -= 0.26
     ax.text(
