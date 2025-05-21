@@ -19,7 +19,7 @@ from plasmapy.utils.exceptions import PlasmaPyWarning
 
 if TYPE_CHECKING:
     # for annotation, does not need real import
-    from matplotlib.axes import Axes
+    import matplotlib.axes
 
 __all__ += __aliases__
 
