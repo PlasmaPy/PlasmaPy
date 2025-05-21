@@ -1,0 +1,3 @@
+Created a GitHub Action (in :file:`weekly.yml` and :file:`noxfile.py`)
+to build documentation using the latest development version of
+`plasmapy_sphinx` on a weekly basis.

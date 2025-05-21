@@ -20,8 +20,7 @@ via a `pull request`_ after having finished the steps for
 |getting ready to contribute|.
 
 If you run into any problems, please feel free to reach out to us in our
-|Matrix chat room| or during our weekly |office hours|. Thank you for
-contributing!
+|community meetings|. Thank you for contributing!
 
 .. tip::
 

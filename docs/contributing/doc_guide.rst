@@ -921,7 +921,7 @@ Parameter descriptions
 The **parameter description** should concisely describe the meaning of
 the parameter, as well as any requirements or restrictions on allowed
 values of the parameter (including those specified by
-|validate_quantities| or |particle_input|. The parameter description
+|validate_quantities| or |particle_input|). The parameter description
 should not repeat information already in the type specification, but may
 include type information when:
 
