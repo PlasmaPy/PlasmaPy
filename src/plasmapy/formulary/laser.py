@@ -1,0 +1,60 @@
+"""
+Functions for calculating quantities associated with laser pulses.
+
+.. attention::
+
+   |expect-api-changes|
+"""
+
+__all__ = [
+    "E0",
+]
+
+from astropy.constants.si import c, eps0
+import astropy.units as u
+import numpy as np
+
+from plasmapy.utils.decorators import validate_quantities
+from plasmapy.utils.exceptions import PhysicsError
+
+
+@validate_quantities(
+    Intensity={"can_be_negative": False},
+)
+
+def E0(
+    Intensity: u.Quantity[u.watt/u.m**2],
+) -> u.Quantity[u.V/u.m]:
+    r"""
+    Calculate the Electric Field Strength :math:`E_0` 
+    from the Intensity :math:`I`
+.. math::
+        E_0=\sqrt{\frac{2I}{c ε_0}}
+
+    where :math:`c` is the speed of light and
+    :math:`ε_0` is the permittivity of free space
+
+    Parameters
+    ----------
+    Intensity : `~astropy.units.Quantity`
+        Intensity of the laser pulse (convertible to u.Watts/u.m**2).
+
+    Returns
+    -------
+    E : `~astropy.units.Quantity`
+        Maximum Electric Field strength for the intensity provided.
+
+    Notes
+    -----
+    For details, see :cite:t:`ling:2016`\ .
+
+    Examples
+    --------
+    >>> import astropy.units as u
+    >>> import numpy as np
+    >>> E0(1e-3 * u.watt/u.m**2)  # Electric Field Strength
+    <Quantity 0.8680211 * u.V/u.m>
+    """
+
+    E = np.sqrt((2*Intensity)/(c*eps0))
+    return E.to(u.V/u.m)
