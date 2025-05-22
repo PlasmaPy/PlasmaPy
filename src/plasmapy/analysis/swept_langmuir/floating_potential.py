@@ -412,7 +412,7 @@ def plot_floating_potential(  # noqa: C901, PLR0912, PLR0915
             f"but got type {type(vf_extras)}."
         )
     elif not isinstance(vf_extras.fitted_func, ffuncs.AbstractFitFunction):
-        raise ValueError(
+        raise TypeError(
             "Argument 'vf_extras' has no valid fit function for "
             f"'vf_extras.fitted_func' ({vf_extras.fitted_func}).  There "
             f"is nothing to plot."
