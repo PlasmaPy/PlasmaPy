@@ -10,25 +10,23 @@ __all__ = [
     "E0",
 ]
 
-from astropy.constants.si import c, eps0
 import astropy.units as u
 import numpy as np
+from astropy.constants.si import c, eps0
 
 from plasmapy.utils.decorators import validate_quantities
-from plasmapy.utils.exceptions import PhysicsError
 
 
 @validate_quantities(
     Intensity={"can_be_negative": False},
 )
-
 def E0(
-    Intensity: u.Quantity[u.watt/u.m**2],
-) -> u.Quantity[u.V/u.m]:
+    Intensity: u.Quantity[u.watt / u.m**2],
+) -> u.Quantity[u.V / u.m]:
     r"""
-    Calculate the Electric Field Strength :math:`E_0` 
+    Calculate the Electric Field Strength :math:`E_0`
     from the Intensity :math:`I`
-.. math::
+    .. math::
         E_0=\sqrt{\frac{2I}{c ε_0}}
 
     where :math:`c` is the speed of light and
@@ -52,9 +50,9 @@ def E0(
     --------
     >>> import astropy.units as u
     >>> import numpy as np
-    >>> E0(1e-3 * u.watt/u.m**2)  # Electric Field Strength
+    >>> E0(1e-3 * u.watt / u.m**2)  # Electric Field Strength
     <Quantity 0.8680211 * u.V/u.m>
     """
 
-    E = np.sqrt((2*Intensity)/(c*eps0))
-    return E.to(u.V/u.m)
+    E = np.sqrt((2 * Intensity) / (c * eps0))
+    return E.to(u.V / u.m)
