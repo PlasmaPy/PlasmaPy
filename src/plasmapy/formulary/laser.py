@@ -24,8 +24,7 @@ def E0(
     Intensity: u.Quantity[u.watt / u.m**2],
 ) -> u.Quantity[u.V / u.m]:
     r"""
-    Calculate the Electric Field Strength :math:`E_0`
-    from the Intensity :math:`I`
+    Calculate Electric Field :math:`E_0` from Intensity :math:`I`.
     .. math::
         E_0=\sqrt{\frac{2I}{c ε_0}}
 
