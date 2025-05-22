@@ -353,7 +353,7 @@ Alias to
 """
 
 
-def plot_floating_potential(  # noqa: PLR0915
+def plot_floating_potential(  # noqa: C901, PLR0912, PLR0915
     voltage: npt.NDArray[np.floating[Any]],
     current: npt.NDArray[np.floating[Any]],
     *,
