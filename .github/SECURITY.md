@@ -1,5 +1,7 @@
 # PlasmaPy Security Policy
 
+<!-- This sets up the security policy on GitHub. -->
+
 ## Supported versions
 
 Security updates will only be provided for the most recent release of PlasmaPy.
