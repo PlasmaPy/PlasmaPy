@@ -24,12 +24,12 @@ def E0(
     Intensity: u.Quantity[u.watt / u.m**2],
 ) -> u.Quantity[u.V / u.m]:
     r"""
-    Calculate Electric Field :math:`E_0` from Intensity :math:`I`.
+    Calculate Electric Field :math:`E_0` from Intensity :math:`I`
     .. math::
         E_0=\sqrt{\frac{2I}{c ε_0}}
 
     where :math:`c` is the speed of light and
-    :math:`ε_0` is the permittivity of free space
+    :math:`ε_0` is the permittivity of free space.
 
     Parameters
     ----------
