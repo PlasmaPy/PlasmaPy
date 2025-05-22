@@ -411,6 +411,12 @@ def plot_floating_potential(  # noqa: PLR0915
             f"Argument 'vf_extras' expected be an instance of {VFExtras}, "
             f"but got type {type(vf_extras)}."
         )
+    elif not isinstance(vf_extras.fitted_func, ffuncs.AbstractFitFunction):
+        raise ValueError(
+            "Argument 'vf_extras' has no valid fit function for "
+            f"'vf_extras.fitted_func' ({vf_extras.fitted_func}).  There "
+            f"is nothing to plot."
+        )
 
     # check vf
     if isinstance(vf, float):
@@ -427,31 +433,22 @@ def plot_floating_potential(  # noqa: PLR0915
     # check arrays
     voltage, current = check_sweep(voltage, current, strip_units=True)
 
-    # gather island points
-    island_indices = np.array([], dtype=np.int64)
-    for island in vf_extras.islands:
-        island_indices = np.concatenate((island_indices, np.r_[island]))
+    # Set plot parameters
+    ax.set_xlabel("Bias Voltage (V)", fontsize=12)
+    ax.set_ylabel("Current (A)", fontsize=12)
 
-    # calc xrange for plot
     xlim = [
         voltage[vf_extras.fitted_indices].min(),
         voltage[vf_extras.fitted_indices].max(),
     ]
     xlim_pad = 0.25 * (xlim[1] - xlim[0])
     xlim = [xlim[0] - xlim_pad, xlim[1] + xlim_pad]
+    ax.set_xlim(*xlim)
 
-    # generated fitted curve
+    # Plot original data
     mask1 = voltage >= xlim[0]
     mask2 = voltage <= xlim[1]
     mask = np.logical_and(mask1, mask2)
-    vfit = np.linspace(xlim[0], xlim[1], 201, endpoint=True)
-    ifit, ifit_err = vf_extras.fitted_func(vfit, reterr=True)
-
-    ax.set_xlabel("Bias Voltage (V)", fontsize=12)
-    ax.set_ylabel("Current (A)", fontsize=12)
-    ax.set_xlim(*xlim)
-
-    # plot original data
     ax.plot(
         voltage[mask],
         current[mask],
@@ -473,18 +470,26 @@ def plot_floating_potential(  # noqa: PLR0915
     )
 
     # highlight crossing islands
-    ax.scatter(
-        voltage[island_indices],
-        current[island_indices],
-        linewidth=2,
-        s=8**2,
-        facecolors="deepskyblue",
-        edgecolors="black",
-        zorder=12,
-        label="Island Points",
-    )
+    if vf_extras.islands is not None:
+        island_indices = np.array([], dtype=np.int64)
+        for island in vf_extras.islands:
+            island_indices = np.concatenate((island_indices, np.r_[island]))
+
+        ax.scatter(
+            voltage[island_indices],
+            current[island_indices],
+            linewidth=2,
+            s=8**2,
+            facecolors="deepskyblue",
+            edgecolors="black",
+            zorder=12,
+            label="Island Points",
+        )
 
     # plot fitted curve
+    vfit = np.linspace(xlim[0], xlim[1], 201, endpoint=True)
+    ifit, ifit_err = vf_extras.fitted_func(vfit, reterr=True)
+
     if isinstance(vf_extras.fitted_func, ffuncs.Linear):
         label = "Linear Fit"
     elif isinstance(vf_extras.fitted_func, ffuncs.ExponentialPlusOffset):
