@@ -24,7 +24,9 @@ def E0(
     Intensity: u.Quantity[u.watt / u.m**2],
 ) -> u.Quantity[u.V / u.m]:
     r"""
-    Calculate Electric Field :math:`E_0` from Intensity :math:`I`
+    Calculate Electric Field :math:`E_0` from Intensity :math:`I`.
+    The E-field is calculated using:
+    
     .. math::
         E_0=\sqrt{\frac{2I}{c ε_0}}
 
@@ -50,7 +52,7 @@ def E0(
     >>> import astropy.units as u
     >>> import numpy as np
     >>> E0(1e-3 * u.watt / u.m**2)  # Electric Field Strength
-    <Quantity 0.8680211 * u.V/u.m>
+    <Quantity 0.8680211 * V / m>
     """
 
     E = np.sqrt((2 * Intensity) / (c * eps0))
