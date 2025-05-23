@@ -38,6 +38,9 @@ physical quantities helpful for plasma physics. |:abacus:|
    | .. toctree:: Ionization <ionization>                   | `plasmapy.formulary.ionization`         |
    |    :maxdepth: 1                                        |                                         |
    +--------------------------------------------------------+-----------------------------------------+
+   | .. toctree:: Laser <laser>                             | `plasmapy.formulary.laser`              |
+   |    :maxdepth: 1                                        |                                         |
+   +--------------------------------------------------------+-----------------------------------------+
    | .. toctree:: Lengths <lengths>                         | `plasmapy.formulary.lengths`            |
    |    :maxdepth: 1                                        |                                         |
    +--------------------------------------------------------+-----------------------------------------+
