@@ -53,7 +53,7 @@ def E0(
     >>> import astropy.units as u
     >>> import numpy as np
     >>> E0(1e-3 * u.watt / u.m**2)  # Electric Field Strength
-    <Quantity 0.8680211 * V / m>
+    <Quantity 0.8680211 V / m>
     """
 
     E = np.sqrt((2 * Intensity) / (c * eps0))
