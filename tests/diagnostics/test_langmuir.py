@@ -106,13 +106,11 @@ class Test__characteristic_errors:
     def test_unequal_arrays(self) -> None:
         r"""Test errors upon unequal array lengths"""
 
-        with pytest.raises(ValueError):
-            with pytest.warns(FutureWarning):
-                langmuir.Characteristic(self.bias_longarr, current_arr)
+        with pytest.raises(ValueError), pytest.warns(FutureWarning):
+            langmuir.Characteristic(self.bias_longarr, current_arr)
 
-        with pytest.raises(ValueError):
-            with pytest.warns(FutureWarning):
-                langmuir.Characteristic(bias_arr, self.current_longarr)
+        with pytest.raises(ValueError), pytest.warns(FutureWarning):
+            langmuir.Characteristic(bias_arr, self.current_longarr)
 
     def test_addition(self) -> None:
         r"""Test addition of characteristic objects"""
@@ -141,7 +139,7 @@ class Test__characteristic_errors:
         assert (a.current - b.current == ab_sub.current).all(), errStr
 
 
-@pytest.fixture()
+@pytest.fixture
 def characteristic():
     r"""Create a dummy characteristic with random values"""
 
@@ -149,7 +147,7 @@ def characteristic():
         return langmuir.Characteristic(bias_arr, current_arr)
 
 
-@pytest.fixture()
+@pytest.fixture
 def characteristic_simulated():
     r"""Create a simulated probe characteristic (provisional)"""
 
@@ -220,29 +218,25 @@ class Test__Characteristic_inherited_methods:
 
     def test_invalid_bias_dimensions(self) -> None:
         r"""Test error on non-1D bias array"""
-        with pytest.raises(ValueError):
-            with pytest.warns(FutureWarning):
-                DryCharacteristic(self.bias_2darr, current_arr)
+        with pytest.raises(ValueError), pytest.warns(FutureWarning):
+            DryCharacteristic(self.bias_2darr, current_arr)
 
     def test_invalid_current_dimensions(self) -> None:
         r"""Test error on non-1d current array"""
-        with pytest.raises(ValueError):
-            with pytest.warns(FutureWarning):
-                DryCharacteristic(bias_arr, self.current_2darr)
+        with pytest.raises(ValueError), pytest.warns(FutureWarning):
+            DryCharacteristic(bias_arr, self.current_2darr)
 
     def test_bias_and_current_length_mismatch(self) -> None:
         r"""Test error on non-1d bias and current arrays"""
 
-        with pytest.raises(ValueError):
-            with pytest.warns(FutureWarning):
-                DryCharacteristic(self.bias_4length_arr, self.current_5length_arr)
+        with pytest.raises(ValueError), pytest.warns(FutureWarning):
+            DryCharacteristic(self.bias_4length_arr, self.current_5length_arr)
 
     def test_duplicate_bias_values(self) -> None:
         r"""Test error on bias array containing duplicate values"""
 
-        with pytest.raises(ValueError):
-            with pytest.warns(FutureWarning):
-                DryCharacteristic(self.bias_duplicates_arr, current_arr)
+        with pytest.raises(ValueError), pytest.warns(FutureWarning):
+            DryCharacteristic(self.bias_duplicates_arr, current_arr)
 
     @staticmethod
     def test_inplace_unique_bias() -> None:
@@ -266,7 +260,7 @@ class Test__Characteristic_inherited_methods:
         assert np.allclose(log_limits.to(u.A).value, np.array((0.014003, 1.42577333)))
 
 
-@pytest.mark.slow()
+@pytest.mark.slow
 class Test__swept_probe_analysis:
     r"""Test the swept_probe_analysis function in langmuir.py"""
 

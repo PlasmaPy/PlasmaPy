@@ -1,8 +1,8 @@
 .. _plasmapy-install:
 
-*******************
-Installing PlasmaPy
-*******************
+**********************
+Installing PlasmaPy ☀️
+**********************
 
 .. note::
 
@@ -20,7 +20,7 @@ Installing Python
 
 PlasmaPy requires a version of |Python| between |minpython| and
 |maxpython|. If you do not have |Python| installed already, here are the
-instructions to `download Python`_ and install it.
+instructions to `download Python`_ and install it. 🐍
 
 .. tip::
 
@@ -59,16 +59,50 @@ Python |minpython|\ + release that has been installed on your computer.
 For more detailed information, please refer to this tutorial on
 `installing packages`_.
 
+.. _install-uv:
+
+Installing PlasmaPy with uv
+===========================
+
+|uv| is "an extremely fast |Python| package and project manager, written
+in Rust". |uv| lets us create and switch between |Python| environments
+that are isolated from each other and the system's |Python|
+installation. In addition, |uv| provides a `pip drop-in interface`_ for
+common |pip| commands so that |Python| packages on |PyPI| may be
+installed into |uv|-managed
+`virtual environments <virtual environment_>`_ without installing |pip|.
+
+After `installing uv`_, a `virtual environment`_ with |Python| version
+3.12 can be created by opening a terminal and running:
+
+.. code-block:: bash
+
+   uv venv --python 3.12
+
+|uv| will automatically download |Python| and link it to
+the `virtual environment`_'s directory at (by default) :file:`.venv`. The
+environment can then be activated by running:
+
+.. code-block:: bash
+
+   source .venv/bin/activate
+
+Then, to install `plasmapy` into the activated environment, run:
+
+.. code-block:: bash
+
+   uv pip install plasmapy
+
 .. _install-conda:
 
 Installing PlasmaPy with Conda
 ==============================
 
 Conda_ is a package management system and environment manager that is
-commonly used in the scientific |Python| ecosystem. Conda_ lets us create
-and switch between |Python| environments that are isolated from each
-other and the system installation. Conda_ can also be used for packages
-written in languages other than |Python|.
+commonly used in the scientific |Python| ecosystem. Similar to |uv|,
+Conda_ is used to create and manage isolated virtual |Python| environments.
+However, Conda_ can also be used for packages written in languages other
+than |Python|.
 
 After `installing Conda`_ or miniconda_, `plasmapy` can be installed
 into an activated Conda_ environment by opening a terminal and running:
@@ -226,7 +260,14 @@ package should also be installed.
 .. _installing Anaconda Navigator: https://docs.anaconda.com/navigator/install
 .. _installing Conda: https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html
 .. _installing packages: https://packaging.python.org/en/latest/tutorials/installing-packages/#installing-from-vcs
+.. _installing uv: https://docs.astral.sh/uv/getting-started/installation/#installing-uv
 .. _getting started with Anaconda Navigator: https://docs.anaconda.com/navigator/getting-started
 .. _miniconda: https://docs.conda.io/en/latest/miniconda.html
+.. _pip drop-in interface: https://docs.astral.sh/uv/pip/#the-pip-interface
+.. _publish a package: https://docs.astral.sh/uv/guides/publish/#publishing-a-package
+.. _project metadata: https://docs.astral.sh/uv/concepts/projects/#project-metadata
+.. _Python project: https://docs.astral.sh/uv/concepts/projects/#projects
 .. _releases: https://github.com/PlasmaPy/PlasmaPy/releases
+.. _uv init options: https://docs.astral.sh/uv/reference/cli/#uv-init
+.. _virtual environment: https://realpython.com/python-virtual-environments-a-primer
 .. _ZIP: https://en.wikipedia.org/wiki/ZIP_(file_format)

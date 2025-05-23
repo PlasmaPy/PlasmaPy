@@ -8,10 +8,9 @@ Dimensionless parameters (`plasmapy.formulary.dimensionless`)
 
 .. automodapi:: plasmapy.formulary.dimensionless
 
-Examples
-========
+Example notebooks
+-----------------
 
 .. nbgallery::
-    :caption: Examples
 
-    /notebooks/formulary/solar_plasma_beta
+   /notebooks/formulary/solar_plasma_beta

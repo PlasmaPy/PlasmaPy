@@ -148,7 +148,7 @@ class BorisIntegrator(AbstractIntegrator):
         >>> v_t1
         array([[0.02, 0.02, 5.02]])
         >>> x_t1
-        array([[0.0003, 0.0003, 0.1003]])
+        array([[0.0001, 0.0001, 0.0501]])
 
         Notes
         -----

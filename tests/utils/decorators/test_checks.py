@@ -177,7 +177,7 @@ class TestCheckUnits:
         with pytest.raises(ValueError):
             cu._normalize_equivalencies([(u.cm,)])
 
-        # input is not a astropy.unit.Unit
+        # input is not a astropy.units.Unit
         with pytest.raises(ValueError):
             cu._normalize_equivalencies([("cm", u.cm)])
 
@@ -210,7 +210,7 @@ class TestCheckUnits:
         ]
         _cases = [
             {
-                "descr": "x units are defined via decorator kwarg of CheckUnits\n"
+                "description": "x units are defined via decorator kwarg of CheckUnits\n"
                 "y units are defined via decorator annotations, additional\n"
                 "  checks thru CheckUnits kwarg",
                 "setup": {
@@ -225,7 +225,7 @@ class TestCheckUnits:
                 },
             },
             {
-                "descr": "x units are defined via decorator kwarg of CheckUnits\n"
+                "description": "x units are defined via decorator kwarg of CheckUnits\n"
                 "y units are defined via function annotations, additional\n"
                 "  checks thru CheckUnits kwarg",
                 "setup": {
@@ -246,7 +246,7 @@ class TestCheckUnits:
                 },
             },
             {
-                "descr": "equivalencies are a list instead of astropy Equivalency objects",
+                "description": "equivalencies are a list instead of astropy Equivalency objects",
                 "setup": {
                     "function": self.foo_no_anno,
                     "args": (2 * u.K, 3 * u.K),
@@ -262,7 +262,7 @@ class TestCheckUnits:
                 },
             },
             {
-                "descr": "number of checked arguments exceed number of function arguments",
+                "description": "number of checked arguments exceed number of function arguments",
                 "setup": {
                     "function": self.foo_partial_anno,
                     "args": (2 * u.cm, 3 * u.cm),
@@ -277,7 +277,7 @@ class TestCheckUnits:
                 "output": {"x": {"units": [u.cm]}, "y": {"units": [u.cm]}},
             },
             {
-                "descr": "arguments passed via *args and **kwargs are ignored",
+                "description": "arguments passed via *args and **kwargs are ignored",
                 "setup": {
                     "function": self.foo_stars,
                     "args": (2 * u.cm, "hello"),
@@ -292,7 +292,7 @@ class TestCheckUnits:
                 "output": {"x": {"units": [u.cm]}, "y": {"units": [u.cm]}},
             },
             {
-                "descr": "arguments can be None values",
+                "description": "arguments can be None values",
                 "setup": {
                     "function": self.foo_with_none,
                     "args": (2 * u.cm, 3 * u.cm),
@@ -305,7 +305,7 @@ class TestCheckUnits:
                 },
             },
             {
-                "descr": "checks and annotations do not specify units",
+                "description": "checks and annotations do not specify units",
                 "setup": {
                     "function": self.foo_no_anno,
                     "args": (2 * u.cm, 3 * u.cm),
@@ -315,7 +315,7 @@ class TestCheckUnits:
                 "raises": ValueError,
             },
             {
-                "descr": "units are directly assigned to the check kwarg",
+                "description": "units are directly assigned to the check kwarg",
                 "setup": {
                     "function": self.foo_partial_anno,
                     "args": (2 * u.cm, 3 * u.cm),
@@ -325,7 +325,7 @@ class TestCheckUnits:
                 "output": {"x": {"units": [u.cm]}, "y": {"units": [u.cm]}},
             },
             {
-                "descr": "return units are assigned via checks",
+                "description": "return units are assigned via checks",
                 "setup": {
                     "function": self.foo_no_anno,
                     "args": (2 * u.km, 3 * u.km),
@@ -335,7 +335,7 @@ class TestCheckUnits:
                 "output": {"checks_on_return": {"units": [u.km]}},
             },
             {
-                "descr": "return units are assigned via annotations",
+                "description": "return units are assigned via annotations",
                 "setup": {
                     "function": self.foo_return_anno,
                     "args": (2 * u.cm, 3 * u.cm),
@@ -345,7 +345,7 @@ class TestCheckUnits:
                 "output": {"checks_on_return": {"units": [u.um]}},
             },
             {
-                "descr": "return units are assigned via annotations and checks arg, but"
+                "description": "return units are assigned via annotations and checks arg, but"
                 "are not consistent",
                 "setup": {
                     "function": self.foo_return_anno,
@@ -356,7 +356,7 @@ class TestCheckUnits:
                 "raises": ValueError,
             },
             {
-                "descr": "return units are not specified but other checks are",
+                "description": "return units are not specified but other checks are",
                 "setup": {
                     "function": self.foo_no_anno,
                     "args": (2 * u.cm, 3 * u.cm),
@@ -366,7 +366,7 @@ class TestCheckUnits:
                 "raises": ValueError,
             },
             {
-                "descr": "no parameter checks for x are defined, but a non-unit annotation"
+                "description": "no parameter checks for x are defined, but a non-unit annotation"
                 "is used",
                 "setup": {
                     "function": self.foo_partial_anno,
@@ -377,7 +377,7 @@ class TestCheckUnits:
                 "output": {"y": {"units": [u.cm]}},
             },
             {
-                "descr": "parameter checks defined for x but unit checks calculated from"
+                "description": "parameter checks defined for x but unit checks calculated from"
                 "function annotations. Function annotations do NOT define "
                 "a proper unit type.",
                 "setup": {
@@ -389,7 +389,7 @@ class TestCheckUnits:
                 "raises": ValueError,
             },
             {
-                "descr": "parameter checks defined for return argument but unit checks "
+                "description": "parameter checks defined for return argument but unit checks "
                 "calculated from function annotations. Function annotations do "
                 "NOT define a proper unit type.",
                 "setup": {
@@ -403,7 +403,7 @@ class TestCheckUnits:
         ]
 
         # perform tests
-        for _ii, case in enumerate(_cases):  # noqa: B007
+        for _ii, case in enumerate(_cases):
             sig = inspect.signature(case["setup"]["function"])
             bound_args = sig.bind(*case["setup"]["args"], **case["setup"]["kwargs"])
 
@@ -429,7 +429,9 @@ class TestCheckUnits:
                 for key, val in default_checks.items():
                     if key in case["output"][arg_name]:
                         val = case["output"][arg_name][key]  # noqa: PLW2901
-                    assert arg_checks[key] == val
+                    assert arg_checks[key] == val, (
+                        f"{case['description'] = }\n\n{arg_checks[key] = }\n\n{val = }"
+                    )
 
     def test_cu_method__check_unit(self) -> None:
         """

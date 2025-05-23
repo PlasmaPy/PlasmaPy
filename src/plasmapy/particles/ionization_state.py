@@ -98,8 +98,7 @@ class IonicLevel:
 
     def __repr__(self) -> str:
         return (
-            f"IonicLevel({self.ionic_symbol!r}, "
-            f"ionic_fraction={self.ionic_fraction})"
+            f"IonicLevel({self.ionic_symbol!r}, ionic_fraction={self.ionic_fraction})"
         )
 
     @property
@@ -219,9 +218,9 @@ class IonizationState:
     >>> import astropy.units as u
     >>> states = IonizationState("H", [0.6, 0.4], n_elem=1 * u.cm**-3, T_e=11000 * u.K)
     >>> states.ionic_fractions[0]  # fraction of hydrogen that is neutral
-    0.6
+    np.float64(0.6)
     >>> states.ionic_fractions[1]  # fraction of hydrogen that is ionized
-    0.4
+    np.float64(0.4)
     >>> states.n_e  # electron number density
     <Quantity 400000. 1 / m3>
     >>> states.n_elem  # element number density
@@ -393,11 +392,11 @@ class IonizationState:
         >>> IonizationState("H", [1, 0], tol=1e-6) == IonizationState(
         ...     "H", [1, 1e-6], tol=1e-6
         ... )  # noqa: W505
-        True
+        np.True_
         >>> IonizationState("H", [1, 0], tol=1e-8) == IonizationState(
         ...     "H", [1, 1e-6], tol=1e-5
         ... )  # noqa: W505
-        False
+        np.False_
         """
         if not isinstance(other, IonizationState):
             return False
@@ -414,16 +413,12 @@ class IonizationState:
 
         min_tol = np.min([self.tol, other.tol])
 
-        same_T_e = (
-            np.isnan(self.T_e)
-            and np.isnan(other.T_e)
-            or u.allclose(self.T_e, other.T_e, rtol=min_tol, atol=0 * u.K)
+        same_T_e = (np.isnan(self.T_e) and np.isnan(other.T_e)) or u.allclose(
+            self.T_e, other.T_e, rtol=min_tol, atol=0 * u.K
         )
 
-        same_n_elem = (
-            np.isnan(self.n_elem)
-            and np.isnan(other.n_elem)
-            or u.allclose(self.n_elem, other.n_elem, rtol=min_tol, atol=0 * u.m**-3)
+        same_n_elem = (np.isnan(self.n_elem) and np.isnan(other.n_elem)) or u.allclose(
+            self.n_elem, other.n_elem, rtol=min_tol, atol=0 * u.m**-3
         )
 
         # For the next line, recall that np.nan == np.nan is False
@@ -475,8 +470,7 @@ class IonizationState:
 
             if len(fractions) != self.atomic_number + 1:
                 raise ParticleError(
-                    "The length of ionic_fractions must be "
-                    f"{self.atomic_number + 1}."
+                    f"The length of ionic_fractions must be {self.atomic_number + 1}."
                 )
 
             if isinstance(fractions, u.Quantity):
@@ -523,7 +517,7 @@ class IonizationState:
         This method may be used, for example, to correct for rounding
         errors.
         """
-        self._ionic_fractions = self._ionic_fractions / np.sum(self._ionic_fractions)
+        self._ionic_fractions = self._ionic_fractions / np.sum(self._ionic_fractions)  # type: ignore[assignment]
 
     @property
     @validate_quantities

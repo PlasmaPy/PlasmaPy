@@ -108,7 +108,7 @@ class Testcollisional_thermalization:
             ({**_kwargs_scalar_value, "temperature_scale": "wrong type"}, TypeError),
         ],
     )
-    @pytest.mark.slow()
+    @pytest.mark.slow
     @pytest.mark.filterwarnings("ignore::RuntimeWarning")
     def test_raises(self, kwargs, _error) -> None:
         with pytest.raises(_error):

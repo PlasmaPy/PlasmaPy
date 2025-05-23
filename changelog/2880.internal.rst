@@ -1,0 +1,2 @@
+Dropped support for Python 3.10 and bumped the minimum required
+versions of several dependencies following |SPEC 0|.

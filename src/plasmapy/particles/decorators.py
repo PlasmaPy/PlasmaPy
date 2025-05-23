@@ -683,8 +683,8 @@ class _ParticleInput:
             for parameter, argument in bound_arguments.arguments.items()
         }
 
-        for parameter in processed_kwargs:
-            bound_arguments.arguments[parameter] = processed_kwargs[parameter]
+        for parameter, processed_kwarg in processed_kwargs.items():
+            bound_arguments.arguments[parameter] = processed_kwarg
 
         return bound_arguments
 

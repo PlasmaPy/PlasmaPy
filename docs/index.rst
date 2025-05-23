@@ -18,12 +18,12 @@ new software tools for plasma research.
 
 If you are new to PlasmaPy, please check out our
 :ref:`getting started notebooks <getting-started-notebooks>` and our
-:ref:`example gallery <examples>`. We invite you to share ideas and ask
-questions in our |Matrix chat room| or during our weekly virtual
-|office hours|.
+:ref:`example gallery <examples>`.
 
 PlasmaPy is developed openly `on GitHub`_, where you can
-`request a new feature`_ or `report a bug`_.
+`request a new feature`_ or `report a bug`_. We invite you to share
+ideas and ask questions in our |Matrix chat room| or during our
+virtual |community meetings|.
 
 .. important::
 
@@ -32,18 +32,18 @@ PlasmaPy is developed openly `on GitHub`_, where you can
    :ref:`cite or acknowledge <citation>` PlasmaPy.
 
 .. toctree::
-   :caption: First Steps
+   :caption: First steps
    :maxdepth: 1
 
-   Installing <install>
-   getting_started
+   Installation <install>
+   Getting Started <getting_started>
    examples
    COMMUNICATION
    Code of Conduct <CODE_OF_CONDUCT.rst>
    about/citation
 
-Example highlights
-------------------
+Example notebooks
+-----------------
 
 .. nbgallery::
    :hidden:
@@ -70,7 +70,7 @@ Example highlights
 
 .. toctree::
    :maxdepth: 1
-   :caption: All the Rest
+   :caption: Project details
 
    changelog/index
    about/credits
@@ -87,9 +87,9 @@ Example highlights
 
    Contributor Guide <contributing/index>
    contributing/many_ways
-   contributing/getting_ready
+   Getting Ready to Contribute <contributing/getting_ready>
    contributing/workflow
-   contributing/coding_guide
+   Coding Guide <contributing/coding_guide>
    contributing/testing_guide
    contributing/doc_guide
    contributing/changelog_guide

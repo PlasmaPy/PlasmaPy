@@ -1,6 +1,7 @@
 """Tests for `plasmapy.particles.decorators`."""
 
 import inspect
+import sys
 from collections.abc import Callable, Iterable
 from typing import Any
 
@@ -386,6 +387,10 @@ def test_preserving_signature_with_stacked_decorators(
     assert undecorated_signature == decorated_signature_1_2 == decorated_signature_2_1
 
 
+@pytest.mark.skipif(
+    not sys.version_info < (3, 13),
+    reason="Class methods can no longer wrap other descriptors. See #2873.",
+)
 def test_annotated_classmethod() -> None:
     """
     Test that `particle_input` behaves as expected for a method that is
