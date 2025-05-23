@@ -1,1 +1,0 @@
-Add casting support for `~plasmapy.particles.particle_collections.ParticleListLike` annotations to the `~plasmapy.particles.decorators.particle_input` decorator.
