@@ -1,0 +1,3 @@
+|ParticleTracker| no longer takes the keyword ``req_quantities``, but instead automatically requires
+quantitities required by the tracker for the given setup. Users wishing to require quantitities
+may use the method `~plasmapy.plasma.grids.AbstractGrid.require_quantities`.

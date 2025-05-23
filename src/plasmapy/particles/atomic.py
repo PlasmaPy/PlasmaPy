@@ -586,8 +586,7 @@ def known_isotopes(argument: ParticleLike | None = None) -> ParticleList:
             isotopes_list = known_isotopes_for_element(element)
         except InvalidElementError as ex:
             raise InvalidElementError(
-                "known_isotopes is unable to get "
-                f"isotopes from an input of: {argument}"
+                f"known_isotopes is unable to get isotopes from an input of: {argument}"
             ) from ex
         except InvalidParticleError as ex:
             raise InvalidParticleError("Invalid particle in known_isotopes.") from ex

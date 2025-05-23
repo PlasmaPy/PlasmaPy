@@ -2,6 +2,8 @@
 Tests for save_routines.py
 """
 
+import warnings
+
 import astropy.units as u
 import numpy as np
 import pytest
@@ -16,22 +18,24 @@ from plasmapy.simulation.particle_tracker.termination_conditions import (
 )
 
 
-@pytest.fixture()
+@pytest.fixture
 def no_particles_on_grids_instantiated():
     return NoParticlesOnGridsTerminationCondition()
 
 
-@pytest.fixture()
+@pytest.fixture
 def time_elapsed_termination_condition_instantiated():
     return TimeElapsedTerminationCondition(1 * u.s)
 
 
-@pytest.fixture()
+@pytest.fixture
 def disk_interval_save_routine_instantiated(tmp_path):
-    return IntervalSaveRoutine(1 * u.s, output_directory=tmp_path)
+    return IntervalSaveRoutine(
+        1 * u.s, output_directory=tmp_path, output_basename="test_name"
+    )
 
 
-@pytest.fixture()
+@pytest.fixture
 def memory_interval_save_routine_instantiated():
     return IntervalSaveRoutine(1 * u.s)
 
@@ -76,4 +80,7 @@ def test_interval_save_routine(request, stop_condition, save_routine) -> None:
     simulation = ParticleTracker(grid, termination_condition, save_routine)
     simulation.load_particles(x, v, point_particle)
 
-    simulation.run()
+    with warnings.catch_warnings():
+        # Ignore warning raises by this special small grid
+        warnings.filterwarnings("ignore", message="Quantities should go to zero")
+        simulation.run()

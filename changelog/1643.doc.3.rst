@@ -1,0 +1,2 @@
+Removed upper dependency limit on `sphinx`, and added lower limit of
+``>=8.2.3``.

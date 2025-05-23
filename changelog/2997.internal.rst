@@ -1,0 +1,3 @@
+Updated :file:`.gitignore` to put content that is custom or PlasmaPy-specific
+at the top of the file, followed by content adapted from :file:`.gitignore`
+templates at the bottom.

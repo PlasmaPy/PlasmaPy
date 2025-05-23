@@ -28,12 +28,9 @@ Troubleshooting pre-commit failures
       pre-commit.ci autofix
 
    This comment will produce a new commit to applies auto-fixes from
-   pre-commit. For an example, see
-   `this comment
-   <https://github.com/PlasmaPy/PlasmaPy/pull/1500#issuecomment-1216865989>`__.
-
-   After doing this, don't forget to do a :bash:`git pull` in your clone
-   of the repository to pull back the changes to your computer.
+   pre-commit. After doing this, don't forget to do a :bash:`git pull`
+   in your clone of the repository to pull back the changes to your
+   computer.
 
 The following sections contain suggestions for how to fix pre-commit
 failures that were not corrected by commenting ``pre-commit.ci autofix``

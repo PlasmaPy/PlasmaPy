@@ -14,7 +14,8 @@ The people who have contributed to the code for this release are:
 * Ramiz Qudsi
 * Tiger Du
 
-Where a * indicates their first contribution to PlasmaPy.
+An asterisk indicates that this release contains their first
+contribution to PlasmaPy.
 
 
 Backwards Incompatible Changes
@@ -40,14 +41,14 @@ Backwards Incompatible Changes
   for functions `~plasmapy.formulary.collisions.coulomb.Coulomb_logarithm` and
   `~plasmapy.formulary.collisions.lengths.impact_parameter`, and then propagated throughout
   the functionality in `plasmapy.formulary.collisions`. (`#962 <https://github.com/plasmapy/plasmapy/pull/962>`__)
-- Add dependency ``pandas >= 1.0.0``.  Modify ``xarray`` dependency to be
+- Added dependency ``pandas >= 1.0.0``.  Modified ``xarray`` dependency to be
   ``xarray >= 0.14.0``. (`#963 <https://github.com/plasmapy/plasmapy/pull/963>`__)
 - The `~plasmapy.plasma.grids.AbstractGrid` property
   `~plasmapy.plasma.grids.AbstractGrid.grid` is now dimensioned (has units) and
   cannot be accessed if all dimensions do not share the same units. (`#981 <https://github.com/plasmapy/plasmapy/pull/981>`__)
 - Renamed attribute ``is_uniform_grid`` on `~plasmapy.plasma.grids.AbstractGrid`
   to ``is_uniform``. (`#981 <https://github.com/plasmapy/plasmapy/pull/981>`__)
-- Drop Python 3.6 support. (`#987 <https://github.com/plasmapy/plasmapy/pull/987>`__)
+- Dropped Python 3.6 support. (`#987 <https://github.com/plasmapy/plasmapy/pull/987>`__)
 - The ``__getitem__`` method of `~plasmapy.plasma.grids.AbstractGrid` now returns
   a |Quantity| array instead of a reference to a ``xarray.DataArray``. (`#1027 <https://github.com/plasmapy/plasmapy/pull/1027>`__)
 - Renamed ``IonicFraction`` to `~plasmapy.particles.ionization_state.IonicLevel`.
@@ -70,7 +71,7 @@ Features
 - Created the `~plasmapy.simulation.abstractions.AbstractNormalizations` class
   to serve as an abstract interface for future classes that represent normalizations. (`#859 <https://github.com/plasmapy/plasmapy/pull/859>`__)
 - Create the analysis sub-package `plasmapy.analysis.swept_langmuir` for analysis
-  code related to analyzing swept Langmuir traces.  Sub-package is initiated with
+  code related to analyzing swept Langmuir traces.  Subpackage is initiated with
   functionality for calculating the floating potential,
   `~plasmapy.analysis.swept_langmuir.floating_potential.find_floating_potential`. (`#889 <https://github.com/plasmapy/plasmapy/pull/889>`__)
 - Added a proton radiography diagnostic module containing a tool for generating synthetic proton radiographs from simulated or calculated fields using a particle tracking algorithm. (`#895 <https://github.com/plasmapy/plasmapy/pull/895>`__)
@@ -78,30 +79,30 @@ Features
 - Added functions in `plasmapy.utils.code_repr` to reproduce strings
   that represent a call to a method or attribute of an object. These
   functions are used, for example, in error messages. (`#920 <https://github.com/plasmapy/plasmapy/pull/920>`__)
-- Add the function
+- Added the function
   ``plasmapy.dispersion.two_fluid_dispersion.two_fluid_dispersion_solution`` to
   `plasmapy.dispersion`, which gives an analytical solution to the dispersion relation as
   derived by :cite:t:`bellan:2012`\ . (`#932 <https://github.com/plasmapy/plasmapy/pull/932>`__)
-- Refactor out the ``plasmapy.simulation.particle_integrators.boris_push`` tracking
+- Refactored out the ``plasmapy.simulation.particle_integrators.boris_push`` tracking
   integrator algorithm from ``plasmapy.simulation.particletracker.ParticleTracker``. (`#953 <https://github.com/plasmapy/plasmapy/pull/953>`__)
-- For `plasmapy.plasma.grids` functionality, add better support for recognizing and
-  handling physical quantities (e.g. spatial position, magnetic field, etc.) added
+- For `plasmapy.plasma.grids` functionality, added better support for recognizing and
+  handling physical quantities (e.g., spatial position, magnetic field, etc.) added
   to a grid object. (`#963 <https://github.com/plasmapy/plasmapy/pull/963>`__)
 - For `plasmapy.plasma.grids` functionality, improve interpolation performance on
   non-uniform grids. (`#963 <https://github.com/plasmapy/plasmapy/pull/963>`__)
 - Added the `~plasmapy.formulary.drifts.diamagnetic_drift` function to
   `~plasmapy.formulary.drifts`. (`#972 <https://github.com/plasmapy/plasmapy/pull/972>`__)
-- Add properties ``grid_resolution`` and
+- Added properties ``grid_resolution`` and
   `~plasmapy.plasma.grids.AbstractGrid.quantities` to
   `~plasmapy.plasma.grids.AbstractGrid`. (`#981 <https://github.com/plasmapy/plasmapy/pull/981>`__)
-- Make several speed improvements to the functionality in `~plasmapy.plasma.grids`,
+- Made several speed improvements to the functionality in `~plasmapy.plasma.grids`,
   including the addition of keyword ``persistent`` to
   `~plasmapy.plasma.grids.AbstractGrid` (and child class) methods
   `~plasmapy.plasma.grids.AbstractGrid.nearest_neighbor_interpolator` and
   ``volume_averaged_interpolator``.  This keyword
   allows the interpolators to assume the last grid setup and contents if input
   arguments have not changed. (`#981 <https://github.com/plasmapy/plasmapy/pull/981>`__)
-- Add methods `~plasmapy.plasma.grids.AbstractGrid.on_grid` and
+- Added methods `~plasmapy.plasma.grids.AbstractGrid.on_grid` and
   `~plasmapy.plasma.grids.AbstractGrid.vector_intersects` to
   `~plasmapy.plasma.grids.AbstractGrid`. (`#981 <https://github.com/plasmapy/plasmapy/pull/981>`__)
 - The `~plasmapy.particles.particle_class.Particle` class now contains an
@@ -121,7 +122,7 @@ Features
 - The greater than (``>``) operator can now be used between
   `~plasmapy.particles.particle_class.Particle` and/or `~plasmapy.particles.particle_collections.ParticleList`
   instances to get the nuclear reaction energy. (`#1017 <https://github.com/plasmapy/plasmapy/pull/1017>`__)
-- Create `plasmapy.particles.particle_collections.ParticleList` as a list-like collection for
+- Created `plasmapy.particles.particle_collections.ParticleList` as a list-like collection for
   instances of `plasmapy.particles.particle_class.Particle` and
   `plasmapy.particles.particle_class.CustomParticle`.  Adding `~plasmapy.particles.particle_class.Particle`
   and/or `~plasmapy.particles.particle_class.CustomParticle` instances will now create a
@@ -167,37 +168,37 @@ Bug Fixes
 Improved Documentation
 ----------------------
 
-- Add narrative documentation on ionization state functionality. (`#796 <https://github.com/plasmapy/plasmapy/pull/796>`__)
+- Added narrative documentation on ionization state functionality. (`#796 <https://github.com/plasmapy/plasmapy/pull/796>`__)
 - Added description to ``plasmapy.formulary.parameters.Hall_parameter``
   signature and equation in docstrings. (`#934 <https://github.com/plasmapy/plasmapy/pull/934>`__)
 - Updated documentation for the `plasmapy.particles` and `plasmapy.utils` subpackages. (`#942 <https://github.com/plasmapy/plasmapy/pull/942>`__)
-- Improves documentation of :file:`plasmapy/formulary/quantum.py` by cleaning up docstrings of contained functionality. (`#951 <https://github.com/plasmapy/plasmapy/pull/951>`__)
-- Update all docstrings associated with computing the Coulomb logarithm and the
+- Improved documentation of :file:`plasmapy/formulary/quantum.py` by cleaning up docstrings of contained functionality. (`#951 <https://github.com/plasmapy/plasmapy/pull/951>`__)
+- Updated all docstrings associated with computing the Coulomb logarithm and the
   possible methods of calculation. (`#962 <https://github.com/plasmapy/plasmapy/pull/962>`__)
-- Add two Jupyter notebooks for functionality contained in `plasmapy.plasma.grids`:
+- Added two Jupyter notebooks for functionality contained in `plasmapy.plasma.grids`:
   :file:`grids_cartesian.ipynb` and :file:`grids_nonuniform.ipynb`. (`#963 <https://github.com/plasmapy/plasmapy/pull/963>`__)
 - Added the ExB drift notebook, which demonstrates the analytical solution for the
   drift and the implementation of the corresponding formulary drift functions,
   `~plasmapy.formulary.drifts.force_drift` and `~plasmapy.formulary.drifts.ExB_drift`. (`#971 <https://github.com/plasmapy/plasmapy/pull/971>`__)
-- Describe what constitutes a valid representation of a particle in the docstring
+- Described what constitutes a valid representation of a particle in the docstring
   for the `plasmapy.particles.particle_class.ParticleLike` typing construct. (`#985 <https://github.com/plasmapy/plasmapy/pull/985>`__)
 - Put the docstring for `plasmapy.particles.particle_class.Particle.is_category` into
   ``numpydoc`` format. (`#1039 <https://github.com/plasmapy/plasmapy/pull/1039>`__)
-- Adds formulas (which were missing) to the docstrings of
+- Added missing formulas to the docstrings of
   ``plasmapy.formulary.dimensionless.quantum_theta`` and
   `~plasmapy.formulary.dimensionless.beta`. (`#1041 <https://github.com/plasmapy/plasmapy/pull/1041>`__)
-- Add live rendering of changelog entries on documentation builds, based on
+- Added live rendering of changelog entries on documentation builds, based on
   `sphinx-changelog <https://github.com/OpenAstronomy/sphinx-changelog>`_. (`#1052 <https://github.com/plasmapy/plasmapy/pull/1052>`__)
 - Created an example notebook demonstrating how the
   ``plasmapy.diagnostics.proton_radiography.SyntheticProtonRadiograph`` class can be
   used to generate synthetic proton radiographs with arbitrary source profiles.  Add
   code documentation links to all proton radiograph notebooks. (`#1054 <https://github.com/plasmapy/plasmapy/pull/1054>`__)
-- Update formatting and broken `sphinx.ext.intersphinx` links in `plasmapy.formulary` docstrings. (`#1058 <https://github.com/plasmapy/plasmapy/pull/1058>`__)
-- Make minor fixes in `plasmapy.particles` docstrings. (`#1064 <https://github.com/plasmapy/plasmapy/pull/1064>`__)
-- Organize the layout of the example Jupyter notebooks on the Read the Docs
+- Updated formatting and broken `sphinx.ext.intersphinx` links in `plasmapy.formulary` docstrings. (`#1058 <https://github.com/plasmapy/plasmapy/pull/1058>`__)
+- Made minor fixes in `plasmapy.particles` docstrings. (`#1064 <https://github.com/plasmapy/plasmapy/pull/1064>`__)
+- Organized the layout of the example Jupyter notebooks on the Read the Docs
   example page. (`#1066 <https://github.com/plasmapy/plasmapy/pull/1066>`__)
-- Fix formatting and broken `sphinx.ext.intersphinx` links in docstrings in
-  various places in the code base. Improve installation instructions in the docs;
+- Fixed formatting and broken `sphinx.ext.intersphinx` links in docstrings in
+  various places in the code base. Improved installation instructions in the docs;
   the subpackage stability matrix, and funding acknowledgments. (`#1076 <https://github.com/plasmapy/plasmapy/pull/1076>`__)
 
 
@@ -206,9 +207,9 @@ Trivial/Internal Changes
 
 - Removed ``colorama`` as a dependency. (`#920 <https://github.com/plasmapy/plasmapy/pull/920>`__)
 - Moved remaining CI from CircleCI to GitHub Actions. (`#996 <https://github.com/plasmapy/plasmapy/pull/996>`__)
-- Add notebook CI through ``nbqa``. (`#997 <https://github.com/plasmapy/plasmapy/pull/997>`__)
-- Remove ``lambda`` expressions from `plasmapy.particles` and `plasmapy.utils`. (`#1013 <https://github.com/plasmapy/plasmapy/pull/1013>`__)
-- Add unicode particle aliases for electrons (``"β-"``, ``"β⁻"``), muons
+- Added notebook CI through ``nbqa``. (`#997 <https://github.com/plasmapy/plasmapy/pull/997>`__)
+- Removed ``lambda`` expressions from `plasmapy.particles` and `plasmapy.utils`. (`#1013 <https://github.com/plasmapy/plasmapy/pull/1013>`__)
+- Added unicode particle aliases for electrons (``"β-"``, ``"β⁻"``), muons
   (``"μ-"``, ``"μ⁻"``), anti-muons (``"μ+"``, ``"μ⁺"``), tau particles
   (``"τ"``, ``"τ-"``, ``"τ⁻"``), anti-tau particles (``"τ+"``, ``"τ⁺"``)
   electron neutrinos (``"ν_e"``), muon neutrinos (``"ν_μ"``), tau neutrinos

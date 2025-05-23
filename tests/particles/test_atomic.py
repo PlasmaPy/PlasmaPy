@@ -269,16 +269,16 @@ class TestInvalidPeriodicElement:
 def test_standard_atomic_weight_value_between() -> None:
     """Test that `standard_atomic_weight` returns approximately the
     correct value for phosphorus."""
-    assert (
-        30.973 < standard_atomic_weight("P").to(u.u).value < 30.974
-    ), "Incorrect standard atomic weight for phosphorus."
+    assert 30.973 < standard_atomic_weight("P").to(u.u).value < 30.974, (
+        "Incorrect standard atomic weight for phosphorus."
+    )
 
 
 def test_particle_mass_berkelium_249() -> None:
     """Test that `particle_mass` returns the correct value for Bk-249."""
-    assert np.isclose(
-        particle_mass("berkelium-249").to(u.u).value, 249.0749877
-    ), "Incorrect isotope mass for berkelium."
+    assert np.isclose(particle_mass("berkelium-249").to(u.u).value, 249.0749877), (
+        "Incorrect isotope mass for berkelium."
+    )
 
 
 def test_particle_mass_for_hydrogen_with_no_mass_number() -> None:
@@ -345,7 +345,7 @@ def test_particle_mass_equivalent_args(arg1, kwargs1, arg2, kwargs2, expected) -
         )
 
 
-@pytest.mark.slow()
+@pytest.mark.slow
 def test_known_common_stable_isotopes() -> None:
     """Test that `known_isotopes`, `common_isotopes`, and
     `stable_isotopes` return the correct values for hydrogen."""
@@ -423,7 +423,7 @@ def test_known_common_stable_isotopes_cases() -> None:
     assert "He-4" in common_isotopes("He", most_common_only=True)
 
 
-@pytest.mark.slow()
+@pytest.mark.slow
 def test_known_common_stable_isotopes_len() -> None:
     """Test that `known_isotopes`, `common_isotopes`, and
     `stable_isotopes` each return a `list` of the expected length.
@@ -502,9 +502,9 @@ def test_isotopic_abundances_sum(element, isotopes) -> None:
     """Test that the sum of isotopic abundances for each element with
     isotopic abundances is one."""
     sum_of_iso_abund = sum(isotopic_abundance(isotope) for isotope in isotopes)
-    assert np.isclose(
-        sum_of_iso_abund, 1, atol=1e-6
-    ), f"The sum of the isotopic abundances for {element} does not equal 1."
+    assert np.isclose(sum_of_iso_abund, 1, atol=1e-6), (
+        f"The sum of the isotopic abundances for {element} does not equal 1."
+    )
 
 
 class TestReducedMassInput:
@@ -606,7 +606,7 @@ def test_invalid_inputs_to_ion_list2(element, min_charge, max_charge) -> None:
         ionic_levels(element, min_charge, max_charge)
 
 
-@pytest.mark.slow()
+@pytest.mark.slow
 @pytest.mark.parametrize(
     ("incident_particle", "material", "kwargs", "expected_error"),
     [

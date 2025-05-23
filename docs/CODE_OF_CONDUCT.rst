@@ -6,8 +6,8 @@ Contributor Covenant Code of Conduct
 We adopt the `Contributor Covenant`_, version 2.1, which is reproduced
 below.
 
-Our Pledge
-----------
+Our Pledge 🤞
+-------------
 
 We as members, contributors, and leaders pledge to make participation in
 our community a harassment-free experience for everyone, regardless of
@@ -17,7 +17,7 @@ education, socioeconomic status, nationality, personal appearance,
 race, caste, color, religion, or sexual identity and orientation.
 
 We pledge to act and interact in ways that contribute to an open,
-welcoming, diverse, inclusive, and healthy community.
+welcoming, diverse, inclusive, and healthy community. ✨
 
 Our Standards
 -------------

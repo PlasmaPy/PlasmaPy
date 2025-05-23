@@ -9,6 +9,7 @@ on:
     branches:
     - main
 
+permissions: {}
 
 env:
   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -29,49 +30,49 @@ jobs:
       matrix:
         include:
 
-        - name: Tests, Python 3.12, doctests, macOS
+        - name: Tests, Python 3.13, doctests, macOS
           os: macos-latest
-          python: '3.12'
-          nox_session: tests-3.12(all)
+          python: '3.13'
+          nox_session: tests-3.13(all)
 
-        - name: Tests, Python 3.11, with code coverage, Windows
+        - name: Tests, Python 3.12, with code coverage, Windows
           os: windows-latest
-          python: '3.11'
-          nox_session: tests-3.11(cov)
-
-        - name: Tests, Python 3.10, Ubuntu
-          os: ubuntu-latest
-          python: '3.10'
-          nox_session: tests-3.10(all)
-
-        - name: Tests, Python 3.10, lowest direct dependencies, Ubuntu
-          os: ubuntu-latest
-          python: '3.10'
-          nox_session: tests-3.10(lowest-direct)
-
-        - name: Tests, Python 3.12, astropy-dev, Ubuntu
-          os: ubuntu-latest
           python: '3.12'
+          nox_session: tests-3.12(cov)
+
+        - name: Tests, Python 3.11, Ubuntu
+          os: ubuntu-latest
+          python: '3.11'
+          nox_session: tests-3.11(all)
+
+        - name: Tests, Python 3.11, lowest direct dependencies, Ubuntu
+          os: ubuntu-latest
+          python: '3.11'
+          nox_session: tests-3.11(lowest-direct)
+
+        - name: Tests, Python 3.13, astropy-dev, Ubuntu
+          os: ubuntu-latest
+          python: '3.13'
           nox_session: run_tests_with_dev_version_of(astropy)
 
-        - name: Tests, Python 3.12, numpy-dev, Ubuntu
+        - name: Tests, Python 3.13, numpy-dev, Ubuntu
           os: ubuntu-latest
-          python: '3.12'
+          python: '3.13'
           nox_session: run_tests_with_dev_version_of(numpy)
 
-        - name: Tests, Python 3.12, xarray-dev, Ubuntu
+        - name: Tests, Python 3.13, xarray-dev, Ubuntu
           os: ubuntu-latest
-          python: '3.12'
+          python: '3.13'
           nox_session: run_tests_with_dev_version_of(xarray)
 
-        - name: Tests, Python 3.12, pandas-dev, Ubuntu
+        - name: Tests, Python 3.13, pandas-dev, Ubuntu
           os: ubuntu-latest
-          python: '3.12'
+          python: '3.13'
           nox_session: run_tests_with_dev_version_of(pandas)
 
-        - name: Tests, Python 3.12, lmfit-dev, Ubuntu
+        - name: Tests, Python 3.13, lmfit-dev, Ubuntu
           os: ubuntu-latest
-          python: '3.12'
+          python: '3.13'
           nox_session: run_tests_with_dev_version_of(lmfit)
 
         - name: Documentation, Python 3.12, Ubuntu
@@ -94,49 +95,54 @@ jobs:
           python: '3.12'
           nox_session: build_docs_with_dev_version_of(nbsphinx)
 
-        - name: Static type checking with mypy, Python 3.12, Windows
-          os: windows-latest
+        - name: Documentation, Python 3.12, plasmapy_sphinx-dev, Ubuntu
+          os: ubuntu-latest
           python: '3.12'
+          nox_session: build_docs_with_dev_version_of(plasmapy_sphinx)
+
+        - name: Static type checking with mypy, Python 3.13, Windows
+          os: windows-latest
+          python: '3.13'
           nox_session: mypy
 
-        - name: Packaging, Python 3.12, Windows
+        - name: Packaging, Python 3.13, Windows
           os: windows-latest
+          python: '3.13'
+          nox_session: build
+
+        - name: Packaging, Python 3.12, Ubuntu
+          os: ubuntu-latest
           python: '3.12'
           nox_session: build
 
-        - name: Packaging, Python 3.11, Ubuntu
-          os: ubuntu-latest
+        - name: Packaging, Python 3.11, macOS
+          os: macos-latest
           python: '3.11'
           nox_session: build
 
-        - name: Packaging, Python 3.10, macOS
+        - name: Import PlasmaPy, Python 3.13, macOS
           os: macos-latest
-          python: '3.10'
-          nox_session: build
+          python: '3.13'
+          nox_session: import
 
-        - name: Import PlasmaPy, Python 3.12, macOS
-          os: macos-latest
+        - name: Import PlasmaPy, Python 3.12, Ubuntu
+          os: ubuntu-latest
           python: '3.12'
           nox_session: import
 
-        - name: Import PlasmaPy, Python 3.11, Ubuntu
-          os: ubuntu-latest
-          python: '3.11'
-          nox_session: import
-
-        - name: Import PlasmaPy, Python 3.10, Windows
+        - name: Import PlasmaPy, Python 3.11, Windows
           os: windows-latest
-          python: '3.10'
+          python: '3.11'
           nox_session: import
 
         - name: Check MANIFEST.in
           os: ubuntu-latest
-          python: '3.12'
+          python: '3.13'
           nox_session: manifest
 
         - name: Lint
           os: ubuntu-latest
-          python: '3.12'
+          python: '3.13'
           nox_session: lint
 
     steps:
@@ -144,36 +150,32 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
       with:
-        fetch-depth: 0
+        persist-credentials: false
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
+    - name: Install Graphviz for doc builds
+      if: contains(matrix.nox_session, 'docs')
+      uses: ts-graphviz/setup-graphviz@v2
+
+    - name: Install pandoc for doc builds
+      # This step requires Ubuntu
+      if: contains(matrix.nox_session, 'docs')
+      run: |
+        sudo apt update
+        sudo apt-get install -y pandoc
+
+    - name: Install uv
+      uses: astral-sh/setup-uv@v6
       with:
         python-version: ${{ matrix.python }}
-        cache: pip
-
-    - name: Install graphviz and pandoc for documentation builds
-      if: startsWith(matrix.name, 'Documentation')
-      # This step only works with Ubuntu
-      run: sudo apt-get install graphviz pandoc
-
-    - name: Install Nox and uv
-      run: python -m pip install --progress-bar off --upgrade nox uv
-
-    - name: Cache .nox to shorten virtual environment creation time
-      uses: actions/cache@v4
-      with:
-        path: |
-          .nox
-        # Changing pyproject.toml or requirements invalidates the cache
-        key: ${{ matrix.nox_session }}-${{ matrix.python }}-${{ runner.os }}-${{ hashFiles('pyproject.toml', 'ci_requirements/all-3.12-linux.txt') }}
+        enable-cache: true
+        cache-suffix: ${{ matrix.nox_session }}-${{ matrix.python }}-${{ runner.os }}
 
     - name: Run Nox session
-      run: nox -s '${{ matrix.nox_session }}'
+      run: uv run --with nox nox -s '${{ matrix.nox_session }}'
 
     - name: Upload coverage reports to Codecov
       if: ${{ contains(matrix.nox_session, 'cov') }}
-      uses: codecov/codecov-action@v4
+      uses: codecov/codecov-action@v5
       with:
         file: ./coverage.xml
         fail_ci_if_error: false
@@ -191,7 +193,7 @@ jobs:
       uses: conda-incubator/setup-miniconda@v3
       with:
         auto-update-conda: true
-        python-version: '3.10'
+        python-version: '3.11'
 
     - name: Use conda to install PlasmaPy from conda-forge
       run: conda install -c conda-forge --yes plasmapy

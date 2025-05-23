@@ -1,0 +1,3 @@
+The new method `~plasmapy.plasma.grids.CartesianGrid.soften_edges` applies an error function mask
+to the edges of all quantities on a grid. This is useful for any application where the grid must
+go to zero smoothly at the edges, e.g. for particle tracking with |ParticleTracker|.

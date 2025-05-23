@@ -25,8 +25,7 @@ Sphinx extensions (built-in):
 import logging
 import os
 import sys
-import warnings
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 
 from sphinx.application import Sphinx
 
@@ -41,7 +40,7 @@ import _author_list_from_cff
 import _changelog_index
 import _global_substitutions
 
-now = datetime.now(timezone.utc)
+now = datetime.now(UTC)
 
 # Project metadata
 
@@ -81,12 +80,15 @@ _author_list_from_cff.generate_rst_file()
 # Sphinx configuration variables
 
 extensions = [
+    # plasmapy extensions & setups
+    "plasmapy_sphinx.theme",
+    "plasmapy_sphinx.ext.autodoc",
+    "plasmapy_sphinx.ext.directives",
+    # other 3rd party extensions
     "hoverxref.extension",
     "IPython.sphinxext.ipython_console_highlighting",
     "nbsphinx",
     "notfound.extension",
-    "plasmapy_sphinx",
-    "sphinx.ext.autodoc",
     "sphinx.ext.duration",
     "sphinx.ext.extlinks",
     "sphinx.ext.graphviz",
@@ -116,7 +118,6 @@ exclude_patterns = [
     ".tox",
     "_build",
     "notebooks/langmuir_samples",
-    "plasmapy_sphinx",
     "Thumbs.db",
 ]
 
@@ -188,7 +189,6 @@ nitpick_ignore_regex = [
     (python_role, "lmfit"),
     (python_role, "mpmath"),
     (python_role, "nbsphinx"),
-    (python_role, "numba"),
     (python_role, "xarray"),
     # plasmapy_sphinx
     (python_role, "automod.*"),
@@ -206,6 +206,10 @@ nitpick_ignore_regex = [
     (python_role, "plasmapy.analysis.swept_langmuir.find_floating_potential"),
     (python_role, "plasmapy.particles.particle_collections"),
     (python_role, "plasmapy.utils.decorators.lite_func"),
+    # undocumented astropy objects
+    # - astropy has no index for u.dimensionless_unscaled, which we
+    #   referenced in our type annotations
+    ("py:class", "dimensionless"),
 ]
 
 # The Sphinx configuration variables rst_prolog and rst_epilog contain
@@ -224,11 +228,8 @@ rst_prolog = """
 
 html_logo = "./_static/with-text-light-190px.png"
 html_static_path = ["_static"]
-html_theme = "sphinx_rtd_theme"
-html_theme_options = {
-    "logo_only": True,
-    "includehidden": False,
-}
+html_theme = "plasmapy_theme"
+html_theme_options = {}
 htmlhelp_basename = "PlasmaPydoc"
 
 # sphinx.ext.autodoc
@@ -246,6 +247,8 @@ bibtex_cite_id = "{key}"
 # sphinx-codeautolink
 
 codeautolink_concat_default = True
+codeautolink_warn_on_failed_resolve = False  # turn on for debugging
+codeautolink_warn_on_missing_inventory = False  # turn on for debugging
 
 # intersphinx
 
@@ -253,9 +256,9 @@ intersphinx_mapping = {
     "astropy": ("https://docs.astropy.org/en/stable/", None),
     "lmfit": ("https://lmfit.github.io/lmfit-py/", None),
     "matplotlib": ("https://matplotlib.org/stable/", None),
-    "numba": ("https://numba.readthedocs.io/en/stable/", None),
     "numpy": ("https://numpy.org/doc/stable/", None),
     "pandas": ("https://pandas.pydata.org/pandas-docs/stable/", None),
+    "plasmapy_sphinx": ("https://plasmapy-sphinx.readthedocs.io/en/latest/", None),
     "pytest": ("https://docs.pytest.org/en/stable/", None),
     "python": ("https://docs.python.org/3/", None),
     "readthedocs": ("https://docs.readthedocs.io/en/stable/", None),
@@ -402,44 +405,49 @@ linkcheck_ignore = [
     r"https://doi\.org/10\.1007/978-3-319-67711-8.*",
     r"https://doi\.org/10\.1007/s11207-014-0526-6",
     r"https://doi\.org/10\.1007/s41116-019-0021-0",
+    r"https://doi\.org/10\.1016/0032-0633(94)00197-Y",
     r"https://doi\.org/10\.1016/0032-0633\(94\)00197-Y",
+    r"https://doi\.org/10\.1016/b978-0-12-374877-5\.00003-8",
     r"https://doi\.org/10\.1016/c2009-0-20048-1",
     r"https://doi\.org/10\.1016/c2013-0-12176-9",
     r"https://doi\.org/10\.1016/j\.physleta\.2004\.08\.021",
+    r"https://doi\.org/10\.1029/95ja03712",
     r"https://doi\.org/10\.1029/1998ja900132",
     r"https://doi\.org/10\.1029/2011ja016674",
     r"https://doi\.org/10\.1029/2012ja017856",
     r"https://doi\.org/10\.1029/9503712",
-    r"https://doi\.org/10\.1029/95ja03712",
     r"https://doi\.org/10\.1038/150405d0",
+    r"https://doi\.org/10\.1063/1\.865901",
+    r"https://doi\.org/10\.1063/1\.871810",
     r"https://doi\.org/10\.1063/1\.1706052",
     r"https://doi\.org/10\.1063/1\.2756751",
     r"https://doi\.org/10\.1063/1\.4775777",
     r"https://doi\.org/10\.1063/1\.4801022",
-    r"https://doi\.org/10\.1063/1\.865901",
-    r"https://doi\.org/10\.1063/1\.871810",
     r"https://doi\.org/10\.1086/523671",
     r"https://doi\.org/10\.1088/0004-637X/751/1/20",
     r"https://doi\.org/10\.1088/0368-3281/5/2/304",
     r"https://doi\.org/10\.1103/PhysRev\.89\.977",
     r"https://doi\.org/10\.1103/PhysRevE\.65\.036418",
     r"https://doi\.org/10\.1103/physrevlett\.111\.241101",
+    r"https://doi\.org/10\.1140/epjd/s10053-021-00305-2",
     r"https://doi\.org/10\.1146/annurev-astro-082708-101726",
     r"https://doi\.org/10\.1201/9781315275048",
     r"https://doi\.org/10\.1371/journal\.pbio\.1001745",
     r"https://doi\.org/10\.1371/journal\.pcbi\.1005510",
     r"https://doi\.org/10\.2172/5259641",
-    r"https://doi\.org/10\.5281/zenodo\.3766933",
     r"https://doi\.org/10\.3847/1538-4357/accc32",
     r"https://doi\.org/10\.5281/zenodo\.1436011",
     r"https://doi\.org/10\.5281/zenodo\.1460977",
     r"https://doi\.org/10\.5281/zenodo\.3406803",
+    r"https://doi\.org/10\.5281/zenodo\.3766933",
     r"https://doi\.org/10\.5281/zenodo\.4602818",
     r"https://doi\.org/10\.5281/zenodo\.7734998",
     r"https://doi\.org/10\.5281/zenodo\.8015753",
+    r"https://doi\.org/10\.18434/T4NC7P",
     r"https://github\.com/PlasmaPy/PlasmaPy/settings/secrets/actions",
     r"https://orcid\.org/0000-0001-5050-6606",
     r"https://orcid\.org/0000-0001-5270-7487",
+    r"https://orcid\.org/0000-0001-5308-6870",
     r"https://orcid\.org/0000-0001-5394-9445",
     r"https://orcid\.org/0000-0001-6079-8307",
     r"https://orcid\.org/0000-0001-6291-8843",
@@ -454,26 +462,50 @@ linkcheck_ignore = [
     r"https://orcid\.org/0000-0002-1073-6383",
     r"https://orcid\.org/0000-0002-1192-2057",
     r"https://orcid\.org/0000-0002-1365-1908",
+    r"https://orcid\.org/0000-0002-1444-9680",
     r"https://orcid\.org/0000-0002-1984-7303",
+    r"https://orcid\.org/0000-0002-2105-0280",
     r"https://orcid\.org/0000-0002-2160-7288",
+    r"https://orcid\.org/0000-0002-2373-8927",
     r"https://orcid\.org/0000-0002-3056-6334",
     r"https://orcid\.org/0000-0002-3713-6337",
+    r"https://orcid\.org/0000-0002-4227-2544",
     r"https://orcid\.org/0000-0002-4237-2211",
     r"https://orcid\.org/0000-0002-4914-6612",
     r"https://orcid\.org/0000-0002-5598-046X",
+    r"https://orcid\.org/0000-0002-5978-6840",
     r"https://orcid\.org/0000-0002-6468-5710",
     r"https://orcid\.org/0000-0002-7616-0946",
     r"https://orcid\.org/0000-0002-7757-5879",
+    r"https://orcid\.org/0000-0002-7860-9567",
+    r"https://orcid\.org/0000-0002-8078-214X",
     r"https://orcid\.org/0000-0002-8335-1441",
+    r"https://orcid\.org/0000-0002-8475-8606",
     r"https://orcid\.org/0000-0002-8644-8118",
     r"https://orcid\.org/0000-0002-8676-1710",
+    r"https://orcid\.org/0000-0002-9180-6565",
     r"https://orcid\.org/0000-0002-9258-4490",
     r"https://orcid\.org/0000-0003-0079-4114",
     r"https://orcid\.org/0000-0003-0223-7004",
     r"https://orcid\.org/0000-0003-0602-8381",
+    r"https://orcid\.org/0000-0003-1439-4218",
+    r"https://orcid\.org/0000-0003-2528-8752",
     r"https://orcid\.org/0000-0003-2892-6924",
+    r"https://orcid\.org/0000-0003-2944-0424",
+    r"https://orcid\.org/0000-0003-3309-3939",
     r"https://orcid\.org/0000-0003-3530-7910",
     r"https://orcid\.org/0000-0003-4217-4642",
+    r"https://orcid\.org/0000-0003-4230-6916",
+    r"https://orcid\.org/0000-0003-4397-027X",
+    r"https://orcid\.org/0000-0003-4739-1152",
+    r"https://orcid\.org/0009-0000-3029-8619",
+    r"https://orcid\.org/0009-0002-5918-4652",
+    r"https://orcid\.org/0009-0003-3159-0541",
+    r"https://orcid\.org/0009-0004-6699-4869",
+    r"https://orcid\.org/0009-0006-0863-0180",
+    r"https://orcid\.org/0009-0007-0655-1347",
+    r"https://orcid\.org/0009-0008-3588-0497",
+    r"https://orcid\.org/0009-0008-5134-6171",
     r"https://orcid\.org/0009-0009-9490-5284",
     r"https://hdl\.handle\.net/10037/29416",
     r"https://www\.iter\.org/",
@@ -508,7 +540,7 @@ nbsphinx_thumbnails = {
 
 # This is processed by Jinja2 and inserted before each notebook
 nbsphinx_prolog = r"""
-{% set docname = 'docs/' + env.doc2path(env.docname, base=None) %}
+{% set docname = 'docs/' + env.doc2path(env.docname, base=None) | string %}
 {% set nb_base = 'tree' if env.config.revision else 'blob' %}
 {% set nb_where = env.config.revision if env.config.revision else 'main' %}
 
@@ -532,7 +564,7 @@ nbsphinx_prolog = r"""
     \sphinxcode{\sphinxupquote{\strut {{ docname | escape_latex }}}} \dotfill}}
 """
 
-# plasmapy_sphinx settings
+# plasmapy_sphinx.ext.autodoc settings
 
 autosummary_generate = True
 automodapi_custom_groups = {
@@ -584,8 +616,17 @@ automodapi_group_order = (
     "variables",
 )
 
+# following https://about.readthedocs.com/blog/2024/07/addons-by-default/
+# Define the canonical URL if you are using a custom domain on Read the Docs
+html_baseurl = os.environ.get("READTHEDOCS_CANONICAL_URL", "")
+
+# Tell Jinja2 templates the build is running on Read the Docs
+if os.environ.get("READTHEDOCS", "") == "True":
+    if "html_context" not in globals():
+        html_context = {}
+    html_context["READTHEDOCS"] = True
+
 
 def setup(app: Sphinx) -> None:
     app.add_config_value("revision", "", rebuild=True)
-    app.add_css_file("css/admonition_color_contrast.css")
-    app.add_css_file("css/plasmapy.css", priority=600)
+    app.add_css_file("css/overrides.css", priority=600)
