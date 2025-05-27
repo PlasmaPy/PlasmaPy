@@ -1,6 +1,5 @@
 """Tests for functionality contained in `plasmapy.formulary.laser`."""
 
-
 import astropy.units as u
 import pytest
 from astropy.tests.helper import assert_quantity_allclose
@@ -19,7 +18,7 @@ from plasmapy.formulary.laser import (
 )
 @pytest.mark.filterwarnings("ignore::astropy.units.UnitsWarning")
 def test_E0(Intensity, expected) -> None:
-    result = E0(Intensity = Intensity)
+    result = E0(Intensity=Intensity)
     assert_quantity_allclose(result, expected, rtol=1e-6, equal_nan=True, verbose=True)
     assert result.unit == u.V / u.m
 
@@ -33,7 +32,7 @@ def test_E0(Intensity, expected) -> None:
 )
 def test_E0_errors(Intensity, expected) -> None:
     with pytest.raises(expected):
-        E0(Intensity = Intensity)
+        E0(Intensity=Intensity)
 
 
 @pytest.mark.parametrize(
@@ -44,4 +43,4 @@ def test_E0_errors(Intensity, expected) -> None:
 )
 def test_E0_warnings(Intensity, expected_warning) -> None:
     with pytest.warns(expected_warning):
-        E0(Intensity = Intensity)
+        E0(Intensity=Intensity)
