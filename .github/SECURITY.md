@@ -1,6 +1,6 @@
 # PlasmaPy Security Policy
 
-<!-- This sets up the security policy on GitHub. -->
+<!-- This sets up the security policy on GitHub. Changes to security practices may need to be made in the GitHub settings for the project. -->
 
 ## Supported versions
 
