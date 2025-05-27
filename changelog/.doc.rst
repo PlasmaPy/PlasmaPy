@@ -1,0 +1,1 @@
+Removed ``sphinx-hoverxref`` as an extension to the documentation build since it has been deprecated.
