@@ -2,8 +2,9 @@ name: Label PR
 
 # The labels to be added are defined in .github/labeler.yml
 
+# See https://github.com/actions/labeler#permissions
 on:
-- pull_request_target
+- pull_request_target  # zizmor: ignore[dangerous-triggers]
 
 jobs:
   labeler:
