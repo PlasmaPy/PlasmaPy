@@ -76,7 +76,7 @@ class Test_Maxwellian_1D:
         # value returned from quad is (integral, error), we just need
         # the 1st
         integVal = integ[0]
-        exceptStr = "Integral of distribution function should be 1 and not {integVal}."
+        exceptStr = f"Integral of distribution function should be 1 and not {integVal}."
         assert np.isclose(integVal, 1, rtol=1e-3, atol=0.0), exceptStr
 
     def test_std(self) -> None:
@@ -377,7 +377,7 @@ class Test_Maxwellian_velocity_2D:
         # value returned from dblquad is (integral, error), we just need
         # the 1st
         integVal = integ[0]
-        exceptStr = "Integral of distribution function should be 1 and not {integVal}."
+        exceptStr = f"Integral of distribution function should be 1 and not {integVal}."
         assert np.isclose(integVal, 1, rtol=1e-3, atol=0.0), exceptStr
 
     def test_units_no_vTh(self) -> None:
@@ -689,7 +689,7 @@ class Test_Maxwellian_velocity_3D:
         # value returned from tplquad is (integral, error), we just need
         # the 1st
         integVal = integ[0]
-        exceptStr = "Integral of distribution function should be 1 and not {integVal}."
+        exceptStr = f"Integral of distribution function should be 1 and not {integVal}."
         assert np.isclose(integVal, 1, rtol=1e-3, atol=0.0), exceptStr
 
     def test_units_no_vTh(self) -> None:
@@ -1049,7 +1049,7 @@ class Test_kappa_velocity_1D:
         # value returned from quad is (integral, error), we just need
         # the 1st
         integVal = integ[0]
-        exceptStr = "Integral of distribution function should be 1 and not {integVal}."
+        exceptStr = f"Integral of distribution function should be 1 and not {integVal}."
         assert np.isclose(integVal, 1, rtol=1e-3, atol=0.0), exceptStr
 
     def test_std(self) -> None:
@@ -1297,7 +1297,7 @@ class Test_kappa_velocity_3D:
         # value returned from tplquad is (integral, error), we just need
         # the 1st
         integVal = integ[0]
-        exceptStr = "Integral of distribution function should be 1 and not {integVal}."
+        exceptStr = f"Integral of distribution function should be 1 and not {integVal}."
         assert np.isclose(integVal, 1, rtol=1e-3, atol=0.0), exceptStr
 
     def test_units_no_vTh(self) -> None:

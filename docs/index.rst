@@ -22,8 +22,8 @@ If you are new to PlasmaPy, please check out our
 
 PlasmaPy is developed openly `on GitHub`_, where you can
 `request a new feature`_ or `report a bug`_. We invite you to share
-ideas and ask questions in our |Matrix chat room| or during our weekly
-virtual |office hours|.
+ideas and ask questions in our |Matrix chat room| or during our
+virtual |community meetings|.
 
 .. important::
 
