@@ -18,15 +18,17 @@ from plasmapy.utils.decorators import validate_quantities
 
 
 @validate_quantities(
-    Intensity={"can_be_negative": False},
+    intensity={"can_be_negative": False},
 )
 def E0(
-    Intensity: u.Quantity[u.watt / u.m**2],
+    intensity: u.Quantity[u.watt / u.m**2],
 ) -> u.Quantity[u.V / u.m]:
     r"""
-    Calculate Electric Field :math:`E_0` from Intensity :math:`I`.
+    Calculate the electric field amplitude :math:`E_0` from the intensity :math:`I`
+    of a laser.
 
-    The E-field is calculated using:
+    The electric field amplitude of an electromagnetic wave in vacuum
+    is calculated using:
 
     .. math::
         E_0=\sqrt{\frac{2I}{c ε_0}},
@@ -36,13 +38,13 @@ def E0(
 
     Parameters
     ----------
-    Intensity : `~astropy.units.Quantity`
+    intensity : `~astropy.units.Quantity`
         Intensity of the laser pulse (convertible to u.Watts/u.m**2).
 
     Returns
     -------
     E : `~astropy.units.Quantity`
-        Maximum Electric Field strength for the intensity provided.
+        Maximum electric field amplitude for the intensity provided.
 
     Notes
     -----
@@ -51,10 +53,9 @@ def E0(
     Examples
     --------
     >>> import astropy.units as u
-    >>> import numpy as np
     >>> E0(1e-3 * u.watt / u.m**2)  # Electric Field Strength
     <Quantity 0.8680211 V / m>
     """
 
-    E = np.sqrt((2 * Intensity) / (c * eps0))
+    E = np.sqrt((2 * intensity) / (c * eps0))
     return E.to(u.V / u.m)
