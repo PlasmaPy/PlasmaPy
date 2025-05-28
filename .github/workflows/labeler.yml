@@ -1,4 +1,4 @@
-name: "Pull Request Labeler"
+name: Pull Request Labeler
 
 # See https://github.com/actions/labeler#permissions
 on:
@@ -13,4 +13,4 @@ jobs:
     steps:
     - uses: actions/labeler@v5
       with:
-        configuration-path: ".github/labeler.yml"
+        configuration-path: .github/labeler.yml
