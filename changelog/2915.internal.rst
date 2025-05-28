@@ -1,0 +1,2 @@
+Added ``User-Agent`` to the header of `~plasmapy.utils.data.downloader.Downloader` to
+resolve an issue with GitHub blocking API access.

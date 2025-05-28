@@ -36,7 +36,7 @@ New Features
 
   - Wrote narrative documentation for each subpackage.
 
-* Adopted use of `~astropy.units` as a units package.
+* Adopted use of `astropy.units` as a units package.
 
 * Created the ``plasmapy.atomic`` subpackage to provide easy access to
   commonly used atomic data.
@@ -96,14 +96,3 @@ Changes to API
 --------------
 
 - PlasmaPy now has an API.
-
-.. _change-log-0.1.0-bugfix:
-
-Bug Fixes
----------
-
-- Fixed bug in universe that cause solar neutrinos to oscillate
-  between different flavors.
-
-.. I went to a talk on neutrinos once, but it all just went in one ear
-   and out the other.

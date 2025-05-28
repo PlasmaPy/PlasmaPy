@@ -15,6 +15,8 @@ on:
   pull_request:
   workflow_dispatch:
 
+permissions: {}  # disables all GitHub permissions for the workflow
+
 env:
   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -37,20 +39,15 @@ jobs:
           python: '3.13'
           nox_session: tests-3.13(skipslow)
 
-        - name: Tests, Python 3.12, skip slow tests, Ubuntu
-          os: ubuntu-latest
-          python: '3.12'
-          nox_session: tests-3.12(skipslow)
-
-        - name: Tests, Python 3.11, with code coverage, macOS
+        - name: Tests, Python 3.12, with code coverage, macOS
           os: macos-latest
-          python: '3.11'
-          nox_session: tests-3.11(cov)
+          python: '3.12'
+          nox_session: tests-3.12(cov)
 
-        - name: Tests, Python 3.10, lowest direct dependencies, Windows
+        - name: Tests, Python 3.11, lowest direct dependencies, Windows
           os: windows-latest
-          python: '3.10'
-          nox_session: tests-3.10(lowest-direct)
+          python: '3.11'
+          nox_session: tests-3.11(lowest-direct)
 
         - name: Documentation, Python 3.12, Ubuntu
           os: ubuntu-latest
@@ -72,6 +69,11 @@ jobs:
           python: '3.13'
           nox_session: cff
 
+        - name: Check workflow security with zizmor
+          os: ubuntu-latest
+          python: '3.13'
+          nox_session: zizmor
+
         - name: Check consistency of pinned & project requirements
           os: ubuntu-latest
           python: '3.13'
@@ -82,35 +84,32 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
       with:
-        fetch-depth: 0
+        persist-credentials: false
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
+    - name: Install Graphviz for doc builds
+      if: contains(matrix.nox_session, 'docs')
+      uses: ts-graphviz/setup-graphviz@v2
+
+    - name: Install pandoc for doc builds
+      # This step requires Ubuntu
+      if: contains(matrix.nox_session, 'docs')
+      run: |
+        sudo apt update
+        sudo apt-get install -y pandoc
+
+    - name: Install uv
+      uses: astral-sh/setup-uv@v6
       with:
         python-version: ${{ matrix.python }}
-        cache: pip
+        enable-cache: true
+        cache-suffix: ${{ matrix.nox_session }}-${{ matrix.python }}-${{ runner.os }}
 
-    - name: Install graphviz and pandoc for documentation builds
-      if: startsWith(matrix.name, 'Documentation')
-      run: sudo apt-get install graphviz pandoc
-
-    - name: Install Nox and uv
-      run: python -m pip install --progress-bar off --upgrade nox uv
-
-    - name: Cache .nox to shorten virtual environment creation time
-      uses: actions/cache@v4
-      with:
-        path: |
-          .nox
-        # Changing pyproject.toml or requirements invalidates the cache
-        key: ${{ matrix.nox_session }}-${{ matrix.python }}-${{ runner.os }}-${{ hashFiles('pyproject.toml', 'ci_requirements/all-3.12-linux.txt') }}
-
-    - name: Run Nox session
-      run: nox -s '${{ matrix.nox_session }}'
+    - name: Run the check
+      run: uv run --with nox --frozen nox -s '${{ matrix.nox_session }}'
 
     - name: Upload coverage reports to Codecov
       if: ${{ contains(matrix.nox_session, 'cov') }}
-      uses: codecov/codecov-action@v4
+      uses: codecov/codecov-action@v5
       with:
         file: ./coverage.xml
         fail_ci_if_error: false

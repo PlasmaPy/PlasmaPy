@@ -1,0 +1,2 @@
+``ax#``, ``dx#`` and ``*_si`` properties of `~plasmapy.plasma.grids.AbstractGrid` are now
+cached properties for faster access, since these attributes do not change after the grid has been initialized.

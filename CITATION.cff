@@ -70,8 +70,21 @@ authors:
   affiliation: Chandigarh University
   alias: ritiek
 
+- given-names: David
+  family-names: Schaffner
+  affiliation: Bryn Mawr College
+  orcid: https://orcid.org/0000-0002-9180-6565
+  alias: dschaffner
+
+- given-names: Steve
+  family-names: Vincena
+  affiliation: UCLA
+  orcid: https://orcid.org/0000-0002-6468-5710
+  alias: svincena
+
 - given-names: Mel
   family-names: Abler
+  orcid: https://orcid.org/0000-0003-2528-8752
   alias: dancingplasma
 
 - given-names: James
@@ -80,11 +93,14 @@ authors:
 
 - given-names: Paula Valentina
   family-names: Alarcon
+  affiliation: North Carolina State University
   orcid: https://orcid.org/0000-0002-7860-9567
   alias: pvalarcon
 
 - given-names: Benjamin
   family-names: Antognetti
+  affiliation: University of Wisconsin–Madison
+  orcid: https://orcid.org/0000-0002-1444-9680
   alias: broantognetti
 
 - given-names: Ataf Fazledin
@@ -133,6 +149,7 @@ authors:
 - given-names: Shane
   family-names: Brown
   affiliation: University of Delaware
+  orcid: https://orcid.org/0000-0003-3309-3939
   alias: Sjbrownian
 
 - given-names: Khalil
@@ -152,6 +169,8 @@ authors:
   affiliation: Beloit College
   orcid: https://orcid.org/0000-0002-0486-1292
   alias: cacsphysics
+
+- alias: CBrown345
 
 - given-names: Sarthak
   family-names: Choudhary
@@ -223,6 +242,8 @@ authors:
 - given-names: Tamar
   family-names: Ervin
   affiliation: University of California, Berkeley
+  orcid: https://orcid.org/0000-0002-8475-8606
+  alias: tamarervin
 
 - given-names: Thomas
   family-names: Fan
@@ -242,6 +263,7 @@ authors:
 
 - given-names: Bryan
   family-names: Foo
+  affiliation: MIT
   orcid: https://orcid.org/0000-0001-5308-6870
   alias: bryancfoo
 
@@ -262,6 +284,7 @@ authors:
 
 - given-names: Jessica
   family-names: Gonzalez
+  affiliation: California Institute of Technology
   alias: stinkymonke
 
 - given-names: Brian
@@ -270,6 +293,7 @@ authors:
 
 - given-names: Shauna
   family-names: Gordon-McKeon
+  orcid: https://orcid.org/0000-0002-2373-8927
   alias: shaunagm
 
 - given-names: Marco
@@ -301,7 +325,7 @@ authors:
 
 - given-names: Mohammed
   family-names: Haque
-  affiliation: Hunter College
+  affiliation: Columbia University
   alias: mohawk811
 
 - given-names: Julien
@@ -348,6 +372,8 @@ authors:
 
 - given-names: Marcin
   family-names: Kastek
+  affiliation: Institute of Plasma Physics and Laser Microfusion
+  orcid: https://orcid.org/0009-0002-5918-4652
   alias: MKastek
 
 - given-names: James
@@ -461,7 +487,7 @@ authors:
 
 - given-names: Carlos
   family-names: Ortiz
-  affiliation: University of Wisconsin
+  affiliation: University of Wisconsin–Madison
   alias: ciortiz
 
 - given-names: Oscar
@@ -489,9 +515,6 @@ authors:
   family-names: Pavon
   alias: silvapavon
 
-- given-names: Jakub
-  family-names: Polak
-
 - given-names: Roberto Díaz
   family-names: Pérez
   alias: RoberTnf
@@ -501,6 +524,9 @@ authors:
   affiliation: Virginia Tech
   orcid: https://orcid.org/0009-0007-0655-1347
   alias: PrestonPitzerVT
+
+- given-names: Jakub
+  family-names: Polak
 
 - given-names: Ramiz
   family-names: Qudsi
@@ -543,6 +569,8 @@ authors:
 
 - given-names: Shanshan
   family-names: Rodriguez
+  affiliation: Grinnell College
+  orcid: https://orcid.org/0000-0003-2944-0424
   alias: slrodriguez
 
 - given-names: Reynaldo
@@ -557,13 +585,8 @@ authors:
 
 - given-names: Antonia
   family-names: Savcheva
-  affiliation: Planetary Science Institute
   orcid: https://orcid.org/0000-0002-5598-046X
   alias: savcheva
-
-- given-names: David
-  family-names: Schaffner
-  alias: dschaffner
 
 - given-names: Cora
   family-names: Schneck
@@ -591,6 +614,7 @@ authors:
 
 - given-names: Trestan
   family-names: Simon
+  orcid: https://orcid.org/0009-0000-3029-8619
   alias: TrestanSimon
 
 - given-names: Angad
@@ -660,13 +684,25 @@ authors:
   affiliation: Centre Spatial de l'École Polytechnique
   alias: antoinetavant
 
+- given-names: Veronica
+  family-names: Tranquilino
+  affiliation: University of Michigan
+  alias: tranqver
+
 - given-names: Thomas
   family-names: Ulrich
   alias: Elfhelm
 
+- given-names: Mychal
+  family-names: Valle
+  affiliation: UCLA
+  orcid: https://orcid.org/0000-0003-4230-6916
+  alias: Mychal-Valle
+
 - given-names: Thomas
   family-names: Varnish
   affiliation: MIT
+  orcid: https://orcid.org/0000-0002-8078-214X
   alias: tvarnish
 
 - given-names: Tien
@@ -674,22 +710,6 @@ authors:
   affiliation: Laboratory for Atmospheric and Space Physics
   orcid: https://orcid.org/0000-0002-8335-1441
   alias: tien-vo
-
-- given-names: Veronica
-  family-names: Tranquilino
-  affiliation: University of Michigan
-  alias: tranqver
-
-- given-names: Mychal
-  family-names: Valle
-  affiliation: UCLA
-  alias: Mychal-Valle
-
-- given-names: Steve
-  family-names: Vincena
-  affiliation: UCLA
-  orcid: https://orcid.org/0000-0002-6468-5710
-  alias: svincena
 
 - alias: WineDarkMoon
 
@@ -711,4 +731,18 @@ authors:
   family-names: Zhang
   alias: carolyz
 
-- alias: CBrown345
+- given-names: Bao
+  family-names: Nguyen
+  affiliation: Imperial College London
+  orcid: https://orcid.org/0000-0002-1753-4223
+  alias: wnguyen1312
+
+- given-names: Emmanuel
+  family-names: Ferdman
+  orcid: https://orcid.org/0009-0004-8953-0151
+  alias: emmanuel-ferdman
+
+- given-names: Mahlet
+  family-names: Getahun
+  affiliation: Marietta College
+  alias: Getahun-yw-Mahl

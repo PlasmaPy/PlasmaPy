@@ -150,7 +150,7 @@ class NoParticlesOnGridsTerminationCondition(AbstractTerminationCondition):
     @property
     def total(self) -> float:
         """The progress of the simulation is measured against the total number of particles in the simulation."""
-        return float(self.tracker.nparticles)
+        return float(self.tracker.num_particles)
 
 
 class AllParticlesOffGridTerminationCondition(AbstractTerminationCondition):
@@ -221,4 +221,4 @@ class AllParticlesOffGridTerminationCondition(AbstractTerminationCondition):
     @property
     def total(self) -> float:
         """The progress of the simulation is compared to the number of particles tracked."""
-        return self._particle_tracker.nparticles_tracked
+        return self._particle_tracker.num_particles_tracked

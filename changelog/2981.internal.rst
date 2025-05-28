@@ -1,0 +1,1 @@
+Enabled a ``pre-commit`` hook for ``mdformat`` to automatically format GitHub-flavored Markdown files.
