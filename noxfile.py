@@ -166,7 +166,11 @@ def requirements(session: nox.Session) -> None:
     # When silent is `True`, `session.run()` returns a multi-line string
     # with the standard output and standard error.
 
-    uv_output: str | bool = session.run(*uv_lock_upgrade, silent=running_on_ci)
+    uv_output: str | bool = session.run(
+        *uv_lock_upgrade,
+        *session.posargs,
+        silent=running_on_ci,
+    )
 
     if running_on_ci:
         session.log(uv_output)
@@ -348,6 +352,8 @@ def docs(session: nox.Session) -> None:
     Build documentation with Sphinx.
 
     This session may require installation of pandoc and graphviz.
+
+    Configuration file: docs/conf.py
     """
 
     if running_on_ci:
@@ -502,7 +508,11 @@ mypy error code. Please use sparingly!
 
 @nox.session(python=maxpython)
 def mypy(session: nox.Session) -> None:
-    """Perform static type checking."""
+    """
+    Perform static type checking.
+
+    Configuration file: mypy.ini
+    """
 
     session.install(uv_requirement)
     session.run_install(
@@ -621,6 +631,7 @@ def changelog(session: nox.Session, final: str) -> None:
         "--version",
         version,
         *options,
+        *session.posargs,
     )
 
     if final:
@@ -653,7 +664,7 @@ def autotyping(session: nox.Session, options: tuple[str, ...]) -> None:
     session.install(".[tests,docs]", "autotyping", "typing_extensions")
     DEFAULT_PATHS = ("src", "tests", "tools", "*.py", ".github", "docs/*.py")
     paths = session.posargs or DEFAULT_PATHS
-    session.run("python", "-m", "autotyping", *options, *paths)
+    session.run("python", "-m", "autotyping", *options, *paths, *session.posargs)
 
 
 @nox.session
@@ -716,7 +727,11 @@ def manifest(session: nox.Session) -> None:
 
 @nox.session
 def lint(session: nox.Session) -> None:
-    """Run all pre-commit hooks on all files."""
+    """
+    Run all pre-commit hooks on all files.
+
+    Configuration file: .pre-commit-config.yaml
+    """
     session.install("pre-commit")
     session.run(
         "pre-commit",
@@ -725,6 +740,38 @@ def lint(session: nox.Session) -> None:
         "--show-diff-on-failure",
         *session.posargs,
     )
+
+
+zizmor_troubleshooting_message = """
+
+🪧 Run this check locally with `nox -s zizmor` to find potential
+security vulnerabilities in GitHub workflows.
+
+📜 Audit rules: https://woodruffw.github.io/zizmor/audits
+
+🔗 If a reported potential vulnerability does not necessitate a fix,
+then either append a comment like `# zizmor: ignore[unpinned-uses]` to
+the reported line (replacing `unpinned-uses` with the audit rule code),
+or add the appropriate configuration settings to: .github/zizmor.yml
+"""
+
+
+@nox.session
+def zizmor(session: nox.Session) -> None:
+    """
+    Find common security issues in GitHub Actions.
+
+    Because some of the zizmor audit rules require a GitHub token,
+    running this check locally may produce different results than
+    running it in CI.
+
+    Configuration file: .github/zizmor.yml
+    """
+    if running_on_ci:
+        session.log(zizmor_troubleshooting_message)
+
+    session.install("zizmor")
+    session.run("zizmor", ".github", "--no-progress", "--color=auto", *session.posargs)
 
 
 # /// script
