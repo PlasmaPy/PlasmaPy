@@ -8,10 +8,9 @@ Thank you for your interest in contributing to PlasmaPy! |:sparkles:|
 The future of the project depends on people like you, so we deeply
 appreciate it! |:seedling:|
 
-Please feel free to reach out to us in PlasmaPy's |Matrix chat room| or
-during PlasmaPy's weekly |office hours|. The PlasmaPy community abides
-by the :ref:`Contributor Covenant Code of Conduct
-<plasmapy-code-of-conduct>`.
+Please feel free to reach out to us during one of PlasmaPy's
+|community meetings|.  The PlasmaPy community abides by the
+:ref:`Contributor Covenant Code of Conduct <plasmapy-code-of-conduct>`.
 
 If you are becoming a first-time contributor, we recommend starting with:
 

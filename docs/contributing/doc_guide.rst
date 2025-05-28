@@ -60,12 +60,7 @@ available at these locations:
   A preview of the documentation is generated every time a pull request
   is created or updated. You can access this preview by scrolling down
   to the checks at the bottom of a pull request, and clicking on
-  :guilabel:`Details` next to :guilabel:`docs/readthedocs.org:plasmapy`.
-
-.. image:: ../_static/contributor_guide/readthedocs_preview_link.png
-   :width: 700
-   :align: center
-   :alt: Access to the preview of the documentation after a pull request
+  :guilabel:`docs/readthedocs.org:plasmapy`.
 
 Markup Languages
 ================
@@ -921,7 +916,7 @@ Parameter descriptions
 The **parameter description** should concisely describe the meaning of
 the parameter, as well as any requirements or restrictions on allowed
 values of the parameter (including those specified by
-|validate_quantities| or |particle_input|. The parameter description
+|validate_quantities| or |particle_input|). The parameter description
 should not repeat information already in the type specification, but may
 include type information when:
 

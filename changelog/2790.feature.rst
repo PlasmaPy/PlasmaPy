@@ -1,0 +1,2 @@
+Enabled |particle_input| to convert |particle-list-like| arguments passed
+to parameters decorated with |ParticleListLike| into |ParticleList| instances.
