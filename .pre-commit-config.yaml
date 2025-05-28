@@ -28,7 +28,7 @@ repos:
   - id: check-yaml
 
 - repo: https://github.com/python-jsonschema/check-jsonschema
-  rev: 0.32.1
+  rev: 0.33.0
   hooks:
   - id: check-github-workflows
 
@@ -86,7 +86,7 @@ repos:
     name: typos (add false positives to _typos.toml)
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.11.4
+  rev: v0.11.8
   hooks:
   - id: ruff
     name: ruff (see https://docs.astral.sh/ruff/rules)
