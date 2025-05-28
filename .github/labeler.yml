@@ -6,107 +6,213 @@
 # If a label includes a space or a pattern begins with an asterisk or
 # special character, enclose it in quotes.
 
-'changes existing API':
+'breaking change':
   - changed-files:
-    - any-glob-to-any-file: 'changelog/*.breaking*.rst'
+    - any-glob-to-any-file: 'changelog/*breaking*.rst'
 
-bug:
+bugfix:
   - changed-files:
-    - any-glob-to-any-file: 'changelog/*.bugfix*.rst'
+    - any-glob-to-any-file: 'changelog/*bugfix*.rst'
 
-'CI':
+CI:
   - changed-files:
     - any-glob-to-any-file: [
-      '.codecov.yaml',
-      '.github/workflows/*test*.yml',
+      '.github/workflows/ci.yml',
+      '.github/workflows/linkcheck.yml',
+      '.github/workflows/weekly.yml',
       '.pre-commit-config.yaml',
       '.readthedocs.yml',
-      'CODEOWNERS',
-      'noxfile.py',
-      'tox.ini'
+      'codecov.yaml',
+      'mypy.ini',
     ]
 
 'contributor guide':
   - changed-files:
-    - any-glob-to-any-file: ['changelog/README.rst', 'docs/contributing/**/*']
+    - any-glob-to-any-file: [
+      '.github/contributing.md',
+      'changelog/README.rst',
+      'CONTRIBUTING.md',
+      'docs/contributing/**',
+    ]
 
-dependencies:
+requirements:
   - changed-files:
-    - any-glob-to-any-file: 'requirements.txt'
+    - any-glob-to-any-file: [
+      '**/*req*.txt',
+      '**/pylock.toml',
+      '**/uv.lock',
+    ]
+
+'deprecation or planned removal':
+  - changed-files:
+    - any-glob-to-any-file: 'changelog/*removal*.rst'
 
 docs:
   - changed-files:
-    - any-glob-to-any-file: ['.readthedocs.yml', 'changelog/*doc*.rst', 'docs/**/*', 'README.md']
+    - any-glob-to-any-file: [
+      'docs/**/*.bib',
+      'docs/**/*.ico',
+      'docs/**/*.ipynb',
+      'docs/**/*.md',
+      'docs/**/*.png',
+      'docs/**/*.rst',
+      'docs/**/*.svg',
+    ]
+
+'documentation infrastructure':
+  - changed-files:
+    - any-glob-to-any-file: [
+      '.github/workflows/changelog.yml',
+      '.github/workflows/check-author-included.yml',
+      '.github/workflows/linkcheck.yml',
+      '.readthedocs.yml',
+      'docs/**/*.css',
+      'docs/**/*.html',
+      'docs/**/*.py',
+      'docs/**/make.bat',
+      'docs/**/Makefile',
+      'docs/**/plasmapy_sphinx/**',
+      'docs/**/robots.txt',
+    ]
+
+feature:
+  - changed-files:
+    - any-glob-to-any-file: 'changelog/*feature*.rst'
 
 'GitHub Actions':
   - changed-files:
-    - any-glob-to-any-file: '.github/**/*'
+    - any-glob-to-any-file: '.github/**'
 
 linters:
   - changed-files:
-    - any-glob-to-any-file: ['.sourcery.yaml', '.pre-commit-config.yaml']
+    - any-glob-to-any-file: [
+      '.editorconfig',
+      '.pre-commit*.yaml',
+      '.sourcery.yaml',
+      '_typos.toml',
+    ]
+
+maintenance:
+  - changed-files:
+    - any-glob-to-any-file: [
+      '.git-blame-ignore-revs',
+      '.gitattributes',
+      '.gitignore',
+      '.mailmap',
+      'changelog/*.internal*.rst',
+      'CODEOWNERS',
+      'licenses/**',
+    ]
 
 notebooks:
   - changed-files:
-    - any-glob-to-any-file: 'docs/notebooks/**/*'
+    - any-glob-to-any-file: [
+      '**/*.ipynb',
+      '**/binder/**',
+      '.jupyter/**',
+      'docs/notebooks/**',
+    ]
+
+nox:
+  - changed-files:
+    - any-glob-to-any-file: '**/noxfile.py'
 
 packaging:
   - changed-files:
     - any-glob-to-any-file: [
+      '**/scm_version.py',
+      '*setup*',
       '.github/workflows/*publish*',
+      '.github/workflows/*pypi*',
       '.github/workflows/*release*',
-      '.zenodo*',
-      'CITATION.cff',
-      'LICENSE.md',
       'MANIFEST.in',
-      'PATENT.md',
       'pyproject.toml',
-      'setup.*'
+    ]
+
+'physical data':
+  - changed-files:
+    - any-glob-to-any-file: [
+      '**/particles/data/**',
+      '**/tools/export_ionization_energy.py',
     ]
 
 plasmapy.analysis:
   - changed-files:
-    - any-glob-to-any-file: 'plasmapy/analysis/**/*'
+    - any-glob-to-any-file: '**/analysis/**'
 
 plasmapy.diagnostics:
   - changed-files:
-    - any-glob-to-any-file: 'plasmapy/diagnostics/**/*'
+    - any-glob-to-any-file: '**/diagnostics/**'
 
 plasmapy.dispersion:
   - changed-files:
-    - any-glob-to-any-file: 'plasmapy/dispersion/**/*'
+    - any-glob-to-any-file: '**/dispersion/**'
 
 plasmapy.formulary:
   - changed-files:
-    - any-glob-to-any-file: 'plasmapy/formulary/**/*'
+    - any-glob-to-any-file: '**/formulary/**'
 
 plasmapy.formulary.quantum:
   - changed-files:
-    - any-glob-to-any-file: 'plasmapy/**/quantum*'
+    - any-glob-to-any-file: '**/quantum*'
 
 plasmapy.particles:
   - changed-files:
-    - any-glob-to-any-file: 'plasmapy/particles/**/*'
+    - any-glob-to-any-file: '**/particles/**'
 
 plasmapy.plasma:
   - changed-files:
-    - any-glob-to-any-file: 'plasmapy/plasma/**/*'
+    - any-glob-to-any-file: '**/plasma/**'
 
 plasmapy.simulation:
   - changed-files:
-    - any-glob-to-any-file: 'plasmapy/simulation/**/*'
+    - any-glob-to-any-file: '**/simulation/**'
 
 plasmapy.utils:
   - changed-files:
-    - any-glob-to-any-file: 'plasmapy/utils/**/*'
+    - any-glob-to-any-file: '**/utils/**'
+
+python:
+  - changed-files:
+    - any-glob-to-any-file: '**/*.py'
+
+release:
+  - changed-files:
+    - any-glob-to-any-file: [
+      '.github/content/*release*',
+      '.github/workflows/*publish*',
+      '.github/workflows/*pypi*',
+      '.github/workflows/*release*',
+    ]
+
+'run weekly tests in CI':
+  - changed-files:
+    - any-glob-to-any-file: [
+      '.github/workflows/*weekly*.yml',
+      'docs/conf.py',
+      'noxfile.py',
+    ]
+
+'static type checking':
+  - changed-files:
+    - any-glob-to-any-file: [
+      '**/*mypy*',
+      '**/py.typed',
+      '**/type_stubs/**',
+    ]
 
 testing:
   - changed-files:
     - any-glob-to-any-file: [
-      '**/test*.py',
+      '**/*coverage*',
+      '**/*pytest*.*',
       '**/conftest.py',
-      '.github/workflows/weekly-tests.yml',
-      '.codecov.yaml',
-      'noxfile.py',
-      'tox.ini'
+      '**/test*.py',
+      '**/tests/**',
+      '*codecov.y*ml',
+      '.github/workflows/ci.yml',
     ]
+
+tools:
+  - changed-files:
+    - any-glob-to-any-file: '**/tools/**'

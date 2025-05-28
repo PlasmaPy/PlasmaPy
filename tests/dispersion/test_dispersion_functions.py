@@ -119,7 +119,7 @@ class TestPlasmaDispersionFunction:
 
         try:
             Z_of_w_array = plasma_dispersion_func(w_array)
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             raise ValueError(
                 "plasma_dispersion_func is unable to accept an "
                 f"ndarray argument with values:\n{w_array}"
@@ -136,7 +136,10 @@ class TestPlasmaDispersionFunction:
             Z_power_series += 1j * np.sqrt(π) * (1j * w_array) ** n / Γ(n / 2 + 1)
 
         assert np.allclose(
-            Z_of_w_array, Z_power_series, atol=1e-15 * (1 + 1j), rtol=1e-15
+            Z_of_w_array,
+            Z_power_series,
+            atol=1e-15 * (1 + 1j),  # type: ignore[arg-type]
+            rtol=1e-15,
         ), (
             "The values returned by plasma_dispersion_func are inconsistent "
             "with the power series expansion of the plasma dispersion function.  "

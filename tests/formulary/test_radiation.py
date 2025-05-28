@@ -15,8 +15,7 @@ def test_thermal_bremsstrahlung() -> None:
     spectrum = thermal_bremsstrahlung(frequencies, ne, Te, ion=ion_species)
 
     assert np.isclose(np.max(spectrum).value, 128.4, 1), (
-        f"Spectrum maximum is {np.max(spectrum).value} "
-        "instead of expected value 128.4"
+        f"Spectrum maximum is {np.max(spectrum).value} instead of expected value 128.4"
     )
 
     # Test violates w > wpe limit

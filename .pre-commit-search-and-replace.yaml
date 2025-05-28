@@ -10,6 +10,9 @@
   replacement: plasmapy
   description: Fix common misspellings of plasmapy
 
+- search: AstroPy
+  replacement: Astropy
+
 - search: from astropy import units as u
   replacement: import astropy.units as u
 
@@ -54,3 +57,17 @@
 - search: 'ion="p"'
   replacement: 'ion="p+"'
   description: Use canonical symbol for proton
+
+- search: '|nox|'
+  replacement: '|Nox|'
+  description: Nox is capitalized except when used as a command
+
+- search: 'nox -e'
+  replacement: 'nox -s'
+  description: The -s refers to Nox sessions, while the -e is from tox environments
+
+- search: '``~plasmapy'
+  description: Either enclose the namespace with single backticks to make it a link, or remove the tilde and keep it a literal
+
+- search: /astropy\.unit\./
+  replacement: 'astropy.units.'

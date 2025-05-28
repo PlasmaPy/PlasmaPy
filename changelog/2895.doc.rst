@@ -1,0 +1,1 @@
+Added acknowledgements to several organizations that have supported PlasmaPy or are aligned with its mission.

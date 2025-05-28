@@ -1,0 +1,4 @@
+Variables in |ParticleTracker|
+and `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography.Tracker` have been updated
+such that ``n*`` is now ``num_*``, e.g. ``nparticles`` is now ``num_particles``. Similarly, ``v_init`` is
+now ``v0`` to be consistent with ``x0``.

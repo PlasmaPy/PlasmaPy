@@ -149,8 +149,8 @@ def kinetic_alfven(  # noqa: C901, PLR0912
 
     With :math:`c_{\rm s}` being the wave speed and :math:`ω_{\rm ci}`
     as the gyrofrequency of the respective ion.  The regions in which
-    this is valid are :math:`ω ≪ ω_{\rm ci}` and :math:`\nu_{\rm Te} ≫
-    \frac{ω}{k_{z}} ≫ \nu_{\rm Ti}`, with :math:`\nu_{\rm Ti}`
+    this is valid are :math:`ω ≪ ω_{\rm ci}` and :math:`ν_{\rm Te} ≫
+    \frac{ω}{k_{z}} ≫ ν_{\rm Ti}`, with :math:`ν_{\rm Ti}`
     standing for the thermal speed of the respective ion. There is no
     restriction on propagation angle.
 
@@ -173,7 +173,7 @@ def kinetic_alfven(  # noqa: C901, PLR0912
     ...     "Z": 1,
     ... }
     >>> kinetic_alfven(**inputs)
-    {30.0: <Quantity [1.24901116e+00, 3.45301796e+08] rad / s>}
+    {np.float64(30.0): <Quantity [1.24901116e+00, 3.45301796e+08] rad / s>}
     """
 
     # Validate arguments
@@ -195,7 +195,7 @@ def kinetic_alfven(  # noqa: C901, PLR0912
 
     # Validate argument k
     k = k.value.squeeze()
-    if k.ndim not in (0, 1):
+    if k.ndim not in {0, 1}:
         raise ValueError(
             "Argument 'k' needs to be a single valued or 1D array "
             f"astropy Quantity, instead got array of shape {k.shape}."
@@ -207,7 +207,7 @@ def kinetic_alfven(  # noqa: C901, PLR0912
 
     # Validate argument theta
     theta = theta.value.squeeze()
-    if theta.ndim not in (0, 1):
+    if theta.ndim not in {0, 1}:
         raise ValueError(
             "Argument 'theta' needs to be a single valued or 1D array "
             f"astropy Quantity, instead got array of shape {theta.shape}."

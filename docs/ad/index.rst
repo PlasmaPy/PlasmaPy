@@ -7,7 +7,7 @@ Analysis & Diagnostic Toolkits
 ==============================
 
 Analyses and diagnostics go hand-in-hand, but have subtle differences.
-Thus, PlasmaPy gives each their own sub-packages, `plasmapy.analysis`
+Thus, PlasmaPy gives each their own subpackages, `plasmapy.analysis`
 and
 `plasmapy.diagnostics` respectively.
 
@@ -42,8 +42,6 @@ focusing on some of following key areas...
    designed ``Probe`` classes that are integrated into the analysis workflow.
 #. Adding graphical user interfaces (GUIs) to the analysis workflow via notebook
    widgets.
-
-----
 
 .. toctree::
    :maxdepth: 2

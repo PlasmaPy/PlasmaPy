@@ -76,7 +76,7 @@ class Test_Maxwellian_1D:
         # value returned from quad is (integral, error), we just need
         # the 1st
         integVal = integ[0]
-        exceptStr = "Integral of distribution function should be 1 and not {integVal}."
+        exceptStr = f"Integral of distribution function should be 1 and not {integVal}."
         assert np.isclose(integVal, 1, rtol=1e-3, atol=0.0), exceptStr
 
     def test_std(self) -> None:
@@ -100,12 +100,11 @@ class Test_Maxwellian_1D:
             v=self.v, T=self.T_e, particle=self.particle, units="units"
         )
         errStr = (
-            f"Distribution function should be {self.distFuncTrue} "
-            f"and not {distFunc}."
+            f"Distribution function should be {self.distFuncTrue} and not {distFunc}."
         )
-        assert np.isclose(
-            distFunc.value, self.distFuncTrue, rtol=1e-5, atol=0.0
-        ), errStr
+        assert np.isclose(distFunc.value, self.distFuncTrue, rtol=1e-5, atol=0.0), (
+            errStr
+        )
 
     def test_units_vTh(self) -> None:
         """
@@ -115,12 +114,11 @@ class Test_Maxwellian_1D:
             v=self.v, T=self.T_e, vTh=self.vTh, particle=self.particle, units="units"
         )
         errStr = (
-            f"Distribution function should be {self.distFuncTrue} "
-            f"and not {distFunc}."
+            f"Distribution function should be {self.distFuncTrue} and not {distFunc}."
         )
-        assert np.isclose(
-            distFunc.value, self.distFuncTrue, rtol=1e-5, atol=0.0
-        ), errStr
+        assert np.isclose(distFunc.value, self.distFuncTrue, rtol=1e-5, atol=0.0), (
+            errStr
+        )
 
     def test_unitless_no_vTh(self) -> None:
         """
@@ -133,8 +131,7 @@ class Test_Maxwellian_1D:
             v=self.v.si.value, T=T_e, particle=self.particle, units="unitless"
         )
         errStr = (
-            f"Distribution function should be {self.distFuncTrue} "
-            f"and not {distFunc}."
+            f"Distribution function should be {self.distFuncTrue} and not {distFunc}."
         )
         assert np.isclose(distFunc, self.distFuncTrue, rtol=1e-5, atol=0.0), errStr
 
@@ -153,8 +150,7 @@ class Test_Maxwellian_1D:
             units="unitless",
         )
         errStr = (
-            f"Distribution function should be {self.distFuncTrue} "
-            f"and not {distFunc}."
+            f"Distribution function should be {self.distFuncTrue} and not {distFunc}."
         )
         assert np.isclose(distFunc, self.distFuncTrue, rtol=1e-5, atol=0.0), errStr
 
@@ -171,12 +167,11 @@ class Test_Maxwellian_1D:
             units="units",
         )
         errStr = (
-            f"Distribution function should be {self.distFuncTrue} "
-            f"and not {distFunc}."
+            f"Distribution function should be {self.distFuncTrue} and not {distFunc}."
         )
-        assert np.isclose(
-            distFunc.value, self.distFuncTrue, rtol=1e-5, atol=0.0
-        ), errStr
+        assert np.isclose(distFunc.value, self.distFuncTrue, rtol=1e-5, atol=0.0), (
+            errStr
+        )
 
     def test_value_drift_units(self) -> None:
         """
@@ -241,12 +236,11 @@ class Test_Maxwellian_speed_1D:
             v=self.v, T=self.T, particle=self.particle, units="units"
         )
         errStr = (
-            f"Distribution function should be {self.distFuncTrue} "
-            f"and not {distFunc}."
+            f"Distribution function should be {self.distFuncTrue} and not {distFunc}."
         )
-        assert np.isclose(
-            distFunc.value, self.distFuncTrue, rtol=1e-5, atol=0.0
-        ), errStr
+        assert np.isclose(distFunc.value, self.distFuncTrue, rtol=1e-5, atol=0.0), (
+            errStr
+        )
 
     def test_units_vTh(self) -> None:
         """
@@ -256,12 +250,11 @@ class Test_Maxwellian_speed_1D:
             v=self.v, T=self.T, vTh=self.vTh, particle=self.particle, units="units"
         )
         errStr = (
-            f"Distribution function should be {self.distFuncTrue} "
-            f"and not {distFunc}."
+            f"Distribution function should be {self.distFuncTrue} and not {distFunc}."
         )
-        assert np.isclose(
-            distFunc.value, self.distFuncTrue, rtol=1e-5, atol=0.0
-        ), errStr
+        assert np.isclose(distFunc.value, self.distFuncTrue, rtol=1e-5, atol=0.0), (
+            errStr
+        )
 
     def test_unitless_no_vTh(self) -> None:
         """
@@ -274,8 +267,7 @@ class Test_Maxwellian_speed_1D:
             v=self.v.si.value, T=T, particle=self.particle, units="unitless"
         )
         errStr = (
-            f"Distribution function should be {self.distFuncTrue} "
-            f"and not {distFunc}."
+            f"Distribution function should be {self.distFuncTrue} and not {distFunc}."
         )
         assert np.isclose(distFunc, self.distFuncTrue, rtol=1e-5, atol=0.0), errStr
 
@@ -294,8 +286,7 @@ class Test_Maxwellian_speed_1D:
             units="unitless",
         )
         errStr = (
-            f"Distribution function should be {self.distFuncTrue} "
-            f"and not {distFunc}."
+            f"Distribution function should be {self.distFuncTrue} and not {distFunc}."
         )
         assert np.isclose(distFunc, self.distFuncTrue, rtol=1e-5, atol=0.0), errStr
 
@@ -312,12 +303,11 @@ class Test_Maxwellian_speed_1D:
             units="units",
         )
         errStr = (
-            f"Distribution function should be {self.distFuncTrue} "
-            f"and not {distFunc}."
+            f"Distribution function should be {self.distFuncTrue} and not {distFunc}."
         )
-        assert np.isclose(
-            distFunc.value, self.distFuncTrue, rtol=1e-5, atol=0.0
-        ), errStr
+        assert np.isclose(distFunc.value, self.distFuncTrue, rtol=1e-5, atol=0.0), (
+            errStr
+        )
 
     def test_value_drift_units(self) -> None:
         """
@@ -387,7 +377,7 @@ class Test_Maxwellian_velocity_2D:
         # value returned from dblquad is (integral, error), we just need
         # the 1st
         integVal = integ[0]
-        exceptStr = "Integral of distribution function should be 1 and not {integVal}."
+        exceptStr = f"Integral of distribution function should be 1 and not {integVal}."
         assert np.isclose(integVal, 1, rtol=1e-3, atol=0.0), exceptStr
 
     def test_units_no_vTh(self) -> None:
@@ -398,12 +388,11 @@ class Test_Maxwellian_velocity_2D:
             vx=self.vx, vy=self.vy, T=self.T, particle=self.particle, units="units"
         )
         errStr = (
-            f"Distribution function should be {self.distFuncTrue} "
-            f"and not {distFunc}."
+            f"Distribution function should be {self.distFuncTrue} and not {distFunc}."
         )
-        assert np.isclose(
-            distFunc.value, self.distFuncTrue, rtol=1e-5, atol=0.0
-        ), errStr
+        assert np.isclose(distFunc.value, self.distFuncTrue, rtol=1e-5, atol=0.0), (
+            errStr
+        )
 
     def test_units_vTh(self) -> None:
         """
@@ -418,12 +407,11 @@ class Test_Maxwellian_velocity_2D:
             units="units",
         )
         errStr = (
-            f"Distribution function should be {self.distFuncTrue} "
-            f"and not {distFunc}."
+            f"Distribution function should be {self.distFuncTrue} and not {distFunc}."
         )
-        assert np.isclose(
-            distFunc.value, self.distFuncTrue, rtol=1e-5, atol=0.0
-        ), errStr
+        assert np.isclose(distFunc.value, self.distFuncTrue, rtol=1e-5, atol=0.0), (
+            errStr
+        )
 
     def test_unitless_no_vTh(self) -> None:
         """
@@ -440,8 +428,7 @@ class Test_Maxwellian_velocity_2D:
             units="unitless",
         )
         errStr = (
-            f"Distribution function should be {self.distFuncTrue} "
-            f"and not {distFunc}."
+            f"Distribution function should be {self.distFuncTrue} and not {distFunc}."
         )
         assert np.isclose(distFunc, self.distFuncTrue, rtol=1e-5, atol=0.0), errStr
 
@@ -461,8 +448,7 @@ class Test_Maxwellian_velocity_2D:
             units="unitless",
         )
         errStr = (
-            f"Distribution function should be {self.distFuncTrue} "
-            f"and not {distFunc}."
+            f"Distribution function should be {self.distFuncTrue} and not {distFunc}."
         )
         assert np.isclose(distFunc, self.distFuncTrue, rtol=1e-5, atol=0.0), errStr
 
@@ -481,12 +467,11 @@ class Test_Maxwellian_velocity_2D:
             units="units",
         )
         errStr = (
-            f"Distribution function should be {self.distFuncTrue} "
-            f"and not {distFunc}."
+            f"Distribution function should be {self.distFuncTrue} and not {distFunc}."
         )
-        assert np.isclose(
-            distFunc.value, self.distFuncTrue, rtol=1e-5, atol=0.0
-        ), errStr
+        assert np.isclose(distFunc.value, self.distFuncTrue, rtol=1e-5, atol=0.0), (
+            errStr
+        )
 
     def test_value_drift_units(self) -> None:
         """
@@ -521,7 +506,7 @@ class Test_Maxwellian_velocity_2D:
             )
 
 
-@pytest.mark.slow()
+@pytest.mark.slow
 class Test_Maxwellian_speed_2D:
     @classmethod
     def setup_class(cls) -> None:
@@ -555,12 +540,11 @@ class Test_Maxwellian_speed_2D:
             v=self.v, T=self.T, particle=self.particle, units="units"
         )
         errStr = (
-            f"Distribution function should be {self.distFuncTrue} "
-            f"and not {distFunc}."
+            f"Distribution function should be {self.distFuncTrue} and not {distFunc}."
         )
-        assert np.isclose(
-            distFunc.value, self.distFuncTrue, rtol=1e-5, atol=0.0
-        ), errStr
+        assert np.isclose(distFunc.value, self.distFuncTrue, rtol=1e-5, atol=0.0), (
+            errStr
+        )
 
     def test_units_vTh(self) -> None:
         """
@@ -570,12 +554,11 @@ class Test_Maxwellian_speed_2D:
             v=self.v, T=self.T, vTh=self.vTh, particle=self.particle, units="units"
         )
         errStr = (
-            f"Distribution function should be {self.distFuncTrue} "
-            f"and not {distFunc}."
+            f"Distribution function should be {self.distFuncTrue} and not {distFunc}."
         )
-        assert np.isclose(
-            distFunc.value, self.distFuncTrue, rtol=1e-5, atol=0.0
-        ), errStr
+        assert np.isclose(distFunc.value, self.distFuncTrue, rtol=1e-5, atol=0.0), (
+            errStr
+        )
 
     def test_unitless_no_vTh(self) -> None:
         """
@@ -588,8 +571,7 @@ class Test_Maxwellian_speed_2D:
             v=self.v.si.value, T=T, particle=self.particle, units="unitless"
         )
         errStr = (
-            f"Distribution function should be {self.distFuncTrue} "
-            f"and not {distFunc}."
+            f"Distribution function should be {self.distFuncTrue} and not {distFunc}."
         )
         assert np.isclose(distFunc, self.distFuncTrue, rtol=1e-5, atol=0.0), errStr
 
@@ -608,8 +590,7 @@ class Test_Maxwellian_speed_2D:
             units="unitless",
         )
         errStr = (
-            f"Distribution function should be {self.distFuncTrue} "
-            f"and not {distFunc}."
+            f"Distribution function should be {self.distFuncTrue} and not {distFunc}."
         )
         assert np.isclose(distFunc, self.distFuncTrue, rtol=1e-5, atol=0.0), errStr
 
@@ -626,12 +607,11 @@ class Test_Maxwellian_speed_2D:
             units="units",
         )
         errStr = (
-            f"Distribution function should be {self.distFuncTrue} "
-            f"and not {distFunc}."
+            f"Distribution function should be {self.distFuncTrue} and not {distFunc}."
         )
-        assert np.isclose(
-            distFunc.value, self.distFuncTrue, rtol=1e-5, atol=0.0
-        ), errStr
+        assert np.isclose(distFunc.value, self.distFuncTrue, rtol=1e-5, atol=0.0), (
+            errStr
+        )
 
     def test_value_drift_units(self) -> None:
         """
@@ -709,7 +689,7 @@ class Test_Maxwellian_velocity_3D:
         # value returned from tplquad is (integral, error), we just need
         # the 1st
         integVal = integ[0]
-        exceptStr = "Integral of distribution function should be 1 and not {integVal}."
+        exceptStr = f"Integral of distribution function should be 1 and not {integVal}."
         assert np.isclose(integVal, 1, rtol=1e-3, atol=0.0), exceptStr
 
     def test_units_no_vTh(self) -> None:
@@ -725,12 +705,11 @@ class Test_Maxwellian_velocity_3D:
             units="units",
         )
         errStr = (
-            f"Distribution function should be {self.distFuncTrue} "
-            f"and not {distFunc}."
+            f"Distribution function should be {self.distFuncTrue} and not {distFunc}."
         )
-        assert np.isclose(
-            distFunc.value, self.distFuncTrue, rtol=1e-5, atol=0.0
-        ), errStr
+        assert np.isclose(distFunc.value, self.distFuncTrue, rtol=1e-5, atol=0.0), (
+            errStr
+        )
 
     def test_units_vTh(self) -> None:
         """
@@ -746,12 +725,11 @@ class Test_Maxwellian_velocity_3D:
             units="units",
         )
         errStr = (
-            f"Distribution function should be {self.distFuncTrue} "
-            f"and not {distFunc}."
+            f"Distribution function should be {self.distFuncTrue} and not {distFunc}."
         )
-        assert np.isclose(
-            distFunc.value, self.distFuncTrue, rtol=1e-5, atol=0.0
-        ), errStr
+        assert np.isclose(distFunc.value, self.distFuncTrue, rtol=1e-5, atol=0.0), (
+            errStr
+        )
 
     def test_unitless_no_vTh(self) -> None:
         """
@@ -769,8 +747,7 @@ class Test_Maxwellian_velocity_3D:
             units="unitless",
         )
         errStr = (
-            f"Distribution function should be {self.distFuncTrue} "
-            f"and not {distFunc}."
+            f"Distribution function should be {self.distFuncTrue} and not {distFunc}."
         )
         assert np.isclose(distFunc, self.distFuncTrue, rtol=1e-5, atol=0.0), errStr
 
@@ -791,8 +768,7 @@ class Test_Maxwellian_velocity_3D:
             units="unitless",
         )
         errStr = (
-            f"Distribution function should be {self.distFuncTrue} "
-            f"and not {distFunc}."
+            f"Distribution function should be {self.distFuncTrue} and not {distFunc}."
         )
         assert np.isclose(distFunc, self.distFuncTrue, rtol=1e-5, atol=0.0), errStr
 
@@ -813,12 +789,11 @@ class Test_Maxwellian_velocity_3D:
             units="units",
         )
         errStr = (
-            f"Distribution function should be {self.distFuncTrue} "
-            f"and not {distFunc}."
+            f"Distribution function should be {self.distFuncTrue} and not {distFunc}."
         )
-        assert np.isclose(
-            distFunc.value, self.distFuncTrue, rtol=1e-5, atol=0.0
-        ), errStr
+        assert np.isclose(distFunc.value, self.distFuncTrue, rtol=1e-5, atol=0.0), (
+            errStr
+        )
 
     def test_value_drift_units(self) -> None:
         """
@@ -890,12 +865,11 @@ class Test_Maxwellian_speed_3D:
             v=self.v, T=self.T, particle=self.particle, units="units"
         )
         errStr = (
-            f"Distribution function should be {self.distFuncTrue} "
-            f"and not {distFunc}."
+            f"Distribution function should be {self.distFuncTrue} and not {distFunc}."
         )
-        assert np.isclose(
-            distFunc.value, self.distFuncTrue, rtol=1e-5, atol=0.0
-        ), errStr
+        assert np.isclose(distFunc.value, self.distFuncTrue, rtol=1e-5, atol=0.0), (
+            errStr
+        )
 
     def test_units_vTh(self) -> None:
         """
@@ -905,12 +879,11 @@ class Test_Maxwellian_speed_3D:
             v=self.v, T=self.T, vTh=self.vTh, particle=self.particle, units="units"
         )
         errStr = (
-            f"Distribution function should be {self.distFuncTrue} "
-            f"and not {distFunc}."
+            f"Distribution function should be {self.distFuncTrue} and not {distFunc}."
         )
-        assert np.isclose(
-            distFunc.value, self.distFuncTrue, rtol=1e-5, atol=0.0
-        ), errStr
+        assert np.isclose(distFunc.value, self.distFuncTrue, rtol=1e-5, atol=0.0), (
+            errStr
+        )
 
     def test_unitless_no_vTh(self) -> None:
         """
@@ -923,8 +896,7 @@ class Test_Maxwellian_speed_3D:
             v=self.v.si.value, T=T, particle=self.particle, units="unitless"
         )
         errStr = (
-            f"Distribution function should be {self.distFuncTrue} "
-            f"and not {distFunc}."
+            f"Distribution function should be {self.distFuncTrue} and not {distFunc}."
         )
         assert np.isclose(distFunc, self.distFuncTrue, rtol=1e-5, atol=0.0), errStr
 
@@ -943,8 +915,7 @@ class Test_Maxwellian_speed_3D:
             units="unitless",
         )
         errStr = (
-            f"Distribution function should be {self.distFuncTrue} "
-            f"and not {distFunc}."
+            f"Distribution function should be {self.distFuncTrue} and not {distFunc}."
         )
         assert np.isclose(distFunc, self.distFuncTrue, rtol=1e-5, atol=0.0), errStr
 
@@ -961,12 +932,11 @@ class Test_Maxwellian_speed_3D:
             units="units",
         )
         errStr = (
-            f"Distribution function should be {self.distFuncTrue} "
-            f"and not {distFunc}."
+            f"Distribution function should be {self.distFuncTrue} and not {distFunc}."
         )
-        assert np.isclose(
-            distFunc.value, self.distFuncTrue, rtol=1e-5, atol=0.0
-        ), errStr
+        assert np.isclose(distFunc.value, self.distFuncTrue, rtol=1e-5, atol=0.0), (
+            errStr
+        )
 
     def test_value_drift_units(self) -> None:
         """
@@ -1079,7 +1049,7 @@ class Test_kappa_velocity_1D:
         # value returned from quad is (integral, error), we just need
         # the 1st
         integVal = integ[0]
-        exceptStr = "Integral of distribution function should be 1 and not {integVal}."
+        exceptStr = f"Integral of distribution function should be 1 and not {integVal}."
         assert np.isclose(integVal, 1, rtol=1e-3, atol=0.0), exceptStr
 
     def test_std(self) -> None:
@@ -1109,12 +1079,11 @@ class Test_kappa_velocity_1D:
             units="units",
         )
         errStr = (
-            f"Distribution function should be {self.distFuncTrue} "
-            f"and not {distFunc}."
+            f"Distribution function should be {self.distFuncTrue} and not {distFunc}."
         )
-        assert np.isclose(
-            distFunc.value, self.distFuncTrue, rtol=1e-5, atol=0.0
-        ), errStr
+        assert np.isclose(distFunc.value, self.distFuncTrue, rtol=1e-5, atol=0.0), (
+            errStr
+        )
 
     def test_units_vTh(self) -> None:
         """
@@ -1129,12 +1098,11 @@ class Test_kappa_velocity_1D:
             units="units",
         )
         errStr = (
-            f"Distribution function should be {self.distFuncTrue} "
-            f"and not {distFunc}."
+            f"Distribution function should be {self.distFuncTrue} and not {distFunc}."
         )
-        assert np.isclose(
-            distFunc.value, self.distFuncTrue, rtol=1e-5, atol=0.0
-        ), errStr
+        assert np.isclose(distFunc.value, self.distFuncTrue, rtol=1e-5, atol=0.0), (
+            errStr
+        )
 
     def test_unitless_no_vTh(self) -> None:
         """
@@ -1151,8 +1119,7 @@ class Test_kappa_velocity_1D:
             units="unitless",
         )
         errStr = (
-            f"Distribution function should be {self.distFuncTrue} "
-            f"and not {distFunc}."
+            f"Distribution function should be {self.distFuncTrue} and not {distFunc}."
         )
         assert np.isclose(distFunc, self.distFuncTrue, rtol=1e-5, atol=0.0), errStr
 
@@ -1172,8 +1139,7 @@ class Test_kappa_velocity_1D:
             units="unitless",
         )
         errStr = (
-            f"Distribution function should be {self.distFuncTrue} "
-            f"and not {distFunc}."
+            f"Distribution function should be {self.distFuncTrue} and not {distFunc}."
         )
         assert np.isclose(distFunc, self.distFuncTrue, rtol=1e-5, atol=0.0), errStr
 
@@ -1191,12 +1157,11 @@ class Test_kappa_velocity_1D:
             units="units",
         )
         errStr = (
-            f"Distribution function should be {self.distFuncTrue} "
-            f"and not {distFunc}."
+            f"Distribution function should be {self.distFuncTrue} and not {distFunc}."
         )
-        assert np.isclose(
-            distFunc.value, self.distFuncTrue, rtol=1e-5, atol=0.0
-        ), errStr
+        assert np.isclose(distFunc.value, self.distFuncTrue, rtol=1e-5, atol=0.0), (
+            errStr
+        )
 
     def test_value_drift_units(self) -> None:
         """
@@ -1229,7 +1194,7 @@ class Test_kappa_velocity_1D:
             )
 
 
-@pytest.mark.slow()
+@pytest.mark.slow
 class Test_kappa_velocity_3D:
     @classmethod
     def setup_class(cls) -> None:
@@ -1332,7 +1297,7 @@ class Test_kappa_velocity_3D:
         # value returned from tplquad is (integral, error), we just need
         # the 1st
         integVal = integ[0]
-        exceptStr = "Integral of distribution function should be 1 and not {integVal}."
+        exceptStr = f"Integral of distribution function should be 1 and not {integVal}."
         assert np.isclose(integVal, 1, rtol=1e-3, atol=0.0), exceptStr
 
     def test_units_no_vTh(self) -> None:
@@ -1349,12 +1314,11 @@ class Test_kappa_velocity_3D:
             units="units",
         )
         errStr = (
-            f"Distribution function should be {self.distFuncTrue} "
-            f"and not {distFunc}."
+            f"Distribution function should be {self.distFuncTrue} and not {distFunc}."
         )
-        assert np.isclose(
-            distFunc.value, self.distFuncTrue, rtol=1e-5, atol=0.0
-        ), errStr
+        assert np.isclose(distFunc.value, self.distFuncTrue, rtol=1e-5, atol=0.0), (
+            errStr
+        )
 
     def test_units_vTh(self) -> None:
         """
@@ -1371,12 +1335,11 @@ class Test_kappa_velocity_3D:
             units="units",
         )
         errStr = (
-            f"Distribution function should be {self.distFuncTrue} "
-            f"and not {distFunc}."
+            f"Distribution function should be {self.distFuncTrue} and not {distFunc}."
         )
-        assert np.isclose(
-            distFunc.value, self.distFuncTrue, rtol=1e-5, atol=0.0
-        ), errStr
+        assert np.isclose(distFunc.value, self.distFuncTrue, rtol=1e-5, atol=0.0), (
+            errStr
+        )
 
     def test_unitless_no_vTh(self) -> None:
         """
@@ -1395,8 +1358,7 @@ class Test_kappa_velocity_3D:
             units="unitless",
         )
         errStr = (
-            f"Distribution function should be {self.distFuncTrue} "
-            f"and not {distFunc}."
+            f"Distribution function should be {self.distFuncTrue} and not {distFunc}."
         )
         assert np.isclose(distFunc, self.distFuncTrue, rtol=1e-5, atol=0.0), errStr
 
@@ -1418,8 +1380,7 @@ class Test_kappa_velocity_3D:
             units="unitless",
         )
         errStr = (
-            f"Distribution function should be {self.distFuncTrue} "
-            f"and not {distFunc}."
+            f"Distribution function should be {self.distFuncTrue} and not {distFunc}."
         )
         assert np.isclose(distFunc, self.distFuncTrue, rtol=1e-5, atol=0.0), errStr
 
@@ -1441,12 +1402,11 @@ class Test_kappa_velocity_3D:
             units="units",
         )
         errStr = (
-            f"Distribution function should be {self.distFuncTrue} "
-            f"and not {distFunc}."
+            f"Distribution function should be {self.distFuncTrue} and not {distFunc}."
         )
-        assert np.isclose(
-            distFunc.value, self.distFuncTrue, rtol=1e-5, atol=0.0
-        ), errStr
+        assert np.isclose(distFunc.value, self.distFuncTrue, rtol=1e-5, atol=0.0), (
+            errStr
+        )
 
     def test_value_drift_units(self) -> None:
         """

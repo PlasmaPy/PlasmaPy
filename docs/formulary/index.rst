@@ -5,7 +5,7 @@ Formulary (`plasmapy.formulary`)
 ********************************
 
 `plasmapy.formulary` provides theoretical formulas for calculation of
-physical quantities helpful for plasma physics.
+physical quantities helpful for plasma physics. |:abacus:|
 
 .. table::
    :widths: 5 16
@@ -77,17 +77,13 @@ appropriate units. If that happens, you will be notified via a
 Please note that well-maintained physical constant data with units and
 uncertainties can be found in `astropy.constants`.
 
-Examples
-========
-
-For a general overview of how unit-based input works, take a look at the
-following examples:
+Example notebooks
+-----------------
 
 .. nbgallery::
-    :caption: Examples
-    :glob:
+   :glob:
 
-    ../notebooks/formulary/*
+   ../notebooks/formulary/*
 
 API
 ===

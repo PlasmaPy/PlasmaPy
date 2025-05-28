@@ -26,6 +26,7 @@ import astropy.units as u
 import numpy as np
 from astropy.constants import si as const
 from astropy.visualization import quantity_support
+from scipy.integrate import trapezoid
 from scipy.optimize import curve_fit
 
 from plasmapy.particles import Particle
@@ -35,7 +36,7 @@ from plasmapy.utils.decorators import validate_quantities
 def _langmuir_futurewarning() -> None:
     warnings.warn(
         "The plasmapy.diagnostics.langmuir module will be deprecated in favor of "
-        "the plasmapy.analysis.swept_langmuir sub-package and phased out over "
+        "the plasmapy.analysis.swept_langmuir subpackage and phased out over "
         "2021.  The plasmapy.analysis package was released in v0.5.0.",
         FutureWarning,
     )
@@ -730,7 +731,7 @@ def get_electron_density_LM(
     electron saturation current is given by
 
     .. math::
-        I_{es} = \frac{1}{4} e n_e A_p \sqrt{\frac{8 T_e}{\pi m_e}}.
+        I_{es} = \frac{1}{4} e n_e A_p \sqrt{\frac{8 T_e}{π m_e}}.
 
     Please note that the electron saturation current density is a hard
     parameter to acquire and it is usually better to measure the ion density,
@@ -1199,7 +1200,7 @@ def get_ion_density_OML(
     temperature [mott-smith.langmuir-1926]_:
 
     .. math::
-        I_i \xrightarrow[T_i = 0]{} A_p n_i e \frac{\sqrt{2}}{\pi}
+        I_i \xrightarrow[T_i = 0]{} A_p n_i e \frac{\sqrt{2}}{π}
         \sqrt{\frac{e \left( V_F - V \right)}{m_i}}
 
     References
@@ -1352,8 +1353,8 @@ def get_EEDF(probe_characteristic, visualize: bool = False):
     [druyvesteyn-1930]_:
 
     .. math::
-        N_e \left( \epsilon \right) =
-        \frac{2}{A_pe^2} \sqrt{\frac{2 m \epsilon}{e}}
+        N_e \left( ε \right) =
+        \frac{2}{A_pe^2} \sqrt{\frac{2 m ε}{e}}
         \frac{\textrm{d}^2 I}{\textrm{d} V^2}
 
     References
@@ -1393,7 +1394,7 @@ def get_EEDF(probe_characteristic, visualize: bool = False):
     probability = dIdV2[_filter] * np.sqrt(energy.to(u.eV).value)
 
     # Integration of the EEDF for the purpose of normalization.
-    integral = np.abs(np.trapz(probability, x=energy.to(u.eV).value))
+    integral = np.abs(trapezoid(probability, x=energy.to(u.eV).value))
     probability = probability / integral
 
     if visualize:
