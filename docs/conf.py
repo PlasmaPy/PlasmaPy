@@ -80,12 +80,15 @@ _author_list_from_cff.generate_rst_file()
 # Sphinx configuration variables
 
 extensions = [
+    # plasmapy extensions & setups
+    "plasmapy_sphinx.theme",
+    "plasmapy_sphinx.ext.autodoc",
+    "plasmapy_sphinx.ext.directives",
+    # other 3rd party extensions
     "hoverxref.extension",
     "IPython.sphinxext.ipython_console_highlighting",
     "nbsphinx",
     "notfound.extension",
-    "plasmapy_sphinx",
-    "sphinx.ext.autodoc",
     "sphinx.ext.duration",
     "sphinx.ext.extlinks",
     "sphinx.ext.graphviz",
@@ -115,7 +118,6 @@ exclude_patterns = [
     ".tox",
     "_build",
     "notebooks/langmuir_samples",
-    "plasmapy_sphinx",
     "Thumbs.db",
 ]
 
@@ -208,6 +210,10 @@ nitpick_ignore_regex = [
     (python_role, "plasmapy.analysis.swept_langmuir.find_floating_potential"),
     (python_role, "plasmapy.particles.particle_collections"),
     (python_role, "plasmapy.utils.decorators.lite_func"),
+    # undocumented astropy objects
+    # - astropy has no index for u.dimensionless_unscaled, which we
+    #   referenced in our type annotations
+    ("py:class", "dimensionless"),
 ]
 
 # The Sphinx configuration variables rst_prolog and rst_epilog contain
@@ -226,11 +232,8 @@ rst_prolog = """
 
 html_logo = "./_static/with-text-light-190px.png"
 html_static_path = ["_static"]
-html_theme = "sphinx_rtd_theme"
-html_theme_options = {
-    "logo_only": True,
-    "includehidden": False,
-}
+html_theme = "plasmapy_theme"
+html_theme_options = {}
 htmlhelp_basename = "PlasmaPydoc"
 
 # sphinx.ext.autodoc
@@ -259,6 +262,7 @@ intersphinx_mapping = {
     "matplotlib": ("https://matplotlib.org/stable/", None),
     "numpy": ("https://numpy.org/doc/stable/", None),
     "pandas": ("https://pandas.pydata.org/pandas-docs/stable/", None),
+    "plasmapy_sphinx": ("https://plasmapy-sphinx.readthedocs.io/en/latest/", None),
     "pytest": ("https://docs.pytest.org/en/stable/", None),
     "python": ("https://docs.python.org/3/", None),
     "readthedocs": ("https://docs.readthedocs.io/en/stable/", None),
@@ -540,7 +544,7 @@ nbsphinx_thumbnails = {
 
 # This is processed by Jinja2 and inserted before each notebook
 nbsphinx_prolog = r"""
-{% set docname = 'docs/' + env.doc2path(env.docname, base=None) %}
+{% set docname = 'docs/' + env.doc2path(env.docname, base=None) | string %}
 {% set nb_base = 'tree' if env.config.revision else 'blob' %}
 {% set nb_where = env.config.revision if env.config.revision else 'main' %}
 
@@ -564,7 +568,7 @@ nbsphinx_prolog = r"""
     \sphinxcode{\sphinxupquote{\strut {{ docname | escape_latex }}}} \dotfill}}
 """
 
-# plasmapy_sphinx settings
+# plasmapy_sphinx.ext.autodoc settings
 
 autosummary_generate = True
 automodapi_custom_groups = {
@@ -629,5 +633,4 @@ if os.environ.get("READTHEDOCS", "") == "True":
 
 def setup(app: Sphinx) -> None:
     app.add_config_value("revision", "", rebuild=True)
-    app.add_css_file("css/admonition_color_contrast.css")
-    app.add_css_file("css/plasmapy.css", priority=600)
+    app.add_css_file("css/overrides.css", priority=600)

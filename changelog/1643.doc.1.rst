@@ -1,0 +1,2 @@
+Removed :file:`docs/plasmapy_sphinx` and put `plasmapy_sphinx` into its own
+repository, https://github.com/PlasmaPy/plasmapy_sphinx\ .
