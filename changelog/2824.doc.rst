@@ -1,1 +1,0 @@
-Restructured subsections of the `~plasmapy.formulary.mathematics.rot_a_to_b` documentation to be consistent with other pages, and added 'Raises' and 'Example' subsections.

@@ -133,7 +133,7 @@ Trivial/Internal Changes
   `plasmapy.dispersion.numerical` to the `plasmapy.dispersion`
   namespace. (:pr:`2271`)
 - Expanded the |ruff| settings to include more linter rules. (:pr:`2295`)
-- Add |ruff| linter rules that check for `print` and :py:`pprint`, as
+- Added |ruff| linter rules that check for `print` and :py:`pprint`, as
   the `logging` library is generally preferred for production code.
   (:pr:`2296`)
 - Updated and corrected author information in :file:`CITATION.cff`.

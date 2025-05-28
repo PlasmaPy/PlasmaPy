@@ -21,8 +21,8 @@ contributors can take to get set up to contribute to PlasmaPy. After
 taking these steps, you'll be ready to go through the :ref:`code
 contribution workflow <workflow>`.
 
-If you run into any problems, please feel free to reach out to us in our
-|Matrix chat room| or during our weekly |office hours|.
+If you run into any problems, please feel free to reach out to us during
+one of our |community meetings|.
 
 Pre-requisites
 ==============
@@ -326,7 +326,7 @@ when you :py:`import plasmapy`.
 .. _install Graphviz: https://graphviz.org/download
 .. _install pandoc: https://pandoc.org/installing.html
 .. _installing Anaconda Navigator: https://docs.anaconda.com/navigator/install
-.. _installing Conda: https://conda.io/projects/conda/en/latest/user-guide/install/index.html
+.. _installing Conda: https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html
 .. _installing Python: https://realpython.com/installing-python
 .. _installing WSL: https://learn.microsoft.com/en-us/windows/wsl/install
 .. _miniconda: https://docs.conda.io/en/latest/miniconda.html

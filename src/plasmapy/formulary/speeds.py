@@ -446,7 +446,7 @@ def thermal_speed_coefficients(method: str, ndim: int) -> float:
     Examples
     --------
     >>> thermal_speed_coefficients(method="most_probable", ndim=3)
-    1.414213...
+    np.float64(1.414213...)
     """
     _coefficients = {
         (1, "most_probable"): 0,
@@ -518,7 +518,7 @@ def thermal_speed_lite(T: float, mass: float, coeff: float) -> float:
     >>> mass = Particle("p").mass.value
     >>> coeff = thermal_speed_coefficients(method="most_probable", ndim=3)
     >>> thermal_speed_lite(T=1e6, mass=mass, coeff=coeff)
-    128486...
+    np.float64(128486.57...)
     """
     return coeff * np.sqrt(k_B_si_unitless * T / mass)
 
@@ -717,7 +717,7 @@ def thermal_speed(
     >>> mass = Particle("p").mass.value
     >>> coeff = thermal_speed.coefficients(method="most_probable", ndim=3)
     >>> thermal_speed.lite(T=1e6, mass=mass, coeff=coeff)
-    128486...
+    np.float64(128486.57...)
     """
     if mass is None:
         mass = particle_mass(particle)

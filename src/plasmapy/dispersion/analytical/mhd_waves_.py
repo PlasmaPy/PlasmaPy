@@ -59,8 +59,7 @@ class AbstractMHDWave(ABC):
 
         if not isinstance(gamma, Real):
             raise TypeError(
-                f"Expected int or float for argument 'gamma', but got "
-                f"{type(gamma)}."
+                f"Expected int or float for argument 'gamma', but got {type(gamma)}."
             )
 
         if density.unit.physical_type == u.physical.mass_density:
@@ -308,12 +307,6 @@ class AbstractMHDWave(ABC):
         """
         angular_frequency = self.angular_frequency(k, theta)
         theta, k = self._validate_k_theta(k, theta)
-
-        if theta.shape[1] == 1:
-            # np.squeeze will have removed this axis from angular_frequency,
-            # so it must be added back
-            angular_frequency = np.expand_dims(angular_frequency, axis=1)
-
         return np.squeeze(angular_frequency / k)
 
 
@@ -529,17 +522,9 @@ class AlfvenWave(AbstractMHDWave):
         """
         phase_velocity = self.phase_velocity(k, theta)
         theta, k = super()._validate_k_theta(k, theta)
-
-        if theta.shape[1] == 1:
-            # np.squeeze will have removed this axis from phase_velocity,
-            # so it must be added back
-            phase_velocity_s = np.expand_dims(phase_velocity, axis=1)
-        else:
-            phase_velocity_s = phase_velocity
-
         return [
             phase_velocity,
-            np.squeeze(-phase_velocity_s * np.tan(theta)),
+            -phase_velocity * np.tan(theta),
         ]
 
 
@@ -780,14 +765,6 @@ class FastMagnetosonicWave(AbstractMHDWave):
         """
         phase_velocity = self.phase_velocity(k, theta)
         theta, k = super()._validate_k_theta(k, theta)
-
-        if theta.shape[1] == 1:
-            # np.squeeze will have removed this axis from phase_velocity,
-            # so it must be added back
-            phase_velocity_s = np.expand_dims(phase_velocity, axis=1)
-        else:
-            phase_velocity_s = phase_velocity
-
         return [
             phase_velocity,
             np.squeeze(
@@ -796,8 +773,8 @@ class FastMagnetosonicWave(AbstractMHDWave):
                 * np.sin(theta)
                 * np.cos(theta)
                 / (
-                    phase_velocity_s
-                    * (2 * phase_velocity_s**2 - self._magnetosonic_speed**2)
+                    phase_velocity
+                    * (2 * phase_velocity**2 - self._magnetosonic_speed**2)
                 )
             ),
         ]
@@ -1030,29 +1007,24 @@ class SlowMagnetosonicWave(AbstractMHDWave):
         phase velocity.
         """
         phase_velocity = self.phase_velocity(k, theta)
+
         theta, k = super()._validate_k_theta(k, theta)
-
-        if theta.shape[1] == 1:
-            # np.squeeze will have removed this axis from phase_velocity,
-            # so it must be added back
-            phase_velocity_s = np.expand_dims(phase_velocity, axis=1)
-        else:
-            phase_velocity_s = phase_velocity
-
         group_velocity = np.ones(k.shape) * (0 * u.m / u.s)
-        np.divide(
-            self._Alfven_speed**2
-            * self._sound_speed**2
-            * np.sin(theta)
-            * np.cos(theta),
-            phase_velocity_s * (2 * phase_velocity_s**2 - self._magnetosonic_speed**2),
-            out=group_velocity,
-            where=phase_velocity != 0,
+        np.squeeze(
+            np.divide(
+                self._Alfven_speed**2
+                * self._sound_speed**2
+                * np.sin(theta)
+                * np.cos(theta),
+                phase_velocity * (2 * phase_velocity**2 - self._magnetosonic_speed**2),
+                out=group_velocity,
+                where=phase_velocity != 0,
+            )
         )
 
         return [
             phase_velocity,
-            np.squeeze(group_velocity),
+            group_velocity,
         ]
 
 

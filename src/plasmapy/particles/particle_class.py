@@ -20,7 +20,7 @@ import typing
 import warnings
 from abc import ABC, abstractmethod
 from collections import defaultdict, namedtuple
-from datetime import datetime
+from datetime import datetime, timezone
 from numbers import Integral, Real
 from typing import TYPE_CHECKING, TypeAlias
 
@@ -170,7 +170,7 @@ class AbstractParticle(ABC):
             "plasmapy_particle": {
                 "type": type(self).__name__,
                 "module": self.__module__,
-                "date_created": datetime.utcnow().strftime(  # noqa: DTZ003
+                "date_created": datetime.now(timezone.utc).strftime(  # noqa: UP017
                     "%Y-%m-%d %H:%M:%S UTC"
                 ),
                 "__init__": {"args": (), "kwargs": {}},
@@ -1852,8 +1852,7 @@ class Particle(AbstractPhysicalParticle):
         """
         if not self.element:
             raise InvalidElementError(
-                f"Cannot ionize {self.symbol} because it is not a "
-                f"neutral atom or ion."
+                f"Cannot ionize {self.symbol} because it is not a neutral atom or ion."
             )
 
         if np.isinf(n):
@@ -2006,22 +2005,20 @@ class Particle(AbstractPhysicalParticle):
         ~plasmapy.particles.exceptions.MissingParticleDataError
             If the electron binding energy is not available for the particle.
 
-
         Returns
         -------
         electron_binding_energy : `~astropy.units.Quantity`
             The electron binding energy of the particle in Joules.
 
-
         Examples
         --------
         >>> helium = Particle("He")
         >>> helium.electron_binding_energy
-        <Quantity 8.71868724e-18 J>
+        <Quantity 1.2658...e-17 J>
 
         >>> carbon_3 = Particle("C 3+")
         >>> carbon_3.electron_binding_energy
-        <Quantity 1.413254e-16 J>
+        <Quantity 1.5165...e-16 J>
 
         Notes
         -----
@@ -2090,9 +2087,9 @@ class DimensionlessParticle(AbstractParticle):
     >>> from plasmapy.particles import DimensionlessParticle
     >>> particle = DimensionlessParticle(mass=1.0, charge=-1.0, symbol="ξ")
     >>> particle.mass
-    1.0
+    np.float64(1.0)
     >>> particle.charge
-    -1.0
+    np.float64(-1.0)
     >>> particle.symbol
     'ξ'
     """
@@ -2172,14 +2169,14 @@ class DimensionlessParticle(AbstractParticle):
         {'plasmapy_particle': {'type': 'DimensionlessParticle',
             'module': 'plasmapy.particles.particle_class',
             'date_created': '...',
-            '__init__': {'args': (), 'kwargs': {'mass': 1.0, 'charge': -1.0,
+            '__init__': {'args': (), 'kwargs': {'mass': np.float64(1.0), 'charge': np.float64(-1.0),
             'symbol': 'DimensionlessParticle(mass=1.0, charge=-1.0)'}}}}
         >>> dimensionless_particle = DimensionlessParticle(mass=1.0)
         >>> dimensionless_particle.json_dict
         {'plasmapy_particle': {'type': 'DimensionlessParticle',
             'module': 'plasmapy.particles.particle_class',
             'date_created': '...',
-            '__init__': {'args': (), 'kwargs': {'mass': 1.0, 'charge': nan,
+            '__init__': {'args': (), 'kwargs': {'mass': np.float64(1.0), 'charge': nan,
             'symbol': 'DimensionlessParticle(mass=1.0, charge=nan)'}}}}
         """
         particle_dictionary = super().json_dict

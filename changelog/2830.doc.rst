@@ -1,1 +1,0 @@
-Added the :term:`force-free` definition to the |glossary|.

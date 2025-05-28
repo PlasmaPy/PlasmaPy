@@ -9,7 +9,7 @@ default_language_version:
 repos:
 
 - repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v4.6.0
+  rev: v5.0.0
   hooks:
   - id: check-ast
     name: validate Python code
@@ -28,12 +28,12 @@ repos:
   - id: check-yaml
 
 - repo: https://github.com/python-jsonschema/check-jsonschema
-  rev: 0.29.2
+  rev: 0.33.0
   hooks:
   - id: check-github-workflows
 
 - repo: https://github.com/sirosen/texthooks
-  rev: 0.6.7
+  rev: 0.6.8
   hooks:
   - id: fix-smartquotes
   - id: fix-spaces
@@ -54,6 +54,7 @@ repos:
     exclude: .github/labeler.yml|.pre-commit-search-and-replace.yaml
 
 - repo: https://github.com/mattlqx/pre-commit-search-and-replace
+  # keep at v1.0.5
   rev: v1.0.5
   hooks:
   - id: search-and-replace
@@ -70,7 +71,7 @@ repos:
   - id: text-unicode-replacement-char
 
 - repo: https://github.com/codespell-project/codespell
-  rev: v2.3.0
+  rev: v2.4.1
   hooks:
   - id: codespell
     name: codespell (add false positives to pyproject.toml)
@@ -79,13 +80,13 @@ repos:
     - tomli
 
 - repo: https://github.com/crate-ci/typos
-  rev: v1.24.5
+  rev: v1.30.2
   hooks:
   - id: typos
     name: typos (add false positives to _typos.toml)
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.6.4
+  rev: v0.11.8
   hooks:
   - id: ruff
     name: ruff (see https://docs.astral.sh/ruff/rules)
@@ -94,7 +95,7 @@ repos:
     name: autoformat source code with ruff-format
 
 - repo: https://github.com/asottile/blacken-docs
-  rev: 1.18.0
+  rev: 1.19.1
   hooks:
   - id: blacken-docs
     name: autoformat code blocks in docs
@@ -107,3 +108,30 @@ repos:
   rev: v1.0.0
   hooks:
   - id: sphinx-lint
+
+- repo: https://github.com/abravalheri/validate-pyproject
+  rev: v0.24.1
+  hooks:
+  - id: validate-pyproject
+    additional_dependencies: ['validate-pyproject-schema-store[all]']
+
+- repo: https://github.com/tox-dev/pyproject-fmt
+  rev: v2.5.1
+  hooks:
+  - id: pyproject-fmt
+
+- repo: https://github.com/hukkin/mdformat
+  rev: 0.7.22
+  hooks:
+  - id: mdformat
+    name: Format .md files
+    # Skip wrapping line length because doing so can mess up
+    # formatting of GitHub issues created from files in
+    # .github/content, and some files use semantic line breaks.
+    exclude: licenses/.*|LICENSE.md|PATENT.md
+    additional_dependencies:
+    - mdformat-black
+    - mdformat-footnote
+    - mdformat-frontmatter
+    - mdformat-gfm
+    - mdformat-gfm-alerts

@@ -586,6 +586,15 @@ class _ParticleInput:
             if not hasattr(argument, "__len__") or len(argument) != 2:
                 raise ValueError(f"The length of {argument} must be 2.")
             return Particle(argument[0]), Particle(argument[1])
+        elif annotation in [ParticleList, ParticleListLike]:
+            # If the argument is already an iterable, it will be
+            # cast to a `ParticleList` by the `_physical_particle_factory` function.
+
+            if not isinstance(argument, ParticleList) and (
+                not isinstance(argument, Iterable) or isinstance(argument, str)
+            ):
+                # If the passed argument is not an iterable, cast it to a list
+                argument = [argument]
 
         if annotation in _basic_particle_input_annotations and argument is None:
             raise TypeError(f"{parameter} may not be None.")
@@ -674,8 +683,8 @@ class _ParticleInput:
             for parameter, argument in bound_arguments.arguments.items()
         }
 
-        for parameter in processed_kwargs:
-            bound_arguments.arguments[parameter] = processed_kwargs[parameter]
+        for parameter, processed_kwarg in processed_kwargs.items():
+            bound_arguments.arguments[parameter] = processed_kwarg
 
         return bound_arguments
 

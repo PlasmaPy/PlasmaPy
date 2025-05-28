@@ -6,14 +6,12 @@ Module containing plasma simulation tools.
    |expect-api-changes|
 """
 
-# update __all__!
-
 __all__ = [
-    "AbstractNormalizations",
     "AbstractSimulation",
     "AbstractTimeDependentSimulation",
+    "particle_tracker",
+    "CFL_limit_electromagnetic_yee",
     "MHDNormalizations",
-    "ParticleTracker",
 ]
 
 from plasmapy.simulation import normalizations, particle_tracker
@@ -29,3 +27,4 @@ from plasmapy.simulation.particle_tracker import (
     ParticleTracker,
     TimeElapsedTerminationCondition,
 )
+from plasmapy.simulation.resolution_constraints import CFL_limit_electromagnetic_yee
