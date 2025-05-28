@@ -456,7 +456,7 @@ class MHDNormalizations(AbstractNormalizations):
         |Quantity|
         """
         raise NotImplementedError(
-            "The thermal conductivity normalization has not yet been " "implemented."
+            "The thermal conductivity normalization has not yet been implemented."
         )
 
     @property
