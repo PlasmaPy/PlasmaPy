@@ -64,7 +64,7 @@ def stix(  # noqa: C901, PLR0912, PLR0915
     -------
     k : `~astropy.units.Quantity` of shape ``(N, M, 4)``
         An array of wavenubmers in units rad/m (shape
-        :math:`N \times M \times 4`).  The first dimension maps to the
+        :math:`N × M × 4`).  The first dimension maps to the
         ``w`` array, the second dimension maps to the ``theta`` array,
         and the third dimension maps to the four roots of the Stix
         polynomial.
@@ -106,35 +106,35 @@ def stix(  # noqa: C901, PLR0912, PLR0915
     :cite:t:`bellan:2012` in equation 8) to be
 
     .. math::
-        (S\sin^{2}(\theta) + P\cos^{2}(\theta))(ck/\omega)^{4}
+        (S\sin^{2}(θ) + P\cos^{2}(θ))(ck/ω)^{4}
             - [
-                RL\sin^{2}(\theta) + PS(1 + \cos^{2}(\theta))
-            ](ck/\omega)^{2} + PRL = 0
+                RL\sin^{2}(θ) + PS(1 + \cos^{2}(θ))
+            ](ck/ω)^{2} + PRL = 0
 
     where,
 
     .. math::
         \mathbf{B_o} &= B_{o} \mathbf{\hat{z}} \\
-        \cos \theta &= \frac{k_z}{k} \\
+        \cos θ &= \frac{k_z}{k} \\
         \mathbf{k} &= k_{\rm x} \hat{x} + k_{\rm z} \hat{z}
 
     .. math::
-        S &= 1 - \sum_{s} \frac{\omega^{2}_{p,s}}{\omega^{2} -
-            \omega^{2}_{c,s}}\\
-        P &= 1 - \sum_{s} \frac{\omega^{2}_{p,s}}{\omega^{2}}\\
+        S &= 1 - \sum_{s} \frac{ω^{2}_{p,s}}{ω^{2} -
+            ω^{2}_{c,s}}\\
+        P &= 1 - \sum_{s} \frac{ω^{2}_{p,s}}{ω^{2}}\\
         D &= \sum_{s}
-            \frac{\omega_{c,s}}{\omega}
-            \frac{\omega^{2}_{p,s}}{\omega^{2} -
-            \omega_{c,s}^{2}}
+            \frac{ω_{c,s}}{ω}
+            \frac{ω^{2}_{p,s}}{ω^{2} -
+            ω_{c,s}^{2}}
 
     .. math::
         R = S + D \hspace{1cm} L = S - D
 
-    :math:`\omega` is the wave frequency, :math:`k` is the wavenumber,
-    :math:`\theta` is the wave propagation angle with respect to the
+    :math:`ω` is the wave frequency, :math:`k` is the wavenumber,
+    :math:`θ` is the wave propagation angle with respect to the
     background magntic field :math:`\mathbf{B_o}`, :math:`s` corresponds
-    to plasma species :math:`s`, :math:`\omega_{p,s}` is the plasma
-    frequency of species :math:`s`, and :math:`\omega_{c,s}` is the
+    to plasma species :math:`s`, :math:`ω_{p,s}` is the plasma
+    frequency of species :math:`s`, and :math:`ω_{c,s}` is the
     gyrofrequency of species :math:`s`. The derivation of this
     dispersion relation assumed:
 
@@ -147,16 +147,16 @@ def stix(  # noqa: C901, PLR0912, PLR0915
       electric-field, magnetic field, particle speeds, etc.) are
       constant in time and space
     * first-order perturbations in plasma parameters vary like
-      :math:`\sim e^{\left [ i (\textbf{k}\cdot\textbf{r} - \omega t)\right ]}`
+      :math:`\sim e^{\left [ i (\textbf{k}\cdot\textbf{r} - ω t)\right ]}`
 
     Due to the cold plasma assumption, this equation is valid for all
-    :math:`\omega` and :math:`k` given
-    :math:`\frac{\omega}{k_{z}} \gg v_{Th}` for all thermal speeds
+    :math:`ω` and :math:`k` given
+    :math:`\frac{ω}{k_{z}} \gg v_{Th}` for all thermal speeds
     :math:`v_{Th}` of all plasma species and :math:`k_{x} r_{L} \ll 1`
     for all gyroradii :math:`r_{L}` of all plasma species.
 
     The relation predicts :math:`k \to 0` when any one of P, R or L
-    vanish (cutoffs) and :math:`k \to \infty` for perpendicular
+    vanish (cutoffs) and :math:`k \to ∞` for perpendicular
     propagation during wave resonance :math:`S \to 0`.
 
     Examples
@@ -189,7 +189,7 @@ def stix(  # noqa: C901, PLR0912, PLR0915
         )
 
     # Validate n_i argument
-    if n_i.ndim not in (0, 1):
+    if n_i.ndim not in {0, 1}:
         raise ValueError(
             "Argument 'n_i' must be a single valued or a 1D array of "
             f"size 1 or {len(ions)}, instead got shape of {n_i.shape}"
@@ -215,13 +215,12 @@ def stix(  # noqa: C901, PLR0912, PLR0915
     B = B.squeeze()
     if B.ndim != 0:
         raise ValueError(
-            "Argument 'B' must be single valued and not an array of"
-            f" shape  {B.shape}."
+            f"Argument 'B' must be single valued and not an array of shape  {B.shape}."
         )
 
     # Validate w argument and dimension
     w = w.value.squeeze()
-    if w.ndim not in (0, 1):
+    if w.ndim not in {0, 1}:
         raise ValueError(
             "Argument 'w' needs to be a single value or a 1D array "
             f" astropy Quantity, got a value of shape {w.shape}."
@@ -231,7 +230,7 @@ def stix(  # noqa: C901, PLR0912, PLR0915
 
     # Validate theta value
     theta = theta.value.squeeze()
-    if theta.ndim not in (0, 1):
+    if theta.ndim not in {0, 1}:
         raise TypeError(
             "Argument 'theta' needs to be a single value or 1D array "
             f" astropy Quantity, got array of shape {theta.shape}."

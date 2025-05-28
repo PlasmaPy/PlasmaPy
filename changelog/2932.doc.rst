@@ -1,0 +1,1 @@
+Added a sentence to introduce what a dispersion relation is and why it's useful.

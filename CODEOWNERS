@@ -4,42 +4,49 @@
 # Order is important; the last matching pattern takes the most
 # precedence.
 
+# Tip: IDEs like PyCharm may have features or extensions that validate
+# CODEOWNERS files and check that paths that are listed match any files.
+
 * @PlasmaPy/plasmapy-reviewers
 
 # subpackages
 
-plasmapy/analysis/ @rocco8773
-plasmapy/diagnostics/ @rocco8773
-plasmapy/diagnostics/charged_particle_radiography/ @pheuer
-plasmapy/dispersion/ @ejohnson-96
-plasmapy/particles/ @namurphy
-plasmapy/simulation/ @namurphy
-plasmapy/tests/ @namurphy
-plasmapy/utils/decorators/ @rocco8773
-plasmapy/utils/pytest_helpers/ @namurphy
+*pytest_helpers/ @namurphy
+analysis/ @rocco8773
+diagnostics/ @rocco8773
+**/diagnostics/charged_particle_radiography/ @pheuer
+dispersion/ @ejohnson-96
+**/utils/decorators/ @rocco8773
 
 # subpackage files (with wildcards to include tests)
 
-plasmapy/analysis/**/*nullpoint.py @namurphy
-plasmapy/diagnostics/**/*thomson.py @pheuer
-plasmapy/formulary/**/*relativity.py @namurphy
+**/analysis/*nullpoint.py @namurphy
+**/diagnostics/*thomson.py @pheuer
+**/formulary/*relativity.py @namurphy
 
 # documentation
 
 .readthedocs.yml @namurphy
+docs/_author_list_from_cff.py @namurphy
+docs/_global_substitutions.py @namurphy
 docs/conf.py @namurphy
 docs/contributing/ @namurphy
 docs/plasmapy_sphinx/ @rocco8773
 
 # project files
 
-plasmapy/__init__.py @namurphy
+uv.lock @namurphy
+mypy.ini @namurphy
 pyproject.toml @namurphy
-requirements.txt @namurphy
-setup.py @namurphy
+type_stubs/ @namurphy
 
 # tests, linters, CI
 
-.github @namurphy
+.github/ @namurphy
 .pre-commit-config.yaml @namurphy
-tox.ini @namurphy
+codecov.yml @namurphy
+noxfile.py @namurphy
+
+# PyCharm configuration
+
+.idea/ @namurphy

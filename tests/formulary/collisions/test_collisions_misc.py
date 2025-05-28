@@ -2,10 +2,60 @@ import astropy.units as u
 import numpy as np
 import pytest
 
-from plasmapy.formulary.collisions.misc import Spitzer_resistivity, mobility
+from plasmapy.formulary.collisions.misc import (
+    Bethe_stopping,
+    Spitzer_resistivity,
+    mobility,
+)
+from plasmapy.formulary.relativity import RelativisticBody
+from plasmapy.particles.atomic import stopping_power
+from plasmapy.particles.particle_class import Particle
 from plasmapy.utils import exceptions
 from plasmapy.utils._pytest_helpers import assert_can_handle_nparray
+from plasmapy.utils.data.downloader import _API_CONNECTION_ESTABLISHED
 from plasmapy.utils.exceptions import CouplingWarning, PhysicsWarning
+
+check_database_connection = pytest.mark.skipif(
+    not _API_CONNECTION_ESTABLISHED, reason="failed to connect to data repository"
+)
+
+
+@check_database_connection
+@pytest.mark.parametrize(
+    (
+        "material",
+        "rho",
+        "I",
+        "n_e",
+        "T2",
+    ),
+    [
+        # TODO: Add more materials
+        (
+            "ALUMINUM",
+            2.7 * u.g / u.cm**3,
+            166 * u.eV,
+            7.8 * 10**23 * u.cm**-3,
+            1.0 * u.MeV,
+        )
+    ],
+)
+def test_Bethe_stopping(material, rho, I, n_e, T2) -> None:  # noqa: E741
+    """
+    The NIST PSTAR and ASTAR databases should have stopping powers similar
+    to those calculated by the Bethe formula beyond a material-dependent
+    energy threshold.
+    """
+
+    energy_space = np.logspace(start=np.log10(T2.to(u.MeV).value), stop=2) * u.MeV
+    particle = RelativisticBody(Particle("p+"), kinetic_energy=energy_space)
+    Bethe_stopping_space = Bethe_stopping(I, n_e, particle.velocity, 1)
+    _, NIST_stopping_space_density = stopping_power(
+        Particle("p+"), material, energy_space, component="electronic"
+    )
+    NIST_stopping_space = NIST_stopping_space_density * rho
+
+    assert np.isclose(Bethe_stopping_space, NIST_stopping_space).all()
 
 
 class Test_Spitzer_resistivity:
@@ -138,8 +188,7 @@ class Test_mobility:
             )
         testTrue = not np.isclose(methodVal.si.value, fail1, rtol=1e-16, atol=0.0)
         errStr = (
-            f"Mobility value test gives {methodVal} and "
-            f"should not be equal to {fail1}."
+            f"Mobility value test gives {methodVal} and should not be equal to {fail1}."
         )
         assert testTrue, errStr
 

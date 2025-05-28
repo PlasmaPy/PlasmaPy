@@ -324,7 +324,7 @@ def test__code_repr_of_ndarray(array_inputs, max_items, expected) -> None:
     )
 
     if max_items >= array.size:
-        recreated_array = eval(actual)  # noqa: PGH001, S307
+        recreated_array = eval(actual)  # noqa: S307
         assert np.allclose(array, recreated_array, atol=1e-15, equal_nan=True), (
             f"Evaluating the representation of an ndarray for array_inputs = "
             f"{array_inputs} and max_items = {max_items} does not recreate "

@@ -257,8 +257,8 @@ def create_particles_dict() -> dict[str, dict]:  # noqa: C901, PLR0912
         },
     }
 
-    for particle in special_attributes:
-        particles[particle] = {**special_attributes[particle], **particles[particle]}
+    for particle, attributes in special_attributes.items():
+        particles[particle] = {**attributes, **particles[particle]}
 
     for particle in particle_zoo.everything:
         if "half-life" not in particles[particle]:

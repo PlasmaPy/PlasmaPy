@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 
 
 def _get_physical_type_dict(
-    iterable: Iterable,
+    iterable: Iterable[object],
     *,
     only_quantities: bool | None = False,
     numbers_become_quantities: bool | None = False,

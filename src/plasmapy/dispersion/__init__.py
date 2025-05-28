@@ -1,7 +1,10 @@
 """
 The `~plasmapy.dispersion` subpackage contains functionality associated
 with plasma dispersion relations, including numerical solvers and
-`~plasmapy.dispersion.analytical` solutions.
+`~plasmapy.dispersion.analytical` solutions. It provides tools to relate
+wave frequency and wavenumber in plasmas, analyze wave propagation, and
+study the growth and damping of instabilities under different
+conditions.
 
 .. attention::
 

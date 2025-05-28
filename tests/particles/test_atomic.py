@@ -24,6 +24,7 @@ from plasmapy.particles.atomic import (
     reduced_mass,
     stable_isotopes,
     standard_atomic_weight,
+    stopping_power,
 )
 from plasmapy.particles.exceptions import (
     ChargeError,
@@ -268,16 +269,16 @@ class TestInvalidPeriodicElement:
 def test_standard_atomic_weight_value_between() -> None:
     """Test that `standard_atomic_weight` returns approximately the
     correct value for phosphorus."""
-    assert (
-        30.973 < standard_atomic_weight("P").to(u.u).value < 30.974
-    ), "Incorrect standard atomic weight for phosphorus."
+    assert 30.973 < standard_atomic_weight("P").to(u.u).value < 30.974, (
+        "Incorrect standard atomic weight for phosphorus."
+    )
 
 
 def test_particle_mass_berkelium_249() -> None:
     """Test that `particle_mass` returns the correct value for Bk-249."""
-    assert np.isclose(
-        particle_mass("berkelium-249").to(u.u).value, 249.0749877
-    ), "Incorrect isotope mass for berkelium."
+    assert np.isclose(particle_mass("berkelium-249").to(u.u).value, 249.0749877), (
+        "Incorrect isotope mass for berkelium."
+    )
 
 
 def test_particle_mass_for_hydrogen_with_no_mass_number() -> None:
@@ -344,7 +345,7 @@ def test_particle_mass_equivalent_args(arg1, kwargs1, arg2, kwargs2, expected) -
         )
 
 
-@pytest.mark.slow()
+@pytest.mark.slow
 def test_known_common_stable_isotopes() -> None:
     """Test that `known_isotopes`, `common_isotopes`, and
     `stable_isotopes` return the correct values for hydrogen."""
@@ -422,7 +423,7 @@ def test_known_common_stable_isotopes_cases() -> None:
     assert "He-4" in common_isotopes("He", most_common_only=True)
 
 
-@pytest.mark.slow()
+@pytest.mark.slow
 def test_known_common_stable_isotopes_len() -> None:
     """Test that `known_isotopes`, `common_isotopes`, and
     `stable_isotopes` each return a `list` of the expected length.
@@ -501,9 +502,9 @@ def test_isotopic_abundances_sum(element, isotopes) -> None:
     """Test that the sum of isotopic abundances for each element with
     isotopic abundances is one."""
     sum_of_iso_abund = sum(isotopic_abundance(isotope) for isotope in isotopes)
-    assert np.isclose(
-        sum_of_iso_abund, 1, atol=1e-6
-    ), f"The sum of the isotopic abundances for {element} does not equal 1."
+    assert np.isclose(sum_of_iso_abund, 1, atol=1e-6), (
+        f"The sum of the isotopic abundances for {element} does not equal 1."
+    )
 
 
 class TestReducedMassInput:
@@ -603,3 +604,105 @@ def test_ion_list2(particle, min_charge, max_charge, expected_charge_numbers) ->
 def test_invalid_inputs_to_ion_list2(element, min_charge, max_charge) -> None:
     with pytest.raises(ChargeError):
         ionic_levels(element, min_charge, max_charge)
+
+
+@pytest.mark.slow
+@pytest.mark.parametrize(
+    ("incident_particle", "material", "kwargs", "expected_error"),
+    [
+        # ESTAR not implemented
+        (Particle("e-"), "OXYGEN", {}, NotImplementedError),
+        # Invalid incident particle
+        (Particle("O"), "OXYGEN", {}, ValueError),
+        # Invalid material
+        (Particle("H+"), "BENZENE", {}, ValueError),
+        # Invalid component
+        (Particle("H+"), "OXYGEN", {"component": "Lorem Ipsum"}, ValueError),
+    ],
+)
+def test_stopping_power_errors(
+    incident_particle, material, kwargs, expected_error
+) -> None:
+    with pytest.raises(expected_error):
+        stopping_power(incident_particle, material, **kwargs)
+
+
+@pytest.mark.parametrize(
+    (
+        "incident_particle",
+        "material",
+        "energies",
+        "component",
+        "expected_stopping_power",
+    ),
+    [
+        # Test ASTAR interpolation
+        (
+            Particle("He-4"),
+            "OXYGEN",
+            [1.25e-3, 1.25e-2, 1.25e-1, 1.25, 1.25e1, 1.25e2] * u.MeV,
+            "total",
+            [2.383e2, 4.055e2, 1.048e3, 1.669e3, 3.837e2, 6.273e1]
+            * u.MeV
+            * u.cm**2
+            / u.g,
+        ),
+        # Test PSTAR interpolation
+        (
+            Particle("H+"),
+            "HYDROGEN",
+            [1.25e-3, 1.25e-2, 1.25e-1, 1.25, 1.25e1, 1.25e2] * u.MeV,
+            "total",
+            [1.030e3, 2.621e3, 3.188e3, 5.673e2, 8.44e1, 1.295e1]
+            * u.MeV
+            * u.cm**2
+            / u.g,
+        ),
+        # Test electronic component
+        (
+            Particle("H+"),
+            "ACETYLENE",
+            [1.25e-3, 1.25e-2, 1.25e-1, 1.25, 1.25e1, 1.25e2] * u.MeV,
+            "electronic",
+            [2.073e2, 6.002e2, 8.871e2, 2.307e2, 3.859e1, 6.185]
+            * u.MeV
+            * u.cm**2
+            / u.g,
+        ),
+        # Test nuclear component
+        (
+            Particle("He-4"),
+            "POLYSTYRENE",
+            [1.25e-3, 1.25e-2, 1.25e-1, 1.25, 1.25e1, 1.25e2] * u.MeV,
+            "nuclear",
+            [2.143e2, 7.921e1, 1.526e1, 2.244, 2.936e-1, 3.450e-2]
+            * u.MeV
+            * u.cm**2
+            / u.g,
+        ),
+        # # Test no interpolation
+        # (
+        #     Particle("H+"),
+        #     "COPPER",
+        #     None,
+        #     "total",
+        #     [0, 0, 0, 0, 0, 0] * u.MeV * u.cm**2 / u.g,
+        # ),
+    ],
+)
+def test_stopping_power_interpolation(
+    incident_particle, material, energies, component, expected_stopping_power
+) -> None:
+    """Test the interpolation functionality of the stopping power function against NIST values"""
+    _, actual_stopping_power = stopping_power(
+        incident_particle, material, energies, component=component
+    )
+
+    # NIST data is given to four significant figures: use a tolerance of 1 part in 1000
+    assert np.isclose(actual_stopping_power, expected_stopping_power, rtol=0.001).all()
+
+
+def test_stopping_power_no_interpolation() -> None:
+    result = stopping_power(Particle("H+"), "COPPER")
+
+    assert type(result) is tuple

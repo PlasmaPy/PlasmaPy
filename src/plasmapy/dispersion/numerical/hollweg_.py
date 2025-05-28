@@ -238,7 +238,7 @@ def hollweg(  # noqa: C901, PLR0912, PLR0915
 
     # validate argument k
     k = k.squeeze()
-    if k.ndim not in (0, 1):
+    if k.ndim not in {0, 1}:
         raise ValueError(
             f"Argument 'k' needs to be single valued or a 1D array "
             f"astropy Quantity, got array of shape {k.shape}."
@@ -248,7 +248,7 @@ def hollweg(  # noqa: C901, PLR0912, PLR0915
 
     # validate argument theta
     theta = theta.squeeze()
-    if theta.ndim not in (0, 1):
+    if theta.ndim not in {0, 1}:
         raise ValueError(
             f"Argument 'theta' needs to be a single valued or 1D array astropy "
             f"Quantity, got array of shape {theta.shape}."
@@ -305,8 +305,8 @@ def hollweg(  # noqa: C901, PLR0912, PLR0915
         for jj in range(nthetas):
             roots[:, ii, jj] = np.roots(coefficients[:, ii, jj])
 
-    roots = np.sqrt(roots)
-    roots = np.sort(roots, axis=0)
+    roots = np.sqrt(roots)  # type: ignore[assignment]
+    roots = np.sort(roots, axis=0)  # type: ignore[assignment]
 
     # Warn about NOT low-β
     if c_s / v_A > 0.1:

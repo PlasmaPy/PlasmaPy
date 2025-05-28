@@ -97,7 +97,7 @@ Deprecations and Removals
   <https://github.com/plasmapy/plasmapy/pull/1465>`__)
 - The ``[all]`` option when using |pip| to install `plasmapy` is now
   deprecated and may be removed in a future release. Packages that
-  were previously optional (|h5py|, |lmfit|, |mpmath|, and |Numba|)
+  were previously optional (|h5py|, |lmfit|, |mpmath|, and Numba)
   are now installed by default when running ``pip install
   plasmapy``. To install all packages required for code development of
   PlasmaPy, instead run ``pip install plasmapy[developer]``. (`#1482
@@ -137,7 +137,7 @@ Features
   <https://github.com/plasmapy/plasmapy/pull/1145>`__)
 - Introduced the concept of :term:`lite-functions`, by creating the
   lite-function ``plasmapy.formulary.parameters.thermal_speed_lite``,
-  which is a simplified and |Numba| jitted version of
+  which is a simplified and Numba jitted version of
   ``plasmapy.formulary.parameters.thermal_speed``.  These functions
   are intended for computational use and as such have no validation of
   input or output values.
@@ -464,10 +464,10 @@ Improved Documentation
   <https://github.com/plasmapy/plasmapy/pull/1568>`__)
 - Added an example notebook that discusses Coulomb collisions. (`#1569
   <https://github.com/plasmapy/plasmapy/pull/1569>`__)
-- Increased the strictness of the ``build_docs`` |tox| environment so
+- Increased the strictness of the ``build_docs`` tox environment so
   that broken |reStructuredText| links now emit warnings which are then treated as
   errors, fixed the new errors, removed the ``build_docs_nitpicky``
-  |tox| environment, and updated the |documentation guide|
+  tox environment, and updated the |documentation guide|
   accordingly. (`#1587
   <https://github.com/plasmapy/plasmapy/pull/1587>`__)
 - Renamed the :file:`magnetic_statics.ipynb` notebook to
@@ -603,7 +603,7 @@ Trivial/Internal Changes
   ``1.19.0``, `pandas` to ``1.0.0``, `pytest` to ``5.4.0``, `scipy` to
   ``1.5.0``, and |xarray| to ``0.15.0``. (`#1482
   <https://github.com/plasmapy/plasmapy/pull/1482>`__)
-- Moved |h5py|, |lmfit|, |mpmath|, and |Numba| out of the
+- Moved |h5py|, |lmfit|, |mpmath|, and Numba out of the
   ``extras`` requirements category and into the ``install``
   requirements category.  These packages are now installed when
   running ``pip install plasmapy``. (`#1482
@@ -632,7 +632,7 @@ Trivial/Internal Changes
   <https://github.com/plasmapy/plasmapy/pull/1501>`__)
 - Added a GitHub Action for `codespell
   <https://github.com/codespell-project/codespell>`__, and updated the
-  corresponding |tox| environment to print out contextual
+  corresponding tox environment to print out contextual
   information. (`#1530
   <https://github.com/plasmapy/plasmapy/pull/1530>`__)
 - Added :file:`plasmapy/utils/units_definitions.py` to precompute
