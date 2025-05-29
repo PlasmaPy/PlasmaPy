@@ -14,7 +14,7 @@ The tests can be run with the following options:
 * "all": run all tests
 * "skipslow": run tests, except tests decorated with `@pytest.mark.slow`
 * "cov": run all tests with code coverage checks
-* "lowest-direct" : run all tests with lowest version of direct dependencies
+* "lowest-direct" : run non-slow tests with lowest versions of direct dependencies
 
 Doctests are run only for the most recent versions of Python and
 PlasmaPy dependencies, and not when code coverage checks are performed.
@@ -240,7 +240,9 @@ def tests(session: nox.Session, test_specifier: nox._parametrize.Param) -> None:
 
     options: list[str] = []
 
-    if test_specifier == "skip slow tests":
+    if test_specifier in {"skip slow tests", "lowest-direct"}:
+        # The charged particle radiography tests are very slow when using
+        # lowest-direct (see #3026), so we skip them in CI for the time being.
         options += skipslow
 
     if test_specifier == "with code coverage":
