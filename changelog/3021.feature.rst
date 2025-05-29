@@ -1,0 +1,1 @@
+Add new module, `plasmapy.formulary.laser`, to make calculation related to laser pulses. Added the first function, `~plasmapy.formulary.laser.E0`, which calculates the Electric Field Strength from Intensity.
