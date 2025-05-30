@@ -8,13 +8,13 @@ features.
 New Features
 ------------
 
-- Add `plasmapy.online_help`
-- Add ``plasmapy.__citation__`` containing a BibTeX reference.
+- Added `plasmapy.online_help`
+- Added ``plasmapy.__citation__`` containing a BibTeX reference.
 
 Bug Fixes
 ---------
 
-- Bring back mistakenly removed Cython versions of plasma parameters.
-- Optimize ``check_relativistic``.
-- Correct a failing import statement.
-- Fix a number of issues with the Maxwellian distribution in ``physics.distribution``.
+- Brought back mistakenly removed Cython versions of plasma parameters.
+- Optimized ``check_relativistic``.
+- Corrected a failing import statement.
+- Fixed a number of issues with the Maxwellian distribution in ``physics.distribution``.

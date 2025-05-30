@@ -12,7 +12,7 @@ def particle(request):  # noqa: D103
     return Particle(request.param)
 
 
-@pytest.fixture()
+@pytest.fixture
 def opposite(particle):  # noqa: D103
     try:
         opposite_particle = ~particle

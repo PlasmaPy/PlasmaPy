@@ -1,15 +1,5 @@
 # PlasmaPy Documentation
 
-[**documentation guide**]: https://docs.plasmapy.org/en/latest/contributing/doc_guide.html
-[Sphinx]: https://www.sphinx-doc.org
-[Nox]: https://nox.thea.codes
-[Read the Docs]: https://about.readthedocs.com
-[reStructuredText]: https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#rst-primer
-[`docs/`]: .
-[`docs/conf.py`]: conf.py
-[install graphviz]: https://graphviz.org/download
-[install pandoc]: https://pandoc.org/installing.html
-
 > [!TIP]
 > To learn more about PlasmaPy's documentation, please check out the
 > [**documentation guide**].
@@ -30,8 +20,8 @@ narrative documentation. The configuration file is [`docs/conf.py`].
 
 > [!TIP]
 > When making a pull request, the documentation can be previewed by
-> clicking on *Details* next to **docs/readthedocs.org:plasmapy** in the
-> list of checks.
+> clicking on **docs/readthedocs.org:plasmapy** in the list of checks
+> at the bottom of each pull request.
 
 Building PlasmaPy's documentation requires using the most recent version
 of Python supported by PlasmaPy. Prior to building documentation
@@ -53,3 +43,13 @@ nox -s docs
 
 The documentation preview will be built in `docs/build/html/` in your
 local clone of PlasmaPy.
+
+[**documentation guide**]: https://docs.plasmapy.org/en/latest/contributing/doc_guide.html
+[install graphviz]: https://graphviz.org/download
+[install pandoc]: https://pandoc.org/installing.html
+[nox]: https://nox.thea.codes
+[read the docs]: https://about.readthedocs.com
+[restructuredtext]: https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#rst-primer
+[sphinx]: https://www.sphinx-doc.org
+[`docs/conf.py`]: conf.py
+[`docs/`]: .

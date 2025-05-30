@@ -1,0 +1,1 @@
+Fixed formatting problems and improved verb tense consistency in prior changelog entries.

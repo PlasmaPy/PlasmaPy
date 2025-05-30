@@ -33,8 +33,8 @@ The people who have contributed to the code for this release are:
 -  pre-commit-ci[bot]  *
 -  rocco8773
 
-Where a * indicates that this release contains their first contribution
-to PlasmaPy.
+An asterisk indicates that this release contains their first
+contribution to PlasmaPy.
 
 Backwards Incompatible Changes
 ------------------------------
@@ -94,7 +94,7 @@ Deprecations and Removals
   `~plasmapy.particles.ionization_state.IonizationState.charge_numbers`. (`#1136 <https://github.com/plasmapy/plasmapy/pull/1136>`__)
 - The ``particle`` attribute of |Particle|
   has been removed after having been deprecated in 0.6.0. (`#1146 <https://github.com/plasmapy/plasmapy/pull/1146>`__)
-- Use more generalized keyword argument ``T`` instead of ``T_i`` in ``plasmapy.formulary.parameters.gyroradius``.
+- Used more generalized keyword argument ``T`` instead of ``T_i`` in ``plasmapy.formulary.parameters.gyroradius``.
   The ``T_i`` argument has been deprecated and will be removed in a subsequent release. (`#1210 <https://github.com/plasmapy/plasmapy/pull/1210>`__)
 
 

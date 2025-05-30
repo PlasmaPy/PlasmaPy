@@ -214,7 +214,7 @@ class Downloader:
             warnings.warn(
                 "URL did not return the expected JSON file: "
                 f"{self._API_BASE_URL}. "
-                f"Response content: {reply.content}. Exception: {err}"
+                f"Response content: {reply.content.decode('utf-8')}. Exception: {err}"
             )
             self._validate = False
             return None
@@ -287,7 +287,10 @@ class Downloader:
         # Only send GitHub api authorization if querying GitHub
         # auth = self._api_auth if "github.com" in url else None
 
-        headers = {"Content-Type": "application/json"}
+        headers = {
+            "Content-Type": "application/json",
+            "User-Agent": "PlasmaPy.utils.Downloader",
+        }
 
         if self._api_token is not None:
             headers["authorization"] = f"Bearer {self._api_token}"

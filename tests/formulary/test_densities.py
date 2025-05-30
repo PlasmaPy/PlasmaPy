@@ -16,7 +16,7 @@ class TestCriticalDensity:
     n_i = 5e19 * u.m**-3
     omega = plasma_frequency(n=n_i, particle="e-")
 
-    @pytest.fixture()
+    @pytest.fixture
     def n_c(self):
         """Get the critical density for the example frequency"""
         return critical_density(self.omega)

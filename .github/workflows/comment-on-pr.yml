@@ -1,7 +1,7 @@
 name: Add comment
 
 on:
-  pull_request_target:
+  pull_request_target: # zizmor: ignore[dangerous-triggers]
     types: [opened]
 
 jobs:
@@ -20,26 +20,24 @@ jobs:
             issue_number: context.issue.number,
             owner: context.repo.owner,
             repo: context.repo.repo,
-            body: `Thank you for submitting this pull request (PR)! ✨ PlasmaPy depends on contributors like you, so we deeply appreciate it!
+            body: `Thank you for submitting this pull request (PR)! ✨
 
-            The bottom of this page shows several checks that are run for every PR. ✅ Don't worry if something broke! We break stuff all the time. 😅 Click on "Details" to learn why a check didn't pass. Please also feel free to ask for help. We do that all the time as well! 🌸 We invite you to our weekly [**community meeting**](https://www.plasmapy.org/meetings/weekly) (2 pm ET on most Tuesdays) and [**office hours**](https://www.plasmapy.org/meetings/office_hours) (3 pm ET on most Thursdays).
+            Below are checks that are being run for this PR. Click on the name of a check to learn why it didn't pass. ✅ Don't worry if something broke! We break stuff all the time. 😅
 
-            After this PR is marked as ready for review, someone should stop by to provide a code review and offer suggestions soon. 👥 If we don't provide a review within a few days, please feel free to send us a reminder. 🎗
-
-            [**PlasmaPy's contributor guide**](https://docs.plasmapy.org/en/latest/contributing/index.html) has information on:
+            [**PlasmaPy's contributor guide**](https://docs.plasmapy.org/en/latest/contributing/index.html) has pages on:
 
              - 🌱 [Getting ready to contribute](https://docs.plasmapy.org/en/latest/contributing/getting_ready.html#getting-ready-to-contribute)
              - 🔧 [Code contribution workflow](https://docs.plasmapy.org/en/latest/contributing/workflow.html#code-contribution-workflow)
-             - 📜 [Adding a changelog entry](https://docs.plasmapy.org/en/latest/contributing/changelog_guide.html#adding-a-changelog-entry)
+             - 📜 [Changelog entries](https://docs.plasmapy.org/en/latest/contributing/changelog_guide.html#adding-a-changelog-entry)
              - 💻 [Coding tips and guidelines](https://docs.plasmapy.org/en/latest/contributing/coding_guide.html#coding-guide)
-             - 📚 [Writing documentation](https://docs.plasmapy.org/en/latest/contributing/doc_guide.html#writing-documentation)
-             - 🧪 [Writing tests](https://docs.plasmapy.org/en/latest/contributing/testing_guide.html#testing-guide)
+             - 📚 [Documentation](https://docs.plasmapy.org/en/latest/contributing/doc_guide.html#writing-documentation)
+             - 🧪 [Tests](https://docs.plasmapy.org/en/latest/contributing/testing_guide.html#testing-guide)
 
             > [!TIP]
-            > 📚 For a documentation preview, click on *Details* next to **docs/readthedocs.org:plasmapy**. For cryptic documentation errors, see the [documentation troubleshooting guide](https://docs.plasmapy.org/en/latest/contributing/doc_guide.html#troubleshooting).
+            > 📚 For a documentation preview, click on **docs/readthedocs.org:plasmapy** below. For cryptic documentation errors, see the [documentation troubleshooting guide](https://docs.plasmapy.org/en/latest/contributing/doc_guide.html#troubleshooting).
 
-            > [!HINT]
-            > 🧹 Automatically fix most **pre-commit.ci** failures by commenting [\`pre-commit.ci autofix\`](https://github.com/PlasmaPy/PlasmaPy/pull/1500#issuecomment-1216865989) below. For other failures, please see the [pre-commit troubleshooting guide](https://docs.plasmapy.org/en/stable/contributing/pre-commit.html#troubleshooting-pre-commit-failures).
+            > [!TIP]
+            > 🧹 Automatically fix most **pre-commit.ci** failures by commenting \`pre-commit.ci autofix\` below. For other failures, please see the [pre-commit troubleshooting guide](https://docs.plasmapy.org/en/stable/contributing/pre-commit.html#troubleshooting-pre-commit-failures).
 
             We thank you once again! 🌌`
           })

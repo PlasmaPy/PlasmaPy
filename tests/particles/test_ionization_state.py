@@ -332,7 +332,7 @@ def test_getitem(test_ionization_state) -> None:
         pytest.fail(str.join("", errors))
 
 
-@pytest.fixture()
+@pytest.fixture
 def He_ionization_state():
     return IonizationState(
         particle="He",
@@ -428,7 +428,7 @@ expected_properties = {
 }
 
 
-@pytest.fixture()
+@pytest.fixture
 def instance():
     kwargs = {
         "particle": "He-4",
@@ -452,9 +452,9 @@ def test_IonizationState_attributes(instance, key) -> None:
 
     if isinstance(expected, u.Quantity):
         assert expected.unit == actual.unit, f"Unit mismatch for IonizationState.{key}"
-        assert np.allclose(
-            expected, actual, atol=1e-15 * expected.unit
-        ), f"Quantity.value mismatch for IonizationState.{key}"
+        assert np.allclose(expected, actual, atol=1e-15 * expected.unit), (
+            f"Quantity.value mismatch for IonizationState.{key}"
+        )
     else:
         try:
             assert expected == actual
@@ -538,9 +538,9 @@ def test_nans() -> None:
     element = "He"
     nstates = atomic_number(element) + 1
     instance = IonizationState(element)
-    assert (
-        len(instance.ionic_fractions) == nstates
-    ), f"Incorrect number of ionization states for {element}"
+    assert len(instance.ionic_fractions) == nstates, (
+        f"Incorrect number of ionization states for {element}"
+    )
     assert np.all([np.isnan(instance.ionic_fractions)]), (
         "The ionic fractions for IonizationState are not defaulting "
         "to numpy.nan when not set by user."
@@ -602,14 +602,13 @@ class Test_IonizationStateNumberDensitiesSetter:
 
     def test_n_elem(self) -> None:
         assert u.quantity.allclose(self.instance.n_elem, self.expected_n_elem), (
-            "IonizationState.n_elem not set correctly after "
-            "number_densities was set."
+            "IonizationState.n_elem not set correctly after number_densities was set."
         )
 
     def test_n_e(self) -> None:
-        assert u.quantity.allclose(
-            self.instance.n_e, self.valid_number_densities[1]
-        ), "IonizationState.n_e not set correctly after number_densities was set."
+        assert u.quantity.allclose(self.instance.n_e, self.valid_number_densities[1]), (
+            "IonizationState.n_e not set correctly after number_densities was set."
+        )
 
     def test_that_negative_density_raises_error(self) -> None:
         with pytest.raises(ParticleError, match="cannot be negative"):
