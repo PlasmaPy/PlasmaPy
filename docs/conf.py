@@ -85,7 +85,6 @@ extensions = [
     "plasmapy_sphinx.ext.autodoc",
     "plasmapy_sphinx.ext.directives",
     # other 3rd party extensions
-    "hoverxref.extension",
     "IPython.sphinxext.ipython_console_highlighting",
     "nbsphinx",
     "notfound.extension",
@@ -269,45 +268,6 @@ intersphinx_mapping = {
         None,
     ),
 }
-
-# hoverxref
-
-hoverxref_intersphinx = list(intersphinx_mapping.keys())
-
-hoverxref_auto_ref = True
-hoverxref_domains = ["py", "cite"]
-hoverxref_mathjax = True
-hoverxref_roles = ["confval", "term"]
-hoverxref_sphinxtabs = True
-hoverxref_tooltip_maxwidth = 600  # RTD main window is 696px
-
-hoverxref_role_types = {
-    # roles with cite domain
-    "p": "tooltip",
-    "t": "tooltip",
-    # roles with py domain
-    "attr": "tooltip",
-    "class": "tooltip",
-    "const": "tooltip",
-    "data": "tooltip",
-    "exc": "tooltip",
-    "func": "tooltip",
-    "meth": "tooltip",
-    "mod": "tooltip",
-    "obj": "tooltip",
-    # roles with std domain
-    "confval": "tooltip",
-    "hoverxref": "tooltip",
-    "ref": "tooltip",
-    "term": "tooltip",
-}
-
-if building_on_readthedocs := os.environ.get("READTHEDOCS"):
-    # Using the proxied API endpoint is a Read the Docs strategy to
-    # avoid a cross-site request forgery block for docs using a custom
-    # domain. See conf.py for sphinx-hoverxref.
-    use_proxied_api_endpoint = os.environ.get("PROXIED_API_ENDPOINT")
-    hoverxref_api_host = "/_" if use_proxied_api_endpoint else "https://readthedocs.org"
 
 # sphinx-issues
 
