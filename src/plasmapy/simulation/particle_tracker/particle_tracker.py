@@ -8,8 +8,9 @@ __all__ = [
 
 import collections
 import sys
+import typing
 import warnings
-from collections.abc import Iterable
+from collections.abc import Callable, Iterable
 from functools import cached_property
 from typing import Literal
 
@@ -17,11 +18,14 @@ import astropy.constants as const
 import astropy.units as u
 import numpy as np
 from numpy.typing import NDArray
+from scipy.integrate import quad
 from tqdm import tqdm
 
 from plasmapy.formulary.collisions.misc import Bethe_stopping_lite
+from plasmapy.formulary.lengths import Debye_length
 from plasmapy.particles import Particle, particle_input
-from plasmapy.particles.atomic import stopping_power
+from plasmapy.particles.atomic import reduced_mass, stopping_power
+from plasmapy.particles.particle_class import ParticleLike, ParticleListLike
 from plasmapy.plasma.grids import AbstractGrid
 from plasmapy.plasma.plasma_base import BasePlasma
 from plasmapy.simulation.particle_integrators import (
@@ -35,6 +39,7 @@ from plasmapy.simulation.particle_tracker.save_routines import (
 from plasmapy.simulation.particle_tracker.termination_conditions import (
     AbstractTerminationCondition,
 )
+from plasmapy.utils.decorators import validate_quantities
 from plasmapy.utils.exceptions import PhysicsWarning, RelativityWarning
 
 _c = const.c
@@ -105,9 +110,24 @@ class ParticleTracker:
 
         The default is 'volume averaged'.
 
+    req_quantities : `list` of `str`, default : `None`
+        A list of quantity keys required to be specified on the Grid object.
+        The base particle pushing simulation requires the quantities
+        [E_x, E_y, E_z, B_x, B_y, B_z]. This keyword is for specifying
+        quantities in addition to these six. If any required
+        quantities are missing, those quantities will be assumed to be zero
+        everywhere. A warning will be raised if any of the additional
+        required quantities are missing and are set to zero.
+
+    seed : int, optional, default : `None`
+        The seed used to create an instance of the `~numpy.random.Generator`
+        object. If no value is provided then fresh entropy will be pulled from
+        the OS. The resulting `~numpy.random.Generator` is used to sample
+        distributions for stopping and scattering functionalities.
+
     verbose : bool, optional
         If true, updates on the status of the program will be printed
-        into the standard output while running. The default is True.
+        into the standard output while running. The default is `True`.
 
     Warns
     -----
@@ -166,6 +186,17 @@ class ParticleTracker:
     6.2999999999... s [[-1.73302...e-08  1.31539...e-05  0.00000...e+00]] m
     """
 
+    # Some quantities are necessary for the particle tracker to function
+    # regardless of other configurations
+    _REQUIRED_QUANTITIES: typing.ClassVar[set[str]] = {
+        "E_x",
+        "E_y",
+        "E_z",
+        "B_x",
+        "B_y",
+        "B_z",
+    }
+
     def __init__(
         self,
         grids: AbstractGrid | Iterable[AbstractGrid],
@@ -175,6 +206,7 @@ class ParticleTracker:
         dt=None,
         dt_range=None,
         field_weighting: str = "volume averaged",
+        seed: int | None = None,
         verbose: bool = True,
     ) -> None:
         # Verbose flag controls whether or not output is printed to stdout
@@ -222,6 +254,8 @@ class ParticleTracker:
             raise ValueError(
                 "Specifying a time step range is only possible for an adaptive time step."
             )
+
+        self._RNG = np.random.default_rng(seed)
 
         # Raise a ValueError if a synchronized dt is required by termination condition or save routine but one is
         # not given. This is only the case if an array with differing entries is specified for dt
@@ -415,9 +449,8 @@ class ParticleTracker:
                 " of particles "
                 f"({x.shape[0]} and {v.shape[0]} respectively)."
             )
-        else:
-            self.num_particles: int = x.shape[0]
 
+        self.num_particles: int = x.shape[0]
         self.x = x.to(u.m).value
         self.v = v.to(u.m / u.s).value
 
@@ -459,8 +492,15 @@ class ParticleTracker:
                             " but quantity ``n_e`` is not defined on that grid."
                         )
 
+            case _:
+                raise ValueError(
+                    f"Please provide one of 'NIST' or 'Bethe' for the method keyword. (Got: {method})"
+                )
+
         return True
 
+    @particle_input(require="isotope")
+    @validate_quantities
     def add_stopping(
         self,
         method: Literal["NIST", "Bethe"],
@@ -519,7 +559,7 @@ class ParticleTracker:
                 self._raised_energy_warning = False
 
                 # These functions are used to represent that the mean excitation energy
-                # does not change over space for a given grid.
+                # and ion number density does not change over space for a given grid.
                 def wrapped_Bethe_stopping(I_grid):
                     def inner_Bethe_stopping(v, n_e):
                         return Bethe_stopping_lite(
@@ -545,6 +585,161 @@ class ParticleTracker:
         self._stopping_power_interpolators = stopping_power_interpolators
 
         self._log(f"Stopping module activated using the {method} method")
+
+        # TODO: create a method to validate that these quantities have shape ngrids
+        # TODO: is this signature too much?
+        # TODO: find a way to create a type for the signature of the Callable parameters
+        #  (preferably using only one expression)
+
+    @particle_input(require="isotope")
+    @validate_quantities
+    def add_scattering(
+        self,
+        target: ParticleListLike,
+        target_rho: u.Quantity[u.kg / u.m**3],
+        scatter_routine: Callable[
+            [
+                u.Quantity[u.rad] | None,  # Theta
+                u.Quantity[u.m / u.s],  # Speed
+                ParticleLike,  # Beam
+                ParticleLike,  # Target
+                u.Quantity[u.K],  # Electron Temperature
+                u.Quantity[1 / u.m**3],  # Electron Number Density
+            ],
+            u.Quantity[u.m**2 / u.sr]
+            | u.Quantity[
+                u.rad**2 / u.s
+            ],  # Differential cross-section or mean-square scatter rate in radians^2 per second
+        ],
+        scatter_routine_type: Literal["differential cross-section", "mean square rate"],
+    ):
+        r"""
+        Enable particle scattering by numeric integration of the provided
+        differential cross-section.
+
+        Parameters
+        ----------
+        target : `~plasmapy.particles.particle_collections.ParticleListLike`
+            A `~plasmapy.particles.particle_collections.ParticleListLike` representation of the target material(s).
+            The atomic mass of each particle must be specified (i.e. ``Al-27``).
+
+        scatter_routine : `callable`
+            A function implementation used to calculate the scattering distribution.
+            Relevant keyword arguments are passed to the provided function, where
+            the defined keywords depend on the value of ``scatter_routine_type``. If
+            ``scatter_routine_type`` is set to ``differential cross-section``
+            then the function receives the following keyword arguments: ``theta``,
+            ``speed``, ``beam_material``, ``target_material``, ``T_s``, and ``n_s``.
+            When ``scatter_routine_type`` is set to ``mean square rate``,
+            the passed function receives the following keyword arguments: ``speed``,
+            ``beam_material``, ``target_material``, ``T_s``, and ``n_s``.
+
+        scatter_routine_type : `str`
+            Determines the role of the function passed to ``scatter_routine``.
+            Must be either ``differential cross-section`` or ``mean square rate``.
+            If set to ``differential cross-section``, the provided function must return
+            a `~astropy.units.Quantity` object with units convertible to square meters
+            per steradian.
+        """
+
+        # For scattering calculations, a multidimensional interpolator must be
+        # constructed to obtain the mean-square scattering rate as a function of
+        # velocity and number density.
+        if len({len(self.grids), len(target), target_rho.shape[0]}) != 1:
+            raise ValueError(
+                "Please provide an array of length ngrids for the materials and densities."
+            )
+
+        if not self._is_quantity_defined_on_one_grid("T_i"):
+            warnings.warn(
+                "The ion temperature is not defined on any of the provided grids! "
+                "Particle scattering will not be calculated.",
+                RuntimeWarning,
+            )
+
+            # Don't set `_do_scattering`. The push loop does not have to do scattering
+            # calculations
+            return
+
+        for grid in self.grids:
+            grid.require_quantities(["T_i"], replace_with_zeros=True)
+            self._required_quantities.update({"T_i"})
+
+        if scatter_routine_type not in [
+            "differential cross-section",
+            "mean square rate",
+        ]:
+            raise ValueError(
+                "Please pass one of 'differential cross-section' or 'mean square rate' "
+                "for the scatter routine keyword."
+            )
+
+        self._scattering_method = scatter_routine_type
+        self._scattering_routine = scatter_routine
+
+        self._set_target_attributes(target, target_rho)
+        self._do_scattering = True
+
+        # For now the integrals will be evaluated every time step
+        # The below code constructs an interpolator for the scattering integral
+        # # TODO: make sure these expressions are working
+        # # TODO: make sure that this method of interpolation is accurate
+        # #  (i.e. as opposed to something like a log spline)
+        # #  include profiling & accuracy analysis on PR
+        # max_electron_temperature = np.log10(
+        #     np.max([grid["T_e"] for grid in self.grids])
+        # )
+        # max_number_density = np.log10(np.max([grid["n_e"] for grid in self.grids]))
+        #
+        # electron_temperature_space = np.logspace(0, max_electron_temperature) * u.K
+        # number_density_space = np.logspace(0, max_number_density+1) / u.m**3
+        # velocity_space = np.logspace(0, np.log(const.c.si.value)) * u.m / u.s
+        #
+        # mu = reduced_mass(self._particle, target)
+        #
+        # b_0 = (
+        #     target.charge
+        #     * self._particle.charge
+        #     / (4 * np.pi * const.eps0 * mu * velocity_space**2)
+        # )
+        # lambda_D = Debye_length(electron_temperature_space, number_density_space)
+        # theta_min_space = 2 * b_0 / lambda_D
+        #
+        # def mean_squared_integrand(theta, v, T_e, n_e):
+        #     return (
+        #         theta**2
+        #         * differential_cross_section(
+        #             theta,
+        #             v,
+        #             self._particle,
+        #             target,
+        #             T_e,
+        #             n_e,
+        #         )
+        #     ).si.value
+        #
+        # evaluated_mean_square_rate = [
+        #     (
+        #         2
+        #         * np.pi
+        #         * velocity
+        #         * quad(
+        #             mean_squared_integrand, theta_min, np.pi, args=(velocity, T_e, n_e)
+        #         )[0]
+        #     ).si.value
+        #     for (theta_min, velocity, T_e, n_e) in zip(
+        #         theta_min_space,
+        #         velocity_space,
+        #         electron_temperature_space,
+        #         number_density_space,
+        #     )
+        # ]
+        #
+        # self._do_scattering = True
+        # self._scattering_interpolator = LinearNDInterpolator(  # sigma(n_e, v)
+        #     list(zip(number_density_space.si.value, velocity_space.si.value)),
+        #     evaluated_mean_square_rate,
+        # )
 
     def _validate_grids(self) -> None:
         """Validate input grids."""
@@ -1037,6 +1232,127 @@ class ParticleTracker:
         # Stop particles, which resets the cache
         self._stop_particles(particles_to_be_stopped_mask)
 
+    def _update_velocity_scattering(self):
+        speeds = np.linalg.norm(self.v[self._tracked_particle_mask], axis=-1)
+
+        match self._scattering_method:
+            # Numerically integrate the scattering integral to construct the mean square scatter rate
+            case "differential cross section":
+                # `theta_prime` dummy variable introduced to prevent global shadow of `theta`
+                def mean_squared_integrand(theta_prime, speed, T_i, n_i):
+                    return (
+                        theta_prime**2
+                        * self._scattering_routine(
+                            theta=theta_prime,
+                            speed=speed,
+                            beam_particle=self._particle,
+                            target_particle=self._target,
+                            T_s=T_i,
+                            n_s=n_i,
+                        )
+                    ).si.value
+
+                # Calculate the minimum scattering angle based on screening
+                mu = reduced_mass(self._target, self._particle)
+                b_0 = (
+                    self._particle.atomic_number
+                    * self._target.atomic_number
+                    * const.e.si**2
+                    / (4 * np.pi * const.eps0 * mu * speeds**2)
+                )
+                lambda_D = Debye_length(
+                    self._total_grid_values["T_i"], self._total_grid_values["n_i"]
+                )
+                theta_min = 2 * b_0 / lambda_D
+
+                # Numerically integrate the classical scattering integral
+                mean_square_scatter_rate = [
+                    (
+                        2
+                        * np.pi
+                        * n_i
+                        * speed
+                        * quad(
+                            mean_squared_integrand,
+                            lower_bound,
+                            np.pi,
+                            args=(speed, T_i, n_i),
+                        )[0]
+                    )
+                    for (T_i, n_i, speed, lower_bound) in zip(
+                        self._total_grid_values["T_i"],
+                        self._total_grid_values["n_i"],
+                        speeds,
+                        theta_min.value,
+                        strict=False,
+                    )
+                ]  # Quad returns a tuple, we only care about the result
+            case "mean square rate":
+                # Ensure there are no particles on multiple grids
+                self._multi_grid_check()
+
+                mean_square_scatter_rate = np.zeros(shape=self.nparticles_tracked)
+
+                for i, _grid in enumerate(self.grids):
+                    particles_on_grid = self.particles_on_grid[
+                        self._tracked_particle_mask, i
+                    ]
+
+                    # Passing an empty array to the scattering routine can cause an error to
+                    # be emitted
+                    if particles_on_grid.sum() == 0:
+                        continue
+
+                    # TODO: figure out additivity rule for scattering
+                    mean_square_scatter_rate[particles_on_grid] += (
+                        self._scattering_routine(
+                            speed=speeds[particles_on_grid],
+                            beam_particle=self._particle,
+                            target_particle=self._target[i],
+                            T_s=self._total_grid_values["T_i"][
+                                particles_on_grid
+                            ].si.value,
+                            n_s=self._target_number_density[i],
+                        )
+                    )
+
+        mean_square_scatter_rate = np.reshape(
+            mean_square_scatter_rate, newshape=(self.nparticles_tracked, 1)
+        )
+
+        # The (polar) angle resulting from scattering
+        theta = self._rng.normal(
+            scale=np.sqrt(
+                mean_square_scatter_rate * self.dt[self._tracked_particle_mask]
+            ),
+            size=(self.nparticles_tracked, 1),
+        )
+
+        theta = np.nan_to_num(theta, 0)
+
+        # Generate a vector that lies somewhere in the plane perpendicular to the velocity
+        k = np.cross(
+            self.v[self._tracked_particle_mask],
+            self._rng.uniform(low=-1, high=1, size=(self.nparticles_tracked, 3)),
+        )
+        # Normalize
+        k_norm = k / np.linalg.norm(k, axis=-1, keepdims=True)
+        # Scale to the perpendicular component of the change in velocities
+        delta_v = speeds[:, np.newaxis] * np.sin(theta) * k_norm
+
+        # Begin by constructing the new velocities by adding the change in
+        # velocity to the current velocities. The direction of this vector will be
+        # correct but will need to be "rescaled" to ensure that the speed remains
+        # consistent.
+        v_new_unscaled = self.v[self._tracked_particle_mask] + delta_v
+
+        # Normalize and rescale
+        self.v[self._tracked_particle_mask] = (
+            v_new_unscaled
+            / np.linalg.norm(v_new_unscaled, axis=-1, keepdims=True)
+            * speeds[:, np.newaxis]
+        )
+
     def _push(self) -> None:
         r"""
         Advance particles using an implementation of the time-centered
@@ -1068,6 +1384,12 @@ class ParticleTracker:
         # Update velocities to reflect stopping
         if self._do_stopping:
             self._update_velocity_stopping()
+
+        if self.num_particles_tracked == 0:
+            return
+
+        if self._do_scattering:
+            self._update_velocity_scattering()
 
         # Update this array, which will have zero elements at the end
         # only for particles that never entered any grid
@@ -1136,7 +1458,6 @@ class ParticleTracker:
         r"""
         Return the non-relativistic kinetic energy of the particles.
         """
-
         # TODO: how should the relativistic case be handled?
         return 0.5 * self.m * np.square(np.linalg.norm(self.v, axis=-1, keepdims=True))
 
