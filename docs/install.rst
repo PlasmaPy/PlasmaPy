@@ -43,17 +43,20 @@ terminal and run:
 
    python -m pip install plasmapy
 
-On some systems, it might be necessary to specify the |Python| version
-number by using ``python3``, ``python3.8``, ``python3.9``,
-``python3.10``, or ``python3.11`` instead of ``python``.
+
+.. note::
+
+   On some systems, it might be necessary to specify the |Python|
+   version by using ``python3``, ``python3.11``, ``python3.12``,  or
+   ``python3.13`` instead of ``python``.
 
 To install PlasmaPy on Windows, run:
 
 .. code-block:: bash
 
-   py -3.11 -m pip install plasmapy
+   py -3.13 -m pip install plasmapy
 
-The version of |Python| may be changed from ``3.11`` to another supported
+The version of |Python| may be changed from ``3.13`` to another supported
 Python |minpython|\ + release that has been installed on your computer.
 
 For more detailed information, please refer to this tutorial on
@@ -73,19 +76,41 @@ installed into |uv|-managed
 `virtual environments <virtual environment_>`_ without installing |pip|.
 
 After `installing uv`_, a `virtual environment`_ with |Python| version
-3.12 can be created by opening a terminal and running:
+3.13 can be created by opening a terminal and running:
 
 .. code-block:: bash
 
-   uv venv --python 3.12
+   uv venv --python 3.13
 
 |uv| will automatically download |Python| and link it to
-the `virtual environment`_'s directory at (by default) :file:`.venv`. The
-environment can then be activated by running:
+the `virtual environment`_'s directory at (by default) :file:`.venv`.
+The command to activate the environment depends on the operating system.
 
-.. code-block:: bash
+.. tabs::
 
-   source .venv/bin/activate
+   .. group-tab:: Windows
+
+      To activate the virtual environment in Powershell, run:
+
+      .. code-block:: PowerShell
+
+         .\.venv\Scripts\activate.ps1
+
+   .. group-tab:: macOS
+
+      To activate the virtual environment on macOS, run:
+
+      .. code-block:: bash
+
+         source .venv/bin/activate
+
+   .. group-tab:: Linux/WSL
+
+      To activate the virtual environment on Linux, run:
+
+      .. code-block:: bash
+
+         source .venv/bin/activate
 
 Then, to install `plasmapy` into the activated environment, run:
 
