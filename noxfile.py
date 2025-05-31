@@ -14,7 +14,8 @@ The tests can be run with the following options:
 * "all": run all tests
 * "skipslow": run tests, except tests decorated with `@pytest.mark.slow`
 * "cov": run all tests with code coverage checks
-* "lowest-direct" : run non-slow tests with lowest versions of direct dependencies
+* "lowest-direct" : run all tests with lowest versions of direct dependencies
+* "lowest-direct-skipslow" : run non-slow tests with lowest versions of direct dependencies
 
 Doctests are run only for the most recent versions of Python and
 PlasmaPy dependencies, and not when code coverage checks are performed.
@@ -228,6 +229,7 @@ test_specifiers: list = [
     nox.param("skip slow tests", id="skipslow"),
     nox.param("with code coverage", id="cov"),
     nox.param("lowest-direct", id="lowest-direct"),
+    nox.param("lowest-direct-skipslow", id="lowest-direct-skipslow"),
 ]
 
 
@@ -240,9 +242,7 @@ def tests(session: nox.Session, test_specifier: nox._parametrize.Param) -> None:
 
     options: list[str] = []
 
-    if test_specifier in {"skip slow tests", "lowest-direct"}:
-        # The charged particle radiography tests are very slow when using
-        # lowest-direct (see #3026), so we skip them in CI for the time being.
+    if test_specifier in {"skip slow tests", "lowest-direct-skipslow"}:
         options += skipslow
 
     if test_specifier == "with code coverage":
@@ -258,7 +258,7 @@ def tests(session: nox.Session, test_specifier: nox._parametrize.Param) -> None:
         session.env["GH_TOKEN"] = gh_token
 
     match test_specifier:
-        case "lowest-direct":
+        case "lowest-direct" | "lowest-direct-skipslow":
             session.install(".[tests]", "--resolution=lowest-direct")
         case _:
             # From https://nox.thea.codes/en/stable/cookbook.html#using-a-lockfile
