@@ -197,7 +197,7 @@ class AbstractParticle(ABC):
         **kwargs:
             Any keyword accepted by `json.dump`.
         """
-        return json.dump(self.json_dict, fp, **kwargs)  # type: ignore[arg-type]
+        return json.dump(self.json_dict, fp, **kwargs)
 
     def json_dumps(self, **kwargs: object) -> str:
         """
@@ -2521,7 +2521,7 @@ class CustomParticle(AbstractPhysicalParticle):
     @property
     def charge_number(self) -> float:
         """The ratio of the charge to the elementary charge."""
-        return (self.charge / const.e.si).value  # type: ignore[no-any-return]
+        return (self.charge / const.e.si).value
 
     @charge_number.setter
     def charge_number(self, Z: int) -> None:
