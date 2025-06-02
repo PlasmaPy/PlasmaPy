@@ -16,17 +16,16 @@ from plasmapy.formulary.laser import E0_, electric_field_amplitude
         (np.nan * u.watt / u.m**2, np.nan * u.V / u.m),
     ],
 )
-
 @pytest.mark.parametrize(
     ("alias", "parent"),
     [
         (E0_, electric_field_amplitude),
     ],
 )
-
 def test_aliases(alias, parent) -> None:
     """Test all aliases defined in laser.py"""
     assert alias is parent
+
 
 @pytest.mark.filterwarnings("ignore::astropy.units.UnitsWarning")
 def test_electric_field_amplitude(intensity, expected) -> None:
