@@ -16,6 +16,7 @@ from plasmapy.formulary.distribution import *
 from plasmapy.formulary.drifts import *
 from plasmapy.formulary.frequencies import *
 from plasmapy.formulary.ionization import *
+from plasmapy.formulary.laser import *
 from plasmapy.formulary.lengths import *
 from plasmapy.formulary.magnetostatics import *
 from plasmapy.formulary.mathematics import *
@@ -58,6 +59,7 @@ for modname in (
     "radiation",
     "relativity",
     "speeds",
+    "laser",
 ):
     try:
         obj = globals()[modname]
