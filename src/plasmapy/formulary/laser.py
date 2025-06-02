@@ -44,7 +44,7 @@ def electric_field_amplitude(
     Parameters
     ----------
     intensity : `~astropy.units.Quantity`
-        Intensity of the laser pulse (convertible to W / m\:sup:`2`).
+        Intensity of the laser pulse (convertible to W / m\ :sup:`2`).
 
     Returns
     -------
