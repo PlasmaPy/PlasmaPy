@@ -58,7 +58,7 @@ def electric_field_amplitude(
     Examples
     --------
     >>> import astropy.units as u
-    >>> electric_field_amplitude(1e-3 * u.watt / u.m**2)  # Electric Field Strength
+    >>> electric_field_amplitude(1e-3 * u.watt / u.m**2)  # Electric Field Amplitude
     <Quantity 0.8680211 V / m>
     """
 
