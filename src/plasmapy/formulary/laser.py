@@ -19,6 +19,7 @@ from plasmapy.utils.decorators import validate_quantities
 
 __all__ += __aliases__
 
+
 @validate_quantities(
     intensity={"can_be_negative": False},
 )
