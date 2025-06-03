@@ -72,11 +72,11 @@ E0_ = electric_field_amplitude
 
 
 @validate_quantities(
-    e_field={"can_be_negative": False},  # ask what is needed here
+    electric_field_amplitude={"can_be_negative": False},
 )
 def intensity(
-    e_field: u.Quantity[u.V / u.m],
-) -> u.Quantity[u.watt / u.cm**2]:
+    electric_field_amplitude: u.Quantity[u.V / u.m],
+) -> u.Quantity[u.watt / u.m**2]:
     r"""
     Calculate the intensity :math:`I` of a laser from the
     electric field amplitude :math:`E_0`.
@@ -94,7 +94,7 @@ def intensity(
 
     Parameters
     ----------
-    e_field : `~astropy.units.Quantity`
+    electric_field_amplitude: `~astropy.units.Quantity`
         Electric field amplitude of an electromagnetic plane wave (convertible to N / C).
 
     Returns
@@ -110,11 +110,11 @@ def intensity(
     --------
     >>> import astropy.units as u
     >>> intensity(0.8680211 * u.V / u.m)  # Intensity
-    <Quantity 1e-3 Watt / cm\ :sup:`2`>
+    <Quantity 1e-3 Watt / m ** 2>
     """
 
-    Int = (1 / 2) * (c * eps0) * (e_field**2)
-    return Int.to(u.Watt / u.cm**2)
+    Int = (1 / 2) * (c * eps0) * (electric_field_amplitude**2)
+    return Int.to(u.Watt / u.m**2)
 
 
 I_ = intensity
