@@ -25,7 +25,8 @@ from plasmapy.formulary.collisions.misc import Bethe_stopping_lite
 from plasmapy.formulary.lengths import Debye_length
 from plasmapy.particles import Particle, particle_input
 from plasmapy.particles.atomic import reduced_mass, stopping_power
-from plasmapy.particles.particle_class import ParticleLike, ParticleListLike
+from plasmapy.particles.particle_class import ParticleLike
+from plasmapy.particles.particle_collections import ParticleListLike
 from plasmapy.plasma.grids import AbstractGrid
 from plasmapy.plasma.plasma_base import BasePlasma
 from plasmapy.simulation.particle_integrators import (
