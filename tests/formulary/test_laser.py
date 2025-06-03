@@ -50,6 +50,7 @@ def test_electric_field_amplitude_warnings(intensity, expected_warning) -> None:
     ("alias", "parent"),
     [
         (E0_, electric_field_amplitude),
+        (I_, intensity),
     ],
 )
 def test_aliases(alias, parent) -> None:
@@ -79,7 +80,7 @@ def test_intensity(electric_field_amplitude, expected) -> None:
         (1 * u.kg, u.UnitTypeError),
     ],
 )
-def test_intensity_errors(intensity, expected) -> None:
+def test_intensity_errors(electric_field_amplitude, expected) -> None:
     with pytest.raises(expected):
         intensity(electric_field_amplitude=electric_field_amplitude)
 
@@ -93,15 +94,3 @@ def test_intensity_errors(intensity, expected) -> None:
 def test_intensity_warnings(electric_field_amplitude, expected_warning) -> None:
     with pytest.warns(expected_warning):
         intensity(electric_field_amplitude=electric_field_amplitude)
-
-
-@pytest.mark.parametrize(
-    ("alias", "parent"),
-    [
-        (E0_, electric_field_amplitude),
-        (I_, intensity),
-    ],
-)
-def test_aliases(alias, parent) -> None:
-    """Test all aliases defined in laser.py"""
-    assert alias is parent
