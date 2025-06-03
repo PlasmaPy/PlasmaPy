@@ -7,9 +7,9 @@ Functions for calculating quantities associated with laser pulses.
 """
 
 __all__ = [
-    "electric_field_amplitude",
+    "electric_field_amplitude", "intensity", 
 ]
-__aliases__ = ["E0_"]
+__aliases__ = ["E0_", "I_"]
 
 import astropy.units as u
 import numpy as np
@@ -65,6 +65,53 @@ def electric_field_amplitude(
     E = np.sqrt((2 * intensity) / (c * eps0))
     return E.to(u.V / u.m)
 
-
 E0_ = electric_field_amplitude
 """Alias to `~plasmapy.formulary.laser.electric_field_amplitude`."""
+
+@validate_quantities(
+    e_field={"can_be_negative": False}, #ask what is needed here
+)
+def intensity(
+    e_field: u.Quantity[u.V / u.m],
+) -> u.Quantity[u.watt / u.cm**2]:
+    r"""
+    Calculate the intensity :math:`I` of a laser from the 
+    electric field amplitude :math:`E_0`.
+
+    The intensity of an electromagnetic plane wave in vacuum
+    is calculated using:
+
+    .. math::
+        I=\frac{1}{2} c ε_0 E_0^2,
+
+    where :math:`c` is the speed of light and
+    :math:`ε_0` is the permittivity of free space.
+
+    **Aliases:** `I_`
+
+    Parameters
+    ----------
+    e_field : `~astropy.units.Quantity`
+        Electric field amplitude of an electromagnetic plane wave (convertible to N / C).
+
+    Returns
+    -------
+    Int : `~astropy.units.Quantity`
+        Intensity for the electric field amplitude provided.
+
+    Notes
+    -----
+    For details, see :cite:t:`ling:2016`\ .
+
+    Examples
+    --------
+    >>> import astropy.units as u
+    >>> intensity(0.8680211 * u.V / u.m)  # Intensity
+    <Quantity 1e-3 Watt / cm\ :sup:`2`>
+    """
+
+    Int = ((1/2) * (c * eps0 )*(e_field**2))
+    return Int.to(u.Watt / u.cm**2)
+
+I_ = intensity
+"""Alias to `~plasmapy.formulary.laser.intensity`."""
