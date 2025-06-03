@@ -110,7 +110,7 @@ def intensity(
     --------
     >>> import astropy.units as u
     >>> intensity(0.8680211 * u.V / u.m)  # Intensity
-    <Quantity 1e-3 Watt / m ** 2>
+    <Quantity 0.001 Watt / m2>
     """
 
     Int = (1 / 2) * (c * eps0) * (electric_field_amplitude**2)
