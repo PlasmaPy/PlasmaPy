@@ -110,7 +110,7 @@ def intensity(
     Examples
     --------
     >>> import astropy.units as u
-    >>> intensity(0.8680211 * u.V / u.m)  # Intensity
+    >>> intensity(0.8680211 * u.V / u.m)
     <Quantity 0.001 W / m2>
     """
 
