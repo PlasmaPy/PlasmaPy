@@ -96,7 +96,7 @@ def intensity(
     ----------
     electric_field_amplitude: `~astropy.units.Quantity`
         Electric field amplitude of an electromagnetic plane wave
-        (convertible to N / C).
+        (convertible to V / m).
 
     Returns
     -------
