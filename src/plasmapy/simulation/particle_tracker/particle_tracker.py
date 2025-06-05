@@ -282,6 +282,11 @@ class ParticleTracker:
         self.termination_condition = termination_condition
         self.save_routine = save_routine
 
+        self._stopping_method: Literal["Bethe", "NIST"] | None = None
+        self._stopping_power_interpolators: list[Callable[
+            [u.Quantity[u.m / u.s], u.Quantity[u.m**-3]],
+        ]] | None = None
+
     @staticmethod
     def _grid_factory(grids):
         """
@@ -548,10 +553,10 @@ class ParticleTracker:
         match method:
             case "NIST":
                 self._required_quantities += ["rho"]
-                stopping_power_interpolators = [
+                self._stopping_power_interpolators = [
                     stopping_power(self._particle, material, return_interpolator=True)
                     if material is not None
-                    else None
+                    else None  # Include `None` for grids lacking excitation energy to ensure consistent grid indices
                     for material in materials
                 ]
 
@@ -569,10 +574,10 @@ class ParticleTracker:
 
                     return inner_Bethe_stopping
 
-                stopping_power_interpolators = [
+                self._stopping_power_interpolators = [
                     wrapped_Bethe_stopping(I_grid.si.value)
                     if I_grid is not None
-                    else None
+                    else None  # Include `None` for grids lacking excitation energy to ensure consistent grid indices
                     for I_grid in I
                 ]
 
@@ -582,16 +587,12 @@ class ParticleTracker:
                 )
 
         self._do_stopping = True
-        self._stopping_method = method
-        self._stopping_power_interpolators = stopping_power_interpolators
-
         self._log(f"Stopping module activated using the {method} method")
 
-        # TODO: create a method to validate that these quantities have shape ngrids
-        # TODO: is this signature too much?
-        # TODO: find a way to create a type for the signature of the Callable parameters
-        #  (preferably using only one expression)
-
+    # TODO: create a method to validate that these quantities have shape ngrids
+    # TODO: is this signature too much?
+    # TODO: find a way to create a type for the signature of the Callable parameters
+    #  (preferably using only one expression)
     @particle_input(require="isotope")
     @validate_quantities
     def add_scattering(
