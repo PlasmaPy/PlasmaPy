@@ -1,0 +1,1 @@
+Added the second function to `plasmapy.formulary.laser`, `~plasmapy.formulary.laser.intensity`, which calculates intensity from the electric field amplitude.
