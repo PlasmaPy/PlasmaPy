@@ -114,8 +114,7 @@ def intensity(
     <Quantity 0.001 W / m2>
     """
 
-    Int = (1 / 2) * c * eps0 * electric_field_amplitude**2
-    return Int.to(u.Watt / u.m**2)
+    return (1 / 2) * c * eps0 * electric_field_amplitude**2
 
 
 I_ = intensity
