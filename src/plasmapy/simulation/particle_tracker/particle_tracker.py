@@ -420,8 +420,8 @@ class ParticleTracker:
     @particle_input
     def load_particles(
         self,
-        x,
-        v,
+        x: u.Quantity[u.m],
+        v: u.Quantity[u.m / u.s],
         particle: Particle,
     ) -> None:
         r"""
@@ -442,8 +442,8 @@ class ParticleTracker:
         # Raise an error if the run method has already been called.
         self._enforce_order()
 
-        self.q = particle.charge.to(u.C).value
-        self.m = particle.mass.to(u.kg).value
+        self._q = particle.charge.to(u.C).value
+        self._m = particle.mass.to(u.kg).value
         self._particle = particle
 
         if self.q != 0:
@@ -456,9 +456,11 @@ class ParticleTracker:
                 f"({x.shape[0]} and {v.shape[0]} respectively)."
             )
 
-        self.num_particles: int = x.shape[0]
-        self.x = x.to(u.m).value
-        self.v = v.to(u.m / u.s).value
+        self._num_particles: int = x.shape[0]
+        self._x = x.to(u.m).value
+        self._v = v.to(u.m / u.s).value
+
+
 
     def _validate_stopping_inputs(
         self,
@@ -589,59 +591,21 @@ class ParticleTracker:
         self._do_stopping = True
         self._log(f"Stopping module activated using the {method} method")
 
-    # TODO: create a method to validate that these quantities have shape ngrids
-    # TODO: is this signature too much?
-    # TODO: find a way to create a type for the signature of the Callable parameters
-    #  (preferably using only one expression)
     @particle_input(require="isotope")
     @validate_quantities
     def add_scattering(
         self,
         target: ParticleListLike,
         target_rho: u.Quantity[u.kg / u.m**3],
-        scatter_routine: Callable[
-            [
-                u.Quantity[u.rad] | None,  # Theta
-                u.Quantity[u.m / u.s],  # Speed
-                ParticleLike,  # Beam
-                ParticleLike,  # Target
-                u.Quantity[u.K],  # Electron Temperature
-                u.Quantity[1 / u.m**3],  # Electron Number Density
-            ],
-            u.Quantity[u.m**2 / u.sr]
-            | u.Quantity[
-                u.rad**2 / u.s
-            ],  # Differential cross-section or mean-square scatter rate in radians^2 per second
-        ],
-        scatter_routine_type: Literal["differential cross-section", "mean square rate"],
     ):
         r"""
-        Enable particle scattering by numeric integration of the provided
-        differential cross-section.
+        Enable particle scattering by using Molière's Multiple Scattering.
 
         Parameters
         ----------
         target : `~plasmapy.particles.particle_collections.ParticleListLike`
             A `~plasmapy.particles.particle_collections.ParticleListLike` representation of the target material(s).
             The atomic mass of each particle must be specified (i.e. ``Al-27``).
-
-        scatter_routine : `callable`
-            A function implementation used to calculate the scattering distribution.
-            Relevant keyword arguments are passed to the provided function, where
-            the defined keywords depend on the value of ``scatter_routine_type``. If
-            ``scatter_routine_type`` is set to ``differential cross-section``
-            then the function receives the following keyword arguments: ``theta``,
-            ``speed``, ``beam_material``, ``target_material``, ``T_s``, and ``n_s``.
-            When ``scatter_routine_type`` is set to ``mean square rate``,
-            the passed function receives the following keyword arguments: ``speed``,
-            ``beam_material``, ``target_material``, ``T_s``, and ``n_s``.
-
-        scatter_routine_type : `str`
-            Determines the role of the function passed to ``scatter_routine``.
-            Must be either ``differential cross-section`` or ``mean square rate``.
-            If set to ``differential cross-section``, the provided function must return
-            a `~astropy.units.Quantity` object with units convertible to square meters
-            per steradian.
         """
 
         # For scattering calculations, a multidimensional interpolator must be
@@ -666,15 +630,6 @@ class ParticleTracker:
         for grid in self.grids:
             grid.require_quantities(["T_i"], replace_with_zeros=True)
             self._required_quantities.update({"T_i"})
-
-        if scatter_routine_type not in [
-            "differential cross-section",
-            "mean square rate",
-        ]:
-            raise ValueError(
-                "Please pass one of 'differential cross-section' or 'mean square rate' "
-                "for the scatter routine keyword."
-            )
 
         self._scattering_method = scatter_routine_type
         self._scattering_routine = scatter_routine
@@ -965,7 +920,7 @@ class ParticleTracker:
                 f"Expected mask of size {self.x.shape[0]}, got {len(particles_to_stop_mask)}"
             )
 
-        self.v[particles_to_stop_mask] = np.nan
+        self._v[particles_to_stop_mask] = np.nan
 
         # Reset the cache to update the particle masks
         self._reset_cache()
@@ -982,8 +937,8 @@ class ParticleTracker:
                 f"Expected mask of size {self.x.shape[0]}, got {len(particles_to_remove_mask)}"
             )
 
-        self.x[particles_to_remove_mask] = np.nan
-        self.v[particles_to_remove_mask] = np.nan
+        self._x[particles_to_remove_mask] = np.nan
+        self._v[particles_to_remove_mask] = np.nan
 
         # Reset the cache to update the particle masks
         self._reset_cache()
@@ -1137,7 +1092,7 @@ class ParticleTracker:
             self.dt,
         )
 
-        self.x[self._tracked_particle_mask], self.v[self._tracked_particle_mask] = (
+        self._x[self._tracked_particle_mask], self._v[self._tracked_particle_mask] = (
             x_results,
             v_results,
         )
@@ -1207,6 +1162,8 @@ class ParticleTracker:
                         category=PhysicsWarning,
                     )
 
+        # Energy loss per unit length is positive by convention, therefore we have
+        # to include a minus sign here
         dE = -np.multiply(energy_loss_per_length, dx)
 
         # Update the velocities of the particles using the new energy values
@@ -1227,7 +1184,7 @@ class ParticleTracker:
         # Eliminate negative energies before calculating new speeds
         E = np.where(E < 0, 0, E)
         new_speeds = np.sqrt(2 * E / self.m)
-        self.v[self._tracked_particle_mask] = np.multiply(
+        self._v[self._tracked_particle_mask] = np.multiply(
             new_speeds, velocity_unit_vectors
         )
 
@@ -1349,7 +1306,7 @@ class ParticleTracker:
         v_new_unscaled = self.v[self._tracked_particle_mask] + delta_v
 
         # Normalize and rescale
-        self.v[self._tracked_particle_mask] = (
+        self._v[self._tracked_particle_mask] = (
             v_new_unscaled
             / np.linalg.norm(v_new_unscaled, axis=-1, keepdims=True)
             * speeds[:, np.newaxis]
