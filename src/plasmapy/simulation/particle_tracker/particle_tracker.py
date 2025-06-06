@@ -602,9 +602,10 @@ class ParticleTracker:
                 self._required_quantities += ["n_e"]
                 self._raised_energy_warning = False
 
-                # These functions are used to represent that the mean excitation energy
-                # and ion number density does not change over space for a given grid.
+                # Each grid has a constant value for the mean excitation energy
                 def wrapped_Bethe_stopping(I_grid):
+                    # Stopping interpolators should have a signature that takes a velocity and
+                    # an electron number density as a parameter
                     def inner_Bethe_stopping(v, n_e):
                         return Bethe_stopping_lite(
                             I_grid, n_e, v, self._particle.charge_number
@@ -615,7 +616,9 @@ class ParticleTracker:
                 self._stopping_power_interpolators = [
                     wrapped_Bethe_stopping(I_grid.si.value)
                     if I_grid is not None
-                    else None  # Include `None` for grids lacking excitation energy to ensure consistent grid indices
+                    # Include `None` for grids lacking a mean excitation energy to ensure
+                    # consistent grid indices
+                    else None
                     for I_grid in I
                 ]
 
