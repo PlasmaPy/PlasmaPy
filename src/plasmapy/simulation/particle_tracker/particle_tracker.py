@@ -67,7 +67,7 @@ class ParticleTracker:
     The simulation will push particles through the provided fields until a
     condition is met. This termination condition is provided as an instance
     of the `~plasmapy.simulation.particle_tracker.termination_conditions.AbstractTerminationCondition`
-    class as arguments to the simulation constructor. The results of a simulation
+    class as an argument to the simulation constructor. The results of a simulation
     can be exported by specifying an instance of the `~plasmapy.simulation.particle_tracker.save_routines.AbstractSaveRoutine`
     class to the ``run`` method.
 
@@ -217,8 +217,9 @@ class ParticleTracker:
         self._has_run = False
 
         # Should the tracker update particle energies after every time step to
-        # reflect stopping?
+        # reflect stopping, scattering?
         self._do_stopping = False
+        self._do_scattering = False
 
         # Instantiate the integrator object for use in the _push() method
         self._integrator: AbstractIntegrator = (
@@ -235,28 +236,22 @@ class ParticleTracker:
 
         # self.grid is the grid object
         self.grids = self._grid_factory(grids)
-
         self._validate_grids()
-
-        # Errors for unsupported grid types are raised in the validate constructor inputs method
 
         # Instantiate the "do not save" save routine if no save routine was specified
         if save_routine is None:
             save_routine = DoNotSaveSaveRoutine()
 
-        # Validate inputs to the run function
+        # Errors for unsupported grid types are raised in the validate constructor inputs method
         self._validate_constructor_inputs(
             grids, termination_condition, save_routine, field_weighting
         )
 
         self._set_time_step_attributes(dt, termination_condition, save_routine)
-
         if dt_range is not None and not self._is_adaptive_time_step:
             raise ValueError(
                 "Specifying a time step range is only possible for an adaptive time step."
             )
-
-        self._RNG = np.random.default_rng(seed)
 
         # Raise a ValueError if a synchronized dt is required by termination condition or save routine but one is
         # not given. This is only the case if an array with differing entries is specified for dt
@@ -265,23 +260,24 @@ class ParticleTracker:
                 "Please specify a synchronized time step to use the simulation with this configuration!"
             )
 
+        self.dt = dt.to(u.s).value if dt is not None else None
+        dt_range = [0, np.inf] * u.s if dt_range is None else dt_range
+        self.dt_range = dt_range.to(u.s).value
+
+        self._RNG = np.random.default_rng(seed)
+
         # self.grid_arr is the grid positions in si units. This is created here
         # so that it isn't continuously called later
         self.grids_arr = [grid.grid.to(u.m).value for grid in self.grids]
 
-        self.dt = dt.to(u.s).value if dt is not None else None
-
-        dt_range = [0, np.inf] * u.s if dt_range is None else dt_range
-        self.dt_range = dt_range.to(u.s).value
-
         # Update the `tracker` attribute so that the stop condition & save routine can be used
         termination_condition.tracker = self
-
         save_routine.tracker = self
 
         self.termination_condition = termination_condition
         self.save_routine = save_routine
 
+        # Declare type hints for stopping power attributes
         self._stopping_method: Literal["Bethe", "NIST"] | None = None
         self._stopping_power_interpolators: list[Callable[
             [u.Quantity[u.m / u.s], u.Quantity[u.m**-3]],
@@ -309,7 +305,7 @@ class ParticleTracker:
 
         self._require_synchronized_time = (
             termination_condition.require_synchronized_dt
-            or (save_routine is not None and save_routine.require_synchronized_dt)
+            or save_routine.require_synchronized_dt
         )
 
         if isinstance(dt, u.Quantity):
@@ -459,8 +455,6 @@ class ParticleTracker:
         self._num_particles: int = x.shape[0]
         self._x = x.to(u.m).value
         self._v = v.to(u.m / u.s).value
-
-
 
     def _validate_stopping_inputs(
         self,
@@ -631,72 +625,8 @@ class ParticleTracker:
             grid.require_quantities(["T_i"], replace_with_zeros=True)
             self._required_quantities.update({"T_i"})
 
-        self._scattering_method = scatter_routine_type
-        self._scattering_routine = scatter_routine
-
         self._set_target_attributes(target, target_rho)
         self._do_scattering = True
-
-        # For now the integrals will be evaluated every time step
-        # The below code constructs an interpolator for the scattering integral
-        # # TODO: make sure these expressions are working
-        # # TODO: make sure that this method of interpolation is accurate
-        # #  (i.e. as opposed to something like a log spline)
-        # #  include profiling & accuracy analysis on PR
-        # max_electron_temperature = np.log10(
-        #     np.max([grid["T_e"] for grid in self.grids])
-        # )
-        # max_number_density = np.log10(np.max([grid["n_e"] for grid in self.grids]))
-        #
-        # electron_temperature_space = np.logspace(0, max_electron_temperature) * u.K
-        # number_density_space = np.logspace(0, max_number_density+1) / u.m**3
-        # velocity_space = np.logspace(0, np.log(const.c.si.value)) * u.m / u.s
-        #
-        # mu = reduced_mass(self._particle, target)
-        #
-        # b_0 = (
-        #     target.charge
-        #     * self._particle.charge
-        #     / (4 * np.pi * const.eps0 * mu * velocity_space**2)
-        # )
-        # lambda_D = Debye_length(electron_temperature_space, number_density_space)
-        # theta_min_space = 2 * b_0 / lambda_D
-        #
-        # def mean_squared_integrand(theta, v, T_e, n_e):
-        #     return (
-        #         theta**2
-        #         * differential_cross_section(
-        #             theta,
-        #             v,
-        #             self._particle,
-        #             target,
-        #             T_e,
-        #             n_e,
-        #         )
-        #     ).si.value
-        #
-        # evaluated_mean_square_rate = [
-        #     (
-        #         2
-        #         * np.pi
-        #         * velocity
-        #         * quad(
-        #             mean_squared_integrand, theta_min, np.pi, args=(velocity, T_e, n_e)
-        #         )[0]
-        #     ).si.value
-        #     for (theta_min, velocity, T_e, n_e) in zip(
-        #         theta_min_space,
-        #         velocity_space,
-        #         electron_temperature_space,
-        #         number_density_space,
-        #     )
-        # ]
-        #
-        # self._do_scattering = True
-        # self._scattering_interpolator = LinearNDInterpolator(  # sigma(n_e, v)
-        #     list(zip(number_density_space.si.value, velocity_space.si.value)),
-        #     evaluated_mean_square_rate,
-        # )
 
     def _validate_grids(self) -> None:
         """Validate input grids."""
