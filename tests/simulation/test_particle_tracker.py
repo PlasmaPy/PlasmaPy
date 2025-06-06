@@ -786,8 +786,6 @@ def test_particle_tracker_ranges_straggling(
     sim.add_scattering(
         target_material,
         target_density,
-        scatter_routine=Mott_Bethe_mean_squared_scattering,
-        scatter_routine_type="mean square rate",
     )
 
     sim.run()
