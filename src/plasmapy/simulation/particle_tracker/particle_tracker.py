@@ -283,6 +283,42 @@ class ParticleTracker:
             [u.Quantity[u.m / u.s], u.Quantity[u.m**-3]],
         ]] | None = None
 
+    # TODO: Should these properties return quantities with units?
+    @cached_property
+    def x(self) -> np.ndarray | None:
+        """An array of points representing the positions of the particles in meters.
+
+        Has shape (``num_particles``, 3). When a particle has been removed from the simulation,
+        its position will be set to ``NaN``.
+        """
+
+        return self._x
+
+    @cached_property
+    def v(self) -> np.ndarray | None:
+        """An array of vectors representing the velocities of the particles in meters per second.
+
+        Has shape of (``num_particles``, 3). When a particle has been stopped, its velocity will
+        be set to ``NaN``, and its position will no longer be evolved by the
+        simulation.
+        """
+
+        return self._v
+
+    # TODO: Is it at all frequent that users will want to evolve multiple species?
+    #  or will this language only be confusing
+    @cached_property
+    def q(self) -> np.ndarray | float | None:
+        """The charge(s) on a single particle of the specie(s) expressed in Coulombs."""
+
+        return self._q
+
+    @cached_property
+    def m(self) -> np.ndarray | float | None:
+        """The mass(es) of a single particle of the specie(s) expressed in kilograms."""
+
+        return self._m
+
     @staticmethod
     def _grid_factory(grids):
         """
