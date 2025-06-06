@@ -319,6 +319,12 @@ class ParticleTracker:
 
         return self._m
 
+    @cached_property
+    def num_particles(self) -> int | None:
+        """The number of particles that have been loaded into the simulation."""
+
+        return self._num_particles
+
     @staticmethod
     def _grid_factory(grids):
         """
