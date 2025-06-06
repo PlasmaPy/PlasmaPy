@@ -243,7 +243,7 @@ def Bethe_stopping_lite(
     higher order corrections become non-negligible for smaller energies.
 
     By convention, this function returns a positive value for the stopping
-    energy.
+    power.
 
     Parameters
     ----------
@@ -300,7 +300,7 @@ def Bethe_stopping(
     higher order corrections become non-negligible for smaller energies.
 
     By convention, this function returns a positive value for the stopping
-    energy.
+    power.
 
     Parameters
     ----------
