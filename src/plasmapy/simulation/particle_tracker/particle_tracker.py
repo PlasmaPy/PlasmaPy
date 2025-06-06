@@ -1169,86 +1169,33 @@ class ParticleTracker:
     def _update_velocity_scattering(self):
         speeds = np.linalg.norm(self.v[self._tracked_particle_mask], axis=-1)
 
-        match self._scattering_method:
-            # Numerically integrate the scattering integral to construct the mean square scatter rate
-            case "differential cross section":
-                # `theta_prime` dummy variable introduced to prevent global shadow of `theta`
-                def mean_squared_integrand(theta_prime, speed, T_i, n_i):
-                    return (
-                        theta_prime**2
-                        * self._scattering_routine(
-                            theta=theta_prime,
-                            speed=speed,
-                            beam_particle=self._particle,
-                            target_particle=self._target,
-                            T_s=T_i,
-                            n_s=n_i,
-                        )
-                    ).si.value
+        # Ensure there are no particles on multiple grids
+        self._multi_grid_check()
 
-                # Calculate the minimum scattering angle based on screening
-                mu = reduced_mass(self._target, self._particle)
-                b_0 = (
-                    self._particle.atomic_number
-                    * self._target.atomic_number
-                    * const.e.si**2
-                    / (4 * np.pi * const.eps0 * mu * speeds**2)
+        mean_square_scatter_rate = np.zeros(shape=self.nparticles_tracked)
+
+        for i, _grid in enumerate(self.grids):
+            particles_on_grid = self.particles_on_grid[
+                self._tracked_particle_mask, i
+            ]
+
+            # Passing an empty array to the scattering routine can cause an error to
+            # be emitted
+            if particles_on_grid.sum() == 0:
+                continue
+
+            # TODO: figure out additivity rule for scattering
+            mean_square_scatter_rate[particles_on_grid] += (
+                self._scattering_routine(
+                    speed=speeds[particles_on_grid],
+                    beam_particle=self._particle,
+                    target_particle=self._target[i],
+                    T_s=self._total_grid_values["T_i"][
+                        particles_on_grid
+                    ].si.value,
+                    n_s=self._target_number_density[i],
                 )
-                lambda_D = Debye_length(
-                    self._total_grid_values["T_i"], self._total_grid_values["n_i"]
-                )
-                theta_min = 2 * b_0 / lambda_D
-
-                # Numerically integrate the classical scattering integral
-                mean_square_scatter_rate = [
-                    (
-                        2
-                        * np.pi
-                        * n_i
-                        * speed
-                        * quad(
-                            mean_squared_integrand,
-                            lower_bound,
-                            np.pi,
-                            args=(speed, T_i, n_i),
-                        )[0]
-                    )
-                    for (T_i, n_i, speed, lower_bound) in zip(
-                        self._total_grid_values["T_i"],
-                        self._total_grid_values["n_i"],
-                        speeds,
-                        theta_min.value,
-                        strict=False,
-                    )
-                ]  # Quad returns a tuple, we only care about the result
-            case "mean square rate":
-                # Ensure there are no particles on multiple grids
-                self._multi_grid_check()
-
-                mean_square_scatter_rate = np.zeros(shape=self.nparticles_tracked)
-
-                for i, _grid in enumerate(self.grids):
-                    particles_on_grid = self.particles_on_grid[
-                        self._tracked_particle_mask, i
-                    ]
-
-                    # Passing an empty array to the scattering routine can cause an error to
-                    # be emitted
-                    if particles_on_grid.sum() == 0:
-                        continue
-
-                    # TODO: figure out additivity rule for scattering
-                    mean_square_scatter_rate[particles_on_grid] += (
-                        self._scattering_routine(
-                            speed=speeds[particles_on_grid],
-                            beam_particle=self._particle,
-                            target_particle=self._target[i],
-                            T_s=self._total_grid_values["T_i"][
-                                particles_on_grid
-                            ].si.value,
-                            n_s=self._target_number_density[i],
-                        )
-                    )
+            )
 
         mean_square_scatter_rate = np.reshape(
             mean_square_scatter_rate, newshape=(self.nparticles_tracked, 1)
@@ -1266,8 +1213,8 @@ class ParticleTracker:
 
         # Generate a vector that lies somewhere in the plane perpendicular to the velocity
         k = np.cross(
-            self.v[self._tracked_particle_mask],
-            self._rng.uniform(low=-1, high=1, size=(self.nparticles_tracked, 3)),
+            self._v[self._tracked_particle_mask],
+            self._RNG.uniform(low=-1, high=1, size=(self.nparticles_tracked, 3)),
         )
         # Normalize
         k_norm = k / np.linalg.norm(k, axis=-1, keepdims=True)
