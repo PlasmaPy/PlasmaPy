@@ -1,0 +1,24 @@
+root = true
+
+[*]
+insert_final_newline = true
+indent_style = space
+charset = utf-8
+trim_trailing_whitespace = true
+end_of_line = lf
+
+[*.py]
+profile = black
+
+[*.rst]
+indent_size = 3
+max_line_length = 72
+
+[*.md]
+max_line_length = 72
+
+[*.{yml,yaml,toml,cff,bib}]
+indent_size = 2
+
+[*.{ini,html}]
+indent_size = 4

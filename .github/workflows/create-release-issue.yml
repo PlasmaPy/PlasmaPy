@@ -1,0 +1,26 @@
+name: Create issue
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version (e.g., v2024.5.0)
+        required: true
+
+jobs:
+  release-checklist:
+    name: Release checklist
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        persist-credentials: false
+
+    - name: Create issue
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        checklist=$(sed "s/%VERSION%/${{ github.event.inputs.version }}/g" .github/content/release-checklist.md)
+        gh issue create --title "Release ${{ github.event.inputs.version }}" --body "$checklist" --label "release"

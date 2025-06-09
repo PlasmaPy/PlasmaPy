@@ -1,11 +1,15 @@
-Examples
-========
+.. _examples:
 
-Here we catalog all the example Jupyter notebooks that have been created for
-the various functionality contained in `plasmapy`.
+Example notebooks
+=================
+
+Here we catalog all the example Jupyter notebooks that have been created
+for the functionality in PlasmaPy.
 
 .. contents::
    :local:
+
+.. _getting-started-notebooks:
 
 Getting started
 ---------------
@@ -15,7 +19,7 @@ Getting started
    notebooks/getting_started/units
    notebooks/getting_started/particles
 
-Analyses & Diagnostics
+Analyses & diagnostics
 ----------------------
 
 .. nbgallery::
@@ -41,10 +45,16 @@ Formulary
 
    notebooks/formulary/*
 
-.. Particles
-   ---------
+Particles
+---------
 
-Plasma Objects
+.. nbgallery::
+   :glob:
+
+   notebooks/getting_started/particles
+   notebooks/particles/*
+
+Plasma objects
 --------------
 
 .. nbgallery::

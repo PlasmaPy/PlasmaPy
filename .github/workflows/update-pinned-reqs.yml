@@ -1,0 +1,54 @@
+name: Update pinned requirements
+
+on:
+  schedule:
+  - cron: 0 12 * * 1
+  workflow_dispatch:
+
+jobs:
+  update-requirements:
+    name: Regenerate requirements
+    runs-on: ubuntu-latest
+    if: github.repository == 'PlasmaPy/PlasmaPy'
+
+    steps:
+
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        persist-credentials: false
+
+    - name: Install uv
+      uses: astral-sh/setup-uv@v6
+      with:
+        python: 3.13
+
+    - name: Run Nox session to regenerate requirements
+      run: uv run --with nox --frozen nox -s requirements
+
+    # When a PR is created by a GitHub Action, normally the checks will
+    # not be run. While the simplest workaround would have been to open
+    # and close the PR, an alternative is to authenticate with GitHub
+    # App generated tokens (as done below). The instructions for how to
+    # do this are in the documentation for the create-pull-request
+    # action.
+
+    - name: Generate token
+      uses: tibdex/github-app-token@3beb63f4bd073e61482598c45c71c1019b59b73a # v2.1.0
+      id: generate_token
+      with:
+        app_id: ${{ secrets.APP_ID }}
+        private_key: ${{ secrets.APP_PRIVATE_KEY }}
+
+    - name: Create pull request
+      uses: peter-evans/create-pull-request@271a8d0340265f705b14b6d32b9829c1cb33d45e # v7.0.8
+      with:
+        title: Update pinned requirements 📍
+        add-paths: uv.lock
+        commit-message: Update requirements with 'nox -s requirements'
+        # The PR body message is generated dynamically via `nox -s requirements` in CI
+        body-path: .github/content/update-requirements-pr-body.md
+        labels: no changelog entry needed, requirements
+        base: main
+        delete-branch: true
+        token: ${{ steps.generate_token.outputs.token }}

@@ -1,0 +1,1 @@
+Updated the configuration to automatically label pull requests on GitHub.

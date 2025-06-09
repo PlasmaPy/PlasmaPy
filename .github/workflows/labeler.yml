@@ -1,29 +1,16 @@
 name: Pull Request Labeler
+
+# See https://github.com/actions/labeler#permissions
 on:
-- pull_request_target
+- pull_request_target  # zizmor: ignore[dangerous-triggers]
 
 jobs:
-  triage:
+  labeler:
+    permissions:
+      contents: read
+      pull-requests: write
     runs-on: ubuntu-latest
     steps:
-    - name: Add Labels to PR
-      uses: actions/labeler@main
+    - uses: actions/labeler@v5
       with:
-        repo-token: ${{ secrets.GITHUB_TOKEN }}
-        sync-labels: true
-    - name: Add Size Label to PR
-      uses: codelytv/pr-size-labeler@v1
-      with:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        xs_label: size/very-small
-        xs_max_size: '10'
-        s_label: size/small
-        s_max_size: '50'
-        m_label: size/medium
-        m_max_size: '200'
-        l_label: size/large
-        l_max_size: '400'
-        xl_label: size/extra-large
-        fail_if_xl: 'false'
-        message_if_xl: ''
-        github_api_url: api.github.com
+        configuration-path: .github/labeler.yml

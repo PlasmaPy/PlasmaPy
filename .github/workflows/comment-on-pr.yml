@@ -1,0 +1,43 @@
+name: Add comment
+
+on:
+  pull_request_target: # zizmor: ignore[dangerous-triggers]
+    types: [opened]
+
+jobs:
+  comment:
+    name: Welcome message
+    # Skip posting this comment for frequent contributors
+    if: "!contains(fromJSON('[''namurphy'', ''rocco8773'', ''StanczakDominik'', ''dependabot'', ''plasmapy-requirements-bot'', ''pre-commit-ci'']'), github.event.pull_request.user.login)"
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - uses: actions/github-script@v7
+      with:
+        script: |
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: `Thank you for submitting this pull request (PR)! ✨
+
+            Below are checks that are being run for this PR. Click on the name of a check to learn why it didn't pass. ✅ Don't worry if something broke! We break stuff all the time. 😅
+
+            [**PlasmaPy's contributor guide**](https://docs.plasmapy.org/en/latest/contributing/index.html) has pages on:
+
+             - 🌱 [Getting ready to contribute](https://docs.plasmapy.org/en/latest/contributing/getting_ready.html#getting-ready-to-contribute)
+             - 🔧 [Code contribution workflow](https://docs.plasmapy.org/en/latest/contributing/workflow.html#code-contribution-workflow)
+             - 📜 [Changelog entries](https://docs.plasmapy.org/en/latest/contributing/changelog_guide.html#adding-a-changelog-entry)
+             - 💻 [Coding tips and guidelines](https://docs.plasmapy.org/en/latest/contributing/coding_guide.html#coding-guide)
+             - 📚 [Documentation](https://docs.plasmapy.org/en/latest/contributing/doc_guide.html#writing-documentation)
+             - 🧪 [Tests](https://docs.plasmapy.org/en/latest/contributing/testing_guide.html#testing-guide)
+
+            > [!TIP]
+            > 📚 For a documentation preview, click on **docs/readthedocs.org:plasmapy** below. For cryptic documentation errors, see the [documentation troubleshooting guide](https://docs.plasmapy.org/en/latest/contributing/doc_guide.html#troubleshooting).
+
+            > [!TIP]
+            > 🧹 Automatically fix most **pre-commit.ci** failures by commenting \`pre-commit.ci autofix\` below. For other failures, please see the [pre-commit troubleshooting guide](https://docs.plasmapy.org/en/stable/contributing/pre-commit.html#troubleshooting-pre-commit-failures).
+
+            We thank you once again! 🌌`
+          })

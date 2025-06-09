@@ -1,18 +1,41 @@
-include README.md
-include LICENSE.md
-include setup.py
-include pyproject.toml
+# MANIFEST.in specifies the files are to be included in the source
+# distribution (sdist) of PlasmaPy.
 
-include setup.cfg
-include plasmapy/tests/coveragerc
+graft changelog
+graft docs
+graft licenses
+graft src
+graft tests
+graft tools
+graft type_stubs
+
+include *.ini *.toml *.yaml *.yml
+include *.md
+include *.py
+include *.pyi
+include *.rst
+include *.txt
+include .editorconfig
+include .git-blame-ignore-revs
+include .jupyter/*.py
+include binder/requirements.txt
 include CITATION.cff
+include CODEOWNERS
 
-recursive-include plasmapy *.json *.npy
-recursive-include docs *
-recursive-include licenses *
+global-exclude _authors.rst
+global-exclude *.o *.py[cod]
+global-exclude uv.lock
 
-prune build
-prune docs/_build
+prune **/_build
+prune **/build
 prune docs/api
 
-global-exclude *.pyc *.o
+# The following directory is only used to get the version right for
+# editable installations.
+
+prune src/plasmapy/_dev
+
+# The following file needs to be in the sdist so that the version
+# appears correctly on Read the Docs.
+
+include src/plasmapy/_version.py

@@ -1,32 +1,218 @@
-Analysis: plasmapy/analysis/**/*
+# This file defines which GitHub labels get applied when files
+# matching certain minimatch glob patterns are changed.
+#
+# Documentation: https://github.com/actions/labeler#pull-request-labeler
+#
+# If a label includes a space or a pattern begins with an asterisk or
+# special character, enclose it in quotes.
 
-Continuous integration: .github/**/*
+'breaking change':
+  - changed-files:
+    - any-glob-to-any-file: 'changelog/*breaking*.rst'
 
-Contributor Guide: docs/contributing/*
+bugfix:
+  - changed-files:
+    - any-glob-to-any-file: 'changelog/*bugfix*.rst'
 
-Diagnostics: plasmapy/diagnostics/**/*
+CI:
+  - changed-files:
+    - any-glob-to-any-file: [
+      '.github/workflows/ci.yml',
+      '.github/workflows/linkcheck.yml',
+      '.github/workflows/weekly.yml',
+      '.pre-commit-config.yaml',
+      '.readthedocs.yml',
+      'codecov.yaml',
+      'mypy.ini',
+    ]
 
-Dispersion: plasmapy/dispersion/**/*
+'contributor guide':
+  - changed-files:
+    - any-glob-to-any-file: [
+      '.github/contributing.md',
+      'changelog/README.rst',
+      'CONTRIBUTING.md',
+      'docs/contributing/**',
+    ]
 
-Formulary: plasmapy/formulary/**/*
+requirements:
+  - changed-files:
+    - any-glob-to-any-file: [
+      '**/*req*.txt',
+      '**/pylock.toml',
+      '**/uv.lock',
+    ]
 
-Mathematics: plasmapy/formulary/mathematics.py
+'deprecation or planned removal':
+  - changed-files:
+    - any-glob-to-any-file: 'changelog/*removal*.rst'
 
-parameters.quantum: plasmapy/formulary/quantum.py
+docs:
+  - changed-files:
+    - any-glob-to-any-file: [
+      'docs/**/*.bib',
+      'docs/**/*.ico',
+      'docs/**/*.ipynb',
+      'docs/**/*.md',
+      'docs/**/*.png',
+      'docs/**/*.rst',
+      'docs/**/*.svg',
+    ]
 
-Particles: plasmapy/particles/**/*
+'documentation infrastructure':
+  - changed-files:
+    - any-glob-to-any-file: [
+      '.github/workflows/changelog.yml',
+      '.github/workflows/check-author-included.yml',
+      '.github/workflows/linkcheck.yml',
+      '.readthedocs.yml',
+      'docs/**/*.css',
+      'docs/**/*.html',
+      'docs/**/*.py',
+      'docs/**/make.bat',
+      'docs/**/Makefile',
+      'docs/**/plasmapy_sphinx/**',
+      'docs/**/robots.txt',
+    ]
 
-# Add Documentation label to any change in docs but notebooks
-Documentation:
-- any: [docs/**/*]
-  all: ['!docs/notebooks/**/*', '!docs/contributing/*']
+feature:
+  - changed-files:
+    - any-glob-to-any-file: 'changelog/*feature*.rst'
 
-Notebooks: docs/notebooks/**/*
+'GitHub Actions':
+  - changed-files:
+    - any-glob-to-any-file: '.github/**'
 
-Plasma class: plasmapy/plasma/**/*
+linters:
+  - changed-files:
+    - any-glob-to-any-file: [
+      '.editorconfig',
+      '.pre-commit*.yaml',
+      '.sourcery.yaml',
+      '_typos.toml',
+    ]
 
-simulations: plasmapy/simulation/**/*
+maintenance:
+  - changed-files:
+    - any-glob-to-any-file: [
+      '.git-blame-ignore-revs',
+      '.gitattributes',
+      '.gitignore',
+      '.mailmap',
+      'changelog/*.internal*.rst',
+      'CODEOWNERS',
+      'licenses/**',
+    ]
 
-Utilities: plasmapy/utils/**/*
+notebooks:
+  - changed-files:
+    - any-glob-to-any-file: [
+      '**/*.ipynb',
+      '**/binder/**',
+      '.jupyter/**',
+      'docs/notebooks/**',
+    ]
 
-Breaking: changelog/*.breaking*rst
+nox:
+  - changed-files:
+    - any-glob-to-any-file: '**/noxfile.py'
+
+packaging:
+  - changed-files:
+    - any-glob-to-any-file: [
+      '**/scm_version.py',
+      '*setup*',
+      '.github/workflows/*publish*',
+      '.github/workflows/*pypi*',
+      '.github/workflows/*release*',
+      'MANIFEST.in',
+      'pyproject.toml',
+    ]
+
+'physical data':
+  - changed-files:
+    - any-glob-to-any-file: [
+      '**/particles/data/**',
+      '**/tools/export_ionization_energy.py',
+    ]
+
+plasmapy.analysis:
+  - changed-files:
+    - any-glob-to-any-file: '**/analysis/**'
+
+plasmapy.diagnostics:
+  - changed-files:
+    - any-glob-to-any-file: '**/diagnostics/**'
+
+plasmapy.dispersion:
+  - changed-files:
+    - any-glob-to-any-file: '**/dispersion/**'
+
+plasmapy.formulary:
+  - changed-files:
+    - any-glob-to-any-file: '**/formulary/**'
+
+plasmapy.formulary.quantum:
+  - changed-files:
+    - any-glob-to-any-file: '**/quantum*'
+
+plasmapy.particles:
+  - changed-files:
+    - any-glob-to-any-file: '**/particles/**'
+
+plasmapy.plasma:
+  - changed-files:
+    - any-glob-to-any-file: '**/plasma/**'
+
+plasmapy.simulation:
+  - changed-files:
+    - any-glob-to-any-file: '**/simulation/**'
+
+plasmapy.utils:
+  - changed-files:
+    - any-glob-to-any-file: '**/utils/**'
+
+python:
+  - changed-files:
+    - any-glob-to-any-file: '**/*.py'
+
+release:
+  - changed-files:
+    - any-glob-to-any-file: [
+      '.github/content/*release*',
+      '.github/workflows/*publish*',
+      '.github/workflows/*pypi*',
+      '.github/workflows/*release*',
+    ]
+
+'run weekly tests in CI':
+  - changed-files:
+    - any-glob-to-any-file: [
+      '.github/workflows/*weekly*.yml',
+      'docs/conf.py',
+      'noxfile.py',
+    ]
+
+'static type checking':
+  - changed-files:
+    - any-glob-to-any-file: [
+      '**/*mypy*',
+      '**/py.typed',
+      '**/type_stubs/**',
+    ]
+
+testing:
+  - changed-files:
+    - any-glob-to-any-file: [
+      '**/*coverage*',
+      '**/*pytest*.*',
+      '**/conftest.py',
+      '**/test*.py',
+      '**/tests/**',
+      '*codecov.y*ml',
+      '.github/workflows/ci.yml',
+    ]
+
+tools:
+  - changed-files:
+    - any-glob-to-any-file: '**/tools/**'

@@ -1,10 +1,10 @@
 title: PlasmaPy
 type: software
-version: 0.9.0
+version: 2024.10.0
 identifiers:
 - type: doi
-  value: 10.5281/zenodo.7303557
-date-released: '2022-11-11'
+  value: 10.5281/zenodo.14010450
+date-released: '2024-10-30'
 message: >-
   Please cite the specific version of PlasmaPy used
   during a research project.
@@ -34,7 +34,7 @@ authors:
   orcid: https://orcid.org/0000-0001-6628-8033
   alias: namurphy
 
-- given-names: Erik
+- given-names: Erik T.
   family-names: Everson
   email: eeverson@ucla.edu
   affiliation: UCLA
@@ -42,28 +42,71 @@ authors:
   alias: rocco8773
 
 - given-names: Dominik
-  family-names: Stańczak
+  family-names: Stańczak-Marikin
   email: stanczakdominik@gmail.com
-  affiliation: IPPLM
   orcid: https://orcid.org/0000-0001-6291-8843
   alias: StanczakDominik
 
-- given-names: Peter
+- given-names: Peter V.
   family-names: Heuer
   affiliation: University of Rochester
   orcid: https://orcid.org/0000-0001-5050-6606
   alias: pheuer
 
-- given-names: Pawel
+- given-names: Pawel M.
   family-names: Kozlowski
   affiliation: Los Alamos National Laboratory
   orcid: https://orcid.org/0000-0001-6849-3612
   alias: lemmatum
 
+- given-names: Elliot
+  family-names: Johnson
+  affiliation: University of Delaware
+  orcid: https://orcid.org/0000-0003-2892-6924
+  alias: ejohnson-96
+
 - given-names: Ritiek
   family-names: Malhotra
   affiliation: Chandigarh University
   alias: ritiek
+
+- given-names: David
+  family-names: Schaffner
+  affiliation: Bryn Mawr College
+  orcid: https://orcid.org/0000-0002-9180-6565
+  alias: dschaffner
+
+- given-names: Steve
+  family-names: Vincena
+  affiliation: UCLA
+  orcid: https://orcid.org/0000-0002-6468-5710
+  alias: svincena
+
+- given-names: Mel
+  family-names: Abler
+  orcid: https://orcid.org/0000-0003-2528-8752
+  alias: dancingplasma
+
+- given-names: James
+  family-names: Addison
+  alias: jayaddison
+
+- given-names: Paula Valentina
+  family-names: Alarcon
+  affiliation: North Carolina State University
+  orcid: https://orcid.org/0000-0002-7860-9567
+  alias: pvalarcon
+
+- given-names: Benjamin
+  family-names: Antognetti
+  affiliation: University of Wisconsin–Madison
+  orcid: https://orcid.org/0000-0002-1444-9680
+  alias: broantognetti
+
+- given-names: Ataf Fazledin
+  family-names: Ahamed
+  affiliation: OpenRefactory Inc.
+  alias: fazledyn-or
 
 - given-names: Christoper
   family-names: Arran
@@ -85,6 +128,10 @@ authors:
   family-names: Bedmutha
   alias: manasbedmutha98
 
+- given-names: Camilo
+  family-names: Bedoya-Lopez
+  alias: Stray235
+
 - given-names: Justin
   family-names: Bergeron
   alias: Justin-Bergeron
@@ -102,16 +149,34 @@ authors:
 - given-names: Shane
   family-names: Brown
   affiliation: University of Delaware
+  orcid: https://orcid.org/0000-0003-3309-3939
   alias: Sjbrownian
 
 - given-names: Khalil
   family-names: Bryant
   affiliation: University of Michigan
+  orcid: https://orcid.org/0000-0002-2105-0280
   alias: KhalilBryant
+
+- alias: Bzero
 
 - given-names: Sean
   family-names: Carroll
   alias: seanwilliamcarroll
+
+- given-names: Carlos
+  family-names: Cartagena-Sanchez
+  affiliation: Beloit College
+  orcid: https://orcid.org/0000-0002-0486-1292
+  alias: cacsphysics
+
+- alias: CBrown345
+
+- given-names: Sarthak
+  family-names: Choudhary
+  alias: martha889
+
+- alias: cicciope
 
 - given-names: Christian
   family-names: Clauss
@@ -129,9 +194,26 @@ authors:
   family-names: Choubey
   alias: apooravc
 
+- given-names: Sebastian
+  family-names: Colom
+  email: sebastian.v.colom@nasa.gov
+  affiliation: NASA Ames Research Center
+  orcid: https://orcid.org/0009-0006-0863-0180
+  alias: Cool-Whiskers
+
+- given-names: Chase
+  family-names: Davies
+  alias: chasepd
+
 - given-names: Jacob
   family-names: Deal
   alias: Jac0bDeal
+
+- given-names: Gregor
+  family-names: Decristoforo
+  affiliation: UiT The Arctic University of Norway
+  orcid: https://orcid.org/0000-0002-7616-0946
+  alias: gregordecristoforo
 
 - given-names: Diego A.
   family-names: Diaz Riega
@@ -157,8 +239,16 @@ authors:
   family-names: Einhorn
   alias: leahein
 
+- given-names: Tamar
+  family-names: Ervin
+  affiliation: University of California, Berkeley
+  orcid: https://orcid.org/0000-0002-8475-8606
+  alias: tamarervin
+
 - given-names: Thomas
   family-names: Fan
+  affiliation: Quansight Labs
+  alias: thomasjpfan
 
 - given-names: Samaiyah I.
   family-names: Farid
@@ -173,15 +263,38 @@ authors:
 
 - given-names: Bryan
   family-names: Foo
+  affiliation: MIT
+  orcid: https://orcid.org/0000-0001-5308-6870
   alias: bryancfoo
+
+- given-names: Heinz-Alexander
+  family-names: Fütterer
+  orcid: https://orcid.org/0000-0003-4397-027X
+  alias: afuetterer
 
 - given-names: Rajagopalan
   family-names: Gangadharan
   alias: RAJAGOPALAN-GANGADHARAN
 
+- given-names: Seth
+  family-names: Gerow
+  affiliation: Embry-Riddle Aeronautical University
+  orcid: https://orcid.org/0009-0008-3588-0497
+  alias: s-gerow
+
+- given-names: Jessica
+  family-names: Gonzalez
+  affiliation: California Institute of Technology
+  alias: stinkymonke
+
 - given-names: Brian
   family-names: Goodall
   alias: goodab
+
+- given-names: Shauna
+  family-names: Gordon-McKeon
+  orcid: https://orcid.org/0000-0002-2373-8927
+  alias: shaunagm
 
 - given-names: Marco
   family-names: Gorelli
@@ -193,7 +306,12 @@ authors:
 
 - given-names: Silvina
   family-names: Guidoni
+  orcid: https://orcid.org/0000-0003-1439-4218
   affiliation: American University
+
+- given-names: Julia
+  family-names: Guimiot
+  alias: JuliaGuimiot
 
 - given-names: Colby
   family-names: Haggerty
@@ -204,6 +322,11 @@ authors:
 - given-names: Raymon Skjørten
   family-names: Hansen
   alias: raymonshansen
+
+- given-names: Mohammed
+  family-names: Haque
+  affiliation: Columbia University
+  alias: mohawk811
 
 - given-names: Julien
   family-names: Hillairet
@@ -227,13 +350,14 @@ authors:
 
 - given-names: Nabil
   family-names: Humphrey
+  orcid: https://orcid.org/0000-0002-4227-2544
   alias: NabilHumphrey
-
-- alias: itsraasshi
 
 - given-names: Maria
   family-names: Isupova
   alias: misupova
+
+- alias: itsraashi
 
 - given-names: Alexis
   family-names: Jeandet
@@ -241,32 +365,43 @@ authors:
   orcid: https://orcid.org/0000-0003-2892-6924
   alias: jeandet
 
-- given-names: Elliot
-  family-names: Johnson
-  affiliation: University of Delaware
-  alias: etjohnson
+- given-names: Evan
+  family-names: Jones
+  orcid: https://orcid.org/0009-0004-6699-4869
+  alias: E-W-Jones
 
 - given-names: Marcin
   family-names: Kastek
+  affiliation: Institute of Plasma Physics and Laser Microfusion
+  orcid: https://orcid.org/0009-0002-5918-4652
   alias: MKastek
 
 - given-names: James
   family-names: Kent
   alias: jdkent
 
-- given-names: Siddharth
-  family-names: Kulshrestha
-  alias: siddharthk07
-
-- given-names: Piotr
-  family-names: Kuszaj
-  alias: kuszaj
+- given-names: Dusan
+  family-names: Klima
+  orcid: https://orcid.org/0009-0008-5134-6171
+  alias: ironwod
 
 - given-names: Alf
   family-names: Köhn-Seemann
   affiliation: University of Stuttgart
   orcid: https://orcid.org/0000-0002-1192-2057
   alias: alfkoehn
+
+- given-names: Siddharth
+  family-names: Kulshrestha
+  alias: siddharthk07
+
+- given-names: Sundaran
+  family-names: Kumar
+  alias: daran9
+
+- given-names: Piotr
+  family-names: Kuszaj
+  alias: kuszaj
 
 - given-names: Samuel
   family-names: Langendorf
@@ -309,6 +444,11 @@ authors:
   family-names: Martinelli
   alias: JvPy
 
+- given-names: Muhammad
+  family-names: Masood
+  affiliation: University of Edinburgh
+  alias: MuhammadHMasood
+
 - given-names: Isaias
   family-names: McHardy
   orcid: https://orcid.org/0000-0001-5394-9445
@@ -337,13 +477,25 @@ authors:
 - given-names: Leo
   family-names: Murphy
   affiliation: College of William & Mary
-  alias: LeoMurphyWM24
+  alias: LeoMurphy037
 
 - given-names: Suzanne
   family-names: Nie
-  alias: suzannenie
+  alias: sznie
 
 - alias: nrb1234
+
+- given-names: Carlos
+  family-names: Ortiz
+  affiliation: University of Wisconsin–Madison
+  alias: ciortiz
+
+- given-names: Oscar
+  alias: 0scvr
+
+- given-names: Shivam
+  family-names: Panda
+  alias: Panda5130
 
 - given-names: Mahima
   family-names: Pannala
@@ -361,14 +513,20 @@ authors:
 
 - given-names: Francisco Silva
   family-names: Pavon
-  alias: silvafrancisco
-
-- given-names: Jakub
-  family-names: Polak
+  alias: silvapavon
 
 - given-names: Roberto Díaz
   family-names: Pérez
   alias: RoberTnf
+
+- given-names: Preston
+  family-names: Pitzer
+  affiliation: Virginia Tech
+  orcid: https://orcid.org/0009-0007-0655-1347
+  alias: PrestonPitzerVT
+
+- given-names: Jakub
+  family-names: Polak
 
 - given-names: Ramiz
   family-names: Qudsi
@@ -384,15 +542,17 @@ authors:
   family-names: Rajashekar
   affiliation: PES University
   orcid: https://orcid.org/0000-0002-4914-6612
-  alias: DarkAEther
+  alias: vrajashkr
 
 - given-names: Afzal
   family-names: Rao
   alias: thecasuist
 
-- given-names: Jayden
-  family-names: Roberts
-  alias: JaydenR2305
+- given-names: Jeffrey
+  family-names: Reep
+  affiliation: University of Hawaiʻi at Manoa
+  orcid: https://orcid.org/0000-0003-4739-1152
+  alias: jwreep
 
 - alias: seanjunheng2
 
@@ -401,6 +561,17 @@ authors:
   affiliation: U.S. Naval Research Laboratory
   orcid: https://orcid.org/0000-0002-3056-6334
   alias: arichar6
+
+- given-names: Jayden
+  family-names: Roberts
+  orcid: https://orcid.org/0009-0009-9490-5284
+  alias: JaydenR2305
+
+- given-names: Shanshan
+  family-names: Rodriguez
+  affiliation: Grinnell College
+  orcid: https://orcid.org/0000-0003-2944-0424
+  alias: slrodriguez
 
 - given-names: Reynaldo
   family-names: Rojas Zelaya
@@ -414,9 +585,12 @@ authors:
 
 - given-names: Antonia
   family-names: Savcheva
-  affiliation: Planetary Science Institute
   orcid: https://orcid.org/0000-0002-5598-046X
   alias: savcheva
+
+- given-names: Cora
+  family-names: Schneck
+  alias: cyschneck
 
 - given-names: Chengcai
   family-names: Shen
@@ -440,6 +614,7 @@ authors:
 
 - given-names: Trestan
   family-names: Simon
+  orcid: https://orcid.org/0009-0000-3029-8619
   alias: TrestanSimon
 
 - given-names: Angad
@@ -461,9 +636,28 @@ authors:
   affiliation: Phoenix Security Labs
   alias: cskinner74
 
+- given-names: Tomasz Adam
+  family-names: Skrzypczak
+  alias: tomasz-adam-skrzypczak
+
 - given-names: Nikita
   family-names: Smirnov
   alias: Nismirno
+
+- given-names: Joseph
+  family-names: Smith
+  affiliation: Marietta College
+  orcid: https://orcid.org/0000-0002-5978-6840
+  alias: josephrhsmith
+
+- given-names: Stuart
+  family-names: Sobeske
+  affiliation: University of Michigan
+  alias: Sobeskes
+
+- given-names: Matteo
+  family-names: Spedicato
+  alias: Spedi
 
 - given-names: David
   family-names: Stansby
@@ -475,18 +669,40 @@ authors:
   family-names: Stinson
   alias: 14tstinson
 
+- given-names: Shelley
+  family-names: Sugiharto
+  affiliation: Texas A&M University
+  orcid: https://orcid.org/0009-0003-3159-0541
+  alias: ShelleySugiharto
+
+- given-names: Michaela
+  family-names: Švancarová
+  alias: mysakli
+
 - given-names: Antoine
   family-names: Tavant
   affiliation: Centre Spatial de l'École Polytechnique
   alias: antoinetavant
 
+- given-names: Veronica
+  family-names: Tranquilino
+  affiliation: University of Michigan
+  alias: tranqver
+
 - given-names: Thomas
   family-names: Ulrich
   alias: Elfhelm
 
+- given-names: Mychal
+  family-names: Valle
+  affiliation: UCLA
+  orcid: https://orcid.org/0000-0003-4230-6916
+  alias: Mychal-Valle
+
 - given-names: Thomas
   family-names: Varnish
   affiliation: MIT
+  orcid: https://orcid.org/0000-0002-8078-214X
   alias: tvarnish
 
 - given-names: Tien
@@ -494,6 +710,8 @@ authors:
   affiliation: Laboratory for Atmospheric and Space Physics
   orcid: https://orcid.org/0000-0002-8335-1441
   alias: tien-vo
+
+- alias: WineDarkMoon
 
 - given-names: Tingfeng
   family-names: Wu
@@ -512,3 +730,19 @@ authors:
 - given-names: Carol
   family-names: Zhang
   alias: carolyz
+
+- given-names: Bao
+  family-names: Nguyen
+  affiliation: Imperial College London
+  orcid: https://orcid.org/0000-0002-1753-4223
+  alias: wnguyen1312
+
+- given-names: Emmanuel
+  family-names: Ferdman
+  orcid: https://orcid.org/0009-0004-8953-0151
+  alias: emmanuel-ferdman
+
+- given-names: Mahlet
+  family-names: Getahun
+  affiliation: Marietta College
+  alias: Getahun-yw-Mahl

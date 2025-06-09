@@ -1,0 +1,31 @@
+name: Documentation improvement 📚
+description: |
+  Share ideas on how to improve PlasmaPy's documentation.
+labels: [docs]
+body:
+- type: textarea
+  id: description
+  attributes:
+    label: Nature of improvement
+    description: >
+      What improvement should we make to PlasmaPy's documentation?
+  validations:
+    required: true
+
+- type: textarea
+  id: motivation
+  attributes:
+    label: Location of improvement
+    description: >
+      Which page and/or sections should we make this change? (optional)
+  validations:
+    required: false
+
+- type: textarea
+  id: additional-context
+  attributes:
+    label: Additional context
+    description: >
+      Please provide any additional helpful details here. (optional)
+  validations:
+    required: false

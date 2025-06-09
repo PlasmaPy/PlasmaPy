@@ -1,0 +1,172 @@
+PlasmaPy v2024.7.0 (2024-07-21)
+===============================
+
+New Features
+------------
+
+- Implemented `~plasmapy.particles.atomic.stopping_power` to calculate stopping
+  powers using the NIST's ASTAR and PSTAR data. (:pr:`2555`)
+- Added ionization energy data from NIST to the |Particle| class.
+  This can now be accessed using the
+  `~plasmapy.particles.particle_class.Particle.ionization_energy` attribute
+  from the |Particle| class. (:pr:`2657`)
+- Renamed the `~plasmapy.particles.particle_class.Particle.binding_energy`
+  attribute of |Particle| to
+  `~plasmapy.particles.particle_class.Particle.nuclear_binding_energy` to avoid
+  confusion with
+  `~plasmapy.particles.particle_class.Particle.electron_binding_energy`.
+  (:pr:`2693`)
+- Added electron binding energy data, relying on ionization energy data from
+  NIST, to the |Particle| class.
+  This can now be accessed using the
+  `~plasmapy.particles.particle_class.Particle.electron_binding_energy`
+  attribute
+  from the |Particle| class. (:pr:`2693`)
+- Added a ``return_interpolator`` keyword to
+  `~plasmapy.particles.atomic.stopping_power` to allow the user to specify the
+  return of an interpolator function (`~scipy.interpolate.CubicSpline` under
+  the hood). (:pr:`2712`)
+- Added the `~plasmapy.formulary.collisions.misc.Bethe_stopping` function to
+  the `~plasmapy.formulary.collisions` subpackage. (:pr:`2712`)
+- Added the ability to enable particle stopping in the |ParticleTracker|.
+  (:pr:`2712`)
+
+
+Documentation Improvements
+--------------------------
+
+- Updated the |coding guide| with information on |static type checking|
+  with |mypy|. (:pr:`2454`)
+- Updated the section in the |coding guide| about requirements and
+  dependencies. (:pr:`2720`)
+- Updated docstrings in `plasmapy.dispersion`. (:pr:`2735`)
+- Updated docstrings in `plasmapy.formulary.collisions`. (:pr:`2736`)
+- Updated docstrings in `plasmapy.formulary`. (:pr:`2737`)
+- Updated docstrings for `plasmapy.diagnostics` and `plasmapy.plasma.grids`.
+  (:pr:`2738`)
+- Added :file:`README.md` files in the :file:`src/plasmapy`, :file:`tests`,
+  :file:`docs`, :file:`type_stubs`, :file:`.github/content`,
+  :file:`.github/scripts`, and :file:`.github/workflows` directories. The
+  contents of these files now appear as local documentation for each of these
+  directories in |PlasmaPy's GitHub repository|. (:pr:`2742`)
+- Automated creation of the index file for the release changelogs. The page for
+  unreleased changes is included in the table of contents only if there are
+  unreleased changes. (:pr:`2754`)
+- Re-wrote the "Test independence and parametrization" section of the |testing
+  guide| to use extremely simple math. (:pr:`2763`)
+- Added functionality to generate a table of global substitutions in the
+  |documentation guide|. (:pr:`2766`)
+- Renamed :file:`docs/_cff_to_rst.py` to :file:`docs/_author_list_from_cff.py`.
+  (:pr:`2766`)
+- Based the version of PlasmaPy that gets included in development documentation
+  builds on the current date and most recent git hash. (:pr:`2775`)
+- Merged the release guide into the |coding guide|. (:pr:`2777`)
+- Added a new page to the |contributor guide| on |many ways to contribute| to
+  an open source project. (:pr:`2777`)
+- Updated the |coding guide|, |testing guide|, and |documentation guide|
+  within the |contributor guide|. (:pr:`2777`)
+- Moved the |contributor guide| section on example Jupyter notebooks from the
+  |coding guide| to the |documentation guide|. (:pr:`2777`)
+- Added ``sphinxemoji`` as a |Sphinx| extension. (:pr:`2781`)
+
+
+Backwards Incompatible Changes
+------------------------------
+
+- Added a ``__str__`` method to the |CustomParticle|
+  class that returns the symbol of the particle if provided, and
+  otherwise falls back to using ``__repr__``. (:pr:`2702`)
+- Changed default keyword argument for the ``fraction_exited_threshold`` in
+  `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography.Tracker`
+  and
+  `~plasmapy.simulation.particle_tracker.termination_conditions.AllParticlesOffGridTerminationCondition`
+  to correspond with the fraction of particles that have entered and
+  subsequently exited the grids. Previously this keyword was a misnomer,
+  causing the simulation to instead terminate when the specified fraction of
+  particles remaining on the grids was less than or equal to the provided
+  ``fraction_exited_threshold``. (:pr:`2712`)
+- Convert ``particle`` to a required argument of the
+  `~plasmapy.simulation.particle_tracker.particle_tracker.ParticleTracker.load_particles`
+  method of |ParticleTracker|. (:pr:`2746`)
+
+
+Bug Fixes
+---------
+
+- Enabled |validate_quantities| to be compatible with postponed evaluation of
+  annotations (see :pep:`563`). (:pr:`2479`, :pr:`2506`)
+- Changed the |charge number| (:math:`Z`) dependence of the ion contribution to
+  the optical Thomson scattering
+  spectral density function in
+  `~plasmapy.diagnostics.thomson.spectral_density_lite` from :math:`Z`
+  to :math:`z^2 / \bar{z}` to match Eq. 5.1.2 and following equations in
+  :cite:t:`sheffield:2011`.
+  The result is a small change in the ion acoustic wave spectrum for plasmas
+  with multiple ion species. (:pr:`2699`)
+- Added axes removed by `numpy.squeeze` to arrays in
+  `~plasmapy.dispersion.analytical.mhd_waves_` (:pr:`2715`)
+
+
+Internal Changes and Refactorings
+---------------------------------
+
+- Converted the tox environment for regenerating the requirements files
+  used in continuous integration checks to |Nox|. (:pr:`2664`)
+- Created a parametrized |Nox| session to run tests. (:pr:`2681`)
+- Added |Nox| sessions to test importing PlasmaPy, validating
+  :file:`CITATION.cff`,
+  and building a source distribution and wheel. (:pr:`2682`)
+- Switched the GitHub workflows for running tests from using tox environments
+  to using |Nox| sessions. (:pr:`2685`)
+- Added ``pytest-filter-subpackage`` to the ``tests`` dependency set. This
+  dependency enables
+  us to run, for example, ``pytest -P particles`` to invoke tests for
+  `plasmapy.particles`. (:pr:`2688`)
+- Added |Nox| sessions to run tests and build documentation against unreleased
+  versions
+  of major dependencies. (:pr:`2694`)
+- Deleted :file:`tox.ini`, since all tox environments defined therein
+  have been converted to |Nox| sessions. (:pr:`2694`)
+- Removed :file:`requirements.txt`, along with the requirements files
+  in :file:`ci_requirements/` that were used in tox environments
+  that have since been replaced with |Nox| sessions. (:pr:`2694`)
+- Switched over weekly tests to use |Nox| sessions rather than tox
+  environments. (:pr:`2694`)
+- Added the ``lint`` and ``manifest`` sessions for |Nox| to run |pre-commit| on
+  all files
+  and verify :file:`MANIFEST.in` with ``check-manifest``, respectively.
+  (:pr:`2695`)
+- Added a |Nox| session that invokes ``autotyping`` to automatically
+  add |type hint annotations|, using either the ``--safe`` or
+  ``--aggressive`` options. (:pr:`2696`)
+- Added ``typos`` as a |pre-commit| hook to perform spellchecking. (:pr:`2700`)
+- Added a condition to check if the GitHub API can be reached to be used by the
+  `~plasmapy.utils.data.downloader.Downloader` object. (:pr:`2710`)
+- Applied |type hint annotations| using ``autotyping``, and made other updates
+  to type
+  hint annotations and docstrings. (:pr:`2728`)
+- Added |type hint annotations| to `plasmapy.utils.roman`. (:pr:`2733`)
+- Added |type hint annotations| to ``plasmapy.utils._units_helpers``.
+  (:pr:`2734`)
+- Added a |Nox| session for building the changelog. (:pr:`2744`)
+- Added an experimental |Nox| session for adding |type hint annotations| using
+  `MonkeyType <https://github.com/Instagram/MonkeyType>`__.
+  This session creates a database of variable types from running pytest, and
+  then applies the observed types to a particular module. (:pr:`2747`)
+- Updated |Nox| sessions, including docstrings and troubleshooting messages.
+  (:pr:`2750`)
+- Enabled tests to pass with ``numpy == 2.0.0``. (:pr:`2772`)
+
+
+Additional Changes
+------------------
+
+- Refactored
+  `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography.Tracker`
+  to use |ParticleTracker|. (:pr:`2704`)
+- Included :file:`src/plasmapy/_version.py` in :file:`MANIFEST.in`. This file
+  is automatically generated using ``setuptools_scm``, but is necessary for the
+  version to be correct in the titles of pages in development documentation
+  builds. (:pr:`2756`)
+- Updated the comment that gets posted to new pull requests via a GitHub
+  workflow. (:pr:`2765`)
