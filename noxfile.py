@@ -14,7 +14,8 @@ The tests can be run with the following options:
 * "all": run all tests
 * "skipslow": run tests, except tests decorated with `@pytest.mark.slow`
 * "cov": run all tests with code coverage checks
-* "lowest-direct" : run all tests with lowest version of direct dependencies
+* "lowest-direct" : run all tests with lowest versions of direct dependencies
+* "lowest-direct-skipslow" : run non-slow tests with lowest versions of direct dependencies
 
 Doctests are run only for the most recent versions of Python and
 PlasmaPy dependencies, and not when code coverage checks are performed.
@@ -166,7 +167,11 @@ def requirements(session: nox.Session) -> None:
     # When silent is `True`, `session.run()` returns a multi-line string
     # with the standard output and standard error.
 
-    uv_output: str | bool = session.run(*uv_lock_upgrade, silent=running_on_ci)
+    uv_output: str | bool = session.run(
+        *uv_lock_upgrade,
+        *session.posargs,
+        silent=running_on_ci,
+    )
 
     if running_on_ci:
         session.log(uv_output)
@@ -224,6 +229,7 @@ test_specifiers: list = [
     nox.param("skip slow tests", id="skipslow"),
     nox.param("with code coverage", id="cov"),
     nox.param("lowest-direct", id="lowest-direct"),
+    nox.param("lowest-direct-skipslow", id="lowest-direct-skipslow"),
 ]
 
 
@@ -236,7 +242,7 @@ def tests(session: nox.Session, test_specifier: nox._parametrize.Param) -> None:
 
     options: list[str] = []
 
-    if test_specifier == "skip slow tests":
+    if test_specifier in {"skip slow tests", "lowest-direct-skipslow"}:
         options += skipslow
 
     if test_specifier == "with code coverage":
@@ -252,7 +258,7 @@ def tests(session: nox.Session, test_specifier: nox._parametrize.Param) -> None:
         session.env["GH_TOKEN"] = gh_token
 
     match test_specifier:
-        case "lowest-direct":
+        case "lowest-direct" | "lowest-direct-skipslow":
             session.install(".[tests]", "--resolution=lowest-direct")
         case _:
             # From https://nox.thea.codes/en/stable/cookbook.html#using-a-lockfile
@@ -348,6 +354,8 @@ def docs(session: nox.Session) -> None:
     Build documentation with Sphinx.
 
     This session may require installation of pandoc and graphviz.
+
+    Configuration file: docs/conf.py
     """
 
     if running_on_ci:
@@ -502,7 +510,11 @@ mypy error code. Please use sparingly!
 
 @nox.session(python=maxpython)
 def mypy(session: nox.Session) -> None:
-    """Perform static type checking."""
+    """
+    Perform static type checking.
+
+    Configuration file: mypy.ini
+    """
 
     session.install(uv_requirement)
     session.run_install(
@@ -621,6 +633,7 @@ def changelog(session: nox.Session, final: str) -> None:
         "--version",
         version,
         *options,
+        *session.posargs,
     )
 
     if final:
@@ -653,7 +666,7 @@ def autotyping(session: nox.Session, options: tuple[str, ...]) -> None:
     session.install(".[tests,docs]", "autotyping", "typing_extensions")
     DEFAULT_PATHS = ("src", "tests", "tools", "*.py", ".github", "docs/*.py")
     paths = session.posargs or DEFAULT_PATHS
-    session.run("python", "-m", "autotyping", *options, *paths)
+    session.run("python", "-m", "autotyping", *options, *paths, *session.posargs)
 
 
 @nox.session
@@ -716,7 +729,11 @@ def manifest(session: nox.Session) -> None:
 
 @nox.session
 def lint(session: nox.Session) -> None:
-    """Run all pre-commit hooks on all files."""
+    """
+    Run all pre-commit hooks on all files.
+
+    Configuration file: .pre-commit-config.yaml
+    """
     session.install("pre-commit")
     session.run(
         "pre-commit",
@@ -725,6 +742,38 @@ def lint(session: nox.Session) -> None:
         "--show-diff-on-failure",
         *session.posargs,
     )
+
+
+zizmor_troubleshooting_message = """
+
+🪧 Run this check locally with `nox -s zizmor` to find potential
+security vulnerabilities in GitHub workflows.
+
+📜 Audit rules: https://woodruffw.github.io/zizmor/audits
+
+🔗 If a reported potential vulnerability does not necessitate a fix,
+then either append a comment like `# zizmor: ignore[unpinned-uses]` to
+the reported line (replacing `unpinned-uses` with the audit rule code),
+or add the appropriate configuration settings to: .github/zizmor.yml
+"""
+
+
+@nox.session
+def zizmor(session: nox.Session) -> None:
+    """
+    Find common security issues in GitHub Actions.
+
+    Because some of the zizmor audit rules require a GitHub token,
+    running this check locally may produce different results than
+    running it in CI.
+
+    Configuration file: .github/zizmor.yml
+    """
+    if running_on_ci:
+        session.log(zizmor_troubleshooting_message)
+
+    session.install("zizmor")
+    session.run("zizmor", ".github", "--no-progress", "--color=auto", *session.posargs)
 
 
 # /// script
