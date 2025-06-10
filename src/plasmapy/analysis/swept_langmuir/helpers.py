@@ -1,6 +1,6 @@
 """Helper functions for analyzing swept Langmuir traces."""
 
-__all__ = ["check_sweep", "sort_sweep_arrays"]
+__all__ = ["check_sweep", "merge_voltage_clusters", "sort_sweep_arrays"]
 
 from typing import Literal
 
@@ -234,3 +234,98 @@ def sort_sweep_arrays(
         current = current[::-1]
 
     return voltage, current
+
+
+def merge_voltage_clusters(
+    voltage: np.ndarray,
+    current: np.ndarray,
+    voltage_step_size: float = None,
+    force_regular_grid: bool = False,
+):
+    # step_size = 0 (only merge identical voltages)
+    # None : calculate steps size as average of array step sizes
+
+    voltage, current = check_sweep(voltage, current)
+
+    if not isinstance(force_regular_grid, bool):
+        raise TypeError(
+            "Expected 'force_regular_grid' to be a bool, but got type "
+            f"{type(force_regular_grid)}."
+        )
+
+    if voltage_step_size is None:
+        voltage_step_size = np.abs(np.average(np.diff(voltage)))
+    elif voltage_step_size == 0:
+        voltage_step_size = 0.0
+    elif not isinstance(voltage_step_size, float):
+        raise TypeError(
+            "Expected 'voltage_step_size' to be a float or None, got type "
+            f"{type(voltage_step_size)}."
+        )
+    elif voltage_step_size < 0:
+        voltage_step_size = -voltage_step_size
+
+    voltage_ascending = bool(np.all(np.diff(voltage) >= 0))
+    if not voltage_ascending:
+        voltage, current = sort_sweep_arrays(voltage, current, voltage_order="ascending")
+
+    # now merge clusters
+    new_voltage = np.unique(voltage)
+    if voltage_step_size == 0 and new_voltage.size == voltage.size:
+        new_current = current.copy()
+    elif voltage_step_size == 0:
+        new_current = np.empty_like(new_voltage, dtype=current.dtype)
+
+        for ii in range(new_voltage.size):
+            mask = voltage == new_voltage[ii]
+            if np.count_nonzero(mask) == 1:
+                new_current[ii] = current[mask]
+            else:
+                new_current[ii] = np.average(current[mask])
+    else:
+        new_voltage = np.empty_like(voltage, dtype=voltage.dtype)
+        new_voltage[...] = np.nan
+        new_current = np.empty_like(current, dtype=current.dtype)
+        new_current[...] = np.nan
+
+        start_voltage = voltage[0]
+        stop_voltage = start_voltage + voltage_step_size
+
+        ii = 0
+        while start_voltage <= voltage[-1]:
+            mask1 = voltage >= start_voltage
+            mask2 = voltage < stop_voltage
+            mask = np.logical_and(mask1, mask2)
+
+            if np.count_nonzero(mask) > 0:
+                new_voltage[ii] = (
+                    start_voltage + 0.5 * voltage_step_size if force_regular_grid
+                    else np.average(voltage[mask])
+                )
+                new_current[ii] = np.average(current[mask])
+
+                ii += 1
+
+            start_voltage = stop_voltage
+            stop_voltage = start_voltage + voltage_step_size
+
+        # filter out NaN values
+        new_voltage = new_voltage[:ii]
+        new_current = new_current[:ii]
+
+        # force regular spacing
+        if force_regular_grid:
+            # Need to fill array with NaN values to force the regular spacing
+            ...
+
+    if not voltage_ascending:
+        voltage, current = sort_sweep_arrays(voltage, current, voltage_order="descending")
+        new_voltage, new_current = sort_sweep_arrays(
+            new_voltage, new_current, voltage_order="descending"
+        )
+    else:
+        new_voltage, new_current = sort_sweep_arrays(
+            new_voltage, new_current, voltage_order="ascending"
+        )
+
+    return new_voltage, new_current
