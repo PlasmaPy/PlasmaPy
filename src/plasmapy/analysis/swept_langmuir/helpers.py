@@ -10,28 +10,36 @@ def check_sweep(  # noqa: C901, PLR0912
     voltage: np.ndarray,
     current: np.ndarray,
     strip_units: bool = True,
+    allow_unsorted: bool = False,
 ) -> tuple[np.ndarray, np.ndarray]:
     """
-    Function for checking that the voltage and current arrays are properly
-    formatted for analysis by `plasmapy.analysis.swept_langmuir`.
+    Function for checking that the voltage and current arrays are
+    properly formatted for analysis by
+    `plasmapy.analysis.swept_langmuir`.
 
     Parameters
     ----------
     voltage: `numpy.ndarray`
-        1D `numpy.ndarray` representing the voltage of the swept Langmuir trace.
-        Voltage should be monotonically increasing.  *No units are assumed or
-        checked, but values should be in volts.*
+        1D `numpy.ndarray` representing the voltage of the swept
+        Langmuir trace. Voltage should be monotonically increasing.
+        *No units are assumed or checked, but values should be in
+        volts.*
 
     current: `numpy.ndarray`
-        1D `numpy.ndarray` representing the current of the swept Langmuir trace.
-        Values should start from a negative ion-saturation current and increase
-        to a positive electron-saturation current.  *No units are assumed or
-        checked, but values should be in amperes.*
+        1D `numpy.ndarray` representing the current of the swept
+        Langmuir trace.  Values should start from a negative
+        ion-saturation current and increase to a positive
+        electron-saturation current.  *No units are assumed or checked,
+        but values should be in amperes.*
 
     strip_units: `bool`
-        (Default: `True`) If `True`, then the units on ``voltage`` and/or
-        ``current`` will be stripped if either are passed in as an Astropy
-        `~astropy.units.Quantity`.
+        (Default: `True`) If `True`, then the units on ``voltage``
+        and/or ``current`` will be stripped if either are passed in as
+        an Astropy `~astropy.units.Quantity`.
+
+    allow_unsorted: `bool`
+        (Default: `False`) If `True`, then the supplied ``voltage``
+        array must be monotonically increasing.
 
     Returns
     -------
@@ -93,7 +101,7 @@ def check_sweep(  # noqa: C901, PLR0912
             f"Expected 1D numpy array for voltage, but got array with "
             f"{voltage.ndim} dimensions.",
         )
-    elif not np.all(np.diff(voltage) >= 0):
+    elif not np.all(np.diff(voltage) >= 0) and not allow_unsorted:
         raise ValueError("The voltage array is not monotonically increasing.")
 
     if isinstance(voltage, u.Quantity) and strip_units:
