@@ -1,9 +1,11 @@
 """Helper functions for analyzing swept Langmuir traces."""
 
-__all__ = ["check_sweep"]
+__all__ = ["check_sweep", "sort_sweep_arrays"]
 
 import astropy.units as u
 import numpy as np
+
+from typing import Literal
 
 
 def check_sweep(  # noqa: C901, PLR0912
@@ -151,5 +153,27 @@ def check_sweep(  # noqa: C901, PLR0912
 
     if isinstance(current, u.Quantity) and strip_units:
         current = current.value
+
+    return voltage, current
+
+
+def sort_sweep_arrays(
+    voltage: np.ndarray,
+    current: np.ndarray,
+    voltage_order: Literal["ascending", "descending"] = "ascending",
+) -> tuple[np.ndarray, np.ndarray]:
+    if voltage_order not in ["ascending", "descending"]:
+        raise ValueError()
+
+    voltage, current = check_sweep(
+        voltage, current, strip_units=True, allow_unsorted=True
+    )
+
+    index_sort = np.argsort(voltage)
+    if voltage_order == "descending":
+        index_sort = index_sort[::-1]
+
+    voltage = voltage[index_sort]
+    current = current[index_sort]
 
     return voltage, current
