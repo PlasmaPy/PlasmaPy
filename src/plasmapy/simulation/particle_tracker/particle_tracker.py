@@ -552,12 +552,16 @@ class ParticleTracker:
         I: list[u.Quantity[u.J] | None] | None = None,  # noqa: E741
     ):
         r"""
-        Enable particle stopping using experimental stopping powers.
+        Enable particle stopping in cold matter using the Bethe formula or experimental stopping powers.
 
-        Interpolation of stopping powers is conducted using data from the NIST
-        PSTAR database. This information is combined with the mass density
-        quantity provided in the grids to calculate the energy loss over the
-        distance travelled during a timestep.
+        When the method parameter is set to 'NIST', interpolation of stopping
+        powers is conducted using data from the NIST PSTAR database. This
+        information is combined with the mass density quantity provided in the
+        grids to calculate the energy loss over the distance travelled during a
+        timestep.
+
+        When the method parameter is set to 'Bethe', the simulation will use the
+        relativistic Bethe stopping formula. See `~plasmapy.formulary.collisions.misc.Bethe_stopping` for more details.
 
         Parameters
         ----------
