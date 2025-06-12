@@ -2,10 +2,10 @@
 
 __all__ = ["check_sweep", "sort_sweep_arrays"]
 
+from typing import Literal
+
 import astropy.units as u
 import numpy as np
-
-from typing import Literal
 
 
 def check_sweep(  # noqa: C901, PLR0912
