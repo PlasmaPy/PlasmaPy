@@ -162,8 +162,16 @@ def sort_sweep_arrays(
     current: np.ndarray,
     voltage_order: Literal["ascending", "descending"] = "ascending",
 ) -> tuple[np.ndarray, np.ndarray]:
-    if voltage_order not in ["ascending", "descending"]:
-        raise ValueError()
+    if not isinstance(voltage_order, str):
+        raise TypeError(
+            "Expected 'voltage_order' to be a string equal to 'ascending' "
+            f"or 'descending', but got type {type(voltage_order)}."
+        )
+    elif voltage_order not in ["ascending", "descending"]:
+        raise ValueError(
+            "Expected 'voltage_order' to be a string equal to 'ascending' "
+            f"or 'descending', but got '{voltage_order}'."
+        )
 
     voltage, current = check_sweep(
         voltage, current, strip_units=True, allow_unsorted=True
