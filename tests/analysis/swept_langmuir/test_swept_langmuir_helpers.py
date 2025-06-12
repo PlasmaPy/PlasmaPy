@@ -163,6 +163,14 @@ from plasmapy.analysis.swept_langmuir.helpers import check_sweep
             does_not_raise(),
             (np.linspace(-40.0, 40, 100), np.linspace(-10.0, 30, 100)),
         ),
+        # -- allow_unsorted == True --
+        (
+            30.0 * np.random.rand(100) - 20.0,
+            np.linspace(-10.0, 30, 100),
+            {"allow_unsorted": True},
+            does_not_raise(),
+            "expected same as inputs",
+        ),
     ],
 )
 def test_check_sweep(voltage, current, kwargs, with_context, expected) -> None:
