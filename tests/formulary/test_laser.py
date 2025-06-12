@@ -5,7 +5,7 @@ import numpy as np
 import pytest
 from astropy.tests.helper import assert_quantity_allclose
 
-from plasmapy.formulary.laser import E0_, electric_field_amplitude
+from plasmapy.formulary.laser import E0_, I_, electric_field_amplitude, intensity
 
 
 @pytest.mark.parametrize(
@@ -50,8 +50,47 @@ def test_electric_field_amplitude_warnings(intensity, expected_warning) -> None:
     ("alias", "parent"),
     [
         (E0_, electric_field_amplitude),
+        (I_, intensity),
     ],
 )
 def test_aliases(alias, parent) -> None:
     """Test all aliases defined in laser.py"""
     assert alias is parent
+
+
+@pytest.mark.parametrize(
+    ("electric_field_amplitude", "expected"),
+    [
+        (0.8680211 * u.V / u.m, 1e-3 * u.watt / u.m**2),
+        ([0.8680211, 0] * u.V / u.m, [1, 0] * u.milliWatt / u.m**2),
+        (np.nan * u.V / u.m, np.nan * u.watt / u.m**2),
+    ],
+)
+@pytest.mark.filterwarnings("ignore::astropy.units.UnitsWarning")
+def test_intensity(electric_field_amplitude, expected) -> None:
+    result = intensity(electric_field_amplitude=electric_field_amplitude)
+    assert_quantity_allclose(result, expected, rtol=1e-6, equal_nan=True, verbose=True)
+    assert result.unit == u.Watt / u.m**2
+
+
+@pytest.mark.parametrize(
+    ("electric_field_amplitude", "expected"),
+    [
+        (-5e4 * u.V / u.m, ValueError),
+        (1 * u.kg, u.UnitTypeError),
+    ],
+)
+def test_intensity_errors(electric_field_amplitude, expected) -> None:
+    with pytest.raises(expected):
+        intensity(electric_field_amplitude=electric_field_amplitude)
+
+
+@pytest.mark.parametrize(
+    ("electric_field_amplitude", "expected_warning"),
+    [
+        (5, u.UnitsWarning),
+    ],
+)
+def test_intensity_warnings(electric_field_amplitude, expected_warning) -> None:
+    with pytest.warns(expected_warning):
+        intensity(electric_field_amplitude=electric_field_amplitude)
