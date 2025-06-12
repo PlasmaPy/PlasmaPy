@@ -162,6 +162,37 @@ def sort_sweep_arrays(
     current: np.ndarray,
     voltage_order: Literal["ascending", "descending"] = "ascending",
 ) -> tuple[np.ndarray, np.ndarray]:
+    """
+    Sort the swept langmuir ``voltage`` and ``current`` traces to
+    ensure the ``voltage`` array is either monotonically increasing or
+    decreasing.
+
+    Parameters
+    ----------
+    voltage: `numpy.ndarray`
+        1D `numpy.ndarray` representing the voltage of the swept
+        Langmuir trace.  *No units are assumed or checked, but values
+        should be in volts.*
+
+    current: `numpy.ndarray`
+        1D `numpy.ndarray` representing the current of the swept
+        Langmuir trace.  Values should start from a negative
+        ion-saturation current and increase to a positive
+        electron-saturation current.  *No units are assumed or checked,
+        but values should be in amperes.*
+
+    voltage_order: `str`
+        Either 'ascending' or 'descending' to indicate how the
+        ``voltage`` array should be sorted.  (DEFAULT: ``'ascending'``)
+
+    Returns
+    -------
+    voltage : `numpy.ndarray`
+        Sorted ``voltage`` array.
+
+    current : `numpy.ndarray`
+        Matched ``current`` array to the sorted ``voltage`` array.
+    """
     if not isinstance(voltage_order, str):
         raise TypeError(
             "Expected 'voltage_order' to be a string equal to 'ascending' "
