@@ -140,11 +140,11 @@ wheels = [
 
 [[package]]
 name = "astropy-iers-data"
-version = "0.2025.6.9.0.39.3"
+version = "0.2025.6.9.14.9.37"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/3d/33/fedbe8157e47ca0f85b752f5cd8285fba15498999c807074342bcbc6486a/astropy_iers_data-0.2025.6.9.0.39.3.tar.gz", hash = "sha256:4f8d0b0325187700a8bb5a8adaeae3570303fdb070537580936a08272e6d2d8d", size = 1903806, upload-time = "2025-06-09T00:39:46.998Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/05/e8/53e07cc2caa39247917f92f0874794a9451e4e0825c63818bafbc3bca737/astropy_iers_data-0.2025.6.9.14.9.37.tar.gz", hash = "sha256:d2281011e650ab9a9012405601a6ce4fad8754ce3025cfe6b9c81e4c2ac794a4", size = 1899652, upload-time = "2025-06-09T14:10:16.218Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/39/18/83a74b38e1cfd2291f43daf0cf9ea59cd8dd8ded912c2e56141e6224d708/astropy_iers_data-0.2025.6.9.0.39.3-py3-none-any.whl", hash = "sha256:76855f5572707b8d25f77a0ede2b330b7ef9863bc963e3eda86321e4e32df802", size = 1956961, upload-time = "2025-06-09T00:39:45.072Z" },
+    { url = "https://files.pythonhosted.org/packages/ea/32/ff50513caf194e33fad927a49b3ac2ddd2a1827c7d957f71250ff86a319c/astropy_iers_data-0.2025.6.9.14.9.37-py3-none-any.whl", hash = "sha256:03ff93fd659630eb75019be5e4519f01cf7f09448eea4e6b6745b7405d461812", size = 1955083, upload-time = "2025-06-09T14:10:14.828Z" },
 ]
 
 [[package]]
@@ -1608,7 +1608,6 @@ docs = [
     { name = "sphinx-collapse" },
     { name = "sphinx-copybutton" },
     { name = "sphinx-gallery" },
-    { name = "sphinx-hoverxref" },
     { name = "sphinx-issues" },
     { name = "sphinx-notfound-page" },
     { name = "sphinx-reredirects" },
@@ -1671,7 +1670,6 @@ requires-dist = [
     { name = "sphinx-collapse", marker = "extra == 'docs'", specifier = ">=0.1.3" },
     { name = "sphinx-copybutton", marker = "extra == 'docs'", specifier = ">=0.5.2" },
     { name = "sphinx-gallery", marker = "extra == 'docs'", specifier = ">=0.16" },
-    { name = "sphinx-hoverxref", marker = "extra == 'docs'", specifier = ">=1.4" },
     { name = "sphinx-issues", marker = "extra == 'docs'", specifier = ">=4.1" },
     { name = "sphinx-notfound-page", marker = "extra == 'docs'", specifier = ">=1.0.2" },
     { name = "sphinx-reredirects", marker = "extra == 'docs'", specifier = ">=0.1.5" },
@@ -2111,7 +2109,7 @@ wheels = [
 
 [[package]]
 name = "requests"
-version = "2.32.3"
+version = "2.32.4"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "certifi" },
@@ -2119,9 +2117,9 @@ dependencies = [
     { name = "idna" },
     { name = "urllib3" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/63/70/2bf7780ad2d390a8d301ad0b550f1581eadbd9a20f896afe06353c2a2913/requests-2.32.3.tar.gz", hash = "sha256:55365417734eb18255590a9ff9eb97e9e1da868d4ccd6402399eaf68af20a760", size = 131218, upload-time = "2024-05-29T15:37:49.536Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/e1/0a/929373653770d8a0d7ea76c37de6e41f11eb07559b103b1c02cafb3f7cf8/requests-2.32.4.tar.gz", hash = "sha256:27d0316682c8a29834d3264820024b62a36942083d52caf2f14c0591336d3422", size = 135258, upload-time = "2025-06-09T16:43:07.34Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/f9/9b/335f9764261e915ed497fcdeb11df5dfd6f7bf257d4a6a2a686d80da4d54/requests-2.32.3-py3-none-any.whl", hash = "sha256:70761cfe03c773ceb22aa2f671b4757976145175cdfca038c02654d061d6dcc6", size = 64928, upload-time = "2024-05-29T15:37:47.027Z" },
+    { url = "https://files.pythonhosted.org/packages/7c/e4/56027c4a6b4ae70ca9de302488c5ca95ad4a39e190093d6c1a8ace08341b/requests-2.32.4-py3-none-any.whl", hash = "sha256:27babd3cda2a6d50b30443204ee89830707d396671944c998b5975b031ac2b2c", size = 64847, upload-time = "2025-06-09T16:43:05.728Z" },
 ]
 
 [[package]]
@@ -2427,19 +2425,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/cd/e5/9ccd6ecd492043123adb465cba504217b9f0a82e2cb5b1d7249c648497c6/sphinx_gallery-0.19.0.tar.gz", hash = "sha256:8400cb5240ad642e28a612fdba0667f725d0505a9be0222d0243de60e8af2eb3", size = 471479, upload-time = "2025-02-13T03:24:50.081Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/77/c7/52b48aec16b26c52aba854d03a3a31e0681150301dac1bea2243645a69e7/sphinx_gallery-0.19.0-py3-none-any.whl", hash = "sha256:4c28751973f81769d5bbbf5e4ebaa0dc49dff8c48eb7f11131eb5f6e4aa25f0e", size = 455923, upload-time = "2025-02-13T03:24:47.697Z" },
-]
-
-[[package]]
-name = "sphinx-hoverxref"
-version = "1.4.2"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "sphinx" },
-    { name = "sphinxcontrib-jquery" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/d6/6d/89764d3c719ed172d94778a74661cca647b2475165ae6cde1f73c9524d63/sphinx_hoverxref-1.4.2.tar.gz", hash = "sha256:74fab961b1b8c0e9c2cf22fa195c0e783d635e78686d39dd06ff157c196ca0c9", size = 1715764, upload-time = "2024-11-18T18:01:34.965Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/19/3b/d981175d7b9bbbcf6894faf640d15198394efc7dedd6182332c4a791a5a6/sphinx_hoverxref-1.4.2-py2.py3-none-any.whl", hash = "sha256:4fc2e283e908d9df61ea9196589934944a7e2e6e3cb753a420b938cd6d14e220", size = 32198, upload-time = "2024-11-18T18:01:31.473Z" },
 ]
 
 [[package]]
