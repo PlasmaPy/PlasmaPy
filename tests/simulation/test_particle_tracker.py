@@ -13,7 +13,6 @@ from hypothesis import given, settings
 from hypothesis import strategies as st
 from scipy.optimize import fsolve
 
-from plasmapy.formulary.collisions.misc import Mott_Bethe_mean_squared_scattering
 from plasmapy.formulary.frequencies import gyrofrequency
 from plasmapy.formulary.lengths import gyroradius
 from plasmapy.formulary.relativity import RelativisticBody
