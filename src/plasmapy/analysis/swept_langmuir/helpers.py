@@ -141,8 +141,8 @@ def check_sweep(  # noqa: C901, PLR0912
         )
     elif current[0] > 0.0 or current[-1] < 0.0:
         raise ValueError(
-            "The current array needs to start from a negative ion-saturation current"
-            " to a positive electron-saturation current."
+            "The current array needs to start from a negative ion-saturation "
+            "current to a positive electron-saturation current."
         )
 
     if voltage.size != current.size:
