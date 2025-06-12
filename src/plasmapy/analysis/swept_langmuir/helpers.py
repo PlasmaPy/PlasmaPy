@@ -179,61 +179,164 @@ def sort_sweep_arrays(
     return voltage, current
 
 
+def _nan_stuff_regular_grid(
+    voltage: np.ndarray,
+    current: np.ndarray,
+    voltage_step_size: float,
+) -> tuple[np.ndarray, np.ndarray]:
+    size = int(np.round((voltage[-1] - voltage[0]) / voltage_step_size)) + 1
+    reg_voltage = np.linspace(voltage[0], voltage[-1], num=size, dtype=voltage.dtype)
+
+    _, reg_indices, new_indices = np.intersect1d(
+        np.round(reg_voltage, decimals=5),
+        np.round(voltage, decimals=5),
+        return_indices=True,
+    )
+    mask = np.ones_like(reg_voltage, dtype=bool)
+    mask[reg_indices] = False
+    reg_voltage[mask] = np.nan
+
+    reg_current = np.full(size, np.nan, dtype=current.dtype)
+    reg_current[np.logical_not(mask)] = current[...]
+
+    return reg_voltage, reg_current
+
+
 def merge_voltage_clusters(
     voltage: np.ndarray,
     current: np.ndarray,
     voltage_step_size: float = None,
-    force_regular_grid: bool = False,
-):
-    # step_size = 0 (only merge identical voltages)
-    # None : calculate steps size as average of array step sizes
-
-    voltage, current = check_sweep(voltage, current)
-
-    if not isinstance(force_regular_grid, bool):
+    force_regular_spacing: bool = False,
+) -> tuple[np.ndarray, np.ndarray]:
+    # condition force_regular_grid
+    if not isinstance(force_regular_spacing, bool):
         raise TypeError(
-            "Expected 'force_regular_grid' to be a bool, but got type "
-            f"{type(force_regular_grid)}."
+            "Expected 'force_regular_spacing' to be a bool, but got type "
+            f"{type(force_regular_spacing)}."
         )
 
-    if voltage_step_size is None:
-        voltage_step_size = np.abs(np.average(np.diff(voltage)))
-    elif voltage_step_size == 0:
-        voltage_step_size = 0.0
-    elif not isinstance(voltage_step_size, float):
+    # condition voltage_step_size
+    if (
+        voltage_step_size is not None
+        and not isinstance(voltage_step_size, (float, np.floating, int, np.integer))
+    ):
         raise TypeError(
             "Expected 'voltage_step_size' to be a float or None, got type "
             f"{type(voltage_step_size)}."
         )
+    elif isinstance(voltage_step_size, (int, np.integer)):
+        voltage_step_size = float(voltage_step_size)
+
+    voltage, current = check_sweep(voltage, current)
+
+    # check if grid is regularly spaced
+    voltage_diff = np.diff(voltage)
+    mask_zero_diff = np.isclose(voltage_diff, 0.0)
+    if np.count_nonzero(mask_zero_diff) > 0:
+        is_regular_grid = False
+    elif np.allclose(voltage_diff, voltage_diff[0]):
+        # grid is already regularly spaced
+        is_regular_grid = True
+    elif np.allclose(
+        np.rint(voltage_diff / np.min(voltage_diff))
+        - voltage_diff / np.min(voltage_diff),
+        0,
+    ):
+        # grid has a common dV, but at times jumps N * dV times
+        if force_regular_spacing and (voltage_step_size is None or voltage_step_size == 0):
+            # need to stuff with NaN values
+            voltage, current = _nan_stuff_regular_grid(
+                voltage=voltage,
+                current=current,
+                voltage_step_size=np.min(voltage_diff),
+            )
+        is_regular_grid = True
+    else:
+        is_regular_grid = False
+
+    # return if voltage is already regularly spaced and no voltage merging is
+    # requested
+    if is_regular_grid and (voltage_step_size is None or voltage_step_size == 0):
+        return voltage.copy(), current.copy()
+
+    # condition voltage_step_size ... Round 2
+    if voltage_step_size is None:
+        voltage_step_size = np.abs(
+            np.average(voltage_diff[np.logical_not(mask_zero_diff)])
+        )
+    elif voltage_step_size == 0:
+        voltage_step_size = 0.0
     elif voltage_step_size < 0:
         voltage_step_size = -voltage_step_size
 
-    voltage_ascending = bool(np.all(np.diff(voltage) >= 0))
+    # ensure voltage is ascending for calculation
+    voltage_ascending = bool(np.all(voltage_diff >= 0))
     if not voltage_ascending:
         voltage, current = sort_sweep_arrays(voltage, current, voltage_order="ascending")
 
     # now merge clusters
-    new_voltage = np.unique(voltage)
-    if voltage_step_size == 0 and new_voltage.size == voltage.size:
+    voltage_diff = np.diff(voltage)
+    if voltage_step_size != 0 and np.all(voltage_diff >= voltage_step_size):
+        new_voltage = voltage.copy()
         new_current = current.copy()
-    elif voltage_step_size == 0:
-        new_current = np.empty_like(new_voltage, dtype=current.dtype)
 
-        for ii in range(new_voltage.size):
-            mask = voltage == new_voltage[ii]
-            if np.count_nonzero(mask) == 1:
-                new_current[ii] = current[mask]
-            else:
-                new_current[ii] = np.average(current[mask])
+        if force_regular_spacing:
+            size = int(
+                np.round((new_voltage[-1] - new_voltage[0]) / voltage_step_size)
+            ) + 1
+            reg_voltage = np.linspace(
+                new_voltage[0], new_voltage[-1], num=size, dtype=new_voltage.dtype
+            )
+            reg_current = np.interp(reg_voltage, new_voltage, new_current)
+
+            new_voltage = reg_voltage
+            new_current = reg_current
+    elif voltage_step_size == 0:
+        voltage_diff = np.diff(voltage)
+        mask_zero_diff = np.isclose(voltage_diff, 0.0)
+        mask_zero_diff = np.append(mask_zero_diff, [mask_zero_diff[-1]])
+
+        new_voltage = np.full(voltage.shape, np.nan, dtype=voltage.dtype)
+        new_current = np.full(current.shape, np.nan, dtype=current.dtype)
+
+        mask = np.logical_not(mask_zero_diff)
+        new_voltage[mask] = voltage[mask]
+        new_current[mask] = current[mask]
+
+        while np.any(mask_zero_diff):
+            volt = voltage[mask_zero_diff][0]
+            index = np.where(new_voltage == volt)[0]
+            if len(index) == 0:
+                index = np.where(mask_zero_diff)[0]
+
+            index = index[0]
+            volt_mask = np.isclose(voltage, volt)
+
+            new_voltage[index] = volt
+            new_current[index] = np.average(current[volt_mask])
+
+            mask_zero_diff[volt_mask] = False
+
+        # remove nan entries
+        mask = np.logical_not(np.isnan(new_voltage))
+        new_voltage = new_voltage[mask]
+        new_current = new_current[mask]
+
+        if force_regular_spacing:
+            new_voltage, new_current = merge_voltage_clusters(
+                voltage=new_voltage,
+                current=new_current,
+                voltage_step_size=voltage_step_size,
+            )
+
     else:
-        new_voltage = np.empty_like(voltage, dtype=voltage.dtype)
-        new_voltage[...] = np.nan
-        new_current = np.empty_like(current, dtype=current.dtype)
-        new_current[...] = np.nan
+        new_voltage = np.full(voltage.shape, np.nan, dtype=voltage.dtype)
+        new_current = np.full(current.shape, np.nan, dtype=current.dtype)
 
         start_voltage = voltage[0]
         stop_voltage = start_voltage + voltage_step_size
 
+        # populate
         ii = 0
         while start_voltage <= voltage[-1]:
             mask1 = voltage >= start_voltage
@@ -242,7 +345,7 @@ def merge_voltage_clusters(
 
             if np.count_nonzero(mask) > 0:
                 new_voltage[ii] = (
-                    start_voltage + 0.5 * voltage_step_size if force_regular_grid
+                    start_voltage + 0.5 * voltage_step_size if force_regular_spacing
                     else np.average(voltage[mask])
                 )
                 new_current[ii] = np.average(current[mask])
@@ -250,25 +353,24 @@ def merge_voltage_clusters(
                 ii += 1
 
             start_voltage = stop_voltage
-            stop_voltage = start_voltage + voltage_step_size
+            stop_voltage += voltage_step_size
 
-        # filter out NaN values
+        # crop new arrays
         new_voltage = new_voltage[:ii]
         new_current = new_current[:ii]
 
-        # force regular spacing
-        if force_regular_grid:
+        if force_regular_spacing:
             # Need to fill array with NaN values to force the regular spacing
-            ...
+            new_voltage, new_current = _nan_stuff_regular_grid(
+                voltage=new_voltage,
+                current=new_current,
+                voltage_step_size=voltage_step_size,
+            )
 
     if not voltage_ascending:
-        voltage, current = sort_sweep_arrays(voltage, current, voltage_order="descending")
-        new_voltage, new_current = sort_sweep_arrays(
-            new_voltage, new_current, voltage_order="descending"
-        )
-    else:
-        new_voltage, new_current = sort_sweep_arrays(
-            new_voltage, new_current, voltage_order="ascending"
-        )
+        voltage = voltage[::-1]
+        current = current[::-1]
+        new_voltage = new_voltage[::-1]
+        new_current = new_current[::-1]
 
     return new_voltage, new_current
