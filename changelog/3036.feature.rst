@@ -1,0 +1,1 @@
+Added functions for wavelength/angular frequency, Gaussian beam calculations and normalized vector potential to `plasmapy.formulary.laser`.
