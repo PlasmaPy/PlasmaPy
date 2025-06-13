@@ -18,6 +18,7 @@ __all__ = [
     "wavelength",
 ]
 __aliases__ = [
+    "a0_",
     "omega_",
     "E0_",
     "I_",
