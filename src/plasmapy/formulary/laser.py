@@ -230,7 +230,7 @@ omega_ = angular_frequency
 def normalized_vector_potential(
     intensity: u.Quantity[u.watt / u.m**2],
     wavelength: u.Quantity[u.m],
-) -> u.Quantity[u.dimensionless]:
+) -> u.Quantity[u.dimensionless_unscaled]:
     r"""
     Calculate the normalized vector potential :math:`a_0` from the intensity :math:`I`
     and the wavelength :math:`\lambda`.
@@ -440,8 +440,8 @@ FWHM_ = Gaussian_spot_size_FWHM
     beam_waist_radius={"can_be_negative": False},
 )
 def Gaussian_Rayleigh_length(
-    wavelength={"can_be_negative": False},
-    beam_waist_radius={"can_be_negative": False},
+    wavelength: u.Quantity[u.m],
+    beam_waist_radius: u.Quantity[u.m],
 ) -> u.Quantity[u.m]:
     r"""
     Calculate the Rayleigh length :math:`z_R` from the beam waist radius :math:`\w_0`
