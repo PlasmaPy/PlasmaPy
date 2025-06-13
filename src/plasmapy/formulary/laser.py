@@ -227,7 +227,9 @@ def angular_frequency(wavelength: u.Quantity[u.m]) -> u.Quantity[u.rad / u.s]:
     >>> angular_frequency(800 * u.nm)
     <Quantity 2.35456446e+15 rad / s>
     """
-    return ((c / wavelength) * 2 * np.pi).to(u.rad / u.s, equivalencies = u.dimensionless_angles())
+    return ((c / wavelength) * 2 * np.pi).to(
+        u.rad / u.s, equivalencies=u.dimensionless_angles()
+    )
 
 
 omega_ = angular_frequency
@@ -272,7 +274,7 @@ def normalized_vector_potential(
 
     Notes
     -----
-    For details, see :cite:t:`gibbon:2016`\ . 
+    For details, see :cite:t:`gibbon:2016`\ .
 
     Examples
     --------
