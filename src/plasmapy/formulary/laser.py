@@ -226,7 +226,7 @@ def angular_frequency(wavelength: u.Quantity[u.m]) -> u.Quantity[u.rad / u.s]:
     >>> angular_frequency(800 * u.nm)
     <Quantity 2.354307546e15 rad / s>
     """
-    return ((c / wavelength) * 2 * np.pi).to(u.rad / u.s)
+    return ((c / wavelength) * 2 * np.pi).to(u.rad / u.s, equivalencies = u.dimensionless_angles())
 
 
 omega_ = angular_frequency
@@ -277,7 +277,7 @@ def normalized_vector_potential(
     --------
     >>> import astropy.units as u
     >>> normalized_vector_potential(1e18 * u.watt / u.cm**2, 1 * u.um)
-    <Quantity 0.8549297014170079>
+    <Quantity 0.8549297>
     """
 
     a0 = (e * wavelength * np.sqrt(intensity / (2 * eps0 * c**5))) / (m_e * np.pi)
@@ -332,7 +332,7 @@ def Gaussian_power(
     --------
     >>> import astropy.units as u
     >>> Gaussian_power(1e18 * u.watt / u.cm**2, 1 * u.um)  # Total beam power
-    <Quantity 15707963267.948967 W>
+    <Quantity 1.57079633e+10 W>
     """
 
     return (1 / 2) * intensity * np.pi * beam_waist**2
