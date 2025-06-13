@@ -332,7 +332,7 @@ P0_ = Gaussian_Power
 
 
 @validate_quantities(
-    spot_size_FWHM: u.Quantity[u.m],
+    spot_size_FWHM={"can_be_negative": False},
 )
 def Gaussian_beam_waist_radius(
     spot_size_FWHM: u.Quantity[u.m]
@@ -385,7 +385,7 @@ w0_ = Gaussian_beam_waist_radius
 
 
 @validate_quantities(
-    beam_waist_radius: u.Quantity[u.m],
+    beam_waist_radius={"can_be_negative": False},
 )
 def Gaussian_spot_size_FWHM(
     beam_waist_radius: u.Quantity[u.m]
