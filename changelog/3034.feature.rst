@@ -1,4 +1,4 @@
 .. currentmodule:: plasmapy.analysis.swept_langmuir
 
-Added helper function `~helper.sort_sweep_arrays` to the
-`~plasmapy.analysis.swept_analysis` module.
+Added helper function `~helpers.sort_sweep_arrays` to the
+`~plasmapy.analysis.swept_langmuir` module.
