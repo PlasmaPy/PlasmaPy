@@ -5,7 +5,25 @@ import numpy as np
 import pytest
 from astropy.tests.helper import assert_quantity_allclose
 
-from plasmapy.formulary.laser import E0_, I_, electric_field_amplitude, intensity
+from plasmapy.formulary.laser import (
+    E0_,
+    I_, 
+    P0_,
+    electric_field_amplitude, 
+    intensity, 
+    Gaussian_power,
+    Gaussian_beam_waist,
+    Gaussian_spot_size_FWHM,
+    wavelength,
+    angular_frequency,
+    normalized_vector_potential,
+    Gaussian_Rayleigh_length,
+    zR_,
+    a0_,
+    lambda_,
+    omega_,
+    w0_,
+    FWHM_,) 
 
 
 @pytest.mark.parametrize(
@@ -51,6 +69,13 @@ def test_electric_field_amplitude_warnings(intensity, expected_warning) -> None:
     [
         (E0_, electric_field_amplitude),
         (I_, intensity),
+        (P0_, Gaussian_power),
+        (w0_, Gaussian_beam_waist),
+        (FWHM_, Gaussian_spot_size_FWHM),
+        (lambda_, wavelength),
+        (omega_, angular_frequency),
+        (a0_, normalized_vector_potential),
+        (zR_, Gaussian_Rayleigh_length),
     ],
 )
 def test_aliases(alias, parent) -> None:
@@ -94,3 +119,285 @@ def test_intensity_errors(electric_field_amplitude, expected) -> None:
 def test_intensity_warnings(electric_field_amplitude, expected_warning) -> None:
     with pytest.warns(expected_warning):
         intensity(electric_field_amplitude=electric_field_amplitude)
+
+
+@pytest.mark.parametrize(
+    ("intensity", "beam_waist", "expected"),
+    [
+        (1e-3 * u.watt / u.m**2, 1e-6 * u.m, 1.5707963267948967e-15 * u.Watt),
+        ([1, 1e21] * u.milliWatt / u.m**2, [1, 1] * u.um, [1.5707963267948967e-15, 1570796.3267948967] * u.Watt),
+        ([1, 1] * u.milliWatt / u.m**2, [1, 10] * u.um, [1.5707963267948967e-15, 1.5707963267948967e-13] * u.Watt),
+        (1 * u.milliWatt / u.m**2, [1, 10] * u.um, [1.5707963267948967e-15, 1.5707963267948967e-13] * u.Watt),
+        ([1, 1e21] * u.milliWatt / u.m**2, 1 * u.um, [1.5707963267948967e-15, 1570796.3267948967] * u.Watt),
+        (0 * u.watt / u.m**2, 1e-6 * u.m, 0 * u.Watt),
+        (1e-3 * u.watt / u.m**2, 0 * u.m, 0 * u.Watt),
+        (np.nan * u.watt / u.m**2, np.nan * u.m, np.nan * u.V / u.m),
+    ],
+)
+@pytest.mark.filterwarnings("ignore::astropy.units.UnitsWarning")
+def test_Gausian_power(intensity, beam_waist, expected) -> None:
+    result = Gaussian_power(intensity=intensity,beam_waist=beam_waist)
+    assert_quantity_allclose(result, expected, rtol=1e-6, equal_nan=True, verbose=True)
+    assert result.unit == u.Watt
+
+
+@pytest.mark.parametrize(
+    ("intensity", "beam_waist", "expected"),
+    [
+        (-5e4 * u.Watt / u.m**2, 2*u.m, ValueError),
+        (5e4 * u.Watt / u.m**2, -2*u.m, ValueError),
+        (1 * u.kg, 3 * u.s, u.UnitTypeError),
+    ],
+)
+def test_Gaussian_Power_errors(intensity, beam_waist, expected) -> None:
+    with pytest.raises(expected):
+        Gaussian_power(intensity=intensity,beam_waist=beam_waist)
+
+
+@pytest.mark.parametrize(
+    ("intensity", "beam_waist", "expected_warning"),
+    [
+        (5, 2 * u.um, u.UnitsWarning),
+        (5 * u.Watt/u.m**2, 2, u.UnitsWarning)
+    ],
+)
+def test_electric_field_amplitude_warnings(intensity, beam_waist, expected_warning) -> None:
+    with pytest.warns(expected_warning):
+        Gaussian_power(intensity=intensity,beam_waist=beam_waist)
+        
+        
+@pytest.mark.parametrize(
+    ("spot_size_FWHM", "expected"),
+    [
+        (8.242e-6 * u.m, 7e-6 *u.m),
+        ([8.242, 0] * u.um, [7e-6, 0] * u.m),
+        (np.nan * u.m, np.nan * u.m),
+    ],
+)
+@pytest.mark.filterwarnings("ignore::astropy.units.UnitsWarning")
+def test_Gaussian_beam_waist(spot_size_FWHM, expected) -> None:
+    result = Gaussian_beam_waist(spot_size_FWHM=spot_size_FWHM)
+    assert_quantity_allclose(result, expected, rtol=1e-6, equal_nan=True, verbose=True)
+    assert result.unit == u.m
+
+
+@pytest.mark.parametrize(
+    ("spot_size_FWHM", "expected"),
+    [
+        (-5e4 * u.m, ValueError),
+        (1 * u.kg, u.UnitTypeError),
+    ],
+)
+def test_Gaussian_beam_waist(spot_size_FWHM, expected) -> None:
+    with pytest.raises(expected):
+        Gaussian_beam_waist(spot_size_FWHM=spot_size_FWHM)
+
+@pytest.mark.parametrize(
+    ("spot_size_FWHM", "expected_warning"),
+    [
+        (5, u.UnitsWarning),
+    ],
+)
+def test_Gaussian_beam_waist(spot_size_FWHM, expected_warning) -> None:
+    with pytest.warns(expected_warning):
+        Gaussian_beam_waist(spot_size_FWHM=spot_size_FWHM)
+
+ 
+@pytest.mark.parametrize(
+    ("beam_waist", "expected"),
+    [
+        (7e-6 * u.m, 8.242e-6 *u.m),
+        ([7, 0] * u.um, [8.242e-6, 0] * u.m),
+        (np.nan * u.m, np.nan * u.m),
+    ],
+)
+@pytest.mark.filterwarnings("ignore::astropy.units.UnitsWarning")
+def test_Gaussian_spot_size_FWHM(beam_waist, expected) -> None:
+    result = Gaussian_spot_size_FWHM(beam_waist=beam_waist)
+    assert_quantity_allclose(result, expected, rtol=1e-6, equal_nan=True, verbose=True)
+    assert result.unit == u.m
+
+
+@pytest.mark.parametrize(
+    ("beam_waist", "expected"),
+    [
+        (-5e4 * u.m, ValueError),
+        (1 * u.kg, u.UnitTypeError),
+    ],
+)
+def test_Gaussian_spot_size_FWHM(beam_waist, expected) -> None:
+    with pytest.raises(expected):
+         Gaussian_spot_size_FWHM(beam_waist=beam_waist)
+
+@pytest.mark.parametrize(
+    ("beam_waist", "expected_warning"),
+    [
+        (5, u.UnitsWarning),
+    ],
+)
+def test_Gaussian_spot_size_FWHM(beam_waist, expected_warning) -> None:
+    with pytest.warns(expected_warning):
+        Gaussian_spot_size_FWHM(beam_waist=beam_waist)
+        
+       
+@pytest.mark.parametrize(
+    ("angular_frequency", "expected"),
+    [
+        (2.354307546e15 * u.rad / u.s, 800e-9 *u.m),
+        ([2.354307546, 0] * u.Prad/u.s, [800e-9, 0] * u.m),
+        (np.nan * u.rad/u.s, np.nan * u.m),
+    ],
+)
+@pytest.mark.filterwarnings("ignore::astropy.units.UnitsWarning")
+def test_wavelength(angular_frequency, expected) -> None:
+    result = wavelength(angular_frequency=angular_frequency)
+    assert_quantity_allclose(result, expected, rtol=1e-6, equal_nan=True, verbose=True)
+    assert result.unit == u.m
+
+
+@pytest.mark.parametrize(
+    ("angular_frequency", "expected"),
+    [
+        (-5e4 * u.rad/u.s, ValueError),
+        (1 * u.kg, u.UnitTypeError),
+    ],
+)
+def test_wavelength(angular_frequency, expected) -> None:
+    with pytest.raises(expected):
+        wavelength(angular_frequency=angular_frequency)
+
+@pytest.mark.parametrize(
+    ("angular_frequency", "expected_warning"),
+    [
+        (5, u.UnitsWarning),
+    ],
+)
+def test_wavelength(angular_frequency, expected_warning) -> None:
+    with pytest.warns(expected_warning):
+        wavelength(angular_frequency=angular_frequency)
+   
+       
+@pytest.mark.parametrize(
+    ("wavelength", "expected"),
+    [
+        (800e-9 *u.m, 2.354307546e15 * u.rad / u.s),
+        ([800, 0] * u.nm, [2.354307546e15, 0] * u.rad/u.s),
+        (np.nan * u.m, np.nan * u.rad/u.s),
+    ],
+)
+@pytest.mark.filterwarnings("ignore::astropy.units.UnitsWarning")
+def test_angular_frequency(wavelength, expected) -> None:
+    result = angular_frequency(wavelength=wavelength)
+    assert_quantity_allclose(result, expected, rtol=1e-6, equal_nan=True, verbose=True)
+    assert result.unit == u.rad/u.sec
+
+
+@pytest.mark.parametrize(
+    ("wavelength", "expected"),
+    [
+        (-5e4 * u.m, ValueError),
+        (1 * u.kg, u.UnitTypeError),
+    ],
+)
+def test_angular_frequency(wavelength, expected) -> None:
+    with pytest.raises(expected):
+        angular_frequency(wavelength=wavelength)
+
+@pytest.mark.parametrize(
+    ("wavelength", "expected_warning"),
+    [
+        (5, u.UnitsWarning),
+    ],
+)
+def test_angular_frequency(wavelength, expected_warning) -> None:
+    with pytest.warns(expected_warning):
+        angular_frequency(wavelength=wavelength)
+        
+
+       
+@pytest.mark.parametrize(
+    ("intensity", "wavelength", "expected"),
+    [
+        (1e-3 * u.watt / u.m**2, 800e-9 *u.m, 2.162820076644342e-13),
+        ([1,1e-3] * u.milliWatt/m**2, [800, 800] * u.nm, [2.162820076644342e-13,6.839437611336064e-15]),
+        ([1,1] * u.milliWatt/m**2, [800, 650] * u.nm, [2.162820076644342e-13,1.7572913122735275e-13]),
+        ([1,1e-3] * u.milliWatt/m**2, 800 * u.nm, [2.162820076644342e-13,6.839437611336064e-15]),
+        (1 * u.milliWatt/m**2, [800, 650] * u.nm, [2.162820076644342e-13,1.7572913122735275e-13]),
+        (0 * u.watt / u.m**2, 800e-9 *u.m, 0),
+        (1e-3 * u.watt / u.m**2,0 *u.m, 0),
+        (np.nan * u.Watt/u.m**2, np.nan * u.m, np.nan),
+    ],
+)
+@pytest.mark.filterwarnings("ignore::astropy.units.UnitsWarning")
+def test_normalized_vector_potential(intensity, wavelength, expected) -> None:
+    result = normalized_vector_potential(intensity=intensity,wavelength=wavelength)
+    assert_quantity_allclose(result, expected, rtol=1e-6, equal_nan=True, verbose=True)
+    assert result.unit == u.dimensionless
+
+
+@pytest.mark.parametrize(
+    ("intensity", "wavelength", "expected"),
+    [
+        (-5e-3 * u.Watt/u.m, -5e4 * u.m, ValueError),
+        (7 * u.s, 1 * u.kg, u.UnitTypeError),
+    ],
+)
+def test_normalized_vector_potential(intensity, wavelength, expected) -> None:
+    with pytest.raises(expected):
+        normalized_vector_potential(intensity=intensity,wavelength=wavelength)
+
+@pytest.mark.parametrize(
+    ("wavelength", "expected_warning"),
+    [
+        (3, 5, u.UnitsWarning),
+    ],
+)
+def test_normalized_vector_potential(intensity,wavelength, expected_warning) -> None:
+    with pytest.warns(expected_warning):
+        normalized_vector_potential(intensity=intensity, wavelength=wavelength)
+        
+        
+
+@pytest.mark.parametrize(
+    ("wavelength", "beam_waist", "expected"),
+    [
+        (800e-9 * u.m, 1e-6 * u.m, 3.926990816987241e-06 u.m),
+        ([800, 650] * u.nm, [1, 1] * u.um, [3.926990816987241e-06, 4.8332194670612195e-06] * u.m),
+        ([800, 800] * u.nm, [1, 20] * u.um, [3.926990816987241e-06, 0.0015707963267948962] * u.m),
+        ([800, 650] * u.nm, 1 * u.um, [3.926990816987241e-06, 4.8332194670612195e-06] * u.m),
+        (800 * u.nm, [1, 20] * u.um, [3.926990816987241e-06, 0.0015707963267948962] * u.m),
+        (800e-9 * u.m, 0 * u.m, 0 u.m),
+        (0 * u.m, 1e-6 * u.m, np.inf * u.m),
+        (np.nan * u.m, np.nan * u.m, np.nan * u.m),
+    ],
+)
+@pytest.mark.filterwarnings("ignore::astropy.units.UnitsWarning")
+def test_Gaussian_Rayleigh_length(wavelength, beam_waist, expected) -> None:
+    result = Gaussian_Rayleigh_length(wavelength=wavelength,beam_waist=beam_waist)
+    assert_quantity_allclose(result, expected, rtol=1e-6, equal_nan=True, verbose=True)
+    assert result.unit == u.m
+
+
+@pytest.mark.parametrize(
+    ("wavelength", "beam_waist", "expected"),
+    [
+        (-5e4 * u.m, 2*u.m, ValueError),
+        (5e4 * u.m, -2*u.m, ValueError),
+        (1 * u.kg, 3 * u.s, u.UnitTypeError),
+    ],
+)
+def test_Gaussian_Rayleigh_length(wavelength, beam_waist, expected) -> None:
+    with pytest.raises(expected):
+        Gaussian_Rayleigh_length(wavelength=wavelength,beam_waist=beam_waist)
+
+
+@pytest.mark.parametrize(
+    ("wavelength", "beam_waist", "expected_warning"),
+    [
+        (5 * u.m, 2, u.UnitsWarning),
+        (5, 2 * u.m, u.UnitsWarning),
+    ],
+)
+def test_Rayleigh_length_warnings(wavelength, beam_waist, expected_warning) -> None:
+    with pytest.warns(expected_warning):
+        Gaussian_Rayleigh_length(wavelength=wavelength,beam_waist=beam_waist)
