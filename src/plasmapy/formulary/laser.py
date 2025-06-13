@@ -224,7 +224,7 @@ def angular_frequency(wavelength: u.Quantity[u.m]) -> u.Quantity[u.rad / u.s]:
     --------
     >>> import astropy.units as u
     >>> angular_frequency(800 * u.nm)
-    <Quantity 2.354307546e15 rad / s>
+    <Quantity 2.35456446e+15 rad / s>
     """
     return ((c / wavelength) * 2 * np.pi).to(u.rad / u.s, equivalencies = u.dimensionless_angles())
 
@@ -271,7 +271,7 @@ def normalized_vector_potential(
 
     Notes
     -----
-    For details, see :cite:t:`Gibbon 2019`\ . #check date!!!!
+    For details, see :cite:t:`Gibbon 2016`\ . 
 
     Examples
     --------
@@ -326,7 +326,7 @@ def Gaussian_power(
 
     Notes
     -----
-    For details, see :wikipedia:t:`Gaussian beam`\ .
+    For details, see :wikipedia:`Gaussian beam`\ .
 
     Examples
     --------
@@ -379,7 +379,7 @@ def Gaussian_beam_waist_radius(spot_size_FWHM: u.Quantity[u.m]) -> u.Quantity[u.
 
     Notes
     -----
-    For details, see :wikipedia:t:`Gaussian beam`\ .
+    For details, see :wikipedia:`Gaussian beam`\ .
 
     Examples
     --------
@@ -428,7 +428,7 @@ def Gaussian_spot_size_FWHM(beam_waist_radius: u.Quantity[u.m]) -> u.Quantity[u.
 
     Notes
     -----
-    For details, see :wikipedia:t:`Gaussian beam`\ .
+    For details, see :wikipedia:`Gaussian beam`\ .
 
     Examples
     --------
@@ -482,7 +482,7 @@ def Gaussian_Rayleigh_length(
 
     Notes
     -----
-    For details, see :wikipedia:t:`Rayleigh Length`\ .
+    For details, see :wikipedia:`Rayleigh Length`\ .
 
     Examples
     --------
