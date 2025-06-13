@@ -2,10 +2,10 @@
 
 __all__ = ["check_sweep", "merge_voltage_clusters", "sort_sweep_arrays"]
 
+from typing import Literal
+
 import astropy.units as u
 import numpy as np
-
-from typing import Literal
 
 
 def check_sweep(  # noqa: C901, PLR0912
@@ -162,19 +162,76 @@ def sort_sweep_arrays(
     current: np.ndarray,
     voltage_order: Literal["ascending", "descending"] = "ascending",
 ) -> tuple[np.ndarray, np.ndarray]:
-    if voltage_order not in ["ascending", "descending"]:
-        raise ValueError()
+    """
+    Sort the swept langmuir ``voltage`` and ``current`` traces to
+    ensure the ``voltage`` array is either monotonically increasing or
+    decreasing.
+
+    Parameters
+    ----------
+    voltage: `numpy.ndarray`
+        1D `numpy.ndarray` representing the voltage of the swept
+        Langmuir trace.  *No units are assumed or checked, but values
+        should be in volts.*
+
+    current: `numpy.ndarray`
+        1D `numpy.ndarray` representing the current of the swept
+        Langmuir trace.  Values should start from a negative
+        ion-saturation current and increase to a positive
+        electron-saturation current.  *No units are assumed or checked,
+        but values should be in amperes.*
+
+    voltage_order: `str`
+        Either 'ascending' or 'descending' to indicate how the
+        ``voltage`` array should be sorted.  (DEFAULT: ``'ascending'``)
+
+    Returns
+    -------
+    voltage : `numpy.ndarray`
+        Sorted ``voltage`` array.
+
+    current : `numpy.ndarray`
+        Matched ``current`` array to the sorted ``voltage`` array.
+    """
+    if not isinstance(voltage_order, str):
+        raise TypeError(
+            "Expected 'voltage_order' to be a string equal to 'ascending' "
+            f"or 'descending', but got type {type(voltage_order)}."
+        )
+    elif voltage_order not in ["ascending", "descending"]:
+        raise ValueError(
+            "Expected 'voltage_order' to be a string equal to 'ascending' "
+            f"or 'descending', but got '{voltage_order}'."
+        )
 
     voltage, current = check_sweep(
         voltage, current, strip_units=True, allow_unsorted=True
     )
 
-    index_sort = np.argsort(voltage)
-    if voltage_order == "descending":
-        index_sort = index_sort[::-1]
+    # determine order
+    voltage_diff = np.diff(voltage)
+    if np.all(voltage_diff >= 0):
+        _order = "ascending"
+    elif np.all(voltage_diff <= 0):
+        _order = "descending"
+    else:
+        _order = None
 
-    voltage = voltage[index_sort]
-    current = current[index_sort]
+    if _order == voltage_order:
+        # already ordered
+        return voltage, current
+
+    # perform sorting
+    if _order is None:
+        index_sort = np.argsort(voltage)
+        if voltage_order == "descending":
+            index_sort = index_sort[::-1]
+
+        voltage = voltage[index_sort]
+        current = current[index_sort]
+    else:
+        voltage = voltage[::-1]
+        current = current[::-1]
 
     return voltage, current
 
