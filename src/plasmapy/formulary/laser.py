@@ -17,11 +17,20 @@ __all__ = [
     "Gaussian_spot_size_FWHM",
     "wavelength",
 ]
-__aliases__ = ["omega_","E0_", "I_","w0_", "P0_", "zR_", "FWHM_", "lambda_",]
+__aliases__ = [
+    "omega_",
+    "E0_",
+    "I_",
+    "w0_",
+    "P0_",
+    "zR_",
+    "FWHM_",
+    "lambda_",
+]
 
 import astropy.units as u
 import numpy as np
-from astropy.constants.si import c, eps0, m_e, e
+from astropy.constants.si import c, e, eps0, m_e
 
 from plasmapy.utils.decorators import validate_quantities
 
@@ -127,12 +136,11 @@ def intensity(
 I_ = intensity
 """Alias to `~plasmapy.formulary.laser.intensity`."""
 
+
 @validate_quantities(
     angular_frequency={"can_be_negative": False},
 )
-def wavelength(
-    angular_frequency: u.Quantity[u.rad / u.s]
-) -> u.Quantity[u.m]:
+def wavelength(angular_frequency: u.Quantity[u.rad / u.s]) -> u.Quantity[u.m]:
     r"""
     Calculate the wavelength of a laser :math:`\lambda` given the
     the angular frequency :math:`\omega`.
@@ -152,6 +160,7 @@ def wavelength(
     ----------
     angular_frequency : `~astropy.units.Quantity`
         angular frequency of the laser beam (convertible to rad / s).
+
     Returns
     -------
     wavelength : `~astropy.units.Quantity`
@@ -167,7 +176,9 @@ def wavelength(
     >>> wavelength(2.354307546e15 * u.rad / u.s)
     <Quantity 8e-07 m>
     """
-    return (2 * np.pi * c /angular_frequency).to(u.m, equivalencies=u.dimensionless_angles())
+    return (2 * np.pi * c / angular_frequency).to(
+        u.m, equivalencies=u.dimensionless_angles()
+    )
 
 
 lambda_ = wavelength
@@ -177,9 +188,7 @@ lambda_ = wavelength
 @validate_quantities(
     wavelength={"can_be_negative": False},
 )
-def angular_frequency(
-    wavelength: u.Quantity[u.m]
-) -> u.Quantity[u.rad / u.s]:
+def angular_frequency(wavelength: u.Quantity[u.m]) -> u.Quantity[u.rad / u.s]:
     r"""
     Calculate the angular frequency :math:`\omega` of a laser given the
     the wavelength of the beam :math:`\lambda`.
@@ -201,6 +210,7 @@ def angular_frequency(
     ----------
     wavelength : `~astropy.units.Quantity`
         wavelength of the laser beam (convertible to nm).
+
     Returns
     -------
     omega_0 : `~astropy.units.Quantity`
@@ -216,7 +226,7 @@ def angular_frequency(
     >>> angular_frequency(800 * u.nm)
     <Quantity 2.354307546e15 rad / s>
     """
-    return ((c/wavelength) * 2 * np.pi).to(u.rad/u.s)
+    return ((c / wavelength) * 2 * np.pi).to(u.rad / u.s)
 
 
 omega_ = angular_frequency
@@ -270,8 +280,9 @@ def normalized_vector_potential(
     <Quantity 0.8549297014170079>
     """
 
-    a0 = (e * wavelength * np.sqrt(intensity/ (2 * eps0 * c **5)))/(m_e * np.pi)
+    a0 = (e * wavelength * np.sqrt(intensity / (2 * eps0 * c**5))) / (m_e * np.pi)
     return a0.to("")
+
 
 a0_ = normalized_vector_potential
 """Alias to `~plasmapy.formulary.laser.normalized_vector_potential`."""
@@ -320,11 +331,11 @@ def Gaussian_power(
     Examples
     --------
     >>> import astropy.units as u
-    >>> Gaussian_power(1e18 * u.watt/u.cm**2, 1 * u.um)  # Total beam power
+    >>> Gaussian_power(1e18 * u.watt / u.cm**2, 1 * u.um)  # Total beam power
     <Quantity 15707963267.948967 W>
     """
 
-    return (1 / 2) * intensity * np.pi * beam_waist ** 2
+    return (1 / 2) * intensity * np.pi * beam_waist**2
 
 
 P0_ = Gaussian_power
@@ -334,9 +345,7 @@ P0_ = Gaussian_power
 @validate_quantities(
     spot_size_FWHM={"can_be_negative": False},
 )
-def Gaussian_beam_waist_radius(
-    spot_size_FWHM: u.Quantity[u.m]
-) -> u.Quantity[u.m]:
+def Gaussian_beam_waist_radius(spot_size_FWHM: u.Quantity[u.m]) -> u.Quantity[u.m]:
     r"""
     Calculate the beam waist radius :math:`w_0` for the intensity profile
     of a Gaussian beam given the Full Width at Half Maximum spot size :math:`FWHM`.
@@ -358,6 +367,7 @@ def Gaussian_beam_waist_radius(
     ----------
     spot_size_FWHM : `~astropy.units.Quantity`
         Full Width at Half Maximum spot size of the Gaussian beam (convertible to m).
+
     Returns
     -------
     w_0 : `~astropy.units.Quantity`
@@ -387,9 +397,7 @@ w0_ = Gaussian_beam_waist_radius
 @validate_quantities(
     beam_waist_radius={"can_be_negative": False},
 )
-def Gaussian_spot_size_FWHM(
-    beam_waist_radius: u.Quantity[u.m]
-) -> u.Quantity[u.m]:
+def Gaussian_spot_size_FWHM(beam_waist_radius: u.Quantity[u.m]) -> u.Quantity[u.m]:
     r"""
     Calculate the Full Width at Half Maximum spot size :math:`FWHM` at focus given the
     beam waist radius of a Gaussian beam :math:`w_0`.
@@ -408,6 +416,7 @@ def Gaussian_spot_size_FWHM(
     ----------
     beam_waist_radius : `~astropy.units.Quantity`
         beam waist radius of the Gaussian beam (convertible to nm).
+
     Returns
     -------
     FWHM : `~astropy.units.Quantity`
@@ -434,7 +443,7 @@ FWHM_ = Gaussian_spot_size_FWHM
 """Alias to `~plasmapy.formulary.laser.Gaussian_spot_size_FWHM`."""
 
 
-#use kwargs
+# use kwargs
 @validate_quantities(
     wavelength={"can_be_negative": False},
     beam_waist_radius={"can_be_negative": False},
@@ -482,7 +491,7 @@ def Gaussian_Rayleigh_length(
     <Quantity 3.927e-06 m>
     """
 
-    return (np.pi * beam_waist_radius **2) / wavelength
+    return (np.pi * beam_waist_radius**2) / wavelength
 
 
 zR_ = Gaussian_Rayleigh_length
