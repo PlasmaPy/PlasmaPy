@@ -7,17 +7,17 @@ Functions for calculating quantities associated with laser pulses.
 """
 
 __all__ = [
-    "angular_frequency"
+    "angular_frequency",
     "electric_field_amplitude",
     "intensity",
-    "normalized_vector_potential"
+    "normalized_vector_potential",
     "Gaussian_beam_waist_radius",
-    "Gaussian_power"
+    "Gaussian_power",
     "Gaussian_Rayleigh_length",
     "Gaussian_spot_size_FWHM",
     "wavelength",
 ]
-__aliases__ = ["omega_","E0_", "I_","w0_", "P0_", "zR_", "FWHM_", "lambda_"]
+__aliases__ = ["omega_","E0_", "I_","w0_", "P0_", "zR_", "FWHM_", "lambda_",]
 
 import astropy.units as u
 import numpy as np
@@ -128,7 +128,7 @@ I_ = intensity
 """Alias to `~plasmapy.formulary.laser.intensity`."""
 
 @validate_quantities(
-    angular_frequency: u.Quantity[u.rad / u.s],
+    angular_frequency={"can_be_negative": False},
 )
 def wavelength(
     angular_frequency: u.Quantity[u.rad / u.s]
