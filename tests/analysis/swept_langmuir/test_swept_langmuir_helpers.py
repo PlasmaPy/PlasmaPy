@@ -255,10 +255,13 @@ def test_check_sweep(voltage, current, kwargs, with_context, expected) -> None:
     ],
 )
 def test_sort_sweep_arrays(voltage, current, kwargs, with_context, expected) -> None:
-    with with_context, mock.patch(
-        "plasmapy.analysis.swept_langmuir.helpers.check_sweep",
-        wraps=check_sweep,
-    ) as mock_check_sweep:
+    with (
+        with_context,
+        mock.patch(
+            "plasmapy.analysis.swept_langmuir.helpers.check_sweep",
+            wraps=check_sweep,
+        ) as mock_check_sweep,
+    ):
         rtn_voltage, rtn_current = sort_sweep_arrays(
             voltage=voltage,
             current=current,
