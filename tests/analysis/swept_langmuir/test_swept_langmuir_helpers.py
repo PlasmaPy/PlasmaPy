@@ -166,7 +166,7 @@ from plasmapy.analysis.swept_langmuir.helpers import check_sweep, sort_sweep_arr
         ),
         # -- allow_unsorted == True --
         (
-            30.0 * np.random.rand(100) - 20.0,
+            30.0 * np.random.default_rng().random(100) - 20.0,
             np.linspace(-10.0, 30, 100),
             {"allow_unsorted": True},
             does_not_raise(),
