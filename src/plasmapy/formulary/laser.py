@@ -21,7 +21,7 @@ __aliases__ = ["omega_","E0_", "I_","w0_", "P0_", "zR_", "FWHM_", "lambda_",]
 
 import astropy.units as u
 import numpy as np
-from astropy.constants.si import c, eps0, m_e
+from astropy.constants.si import c, eps0, m_e, e
 
 from plasmapy.utils.decorators import validate_quantities
 
@@ -167,8 +167,8 @@ def wavelength(
     >>> wavelength(2.354307546e15 * u.rad / u.s)
     <Quantity 8e-07 m>
     """
-    wavelength = (2 * np.pi * c /angular_frequency).to("")
-    return wavelength
+    return (2 * np.pi * c /angular_frequency).to(u.m, equivalencies=u.dimensionless_angles())
+
 
 lambda_ = wavelength
 """Alias to `~plasmapy.formulary.laser.wavelength`."""
@@ -216,8 +216,8 @@ def angular_frequency(
     >>> angular_frequency(800 * u.nm)
     <Quantity 2.354307546e15 rad / s>
     """
-    omega = ((c/wavelength) * 2 * np.pi).to(u.rad/u.s)
-    return omega
+    return ((c/wavelength) * 2 * np.pi).to(u.rad/u.s)
+
 
 omega_ = angular_frequency
 """Alias to `~plasmapy.formulary.laser.angular_frequency`."""
@@ -281,7 +281,7 @@ a0_ = normalized_vector_potential
     intensity={"can_be_negative": False},
     beam_waist={"can_be_negative": False},
 )
-def Gaussian_Power(
+def Gaussian_power(
     intensity: u.Quantity[u.watt / u.m**2],
     beam_waist: u.Quantity[u.m],
 ) -> u.Quantity[u.Watt]:
@@ -320,15 +320,15 @@ def Gaussian_Power(
     Examples
     --------
     >>> import astropy.units as u
-    >>> Gaussian_Power(1e18 * u.watt/u.cm**2, 1 * u.um)  # Total beam power
+    >>> Gaussian_power(1e18 * u.watt/u.cm**2, 1 * u.um)  # Total beam power
     <Quantity 15707963267.948967 W>
     """
 
-    P_0 = (1 / 2) * intensity * np.pi * beam_waist ** 2
-    return P_0
+    return (1 / 2) * intensity * np.pi * beam_waist ** 2
 
-P0_ = Gaussian_Power
-"""Alias to `~plasmapy.formulary.laser.Gaussian_Power`."""
+
+P0_ = Gaussian_power
+"""Alias to `~plasmapy.formulary.laser.Gaussian_power`."""
 
 
 @validate_quantities(
@@ -377,8 +377,8 @@ def Gaussian_beam_waist_radius(
     >>> Gaussian_beam_waist_radius(8.242 * u.um)
     <Quantity 7e-6 m>
     """
-    w_0 = spot_size_FWHM / np.sqrt(2 * np.log(2))
-    return w_0
+    return spot_size_FWHM / np.sqrt(2 * np.log(2))
+
 
 w0_ = Gaussian_beam_waist_radius
 """Alias to `~plasmapy.formulary.laser.Gaussian_beam_waist_radius`."""
@@ -427,8 +427,8 @@ def Gaussian_spot_size_FWHM(
     >>> Gaussian_spot_size_FWHM(7 * u.um)
     <Quantity 8.242e-6 m>
     """
-    FWHM = beam_waist_radius * np.sqrt(2 * np.log(2))
-    return FWHM
+    return beam_waist_radius * np.sqrt(2 * np.log(2))
+
 
 FWHM_ = Gaussian_spot_size_FWHM
 """Alias to `~plasmapy.formulary.laser.Gaussian_spot_size_FWHM`."""
@@ -440,7 +440,6 @@ FWHM_ = Gaussian_spot_size_FWHM
     beam_waist_radius={"can_be_negative": False},
 )
 def Gaussian_Rayleigh_length(
-    *,
     wavelength={"can_be_negative": False},
     beam_waist_radius={"can_be_negative": False},
 ) -> u.Quantity[u.m]:
@@ -483,8 +482,8 @@ def Gaussian_Rayleigh_length(
     <Quantity 3.927e-06 m>
     """
 
-    z_R = (np.pi * beam_waist_radius **2) / wavelength
-    return z_R
+    return (np.pi * beam_waist_radius **2) / wavelength
+
 
 zR_ = Gaussian_Rayleigh_length
 """Alias to `~plasmapy.formulary.laser.Gaussian_Rayleigh_length`."""
