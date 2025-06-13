@@ -134,7 +134,7 @@ def wavelength(
     angular_frequency: u.Quantity[u.rad / u.s]
 ) -> u.Quantity[u.m]:
     r"""
-    Calculate the wavelength of a laser :math:`\lambda` given the 
+    Calculate the wavelength of a laser :math:`\lambda` given the
     the angular frequency :math:`\omega`.
 
     The frequency of an electromagnetic wave :math:`f`
@@ -175,18 +175,18 @@ lambda_ = wavelength
 
 
 @validate_quantities(
-    wavelength: u.Quantity[u.m],
+    wavelength={"can_be_negative": False},
 )
 def angular_frequency(
     wavelength: u.Quantity[u.m]
 ) -> u.Quantity[u.rad / u.s]:
     r"""
-    Calculate the angular frequency :math:`\omega` of a laser given the 
+    Calculate the angular frequency :math:`\omega` of a laser given the
     the wavelength of the beam :math:`\lambda`.
 
     The frequency of a wave can be found from the wavelength due to
     spectral equivalencies.
-    
+
     The angular frequency of a wave :math:`f`
     is then calculated using:
 
@@ -256,7 +256,7 @@ def normalized_vector_potential(
     Returns
     -------
     P_0 : `~astropy.units.Quantity`
-        The total power of the Guassian beam for the given intensity
+        The total power of the Gaussian beam for the given intensity
         and spot size.
 
     Notes
@@ -310,7 +310,7 @@ def Gaussian_Power(
     Returns
     -------
     P_0 : `~astropy.units.Quantity`
-        The total power of the Guassian beam for the given intensity
+        The total power of the Gaussian beam for the given intensity
         and spot size.
 
     Notes
@@ -338,10 +338,10 @@ def Gaussian_beam_waist_radius(
     spot_size_FWHM: u.Quantity[u.m]
 ) -> u.Quantity[u.m]:
     r"""
-    Calculate the beam waist radius :math:`w_0` for the intensity profile 
+    Calculate the beam waist radius :math:`w_0` for the intensity profile
     of a Gaussian beam given the Full Width at Half Maximum spot size :math:`FWHM`.
 
-    At focus, :math:`w_0` is the transverse distance from the center of the beam 
+    At focus, :math:`w_0` is the transverse distance from the center of the beam
     to where the intensity drops by a factor of :math:`1/e^2`.
 
     The beam waist radius of a Gaussian beam
@@ -361,7 +361,7 @@ def Gaussian_beam_waist_radius(
     Returns
     -------
     w_0 : `~astropy.units.Quantity`
-        The beam waist radius of the Guassian beam for the given FWHM spot size.
+        The beam waist radius of the Gaussian beam for the given FWHM spot size.
 
     See Also
     --------
@@ -391,7 +391,7 @@ def Gaussian_spot_size_FWHM(
     beam_waist_radius: u.Quantity[u.m]
 ) -> u.Quantity[u.m]:
     r"""
-    Calculate the Full Width at Half Maximum spot size :math:`FWHM` at focus given the 
+    Calculate the Full Width at Half Maximum spot size :math:`FWHM` at focus given the
     beam waist radius of a Gaussian beam :math:`w_0`.
 
     The FWHM spot size of a Gaussian beam
@@ -411,8 +411,8 @@ def Gaussian_spot_size_FWHM(
     Returns
     -------
     FWHM : `~astropy.units.Quantity`
-        The FWHM spot size of the Guassian beam for the given beam waist.
- 
+        The FWHM spot size of the Gaussian beam for the given beam waist.
+
     See Also
     --------
     Gaussian_beam_waist_radius
@@ -434,7 +434,7 @@ FWHM_ = Gaussian_spot_size_FWHM
 """Alias to `~plasmapy.formulary.laser.Gaussian_spot_size_FWHM`."""
 
 
-#use kwargs 
+#use kwargs
 @validate_quantities(
     wavelength={"can_be_negative": False},
     beam_waist_radius={"can_be_negative": False},
@@ -469,7 +469,7 @@ def Gaussian_Rayleigh_length(
     Returns
     -------
     z_R : `~astropy.units.Quantity`
-        The Rayleigh length of the Guassian beam for the given wavelength
+        The Rayleigh length of the Gaussian beam for the given wavelength
         and beam waist.
 
     Notes
