@@ -271,7 +271,7 @@ def normalized_vector_potential(
 
     Notes
     -----
-    For details, see :cite:t:`Gibbon 2016`\ . 
+    For details, see :cite:t:`gibbon:2016`\ . 
 
     Examples
     --------
@@ -487,7 +487,7 @@ def Gaussian_Rayleigh_length(
     Examples
     --------
     >>> import astropy.units as u
-    >>> Rayleigh_length(800 * u.nm, 1 * u.um)
+    >>> Gaussian_Rayleigh_length(800 * u.nm, 1 * u.um)
     <Quantity 3.927e-06 m>
     """
 
