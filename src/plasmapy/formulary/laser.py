@@ -153,8 +153,7 @@ def wavelength(angular_frequency: u.Quantity[u.rad / u.s]) -> u.Quantity[u.m]:
         \lambda = \frac{2\pi c}{\omega},
 
     where :math:`\omega` is the angular frequency of the beam.
-    The wavelength :math:`\lambda` can be found from the frequency due to
-    spectral equivalencies.
+
     **Aliases:** `lambda_`
 
     Parameters
@@ -194,16 +193,13 @@ def angular_frequency(wavelength: u.Quantity[u.m]) -> u.Quantity[u.rad / u.s]:
     Calculate the angular frequency :math:`\omega` of a laser given the
     the wavelength of the beam :math:`\lambda`.
 
-    The frequency of a wave can be found from the wavelength due to
-    spectral equivalencies.
-
     The angular frequency of a wave :math:`f`
-    is then calculated using:
+    can be calculated using:
 
     .. math::
-        \omega = {2\pi}f,
+        \omega = \frac{2\pi c}{\lambda},
 
-    where :math:`\f` is the frequency of the beam.
+    where :math:`\lambda` is the wavelength of the beam and :math:`c` is the speed of light.
 
     **Aliases:** `omega_`
 
@@ -301,7 +297,7 @@ def Gaussian_power(
 ) -> u.Quantity[u.Watt]:
     r"""
     Calculate the total power of a Gaussian beam :math:`P_0` from the intensity :math:`I`
-    and the beam waist :math:`\w_0`.
+    and the beam waist :math:`w_0`.
 
     The total power of a Gaussian beam
     is calculated using:
@@ -456,7 +452,7 @@ def Gaussian_Rayleigh_length(
     beam_waist_radius: u.Quantity[u.m],
 ) -> u.Quantity[u.m]:
     r"""
-    Calculate the Rayleigh length :math:`z_R` from the beam waist radius :math:`\w_0`
+    Calculate the Rayleigh length :math:`z_R` from the beam waist radius :math:`w_0`
     and the wavelength :math:`\lambda`.
 
     The Rayleigh length of a Gaussian beam
