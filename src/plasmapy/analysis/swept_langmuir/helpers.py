@@ -208,11 +208,29 @@ def sort_sweep_arrays(
         voltage, current, strip_units=True, allow_unsorted=True
     )
 
-    index_sort = np.argsort(voltage)
-    if voltage_order == "descending":
-        index_sort = index_sort[::-1]
+    # determine order
+    voltage_diff = np.diff(voltage)
+    if np.all(voltage_diff >= 0):
+        _order = "ascending"
+    elif np.all(voltage_diff <= 0):
+        _order = "descending"
+    else:
+        _order = None
 
-    voltage = voltage[index_sort]
-    current = current[index_sort]
+    if _order == voltage_order:
+        # already ordered
+        return voltage, current
+
+    # perform sorting
+    if _order is None:
+        index_sort = np.argsort(voltage)
+        if voltage_order == "descending":
+            index_sort = index_sort[::-1]
+
+        voltage = voltage[index_sort]
+        current = current[index_sort]
+    else:
+        voltage = voltage[::-1]
+        current = current[::-1]
 
     return voltage, current
