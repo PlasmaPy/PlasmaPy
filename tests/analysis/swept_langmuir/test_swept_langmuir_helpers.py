@@ -268,10 +268,6 @@ def test_sort_sweep_arrays(voltage, current, kwargs, with_context, expected) -> 
         if expected is not None:
             assert np.allclose(rtn_voltage, expected[0])
             assert np.allclose(rtn_current, expected[1])
-        elif kwargs["voltage_order"] in ("ascending", "descending"):
-            ...
-        elif kwargs["voltage_order"] == "descending":
-            ...
         else:
             assert np.allclose(rtn_voltage, voltage)
             assert np.allclose(rtn_current, current)
