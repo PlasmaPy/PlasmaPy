@@ -7,24 +7,23 @@ from astropy.tests.helper import assert_quantity_allclose
 
 from plasmapy.formulary.laser import (
     E0_,
-    FWHM_,
-    I_,
+    I_, 
     P0_,
-    Gaussian_beam_waist,
+    electric_field_amplitude, 
+    intensity, 
     Gaussian_power,
-    Gaussian_Rayleigh_length,
+    Gaussian_beam_waist,
     Gaussian_spot_size_FWHM,
-    a0_,
+    wavelength,
     angular_frequency,
-    electric_field_amplitude,
-    intensity,
-    lambda_,
     normalized_vector_potential,
+    Gaussian_Rayleigh_length,
+    zR_,
+    a0_,
+    lambda_,
     omega_,
     w0_,
-    wavelength,
-    zR_,
-)
+    FWHM_,) 
 
 
 @pytest.mark.parametrize(
@@ -165,8 +164,8 @@ def test_Gaussian_Power_errors(intensity, beam_waist, expected) -> None:
 def test_electric_field_amplitude_warnings(intensity, beam_waist, expected_warning) -> None:
     with pytest.warns(expected_warning):
         Gaussian_power(intensity=intensity,beam_waist=beam_waist)
-
-
+        
+        
 @pytest.mark.parametrize(
     ("spot_size_FWHM", "expected"),
     [
@@ -203,7 +202,7 @@ def test_Gaussian_beam_waist(spot_size_FWHM, expected_warning) -> None:
     with pytest.warns(expected_warning):
         Gaussian_beam_waist(spot_size_FWHM=spot_size_FWHM)
 
-
+ 
 @pytest.mark.parametrize(
     ("beam_waist", "expected"),
     [
@@ -239,8 +238,8 @@ def test_Gaussian_spot_size_FWHM(beam_waist, expected) -> None:
 def test_Gaussian_spot_size_FWHM(beam_waist, expected_warning) -> None:
     with pytest.warns(expected_warning):
         Gaussian_spot_size_FWHM(beam_waist=beam_waist)
-
-
+        
+       
 @pytest.mark.parametrize(
     ("angular_frequency", "expected"),
     [
@@ -276,8 +275,8 @@ def test_wavelength(angular_frequency, expected) -> None:
 def test_wavelength(angular_frequency, expected_warning) -> None:
     with pytest.warns(expected_warning):
         wavelength(angular_frequency=angular_frequency)
-
-
+   
+       
 @pytest.mark.parametrize(
     ("wavelength", "expected"),
     [
@@ -313,17 +312,17 @@ def test_angular_frequency(wavelength, expected) -> None:
 def test_angular_frequency(wavelength, expected_warning) -> None:
     with pytest.warns(expected_warning):
         angular_frequency(wavelength=wavelength)
+        
 
-
-
+       
 @pytest.mark.parametrize(
     ("intensity", "wavelength", "expected"),
     [
         (1e-3 * u.watt / u.m**2, 800e-9 *u.m, 2.162820076644342e-13),
-        ([1,1e-3] * u.milliWatt/m**2, [800, 800] * u.nm, [2.162820076644342e-13,6.839437611336064e-15]),
-        ([1,1] * u.milliWatt/m**2, [800, 650] * u.nm, [2.162820076644342e-13,1.7572913122735275e-13]),
-        ([1,1e-3] * u.milliWatt/m**2, 800 * u.nm, [2.162820076644342e-13,6.839437611336064e-15]),
-        (1 * u.milliWatt/m**2, [800, 650] * u.nm, [2.162820076644342e-13,1.7572913122735275e-13]),
+        ([1,1e-3] * u.milliWatt/u.m**2, [800, 800] * u.nm, [2.162820076644342e-13,6.839437611336064e-15]),
+        ([1,1] * u.milliWatt/u.m**2, [800, 650] * u.nm, [2.162820076644342e-13,1.7572913122735275e-13]),
+        ([1,1e-3] * u.milliWatt/u.m**2, 800 * u.nm, [2.162820076644342e-13,6.839437611336064e-15]),
+        (1 * u.milliWatt/u.m**2, [800, 650] * u.nm, [2.162820076644342e-13,1.7572913122735275e-13]),
         (0 * u.watt / u.m**2, 800e-9 *u.m, 0),
         (1e-3 * u.watt / u.m**2,0 *u.m, 0),
         (np.nan * u.Watt/u.m**2, np.nan * u.m, np.nan),
@@ -356,8 +355,8 @@ def test_normalized_vector_potential(intensity, wavelength, expected) -> None:
 def test_normalized_vector_potential(intensity,wavelength, expected_warning) -> None:
     with pytest.warns(expected_warning):
         normalized_vector_potential(intensity=intensity, wavelength=wavelength)
-
-
+        
+        
 
 @pytest.mark.parametrize(
     ("wavelength", "beam_waist", "expected"),
