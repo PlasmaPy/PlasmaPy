@@ -241,6 +241,41 @@ def _force_regular_spacing(
     current: np.ndarray,
     voltage_step_size: float,
 ) -> tuple[np.ndarray, np.ndarray]:
+    """
+    Take a ``voltage`` array that already has voltage steps at some
+    integer spacing of ``voltage_step_size`` and its paired ``current``
+    array to generate a voltage array with a fixed step size
+    ``voltage_step_size`` along with an appropriately `~numpy.nan`
+    stuffed ``current`` array.
+
+    Parameters
+    ----------
+    voltage: `numpy.ndarray`
+        1D `numpy.ndarray` representing the voltage of the swept
+        Langmuir trace.  *No units are assumed or checked, but values
+        should be in volts.*
+
+    current: `numpy.ndarray`
+        1D `numpy.ndarray` representing the current of the swept
+        Langmuir trace.  Values should start from a negative
+        ion-saturation current and increase to a positive
+        electron-saturation current.  *No units are assumed or checked,
+        but values should be in amperes.*
+
+    voltage_step_size: `float`
+        A non-zero, positive step size for the ``voltage`` array
+        spacing.
+
+    Returns
+    -------
+    voltage : `numpy.ndarray`
+        An array with step size ``voltage_step_size`` spanning the same
+        voltages given in the input ``voltage`` array.
+
+    current : `numpy.ndarray`
+        A `~numpy.nan` stuffed copy of the input ``current`` array to
+        match the size of the returned ``voltage`` array.
+    """
     size = int(np.round((voltage[-1] - voltage[0]) / voltage_step_size)) + 1
     reg_voltage = np.linspace(voltage[0], voltage[-1], num=size, dtype=voltage.dtype)
 
