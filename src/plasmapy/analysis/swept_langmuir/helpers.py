@@ -308,9 +308,8 @@ def merge_voltage_clusters(  # noqa: C901, PLR0912, PLR0915
         )
 
     # condition voltage_step_size
-    if (
-        voltage_step_size is not None
-        and not isinstance(voltage_step_size, float | np.floating | int | np.integer)
+    if voltage_step_size is not None and not isinstance(
+        voltage_step_size, float | np.floating | int | np.integer
     ):
         raise TypeError(
             "Expected 'voltage_step_size' to be a float or None, got type "
@@ -335,7 +334,9 @@ def merge_voltage_clusters(  # noqa: C901, PLR0912, PLR0915
         0,
     ):
         # grid has a common dV, but at times jumps N * dV times
-        if force_regular_spacing and (voltage_step_size is None or voltage_step_size == 0):
+        if force_regular_spacing and (
+            voltage_step_size is None or voltage_step_size == 0
+        ):
             # need to stuff with NaN values
             voltage, current = _force_regular_spacing(
                 voltage=voltage,
@@ -364,7 +365,9 @@ def merge_voltage_clusters(  # noqa: C901, PLR0912, PLR0915
     # ensure voltage is ascending for calculation
     voltage_ascending = bool(np.all(voltage_diff >= 0))
     if not voltage_ascending:
-        voltage, current = sort_sweep_arrays(voltage, current, voltage_order="ascending")
+        voltage, current = sort_sweep_arrays(
+            voltage, current, voltage_order="ascending"
+        )
 
     # now merge clusters
     voltage_diff = np.diff(voltage)
@@ -373,9 +376,10 @@ def merge_voltage_clusters(  # noqa: C901, PLR0912, PLR0915
         new_current = current.copy()
 
         if force_regular_spacing:
-            size = int(
-                np.round((new_voltage[-1] - new_voltage[0]) / voltage_step_size)
-            ) + 1
+            size = (
+                int(np.round((new_voltage[-1] - new_voltage[0]) / voltage_step_size))
+                + 1
+            )
             reg_voltage = np.linspace(
                 new_voltage[0], new_voltage[-1], num=size, dtype=new_voltage.dtype
             )
@@ -437,7 +441,8 @@ def merge_voltage_clusters(  # noqa: C901, PLR0912, PLR0915
 
             if np.count_nonzero(mask) > 0:
                 new_voltage[ii] = (
-                    start_voltage + 0.5 * voltage_step_size if force_regular_spacing
+                    start_voltage + 0.5 * voltage_step_size
+                    if force_regular_spacing
                     else np.average(voltage[mask])
                 )
                 new_current[ii] = np.average(current[mask])
