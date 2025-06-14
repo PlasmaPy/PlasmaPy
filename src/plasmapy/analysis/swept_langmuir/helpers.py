@@ -294,10 +294,10 @@ def _force_regular_spacing(
     return reg_voltage, reg_current
 
 
-def merge_voltage_clusters(
+def merge_voltage_clusters(  # noqa: C901, PLR0912, PLR9015
     voltage: np.ndarray,
     current: np.ndarray,
-    voltage_step_size: float = None,
+    voltage_step_size: float | None = None,
     force_regular_spacing: bool = False,
 ) -> tuple[np.ndarray, np.ndarray]:
     # condition force_regular_grid
@@ -310,13 +310,13 @@ def merge_voltage_clusters(
     # condition voltage_step_size
     if (
         voltage_step_size is not None
-        and not isinstance(voltage_step_size, (float, np.floating, int, np.integer))
+        and not isinstance(voltage_step_size, float | np.floating | int | np.integer)
     ):
         raise TypeError(
             "Expected 'voltage_step_size' to be a float or None, got type "
             f"{type(voltage_step_size)}."
         )
-    elif isinstance(voltage_step_size, (int, np.integer)):
+    elif isinstance(voltage_step_size, int | np.integer):
         voltage_step_size = float(voltage_step_size)
 
     voltage, current = check_sweep(voltage, current)
