@@ -284,12 +284,12 @@ def _force_regular_spacing(
         np.round(voltage, decimals=5),
         return_indices=True,
     )
-    mask = np.ones_like(reg_voltage, dtype=bool)
-    mask[reg_indices] = False
-    reg_voltage[mask] = np.nan
+
+    mask = np.zeros_like(reg_voltage, dtype=bool)
+    mask[reg_indices] = True
 
     reg_current = np.full(size, np.nan, dtype=current.dtype)
-    reg_current[np.logical_not(mask)] = current[...]
+    reg_current[mask] = current[...]
 
     return reg_voltage, reg_current
 
