@@ -236,7 +236,7 @@ def sort_sweep_arrays(
     return voltage, current
 
 
-def _nan_stuff_regular_grid(
+def _force_regular_spacing(
     voltage: np.ndarray,
     current: np.ndarray,
     voltage_step_size: float,
@@ -302,7 +302,7 @@ def merge_voltage_clusters(
         # grid has a common dV, but at times jumps N * dV times
         if force_regular_spacing and (voltage_step_size is None or voltage_step_size == 0):
             # need to stuff with NaN values
-            voltage, current = _nan_stuff_regular_grid(
+            voltage, current = _force_regular_spacing(
                 voltage=voltage,
                 current=current,
                 voltage_step_size=np.min(voltage_diff),
@@ -418,7 +418,7 @@ def merge_voltage_clusters(
 
         if force_regular_spacing:
             # Need to fill array with NaN values to force the regular spacing
-            new_voltage, new_current = _nan_stuff_regular_grid(
+            new_voltage, new_current = _force_regular_spacing(
                 voltage=new_voltage,
                 current=new_current,
                 voltage_step_size=voltage_step_size,
