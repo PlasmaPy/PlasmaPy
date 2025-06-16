@@ -242,7 +242,7 @@ def test_Gaussian_spot_size_FWHM(beam_waist, expected) -> None:
         (1 * u.kg, u.UnitTypeError),
     ],
 )
-def test_Gaussian_spot_size_FWHM(beam_waist, expected) -> None:
+def test_Gaussian_spot_size_FWHM_errors(beam_waist, expected) -> None:
     with pytest.raises(expected):
         Gaussian_spot_size_FWHM(beam_waist=beam_waist)
 
@@ -253,7 +253,7 @@ def test_Gaussian_spot_size_FWHM(beam_waist, expected) -> None:
         (5, u.UnitsWarning),
     ],
 )
-def test_Gaussian_spot_size_FWHM(beam_waist, expected_warning) -> None:
+def test_Gaussian_spot_size_FWHM_warnings(beam_waist, expected_warning) -> None:
     with pytest.warns(expected_warning):
         Gaussian_spot_size_FWHM(beam_waist=beam_waist)
 
@@ -280,7 +280,7 @@ def test_wavelength(angular_frequency, expected) -> None:
         (1 * u.kg, u.UnitTypeError),
     ],
 )
-def test_wavelength(angular_frequency, expected) -> None:
+def test_wavelength_errors(angular_frequency, expected) -> None:
     with pytest.raises(expected):
         wavelength(angular_frequency=angular_frequency)
 
@@ -291,7 +291,7 @@ def test_wavelength(angular_frequency, expected) -> None:
         (5, u.UnitsWarning),
     ],
 )
-def test_wavelength(angular_frequency, expected_warning) -> None:
+def test_wavelength_warnings(angular_frequency, expected_warning) -> None:
     with pytest.warns(expected_warning):
         wavelength(angular_frequency=angular_frequency)
 
@@ -318,7 +318,7 @@ def test_angular_frequency(wavelength, expected) -> None:
         (1 * u.kg, u.UnitTypeError),
     ],
 )
-def test_angular_frequency(wavelength, expected) -> None:
+def test_angular_frequency_errors(wavelength, expected) -> None:
     with pytest.raises(expected):
         angular_frequency(wavelength=wavelength)
 
@@ -329,7 +329,7 @@ def test_angular_frequency(wavelength, expected) -> None:
         (5, u.UnitsWarning),
     ],
 )
-def test_angular_frequency(wavelength, expected_warning) -> None:
+def test_angular_frequency_warning(wavelength, expected_warning) -> None:
     with pytest.warns(expected_warning):
         angular_frequency(wavelength=wavelength)
 
@@ -377,7 +377,7 @@ def test_normalized_vector_potential(intensity, wavelength, expected) -> None:
         (7 * u.s, 1 * u.kg, u.UnitTypeError),
     ],
 )
-def test_normalized_vector_potential(intensity, wavelength, expected) -> None:
+def test_normalized_vector_potential_errors(intensity, wavelength, expected) -> None:
     with pytest.raises(expected):
         normalized_vector_potential(intensity=intensity, wavelength=wavelength)
 
@@ -388,7 +388,7 @@ def test_normalized_vector_potential(intensity, wavelength, expected) -> None:
         (3, 5, u.UnitsWarning),
     ],
 )
-def test_normalized_vector_potential(intensity, wavelength, expected_warning) -> None:
+def test_normalized_vector_potential_warning(intensity, wavelength, expected_warning) -> None:
     with pytest.warns(expected_warning):
         normalized_vector_potential(intensity=intensity, wavelength=wavelength)
 
@@ -437,7 +437,7 @@ def test_Gaussian_Rayleigh_length(wavelength, beam_waist, expected) -> None:
         (1 * u.kg, 3 * u.s, u.UnitTypeError),
     ],
 )
-def test_Gaussian_Rayleigh_length(wavelength, beam_waist, expected) -> None:
+def test_Gaussian_Rayleigh_length_errors(wavelength, beam_waist, expected) -> None:
     with pytest.raises(expected):
         Gaussian_Rayleigh_length(wavelength=wavelength, beam_waist=beam_waist)
 
@@ -449,6 +449,6 @@ def test_Gaussian_Rayleigh_length(wavelength, beam_waist, expected) -> None:
         (5, 2 * u.m, u.UnitsWarning),
     ],
 )
-def test_Rayleigh_length_warnings(wavelength, beam_waist, expected_warning) -> None:
+def test_Rayleigh_length_warnings_warnings(wavelength, beam_waist, expected_warning) -> None:
     with pytest.warns(expected_warning):
         Gaussian_Rayleigh_length(wavelength=wavelength, beam_waist=beam_waist)
