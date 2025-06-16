@@ -277,6 +277,11 @@ def _force_regular_spacing(
         match the size of the returned ``voltage`` array.
     """
     size = int(np.round((voltage[-1] - voltage[0]) / voltage_step_size)) + 1
+
+    if voltage.size == size:
+        # all voltages steps are already equal
+        return voltage, current
+
     reg_voltage = np.linspace(voltage[0], voltage[-1], num=size, dtype=voltage.dtype)
 
     _, reg_indices, new_indices = np.intersect1d(
