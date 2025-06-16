@@ -373,8 +373,8 @@ def test_normalized_vector_potential(intensity, wavelength, expected) -> None:
 @pytest.mark.parametrize(
     ("intensity", "wavelength", "expected"),
     [
-        (-5e-3 * u.Watt / u.m, 5e4 * u.m, ValueError),
-        (5e-3 * u.Watt / u.m, -5e4 * u.m, ValueError),
+        (-5e-3 * u.Watt / u.m**2, 5e4 * u.m, ValueError),
+        (5e-3 * u.Watt / u.m**2, -5e4 * u.m, ValueError),
         (7 * u.s, 1 * u.kg, u.UnitTypeError),
     ],
 )
@@ -426,34 +426,34 @@ def test_normalized_vector_potential_warning(
     ],
 )
 @pytest.mark.filterwarnings("ignore::astropy.units.UnitsWarning")
-def test_Gaussian_Rayleigh_length(wavelength, beam_waist, expected) -> None:
-    result = Gaussian_Rayleigh_length(wavelength=wavelength, beam_waist=beam_waist)
+def test_Gaussian_Rayleigh_length(wavelength, beam_waist_radius, expected) -> None:
+    result = Gaussian_Rayleigh_length(wavelength=wavelength, beam_waist_radius=beam_waist_radius)
     assert_quantity_allclose(result, expected, rtol=1e-6, equal_nan=True, verbose=True)
     assert result.unit == u.m
 
 
 @pytest.mark.parametrize(
-    ("wavelength", "beam_waist", "expected"),
+    ("wavelength", "beam_waist_radius", "expected"),
     [
         (-5e4 * u.m, 2 * u.m, ValueError),
         (5e4 * u.m, -2 * u.m, ValueError),
         (1 * u.kg, 3 * u.s, u.UnitTypeError),
     ],
 )
-def test_Gaussian_Rayleigh_length_errors(wavelength, beam_waist, expected) -> None:
+def test_Gaussian_Rayleigh_length_errors(wavelength, beam_waist_radius, expected) -> None:
     with pytest.raises(expected):
-        Gaussian_Rayleigh_length(wavelength=wavelength, beam_waist=beam_waist)
+        Gaussian_Rayleigh_length(wavelength=wavelength, beam_waist_radius=beam_waist_radius)
 
 
 @pytest.mark.parametrize(
-    ("wavelength", "beam_waist", "expected_warning"),
+    ("wavelength", "beam_waist_radius", "expected_warning"),
     [
         (5 * u.m, 2, u.UnitsWarning),
         (5, 2 * u.m, u.UnitsWarning),
     ],
 )
 def test_Rayleigh_length_warnings_warnings(
-    wavelength, beam_waist, expected_warning
+    wavelength, beam_waist_radius, expected_warning
 ) -> None:
     with pytest.warns(expected_warning):
-        Gaussian_Rayleigh_length(wavelength=wavelength, beam_waist=beam_waist)
+        Gaussian_Rayleigh_length(wavelength=wavelength, beam_waist_radius=beam_waist_radius)

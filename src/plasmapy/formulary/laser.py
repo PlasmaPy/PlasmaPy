@@ -265,7 +265,7 @@ def normalized_vector_potential(
     Returns
     -------
     a_0 : `~astropy.units.Quantity`
-        The normalized vector potential of an electron given the intensity and wavelength of
+        The normalized vector potential of a plasma given the intensity and wavelength of
         a laser.
 
     Notes
