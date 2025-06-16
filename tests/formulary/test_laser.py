@@ -373,7 +373,8 @@ def test_normalized_vector_potential(intensity, wavelength, expected) -> None:
 @pytest.mark.parametrize(
     ("intensity", "wavelength", "expected"),
     [
-        (-5e-3 * u.Watt / u.m, -5e4 * u.m, ValueError),
+        (-5e-3 * u.Watt / u.m, 5e4 * u.m, ValueError),
+        (5e-3 * u.Watt / u.m, -5e4 * u.m, ValueError),
         (7 * u.s, 1 * u.kg, u.UnitTypeError),
     ],
 )
