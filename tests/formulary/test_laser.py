@@ -427,7 +427,9 @@ def test_normalized_vector_potential_warning(
 )
 @pytest.mark.filterwarnings("ignore::astropy.units.UnitsWarning")
 def test_Gaussian_Rayleigh_length(wavelength, beam_waist_radius, expected) -> None:
-    result = Gaussian_Rayleigh_length(wavelength=wavelength, beam_waist_radius=beam_waist_radius)
+    result = Gaussian_Rayleigh_length(
+        wavelength=wavelength, beam_waist_radius=beam_waist_radius
+    )
     assert_quantity_allclose(result, expected, rtol=1e-6, equal_nan=True, verbose=True)
     assert result.unit == u.m
 
@@ -440,9 +442,13 @@ def test_Gaussian_Rayleigh_length(wavelength, beam_waist_radius, expected) -> No
         (1 * u.kg, 3 * u.s, u.UnitTypeError),
     ],
 )
-def test_Gaussian_Rayleigh_length_errors(wavelength, beam_waist_radius, expected) -> None:
+def test_Gaussian_Rayleigh_length_errors(
+    wavelength, beam_waist_radius, expected
+) -> None:
     with pytest.raises(expected):
-        Gaussian_Rayleigh_length(wavelength=wavelength, beam_waist_radius=beam_waist_radius)
+        Gaussian_Rayleigh_length(
+            wavelength=wavelength, beam_waist_radius=beam_waist_radius
+        )
 
 
 @pytest.mark.parametrize(
@@ -456,4 +462,6 @@ def test_Rayleigh_length_warnings_warnings(
     wavelength, beam_waist_radius, expected_warning
 ) -> None:
     with pytest.warns(expected_warning):
-        Gaussian_Rayleigh_length(wavelength=wavelength, beam_waist_radius=beam_waist_radius)
+        Gaussian_Rayleigh_length(
+            wavelength=wavelength, beam_waist_radius=beam_waist_radius
+        )
