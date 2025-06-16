@@ -248,7 +248,7 @@ def normalized_vector_potential(
     is calculated using:
 
     .. math::
-        a_0=\frac{e \lambda}{m_e \pi} \sqrt{2 \epsilon_0 c^5},
+        a_0= \frac{e \lambda}{m_e \pi} \sqrt{\frac{I} {2 \epsilon_0 c^5}},
 
     where :math:`w_0` is the beam waist and
     :math:`I_0` is the intensity of the beam.

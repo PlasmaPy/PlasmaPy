@@ -308,7 +308,7 @@ def test_wavelength_warnings(angular_frequency, expected_warning) -> None:
 def test_angular_frequency(wavelength, expected) -> None:
     result = angular_frequency(wavelength=wavelength)
     assert_quantity_allclose(result, expected, rtol=1e-6, equal_nan=True, verbose=True)
-    assert result.unit == u.rad / u.sec
+    assert result.unit == u.rad / u.s
 
 
 @pytest.mark.parametrize(
@@ -367,7 +367,7 @@ def test_angular_frequency_warning(wavelength, expected_warning) -> None:
 def test_normalized_vector_potential(intensity, wavelength, expected) -> None:
     result = normalized_vector_potential(intensity=intensity, wavelength=wavelength)
     assert_quantity_allclose(result, expected, rtol=1e-6, equal_nan=True, verbose=True)
-    assert result.unit == u.dimensionless
+    assert result.unit == u.dimensionless_unscaled
 
 
 @pytest.mark.parametrize(
