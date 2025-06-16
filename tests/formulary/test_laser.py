@@ -123,7 +123,7 @@ def test_intensity_warnings(electric_field_amplitude, expected_warning) -> None:
 
 
 @pytest.mark.parametrize(
-    ("intensity", "beam_waist", "expected"),
+    ("intensity", "beam_waist_radius", "expected"),
     [
         (1e-3 * u.watt / u.m**2, 1e-6 * u.m, 1.5707963267948967e-15 * u.Watt),
         (
@@ -152,34 +152,34 @@ def test_intensity_warnings(electric_field_amplitude, expected_warning) -> None:
     ],
 )
 @pytest.mark.filterwarnings("ignore::astropy.units.UnitsWarning")
-def test_Gaussian_power(intensity, beam_waist, expected) -> None:
-    result = Gaussian_power(intensity=intensity, beam_waist=beam_waist)
+def test_Gaussian_power(intensity, beam_waist_radius, expected) -> None:
+    result = Gaussian_power(intensity=intensity, beam_waist_radius=beam_waist_radius)
     assert_quantity_allclose(result, expected, rtol=1e-6, equal_nan=True, verbose=True)
     assert result.unit == u.Watt
 
 
 @pytest.mark.parametrize(
-    ("intensity", "beam_waist", "expected"),
+    ("intensity", "beam_waist_radius", "expected"),
     [
         (-5e4 * u.Watt / u.m**2, 2 * u.m, ValueError),
         (5e4 * u.Watt / u.m**2, -2 * u.m, ValueError),
         (1 * u.kg, 3 * u.s, u.UnitTypeError),
     ],
 )
-def test_Gaussian_power_errors(intensity, beam_waist, expected) -> None:
+def test_Gaussian_power_errors(intensity, beam_waist_radius, expected) -> None:
     with pytest.raises(expected):
-        Gaussian_power(intensity=intensity, beam_waist=beam_waist)
+        Gaussian_power(intensity=intensity, beam_waist_radius=beam_waist_radius)
 
 
 @pytest.mark.parametrize(
-    ("intensity", "beam_waist", "expected_warning"),
+    ("intensity", "beam_waist_radius", "expected_warning"),
     [(5, 2 * u.um, u.UnitsWarning), (5 * u.Watt / u.m**2, 2, u.UnitsWarning)],
 )
 def test_Gaussian_power_errors_warnings(
-    intensity, beam_waist, expected_warning
+    intensity, beam_waist_radius, expected_warning
 ) -> None:
     with pytest.warns(expected_warning):
-        Gaussian_power(intensity=intensity, beam_waist=beam_waist)
+        Gaussian_power(intensity=intensity, beam_waist_radius=beam_waist_radius)
 
 
 @pytest.mark.parametrize(
@@ -204,7 +204,7 @@ def test_Gaussian_beam_waist_radius(spot_size_FWHM, expected) -> None:
         (1 * u.kg, u.UnitTypeError),
     ],
 )
-def test_Gaussian_beam_waist_errors(spot_size_FWHM, expected) -> None:
+def test_Gaussian_beam_waist_radius_errors(spot_size_FWHM, expected) -> None:
     with pytest.raises(expected):
         Gaussian_beam_waist_radius(spot_size_FWHM=spot_size_FWHM)
 
@@ -215,13 +215,13 @@ def test_Gaussian_beam_waist_errors(spot_size_FWHM, expected) -> None:
         (5, u.UnitsWarning),
     ],
 )
-def test_Gaussian_beam_waist_warnings(spot_size_FWHM, expected_warning) -> None:
+def test_Gaussian_beam_waist_radius_warnings(spot_size_FWHM, expected_warning) -> None:
     with pytest.warns(expected_warning):
         Gaussian_beam_waist_radius(spot_size_FWHM=spot_size_FWHM)
 
 
 @pytest.mark.parametrize(
-    ("beam_waist", "expected"),
+    ("beam_waist_radius", "expected"),
     [
         (7e-6 * u.m, 8.242e-6 * u.m),
         ([7, 0] * u.um, [8.242e-6, 0] * u.m),
@@ -229,33 +229,33 @@ def test_Gaussian_beam_waist_warnings(spot_size_FWHM, expected_warning) -> None:
     ],
 )
 @pytest.mark.filterwarnings("ignore::astropy.units.UnitsWarning")
-def test_Gaussian_spot_size_FWHM(beam_waist, expected) -> None:
-    result = Gaussian_spot_size_FWHM(beam_waist=beam_waist)
+def test_Gaussian_spot_size_FWHM(beam_waist_radius, expected) -> None:
+    result = Gaussian_spot_size_FWHM(beam_waist_radius=beam_waist_radius)
     assert_quantity_allclose(result, expected, rtol=1e-6, equal_nan=True, verbose=True)
     assert result.unit == u.m
 
 
 @pytest.mark.parametrize(
-    ("beam_waist", "expected"),
+    ("beam_waist_radius", "expected"),
     [
         (-5e4 * u.m, ValueError),
         (1 * u.kg, u.UnitTypeError),
     ],
 )
-def test_Gaussian_spot_size_FWHM_errors(beam_waist, expected) -> None:
+def test_Gaussian_spot_size_FWHM_errors(beam_waist_radius, expected) -> None:
     with pytest.raises(expected):
-        Gaussian_spot_size_FWHM(beam_waist=beam_waist)
+        Gaussian_spot_size_FWHM(beam_waist_radius=beam_waist_radius)
 
 
 @pytest.mark.parametrize(
-    ("beam_waist", "expected_warning"),
+    ("beam_waist_radius", "expected_warning"),
     [
         (5, u.UnitsWarning),
     ],
 )
-def test_Gaussian_spot_size_FWHM_warnings(beam_waist, expected_warning) -> None:
+def test_Gaussian_spot_size_FWHM_warnings(beam_waist_radius, expected_warning) -> None:
     with pytest.warns(expected_warning):
-        Gaussian_spot_size_FWHM(beam_waist=beam_waist)
+        Gaussian_spot_size_FWHM(beam_waist_radius=beam_waist_radius)
 
 
 @pytest.mark.parametrize(
