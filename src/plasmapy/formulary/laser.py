@@ -193,7 +193,7 @@ def angular_frequency(wavelength: u.Quantity[u.m]) -> u.Quantity[u.rad / u.s]:
     Calculate the angular frequency :math:`\omega` of a laser given the
     the wavelength of the beam :math:`\lambda`.
 
-    The angular frequency of a wave :math:`f`
+    The angular frequency of a wave :math:`\omega`
     can be calculated using:
 
     .. math::
