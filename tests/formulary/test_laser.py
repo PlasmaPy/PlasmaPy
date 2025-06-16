@@ -396,7 +396,7 @@ def test_normalized_vector_potential_warning(
 
 
 @pytest.mark.parametrize(
-    ("intensity", "wavelength", "beam_waist", "expected"),
+    ("wavelength", "beam_waist", "expected"),
     [
         (800e-9 * u.m, 1e-6 * u.m, 3.926990816987241e-06 * u.m),
         (
