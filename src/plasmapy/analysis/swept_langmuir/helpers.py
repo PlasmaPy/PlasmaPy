@@ -294,6 +294,27 @@ def _force_regular_spacing(
     return reg_voltage, reg_current
 
 
+def _is_voltage_regularly_spaced(
+    voltage_diff: np.ndarray, mask_zero_diff: np.ndarray,
+) -> bool:
+    is_regular_grid = False
+    if np.count_nonzero(mask_zero_diff) > 0:
+        # is_regular_grid = False
+        pass
+    elif np.allclose(voltage_diff, voltage_diff[0]):
+        # grid is already regularly spaced
+        is_regular_grid = True
+    elif np.allclose(
+            np.rint(voltage_diff / np.min(voltage_diff))
+            - voltage_diff / np.min(voltage_diff),
+            0,
+    ):
+        # grid has a common dV, but at times jumps N * dV times
+        is_regular_grid = True
+
+    return is_regular_grid
+
+
 def merge_voltage_clusters(  # noqa: C901, PLR0912, PLR0915
     voltage: np.ndarray,
     current: np.ndarray,
@@ -323,29 +344,7 @@ def merge_voltage_clusters(  # noqa: C901, PLR0912, PLR0915
     # check if grid is regularly spaced
     voltage_diff = np.diff(voltage)
     mask_zero_diff = np.isclose(voltage_diff, 0.0)
-    if np.count_nonzero(mask_zero_diff) > 0:
-        is_regular_grid = False
-    elif np.allclose(voltage_diff, voltage_diff[0]):
-        # grid is already regularly spaced
-        is_regular_grid = True
-    elif np.allclose(
-        np.rint(voltage_diff / np.min(voltage_diff))
-        - voltage_diff / np.min(voltage_diff),
-        0,
-    ):
-        # grid has a common dV, but at times jumps N * dV times
-        if force_regular_spacing and (
-            voltage_step_size is None or voltage_step_size == 0
-        ):
-            # need to stuff with NaN values
-            voltage, current = _force_regular_spacing(
-                voltage=voltage,
-                current=current,
-                voltage_step_size=np.min(voltage_diff),
-            )
-        is_regular_grid = True
-    else:
-        is_regular_grid = False
+    is_regular_grid = _is_voltage_regularly_spaced(voltage_diff, mask_zero_diff)
 
     # return if voltage is already regularly spaced and no voltage merging is
     # requested
