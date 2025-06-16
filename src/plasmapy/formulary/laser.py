@@ -206,7 +206,7 @@ def angular_frequency(wavelength: u.Quantity[u.m]) -> u.Quantity[u.rad / u.s]:
     Parameters
     ----------
     wavelength : `~astropy.units.Quantity`
-        wavelength of the laser beam (convertible to nm).
+        wavelength of the laser beam (convertible to m).
 
     Returns
     -------
@@ -250,7 +250,11 @@ def normalized_vector_potential(
     .. math::
         a_0= \frac{e \lambda}{m_e \pi} \sqrt{\frac{I} {2 \epsilon_0 c^5}},
 
-    where :math:`w_0` is the beam waist and
+    where :math:`e` is the fudamental charge,
+    :math:`m_e` is the mass of an electron,
+    :math:`\epsilon_0` is the permitivity of free space,
+    :math:`c` is the speed of light,
+    :math:`\lambda` is the wavelength and
     :math:`I_0` is the intensity of the beam.
 
     **Aliases:** `a0_`
@@ -259,8 +263,8 @@ def normalized_vector_potential(
     ----------
     intensity : `~astropy.units.Quantity`
         Intensity of the laser pulse (convertible to W / m\ :sup:`2`).
-    beam_waist : `~astropy.units.Quantity`
-        Beam waist of the laser pulse (convertible to m).
+    wavelength : `~astropy.units.Quantity`
+        Wavelength of the laser (convertible to m).
 
     Returns
     -------
