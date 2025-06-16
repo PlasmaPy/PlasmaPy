@@ -10,7 +10,7 @@ from plasmapy.formulary.laser import (
     FWHM_,
     I_,
     P0_,
-    Gaussian_beam_waist,
+    Gaussian_beam_waist_radius,
     Gaussian_power,
     Gaussian_Rayleigh_length,
     Gaussian_spot_size_FWHM,
@@ -191,8 +191,8 @@ def test_Gaussian_power_errors_warnings(
     ],
 )
 @pytest.mark.filterwarnings("ignore::astropy.units.UnitsWarning")
-def test_Gaussian_beam_waist(spot_size_FWHM, expected) -> None:
-    result = Gaussian_beam_waist(spot_size_FWHM=spot_size_FWHM)
+def test_Gaussian_beam_waist_radius(spot_size_FWHM, expected) -> None:
+    result = Gaussian_beam_waist_radius(spot_size_FWHM=spot_size_FWHM)
     assert_quantity_allclose(result, expected, rtol=1e-6, equal_nan=True, verbose=True)
     assert result.unit == u.m
 
@@ -206,7 +206,7 @@ def test_Gaussian_beam_waist(spot_size_FWHM, expected) -> None:
 )
 def test_Gaussian_beam_waist_errors(spot_size_FWHM, expected) -> None:
     with pytest.raises(expected):
-        Gaussian_beam_waist(spot_size_FWHM=spot_size_FWHM)
+        Gaussian_beam_waist_radius(spot_size_FWHM=spot_size_FWHM)
 
 
 @pytest.mark.parametrize(
@@ -217,7 +217,7 @@ def test_Gaussian_beam_waist_errors(spot_size_FWHM, expected) -> None:
 )
 def test_Gaussian_beam_waist_warnings(spot_size_FWHM, expected_warning) -> None:
     with pytest.warns(expected_warning):
-        Gaussian_beam_waist(spot_size_FWHM=spot_size_FWHM)
+        Gaussian_beam_waist_radius(spot_size_FWHM=spot_size_FWHM)
 
 
 @pytest.mark.parametrize(
