@@ -293,15 +293,15 @@ a0_ = normalized_vector_potential
 
 @validate_quantities(
     intensity={"can_be_negative": False},
-    beam_waist={"can_be_negative": False},
+    beam_waist_radius={"can_be_negative": False},
 )
 def Gaussian_power(
     intensity: u.Quantity[u.watt / u.m**2],
-    beam_waist: u.Quantity[u.m],
+    beam_waist_radius: u.Quantity[u.m],
 ) -> u.Quantity[u.Watt]:
     r"""
     Calculate the total power of a Gaussian beam :math:`P_0` from the intensity :math:`I`
-    and the beam waist :math:`w_0`.
+    and the beam waist radius :math:`w_0`.
 
     The total power of a Gaussian beam
     is calculated using:
@@ -309,7 +309,7 @@ def Gaussian_power(
     .. math::
         P_0=\frac{1}{2}I_0 \pi w_0^2,
 
-    where :math:`w_0` is the beam waist and
+    where :math:`w_0` is the beam waist radius and
     :math:`I_0` is the intensity of the beam.
 
     **Aliases:** `P0_`
@@ -318,7 +318,7 @@ def Gaussian_power(
     ----------
     intensity : `~astropy.units.Quantity`
         Intensity of the laser pulse (convertible to W / m\ :sup:`2`).
-    beam_waist : `~astropy.units.Quantity`
+    beam_waist_radius : `~astropy.units.Quantity`
         Beam waist of the laser pulse (convertible to m).
 
     Returns
@@ -338,7 +338,7 @@ def Gaussian_power(
     <Quantity 1.57079633e+10 W>
     """
 
-    return (1 / 2) * intensity * np.pi * beam_waist**2
+    return (1 / 2) * intensity * np.pi * beam_waist_radius**2
 
 
 P0_ = Gaussian_power
