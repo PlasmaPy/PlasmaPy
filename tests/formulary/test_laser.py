@@ -383,7 +383,7 @@ def test_normalized_vector_potential_errors(intensity, wavelength, expected) -> 
 
 
 @pytest.mark.parametrize(
-    ("wavelength", "expected_warning"),
+    ("intensity", "wavelength", "expected_warning"),
     [
         (3, 5, u.UnitsWarning),
     ],
@@ -394,7 +394,7 @@ def test_normalized_vector_potential_warning(intensity, wavelength, expected_war
 
 
 @pytest.mark.parametrize(
-    ("wavelength", "beam_waist", "expected"),
+    ("intensity", "wavelength", "beam_waist", "expected"),
     [
         (800e-9 * u.m, 1e-6 * u.m, 3.926990816987241e-06 * u.m),
         (
