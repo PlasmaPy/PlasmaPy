@@ -388,7 +388,9 @@ def test_normalized_vector_potential_errors(intensity, wavelength, expected) -> 
         (3, 5, u.UnitsWarning),
     ],
 )
-def test_normalized_vector_potential_warning(intensity, wavelength, expected_warning) -> None:
+def test_normalized_vector_potential_warning(
+    intensity, wavelength, expected_warning
+) -> None:
     with pytest.warns(expected_warning):
         normalized_vector_potential(intensity=intensity, wavelength=wavelength)
 
@@ -449,6 +451,8 @@ def test_Gaussian_Rayleigh_length_errors(wavelength, beam_waist, expected) -> No
         (5, 2 * u.m, u.UnitsWarning),
     ],
 )
-def test_Rayleigh_length_warnings_warnings(wavelength, beam_waist, expected_warning) -> None:
+def test_Rayleigh_length_warnings_warnings(
+    wavelength, beam_waist, expected_warning
+) -> None:
     with pytest.warns(expected_warning):
         Gaussian_Rayleigh_length(wavelength=wavelength, beam_waist=beam_waist)
