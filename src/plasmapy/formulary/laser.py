@@ -248,7 +248,7 @@ def normalized_vector_potential(
     is calculated using:
 
     .. math::
-        a_0=\frac{1}{2}I_0 \pi w_0^2,
+        a_0=\frac{e \lambda}{m_e \pi} \sqrt{2 \epsilon_0 c^5},
 
     where :math:`w_0` is the beam waist and
     :math:`I_0` is the intensity of the beam.
@@ -264,9 +264,9 @@ def normalized_vector_potential(
 
     Returns
     -------
-    P_0 : `~astropy.units.Quantity`
-        The total power of the Gaussian beam for the given intensity
-        and spot size.
+    a_0 : `~astropy.units.Quantity`
+        The normalized vector potential of an electron given the intensity and wavelength of
+        a laser.
 
     Notes
     -----
