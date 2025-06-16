@@ -149,7 +149,7 @@ def test_Gausian_power(intensity, beam_waist, expected) -> None:
         (1 * u.kg, 3 * u.s, u.UnitTypeError),
     ],
 )
-def test_Gaussian_Power_errors(intensity, beam_waist, expected) -> None:
+def test_Gaussian_power_errors(intensity, beam_waist, expected) -> None:
     with pytest.raises(expected):
         Gaussian_power(intensity=intensity,beam_waist=beam_waist)
 
@@ -161,7 +161,7 @@ def test_Gaussian_Power_errors(intensity, beam_waist, expected) -> None:
         (5 * u.Watt/u.m**2, 2, u.UnitsWarning)
     ],
 )
-def test_electric_field_amplitude_warnings(intensity, beam_waist, expected_warning) -> None:
+def test_Gaussian_power_errors_warnings(intensity, beam_waist, expected_warning) -> None:
     with pytest.warns(expected_warning):
         Gaussian_power(intensity=intensity,beam_waist=beam_waist)
         
@@ -188,7 +188,7 @@ def test_Gaussian_beam_waist(spot_size_FWHM, expected) -> None:
         (1 * u.kg, u.UnitTypeError),
     ],
 )
-def test_Gaussian_beam_waist(spot_size_FWHM, expected) -> None:
+def test_Gaussian_beam_waist_errors(spot_size_FWHM, expected) -> None:
     with pytest.raises(expected):
         Gaussian_beam_waist(spot_size_FWHM=spot_size_FWHM)
 
@@ -198,7 +198,7 @@ def test_Gaussian_beam_waist(spot_size_FWHM, expected) -> None:
         (5, u.UnitsWarning),
     ],
 )
-def test_Gaussian_beam_waist(spot_size_FWHM, expected_warning) -> None:
+def test_Gaussian_beam_waist_warnings(spot_size_FWHM, expected_warning) -> None:
     with pytest.warns(expected_warning):
         Gaussian_beam_waist(spot_size_FWHM=spot_size_FWHM)
 
