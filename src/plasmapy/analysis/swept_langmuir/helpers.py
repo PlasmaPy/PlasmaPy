@@ -3,9 +3,12 @@
 __all__ = ["check_sweep", "merge_voltage_clusters", "sort_sweep_arrays"]
 
 from typing import Literal
+import warnings
 
 import astropy.units as u
 import numpy as np
+
+from plasmapy.utils.exceptions import PlasmaPyWarning
 
 
 def check_sweep(  # noqa: C901, PLR0912
@@ -404,6 +407,22 @@ def merge_voltage_clusters(  # noqa: C901, PLR0912, PLR0915
     # return if voltage is already regularly spaced and no voltage merging is
     # requested
     if is_regular_grid and (voltage_step_size is None or voltage_step_size == 0):
+        if voltage_step_size is None:
+            warnings.warn(
+                "The supplied ``voltage`` array is already regularly spaced. If "
+                "you want to re-bin the arrays to a different voltage_step_size, "
+                "the use something like numpy.interp.",
+                PlasmaPyWarning
+            )
+
+        if force_regular_spacing:
+            # need to stuff with NaN values
+            voltage, current = _force_regular_spacing(
+                voltage=voltage,
+                current=current,
+                voltage_step_size=np.min(voltage_diff),
+            )
+
         return voltage.copy(), current.copy()
 
     # condition voltage_step_size ... Round 2
