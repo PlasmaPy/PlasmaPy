@@ -321,6 +321,56 @@ def merge_voltage_clusters(  # noqa: C901, PLR0912, PLR0915
     voltage_step_size: float | None = None,
     force_regular_spacing: bool = False,
 ) -> tuple[np.ndarray, np.ndarray]:
+    """
+    Search the ``voltage`` array for closely spaced voltage clusters
+    based on the ``voltage_step_size`` parameter and merge cluster, and
+    associated ``current`` values, into a single point.
+
+    Parameters
+    ----------
+    voltage: `numpy.ndarray`
+        1D `numpy.ndarray` representing the voltage of the swept
+        Langmuir trace.  *No units are assumed or checked, but values
+        should be in volts.*
+
+    current: `numpy.ndarray`
+        1D `numpy.ndarray` representing the current of the swept
+        Langmuir trace.  Values should start from a negative
+        ion-saturation current and increase to a positive
+        electron-saturation current.  *No units are assumed or checked,
+        but values should be in amperes.*
+
+    voltage_step_size: `float` or `None`
+        A non-zero, positive step size for the ``voltage`` array
+        cluster identification.  A value of ``0`` will merge only
+        duplicate voltage values.  A value of `None` will default to the
+        average step size of the ``voltage`` array.  (DEFAULT:`None`)
+
+    force_regular_spacing: `bool`
+        If `False`, then the new voltage value of a cluster is the
+        average of the contained points.  If `True`, then the new
+        ``voltage`` array will be regularly spaced with a delta of
+        ``voltage_step_size``.  (DEFAULT: `False`)
+
+    Returns
+    -------
+    voltage : `numpy.ndarray`
+        The new ``voltage`` array.
+
+    current : `numpy.ndarray`
+        The new ``current`` array.
+
+    Notes
+    -----
+    ``voltage_step_size = 0`` :
+        blah
+
+    ``voltage_step_size > 0`` or `None`
+        blah
+
+    ``force_regular_spacing = True``
+        blah
+    """
     # condition force_regular_grid
     if not isinstance(force_regular_spacing, bool):
         raise TypeError(
