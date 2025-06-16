@@ -146,7 +146,7 @@ def wavelength(angular_frequency: u.Quantity[u.rad / u.s]) -> u.Quantity[u.m]:
     Calculate the wavelength of a laser :math:`\lambda` given the
     the angular frequency :math:`\omega`.
 
-    The frequency of an electromagnetic wave :math:`f`
+    The wavelength of an electromagnetic wave :math:`\lambda`
     is calculated using:
 
     .. math::
