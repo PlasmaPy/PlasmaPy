@@ -303,7 +303,8 @@ def _force_regular_spacing(
 
 
 def _is_voltage_regularly_spaced(
-    voltage_diff: np.ndarray, mask_zero_diff: np.ndarray,
+    voltage_diff: np.ndarray,
+    mask_zero_diff: np.ndarray,
 ) -> bool:
     """
     Determine if the voltage difference array ``voltage_diff`` is
@@ -318,9 +319,9 @@ def _is_voltage_regularly_spaced(
         # grid is already regularly spaced
         is_regular_grid = True
     elif np.allclose(
-            np.rint(voltage_diff / np.min(voltage_diff))
-            - voltage_diff / np.min(voltage_diff),
-            0,
+        np.rint(voltage_diff / np.min(voltage_diff))
+        - voltage_diff / np.min(voltage_diff),
+        0,
     ):
         # grid has a common dV, but at times jumps N * dV times
         is_regular_grid = True
@@ -339,13 +340,8 @@ def _interpolate_sweep(
     new voltage array will be spaced by ``voltage_step_size`` and span
     the same range as the original ``voltage`` array.
     """
-    size = (
-        int(np.round((voltage[-1] - voltage[0]) / voltage_step_size))
-        + 1
-    )
-    reg_voltage = np.linspace(
-        voltage[0], voltage[-1], num=size, dtype=voltage.dtype
-    )
+    size = int(np.round((voltage[-1] - voltage[0]) / voltage_step_size)) + 1
+    reg_voltage = np.linspace(voltage[0], voltage[-1], num=size, dtype=voltage.dtype)
     reg_current = np.interp(reg_voltage, voltage, current)
 
     return reg_voltage, reg_current
@@ -484,7 +480,7 @@ def merge_voltage_clusters(  # noqa: C901, PLR0912, PLR0915
                 "The supplied ``voltage`` array is already regularly spaced. If "
                 "you want to re-bin the arrays to a different voltage_step_size, "
                 "the use something like numpy.interp.",
-                PlasmaPyWarning
+                PlasmaPyWarning,
             )
 
         if force_regular_spacing:
@@ -516,7 +512,6 @@ def merge_voltage_clusters(  # noqa: C901, PLR0912, PLR0915
 
     # now merge clusters
     if voltage_step_size != 0 and np.all(voltage_diff >= voltage_step_size):
-
         if force_regular_spacing:
             new_voltage, new_current = _interpolate_sweep(
                 voltage, current, voltage_step_size
