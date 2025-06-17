@@ -148,8 +148,8 @@ def test_multiple_grids() -> None:
     solution??
     """
 
-    grid1 = _test_grid("constant_bz", L=3 * u.cm, num=50, B0=0.7 * u.T)
-    grid2 = _test_grid("electrostatic_gaussian_sphere", L=1 * u.mm, num=50)
+    grid1 = _test_grid("constant_bz", L=3 * u.cm, num=20, B0=0.7 * u.T)
+    grid2 = _test_grid("electrostatic_gaussian_sphere", L=1 * u.mm, num=20)
     grids = [grid1, grid2]
 
     source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
@@ -159,20 +159,13 @@ def test_multiple_grids() -> None:
         grids, source, detector, field_weighting="nearest neighbor", verbose=True
     )
 
-    sim.create_particles(1e5, 15 * u.MeV, max_theta=8 * u.deg, random_seed=42)
+    sim.create_particles(1e2, 15 * u.MeV, max_theta=8 * u.deg, random_seed=42)
 
     sim.run()
 
     size = np.array([[-1, 1], [-1, 1]]) * 5 * u.cm
     bins = [100, 100]
     hax, vax, values = cpr.synthetic_radiograph(sim, size=size, bins=bins)
-
-    """
-    import matplotlib.pyplot as plt
-    fig, ax = plt.subplots()
-    ax.set_aspect('equal')
-    ax.pcolormesh(hax.to(u.cm).value, vax.to(u.cm).value, values.T)
-    """
 
 
 def run_1D_example(name: str):
@@ -922,42 +915,6 @@ def test_add_wire_mesh() -> None:
 
     # Verify that the spacing is correct by checking the FFT
     assert np.isclose(measured_spacing, true_spacing, 0.5)
-
-
-@pytest.mark.slow
-@pytest.mark.filterwarnings("ignore::RuntimeWarning")
-def test_multiple_grids2() -> None:
-    """
-    Test that a case with two grids runs.
-    TODO: automate test by including two fields with some obvious analytical
-    solution??
-    """
-
-    grid1 = _test_grid("constant_bz", L=3 * u.cm, num=50, B0=0.7 * u.T)
-    grid2 = _test_grid("electrostatic_gaussian_sphere", L=1 * u.mm, num=50)
-    grids = [grid1, grid2]
-
-    source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
-    detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
-
-    sim = cpr.Tracker(
-        grids, source, detector, field_weighting="nearest neighbor", verbose=True
-    )
-
-    sim.create_particles(1e5, 15 * u.MeV, max_theta=8 * u.deg, random_seed=42)
-
-    sim.run()
-
-    size = np.array([[-1, 1], [-1, 1]]) * 5 * u.cm
-    bins = [100, 100]
-    hax, vax, values = cpr.synthetic_radiograph(sim, size=size, bins=bins)
-
-    """
-    import matplotlib.pyplot as plt
-    fig, ax = plt.subplots()
-    ax.set_aspect('equal')
-    ax.pcolormesh(hax.to(u.cm).value, vax.to(u.cm).value, values.T)
-    """
 
 
 def test_radiography_disk_save_routine(tmp_path) -> None:
