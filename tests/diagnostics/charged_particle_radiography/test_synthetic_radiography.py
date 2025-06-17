@@ -805,38 +805,45 @@ def test_gaussian_sphere_analytical_comparison() -> None:
     assert np.isclose(max_deflection, sim.max_deflection.to(u.rad).value, atol=1e-3)
 
 
-@pytest.mark.parametrize('kwargs', [
-    # Test a circular mesh
-    {'extent':1*u.mm},
-    # Test providing hdir
-    {'mesh_hdir':np.array([0.5, 0, 0.5])},
-    # Test providing hdir and vdir
-    {'mesh_hdir':np.array([0.5, 0, 0.5]), 'mesh_vdir':np.array([0, 0.1, 1])},
-                         ])
+@pytest.mark.parametrize(
+    "kwargs",
+    [
+        # Test a circular mesh
+        {"extent": 1 * u.mm},
+        # Test providing hdir
+        {"mesh_hdir": np.array([0.5, 0, 0.5])},
+        # Test providing hdir and vdir
+        {"mesh_hdir": np.array([0.5, 0, 0.5]), "mesh_vdir": np.array([0, 0.1, 1])},
+    ],
+)
 @pytest.mark.slow
-def test_add_wire_mesh_inputs(kwargs)->None:
+def test_add_wire_mesh_inputs(kwargs) -> None:
     run_mesh_example(**kwargs)
-    
-@pytest.mark.parametrize('kwargs,exception', [
-    # Test invalid extent (too many elements)
-    ({'extent':(1 * u.mm, 2 * u.mm, 3 * u.mm)}, ValueError ),
-    # Test wire mesh completely blocks all particles (in this case because
-    # the wire diameter is absurdly large)
-    ({'wire_diameter':5 * u.mm}, ValueError),
-    # Test if wire mesh is not between the source and object
-    ({'location':np.array([0, 3, 0]) * u.mm}, ValueError),
-                         ])
+
+
+@pytest.mark.parametrize(
+    "kwargs,exception",
+    [
+        # Test invalid extent (too many elements)
+        ({"extent": (1 * u.mm, 2 * u.mm, 3 * u.mm)}, ValueError),
+        # Test wire mesh completely blocks all particles (in this case because
+        # the wire diameter is absurdly large)
+        ({"wire_diameter": 5 * u.mm}, ValueError),
+        # Test if wire mesh is not between the source and object
+        ({"location": np.array([0, 3, 0]) * u.mm}, ValueError),
+    ],
+)
 @pytest.mark.slow
-def test_add_wire_mesh_invalid_inputs(kwargs,exception) -> None:
+def test_add_wire_mesh_invalid_inputs(kwargs, exception) -> None:
     with pytest.raises(exception):
         run_mesh_example(**kwargs)
-    
+
 
 @pytest.mark.slow
 def test_add_wire_mesh_accuracy() -> None:
     """
     Test that a mesh is imaged correctly in the detector plane.
-    
+
     Test that mesh is the right size in the detector plane, and that
     the wire spacing images correctly.
     This is actually a good overall test of the whole proton radiography
@@ -846,7 +853,7 @@ def test_add_wire_mesh_accuracy() -> None:
     extent = (1 * u.mm, 1 * u.mm)
     wire_diameter = 30 * u.um
     nwires = 9
-    
+
     # A large number of particles is needed to get a good image
     # of the mesh, so this is a slow test
     sim = run_mesh_example(
