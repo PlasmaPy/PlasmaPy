@@ -809,11 +809,11 @@ def test_gaussian_sphere_analytical_comparison() -> None:
     "kwargs",
     [
         # Test a circular mesh
-        {"extent": 1 * u.mm},
+        ({"extent": 1 * u.mm}),
         # Test providing hdir
-        {"mesh_hdir": np.array([0.5, 0, 0.5])},
+        ({"mesh_hdir": np.array([0.5, 0, 0.5])}),
         # Test providing hdir and vdir
-        {"mesh_hdir": np.array([0.5, 0, 0.5]), "mesh_vdir": np.array([0, 0.1, 1])},
+        ({"mesh_hdir": np.array([0.5, 0, 0.5]), "mesh_vdir": np.array([0, 0.1, 1])}),
     ],
 )
 @pytest.mark.slow
@@ -822,7 +822,7 @@ def test_add_wire_mesh_inputs(kwargs) -> None:
 
 
 @pytest.mark.parametrize(
-    "kwargs,exception",
+    ("kwargs", "exception"),
     [
         # Test invalid extent (too many elements)
         ({"extent": (1 * u.mm, 2 * u.mm, 3 * u.mm)}, ValueError),
