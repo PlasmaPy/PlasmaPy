@@ -351,6 +351,50 @@ def _interpolate_sweep(
     return reg_voltage, reg_current
 
 
+def _merge_zero_diff_voltage_clusters(
+    voltage: np.ndarray, current: np.ndarray
+) -> tuple[np.ndarray, np.ndarray]:
+    """
+    Take the ``voltage`` and ``current`` arrays associated with a
+    langmuir trace and average together clusters of identical voltage
+    values.
+    """
+    # generate boolean mask for zero diff locations
+    voltage_diff = np.diff(voltage)
+    mask_zero_diff = np.isclose(voltage_diff, 0.0)
+    mask_zero_diff = np.append(mask_zero_diff, [mask_zero_diff[-1]])
+
+    # initialize new voltage and current arrays
+    new_voltage = np.full(voltage.shape, np.nan, dtype=voltage.dtype)
+    new_current = np.full(current.shape, np.nan, dtype=current.dtype)
+
+    mask = np.logical_not(mask_zero_diff)
+    new_voltage[mask] = voltage[mask]
+    new_current[mask] = current[mask]
+
+    # merge zero diff clusters
+    while np.any(mask_zero_diff):
+        volt = voltage[mask_zero_diff][0]
+        index = np.where(new_voltage == volt)[0]
+        if len(index) == 0:
+            index = np.where(mask_zero_diff)[0]
+
+        index = index[0]
+        volt_mask = np.isclose(voltage, volt)
+
+        new_voltage[index] = volt
+        new_current[index] = np.average(current[volt_mask])
+
+        mask_zero_diff[volt_mask] = False
+
+    # remove nan entries
+    mask = np.logical_not(np.isnan(new_voltage))
+    new_voltage = new_voltage[mask]
+    new_current = new_current[mask]
+
+    return new_voltage, new_current
+
+
 def merge_voltage_clusters(  # noqa: C901, PLR0912, PLR0915
     voltage: np.ndarray,
     current: np.ndarray,
@@ -471,7 +515,6 @@ def merge_voltage_clusters(  # noqa: C901, PLR0912, PLR0915
         )
 
     # now merge clusters
-    voltage_diff = np.diff(voltage)
     if voltage_step_size != 0 and np.all(voltage_diff >= voltage_step_size):
 
         if force_regular_spacing:
@@ -480,35 +523,7 @@ def merge_voltage_clusters(  # noqa: C901, PLR0912, PLR0915
             )
 
     elif voltage_step_size == 0:
-        voltage_diff = np.diff(voltage)
-        mask_zero_diff = np.isclose(voltage_diff, 0.0)
-        mask_zero_diff = np.append(mask_zero_diff, [mask_zero_diff[-1]])
-
-        new_voltage = np.full(voltage.shape, np.nan, dtype=voltage.dtype)
-        new_current = np.full(current.shape, np.nan, dtype=current.dtype)
-
-        mask = np.logical_not(mask_zero_diff)
-        new_voltage[mask] = voltage[mask]
-        new_current[mask] = current[mask]
-
-        while np.any(mask_zero_diff):
-            volt = voltage[mask_zero_diff][0]
-            index = np.where(new_voltage == volt)[0]
-            if len(index) == 0:
-                index = np.where(mask_zero_diff)[0]
-
-            index = index[0]
-            volt_mask = np.isclose(voltage, volt)
-
-            new_voltage[index] = volt
-            new_current[index] = np.average(current[volt_mask])
-
-            mask_zero_diff[volt_mask] = False
-
-        # remove nan entries
-        mask = np.logical_not(np.isnan(new_voltage))
-        new_voltage = new_voltage[mask]
-        new_current = new_current[mask]
+        new_voltage, new_current = _merge_zero_diff_voltage_clusters(voltage, current)
 
         if force_regular_spacing:
             new_voltage, new_current = merge_voltage_clusters(
