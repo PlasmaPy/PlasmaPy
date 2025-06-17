@@ -328,6 +328,29 @@ def _is_voltage_regularly_spaced(
     return is_regular_grid
 
 
+def _interpolate_sweep(
+    voltage: np.ndarray,
+    current: np.ndarray,
+    voltage_step_size: float,
+):
+    """
+    Interpolate the ``voltage`` and ``current`` arrays associated with
+    a langmuir trace onto a new regularly spaced  voltage array.  The
+    new voltage array will be spaced by ``voltage_step_size`` and span
+    the same range as the original ``voltage`` array.
+    """
+    size = (
+        int(np.round((voltage[-1] - voltage[0]) / voltage_step_size))
+        + 1
+    )
+    reg_voltage = np.linspace(
+        voltage[0], voltage[-1], num=size, dtype=voltage.dtype
+    )
+    reg_current = np.interp(reg_voltage, voltage, current)
+
+    return reg_voltage, reg_current
+
+
 def merge_voltage_clusters(  # noqa: C901, PLR0912, PLR0915
     voltage: np.ndarray,
     current: np.ndarray,
@@ -450,21 +473,12 @@ def merge_voltage_clusters(  # noqa: C901, PLR0912, PLR0915
     # now merge clusters
     voltage_diff = np.diff(voltage)
     if voltage_step_size != 0 and np.all(voltage_diff >= voltage_step_size):
-        new_voltage = voltage.copy()
-        new_current = current.copy()
 
         if force_regular_spacing:
-            size = (
-                int(np.round((new_voltage[-1] - new_voltage[0]) / voltage_step_size))
-                + 1
+            new_voltage, new_current = _interpolate_sweep(
+                voltage, current, voltage_step_size
             )
-            reg_voltage = np.linspace(
-                new_voltage[0], new_voltage[-1], num=size, dtype=new_voltage.dtype
-            )
-            reg_current = np.interp(reg_voltage, new_voltage, new_current)
 
-            new_voltage = reg_voltage
-            new_current = reg_current
     elif voltage_step_size == 0:
         voltage_diff = np.diff(voltage)
         mask_zero_diff = np.isclose(voltage_diff, 0.0)
