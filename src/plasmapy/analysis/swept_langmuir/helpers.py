@@ -2,8 +2,8 @@
 
 __all__ = ["check_sweep", "merge_voltage_clusters", "sort_sweep_arrays"]
 
-from typing import Literal
 import warnings
+from typing import Literal
 
 import astropy.units as u
 import numpy as np
