@@ -332,7 +332,7 @@ def _interpolate_sweep(
     voltage: np.ndarray,
     current: np.ndarray,
     voltage_step_size: float,
-):
+) -> tuple[np.ndarray, np.ndarray]:
     """
     Interpolate the ``voltage`` and ``current`` arrays associated with
     a langmuir trace onto a new regularly spaced  voltage array.  The
