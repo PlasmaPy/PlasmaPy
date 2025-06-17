@@ -305,6 +305,11 @@ def _force_regular_spacing(
 def _is_voltage_regularly_spaced(
     voltage_diff: np.ndarray, mask_zero_diff: np.ndarray,
 ) -> bool:
+    """
+    Determine if the voltage difference array ``voltage_diff`` is
+    regularly spaced.  That is the differences are all equal or some
+    integer multiple of the smallest difference.
+    """
     is_regular_grid = False
     if np.count_nonzero(mask_zero_diff) > 0:
         # is_regular_grid = False
