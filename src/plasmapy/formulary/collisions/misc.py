@@ -6,6 +6,7 @@ __all__ = [
     "mobility",
     "Bethe_stopping",
     "Bethe_Ferrari_Moliere_scattering",
+    "Highland_scattering",
     "Spitzer_resistivity",
 ]
 __lite_funcs__ = ["Bethe_stopping_lite"]
@@ -436,6 +437,40 @@ def Bethe_Ferrari_Moliere_scattering(
 
     return scattering_integrand
 
+def Highland_scattering(
+    m: u.Quantity[u.kg],
+    v: u.Quantity[u.m / u.s],
+    L_rad: u.Quantity[u.kg / u.m**2],
+    dt: u.Quantity[u.s],
+):
+    """Calculate the RMS scattering angle using the Highland formula.
+
+    Parameters
+    ----------
+    m : `~astropy.Units.Quantity`
+        The mass of the projectile particles streaming through the target.
+    v : `~astropy.units.Quantity`
+        The speed of the projectile particles streaming through the target.
+    L_rad : `~astropy.units.Quantity`
+        The radiation length of the target material. See notes for more details.
+    dt : `~astropy.units.Quantity`
+        The timestep being used in the Monte Carlo simulation.
+
+    Returns
+    -------
+    theta_rms : `~astropy.units.Quantity`
+        The RMS scattering angle in radians.
+    """
+    # Fitting constant, value provided by Highland
+    E_s = 17.5 * u.MeV
+    # The length the particle will traverse in this timestep
+    L = v * dt
+
+    # Eq (2) in Highland
+    epsilon = 1 + 0.125 * np.log10(L / L_rad)
+
+    # Eq (4) in Highland
+    return E_s / (m*v**2) * np.sqrt(L / L_rad) * (1 + epsilon)
 
 @validate_quantities(
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
