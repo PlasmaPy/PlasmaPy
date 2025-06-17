@@ -391,6 +391,51 @@ def _merge_zero_diff_voltage_clusters(
     return new_voltage, new_current
 
 
+def _merge_voltage_clusters(
+    voltage: np.ndarray,
+    current: np.ndarray,
+    voltage_step_size: float,
+    force_regular_spacing: bool,
+) -> tuple[np.ndarray, np.ndarray]:
+    """
+    Take the ``voltage`` and ``current`` arrays associated with a
+    langmuir trace and average together clusters voltage values within
+    step size ``voltage_step_size``.
+    """
+    # initialize new voltage anc current arrays
+    new_voltage = np.full(voltage.shape, np.nan, dtype=voltage.dtype)
+    new_current = np.full(current.shape, np.nan, dtype=current.dtype)
+
+    start_voltage = voltage[0]
+    stop_voltage = start_voltage + voltage_step_size
+
+    # populate
+    ii = 0
+    while start_voltage <= voltage[-1]:
+        mask1 = voltage >= start_voltage
+        mask2 = voltage < stop_voltage
+        mask = np.logical_and(mask1, mask2)
+
+        if np.count_nonzero(mask) > 0:
+            new_voltage[ii] = (
+                start_voltage + 0.5 * voltage_step_size
+                if force_regular_spacing
+                else np.average(voltage[mask])
+            )
+            new_current[ii] = np.average(current[mask])
+
+            ii += 1
+
+        start_voltage = stop_voltage
+        stop_voltage += voltage_step_size
+
+    # crop new arrays
+    new_voltage = new_voltage[:ii]
+    new_current = new_current[:ii]
+
+    return new_voltage, new_current
+
+
 def merge_voltage_clusters(  # noqa: C901, PLR0912, PLR0915
     voltage: np.ndarray,
     current: np.ndarray,
@@ -531,35 +576,9 @@ def merge_voltage_clusters(  # noqa: C901, PLR0912, PLR0915
             )
 
     else:
-        new_voltage = np.full(voltage.shape, np.nan, dtype=voltage.dtype)
-        new_current = np.full(current.shape, np.nan, dtype=current.dtype)
-
-        start_voltage = voltage[0]
-        stop_voltage = start_voltage + voltage_step_size
-
-        # populate
-        ii = 0
-        while start_voltage <= voltage[-1]:
-            mask1 = voltage >= start_voltage
-            mask2 = voltage < stop_voltage
-            mask = np.logical_and(mask1, mask2)
-
-            if np.count_nonzero(mask) > 0:
-                new_voltage[ii] = (
-                    start_voltage + 0.5 * voltage_step_size
-                    if force_regular_spacing
-                    else np.average(voltage[mask])
-                )
-                new_current[ii] = np.average(current[mask])
-
-                ii += 1
-
-            start_voltage = stop_voltage
-            stop_voltage += voltage_step_size
-
-        # crop new arrays
-        new_voltage = new_voltage[:ii]
-        new_current = new_current[:ii]
+        new_voltage, new_current = _merge_voltage_clusters(
+            voltage, current, voltage_step_size, force_regular_spacing
+        )
 
         if force_regular_spacing:
             # Need to fill array with NaN values to force the regular spacing
