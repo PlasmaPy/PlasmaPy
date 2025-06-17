@@ -437,6 +437,7 @@ def Bethe_Ferrari_Moliere_scattering(
 
     return scattering_integrand
 
+
 def Highland_scattering(
     m: u.Quantity[u.kg],
     v: u.Quantity[u.m / u.s],
@@ -470,7 +471,8 @@ def Highland_scattering(
     epsilon = 1 + 0.125 * np.log10(L / L_rad)
 
     # Eq (4) in Highland
-    return E_s / (m*v**2) * np.sqrt(L / L_rad) * (1 + epsilon)
+    return E_s / (m * v**2) * np.sqrt(L / L_rad) * (1 + epsilon)
+
 
 @validate_quantities(
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
