@@ -516,6 +516,9 @@ def merge_voltage_clusters(  # noqa: C901, PLR0912, PLR0915
             new_voltage, new_current = _interpolate_sweep(
                 voltage, current, voltage_step_size
             )
+        else:
+            new_voltage = voltage.copy()
+            new_current = current.copy()
 
     elif voltage_step_size == 0:
         new_voltage, new_current = _merge_zero_diff_voltage_clusters(voltage, current)
