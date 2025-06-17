@@ -5,7 +5,7 @@ Module of miscellaneous parameters related to collisions.
 __all__ = [
     "mobility",
     "Bethe_stopping",
-    "Mott_Bethe_mean_squared_scattering",
+    "Bethe_Ferrari_Moliere_scattering",
     "Spitzer_resistivity",
 ]
 __lite_funcs__ = ["Bethe_stopping_lite"]
@@ -16,23 +16,26 @@ import astropy.constants as const
 import astropy.units as u
 import numpy as np
 import numpy.typing as npt
-from scipy.special import erf
+from scipy.integrate import quad
+from scipy.optimize import fsolve
+from scipy.special import factorial, jv
 
 from plasmapy.formulary.collisions import frequencies
-from plasmapy.formulary.lengths import Debye_length
 from plasmapy.formulary.speeds import thermal_speed
 from plasmapy.particles.atomic import reduced_mass
 from plasmapy.particles.decorators import particle_input
-from plasmapy.particles.particle_class import Particle, ParticleLike
+from plasmapy.particles.particle_class import Particle
 from plasmapy.utils.decorators import bind_lite_func, validate_quantities
 from plasmapy.utils.decorators.checks import _check_relativistic
 from plasmapy.utils.exceptions import PhysicsError
 
 __all__ += __lite_funcs__
 
+_alpha = const.alpha
 _c = const.c
 _e = const.e.si
 _eps0 = const.eps0
+_hbar = const.hbar
 _m_e = const.m_e
 
 
@@ -327,6 +330,111 @@ def Bethe_stopping(
 
     return Bethe_stopping_lite(I.si.value, n.si.value, v.si.value, z) * u.J / u.m
 
+
+def _f_n_mol_integrand(
+    u: float,
+    ν: float,
+    n: int,
+):
+    return u * jv(0, ν * u) * np.exp(-(u**2) / 4) * (u**2 / 4 * np.log(u**2 / 4)) ** n
+
+
+def _f_mol_n(
+    ν: float,
+    n: int,
+):
+    return (
+        1
+        / factorial(n)
+        * quad(
+            _f_n_mol_integrand,
+            0,
+            np.inf,
+            args=(
+                ν,
+                n,
+            ),
+        )
+    )
+
+
+def _Moliere_scattering_B(B, omega_0):
+    return B - np.log(B) - np.log(omega_0)
+
+
+def Bethe_Ferrari_Moliere_scattering(
+    v: u.Quantity[u.m / u.s],
+    n: u.Quantity[u.m**-3],
+    z: int,
+    m: u.Quantity[u.kg],
+    Z: int,
+    ξ_e: float,  # TODO: Double check the units on this
+    dt: u.Quantity[u.s],
+):
+    """Calculate the angular scattering distribution for the provided particle species.
+
+    Parameters
+    ----------
+    v : `~astropy.units.Quantity`
+        The speed of the projectile particles streaming through the target.
+
+    n : `~astropy.units.Quantity`
+        The number density of atoms per unit volume of the target material.
+
+    z : `~astropy.units.Quantity`
+        The atomic number of the projectile specie.
+
+    m : `~astropy.units.Quantity`
+        The mass of the projectile specie.
+
+    Z : `~astropy.units.Quantity`
+        The atomic number of the target.
+
+    ξ_e : `float`
+        A parameter taking into account the scattering on atomic electrons.
+
+    dt : `~astropy.units.Quantity`
+        The timestep being used in the Monte Carlo simulation.
+    """
+
+    # What thickness will we be traversing with this timestep?
+    t = v * dt
+    beta = v / _c
+    E = m * _c**2 / (np.sqrt(1 - beta**2))  # Relativistic energy
+
+    χ_cc = np.sqrt(4 * np.pi * n * z**2 * Z * (Z + ξ_e) * _e**4)
+    χ_c = χ_cc * t**0.5 / (E * beta**2)
+    b_c = (0.855 * χ_cc * _hbar) ** 2 / (
+        1.167**2
+        * _m_e
+        * _c**2
+        * _e**4
+        * Z ** (2 / 3)
+        * (1.13 + (3.76 * _alpha**2 * z**2 * Z**2) / beta**2)
+    )
+    omega_0 = b_c * t / beta**2
+
+    # The transcendental equation associated with `B` yields two solutions for
+    # every `omega_0`. We want to solve for values where B > 1, so our initial
+    # guess must also satisfy x0 > 1.
+    # TODO: Double check this function returns what we're expecting
+    B = fsolve(
+        _Moliere_scattering_B,
+        x0=np.full_like(omega_0.value, 5),
+        args=(omega_0,),
+    )
+    χ_r = χ_c * np.sqrt(B)
+
+    def scattering_integrand(theta, B):
+        # Ensure we use the reduced angle for the integration
+        theta_r = theta / χ_r
+
+        f_n = [_f_mol_n(theta_r, i) / B**i for i in range(3)]
+        f_mol = sum(f_n) / (2 * np.pi)
+
+        return 2 * np.pi * theta * f_mol * np.sqrt(np.sin(theta) / theta)
+
+    return scattering_integrand
 
 
 @validate_quantities(
