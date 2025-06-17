@@ -5,7 +5,7 @@ Module of miscellaneous parameters related to collisions.
 __all__ = [
     "mobility",
     "Bethe_stopping",
-    "Mott_Bethe_mean_squared_scattering",
+    "Bethe_Ferrari_Moliere_scattering",
     "Spitzer_resistivity",
 ]
 __lite_funcs__ = ["Bethe_stopping_lite"]
@@ -16,23 +16,26 @@ import astropy.constants as const
 import astropy.units as u
 import numpy as np
 import numpy.typing as npt
-from scipy.special import erf
+from scipy.integrate import quad
+from scipy.optimize import fsolve
+from scipy.special import factorial, jv
 
 from plasmapy.formulary.collisions import frequencies
-from plasmapy.formulary.lengths import Debye_length
 from plasmapy.formulary.speeds import thermal_speed
 from plasmapy.particles.atomic import reduced_mass
 from plasmapy.particles.decorators import particle_input
-from plasmapy.particles.particle_class import Particle, ParticleLike
+from plasmapy.particles.particle_class import Particle
 from plasmapy.utils.decorators import bind_lite_func, validate_quantities
 from plasmapy.utils.decorators.checks import _check_relativistic
 from plasmapy.utils.exceptions import PhysicsError
 
 __all__ += __lite_funcs__
 
+_alpha = const.alpha
 _c = const.c
 _e = const.e.si
 _eps0 = const.eps0
+_hbar = const.hbar
 _m_e = const.m_e
 
 
@@ -328,78 +331,110 @@ def Bethe_stopping(
     return Bethe_stopping_lite(I.si.value, n.si.value, v.si.value, z) * u.J / u.m
 
 
-# TODO: figure out if there's a better name for this. And where it came from.
-#  See https://pubs.aip.org/aip/pop/article/30/9/093902/2910853/Monte-Carlo-simulations-of-charged-particle
-#  which states that the original source is not in English
-def Mott_Bethe_mean_squared_scattering(
-    speed: u.Quantity[u.m / u.s],
-    beam_particle: ParticleLike,
-    target_particle: ParticleLike,
-    T_s: u.Quantity[u.K],
-    n_s: u.Quantity[1 / u.m**3],
-) -> u.Quantity[u.Hz]:
-    r"""
-    Calculate the mean-squared rate of scattering for protons scattering
-    through a screened Coulomb potential.
+def _f_n_mol_integrand(
+    u: float,
+    ν: float,
+    n: int,
+):
+    return u * jv(0, ν * u) * np.exp(-(u**2) / 4) * (u**2 / 4 * np.log(u**2 / 4)) ** n
+
+
+def _f_mol_n(
+    ν: float,
+    n: int,
+):
+    return (
+        1
+        / factorial(n)
+        * quad(
+            _f_n_mol_integrand,
+            0,
+            np.inf,
+            args=(
+                ν,
+                n,
+            ),
+        )
+    )
+
+
+def _Moliere_scattering_B(B, omega_0):
+    return B - np.log(B) - np.log(omega_0)
+
+
+def Bethe_Ferrari_Moliere_scattering(
+    v: u.Quantity[u.m / u.s],
+    n: u.Quantity[u.m**-3],
+    z: int,
+    m: u.Quantity[u.kg],
+    Z: int,
+    ξ_e: float,  # TODO: Double check the units on this
+    dt: u.Quantity[u.s],
+):
+    """Calculate the angular scattering distribution for the provided particle species.
 
     Parameters
     ----------
-    speed : `~astropy.units.Quantity`
-        The speed of the particle.
+    v : `~astropy.units.Quantity`
+        The speed of the projectile particles streaming through the target.
 
-    beam_particle : `~plasmapy.particles.particle_class.ParticleLike`
-        A particle class representation of the incident particle beam.
+    n : `~astropy.units.Quantity`
+        The number density of atoms per unit volume of the target material.
 
-    target_particle : `~plasmapy.particles.particle_class.ParticleLike`
-        A particle class representation of the target.
+    z : `~astropy.units.Quantity`
+        The atomic number of the projectile specie.
 
-    T_s : `~astropy.units.Quantity`
-        The temperature of the target species.
+    m : `~astropy.units.Quantity`
+        The mass of the projectile specie.
 
-    n_s : `~astropy.units.Quantity`
-        The number density of scatterers in the material.
+    Z : `~astropy.units.Quantity`
+        The atomic number of the target.
 
-    Notes
-    -----
-    The mean-square rate of scattering of incident protons is given in Mott & Massey (1950) to be
+    ξ_e : `float`
+        A parameter taking into account the scattering on atomic electrons.
 
-    .. math::
-        \frac{d\langle \Delta \theta^2 \rangle}{dt} = \frac{n_s q_{\alpha}^2 q_{\beta}^2}
-        {2 \pi \epsilon_0 m_{\alpha}^2 v_{\alpha}^3} \ln{(\bar{\Lambda})}
-        \Phi{\left( \frac{v_{\alpha}}{v_{\beta T}} \right)}
-
-    where :math:`n_s` is the number density of scatterers, :math:`\ln{(\bar{\Lambda})}`,
-    :math:`q_{\alpha, \beta}`, :math:`m_{\alpha, \beta}` and :math:`v_{\alpha, \beta}` are the particle charge,
-    mass, and velocity in the rest frame, respectively. The subscript :math:`\alpha`
-    refers to the beam species whereas :math:`\beta` refers to the target species.
-    :math:`\ln{\left(\bar{\Lambda}\right)}` is the averaged Coulomb logarithm, given by :math:`\ln{(\lambda_D / \langle b_0 \rangle)}`
-    where :math:`\lambda_D` is the Debye length and :math:`\langle b_0 \rangle` is the
-    average value for the distance of closest approach associated with the
-    classical Coulomb potential in the center of mass frame, given as :math:`b_0 = q_{\alpha}
-    q_{\beta} / 4 \pi \eps_0 \mu \bar{u}^2`, where :math:`\bar{u}` is the average relative velocity.
+    dt : `~astropy.units.Quantity`
+        The timestep being used in the Monte Carlo simulation.
     """
-    mu = reduced_mass(target_particle, beam_particle)
 
-    b_0 = (
-        target_particle.atomic_number
-        * beam_particle.atomic_number
-        * const.e.si**2
-        / (4 * np.pi * const.eps0 * mu * speed**2)
+    # What thickness will we be traversing with this timestep?
+    t = v * dt
+    beta = v / _c
+    E = m * _c**2 / (np.sqrt(1 - beta**2))  # Relativistic energy
+
+    χ_cc = np.sqrt(4 * np.pi * n * z**2 * Z * (Z + ξ_e) * _e**4)
+    χ_c = χ_cc * t**0.5 / (E * beta**2)
+    b_c = (0.855 * χ_cc * _hbar) ** 2 / (
+        1.167**2
+        * _m_e
+        * _c**2
+        * _e**4
+        * Z ** (2 / 3)
+        * (1.13 + (3.76 * _alpha**2 * z**2 * Z**2) / beta**2)
     )
+    omega_0 = b_c * t / beta**2
 
-    lambda_D = Debye_length(T_s * u.K, n_s / u.m**3)
-    L = np.log((lambda_D / b_0).si.value)
-
-    result = (
-        n_s
-        * (beam_particle.atomic_number * target_particle.atomic_number * const.e.si**2)
-        ** 2
-        / (2 * np.pi * const.eps0**2 * beam_particle.mass**2 * speed**3)
-        * L
-        * erf((speed / thermal_speed(T_s * u.K, target_particle)).si.value)
+    # The transcendental equation associated with `B` yields two solutions for
+    # every `omega_0`. We want to solve for values where B > 1, so our initial
+    # guess must also satisfy x0 > 1.
+    # TODO: Double check this function returns what we're expecting
+    B = fsolve(
+        _Moliere_scattering_B,
+        x0=np.full_like(omega_0.value, 5),
+        args=(omega_0,),
     )
+    χ_r = χ_c * np.sqrt(B)
 
-    return result.si.value
+    def scattering_integrand(theta, B):
+        # Ensure we use the reduced angle for the integration
+        theta_r = theta / χ_r
+
+        f_n = [_f_mol_n(theta_r, i) / B**i for i in range(3)]
+        f_mol = sum(f_n) / (2 * np.pi)
+
+        return 2 * np.pi * theta * f_mol * np.sqrt(np.sin(theta) / theta)
+
+    return scattering_integrand
 
 
 @validate_quantities(

@@ -18,14 +18,11 @@ import astropy.constants as const
 import astropy.units as u
 import numpy as np
 from numpy.typing import NDArray
-from scipy.integrate import quad
 from tqdm import tqdm
 
 from plasmapy.formulary.collisions.misc import Bethe_stopping_lite
-from plasmapy.formulary.lengths import Debye_length
 from plasmapy.particles import Particle, particle_input
-from plasmapy.particles.atomic import reduced_mass, stopping_power
-from plasmapy.particles.particle_class import ParticleLike
+from plasmapy.particles.atomic import stopping_power
 from plasmapy.particles.particle_collections import ParticleListLike
 from plasmapy.plasma.grids import AbstractGrid
 from plasmapy.plasma.plasma_base import BasePlasma
@@ -279,9 +276,9 @@ class ParticleTracker:
 
         # Declare type hints for stopping power attributes
         self._stopping_method: Literal["Bethe", "NIST"] | None = None
-        self._stopping_power_interpolators: list[Callable[
-            [u.Quantity[u.m / u.s], u.Quantity[u.m**-3]],
-        ]] | None = None
+        self._stopping_power_interpolators: (
+            list[Callable[[u.Quantity[u.m / u.s], u.Quantity[u.m**-3]],]] | None
+        ) = None
 
     # TODO: Should these properties return quantities with units?
     @cached_property
@@ -1175,9 +1172,7 @@ class ParticleTracker:
         mean_square_scatter_rate = np.zeros(shape=self.nparticles_tracked)
 
         for i, _grid in enumerate(self.grids):
-            particles_on_grid = self.particles_on_grid[
-                self._tracked_particle_mask, i
-            ]
+            particles_on_grid = self.particles_on_grid[self._tracked_particle_mask, i]
 
             # Passing an empty array to the scattering routine can cause an error to
             # be emitted
@@ -1185,16 +1180,12 @@ class ParticleTracker:
                 continue
 
             # TODO: figure out additivity rule for scattering
-            mean_square_scatter_rate[particles_on_grid] += (
-                self._scattering_routine(
-                    speed=speeds[particles_on_grid],
-                    beam_particle=self._particle,
-                    target_particle=self._target[i],
-                    T_s=self._total_grid_values["T_i"][
-                        particles_on_grid
-                    ].si.value,
-                    n_s=self._target_number_density[i],
-                )
+            mean_square_scatter_rate[particles_on_grid] += self._scattering_routine(
+                speed=speeds[particles_on_grid],
+                beam_particle=self._particle,
+                target_particle=self._target[i],
+                T_s=self._total_grid_values["T_i"][particles_on_grid].si.value,
+                n_s=self._target_number_density[i],
             )
 
         mean_square_scatter_rate = np.reshape(
