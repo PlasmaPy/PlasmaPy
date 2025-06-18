@@ -5,6 +5,8 @@ Module of miscellaneous parameters related to collisions.
 __all__ = [
     "mobility",
     "Bethe_stopping",
+    "Bethe_Ferrari_Moliere_scattering",
+    "Highland_scattering",
     "Spitzer_resistivity",
 ]
 __lite_funcs__ = ["Bethe_stopping_lite"]
@@ -15,6 +17,9 @@ import astropy.constants as const
 import astropy.units as u
 import numpy as np
 import numpy.typing as npt
+from scipy.integrate import quad
+from scipy.optimize import fsolve
+from scipy.special import factorial, jv
 
 from plasmapy.formulary.collisions import frequencies
 from plasmapy.formulary.speeds import thermal_speed
@@ -27,9 +32,11 @@ from plasmapy.utils.exceptions import PhysicsError
 
 __all__ += __lite_funcs__
 
+_alpha = const.alpha
 _c = const.c
 _e = const.e.si
 _eps0 = const.eps0
+_hbar = const.hbar
 _m_e = const.m_e
 
 
@@ -240,7 +247,7 @@ def Bethe_stopping_lite(
     higher order corrections become non-negligible for smaller energies.
 
     By convention, this function returns a positive value for the stopping
-    energy.
+    power.
 
     Parameters
     ----------
@@ -267,7 +274,7 @@ def Bethe_stopping_lite(
 
     beta = v / _c.si.value
 
-    return np.asarray(
+    return -np.asarray(
         4
         * np.pi
         * n
@@ -297,7 +304,7 @@ def Bethe_stopping(
     higher order corrections become non-negligible for smaller energies.
 
     By convention, this function returns a positive value for the stopping
-    energy.
+    power.
 
     Parameters
     ----------
@@ -323,6 +330,166 @@ def Bethe_stopping(
     """
 
     return Bethe_stopping_lite(I.si.value, n.si.value, v.si.value, z) * u.J / u.m
+
+
+def _f_n_mol_integrand(
+    u: float,
+    ν: float,
+    n: int,
+):
+    return u * jv(0, ν * u) * np.exp(-(u**2) / 4) * (u**2 / 4 * np.log(u**2 / 4)) ** n
+
+
+def _f_mol_n(
+    ν: float,
+    n: int,
+):
+    return (
+        1
+        / factorial(n)
+        * quad(
+            _f_n_mol_integrand,
+            0,
+            np.inf,
+            args=(
+                ν,
+                n,
+            ),
+        )
+    )
+
+
+def _Moliere_scattering_B(B, omega_0):
+    return B - np.log(B) - np.log(omega_0)
+
+
+def Bethe_Ferrari_Moliere_scattering(
+    v: u.Quantity[u.m / u.s],
+    n: u.Quantity[u.m**-3],
+    z: int,
+    m: u.Quantity[u.kg],
+    Z: int,
+    ξ_e: float,  # TODO: Double check the units on this
+    dt: u.Quantity[u.s],
+):
+    """Calculate the angular scattering distribution for the provided particle species.
+
+    Parameters
+    ----------
+    v : `~astropy.units.Quantity`
+        The speed of the projectile particles streaming through the target.
+
+    n : `~astropy.units.Quantity`
+        The number density of atoms per unit volume of the target material.
+
+    z : `~astropy.units.Quantity`
+        The atomic number of the projectile specie.
+
+    m : `~astropy.units.Quantity`
+        The mass of the projectile specie.
+
+    Z : `~astropy.units.Quantity`
+        The atomic number of the target.
+
+    ξ_e : `float`
+        A parameter taking into account the scattering on atomic electrons.
+
+    dt : `~astropy.units.Quantity`
+        The timestep being used in the Monte Carlo simulation.
+    """
+
+    # What thickness will we be traversing with this timestep?
+    t = v * dt
+    beta = v / _c
+    E = m * _c**2 / (np.sqrt(1 - beta**2))  # Relativistic energy
+
+    χ_cc = np.sqrt(4 * np.pi * n * z**2 * Z * (Z + ξ_e) * _e**4)
+    χ_c = χ_cc * t**0.5 / (E * beta**2)
+    b_c = (0.855 * χ_cc * _hbar) ** 2 / (
+        1.167**2
+        * _m_e
+        * _c**2
+        * _e**4
+        * Z ** (2 / 3)
+        * (1.13 + (3.76 * _alpha**2 * z**2 * Z**2) / beta**2)
+    )
+    omega_0 = b_c * t / beta**2
+
+    # The transcendental equation associated with `B` yields two solutions for
+    # every `omega_0`. We want to solve for values where B > 1, so our initial
+    # guess must also satisfy x0 > 1.
+    # TODO: Double check this function returns what we're expecting
+    B = fsolve(
+        _Moliere_scattering_B,
+        x0=np.full_like(omega_0.value, 5),
+        args=(omega_0,),
+    )
+    χ_r = χ_c * np.sqrt(B)
+
+    def scattering_integrand(theta, B):
+        # Ensure we use the reduced angle for the integration
+        theta_r = theta / χ_r
+
+        f_n = [_f_mol_n(theta_r, i) / B**i for i in range(3)]
+        f_mol = sum(f_n) / (2 * np.pi)
+
+        return 2 * np.pi * theta * f_mol * np.sqrt(np.sin(theta) / theta)
+
+    return scattering_integrand
+
+
+def Highland_scattering(
+    m: u.Quantity[u.kg],
+    v: u.Quantity[u.m / u.s],
+    L: u.Quantity[u.m],
+    L_rad: u.Quantity[u.kg / u.m**2],
+):
+    r"""Calculate the rms scattering angle using the Highland formula.
+
+    Parameters
+    ----------
+    m : `~astropy.Units.Quantity`
+        The mass of the projectile particles streaming through the target.
+    v : `~astropy.units.Quantity`
+        The speed of the projectile particles streaming through the target.
+    L : `~astropy.units.Quantity`
+        The thickness of the target in units of length.
+    L_rad : `~astropy.units.Quantity`
+        The radiation length of the target material in units of length.
+        See notes for more details.
+
+    Returns
+    -------
+    theta_rms : `~astropy.units.Quantity`
+        The rms scattering angle in radians.
+
+    Notes
+    -----
+    The root-mean squared (rms) scattering angle is given by the Highland
+    formula :cite:t:`highland:1975` as:
+
+    .. math::
+        \theta_{1/e} = \frac{17.5 \text{MeV}}{p\beta c}\sqrt{\frac{L}{L_R}}
+        \left(1 + 0.125\log_{10}\left(\frac{L}{0.1L_R}\right)\right)
+
+    where :math:`p` is the momentum of the projectile particles,
+    :math:`\beta` is the relativistic beta, :math:`L` is the thickness
+    of the target, and :math:`L_R` is the radiation length-- a characteristic
+    distance scale over which energy loss to bremsstrahlung radiation is
+    relevant.
+
+    The Highland formula is an approximation that works best for high Z targets.
+    For low Z targets, the number of scattering events may be underestimated, and
+    a different model should be used.
+    """
+    # Fitting constant, value provided by Highland
+    E_s = 17.5 * u.MeV
+
+    # Eq (2) in Highland
+    epsilon = 0.125 * np.log10(10 * L / L_rad)
+
+    # Eq (4) in Highland
+    return E_s / (m * v**2) * np.sqrt(L / L_rad) * (1 + epsilon)
 
 
 @validate_quantities(
