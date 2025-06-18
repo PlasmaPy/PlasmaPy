@@ -444,7 +444,7 @@ def Highland_scattering(
     L: u.Quantity[u.m],
     L_rad: u.Quantity[u.kg / u.m**2],
 ):
-    r"""Calculate the RMS scattering angle using the Highland formula.
+    r"""Calculate the rms scattering angle using the Highland formula.
 
     Parameters
     ----------
@@ -455,7 +455,8 @@ def Highland_scattering(
     L : `~astropy.units.Quantity`
         The thickness of the target in units of length.
     L_rad : `~astropy.units.Quantity`
-        The radiation length of the target material. See notes for more details.
+        The radiation length of the target material in units of length.
+        See notes for more details.
 
     Returns
     -------
@@ -464,17 +465,22 @@ def Highland_scattering(
 
     Notes
     -----
-    The root-mean squared (rms) scattering angle is given in :cite:t:`highland:1975` as:
+    The root-mean squared (rms) scattering angle is given by the Highland
+    formula :cite:t:`highland:1975` as:
 
     .. math::
-        \theta_{1/e} = \frac{17.5 \\; \text{MeV}}{p\beta c}\\sqrt{\frac{L}{L_R}}
-        \\left(1 + 0.125\\log_{10}\\left(\frac{L}{0.1L_R}\right)\right)
+        \theta_{1/e} = \frac{17.5 \text{MeV}}{p\beta c}\sqrt{\frac{L}{L_R}}
+        \left(1 + 0.125\log_{10}\left(\frac{L}{0.1L_R}\right)\right)
 
     where :math:`p` is the momentum of the projectile particles,
     :math:`\beta` is the relativistic beta, :math:`L` is the thickness
     of the target, and :math:`L_R` is the radiation length-- a characteristic
     distance scale over which energy loss to bremsstrahlung radiation is
     relevant.
+
+    The Highland formula is an approximation that works best for high Z targets.
+    For low Z targets, the number of scattering events may be underestimated, and
+    a different model should be used.
     """
     # Fitting constant, value provided by Highland
     E_s = 17.5 * u.MeV
