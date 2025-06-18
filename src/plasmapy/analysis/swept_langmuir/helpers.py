@@ -402,7 +402,7 @@ def _merge_voltage_clusters(
     langmuir trace and average together clusters voltage values within
     step size ``voltage_step_size``.
     """
-    # initialize new voltage anc current arrays
+    # initialize new voltage and current arrays
     new_voltage = np.full(voltage.shape, np.nan, dtype=voltage.dtype)
     new_current = np.full(current.shape, np.nan, dtype=current.dtype)
 
