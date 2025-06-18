@@ -441,10 +441,10 @@ def Bethe_Ferrari_Moliere_scattering(
 def Highland_scattering(
     m: u.Quantity[u.kg],
     v: u.Quantity[u.m / u.s],
+    L: u.Quantity[u.m],
     L_rad: u.Quantity[u.kg / u.m**2],
-    dt: u.Quantity[u.s],
 ):
-    """Calculate the RMS scattering angle using the Highland formula.
+    r"""Calculate the RMS scattering angle using the Highland formula.
 
     Parameters
     ----------
@@ -452,20 +452,32 @@ def Highland_scattering(
         The mass of the projectile particles streaming through the target.
     v : `~astropy.units.Quantity`
         The speed of the projectile particles streaming through the target.
+    L : `~astropy.units.Quantity`
+        The thickness of the target in units of length.
     L_rad : `~astropy.units.Quantity`
         The radiation length of the target material. See notes for more details.
-    dt : `~astropy.units.Quantity`
-        The timestep being used in the Monte Carlo simulation.
 
     Returns
     -------
     theta_rms : `~astropy.units.Quantity`
-        The RMS scattering angle in radians.
+        The rms scattering angle in radians.
+
+    Notes
+    -----
+    The root-mean squared (rms) scattering angle is given in :cite:t:`highland:1975` as:
+
+    .. math::
+        \theta_{1/e} = \frac{17.5 \\; \text{MeV}}{p\beta c}\\sqrt{\frac{L}{L_R}}
+        \\left(1 + 0.125\\log_{10}\\left(\frac{L}{0.1L_R}\right)\right)
+
+    where :math:`p` is the momentum of the projectile particles,
+    :math:`\beta` is the relativistic beta, :math:`L` is the thickness
+    of the target, and :math:`L_R` is the radiation length-- a characteristic
+    distance scale over which energy loss to bremsstrahlung radiation is
+    relevant.
     """
     # Fitting constant, value provided by Highland
     E_s = 17.5 * u.MeV
-    # The length the particle will traverse in this timestep
-    L = v * dt
 
     # Eq (2) in Highland
     epsilon = 0.125 * np.log10(10 * L / L_rad)
