@@ -468,7 +468,7 @@ def Highland_scattering(
     L = v * dt
 
     # Eq (2) in Highland
-    epsilon = 1 + 0.125 * np.log10(L / L_rad)
+    epsilon = 0.125 * np.log10(10 * L / L_rad)
 
     # Eq (4) in Highland
     return E_s / (m * v**2) * np.sqrt(L / L_rad) * (1 + epsilon)
