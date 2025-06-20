@@ -185,8 +185,8 @@ def test_Gaussian_power_errors_warnings(
 @pytest.mark.parametrize(
     ("spot_size_FWHM", "expected"),
     [
-        (8.242e-6 * u.m, 7e-6 * u.m),
-        ([8.242, 0] * u.um, [7e-6, 0] * u.m),
+        (8.242e-6 * u.m, 7.00011e-6 * u.m),
+        ([8.242, 0] * u.um, [7.00011e-6, 0] * u.m),
         (np.nan * u.m, np.nan * u.m),
     ],
 )
@@ -223,8 +223,8 @@ def test_Gaussian_beam_waist_radius_warnings(spot_size_FWHM, expected_warning) -
 @pytest.mark.parametrize(
     ("beam_waist_radius", "expected"),
     [
-        (7e-6 * u.m, 8.242e-6 * u.m),
-        ([7, 0] * u.um, [8.242e-6, 0] * u.m),
+        (7e-6 * u.m, 8.24187e-6 * u.m),
+        ([7, 0] * u.um, [8.24187e-6, 0] * u.m),
         (np.nan * u.m, np.nan * u.m),
     ],
 )
@@ -261,8 +261,8 @@ def test_Gaussian_spot_size_FWHM_warnings(beam_waist_radius, expected_warning) -
 @pytest.mark.parametrize(
     ("angular_frequency", "expected"),
     [
-        (2.354307546e15 * u.rad / u.s, 800e-9 * u.m),
-        ([2.354307546, 0] * u.Prad / u.s, [800e-9, 0] * u.m),
+        (2.354307546e15 * u.rad / u.s, 800.0873e-9 * u.m),
+        ([2.354307546, 0] * u.Prad / u.s, [800.0873e-9, 0] * u.m),
         (np.nan * u.rad / u.s, np.nan * u.m),
     ],
 )
@@ -299,8 +299,8 @@ def test_wavelength_warnings(angular_frequency, expected_warning) -> None:
 @pytest.mark.parametrize(
     ("wavelength", "expected"),
     [
-        (800e-9 * u.m, 2.354307546e15 * u.rad / u.s),
-        ([800, 0] * u.nm, [2.354307546e15, 0] * u.rad / u.s),
+        (800e-9 * u.m, 2.354564e15 * u.rad / u.s),
+        ([800, 0] * u.nm, [2.354564e15, 0] * u.rad / u.s),
         (np.nan * u.m, np.nan * u.rad / u.s),
     ],
 )
