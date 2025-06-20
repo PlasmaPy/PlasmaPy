@@ -148,7 +148,7 @@ def test_intensity_warnings(electric_field_amplitude, expected_warning) -> None:
         ),
         (0 * u.watt / u.m**2, 1e-6 * u.m, 0 * u.Watt),
         (1e-3 * u.watt / u.m**2, 0 * u.m, 0 * u.Watt),
-        (np.nan * u.watt / u.m**2, np.nan * u.m, np.nan * u.V / u.m),
+        (np.nan * u.watt / u.m**2, np.nan * u.m, np.nan * u.Watt),
     ],
 )
 @pytest.mark.filterwarnings("ignore::astropy.units.UnitsWarning")
@@ -262,7 +262,7 @@ def test_Gaussian_spot_size_FWHM_warnings(beam_waist_radius, expected_warning) -
     ("angular_frequency", "expected"),
     [
         (2.354307546e15 * u.rad / u.s, 800.0873e-9 * u.m),
-        ([2.354307546, 0] * u.Prad / u.s, [800.0873e-9, 0] * u.m),
+        ([2.354307546, 0] * u.Prad / u.s, [800.0873e-9, np.inf] * u.m),
         (np.nan * u.rad / u.s, np.nan * u.m),
     ],
 )
@@ -300,7 +300,7 @@ def test_wavelength_warnings(angular_frequency, expected_warning) -> None:
     ("wavelength", "expected"),
     [
         (800e-9 * u.m, 2.354564e15 * u.rad / u.s),
-        ([800, 0] * u.nm, [2.354564e15, 0] * u.rad / u.s),
+        ([800, 0] * u.nm, [2.354564e15, np.inf] * u.rad / u.s),
         (np.nan * u.m, np.nan * u.rad / u.s),
     ],
 )
