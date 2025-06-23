@@ -313,7 +313,7 @@ def _is_voltage_regularly_spaced(
 ) -> bool:
     """
     Determine if the voltage difference array ``voltage_diff`` is
-    regularly spaced.  That is the differences are all equal or some
+    regularly spaced; that is the differences are all equal or some
     integer multiple of the smallest difference.
     """
     is_regular_grid = False
