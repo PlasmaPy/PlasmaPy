@@ -403,9 +403,9 @@ def _merge_voltage_clusters(
     force_regular_spacing: bool,
 ) -> tuple[np.ndarray, np.ndarray]:
     """
-    Take the ``voltage`` and ``current`` arrays associated with a
-    langmuir trace and average together clusters voltage values within
-    step size ``voltage_step_size``.
+    Take the ``voltage`` and ``current`` arrays associated with a swept
+    langmuir trace and average together clusters of voltage values
+    within step size ``voltage_step_size``.
     """
     # initialize new voltage and current arrays
     new_voltage = np.full(voltage.shape, np.nan, dtype=voltage.dtype)
