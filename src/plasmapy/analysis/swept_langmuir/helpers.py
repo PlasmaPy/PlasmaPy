@@ -396,7 +396,7 @@ def _merge_zero_diff_voltage_clusters(
     return new_voltage, new_current
 
 
-def _merge_voltage_clusters(
+def _merge_voltage_clusters__within_dv(
     voltage: np.ndarray,
     current: np.ndarray,
     voltage_step_size: float,
@@ -581,7 +581,7 @@ def merge_voltage_clusters(  # noqa: C901, PLR0912
             )
 
     else:
-        new_voltage, new_current = _merge_voltage_clusters(
+        new_voltage, new_current = _merge_voltage_clusters__within_dv(
             voltage, current, voltage_step_size, force_regular_spacing
         )
 
