@@ -571,14 +571,29 @@ def merge_voltage_clusters(  # noqa: C901, PLR0912
             new_current = current.copy()
 
     elif voltage_step_size == 0:
-        new_voltage, new_current = _merge_voltage_clusters__zero_diff_neighbors(voltage, current)
+        new_voltage, new_current = _merge_voltage_clusters__zero_diff_neighbors(
+            voltage, current
+        )
 
         if force_regular_spacing:
-            new_voltage, new_current = merge_voltage_clusters(
-                voltage=new_voltage,
-                current=new_current,
-                voltage_step_size=voltage_step_size,
-            )
+            voltage_diff = np.diff(new_voltage)
+            mask_zero_diff = np.isclose(voltage_diff, 0.0)
+            is_regular_grid = _is_voltage_regularly_spaced(voltage_diff, mask_zero_diff)
+
+            if is_regular_grid:
+                new_voltage, new_current = _force_regular_spacing(
+                    voltage=new_voltage,
+                    current=new_current,
+                    voltage_step_size=np.min(voltage_diff),
+                )
+            else:
+                warnings.warn(
+                    "Can not enforce regular spacing for the voltage array "
+                    "if argument 'voltage_step_size' is set to 0 and the "
+                    "voltage array is NOT already regularly spaced.  "
+                    "Returning voltage and current arrays WITHOUT enforce "
+                    "regular spacing.",
+                )
 
     else:
         new_voltage, new_current = _merge_voltage_clusters__within_dv(
