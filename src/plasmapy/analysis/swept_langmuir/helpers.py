@@ -245,11 +245,16 @@ def _force_regular_spacing(
     voltage_step_size: float,
 ) -> tuple[np.ndarray, np.ndarray]:
     """
-    Take a ``voltage`` array that already has voltage steps at some
-    integer spacing of ``voltage_step_size`` and its paired ``current``
-    array to generate a voltage array with a fixed step size
-    ``voltage_step_size`` along with an appropriately `~numpy.nan`
-    stuffed ``current`` array.
+    Generated a regularly spaced voltage array and associated
+    `~numpy.nan` stuffed current array from the given ``voltage``
+    and ``current`` langmuir trace arrays.  The generated voltage
+    array will span the same range as the input ``voltage`` array with
+    a regular spacing of ``voltage_step_size``.
+
+    It is assumed the input ``voltage`` array is already spaced at
+    some integer multiple of ``voltage_step_size``.  This integer
+    multiple does NOT need to be fixed for every point pair in
+    ``voltage``.
 
     Parameters
     ----------
