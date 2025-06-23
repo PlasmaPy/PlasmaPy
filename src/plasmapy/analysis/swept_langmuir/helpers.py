@@ -334,7 +334,7 @@ def _is_voltage_regularly_spaced(
     return is_regular_grid
 
 
-def _interpolate_sweep(
+def _merge_voltage_clusters__interpolate_sweep(
     voltage: np.ndarray,
     current: np.ndarray,
     voltage_step_size: float,
@@ -563,7 +563,7 @@ def merge_voltage_clusters(  # noqa: C901, PLR0912
     # now merge clusters
     if voltage_step_size != 0 and np.all(voltage_diff >= voltage_step_size):
         if force_regular_spacing:
-            new_voltage, new_current = _interpolate_sweep(
+            new_voltage, new_current = _merge_voltage_clusters__interpolate_sweep(
                 voltage, current, voltage_step_size
             )
         else:
