@@ -356,7 +356,7 @@ def _merge_zero_diff_voltage_clusters(
     voltage: np.ndarray, current: np.ndarray
 ) -> tuple[np.ndarray, np.ndarray]:
     """
-    Take the ``voltage`` and ``current`` arrays associated with a
+    Take the ``voltage`` and ``current`` arrays associated with a swept
     langmuir trace and average together clusters of identical voltage
     values.
     """
