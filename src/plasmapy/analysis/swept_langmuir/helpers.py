@@ -352,7 +352,7 @@ def _interpolate_sweep(
     return reg_voltage, reg_current
 
 
-def _merge_zero_diff_voltage_clusters(
+def _merge_voltage_clusters__zero_diff_neighbors(
     voltage: np.ndarray, current: np.ndarray
 ) -> tuple[np.ndarray, np.ndarray]:
     """
@@ -571,7 +571,7 @@ def merge_voltage_clusters(  # noqa: C901, PLR0912
             new_current = current.copy()
 
     elif voltage_step_size == 0:
-        new_voltage, new_current = _merge_zero_diff_voltage_clusters(voltage, current)
+        new_voltage, new_current = _merge_voltage_clusters__zero_diff_neighbors(voltage, current)
 
         if force_regular_spacing:
             new_voltage, new_current = merge_voltage_clusters(
