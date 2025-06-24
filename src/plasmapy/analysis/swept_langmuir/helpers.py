@@ -345,8 +345,8 @@ def _merge_voltage_clusters__interpolate_sweep(
     new voltage array will be spaced by ``voltage_step_size`` and span
     the same range as the original ``voltage`` array.
     """
-    size = int(np.round((voltage[-1] - voltage[0]) / voltage_step_size)) + 1
-    reg_voltage = np.linspace(voltage[0], voltage[-1], num=size, dtype=voltage.dtype)
+    size = int(np.floor((voltage[-1] - voltage[0]) / voltage_step_size)) + 1
+    reg_voltage = voltage_step_size * np.arange(size, dtype=voltage.dtype) + voltage[0]
     reg_current = np.interp(reg_voltage, voltage, current)
 
     return reg_voltage, reg_current
