@@ -369,8 +369,8 @@ def Bethe_Ferrari_Moliere_scattering(
     z: int,
     m: u.Quantity[u.kg],
     Z: int,
-    ξ_e: float,  # TODO: Double check the units on this
-    dt: u.Quantity[u.s],
+    dx: u.Quantity[u.m],
+    ξ_e: float = 1,  # TODO: Find a source with more context on this parameter
 ):
     """Calculate the angular scattering distribution for the provided particle species.
 
@@ -391,20 +391,20 @@ def Bethe_Ferrari_Moliere_scattering(
     Z : `~astropy.units.Quantity`
         The atomic number of the target.
 
-    ξ_e : `float`
-        A parameter taking into account the scattering on atomic electrons.
+    dx : `~astropy.units.Quantity`
+        The thickness being traversed by the particles.
 
-    dt : `~astropy.units.Quantity`
-        The timestep being used in the Monte Carlo simulation.
+    ξ_e : `float`
+        A dimensionless parameter taking into account the scattering on atomic
+        electrons. By default, it is set to 1.
+
     """
 
-    # What thickness will we be traversing with this timestep?
-    t = v * dt
     beta = v / _c
     E = m * _c**2 / (np.sqrt(1 - beta**2))  # Relativistic energy
 
     χ_cc = np.sqrt(4 * np.pi * n * z**2 * Z * (Z + ξ_e) * _e**4)
-    χ_c = χ_cc * t**0.5 / (E * beta**2)
+    χ_c = χ_cc * dx**0.5 / (E * beta**2)
     b_c = (0.855 * χ_cc * _hbar) ** 2 / (
         1.167**2
         * _m_e
@@ -413,7 +413,7 @@ def Bethe_Ferrari_Moliere_scattering(
         * Z ** (2 / 3)
         * (1.13 + (3.76 * _alpha**2 * z**2 * Z**2) / beta**2)
     )
-    omega_0 = b_c * t / beta**2
+    omega_0 = b_c * dx / beta**2
 
     # The transcendental equation associated with `B` yields two solutions for
     # every `omega_0`. We want to solve for values where B > 1, so our initial
@@ -465,22 +465,21 @@ def Highland_scattering(
 
     Notes
     -----
-    The root-mean squared (rms) scattering angle is given by the Highland
-    formula :cite:t:`highland:1975` as:
+    The root-mean-square (rms) scattering angle is given by in :cite:t:`highland:1975` as:
 
     .. math::
-        \theta_{1/e} = \frac{17.5 \text{MeV}}{p\beta c}\sqrt{\frac{L}{L_R}}
+        \theta_{1/e} = \frac{17.5 \; \text{MeV}}{p\beta c}\sqrt{\frac{L}{L_R}}
         \left(1 + 0.125\log_{10}\left(\frac{L}{0.1L_R}\right)\right)
 
     where :math:`p` is the momentum of the projectile particles,
     :math:`\beta` is the relativistic beta, :math:`L` is the thickness
-    of the target, and :math:`L_R` is the radiation length-- a characteristic
-    distance scale over which energy loss to bremsstrahlung radiation is
+    of the target, and :math:`L_R` is the radiation length--a characteristic
+    distance scale for which energy loss to bremsstrahlung radiation is
     relevant.
 
     The Highland formula is an approximation that works best for high Z targets.
-    For low Z targets, the number of scattering events may be underestimated, and
-    a different model should be used.
+    For low Z targets, the number of scattering events may be underestimated
+    by the Highland formula, and a different model should be used.
     """
     # Fitting constant, value provided by Highland
     E_s = 17.5 * u.MeV
