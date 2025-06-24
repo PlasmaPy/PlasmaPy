@@ -11,6 +11,7 @@ import numpy as np
 import pytest
 
 from plasmapy.analysis.swept_langmuir.helpers import check_sweep, merge_voltage_clusters
+from plasmapy.utils.exceptions import PlasmaPyWarning
 
 
 @pytest.mark.parametrize(
@@ -32,48 +33,30 @@ from plasmapy.analysis.swept_langmuir.helpers import check_sweep, merge_voltage_
             None,
         ),
         # values
-        # (
-        #     np.linspace(-40.0, 40, 100),
-        #     np.linspace(-10.0, 30, 100),
-        #     {"voltage_order": "ascending"},
-        #     does_not_raise(),
-        #     None,
-        # ),
-        # (
-        #     np.linspace(-40.0, 40, 100),
-        #     np.linspace(-10.0, 30, 100),
-        #     {"voltage_order": "descending"},
-        #     does_not_raise(),
-        #     (np.linspace(40.0, -40, 100), np.linspace(30.0, -10, 100)),
-        # ),
-        # (
-        #     np.linspace(40.0, -40, 100),
-        #     np.linspace(-10.0, 30, 100),
-        #     {"voltage_order": "descending"},
-        #     does_not_raise(),
-        #     None,
-        # ),
-        # (
-        #     np.linspace(40.0, -40, 100),
-        #     np.linspace(-10.0, 30, 100),
-        #     {"voltage_order": "ascending"},
-        #     does_not_raise(),
-        #     (np.linspace(-40.0, 40, 100), np.linspace(30.0, -10, 100)),
-        # ),
-        # (
-        #     np.array([-40.0, 20.0, -22.0, 40.0]),
-        #     np.array([-10.0, 10.0, -5.0, 30.0]),
-        #     {"voltage_order": "ascending"},
-        #     does_not_raise(),
-        #     (np.array([-40.0, -22.0, 20.0, 40.0]), np.array([-10.0, -5.0, 10.0, 30.0])),
-        # ),
-        # (
-        #     np.array([-40.0, 20.0, -22.0, 40.0]),
-        #     np.array([-10.0, 10.0, -5.0, 30.0]),
-        #     {"voltage_order": "descending"},
-        #     does_not_raise(),
-        #     (np.array([40.0, 20.0, -22.0, -40.0]), np.array([30.0, 10.0, -5.0, -10.0])),
-        # ),
+        (
+            np.linspace(-40.0, 40, 100),
+            np.linspace(-10.0, 30, 100),
+            {"voltage_step_size": None},
+            pytest.warns(PlasmaPyWarning),
+            None,  # same as inputs
+        ),
+        (
+            np.linspace(-40.0, 40, 100),
+            np.linspace(-10.0, 30, 100),
+            {"voltage_step_size": 0.0},
+            does_not_raise(),
+            None,  # same as inputs
+        ),
+        (
+            np.array([1, 2, 4, 6], dtype=float),
+            np.array([-5, -2, 0, 5], dtype=float),
+            {"voltage_step_size": 0.0, "force_regular_spacing": True},
+            does_not_raise(),
+            (
+                np.array([1, 2, 3, 4, 5, 6], dtype=float),
+                np.array([-5, -2, np.nan, 0, np.nan, 5], dtype=float),
+            ),  # same as inputs
+        ),
     ],
 )
 def test_merge_voltage_clusters(
@@ -98,7 +81,14 @@ def test_merge_voltage_clusters(
 
         if expected is not None:
             assert np.allclose(rtn_voltage, expected[0])
-            assert np.allclose(rtn_current, expected[1])
+
+            rtn_nan_mask = np.isnan(rtn_current)
+            expected_nan_mask = np.isnan(expected[1])
+            assert np.array_equal(rtn_nan_mask, expected_nan_mask)
+            assert np.allclose(
+                rtn_current[np.logical_not(rtn_nan_mask)],
+                expected[1][np.logical_not(expected_nan_mask)],
+            )
         else:
             assert np.allclose(rtn_voltage, voltage)
             assert np.allclose(rtn_current, current)
