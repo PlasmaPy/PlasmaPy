@@ -1,0 +1,1 @@
+Refactored tests for the `~plasmapy.diagnostics.charged_particle_radiography` module to reduce test runtime.
