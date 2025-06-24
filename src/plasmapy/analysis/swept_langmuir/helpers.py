@@ -615,6 +615,7 @@ def merge_voltage_clusters(  # noqa: C901, PLR0912
                     "voltage array is NOT already regularly spaced.  "
                     "Returning voltage and current arrays WITHOUT enforce "
                     "regular spacing.",
+                    PlasmaPyWarning,
                 )
 
     else:
