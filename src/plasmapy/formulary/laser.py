@@ -206,7 +206,7 @@ def angular_frequency(wavelength: u.Quantity[u.m]) -> u.Quantity[u.rad / u.s]:
     Parameters
     ----------
     wavelength : `~astropy.units.Quantity`
-        wavelength of the laser beam (convertible to m).
+        Wavelength of the laser beam (convertible to m).
 
     Returns
     -------
