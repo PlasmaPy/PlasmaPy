@@ -219,7 +219,7 @@ def em_angular_frequency(wavelength: u.Quantity[u.m]) -> u.Quantity[u.rad / u.s]
 
 
 omega_ = em_angular_frequency
-"""Alias to `~plasmapy.formulary.laser.angular_frequency`."""
+"""Alias to `~plasmapy.formulary.laser.em_angular_frequency`."""
 
 
 @validate_quantities(
