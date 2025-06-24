@@ -67,7 +67,7 @@ def test_electric_field_amplitude_warnings(intensity, expected_warning) -> None:
         (E0_, electric_field_amplitude),
         (I_, intensity),
         (w0_, Gaussian_beam_waist_radius),
-        (omega_, angular_frequency),
+        (omega_, em_angular_frequency),
         (a0_, normalized_vector_potential),
     ],
 )
