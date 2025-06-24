@@ -489,6 +489,7 @@ def merge_voltage_clusters(  # noqa: C901, PLR0912
     Notes
     -----
     - ``voltage_step_size = 0``
+
       - Only merge clusters that have the same voltage values.
       - ``force_regular_spacing = True`` is ignored if the spacing is
         not already regularly spaced.  If the voltage is already
@@ -496,6 +497,7 @@ def merge_voltage_clusters(  # noqa: C901, PLR0912
         stuffed for missing voltage entries.
 
     - ``voltage_step_size is None``
+
       - If the ``voltage`` array is already regularly spaced, then a
         copy of the original arrays will be returned.
       - If the ``voltage`` array is NOT regularly spaced, then the
@@ -503,6 +505,7 @@ def merge_voltage_clusters(  # noqa: C901, PLR0912
         array.
 
     - ``voltage_step_size > 0`` or `None`
+
       - If the ``voltage`` array is already regularly spaced, then
         `numpy.interp` will be used interpolate the ``voltage`` and
         ``current`` arrays onto the new grid spacing
@@ -517,7 +520,7 @@ def merge_voltage_clusters(  # noqa: C901, PLR0912
         merged together with the new current value being the average of
         the points in the cluster and the new voltage value being
         ``voltage_min + 0.5 * N * voltage_step_size``, where ``N`` is
-        the Nth point in the voltage array.
+        the N-th point in the voltage array.
     """
     # condition force_regular_grid
     if not isinstance(force_regular_spacing, bool):
