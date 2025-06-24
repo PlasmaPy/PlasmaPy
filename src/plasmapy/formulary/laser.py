@@ -333,7 +333,6 @@ def Gaussian_power(
     return (1 / 2) * intensity * np.pi * beam_waist_radius**2
 
 
-
 @validate_quantities(
     spot_size_FWHM={"can_be_negative": False},
 )
