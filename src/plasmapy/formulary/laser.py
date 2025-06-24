@@ -233,7 +233,7 @@ def normalized_vector_potential(
     r"""
     Calculate the normalized vector potential :math:`a_0` from the intensity :math:`I`
     and the wavelength :math:`\lambda`.
-    
+
     The normalized vector potential is also known as a dimensionless oscillation amplitude,
     quiver velocity, or normalized quiver momentum of an electron.
 
