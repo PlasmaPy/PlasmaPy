@@ -150,8 +150,6 @@ def em_wavelength(angular_frequency: u.Quantity[u.rad / u.s]) -> u.Quantity[u.m]
 
     where :math:`\omega` is the angular frequency of the beam.
 
-    **Aliases:** `lambda_`
-
     Parameters
     ----------
     angular_frequency : `~astropy.units.Quantity`
@@ -235,19 +233,24 @@ def normalized_vector_potential(
     r"""
     Calculate the normalized vector potential :math:`a_0` from the intensity :math:`I`
     and the wavelength :math:`\lambda`.
+    
+    The normalized vector potential is also known as a dimensionless oscillation amplitude,
+    quiver velocity, or normalized quiver momentum of an electron.
 
     The normalized vector potential of a laser
     is calculated using:
 
     .. math::
-        a_0= \frac{e \lambda}{m_e \pi} \sqrt{\frac{I} {2 \epsilon_0 c^5}},
+        a_0= \frac{e E_0}{m_e \omega c}=\frac{e \lambda}{m_e \pi} \sqrt{\frac{I} {2 \epsilon_0 c^5}},
 
     where :math:`e` is the fudamental charge,
+    :math:`E_0` is the electric field amplitude,
     :math:`m_e` is the mass of an electron,
-    :math:`\epsilon_0` is the permitivity of free space,
+    :math:`\omega` is the angular frequency of the electromagnetic wave,
     :math:`c` is the speed of light,
-    :math:`\lambda` is the wavelength and
-    :math:`I_0` is the intensity of the beam.
+    :math:`\lambda` is the wavelength,
+    :math:`I` is the intensity of the elecromagnetic wave, and
+    :math:`\epsilon_0` is the permitivity of free space.
 
     **Aliases:** `a0_`
 
@@ -303,8 +306,6 @@ def Gaussian_power(
 
     where :math:`w_0` is the beam waist radius and
     :math:`I_0` is the intensity of the beam.
-
-    **Aliases:** `P0_`
 
     Parameters
     ----------
@@ -401,8 +402,6 @@ def Gaussian_spot_size_FWHM(beam_waist_radius: u.Quantity[u.m]) -> u.Quantity[u.
 
     where :math:`w_0` is the beam waist radius of the beam.
 
-    **Aliases:** `FWHM_`
-
     Parameters
     ----------
     beam_waist_radius : `~astropy.units.Quantity`
@@ -452,8 +451,6 @@ def Gaussian_Rayleigh_length(
     where :math:`w_0` is the beam waist and
     :math:`\lambda` is the wavelength of the beam.
 
-    **Aliases:** `zR_`
-
     Parameters
     ----------
     wavelength : `~astropy.units.Quantity`
@@ -466,6 +463,11 @@ def Gaussian_Rayleigh_length(
     z_R : `~astropy.units.Quantity`
         The Rayleigh length of the Gaussian beam for the given wavelength
         and beam waist.
+
+    See Also
+    --------
+    Gaussian_beam_waist_radius
+    Gaussian_spot_size_FWHM
 
     Notes
     -----
