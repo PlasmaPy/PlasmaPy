@@ -32,14 +32,25 @@ from plasmapy.utils.exceptions import PlasmaPyWarning
             pytest.raises(TypeError),
             None,
         ),
-        # values
-        (
+        # warnings (and values)
+        (  # voltage spacing is regular and not step size given
             np.linspace(-40.0, 40, 100),
             np.linspace(-10.0, 30, 100),
             {"voltage_step_size": None},
             pytest.warns(PlasmaPyWarning),
             None,  # same as inputs
         ),
+        (  # voltage_step_size = 0 and spacing is irregular
+            np.array([1.1, 1.1,  2, 3.8, 6.1, 6.1], dtype=float),
+            np.array([-5, -5.2, -2, 0, 4.2, 5], dtype=float),
+            {"voltage_step_size": 0, "force_regular_spacing": True},
+            pytest.warns(PlasmaPyWarning),
+            (
+                np.array([1.1, 2, 3.8, 6.1], dtype=float),
+                np.array([-5.1, -2, 0, 4.6], dtype=float),
+            ),
+        ),
+        # values
         (
             np.linspace(-40.0, 40, 100),
             np.linspace(-10.0, 30, 100),
