@@ -141,7 +141,7 @@ I_ = intensity
 @validate_quantities(
     angular_frequency={"can_be_negative": False},
 )
-def wavelength(angular_frequency: u.Quantity[u.rad / u.s]) -> u.Quantity[u.m]:
+def em_wavelength(angular_frequency: u.Quantity[u.rad / u.s]) -> u.Quantity[u.m]:
     r"""
     Calculate the wavelength of a laser :math:`\lambda` given the
     the angular frequency :math:`\omega`.
