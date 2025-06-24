@@ -169,16 +169,12 @@ def em_wavelength(angular_frequency: u.Quantity[u.rad / u.s]) -> u.Quantity[u.m]
     Examples
     --------
     >>> import astropy.units as u
-    >>> wavelength(2.354307546e15 * u.rad / u.s)
+    >>> em_wavelength(2.354307546e15 * u.rad / u.s)
     <Quantity 8e-07 m>
     """
     return (2 * np.pi * c / angular_frequency).to(
         u.m, equivalencies=u.dimensionless_angles()
     )
-
-
-lambda_ = em_wavelength
-"""Alias to `~plasmapy.formulary.laser.wavelength`."""
 
 
 @validate_quantities(
@@ -216,7 +212,7 @@ def em_angular_frequency(wavelength: u.Quantity[u.m]) -> u.Quantity[u.rad / u.s]
     Examples
     --------
     >>> import astropy.units as u
-    >>> angular_frequency(800 * u.nm)
+    >>> em_angular_frequency(800 * u.nm)
     <Quantity 2.35456446e+15 rad / s>
     """
     return ((c / wavelength) * 2 * np.pi).to(
@@ -224,7 +220,7 @@ def em_angular_frequency(wavelength: u.Quantity[u.m]) -> u.Quantity[u.rad / u.s]
     )
 
 
-omega_ = angular_frequency
+omega_ = em_angular_frequency
 """Alias to `~plasmapy.formulary.laser.angular_frequency`."""
 
 
@@ -337,9 +333,6 @@ def Gaussian_power(
     return (1 / 2) * intensity * np.pi * beam_waist_radius**2
 
 
-P0_ = Gaussian_power
-"""Alias to `~plasmapy.formulary.laser.Gaussian_power`."""
-
 
 @validate_quantities(
     spot_size_FWHM={"can_be_negative": False},
@@ -438,10 +431,6 @@ def Gaussian_spot_size_FWHM(beam_waist_radius: u.Quantity[u.m]) -> u.Quantity[u.
     return beam_waist_radius * np.sqrt(2 * np.log(2))
 
 
-FWHM_ = Gaussian_spot_size_FWHM
-"""Alias to `~plasmapy.formulary.laser.Gaussian_spot_size_FWHM`."""
-
-
 # use kwargs
 @validate_quantities(
     wavelength={"can_be_negative": False},
@@ -491,7 +480,3 @@ def Gaussian_Rayleigh_length(
     """
 
     return (np.pi * beam_waist_radius**2) / wavelength
-
-
-zR_ = Gaussian_Rayleigh_length
-"""Alias to `~plasmapy.formulary.laser.Gaussian_Rayleigh_length`."""

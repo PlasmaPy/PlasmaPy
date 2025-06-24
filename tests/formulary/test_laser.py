@@ -298,7 +298,7 @@ def test_em_wavelength_warnings(angular_frequency, expected_warning) -> None:
 )
 @pytest.mark.filterwarnings("ignore::astropy.units.UnitsWarning")
 def test_em_angular_frequency(wavelength, expected) -> None:
-    result = angular_frequency(wavelength=wavelength)
+    result = em_angular_frequency(wavelength=wavelength)
     assert_quantity_allclose(result, expected, rtol=1e-6, equal_nan=True, verbose=True)
     assert result.unit == u.rad / u.s
 
