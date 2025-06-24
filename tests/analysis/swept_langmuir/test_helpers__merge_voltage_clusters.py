@@ -55,7 +55,62 @@ from plasmapy.utils.exceptions import PlasmaPyWarning
             (
                 np.array([1, 2, 3, 4, 5, 6], dtype=float),
                 np.array([-5, -2, np.nan, 0, np.nan, 5], dtype=float),
-            ),  # same as inputs
+            ),
+        ),
+        (
+            np.array([1, 2, 2, 4, 6, 6], dtype=float),
+            np.array([-5, -2, -2.1, 0, 5, 4.9], dtype=float),
+            {"voltage_step_size": 0.0},
+            does_not_raise(),
+            (
+                np.array([1, 2, 4, 6], dtype=float),
+                np.array([-5, -2.05, 0, 4.95], dtype=float),
+            ),
+        ),
+        (
+            np.array([1, 2, 2, 4, 6, 6], dtype=float),
+            np.array([-5, -2, -2.1, 0, 5, 4.9], dtype=float),
+            {"voltage_step_size": 0, "force_regular_spacing": True},
+            does_not_raise(),
+            (
+                np.array([1, 2, 3, 4, 5, 6], dtype=float),
+                np.array([-5, -2.05, np.nan, 0, np.nan, 4.95], dtype=float),
+            ),
+        ),
+        # voltage_step_size < all actual diffs
+        (
+            np.array([1, 1.5, 2.1, 4, 5.5, 6], dtype=float),
+            np.array([-5, -2, -2, 0, 5, 5], dtype=float),
+            {"voltage_step_size": 0.2, "force_regular_spacing": False},
+            does_not_raise(),
+            None,
+        ),
+        (
+            np.array([1, 1.5, 2.1, 4, 5.5, 6], dtype=float),
+            np.array([-5, -2, -2, 0, 5, 5], dtype=float),
+            {"voltage_step_size": 0.4, "force_regular_spacing": True},
+            does_not_raise(),
+            (
+                0.4 * np.arange(13, dtype=float) + 1.0,
+                np.array(
+                    [
+                        -5,
+                        -2.6,
+                        -2,
+                        -1.894736,
+                        -1.473684,
+                        -1.052631,
+                        -0.631578,
+                        -0.210526,
+                        0.666667,
+                        2.0,
+                        3.333333,
+                        4.666667,
+                        5.0,
+                    ],
+                    dtype=float,
+                ),  # generated using np.interp
+            ),
         ),
     ],
 )
