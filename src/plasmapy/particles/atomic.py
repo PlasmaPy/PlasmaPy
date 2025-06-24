@@ -819,7 +819,7 @@ def stable_isotopes(
 
 
 @particle_input
-@validate_quantities  # type: ignore[misc]
+@validate_quantities
 def reduced_mass(
     test_particle: ParticleLike,
     target_particle: ParticleLike,
