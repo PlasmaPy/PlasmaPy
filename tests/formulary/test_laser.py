@@ -7,9 +7,7 @@ from astropy.tests.helper import assert_quantity_allclose
 
 from plasmapy.formulary.laser import (
     E0_,
-    FWHM_,
     I_,
-    P0_,
     Gaussian_beam_waist_radius,
     Gaussian_power,
     Gaussian_Rayleigh_length,
@@ -18,12 +16,10 @@ from plasmapy.formulary.laser import (
     angular_frequency,
     electric_field_amplitude,
     intensity,
-    lambda_,
     normalized_vector_potential,
     omega_,
     w0_,
-    wavelength,
-    zR_,
+    em_wavelength,
 )
 
 
@@ -70,13 +66,9 @@ def test_electric_field_amplitude_warnings(intensity, expected_warning) -> None:
     [
         (E0_, electric_field_amplitude),
         (I_, intensity),
-        (P0_, Gaussian_power),
         (w0_, Gaussian_beam_waist_radius),
-        (FWHM_, Gaussian_spot_size_FWHM),
-        (lambda_, wavelength),
         (omega_, angular_frequency),
         (a0_, normalized_vector_potential),
-        (zR_, Gaussian_Rayleigh_length),
     ],
 )
 def test_aliases(alias, parent) -> None:
@@ -267,8 +259,8 @@ def test_Gaussian_spot_size_FWHM_warnings(beam_waist_radius, expected_warning) -
     ],
 )
 @pytest.mark.filterwarnings("ignore::astropy.units.UnitsWarning")
-def test_wavelength(angular_frequency, expected) -> None:
-    result = wavelength(angular_frequency=angular_frequency)
+def test_em_wavelength(angular_frequency, expected) -> None:
+    result = em_wavelength(angular_frequency=angular_frequency)
     assert_quantity_allclose(result, expected, rtol=1e-6, equal_nan=True, verbose=True)
     assert result.unit == u.m
 
@@ -280,9 +272,9 @@ def test_wavelength(angular_frequency, expected) -> None:
         (1 * u.kg, u.UnitTypeError),
     ],
 )
-def test_wavelength_errors(angular_frequency, expected) -> None:
+def test_em_wavelength_errors(angular_frequency, expected) -> None:
     with pytest.raises(expected):
-        wavelength(angular_frequency=angular_frequency)
+        em_wavelength(angular_frequency=angular_frequency)
 
 
 @pytest.mark.parametrize(
@@ -291,9 +283,9 @@ def test_wavelength_errors(angular_frequency, expected) -> None:
         (5, u.UnitsWarning),
     ],
 )
-def test_wavelength_warnings(angular_frequency, expected_warning) -> None:
+def test_em_wavelength_warnings(angular_frequency, expected_warning) -> None:
     with pytest.warns(expected_warning):
-        wavelength(angular_frequency=angular_frequency)
+        em_wavelength(angular_frequency=angular_frequency)
 
 
 @pytest.mark.parametrize(
@@ -305,7 +297,7 @@ def test_wavelength_warnings(angular_frequency, expected_warning) -> None:
     ],
 )
 @pytest.mark.filterwarnings("ignore::astropy.units.UnitsWarning")
-def test_angular_frequency(wavelength, expected) -> None:
+def test_em_angular_frequency(wavelength, expected) -> None:
     result = angular_frequency(wavelength=wavelength)
     assert_quantity_allclose(result, expected, rtol=1e-6, equal_nan=True, verbose=True)
     assert result.unit == u.rad / u.s
@@ -318,9 +310,9 @@ def test_angular_frequency(wavelength, expected) -> None:
         (1 * u.kg, u.UnitTypeError),
     ],
 )
-def test_angular_frequency_errors(wavelength, expected) -> None:
+def test_em_angular_frequency_errors(wavelength, expected) -> None:
     with pytest.raises(expected):
-        angular_frequency(wavelength=wavelength)
+        em_angular_frequency(wavelength=wavelength)
 
 
 @pytest.mark.parametrize(
@@ -329,9 +321,9 @@ def test_angular_frequency_errors(wavelength, expected) -> None:
         (5, u.UnitsWarning),
     ],
 )
-def test_angular_frequency_warning(wavelength, expected_warning) -> None:
+def test_em_angular_frequency_warning(wavelength, expected_warning) -> None:
     with pytest.warns(expected_warning):
-        angular_frequency(wavelength=wavelength)
+        em_angular_frequency(wavelength=wavelength)
 
 
 @pytest.mark.parametrize(

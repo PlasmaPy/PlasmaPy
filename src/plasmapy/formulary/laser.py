@@ -7,7 +7,7 @@ Functions for calculating quantities associated with laser pulses.
 """
 
 __all__ = [
-    "angular_frequency",
+    "em_angular_frequency",
     "electric_field_amplitude",
     "intensity",
     "normalized_vector_potential",
@@ -15,7 +15,7 @@ __all__ = [
     "Gaussian_power",
     "Gaussian_Rayleigh_length",
     "Gaussian_spot_size_FWHM",
-    "wavelength",
+    "em_wavelength",
 ]
 __aliases__ = [
     "a0_",
@@ -23,10 +23,6 @@ __aliases__ = [
     "E0_",
     "I_",
     "w0_",
-    "P0_",
-    "zR_",
-    "FWHM_",
-    "lambda_",
 ]
 
 import astropy.units as u
@@ -181,7 +177,7 @@ def em_wavelength(angular_frequency: u.Quantity[u.rad / u.s]) -> u.Quantity[u.m]
     )
 
 
-lambda_ = wavelength
+lambda_ = em_wavelength
 """Alias to `~plasmapy.formulary.laser.wavelength`."""
 
 
