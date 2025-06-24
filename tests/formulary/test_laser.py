@@ -13,7 +13,7 @@ from plasmapy.formulary.laser import (
     Gaussian_Rayleigh_length,
     Gaussian_spot_size_FWHM,
     a0_,
-    angular_frequency,
+    em_angular_frequency,
     electric_field_amplitude,
     intensity,
     normalized_vector_potential,

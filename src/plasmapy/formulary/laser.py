@@ -184,7 +184,7 @@ lambda_ = em_wavelength
 @validate_quantities(
     wavelength={"can_be_negative": False},
 )
-def angular_frequency(wavelength: u.Quantity[u.m]) -> u.Quantity[u.rad / u.s]:
+def em_angular_frequency(wavelength: u.Quantity[u.m]) -> u.Quantity[u.rad / u.s]:
     r"""
     Calculate the angular frequency :math:`\omega` of a laser given the
     the wavelength of the beam :math:`\lambda`.
