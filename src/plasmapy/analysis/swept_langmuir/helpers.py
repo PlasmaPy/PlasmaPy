@@ -565,14 +565,13 @@ def merge_voltage_clusters(  # noqa: C901, PLR0912
 
     # return if voltage is already regularly spaced and no voltage merging is
     # requested
-    if is_regular_grid and (voltage_step_size is None or voltage_step_size == 0):
-        if voltage_step_size is None:
-            warnings.warn(
-                "The supplied ``voltage`` array is already regularly spaced. If "
-                "you want to re-bin the arrays to a different voltage_step_size, "
-                "the use something like numpy.interp.",
-                PlasmaPyWarning,
-            )
+    if is_regular_grid and voltage_step_size is None:
+        warnings.warn(
+            "The supplied ``voltage`` array is already regularly spaced. If "
+            "you want to re-bin the arrays to a different voltage_step_size, "
+            "then use something like numpy.interp.  No merging performed.",
+            PlasmaPyWarning,
+        )
 
         return voltage.copy(), current.copy()
 
@@ -586,6 +585,17 @@ def merge_voltage_clusters(  # noqa: C901, PLR0912
     elif voltage_step_size < 0:
         voltage_step_size = -voltage_step_size
 
+    if np.all(voltage_step_size <= np.abs(voltage_diff)) and voltage_step_size != 0:
+        warnings.warn(
+            f"The supplied voltage_step_size ({voltage_step_size}) is smaller than "
+            f"any of the voltage steps in the voltage array.  Supply a step size "
+            f"greater than the smallest voltage step ({np.min(voltage_diff)}).  "
+            f"No merging performed.",
+            PlasmaPyWarning,
+        )
+
+        return voltage.copy(), current.copy()
+
     # ensure voltage is ascending for calculation
     voltage_ascending = bool(np.all(voltage_diff >= 0))
     if not voltage_ascending:
@@ -594,11 +604,7 @@ def merge_voltage_clusters(  # noqa: C901, PLR0912
         )
 
     # now merge clusters
-    if voltage_step_size != 0 and np.all(voltage_diff >= voltage_step_size):
-        new_voltage = voltage.copy()
-        new_current = current.copy()
-
-    elif voltage_step_size == 0:
+    if voltage_step_size == 0:
         new_voltage, new_current = _merge_voltage_clusters__zero_diff_neighbors(
             voltage, current
         )
