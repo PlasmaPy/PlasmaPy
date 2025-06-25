@@ -131,10 +131,6 @@ def test_merge_voltage_clusters(
     with (
         with_context,
         mock.patch(
-            "plasmapy.analysis.swept_langmuir.helpers.merge_voltage_clusters",
-            wraps=merge_voltage_clusters,
-        ) as mock_merge,
-        mock.patch(
             "plasmapy.analysis.swept_langmuir.helpers.check_sweep",
             wraps=check_sweep,
         ) as mock_sweep,
@@ -158,9 +154,6 @@ def test_merge_voltage_clusters(
         else:
             assert np.allclose(rtn_voltage, voltage)
             assert np.allclose(rtn_current, current)
-
-        # mock_merge.assert_called_once()
-        # mock_merge.reset_mock()
 
         mock_sweep.assert_called_once()
         mock_sweep.reset_mock()
