@@ -5,7 +5,7 @@ Module of miscellaneous parameters related to collisions.
 __all__ = [
     "mobility",
     "Bethe_stopping",
-    "Bethe_Ferrari_Moliere_scattering",
+    "Bethe_Moliere_scattering",
     "Highland_scattering",
     "Spitzer_resistivity",
 ]
@@ -334,14 +334,16 @@ def Bethe_stopping(
 
 def _f_n_mol_integrand(
     u: float,
-    ν: float,
+    ϑ: float,
     n: int,
 ):
-    return u * jv(0, ν * u) * np.exp(-(u**2) / 4) * (u**2 / 4 * np.log(u**2 / 4)) ** n
+    """Eq. 26 of Bethe."""
+    # TODO: Move this into the body of `Bethe_Ferrari_Moliere_scattering`
+    return u * jv(0, ϑ * u) * np.exp(-(u**2) / 4) * (u**2 / 4 * np.log(u**2 / 4)) ** n
 
 
 def _f_mol_n(
-    ν: float,
+    ϑ: float,
     n: int,
 ):
     return (
@@ -352,88 +354,94 @@ def _f_mol_n(
             0,
             np.inf,
             args=(
-                ν,
+                ϑ,
                 n,
             ),
         )
     )
 
 
-def _Moliere_scattering_B(B, omega_0):
-    return B - np.log(B) - np.log(omega_0)
+def _Moliere_scattering_B(B, b):
+    """Eq. 23 of Bethe."""
+    return B - np.log(B) - np.log(b)
 
 
-def Bethe_Ferrari_Moliere_scattering(
-    v: u.Quantity[u.m / u.s],
-    n: u.Quantity[u.m**-3],
-    z: int,
+def Bethe_Moliere_scattering(
+    # Projectile parameters
     m: u.Quantity[u.kg],
+    v: u.Quantity[u.m / u.s],
+    z: int,
+    # Target parameters
+    A: u.Quantity[u.amu],
+    N: u.Quantity[u.m**-3],
     Z: int,
-    ξ_e: float,  # TODO: Double check the units on this
-    dt: u.Quantity[u.s],
+    t: u.Quantity[u.kg / u.m**2],
 ):
     """Calculate the angular scattering distribution for the provided particle species.
 
     Parameters
     ----------
+    m : `~astropy.units.Quantity`
+        The mass of the projectile specie.
+
     v : `~astropy.units.Quantity`
         The speed of the projectile particles streaming through the target.
-
-    n : `~astropy.units.Quantity`
-        The number density of atoms per unit volume of the target material.
 
     z : `~astropy.units.Quantity`
         The atomic number of the projectile specie.
 
-    m : `~astropy.units.Quantity`
-        The mass of the projectile specie.
+    A : `~astropy.units.Quantity`
+        The atomic weight of an atom of the atomic material in units convertible
+        to amu.
+
+    N : `~astropy.units.Quantity`
+        The number density of atoms per unit volume of the target material.
 
     Z : `~astropy.units.Quantity`
         The atomic number of the target.
 
-    ξ_e : `float`
-        A parameter taking into account the scattering on atomic electrons.
+    t : `~astropy.units.Quantity`
+        The areal density of the target in units convertible to kilograms per square meter.
 
-    dt : `~astropy.units.Quantity`
-        The timestep being used in the Monte Carlo simulation.
     """
-
-    # What thickness will we be traversing with this timestep?
-    t = v * dt
     beta = v / _c
-    E = m * _c**2 / (np.sqrt(1 - beta**2))  # Relativistic energy
 
-    χ_cc = np.sqrt(4 * np.pi * n * z**2 * Z * (Z + ξ_e) * _e**4)
-    χ_c = χ_cc * t**0.5 / (E * beta**2)
-    b_c = (0.855 * χ_cc * _hbar) ** 2 / (
-        1.167**2
-        * _m_e
-        * _c**2
-        * _e**4
-        * Z ** (2 / 3)
-        * (1.13 + (3.76 * _alpha**2 * z**2 * Z**2) / beta**2)
+    # Eq. 10 of Bethe
+    χ_c = 4 * np.pi * N * t * const.e.esu**4 * Z * (Z + 1) * z**2 / (m * v**2) ** 2
+
+    # Eq. 22 of Bethe
+    # TODO: Double check we are using the proper value of alpha here.
+    #  Compare with Eq. 21a
+    e_b = (
+        6680
+        * t.cgs.value
+        / beta**2
+        * (Z + 1)
+        * Z ** (1 / 3)
+        * z**2
+        / (A.to(u.amu).value * (1 + 3.34 * _alpha**2))
     )
-    omega_0 = b_c * t / beta**2
+    b = np.log(e_b)
 
     # The transcendental equation associated with `B` yields two solutions for
-    # every `omega_0`. We want to solve for values where B > 1, so our initial
-    # guess must also satisfy x0 > 1.
-    # TODO: Double check this function returns what we're expecting
+    # every `b`. We want to solve for values where B > 1, so our initial
+    # guess must also satisfy b > 1.
     B = fsolve(
         _Moliere_scattering_B,
-        x0=np.full_like(omega_0.value, 5),
-        args=(omega_0,),
+        x0=np.full_like(b, 5),
+        args=(b,),
     )
-    χ_r = χ_c * np.sqrt(B)
 
-    def scattering_integrand(theta, B):
-        # Ensure we use the reduced angle for the integration
-        theta_r = theta / χ_r
+    def scattering_integrand(theta):
+        """Eq. 25 of Bethe."""
 
-        f_n = [_f_mol_n(theta_r, i) / B**i for i in range(3)]
-        f_mol = sum(f_n) / (2 * np.pi)
+        # Eq. 24 of Bethe
+        ϑ = theta / (χ_c * np.sqrt(B))
 
-        return 2 * np.pi * theta * f_mol * np.sqrt(np.sin(theta) / theta)
+        f_n = [_f_mol_n(ϑ, i) / B**i for i in range(3)]
+        f_mol = sum(f_n)
+
+        return theta * f_mol
 
     return scattering_integrand
 
@@ -465,22 +473,21 @@ def Highland_scattering(
 
     Notes
     -----
-    The root-mean squared (rms) scattering angle is given by the Highland
-    formula :cite:t:`highland:1975` as:
+    The root-mean-square (rms) scattering angle is given by in :cite:t:`highland:1975` as:
 
     .. math::
-        \theta_{1/e} = \frac{17.5 \text{MeV}}{p\beta c}\sqrt{\frac{L}{L_R}}
+        \theta_{1/e} = \frac{17.5 \; \text{MeV}}{p\beta c}\sqrt{\frac{L}{L_R}}
         \left(1 + 0.125\log_{10}\left(\frac{L}{0.1L_R}\right)\right)
 
     where :math:`p` is the momentum of the projectile particles,
     :math:`\beta` is the relativistic beta, :math:`L` is the thickness
-    of the target, and :math:`L_R` is the radiation length-- a characteristic
-    distance scale over which energy loss to bremsstrahlung radiation is
+    of the target, and :math:`L_R` is the radiation length--a characteristic
+    distance scale for which energy loss to bremsstrahlung radiation is
     relevant.
 
     The Highland formula is an approximation that works best for high Z targets.
-    For low Z targets, the number of scattering events may be underestimated, and
-    a different model should be used.
+    For low Z targets, the number of scattering events may be underestimated
+    by the Highland formula, and a different model should be used.
     """
     # Fitting constant, value provided by Highland
     E_s = 17.5 * u.MeV
