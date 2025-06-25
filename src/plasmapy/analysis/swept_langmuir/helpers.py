@@ -400,7 +400,6 @@ def _merge_voltage_clusters__within_dv(
     voltage: np.ndarray,
     current: np.ndarray,
     voltage_step_size: float,
-    force_regular_spacing: bool,
 ) -> tuple[np.ndarray, np.ndarray]:
     """
     Take the ``voltage`` and ``current`` arrays associated with a swept
@@ -476,7 +475,6 @@ def merge_voltage_clusters(  # noqa: C901, PLR0912
     voltage: np.ndarray,
     current: np.ndarray,
     voltage_step_size: float | None = None,
-    force_regular_spacing: bool = False,
 ) -> tuple[np.ndarray, np.ndarray]:
     """
     Search the ``voltage`` array for closely spaced voltage clusters
@@ -502,12 +500,6 @@ def merge_voltage_clusters(  # noqa: C901, PLR0912
         cluster identification.  A value of ``0`` will merge only
         duplicate voltage values.  A value of `None` will default to the
         average step size of the ``voltage`` array.  (DEFAULT:`None`)
-
-    force_regular_spacing: `bool`
-        If `False`, then the new voltage value of a cluster is the
-        average of the contained points.  If `True`, then the new
-        ``voltage`` array will be regularly spaced with a delta of
-        ``voltage_step_size``.  (DEFAULT: `False`)
 
     Returns
     -------
@@ -553,13 +545,6 @@ def merge_voltage_clusters(  # noqa: C901, PLR0912
         ``voltage_min + 0.5 * N * voltage_step_size``, where ``N`` is
         the N-th point in the voltage array.
     """
-    # condition force_regular_grid
-    if not isinstance(force_regular_spacing, bool):
-        raise TypeError(
-            "Expected 'force_regular_spacing' to be a bool, but got type "
-            f"{type(force_regular_spacing)}."
-        )
-
     # condition voltage_step_size
     if voltage_step_size is not None and not isinstance(
         voltage_step_size, float | np.floating | int | np.integer
@@ -589,14 +574,6 @@ def merge_voltage_clusters(  # noqa: C901, PLR0912
                 PlasmaPyWarning,
             )
 
-        if force_regular_spacing:
-            # need to stuff with NaN values
-            voltage, current = _force_regular_spacing(
-                voltage=voltage,
-                current=current,
-                voltage_step_size=np.min(voltage_diff),
-            )
-
         return voltage.copy(), current.copy()
 
     # condition voltage_step_size ... Round 2
@@ -618,52 +595,18 @@ def merge_voltage_clusters(  # noqa: C901, PLR0912
 
     # now merge clusters
     if voltage_step_size != 0 and np.all(voltage_diff >= voltage_step_size):
-        if force_regular_spacing:
-            new_voltage, new_current = _merge_voltage_clusters__interpolate_sweep(
-                voltage, current, voltage_step_size
-            )
-        else:
-            new_voltage = voltage.copy()
-            new_current = current.copy()
+        new_voltage = voltage.copy()
+        new_current = current.copy()
 
     elif voltage_step_size == 0:
         new_voltage, new_current = _merge_voltage_clusters__zero_diff_neighbors(
             voltage, current
         )
 
-        if force_regular_spacing:
-            voltage_diff = np.diff(new_voltage)
-            mask_zero_diff = np.isclose(voltage_diff, 0.0)
-            is_regular_grid = _is_voltage_regularly_spaced(voltage_diff, mask_zero_diff)
-
-            if is_regular_grid:
-                new_voltage, new_current = _force_regular_spacing(
-                    voltage=new_voltage,
-                    current=new_current,
-                    voltage_step_size=np.min(voltage_diff),
-                )
-            else:
-                warnings.warn(
-                    "Can not enforce regular spacing for the voltage array "
-                    "if argument 'voltage_step_size' is set to 0 and the "
-                    "voltage array is NOT already regularly spaced.  "
-                    "Returning voltage and current arrays WITHOUT enforce "
-                    "regular spacing.",
-                    PlasmaPyWarning,
-                )
-
     else:
         new_voltage, new_current = _merge_voltage_clusters__within_dv(
-            voltage, current, voltage_step_size, force_regular_spacing
+            voltage, current, voltage_step_size
         )
-
-        if force_regular_spacing:
-            # Need to fill array with NaN values to force the regular spacing
-            new_voltage, new_current = _force_regular_spacing(
-                voltage=new_voltage,
-                current=new_current,
-                voltage_step_size=voltage_step_size,
-            )
 
     if not voltage_ascending:
         voltage = voltage[::-1]
