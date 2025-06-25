@@ -408,35 +408,66 @@ def _merge_voltage_clusters__within_dv(
     within step size ``voltage_step_size``.
     """
     # initialize new voltage and current arrays
-    new_voltage = np.full(voltage.shape, np.nan, dtype=voltage.dtype)
-    new_current = np.full(current.shape, np.nan, dtype=current.dtype)
+    new_voltage = voltage.copy()
+    new_current = current.copy()
 
-    start_voltage = voltage[0]
-    stop_voltage = start_voltage + voltage_step_size
+    voltage_diff = np.diff(voltage)
+
+    # generate global cluster mask
+    cluster_mask = voltage_diff <= voltage_step_size
+    cluster_mask = np.append(cluster_mask, [cluster_mask[-1]])
+    cluster_mask[1:] = np.logical_or(cluster_mask[1:], np.roll(cluster_mask, 1)[1:])
+
+    # determine cluster locations
+    indices = np.where(np.diff(cluster_mask))[0]
+    if cluster_mask[0]:
+        # 1st element in voltage is in a cluster
+        indices = np.append([0], indices)
+    else:
+        indices[0] = indices[0] + 1
+    if indices.size > 1:
+        indices[2::2] = indices[2::2] + 1
+    if cluster_mask[-1] and indices[-1] != voltage.size-1:
+        # last element in voltage is in a cluster
+        indices = np.append(indices, [voltage.size-1])
+    indices = np.reshape(indices, shape=(int(indices.size/2), 2))
 
     # populate
-    ii = 0
-    while start_voltage <= voltage[-1]:
-        mask1 = voltage >= start_voltage
-        mask2 = voltage < stop_voltage
-        mask = np.logical_and(mask1, mask2)
+    for ii in range(indices.shape[0]):
+        start_index = indices[ii][0]
+        stop_index = indices[ii][1] + 1
 
-        if np.count_nonzero(mask) > 0:
-            new_voltage[ii] = (
-                start_voltage + 0.5 * voltage_step_size
-                if force_regular_spacing
-                else np.average(voltage[mask])
-            )
-            new_current[ii] = np.average(current[mask])
+        new_voltage[start_index:stop_index] = np.nan
+        new_current[start_index:stop_index] = np.nan
 
-            ii += 1
+        sub_voltage = voltage[start_index:stop_index]
+        sub_current = current[start_index:stop_index]
 
-        start_voltage = stop_voltage
-        stop_voltage += voltage_step_size
+        if sub_voltage[-1] - sub_voltage[0] <= voltage_step_size:
+            new_voltage[start_index] = np.average(sub_voltage)
+            new_current[start_index] = np.average(sub_current)
+            continue
 
-    # crop new arrays
-    new_voltage = new_voltage[:ii]
-    new_current = new_current[:ii]
+        start_voltage = sub_voltage[0]
+        stop_voltage = start_voltage + voltage_step_size
+        jj = 0
+        while start_voltage <= sub_voltage[-1]:
+            mask1 = sub_voltage >= start_voltage
+            mask2 = sub_voltage < stop_voltage
+            mask = np.logical_and(mask1, mask2)
+
+            if np.count_nonzero(mask) > 0:
+                new_voltage[start_index + jj] = np.average(sub_voltage[mask])
+                new_current[start_index + jj] = np.average(sub_current[mask])
+                jj += 1
+
+            start_voltage = stop_voltage
+            stop_voltage += voltage_step_size
+
+    # filter out NaN values
+    nan_mask = np.logical_not(np.isnan(new_voltage))
+    new_voltage = new_voltage[nan_mask]
+    new_current = new_current[nan_mask]
 
     return new_voltage, new_current
 
