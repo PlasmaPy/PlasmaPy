@@ -18,11 +18,11 @@ around `numpy arrays <https://numpy.org/doc/stable/reference/arrays.html>`_
 and each function has a well-defined, focused task. For example,
 :func:`numpy.fft.fft` does one specific task: compute the
 one-dimensional discrete Fourier Transform. Similarly,
-:func:`plasmapy.analysis.swept_langmuir.find_floating_potential` only
-finds the floating potential for a given Langmuir trace. It does not
-have smoothing. It does not do any filtering. It does not do any signal
-conditioning. Its sole task is to find the floating potential of a
-single Langmuir trace.
+:func:`~plasmapy.analysis.swept_langmuir.floating_potential.find_floating_potential`
+only finds the floating potential for a given Langmuir trace. It does
+not have smoothing. It does not do any filtering. It does not do any
+signal conditioning. Its sole task is to find the floating potential of
+a single Langmuir trace.
 
 Diagnostics have a much broader scope and leverage the tools defined in
 `plasmapy.analysis` to give a more integrated user experience when
