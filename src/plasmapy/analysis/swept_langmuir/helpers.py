@@ -264,7 +264,7 @@ def _is_voltage_regularly_spaced(
         min_dV = np.min(voltage_diff)
         ndV = np.rint(voltage_diff / min_dV)
 
-        is_regular_grid = False if np.any(ndV > 10) else True
+        is_regular_grid = not np.any(ndV > 10)
 
     return is_regular_grid
 
