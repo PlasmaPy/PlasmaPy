@@ -21,13 +21,6 @@ from plasmapy.utils.exceptions import PlasmaPyWarning
         (
             np.linspace(-40.0, 40, 100),
             np.linspace(-10.0, 30, 100),
-            {"force_regular_spacing": None},  # not a bool
-            pytest.raises(TypeError),
-            None,
-        ),
-        (
-            np.linspace(-40.0, 40, 100),
-            np.linspace(-10.0, 30, 100),
             {"voltage_step_size": "wrong type"},
             pytest.raises(TypeError),
             None,
@@ -40,15 +33,19 @@ from plasmapy.utils.exceptions import PlasmaPyWarning
             pytest.warns(PlasmaPyWarning),
             None,  # same as inputs
         ),
-        (  # voltage_step_size = 0 and spacing is irregular
-            np.array([1.1, 1.1,  2, 3.8, 6.1, 6.1], dtype=float),
+        (  # non-zero voltage_step_size < any step size
+            np.array([1.1, 1.5,  2, 3.8, 6.0, 6.2], dtype=float),
             np.array([-5, -5.2, -2, 0, 4.2, 5], dtype=float),
-            {"voltage_step_size": 0, "force_regular_spacing": True},
+            {"voltage_step_size": 0.1},
             pytest.warns(PlasmaPyWarning),
-            (
-                np.array([1.1, 2, 3.8, 6.1], dtype=float),
-                np.array([-5.1, -2, 0, 4.6], dtype=float),
-            ),
+            None,
+        ),
+        (
+            np.array([1, 1.5, 2.1, 4, 5.5, 6], dtype=float),
+            np.array([-5, -2, -2, 0, 5, 5], dtype=float),
+            {"voltage_step_size": 0.2},
+            pytest.warns(PlasmaPyWarning),
+            None,
         ),
         # values
         (
@@ -57,16 +54,6 @@ from plasmapy.utils.exceptions import PlasmaPyWarning
             {"voltage_step_size": 0.0},
             does_not_raise(),
             None,  # same as inputs
-        ),
-        (
-            np.array([1, 2, 4, 6], dtype=float),
-            np.array([-5, -2, 0, 5], dtype=float),
-            {"voltage_step_size": 0.0, "force_regular_spacing": True},
-            does_not_raise(),
-            (
-                np.array([1, 2, 3, 4, 5, 6], dtype=float),
-                np.array([-5, -2, np.nan, 0, np.nan, 5], dtype=float),
-            ),
         ),
         (
             np.array([1, 2, 2, 4, 6, 6], dtype=float),
@@ -81,46 +68,21 @@ from plasmapy.utils.exceptions import PlasmaPyWarning
         (
             np.array([1, 2, 2, 4, 6, 6], dtype=float),
             np.array([-5, -2, -2.1, 0, 5, 4.9], dtype=float),
-            {"voltage_step_size": 0, "force_regular_spacing": True},
+            {"voltage_step_size": 0},  # integer value
             does_not_raise(),
             (
-                np.array([1, 2, 3, 4, 5, 6], dtype=float),
-                np.array([-5, -2.05, np.nan, 0, np.nan, 4.95], dtype=float),
+                np.array([1, 2, 4, 6], dtype=float),
+                np.array([-5, -2.05, 0, 4.95], dtype=float),
             ),
         ),
-        # voltage_step_size < all actual diffs
-        (
-            np.array([1, 1.5, 2.1, 4, 5.5, 6], dtype=float),
-            np.array([-5, -2, -2, 0, 5, 5], dtype=float),
-            {"voltage_step_size": 0.2, "force_regular_spacing": False},
-            does_not_raise(),
-            None,
-        ),
-        (
-            np.array([1, 1.5, 2.1, 4, 5.5, 6], dtype=float),
-            np.array([-5, -2, -2, 0, 5, 5], dtype=float),
-            {"voltage_step_size": 0.4, "force_regular_spacing": True},
+        (  # voltage_step_size is negative
+            np.array([1, 1.5, 1.56, 2.1, 4, 5.5, 5.52], dtype=float),
+            np.array([-5, -2, -2.1, 0, 5, 7, 7.1], dtype=float),
+            {"voltage_step_size": -0.1},
             does_not_raise(),
             (
-                0.4 * np.arange(13, dtype=float) + 1.0,
-                np.array(
-                    [
-                        -5,
-                        -2.6,
-                        -2,
-                        -1.894736,
-                        -1.473684,
-                        -1.052631,
-                        -0.631578,
-                        -0.210526,
-                        0.666667,
-                        2.0,
-                        3.333333,
-                        4.666667,
-                        5.0,
-                    ],
-                    dtype=float,
-                ),  # generated using np.interp
+                np.array([1, 1.53, 2.1, 4, 5.51], dtype=float),
+                np.array([-5, -2.05, 0, 5, 7.05], dtype=float),
             ),
         ),
     ],
