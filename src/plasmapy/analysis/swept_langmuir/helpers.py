@@ -412,7 +412,7 @@ def merge_voltage_clusters(  # noqa: C901, PLR0912
     current: np.ndarray,
     voltage_step_size: float | None = None,
 ) -> tuple[np.ndarray, np.ndarray]:
-    """
+    r"""
     Search the ``voltage`` array for closely spaced voltage clusters
     based on the ``voltage_step_size`` parameter and merge those
     clusters, and associated ``current`` values, into a single point.
@@ -448,39 +448,18 @@ def merge_voltage_clusters(  # noqa: C901, PLR0912
 
     Notes
     -----
-    - ``voltage_step_size = 0``
 
-      - Only merge clusters that have the same voltage values.
-      - ``force_regular_spacing = True`` is ignored if the spacing is
-        not already regularly spaced.  If the voltage is already
-        regularly spaced, then the current array will be `numpy.nan`
-        stuffed for missing voltage entries.
+    An identified voltage cluster can span a voltage range larger than
+    ``voltage_step_size`` and still have every voltage step being
+    smaller than ``voltage_step_size``.  In this scenario, the voltage
+    cluster will be divided up into :math:`N`-sections for averaging,
+    where :math:`N` is given by
 
-    - ``voltage_step_size is None``
+    .. math::
 
-      - If the ``voltage`` array is already regularly spaced, then a
-        copy of the original arrays will be returned.
-      - If the ``voltage`` array is NOT regularly spaced, then the
-        step size will be the average voltage step of the ``voltage``
-        array.
-
-    - ``voltage_step_size > 0`` or `None`
-
-      - If the ``voltage`` array is already regularly spaced, then
-        `numpy.interp` will be used interpolate the ``voltage`` and
-        ``current`` arrays onto the new grid spacing
-        ``voltage_step_size``.
-      - If ``force_regular_spacing = False``, then, starting at the
-        lowest voltage, clusters within ``voltage_step_size`` will be
-        merged together with the new voltage value being the average of
-        the points in the cluster and the new current value being the
-        average of the points in the cluster.
-      - If ``force_regular_spacing = True``, then, starting at the
-        lowest voltage, clusters within ``voltage_step_size`` will be
-        merged together with the new current value being the average of
-        the points in the cluster and the new voltage value being
-        ``voltage_min + 0.5 * N * voltage_step_size``, where ``N`` is
-        the N-th point in the voltage array.
+        N = \texttt{floor}\left(
+            \frac{V_{cluster,max} - V_{cluster,min}}{\texttt{voltage_step_size}}
+        \right)
     """
     # condition voltage_step_size
     if voltage_step_size is not None and not isinstance(
