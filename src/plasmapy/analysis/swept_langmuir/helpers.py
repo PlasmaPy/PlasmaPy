@@ -400,7 +400,7 @@ def _merge_voltage_clusters__within_dv(
     return new_voltage, new_current
 
 
-def merge_voltage_clusters(  # noqa: C901, PLR0912
+def merge_voltage_clusters(
     voltage: np.ndarray,
     current: np.ndarray,
     voltage_step_size: float | None = None,
@@ -442,7 +442,6 @@ def merge_voltage_clusters(  # noqa: C901, PLR0912
 
     Notes
     -----
-
     An identified voltage cluster can span a voltage range larger than
     ``voltage_step_size`` and still have every voltage step being
     smaller than ``voltage_step_size``.  In this scenario, the voltage
