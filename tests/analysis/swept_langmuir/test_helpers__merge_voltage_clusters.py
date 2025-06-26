@@ -125,14 +125,7 @@ def test_merge_voltage_clusters(
 
         if expected is not None:
             assert np.allclose(rtn_voltage, expected[0])
-
-            rtn_nan_mask = np.isnan(rtn_current)
-            expected_nan_mask = np.isnan(expected[1])
-            assert np.array_equal(rtn_nan_mask, expected_nan_mask)
-            assert np.allclose(
-                rtn_current[np.logical_not(rtn_nan_mask)],
-                expected[1][np.logical_not(expected_nan_mask)],
-            )
+            assert np.allclose(rtn_current, expected[1])
         else:
             assert np.allclose(rtn_voltage, voltage)
             assert np.allclose(rtn_current, current)
