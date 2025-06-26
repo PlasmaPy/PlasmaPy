@@ -266,24 +266,6 @@ def _is_voltage_regularly_spaced(
     return is_regular_grid
 
 
-def _merge_voltage_clusters__interpolate_sweep(
-    voltage: np.ndarray,
-    current: np.ndarray,
-    voltage_step_size: float,
-) -> tuple[np.ndarray, np.ndarray]:
-    """
-    Interpolate the ``voltage`` and ``current`` arrays associated with
-    a langmuir trace onto a new regularly spaced voltage array.  The
-    new voltage array will be spaced by ``voltage_step_size`` and span
-    the same range as the original ``voltage`` array.
-    """
-    size = int(np.floor((voltage[-1] - voltage[0]) / voltage_step_size)) + 1
-    reg_voltage = voltage_step_size * np.arange(size, dtype=voltage.dtype) + voltage[0]
-    reg_current = np.interp(reg_voltage, voltage, current)
-
-    return reg_voltage, reg_current
-
-
 def _merge_voltage_clusters__zero_diff_neighbors(
     voltage: np.ndarray, current: np.ndarray
 ) -> tuple[np.ndarray, np.ndarray]:
