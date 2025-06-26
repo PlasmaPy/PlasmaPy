@@ -313,7 +313,7 @@ def _merge_voltage_clusters__zero_diff_neighbors(
     return new_voltage, new_current
 
 
-def _merge_voltage_clusters__within_dv(
+def _merge_voltage_clusters__within_dv(  # noqa: C901
     voltage: np.ndarray,
     current: np.ndarray,
     voltage_step_size: float,
