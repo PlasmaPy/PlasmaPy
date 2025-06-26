@@ -327,7 +327,9 @@ def _merge_voltage_clusters__within_dv(
     voltage_diff = np.diff(voltage)
 
     # generate global cluster mask
-    cluster_mask = voltage_diff <= voltage_step_size
+    mask1 = voltage_diff < voltage_step_size
+    mask2 = np.isclose(voltage_diff, voltage_step_size)
+    cluster_mask = np.logical_or(mask1, mask2)
     cluster_mask = np.append(cluster_mask, [cluster_mask[-1]])
     cluster_mask[1:] = np.logical_or(cluster_mask[1:], np.roll(cluster_mask, 1)[1:])
 
