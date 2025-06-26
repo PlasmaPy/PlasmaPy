@@ -261,7 +261,10 @@ def _is_voltage_regularly_spaced(
         0,
     ):
         # grid has a common dV, but at times jumps N * dV times
-        is_regular_grid = True
+        min_dV = np.min(voltage_diff)
+        ndV = np.rint(voltage_diff / min_dV)
+
+        is_regular_grid = False if np.any(ndV > 10) else True
 
     return is_regular_grid
 
