@@ -360,7 +360,11 @@ def _merge_voltage_clusters__within_dv(
         sub_voltage = voltage[start_index:stop_index]
         sub_current = current[start_index:stop_index]
 
-        nbins = int(np.floor((sub_voltage[-1] - sub_voltage[0]) / voltage_step_size))
+        v_range = sub_voltage[-1] - sub_voltage[0]
+        nbins = int(np.rint(v_range / voltage_step_size))
+        if not np.isclose(nbins - (v_range / voltage_step_size), 0):
+            nbins = int(np.floor((sub_voltage[-1] - sub_voltage[0]) / voltage_step_size))
+
         if nbins == 0:
             nbins = 1
 
