@@ -105,6 +105,38 @@ from plasmapy.utils.exceptions import PlasmaPyWarning
                 np.array([-5., -4, 0, 5, 7], dtype=float),
             ),
         ),
+        (  # multiple voltage clusters, including at beginning and end
+            np.array(
+                [1, 1.01, 1.05, 1.5, 2, 3.88, 3.9, 3.92, 4.8,  5.5, 5.55],
+                dtype=float,
+            ),
+            np.array(
+                [-5, -5.1, -4.9, -4, -3, 0, 0.1, -0.1, 5, 7, 6.9],
+                dtype=float,
+            ),
+            {"voltage_step_size": 0.1},
+            does_not_raise(),
+            (
+                np.array([1.02, 1.5, 2, 3.9, 4.8, 5.525], dtype=float),
+                np.array([-5., -4, -3, 0, 5, 6.95], dtype=float),
+            ),
+        ),
+        (  # self determine voltage_step_size
+            np.array(
+                [1, 1.01, 1.05, 1.5, 2, 3.88, 3.9, 3.92, 4.8,  5.5, 5.55],
+                dtype=float,
+            ),
+            np.array(
+                [-5, -5.1, -4.9, -4, -3, 0, 0.1, -0.1, 5, 7, 6.9],
+                dtype=float,
+            ),
+            {"voltage_step_size": None},
+            does_not_raise(),
+            (
+                np.array([1.02, 1.5, 2, 3.9, 4.8, 5.525], dtype=float),
+                np.array([-5., -4, -3, 0, 5, 6.95], dtype=float),
+            ),
+        ),
     ],
 )
 def test_merge_voltage_clusters(
