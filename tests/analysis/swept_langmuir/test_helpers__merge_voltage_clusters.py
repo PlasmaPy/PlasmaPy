@@ -48,14 +48,14 @@ from plasmapy.utils.exceptions import PlasmaPyWarning
             None,
         ),
         # values
-        (
+        (  # no merging needed
             np.linspace(-40.0, 40, 100),
             np.linspace(-10.0, 30, 100),
             {"voltage_step_size": 0.0},
             does_not_raise(),
             None,  # same as inputs
         ),
-        (
+        (  # merge identical voltages
             np.array([1, 2, 2, 4, 6, 6], dtype=float),
             np.array([-5, -2, -2.1, 0, 5, 4.9], dtype=float),
             {"voltage_step_size": 0.0},
@@ -65,7 +65,7 @@ from plasmapy.utils.exceptions import PlasmaPyWarning
                 np.array([-5, -2.05, 0, 4.95], dtype=float),
             ),
         ),
-        (
+        (  # step size given as an integer
             np.array([1, 2, 2, 4, 6, 6], dtype=float),
             np.array([-5, -2, -2.1, 0, 5, 4.9], dtype=float),
             {"voltage_step_size": 0},  # integer value
