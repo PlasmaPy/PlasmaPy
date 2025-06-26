@@ -414,8 +414,9 @@ def merge_voltage_clusters(  # noqa: C901, PLR0912
     ----------
     voltage: `numpy.ndarray`
         1D `numpy.ndarray` representing the voltage of the swept
-        Langmuir trace.  *No units are assumed or checked, but values
-        should be in volts.*
+        Langmuir trace.  Voltage needs to be monotonically ascending.
+        *No units are assumed or checked, but values should be in
+        volts.*
 
     current: `numpy.ndarray`
         1D `numpy.ndarray` representing the current of the swept
@@ -505,13 +506,6 @@ def merge_voltage_clusters(  # noqa: C901, PLR0912
 
         return voltage.copy(), current.copy()
 
-    # ensure voltage is ascending for calculation
-    voltage_ascending = bool(np.all(voltage_diff >= 0))
-    if not voltage_ascending:
-        voltage, current = sort_sweep_arrays(
-            voltage, current, voltage_order="ascending"
-        )
-
     # now merge clusters
     if voltage_step_size == 0:
         new_voltage, new_current = _merge_voltage_clusters__zero_diff_neighbors(
@@ -522,11 +516,5 @@ def merge_voltage_clusters(  # noqa: C901, PLR0912
         new_voltage, new_current = _merge_voltage_clusters__within_dv(
             voltage, current, voltage_step_size
         )
-
-    if not voltage_ascending:
-        voltage = voltage[::-1]
-        current = current[::-1]
-        new_voltage = new_voltage[::-1]
-        new_current = new_current[::-1]
 
     return new_voltage, new_current
