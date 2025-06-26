@@ -374,26 +374,30 @@ def _merge_voltage_clusters__within_dv(
         sub_voltage = voltage[start_index:stop_index]
         sub_current = current[start_index:stop_index]
 
-        if sub_voltage[-1] - sub_voltage[0] <= voltage_step_size:
+        nbins = int(np.floor((sub_voltage[-1] - sub_voltage[0]) / voltage_step_size))
+        if nbins == 0:
+            nbins = 1
+
+        if nbins == 1:
             new_voltage[start_index] = np.average(sub_voltage)
             new_current[start_index] = np.average(sub_current)
             continue
 
-        start_voltage = sub_voltage[0]
-        stop_voltage = start_voltage + voltage_step_size
-        jj = 0
-        while start_voltage <= sub_voltage[-1]:
+        range_array = np.linspace(sub_voltage[0], sub_voltage[-1], nbins+1)
+        for jj in range(nbins):
+            start_voltage = range_array[jj]
+            start_current = range_array[jj+1]
+
             mask1 = sub_voltage >= start_voltage
-            mask2 = sub_voltage < stop_voltage
+            if jj == nbins - 1:
+                mask2 = sub_voltage <= stop_voltage
+            else:
+                mask2 = sub_voltage < stop_voltage
             mask = np.logical_and(mask1, mask2)
 
             if np.count_nonzero(mask) > 0:
                 new_voltage[start_index + jj] = np.average(sub_voltage[mask])
                 new_current[start_index + jj] = np.average(sub_current[mask])
-                jj += 1
-
-            start_voltage = stop_voltage
-            stop_voltage += voltage_step_size
 
     # filter out NaN values
     nan_mask = np.logical_not(np.isnan(new_voltage))
