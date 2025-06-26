@@ -229,7 +229,7 @@ omega_ = em_angular_frequency
 def normalized_vector_potential(
     intensity: u.Quantity[u.watt / u.m**2],
     wavelength: u.Quantity[u.m],
-) -> u.Quantity[u.dimensionless_unscaled]:
+) -> float | np.ndarray:
     r"""
     Calculate the normalized vector potential :math:`a_0` from the intensity :math:`I`
     and the wavelength :math:`\lambda`.
@@ -258,12 +258,13 @@ def normalized_vector_potential(
     ----------
     intensity : `~astropy.units.Quantity`
         Intensity of the laser pulse (convertible to W / m\ :sup:`2`).
+
     wavelength : `~astropy.units.Quantity`
         Wavelength of the laser (convertible to m).
 
     Returns
     -------
-    a_0 : `~astropy.units.Quantity`
+    a_0 : float | numpy.ndarray
         The normalized vector potential of a plasma given the intensity and wavelength of
         a laser.
 
@@ -275,11 +276,11 @@ def normalized_vector_potential(
     --------
     >>> import astropy.units as u
     >>> normalized_vector_potential(1e18 * u.watt / u.cm**2, 1 * u.um)
-    <Quantity 0.8549297>
+    np.float64(0.8549297...)
     """
 
     a0 = (e * wavelength * np.sqrt(intensity / (2 * eps0 * c**5))) / (m_e * np.pi)
-    return a0.to("")
+    return a0.to(u.dimensionless_unscaled).value  # type: ignore[no-any-return]
 
 
 a0_ = normalized_vector_potential
