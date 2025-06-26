@@ -435,7 +435,8 @@ def merge_voltage_clusters(  # noqa: C901, PLR0912
         A non-zero, positive step size for the ``voltage`` array
         cluster identification.  A value of ``0`` will merge only
         duplicate voltage values.  A value of `None` will default to the
-        average step size of the ``voltage`` array.  (DEFAULT:`None`)
+        average step size of the ``voltage`` array (only counting
+        duplicate voltages once).  (DEFAULT:`None`)
 
     Returns
     -------
