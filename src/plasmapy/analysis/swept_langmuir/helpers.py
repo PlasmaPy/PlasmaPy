@@ -388,7 +388,7 @@ def _merge_voltage_clusters__within_dv(
         range_array = np.linspace(sub_voltage[0], sub_voltage[-1], nbins+1)
         for jj in range(nbins):
             start_voltage = range_array[jj]
-            start_current = range_array[jj+1]
+            stop_voltage = range_array[jj+1]
 
             mask1 = sub_voltage >= start_voltage
             if jj == nbins - 1:
