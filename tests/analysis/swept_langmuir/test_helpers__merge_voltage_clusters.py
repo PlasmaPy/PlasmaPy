@@ -6,7 +6,6 @@ Tests for helper function `merge_voltage_clusters` contained in
 from contextlib import nullcontext as does_not_raise
 from unittest import mock
 
-import astropy.units as u
 import numpy as np
 import pytest
 
