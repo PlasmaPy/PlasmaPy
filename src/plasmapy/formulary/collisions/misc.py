@@ -38,6 +38,7 @@ _e = const.e.si
 _eps0 = const.eps0
 _hbar = const.hbar
 _m_e = const.m_e
+_N_A = const.N_A
 
 
 @validate_quantities(T={"equivalencies": u.temperature_energy()})
@@ -343,27 +344,19 @@ def _f_n_mol_integrand(
 
 
 def _f_mol_n(
-    ϑ: float,
+    ϑ: u.Quantity[u.dimensionless_unscaled],
     n: int,
 ):
-    return (
-        1
-        / factorial(n)
-        * quad(
-            _f_n_mol_integrand,
-            0,
-            np.inf,
-            args=(
-                ϑ,
-                n,
-            ),
-        )
-    )
+    integral = [
+        quad(_f_n_mol_integrand, 0, np.inf, args=(x, n))[0] for x in ϑ
+    ] * u.dimensionless_unscaled
+
+    return integral / factorial(n)
 
 
 def _Moliere_scattering_B(B, b):
     """Eq. 23 of Bethe."""
-    return B - np.log(B) - np.log(b)
+    return B - np.log(B) - b
 
 
 def Bethe_Moliere_scattering(
@@ -372,10 +365,10 @@ def Bethe_Moliere_scattering(
     v: u.Quantity[u.m / u.s],
     z: int,
     # Target parameters
-    A: u.Quantity[u.amu],
+    A: u.Quantity[u.kg / u.mol],
     N: u.Quantity[u.m**-3],
     Z: int,
-    t: u.Quantity[u.kg / u.m**2],
+    t: u.Quantity[u.m],
 ):
     """Calculate the angular scattering distribution for the provided particle species.
 
@@ -391,8 +384,8 @@ def Bethe_Moliere_scattering(
         The atomic number of the projectile specie.
 
     A : `~astropy.units.Quantity`
-        The atomic weight of an atom of the atomic material in units convertible
-        to amu.
+        The formula weight of an atom of the atomic material in units convertible
+        to kilograms per mole.
 
     N : `~astropy.units.Quantity`
         The number density of atoms per unit volume of the target material.
@@ -401,27 +394,31 @@ def Bethe_Moliere_scattering(
         The atomic number of the target.
 
     t : `~astropy.units.Quantity`
-        The areal density of the target in units convertible to kilograms per square meter.
+        The thickness of the target in units convertible to meters.
 
     """
     beta = v / _c
 
     # Eq. 10 of Bethe
-    χ_c = 4 * np.pi * N * t * const.e.esu**4 * Z * (Z + 1) * z**2 / (m * v**2) ** 2
+    χ_c = np.sqrt(
+        4 * np.pi * N * t * const.e.esu**4 * Z * (Z + 1) * z**2 / (m * v**2) ** 2
+    )
 
-    # Eq. 22 of Bethe
-    # TODO: Double check we are using the proper value of alpha here.
-    #  Compare with Eq. 21a
+    # Eq. 21a, "the deviation from the Born approximation"
+    Born_alpha = z * Z * const.e.esu**2 / (_hbar * v)
+    # Areal density is used in eq. 22
+    rho_t = A * N / _N_A * t
+    # Eq. 22
     e_b = (
         6680
-        * t.cgs.value
+        * rho_t
         / beta**2
         * (Z + 1)
         * Z ** (1 / 3)
         * z**2
-        / (A.to(u.amu).value * (1 + 3.34 * _alpha**2))
+        / (A * (1 + 3.34 * Born_alpha**2))
     )
-    b = np.log(e_b)
+    b = np.log(e_b.cgs.value)
 
     # The transcendental equation associated with `B` yields two solutions for
     # every `b`. We want to solve for values where B > 1, so our initial
@@ -439,9 +436,9 @@ def Bethe_Moliere_scattering(
         ϑ = theta / (χ_c * np.sqrt(B))
 
         f_n = [_f_mol_n(ϑ, i) / B**i for i in range(3)]
-        f_mol = sum(f_n)
+        f_mol = np.sum(f_n, axis=0)
 
-        return theta * f_mol
+        return ϑ * f_mol
 
     return scattering_integrand
 
@@ -473,7 +470,7 @@ def Highland_scattering(
 
     Notes
     -----
-    The root-mean-square (rms) scattering angle is given by in :cite:t:`highland:1975` as:
+    The root-mean-square (rms) scattering angle is given in :cite:t:`highland:1975` as:
 
     .. math::
         \theta_{1/e} = \frac{17.5 \; \text{MeV}}{p\beta c}\sqrt{\frac{L}{L_R}}
