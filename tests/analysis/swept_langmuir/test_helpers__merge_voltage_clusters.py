@@ -33,7 +33,7 @@ from plasmapy.utils.exceptions import PlasmaPyWarning
             None,  # same as inputs
         ),
         (  # non-zero voltage_step_size < any step size
-            np.array([1.1, 1.5,  2, 3.8, 6.0, 6.2], dtype=float),
+            np.array([1.1, 1.5, 2, 3.8, 6.0, 6.2], dtype=float),
             np.array([-5, -5.2, -2, 0, 4.2, 5], dtype=float),
             {"voltage_step_size": 0.1},
             pytest.warns(PlasmaPyWarning),
@@ -90,8 +90,8 @@ from plasmapy.utils.exceptions import PlasmaPyWarning
             {"voltage_step_size": 0.1},
             does_not_raise(),
             (
-                np.array([1., 1.15, 1.5, 2, 4, 5.5], dtype=float),
-                np.array([-5., -5, -4, 0, 5, 7], dtype=float),
+                np.array([1.0, 1.15, 1.5, 2, 4, 5.5], dtype=float),
+                np.array([-5.0, -5, -4, 0, 5, 7], dtype=float),
             ),
         ),
         (  # voltage array starts with a cluster, spans < 2 * voltage_step_size
@@ -101,12 +101,12 @@ from plasmapy.utils.exceptions import PlasmaPyWarning
             does_not_raise(),
             (
                 np.array([1.1, 1.5, 2, 4, 5.5], dtype=float),
-                np.array([-5., -4, 0, 5, 7], dtype=float),
+                np.array([-5.0, -4, 0, 5, 7], dtype=float),
             ),
         ),
         (  # multiple voltage clusters, including at beginning and end
             np.array(
-                [1, 1.01, 1.05, 1.5, 2, 3.88, 3.9, 3.92, 4.8,  5.5, 5.55],
+                [1, 1.01, 1.05, 1.5, 2, 3.88, 3.9, 3.92, 4.8, 5.5, 5.55],
                 dtype=float,
             ),
             np.array(
@@ -117,12 +117,12 @@ from plasmapy.utils.exceptions import PlasmaPyWarning
             does_not_raise(),
             (
                 np.array([1.02, 1.5, 2, 3.9, 4.8, 5.525], dtype=float),
-                np.array([-5., -4, -3, 0, 5, 6.95], dtype=float),
+                np.array([-5.0, -4, -3, 0, 5, 6.95], dtype=float),
             ),
         ),
         (  # self determine voltage_step_size
             np.array(
-                [1, 1.01, 1.05, 1.5, 2, 3.88, 3.9, 3.92, 4.8,  5.5, 5.55],
+                [1, 1.01, 1.05, 1.5, 2, 3.88, 3.9, 3.92, 4.8, 5.5, 5.55],
                 dtype=float,
             ),
             np.array(
@@ -133,7 +133,7 @@ from plasmapy.utils.exceptions import PlasmaPyWarning
             does_not_raise(),
             (
                 np.array([1.02, 1.5, 2, 3.9, 4.8, 5.525], dtype=float),
-                np.array([-5., -4, -3, 0, 5, 6.95], dtype=float),
+                np.array([-5.0, -4, -3, 0, 5, 6.95], dtype=float),
             ),
         ),
     ],

@@ -345,10 +345,10 @@ def _merge_voltage_clusters__within_dv(  # noqa: C901
         indices[0] = indices[0] + 1
     if indices.size > 1:
         indices[2::2] = indices[2::2] + 1
-    if cluster_mask[-1] and indices[-1] != voltage.size-1:
+    if cluster_mask[-1] and indices[-1] != voltage.size - 1:
         # last element in voltage is in a cluster
-        indices = np.append(indices, [voltage.size-1])
-    indices = np.reshape(indices, newshape=(int(indices.size/2), 2))
+        indices = np.append(indices, [voltage.size - 1])
+    indices = np.reshape(indices, newshape=(int(indices.size / 2), 2))
     # ^ using newshape kwarg for backwards compatability, newshape kwarg
     #   has been deprecated since numpy v2.1
 
@@ -366,7 +366,9 @@ def _merge_voltage_clusters__within_dv(  # noqa: C901
         v_range = sub_voltage[-1] - sub_voltage[0]
         nbins = int(np.rint(v_range / voltage_step_size))
         if not np.isclose(nbins - (v_range / voltage_step_size), 0):
-            nbins = int(np.floor((sub_voltage[-1] - sub_voltage[0]) / voltage_step_size))
+            nbins = int(
+                np.floor((sub_voltage[-1] - sub_voltage[0]) / voltage_step_size)
+            )
 
         if nbins == 0:
             nbins = 1
@@ -376,10 +378,10 @@ def _merge_voltage_clusters__within_dv(  # noqa: C901
             new_current[start_index] = np.average(sub_current)
             continue
 
-        range_array = np.linspace(sub_voltage[0], sub_voltage[-1], nbins+1)
+        range_array = np.linspace(sub_voltage[0], sub_voltage[-1], nbins + 1)
         for jj in range(nbins):
             start_voltage = range_array[jj]
-            stop_voltage = range_array[jj+1]
+            stop_voltage = range_array[jj + 1]
 
             mask1 = sub_voltage >= start_voltage
             if jj == nbins - 1:
