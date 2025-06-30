@@ -32,6 +32,7 @@ from plasmapy.utils.exceptions import PhysicsError
 
 __all__ += __lite_funcs__
 
+_a0 = const.a0
 _alpha = const.alpha
 _c = const.c
 _e = const.e.si
@@ -354,18 +355,12 @@ def _f_mol_n(
     return integral / factorial(n)
 
 
-def _Moliere_scattering_B(B, b):
-    """Eq. 23 of Bethe."""
-    return B - np.log(B) - b
-
-
 def Bethe_Moliere_scattering(
     # Projectile parameters
     m: u.Quantity[u.kg],
     v: u.Quantity[u.m / u.s],
     z: int,
     # Target parameters
-    A: u.Quantity[u.kg / u.mol],
     N: u.Quantity[u.m**-3],
     Z: int,
     t: u.Quantity[u.m],
@@ -383,10 +378,6 @@ def Bethe_Moliere_scattering(
     z : `~astropy.units.Quantity`
         The atomic number of the projectile specie.
 
-    A : `~astropy.units.Quantity`
-        The formula weight of an atom of the atomic material in units convertible
-        to kilograms per mole.
-
     N : `~astropy.units.Quantity`
         The number density of atoms per unit volume of the target material.
 
@@ -397,36 +388,34 @@ def Bethe_Moliere_scattering(
         The thickness of the target in units convertible to meters.
 
     """
-    beta = v / _c
 
-    # Eq. 10 of Bethe
-    χ_c = np.sqrt(
-        4 * np.pi * N * t * const.e.esu**4 * Z * (Z + 1) * z**2 / (m * v**2) ** 2
-    )
+    # Eq. 10
+    χ_c = 4 * np.pi * N * t * const.e.esu**4 * Z * (Z + 1) / (m**2 * v**4)
 
-    # Eq. 21a, "the deviation from the Born approximation"
-    Born_alpha = z * Z * const.e.esu**2 / (_hbar * v)
-    # Areal density is used in eq. 22
-    rho_t = A * N / _N_A * t
+    # Eq. 8
+    deBroglie_wavelength = _hbar / (m * v)
+    Fermi_radius = 0.885 * _a0 * Z ** (-1 / 3)
+    x_0 = deBroglie_wavelength / Fermi_radius
+
+    # Eq. 21a
+    alpha = z * Z * const.e.esu**2 / (_hbar * v)
+    # Eq. 21
+    χ_a = np.sqrt(x_0**2 * (1.13 + 3.76 * alpha**2))
+
     # Eq. 22
-    e_b = (
-        6680
-        * rho_t
-        / beta**2
-        * (Z + 1)
-        * Z ** (1 / 3)
-        * z**2
-        / (A * (1 + 3.34 * Born_alpha**2))
-    )
+    e_b = χ_c**2 / (1.167 * χ_a**2)
     b = np.log(e_b.cgs.value)
 
+    def Moliere_scattering_B(B):
+        """Eq. 23 of Bethe."""
+        return B - np.log(B) - b
+
     # The transcendental equation associated with `B` yields two solutions for
-    # every `b`. We want to solve for values where B > 1, so our initial
-    # guess must also satisfy b > 1.
+    # every `b`. We want to solve for values where B > 1, this corresponds to
+    # our initial guess satisfying b > 1.
     B = fsolve(
-        _Moliere_scattering_B,
+        Moliere_scattering_B,
         x0=np.full_like(b, 5),
-        args=(b,),
     )
 
     def scattering_integrand(theta):
