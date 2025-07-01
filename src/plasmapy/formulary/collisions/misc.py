@@ -5,7 +5,7 @@ Module of miscellaneous parameters related to collisions.
 __all__ = [
     "mobility",
     "Bethe_stopping",
-    "Bethe_Moliere_scattering",
+    "Moliere_scattering",
     "Highland_scattering",
     "Spitzer_resistivity",
 ]
@@ -355,12 +355,13 @@ def _f_mol_n(
     return integral / factorial(n)
 
 
-def Bethe_Moliere_scattering(
+def Moliere_scattering(
     # Projectile parameters
     m: u.Quantity[u.kg],
     v: u.Quantity[u.m / u.s],
     z: int,
     # Target parameters
+    A: u.Quantity[u.kg / u.mol],
     N: u.Quantity[u.m**-3],
     Z: int,
     t: u.Quantity[u.m],
@@ -378,6 +379,9 @@ def Bethe_Moliere_scattering(
     z : `~astropy.units.Quantity`
         The atomic number of the projectile specie.
 
+    A : `~astropy.units.Quantity`
+        The atomic weight of the target material in units convertible to kilograms per mol.
+
     N : `~astropy.units.Quantity`
         The number density of atoms per unit volume of the target material.
 
@@ -388,22 +392,32 @@ def Bethe_Moliere_scattering(
         The thickness of the target in units convertible to meters.
 
     """
+    beta = v / _c
+    gamma = 1 / np.sqrt(1 - beta**2)
+    p = gamma * m * v
+    # Eq. 10 with relativistically correct `p`
+    χ_c = np.sqrt(
+        4 * np.pi * N * t * const.e.esu**4 * Z * (Z + 1) * z**2 / (p * v) ** 2
+    )
 
-    # Eq. 10
-    χ_c = 4 * np.pi * N * t * const.e.esu**4 * Z * (Z + 1) / (m**2 * v**4)
+    # Eq. 21a, "the deviation from the Born approximation"
+    Born_alpha = z * Z * const.e.esu**2 / (_hbar * v)
 
-    # Eq. 8
-    deBroglie_wavelength = _hbar / (m * v)
-    Fermi_radius = 0.885 * _a0 * Z ** (-1 / 3)
-    x_0 = deBroglie_wavelength / Fermi_radius
-
-    # Eq. 21a
-    alpha = z * Z * const.e.esu**2 / (_hbar * v)
-    # Eq. 21
-    χ_a = np.sqrt(x_0**2 * (1.13 + 3.76 * alpha**2))
-
-    # Eq. 22
-    e_b = χ_c**2 / (1.167 * χ_a**2)
+    # Density of the target material
+    rho = N * A / _N_A
+    # Eq. 22, collected constants have been recalculated. Bethe switches to the
+    # target areal density for `t`. We instead introduce a factor of `rho` and
+    # keep `t` as the target thickness.
+    e_b = (
+        (6702 * u.cm**2 / u.mol)
+        * rho
+        * t
+        / beta**2
+        * (Z + 1)
+        * Z ** (1 / 3)
+        * z**2
+        / (A * (1 + 3.34 * Born_alpha**2))
+    )
     b = np.log(e_b.cgs.value)
 
     def Moliere_scattering_B(B):
