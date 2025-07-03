@@ -706,3 +706,8 @@ def test_stopping_power_no_interpolation() -> None:
     result = stopping_power(Particle("H+"), "COPPER")
 
     assert type(result) is tuple
+
+
+def test_element_name_bug():
+    Z = np.array([18,26])
+    element_name(Z[0])
