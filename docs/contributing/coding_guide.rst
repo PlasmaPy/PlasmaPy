@@ -1059,6 +1059,30 @@ an angular frequency to get a length scale:
 
 .. _performing releases:
 
+Adding a new module
+===================
+
+* Create the source file at :samp:`src/plasmapy/{subpackage}/{module}.py`
+  - Add a top-level docstring
+  - Define :py:`__all__` near the top of :samp:`{module}.py`
+* Update imports in :samp:`src/plasmapy/{subpackage}/__init__.py`
+* Add tests at :samp:`tests/{subpackage}/test_{module}.py`
+* Add a documentation stub file
+* Add type hint annotations
+  - Update :file:`mypy.ini` to ignore static type checking errors that
+    are external to the new module (e.g., :issue:`2435`), if necessary
+
+.. tip::
+
+   To get a better idea of the steps necessary to add a new module,
+   check out a recent pull request that adds a new module (e.g.,
+   :pr:`3021`).
+
+.. important::
+
+   When the process for adding a new module changes, please update this
+   section accordingly.
+
 Performing releases
 ===================
 
