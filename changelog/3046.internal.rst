@@ -1,0 +1,1 @@
+Bumped versions of multiple dependencies to be consistent with the policy recommended by |SPEC 0|.
