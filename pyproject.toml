@@ -60,7 +60,7 @@ dependencies = [
   "astropy>=5.3,<7",
   "h5py>=3.10",
   # Minimum version of ipykernel should not exceed what's used by Google Colab
-  "ipykernel>=5.5.6",
+  "ipykernel>=6.17.1",
   "ipywidgets>=6",
   "lmfit>=1.2",
   "matplotlib>=3.8",
