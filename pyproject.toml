@@ -57,26 +57,26 @@ dynamic = [ "version" ]
 
 dependencies = [
   # astropy upper limit described in https://github.com/PlasmaPy/PlasmaPy/issues/2883
-  "astropy>=5.2,<7",
-  "h5py>=3.8",
+  "astropy>=5.3,<7",
+  "h5py>=3.10",
   # Minimum version of ipykernel should not exceed what's used by Google Colab
   "ipykernel>=5.5.6",
   "ipywidgets>=6",
-  "lmfit>=1.1",
-  "matplotlib>=3.7",
+  "lmfit>=1.2",
+  "matplotlib>=3.8",
   "mpmath>=1.3",
-  "numpy>=1.24",
-  "packaging>=22",
-  "pandas>=2",
-  "requests>=2.28",
-  "scipy>=1.10",
-  "setuptools>=66",
-  "tqdm>=4.65",
+  "numpy>=1.26",
+  "packaging>=23.2",
+  "pandas>=2.1",
+  "requests>=2.31",
+  "scipy>=1.12",
+  "setuptools>=68.1",
+  "tqdm>=4.66",
   # Use loose requirements for voila because it impacts ipykernel version
   "voila>=0.2.7",
-  "wrapt>=1.15",
+  "wrapt>=1.16",
   # xarray upper limit described in: https://github.com/PlasmaPy/PlasmaPy/issues/2922
-  "xarray>=2022.12,<=2024.10",
+  "xarray>=2023.7,<=2024.10",
 ]
 
 # The documentation build occurs in an isolated environment that is not
