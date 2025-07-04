@@ -776,8 +776,55 @@ def zizmor(session: nox.Session) -> None:
     session.run("zizmor", ".github", "--no-progress", "--color=auto", *session.posargs)
 
 
+@nox.session
+def spec0(session: nox.Session) -> None:
+    """
+    Update dependencies in `pyproject.toml` to be consistent with SPEC 0.
+
+    Scientific Python Enhancement Proposal 0 recommends that packages in
+    the scientific pythoniverse support all minor releases of core
+    dependencies that were made in the past 24 months, and minor
+    releases of Python that were made in the past 36 months.
+    """
+
+    import nep29
+    import pyproject_parser
+    from dep_logic.specifiers import parse_version_specifier
+
+    def get_spec0_specifier(package: str) -> str:
+        oldest_version = nep29.nep29_versions(package)[-1][0]
+        return f">={oldest_version}"
+
+    def update_specifier(original, new) -> str:
+        """
+        Combine two requirement specifiers, falling back to the original
+        specifier if
+        """
+        # Use `str` in case `original` is a SpecifierSet
+        parsed_original = parse_version_specifier(str(original))
+        parsed_new = parse_version_specifier(new)
+        combined = parsed_original & parsed_new
+        return original if combined.is_empty() else combined
+
+    pyproject = pyproject_parser.PyProject.load("pyproject.toml")
+    deps = pyproject.project["dependencies"]
+
+    excluded_dependencies = {"ipykernel", "ipywidgets", "voila"}
+
+    for i, dep in enumerate(deps):
+
+        if dep.name in excluded_dependencies:
+            continue
+
+        spec0_specifier = get_spec0_specifier(dep.name)
+        updated_specifier = update_specifier(dep.specifier, spec0_specifier)
+        requirement = f"{dep.name}{updated_specifier}"
+        session.run("uv", "add", requirement)
+
+    session.run("pre-commit", "run", "pyproject-fmt", "--files", "pyproject.toml")
+
 # /// script
-# dependencies = ["nox"]
+# dependencies = ["nox", "dep_logic", "nep29", "pyproject_parser", "setuptools"]
 # ///
 
 if __name__ == "__main__":
