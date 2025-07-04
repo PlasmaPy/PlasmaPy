@@ -811,6 +811,8 @@ def spec0(session: nox.Session) -> None:
 
     excluded_dependencies = {"ipykernel", "ipywidgets", "voila"}
 
+    requirements = []
+
     for i, dep in enumerate(deps):
 
         if dep.name in excluded_dependencies:
@@ -818,9 +820,9 @@ def spec0(session: nox.Session) -> None:
 
         spec0_specifier = get_spec0_specifier(dep.name)
         updated_specifier = update_specifier(dep.specifier, spec0_specifier)
-        requirement = f"{dep.name}{updated_specifier}"
-        session.run("uv", "add", requirement)
+        requirements.append(f"{dep.name}{updated_specifier}")
 
+    session.run("uv", "add", *requirements)
     session.run("pre-commit", "run", "pyproject-fmt", "--files", "pyproject.toml")
 
 # /// script
