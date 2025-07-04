@@ -794,8 +794,8 @@ def spec0(session: nox.Session) -> None:
     session.install("pre-commit")
 
     def get_spec0_specifier(package: str) -> str:
-        oldest_version = nep29.nep29_versions(package)[-1][0]
-        oldest_version = oldest_version.removesuffix(".0").removesuffix(".0")
+        oldest_version = str(nep29.nep29_versions(package)[-1][0])
+        oldest_version = oldest_version.rstrip(".0")
         return f">={oldest_version}"
 
     def update_specifier(original, new) -> str:
