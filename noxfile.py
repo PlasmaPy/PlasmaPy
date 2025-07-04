@@ -791,6 +791,8 @@ def spec0(session: nox.Session) -> None:
     import pyproject_parser
     from dep_logic.specifiers import parse_version_specifier
 
+    session.install("pre-commit")
+
     def get_spec0_specifier(package: str) -> str:
         oldest_version = nep29.nep29_versions(package)[-1][0]
         return f">={oldest_version}"
