@@ -795,7 +795,10 @@ def spec0(session: nox.Session) -> None:
 
     def get_spec0_specifier(package: str) -> str:
         oldest_version = str(nep29.nep29_versions(package)[-1][0])
-        oldest_version = oldest_version.rstrip(".0")
+
+        # Reduce inconsistencies with `pyproject-fmt`
+        oldest_version = oldest_version.removesuffix(".0").removesuffix(".0")
+
         return f">={oldest_version}"
 
     def update_specifier(original, new) -> str:
@@ -825,8 +828,12 @@ def spec0(session: nox.Session) -> None:
         updated_specifier = update_specifier(dep.specifier, spec0_specifier)
         requirements.append(f"{dep.name}{updated_specifier}")
 
-    session.run("uv", "add", *requirements)
+    session.run("uv", "add", *requirements, "--frozen")
+
+    # TODO: remove the invocation of pyproject-fmt once I'm confident it's working
     session.run("pre-commit", "run", "pyproject-fmt", "--files", "pyproject.toml")
+
+    session.notify("requirements")
 
 # /// script
 # dependencies = ["nox", "dep_logic", "nep29", "pyproject_parser", "setuptools"]
