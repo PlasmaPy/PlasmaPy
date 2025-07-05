@@ -814,7 +814,7 @@ def bump_requirements(session: nox.Session) -> None:
     excluded_deps: set[str] = {"ipykernel", "ipywidgets", "voila"}
     deps_to_update = (dep for dep in deps if dep.name not in excluded_deps)
     updated_requirements = [_update_requirement(dep) for dep in deps_to_update]
-    session.run("uv", "add", "--no-install", *updated_requirements)
+    session.run("uv", "add", "--no-sync", *updated_requirements)
 
 
 # /// script
