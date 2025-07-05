@@ -32,7 +32,10 @@ import shutil
 import sys
 import tomllib
 
+import nep29
 import nox
+import pyproject_parser
+from dep_logic.specifiers import parse_version_specifier
 from packaging.requirements import Requirement
 
 # SPEC 0 indicates that scientific Python packages should support
@@ -776,8 +779,46 @@ def zizmor(session: nox.Session) -> None:
     session.run("zizmor", ".github", "--no-progress", "--color=auto", *session.posargs)
 
 
+def _get_oldest_allowed_version_specifier(package: str, n_months: int = 24) -> str:
+    oldest_version = str(nep29.nep29_versions(package, n_months=n_months)[-1][0])
+    while oldest_version.endswith(".0"):  # for consistency with pyproject-fmt
+        oldest_version = oldest_version.removesuffix(".0")
+    return f">={oldest_version}"
+
+def _combine_version_specifiers(original, new) -> str:
+    parsed_original = parse_version_specifier(str(original))
+    parsed_new = parse_version_specifier(str(new))
+    combined = parsed_original & parsed_new
+    return original if combined.is_empty() else combined
+
+
+def _update_requirement(dep) -> str:
+    print(type(dep))
+    new_specifier = _get_oldest_allowed_version_specifier(dep.name)
+    combined_specifier = _combine_version_specifiers(dep.specifier, new_specifier)
+    return f"{dep.name}{combined_specifier}"
+
+@nox.session
+def bump_requirements(session: nox.Session) -> None:
+    """
+    Update the minimum allowed versions of dependencies to be consistent
+    with SPEC 0.
+
+    Scientific Python Enhancement Proposal 0 recommends that packages in
+    the scientific pythoniverse support all minor releases of core
+    dependencies that were made in the past 24 months, and minor
+    releases of Python that were made in the past 36 months.
+    """
+    pyproject = pyproject_parser.PyProject.load("pyproject.toml")
+    deps = pyproject.project["dependencies"]
+    excluded_deps: set[str] = {"ipykernel", "ipywidgets", "voila"}
+    deps_to_update = (dep for dep in deps if dep.name not in excluded_deps)
+    updated_requirements = [_update_requirement(dep) for dep in deps_to_update]
+    session.run("uv", "add", "--no-sync", *updated_requirements)
+
+
 # /// script
-# dependencies = ["nox"]
+# dependencies = ["nox", "dep_logic", "nep29", "pyproject_parser", "setuptools", "uv"]
 # ///
 
 if __name__ == "__main__":
