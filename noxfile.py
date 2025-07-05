@@ -809,48 +809,12 @@ def bump_requirements(session: nox.Session) -> None:
     dependencies that were made in the past 24 months, and minor
     releases of Python that were made in the past 36 months.
     """
-
-#    def get_spec0_specifier(package: str, n_months: int = 24) -> str:
-#        oldest_version = str(nep29.nep29_versions(package, n_months=n_months)[-1][0])
-#
-#        # Remove trailing zero minor and and patch version numbers for
-#        # consistency with pyproject-fmt
-#        oldest_version = oldest_version.removesuffix(".0").removesuffix(".0")
-#
-#        return f">={oldest_version}"
-#
-#    def update_specifier(original, new) -> str:
-#        """
-#        Combine two requirement specifiers, falling back to the original
-#        specifier in case of inconsistencies.
-#        """
-#        # Use `str` in case `original` is a SpecifierSet
-#        parsed_original = parse_version_specifier(str(original))
-#        parsed_new = parse_version_specifier(new)
-#        combined = parsed_original & parsed_new
-#        return original if combined.is_empty() else combined
-
     pyproject = pyproject_parser.PyProject.load("pyproject.toml")
     deps = pyproject.project["dependencies"]
-    excluded_deps = {"ipykernel", "ipywidgets", "voila"}
+    excluded_deps: set[str] = {"ipykernel", "ipywidgets", "voila"}
     deps_to_update = (dep for dep in deps if dep.name not in excluded_deps)
-    new_requirements = [_update_requirement(dep) for dep in deps_to_update]
-    session.run("uv", "add", *requirements, "--frozen")
-    session.notify("requirements")
-
-#    excluded_dependencies = {"ipykernel", "ipywidgets", "voila"}
-#
-#    requirements = []
-#
-#    for dep in deps:
-#        if dep.name in excluded_dependencies:
-#            continue
-#        spec0_specifier = get_spec0_specifier(dep.name, n_months=24)
-#        updated_specifier = update_specifier(dep.specifier, spec0_specifier)
-#        requirements.append(f"{dep.name}{updated_specifier}")
-#
-#    session.run("uv", "add", *requirements, "--frozen")
-#    session.notify("requirements")
+    updated_requirements = [_update_requirement(dep) for dep in deps_to_update]
+    session.run("uv", "add", "--no-install", *updated_requirements)
 
 
 # /// script
