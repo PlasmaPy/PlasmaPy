@@ -23,6 +23,7 @@ import copy
 import warnings
 
 import astropy.units as u
+import matplotlib.pyplot as plt
 import numpy as np
 from astropy.constants import si as const
 from astropy.visualization import quantity_support
@@ -31,8 +32,6 @@ from scipy.optimize import curve_fit
 
 from plasmapy.particles import Particle
 from plasmapy.utils.decorators import validate_quantities
-
-import matplotlib.pyplot as plt
 
 
 def _langmuir_futurewarning() -> None:

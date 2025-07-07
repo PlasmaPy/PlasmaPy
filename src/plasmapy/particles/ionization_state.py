@@ -698,7 +698,7 @@ class IonizationState:
     @property
     def Z_mean(self) -> np.float64:
         """Return the mean charge number."""
-        if np.nan in self.ionic_fractions:
+        if np.nan in self.ionic_fractions:  # noqa: PLW0177
             raise ChargeError(
                 "Z_mean cannot be found because no ionic fraction "
                 f"information is available for {self.base_particle}."
