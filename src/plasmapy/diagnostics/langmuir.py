@@ -32,6 +32,8 @@ from scipy.optimize import curve_fit
 from plasmapy.particles import Particle
 from plasmapy.utils.decorators import validate_quantities
 
+import matplotlib.pyplot as plt
+
 
 def _langmuir_futurewarning() -> None:
     warnings.warn(
@@ -200,8 +202,6 @@ class Characteristic:
 
     def plot(self) -> None:
         r"""Plot the characteristic in matplotlib."""
-        import matplotlib.pyplot as plt
-
         with quantity_support():
             plt.figure()
             plt.scatter(self.bias.to(u.V), self.current.to(u.mA), marker=".", color="k")
@@ -365,8 +365,6 @@ def swept_probe_analysis(  # noqa: PLR0915
     )
 
     if visualize:
-        import matplotlib.pyplot as plt
-
         with quantity_support():
             fig, (ax1, ax2) = plt.subplots(2, 1)
             ax1.plot(
@@ -975,8 +973,6 @@ def get_electron_temperature(
         T_e = np.array([T0, T0 + Delta_T]) * u.eV
 
     if visualize:
-        import matplotlib.pyplot as plt
-
         with quantity_support():
             plt.figure()
 
@@ -1083,8 +1079,6 @@ def extrapolate_electron_current(
     )
 
     if visualize:
-        import matplotlib.pyplot as plt
-
         with quantity_support():
             plt.figure()
             plt.scatter(
@@ -1236,8 +1230,6 @@ def get_ion_density_OML(
     )
 
     if visualize:
-        import matplotlib.pyplot as plt
-
         with quantity_support():
             plt.figure()
             plt.scatter(
@@ -1303,8 +1295,6 @@ def extrapolate_ion_current_OML(probe_characteristic, fit, visualize: bool = Fal
     ion_characteristic = Characteristic(probe_characteristic.bias, ion_current)
 
     if visualize:
-        import matplotlib.pyplot as plt
-
         with quantity_support():
             plt.figure()
             plt.scatter(
@@ -1398,8 +1388,6 @@ def get_EEDF(probe_characteristic, visualize: bool = False):
     probability = probability / integral
 
     if visualize:
-        import matplotlib.pyplot as plt
-
         with quantity_support():
             plt.figure()
             plt.semilogy(energy, probability, c="k")
