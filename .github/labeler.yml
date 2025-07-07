@@ -104,6 +104,14 @@ maintenance:
       'licenses/**',
     ]
 
+security:
+  - changed-files:
+    - any-glob-to-any-file: [
+      '**/*security*',
+      '**/*SECURITY*',
+      '**/*zizmor*',
+    ]
+
 notebooks:
   - changed-files:
     - any-glob-to-any-file: [
