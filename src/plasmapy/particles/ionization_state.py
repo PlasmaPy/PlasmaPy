@@ -101,6 +101,9 @@ class IonicLevel:
             f"IonicLevel({self.ionic_symbol!r}, ionic_fraction={self.ionic_fraction})"
         )
 
+    def __hash__(self) -> int:
+        return hash(repr(self))
+
     @property
     def ionic_symbol(self) -> str:
         """The symbol of the ion."""
@@ -914,3 +917,6 @@ class IonizationState:
 
         for line in output:
             print(line)  # noqa: T201
+
+    def __hash__(self) -> int:
+        return hash(repr(self))
