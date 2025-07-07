@@ -816,15 +816,15 @@ def _update_requirement(dep: Requirement) -> str:
 
 
 @nox.session
-def bump_requirements(session: nox.Session) -> None:
+def bump_minimum_requirements(session: nox.Session) -> None:
     """
     Update the minimum allowed versions of dependencies to be consistent
     with SPEC 0.
 
-    Scientific Python Ecosystem Coordination (SPEC) 0 recommends that
-    packages support all minor releases of core dependencies that were
-    made in the past 24 months, and minor releases of Python that were
-    made in the past 36 months.
+    Scientific Python Ecosystem Coordination (SPEC) document 0
+    recommends that packages support all minor releases of core
+    dependencies that were made in the past 24 months, and minor
+    releases of Python that were made in the past 36 months.
     """
     pyproject = pyproject_parser.PyProject.load("pyproject.toml")
     deps = pyproject.project["dependencies"]
