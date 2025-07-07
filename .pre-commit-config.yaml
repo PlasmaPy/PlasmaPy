@@ -28,7 +28,7 @@ repos:
   - id: check-yaml
 
 - repo: https://github.com/python-jsonschema/check-jsonschema
-  rev: 0.33.0
+  rev: 0.33.2
   hooks:
   - id: check-github-workflows
 
@@ -41,7 +41,7 @@ repos:
   - id: forbid-bidi-controls
 
 - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
-  rev: v2.14.0
+  rev: v2.15.0
   hooks:
   - id: pretty-format-ini
     args: [--autofix]
@@ -55,7 +55,7 @@ repos:
 
 - repo: https://github.com/mattlqx/pre-commit-search-and-replace
   # keep at v1.0.5
-  rev: v1.0.5
+  rev: v1.1.8
   hooks:
   - id: search-and-replace
     exclude: changelog/README.rst|docs/changelog/.*|.sourcery.yaml|docs/_global_substitutions.py|CHANGELOG.rst|docs/contributing/doc_guide.rst
@@ -80,13 +80,13 @@ repos:
     - tomli
 
 - repo: https://github.com/crate-ci/typos
-  rev: v1.33.1
+  rev: v1
   hooks:
   - id: typos
     name: typos (add false positives to _typos.toml)
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.11.12
+  rev: v0.12.2
   hooks:
   - id: ruff
     name: ruff (see https://docs.astral.sh/ruff/rules)
