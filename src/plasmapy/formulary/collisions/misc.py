@@ -334,118 +334,6 @@ def Bethe_stopping(
     return Bethe_stopping_lite(I.si.value, n.si.value, v.si.value, z) * u.J / u.m
 
 
-def _f_n_mol_integrand(
-    u: float,
-    ϑ: float,
-    n: int,
-):
-    """Eq. 26 of Bethe."""
-    # TODO: Move this into the body of `Bethe_Ferrari_Moliere_scattering`
-    return u * jv(0, ϑ * u) * np.exp(-(u**2) / 4) * (u**2 / 4 * np.log(u**2 / 4)) ** n
-
-
-def _f_mol_n(
-    ϑ: u.Quantity[u.dimensionless_unscaled],
-    n: int,
-):
-    integral = [
-        quad(_f_n_mol_integrand, 0, np.inf, args=(x, n))[0] for x in ϑ
-    ] * u.dimensionless_unscaled
-
-    return integral / factorial(n)
-
-
-def Moliere_scattering(
-    # Projectile parameters
-    m: u.Quantity[u.kg],
-    v: u.Quantity[u.m / u.s],
-    z: int,
-    # Target parameters
-    A: u.Quantity[u.kg / u.mol],
-    N: u.Quantity[u.m**-3],
-    Z: int,
-    t: u.Quantity[u.m],
-):
-    """Calculate the angular scattering distribution for the provided particle species.
-
-    Parameters
-    ----------
-    m : `~astropy.units.Quantity`
-        The mass of the projectile specie.
-
-    v : `~astropy.units.Quantity`
-        The speed of the projectile particles streaming through the target.
-
-    z : `~astropy.units.Quantity`
-        The atomic number of the projectile specie.
-
-    A : `~astropy.units.Quantity`
-        The atomic weight of the target material in units convertible to kilograms per mol.
-
-    N : `~astropy.units.Quantity`
-        The number density of atoms per unit volume of the target material.
-
-    Z : `~astropy.units.Quantity`
-        The atomic number of the target.
-
-    t : `~astropy.units.Quantity`
-        The thickness of the target in units convertible to meters.
-
-    """
-    beta = v / _c
-    gamma = 1 / np.sqrt(1 - beta**2)
-    p = gamma * m * v
-    # Eq. 10 with relativistically correct `p`
-    χ_c = np.sqrt(
-        4 * np.pi * N * t * const.e.esu**4 * Z * (Z + 1) * z**2 / (p * v) ** 2
-    )
-
-    # Eq. 21a, "the deviation from the Born approximation"
-    Born_alpha = z * Z * const.e.esu**2 / (_hbar * v)
-
-    # Density of the target material
-    rho = N * A / _N_A
-    # Eq. 22, collected constants have been recalculated. Bethe switches to the
-    # target areal density for `t`. We instead introduce a factor of `rho` and
-    # keep `t` as the target thickness.
-    e_b = (
-        (6702 * u.cm**2 / u.mol)
-        * rho
-        * t
-        / beta**2
-        * (Z + 1)
-        * Z ** (1 / 3)
-        * z**2
-        / (A * (1 + 3.34 * Born_alpha**2))
-    )
-    b = np.log(e_b.cgs.value)
-
-    def Moliere_scattering_B(B):
-        """Eq. 23 of Bethe."""
-        return B - np.log(B) - b
-
-    # The transcendental equation associated with `B` yields two solutions for
-    # every `b`. We want to solve for values where B > 1, this corresponds to
-    # our initial guess satisfying b > 1.
-    B = fsolve(
-        Moliere_scattering_B,
-        x0=np.full_like(b, 5),
-    )
-
-    def scattering_integrand(theta):
-        """Eq. 25 of Bethe."""
-
-        # Eq. 24 of Bethe
-        ϑ = theta / (χ_c * np.sqrt(B))
-
-        f_n = [_f_mol_n(ϑ, i) / B**i for i in range(3)]
-        f_mol = np.sum(f_n, axis=0)
-
-        return ϑ * f_mol
-
-    return scattering_integrand
-
-
 def Highland_scattering(
     m: u.Quantity[u.kg],
     v: u.Quantity[u.m / u.s],
@@ -497,6 +385,144 @@ def Highland_scattering(
 
     # Eq (4) in Highland
     return E_s / (m * v**2) * np.sqrt(L / L_rad) * (1 + epsilon)
+
+
+def _f_n_mol_integrand(
+    u: float,
+    ϑ: float,
+    n: int,
+):
+    """Eq. 26 of Bethe."""
+    # TODO: Move this into the body of `Bethe_Ferrari_Moliere_scattering`
+    return u * jv(0, ϑ * u) * np.exp(-(u**2) / 4) * (u**2 / 4 * np.log(u**2 / 4)) ** n
+
+
+def _f_mol_n(
+    ϑ: u.Quantity[u.dimensionless_unscaled],
+    n: int,
+):
+    integral = [
+        quad(_f_n_mol_integrand, 0, np.inf, args=(x, n))[0] for x in ϑ
+    ] * u.dimensionless_unscaled
+
+    return integral / factorial(n)
+
+
+def Moliere_scattering(
+    # Projectile parameters
+    m: u.Quantity[u.kg],
+    v: u.Quantity[u.m / u.s],
+    z: int,
+    # Target parameters
+    A: u.Quantity[u.kg / u.mol],
+    N: u.Quantity[u.m**-3],
+    Z: int,
+    t: u.Quantity[u.m],
+    # Return parameter
+    return_rms: bool = False,
+):
+    """Calculate the angular scattering distribution for the provided particle species.
+
+    Parameters
+    ----------
+    m : `~astropy.units.Quantity`
+        The mass of the projectile specie.
+
+    v : `~astropy.units.Quantity`
+        The speed of the projectile particles streaming through the target.
+
+    z : `~astropy.units.Quantity`
+        The atomic number of the projectile specie.
+
+    A : `~astropy.units.Quantity`
+        The atomic weight of the target material in units convertible to kilograms per mol.
+
+    N : `~astropy.units.Quantity`
+        The number density of atoms per unit volume of the target material.
+
+    Z : `~astropy.units.Quantity`
+        The atomic number of the target.
+
+    t : `~astropy.units.Quantity`
+        The thickness of the target in units convertible to meters.
+
+    return_rms : `bool`
+        Whether to return the rms scattering angle in radians, or return the
+        distribution function.
+
+    """
+    beta = v / _c
+    gamma = 1 / np.sqrt(1 - beta**2)
+    p = gamma * m * v
+    # Eq. 10 with relativistically correct `p`
+    χ_c = np.sqrt(
+        4 * np.pi * N * t * const.e.esu**4 * Z * (Z + 1) * z**2 / (p * v) ** 2
+    )
+
+    # Eq. 21a, "the deviation from the Born approximation"
+    Born_alpha = z * Z * const.e.esu**2 / (_hbar * v)
+
+    # Density of the target material
+    rho = N * A / _N_A
+    # Eq. 22, collected constants have been recalculated. Bethe switches to the
+    # target areal density for `t`. We instead introduce a factor of `rho` and
+    # keep `t` as the target thickness.
+    e_b = (
+        (6702 * u.cm**2 / u.mol)
+        * rho
+        * t
+        / beta**2
+        * (Z + 1)
+        * Z ** (1 / 3)
+        * z**2
+        / (A * (1 + 3.34 * Born_alpha**2))
+    )
+    b = np.log(e_b.cgs.value)
+
+    def Moliere_scattering_B(B):
+        """Eq. 23 of Bethe."""
+        return B - np.log(B) - b
+
+    # The transcendental equation associated with `B` yields two solutions for
+    # every `b`. We want to solve for values where B > 1, this corresponds to
+    # our initial guess satisfying b > 1.
+    B = fsolve(
+        Moliere_scattering_B,
+        x0=np.full_like(b, 5),
+    )
+
+    def scattering_integrand(theta):
+        """Eq. 25 of Bethe."""
+
+        # Eq. 24 of Bethe
+        ϑ = theta / (χ_c * np.sqrt(B))
+
+        f_n = [_f_mol_n(ϑ, i) / B**i for i in range(3)]
+
+        return np.sum(f_n, axis=0)
+
+    if not return_rms:
+        return scattering_integrand
+    else:
+        # Eq. 30
+        theta_w = χ_c * np.sqrt(B)
+        # Use Gaussian approximation to determine when the distribution has
+        # reached a sufficiently low value
+        upper_bound = 2 * theta_w
+
+        total_scattering_probability, _total_probability_error = quad(
+            scattering_integrand, 0, upper_bound
+        )
+
+        mean_squared, _mean_squared_error = quad(
+            lambda theta: theta**2
+            * scattering_integrand(theta)
+            / total_scattering_probability,
+            0,
+            upper_bound,
+        )
+
+        return np.sqrt(mean_squared)
 
 
 @validate_quantities(
