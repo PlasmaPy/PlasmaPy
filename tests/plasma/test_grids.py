@@ -11,6 +11,8 @@ from plasmapy.plasma import grids
 
 rs = np.random.RandomState(120921)
 
+import matplotlib.pyplot as plt
+
 
 @pytest.fixture
 def abstract_grid_uniform():
@@ -1010,7 +1012,6 @@ def debug_volume_avg_interpolator() -> None:
     Plot the comparison of the nearest neighbor interpolator and volume
     averaged interpolator for `~plasmapy.plasma.grids.CartesianGrid`.
     """
-    import matplotlib.pyplot as plt
 
     grid = grids.CartesianGrid(-1 * u.cm, 1 * u.cm, num=24)
 
