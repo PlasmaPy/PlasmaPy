@@ -3,6 +3,7 @@ Tests for grids.py
 """
 
 import astropy.units as u
+import matplotlib.pyplot as plt
 import numpy as np
 import pytest
 from astropy.tests.helper import assert_quantity_allclose
@@ -10,8 +11,6 @@ from astropy.tests.helper import assert_quantity_allclose
 from plasmapy.plasma import grids
 
 rs = np.random.RandomState(120921)
-
-import matplotlib.pyplot as plt
 
 
 @pytest.fixture

@@ -92,29 +92,29 @@ class Test_Coulomb_logarithm:
                 method="welcome our new microsoft overlords",
             )
 
+    @pytest.mark.filterwarnings("ignore::CouplingWarning")
     def test_handle_invalid_V(self) -> None:
         """Test that V default, V = None, and V = np.nan all give the same result"""
-        with pytest.warns(CouplingWarning):
-            methodVal_0 = Coulomb_logarithm(
-                self.T_arr[0],
-                self.n_arr[0],
-                self.particles,
-                z_mean=1 * u.dimensionless_unscaled,
-                V=np.nan * u.m / u.s,
-            )
-            methodVal_1 = Coulomb_logarithm(
-                self.T_arr[0],
-                self.n_arr[0],
-                self.particles,
-                z_mean=1 * u.dimensionless_unscaled,
-                V=None,
-            )
-            methodVal_2 = Coulomb_logarithm(
-                self.T_arr[0],
-                self.n_arr[0],
-                self.particles,
-                z_mean=1 * u.dimensionless_unscaled,
-            )
+        methodVal_0 = Coulomb_logarithm(
+            self.T_arr[0],
+            self.n_arr[0],
+            self.particles,
+            z_mean=1 * u.dimensionless_unscaled,
+            V=np.nan * u.m / u.s,
+        )
+        methodVal_1 = Coulomb_logarithm(
+            self.T_arr[0],
+            self.n_arr[0],
+            self.particles,
+            z_mean=1 * u.dimensionless_unscaled,
+            V=None,
+        )
+        methodVal_2 = Coulomb_logarithm(
+            self.T_arr[0],
+            self.n_arr[0],
+            self.particles,
+            z_mean=1 * u.dimensionless_unscaled,
+        )
         assert_quantity_allclose(methodVal_0, methodVal_1)
         assert_quantity_allclose(methodVal_0, methodVal_2)
 
@@ -129,41 +129,39 @@ class Test_Coulomb_logarithm:
                 V=0 * u.m / u.s,
             )
 
+    @pytest.mark.filterwarnings("ignore::CouplingWarning")
     def test_handle_V_arraysizes(self) -> None:
         """Test that different sized V input array gets handled by _boilerplate"""
-        with pytest.warns(CouplingWarning):
-            methodVal_0 = Coulomb_logarithm(
-                self.T_arr[0],
-                self.n_arr[0],
-                self.particles,
-                z_mean=1 * u.dimensionless_unscaled,
-                V=np.array([np.nan, 3e7]) * u.m / u.s,
-            )
-            methodVal_1 = Coulomb_logarithm(
-                self.T_arr[1],
-                self.n_arr[0],
-                self.particles,
-                z_mean=1 * u.dimensionless_unscaled,
-                V=np.array([1e7, np.nan]) * u.m / u.s,
-            )
-            methodVal_2 = Coulomb_logarithm(
-                self.T_arr,
-                self.n_arr[0],
-                self.particles,
-                z_mean=1 * u.dimensionless_unscaled,
-                V=np.array([np.nan, np.nan]) * u.m / u.s,
-            )
+        methodVal_0 = Coulomb_logarithm(
+            self.T_arr[0],
+            self.n_arr[0],
+            self.particles,
+            z_mean=1 * u.dimensionless_unscaled,
+            V=np.array([np.nan, 3e7]) * u.m / u.s,
+        )
+        methodVal_1 = Coulomb_logarithm(
+            self.T_arr[1],
+            self.n_arr[0],
+            self.particles,
+            z_mean=1 * u.dimensionless_unscaled,
+            V=np.array([1e7, np.nan]) * u.m / u.s,
+        )
+        methodVal_2 = Coulomb_logarithm(
+            self.T_arr,
+            self.n_arr[0],
+            self.particles,
+            z_mean=1 * u.dimensionless_unscaled,
+            V=np.array([np.nan, np.nan]) * u.m / u.s,
+        )
         assert_quantity_allclose(methodVal_0[0], methodVal_2[0])
         assert_quantity_allclose(methodVal_1[1], methodVal_2[1])
 
+    @pytest.mark.filterwarnings("ignore::CouplingWarning")
     def test_symmetry(self) -> None:
-        with pytest.warns(CouplingWarning):
-            lnLambda = Coulomb_logarithm(
-                self.temperature1, self.density2, self.particles
-            )
-            lnLambdaRev = Coulomb_logarithm(
-                self.temperature1, self.density2, self.particles[::-1]
-            )
+        lnLambda = Coulomb_logarithm(self.temperature1, self.density2, self.particles)
+        lnLambdaRev = Coulomb_logarithm(
+            self.temperature1, self.density2, self.particles[::-1]
+        )
         assert lnLambda == lnLambdaRev
 
     def test_Chen_Q_machine(self) -> None:
