@@ -5,6 +5,8 @@ Module of miscellaneous parameters related to collisions.
 __all__ = [
     "mobility",
     "Bethe_stopping",
+    "Moliere_scattering",
+    "Highland_scattering",
     "Spitzer_resistivity",
 ]
 __lite_funcs__ = ["Bethe_stopping_lite"]
@@ -15,6 +17,10 @@ import astropy.constants as const
 import astropy.units as u
 import numpy as np
 import numpy.typing as npt
+from scipy.integrate import quad
+from scipy.interpolate import make_interp_spline
+from scipy.optimize import fsolve
+from scipy.special import factorial, jv
 
 from plasmapy.formulary.collisions import frequencies
 from plasmapy.formulary.speeds import thermal_speed
@@ -27,10 +33,143 @@ from plasmapy.utils.exceptions import PhysicsError
 
 __all__ += __lite_funcs__
 
+_a0 = const.a0
+_alpha = const.alpha
 _c = const.c
 _e = const.e.si
 _eps0 = const.eps0
+_hbar = const.hbar
 _m_e = const.m_e
+_N_A = const.N_A
+
+_ϑ_tabulated = [
+    0.0,
+    0.2,
+    0.4,
+    0.6,
+    0.8,
+    1.0,
+    1.2,
+    1.4,
+    1.6,
+    1.8,
+    2.0,
+    2.2,
+    2.4,
+    2.6,
+    2.8,
+    3.0,
+    3.2,
+    3.4,
+    3.6,
+    3.8,
+    4.0,
+    4.5,
+    5.0,
+    5.5,
+    6.0,
+    7.0,
+    8.0,
+    9.0,
+    10.0,
+]
+
+# TODO: Validate the values here by comparing with actual integration
+_f_mol_tabulated = [
+    [
+        +2.0000,
+        +0.8456,
+        +2.4929,
+    ],
+    [
+        +1.9216,
+        +0.7038,
+        +2.0694,
+    ],
+    [
+        +1.7214,
+        +0.3437,
+        +1.0488,
+    ],
+    [
+        +1.4094,
+        -0.0777,
+        -0.0044,
+    ],
+    [
+        +1.0546,
+        -0.3981,
+        -0.6068,
+    ],
+    [
+        +0.7338,
+        -0.5285,
+        -0.6359,
+    ],
+    [
+        +0.4738,
+        -0.4770,
+        -0.3086,
+    ],
+    [
+        +0.2817,
+        -0.3183,
+        +0.0525,
+    ],
+    [
+        +0.1546,
+        -0.1396,
+        +0.2423,
+    ],
+    [
+        +0.0783,
+        -0.0006,
+        +0.2386,
+    ],
+    [
+        +0.03660,
+        +0.07820,
+        +0.1316,
+    ],
+    [
+        +0.01581,
+        +0.10540,
+        +0.0196,
+    ],
+    [
+        +0.00630,
+        +0.10080,
+        -0.0467,
+    ],
+    [
+        +0.00232,
+        +0.08262,
+        -0.0649,
+    ],
+    [
+        +0.00079,
+        +0.06247,
+        -0.0546,
+    ],
+    [+0.000250, +0.04550, -0.03568],
+    [+7.3e-5, +0.03288, -0.01923],
+    [+1.9e-5, +0.02402, -0.00847],
+    [+4.7e-6, +0.01791, -0.00264],
+    [+1.1e-6, +0.01366, +0.00005],
+    # 4
+    [1e-3 * 2.3e-4, 1e-3 * 10.638, 1e-3 * 1.0741],
+    [1e-3 * 3e-6, 1e-3 * 6.140, 1e-3 * 1.2294],
+    # 5
+    [1e-3 * 2e-8, 1e-3 * 3.831, 1e-3 * 0.8326],
+    [1e-3 * 2e-10, 1e-3 * 2.527, 1e-3 * 0.5368],
+    [1e-3 * 5e-13, 1e-3 * 1.739, 1e-3 * 0.3495],
+    [1e-3 * 1e-18, 1e-3 * 0.9080, 1e-3 * 0.1584],
+    [1e-3 * 3e-25, 1e-3 * 0.5211, 1e-3 * 0.0783],
+    [1e-3 * 1e-32, 1e-3 * 0.3208, 1e-3 * 0.0417],
+    [1e-3 * 1e-40, 1e-3 * 0.2084, 1e-3 * 0.0237],
+]
+
+_f_mol_spline = make_interp_spline(_ϑ_tabulated, _f_mol_tabulated)
 
 
 @validate_quantities(T={"equivalencies": u.temperature_energy()})
@@ -240,7 +379,7 @@ def Bethe_stopping_lite(
     higher order corrections become non-negligible for smaller energies.
 
     By convention, this function returns a positive value for the stopping
-    energy.
+    power.
 
     Parameters
     ----------
@@ -267,7 +406,7 @@ def Bethe_stopping_lite(
 
     beta = v / _c.si.value
 
-    return np.asarray(
+    return -np.asarray(
         4
         * np.pi
         * n
@@ -297,7 +436,7 @@ def Bethe_stopping(
     higher order corrections become non-negligible for smaller energies.
 
     By convention, this function returns a positive value for the stopping
-    energy.
+    power.
 
     Parameters
     ----------
@@ -323,6 +462,213 @@ def Bethe_stopping(
     """
 
     return Bethe_stopping_lite(I.si.value, n.si.value, v.si.value, z) * u.J / u.m
+
+
+def Highland_scattering(
+    m: u.Quantity[u.kg],
+    v: u.Quantity[u.m / u.s],
+    L: u.Quantity[u.m],
+    L_rad: u.Quantity[u.kg / u.m**2],
+):
+    r"""Calculate the rms scattering angle using the Highland formula.
+
+    Parameters
+    ----------
+    m : `~astropy.Units.Quantity`
+        The mass of the projectile particles streaming through the target.
+    v : `~astropy.units.Quantity`
+        The speed of the projectile particles streaming through the target.
+    L : `~astropy.units.Quantity`
+        The thickness of the target in units of length.
+    L_rad : `~astropy.units.Quantity`
+        The radiation length of the target material in units of length.
+        See notes for more details.
+
+    Returns
+    -------
+    theta_rms : `~astropy.units.Quantity`
+        The rms scattering angle in radians.
+
+    Notes
+    -----
+    The root-mean-square (rms) scattering angle is given in :cite:t:`highland:1975` as:
+
+    .. math::
+        \theta_{1/e} = \frac{17.5 \; \text{MeV}}{p\beta c}\sqrt{\frac{L}{L_R}}
+        \left(1 + 0.125\log_{10}\left(\frac{L}{0.1L_R}\right)\right)
+
+    where :math:`p` is the momentum of the projectile particles,
+    :math:`\beta` is the relativistic beta, :math:`L` is the thickness
+    of the target, and :math:`L_R` is the radiation length--a characteristic
+    distance scale over which energy loss to bremsstrahlung radiation is
+    relevant.
+
+    The Highland formula is an approximation that works best for high Z targets.
+    For low Z targets, the number of scattering events may be underestimated
+    by the Highland formula, and a different model should be used.
+    """
+    # Fitting constant, value provided by Highland
+    E_s = 17.5 * u.MeV
+
+    # Eq (2) in Highland
+    epsilon = 0.125 * np.log10(10 * L / L_rad)
+
+    # Eq (4) in Highland
+    return E_s / (m * v**2) * np.sqrt(L / L_rad) * (1 + epsilon)
+
+
+def _f_n_mol_integrand(
+    u: float,
+    ϑ: float,
+    n: int,
+):
+    """Eq. 26 of Bethe."""
+    # TODO: Move this into the body of `Bethe_Ferrari_Moliere_scattering`
+    return u * jv(0, ϑ * u) * np.exp(-(u**2) / 4) * (u**2 / 4 * np.log(u**2 / 4)) ** n
+
+
+def _f_mol_n(
+    ϑ: u.Quantity[u.dimensionless_unscaled],
+    n: int,
+):
+    integral = [
+        quad(_f_n_mol_integrand, 0, np.inf, args=(x, n))[0] for x in ϑ
+    ] * u.dimensionless_unscaled
+
+    return integral / factorial(n)
+
+
+def Moliere_scattering(
+    # Projectile parameters
+    m: u.Quantity[u.kg],
+    v: u.Quantity[u.m / u.s],
+    z: int,
+    # Target parameters
+    A: u.Quantity[u.kg / u.mol],
+    Rho: u.Quantity[u.m**-3],
+    Z: int,
+    t: u.Quantity[u.m],
+    # Miscellaneous Parameters
+    return_rms: bool = False,
+    use_interpolator: bool = True,
+):
+    """Calculate the angular scattering distribution for the provided particle species.
+
+    Parameters
+    ----------
+    m : `~astropy.units.Quantity`
+        The mass of the projectile specie.
+
+    v : `~astropy.units.Quantity`
+        The speed of the projectile particles streaming through the target.
+
+    z : `~astropy.units.Quantity`
+        The atomic number of the projectile specie.
+
+    A : `~astropy.units.Quantity`
+        The atomic weight of the target material in units convertible to kilograms per mol.
+
+    Rho : `~astropy.units.Quantity`
+        The density of the target in units convertible to kilograms per cubic meter.
+
+    Z : `~astropy.units.Quantity`
+        The atomic number of the target.
+
+    t : `~astropy.units.Quantity`
+        The thickness of the target in units convertible to meters.
+
+    return_rms : `bool`
+        Whether to return the rms scattering angle in radians, or return the
+        distribution function.
+
+    """
+    beta = v / _c
+    gamma = 1 / np.sqrt(1 - beta**2)
+    p = gamma * m * v
+
+    # Number density of atoms in the target
+    N = Rho * _N_A / A
+
+    # Eq. 10 with relativistically correct `p`
+    χ_c = np.sqrt(
+        4 * np.pi * N * t * const.e.esu**4 * Z * (Z + 1) * z**2 / (p * v) ** 2
+    )
+
+    # Eq. 21a, "the deviation from the Born approximation"
+    Born_alpha = z * Z * const.e.esu**2 / (_hbar * v)
+
+    # Eq. 22, collected constants have been recalculated. Bethe switches to the
+    # target areal density for `t`. We instead introduce a factor of `rho` and
+    # keep `t` as the target thickness.
+    e_b = (
+        (6702 * u.cm**2 / u.mol)
+        * Rho
+        * t
+        / beta**2
+        * (Z + 1)
+        * Z ** (1 / 3)
+        * z**2
+        / (A * (1 + 3.34 * Born_alpha**2))
+    )
+    b = np.log(e_b.cgs.value)
+
+    def Moliere_scattering_B(B):
+        """Eq. 23 of Bethe."""
+        return B - np.log(B) - b
+
+    # The transcendental equation associated with `B` yields two solutions for
+    # every `b`. We want to solve for values where B > 1, this corresponds to
+    # our initial guess satisfying b > 1.
+    B = fsolve(
+        Moliere_scattering_B,
+        x0=np.full_like(b, 5),
+    )
+
+    def scattering_integrand(theta):
+        """Eq. 25 of Bethe."""
+
+        # Eq. 24 of Bethe
+        ϑ = theta / (χ_c * np.sqrt(B))
+
+        if np.any(ϑ > 20):
+            raise PhysicsError(f"Exceeded ϑ=20 (got {np.max(ϑ.cgs)}).")
+
+        if np.any(theta > np.pi):
+            raise PhysicsError(
+                f"Angular distribution cannot exceed theta=180 (got {np.max(theta)})."
+            )
+
+        B_coefficient = np.asarray([1 / B**i for i in range(3)])
+
+        if use_interpolator:
+            f_n = _f_mol_spline(ϑ.cgs).T
+        else:
+            f_n = [_f_mol_n(ϑ, i) for i in range(3)]
+
+        return np.sum(B_coefficient * f_n, axis=0)
+
+    if not return_rms:
+        return scattering_integrand
+    else:
+        # Eq. 30
+        theta_w = χ_c * np.sqrt(B)
+        # Use Gaussian approximation to determine when the distribution has
+        # reached a sufficiently low value
+        upper_bound = 2 * theta_w
+
+        total_scattering_probability, _total_probability_error = quad(
+            scattering_integrand, 0, upper_bound
+        )
+
+        mean_squared, _mean_squared_error = quad(
+            lambda theta: theta**2
+            * scattering_integrand(theta)
+            / total_scattering_probability,
+            0,
+            upper_bound,
+        )
+
+        return np.sqrt(mean_squared)
 
 
 @validate_quantities(
