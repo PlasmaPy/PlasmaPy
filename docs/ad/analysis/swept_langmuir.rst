@@ -5,7 +5,8 @@
 Swept Langmuir Analysis Module
 ==============================
 
-.. automodule:: plasmapy.analysis.swept_langmuir
+.. automodapi:: plasmapy.analysis.swept_langmuir
+   :no-groups:
 
 Example notebooks
 -----------------
