@@ -18,6 +18,7 @@ import astropy.units as u
 import numpy as np
 import numpy.typing as npt
 from scipy.integrate import quad
+from scipy.interpolate import make_interp_spline
 from scipy.optimize import fsolve
 from scipy.special import factorial, jv
 
@@ -40,6 +41,135 @@ _eps0 = const.eps0
 _hbar = const.hbar
 _m_e = const.m_e
 _N_A = const.N_A
+
+_ϑ_tabulated = [
+    0.0,
+    0.2,
+    0.4,
+    0.6,
+    0.8,
+    1.0,
+    1.2,
+    1.4,
+    1.6,
+    1.8,
+    2.0,
+    2.2,
+    2.4,
+    2.6,
+    2.8,
+    3.0,
+    3.2,
+    3.4,
+    3.6,
+    3.8,
+    4.0,
+    4.5,
+    5.0,
+    5.5,
+    6.0,
+    7.0,
+    8.0,
+    9.0,
+    10.0,
+]
+
+# TODO: Validate the values here by comparing with actual integration
+_f_mol_tabulated = [
+    [
+        +2.0000,
+        +0.8456,
+        +2.4929,
+    ],
+    [
+        +1.9216,
+        +0.7038,
+        +2.0694,
+    ],
+    [
+        +1.7214,
+        +0.3437,
+        +1.0488,
+    ],
+    [
+        +1.4094,
+        -0.0777,
+        -0.0044,
+    ],
+    [
+        +1.0546,
+        -0.3981,
+        -0.6068,
+    ],
+    [
+        +0.7338,
+        -0.5285,
+        -0.6359,
+    ],
+    [
+        +0.4738,
+        -0.4770,
+        -0.3086,
+    ],
+    [
+        +0.2817,
+        -0.3183,
+        +0.0525,
+    ],
+    [
+        +0.1546,
+        -0.1396,
+        +0.2423,
+    ],
+    [
+        +0.0783,
+        -0.0006,
+        +0.2386,
+    ],
+    [
+        +0.03660,
+        +0.07820,
+        +0.1316,
+    ],
+    [
+        +0.01581,
+        +0.10540,
+        +0.0196,
+    ],
+    [
+        +0.00630,
+        +0.10080,
+        -0.0467,
+    ],
+    [
+        +0.00232,
+        +0.08262,
+        -0.0649,
+    ],
+    [
+        +0.00079,
+        +0.06247,
+        -0.0546,
+    ],
+    [+0.000250, +0.04550, -0.03568],
+    [+7.3e-5, +0.03288, -0.01923],
+    [+1.9e-5, +0.02402, -0.00847],
+    [+4.7e-6, +0.01791, -0.00264],
+    [+1.1e-6, +0.01366, +0.00005],
+    # 4
+    [1e-3 * 2.3e-4, 1e-3 * 10.638, 1e-3 * 1.0741],
+    [1e-3 * 3e-6, 1e-3 * 6.140, 1e-3 * 1.2294],
+    # 5
+    [1e-3 * 2e-8, 1e-3 * 3.831, 1e-3 * 0.8326],
+    [1e-3 * 2e-10, 1e-3 * 2.527, 1e-3 * 0.5368],
+    [1e-3 * 5e-13, 1e-3 * 1.739, 1e-3 * 0.3495],
+    [1e-3 * 1e-18, 1e-3 * 0.9080, 1e-3 * 0.1584],
+    [1e-3 * 3e-25, 1e-3 * 0.5211, 1e-3 * 0.0783],
+    [1e-3 * 1e-32, 1e-3 * 0.3208, 1e-3 * 0.0417],
+    [1e-3 * 1e-40, 1e-3 * 0.2084, 1e-3 * 0.0237],
+]
+
+_f_mol_spline = make_interp_spline(_ϑ_tabulated, _f_mol_tabulated)
 
 
 @validate_quantities(T={"equivalencies": u.temperature_energy()})
@@ -415,11 +545,12 @@ def Moliere_scattering(
     z: int,
     # Target parameters
     A: u.Quantity[u.kg / u.mol],
-    N: u.Quantity[u.m**-3],
+    Rho: u.Quantity[u.m**-3],
     Z: int,
     t: u.Quantity[u.m],
-    # Return parameter
+    # Miscellaneous Parameters
     return_rms: bool = False,
+    use_interpolator: bool = True,
 ):
     """Calculate the angular scattering distribution for the provided particle species.
 
@@ -437,8 +568,8 @@ def Moliere_scattering(
     A : `~astropy.units.Quantity`
         The atomic weight of the target material in units convertible to kilograms per mol.
 
-    N : `~astropy.units.Quantity`
-        The number density of atoms per unit volume of the target material.
+    Rho : `~astropy.units.Quantity`
+        The density of the target in units convertible to kilograms per cubic meter.
 
     Z : `~astropy.units.Quantity`
         The atomic number of the target.
@@ -454,6 +585,10 @@ def Moliere_scattering(
     beta = v / _c
     gamma = 1 / np.sqrt(1 - beta**2)
     p = gamma * m * v
+
+    # Number density of atoms in the target
+    N = Rho * _N_A / A
+
     # Eq. 10 with relativistically correct `p`
     χ_c = np.sqrt(
         4 * np.pi * N * t * const.e.esu**4 * Z * (Z + 1) * z**2 / (p * v) ** 2
@@ -462,14 +597,12 @@ def Moliere_scattering(
     # Eq. 21a, "the deviation from the Born approximation"
     Born_alpha = z * Z * const.e.esu**2 / (_hbar * v)
 
-    # Density of the target material
-    rho = N * A / _N_A
     # Eq. 22, collected constants have been recalculated. Bethe switches to the
     # target areal density for `t`. We instead introduce a factor of `rho` and
     # keep `t` as the target thickness.
     e_b = (
         (6702 * u.cm**2 / u.mol)
-        * rho
+        * Rho
         * t
         / beta**2
         * (Z + 1)
@@ -497,9 +630,22 @@ def Moliere_scattering(
         # Eq. 24 of Bethe
         ϑ = theta / (χ_c * np.sqrt(B))
 
-        f_n = [_f_mol_n(ϑ, i) / B**i for i in range(3)]
+        if np.any(ϑ > 20):
+            raise PhysicsError(f"Exceeded ϑ=20 (got {np.max(ϑ.cgs)}).")
 
-        return np.sum(f_n, axis=0)
+        if np.any(theta > np.pi):
+            raise PhysicsError(
+                f"Angular distribution cannot exceed theta=180 (got {np.max(theta)})."
+            )
+
+        B_coefficient = np.asarray([1 / B**i for i in range(3)])
+
+        if use_interpolator:
+            f_n = _f_mol_spline(ϑ.cgs).T
+        else:
+            f_n = [_f_mol_n(ϑ, i) for i in range(3)]
+
+        return np.sum(B_coefficient * f_n, axis=0)
 
     if not return_rms:
         return scattering_integrand
