@@ -564,7 +564,8 @@ def Moliere_scattering(
         The atomic number of the projectile specie.
 
     A : `~astropy.units.Quantity`
-        The atomic weight of the target material in units convertible to kilograms per mol.
+        The atomic weight of the target material in units convertible to
+        kilograms per mol.
 
     Rho : `~astropy.units.Quantity`
         The density of the target in units convertible to kilograms per cubic meter.
@@ -577,7 +578,12 @@ def Moliere_scattering(
 
     return_rms : `bool`
         Whether to return the rms scattering angle in radians, or return the
-        distribution function.
+        distribution function. Defaults to `False`.
+
+    use_interpolator : `boolean`
+        Whether the integrals involved in the calculation of the angular
+        distribution should be estimated using interpolation or numerical
+        integration. Defaults to `True`.
 
     """
     beta = v / _c
@@ -654,17 +660,15 @@ def Moliere_scattering(
         # reached a sufficiently low value
         upper_bound = 2 * theta_w
 
-        total_scattering_probability, _total_probability_error = quad_vec(
-            scattering_integrand, 0, upper_bound
-        )
+        total_scattering_probability = quad_vec(scattering_integrand, 0, upper_bound)[0]
 
-        mean_squared, _mean_squared_error = quad_vec(
+        mean_squared = quad_vec(
             lambda theta: theta**2
             * scattering_integrand(theta)
             / total_scattering_probability,
             0,
             upper_bound,
-        )
+        )[0]
 
         return np.sqrt(mean_squared)
 
