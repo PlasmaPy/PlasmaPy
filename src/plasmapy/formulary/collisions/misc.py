@@ -17,7 +17,7 @@ import astropy.constants as const
 import astropy.units as u
 import numpy as np
 import numpy.typing as npt
-from scipy.integrate import quad
+from scipy.integrate import quad_vec
 from scipy.interpolate import make_interp_spline
 from scipy.optimize import fsolve
 from scipy.special import factorial, jv
@@ -531,9 +531,7 @@ def _f_mol_n(
     ϑ: u.Quantity[u.dimensionless_unscaled],
     n: int,
 ):
-    integral = [
-        quad(_f_n_mol_integrand, 0, np.inf, args=(x, n))[0] for x in ϑ
-    ] * u.dimensionless_unscaled
+    integral = quad_vec(_f_n_mol_integrand, 0, np.inf, args=(ϑ, n))[0]
 
     return integral / factorial(n)
 
@@ -656,11 +654,11 @@ def Moliere_scattering(
         # reached a sufficiently low value
         upper_bound = 2 * theta_w
 
-        total_scattering_probability, _total_probability_error = quad(
+        total_scattering_probability, _total_probability_error = quad_vec(
             scattering_integrand, 0, upper_bound
         )
 
-        mean_squared, _mean_squared_error = quad(
+        mean_squared, _mean_squared_error = quad_vec(
             lambda theta: theta**2
             * scattering_integrand(theta)
             / total_scattering_probability,
