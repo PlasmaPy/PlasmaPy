@@ -7,12 +7,13 @@ __all__ = [
     "check_sweep",
     "find_floating_potential",
     "find_ion_saturation_current",
+    "find_plasma_potential_via_didv_peak",
     "merge_voltage_clusters",
     "sort_sweep_arrays",
     "ISatExtras",
     "VFExtras",
 ]
-__aliases__ = ["find_isat_", "find_vf_"]
+__aliases__ = ["find_isat_", "find_vf_", "find_vp_"]
 __all__ += __aliases__
 
 from plasmapy.analysis.swept_langmuir.floating_potential import (
@@ -29,4 +30,8 @@ from plasmapy.analysis.swept_langmuir.ion_saturation_current import (
     ISatExtras,
     find_ion_saturation_current,
     find_isat_,
+)
+from plasmapy.analysis.swept_langmuir.plasma_potential import (
+    find_plasma_potential_via_didv_peak,
+    find_vp_,
 )
