@@ -15,7 +15,7 @@ def check_sweep(  # noqa: C901, PLR0912
     allow_unsorted: bool = False,
 ) -> tuple[np.ndarray, np.ndarray]:
     """
-    Function for checking that the voltage and current arrays are
+    Check that the voltage and current arrays are
     properly formatted for analysis by
     `plasmapy.analysis.swept_langmuir`.
 
@@ -34,13 +34,13 @@ def check_sweep(  # noqa: C901, PLR0912
         electron-saturation current.  *No units are assumed or checked,
         but values should be in amperes.*
 
-    strip_units: `bool`
-        (Default: `True`) If `True`, then the units on ``voltage``
-        and/or ``current`` will be stripped if either are passed in as
-        an Astropy `~astropy.units.Quantity`.
+    strip_units: `bool`, default: `True`
+        If `True`, then the units on ``voltage`` and/or ``current``
+        will be stripped if either are passed in as an Astropy
+        `~astropy.units.Quantity`.
 
-    allow_unsorted: `bool`
-        (Default: `False`) If `True`, then the supplied ``voltage``
+    allow_unsorted: `bool`, default: `False`
+        If `True`, then the supplied ``voltage``
         array must be monotonically increasing.
 
     Returns
@@ -182,7 +182,7 @@ def sort_sweep_arrays(
         but values should be in amperes.*
 
     voltage_order: `str`
-        Either 'ascending' or 'descending' to indicate how the
+        Either ``'ascending'`` or ``'descending'`` to indicate how the
         ``voltage`` array should be sorted.  (DEFAULT: ``'ascending'``)
 
     Returns
