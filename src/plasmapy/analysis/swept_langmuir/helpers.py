@@ -46,18 +46,18 @@ def check_sweep(  # noqa: C901, PLR0912
     Returns
     -------
     voltage : `numpy.ndarray`
-        Input argument ``voltage`` after it goes through all of its checks
-        and conditioning.
+        Input argument ``voltage`` after it goes through all of its
+        checks and conditioning.
 
     current : `numpy.ndarray`
-        Input argument ``current`` after it goes through all of its checks
-        and conditioning.
+        Input argument ``current`` after it goes through all of its
+        checks and conditioning.
 
     Raises
     ------
     `TypeError`
-        If either the ``voltage`` or ``current`` arrays are not instances of a
-        `numpy.ndarray`.
+        If either the ``voltage`` or ``current`` arrays are not
+        instances of a `numpy.ndarray`.
 
     `ValueError`:
         If either the ``voltage`` or ``current`` arrays are not 1D.
@@ -66,12 +66,13 @@ def check_sweep(  # noqa: C901, PLR0912
         If the ``voltage`` array is not monotonically increasing.
 
     `ValueError`
-        If the ``current`` array never crosses zero (i.e. has no floating
-        potential).
+        If the ``current`` array never crosses zero (i.e. has no
+        floating potential).
 
     `ValueError`
-        If the ``current`` array does not start form a negative ion-saturation
-        current and increases to a positive electron-saturation current.
+        If the ``current`` array does not start form a negative
+        ion-saturation current and increases to a positive
+        electron-saturation current.
 
     `ValueError`
         If either the ``voltage`` or ``current`` array does not have a
