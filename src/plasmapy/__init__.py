@@ -80,8 +80,8 @@ def online_help(query: str) -> None:  # coverage: ignore
     query : str
         The search query.
     """
-    import webbrowser
-    from urllib.parse import urlencode
+    import webbrowser  # noqa: PLC0415
+    from urllib.parse import urlencode  # noqa: PLC0415
 
     url = (
         "http://docs.plasmapy.org/en/stable/search.html?"

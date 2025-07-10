@@ -356,11 +356,11 @@ atomic_warnings_table = [
 
 
 @pytest.mark.parametrize(("arg", "kwargs", "num_warnings"), atomic_warnings_table)
-def test_parse_AtomicWarnings(arg, kwargs, num_warnings: int) -> None:
-    r"""Tests that _parse_and_check_atomic_input issues an AtomicWarning
+def test_parse_ParticleWarnings(arg, kwargs, num_warnings: int) -> None:
+    r"""Tests that _parse_and_check_atomic_input issues a ParticleWarning
     under the required conditions."""
 
-    with pytest.warns(ParticleWarning) as record:
+    with pytest.warns(ParticleWarning) as record:  # noqa: PT031
         parse_and_check_atomic_input(arg, **kwargs)
         if not record:
             pytest.fail(

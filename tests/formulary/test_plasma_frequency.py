@@ -96,8 +96,8 @@ class TestPlasmaFrequency:
         """
         with pytest.warns(_warning):
             wp = plasma_frequency(*args, **kwargs)
-            assert isinstance(wp, u.Quantity)
-            assert wp.unit == u.rad / u.s
+        assert isinstance(wp, u.Quantity)
+        assert wp.unit == u.rad / u.s
 
         if expected is not None:
             assert np.allclose(wp, expected)

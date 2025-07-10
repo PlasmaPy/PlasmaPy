@@ -664,7 +664,7 @@ def test_Particle_warnings(arg, kwargs, attribute, warning) -> None:
     Test that the appropriate warnings are issued during the creation
     and use of a `~plasmapy.particles.Particle` object.
     """
-    with pytest.warns(warning) as record:
+    with pytest.warns(warning) as record:  # noqa: PT031
         exec(f"Particle(arg, **kwargs){attribute}")  # noqa: S102
         if not record:
             pytest.fail(
@@ -1668,7 +1668,7 @@ def test_undefined_electron_binding_energy() -> None:
 def test_warning_on_use_of_binding_energy() -> None:
     with pytest.warns(FutureWarning):
         particle = Particle("n")
-        assert particle.binding_energy == particle.nuclear_binding_energy
+    assert particle.binding_energy == particle.nuclear_binding_energy
 
 
 def test_deuterium_electron_binding_energy() -> None:

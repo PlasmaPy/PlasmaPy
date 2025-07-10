@@ -223,7 +223,7 @@ class ParticleList(collections.UserList):
         return f"ParticleList({self.symbols!r})"
 
     def __gt__(self, other):
-        from plasmapy.particles.nuclear import nuclear_reaction_energy
+        from plasmapy.particles.nuclear import nuclear_reaction_energy  # noqa: PLC0415
 
         other_as_particle_list = self._cast_other_as_particle_list(other)
         return nuclear_reaction_energy(

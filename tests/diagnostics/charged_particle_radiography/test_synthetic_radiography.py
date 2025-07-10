@@ -367,10 +367,11 @@ def test_input_validation() -> None:
 
     # Choose a very small synthetic radiograph size that misses most of the
     # particles
+    size = np.array([[-1, 1], [-1, 1]]) * 1 * u.mm
+
     with pytest.warns(
         RuntimeWarning, match="of the particles are shown on this synthetic radiograph."
     ):
-        size = np.array([[-1, 1], [-1, 1]]) * 1 * u.mm
         hax, vax, values = cpr.synthetic_radiograph(sim, size=size)
 
 

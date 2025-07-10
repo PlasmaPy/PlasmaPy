@@ -212,7 +212,8 @@ class TestFindFloatingPotential:
         """Test scenarios that issue warnings."""
         with pytest.warns(_warning):
             vf, extras = find_floating_potential(**kwargs)
-            assert isinstance(extras, VFExtras)
+
+        assert isinstance(extras, VFExtras)
 
         for key, val in expected.items():
             rtn_val = vf if key == "vf" else getattr(extras, key)

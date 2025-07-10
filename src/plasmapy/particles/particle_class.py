@@ -223,7 +223,9 @@ class AbstractPhysicalParticle(AbstractParticle):
     @property
     def _as_particle_list(self) -> ParticleList:
         # Avoid circular imports by importing here
-        from plasmapy.particles.particle_collections import ParticleList
+        from plasmapy.particles.particle_collections import (  # noqa: PLC0415
+            ParticleList,
+        )
 
         return ParticleList([self])
 
@@ -1592,7 +1594,7 @@ class Particle(AbstractPhysicalParticle):
         >>> D.isotopic_abundance
         0.000115
         """
-        from plasmapy.particles.atomic import common_isotopes
+        from plasmapy.particles.atomic import common_isotopes  # noqa: PLC0415
 
         if not self.isotope or self.is_ion:
             raise InvalidIsotopeError(_category_errmsg(self.symbol, "isotope"))
@@ -2130,7 +2132,7 @@ class DimensionlessParticle(AbstractParticle):
         # TODO: Replace with validator? Use an equivalency between
         # coulombs and reals
 
-        if obj is None or obj is np.nan:
+        if obj is None or np.isnan(obj):
             return np.nan
         elif np.isinf(obj):
             return obj

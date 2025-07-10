@@ -149,7 +149,7 @@ class Test_mobility:
         cls.True_zmean = 0.32665227217687254
 
     def test_symmetry(self) -> None:
-        with pytest.warns(CouplingWarning):
+        with pytest.warns(CouplingWarning):  # noqa: PT031
             result = mobility(self.T, self.n_e, self.particles)
             resultRev = mobility(self.T, self.n_e, self.particles[::-1])
         assert result == resultRev

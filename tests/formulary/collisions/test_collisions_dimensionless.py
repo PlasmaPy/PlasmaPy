@@ -132,6 +132,8 @@ class Test_Knudsen_number:
     def test_symmetry(self) -> None:
         with pytest.warns(CouplingWarning):
             result = Knudsen_number(self.length, self.T, self.n_e, self.particles)
+
+        with pytest.warns(CouplingWarning):
             resultRev = Knudsen_number(
                 self.length, self.T, self.n_e, self.particles[::-1]
             )
