@@ -5,6 +5,8 @@ Functionality for determining the plasma potential of a Langmuir sweep.
 __all__ = ["find_plasma_potential_via_didv_peak"]
 __aliases__ = ["find_vp_"]
 
+from typing import NamedTuple
+
 __all__ += __aliases__
 
 import numpy as np
@@ -12,6 +14,14 @@ import numpy as np
 from scipy import signal
 
 from plasmapy.analysis.swept_langmuir.helpers import check_sweep, merge_voltage_clusters
+
+
+class VpExtras(NamedTuple):
+    vp_std: float | None
+    data_slice: slice | None
+    savgol_windows: list[int] | None
+    computed_plasma_potentials: list[float] | None
+    method: str | None
 
 
 def find_plasma_potential_via_didv_peak(
