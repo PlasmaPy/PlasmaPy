@@ -72,7 +72,7 @@ def find_plasma_potential_via_didv_peak(
         smooth_fractions = np.linspace(0.01, 0.25, num=30)
 
     # create bin sizes (smooth_windows) for the savgol_filter
-    smooth_windows = np.unique(np.rint(smooth_fractions * data_size, dtype=int))
+    smooth_windows = np.unique(np.rint(smooth_fractions * data_size).astype(int))
     mask = smooth_windows > 2
     smooth_windows = smooth_windows[mask]
     mask = smooth_windows % 2 == 0
@@ -100,7 +100,7 @@ def find_plasma_potential_via_didv_peak(
         else:
             vp = voltage_slice[imax[0]]
 
-        plasma_potentials.append(vp)
+        plasma_potentials.append(float(vp))
         rtn_extras["savgol_windows"].append(int(_window))
 
     rtn_extras["computed_plasma_potentials"] = plasma_potentials
