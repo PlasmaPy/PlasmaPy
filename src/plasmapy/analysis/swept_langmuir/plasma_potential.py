@@ -31,6 +31,14 @@ def find_plasma_potential_via_didv_peak(
     floating_potential: float | None = None,
     smooth_fractions=None,
 ):
+    rtn_extras = VpExtras(
+        vp_std=None,
+        data_slice=None,
+        savgol_windows=None,
+        computed_plasma_potentials=None,
+        method="didv_peak",
+    )._asdict()
+
     # check voltage and current arrays
     voltage, current = check_sweep(voltage, current, strip_units=True)
     voltage, current = merge_voltage_clusters(voltage, current, voltage_step_size=0)
@@ -56,6 +64,7 @@ def find_plasma_potential_via_didv_peak(
         if np.count_nonzero(mask) > 0:
             first_index = np.where(mask)[0][0]
     data_size = voltage.size - first_index
+    rtn_extras["data_slice"] = slice(int(first_index), None, 1)
 
     # define smooth_fractions
     # TODO: add better description
@@ -74,6 +83,7 @@ def find_plasma_potential_via_didv_peak(
     voltage_slice = voltage[first_index:]
     current_slice = current[first_index:]
     plasma_potentials = []
+    rtn_extras["savgol_windows"] = []
     for _window in smooth_windows:
         v_smooth = signal.savgol_filter(voltage_slice, _window, 1)
         c_smooth = signal.savgol_filter(current_slice, _window, 1)
@@ -86,8 +96,13 @@ def find_plasma_potential_via_didv_peak(
             vp = voltage_slice[imax[0]]
 
         plasma_potentials.append(vp)
+        rtn_extras["savgol_windows"].append(int(_window))
 
+    rtn_extras["computed_plasma_potentials"] = plasma_potentials
+    rtn_extras["vp_std"] = float(np.std(plasma_potentials))
 
+    vp = float(np.average(plasma_potentials))
+    return vp, VpExtras(**rtn_extras)
 
 
 find_vp_ = find_plasma_potential_via_didv_peak
