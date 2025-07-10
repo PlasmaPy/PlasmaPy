@@ -3,6 +3,9 @@ Functionality for determining the plasma potential of a Langmuir sweep.
 """
 
 __all__ = ["find_plasma_potential_via_didv_peak"]
+__aliases__ = ["find_vp_"]
+
+__all__ += __aliases__
 
 import numpy as np
 
