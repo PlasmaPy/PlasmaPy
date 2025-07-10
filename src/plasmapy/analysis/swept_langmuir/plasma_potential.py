@@ -69,7 +69,7 @@ def find_plasma_potential_via_didv_peak(
     # define smooth_fractions
     # TODO: add better description
     if smooth_fractions is None:
-        smooth_fractions = np.linspace(0.01, 0.25, num=25)
+        smooth_fractions = np.linspace(0.01, 0.25, num=30)
 
     # create bin sizes (smooth_windows) for the savgol_filter
     smooth_windows = np.unique(np.rint(smooth_fractions * data_size, dtype=int))
