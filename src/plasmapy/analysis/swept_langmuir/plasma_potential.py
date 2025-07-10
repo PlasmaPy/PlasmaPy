@@ -91,7 +91,12 @@ def find_plasma_potential_via_didv_peak(
         didv = np.gradient(c_smooth, v_smooth)
         imax = np.argmax(didv)
         if imax.size > 1:
-            ...
+            if np.all(np.diff(imax) == 1):
+                vp = np.average(voltage_slice[imax])
+            else:
+                continue
+        elif np.isscalar(imax):
+            vp = voltage_slice[imax]
         else:
             vp = voltage_slice[imax[0]]
 
