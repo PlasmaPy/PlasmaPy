@@ -88,7 +88,7 @@ optional-dependencies.docs = [
   "nox>=2025.5.1",
   "numpydoc>=1.9",
   "pillow>=11.3",
-  "plasmapy-sphinx>=2025.5.0",
+  "plasmapy-sphinx>=0.2.0b1",
   "pygments==2.19.2",
   # allow sphinx<8.2 because of https://github.com/spatialaudio/nbsphinx/issues/832
   "sphinx>=8.1.3",
