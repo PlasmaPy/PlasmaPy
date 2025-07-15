@@ -138,7 +138,7 @@ class Test_classical_transport:
         )
         assert testTrue, errStr
 
-    @pytest.make.filterwarnings("ignore::RelativityWarning")
+    @pytest.mark.filterwarnings("ignore::RelativityWarning")
     def test_resistivity_units(self) -> None:
         """Output should be a Quantity with units of Ohm m"""
         testTrue = self.ct.resistivity.unit == u.Ohm * u.m

@@ -24,7 +24,7 @@ class Test_Coulomb_logarithm:
         cls.T_arr = np.array([1, 2]) * u.eV
         cls.density1 = 1e20 * u.cm**-3
         cls.n_arr = np.array([1e20, 2e20]) * u.cm**-3
-        cls.temperature2f = 1 * 11604 * u.K
+        cls.temperature2 = 1 * 11604 * u.K
         cls.density2 = 1e23 * u.cm**-3
         cls.z_mean = 2.5 * u.dimensionless_unscaled
         cls.particles = ("e", "p")
@@ -89,7 +89,7 @@ class Test_Coulomb_logarithm:
                 self.T_arr[0],
                 self.n_arr[0],
                 self.particles,
-                method="non-existent method",
+                method="welcome our new microsoft overlords",
             )
 
     def test_handle_invalid_V(self) -> None:
@@ -931,3 +931,6 @@ class Test_Coulomb_logarithm:
     T = np.array([1e2, 1e7, 1e8]) * u.K
     Lambda = np.array([5.97, 21.66, 6.69])
     particles = ("e", "p")
+
+
+# class Test_Coulomb_cross_section:

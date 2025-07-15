@@ -201,9 +201,9 @@ class Test_PlasmaBlobRegimes:
             blob = plasmablob.PlasmaBlob(T_e=T_e, n_e=n_e, Z=Z, particle=particle)
 
             # expect_regime = 'Weakly coupled regime: Gamma = 0.0075178096952688445.'
-        expect_regime = f"Weakly coupled regime: Gamma = {blob.coupling()}."
+            expect_regime = f"Weakly coupled regime: Gamma = {blob.coupling()}."
 
-        regime, _ = blob.regimes()
+            regime, _ = blob.regimes()
         assert regime == expect_regime
 
     def test_thermal_kinetic_energy_dominant(self) -> None:

@@ -4,7 +4,7 @@ import pytest
 
 from plasmapy.formulary.collisions import coulomb, lengths
 from plasmapy.utils._pytest_helpers import assert_can_handle_nparray
-from plasmapy.utils.exceptions import PhysicsWarning
+from plasmapy.utils.exceptions import CouplingWarning, PhysicsWarning
 
 
 class Test_impact_parameter_perp:
@@ -203,10 +203,10 @@ class Test_mean_free_path:
         cls.V = 1e4 * u.km / u.s
         cls.True1 = 4.4047571877932046e-07
 
-    @pytest.mark.filterwarnings("ignore::CouplingWarning")
     def test_symmetry(self) -> None:
-        result = lengths.mean_free_path(self.T, self.n_e, self.particles)
-        resultRev = lengths.mean_free_path(self.T, self.n_e, self.particles[::-1])
+        with pytest.warns(CouplingWarning):
+            result = lengths.mean_free_path(self.T, self.n_e, self.particles)
+            resultRev = lengths.mean_free_path(self.T, self.n_e, self.particles[::-1])
         assert result == resultRev
 
     def test_known1(self) -> None:

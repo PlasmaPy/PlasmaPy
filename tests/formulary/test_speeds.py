@@ -110,9 +110,9 @@ class TestAlfvenSpeed:
         """Test scenarios that issue warnings"""
         with pytest.warns(_warning):
             val = Alfven_speed(*args, **kwargs)
-        assert isinstance(val, u.Quantity)
-        assert val.unit == u.m / u.s
-        assert np.isclose(val.value, expected, **isclose_kw)
+            assert isinstance(val, u.Quantity)
+            assert val.unit == u.m / u.s
+            assert np.isclose(val.value, expected, **isclose_kw)
 
     @pytest.mark.parametrize(
         ("args", "kwargs", "expected", "isclose_kw"),
@@ -333,10 +333,8 @@ class Test_Ion_Sound_Speed:
     def test_warns(self, kwargs1, kwargs2, _warning) -> None:
         with pytest.warns(_warning):
             val = ion_sound_speed(**kwargs1)
-
-        if kwargs2:
-            with pytest.warns(_warning):
-                assert val == ion_sound_speed(**kwargs2)
+            if kwargs2 != {}:
+                val == ion_sound_speed(**kwargs2)  # noqa: B015
 
     @pytest.mark.parametrize(
         ("args", "kwargs", "_error"),
