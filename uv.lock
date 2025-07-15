@@ -1696,7 +1696,7 @@ requires-dist = [
     { name = "sphinx-gallery", marker = "extra == 'docs'", specifier = ">=0.19" },
     { name = "sphinx-issues", marker = "extra == 'docs'", specifier = ">=5.0.1" },
     { name = "sphinx-notfound-page", marker = "extra == 'docs'", specifier = ">=1.1" },
-    { name = "sphinx-reredirects", marker = "extra == 'docs'", specifier = ">=1.0.0" },
+    { name = "sphinx-reredirects", marker = "extra == 'docs'", specifier = ">=1" },
     { name = "sphinx-rtd-theme", marker = "extra == 'docs'", specifier = ">=3.0.2" },
     { name = "sphinx-tabs", marker = "extra == 'docs'", specifier = ">=3.4.7" },
     { name = "sphinxcontrib-bibtex", marker = "extra == 'docs'", specifier = ">=2.6.5" },
