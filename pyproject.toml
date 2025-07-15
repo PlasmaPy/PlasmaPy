@@ -299,7 +299,7 @@ lint.per-file-ignores.".github/scripts/*.py" = [ "D103", "INP001" ]
 lint.per-file-ignores."__init__.py" = [ "D104", "E402", "F401", "F402", "F403" ] # ignore import errors
 lint.per-file-ignores."docs/conf.py" = [ "D100", "D103", "E402", "EXE001", "EXE005", "F401" ]
 
-# Most ruff rule violations in the following notebooks should eventually be fixed
+# Most ruff rule violations in the following files should eventually be fixed
 lint.per-file-ignores."docs/notebooks/analysis/fit_functions.ipynb" = [ "NPY002" ]
 lint.per-file-ignores."docs/notebooks/analysis/nullpoint.ipynb" = [ "D103" ]
 lint.per-file-ignores."docs/notebooks/analysis/swept_langmuir/find_floating_potential.ipynb" = [ "FBT003" ]
@@ -348,6 +348,7 @@ lint.per-file-ignores."tests/**/test_*.py" = [
   "RUF012",
   "SLF001",
 ]
+lint.per-file-ignores."tests/formulary/collisions/test_coulomb.py" = [ "PT031" ]
 lint.per-file-ignores."tests/formulary/test_distribution.py" = [ "ARG005" ]
 lint.per-file-ignores."tests/particles/test_decorators.py" = [ "ARG001", "ARG002" ]
 lint.per-file-ignores."tests/utils/_pytest_helpers/test_pytest_helpers.py" = [ "BLE001", "TRY002" ]
