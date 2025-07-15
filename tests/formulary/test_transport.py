@@ -39,7 +39,7 @@ from plasmapy.formulary.collisions import Coulomb_logarithm
 from plasmapy.formulary.dimensionless import Hall_parameter
 from plasmapy.particles.atomic import charge_number, particle_mass
 from plasmapy.particles.exceptions import InvalidParticleError
-from plasmapy.utils.exceptions import CouplingWarning, PhysicsError
+from plasmapy.utils.exceptions import CouplingWarning, PhysicsError, RelativityWarning
 
 
 def count_decimal_places(digits):
@@ -50,7 +50,6 @@ def count_decimal_places(digits):
 
 @pytest.mark.slow
 class Test_classical_transport:
-    @pytest.mark.filterwarnings("ignore::RelativityWarning")
     @classmethod
     def setup_class(cls) -> None:
         """Set up some initial values for tests"""
@@ -72,80 +71,82 @@ class Test_classical_transport:
         cls.theta = cls.T_e / cls.T_i
         cls.model = "Braginskii"
         cls.field_orientation = "all"
-        cls.ct = ClassicalTransport(
-            T_e=cls.T_e,
-            n_e=cls.n_e,
-            T_i=cls.T_i,
-            n_i=cls.n_i,
-            ion=cls.ion,
-            Z=cls.Z,
-            B=cls.B,
-            model=cls.model,
-            field_orientation=cls.field_orientation,
-            coulomb_log_ei=cls.coulomb_log_val_ei,
-            coulomb_log_ii=cls.coulomb_log_val_ii,
-            V_ei=cls.V_ei,
-            V_ii=cls.V_ii,
-            hall_e=cls.hall_e,
-            hall_i=cls.hall_i,
-            mu=cls.mu,
-            theta=cls.theta,
-        )
+        with pytest.warns(RelativityWarning):
+            cls.ct = ClassicalTransport(
+                T_e=cls.T_e,
+                n_e=cls.n_e,
+                T_i=cls.T_i,
+                n_i=cls.n_i,
+                ion=cls.ion,
+                Z=cls.Z,
+                B=cls.B,
+                model=cls.model,
+                field_orientation=cls.field_orientation,
+                coulomb_log_ei=cls.coulomb_log_val_ei,
+                coulomb_log_ii=cls.coulomb_log_val_ii,
+                V_ei=cls.V_ei,
+                V_ii=cls.V_ii,
+                hall_e=cls.hall_e,
+                hall_i=cls.hall_i,
+                mu=cls.mu,
+                theta=cls.theta,
+            )
 
-        cls.ct_wrapper = ClassicalTransport(
-            T_e=cls.T_e,
-            n_e=cls.n_e,
-            T_i=cls.T_i,
-            n_i=cls.n_i,
-            ion=cls.ion,
-            Z=cls.Z,
-            B=cls.B,
-            model=cls.model,
-            field_orientation=cls.field_orientation,
-            mu=cls.mu,
-            theta=cls.theta,
-        )
+            cls.ct_wrapper = ClassicalTransport(
+                T_e=cls.T_e,
+                n_e=cls.n_e,
+                T_i=cls.T_i,
+                n_i=cls.n_i,
+                ion=cls.ion,
+                Z=cls.Z,
+                B=cls.B,
+                model=cls.model,
+                field_orientation=cls.field_orientation,
+                mu=cls.mu,
+                theta=cls.theta,
+            )
 
-        cls.all_variables = cls.ct.all_variables
+            cls.all_variables = cls.ct.all_variables
 
-    @pytest.mark.filterwarnings("ignore::RelativityWarning")
     def test_spitzer_vs_formulary(self) -> None:
         """Spitzer resistivity should agree with approx. in NRL formulary"""
-        ct2 = ClassicalTransport(
-            T_e=self.T_e,
-            n_e=self.n_e,
-            T_i=self.T_i,
-            n_i=self.n_i,
-            ion=self.ion,
-            model="spitzer",
-            field_orientation="perp",
-        )
-        alpha_spitzer_perp_NRL = (
-            1.03e-4
-            * ct2.Z
-            * ct2.coulomb_log_ei
-            * (ct2.T_e.to(u.eV, equivalencies=u.temperature_energy())).value ** (-3 / 2)
-            * u.Ohm
-            * u.m
-        )
-        testTrue = np.isclose(
-            ct2.resistivity.value, alpha_spitzer_perp_NRL.value, rtol=2e-2
-        )
-        errStr = (
-            f"Resistivity should be close to "
-            f"{alpha_spitzer_perp_NRL.value} "
-            f"and not {ct2.resistivity.value}."
-        )
+        with pytest.warns(RelativityWarning):
+            ct2 = ClassicalTransport(
+                T_e=self.T_e,
+                n_e=self.n_e,
+                T_i=self.T_i,
+                n_i=self.n_i,
+                ion=self.ion,
+                model="spitzer",
+                field_orientation="perp",
+            )
+            alpha_spitzer_perp_NRL = (
+                1.03e-4
+                * ct2.Z
+                * ct2.coulomb_log_ei
+                * (ct2.T_e.to(u.eV, equivalencies=u.temperature_energy())).value
+                ** (-3 / 2)
+                * u.Ohm
+                * u.m
+            )
+            testTrue = np.isclose(
+                ct2.resistivity.value, alpha_spitzer_perp_NRL.value, rtol=2e-2
+            )
+            errStr = (
+                f"Resistivity should be close to "
+                f"{alpha_spitzer_perp_NRL.value} "
+                f"and not {ct2.resistivity.value}."
+            )
         assert testTrue, errStr
 
-    @pytest.mark.filterwarnings("ignore::RelativityWarning")
     def test_resistivity_units(self) -> None:
         """Output should be a Quantity with units of Ohm m"""
-        testTrue = self.ct.resistivity.unit == u.Ohm * u.m
-        errStr = (
-            f"Resistivity units should be {u.Ohm * u.m} and "
-            f"not {self.ct.resistivity.unit}."
-        )
+        with pytest.warns(RelativityWarning):
+            testTrue = self.ct.resistivity.unit == u.Ohm * u.m
+            errStr = (
+                f"Resistivity units should be {u.Ohm * u.m} and "
+                f"not {self.ct.resistivity.unit}."
+            )
         assert testTrue, errStr
 
     def test_thermoelectric_conductivity_units(self) -> None:
@@ -167,15 +168,15 @@ class Test_classical_transport:
         )
         assert testTrue, errStr
 
-    @pytest.mark.filterwarnings("ignore::RelativityWarning")
     def test_electron_thermal_conductivity_units(self) -> None:
         """Output should be Quantity with units of W / (m K)"""
-        testTrue = self.ct.electron_thermal_conductivity.unit == u.W / u.m / u.K
-        errStr = (
-            f"Electron thermal conductivity units "
-            f"should be {u.W / u.m / u.K} "
-            f"and not {self.ct.electron_thermal_conductivity.unit}."
-        )
+        with pytest.warns(RelativityWarning):
+            testTrue = self.ct.electron_thermal_conductivity.unit == u.W / u.m / u.K
+            errStr = (
+                f"Electron thermal conductivity units "
+                f"should be {u.W / u.m / u.K} "
+                f"and not {self.ct.electron_thermal_conductivity.unit}."
+            )
         assert testTrue, errStr
 
     def test_ion_viscosity_units(self) -> None:
@@ -187,14 +188,14 @@ class Test_classical_transport:
         )
         assert testTrue, errStr
 
-    @pytest.mark.filterwarnings("ignore::RelativityWarning")
     def test_electron_viscosity_units(self) -> None:
         """Output should be Quantity with units of Pa s"""
-        testTrue = self.ct.electron_viscosity.unit == u.Pa * u.s
-        errStr = (
-            f"Electron viscosity units should be {u.Pa * u.s} "
-            f"and not {self.ct.electron_viscosity.unit}."
-        )
+        with pytest.warns(RelativityWarning):
+            testTrue = self.ct.electron_viscosity.unit == u.Pa * u.s
+            errStr = (
+                f"Electron viscosity units should be {u.Pa * u.s} "
+                f"and not {self.ct.electron_viscosity.unit}."
+            )
         assert testTrue, errStr
 
     def test_particle_mass(self) -> None:
@@ -277,18 +278,21 @@ class Test_classical_transport:
                 coulomb_log_ei=0.3,
             )
 
-    @pytest.mark.filterwarnings("ignore::RelativityWarning")
     def test_coulomb_log_calc(self) -> None:
         """If no coulomb logs are input, they should be calculated"""
-        ct2 = ClassicalTransport(
-            T_e=self.T_e, n_e=self.n_e, T_i=self.T_i, n_i=self.n_i, ion=self.ion
-        )
-        cl_ii = Coulomb_logarithm(self.T_i, self.n_e, [self.ion, self.ion], self.V_ii)
-        cl_ei = Coulomb_logarithm(self.T_e, self.n_e, ["e", self.ion], self.V_ei)
-        testTrue = cl_ii == ct2.coulomb_log_ii
-        errStr = (
-            f"Ion-ion coulomb logarithm should be {cl_ii} and not {ct2.coulomb_log_ii}."
-        )
+        with pytest.warns(RelativityWarning):
+            ct2 = ClassicalTransport(
+                T_e=self.T_e, n_e=self.n_e, T_i=self.T_i, n_i=self.n_i, ion=self.ion
+            )
+            cl_ii = Coulomb_logarithm(
+                self.T_i, self.n_e, [self.ion, self.ion], self.V_ii
+            )
+            cl_ei = Coulomb_logarithm(self.T_e, self.n_e, ["e", self.ion], self.V_ei)
+            testTrue = cl_ii == ct2.coulomb_log_ii
+            errStr = (
+                f"Ion-ion coulomb logarithm should be {cl_ii} "
+                f"and not {ct2.coulomb_log_ii}."
+            )
         assert testTrue, errStr
         testTrue = cl_ei == ct2.coulomb_log_ei
         errStr = (
@@ -297,26 +301,26 @@ class Test_classical_transport:
         )
         assert testTrue, errStr
 
-    @pytest.mark.filterwarnings("ignore::RelativityWarning")
     def test_hall_calc(self) -> None:
         """If no hall parameters are input, they should be calculated"""
-        ct2 = ClassicalTransport(
-            T_e=self.T_e, n_e=self.n_e, T_i=self.T_i, n_i=self.n_i, ion=self.ion
-        )
-        hall_i = Hall_parameter(
-            ct2.n_i, ct2.T_i, ct2.B, ct2.ion, ct2.ion, ct2.coulomb_log_ii, ct2.V_ii
-        )
-        hall_e = Hall_parameter(
-            ct2.n_e,
-            ct2.T_e,
-            ct2.B,
-            ct2.ion,
-            ct2.e_particle,
-            ct2.coulomb_log_ei,
-            ct2.V_ei,
-        )
-        testTrue = hall_i == ct2.hall_i
-        errStr = f"Ion hall parameter should be {hall_i} and not {ct2.hall_i}."
+        with pytest.warns(RelativityWarning):
+            ct2 = ClassicalTransport(
+                T_e=self.T_e, n_e=self.n_e, T_i=self.T_i, n_i=self.n_i, ion=self.ion
+            )
+            hall_i = Hall_parameter(
+                ct2.n_i, ct2.T_i, ct2.B, ct2.ion, ct2.ion, ct2.coulomb_log_ii, ct2.V_ii
+            )
+            hall_e = Hall_parameter(
+                ct2.n_e,
+                ct2.T_e,
+                ct2.B,
+                ct2.ion,
+                ct2.e_particle,
+                ct2.coulomb_log_ei,
+                ct2.V_ei,
+            )
+            testTrue = hall_i == ct2.hall_i
+            errStr = f"Ion hall parameter should be {hall_i} and not {ct2.hall_i}."
         assert testTrue, errStr
         testTrue = hall_e == ct2.hall_e
         errStr = f"Electron hall parameter should be {hall_e} and not {ct2.hall_e}."
@@ -344,24 +348,24 @@ class Test_classical_transport:
                 field_orientation="to the left",
             )
 
-    @pytest.mark.filterwarnings("ignore::RelativityWarning")
     def test_precalculated_parameters(self) -> None:
-        ct2 = ClassicalTransport(
-            T_e=self.T_e,
-            n_e=self.n_e,
-            T_i=self.T_i,
-            n_i=self.n_i,
-            ion=self.ion,
-            hall_i=0,
-            hall_e=0,
-        )
-        testTrue = np.isclose(
-            ct2.resistivity, 2.8184954e-8 * u.Ohm * u.m, atol=1e-6 * u.Ohm * u.m
-        )
-        errStr = (
-            f"Resistivity should be close to "
-            f"{2.8184954e-8 * u.Ohm * u.m} and not {ct2.resistivity}."
-        )
+        with pytest.warns(RelativityWarning):
+            ct2 = ClassicalTransport(
+                T_e=self.T_e,
+                n_e=self.n_e,
+                T_i=self.T_i,
+                n_i=self.n_i,
+                ion=self.ion,
+                hall_i=0,
+                hall_e=0,
+            )
+            testTrue = np.isclose(
+                ct2.resistivity, 2.8184954e-8 * u.Ohm * u.m, atol=1e-6 * u.Ohm * u.m
+            )
+            errStr = (
+                f"Resistivity should be close to "
+                f"{2.8184954e-8 * u.Ohm * u.m} and not {ct2.resistivity}."
+            )
         assert testTrue, errStr
 
     @pytest.mark.parametrize(
@@ -374,26 +378,26 @@ class Test_classical_transport:
             ("spitzer", "resistivity", "all", 2),
         ],
     )
-    @pytest.mark.filterwarnings("ignore::RelativityWarning")
     def test_number_of_returns(
         self, model, attr_name: str, field_orientation, expected
     ) -> None:
-        ct2 = ClassicalTransport(
-            T_e=self.T_e,
-            n_e=self.n_e,
-            T_i=self.T_i,
-            n_i=self.n_i,
-            ion=self.ion,
-            model=model,
-            field_orientation=field_orientation,
-        )
-        attr_to_test = getattr(ct2, attr_name)
-        testTrue = np.size(attr_to_test) == expected
-        errStr = (
-            f"{attr_name} in {model} model returns "
-            f"{np.size(attr_to_test)} objects. "
-            f"Expected to return {expected} objects."
-        )
+        with pytest.warns(RelativityWarning):
+            ct2 = ClassicalTransport(
+                T_e=self.T_e,
+                n_e=self.n_e,
+                T_i=self.T_i,
+                n_i=self.n_i,
+                ion=self.ion,
+                model=model,
+                field_orientation=field_orientation,
+            )
+            attr_to_test = getattr(ct2, attr_name)
+            testTrue = np.size(attr_to_test) == expected
+            errStr = (
+                f"{attr_name} in {model} model returns "
+                f"{np.size(attr_to_test)} objects. "
+                f"Expected to return {expected} objects."
+            )
         assert testTrue, errStr
 
     @pytest.mark.parametrize(
@@ -404,21 +408,21 @@ class Test_classical_transport:
             ("braginskii", 2.78349687e-8 * u.Ohm * u.m),
         ],
     )
-    @pytest.mark.filterwarnings("ignore::RelativityWarning")
     def test_resistivity_by_model(self, model, expected) -> None:
-        ct2 = ClassicalTransport(
-            T_e=self.T_e,
-            n_e=self.n_e,
-            T_i=self.T_i,
-            n_i=self.n_i,
-            ion=self.ion,
-            model=model,
-        )
-        testTrue = np.isclose(ct2.resistivity, expected, atol=1e-6 * u.Ohm * u.m)
-        errStr = (
-            f"Resistivity in {model} model should be "
-            f"close to {expected} and not {ct2.resistivity}."
-        )
+        with pytest.warns(RelativityWarning):
+            ct2 = ClassicalTransport(
+                T_e=self.T_e,
+                n_e=self.n_e,
+                T_i=self.T_i,
+                n_i=self.n_i,
+                ion=self.ion,
+                model=model,
+            )
+            testTrue = np.isclose(ct2.resistivity, expected, atol=1e-6 * u.Ohm * u.m)
+            errStr = (
+                f"Resistivity in {model} model should be "
+                f"close to {expected} and not {ct2.resistivity}."
+            )
         assert testTrue, errStr
 
     @pytest.mark.parametrize(
@@ -429,24 +433,24 @@ class Test_classical_transport:
             ("braginskii", 0.711084 * u.s / u.s),
         ],
     )
-    @pytest.mark.filterwarnings("ignore::RelativityWarning")
     def test_thermoelectric_conductivity_by_model(self, model, expected) -> None:
-        ct2 = ClassicalTransport(
-            T_e=self.T_e,
-            n_e=self.n_e,
-            T_i=self.T_i,
-            n_i=self.n_i,
-            ion=self.ion,
-            model=model,
-        )
-        testTrue = np.isclose(
-            ct2.thermoelectric_conductivity, expected, atol=1e-6 * u.s / u.s
-        )
-        errStr = (
-            f"Thermoelectric conductivity in {model} model "
-            f"should be close {expected} and not "
-            f"{ct2.thermoelectric_conductivity}."
-        )
+        with pytest.warns(RelativityWarning):
+            ct2 = ClassicalTransport(
+                T_e=self.T_e,
+                n_e=self.n_e,
+                T_i=self.T_i,
+                n_i=self.n_i,
+                ion=self.ion,
+                model=model,
+            )
+            testTrue = np.isclose(
+                ct2.thermoelectric_conductivity, expected, atol=1e-6 * u.s / u.s
+            )
+            errStr = (
+                f"Thermoelectric conductivity in {model} model "
+                f"should be close {expected} and not "
+                f"{ct2.thermoelectric_conductivity}."
+            )
         assert testTrue, errStr
 
     @pytest.mark.parametrize(
@@ -462,21 +466,23 @@ class Test_classical_transport:
             ),
         ],
     )
-    @pytest.mark.filterwarnings("ignore::RelativityWarning")
     def test_electron_viscosity_by_model(self, model, expected) -> None:
-        ct2 = ClassicalTransport(
-            T_e=self.T_e,
-            n_e=self.n_e,
-            T_i=self.T_i,
-            n_i=self.n_i,
-            ion=self.ion,
-            model=model,
-        )
-        testTrue = np.allclose(ct2.electron_viscosity, expected, atol=1e-6 * u.Pa * u.s)
-        errStr = (
-            f"Electron viscosity in {model} model should be close to "
-            f"{expected} and not {ct2.electron_viscosity}."
-        )
+        with pytest.warns(RelativityWarning):
+            ct2 = ClassicalTransport(
+                T_e=self.T_e,
+                n_e=self.n_e,
+                T_i=self.T_i,
+                n_i=self.n_i,
+                ion=self.ion,
+                model=model,
+            )
+            testTrue = np.allclose(
+                ct2.electron_viscosity, expected, atol=1e-6 * u.Pa * u.s
+            )
+            errStr = (
+                f"Electron viscosity in {model} model should be close to "
+                f"{expected} and not {ct2.electron_viscosity}."
+            )
         assert testTrue, errStr
 
     @pytest.mark.parametrize(
@@ -492,21 +498,21 @@ class Test_classical_transport:
             ),
         ],
     )
-    @pytest.mark.filterwarnings("ignore::RelativityWarning")
     def test_ion_viscosity_by_model(self, model, expected) -> None:
-        ct2 = ClassicalTransport(
-            T_e=self.T_e,
-            n_e=self.n_e,
-            T_i=self.T_i,
-            n_i=self.n_i,
-            ion=self.ion,
-            model=model,
-        )
-        testTrue = np.allclose(ct2.ion_viscosity, expected, atol=1e-6 * u.Pa * u.s)
-        errStr = (
-            f"Electron viscosity in {model} model should be close to "
-            f"{expected} and not {ct2.electron_viscosity}"
-        )
+        with pytest.warns(RelativityWarning):
+            ct2 = ClassicalTransport(
+                T_e=self.T_e,
+                n_e=self.n_e,
+                T_i=self.T_i,
+                n_i=self.n_i,
+                ion=self.ion,
+                model=model,
+            )
+            testTrue = np.allclose(ct2.ion_viscosity, expected, atol=1e-6 * u.Pa * u.s)
+            errStr = (
+                f"Electron viscosity in {model} model should be close to "
+                f"{expected} and not {ct2.electron_viscosity}"
+            )
         assert testTrue, errStr
 
     @pytest.mark.parametrize(
@@ -517,26 +523,26 @@ class Test_classical_transport:
             ("braginskii", 5016895.3386957785 * u.W / (u.K * u.m)),
         ],
     )
-    @pytest.mark.filterwarnings("ignore::RelativityWarning")
     def test_electron_thermal_conductivity_by_model(self, model, expected) -> None:
-        ct2 = ClassicalTransport(
-            T_e=self.T_e,
-            n_e=self.n_e,
-            T_i=self.T_i,
-            n_i=self.n_i,
-            ion=self.ion,
-            model=model,
-        )
-        testTrue = np.allclose(
-            ct2.electron_thermal_conductivity,
-            expected,
-            atol=1e-6 * u.W / (u.K * u.m),
-        )
-        errStr = (
-            f"Electron thermal conductivity in {model} model "
-            f"should be close to {expected} and not "
-            f"{ct2.electron_thermal_conductivity}."
-        )
+        with pytest.warns(RelativityWarning):
+            ct2 = ClassicalTransport(
+                T_e=self.T_e,
+                n_e=self.n_e,
+                T_i=self.T_i,
+                n_i=self.n_i,
+                ion=self.ion,
+                model=model,
+            )
+            testTrue = np.allclose(
+                ct2.electron_thermal_conductivity,
+                expected,
+                atol=1e-6 * u.W / (u.K * u.m),
+            )
+            errStr = (
+                f"Electron thermal conductivity in {model} model "
+                f"should be close to {expected} and not "
+                f"{ct2.electron_thermal_conductivity}."
+            )
         assert testTrue, errStr
 
     @pytest.mark.parametrize(
@@ -546,24 +552,24 @@ class Test_classical_transport:
             ("braginskii", 133052.21732349042 * u.W / (u.K * u.m)),
         ],
     )
-    @pytest.mark.filterwarnings("ignore::RelativityWarning")
     def test_ion_thermal_conductivity_by_model(self, model, expected) -> None:
-        ct2 = ClassicalTransport(
-            T_e=self.T_e,
-            n_e=self.n_e,
-            T_i=self.T_i,
-            n_i=self.n_i,
-            ion=self.ion,
-            model=model,
-        )
-        testTrue = np.allclose(
-            ct2.ion_thermal_conductivity, expected, atol=1e-6 * u.W / (u.K * u.m)
-        )
-        errStr = (
-            f"Ion thermal conductivity in {model} model "
-            f"should be close to {expected} and not "
-            f"{ct2.ion_thermal_conductivity}."
-        )
+        with pytest.warns(RelativityWarning):
+            ct2 = ClassicalTransport(
+                T_e=self.T_e,
+                n_e=self.n_e,
+                T_i=self.T_i,
+                n_i=self.n_i,
+                ion=self.ion,
+                model=model,
+            )
+            testTrue = np.allclose(
+                ct2.ion_thermal_conductivity, expected, atol=1e-6 * u.W / (u.K * u.m)
+            )
+            errStr = (
+                f"Ion thermal conductivity in {model} model "
+                f"should be close to {expected} and not "
+                f"{ct2.ion_thermal_conductivity}."
+            )
         assert testTrue, errStr
 
     @pytest.mark.parametrize(
@@ -605,114 +611,116 @@ class Test_classical_transport:
         )
         assert testTrue, errStr
 
-    @pytest.mark.filterwarnings("ignore::RelativityWarning")
     def test_resistivity_wrapper(self) -> None:
-        assert_quantity_allclose(
-            resistivity(
-                T_e=self.T_e,
-                n_e=self.n_e,
-                T_i=self.T_i,
-                n_i=self.n_i,
-                ion=self.ion,
-                Z=self.Z,
-                B=self.B,
-                model=self.model,
-                field_orientation=self.field_orientation,
-                mu=self.mu,
-                theta=self.theta,
-            ),
-            self.ct_wrapper.resistivity,
-        )
+        with pytest.warns(RelativityWarning):
+            assert_quantity_allclose(
+                resistivity(
+                    T_e=self.T_e,
+                    n_e=self.n_e,
+                    T_i=self.T_i,
+                    n_i=self.n_i,
+                    ion=self.ion,
+                    Z=self.Z,
+                    B=self.B,
+                    model=self.model,
+                    field_orientation=self.field_orientation,
+                    mu=self.mu,
+                    theta=self.theta,
+                ),
+                self.ct_wrapper.resistivity,
+            )
 
-    @pytest.mark.filterwarnings("ignore::RelativityWarning")
     def test_thermoelectric_conductivity_wrapper(self) -> None:
-        val1 = thermoelectric_conductivity(
-            T_e=self.T_e,
-            n_e=self.n_e,
-            T_i=self.T_i,
-            n_i=self.n_i,
-            ion=self.ion,
-            Z=self.Z,
-            B=self.B,
-            model=self.model,
-            field_orientation=self.field_orientation,
-            mu=self.mu,
-            theta=self.theta,
-        )
-        val2 = self.ct_wrapper.thermoelectric_conductivity
-        assert_quantity_allclose(val1, val2)
+        with pytest.warns(RelativityWarning):
+            val1 = thermoelectric_conductivity(
+                T_e=self.T_e,
+                n_e=self.n_e,
+                T_i=self.T_i,
+                n_i=self.n_i,
+                ion=self.ion,
+                Z=self.Z,
+                B=self.B,
+                model=self.model,
+                field_orientation=self.field_orientation,
+                mu=self.mu,
+                theta=self.theta,
+            )
+            val2 = self.ct_wrapper.thermoelectric_conductivity
+            assert_quantity_allclose(val1, val2)
 
-    @pytest.mark.filterwarnings("ignore::RelativityWarning")
     def test_ion_thermal_conductivity_wrapper(self) -> None:
-        wrapped = ion_thermal_conductivity(
-            T_e=self.T_e,
-            n_e=self.n_e,
-            T_i=self.T_i,
-            n_i=self.n_i,
-            ion=self.ion,
-            Z=self.Z,
-            B=self.B,
-            model=self.model,
-            field_orientation=self.field_orientation,
-            mu=self.mu,
-            theta=self.theta,
-        )
-        assert_quantity_allclose(wrapped, self.ct_wrapper.ion_thermal_conductivity)
+        with pytest.warns(RelativityWarning):
+            wrapped = ion_thermal_conductivity(
+                T_e=self.T_e,
+                n_e=self.n_e,
+                T_i=self.T_i,
+                n_i=self.n_i,
+                ion=self.ion,
+                Z=self.Z,
+                B=self.B,
+                model=self.model,
+                field_orientation=self.field_orientation,
+                mu=self.mu,
+                theta=self.theta,
+            )
+            assert_quantity_allclose(wrapped, self.ct_wrapper.ion_thermal_conductivity)
 
-    @pytest.mark.filterwarnings("ignore::RelativityWarning")
     def test_electron_thermal_conductivity_wrapper(self) -> None:
-        wrapped = electron_thermal_conductivity(
-            T_e=self.T_e,
-            n_e=self.n_e,
-            T_i=self.T_i,
-            n_i=self.n_i,
-            ion=self.ion,
-            Z=self.Z,
-            B=self.B,
-            model=self.model,
-            field_orientation=self.field_orientation,
-            mu=self.mu,
-            theta=self.theta,
-        )
-        assert_quantity_allclose(wrapped, self.ct_wrapper.electron_thermal_conductivity)
+        with pytest.warns(RelativityWarning):
+            wrapped = electron_thermal_conductivity(
+                T_e=self.T_e,
+                n_e=self.n_e,
+                T_i=self.T_i,
+                n_i=self.n_i,
+                ion=self.ion,
+                Z=self.Z,
+                B=self.B,
+                model=self.model,
+                field_orientation=self.field_orientation,
+                mu=self.mu,
+                theta=self.theta,
+            )
+            assert_quantity_allclose(
+                wrapped, self.ct_wrapper.electron_thermal_conductivity
+            )
 
-    @pytest.mark.filterwarnings("ignore::RelativityWarning")
     def test_ion_viscosity_wrapper(self) -> None:
-        assert_quantity_allclose(
-            ion_viscosity(
-                T_e=self.T_e,
-                n_e=self.n_e,
-                T_i=self.T_i,
-                n_i=self.n_i,
-                ion=self.ion,
-                Z=self.Z,
-                B=self.B,
-                model=self.model,
-                field_orientation=self.field_orientation,
-                mu=self.mu,
-                theta=self.theta,
-            ),
-            self.ct_wrapper.ion_viscosity,
-        )
+        with pytest.warns(RelativityWarning):
+            assert_quantity_allclose(
+                ion_viscosity(
+                    T_e=self.T_e,
+                    n_e=self.n_e,
+                    T_i=self.T_i,
+                    n_i=self.n_i,
+                    ion=self.ion,
+                    Z=self.Z,
+                    B=self.B,
+                    model=self.model,
+                    field_orientation=self.field_orientation,
+                    mu=self.mu,
+                    theta=self.theta,
+                ),
+                self.ct_wrapper.ion_viscosity,
+            )
 
-    @pytest.mark.filterwarnings("ignore::RelativityWarning")
     def test_electron_viscosity_wrapper(self) -> None:
-        assert_quantity_allclose(
-            electron_viscosity(
-                T_e=self.T_e,
-                n_e=self.n_e,
-                T_i=self.T_i,
-                n_i=self.n_i,
-                ion=self.ion,
-                Z=self.Z,
-                B=self.B,
-                model=self.model,
-                field_orientation=self.field_orientation,
-                mu=self.mu,
-                theta=self.theta,
-            ),
-            self.ct_wrapper.electron_viscosity,
-        )
+        with pytest.warns(RelativityWarning):
+            assert_quantity_allclose(
+                electron_viscosity(
+                    T_e=self.T_e,
+                    n_e=self.n_e,
+                    T_i=self.T_i,
+                    n_i=self.n_i,
+                    ion=self.ion,
+                    Z=self.Z,
+                    B=self.B,
+                    model=self.model,
+                    field_orientation=self.field_orientation,
+                    mu=self.mu,
+                    theta=self.theta,
+                ),
+                self.ct_wrapper.electron_viscosity,
+            )
 
 
 @pytest.mark.parametrize("particle", ["e", "p"])
