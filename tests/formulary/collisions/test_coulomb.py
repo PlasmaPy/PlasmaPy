@@ -24,7 +24,7 @@ class Test_Coulomb_logarithm:
         cls.T_arr = np.array([1, 2]) * u.eV
         cls.density1 = 1e20 * u.cm**-3
         cls.n_arr = np.array([1e20, 2e20]) * u.cm**-3
-        cls.temperature2 = 1 * 11604 * u.K
+        cls.temperature2f = 1 * 11604 * u.K
         cls.density2 = 1e23 * u.cm**-3
         cls.z_mean = 2.5 * u.dimensionless_unscaled
         cls.particles = ("e", "p")
@@ -94,7 +94,7 @@ class Test_Coulomb_logarithm:
 
     def test_handle_invalid_V(self) -> None:
         """Test that V default, V = None, and V = np.nan all give the same result"""
-        with pytest.warns(CouplingWarning):
+        with pytest.warns(CouplingWarning):  # PT031
             methodVal_0 = Coulomb_logarithm(
                 self.T_arr[0],
                 self.n_arr[0],
@@ -131,7 +131,7 @@ class Test_Coulomb_logarithm:
 
     def test_handle_V_arraysizes(self) -> None:
         """Test that different sized V input array gets handled by _boilerplate"""
-        with pytest.warns(CouplingWarning):
+        with pytest.warns(CouplingWarning):  # PT031
             methodVal_0 = Coulomb_logarithm(
                 self.T_arr[0],
                 self.n_arr[0],
@@ -157,7 +157,7 @@ class Test_Coulomb_logarithm:
         assert_quantity_allclose(methodVal_1[1], methodVal_2[1])
 
     def test_symmetry(self) -> None:
-        with pytest.warns(CouplingWarning):
+        with pytest.warns(CouplingWarning):  # PT031
             lnLambda = Coulomb_logarithm(
                 self.temperature1, self.density2, self.particles
             )
