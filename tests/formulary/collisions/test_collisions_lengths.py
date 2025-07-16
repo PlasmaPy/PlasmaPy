@@ -204,7 +204,7 @@ class Test_mean_free_path:
         cls.True1 = 4.4047571877932046e-07
 
     def test_symmetry(self) -> None:
-        with pytest.warns(CouplingWarning):
+        with pytest.warns(CouplingWarning):  # noqa: PT031
             result = lengths.mean_free_path(self.T, self.n_e, self.particles)
             resultRev = lengths.mean_free_path(self.T, self.n_e, self.particles[::-1])
         assert result == resultRev
