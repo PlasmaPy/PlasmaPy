@@ -396,6 +396,7 @@ linkcheck_ignore = [
     r"https://doi\.org/10\.1371/journal\.pcbi\.1005510",
     r"https://doi\.org/10\.2172/5259641",
     r"https://doi\.org/10\.3847/1538-4357/accc32",
+    r"https://doi\.org/10\.5170/CERN-2016-001\.51",
     r"https://doi\.org/10\.5281/zenodo\.1436011",
     r"https://doi\.org/10\.5281/zenodo\.1460977",
     r"https://doi\.org/10\.5281/zenodo\.3406803",
