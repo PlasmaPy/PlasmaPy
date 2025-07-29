@@ -403,7 +403,7 @@ def _merge_voltage_clusters__within_dv(  # noqa: C901
     return new_voltage, new_current
 
 
-def merge_voltage_clusters(
+def merge_voltage_clusters(  # noqa: C901, PLR0912
     voltage: np.ndarray,
     current: np.ndarray,
     voltage_step_size: float | None = None,
