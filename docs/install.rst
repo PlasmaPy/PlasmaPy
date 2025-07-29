@@ -71,20 +71,21 @@ Installing PlasmaPy with uv
 in Rust". |uv| lets us create and switch between |Python| environments
 that are isolated from each other and the system's |Python|
 installation. In addition, |uv| provides a `pip drop-in interface`_ for
-common |pip| commands so that |Python| packages on |PyPI| may be
-installed into |uv|-managed
-`virtual environments <virtual environment_>`_ without installing |pip|.
+common |pip| commands to install packages from |PyPI|.
 
-After `installing uv`_, a `virtual environment`_ with |Python| version
-3.13 can be created by opening a terminal and running:
+By default, |uv| requires that packages be installed into
+`uv-managed virtual environments`_ rather than the system Python
+installation. After `installing uv`_, create a virtual environment by
+opening a terminal and running:
 
 .. code-block:: bash
 
    uv venv --python 3.13
 
-|uv| will automatically download |Python| and link it to
-the `virtual environment`_'s directory at (by default) :file:`.venv`.
-The command to activate the environment depends on the operating system.
+This command will create a virtual environment managed by |uv| in a
+new :file:`.venv` subdirectory, and then print out the command that will
+activate the virtual environment. The activation command differs between
+different operating systems and Unix shells.
 
 .. tabs::
 
@@ -94,25 +95,23 @@ The command to activate the environment depends on the operating system.
 
       .. code-block:: PowerShell
 
-         .\.venv\Scripts\activate.ps1
+         .venv\Scripts\activate
 
-   .. group-tab:: macOS
-
-      To activate the virtual environment on macOS, run:
-
-      .. code-block:: bash
-
-         source .venv/bin/activate
+   .. group-tab:: macOS and Linux
 
    .. group-tab:: Linux/WSL
 
       To activate the virtual environment on Linux, run:
+     `bash`, `zsh`, and `sh`, run:
 
       .. code-block:: bash
 
          source .venv/bin/activate
 
-Then, to install `plasmapy` into the activated environment, run:
+      For alternative shells, see the |uv| documentation page for
+      `using a virtual environment`_.
+
+To install `plasmapy`, run:
 
 .. code-block:: bash
 
@@ -293,6 +292,8 @@ package should also be installed.
 .. _project metadata: https://docs.astral.sh/uv/concepts/projects/#project-metadata
 .. _Python project: https://docs.astral.sh/uv/concepts/projects/#projects
 .. _releases: https://github.com/PlasmaPy/PlasmaPy/releases
+.. _using a virtual environment: https://docs.astral.sh/uv/pip/environments/#using-a-virtual-environment
 .. _uv init options: https://docs.astral.sh/uv/reference/cli/#uv-init
+.. _uv managed virtual environments: https://docs.astral.sh/uv/pip/environments
 .. _virtual environment: https://realpython.com/python-virtual-environments-a-primer
 .. _ZIP: https://en.wikipedia.org/wiki/ZIP_(file_format)
