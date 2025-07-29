@@ -352,7 +352,7 @@ def _merge_voltage_clusters__within_dv(  # noqa: C901
     # ^ using newshape kwarg for backwards compatibility, newshape kwarg
     #   has been deprecated since numpy v2.1
 
-    # populate
+    # merge clusters and update new_voltage and new_current
     for ii in range(indices.shape[0]):
         start_index = indices[ii][0]
         stop_index = indices[ii][1] + 1
