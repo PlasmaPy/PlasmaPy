@@ -440,6 +440,10 @@ def merge_voltage_clusters(
         95% of the average step size of the ``voltage`` array (only
         counting duplicate voltages once).
 
+    filter_nan: `bool`, default: `False`
+        Set `True` to automatically filter `~numpy.nan` values from the
+        ``voltage`` and ``current`` arrays.
+
     Returns
     -------
     voltage : `numpy.ndarray`
