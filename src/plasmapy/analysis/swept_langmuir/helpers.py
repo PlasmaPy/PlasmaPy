@@ -488,7 +488,7 @@ def merge_voltage_clusters(  # noqa: C901, PLR0912
                 "The voltage array contains NaN values.  If you want NaN "
                 "values to be automatically filtered set argument "
                 "filter_nan=True."
-            )
+            ) from err
 
         # filter (voltage) NaN values and check sweep again
         nan_mask = np.logical_not(np.isnan(voltage))
