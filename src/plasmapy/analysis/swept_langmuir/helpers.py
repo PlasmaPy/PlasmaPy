@@ -407,6 +407,7 @@ def merge_voltage_clusters(
     voltage: np.ndarray,
     current: np.ndarray,
     voltage_step_size: float | None = None,
+    filter_nan: bool = False,
 ) -> tuple[np.ndarray, np.ndarray]:
     r"""
     Search the ``voltage`` array for closely spaced voltage clusters
@@ -470,7 +471,44 @@ def merge_voltage_clusters(
     elif isinstance(voltage_step_size, numbers.Integral):
         voltage_step_size = float(voltage_step_size)
 
-    voltage, current = check_sweep(voltage, current)
+    try:
+        voltage, current = check_sweep(voltage, current)
+    except ValueError as err:
+        # check if the ValueError was a result of voltage containing nan
+        # values
+        if not np.any(np.isnan(voltage)):
+            # voltage array has no nan values
+            raise err
+
+        if not filter_nan:
+            raise ValueError(
+                "The voltage array contains NaN values.  If you want NaN "
+                "values to be automatically filtered set argument "
+                "filter_nan=True."
+            )
+
+        # filter (voltage) NaN values and check sweep again
+        nan_mask = np.logical_not(np.isnan(voltage))
+        voltage = voltage[nan_mask]
+        current = current[nan_mask]
+
+        voltage, current = check_sweep(voltage, current)
+
+    # filter (curren) NaN values
+    if not np.any(np.isnan(current)):
+        # voltage array has no nan values
+        pass
+    elif filter_nan:
+        # mask out current NaN values
+        nan_mask = np.logical_not(np.isnan(current))
+        voltage = voltage[nan_mask]
+        current = current[nan_mask]
+    else:
+        raise ValueError(
+            "The current array contains NaN values.  If you want NaN "
+            "values to be automatically filtered set argument "
+            "filter_nan=True."
+        )
 
     # check if grid is regularly spaced
     voltage_diff = np.diff(voltage)
