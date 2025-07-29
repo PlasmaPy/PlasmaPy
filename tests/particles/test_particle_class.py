@@ -510,6 +510,14 @@ test_Particle_table = [
             "ionic_symbol": "C-14 3+",
         },
     ),
+    (
+        np.array([26])[0],  # see issue #3044
+        {},
+        {
+            "symbol": "Fe",
+            "atomic_number": 26,
+        }
+    )
 ]
 
 
