@@ -488,7 +488,7 @@ def merge_voltage_clusters(  # noqa: C901, PLR0912
         if not filter_nan:
             raise ValueError(
                 "The voltage array contains NaN values.  If you want NaN "
-                "values to be automatically filtered set argument "
+                "values to be automatically filtered, then set argument "
                 "filter_nan=True."
             ) from err
 
@@ -511,7 +511,7 @@ def merge_voltage_clusters(  # noqa: C901, PLR0912
     else:
         raise ValueError(
             "The current array contains NaN values.  If you want NaN "
-            "values to be automatically filtered set argument "
+            "values to be automatically filtered, then set argument "
             "filter_nan=True."
         )
 
