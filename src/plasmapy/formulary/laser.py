@@ -472,7 +472,7 @@ def Gaussian_Rayleigh_length(
 
     Notes
     -----
-    For details, see :wikipedia:`Rayleigh Length`\ .
+    For details, see :wikipedia:`Rayleigh length`.
 
     Examples
     --------
