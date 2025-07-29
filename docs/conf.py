@@ -396,6 +396,7 @@ linkcheck_ignore = [
     r"https://doi\.org/10\.1371/journal\.pcbi\.1005510",
     r"https://doi\.org/10\.2172/5259641",
     r"https://doi\.org/10\.3847/1538-4357/accc32",
+    r"https://doi\.org/10\.5170/CERN-2016-001\.51",
     r"https://doi\.org/10\.5281/zenodo\.1436011",
     r"https://doi\.org/10\.5281/zenodo\.1460977",
     r"https://doi\.org/10\.5281/zenodo\.3406803",
@@ -405,6 +406,8 @@ linkcheck_ignore = [
     r"https://doi\.org/10\.5281/zenodo\.8015753",
     r"https://doi\.org/10\.18434/T4NC7P",
     r"https://github\.com/PlasmaPy/PlasmaPy/settings/secrets/actions",
+    r"https://www\.gnu\.org/software/make",
+    r"https://hdl\.handle\.net/10037/29416",
     r"https://orcid\.org/0000-0001-5050-6606",
     r"https://orcid\.org/0000-0001-5270-7487",
     r"https://orcid\.org/0000-0001-5308-6870",
@@ -467,8 +470,8 @@ linkcheck_ignore = [
     r"https://orcid\.org/0009-0008-3588-0497",
     r"https://orcid\.org/0009-0008-5134-6171",
     r"https://orcid\.org/0009-0009-9490-5284",
-    r"https://hdl\.handle\.net/10037/29416",
-    r"https://www\.iter\.org/",
+    r"https://www\.iter\.org",
+    r"https://www\.pppl\.gov",
     r"https://www\.sciencedirect\.com/book/9780123748775/.*",
 ]
 
