@@ -511,7 +511,7 @@ test_Particle_table = [
         },
     ),
     (
-        np.array([26])[0],  # test that Particle accepts np.integer objects (see #3044)
+        np.int32(26),  # test that Particle accepts np.integer objects (see #3044)
         {},
         {
             "symbol": "Fe",
