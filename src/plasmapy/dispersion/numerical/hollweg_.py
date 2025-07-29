@@ -305,8 +305,8 @@ def hollweg(  # noqa: C901, PLR0912, PLR0915
         for jj in range(nthetas):
             roots[:, ii, jj] = np.roots(coefficients[:, ii, jj])
 
-    roots = np.sqrt(roots)  # type: ignore[assignment]
-    roots = np.sort(roots, axis=0)  # type: ignore[assignment]
+    roots = np.sqrt(roots)
+    roots = np.sort(roots, axis=0)
 
     # Warn about NOT low-β
     if c_s / v_A > 0.1:

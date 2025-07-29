@@ -44,10 +44,10 @@ jobs:
           python: '3.12'
           nox_session: tests-3.12(cov)
 
-        - name: Tests, Python 3.11, lowest direct dependencies, Windows
+        - name: Tests, Python 3.11, lowest direct dependencies, skip slow tests, Windows
           os: windows-latest
           python: '3.11'
-          nox_session: tests-3.11(lowest-direct)
+          nox_session: tests-3.11(lowest-direct-skipslow)
 
         - name: Documentation, Python 3.12, Ubuntu
           os: ubuntu-latest
@@ -68,6 +68,11 @@ jobs:
           os: ubuntu-latest
           python: '3.13'
           nox_session: cff
+
+        - name: Check workflow security with zizmor
+          os: ubuntu-latest
+          python: '3.13'
+          nox_session: zizmor
 
         - name: Check consistency of pinned & project requirements
           os: ubuntu-latest

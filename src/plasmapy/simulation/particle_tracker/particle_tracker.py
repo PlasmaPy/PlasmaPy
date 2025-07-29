@@ -962,7 +962,7 @@ class ParticleTracker:
         velocity_unit_vectors = np.multiply(
             1 / current_speeds, self.v[self._tracked_particle_mask]
         )
-        dx = np.multiply(current_speeds, self.dt)  # type: ignore[arg-type]
+        dx = np.multiply(current_speeds, self.dt)
 
         stopping_power = np.zeros((self.num_particles_tracked, 1))
         relevant_kinetic_energy = (

@@ -195,7 +195,7 @@ class Test_PlasmaBlobRegimes:
         n_e = 1e15 * u.cm**-3
         Z = 2.5 * u.dimensionless_unscaled
         particle = "p+"
-        with pytest.warns(
+        with pytest.warns(  # noqa: PT031
             CouplingWarning, match="you might have strong coupling effects"
         ):
             blob = plasmablob.PlasmaBlob(T_e=T_e, n_e=n_e, Z=Z, particle=particle)
