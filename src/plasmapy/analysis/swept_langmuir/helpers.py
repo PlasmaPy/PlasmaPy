@@ -498,7 +498,7 @@ def merge_voltage_clusters(  # noqa: C901, PLR0912
 
         voltage, current = check_sweep(voltage, current)
 
-    # filter (curren) NaN values
+    # filter (current) NaN values
     if not np.any(np.isnan(current)):
         # voltage array has no nan values
         pass
