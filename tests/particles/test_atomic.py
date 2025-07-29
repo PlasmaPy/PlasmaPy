@@ -713,5 +713,4 @@ def test_element_name_used_on_numpy_integer():
     Test that `element_name` works when provided with a numpy.integer
     object acquired from an ndarray (see #3044).
     """
-    Z = np.array([18, 26])
-    assert element_name(Z[0]) == "argon"
+    assert element_name(np.int32(18)) == "argon"
