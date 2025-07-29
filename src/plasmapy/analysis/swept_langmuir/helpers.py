@@ -482,7 +482,7 @@ def merge_voltage_clusters(
         # values
         if not np.any(np.isnan(voltage)):
             # voltage array has no nan values
-            raise err
+            raise ValueError(*err.args) from err
 
         if not filter_nan:
             raise ValueError(
