@@ -466,7 +466,9 @@ def merge_voltage_clusters(  # noqa: C901, PLR0912
         \right)
     """
     # condition voltage_step_size
-    if voltage_step_size is not None and not isinstance(voltage_step_size, numbers.Real):
+    if voltage_step_size is not None and not isinstance(
+        voltage_step_size, numbers.Real
+    ):
         raise TypeError(
             "Expected 'voltage_step_size' to be a float or None, got type "
             f"{type(voltage_step_size)}."

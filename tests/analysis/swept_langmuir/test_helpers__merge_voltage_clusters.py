@@ -25,14 +25,14 @@ from plasmapy.utils.exceptions import PlasmaPyWarning
             None,
         ),
         (  # voltage array has np.nan values (hence not monotonic)
-            np.array([1., 1.2, np.nan, 2.5]),
+            np.array([1.0, 1.2, np.nan, 2.5]),
             np.array([-1, 0, np.nan, 4.3]),
             {"filter_nan": False},
             pytest.raises(ValueError),
             None,
         ),
         (  # current array has np.nan values (hence not monotonic)
-            np.array([1., 1.2, 1.8, 2.5]),
+            np.array([1.0, 1.2, 1.8, 2.5]),
             np.array([-1, 0, np.nan, 4.3]),
             {"filter_nan": False},
             pytest.raises(ValueError),
