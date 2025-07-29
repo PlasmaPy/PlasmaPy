@@ -708,6 +708,10 @@ def test_stopping_power_no_interpolation() -> None:
     assert type(result) is tuple
 
 
-def test_element_name_bug():
+def test_element_name_used_on_element_of_numpy_array():
+    """
+    Test that `element_name` works when provided with a numpy.integer
+    object acquired from an ndarray (see #3044).
+    """
     Z = np.array([18, 26])
-    element_name(Z[0])
+    assert element_name(Z[0]) == "argon"
