@@ -427,12 +427,12 @@ def merge_voltage_clusters(
         electron-saturation current.  *No units are assumed or checked,
         but values should be in amperes.*
 
-    voltage_step_size: `float` or `None`
+    voltage_step_size: `float` | `None`, default: `None`
         A non-zero, positive step size for the ``voltage`` array
         cluster identification.  A value of ``0`` will merge only
         duplicate voltage values.  A value of `None` will default to
         95% of the average step size of the ``voltage`` array (only
-        counting duplicate voltages once).  (DEFAULT:`None`)
+        counting duplicate voltages once).
 
     Returns
     -------
