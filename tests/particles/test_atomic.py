@@ -709,5 +709,5 @@ def test_stopping_power_no_interpolation() -> None:
 
 
 def test_element_name_bug():
-    Z = np.array([18,26])
+    Z = np.array([18, 26])
     element_name(Z[0])
