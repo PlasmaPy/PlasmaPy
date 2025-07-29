@@ -85,7 +85,6 @@ extensions = [
     "plasmapy_sphinx.ext.autodoc",
     "plasmapy_sphinx.ext.directives",
     # other 3rd party extensions
-    "hoverxref.extension",
     "IPython.sphinxext.ipython_console_highlighting",
     "nbsphinx",
     "notfound.extension",
@@ -270,45 +269,6 @@ intersphinx_mapping = {
     ),
 }
 
-# hoverxref
-
-hoverxref_intersphinx = list(intersphinx_mapping.keys())
-
-hoverxref_auto_ref = True
-hoverxref_domains = ["py", "cite"]
-hoverxref_mathjax = True
-hoverxref_roles = ["confval", "term"]
-hoverxref_sphinxtabs = True
-hoverxref_tooltip_maxwidth = 600  # RTD main window is 696px
-
-hoverxref_role_types = {
-    # roles with cite domain
-    "p": "tooltip",
-    "t": "tooltip",
-    # roles with py domain
-    "attr": "tooltip",
-    "class": "tooltip",
-    "const": "tooltip",
-    "data": "tooltip",
-    "exc": "tooltip",
-    "func": "tooltip",
-    "meth": "tooltip",
-    "mod": "tooltip",
-    "obj": "tooltip",
-    # roles with std domain
-    "confval": "tooltip",
-    "hoverxref": "tooltip",
-    "ref": "tooltip",
-    "term": "tooltip",
-}
-
-if building_on_readthedocs := os.environ.get("READTHEDOCS"):
-    # Using the proxied API endpoint is a Read the Docs strategy to
-    # avoid a cross-site request forgery block for docs using a custom
-    # domain. See conf.py for sphinx-hoverxref.
-    use_proxied_api_endpoint = os.environ.get("PROXIED_API_ENDPOINT")
-    hoverxref_api_host = "/_" if use_proxied_api_endpoint else "https://readthedocs.org"
-
 # sphinx-issues
 
 issues_github_path = "PlasmaPy/PlasmaPy"
@@ -436,6 +396,7 @@ linkcheck_ignore = [
     r"https://doi\.org/10\.1371/journal\.pcbi\.1005510",
     r"https://doi\.org/10\.2172/5259641",
     r"https://doi\.org/10\.3847/1538-4357/accc32",
+    r"https://doi\.org/10\.5170/CERN-2016-001\.51",
     r"https://doi\.org/10\.5281/zenodo\.1436011",
     r"https://doi\.org/10\.5281/zenodo\.1460977",
     r"https://doi\.org/10\.5281/zenodo\.3406803",
@@ -445,6 +406,8 @@ linkcheck_ignore = [
     r"https://doi\.org/10\.5281/zenodo\.8015753",
     r"https://doi\.org/10\.18434/T4NC7P",
     r"https://github\.com/PlasmaPy/PlasmaPy/settings/secrets/actions",
+    r"https://www\.gnu\.org/software/make",
+    r"https://hdl\.handle\.net/10037/29416",
     r"https://orcid\.org/0000-0001-5050-6606",
     r"https://orcid\.org/0000-0001-5270-7487",
     r"https://orcid\.org/0000-0001-5308-6870",
@@ -507,8 +470,8 @@ linkcheck_ignore = [
     r"https://orcid\.org/0009-0008-3588-0497",
     r"https://orcid\.org/0009-0008-5134-6171",
     r"https://orcid\.org/0009-0009-9490-5284",
-    r"https://hdl\.handle\.net/10037/29416",
-    r"https://www\.iter\.org/",
+    r"https://www\.iter\.org",
+    r"https://www\.pppl\.gov",
     r"https://www\.sciencedirect\.com/book/9780123748775/.*",
 ]
 

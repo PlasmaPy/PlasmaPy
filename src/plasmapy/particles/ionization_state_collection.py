@@ -29,7 +29,7 @@ def _atomic_number_and_mass_number(p: ParticleLike):
     return p.atomic_number, p.mass_number if p.isotope else 0
 
 
-class IonizationStateCollection:
+class IonizationStateCollection:  # noqa: PLW1641
     """
     Describe the ionization state distributions of multiple elements
     or isotopes.
