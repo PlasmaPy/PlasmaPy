@@ -516,8 +516,8 @@ test_Particle_table = [
         {
             "symbol": "Fe",
             "atomic_number": 26,
-        }
-    )
+        },
+    ),
 ]
 
 
