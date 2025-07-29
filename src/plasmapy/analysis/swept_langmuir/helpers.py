@@ -463,7 +463,7 @@ def merge_voltage_clusters(
             "Expected 'voltage_step_size' to be a float or None, got type "
             f"{type(voltage_step_size)}."
         )
-    elif isinstance(voltage_step_size, int | np.integer):
+    elif isinstance(voltage_step_size, numbers.Integral):
         voltage_step_size = float(voltage_step_size)
 
     voltage, current = check_sweep(voltage, current)
