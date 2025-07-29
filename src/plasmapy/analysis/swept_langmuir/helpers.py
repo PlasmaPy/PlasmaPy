@@ -252,7 +252,7 @@ def _is_voltage_regularly_spaced(
     is_regular_grid = False
     if np.count_nonzero(mask_zero_diff) > 0:
         # is_regular_grid = False
-        pass
+        return False
     elif np.allclose(voltage_diff, voltage_diff[0]):
         # grid is already regularly spaced
         is_regular_grid = True
