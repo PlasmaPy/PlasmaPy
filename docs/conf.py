@@ -405,6 +405,7 @@ linkcheck_ignore = [
     r"https://doi\.org/10\.5281/zenodo\.8015753",
     r"https://doi\.org/10\.18434/T4NC7P",
     r"https://github\.com/PlasmaPy/PlasmaPy/settings/secrets/actions",
+    r"https://www\.gnu\.org/software/make",
     r"https://orcid\.org/0000-0001-5050-6606",
     r"https://orcid\.org/0000-0001-5270-7487",
     r"https://orcid\.org/0000-0001-5308-6870",
