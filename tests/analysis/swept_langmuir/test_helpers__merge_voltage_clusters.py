@@ -24,6 +24,13 @@ from plasmapy.utils.exceptions import PlasmaPyWarning
             pytest.raises(TypeError),
             None,
         ),
+        (  # voltage array has np.nan values (hence not monotonic)
+            np.array([1., 1.2, np.nan, 2.5]),
+            np.array([-1, 0, np.nan, 4.3]),
+            {},
+            pytest.raises(ValueError),
+            None,
+        ),
         # warnings (and values)
         (  # voltage spacing is regular and not step size given
             np.linspace(-40.0, 40, 100),
