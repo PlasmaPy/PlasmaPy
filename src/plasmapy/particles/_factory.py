@@ -32,10 +32,6 @@ def _generate_particle_factory_error_message(
 
     if args:
         errmsg += repr(args)
-
-        if not isinstance(args, str | int | list | tuple):
-            errmsg += f" (type: {type(args).__name__!r})"
-
         if kwargs:
             errmsg += " and "
 
@@ -210,7 +206,7 @@ def _physical_particle_factory(
 
     if args and not isinstance(args[0], str | Integral | u.Quantity):
         raise TypeError(
-            f"{args[0]!r} is of type {type(args[0])}, which is not a "
+            f"{args[0]!r} is of type {type(args[0]).__name__}, which is not a "
             f"valid particle type."
         )
 
