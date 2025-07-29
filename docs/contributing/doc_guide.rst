@@ -1594,7 +1594,7 @@ example Jupyter notebooks, the tables of contents are in
 .. _BibTeX: https://www.bibtex.org
 .. _BibTeX format: https://www.bibtex.com/g/bibtex-format
 .. _configuration options: https://www.sphinx-doc.org/en/master/usage/configuration.html
-.. _CSS: http://www.w3schools.com/css/
+.. _CSS: https://www.w3schools.com:443/css
 .. _define substitutions: https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#substitution-definitions
 .. _doctests: https://docs.pytest.org/en/6.2.x/doctest.html
 .. _full list of emoji codes: https://sphinxemojicodes.readthedocs.io/en/stable/#supported-codes
@@ -1623,7 +1623,7 @@ example Jupyter notebooks, the tables of contents are in
 .. _sphinx-codeautolink: https://sphinx-codeautolink.readthedocs.io
 .. _Sphinx's glossary: https://www.sphinx-doc.org/en/master/glossary.html
 .. _Sphinx's templating page: https://www.sphinx-doc.org/en/master/development/templating.html
-.. _style overrides: https://docs.readthedocs.com/platform/stable/guides/adding-custom-css.html
+.. _style overrides: https://docs.readthedocs.io/en/stable/guides/adding-custom-css.html
 .. _toctree: https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#table-of-contents
 .. _warns: https://numpydoc.readthedocs.io/en/latest/format.html#warns
 .. _weekly tests: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/weekly.yml
