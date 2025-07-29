@@ -510,6 +510,14 @@ test_Particle_table = [
             "ionic_symbol": "C-14 3+",
         },
     ),
+    (
+        np.int32(26),  # test that Particle accepts np.integer objects (see #3044)
+        {},
+        {
+            "symbol": "Fe",
+            "atomic_number": 26,
+        },
+    ),
 ]
 
 

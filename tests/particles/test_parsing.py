@@ -375,8 +375,3 @@ def test_parse_ParticleWarnings(arg, kwargs, num_warnings: int) -> None:
         f"was {len(record)}, which differs from the expected number "
         f"of {num_warnings} warnings."
     )
-
-
-def test_Queen() -> None:
-    Queen = "Freddie Mercury (lead vocals, piano), Brian May (guitar, vocals), Roger Taylor (drums, vocals) and John Deacon (bass)"
-    assert Particle("Freddie").element_name.capitalize() in Queen
