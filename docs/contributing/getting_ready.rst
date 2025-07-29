@@ -313,19 +313,19 @@ when you :py:`import plasmapy`.
       >>> reload(plasmapy)
 
 .. _Add a new SSH key to your GitHub account: https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account
-.. _Anaconda Navigator: https://docs.anaconda.com/navigator
-.. _Anaconda: https://docs.anaconda.com
+.. _Anaconda Navigator: https://www.anaconda.com/docs/tools/anaconda-navigator/main
+.. _Anaconda: https://www.anaconda.com/docs/main
 .. _clone: https://github.com/git-guides/git-clone
 .. _Conda: https://docs.conda.io
-.. _creating an environment: https://docs.anaconda.com/navigator/tutorials/manage-environments/#creating-a-new-environment
+.. _creating an environment: https://www.anaconda.com/docs/tools/anaconda-navigator/tutorials/manage-environments#creating-a-new-environment
 .. _download Python: https://www.python.org/downloads
 .. _fork: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/about-forks
-.. _frequently used Unix commands: https://faculty.tru.ca/nmora/Frequently%20used%20UNIX%20commands.pdf
+.. _frequently used Unix commands: https://www.geeksforgeeks.org/linux-unix/essential-linuxunix-commands/
 .. _git commands for setup and config: https://git-scm.com/book/en/v2/Appendix-C%3A-Git-Commands-Setup-and-Config
 .. _install git: https://git-scm.com/book/en/v2/Getting-Started-Installing-Git
 .. _install Graphviz: https://graphviz.org/download
 .. _install pandoc: https://pandoc.org/installing.html
-.. _installing Anaconda Navigator: https://docs.anaconda.com/navigator/install
+.. _installing Anaconda Navigator: https://www.anaconda.com/docs/tools/anaconda-navigator/install
 .. _installing Conda: https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html
 .. _installing Python: https://realpython.com/installing-python
 .. _installing WSL: https://learn.microsoft.com/en-us/windows/wsl/install
@@ -338,7 +338,7 @@ when you :py:`import plasmapy`.
 .. _terminal user guide: https://support.apple.com/guide/terminal/welcome/mac
 .. _this xkcd comic: https://xkcd.com/1987
 .. _unix tutorial: https://www.hpc.iastate.edu/guides/unix-introduction/unix-tutorial-1
-.. _using an environment: https://docs.anaconda.com/navigator/tutorials/manage-environments/#using-an-environment
+.. _using an environment: https://www.anaconda.com/docs/tools/anaconda-navigator/tutorials/manage-environments#using-an-environment
 .. _venv: https://docs.python.org/3/library/venv.html
 .. _virtual environment: https://realpython.com/python-virtual-environments-a-primer
 .. _Windows Subsystem for Linux: https://learn.microsoft.com/en-us/windows/wsl

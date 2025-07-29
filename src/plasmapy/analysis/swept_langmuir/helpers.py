@@ -2,6 +2,7 @@
 
 __all__ = ["check_sweep", "merge_voltage_clusters", "sort_sweep_arrays"]
 
+import numbers
 import warnings
 from typing import Literal
 
@@ -251,7 +252,7 @@ def _is_voltage_regularly_spaced(
     is_regular_grid = False
     if np.count_nonzero(mask_zero_diff) > 0:
         # is_regular_grid = False
-        pass
+        return False
     elif np.allclose(voltage_diff, voltage_diff[0]):
         # grid is already regularly spaced
         is_regular_grid = True
@@ -292,15 +293,15 @@ def _merge_voltage_clusters__zero_diff_neighbors(
 
     # merge zero diff clusters
     while np.any(mask_zero_diff):
-        volt = voltage[mask_zero_diff][0]
-        index = np.where(new_voltage == volt)[0]
+        leading_cluster_volt = voltage[mask_zero_diff][0]
+        index = np.where(new_voltage == leading_cluster_volt)[0]
         if len(index) == 0:
             index = np.where(mask_zero_diff)[0]
 
         index = index[0]
-        volt_mask = np.isclose(voltage, volt)
+        volt_mask = np.isclose(voltage, leading_cluster_volt)
 
-        new_voltage[index] = volt
+        new_voltage[index] = leading_cluster_volt
         new_current[index] = np.average(current[volt_mask])
 
         mask_zero_diff[volt_mask] = False
@@ -333,18 +334,17 @@ def _merge_voltage_clusters__within_dv(  # noqa: C901
     mask1 = voltage_diff < voltage_step_size
     mask2 = np.isclose(voltage_diff, voltage_step_size)
     cluster_mask = np.logical_or(mask1, mask2)
-    cluster_mask = np.append(cluster_mask, [cluster_mask[-1]])
-    cluster_mask[1:] = np.logical_or(cluster_mask[1:], np.roll(cluster_mask, 1)[1:])
 
     # determine cluster locations
     indices = np.where(np.diff(cluster_mask))[0]
     if cluster_mask[0]:
         # 1st element in voltage is in a cluster
         indices = np.append([0], indices)
+        indices[1] = indices[1] + 1
     else:
-        indices[0] = indices[0] + 1
+        indices[0:2] = indices[0:2] + 1
     if indices.size > 1:
-        indices[2::2] = indices[2::2] + 1
+        indices[2:] = indices[2:] + 1
     if cluster_mask[-1] and indices[-1] != voltage.size - 1:
         # last element in voltage is in a cluster
         indices = np.append(indices, [voltage.size - 1])
@@ -352,7 +352,7 @@ def _merge_voltage_clusters__within_dv(  # noqa: C901
     # ^ using newshape kwarg for backwards compatibility, newshape kwarg
     #   has been deprecated since numpy v2.1
 
-    # populate
+    # merge clusters and update new_voltage and new_current
     for ii in range(indices.shape[0]):
         start_index = indices[ii][0]
         stop_index = indices[ii][1] + 1
@@ -402,15 +402,20 @@ def _merge_voltage_clusters__within_dv(  # noqa: C901
     return new_voltage, new_current
 
 
-def merge_voltage_clusters(
+def merge_voltage_clusters(  # noqa: C901, PLR0912
     voltage: np.ndarray,
     current: np.ndarray,
     voltage_step_size: float | None = None,
+    filter_nan: bool = False,
 ) -> tuple[np.ndarray, np.ndarray]:
     r"""
     Search the ``voltage`` array for closely spaced voltage clusters
     based on the ``voltage_step_size`` parameter and merge those
     clusters, and associated ``current`` values, into a single point.
+
+    This function is intended to merge together identical, or close,
+    voltage points to remove small step sizes in the swept langmuir
+    trace before differentiation.
 
     Parameters
     ----------
@@ -427,12 +432,16 @@ def merge_voltage_clusters(
         electron-saturation current.  *No units are assumed or checked,
         but values should be in amperes.*
 
-    voltage_step_size: `float` or `None`
+    voltage_step_size: `float` | `None`, default: `None`
         A non-zero, positive step size for the ``voltage`` array
         cluster identification.  A value of ``0`` will merge only
         duplicate voltage values.  A value of `None` will default to
         95% of the average step size of the ``voltage`` array (only
-        counting duplicate voltages once).  (DEFAULT:`None`)
+        counting duplicate voltages once).
+
+    filter_nan: `bool`, default: `False`
+        Set `True` to automatically filter `~numpy.nan` values from the
+        ``voltage`` and ``current`` arrays.
 
     Returns
     -------
@@ -458,16 +467,53 @@ def merge_voltage_clusters(
     """
     # condition voltage_step_size
     if voltage_step_size is not None and not isinstance(
-        voltage_step_size, float | np.floating | int | np.integer
+        voltage_step_size, numbers.Real
     ):
         raise TypeError(
             "Expected 'voltage_step_size' to be a float or None, got type "
             f"{type(voltage_step_size)}."
         )
-    elif isinstance(voltage_step_size, int | np.integer):
+    elif isinstance(voltage_step_size, numbers.Integral):
         voltage_step_size = float(voltage_step_size)
 
-    voltage, current = check_sweep(voltage, current)
+    try:
+        voltage, current = check_sweep(voltage, current)
+    except ValueError as err:
+        # check if the ValueError was a result of voltage containing nan
+        # values
+        if not np.any(np.isnan(voltage)):
+            # voltage array has no nan values
+            raise ValueError(*err.args) from err
+
+        if not filter_nan:
+            raise ValueError(
+                "The voltage array contains NaN values.  If you want NaN "
+                "values to be automatically filtered, then set argument "
+                "filter_nan=True."
+            ) from err
+
+        # filter (voltage) NaN values and check sweep again
+        nan_mask = np.logical_not(np.isnan(voltage))
+        voltage = voltage[nan_mask]
+        current = current[nan_mask]
+
+        voltage, current = check_sweep(voltage, current)
+
+    # filter (current) NaN values
+    if not np.any(np.isnan(current)):
+        # voltage array has no nan values
+        pass
+    elif filter_nan:
+        # mask out current NaN values
+        nan_mask = np.logical_not(np.isnan(current))
+        voltage = voltage[nan_mask]
+        current = current[nan_mask]
+    else:
+        raise ValueError(
+            "The current array contains NaN values.  If you want NaN "
+            "values to be automatically filtered, then set argument "
+            "filter_nan=True."
+        )
 
     # check if grid is regularly spaced
     voltage_diff = np.diff(voltage)
