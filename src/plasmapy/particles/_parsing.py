@@ -380,7 +380,7 @@ def parse_and_check_atomic_input(  # noqa: C901, PLR0912, PLR0915
 
         return ion
 
-    if isinstance(argument, np.integer):
+    if isinstance(argument, np.integer):  # see issue 3044
         argument = int(argument)
 
     if not isinstance(argument, str | int):
