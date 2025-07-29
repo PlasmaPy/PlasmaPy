@@ -533,3 +533,6 @@ class RelativisticBody:
             if self_value != other_value:
                 return False
         return True
+
+    def __hash__(self) -> int:
+        return hash(repr(self))
