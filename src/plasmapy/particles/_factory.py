@@ -32,10 +32,6 @@ def _generate_particle_factory_error_message(
 
     if args:
         errmsg += repr(args)
-
-        if not isinstance(args, str | int | list | tuple):
-            errmsg += f" (type: {type(args).__name__!r})"
-
         if kwargs:
             errmsg += " and "
 
