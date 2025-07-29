@@ -43,7 +43,6 @@ terminal and run:
 
    python -m pip install plasmapy
 
-
 .. note::
 
    On some systems, it might be necessary to specify the |Python|
@@ -99,9 +98,7 @@ different operating systems and Unix shells.
 
    .. group-tab:: macOS and Linux
 
-   .. group-tab:: Linux/WSL
-
-      To activate the virtual environment on Linux, run:
+      To activate the virtual environment on POSIX-compliant shells like
      `bash`, `zsh`, and `sh`, run:
 
       .. code-block:: bash
