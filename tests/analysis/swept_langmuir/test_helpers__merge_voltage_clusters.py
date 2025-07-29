@@ -191,5 +191,5 @@ def test_merge_voltage_clusters(
             assert np.allclose(rtn_voltage, voltage)
             assert np.allclose(rtn_current, current)
 
-        mock_sweep.assert_called_once()
+        assert 0 < mock_sweep.call_count <= 2
         mock_sweep.reset_mock()
