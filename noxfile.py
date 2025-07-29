@@ -14,7 +14,8 @@ The tests can be run with the following options:
 * "all": run all tests
 * "skipslow": run tests, except tests decorated with `@pytest.mark.slow`
 * "cov": run all tests with code coverage checks
-* "lowest-direct" : run all tests with lowest version of direct dependencies
+* "lowest-direct" : run all tests with lowest versions of direct dependencies
+* "lowest-direct-skipslow" : run non-slow tests with lowest versions of direct dependencies
 
 Doctests are run only for the most recent versions of Python and
 PlasmaPy dependencies, and not when code coverage checks are performed.
@@ -29,8 +30,10 @@ import pathlib
 import re
 import shutil
 import sys
+import tomllib
 
 import nox
+from packaging.requirements import Requirement
 
 # SPEC 0 indicates that scientific Python packages should support
 # versions of Python that have been released in the last 3 years, or
@@ -43,6 +46,8 @@ supported_operating_systems: tuple[str, ...] = ("linux", "macos", "windows")
 
 maxpython = max(supported_python_versions)
 minpython = min(supported_python_versions)
+
+_HERE = pathlib.Path(__file__).parent
 
 # The documentation should be build always using the same version of
 # Python, which should be the latest version of Python supported by Read
@@ -115,6 +120,32 @@ def _create_requirements_pr_message(uv_output: str, session: nox.Session) -> Non
         file.write("\n".join(lines))
 
 
+def _get_dependencies_from_pyproject_toml(extras: str | None = None):
+    _PYTPROJECT_TOML = (_HERE / "pyproject.toml").resolve()
+    with _PYTPROJECT_TOML.open(mode="rb") as file:
+        data = tomllib.load(file)
+        config = data["project"]
+
+    dependencies = {Requirement(item).name: item for item in config["dependencies"]}
+
+    if (
+        extras is None
+        or "optional-dependencies" not in config
+        or not isinstance(extras, str)
+        or (extras not in config["optional-dependencies"] and extras != "all")
+    ):
+        return dependencies
+
+    extras = [extras] if extras != "all" else list(config["optional-dependencies"])
+    op_deps = {}
+    for extra in extras:
+        for dep in config["optional-dependencies"][extra]:
+            name = Requirement(dep).name
+            op_deps[name] = dep
+
+    return {**dependencies, **op_deps}
+
+
 @nox.session
 def requirements(session: nox.Session) -> None:
     """
@@ -136,7 +167,11 @@ def requirements(session: nox.Session) -> None:
     # When silent is `True`, `session.run()` returns a multi-line string
     # with the standard output and standard error.
 
-    uv_output: str | bool = session.run(*uv_lock_upgrade, silent=running_on_ci)
+    uv_output: str | bool = session.run(
+        *uv_lock_upgrade,
+        *session.posargs,
+        silent=running_on_ci,
+    )
 
     if running_on_ci:
         session.log(uv_output)
@@ -194,6 +229,7 @@ test_specifiers: list = [
     nox.param("skip slow tests", id="skipslow"),
     nox.param("with code coverage", id="cov"),
     nox.param("lowest-direct", id="lowest-direct"),
+    nox.param("lowest-direct-skipslow", id="lowest-direct-skipslow"),
 ]
 
 
@@ -206,7 +242,7 @@ def tests(session: nox.Session, test_specifier: nox._parametrize.Param) -> None:
 
     options: list[str] = []
 
-    if test_specifier == "skip slow tests":
+    if test_specifier in {"skip slow tests", "lowest-direct-skipslow"}:
         options += skipslow
 
     if test_specifier == "with code coverage":
@@ -222,7 +258,7 @@ def tests(session: nox.Session, test_specifier: nox._parametrize.Param) -> None:
         session.env["GH_TOKEN"] = gh_token
 
     match test_specifier:
-        case "lowest-direct":
+        case "lowest-direct" | "lowest-direct-skipslow":
             session.install(".[tests]", "--resolution=lowest-direct")
         case _:
             # From https://nox.thea.codes/en/stable/cookbook.html#using-a-lockfile
@@ -318,6 +354,8 @@ def docs(session: nox.Session) -> None:
     Build documentation with Sphinx.
 
     This session may require installation of pandoc and graphviz.
+
+    Configuration file: docs/conf.py
     """
 
     if running_on_ci:
@@ -340,6 +378,56 @@ def docs(session: nox.Session) -> None:
         session.error(f"Documentation preview landing page not found: {landing_page}")
 
 
+@nox.session(python=docpython, reuse_venv=True)
+def docs_bundle_htmlzip(session: nox.Session) -> None:
+    """
+    Convert html built docs to a bundle html zip file.
+    """
+
+    if not running_on_rtd:
+        session.log(
+            "Process is NOT being run on Read the Docs.  Will not html ZIP file."
+        )
+        return None
+
+    html_build_dir = pathlib.Path(doc_build_dir)
+    html_landing_page = (html_build_dir / "index.html").resolve()
+    READTHEDOCS_OUTPUT = html_build_dir.parent
+    if not html_landing_page.exists():
+        session.error(
+            f"No documentation build found at: {html_landing_page}\n"
+            f"It appears the documentation has not been built."
+        )
+
+    command = [
+        "sphinx-build",
+        "--show-traceback",
+        "--doctree-dir",
+        f"{html_build_dir / '.doctrees'}",
+        "--builder",
+        "singlehtml",
+        "--define",
+        "language=en",
+        "./docs/",  # source directory
+        f"{READTHEDOCS_OUTPUT / 'htmlzip'}",  # output directory
+    ]
+    session.run(*command)
+
+    # now build the zip file
+    READTHEDOCS_PROJECT = os.environ.get("READTHEDOCS_PROJECT")
+    READTHEDOCS_LANGUAGE = os.environ.get("READTHEDOCS_LANGUAGE")
+    READTHEDOCS_VERSION = os.environ.get("READTHEDOCS_VERSION")
+    zip_name = f"{READTHEDOCS_PROJECT}-{READTHEDOCS_LANGUAGE}-{READTHEDOCS_VERSION}.zip"
+    # ^ this name mimics how RTD does it by default
+
+    cwd = pathlib.Path.cwd()
+    session.chdir(f"{READTHEDOCS_OUTPUT / 'htmlzip'}")
+    session.run("zip", "-r", "-m", f"{zip_name}", ".")
+    session.chdir(f"{cwd}")
+
+    session.log(f"The htmlzip was placed in: {READTHEDOCS_OUTPUT / 'htmlzip'}")
+
+
 @nox.session(python=docpython)
 @nox.parametrize(
     ["site", "repository"],
@@ -347,6 +435,7 @@ def docs(session: nox.Session) -> None:
         nox.param("github", "sphinx-doc/sphinx", id="sphinx"),
         nox.param("github", "readthedocs/sphinx_rtd_theme", id="sphinx_rtd_theme"),
         nox.param("github", "spatialaudio/nbsphinx", id="nbsphinx"),
+        nox.param("github", "plasmapy/plasmapy_sphinx", id="plasmapy_sphinx"),
     ],
 )
 def build_docs_with_dev_version_of(
@@ -358,7 +447,19 @@ def build_docs_with_dev_version_of(
     The purpose of this session is to catch bugs and breaking changes
     so that they can be fixed or updated earlier rather than later.
     """
-    session.install(f"git+https://{site}.com/{repository}", ".[docs]")
+    # Note: Individual dependencies are install in this fashion to
+    #       avoid resolution conflicts if an upper dependency limit
+    #       had been put on the target package.
+    pkg_name = repository.split("/")[-1]
+    deps = _get_dependencies_from_pyproject_toml(extras="docs")
+    deps.pop(pkg_name, None)
+
+    session.install(
+        f"git+https://{site}.com/{repository}",
+        *list(deps.values()),
+        silent=False,
+    )
+    session.install("--no-deps", ".")
     session.run(*sphinx_base_command, *build_html, *session.posargs)
 
 
@@ -409,7 +510,11 @@ mypy error code. Please use sparingly!
 
 @nox.session(python=maxpython)
 def mypy(session: nox.Session) -> None:
-    """Perform static type checking."""
+    """
+    Perform static type checking.
+
+    Configuration file: mypy.ini
+    """
 
     session.install(uv_requirement)
     session.run_install(
@@ -528,6 +633,7 @@ def changelog(session: nox.Session, final: str) -> None:
         "--version",
         version,
         *options,
+        *session.posargs,
     )
 
     if final:
@@ -560,7 +666,7 @@ def autotyping(session: nox.Session, options: tuple[str, ...]) -> None:
     session.install(".[tests,docs]", "autotyping", "typing_extensions")
     DEFAULT_PATHS = ("src", "tests", "tools", "*.py", ".github", "docs/*.py")
     paths = session.posargs or DEFAULT_PATHS
-    session.run("python", "-m", "autotyping", *options, *paths)
+    session.run("python", "-m", "autotyping", *options, *paths, *session.posargs)
 
 
 @nox.session
@@ -623,7 +729,11 @@ def manifest(session: nox.Session) -> None:
 
 @nox.session
 def lint(session: nox.Session) -> None:
-    """Run all pre-commit hooks on all files."""
+    """
+    Run all pre-commit hooks on all files.
+
+    Configuration file: .pre-commit-config.yaml
+    """
     session.install("pre-commit")
     session.run(
         "pre-commit",
@@ -632,6 +742,38 @@ def lint(session: nox.Session) -> None:
         "--show-diff-on-failure",
         *session.posargs,
     )
+
+
+zizmor_troubleshooting_message = """
+
+🪧 Run this check locally with `nox -s zizmor` to find potential
+security vulnerabilities in GitHub workflows.
+
+📜 Audit rules: https://woodruffw.github.io/zizmor/audits
+
+🔗 If a reported potential vulnerability does not necessitate a fix,
+then either append a comment like `# zizmor: ignore[unpinned-uses]` to
+the reported line (replacing `unpinned-uses` with the audit rule code),
+or add the appropriate configuration settings to: .github/zizmor.yml
+"""
+
+
+@nox.session
+def zizmor(session: nox.Session) -> None:
+    """
+    Find common security issues in GitHub Actions.
+
+    Because some of the zizmor audit rules require a GitHub token,
+    running this check locally may produce different results than
+    running it in CI.
+
+    Configuration file: .github/zizmor.yml
+    """
+    if running_on_ci:
+        session.log(zizmor_troubleshooting_message)
+
+    session.install("zizmor")
+    session.run("zizmor", ".github", "--no-progress", "--color=auto", *session.posargs)
 
 
 # /// script

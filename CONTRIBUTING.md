@@ -16,10 +16,6 @@ which has information on:
 - [Writing and running tests](https://docs.plasmapy.org/en/latest/contributing/testing_guide.html#testing-guide)
 - [Adding a changelog entry](https://docs.plasmapy.org/en/latest/contributing/changelog_guide.html#adding-a-changelog-entry) (needed except for minor changes)
 
-You can also find us in our
-[**chat room**](https://app.element.io/#/room/#plasmapy:openastronomy.org)
-or weekly
-[**community meetings**](https://www.plasmapy.org/meetings/weekly) &
-[**office hours**](https://www.plasmapy.org/meetings/office_hours).
+You can also find us during our [**community meetings**](https://www.plasmapy.org/meetings/weekly).
 
 We thank you once again!

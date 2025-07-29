@@ -186,7 +186,7 @@ code is supposed to be doing.
 
 * Avoid unnecessary abbreviations, as these make code harder to read.
   Prefer clarity over brevity, except for code that is used frequently
-  and interactively (e.g., :command:`cd` or :command:`ls`).
+  and interactively (e.g., ``cd`` or ``ls``).
 
   .. tip::
 
@@ -1059,6 +1059,13 @@ an angular frequency to get a length scale:
 
 .. _performing releases:
 
+Security policy
+===============
+
+PlasmaPy's `security policy`_ is located at :file:`.github/SECURITY.md`.
+The GitHub repository has a link to
+`privately report security vulnerabilities`_.
+
 Performing releases
 ===================
 
@@ -1103,10 +1110,12 @@ The overall process of performing a release is:
 .. _NEP 29: https://numpy.org/neps/nep-0029-deprecation_policy.html
 .. _not a number: https://en.wikipedia.org/wiki/NaN
 .. _NumPy Enhancement Proposal 29: https://numpy.org/neps/nep-0029-deprecation_policy.html
+.. _privately report security vulnerabilities: https://github.com/PlasmaPy/PlasmaPy/security/advisories/new
 .. _Python Packaging User Guide: https://packaging.python.org
 .. _pyupgrade: https://github.com/asottile/pyupgrade
 .. _release checklist: https://github.com/PlasmaPy/PlasmaPy/blob/main/.github/content/release-checklist.md
 .. _rename refactoring in PyCharm: https://www.jetbrains.com/help/pycharm/rename-refactorings.html
+.. _security policy: https://github.com/PlasmaPy/PlasmaPy/blob/main/.github/SECURITY.md
 .. _TOML: https://toml.io/en/v1.0.0
 .. _type hints cheat sheet: https://mypy.readthedocs.io/en/stable/cheat_sheet_py3.html
 .. _update pinned requirements: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/update-pinned-reqs.yml

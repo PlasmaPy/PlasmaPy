@@ -273,10 +273,10 @@ class TestThermalSpeed:
         """Test scenarios where `thermal_speed` issues warnings."""
         with pytest.warns(_warning):
             vth = thermal_speed(*args, **kwargs)
-            assert vth.unit == u.m / u.s
+        assert vth.unit == u.m / u.s
 
-            if expected is not None:
-                assert vth == expected
+        if expected is not None:
+            assert vth == expected
 
     def test_electron_vs_proton(self) -> None:
         """
@@ -397,8 +397,7 @@ class Test_kappa_thermal_speed:
         )
         assert np.isclose(known1.value, self.mean1True, rtol=1e-8, atol=0.0), errstr
 
-    def test_handle_nparrays(self, kwargs=None) -> None:
+    def test_handle_nparrays(self) -> None:
         """Test for ability to handle numpy array quantities"""
-        if kwargs is None:
-            kwargs = {"kappa": 2}
+        kwargs = {"kappa": 2}
         assert_can_handle_nparray(kappa_thermal_speed, kwargs=kwargs)

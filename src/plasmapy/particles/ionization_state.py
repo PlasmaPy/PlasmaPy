@@ -101,6 +101,9 @@ class IonicLevel:
             f"IonicLevel({self.ionic_symbol!r}, ionic_fraction={self.ionic_fraction})"
         )
 
+    def __hash__(self) -> int:
+        return hash(repr(self))
+
     @property
     def ionic_symbol(self) -> str:
         """The symbol of the ion."""
@@ -517,7 +520,7 @@ class IonizationState:
         This method may be used, for example, to correct for rounding
         errors.
         """
-        self._ionic_fractions = self._ionic_fractions / np.sum(self._ionic_fractions)  # type: ignore[assignment]
+        self._ionic_fractions = self._ionic_fractions / np.sum(self._ionic_fractions)
 
     @property
     @validate_quantities
@@ -698,7 +701,7 @@ class IonizationState:
     @property
     def Z_mean(self) -> np.float64:
         """Return the mean charge number."""
-        if np.nan in self.ionic_fractions:
+        if np.nan in self.ionic_fractions:  # noqa: PLW0177
             raise ChargeError(
                 "Z_mean cannot be found because no ionic fraction "
                 f"information is available for {self.base_particle}."
@@ -914,3 +917,6 @@ class IonizationState:
 
         for line in output:
             print(line)  # noqa: T201
+
+    def __hash__(self) -> int:
+        return hash(repr(self))
