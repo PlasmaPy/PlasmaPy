@@ -320,7 +320,7 @@ when you :py:`import plasmapy`.
 .. _creating an environment: https://www.anaconda.com/docs/tools/anaconda-navigator/tutorials/manage-environments#creating-a-new-environment
 .. _download Python: https://www.python.org/downloads
 .. _fork: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/about-forks
-.. _frequently used Unix commands: https://faculty.tru.ca/nmora/Frequently%20used%20UNIX%20commands.pdf
+.. _frequently used Unix commands: https://www.geeksforgeeks.org/linux-unix/essential-linuxunix-commands/
 .. _git commands for setup and config: https://git-scm.com/book/en/v2/Appendix-C%3A-Git-Commands-Setup-and-Config
 .. _install git: https://git-scm.com/book/en/v2/Getting-Started-Installing-Git
 .. _install Graphviz: https://graphviz.org/download
