@@ -413,6 +413,10 @@ def merge_voltage_clusters(
     based on the ``voltage_step_size`` parameter and merge those
     clusters, and associated ``current`` values, into a single point.
 
+    This function is intended to merge together identical, or close,
+    voltage points to remove small step sizes in the swept langmuir
+    trace before differentiation.
+
     Parameters
     ----------
     voltage: `numpy.ndarray`
