@@ -380,6 +380,9 @@ def parse_and_check_atomic_input(  # noqa: C901, PLR0912, PLR0915
 
         return ion
 
+    if isinstance(argument, np.integer):
+        argument = int(argument)
+
     if not isinstance(argument, str | int):
         raise TypeError(f"The argument {argument} is not an integer or string.")
 
