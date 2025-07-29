@@ -1,0 +1,1 @@
+Set ``uv`` as the sole backend to Nox, and changed the ``docs`` and ``tests`` dependency sets to include ``nox[uv]`` instead of ``nox``.
