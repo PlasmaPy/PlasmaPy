@@ -334,18 +334,17 @@ def _merge_voltage_clusters__within_dv(  # noqa: C901
     mask1 = voltage_diff < voltage_step_size
     mask2 = np.isclose(voltage_diff, voltage_step_size)
     cluster_mask = np.logical_or(mask1, mask2)
-    cluster_mask = np.append(cluster_mask, [cluster_mask[-1]])
-    cluster_mask[1:] = np.logical_or(cluster_mask[1:], np.roll(cluster_mask, 1)[1:])
 
     # determine cluster locations
     indices = np.where(np.diff(cluster_mask))[0]
     if cluster_mask[0]:
         # 1st element in voltage is in a cluster
         indices = np.append([0], indices)
+        indices[1] = indices[1] + 1
     else:
-        indices[0] = indices[0] + 1
+        indices[0:2] = indices[0:2] + 1
     if indices.size > 1:
-        indices[2::2] = indices[2::2] + 1
+        indices[2:] = indices[2:] + 1
     if cluster_mask[-1] and indices[-1] != voltage.size - 1:
         # last element in voltage is in a cluster
         indices = np.append(indices, [voltage.size - 1])
