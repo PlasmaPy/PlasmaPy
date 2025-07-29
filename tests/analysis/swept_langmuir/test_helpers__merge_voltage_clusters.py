@@ -191,5 +191,7 @@ def test_merge_voltage_clusters(
             assert np.allclose(rtn_voltage, voltage)
             assert np.allclose(rtn_current, current)
 
+        # ensure check_sweep() is called...then we do not have to
+        # explicitly add test cases covered by check_sweep()
         assert 0 < mock_sweep.call_count <= 2
         mock_sweep.reset_mock()
