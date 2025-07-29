@@ -2,6 +2,7 @@
 
 __all__ = ["check_sweep", "merge_voltage_clusters", "sort_sweep_arrays"]
 
+import numbers
 import warnings
 from typing import Literal
 
@@ -457,9 +458,7 @@ def merge_voltage_clusters(
         \right)
     """
     # condition voltage_step_size
-    if voltage_step_size is not None and not isinstance(
-        voltage_step_size, float | np.floating | int | np.integer
-    ):
+    if voltage_step_size is not None and not isinstance(voltage_step_size, numbers.Real):
         raise TypeError(
             "Expected 'voltage_step_size' to be a float or None, got type "
             f"{type(voltage_step_size)}."
