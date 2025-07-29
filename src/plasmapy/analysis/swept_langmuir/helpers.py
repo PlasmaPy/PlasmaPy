@@ -293,15 +293,15 @@ def _merge_voltage_clusters__zero_diff_neighbors(
 
     # merge zero diff clusters
     while np.any(mask_zero_diff):
-        volt = voltage[mask_zero_diff][0]
-        index = np.where(new_voltage == volt)[0]
+        leading_cluster_volt = voltage[mask_zero_diff][0]
+        index = np.where(new_voltage == leading_cluster_volt)[0]
         if len(index) == 0:
             index = np.where(mask_zero_diff)[0]
 
         index = index[0]
-        volt_mask = np.isclose(voltage, volt)
+        volt_mask = np.isclose(voltage, leading_cluster_volt)
 
-        new_voltage[index] = volt
+        new_voltage[index] = leading_cluster_volt
         new_current[index] = np.average(current[volt_mask])
 
         mask_zero_diff[volt_mask] = False
