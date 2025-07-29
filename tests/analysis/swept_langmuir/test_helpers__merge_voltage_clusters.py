@@ -150,6 +150,22 @@ from plasmapy.utils.exceptions import PlasmaPyWarning
                 np.array([-5.0, -4, -3, 0, 5, 6.95], dtype=float),
             ),
         ),
+        (  # test case for auto filtering NaN values
+            np.array(
+                [1, 1.01, np.nan, 1.5, 2, 3.88, 3.9, np.nan, 4.8, 5.5, 5.55],
+                dtype=float,
+            ),
+            np.array(
+                [-5, -5.1, np.nan, -4, -3, 0, 0.1, np.nan, np.nan, 7, 6.9],
+                dtype=float,
+            ),
+            {"filter_nan": True, "voltage_step_size": 0.12},
+            does_not_raise(),
+            (
+                np.array([1.005, 1.5, 2, 3.89, 5.525], dtype=float),
+                np.array([-5.05, -4, -3, 0.05, 6.95], dtype=float),
+            ),
+        ),
     ],
 )
 def test_merge_voltage_clusters(
