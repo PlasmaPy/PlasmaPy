@@ -135,7 +135,7 @@ def _condition_smooth_fractions(smooth_fractions, data_size):
         savgol_windows[mask] = savgol_windows[mask] + 1
         savgol_windows = np.unique(savgol_windows)
 
-    # do not let windows sizes be larget than data_size
+    # do not let windows sizes exceed data_size
     mask = savgol_windows <= data_size
     savgol_windows = savgol_windows[mask]
 
