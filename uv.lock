@@ -1691,6 +1691,7 @@ dependencies = [
     { name = "numpy" },
     { name = "packaging" },
     { name = "pandas" },
+    { name = "plasmapy-sphinx" },
     { name = "requests" },
     { name = "scipy" },
     { name = "setuptools" },
@@ -1761,6 +1762,7 @@ requires-dist = [
     { name = "packaging", specifier = ">=22" },
     { name = "pandas", specifier = ">=2" },
     { name = "pillow", marker = "extra == 'docs'", specifier = ">=10.4" },
+    { name = "plasmapy-sphinx", specifier = ">=2025.5.1" },
     { name = "plasmapy-sphinx", marker = "extra == 'docs'", specifier = ">=0.2.0b1" },
     { name = "pygments", marker = "extra == 'docs'", specifier = "==2.18" },
     { name = "pytest", marker = "extra == 'tests'", specifier = ">=8.3.1" },
@@ -1798,7 +1800,7 @@ provides-extras = ["docs", "tests"]
 
 [[package]]
 name = "plasmapy-sphinx"
-version = "2025.5.0"
+version = "2025.5.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "docutils" },
@@ -1808,9 +1810,9 @@ dependencies = [
     { name = "sphinx-gallery" },
     { name = "sphinx-rtd-theme" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/1c/c8/cc313f867d1b4106cd7c8717f5f36d720da58d2c2c34cddbf9e36c06e0a6/plasmapy_sphinx-2025.5.0.tar.gz", hash = "sha256:daed4cd5a9a6cee7912f7b2dbf118890e6c1f481c6f2fd0fbe84884f4bdb40ad", size = 74094, upload-time = "2025-05-09T01:49:05.611Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/93/2a/8a3c4bdff6de3641db3d99e91a17152200542e7b681ca4731fa088b250b3/plasmapy_sphinx-2025.5.1.tar.gz", hash = "sha256:aac5c182fca4e0fba96fa7f1a8f19ea3e09fb6e93d2ec0e3b999e1a8155518c2", size = 74132, upload-time = "2025-07-29T23:44:02.119Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/ee/e3/f2bbc2b507668fa49d72332d41a0ba6456ea860389041457bdd98cb2fb2e/plasmapy_sphinx-2025.5.0-py3-none-any.whl", hash = "sha256:84ea61f639c8c2999732e900bc17f526f3d9221e9bd086cf3ed798c8dc7ae4a3", size = 44342, upload-time = "2025-05-09T01:49:03.652Z" },
+    { url = "https://files.pythonhosted.org/packages/ca/12/4efedf0181989f0288027c6f1d47bd4f5d8b273ccb4fd17626d346dfead1/plasmapy_sphinx-2025.5.1-py3-none-any.whl", hash = "sha256:e8e08fa7b48e7c2f87ea9e26c2496cac0efc8925ac836408cb3ca8fcb74a51a1", size = 44347, upload-time = "2025-07-29T23:44:00.628Z" },
 ]
 
 [[package]]
