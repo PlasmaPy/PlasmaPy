@@ -69,8 +69,8 @@ Installing PlasmaPy with uv
 |uv| is "an extremely fast |Python| package and project manager, written
 in Rust". |uv| lets us create and switch between |Python| environments
 that are isolated from each other and the system's |Python|
-installation. In addition, |uv| provides a `pip drop-in interface`_ for
-common |pip| commands to install packages from |PyPI|.
+installation. |uv| provides a `pip drop-in interface`_ for common |pip|
+commands to install packages from |PyPI|.
 
 By default, |uv| requires that packages be installed into
 `uv-managed virtual environments`_ rather than the system Python
@@ -81,9 +81,10 @@ opening a terminal and running:
 
    uv venv --python 3.13
 
-This command will create a virtual environment managed by |uv| in a
-new :file:`.venv` subdirectory, and then print out the command that will
-activate the virtual environment. The activation command differs between
+This command will create a virtual environment managed by |uv| in a new
+:file:`.venv` subdirectory, and then print out the command that will
+activate the virtual environment from the directory that the above
+command was run in. The activation command differs between
 different operating systems and Unix shells.
 
 .. tabs::
@@ -99,7 +100,7 @@ different operating systems and Unix shells.
    .. group-tab:: macOS and Linux
 
       To activate the virtual environment on POSIX-compliant shells like
-     `bash`, `zsh`, and `sh`, run:
+      `bash`, `zsh`, and `sh`, run:
 
       .. code-block:: bash
 
@@ -133,7 +134,7 @@ into an activated Conda_ environment by opening a terminal and running:
    conda install -c conda-forge plasmapy
 
 Here :bash:`-c conda-forge` indicates that `plasmapy` should be installed
-from the conda-forge_ channel.
+from tkhe conda-forge_ channel.
 
 To install `plasmapy` into another existing Conda_ environment, append
 :samp:`-n {env_name}` to the previous command, where :samp:`{env_name}`
