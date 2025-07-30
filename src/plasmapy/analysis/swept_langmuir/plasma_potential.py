@@ -15,14 +15,14 @@ from scipy import signal
 from plasmapy.analysis.swept_langmuir.helpers import check_sweep, merge_voltage_clusters
 
 
-class dIdVExtras(NamedTuple):
+class dIdVExtras(NamedTuple):  # noqa: N801
     std: float | None
     data_slice: slice | None
     savgol_windows: list[int] | None
     savgol_peaks: list[float] | None
 
 
-def find_didv_peak(
+def find_didv_peak(  # noqa: C901, PLR0912
     voltage: np.ndarray,
     current: np.ndarray,
     # *,
