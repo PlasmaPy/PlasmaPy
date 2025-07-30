@@ -20,7 +20,6 @@ class VpExtras(NamedTuple):
     data_slice: slice | None
     savgol_windows: list[int] | None
     computed_plasma_potentials: list[float] | None
-    method: str | None
 
 
 def find_didv_peak(
@@ -35,7 +34,6 @@ def find_didv_peak(
         data_slice=None,
         savgol_windows=None,
         computed_plasma_potentials=None,
-        method="didv_peak",
     )._asdict()
 
     # check voltage and current arrays
