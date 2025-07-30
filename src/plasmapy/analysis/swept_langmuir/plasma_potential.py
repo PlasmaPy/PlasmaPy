@@ -23,53 +23,7 @@ class dIdVExtras(NamedTuple):  # noqa: N801
     savgol_peaks: list[float] | None
 
 
-def find_didv_peak(  # noqa: C901, PLR0912
-    voltage: np.ndarray,
-    current: np.ndarray,
-    *,
-    voltage_window: list[float | None] | None = None,
-    smooth_fractions=None,
-):
-    """
-    Find the peak slope (:math:`dI/dV_{max}`) of the swept Langmuir
-    trace.
-
-    This is often used as a rough estimate of the plasma potential.
-    However, it will always be slightly less than the actual plasma
-    potential.
-
-    Parameters
-    ----------
-    voltage : `numpy.ndarray`
-        1-D numpy array of monotonically increasing probe biases
-        (should be in volts).
-
-    current : `numpy.ndarray`
-        1-D numpy array of probe current (should be in amperes)
-        corresponding to the ``voltage`` array.
-
-    voltage_window : `list[float | None]` | `None`, default: `None`
-        A two-element list ``[v_min, v_max]`` that specifies the voltage
-        range in which the peak slope will be looked for.  Specifying
-        `None` for either the first or second element will result in a
-        window using the lower or upper bound of ``voltage``
-        respectively.  If set to `None` (default), then the whole
-        ``voltage`` window will be used.
-
-    smooth_fractions : `list[float]` | `None`, default: `None`
-    """
-    rtn_extras = dIdVExtras(
-        std=None,
-        data_slice=None,
-        savgol_windows=None,
-        savgol_peaks=None,
-    )._asdict()
-
-    # check voltage and current arrays
-    voltage, current = check_sweep(voltage, current, strip_units=True)
-    voltage, current = merge_voltage_clusters(voltage, current, voltage_step_size=0)
-
-    # condition voltage_windows
+def _condition_voltage_window(voltage, voltage_window) -> slice:
     if voltage_window is None:
         voltage_window = [None, None]
     elif not isinstance(voltage_window, Sequence):
@@ -119,7 +73,57 @@ def find_didv_peak(  # noqa: C901, PLR0912
     else:
         last_index = int(np.where(voltage < voltage_window[1])[0][0])
 
-    _slice = slice(first_index, last_index, 1)
+    return slice(first_index, last_index, 1)
+
+
+def find_didv_peak(  # noqa: C901, PLR0912
+    voltage: np.ndarray,
+    current: np.ndarray,
+    *,
+    voltage_window: list[float | None] | None = None,
+    smooth_fractions=None,
+) -> tuple[np.ndarray, np.ndarray]:
+    """
+    Find the peak slope (:math:`dI/dV_{max}`) of the swept Langmuir
+    trace.
+
+    This is often used as a rough estimate of the plasma potential.
+    However, it will always be slightly less than the actual plasma
+    potential.
+
+    Parameters
+    ----------
+    voltage : `numpy.ndarray`
+        1-D numpy array of monotonically increasing probe biases
+        (should be in volts).
+
+    current : `numpy.ndarray`
+        1-D numpy array of probe current (should be in amperes)
+        corresponding to the ``voltage`` array.
+
+    voltage_window : `list[float | None]` | `None`, default: `None`
+        A two-element list ``[v_min, v_max]`` that specifies the voltage
+        range in which the peak slope will be looked for.  Specifying
+        `None` for either the first or second element will result in a
+        window using the lower or upper bound of ``voltage``
+        respectively.  If set to `None` (default), then the whole
+        ``voltage`` window will be used.
+
+    smooth_fractions : `list[float]` | `None`, default: `None`
+    """
+    rtn_extras = dIdVExtras(
+        std=None,
+        data_slice=None,
+        savgol_windows=None,
+        savgol_peaks=None,
+    )._asdict()
+
+    # check voltage and current arrays
+    voltage, current = check_sweep(voltage, current, strip_units=True)
+    voltage, current = merge_voltage_clusters(voltage, current, voltage_step_size=0)
+
+    # condition voltage_windows
+    _slice = _condition_voltage_window(voltage, voltage_window)
     data_size = len(_slice.indices(voltage.size))
     if data_size <= 1:
         raise ValueError(
