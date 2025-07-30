@@ -6,6 +6,8 @@ __all__ = ["find_didv_peak"]
 __aliases__ = []
 __all__ += __aliases__
 
+import numbers
+from collections.abc import Sequence
 from typing import NamedTuple
 
 import numpy as np
@@ -24,8 +26,8 @@ class dIdVExtras(NamedTuple):  # noqa: N801
 def find_didv_peak(  # noqa: C901, PLR0912
     voltage: np.ndarray,
     current: np.ndarray,
-    # *,
-    floating_potential: float | None = None,
+    *,
+    voltage_window: list[float | None] | None = None,
     smooth_fractions=None,
 ):
     rtn_extras = dIdVExtras(
@@ -39,28 +41,65 @@ def find_didv_peak(  # noqa: C901, PLR0912
     voltage, current = check_sweep(voltage, current, strip_units=True)
     voltage, current = merge_voltage_clusters(voltage, current, voltage_step_size=0)
 
-    # condition floating potential
-    if floating_potential is None:
-        pass
-    elif not isinstance(floating_potential, float | int | np.floating | np.integer):
+    # condition voltage_windows
+    if voltage_window is None:
+        voltage_window = [None, None]
+    elif not isinstance(voltage_window, Sequence):
         raise TypeError(
-            f"Expected None or float for floating_potential, got type "
-            f"{type(floating_potential)}."
+            f"Expected a 2-element list of floats or None for 'voltage_window', "
+            f"but got type {type(voltage_window)}."
         )
-    elif not (np.min(voltage) <= floating_potential <= np.max(voltage)):
+    elif len(voltage_window) != 2:
         raise ValueError(
-            f"Given floating_potential ({floating_potential}) is outside range "
-            f"[{np.min(voltage)}, {np.max(voltage)}]."
+            f"Expected a 2-element list of floats or None for 'voltage_window', "
+            f"but got type {len(voltage_window)} elements."
         )
+    elif not all(
+        isinstance(element, numbers.Real) or element is None
+        for element in voltage_window
+    ):
+        raise TypeError(f"Not all elements of 'voltage_window' are floats or None.")
+    elif None not in voltage_window:
+        voltage_window = np.sort(voltage).tolist()
 
     # determine data window
-    first_index = 0
-    if floating_potential is not None:
-        mask = voltage > floating_potential
-        if np.count_nonzero(mask) > 0:
-            first_index = np.where(mask)[0][0]
-    data_size = voltage.size - first_index
-    rtn_extras["data_slice"] = slice(int(first_index), None, 1)
+    if (
+        voltage_window[0] is None
+        or voltage_window[0] <= voltage[0]
+    ):
+        first_index = None
+    elif voltage_window[0] >= voltage[-1]:
+        raise ValueError(
+            f"The min value for the voltage window ({voltage_window[0]}) "
+            f"is larger than the max value of the langmuir trace "
+            f"({voltage[-1]})."
+        )
+    else:
+        first_index = int(np.where(voltage >= voltage_window[0])[0][0])
+
+    if (
+        voltage_window[1] is None
+        or voltage_window[1] >= voltage[-1]
+    ):
+        last_index = None
+    elif voltage_window[1] <= voltage[0]:
+        raise ValueError(
+            f"The max value for the voltage window ({voltage_window[1]}) "
+            f"is smaller than the min value of the langmuir trace "
+            f"({voltage[0]})."
+        )
+    else:
+        last_index = int(np.where(voltage < voltage_window[1])[0][0])
+
+    _slice = slice(first_index, last_index, 1)
+    data_size = len(_slice.indices(voltage.size))
+    if data_size <= 1:
+        raise ValueError(
+            f"The specified voltage_window ({voltage_window}) would result "
+            f"in a null window or a 1-element window."
+        )
+
+    rtn_extras["data_slice"] = _slice
 
     # define smooth_fractions
     # TODO: add better description
@@ -76,8 +115,8 @@ def find_didv_peak(  # noqa: C901, PLR0912
         smooth_windows[mask] = smooth_windows[mask] + 1
         smooth_windows = np.unique(smooth_windows)
 
-    voltage_slice = voltage[first_index:]
-    current_slice = current[first_index:]
+    voltage_slice = voltage[_slice]
+    current_slice = current[_slice]
     plasma_potentials = []
     rtn_extras["savgol_windows"] = []
     for _window in smooth_windows:
