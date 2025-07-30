@@ -216,7 +216,7 @@ def find_didv_peak(  # noqa: C901, PLR0912
     if data_size < 3:
         raise ValueError(
             f"The specified voltage_window ({voltage_window}) would result "
-            f"in a null window or a window less than 3-elements."
+            f"in a null window or a window with fewer than 3 elements."
         )
 
     # define starting savgol windows
