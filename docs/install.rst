@@ -299,4 +299,3 @@ because they are not intended for use by end users.
 .. _uv init options: https://docs.astral.sh/uv/reference/cli/#uv-init
 .. _virtual environment: https://realpython.com/python-virtual-environments-a-primer
 .. _ZIP: https://en.wikipedia.org/wiki/ZIP_(file_format)
-
