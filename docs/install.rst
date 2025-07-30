@@ -27,8 +27,8 @@ instructions to `download Python`_ and install it. 🐍
    New versions of |Python| are released annually in October, and it can
    take a few months for the scientific Python ecosystem to catch up. If
    you have trouble installing `plasmapy` on the most recent |Python|
-   version between October and March, then try installing it on the
-   second most recent version.
+   late in a year, then try installing it on the second most recent
+   version.
 
 .. _install-pip:
 
@@ -248,6 +248,34 @@ package should also be installed.
    and create branches so that you may make contributions via pull
    requests.
 
+Version support policy for dependencies
+=======================================
+
+.. image:: https://img.shields.io/badge/SPEC-0-green?labelColor=%23004811&color=%235CA038
+   :target: https://scientific-python.org/specs/spec-0000/
+
+PlasmaPy generally supports the time-based policy for dropping
+dependencies as recommended in |SPEC 0|, including that:
+
+1. Support for Python versions be dropped **3 years** after their
+   initial release.
+2. Support for core package dependencies be dropped **2 years** after
+   their initial release.
+
+These recommendations help provide a common dependency support window
+across the scientific Python ecosystem, while limiting the maintenance
+burden associated with supporting older versions of dependencies.
+
+Support for dependencies may be dropped earlier in case of major bug
+fixes or important new features.
+
+Dependency groups intended for end users should follow this policy,
+unless otherwise indicated in the documentation.
+
+Dependency groups used primarily for code development activities such as
+running tests and building documentation are excluded from this policy
+because they are not intended for use by end users.
+
 .. _Anaconda Navigator: https://www.anaconda.com/docs/tools/anaconda-navigator/main
 .. _clone a repository using SSH: https://docs.github.com/en/get-started/getting-started-with-git/about-remote-repositories#cloning-with-ssh-urls
 .. _Conda: https://docs.conda.io
@@ -271,3 +299,4 @@ package should also be installed.
 .. _uv init options: https://docs.astral.sh/uv/reference/cli/#uv-init
 .. _virtual environment: https://realpython.com/python-virtual-environments-a-primer
 .. _ZIP: https://en.wikipedia.org/wiki/ZIP_(file_format)
+
