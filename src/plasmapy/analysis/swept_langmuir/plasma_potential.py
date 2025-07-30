@@ -86,6 +86,9 @@ def _condition_smooth_fractions(smooth_fractions, data_size):
     Savitzky-Golay filter windows sizes, based on the ``data_size``.
     """
     if smooth_fractions is None:
+        # Note: If this default value is changed, then the docstring entry
+        #       for smooth_fractions in the find_didv_peak() docstring
+        #       needs to be updated accordingly.
         smooth_fractions = np.linspace(0.01, 0.25, num=30)
     elif (
         isinstance(smooth_fractions, Sequence)
