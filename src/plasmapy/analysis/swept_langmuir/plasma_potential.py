@@ -198,10 +198,10 @@ def find_didv_peak(  # noqa: C901, PLR0912
     _slice = _condition_voltage_window(voltage, voltage_window)
     rtn_extras["data_slice"] = _slice
     data_size = len(_slice.indices(voltage.size))
-    if data_size <= 1:
+    if data_size < 3:
         raise ValueError(
             f"The specified voltage_window ({voltage_window}) would result "
-            f"in a null window or a 1-element window."
+            f"in a null window or a window less than 3-elements."
         )
 
     # define starting savgol windows
