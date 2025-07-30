@@ -86,7 +86,7 @@ def find_didv_peak(  # noqa: C901, PLR0912
     *,
     voltage_window: list[float | None] | None = None,
     smooth_fractions=None,
-) -> tuple[np.ndarray, np.ndarray]:
+) -> tuple[float, dIdVExtras]:
     """
     Find the peak slope (:math:`dI/dV_{max}`) of the swept Langmuir
     trace.
