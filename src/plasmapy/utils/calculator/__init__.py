@@ -9,6 +9,6 @@ Script and utilities to launch the plasma calculator.
 from typing import NoReturn
 
 
-def main() -> NoReturn:
+def main() -> NoReturn:  # coverage: ignore
     """Plasma calculator."""
     raise RuntimeError("The plasma calculator has been removed.")
