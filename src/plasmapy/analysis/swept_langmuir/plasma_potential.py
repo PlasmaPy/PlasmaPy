@@ -3,7 +3,7 @@ Functionality for determining the plasma potential of a Langmuir sweep.
 """
 
 __all__ = ["find_plasma_potential_via_didv_peak"]
-__aliases__ = ["find_vp_"]
+__aliases__ = []
 
 from typing import NamedTuple
 
@@ -108,10 +108,3 @@ def find_plasma_potential_via_didv_peak(
 
     vp = float(np.average(plasma_potentials))
     return vp, VpExtras(**rtn_extras)
-
-
-find_vp_ = find_plasma_potential_via_didv_peak
-"""
-Alias to
-:func:`~plasmapy.analysis.swept_langmuir.plasma_potential.find_plasma_potential_via_didv_peak`.
-"""
