@@ -153,7 +153,7 @@ def find_didv_peak(  # noqa: C901, PLR0912
     current: np.ndarray,
     *,
     voltage_window: list[float | None] | None = None,
-    smooth_fractions=None,
+    smooth_fractions: list[float] | None = None,
 ) -> tuple[float, dIdVExtras]:
     """
     Find the peak slope (:math:`dI/dV_{max}`) of the swept Langmuir
@@ -182,6 +182,18 @@ def find_didv_peak(  # noqa: C901, PLR0912
         ``voltage`` window will be used.
 
     smooth_fractions : `list[float]` | `None`, default: `None`
+        An order list of fractions in the interval :math:`(0, 1]` used
+        to compute the Savitzky-Golay filter window sizes.  For example,
+        if the ``voltage_windows`` had a size of 50, then a
+        ``smooth_fraction`` value of 0.5 would result in a
+        Savitzky-Golay window size of 25.  If `None` (default), then
+        ``smooth_fractions`` will default to
+        ``np.linspace(0.01, 0.25, num=30)``.
+
+    Notes
+    -----
+
+    Add details about algorithm.
     """
     rtn_extras = dIdVExtras(
         std=None,
