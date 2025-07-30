@@ -9,7 +9,6 @@ __all__ += __aliases__
 from typing import NamedTuple
 
 import numpy as np
-
 from scipy import signal
 
 from plasmapy.analysis.swept_langmuir.helpers import check_sweep, merge_voltage_clusters
