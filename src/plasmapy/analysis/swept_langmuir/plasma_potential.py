@@ -80,6 +80,74 @@ def _condition_voltage_window(voltage, voltage_window) -> slice:
     return slice(first_index, last_index, 1)
 
 
+def _condition_smooth_fractions(smooth_fractions, data_size):
+    """
+    Condition ``smooth_fractions`` and return the resulting
+    Savitzky-Golay filter windows sizes, based on the ``data_size``.
+    """
+    if smooth_fractions is None:
+        smooth_fractions = np.linspace(0.01, 0.25, num=30)
+    elif (
+        isinstance(smooth_fractions, Sequence)
+        and not isinstance(smooth_fractions, np.ndarray)
+    ):
+        smooth_fractions = np.array(smooth_fractions)
+
+    if not isinstance(smooth_fractions, np.ndarray):
+        raise TypeError(
+            "Expected a 1-D list of floats in the interval (0, 1] for argument "
+            f"'smooth_fractions', but got type {type(smooth_fractions)}."
+        )
+    elif smooth_fractions.ndim != 1:
+        raise ValueError(
+            "Expected a 1-D list of floats in the interval (0, 1] for argument "
+            f"'smooth_fractions', but got a {smooth_fractions.ndim}-D list.")
+    elif not np.issubdtype(smooth_fractions.dtype, np.floating):
+        raise ValueError(
+            "Expected a 1-D list of floats in the interval (0, 1] for argument "
+            f"'smooth_fractions', not all elements are floats."
+        )
+
+    smooth_fractions = np.unique(np.sort(smooth_fractions))
+    mask1 = smooth_fractions > 0
+    mask2 = smooth_fractions <= 1
+    mask = np.logical_and(mask1, mask2)
+    if np.count_nonzero(mask) == 0:
+        raise ValueError(
+            "Expected a 1-D list of floats in the interval (0, 1] for argument "
+            f"'smooth_fractions', no elements are within this interval "
+            f"{smooth_fractions.tolist()}."
+        )
+
+    # create bin sizes (savgol_windows) for the savgol_filter
+    savgol_windows = np.unique(np.rint(smooth_fractions * data_size).astype(int))
+
+    # windows need to have at least 2 points
+    mask = savgol_windows > 2
+    savgol_windows = savgol_windows[mask]
+
+    # force windows sizes to be odd
+    mask = savgol_windows % 2 == 0
+    if np.count_nonzero(mask) > 0:
+        savgol_windows[mask] = savgol_windows[mask] + 1
+        savgol_windows = np.unique(savgol_windows)
+
+    # do not let windows sizes be larget than data_size
+    mask = savgol_windows <= data_size
+    savgol_windows = savgol_windows[mask]
+
+    # check savgol_windows is not null
+    if savgol_windows.size == 0:
+        raise ValueError(
+            f"The given smooth_fractions ({smooth_fractions}) and "
+            f"window size ({data_size}) resulted in no valid Savitzky-Golay "
+            f"filter windows.  Computed windows must be odd, greater than 3, "
+            f"and less than or equal to the windows size."
+        )
+
+    return savgol_windows
+
+
 def find_didv_peak(  # noqa: C901, PLR0912
     voltage: np.ndarray,
     current: np.ndarray,
@@ -136,25 +204,14 @@ def find_didv_peak(  # noqa: C901, PLR0912
             f"in a null window or a 1-element window."
         )
 
-    # define smooth_fractions
-    # TODO: add better description
-    if smooth_fractions is None:
-        smooth_fractions = np.linspace(0.01, 0.25, num=30)
-
-    # create bin sizes (smooth_windows) for the savgol_filter
-    smooth_windows = np.unique(np.rint(smooth_fractions * data_size).astype(int))
-    mask = smooth_windows > 2
-    smooth_windows = smooth_windows[mask]
-    mask = smooth_windows % 2 == 0
-    if np.count_nonzero(mask) > 0:
-        smooth_windows[mask] = smooth_windows[mask] + 1
-        smooth_windows = np.unique(smooth_windows)
+    # define starting savgol windows
+    savgol_windows = _condition_smooth_fractions(smooth_fractions, data_size)
 
     voltage_slice = voltage[_slice]
     current_slice = current[_slice]
     plasma_potentials = []
     rtn_extras["savgol_windows"] = []
-    for _window in smooth_windows:
+    for _window in savgol_windows:
         v_smooth = signal.savgol_filter(voltage_slice, _window, 1)
         c_smooth = signal.savgol_filter(current_slice, _window, 1)
 
