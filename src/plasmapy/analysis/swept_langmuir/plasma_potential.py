@@ -191,7 +191,7 @@ def find_didv_peak(  # noqa: C901, PLR0912
         ``smooth_fraction`` value of 0.5 would result in a
         Savitzky-Golay window size of 25.  If `None` (default), then
         ``smooth_fractions`` will default to
-        ``np.linspace(0.01, 0.25, num=30)``.
+        ``numpy.linspace(0.01, 0.25, num=30)``.
 
     Notes
     -----
