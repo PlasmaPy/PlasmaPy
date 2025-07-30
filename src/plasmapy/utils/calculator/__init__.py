@@ -9,6 +9,8 @@ import pathlib
 import shlex
 import subprocess
 
+from plasmapy.utils.decorators.deprecation import deprecated
+
 _description = """
 Plasma calculator is a tool that opens a page in a web browser for
 interactive calculation of plasma parameters.
@@ -19,10 +21,19 @@ and feedback: https://github.com/PlasmaPy/PlasmaPy/issues/new
 """
 
 
+@deprecated(
+    since="v2025.7.0",
+    message=(
+        "PlasmaPy's prototype plasma calculator has been deprecated so that "
+        "it can be extracted into a standalone package. It will be removed in "
+        "the next release of PlasmaPy."
+    ),
+)
 def main() -> None:
     """
     Stub function for command line tool that launches the plasma calculator notebook.
     """
+
     parser = argparse.ArgumentParser(description=_description)
     parser.add_argument(
         "--port", type=int, default=8866, help="Port to run the notebook"
