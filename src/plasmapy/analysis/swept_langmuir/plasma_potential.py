@@ -162,7 +162,7 @@ def find_didv_peak(  # noqa: C901, PLR0912
     Find the peak slope (:math:`dI/dV_{max}`) of the swept Langmuir
     trace.
 
-    This is often used as a rough estimate of the plasma potential.
+    The peak slope is often used as a rough estimate of the plasma potential.
     However, it will always be slightly less than the actual plasma
     potential.
 
