@@ -159,12 +159,12 @@ def find_didv_peak(  # noqa: C901, PLR0912
     smooth_fractions: list[float] | None = None,
 ) -> tuple[float, dIdVExtras]:
     """
-    Find the peak slope (:math:`dI/dV_{max}`) of the swept Langmuir
-    trace.
+    Find the bias voltage at which the peak slope (:math:`dI/dV_{max}`)
+    of the swept Langmuir trace occurs.
 
-    The peak slope is often used as a rough estimate of the plasma
-    potential.  However, it will always be slightly less than the
-    actual plasma potential.
+    The peak slope bias voltage is often used as a rough estimate of
+    the plasma potential.  However, the value will always be slightly
+    less than the actual plasma potential.
 
     Parameters
     ----------
