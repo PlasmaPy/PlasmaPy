@@ -2,7 +2,7 @@
 Functionality for determining the plasma potential of a Langmuir sweep.
 """
 
-__all__ = ["find_didv_peak_location"]
+__all__ = ["find_didv_peak_location", "dIdVExtras"]
 __aliases__ = []
 __all__ += __aliases__
 
