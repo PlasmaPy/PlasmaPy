@@ -6,7 +6,9 @@ Script and utilities to launch the plasma calculator.
    so that it can be included in a standalone package.
 """
 
+from typing import NoReturn
 
-def main():
+
+def main() -> NoReturn:
     """Plasma calculator."""
     raise RuntimeError("The plasma calculator has been removed.")
