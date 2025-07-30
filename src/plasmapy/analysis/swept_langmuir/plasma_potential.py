@@ -46,7 +46,7 @@ def _condition_voltage_window(voltage, voltage_window) -> slice:
     ):
         raise TypeError(f"Not all elements of 'voltage_window' are floats or None.")
     elif None not in voltage_window:
-        voltage_window = np.sort(voltage).tolist()
+        voltage_window = np.sort(voltage_window).tolist()
 
     # determine data window
     if (
