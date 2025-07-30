@@ -6,7 +6,7 @@ Script and utilities to launch the plasma calculator.
    so that it can be included in a standalone package.
 """
 
-from typing import NoReturn
+from typing import NoReturn  # coverage: ignore
 
 
 def main() -> NoReturn:  # coverage: ignore
