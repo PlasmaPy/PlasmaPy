@@ -15,7 +15,7 @@ from scipy import signal
 from plasmapy.analysis.swept_langmuir.helpers import check_sweep, merge_voltage_clusters
 
 
-class VpExtras(NamedTuple):
+class dIdVExtras(NamedTuple):
     std: float | None
     data_slice: slice | None
     savgol_windows: list[int] | None
@@ -29,7 +29,7 @@ def find_didv_peak(
     floating_potential: float | None = None,
     smooth_fractions=None,
 ):
-    rtn_extras = VpExtras(
+    rtn_extras = dIdVExtras(
         std=None,
         data_slice=None,
         savgol_windows=None,
@@ -104,4 +104,4 @@ def find_didv_peak(
     rtn_extras["std"] = float(np.std(plasma_potentials))
 
     vp = float(np.average(plasma_potentials))
-    return vp, VpExtras(**rtn_extras)
+    return vp, dIdVExtras(**rtn_extras)
