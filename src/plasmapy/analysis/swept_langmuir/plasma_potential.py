@@ -2,7 +2,7 @@
 Functionality for determining the plasma potential of a Langmuir sweep.
 """
 
-__all__ = ["find_plasma_potential_via_didv_peak"]
+__all__ = ["find_didv_peak"]
 __aliases__ = []
 
 from typing import NamedTuple
@@ -24,7 +24,7 @@ class VpExtras(NamedTuple):
     method: str | None
 
 
-def find_plasma_potential_via_didv_peak(
+def find_didv_peak(
     voltage: np.ndarray,
     current: np.ndarray,
     # *,
