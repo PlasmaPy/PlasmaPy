@@ -16,10 +16,10 @@ from plasmapy.analysis.swept_langmuir.helpers import check_sweep, merge_voltage_
 
 
 class VpExtras(NamedTuple):
-    vp_std: float | None
+    std: float | None
     data_slice: slice | None
     savgol_windows: list[int] | None
-    computed_plasma_potentials: list[float] | None
+    savgol_peaks: list[float] | None
 
 
 def find_didv_peak(
@@ -30,10 +30,10 @@ def find_didv_peak(
     smooth_fractions=None,
 ):
     rtn_extras = VpExtras(
-        vp_std=None,
+        std=None,
         data_slice=None,
         savgol_windows=None,
-        computed_plasma_potentials=None,
+        savgol_peaks=None,
     )._asdict()
 
     # check voltage and current arrays
@@ -100,8 +100,8 @@ def find_didv_peak(
         plasma_potentials.append(float(vp))
         rtn_extras["savgol_windows"].append(int(_window))
 
-    rtn_extras["computed_plasma_potentials"] = plasma_potentials
-    rtn_extras["vp_std"] = float(np.std(plasma_potentials))
+    rtn_extras["savgol_peaks"] = plasma_potentials
+    rtn_extras["std"] = float(np.std(plasma_potentials))
 
     vp = float(np.average(plasma_potentials))
     return vp, VpExtras(**rtn_extras)
