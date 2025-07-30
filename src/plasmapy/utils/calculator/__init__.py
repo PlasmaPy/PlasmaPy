@@ -9,6 +9,4 @@ Script and utilities to launch the plasma calculator.
 
 def main():
     """Plasma calculator."""
-    raise RuntimeError(
-        "The plasma calculator has been removed."
-    )
+    raise RuntimeError("The plasma calculator has been removed.")

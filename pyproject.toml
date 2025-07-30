@@ -79,8 +79,8 @@ dependencies = [
 # user-facing, so we can have stricter requirements.
 optional-dependencies.docs = [
   "docutils>=0.20.1",
-  "jinja2>=3.1.4",
   "ipykernel>=6.30",
+  "jinja2>=3.1.4",
   "nbsphinx>=0.9.4",
   "nox[uv]>=2025.5.1",
   "numpydoc>=1.7",
