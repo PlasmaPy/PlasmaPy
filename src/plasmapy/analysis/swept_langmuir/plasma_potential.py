@@ -2,7 +2,7 @@
 Functionality for determining the plasma potential of a Langmuir sweep.
 """
 
-__all__ = ["find_didv_peak"]
+__all__ = ["find_didv_peak_location"]
 __aliases__ = []
 __all__ += __aliases__
 
@@ -151,7 +151,7 @@ def _condition_smooth_fractions(smooth_fractions, data_size):
     return savgol_windows
 
 
-def find_didv_peak(  # noqa: C901, PLR0912
+def find_didv_peak_location(  # noqa: C901, PLR0912
     voltage: np.ndarray,
     current: np.ndarray,
     *,
