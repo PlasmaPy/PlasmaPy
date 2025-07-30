@@ -126,7 +126,7 @@ def find_didv_peak(  # noqa: C901, PLR0912
     voltage, current = check_sweep(voltage, current, strip_units=True)
     voltage, current = merge_voltage_clusters(voltage, current, voltage_step_size=0)
 
-    # condition voltage_windows
+    # condition voltage_window
     _slice = _condition_voltage_window(voltage, voltage_window)
     rtn_extras["data_slice"] = _slice
     data_size = len(_slice.indices(voltage.size))
