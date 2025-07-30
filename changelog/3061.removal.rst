@@ -1,0 +1,2 @@
+Deprecated `plasmapy.utils.calculator` prior to the plasma calculator
+being extracted into a standalone package.
