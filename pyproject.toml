@@ -124,6 +124,8 @@ urls.Documentation = "https://docs.plasmapy.org/"
 urls.Issues = "https://github.com/PlasmaPy/plasmapy/issues/"
 urls.Source = "https://github.com/PlasmaPy/plasmapy"
 urls.website = "https://www.plasmapy.org"
+
+# Deprecated in favor of standalone package
 scripts.plasma-calculator = "plasmapy.utils.calculator:main"
 
 [tool.setuptools]
