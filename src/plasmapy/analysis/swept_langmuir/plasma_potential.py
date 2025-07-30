@@ -24,6 +24,10 @@ class dIdVExtras(NamedTuple):  # noqa: N801
 
 
 def _condition_voltage_window(voltage, voltage_window) -> slice:
+    """
+    Condition ``voltage_window`` and return resulting `slice` object to
+    index ``voltage``.
+    """
     if voltage_window is None:
         voltage_window = [None, None]
     elif not isinstance(voltage_window, Sequence):
