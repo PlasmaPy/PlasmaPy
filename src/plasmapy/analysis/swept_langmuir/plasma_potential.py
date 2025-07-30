@@ -30,6 +30,34 @@ def find_didv_peak(  # noqa: C901, PLR0912
     voltage_window: list[float | None] | None = None,
     smooth_fractions=None,
 ):
+    """
+    Find the peak slope (:math:`dI/dV_{max}`) of the swept Langmuir
+    trace.
+
+    This is often used as a rough estimate of the plasma potential.
+    However, it will always be slightly less than the actual plasma
+    potential.
+
+    Parameters
+    ----------
+    voltage : `numpy.ndarray`
+        1-D numpy array of monotonically increasing probe biases
+        (should be in volts).
+
+    current : `numpy.ndarray`
+        1-D numpy array of probe current (should be in amperes)
+        corresponding to the ``voltage`` array.
+
+    voltage_window : `list[float | None]` | `None`, default: `None`
+        A two-element list ``[v_min, v_max]`` that specifies the voltage
+        range in which the peak slope will be looked for.  Specifying
+        `None` for either the first or second element will result in a
+        window using the lower or upper bound of ``voltage``
+        respectively.  If set to `None` (default), then the whole
+        ``voltage`` window will be used.
+
+    smooth_fractions : `list[float]` | `None`, default: `None`
+    """
     rtn_extras = dIdVExtras(
         std=None,
         data_slice=None,
