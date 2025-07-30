@@ -125,7 +125,7 @@ urls.Issues = "https://github.com/PlasmaPy/plasmapy/issues/"
 urls.Source = "https://github.com/PlasmaPy/plasmapy"
 urls.website = "https://www.plasmapy.org"
 
-# Deprecated in favor of standalone package
+# Remove references to plasma calculator after mid-2026
 scripts.plasma-calculator = "plasmapy.utils.calculator:main"
 
 [tool.setuptools]
@@ -134,7 +134,6 @@ include-package-data = true
 [tool.setuptools.package-data]
 "plasmapy.particles.data" = [ "*" ]
 "plasmapy.tests" = [ "coveragerc" ]
-"plasmapy.utils.calculator" = [ "*" ]
 
 [tool.setuptools.packages.find]
 where = [ "src" ]
@@ -328,7 +327,6 @@ lint.per-file-ignores."src/plasmapy/analysis/swept_langmuir/__init__.py" = [ "E4
 lint.per-file-ignores."src/plasmapy/formulary/braginskii.py" = [ "C901", "RET503", "RET504" ]
 lint.per-file-ignores."src/plasmapy/plasma/sources/*.py" = [ "D102" ]
 lint.per-file-ignores."src/plasmapy/utils/_pytest_helpers/pytest_helpers.py" = [ "BLE001", "PLR", "SLF001" ]
-lint.per-file-ignores."src/plasmapy/utils/calculator/plasma_calculator.ipynb" = [ "SLF001" ]
 lint.per-file-ignores."tests/**/__init__.py" = [ "D104" ]
 lint.per-file-ignores."tests/**/test_*.py" = [
   "D100",
@@ -533,7 +531,6 @@ exclude_lines = [
 branch = true
 source = [ "src" ]
 omit = [
-  "*/plasmapy/utils/calculator/*",
   "*/plasmapy/tests/*",
   "*/plasmapy/*version.py",
   "*/plasmapy/_dev/*",
