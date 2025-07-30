@@ -122,8 +122,8 @@ Installing PlasmaPy with Conda
 Conda_ is a package management system and environment manager that is
 commonly used in the scientific |Python| ecosystem. Similar to |uv|,
 Conda_ is used to create and manage isolated virtual |Python| environments.
-However, Conda_ can also be used for packages written in languages other
-than |Python|.
+Conda_ can also be used for packages written in languages other than
+|Python|.
 
 After `installing Conda`_ or miniconda_, `plasmapy` can be installed
 into an activated Conda_ environment by opening a terminal and running:
