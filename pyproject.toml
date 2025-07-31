@@ -85,7 +85,7 @@ optional-dependencies.docs = [
   "nox[uv]>=2025.5.1",
   "numpydoc>=1.7",
   "pillow>=10.4",
-  "plasmapy-sphinx>=0.2.0b1",
+  "plasmapy-sphinx>=2025.5.1",
   "pygments==2.18",
   "sphinx>=8.2.3",
   "sphinx-changelog>=1.5",
