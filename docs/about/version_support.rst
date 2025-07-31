@@ -4,6 +4,9 @@
 Policies
 ********
 
+.. contents:: Contents
+   :local:
+
 .. _version-support:
 
 Version support policy for dependencies
