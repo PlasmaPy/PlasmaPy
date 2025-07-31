@@ -399,7 +399,7 @@ Improved Documentation
 - Added an example notebook that introduces how to use
   `plasmapy.particles`. (`#1382
   <https://github.com/plasmapy/plasmapy/pull/1382>`__)
-- Described the |plasma-calculator| in the narrative
+- Described the prototype plasma-calculator in the narrative
   documentation. (`#1390
   <https://github.com/plasmapy/plasmapy/pull/1390>`__)
 - Updated the cold magnetized plasma dielectric permittivity tensor
