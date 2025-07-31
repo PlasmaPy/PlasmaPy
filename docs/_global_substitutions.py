@@ -98,7 +98,6 @@ doc_subs: dict[str, str] = {
     "parameters": r":term:`parameters <parameter>`\ ",
     "particle-like": r":term:`particle-like`\ ",
     "particle-list-like": r":term:`particle-list-like`\ ",
-    "plasma-calculator": r":ref:`plasmapy-calculator`\ ",
     "src/plasmapy": r":file:`src/plasmapy`\ ",
     "testing guide": r":ref:`testing guide`\ ",
     "tests": r":file:`tests`\ ",
