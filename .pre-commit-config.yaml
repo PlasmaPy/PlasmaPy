@@ -84,6 +84,7 @@ repos:
   hooks:
   - id: typos
     name: typos (add false positives to _typos.toml)
+    exclude: .pre-commit-search-and-replace.yaml
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
   rev: v0.12.3
