@@ -1,3 +1,3 @@
-Added the ``source_vdir`` keyword to the ``create_particles``
+Added the ``source_vdir`` keyword to the `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography.Tracker.create_particles`
 method of `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography.Tracker` to explicitly define the
 orientation of the mean velocity of the source particles.
