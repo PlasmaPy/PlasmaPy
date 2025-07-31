@@ -1,1 +1,1 @@
-Extended the description of the physics of the `~plasmapy.formulary.dimensionless.Hall_parameter`.
+Expanded the docstring of `~plasmapy.formulary.dimensionless.Hall_parameter`.
