@@ -121,7 +121,7 @@ class ValidateQuantities(CheckUnits, CheckValues):
 
         @ValidateQuantities(
             arg1={"units": u.cm},
-            validations_on_return = {"units": u.km, "pass_equivalent_units": True},
+            validations_on_return={"units": u.km, "pass_equivalent_units": True},
         )
         def foo(arg1):
             return arg1
@@ -281,7 +281,9 @@ class ValidateQuantities(CheckUnits, CheckValues):
             validations[arg_name].update(value_checks[arg_name])
 
         if "validations_on_return" in validations:
-            validations["validations_on_return"] = validations.pop("validations_on_return")
+            validations["validations_on_return"] = validations.pop(
+                "validations_on_return"
+            )
 
         return validations
 
