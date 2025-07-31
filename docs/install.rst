@@ -73,7 +73,7 @@ installation. |uv| provides a `pip drop-in interface`_ for common |pip|
 commands to install packages from |PyPI|.
 
 By default, |uv| requires that packages be installed into
-`uv-managed virtual environments`_ rather than the system Python
+`uv managed virtual environments`_ rather than the system Python
 installation. After `installing uv`_, create a virtual environment by
 opening a terminal and running:
 
@@ -100,7 +100,7 @@ different operating systems and Unix shells.
    .. group-tab:: macOS and Linux
 
       To activate the virtual environment on POSIX-compliant shells like
-      `bash`, `zsh`, and `sh`, run:
+      ``bash``, ``zsh``, and ``sh``, run:
 
       .. code-block:: bash
 
