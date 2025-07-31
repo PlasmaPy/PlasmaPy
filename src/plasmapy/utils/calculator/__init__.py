@@ -11,4 +11,8 @@ from typing import NoReturn  # coverage: ignore
 
 def main() -> NoReturn:  # coverage: ignore
     """Plasma calculator."""
-    raise RuntimeError("The plasma calculator has been removed.")
+    raise RuntimeError(
+        "The plasma calculator has been extracted from PlasmaPy into a "
+        "standalone package. For more details, see: "
+        "https://github.com/PlasmaPy/plasmapy-calculator"
+    )
