@@ -8,12 +8,11 @@ Length Plasma Parameters (`plasmapy.formulary.lengths`)
 
 .. automodapi:: plasmapy.formulary.lengths
 
-Examples
-========
+Example notebooks
+-----------------
 
 .. nbgallery::
-    :caption: Examples
 
-    /notebooks/formulary/ExB_drift
-    /notebooks/formulary/iter
-    /notebooks/formulary/magnetosphere
+   /notebooks/formulary/ExB_drift
+   /notebooks/formulary/iter
+   /notebooks/formulary/magnetosphere

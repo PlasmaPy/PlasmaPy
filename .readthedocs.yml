@@ -3,21 +3,37 @@
 
 version: 2
 
+sphinx:
+  configuration: docs/conf.py
+
 formats:
 - htmlzip
 
 build:
-  os: ubuntu-22.04
+  os: ubuntu-24.04
   tools:
     python: '3.12'
+
   apt_packages:
   - graphviz
-  jobs:
-    post_build:
-    - echo $'\n'For help deciphering documentation build error messages, see:$'\n\n'\ \ https://docs.plasmapy.org/en/latest/contributing/doc_guide.html#troubleshooting
 
-python:
-  install:
-  - method: pip
-    path: .
-  - requirements: ci_requirements/docs-3.12-linux.txt
+  jobs:
+
+    create_environment:
+    - asdf plugin add uv
+    - asdf install uv latest
+    - asdf global uv latest
+    - uv venv --python=3.12
+
+    install:
+    - uv sync --extra docs --frozen --exact
+
+    build:
+      html:
+      - uv run --extra docs --frozen --exact nox -s docs
+
+      htmlzip:
+      - uv run --extra docs --frozen --exact nox -s docs_bundle_htmlzip
+
+    post_build:
+    - echo $'\n'⚠️ For help deciphering documentation build error messages, see:$'\n\n'\ \ https://docs.plasmapy.org/en/latest/contributing/doc_guide.html#troubleshooting

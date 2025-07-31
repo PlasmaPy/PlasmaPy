@@ -288,8 +288,7 @@ class AbstractFitFunction(ABC):
                 pass
             elif x_err.shape != x.shape:
                 raise ValueError(
-                    f"x_err shape {x_err.shape} must be equal the shape of "
-                    f"x {x.shape}."
+                    f"x_err shape {x_err.shape} must be equal the shape of x {x.shape}."
                 )
         return x, x_err
 
@@ -302,8 +301,7 @@ class AbstractFitFunction(ABC):
         for arg in args:
             if not isinstance(arg, numbers.Real):
                 raise TypeError(
-                    f"Expected int or float for parameter argument, got "
-                    f"{type(arg)}."
+                    f"Expected int or float for parameter argument, got {type(arg)}."
                 )
 
     @staticmethod
@@ -323,8 +321,7 @@ class AbstractFitFunction(ABC):
                 or np.issubdtype(x.dtype, np.floating)
             ):
                 raise TypeError(
-                    "Argument x needs to be an array_like object of integers "
-                    "or floats."
+                    "Argument x needs to be an array_like object of integers or floats."
                 )
 
             x = x.squeeze()
@@ -365,15 +362,7 @@ class AbstractFitFunction(ABC):
         >>> func.param_errors = (0.0, 0.0)
         >>> roots = fsolve(func, -4.0, full_output=True)
         >>> roots
-        (array([-5.]),
-         {'nfev': 4,
-          'fjac': array([[-1.]]),
-          'r': array([-1.]),
-          'qtf': array([2.18...e-12]),
-          'fvec': 0.0},
-         1,
-         'The solution converged.')
-
+        (array([-5.]), {'nfev': 5, 'fjac': array([[-1.]]), 'r': array([-1.]), 'qtf': array([-1.]), 'fvec': np.float64(0.0)}, 1, 'The solution converged.')
         """
         results = fsolve(self.func, x0, args=self.params)
 

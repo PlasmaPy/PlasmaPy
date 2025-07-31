@@ -38,6 +38,9 @@ physical quantities helpful for plasma physics. |:abacus:|
    | .. toctree:: Ionization <ionization>                   | `plasmapy.formulary.ionization`         |
    |    :maxdepth: 1                                        |                                         |
    +--------------------------------------------------------+-----------------------------------------+
+   | .. toctree:: Laser <laser>                             | `plasmapy.formulary.laser`              |
+   |    :maxdepth: 1                                        |                                         |
+   +--------------------------------------------------------+-----------------------------------------+
    | .. toctree:: Lengths <lengths>                         | `plasmapy.formulary.lengths`            |
    |    :maxdepth: 1                                        |                                         |
    +--------------------------------------------------------+-----------------------------------------+
@@ -77,17 +80,13 @@ appropriate units. If that happens, you will be notified via a
 Please note that well-maintained physical constant data with units and
 uncertainties can be found in `astropy.constants`.
 
-Examples
-========
-
-For a general overview of how unit-based input works, take a look at the
-following examples:
+Example notebooks
+-----------------
 
 .. nbgallery::
-    :caption: Examples
-    :glob:
+   :glob:
 
-    ../notebooks/formulary/*
+   ../notebooks/formulary/*
 
 API
 ===

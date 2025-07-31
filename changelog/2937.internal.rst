@@ -1,0 +1,8 @@
+Began using :file:`uv.lock` to pin the versions of dependencies used
+in tests and documentation builds. Previously, pinned requirements had
+been stored in :file:`requirements.txt` style files in
+:file:`ci_requirements/` that were generated with ``uv pip compile``
+for each operating system, Python version, and dependency set. Using
+:file:`uv.lock` lets us store requirements information for
+different operating systems, Python versions, and dependency sets in
+a single file.

@@ -1,0 +1,4 @@
+Fixed references to the ``astropy.units.equivalencies`` module in the docs. Astropy now considers
+this file to be private API (which broke PlasmaPy's intersphinx links), and
+recommends that its contents be imported through the `astropy.units` namespace.
+This pull request changes those links to a direct URL to |Astropy Equivalencies|.

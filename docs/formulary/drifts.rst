@@ -8,11 +8,9 @@ Particle drifts (`plasmapy.formulary.drifts`)
 
 .. automodapi:: plasmapy.formulary.drifts
 
-
-Examples
-========
+Example notebooks
+-----------------
 
 .. nbgallery::
-    :caption: Examples
 
-    /notebooks/formulary/ExB_drift
+   /notebooks/formulary/ExB_drift

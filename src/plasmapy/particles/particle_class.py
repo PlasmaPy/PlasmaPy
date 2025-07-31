@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Literal
 
 __all__ = [
     "AbstractParticle",
@@ -20,7 +20,7 @@ import typing
 import warnings
 from abc import ABC, abstractmethod
 from collections import defaultdict, namedtuple
-from datetime import datetime
+from datetime import datetime, timezone
 from numbers import Integral, Real
 from typing import TYPE_CHECKING, TypeAlias
 
@@ -170,7 +170,7 @@ class AbstractParticle(ABC):
             "plasmapy_particle": {
                 "type": type(self).__name__,
                 "module": self.__module__,
-                "date_created": datetime.utcnow().strftime(  # noqa: DTZ003
+                "date_created": datetime.now(timezone.utc).strftime(  # noqa: UP017
                     "%Y-%m-%d %H:%M:%S UTC"
                 ),
                 "__init__": {"args": (), "kwargs": {}},
@@ -197,7 +197,7 @@ class AbstractParticle(ABC):
         **kwargs:
             Any keyword accepted by `json.dump`.
         """
-        return json.dump(self.json_dict, fp, **kwargs)  # type: ignore[arg-type]
+        return json.dump(self.json_dict, fp, **kwargs)
 
     def json_dumps(self, **kwargs: object) -> str:
         """
@@ -223,7 +223,9 @@ class AbstractPhysicalParticle(AbstractParticle):
     @property
     def _as_particle_list(self) -> ParticleList:
         # Avoid circular imports by importing here
-        from plasmapy.particles.particle_collections import ParticleList
+        from plasmapy.particles.particle_collections import (  # noqa: PLC0415
+            ParticleList,
+        )
 
         return ParticleList([self])
 
@@ -842,8 +844,7 @@ class Particle(AbstractPhysicalParticle):
             for key in _ionization_energy.data_about_ionization_energy:
                 if key.startswith(element_key + " "):
                     charge = int(key.split()[-1].replace("+", ""))
-                    if charge > max_charge:
-                        max_charge = charge
+                    max_charge = max(charge, max_charge)
 
             if charge_number <= max_charge:
                 ions = [
@@ -1593,7 +1594,7 @@ class Particle(AbstractPhysicalParticle):
         >>> D.isotopic_abundance
         0.000115
         """
-        from plasmapy.particles.atomic import common_isotopes
+        from plasmapy.particles.atomic import common_isotopes  # noqa: PLC0415
 
         if not self.isotope or self.is_ion:
             raise InvalidIsotopeError(_category_errmsg(self.symbol, "isotope"))
@@ -1794,7 +1795,9 @@ class Particle(AbstractPhysicalParticle):
         """
         return self.is_category("ion")
 
-    def ionize(self, n: int = 1, inplace: bool = False) -> Particle | None:
+    def ionize(
+        self, n: int | Literal[np.inf] = 1, inplace: bool = False
+    ) -> Particle | None:
         """
         Create a new |Particle| instance corresponding to the current
         |Particle| after being ionized ``n`` times.
@@ -1823,6 +1826,8 @@ class Particle(AbstractPhysicalParticle):
             A new |Particle| object that has been ionized ``n`` times
             relative to the original |Particle|.  If ``inplace`` is
             `False`, instead return `None`.
+            If |inf| is passed as ``n``, the particle will be fully ionized,
+            and the result will be the nucleus of the ion.
 
         Raises
         ------
@@ -1849,9 +1854,15 @@ class Particle(AbstractPhysicalParticle):
         """
         if not self.element:
             raise InvalidElementError(
-                f"Cannot ionize {self.symbol} because it is not a "
-                f"neutral atom or ion."
+                f"Cannot ionize {self.symbol} because it is not a neutral atom or ion."
             )
+
+        if np.isinf(n):
+            if inplace:
+                self.__init__(self.nucleus.symbol)
+                return None
+            else:
+                return self.nucleus
         assumed_charge_number = (
             self.charge_number
             if self.is_category(any_of={"charged", "uncharged"})
@@ -1862,6 +1873,7 @@ class Particle(AbstractPhysicalParticle):
                 f"The particle {self.symbol} is already fully "
                 f"ionized and cannot be ionized further."
             )
+
         if not isinstance(n, Integral):
             raise TypeError("n must be a positive integer.")
         if n <= 0:
@@ -1995,22 +2007,20 @@ class Particle(AbstractPhysicalParticle):
         ~plasmapy.particles.exceptions.MissingParticleDataError
             If the electron binding energy is not available for the particle.
 
-
         Returns
         -------
         electron_binding_energy : `~astropy.units.Quantity`
             The electron binding energy of the particle in Joules.
 
-
         Examples
         --------
         >>> helium = Particle("He")
         >>> helium.electron_binding_energy
-        <Quantity 8.71868724e-18 J>
+        <Quantity 1.2658...e-17 J>
 
         >>> carbon_3 = Particle("C 3+")
         >>> carbon_3.electron_binding_energy
-        <Quantity 1.413254e-16 J>
+        <Quantity 1.5165...e-16 J>
 
         Notes
         -----
@@ -2079,9 +2089,9 @@ class DimensionlessParticle(AbstractParticle):
     >>> from plasmapy.particles import DimensionlessParticle
     >>> particle = DimensionlessParticle(mass=1.0, charge=-1.0, symbol="ξ")
     >>> particle.mass
-    1.0
+    np.float64(1.0)
     >>> particle.charge
-    -1.0
+    np.float64(-1.0)
     >>> particle.symbol
     'ξ'
     """
@@ -2122,7 +2132,7 @@ class DimensionlessParticle(AbstractParticle):
         # TODO: Replace with validator? Use an equivalency between
         # coulombs and reals
 
-        if obj is None or obj is np.nan:
+        if obj is None or np.isnan(obj):
             return np.nan
         elif np.isinf(obj):
             return obj
@@ -2161,14 +2171,14 @@ class DimensionlessParticle(AbstractParticle):
         {'plasmapy_particle': {'type': 'DimensionlessParticle',
             'module': 'plasmapy.particles.particle_class',
             'date_created': '...',
-            '__init__': {'args': (), 'kwargs': {'mass': 1.0, 'charge': -1.0,
+            '__init__': {'args': (), 'kwargs': {'mass': np.float64(1.0), 'charge': np.float64(-1.0),
             'symbol': 'DimensionlessParticle(mass=1.0, charge=-1.0)'}}}}
         >>> dimensionless_particle = DimensionlessParticle(mass=1.0)
         >>> dimensionless_particle.json_dict
         {'plasmapy_particle': {'type': 'DimensionlessParticle',
             'module': 'plasmapy.particles.particle_class',
             'date_created': '...',
-            '__init__': {'args': (), 'kwargs': {'mass': 1.0, 'charge': nan,
+            '__init__': {'args': (), 'kwargs': {'mass': np.float64(1.0), 'charge': nan,
             'symbol': 'DimensionlessParticle(mass=1.0, charge=nan)'}}}}
         """
         particle_dictionary = super().json_dict
@@ -2513,7 +2523,7 @@ class CustomParticle(AbstractPhysicalParticle):
     @property
     def charge_number(self) -> float:
         """The ratio of the charge to the elementary charge."""
-        return (self.charge / const.e.si).value  # type: ignore[no-any-return]
+        return (self.charge / const.e.si).value
 
     @charge_number.setter
     def charge_number(self, Z: int) -> None:

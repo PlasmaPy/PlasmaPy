@@ -726,6 +726,7 @@ class Test_collision_frequency:
     def test_symmetry(self) -> None:
         with pytest.warns(CouplingWarning):
             result = collision_frequency(self.T, self.n, self.particles)
+        with pytest.warns(CouplingWarning):
             resultRev = collision_frequency(self.T, self.n, self.particles[::-1])
         assert result == resultRev
 
@@ -801,8 +802,7 @@ class Test_collision_frequency:
             self.True_electrons, methodVal.si.value, rtol=1e-1, atol=0.0
         )
         errStr = (
-            f"Collision frequency should be {self.True_electrons} and "
-            f"not {methodVal}."
+            f"Collision frequency should be {self.True_electrons} and not {methodVal}."
         )
         assert testTrue, errStr
 
@@ -823,8 +823,7 @@ class Test_collision_frequency:
             self.True_protons, methodVal.si.value, rtol=1e-1, atol=0.0
         )
         errStr = (
-            f"Collision frequency should be {self.True_protons} and "
-            f"not {methodVal}."
+            f"Collision frequency should be {self.True_protons} and not {methodVal}."
         )
         assert testTrue, errStr
 

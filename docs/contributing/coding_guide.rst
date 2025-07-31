@@ -1,8 +1,8 @@
 .. _coding guide:
 
-************
-Coding Guide
-************
+***************
+Coding Guide 👾
+***************
 
 .. contents:: Table of Contents
    :depth: 2
@@ -186,7 +186,7 @@ code is supposed to be doing.
 
 * Avoid unnecessary abbreviations, as these make code harder to read.
   Prefer clarity over brevity, except for code that is used frequently
-  and interactively (e.g., :command:`cd` or :command:`ls`).
+  and interactively (e.g., ``cd`` or ``ls``).
 
   .. tip::
 
@@ -650,7 +650,7 @@ Dependencies and requirements
   |pyproject.toml|_ under :toml:`[project.dependencies]` (i.e., in the
   :toml:`dependencies` array in the :toml:`[project]` table).
 
-* PlasmaPy releases should follow the recommendations in `SPEC 0`_,
+* PlasmaPy releases should follow the recommendations in |SPEC 0|,
   including that:
 
   - Support for Python versions be dropped **3 years** after their
@@ -658,15 +658,17 @@ Dependencies and requirements
   - Support for core package dependencies be dropped **2 years** after
     their initial release.
 
-* The |ci_requirements/|_ directory contains pinned requirements files
-  for use in continuous integration tests (see
-  |ci_requirements/README.md|_).
+* The |uv.lock|_ file contains pinned requirements files
+  for use in continuous integration tests.
 
   - These files are updated periodically via pull requests created by a
-    GitHub workflow to `update pinned requirements`_.
+    GitHub workflow to `update pinned requirements`_, defined in this
+    `script <https://github.com/PlasmaPy/PlasmaPy/blob/main/.github/workflows/update-pinned-reqs.yml>`__.
 
   - When updating requirements in |pyproject.toml|_, run
     :bash:`nox -s requirements` to update the pinned requirements files.
+
+  - Validate requirements with :bash:`nox -s validate_requirements`.
 
 * Even if a dependency is unlikely to be shared with packages installed
   alongside PlasmaPy, that dependency may have strict requirements that
@@ -687,7 +689,7 @@ Dependencies and requirements
      become compatible with the latest versions of its dependencies than
      to set a maximum requirement.
 
-* It sometimes takes a few months for packages like |Numba| to become
+* It sometimes takes a few months for packages like Numba to become
   compatible with the newest minor version of |Python|.
 
 * The ``tests`` and ``docs`` dependency sets are required for running
@@ -800,14 +802,11 @@ that corresponds to :py:`function` as would be defined in
 
    from numbers import Real
 
-   from numba import njit
-   from plasmapy.utils.decorators import bind_lite_func, preserve_signature
+   from plasmapy.utils.decorators import bind_lite_func
 
    __all__ += __lite_funcs__
 
 
-   @preserve_signature
-   @njit
    def function_lite(v: float) -> float:
        """
        The lite-function which accepts and returns real numbers in
@@ -843,17 +842,8 @@ that corresponds to :py:`function` as would be defined in
   allows the :term:`lite-function` to also be accessed like
   :py:`thermal_speed.lite()`.
 
-* If a :term:`lite-function` is decorated with something like
-  :py:`@njit`, then it should also be decorated with
-  `~plasmapy.utils.decorators.helpers.preserve_signature`. This
-  preserves the function signature so interpreters can still
-  give hints about function arguments.
-
-* When possible, a :term:`lite-function` should incorporate `numba's
-  just-in-time compilation
-  <https://numba.pydata.org/numba-doc/latest/reference/jit-compilation.html>`__
-  or utilize Cython_. At a minimum any "extra" code beyond the raw
-  calculation should be removed.
+* A :term:`lite-function` should not include any "extra" code beyond the
+  raw calculation. In the future
 
 * The name of the original function should be included in :py:`__all__`
   near the top of each module, and the name of the :term:`lite-function`
@@ -1069,6 +1059,13 @@ an angular frequency to get a length scale:
 
 .. _performing releases:
 
+Security policy
+===============
+
+PlasmaPy's `security policy`_ is located at :file:`.github/SECURITY.md`.
+The GitHub repository has a link to
+`privately report security vulnerabilities`_.
+
 Performing releases
 ===================
 
@@ -1099,7 +1096,7 @@ The overall process of performing a release is:
 
 .. _ASCII: https://en.wikipedia.org/wiki/ASCII
 .. _autotyping: https://github.com/JelleZijlstra/autotyping
-.. _cognitive complexity: https://docs.codeclimate.com/docs/cognitive-complexity
+.. _cognitive complexity: https://getdx.com/blog/cognitive-complexity/
 .. _create a release issue: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/create-release-issue.yml
 .. _Cython: https://cython.org
 .. _equivalencies: https://docs.astropy.org/en/stable/units/equivalencies.html
@@ -1113,11 +1110,12 @@ The overall process of performing a release is:
 .. _NEP 29: https://numpy.org/neps/nep-0029-deprecation_policy.html
 .. _not a number: https://en.wikipedia.org/wiki/NaN
 .. _NumPy Enhancement Proposal 29: https://numpy.org/neps/nep-0029-deprecation_policy.html
+.. _privately report security vulnerabilities: https://github.com/PlasmaPy/PlasmaPy/security/advisories/new
 .. _Python Packaging User Guide: https://packaging.python.org
 .. _pyupgrade: https://github.com/asottile/pyupgrade
 .. _release checklist: https://github.com/PlasmaPy/PlasmaPy/blob/main/.github/content/release-checklist.md
 .. _rename refactoring in PyCharm: https://www.jetbrains.com/help/pycharm/rename-refactorings.html
-.. _SPEC 0: https://scientific-python.org/specs/spec-0000
+.. _security policy: https://github.com/PlasmaPy/PlasmaPy/blob/main/.github/SECURITY.md
 .. _TOML: https://toml.io/en/v1.0.0
 .. _type hints cheat sheet: https://mypy.readthedocs.io/en/stable/cheat_sheet_py3.html
 .. _update pinned requirements: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/update-pinned-reqs.yml
@@ -1127,16 +1125,13 @@ The overall process of performing a release is:
 .. _`astropy.units`: https://docs.astropy.org/en/stable/units/index.html
 .. |astropy.units| replace:: `astropy.units`
 
-.. _`ci_requirements/`: https://github.com/PlasmaPy/PlasmaPy/blob/main/ci_requirements
-.. |ci_requirements/| replace:: :file:`ci_requirements/`
-
-.. _`ci_requirements/README.md`: https://github.com/PlasmaPy/PlasmaPy/blob/main/ci_requirements/README.md
-.. |ci_requirements/README.md| replace:: :file:`ci_requirements/README.md`
+.. _`uv.lock`: https://github.com/PlasmaPy/PlasmaPy/blob/main/uv.lock
+.. |uv.lock| replace:: :file:`uv.lock`
 
 .. _`mypy.ini`: https://github.com/PlasmaPy/PlasmaPy/blob/main/mypy.ini
 .. |mypy.ini| replace:: :file:`mypy.ini`
 
-.. _`noxfile.py`: https://github.com/PlasmaPy/PlasmaPy/tree/main/noxfile.py
+.. _`noxfile.py`: https://github.com/PlasmaPy/PlasmaPy/blob/main/noxfile.py
 .. |noxfile.py| replace:: :file:`noxfile.py`
 
 .. _`pyproject.toml`: https://github.com/PlasmaPy/PlasmaPy/blob/main/pyproject.toml

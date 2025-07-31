@@ -1,0 +1,2 @@
+Removed the prototype plasma calculator from PlasmaPy so that it can be
+included in the |plasmapy-calculator| standalone package.

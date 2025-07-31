@@ -173,7 +173,7 @@ def kinetic_alfven(  # noqa: C901, PLR0912
     ...     "Z": 1,
     ... }
     >>> kinetic_alfven(**inputs)
-    {30.0: <Quantity [1.24901116e+00, 3.45301796e+08] rad / s>}
+    {np.float64(30.0): <Quantity [1.24901116e+00, 3.45301796e+08] rad / s>}
     """
 
     # Validate arguments

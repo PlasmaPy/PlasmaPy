@@ -11,7 +11,6 @@ import astropy.units as u
 import numpy as np
 import pytest
 from astropy.constants.si import m_p
-from numba.extending import is_jitted
 
 from plasmapy.formulary.frequencies import plasma_frequency, plasma_frequency_lite, wp_
 from plasmapy.particles._factory import _physical_particle_factory
@@ -97,8 +96,8 @@ class TestPlasmaFrequency:
         """
         with pytest.warns(_warning):
             wp = plasma_frequency(*args, **kwargs)
-            assert isinstance(wp, u.Quantity)
-            assert wp.unit == u.rad / u.s
+        assert isinstance(wp, u.Quantity)
+        assert wp.unit == u.rad / u.s
 
         if expected is not None:
             assert np.allclose(wp, expected)
@@ -149,10 +148,6 @@ class TestPlasmaFrequency:
 class TestPlasmaFrequencyLite:
     """Test class for `plasma_frequency_lite`."""
 
-    def test_is_jitted(self) -> None:
-        """Ensure `plasmapy_frequency_lite` was jitted by `numba`."""
-        assert is_jitted(plasma_frequency_lite)
-
     @pytest.mark.parametrize(
         "inputs",
         [
@@ -179,8 +174,6 @@ class TestPlasmaFrequencyLite:
             inputs_unitless["to_hz"] = inputs["to_hz"]
 
         lite = plasma_frequency_lite(**inputs_unitless)
-        pylite = plasma_frequency_lite.py_func(**inputs_unitless)
-        assert pylite == lite
 
         normal = plasma_frequency(**inputs)
         assert np.allclose(normal.value, lite)

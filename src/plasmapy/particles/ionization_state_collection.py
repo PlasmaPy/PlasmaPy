@@ -29,7 +29,7 @@ def _atomic_number_and_mass_number(p: ParticleLike):
     return p.atomic_number, p.mass_number if p.isotope else 0
 
 
-class IonizationStateCollection:
+class IonizationStateCollection:  # noqa: PLW1641
     """
     Describe the ionization state distributions of multiple elements
     or isotopes.
@@ -321,8 +321,7 @@ class IonizationStateCollection:
         all_nans = np.all(np.isnan(new_fractions))
         if not all_nans and (new_fractions.min() < 0 or new_fractions.max() > 1):
             raise ValueError(
-                f"{errmsg} because the new ionic fractions are not "
-                f"all between 0 and 1."
+                f"{errmsg} because the new ionic fractions are not all between 0 and 1."
             )
 
         normalized = np.isclose(np.sum(new_fractions), 1, rtol=self.tol)
@@ -476,15 +475,15 @@ class IonizationStateCollection:
             # The particles whose ionization states are to be recorded
             # should be elements or isotopes but not ions or neutrals.
 
-            for key in particles:
-                is_element = particles[key].is_category("element")
-                has_charge_info = particles[key].is_category(
+            for particle in particles:  # noqa: PLC0206
+                is_element = particles[particle].is_category("element")
+                has_charge_info = particles[particle].is_category(
                     any_of=["charged", "uncharged"]
                 )
 
                 if not is_element or has_charge_info:
                     raise ParticleError(
-                        f"{key} is not an element or isotope without "
+                        f"{particle} is not an element or isotope without "
                         f"charge information."
                     )
 
@@ -509,58 +508,58 @@ class IonizationStateCollection:
             if inputs_have_quantities:
                 n_elems = {}
 
-            for key in sorted_keys:
-                new_key = particles[key].symbol
-                _particle_instances.append(particles[key])
+            for particle in sorted_keys:
+                new_key = particles[particle].symbol
+                _particle_instances.append(particles[particle])
                 if new_key in _elements_and_isotopes:
                     raise ParticleError(
                         "Repeated particles in IonizationStateCollection."
                     )
 
-                nstates_input = len(inputs[key])
-                nstates = particles[key].atomic_number + 1
+                nstates_input = len(inputs[particle])
+                nstates = particles[particle].atomic_number + 1
                 if nstates != nstates_input:
                     raise ParticleError(
-                        f"The ionic fractions array for {key} must "
+                        f"The ionic fractions array for {particle} must "
                         f"have a length of {nstates}."
                     )
 
                 _elements_and_isotopes.append(new_key)
                 if inputs_have_quantities:
                     try:
-                        number_densities = inputs[key].to(u.m**-3)
+                        number_densities = inputs[particle].to(u.m**-3)
                         n_elem = np.sum(number_densities)
                         new_ionic_fractions[new_key] = np.array(
                             number_densities / n_elem
                         )
-                        n_elems[key] = n_elem
+                        n_elems[particle] = n_elem
                     except u.UnitConversionError as exc:
                         raise ParticleError("Units are not inverse volume.") from exc
                 elif (
-                    isinstance(inputs[key], np.ndarray)
-                    and inputs[key].dtype.kind == "f"
+                    isinstance(inputs[particle], np.ndarray)
+                    and inputs[particle].dtype.kind == "f"
                 ):
-                    new_ionic_fractions[particles[key].symbol] = inputs[key]
+                    new_ionic_fractions[particles[particle].symbol] = inputs[particle]
                 else:
                     try:
-                        new_ionic_fractions[particles[key].symbol] = np.array(
-                            inputs[key], dtype=float
+                        new_ionic_fractions[particles[particle].symbol] = np.array(
+                            inputs[particle], dtype=float
                         )
                     except ValueError as exc:
                         raise ParticleError(
-                            f"Inappropriate ionic fractions for {key}."
+                            f"Inappropriate ionic fractions for {particle}."
                         ) from exc
 
-            for key in _elements_and_isotopes:
-                fractions = new_ionic_fractions[key]
+            for particle in _elements_and_isotopes:
+                fractions = new_ionic_fractions[particle]
                 if not np.all(np.isnan(fractions)):
                     if np.min(fractions) < 0 or np.max(fractions) > 1:
                         raise ParticleError(
-                            f"Ionic fractions for {key} are not between 0 and 1."
+                            f"Ionic fractions for {particle} are not between 0 and 1."
                         )
                     if not np.isclose(np.sum(fractions), 1, atol=self.tol, rtol=0):
                         raise ParticleError(
-                            f"Ionic fractions for {key} are not normalized to 1."
+                            f"Ionic fractions for {particle} are not normalized to 1."
                         )
 
             # When the inputs provide the densities, the abundances must
@@ -577,13 +576,13 @@ class IonizationStateCollection:
             if inputs_have_quantities:
                 if np.isnan(self.n0):
                     new_n = 0 * u.m**-3
-                    for key in _elements_and_isotopes:
-                        new_n += n_elems[key]
+                    for particle in _elements_and_isotopes:
+                        new_n += n_elems[particle]
                     self.n0 = new_n
 
                 new_abundances = {}
-                for key in _elements_and_isotopes:
-                    new_abundances[key] = float(n_elems[key] / self.n0)
+                for particle in _elements_and_isotopes:
+                    new_abundances[particle] = float(n_elems[particle] / self.n0)
 
                 self._pars["abundances"] = new_abundances
 
@@ -690,7 +689,7 @@ class IonizationStateCollection:
         ionization states are being tracked.
         """
         if abundances_dict is None:
-            self._pars["abundances"] = {elem: np.nan for elem in self.base_particles}
+            self._pars["abundances"] = dict.fromkeys(self.base_particles, np.nan)
         elif not isinstance(abundances_dict, dict):
             raise TypeError(
                 "The abundances attribute must be a dict with "

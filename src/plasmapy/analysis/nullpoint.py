@@ -105,7 +105,7 @@ class Point:
     loc = property(get_loc)
 
 
-class NullPoint(Point):
+class NullPoint(Point):  # noqa: PLW1641
     """
     A class for defining a null point in 3D space.
 
@@ -1294,7 +1294,7 @@ def _locate_null_point(vspace, cell, n, err):
     for x0 in starting_pos:
         x0 = np.array(x0)  # noqa: PLW2901
         x0 = x0.reshape(3, 1)  # noqa: PLW2901
-        for _i in range(n):  # noqa: B007
+        for _i in range(n):
             locx = tlApprox(x0[0], x0[1], x0[2])[0]
             locy = tlApprox(x0[0], x0[1], x0[2])[1]
             locz = tlApprox(x0[0], x0[1], x0[2])[2]

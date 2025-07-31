@@ -3,15 +3,17 @@ Tests for grids.py
 """
 
 import astropy.units as u
+import matplotlib.pyplot as plt
 import numpy as np
 import pytest
+from astropy.tests.helper import assert_quantity_allclose
 
 from plasmapy.plasma import grids
 
 rs = np.random.RandomState(120921)
 
 
-@pytest.fixture()
+@pytest.fixture
 def abstract_grid_uniform():
     """
     A `pytest` fixture that generates an abstract grid that spans
@@ -37,7 +39,7 @@ def abstract_grid_uniform():
     return grid
 
 
-@pytest.fixture()
+@pytest.fixture
 def abstract_grid_nonuniform():
     """
     A `pytest` fixture that generates an abstract grid that spans
@@ -479,7 +481,7 @@ def test_AbstractGrid_vector_intersects(
 # **********************************************************************
 
 
-@pytest.fixture()
+@pytest.fixture
 def uniform_cartesian_grid():
     """
     A `pytest` fixture that generates a CartesianGrid that spans
@@ -503,6 +505,35 @@ def uniform_cartesian_grid():
     grid.add_quantities(rho=rho)
 
     return grid
+
+
+@pytest.mark.parametrize(
+    ("width"),
+    [
+        None,
+        0.1 * u.cm,
+    ],
+)
+def test_soften_edges(uniform_cartesian_grid, width):
+    grid = uniform_cartesian_grid
+
+    # Find the approximate center of the grid
+    x, y, z = grid.shape
+    xi, yi, zi = int(x / 2), int(y / 2), int(z / 2)
+    center_value = grid["rho"][xi, yi, zi]
+
+    grid.soften_edges(width=width)
+
+    # Assert edges are now zero
+    assert_quantity_allclose(grid["rho"][0, :, :], 0 * u.kg / u.m**3)
+    assert_quantity_allclose(grid["rho"][:, 0, :], 0 * u.kg / u.m**3)
+    assert_quantity_allclose(grid["rho"][:, :, 0], 0 * u.kg / u.m**3)
+    assert_quantity_allclose(grid["rho"][-1, :, :], 0 * u.kg / u.m**3)
+    assert_quantity_allclose(grid["rho"][:, -1, :], 0 * u.kg / u.m**3)
+    assert_quantity_allclose(grid["rho"][:, :, -1], 0 * u.kg / u.m**3)
+
+    # Assert center value is nearly unchanged
+    assert np.isclose(grid["rho"][xi, yi, zi], center_value)
 
 
 create_args_uniform_cartesian = [
@@ -614,7 +645,7 @@ def test_uniform_cartesian_NN_interp_persistence(uniform_cartesian_grid) -> None
 # **********************************************************************
 
 
-@pytest.fixture()
+@pytest.fixture
 def nonuniform_cartesian_grid():
     """
     A `pytest` fixture that generates a NonUniformCartesianGrid that spans
@@ -719,7 +750,7 @@ def test_nonuniform_cartesian_NN_interp(
 @pytest.mark.filterwarnings(
     "ignore:.*MultiIndex.*:DeprecationWarning"
 )  # see issue 2319
-@pytest.mark.slow()
+@pytest.mark.slow
 def test_nonuniform_cartesian_nearest_neighbor_interpolator() -> None:
     """
     Note that this test is running on a very small grid, because otherwise it is
@@ -980,7 +1011,6 @@ def debug_volume_avg_interpolator() -> None:
     Plot the comparison of the nearest neighbor interpolator and volume
     averaged interpolator for `~plasmapy.plasma.grids.CartesianGrid`.
     """
-    import matplotlib.pyplot as plt
 
     grid = grids.CartesianGrid(-1 * u.cm, 1 * u.cm, num=24)
 

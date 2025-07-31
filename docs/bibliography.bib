@@ -1,6 +1,21 @@
+% This file contains BibTeX entries that are used by sphinxcontrib-bibtex to
+# generate the bibliography in PlasmaPy's documentation.
+%
+% In docstrings and .rst files, use citations like :cite:p:`alfven:1942` for a
+% parenthetical citation like "[Alfvén 1942]", and :cite:t:`alfven:1942` for a
+% textual citation like "Alfvén [1942]".
+%
+% For more details, see the documentation for sphinxcontrib-bibtex and the
+% Documentation Guide in PlasmaPy's contributor guide.
+%
+% In lieu of a pre-commit hook, this file can be autoformatted with bibtex-tidy
+% with the command:
+%
+%   bibtex-tidy --omit=abstract,month --curly --numeric --space=3 --no-align --sort=key --duplicates=key,doi --drop-all-caps --no-escape --sort-fields --remove-empty-fields --wrap=88 bibliography.bib
+%
 @article{alfven:1942,
-   author = {H. Alfvén},
    title = {{Existence of Electromagnetic-Hydrodynamic Waves}},
+   author = {H. Alfvén},
    year = 1942,
    journal = {Nature},
    volume = 150,
@@ -9,22 +24,22 @@
    doi = {10.1038/150405d0}
 }
 @book{baumjohann:1997,
-   author = {W. Baumjohann and R. A. Treumann},
    title = {{Basic Space Plasma Physics}},
+   author = {W. Baumjohann and R. A. Treumann},
    year = 1997,
    publisher = {Imperial College Press},
    place = {London}
 }
 @book{bekefi:1966,
-   author = {G. Bekefi},
    title = {{Radiation Processes in Plasmas}},
+   author = {G. Bekefi},
    year = 1966,
    publisher = {Wiley},
    isbn = 9780471063506
 }
 @article{bellan:2012,
-   author = {P. M. Bellan},
    title = {{Improved basis set for low frequency plasma waves}},
+   author = {P. M. Bellan},
    year = 2012,
    journal = {Journal of Geophysical Research: Space Physics},
    volume = 117,
@@ -32,8 +47,11 @@
    doi = {10.1029/2012ja017856}
 }
 @book{bernstein:2015,
+   title = {
+      {Beyond Legacy Code: Nine Practices to Extend the Life (and Value) of Your
+      Software}
+   },
    author = {D. S. Bernstein},
-   title = {{Beyond Legacy Code: Nine Practices to Extend the Life (and Value) of Your Software}},
    year = 2015,
    publisher = {Pragmatic Bookshelf},
    isbn = 9781680500790,
@@ -41,29 +59,29 @@
    edition = {1st}
 }
 @book{birdsall:2004,
-   author = {C. K. Birdsall and A. B. Langdon},
    title = {{Plasma Physics via Computer Simulation}},
+   author = {C. K. Birdsall and A. B. Langdon},
    year = 2004,
    publisher = {{CRC} Press},
    doi = {10.1201/9781315275048}
 }
 @book{bohm:1949,
-   author = {D. Bohm},
    title = {{The Characteristics of Electrical Discharges in Magnetic Fields}},
+   author = {D. Bohm},
    year = 1949,
    publisher = {McGraw-Hill},
    editor = {A. Guthrie and R. K. Wakerling}
 }
 @book{bonitz:1998,
-   author = {M. Bonitz},
    title = {{Quantum Kinetic Theory}},
+   author = {M. Bonitz},
    year = 1998,
    publisher = {Springer},
    doi = {10.1007/978-3-319-24121-0}
 }
 @inproceedings{boris:1970,
-   author = {J. P. Boris},
    title = {{Relativistic plasma simulation—Optimization of a hybrid code}},
+   author = {J. P. Boris},
    year = 1970,
    booktitle = {Proceedings of Fourth Conference on Numerical Simulation of Plasmas},
    publisher = {Naval Research Laboratory},
@@ -72,42 +90,65 @@
    editor = {J. P. Boris and R. A. Shanny}
 }
 @article{braginskii:1965,
-   author = {S. I. Braginskii},
    title = {{Transport Processes in a Plasma}},
+   author = {S. I. Braginskii},
    year = 1965,
    journal = {Reviews of Plasma Physics},
    volume = 1,
    pages = 205
 }
 @article{buchsbaum:1960,
-   author = {S. J. Buchsbaum},
    title = {{Resonance in a Plasma with Two Ion Species}},
+   author = {S. J. Buchsbaum},
    year = 1960,
    journal = {The Physics of Fluids},
    volume = 3,
    number = 3,
    pages = {418--420},
-   doi = {10.1063/1.1706052},
+   doi = {10.1063/1.1706052}
 }
 @unpublished{callen:unpublished,
-   author = {J. Callen},
    title = {{Draft Material For "Fundamentals of Plasma Physics" Book}},
+   author = {J. Callen},
    url = {
       https://docs.google.com/document/d/e/2PACX-1vQmvQ_b8p0P2cYsWGMQYVd92OBLX9Sm6XGiCMRBidoVSoJffj2MBvWiwpix46mqlq_HQvHD5ofpfrNF/pub
    },
    note = {Unpublished}
 }
 @book{chen:2016,
-   author = {F. Chen},
    title = {{Introduction to Plasma Physics and Controlled Fusion}},
+   author = {F. Chen},
    year = 2016,
    publisher = {Springer},
    doi = {10.1007/978-3-319-22309-4},
    edition = {3rd}
 }
+@article{courant:1928,
+   title = {{\"U}ber die partiellen Differenzengleichungen der mathematischen Physik},
+   author = {R. Courant and K. Friedrichs and H. Lewy},
+   year = 1928,
+   journal = {Mathematische annalen},
+   publisher = {Springer},
+   volume = 100,
+   number = 1,
+   pages = {32--74}
+}
+@article{courant:1967,
+   title = {On the partial difference equations of mathematical physics},
+   author = {R. Courant and K. Friedrichs and H. Lewy},
+   year = 1967,
+   journal = {IBM journal of Research and Development},
+   publisher = {IBM},
+   volume = 11,
+   number = 2,
+   pages = {215--234}
+}
 @article{epperlein:1986,
+   title = {
+      {Plasma transport coefficients in a magnetic field by direct numerical solution
+      of the Fokker–Planck equation}
+   },
    author = {E. M. Epperlein and M. G. Haynes},
-   title = {{Plasma transport coefficients in a magnetic field by direct numerical solution of the Fokker–Planck equation}},
    year = 1986,
    journal = {Physics of Fluids},
    volume = 29,
@@ -115,15 +156,15 @@
    doi = {10.1063/1.865901}
 }
 @book{fried:1961,
-   author = {B. D. Fried and S. D. Conte},
    title = {{The Plasma Dispersion Function: The Hilbert Transformation of the Gaussian}},
+   author = {B. D. Fried and S. D. Conte},
    year = 1961,
    publisher = {Academic Press},
    doi = {10.1016/c2013-0-12176-9}
 }
 @book{froula:2011,
-   author = {D. H. Froula and S. H. Glenzer and N. C. Luhmann and J. Sheffield},
    title = {{Plasma Scattering of Electromagnetic Radiation}},
+   author = {D. H. Froula and S. H. Glenzer and N. C. Luhmann and J. Sheffield},
    year = 2011,
    publisher = {Academic Press},
    pages = 103142,
@@ -132,8 +173,11 @@
    edition = {2nd}
 }
 @techreport{fundamenski:2007,
+   title = {
+      {Comparison of Coulomb Collision Rates in the Plasma Physics and Magnetically
+      Confined Fusion Literature}
+   },
    author = {W. Fundamenski and O. E. Garcia},
-   title = {{Comparison of Coulomb Collision Rates in the Plasma Physics and Magnetically Confined Fusion Literature}},
    year = 2007,
    number = {{EFDA–JET–R(07)01}},
    url = {
@@ -142,8 +186,8 @@
    institution = {{EFDA-JET}}
 }
 @article{gericke:2002,
-   author = {D. O. Gericke and M. S. Murillo and M. Schlanges},
    title = {{Dense plasma temperature equilibration in the binary collision approximation}},
+   author = {D. O. Gericke and M. S. Murillo and M. Schlanges},
    year = 2002,
    journal = {Physical Review E},
    volume = 65,
@@ -151,16 +195,25 @@
    pages = 036418,
    doi = {10.1103/PhysRevE.65.036418}
 }
+@inproceedings{gibbon:2016,
+   title = {{Introduction to Plasma Physics}},
+   author = {P. Gibbons},
+   year = 2016,
+   booktitle = {Proceedings of the 2014 CAS-CERN Accelerator School: Plasma Wake Acceleration},
+   publisher = {CERN},
+   pages = {51 - 65},
+   doi = {10.5170/CERN-2016-001.51},
+}
 @article{hasegawa:1982,
-   author = {A. Hasegawa and C. Uberoi},
    title = {{Alfven wave. DOE Critical Review Series}},
+   author = {A. Hasegawa and C. Uberoi},
    year = 1982,
    journal = {U.S. Department of Energy Office of Scientific and Technical Information},
    doi = {10.2172/5259641}
 }
 @article{haynes:2007,
-   author = {A. Haynes and C. Parnell},
    title = {{A trilinear method for finding null points in a three-dimensional vector space}},
+   author = {A. Haynes and C. Parnell},
    year = 2007,
    month = {08},
    journal = {Physics of Plasmas},
@@ -169,40 +222,48 @@
    doi = {10.1063/1.2756751}
 }
 @article{hellinger:2011,
+   title = {
+      {Heating and cooling of protons in the fast solar wind between 0.3 and 1 AU:
+      Helios revisited}
+   },
    author = {P. Hellinger and L. Matteini and Š. Štverák and P. M. Trávníček  and E. Marsch},
-   title = {{Heating and cooling of protons in the fast solar wind between 0.3 and 1 AU: Helios revisited}},
    year = 2011,
    journal = {Journal of Geophysical Research: Space Physics},
    volume = 116,
    number = {A9},
    doi = {10.1029/2011ja016674}
 }
-@article{johnson:2023a
-   doi = {10.3847/1538-4357/accc32},
-   year = {2023},
-   month = {jun},
-   publisher = {The American Astronomical Society},
-   volume = {950},
-   number = {1},
-   pages = {51},
-   author = {E. Johnson and B. A. Maruca and M. McManus and K. G. Klein and E. R. Lichko and J. Verniero and K. W. Paulson and H. DeWeese and I. Dieguez and R. A. Qudsi and J. Kasper and M. Stevens and B. L. Alterman and L. B. Wilson III and R. Livi and A. Rahmati and D. Larson},
+@article{johnson:2023a,
    title = {Anterograde Collisional Analysis of Solar Wind Ions},
-   journal = {The Astrophysical Journal}
+   author = {
+      E. Johnson and B. A. Maruca and M. McManus and K. G. Klein and E. R. Lichko and
+      J. Verniero and K. W. Paulson and H. DeWeese and I. Dieguez and R. A. Qudsi and
+      J. Kasper and M. Stevens and B. L. Alterman and L. B. Wilson III and R. Livi and
+      A. Rahmati and D. Larson
+   },
+   year = 2023,
+   month = {jun},
+   journal = {The Astrophysical Journal},
+   publisher = {The American Astronomical Society},
+   volume = 950,
+   number = 1,
+   pages = 51,
+   doi = {10.3847/1538-4357/accc32}
 }
 @article{larroche:2021,
-	doi = {10.1140/epjd/s10053-021-00305-2},
-	year = 2021,
-	month = nov,
-	publisher = {Springer Science and Business Media {LLC}},
-	volume = {75},
-	number = {11},
-	author = {O. Larroche},
-	title = {An extended hydrodynamics model for inertial confinement fusion hohlraums},
-	journal = {The European Physical Journal D}
+   title = {An extended hydrodynamics model for inertial confinement fusion hohlraums},
+   author = {O. Larroche},
+   year = 2021,
+   month = nov,
+   journal = {The European Physical Journal D},
+   publisher = {Springer Science and Business Media {LLC}},
+   volume = 75,
+   number = 11,
+   doi = {10.1140/epjd/s10053-021-00305-2}
 }
 @article{hirose:2004,
-   author = {A. Hirose and A. Ito and S. M. Mahajan and S. Ohsaki},
    title = {{Relation between Hall-magnetohydrodynamics and the kinetic Alfvén wave}},
+   author = {A. Hirose and A. Ito and S. M. Mahajan and S. Ohsaki},
    year = 2004,
    journal = {Physics Letters A},
    volume = 330,
@@ -211,8 +272,8 @@
    doi = {10.1016/j.physleta.2004.08.021}
 }
 @article{hollweg:1999,
-   author = {J. V. Hollweg},
    title = {{Kinetic Alfvén wave revisited}},
+   author = {J. V. Hollweg},
    year = 1999,
    journal = {Journal of Geophysical Research},
    volume = 104,
@@ -220,8 +281,8 @@
    doi = {10.1029/1998ja900132}
 }
 @article{ji:2013,
-   author = {J.-Y. Ji and E. D. Held},
    title = {{Closure and transport theory for high-collisionality electron-ion plasmas}},
+   author = {J.-Y. Ji and E. D. Held},
    year = 2013,
    journal = {Physics of Plasmas},
    volume = 20,
@@ -229,16 +290,23 @@
    doi = {10.1063/1.4801022}
 }
 @book{khorikov:2020,
-   author = {V. Khorikov},
    title = {{Unit Testing Principles, Practices, and Patterns}},
+   author = {V. Khorikov},
    year = 2020,
    publisher = {Manning Press},
    url = {https://www.manning.com/books/unit-testing},
    edition = {1st}
 }
+@book{ling:2016,
+  title = {{University Physics Volume 2}},
+  author = {S. J. Ling and J. Sanny and W. Moebs},
+  year = {2016},
+  publisher = {OpenStax},
+  url = {https://openstax.org/details/books/university-physics-volume-2}
+}
 @article{lundquist:1950,
-   author = {S. Lundquist},
    title = {{Magneto-hydrostatic fields}},
+   author = {S. Lundquist},
    year = 1950,
    journal = {Arkiv. fysik},
    volume = 2,
@@ -246,11 +314,11 @@
    pages = 361
 }
 @article{maruca:2013,
+   title = {{Collisional Thermalization of Hydrogen and Helium in Solar-Wind Plasma}},
    author = {
       B. A. Maruca and S. D. Bale and L. Sorriso-Valvo and J. C. Kasper and M. L.
       Stevens
    },
-   title = {{Collisional Thermalization of Hydrogen and Helium in Solar-Wind Plasma}},
    year = 2013,
    journal = {Physical Review Letters},
    publisher = {American Physical Society ({APS})},
@@ -259,38 +327,41 @@
    doi = {10.1103/physrevlett.111.241101}
 }
 @article{morales:1997,
-   author = {G. J. Morales and J. E. Maggs},
    title = {{Structure of kinetic Alfvén waves with small transverse scale length}},
+   author = {G. J. Morales and J. E. Maggs},
    year = 1997,
    journal = {Physics of Plasmas},
    volume = 4,
    pages = {4118--4125}
 }
 @phdthesis{nilsen:2023,
-   author = {R. A. B. Nilsen},
    title = {{Conditional averaging of overlapping pulses}},
-   school = {UiT The Arctic University of Norway},
+   author = {R. A. B. Nilsen},
    year = 2023,
-   type = {{Master thesis}},
-   url = {https://hdl.handle.net/10037/29416}
+   url = {https://hdl.handle.net/10037/29416},
+   school = {UiT The Arctic University of Norway},
+   type = {{Master thesis}}
 }
 @techreport{niststar:2005,
+   title = {
+      {ESTAR, PSTAR, and ASTAR: Computer Programs for Calculating Stopping-Power and
+      Range Tables for Electrons, Protons, and Helium Ions}
+   },
    author = {M. J. Berger and J. S. Coursey and M. A. Zucker and J. Chang},
-   title = {{ESTAR, PSTAR, and ASTAR: Computer Programs for Calculating Stopping-Power and Range Tables for Electrons, Protons, and Helium Ions}},
    year = 2005,
-   institution = {National Institute of Standards and Technology},
-   doi = {10.18434/T4NC7P}
+   doi = {10.18434/T4NC7P},
+   institution = {National Institute of Standards and Technology}
 }
 @techreport{nrlformulary:2019,
-   author = {A. S. Richardson},
    title = {{NRL Plasma Formulary}},
+   author = {A. S. Richardson},
    year = 2019,
    url = {https://www.nrl.navy.mil/News-Media/Publications/nrl-plasma-formulary},
    institution = {Naval Research Laboratory}
 }
 @book{osherove:2013,
-   author = {R. Osherove},
    title = {{The Art of Unit Testing: With Examples in .NET}},
+   author = {R. Osherove},
    year = 2013,
    publisher = {Manning Press},
    isbn = 9781617290893,
@@ -298,8 +369,8 @@
    edition = {2nd}
 }
 @article{parnell:1996,
-   author = {C. E. Parnell and J. M. Smith and T. Neukirch and E. R. Priest},
    title = {{The structure of three-dimensional magnetic neutral points}},
+   author = {C. E. Parnell and J. M. Smith and T. Neukirch and E. R. Priest},
    year = 1996,
    journal = {Physics of Plasmas},
    volume = 3,
@@ -308,31 +379,37 @@
    doi = {10.1063/1.871810}
 }
 @book{priest:2000,
-   author = {E. R. Priest and T. Forbes},
    title = {{Magnetic Reconnection: MHD Theory and Applications}},
+   author = {E. R. Priest and T. Forbes},
    year = 2000,
    publisher = {Cambridge University Press},
    isbn = {978-0-521-03394-7}
 }
 @phdthesis{schaeffer:2014,
+   title = {
+      {Generation of Quasi-Perpendicular Collisionless Shocks by a Laser-Driven
+      Magnetic Piston}
+   },
    author = {D. Schaeffer},
-   title = {{Generation of Quasi-Perpendicular Collisionless Shocks by a Laser-Driven Magnetic Piston}},
    year = 2014,
    month = dec,
    doi = {10.5281/zenodo.3766933},
    school = {University of California, Los Angeles}
 }
 @book{sheffield:2011,
+   title = {
+      {Plasma Scattering of Electromagnetic Radiation: Theory and Measurement
+      Techniques}
+   },
    author = {J. Sheffield and D. Froula and S. H. Glenzer and N. C. {Luhmann, Jr.}},
-   title = {{Plasma Scattering of Electromagnetic Radiation: Theory and Measurement Techniques}},
    year = 2011,
    publisher = {Academic Press},
    isbn = {978-0-12-374877-5},
    edition = {2nd}
 }
 @incollection{sheffield:2011:ch3,
-   author = {J. Sheffield and D. H. Froula and S. H. Glenzer and N. C. Luhmann},
    title = {{Chapter 3 - Scattering Spectrum from a Plasma Theory}},
+   author = {J. Sheffield and D. H. Froula and S. H. Glenzer and N. C. Luhmann},
    year = 2011,
    booktitle = {{Plasma Scattering of Electromagnetic Radiation (Second Edition)}},
    publisher = {Academic Press},
@@ -344,8 +421,8 @@
    edition = {2nd}
 }
 @article{spitzer:1953,
-   author = {L. Spitzer and R. Härm},
    title = {{Transport phenomena in a Completely Ionized Gas}},
+   author = {L. Spitzer and R. Härm},
    year = 1953,
    journal = {Physical Review},
    volume = 89,
@@ -353,22 +430,22 @@
    doi = {10.1103/PhysRev.89.977}
 }
 @book{spitzer:1962,
-   author = {L. Spitzer},
    title = {{Physics of Fully Ionized Gases}},
+   author = {L. Spitzer},
    year = 1962,
    publisher = {Interscience},
    edition = {2nd}
 }
 @book{stix:1992,
-   author = {T. H. Stix},
    title = {{Waves in Plasmas}},
+   author = {T. H. Stix},
    year = 1992,
    publisher = {AIP-Press},
    url = {https://link.springer.com/book/9780883188590}
 }
 @article{stringer:1963,
-   author = {T. E. Stringer},
    title = {{Low-frequency waves in an unbounded plasma}},
+   author = {T. E. Stringer},
    year = 1963,
    journal = {
       Journal of Nuclear Energy. Part C, Plasma Physics, Accelerators, Thermonuclear
@@ -381,19 +458,19 @@
    doi = {10.1088/0368-3281/5/2/304}
 }
 @article{thompson:1995,
-   author = {P. Thompson and M. K. Dougherty and D. J. Southwood},
    title = {{Wave behaviour near critical frequencies in cold bi-ion plasmas}},
+   author = {P. Thompson and M. K. Dougherty and D. J. Southwood},
    year = 1995,
    journal = {Planetary and Space Science},
    volume = 43,
    number = 5,
    pages = {625–634},
    doi = {10.1016/0032-0633(94)00197-Y},
-   issn = {0032-0633},
+   issn = {0032-0633}
 }
 @article{verscharen:2019,
-   author = {D. Verscharen and K. G. Klein and B. A. Maruca},
    title = {{The multi-scale nature of the solar wind}},
+   author = {D. Verscharen and K. G. Klein and B. A. Maruca},
    year = 2019,
    journal = {Living Reviews in Solar Physics},
    publisher = {Springer Science and Business Media (LLC)},
@@ -402,8 +479,8 @@
    doi = {10.1007/s41116-019-0021-0}
 }
 @article{vincena:2013,
-   author = {S. T. Vincena and W. A. Farmer and J. E. Maggs and G. J. Morales},
    title = {{Investigation of an ion-ion hybrid Alfvén wave resonator}},
+   author = {S. T. Vincena and W. A. Farmer and J. E. Maggs and G. J. Morales},
    year = 2013,
    journal = {Physics of Plasmas},
    volume = 20,
@@ -412,8 +489,8 @@
    doi = {10.1063/1.4775777}
 }
 @article{william:1996,
-   author = {R. L. Lysak and W. Lotko},
    title = {{On the kinetic dispersion relation for shear Alfvén waves}},
+   author = {R. L. Lysak and W. Lotko},
    year = 1996,
    journal = {Journal of Geophysical Research: Space Physics},
    volume = 101,
@@ -422,12 +499,12 @@
    doi = {10.1029/95ja03712}
 }
 @article{wilson:2014,
+   title = {{Best practices for scientific computing}},
    author = {
       G. Wilson and D. A. Aruliah and C. T. Brown and N. P. Chue Hong and M. Davis and
       R. T. Guy and S. H. D. Haddock and K. D. Huff and I. M. Mitchell and M. D.
       Plumbley and B. Waugh and E. P. White and P. Wilson
    },
-   title = {{Best practices for scientific computing}},
    year = 2014,
    journal = {PLoS Biology},
    volume = 12,
@@ -436,11 +513,11 @@
    doi = {10.1371/journal.pbio.1001745}
 }
 @article{wilson:2017,
+   title = {{Good enough practices in scientific computing}},
    author = {
       G. Wilson and J. Bryan and K. Cranston and J. Kitzes and L. Nederbragt and T. K.
       Teal
    },
-   title = {{Good enough practices in scientific computing}},
    year = 2017,
    journal = {PLOS Computational Biology},
    volume = 13,
