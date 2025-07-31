@@ -105,7 +105,7 @@ See Also
 """
 
 
-def _category_errmsg(particle: str | Self, category: str) -> str:
+def _category_errmsg(particle: str | Particle, category: str) -> str:
     """
     Return an error message when an attribute raises an
     `~plasmapy.particles.exceptions.InvalidElementError`,
