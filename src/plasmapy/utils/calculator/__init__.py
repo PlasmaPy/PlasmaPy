@@ -1,9 +1,11 @@
 """
-Script and utilities to launch the plasma calculator.
+Subpackage formerly containing a prototype plasma calculator.
 
 .. important::
+
    The plasma calculator has been removed from PlasmaPy
-   so that it can be included in a standalone package.
+   so that it can be included in the |plasmapy-calculator| standalone
+   package.
 """
 
 from typing import NoReturn  # coverage: ignore

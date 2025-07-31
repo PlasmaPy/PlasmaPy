@@ -144,6 +144,7 @@ links_to_become_subs: dict[str, str] = {
     "pandas": "https://pandas.pydata.org",
     "pip": "https://pip.pypa.io",
     "Plasma Hack Week": "https://hack.plasmapy.org",
+    "plasmapy-calculator": "https://github.com/PlasmaPy/plasmapy-calculator",
     "PlasmaPy": "https://www.plasmapy.org",
     "PlasmaPy's data repository": "https://github.com/PlasmaPy/PlasmaPy-data",
     "PlasmaPy's documentation": "https://docs.plasmapy.org/en/stable",
