@@ -280,10 +280,8 @@ class ValidateQuantities(CheckUnits, CheckValues):
             # update the validations dictionary
             validations[arg_name].update(value_checks[arg_name])
 
-        if "validations_on_return" in validations:
-            validations["validations_on_return"] = validations.pop(
-                "validations_on_return"
-            )
+        if "checks_on_return" in validations:
+            validations["validations_on_return"] = validations.pop("checks_on_return")
 
         return validations
 
@@ -318,8 +316,8 @@ class ValidateQuantities(CheckUnits, CheckValues):
             if validations fail
         """
         # rename to work with "check" methods
-        if arg_name == "checks_on_return":
-            arg_name = "validations_on_return"
+        if arg_name == "validations_on_return":
+            arg_name = "checks_on_return"
 
         # initialize str for error message
         if arg_name == "checks_on_return":
