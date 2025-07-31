@@ -5,6 +5,7 @@ traces.
 
 __all__ = [
     "check_sweep",
+    "electron_temperature",
     "find_floating_potential",
     "find_ion_saturation_current",
     "find_didv_peak_location",
@@ -12,11 +13,17 @@ __all__ = [
     "sort_sweep_arrays",
     "dIdVExtras",
     "ISatExtras",
+    "TeExtras",
     "VFExtras",
 ]
-__aliases__ = ["find_isat_", "find_vf_"]
+__aliases__ = ["find_isat_", "find_te_", "find_vf_"]
 __all__ += __aliases__
 
+from plasmapy.analysis.swept_langmuir.electron_temperature import (
+    TeExtras,
+    find_electron_temperature,
+    find_te_,
+)
 from plasmapy.analysis.swept_langmuir.floating_potential import (
     VFExtras,
     find_floating_potential,
