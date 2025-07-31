@@ -144,7 +144,7 @@ each step, try running :bash:`git status`.
 
       See PlasmaPy's :ref:`pre-commit guide <using-pre-commit>` for more
       details, including the section on
-      :ref:`changes to the code contribution workflow <pre-commit changes>`.
+      :ref:`pre-commit changes to the code contribution workflow <pre-commit-changes>`.
 
 #. To push the changes to GitHub, run:
 
