@@ -1,4 +1,4 @@
-.. _pre-commit:
+.. _using-pre-commit:
 
 ****************
 Using pre-commit
@@ -157,6 +157,8 @@ To enable pre-commit on your computer:
    .. code-block:: bash
 
       pre-commit install
+
+.. _pre-commit-changes:
 
 Changes to the workflow
 -----------------------
