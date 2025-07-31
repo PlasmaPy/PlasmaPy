@@ -1,2 +1,3 @@
-Removed the prototype plasma calculator for inclusion in a standalone package.
-For more details, see https://github.com/PlasmaPy/plasmapy-calculator.
+Removed the prototype plasma calculator for inclusion in the standalone
+`plasmapy-calculator <https://github.com/PlasmaPy/plasmapy-calculator>`__
+package.
