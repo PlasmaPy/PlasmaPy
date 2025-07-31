@@ -195,18 +195,16 @@ def test_single_species_collective_spectrum(single_species_collective_spectrum) 
     alpha, wavelength, Skw = single_species_collective_spectrum
 
     # Check that alpha is correct
-    assert np.isclose(
-        alpha, 1.801, atol=0.01
-    ), f"Collective case alpha returns {alpha} instead of expected 1.801"
+    assert np.isclose(alpha, 1.801, atol=0.01), (
+        f"Collective case alpha returns {alpha} instead of expected 1.801"
+    )
 
     i_width = width_at_value(wavelength.value, Skw.value, 2e-13)
     e_width = width_at_value(wavelength.value, Skw.value, 0.2e-13)
 
     # Check that the widths of the ion and electron features match expectations
     assert np.isclose(i_width, 0.1599, 1e-3), (
-        "Collective case ion feature "
-        f"width is {i_width}"
-        "instead of expected 0.1599"
+        f"Collective case ion feature width is {i_width}instead of expected 0.1599"
     )
 
     assert np.isclose(e_width, 17.7899, 1e-3), (
@@ -275,7 +273,7 @@ def test_notched_spectrum(notch, notch_num, single_species_collective_args) -> N
 @pytest.mark.parametrize(
     ("notch"),
     [
-        (np.array([533, 531]) * u.nm),  # Elements not in montonic increasing order
+        (np.array([533, 531]) * u.nm),  # Elements not in monotonically increasing order
         (np.array([530, 531, 533]) * u.nm),  # Not exactly 2 elements
     ],
 )
@@ -362,15 +360,15 @@ def multiple_species_collective_args():
         "wavelengths": np.arange(520, 545, 0.01) * u.nm,
         "probe_wavelength": 532 * u.nm,
         "n": 5e17 * u.cm**-3,
-        "T_e": 10 * u.eV,
+        "T_e": np.array([10, 50]) * u.eV,
     }
     kwargs["T_i"] = np.array([25, 25]) * u.eV
     kwargs["ions"] = [Particle("p+"), Particle("C-12 5+")]
     kwargs["probe_vec"] = np.array([1, 0, 0])
     kwargs["scatter_vec"] = np.array([0, 1, 0])
-    kwargs["efract"] = np.array([1.0])
+    kwargs["efract"] = np.array([0.4, 0.6])
     kwargs["ifract"] = np.array([0.7, 0.3])
-    kwargs["electron_vel"] = np.array([[0, 0, 0]]) * u.km / u.s
+    kwargs["electron_vel"] = np.array([[0, 0, 0], [100, 0, 0]]) * u.km / u.s
     kwargs["ion_vel"] = np.array([[-100, 0, 0], [0, 100, 0]]) * u.km / u.s
 
     return kwargs
@@ -424,15 +422,13 @@ def test_multiple_species_collective_spectrum(
     max_wavelength = wavelength.value[np.argmax(Skw.value)]
 
     # Check width
-    assert np.isclose(width, 0.17, 1e-2), (
-        f"Multiple ion species case spectrum width is {width} instead of "
-        "expected 0.17"
+    assert np.isclose(width, 0.1499, 1e-2), (
+        f"Multiple ion species case spectrum width is {width} instead of expected 0.17"
     )
 
     # Check max value
     assert np.isclose(max_skw, 6e-12, 1e-11), (
-        f"Multiple ion species case spectrum max is {max_skw} instead of "
-        "expected 6e-12"
+        f"Multiple ion species case spectrum max is {max_skw} instead of expected 6e-12"
     )
 
     # Check max peak location
@@ -496,9 +492,9 @@ def test_single_species_non_collective_spectrum(
     alpha, wavelength, Skw = single_species_non_collective_spectrum
 
     # Check that alpha is correct
-    assert np.isclose(
-        alpha, 0.05707, atol=0.01
-    ), f"Non-collective case alpha returns {alpha} instead of expected 0.05707"
+    assert np.isclose(alpha, 0.05707, atol=0.01), (
+        f"Non-collective case alpha returns {alpha} instead of expected 0.05707"
+    )
 
     e_width = width_at_value(wavelength.value, Skw.value, 0.2e-13)
 

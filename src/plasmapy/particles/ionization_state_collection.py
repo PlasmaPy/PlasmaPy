@@ -29,7 +29,7 @@ def _atomic_number_and_mass_number(p: ParticleLike):
     return p.atomic_number, p.mass_number if p.isotope else 0
 
 
-class IonizationStateCollection:
+class IonizationStateCollection:  # noqa: PLW1641
     """
     Describe the ionization state distributions of multiple elements
     or isotopes.
@@ -321,8 +321,7 @@ class IonizationStateCollection:
         all_nans = np.all(np.isnan(new_fractions))
         if not all_nans and (new_fractions.min() < 0 or new_fractions.max() > 1):
             raise ValueError(
-                f"{errmsg} because the new ionic fractions are not "
-                f"all between 0 and 1."
+                f"{errmsg} because the new ionic fractions are not all between 0 and 1."
             )
 
         normalized = np.isclose(np.sum(new_fractions), 1, rtol=self.tol)
@@ -690,7 +689,7 @@ class IonizationStateCollection:
         ionization states are being tracked.
         """
         if abundances_dict is None:
-            self._pars["abundances"] = {elem: np.nan for elem in self.base_particles}
+            self._pars["abundances"] = dict.fromkeys(self.base_particles, np.nan)
         elif not isinstance(abundances_dict, dict):
             raise TypeError(
                 "The abundances attribute must be a dict with "

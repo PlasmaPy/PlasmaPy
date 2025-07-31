@@ -371,8 +371,7 @@ Improved Documentation
   :file:`README.md`. (`#1327
   <https://github.com/plasmapy/plasmapy/pull/1327>`__)
 - Enabled the `sphinx-hoverxref
-  <https://sphinx-hoverxref.readthedocs.io>`_ extension to
-  |Sphinx|. (`#1353
+  <https://github.com/readthedocs/sphinx-hoverxref>`__ extension to |Sphinx|. (`#1353
   <https://github.com/plasmapy/plasmapy/pull/1353>`__)
 - Added bullet points on module level docstrings and ``__all__`` to
   the documentation guide. (`#1359
@@ -400,7 +399,7 @@ Improved Documentation
 - Added an example notebook that introduces how to use
   `plasmapy.particles`. (`#1382
   <https://github.com/plasmapy/plasmapy/pull/1382>`__)
-- Described the |plasma-calculator| in the narrative
+- Described the prototype plasma-calculator in the narrative
   documentation. (`#1390
   <https://github.com/plasmapy/plasmapy/pull/1390>`__)
 - Updated the cold magnetized plasma dielectric permittivity tensor

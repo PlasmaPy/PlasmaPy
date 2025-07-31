@@ -108,7 +108,7 @@ class TestAlfvenSpeed:
     )
     def test_warns(self, args, kwargs, expected, isclose_kw, _warning) -> None:
         """Test scenarios that issue warnings"""
-        with pytest.warns(_warning):
+        with pytest.warns(_warning):  # noqa: PT031
             val = Alfven_speed(*args, **kwargs)
             assert isinstance(val, u.Quantity)
             assert val.unit == u.m / u.s
@@ -331,7 +331,7 @@ class Test_Ion_Sound_Speed:
         ],
     )
     def test_warns(self, kwargs1, kwargs2, _warning) -> None:
-        with pytest.warns(_warning):
+        with pytest.warns(_warning):  # noqa: PT031
             val = ion_sound_speed(**kwargs1)
             if kwargs2 != {}:
                 val == ion_sound_speed(**kwargs2)  # noqa: B015

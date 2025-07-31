@@ -430,9 +430,7 @@ class TestCheckUnits:
                     if key in case["output"][arg_name]:
                         val = case["output"][arg_name][key]  # noqa: PLW2901
                     assert arg_checks[key] == val, (
-                        f"{case['description'] = }\n\n"
-                        f"{arg_checks[key] = }\n\n"
-                        f"{val = }"
+                        f"{case['description'] = }\n\n{arg_checks[key] = }\n\n{val = }"
                     )
 
     def test_cu_method__check_unit(self) -> None:

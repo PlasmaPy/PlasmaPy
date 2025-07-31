@@ -213,7 +213,7 @@ def Hall_parameter(
     >>> Hall_parameter(1e10 * u.m**-3, 2.8e2 * u.eV, 2.3 * u.T, "He-4 +1", "e-")
     <Quantity 2.500...e+15>
     """
-    from plasmapy.formulary.collisions import (
+    from plasmapy.formulary.collisions import (  # noqa: PLC0415
         fundamental_electron_collision_freq,
         fundamental_ion_collision_freq,
     )

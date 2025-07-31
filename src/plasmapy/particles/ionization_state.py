@@ -98,9 +98,11 @@ class IonicLevel:
 
     def __repr__(self) -> str:
         return (
-            f"IonicLevel({self.ionic_symbol!r}, "
-            f"ionic_fraction={self.ionic_fraction})"
+            f"IonicLevel({self.ionic_symbol!r}, ionic_fraction={self.ionic_fraction})"
         )
+
+    def __hash__(self) -> int:
+        return hash(repr(self))
 
     @property
     def ionic_symbol(self) -> str:
@@ -414,16 +416,12 @@ class IonizationState:
 
         min_tol = np.min([self.tol, other.tol])
 
-        same_T_e = (
-            np.isnan(self.T_e)
-            and np.isnan(other.T_e)
-            or u.allclose(self.T_e, other.T_e, rtol=min_tol, atol=0 * u.K)
+        same_T_e = (np.isnan(self.T_e) and np.isnan(other.T_e)) or u.allclose(
+            self.T_e, other.T_e, rtol=min_tol, atol=0 * u.K
         )
 
-        same_n_elem = (
-            np.isnan(self.n_elem)
-            and np.isnan(other.n_elem)
-            or u.allclose(self.n_elem, other.n_elem, rtol=min_tol, atol=0 * u.m**-3)
+        same_n_elem = (np.isnan(self.n_elem) and np.isnan(other.n_elem)) or u.allclose(
+            self.n_elem, other.n_elem, rtol=min_tol, atol=0 * u.m**-3
         )
 
         # For the next line, recall that np.nan == np.nan is False
@@ -475,8 +473,7 @@ class IonizationState:
 
             if len(fractions) != self.atomic_number + 1:
                 raise ParticleError(
-                    "The length of ionic_fractions must be "
-                    f"{self.atomic_number + 1}."
+                    f"The length of ionic_fractions must be {self.atomic_number + 1}."
                 )
 
             if isinstance(fractions, u.Quantity):
@@ -523,7 +520,7 @@ class IonizationState:
         This method may be used, for example, to correct for rounding
         errors.
         """
-        self._ionic_fractions = self._ionic_fractions / np.sum(self._ionic_fractions)  # type: ignore[assignment]
+        self._ionic_fractions = self._ionic_fractions / np.sum(self._ionic_fractions)
 
     @property
     @validate_quantities
@@ -704,7 +701,7 @@ class IonizationState:
     @property
     def Z_mean(self) -> np.float64:
         """Return the mean charge number."""
-        if np.nan in self.ionic_fractions:
+        if np.nan in self.ionic_fractions:  # noqa: PLW0177
             raise ChargeError(
                 "Z_mean cannot be found because no ionic fraction "
                 f"information is available for {self.base_particle}."
@@ -920,3 +917,6 @@ class IonizationState:
 
         for line in output:
             print(line)  # noqa: T201
+
+    def __hash__(self) -> int:
+        return hash(repr(self))
