@@ -74,6 +74,7 @@ Example notebooks
 
    changelog/index
    about/credits
+   about/policies
    bibliography
    glossary
    performance_tips
