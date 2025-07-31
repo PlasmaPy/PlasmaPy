@@ -22,20 +22,12 @@ PlasmaPy requires a version of |Python| between |minpython| and
 |maxpython|. If you do not have |Python| installed already, here are the
 instructions to `download Python`_ and install it. 🐍
 
-.. tip::
-
-   New versions of |Python| are released annually in October, and it can
-   take a few months for the scientific Python ecosystem to catch up. If
-   you have trouble installing `plasmapy` on the most recent |Python|
-   version between October and March, then try installing it on the
-   second most recent version.
-
 .. _install-pip:
 
 Installing PlasmaPy with pip
 ============================
 
-To install the most recent release of `plasmapy` on |PyPI| with |pip| into
+To install the most recent release of PlasmaPy on |PyPI| with |pip| into
 an existing |Python| |minpython|\ + environment on macOS or Linux, open a
 terminal and run:
 
@@ -109,7 +101,7 @@ different operating systems and Unix shells.
       For alternative shells, see the |uv| documentation page for
       `using a virtual environment`_.
 
-To install `plasmapy`, run:
+To install PlasmaPy, run:
 
 .. code-block:: bash
 
@@ -126,21 +118,21 @@ Conda_ is used to create and manage isolated virtual |Python| environments.
 Conda_ can also be used for packages written in languages other than
 |Python|.
 
-After `installing Conda`_ or miniconda_, `plasmapy` can be installed
+After `installing Conda`_ or miniconda_, PlasmaPy can be installed
 into an activated Conda_ environment by opening a terminal and running:
 
 .. code-block:: bash
 
    conda install -c conda-forge plasmapy
 
-Here :bash:`-c conda-forge` indicates that `plasmapy` should be installed
+Here :bash:`-c conda-forge` indicates that PlasmaPy should be installed
 from tkhe conda-forge_ channel.
 
-To install `plasmapy` into another existing Conda_ environment, append
+To install PlasmaPy into another existing Conda_ environment, append
 :samp:`-n {env_name}` to the previous command, where :samp:`{env_name}`
 is replaced with the name of the environment.
 
-To create a new environment with `plasmapy` installed in it, run:
+To create a new environment with PlasmaPy installed in it, run:
 
 .. code-block:: bash
 
@@ -153,7 +145,7 @@ This step may take several minutes. To activate this environment, run:
 
    conda activate env_name
 
-To update `plasmapy` to the most recent version within a currently
+To update PlasmaPy to the most recent version within a currently
 activated Conda_ environment, run:
 
 .. code-block:: bash
@@ -193,7 +185,7 @@ click on :guilabel:`Update channels` and then :guilabel:`Update index`.
 .. Is clicking on `Update index` actually necessary?
 
 Next, while on the :guilabel:`Environments` tab, select the environment
-that you would like to install `plasmapy` in. The default is generally
+that you would like to install PlasmaPy in. The default is generally
 ``base (root)``. Optionally, you may select :guilabel:`Create` to start
 a new environment. In the search bar, enter ``plasmapy``. Click on the
 checkbox next to ``plasmapy``, and select :guilabel:`Apply` to begin the
@@ -212,7 +204,7 @@ Obtaining official releases
 ---------------------------
 
 A ZIP_ file containing the source code for official releases of
-`plasmapy` can be obtained `from PyPI`_ or `from Zenodo`_.
+PlasmaPy can be obtained `from PyPI`_ or `from Zenodo`_.
 
 Alternatively, official releases since 0.7.0 can be downloaded from the
 releases_ page on |PlasmaPy's GitHub repository|.
@@ -221,7 +213,7 @@ Obtaining source code from GitHub
 ---------------------------------
 
 If you have |git| installed on your computer, you may clone
-|PlasmaPy's GitHub repository| and access the source code from the most
+|PlasmaPy's GitHub repository| and access the source code for the most
 recent development version by running:
 
 .. code-block:: bash
@@ -229,20 +221,20 @@ recent development version by running:
    git clone https://github.com/PlasmaPy/PlasmaPy.git
 
 The repository will be cloned inside a new subdirectory called
-:file:`PlasmaPy`.
+:file:`PlasmaPy/`.
 
 If you do not have |git| installed on your computer, then you may
 download the most recent source code from |PlasmaPy's GitHub repository|
 by going to :guilabel:`Code` and selecting :guilabel:`Download ZIP`.
 `Unzipping <https://www.wikihow.com/Unzip-a-File>`__ the file will
-create a subdirectory called :file:`PlasmaPy` that contains the source
+create a subdirectory called :file:`PlasmaPy/` that contains the source
 code.
 
 Building and installing
 -----------------------
 
-To install the downloaded version of `plasmapy`, enter the
-:file:`PlasmaPy` directory and run:
+To install the downloaded version of PlasmaPy, enter the
+:file:`PlasmaPy/` directory and run:
 
 .. code-block:: bash
 
