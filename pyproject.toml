@@ -65,7 +65,6 @@ dependencies = [
   "numpy>=1.24",
   "packaging>=22",
   "pandas>=2",
-  "plasmapy-sphinx>=2025.5.1",
   "requests>=2.28",
   "scipy>=1.10",
   "setuptools>=66",
@@ -153,7 +152,6 @@ extend-exclude = [
   ".jupyter",
   "__pycache__",
   "_dev",
-  "docs/plasmapy_sphinx",
 ]
 
 show-fixes = true
