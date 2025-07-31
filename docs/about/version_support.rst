@@ -35,3 +35,14 @@ bug fixes are important new features.
    Dependency groups used primarily for code development activities such
    as running tests and building documentation are excluded from this
    policy because they are not intended for use by end users.
+
+.. _security-policy:
+
+Security policy
+===============
+
+PlasmaPy's `security policy`_ is maintained within its GitHub repository.
+Please use this link to `privately report a security vulnerability`_.
+
+.. _privately report a security vulnerability: https://github.com/plasmapy/plasmapy/security/advisories/new
+.. _security policy: https://github.com/PlasmaPy/PlasmaPy?tab=security-ov-file
