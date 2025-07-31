@@ -126,7 +126,7 @@ into an activated Conda_ environment by opening a terminal and running:
    conda install -c conda-forge plasmapy
 
 Here :bash:`-c conda-forge` indicates that PlasmaPy should be installed
-from tkhe conda-forge_ channel.
+from the conda-forge_ channel.
 
 To install PlasmaPy into another existing Conda_ environment, append
 :samp:`-n {env_name}` to the previous command, where :samp:`{env_name}`
