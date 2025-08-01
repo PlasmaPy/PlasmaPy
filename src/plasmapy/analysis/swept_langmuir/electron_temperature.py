@@ -143,16 +143,24 @@ def find_electron_temperature(
     thresholds = _condition_current_threshold_factors(current_threshold_factors)
 
     # generate data slice
-    mask1 = current_adjusted >= thresholds[0] * np.min(current_adjusted[voltage_window])
-    mask2 = current_adjusted <= thresholds[1] * np.max(current_adjusted[voltage_window])
-    indices = np.where(np.logical_and(mask1, mask2))[0]
+    mask = np.zeros_like(voltage, dtype=bool)
+    mask[voltage_window] = True
+
+    max_adj_current = np.max(current_adjusted[mask])
+    mask1 = current_adjusted >= thresholds[0] * max_adj_current
+    mask2 = current_adjusted <= thresholds[1] * max_adj_current
+
+    mask = np.logical_and(mask, mask1)
+    mask = np.logical_and(mask, mask2)
+
+    indices = np.where(mask)[0]
     _slice = slice(indices[0], indices[-1], 1)
     v_slice = voltage[_slice]
-    c_slice = current_adjusted[_slice]
+    c_log_slice = np.log(current_adjusted[_slice])
 
     # fit data
     fit = ffuncs.Linear()
-    fit.curve_fit(v_slice, np.log(c_slice))
+    fit.curve_fit(v_slice, c_log_slice)
 
     # calculated Te and error
     te = float(1.0 / fit.params.m)
@@ -160,7 +168,7 @@ def find_electron_temperature(
 
     rtn_extras["err"] = float(te_err)
     rtn_extras["rsq"] = fit.rsq
-    rtn_extras["fitted_func"] = fit_func
+    rtn_extras["fitted_func"] = fit
     rtn_extras["fitted_indices"] = _slice
 
     return te, TeExtras(**rtn_extras)
