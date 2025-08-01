@@ -40,12 +40,6 @@ files in your clone of the repository by running:
 
 The ``-a`` is short for ``--all-files``.
 
-If `uv is installed`_, then |pre-commit| can be run with:
-
-.. code-block:: bash
-
-   uvx pre-commit run -a
-
 .. _pre-commit-troubleshooting:
 
 Troubleshooting pre-commit failures
@@ -134,7 +128,6 @@ positives.
 .. _PLR0915: https://docs.astral.sh/ruff/rules/too-many-statements
 .. _ruff's documentation page on rules: https://docs.astral.sh/ruff/rules
 .. _typos: https://github.com/crate-ci/typos
-.. _uv is installed: https://docs.astral.sh/uv/getting-started/installation
 
 .. _`.pre-commit-config.yaml`: https://github.com/PlasmaPy/PlasmaPy/blob/main/.pre-commit-config.yaml
 .. |.pre-commit-config.yaml| replace:: :file:`.pre-commit-config.yaml`
