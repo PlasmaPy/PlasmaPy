@@ -1,0 +1,11 @@
+Fixed a possible bug when using `plasmapy.plasma.grids.AbstractGrid.add_quantities`
+alongside newer versions of |xarray|.
+The ``v2024.11.0`` release of |xarray| includes better support for `astropy.units`,
+but `~plasmapy.plasma.grids.AbstractGrid` was written under the assumption that
+|xarray| lacks units support. As a workaround to enable compatibility with newer releases of
+|xarray|, the creation of a `~xarray.DataArray` within
+the `~plasmapy.plasma.grids.AbstractGrid.add_quantities` method
+of `~plasmapy.plasma.grids.AbstractGrid` is now done by providing the `~xarray.DataArray`
+with the `~astropy.units.Quantity.value` attribute of a |Quantity|
+rather than the |Quantity| itself. We now recommend against
+using ``xarray>=2024.11.0`` with ``plasmapy<=2024.10.0``.
