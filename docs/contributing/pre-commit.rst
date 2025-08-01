@@ -64,15 +64,6 @@ example, lint rule F401_ removes unused :py:`import` statements.
    `ruff's documentation page on rules`_ for the rule code and clicking
    on its name.
 
-.. Problems flagged by C901_ occur when a function is too complex (i.e.,
-when it contains heavily nested control flow), which makes code harder
-to maintain.
-
-.. .`.. tip::
-
-..   Reduce complexity by splitting up complicated functiona into short
-   functions that do one thing with no side effects.
-
 Disabling a ruff rule
 ~~~~~~~~~~~~~~~~~~~~~
 
