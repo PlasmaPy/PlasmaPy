@@ -1,13 +1,13 @@
 .. _plasmapy-install:
 
-**********************
-Installing PlasmaPy ☀️
-**********************
+*******************
+Installing PlasmaPy
+*******************
 
 .. note::
 
    If you would like to contribute to PlasmaPy, please check out the
-   |contributor guide|.
+   |contributor guide|. :sunny:
 
 .. contents:: Contents
    :local:
@@ -20,7 +20,7 @@ Installing Python
 
 PlasmaPy requires a version of |Python| between |minpython| and
 |maxpython|. If you do not have |Python| installed already, here are the
-instructions to `download Python`_ and install it. 🐍
+instructions to `download Python`_ and install it. :snake:
 
 .. tip::
 
