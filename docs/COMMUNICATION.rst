@@ -61,6 +61,7 @@ Please use this link to `privately report a security vulnerability`_
 .. _GitHub Discussions page: https://github.com/PlasmaPy/PlasmaPy/discussions
 .. _Gitter bridge: https://app.gitter.im/#/room/#PlasmaPy_Lobby:gitter.im
 .. _mailing list: https://groups.google.com/forum/#!forum/plasmapy
+.. _matrix chat room: https://app.element.io/#/room/#plasmapy:openastronomy.org
 .. _PlasmaPy meetings: https://www.plasmapy.org/meetings
 .. _privately report a security vulnerability: https://github.com/plasmapy/plasmapy/security/advisories/new
 .. _submit a bug report: https://github.com/PlasmaPy/PlasmaPy/issues/new?assignees=&labels=Bug&template=bug_report.yml
