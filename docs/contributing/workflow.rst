@@ -257,8 +257,6 @@ marked as a draft pull request. Thank you for contributing!
    unique, persistent identifier used by researchers, authors, and open
    source contributors.
 
-
-
 Pulling changes from GitHub
 ---------------------------
 
