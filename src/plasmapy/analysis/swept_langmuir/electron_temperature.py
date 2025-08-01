@@ -12,6 +12,7 @@ from typing import Callable, NamedTuple, Sequence
 import numpy as np
 
 from plasmapy.analysis import fit_functions as ffuncs
+from plasmapy.analysis.swept_langmuir.helpers import check_sweep
 
 
 class TeExtras(NamedTuple):
@@ -30,7 +31,27 @@ def find_electron_temperature(
     current_threshold_factors: list[float | None] | None = (0.05, 1.0),
 ):
     """threshhold"""
-    ...
+    rtn_extras = TeExtras(
+        err=None,
+        rsq=None,
+        fitted_func=None,
+        fitted_indices=None,
+    )
+
+    # check voltage and current arrays
+    voltage, current = check_sweep(voltage, current, strip_units=True)
+
+    # condition voltage_window
+
+    # condition isat
+
+    # condition current_threshold_factors
+
+    # generate data slice
+
+    # fit data
+
+    # calculated Te and error
 
 
 find_te_ = find_electron_temperature
