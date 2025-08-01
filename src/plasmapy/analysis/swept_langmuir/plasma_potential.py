@@ -6,14 +6,17 @@ __all__ = ["find_didv_peak_location", "dIdVExtras"]
 __aliases__ = []
 __all__ += __aliases__
 
-import numbers
 from collections.abc import Sequence
 from typing import NamedTuple
 
 import numpy as np
 from scipy import signal
 
-from plasmapy.analysis.swept_langmuir.helpers import check_sweep, merge_voltage_clusters
+from plasmapy.analysis.swept_langmuir.helpers import (
+    _condition_voltage_window,
+    check_sweep,
+    merge_voltage_clusters,
+)
 
 
 class dIdVExtras(NamedTuple):  # noqa: N801
@@ -21,67 +24,6 @@ class dIdVExtras(NamedTuple):  # noqa: N801
     data_slice: slice | None
     savgol_windows: list[int] | None
     savgol_peaks: list[float] | None
-
-
-def _condition_voltage_window(voltage, voltage_window) -> slice:
-    """
-    Condition ``voltage_window`` and return resulting `slice` object to
-    index ``voltage``.
-    """
-    if isinstance(voltage_window, np.ndarray):
-        voltage_window = voltage_window.tolist()
-
-    if voltage_window is None:
-        voltage_window = [None, None]
-    elif not isinstance(voltage_window, Sequence):
-        raise TypeError(
-            f"Expected a 2-element list of floats or None for 'voltage_window', "
-            f"but got type {type(voltage_window)}."
-        )
-    elif len(voltage_window) != 2:
-        raise ValueError(
-            f"Expected a 2-element list of floats or None for 'voltage_window', "
-            f"but got type {len(voltage_window)} elements."
-        )
-    elif not all(
-        isinstance(element, numbers.Real) or element is None
-        for element in voltage_window
-    ):
-        raise TypeError(f"Not all elements of 'voltage_window' are floats or None.")
-    elif None not in voltage_window:
-        voltage_window = np.sort(voltage_window).tolist()
-
-    # determine data window
-    if voltage_window[0] is not None and voltage_window[0] >= voltage[-1]:
-        raise ValueError(
-            f"The min value for the voltage window ({voltage_window[0]}) "
-            f"is larger than the max value of the langmuir trace "
-            f"({voltage[-1]})."
-        )
-
-    if voltage_window[1] is not None and voltage_window[1] <= voltage[0]:
-        raise ValueError(
-            f"The max value for the voltage window ({voltage_window[1]}) "
-            f"is smaller than the min value of the langmuir trace "
-            f"({voltage[0]})."
-        )
-
-    if all(isinstance(element, numbers.Real) for element in voltage_window):
-        voltage_window = np.sort(voltage_window).tolist()
-
-    first_index = (
-        None
-        if voltage_window[0] is None
-        else int(np.where(voltage >= voltage_window[0])[0][0])
-    )
-
-    last_index = (
-        None
-        if voltage_window[1] is None
-        else int(np.where(voltage <= voltage_window[1])[0][-1])
-    )
-
-    return slice(first_index, last_index, 1)
 
 
 def _condition_smooth_fractions(smooth_fractions, data_size):
