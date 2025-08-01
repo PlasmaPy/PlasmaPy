@@ -20,10 +20,36 @@ from plasmapy.analysis.swept_langmuir.helpers import (
 
 
 class dIdVExtras(NamedTuple):  # noqa: N801
+    """
+    `~typing.NamedTuple` structured to contain the extra parameters
+    calculated by
+    `~plasmapy.analysis.swept_langmuir.plasma_potential.find_didv_peak_location`.
+    """
+
     std: float | None
+    """
+    Alias for field number 0, standard deviation of all the computed
+    peak slope bias locations for each Savitzky-Golay filtered Langmuir
+    trace.  Standard deviation of :attr:`savgol_peaks`.
+    """
+
     data_slice: slice | None
+    """
+    Alias for field number 1, `slice` objected corresponding to the
+    sub-arrays of the Langmuir trace used for the calculation.
+    """
+
     savgol_windows: list[int] | None
+    """
+    Alias for field number 2, list of windows sizes used for each
+    Savitzky-Golay filtered Langmuir trace.
+    """
+
     savgol_peaks: list[float] | None
+    """
+    Alias for field number 3, list of computed peak slope bias locations
+    for each Savitzky-Golay filtered Langmuir trace.
+    """
 
 
 def _condition_smooth_fractions(smooth_fractions, data_size):
