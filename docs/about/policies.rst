@@ -1,7 +1,7 @@
 .. _policies:
 
 **********************
-Policies and practices
+Policies and Practices
 **********************
 
 .. contents:: Contents
