@@ -101,7 +101,7 @@ def find_electron_temperature(
         rsq=None,
         fitted_func=None,
         fitted_indices=None,
-    )
+    )._asdict()
 
     # check voltage and current arrays
     voltage, current = check_sweep(voltage, current, strip_units=True)
@@ -143,10 +143,27 @@ def find_electron_temperature(
     thresholds = _condition_current_threshold_factors(current_threshold_factors)
 
     # generate data slice
+    mask1 = current_adjusted >= thresholds[0] * np.min(current_adjusted[voltage_window])
+    mask2 = current_adjusted <= thresholds[1] * np.max(current_adjusted[voltage_window])
+    indices = np.where(np.logical_and(mask1, mask2))[0]
+    _slice = slice(indices[0], indices[-1], 1)
+    v_slice = voltage[_slice]
+    c_slice = current_adjusted[_slice]
 
     # fit data
+    fit = ffuncs.Linear()
+    fit.curve_fit(v_slice, np.log(c_slice))
 
     # calculated Te and error
+    te = float(1.0 / fit.params.m)
+    te_err = np.abs(te) * fit.param_errors.m / fit.params.m
+
+    rtn_extras["err"] = float(te_err)
+    rtn_extras["rsq"] = fit.rsq
+    rtn_extras["fitted_func"] = fit_func
+    rtn_extras["fitted_indices"] = _slice
+
+    return te, TeExtras(**rtn_extras)
 
 
 find_te_ = find_electron_temperature
