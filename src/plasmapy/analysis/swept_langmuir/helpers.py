@@ -4,7 +4,8 @@ __all__ = ["check_sweep", "merge_voltage_clusters", "sort_sweep_arrays"]
 
 import numbers
 import warnings
-from typing import Literal, Sequence
+from collections.abc import Sequence
+from typing import Literal
 
 import astropy.units as u
 import numpy as np
@@ -591,7 +592,7 @@ def _condition_voltage_window(voltage, voltage_window) -> slice:
         isinstance(element, numbers.Real) or element is None
         for element in voltage_window
     ):
-        raise TypeError(f"Not all elements of 'voltage_window' are floats or None.")
+        raise TypeError("Not all elements of 'voltage_window' are floats or None.")
     elif None not in voltage_window:
         voltage_window = np.sort(voltage_window).tolist()
 

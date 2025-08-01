@@ -80,7 +80,7 @@ def _condition_smooth_fractions(smooth_fractions, data_size):
     elif not np.issubdtype(smooth_fractions.dtype, np.floating):
         raise ValueError(
             "Expected a 1-D list of floats in the interval (0, 1] for argument "
-            f"'smooth_fractions', not all elements are floats."
+            "'smooth_fractions', not all elements are floats."
         )
 
     smooth_fractions = np.unique(np.sort(smooth_fractions))
@@ -123,7 +123,7 @@ def _condition_smooth_fractions(smooth_fractions, data_size):
     return savgol_windows
 
 
-def find_didv_peak_location(  # noqa: C901, PLR0912
+def find_didv_peak_location(
     voltage: np.ndarray,
     current: np.ndarray,
     *,
@@ -167,7 +167,6 @@ def find_didv_peak_location(  # noqa: C901, PLR0912
 
     Notes
     -----
-
     Add details about algorithm.
     """
     rtn_extras = dIdVExtras(
