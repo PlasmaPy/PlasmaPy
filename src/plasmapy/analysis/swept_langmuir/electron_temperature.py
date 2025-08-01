@@ -25,6 +25,68 @@ class TeExtras(NamedTuple):
     fitted_indices: slice | None
 
 
+def _condition_current_threshold_factors(
+    current_threshold_factors: list[float | None] | None
+) -> tuple[float, float]:
+
+    thresholds = current_threshold_factors
+
+    if thresholds is None:
+        return 0.0, 1.0
+
+    if isinstance(thresholds, np.ndarray):
+        thresholds = thresholds.tolist()
+
+    if not isinstance(thresholds, Sequence):
+        raise TypeError(
+            f"Expected a 2-element list of floats or None for "
+            f"'current_threshold_factors', but got type "
+            f"{type(thresholds)}."
+        )
+    elif len(thresholds) != 2:
+        raise ValueError(
+            f"Expected a 2-element list of floats or None for "
+            f"'current_threshold_factors', but got type "
+            f"{len(thresholds)} elements."
+        )
+    elif not all(
+        isinstance(element, numbers.Real) or element is None
+        for element in thresholds
+    ):
+        raise TypeError(
+            f"Not all elements of 'current_threshold_factors' are floats or None."
+        )
+    elif None not in thresholds:
+        thresholds = np.sort(thresholds).tolist()
+    else:
+        thresholds = list(thresholds)
+
+    if thresholds[0] is None:
+        thresholds[0] = 0.0
+    elif not (0 <= thresholds[0] <= 1):
+        raise ValueError(
+            "The lower current_threshold_factors needs to be in the "
+            f"interval [0, 1], got {thresholds[0]}."
+        )
+
+    if thresholds[1] is None:
+        thresholds[1] = 1.0
+    elif not (0 <= thresholds[1] <= 1):
+        raise ValueError(
+            "The upper current_threshold_factors needs to be in the "
+            f"interval [0, 1], got {thresholds[1]}."
+        )
+
+    if thresholds[1] < thresholds[0]:
+        thresholds = np.sort(thresholds).tolist()
+    elif thresholds[0] == thresholds[1]:
+        raise ValueError(
+            "The upper and lower current_threshold_factors can not be equal."
+        )
+
+    return thresholds[0], thresholds[1]
+
+
 def find_electron_temperature(
     voltage: np.ndarray,
     current: np.ndarray,
@@ -78,6 +140,7 @@ def find_electron_temperature(
         )
 
     # condition current_threshold_factors
+    thresholds = _condition_current_threshold_factors(current_threshold_factors)
 
     # generate data slice
 
