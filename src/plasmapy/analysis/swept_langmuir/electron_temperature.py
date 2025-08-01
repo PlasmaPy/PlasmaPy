@@ -95,7 +95,7 @@ def find_electron_temperature(
     voltage_window: list[numbers.Real | None] | None = None,
     current_threshold_factors: list[float | None] | None = (0.05, 1.0),
 ):
-    """threshhold"""
+    """threshold"""
     rtn_extras = TeExtras(
         err=None,
         rsq=None,
