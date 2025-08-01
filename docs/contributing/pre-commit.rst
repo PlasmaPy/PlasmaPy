@@ -24,9 +24,9 @@ request.
       pre-commit.ci autofix
 
    Adding this comment to the :guilabel:`Conversation` tab of a pull
-   request triggers a new commit that applies automatic fixes performed
-   by the PlasmaPy's pre-commit hooks. Use :bash:`git pull` to pull
-   the changes on GitHub back to your computer.
+   request triggers a new commit that applies automatic fixes made by
+   PlasmaPy's pre-commit hooks. Use :bash:`git pull` to bring changes on
+   GitHub back to your computer.
 
 Running pre-commit locally
 ==========================
@@ -64,14 +64,14 @@ example, lint rule F401_ removes unused :py:`import` statements.
    `ruff's documentation page on rules`_ for the rule code and clicking
    on its name.
 
-.. hint::
+.. Problems flagged by C901_ occur when a function is too complex (i.e.,
+when it contains heavily nested control flow), which makes code harder
+to maintain.
 
-   Problems flagged by C901_ occur when a function is too complex (i.e.,
-   when it contains heavily nested control flow), which makes code much
-   more difficult to maintain.
+.. .`.. tip::
 
-   Reduce complexity by splitting up complicated functions into short
-   functions that do exactly one thing with no side effects.
+..   Reduce complexity by splitting up complicated functiona into short
+   functions that do one thing with no side effects.
 
 Disabling a ruff rule
 ~~~~~~~~~~~~~~~~~~~~~
@@ -79,31 +79,30 @@ Disabling a ruff rule
 While |ruff| usually suggests improvements, there are occasionally
 times when a departure from a |ruff| rule is preferable.
 
-.. tip::
+To ignore a |ruff| rule on a specific line, append a comment of the form
+:samp:`# noqa {<rule-codes>}`, where :samp:`<rule-codes>` is replaced by
+the |ruff| rule code(s) to ignore.
 
-   To ignore a |ruff| rule on a specific line, append a comment of the
-   form :samp:`# noqa {<rule-codes>}`, where :samp:`<rule-codes>` is
-   replaced by the |ruff| rule codes to ignore.
+For example, we can tell |ruff| to ignore a function with excessive code
+complexity (C901_), too many branches (PLR0912_), and too many
+statements (PLR0915_) by adding a ``noqa`` comment like in the following
+example:
 
-   For example, we can tell |ruff| to ignore a function with excessive
-   code complexity (C901_), too many branches (PLR0912_), and too many
-   statements (PLR0915_) by adding the following ``noqa`` comment:
+.. code-block:: python
 
-   .. code-block:: python
+   def overly_complicated_function():  # noqa: C901, PLR0912, PLR0915
+       """A function with 97 lines and multiple nested if/else blocks."""
 
-      def overly_complicated_function():  # noqa: C901, PLR0912, PLR0915
-          """A function with 97 lines and 42 if/else branches."""
+When writing new code, it is almost always preferable to refactor the
+code to remove the error than to add a ``# noqa`` comment to ignore the
+rule. Complex functions flagged by C901_ could be simplified by
+extracting sections of code into separate functions that do exactly one
+thing with no side effects.
 
-.. hint::
+.. important::
 
-   Use ``# noqa`` comments only when you have a good reason to do so.
-
-   When writing new code, it is almost always preferable to refactor the
-   code to remove the error rather than add a ``noqa`` comment. For
-   example, an overly complicated function could be broken up into
-   multiple short functions that do exactly one thing with no side
-   effects so that the code is easier to understand, modify, and
-   maintain.
+   Use ``# noqa`` comments sparingly, and only when you have a strong
+   reason to do so.
 
 Spellchecks
 -----------
