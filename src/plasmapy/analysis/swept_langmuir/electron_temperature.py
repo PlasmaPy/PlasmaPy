@@ -13,6 +13,9 @@ import numpy as np
 
 from plasmapy.analysis import fit_functions as ffuncs
 from plasmapy.analysis.swept_langmuir.helpers import check_sweep
+from plasmapy.analysis.swept_langmuir.plasma_potential import (
+    _condition_voltage_window
+)
 
 
 class TeExtras(NamedTuple):
@@ -42,6 +45,13 @@ def find_electron_temperature(
     voltage, current = check_sweep(voltage, current, strip_units=True)
 
     # condition voltage_window
+    voltage_window = _condition_voltage_window(voltage, voltage_window)
+    data_size = voltage[voltage_window].size
+    if data_size < 3:
+        raise ValueError(
+            f"The specified voltage_window ({voltage_window}) would result "
+            f"in a null window or a window with fewer than 3 elements."
+        )
 
     # condition isat
 
