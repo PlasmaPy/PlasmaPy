@@ -56,7 +56,7 @@ On some systems, it might be necessary to specify the Python version
 number, for example by using `python3` or `python3.13` instead of
 `python`.
 
-To install PlasmaPy on Windows, open a terminal and run
+To install PlasmaPy in Windows via PowerShell, run:
 
 ```Shell
 py -3.13 -m pip install plasmapy
@@ -143,7 +143,7 @@ added [protections against software patents].
 ## Acknowledgments
 
 Development of PlasmaPy has been supported in part by the
-[National Science Foundation], [Department of Energy], [NASA], and the
+[National Science Foundation], [NASA], [Department of Energy], and the
 [Smithsonian Institution]. For more details, please see PlasmaPy's
 documentation page on [authors and credits].
 

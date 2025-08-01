@@ -27,8 +27,8 @@ instructions to `download Python`_ and install it. 🐍
    New versions of |Python| are released annually in October, and it can
    take a few months for the scientific Python ecosystem to catch up. If
    you have trouble installing `plasmapy` on the most recent |Python|
-   late in a year, then try installing it on the second most recent
-   version.
+   version between October and March, then try installing it on the
+   second most recent version.
 
 .. _install-pip:
 
