@@ -71,3 +71,9 @@
 
 - search: /astropy\.unit\./
   replacement: 'astropy.units.'
+
+- search: quantitity
+  replacement: quantity
+
+- search: quantitities
+  replacement: quantities

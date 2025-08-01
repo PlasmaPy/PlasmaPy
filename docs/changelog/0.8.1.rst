@@ -95,7 +95,7 @@ Deprecations and Removals
   policy laid out in `NumPy Enhancement Proposal 29
   <https://numpy.org/neps/nep-0029-deprecation_policy.html>`__. (`#1465
   <https://github.com/plasmapy/plasmapy/pull/1465>`__)
-- The ``[all]`` option when using |pip| to install `plasmapy` is now
+- The ``[all]`` option when using |pip| to install PlasmaPy is now
   deprecated and may be removed in a future release. Packages that
   were previously optional (|h5py|, |lmfit|, |mpmath|, and Numba)
   are now installed by default when running ``pip install
@@ -371,8 +371,7 @@ Improved Documentation
   :file:`README.md`. (`#1327
   <https://github.com/plasmapy/plasmapy/pull/1327>`__)
 - Enabled the `sphinx-hoverxref
-  <https://sphinx-hoverxref.readthedocs.io>`_ extension to
-  |Sphinx|. (`#1353
+  <https://github.com/readthedocs/sphinx-hoverxref>`__ extension to |Sphinx|. (`#1353
   <https://github.com/plasmapy/plasmapy/pull/1353>`__)
 - Added bullet points on module level docstrings and ``__all__`` to
   the documentation guide. (`#1359
@@ -400,7 +399,7 @@ Improved Documentation
 - Added an example notebook that introduces how to use
   `plasmapy.particles`. (`#1382
   <https://github.com/plasmapy/plasmapy/pull/1382>`__)
-- Described the |plasma-calculator| in the narrative
+- Described the prototype plasma-calculator in the narrative
   documentation. (`#1390
   <https://github.com/plasmapy/plasmapy/pull/1390>`__)
 - Updated the cold magnetized plasma dielectric permittivity tensor
@@ -424,9 +423,9 @@ Improved Documentation
 - Added a discussion of doctests to the |documentation guide|. (`#1478
   <https://github.com/plasmapy/plasmapy/pull/1478>`__)
 - Removed the section on package requirements from the instructions on
-  how to install `plasmapy`. (`#1482
+  how to install PlasmaPy. (`#1482
   <https://github.com/plasmapy/plasmapy/pull/1482>`__)
-- Updated the instructions on how to install `plasmapy`. (`#1482
+- Updated the instructions on how to install PlasmaPy`. (`#1482
   <https://github.com/plasmapy/plasmapy/pull/1482>`__)
 - Defined ``autodoc_typehints_format="short"`` so signature type hints
   are displayed in short form, i.e. without the leading module

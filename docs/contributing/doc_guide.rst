@@ -1066,8 +1066,6 @@ extensions:
 * |IPython.sphinxext.ipython_console_highlighting|_.
 * |sphinx_changelog|_ for rendering |towncrier| changelogs.
 * |sphinx-tabs|_ for creating tabbed content.
-* |sphinx-hoverxref|_ for showing floating windows on cross references
-  of the documentation.
 * |sphinx-notfound-page|_ to add a :wikipedia:`404 <HTTP_404>` page for
   the documentation.
 * |sphinx-issues|_ to add roles for linking to GitHub (:rst:role:`commit`,
@@ -1596,7 +1594,7 @@ example Jupyter notebooks, the tables of contents are in
 .. _BibTeX: https://www.bibtex.org
 .. _BibTeX format: https://www.bibtex.com/g/bibtex-format
 .. _configuration options: https://www.sphinx-doc.org/en/master/usage/configuration.html
-.. _CSS: https://www.w3schools.com:443/css
+.. _CSS: http://www.w3schools.com/css/
 .. _define substitutions: https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#substitution-definitions
 .. _doctests: https://docs.pytest.org/en/6.2.x/doctest.html
 .. _full list of emoji codes: https://sphinxemojicodes.readthedocs.io/en/stable/#supported-codes
@@ -1625,7 +1623,7 @@ example Jupyter notebooks, the tables of contents are in
 .. _sphinx-codeautolink: https://sphinx-codeautolink.readthedocs.io
 .. _Sphinx's glossary: https://www.sphinx-doc.org/en/master/glossary.html
 .. _Sphinx's templating page: https://www.sphinx-doc.org/en/master/development/templating.html
-.. _style overrides: https://docs.readthedocs.io/en/stable/guides/adding-custom-css.html
+.. _style overrides: https://docs.readthedocs.com/platform/stable/guides/adding-custom-css.html
 .. _toctree: https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#table-of-contents
 .. _warns: https://numpydoc.readthedocs.io/en/latest/format.html#warns
 .. _weekly tests: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/weekly.yml
@@ -1697,9 +1695,6 @@ example Jupyter notebooks, the tables of contents are in
 
 .. _`sphinx-reredirects`: https://documatt.gitlab.io/sphinx-reredirects
 .. |sphinx-reredirects| replace:: `sphinx-reredirects`
-
-.. _`sphinx-hoverxref`: https://sphinx-hoverxref.readthedocs.io
-.. |sphinx-hoverxref| replace:: `sphinx-hoverxref`
 
 .. _`sphinx-issues`: https://github.com/sloria/sphinx-issues
 .. |sphinx-issues| replace:: `sphinx-issues`
