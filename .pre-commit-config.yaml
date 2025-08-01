@@ -33,7 +33,7 @@ repos:
   - id: check-github-workflows
 
 - repo: https://github.com/sirosen/texthooks
-  rev: 0.6.8
+  rev: 0.7.1
   hooks:
   - id: fix-smartquotes
   - id: fix-spaces
@@ -87,7 +87,7 @@ repos:
     exclude: .pre-commit-search-and-replace.yaml
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.12.3
+  rev: v0.12.7
   hooks:
   - id: ruff
     name: ruff (see https://docs.astral.sh/ruff/rules)
