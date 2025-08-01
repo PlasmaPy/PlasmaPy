@@ -129,7 +129,7 @@ positives.
 .. _C901: https://docs.astral.sh/ruff/rules/complex-structure
 .. _codespell: https://github.com/codespell-project/codespell
 .. _F401: https://docs.astral.sh/ruff/rules/unused-import
-.. _install pre-commit: https://pre-commit.com/#installation
+.. _installing pre-commit: https://pre-commit.com/#installation
 .. _PLR0912: https://docs.astral.sh/ruff/rules/too-many-branches
 .. _PLR0915: https://docs.astral.sh/ruff/rules/too-many-statements
 .. _ruff's documentation page on rules: https://docs.astral.sh/ruff/rules
