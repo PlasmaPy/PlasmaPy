@@ -52,33 +52,34 @@ def _condition_voltage_window(voltage, voltage_window) -> slice:
         voltage_window = np.sort(voltage_window).tolist()
 
     # determine data window
-    if (
-        voltage_window[0] is None
-        or voltage_window[0] <= voltage[0]
-    ):
-        first_index = None
-    elif voltage_window[0] >= voltage[-1]:
+    if voltage_window[0] is not None and voltage_window[0] >= voltage[-1]:
         raise ValueError(
             f"The min value for the voltage window ({voltage_window[0]}) "
             f"is larger than the max value of the langmuir trace "
             f"({voltage[-1]})."
         )
-    else:
-        first_index = int(np.where(voltage >= voltage_window[0])[0][0])
 
-    if (
-        voltage_window[1] is None
-        or voltage_window[1] >= voltage[-1]
-    ):
-        last_index = None
-    elif voltage_window[1] <= voltage[0]:
+    if voltage_window[1] is not None and voltage_window[1] <= voltage[0]:
         raise ValueError(
             f"The max value for the voltage window ({voltage_window[1]}) "
             f"is smaller than the min value of the langmuir trace "
             f"({voltage[0]})."
         )
-    else:
-        last_index = int(np.where(voltage < voltage_window[1])[0][0])
+
+    if all(isinstance(element, numbers.Real) for element in voltage_window):
+        voltage_window = np.sort(voltage_window).tolist()
+
+    first_index = (
+        None
+        if voltage_window[0] is None
+        else int(np.where(voltage >= voltage_window[0])[0][0])
+    )
+
+    last_index = (
+        None
+        if voltage_window[1] is None
+        else int(np.where(voltage <= voltage_window[1])[0][-1])
+    )
 
     return slice(first_index, last_index, 1)
 
