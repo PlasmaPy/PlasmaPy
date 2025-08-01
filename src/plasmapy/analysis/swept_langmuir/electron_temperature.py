@@ -54,6 +54,28 @@ def find_electron_temperature(
         )
 
     # condition isat
+    if isat is None:
+        # this indicates the user has already removed isat from the
+        # given current array
+        current_adjusted = current.copy()
+    elif isinstance(isat, numbers.Real):
+        current_adjusted = current - isat
+    elif callable(isat):
+        try:
+            current_adjusted = current - isat(voltage)
+        except Exception as err:
+            raise RuntimeError(
+                "Supplied isat callable does not have appropriate "
+                "signature.  isat should take a voltage array and "
+                "produce an isat current array that can be subtracted "
+                "from the probe current array, i.e. "
+                "`current - isat(voltage)`."
+            ) from err
+    else:
+        raise TypeError(
+            f"Expected None, float, or a callable for argument isat, "
+            f"but got {type(isat)}."
+        )
 
     # condition current_threshold_factors
 
