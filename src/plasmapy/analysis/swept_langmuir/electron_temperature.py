@@ -7,7 +7,7 @@ __aliases__ = ["find_te_"]
 __all__ += __aliases__
 
 import numbers
-from typing import NamedTuple
+from typing import Callable, NamedTuple, Sequence
 
 import numpy as np
 
@@ -25,9 +25,9 @@ def find_electron_temperature(
     voltage: np.ndarray,
     current: np.ndarray,
     *,
-    isat: numbers.Real | callable | None = None,
+    isat: numbers.Real | Callable | None,
     voltage_window: list[numbers.Real | None] | None = None,
-    threshold_factor: float = 0.1,
+    current_threshold_factors: list[float | None] | None = (0.05, 1.0),
 ):
     """threshhold"""
     ...
