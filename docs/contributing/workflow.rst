@@ -232,7 +232,10 @@ marked as a draft pull request. Thank you for contributing!
 
    Most ``pre-commit.ci`` failures can be fixed by adding a comment that
    says ``pre-commit.ci autofix`` in the conversation tab of a pull
-   request. For more details, see :ref:`pre-commit-troubleshooting`.
+   request. 
+   
+   To learn more about fixing |pre-commit| failures, see 
+   :ref:`pre-commit-troubleshooting`.
 
 .. important::
 
