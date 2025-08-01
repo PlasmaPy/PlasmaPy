@@ -611,7 +611,7 @@ class TestSyntheticRadiograph:
         with pytest.warns(RuntimeWarning):
             cpr.synthetic_radiograph(sim_results)
 
-    def test_ignore_grid(self):
+    def test_ignore_grid(self) -> None:
         """
         Verifies that the no grid option runs - no good tests for whether it is correct currently
         """
