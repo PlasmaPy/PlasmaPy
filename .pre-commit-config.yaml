@@ -1,6 +1,6 @@
 ci:
   autofix_prs: false
-  autoupdate_schedule: monthly
+  autoupdate_schedule: quarterly
 
 # Specify the default version of Ruby in case it is not installed
 default_language_version:
@@ -28,12 +28,12 @@ repos:
   - id: check-yaml
 
 - repo: https://github.com/python-jsonschema/check-jsonschema
-  rev: 0.29.4
+  rev: 0.33.2
   hooks:
   - id: check-github-workflows
 
 - repo: https://github.com/sirosen/texthooks
-  rev: 0.6.7
+  rev: 0.6.8
   hooks:
   - id: fix-smartquotes
   - id: fix-spaces
@@ -41,7 +41,7 @@ repos:
   - id: forbid-bidi-controls
 
 - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
-  rev: v2.14.0
+  rev: v2.15.0
   hooks:
   - id: pretty-format-ini
     args: [--autofix]
@@ -54,6 +54,7 @@ repos:
     exclude: .github/labeler.yml|.pre-commit-search-and-replace.yaml
 
 - repo: https://github.com/mattlqx/pre-commit-search-and-replace
+  # keep at v1.0.5
   rev: v1.0.5
   hooks:
   - id: search-and-replace
@@ -70,7 +71,7 @@ repos:
   - id: text-unicode-replacement-char
 
 - repo: https://github.com/codespell-project/codespell
-  rev: v2.3.0
+  rev: v2.4.1
   hooks:
   - id: codespell
     name: codespell (add false positives to pyproject.toml)
@@ -79,13 +80,14 @@ repos:
     - tomli
 
 - repo: https://github.com/crate-ci/typos
-  rev: v1.26.8
+  rev: v1.34.0
   hooks:
   - id: typos
     name: typos (add false positives to _typos.toml)
+    exclude: .pre-commit-search-and-replace.yaml
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.7.1
+  rev: v0.12.3
   hooks:
   - id: ruff
     name: ruff (see https://docs.astral.sh/ruff/rules)
@@ -107,3 +109,30 @@ repos:
   rev: v1.0.0
   hooks:
   - id: sphinx-lint
+
+- repo: https://github.com/abravalheri/validate-pyproject
+  rev: v0.24.1
+  hooks:
+  - id: validate-pyproject
+    additional_dependencies: ['validate-pyproject-schema-store[all]']
+
+- repo: https://github.com/tox-dev/pyproject-fmt
+  rev: v2.6.0
+  hooks:
+  - id: pyproject-fmt
+
+- repo: https://github.com/hukkin/mdformat
+  rev: 0.7.22
+  hooks:
+  - id: mdformat
+    name: Format .md files
+    # Skip wrapping line length because doing so can mess up
+    # formatting of GitHub issues created from files in
+    # .github/content, and some files use semantic line breaks.
+    exclude: licenses/.*|LICENSE.md|PATENT.md
+    additional_dependencies:
+    - mdformat-black
+    - mdformat-footnote
+    - mdformat-frontmatter
+    - mdformat-gfm
+    - mdformat-gfm-alerts

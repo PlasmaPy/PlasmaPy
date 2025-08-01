@@ -25,8 +25,7 @@ Sphinx extensions (built-in):
 import logging
 import os
 import sys
-import warnings
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 
 from sphinx.application import Sphinx
 
@@ -41,7 +40,7 @@ import _author_list_from_cff
 import _changelog_index
 import _global_substitutions
 
-now = datetime.now(timezone.utc)
+now = datetime.now(UTC)
 
 # Project metadata
 
@@ -81,12 +80,14 @@ _author_list_from_cff.generate_rst_file()
 # Sphinx configuration variables
 
 extensions = [
-    "hoverxref.extension",
+    # plasmapy extensions & setups
+    "plasmapy_sphinx.theme",
+    "plasmapy_sphinx.ext.autodoc",
+    "plasmapy_sphinx.ext.directives",
+    # other 3rd party extensions
     "IPython.sphinxext.ipython_console_highlighting",
     "nbsphinx",
     "notfound.extension",
-    "plasmapy_sphinx",
-    "sphinx.ext.autodoc",
     "sphinx.ext.duration",
     "sphinx.ext.extlinks",
     "sphinx.ext.graphviz",
@@ -116,7 +117,6 @@ exclude_patterns = [
     ".tox",
     "_build",
     "notebooks/langmuir_samples",
-    "plasmapy_sphinx",
     "Thumbs.db",
 ]
 
@@ -205,6 +205,10 @@ nitpick_ignore_regex = [
     (python_role, "plasmapy.analysis.swept_langmuir.find_floating_potential"),
     (python_role, "plasmapy.particles.particle_collections"),
     (python_role, "plasmapy.utils.decorators.lite_func"),
+    # undocumented astropy objects
+    # - astropy has no index for u.dimensionless_unscaled, which we
+    #   referenced in our type annotations
+    ("py:class", "dimensionless"),
 ]
 
 # The Sphinx configuration variables rst_prolog and rst_epilog contain
@@ -223,11 +227,8 @@ rst_prolog = """
 
 html_logo = "./_static/with-text-light-190px.png"
 html_static_path = ["_static"]
-html_theme = "sphinx_rtd_theme"
-html_theme_options = {
-    "logo_only": True,
-    "includehidden": False,
-}
+html_theme = "plasmapy_theme"
+html_theme_options = {}
 htmlhelp_basename = "PlasmaPydoc"
 
 # sphinx.ext.autodoc
@@ -245,6 +246,8 @@ bibtex_cite_id = "{key}"
 # sphinx-codeautolink
 
 codeautolink_concat_default = True
+codeautolink_warn_on_failed_resolve = False  # turn on for debugging
+codeautolink_warn_on_missing_inventory = False  # turn on for debugging
 
 # intersphinx
 
@@ -254,6 +257,7 @@ intersphinx_mapping = {
     "matplotlib": ("https://matplotlib.org/stable/", None),
     "numpy": ("https://numpy.org/doc/stable/", None),
     "pandas": ("https://pandas.pydata.org/pandas-docs/stable/", None),
+    "plasmapy_sphinx": ("https://plasmapy-sphinx.readthedocs.io/en/latest/", None),
     "pytest": ("https://docs.pytest.org/en/stable/", None),
     "python": ("https://docs.python.org/3/", None),
     "readthedocs": ("https://docs.readthedocs.io/en/stable/", None),
@@ -264,45 +268,6 @@ intersphinx_mapping = {
         None,
     ),
 }
-
-# hoverxref
-
-hoverxref_intersphinx = list(intersphinx_mapping.keys())
-
-hoverxref_auto_ref = True
-hoverxref_domains = ["py", "cite"]
-hoverxref_mathjax = True
-hoverxref_roles = ["confval", "term"]
-hoverxref_sphinxtabs = True
-hoverxref_tooltip_maxwidth = 600  # RTD main window is 696px
-
-hoverxref_role_types = {
-    # roles with cite domain
-    "p": "tooltip",
-    "t": "tooltip",
-    # roles with py domain
-    "attr": "tooltip",
-    "class": "tooltip",
-    "const": "tooltip",
-    "data": "tooltip",
-    "exc": "tooltip",
-    "func": "tooltip",
-    "meth": "tooltip",
-    "mod": "tooltip",
-    "obj": "tooltip",
-    # roles with std domain
-    "confval": "tooltip",
-    "hoverxref": "tooltip",
-    "ref": "tooltip",
-    "term": "tooltip",
-}
-
-if building_on_readthedocs := os.environ.get("READTHEDOCS"):
-    # Using the proxied API endpoint is a Read the Docs strategy to
-    # avoid a cross-site request forgery block for docs using a custom
-    # domain. See conf.py for sphinx-hoverxref.
-    use_proxied_api_endpoint = os.environ.get("PROXIED_API_ENDPOINT")
-    hoverxref_api_host = "/_" if use_proxied_api_endpoint else "https://readthedocs.org"
 
 # sphinx-issues
 
@@ -431,6 +396,7 @@ linkcheck_ignore = [
     r"https://doi\.org/10\.1371/journal\.pcbi\.1005510",
     r"https://doi\.org/10\.2172/5259641",
     r"https://doi\.org/10\.3847/1538-4357/accc32",
+    r"https://doi\.org/10\.5170/CERN-2016-001\.51",
     r"https://doi\.org/10\.5281/zenodo\.1436011",
     r"https://doi\.org/10\.5281/zenodo\.1460977",
     r"https://doi\.org/10\.5281/zenodo\.3406803",
@@ -440,6 +406,8 @@ linkcheck_ignore = [
     r"https://doi\.org/10\.5281/zenodo\.8015753",
     r"https://doi\.org/10\.18434/T4NC7P",
     r"https://github\.com/PlasmaPy/PlasmaPy/settings/secrets/actions",
+    r"https://www\.gnu\.org/software/make",
+    r"https://hdl\.handle\.net/10037/29416",
     r"https://orcid\.org/0000-0001-5050-6606",
     r"https://orcid\.org/0000-0001-5270-7487",
     r"https://orcid\.org/0000-0001-5308-6870",
@@ -502,8 +470,8 @@ linkcheck_ignore = [
     r"https://orcid\.org/0009-0008-3588-0497",
     r"https://orcid\.org/0009-0008-5134-6171",
     r"https://orcid\.org/0009-0009-9490-5284",
-    r"https://hdl\.handle\.net/10037/29416",
-    r"https://www\.iter\.org/",
+    r"https://www\.iter\.org",
+    r"https://www\.pppl\.gov",
     r"https://www\.sciencedirect\.com/book/9780123748775/.*",
 ]
 
@@ -535,7 +503,7 @@ nbsphinx_thumbnails = {
 
 # This is processed by Jinja2 and inserted before each notebook
 nbsphinx_prolog = r"""
-{% set docname = 'docs/' + env.doc2path(env.docname, base=None) %}
+{% set docname = 'docs/' + env.doc2path(env.docname, base=None) | string %}
 {% set nb_base = 'tree' if env.config.revision else 'blob' %}
 {% set nb_where = env.config.revision if env.config.revision else 'main' %}
 
@@ -559,7 +527,7 @@ nbsphinx_prolog = r"""
     \sphinxcode{\sphinxupquote{\strut {{ docname | escape_latex }}}} \dotfill}}
 """
 
-# plasmapy_sphinx settings
+# plasmapy_sphinx.ext.autodoc settings
 
 autosummary_generate = True
 automodapi_custom_groups = {
@@ -624,5 +592,4 @@ if os.environ.get("READTHEDOCS", "") == "True":
 
 def setup(app: Sphinx) -> None:
     app.add_config_value("revision", "", rebuild=True)
-    app.add_css_file("css/admonition_color_contrast.css")
-    app.add_css_file("css/plasmapy.css", priority=600)
+    app.add_css_file("css/overrides.css", priority=600)

@@ -205,8 +205,7 @@ def coupling_parameter(
             kinetic_energy = np.real(kinetic_energy)
         else:
             raise ValueError(
-                "Kinetic energy should not be imaginary."
-                "Something went horribly wrong."
+                "Kinetic energy should not be imaginary.Something went horribly wrong."
             )
     else:
         raise ValueError(

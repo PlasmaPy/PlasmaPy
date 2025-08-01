@@ -62,9 +62,8 @@ def test_gyrofrequency() -> None:
 
     assert np.isclose(gyrofrequency(1 * u.G, "e-").cgs.value, 1.76e7, rtol=1e-3)
 
-    with pytest.raises(TypeError):
-        with pytest.warns(u.UnitsWarning):
-            gyrofrequency(u.m, "e-")
+    with pytest.raises(TypeError), pytest.warns(u.UnitsWarning):
+        gyrofrequency(u.m, "e-")
 
     with pytest.raises(u.UnitTypeError):
         gyrofrequency(u.m * 1, "e-")

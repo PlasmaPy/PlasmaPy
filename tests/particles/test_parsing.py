@@ -356,11 +356,11 @@ atomic_warnings_table = [
 
 
 @pytest.mark.parametrize(("arg", "kwargs", "num_warnings"), atomic_warnings_table)
-def test_parse_AtomicWarnings(arg, kwargs, num_warnings: int) -> None:
-    r"""Tests that _parse_and_check_atomic_input issues an AtomicWarning
+def test_parse_ParticleWarnings(arg, kwargs, num_warnings: int) -> None:
+    r"""Tests that _parse_and_check_atomic_input issues a ParticleWarning
     under the required conditions."""
 
-    with pytest.warns(ParticleWarning) as record:
+    with pytest.warns(ParticleWarning) as record:  # noqa: PT031
         parse_and_check_atomic_input(arg, **kwargs)
         if not record:
             pytest.fail(
@@ -375,8 +375,3 @@ def test_parse_AtomicWarnings(arg, kwargs, num_warnings: int) -> None:
         f"was {len(record)}, which differs from the expected number "
         f"of {num_warnings} warnings."
     )
-
-
-def test_Queen() -> None:
-    Queen = "Freddie Mercury (lead vocals, piano), Brian May (guitar, vocals), Roger Taylor (drums, vocals) and John Deacon (bass)"
-    assert Particle("Freddie").element_name.capitalize() in Queen

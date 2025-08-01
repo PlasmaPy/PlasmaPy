@@ -3,8 +3,10 @@ Tests for grids.py
 """
 
 import astropy.units as u
+import matplotlib.pyplot as plt
 import numpy as np
 import pytest
+from astropy.tests.helper import assert_quantity_allclose
 
 from plasmapy.plasma import grids
 
@@ -505,6 +507,35 @@ def uniform_cartesian_grid():
     return grid
 
 
+@pytest.mark.parametrize(
+    ("width"),
+    [
+        None,
+        0.1 * u.cm,
+    ],
+)
+def test_soften_edges(uniform_cartesian_grid, width):
+    grid = uniform_cartesian_grid
+
+    # Find the approximate center of the grid
+    x, y, z = grid.shape
+    xi, yi, zi = int(x / 2), int(y / 2), int(z / 2)
+    center_value = grid["rho"][xi, yi, zi]
+
+    grid.soften_edges(width=width)
+
+    # Assert edges are now zero
+    assert_quantity_allclose(grid["rho"][0, :, :], 0 * u.kg / u.m**3)
+    assert_quantity_allclose(grid["rho"][:, 0, :], 0 * u.kg / u.m**3)
+    assert_quantity_allclose(grid["rho"][:, :, 0], 0 * u.kg / u.m**3)
+    assert_quantity_allclose(grid["rho"][-1, :, :], 0 * u.kg / u.m**3)
+    assert_quantity_allclose(grid["rho"][:, -1, :], 0 * u.kg / u.m**3)
+    assert_quantity_allclose(grid["rho"][:, :, -1], 0 * u.kg / u.m**3)
+
+    # Assert center value is nearly unchanged
+    assert np.isclose(grid["rho"][xi, yi, zi], center_value)
+
+
 create_args_uniform_cartesian = [
     # Same start, stop and num for each axis
     ([-1 * u.cm, 1 * u.cm], {"num": 10}, (10, 10, 10), None),
@@ -980,7 +1011,6 @@ def debug_volume_avg_interpolator() -> None:
     Plot the comparison of the nearest neighbor interpolator and volume
     averaged interpolator for `~plasmapy.plasma.grids.CartesianGrid`.
     """
-    import matplotlib.pyplot as plt
 
     grid = grids.CartesianGrid(-1 * u.cm, 1 * u.cm, num=24)
 

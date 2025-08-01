@@ -105,7 +105,7 @@ class Point:
     loc = property(get_loc)
 
 
-class NullPoint(Point):
+class NullPoint(Point):  # noqa: PLW1641
     """
     A class for defining a null point in 3D space.
 

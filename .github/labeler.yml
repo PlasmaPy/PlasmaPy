@@ -17,30 +17,30 @@ bugfix:
 CI:
   - changed-files:
     - any-glob-to-any-file: [
-      '.github/workflows/*test*.yml',
+      '.github/workflows/ci.yml',
+      '.github/workflows/linkcheck.yml',
+      '.github/workflows/weekly.yml',
       '.pre-commit-config.yaml',
       '.readthedocs.yml',
       'codecov.yaml',
       'mypy.ini',
-      'noxfile.py',
-      'tox.ini',
-      '*azure*',
-      '*appveyor*',
     ]
 
 'contributor guide':
   - changed-files:
     - any-glob-to-any-file: [
+      '.github/contributing.md',
       'changelog/README.rst',
-      'docs/contributing/**'
+      'CONTRIBUTING.md',
+      'docs/contributing/**',
     ]
 
 requirements:
   - changed-files:
     - any-glob-to-any-file: [
       '**/*req*.txt',
-      '**/environment.y*ml',
-      '*requirements*/**/*.txt'
+      '**/pylock.toml',
+      '**/uv.lock',
     ]
 
 'deprecation or planned removal':
@@ -56,12 +56,14 @@ docs:
       'docs/**/*.md',
       'docs/**/*.png',
       'docs/**/*.rst',
-      'docs/**/*.svg'
+      'docs/**/*.svg',
     ]
 
 'documentation infrastructure':
   - changed-files:
     - any-glob-to-any-file: [
+      '.github/workflows/changelog.yml',
+      '.github/workflows/check-author-included.yml',
       '.github/workflows/linkcheck.yml',
       '.readthedocs.yml',
       'docs/**/*.css',
@@ -70,7 +72,7 @@ docs:
       'docs/**/make.bat',
       'docs/**/Makefile',
       'docs/**/plasmapy_sphinx/**',
-      'docs/**/robots.txt'
+      'docs/**/robots.txt',
     ]
 
 feature:
@@ -84,27 +86,30 @@ feature:
 linters:
   - changed-files:
     - any-glob-to-any-file: [
-      '**/*flake8*',
-      '*lint*',
-      '*pep8speaks*',
-      '*style*',
       '.editorconfig',
       '.pre-commit*.yaml',
-      '.sourcery.yaml'
+      '.sourcery.yaml',
+      '_typos.toml',
     ]
 
 maintenance:
   - changed-files:
     - any-glob-to-any-file: [
-      '**/CONTRIBUTING.md',
-      '**/README.*',
       '.git-blame-ignore-revs',
       '.gitattributes',
       '.gitignore',
       '.mailmap',
       'changelog/*.internal*.rst',
       'CODEOWNERS',
-      'licenses/**'
+      'licenses/**',
+    ]
+
+security:
+  - changed-files:
+    - any-glob-to-any-file: [
+      '**/*security*',
+      '**/*SECURITY*',
+      '**/*zizmor*',
     ]
 
 notebooks:
@@ -113,7 +118,7 @@ notebooks:
       '**/*.ipynb',
       '**/binder/**',
       '.jupyter/**',
-      'docs/notebooks/**'
+      'docs/notebooks/**',
     ]
 
 nox:
@@ -129,14 +134,14 @@ packaging:
       '.github/workflows/*pypi*',
       '.github/workflows/*release*',
       'MANIFEST.in',
-      'pyproject.toml'
+      'pyproject.toml',
     ]
 
 'physical data':
   - changed-files:
     - any-glob-to-any-file: [
       '**/particles/data/**',
-      '**/tools/export_ionization_energy.py'
+      '**/tools/export_ionization_energy.py',
     ]
 
 plasmapy.analysis:
@@ -161,10 +166,7 @@ plasmapy.formulary.quantum:
 
 plasmapy.particles:
   - changed-files:
-    - any-glob-to-any-file: [
-      '**/atomic/**',
-      '**/particles/**'
-    ]
+    - any-glob-to-any-file: '**/particles/**'
 
 plasmapy.plasma:
   - changed-files:
@@ -185,9 +187,18 @@ python:
 release:
   - changed-files:
     - any-glob-to-any-file: [
+      '.github/content/*release*',
       '.github/workflows/*publish*',
       '.github/workflows/*pypi*',
-      '.github/workflows/*release*'
+      '.github/workflows/*release*',
+    ]
+
+'run weekly tests in CI':
+  - changed-files:
+    - any-glob-to-any-file: [
+      '.github/workflows/*weekly*.yml',
+      'docs/conf.py',
+      'noxfile.py',
     ]
 
 'static type checking':
@@ -195,28 +206,21 @@ release:
     - any-glob-to-any-file: [
       '**/*mypy*',
       '**/py.typed',
-      '**/type_stubs/**'
+      '**/type_stubs/**',
     ]
 
 testing:
   - changed-files:
     - any-glob-to-any-file: [
       '**/*coverage*',
+      '**/*pytest*.*',
       '**/conftest.py',
       '**/test*.py',
       '**/tests/**',
-      '*.sh',
       '*codecov.y*ml',
-      '.github/workflows/*tests*.yml',
       '.github/workflows/ci.yml',
-      'noxfile.py',
-      'pytest.ini',
-      'tox.ini'
     ]
 
 tools:
   - changed-files:
-    - any-glob-to-any-file: [
-      '**/scripts/**',
-      '**/tools/**'
-    ]
+    - any-glob-to-any-file: '**/tools/**'

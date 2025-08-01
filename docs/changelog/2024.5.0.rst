@@ -124,14 +124,14 @@ Internal Changes and Refactorings
   to follow the updated recommendation from the Python Packaging
   Authority's `packaging guide <https://packaging.python.org/>`__. The
   motivation for this change is described in :issue:`2581`. Source
-  code previously in :file:`plasmapy` is now located in
-  :file:`src/plasmapy` and tests are now in a separate :file:`tests`
-  directory. Tests previously in :file:`plasmapy/**/tests` are now in
+  code previously in :file:`plasmapy/` is now located in
+  :file:`src/plasmapy/` and tests are now in a separate :file:`tests`
+  directory. Tests previously in :file:`plasmapy/**/tests/` are now in
   :file:`tests/**/`, where :file:`**` refers to an arbitrary number of
   subdirectories. For example, the source code of `plasmapy.formulary`
-  is now located in :file:`src/plasmapy/formulary` and the tests for
+  is now located in :file:`src/plasmapy/formulary/` and the tests for
   `plasmapy.formulary` are now in
-  :file:`tests/formulary`. (:pr:`2598`)
+  :file:`tests/formulary/`. (:pr:`2598`)
 - Reconfigured the auto-generated requirements files used during
   continuous integration and for documentation builds, while adding
   corresponding documentation.  (:pr:`2650`)
