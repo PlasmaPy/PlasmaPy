@@ -140,7 +140,7 @@ each step, try running :bash:`git status`.
       then fix the remaining errors and repeat the :bash:`git add` and
       :bash:`git commit` steps. Alternatively, local |pre-commit| checks
       can be skipped by using :bash:`git commit --no-verify` instead of
-      :bash:`git commit` in the above command.
+      :bash:`git commit`.
 
       See PlasmaPy's :ref:`pre-commit guide <using-pre-commit>` for more
       details, including the section on
