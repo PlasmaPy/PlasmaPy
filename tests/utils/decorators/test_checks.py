@@ -87,10 +87,24 @@ class TestCheckUnits:
     def test_inheritance(self) -> None:
         assert issubclass(CheckUnits, CheckBase)
 
+    @pytest.mark.parametrize(
+        "name",
+        [
+            "_CheckUnits__check_defaults",
+            "_flatten_equivalencies_list",
+            "_condition_target_units",
+            "_normalize_equivalencies",
+            "_get_unit_checks",
+            "_check_unit",
+            "_check_unit_core",
+        ],
+    )
+    def test_method_existence(self, name: str) -> None:
+        assert hasattr(CheckUnits, name)
+
     def test_cu_default_check_values(self) -> None:
         """Test the default check dictionary for CheckUnits."""
         cu = CheckUnits()
-        assert hasattr(cu, "_CheckUnits__check_defaults")
         assert isinstance(cu._CheckUnits__check_defaults, dict)
         _defaults = [
             ("units", None),
@@ -102,8 +116,6 @@ class TestCheckUnits:
             assert cu._CheckUnits__check_defaults[key] == val
 
     def test_cu_method__flatten_equivalencies_list(self) -> None:
-        assert hasattr(CheckUnits, "_flatten_equivalencies_list")
-
         cu = CheckUnits()
         pairs = [([1, 2, 4], [1, 2, 4]), ([1, 2, (3, 4), [5, 6]], [1, 2, (3, 4), 5, 6])]
         for pair in pairs:
@@ -111,7 +123,6 @@ class TestCheckUnits:
 
     def test_cu_method__condition_target_units(self) -> None:
         """Test method `CheckUnits._condition_target_units`."""
-        assert hasattr(CheckUnits, "_condition_target_units")
 
         cu = CheckUnits()
 
@@ -130,7 +141,6 @@ class TestCheckUnits:
 
     def test_cu_method__normalize_equivalencies(self) -> None:
         """Test method `CheckUnits._normalize_equivalencies`."""
-        assert hasattr(CheckUnits, "_normalize_equivalencies")
 
         cu = CheckUnits()
 
@@ -187,8 +197,7 @@ class TestCheckUnits:
         This method reviews the decorator `checks` arguments and wrapped function
         annotations to build a complete checks dictionary.
         """
-        # methods must exist
-        assert hasattr(CheckUnits, "_get_unit_checks")
+
 
         # setup default checks
         default_checks = {
@@ -439,9 +448,6 @@ class TestCheckUnits:
         on `CheckUnits`.  These methods do the actual checking of the argument units
         and should be called by `CheckUnits.__call__()`.
         """
-        # methods must exist
-        assert hasattr(CheckUnits, "_check_unit")
-        assert hasattr(CheckUnits, "_check_unit_core")
 
         # setup default checks
         check = {**self.check_defaults, "units": [u.cm]}
