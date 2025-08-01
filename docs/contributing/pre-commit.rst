@@ -128,7 +128,7 @@ To enable pre-commit on your computer:
 
       .. group-tab:: Windows
 
-         .. code-block:: bash
+         .. code-block:: PowerShell
 
             py -m pip install pre-commit
 
