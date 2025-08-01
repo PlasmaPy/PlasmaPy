@@ -2,7 +2,7 @@ name: Update pinned requirements
 
 on:
   schedule:
-  - cron: 0 12 * * 1
+  - cron: 37 11 * * 4
   workflow_dispatch:
 
 jobs:
@@ -24,7 +24,7 @@ jobs:
         python: 3.13
 
     - name: Run Nox session to regenerate requirements
-      run: uv run --with nox --frozen nox -s requirements
+      run: uvx nox -s requirements
 
     # When a PR is created by a GitHub Action, normally the checks will
     # not be run. While the simplest workaround would have been to open
@@ -34,14 +34,14 @@ jobs:
     # action.
 
     - name: Generate token
-      uses: tibdex/github-app-token@v2
+      uses: tibdex/github-app-token@3beb63f4bd073e61482598c45c71c1019b59b73a # v2.1.0
       id: generate_token
       with:
         app_id: ${{ secrets.APP_ID }}
         private_key: ${{ secrets.APP_PRIVATE_KEY }}
 
     - name: Create pull request
-      uses: peter-evans/create-pull-request@v7
+      uses: peter-evans/create-pull-request@271a8d0340265f705b14b6d32b9829c1cb33d45e # v7.0.8
       with:
         title: Update pinned requirements 📍
         add-paths: uv.lock

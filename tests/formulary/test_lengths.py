@@ -332,8 +332,8 @@ class TestGyroradius:
     def test_warns(self, args, kwargs, expected, _warns) -> None:
         with pytest.warns(_warns):
             rc = gyroradius(*args, **kwargs)
-            if expected is not None:
-                assert np.allclose(rc, expected)
+        if expected is not None:
+            assert np.allclose(rc, expected)
 
     def test_keeps_arguments_unchanged(self) -> None:
         Vperp1 = u.Quantity([np.nan, 1], unit=u.m / u.s)
@@ -390,9 +390,7 @@ def test_inertial_length() -> None:
 
     with pytest.warns(u.UnitsWarning):
         inertial_length_no_units = inertial_length(1e19, particle="p+")
-        assert inertial_length_no_units == inertial_length(
-            1e19 * u.m**-3, particle="p+"
-        )
+    assert inertial_length_no_units == inertial_length(1e19 * u.m**-3, particle="p+")
 
     assert inertial_length(n_e, "e-").unit.is_equivalent(u.m)
 

@@ -1,6 +1,6 @@
 ci:
   autofix_prs: false
-  autoupdate_schedule: monthly
+  autoupdate_schedule: quarterly
 
 # Specify the default version of Ruby in case it is not installed
 default_language_version:
@@ -28,7 +28,7 @@ repos:
   - id: check-yaml
 
 - repo: https://github.com/python-jsonschema/check-jsonschema
-  rev: 0.32.1
+  rev: 0.33.2
   hooks:
   - id: check-github-workflows
 
@@ -41,7 +41,7 @@ repos:
   - id: forbid-bidi-controls
 
 - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
-  rev: v2.14.0
+  rev: v2.15.0
   hooks:
   - id: pretty-format-ini
     args: [--autofix]
@@ -54,6 +54,7 @@ repos:
     exclude: .github/labeler.yml|.pre-commit-search-and-replace.yaml
 
 - repo: https://github.com/mattlqx/pre-commit-search-and-replace
+  # keep at v1.0.5
   rev: v1.0.5
   hooks:
   - id: search-and-replace
@@ -79,13 +80,14 @@ repos:
     - tomli
 
 - repo: https://github.com/crate-ci/typos
-  rev: v1.30.2
+  rev: v1.34.0
   hooks:
   - id: typos
     name: typos (add false positives to _typos.toml)
+    exclude: .pre-commit-search-and-replace.yaml
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.11.4
+  rev: v0.12.3
   hooks:
   - id: ruff
     name: ruff (see https://docs.astral.sh/ruff/rules)
@@ -115,7 +117,7 @@ repos:
     additional_dependencies: ['validate-pyproject-schema-store[all]']
 
 - repo: https://github.com/tox-dev/pyproject-fmt
-  rev: v2.5.1
+  rev: v2.6.0
   hooks:
   - id: pyproject-fmt
 

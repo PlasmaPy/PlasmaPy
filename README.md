@@ -55,7 +55,7 @@ On some systems, it might be necessary to specify the Python version
 number, for example by using `python3` or `python3.13` instead of
 `python`.
 
-To install PlasmaPy on Windows, open a terminal and run
+To install PlasmaPy in Windows via PowerShell, run:
 
 ```Shell
 py -3.13 -m pip install plasmapy
@@ -105,24 +105,15 @@ PlasmaPy's weekly [community meetings] are a place to talk about code
 development, event planning, and other community happenings. If you have
 an idea for a new feature or would like to become involved in the
 PlasmaPy project, community meetings are a great place to start. As of
-March 2025, our community meetings are on most Thursdays at 2 pm ET.
-
-### Office hours
-
-Our weekly informal [office hours] are an opportunity to chat with
-active members of the PlasmaPy community about topics related to Python
-and plasma physics. If you'd like to learn more about PlasmaPy, our
-office hours are one of the best places to start. As of March 2025, our
-office hours are on most Thursdays at 3 pm Eastern. Please feel free to
-come by!
+May 2025, our community meetings are on most Thursdays at 2 pm ET.
 
 ## Community
 
 ## Contact information
 
 Please feel free to reach out to us at [team@plasmapy.org] or stop by
-our [office hours] with any ideas, questions, and/or puns about
-computational magnetohydrodynamics.
+one of our [community meetings] with any ideas, questions, and/or puns
+about computational magnetohydrodynamics.
 
 Please use these links to [submit a feature request] and to
 [submit a bug report] on PlasmaPy's GitHub repository.
@@ -151,7 +142,7 @@ added [protections against software patents].
 ## Acknowledgments
 
 Development of PlasmaPy has been supported in part by the
-[National Science Foundation], [Department of Energy], [NASA], and the
+[National Science Foundation], [NASA], [Department of Energy], and the
 [Smithsonian Institution]. For more details, please see PlasmaPy's
 documentation page on [authors and credits].
 
@@ -176,7 +167,6 @@ documentation page on [authors and credits].
 [meetings]: https://www.plasmapy.org/meetings/weekly
 [nasa]: https://www.nasa.gov/
 [national science foundation]: https://nsf.gov
-[office hours]: http://www.plasmapy.org/meetings/office_hours
 [plasmapy]: https://www.plasmapy.org
 [plasmapy community on zenodo]: https://zenodo.org/communities/plasmapy
 [protections against software patents]: ./PATENT.md
