@@ -726,6 +726,7 @@ class Test_collision_frequency:
     def test_symmetry(self) -> None:
         with pytest.warns(CouplingWarning):
             result = collision_frequency(self.T, self.n, self.particles)
+        with pytest.warns(CouplingWarning):
             resultRev = collision_frequency(self.T, self.n, self.particles[::-1])
         assert result == resultRev
 

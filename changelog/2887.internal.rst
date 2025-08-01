@@ -1,0 +1,1 @@
+Used `typing.Self` for type hint annotations for |Particle| and |CustomParticle|.
