@@ -132,20 +132,6 @@ each step, try running :bash:`git status`.
    Committing a change is like preserving a snapshot of what each file
    looks like at this point in history.
 
-   .. note::
-
-      If you have enabled |pre-commit| for your clone of PlasmaPy, then
-      |pre-commit| might report and/or automatically fix errors when
-      attempting :bash:`git commit`. If |pre-commit| reports errors,
-      then fix the remaining errors and repeat the :bash:`git add` and
-      :bash:`git commit` steps. Alternatively, local |pre-commit| checks
-      can be skipped by using :bash:`git commit --no-verify` instead of
-      :bash:`git commit`.
-
-      See PlasmaPy's :ref:`pre-commit guide <using-pre-commit>` for more
-      details, including the section on
-      :ref:`changes to this workflow <pre-commit-changes>`.
-
 #. To push the changes to GitHub, run:
 
    .. code-block:: bash
@@ -232,9 +218,9 @@ marked as a draft pull request. Thank you for contributing!
 
    Most ``pre-commit.ci`` failures can be fixed by adding a comment that
    says ``pre-commit.ci autofix`` in the conversation tab of a pull
-   request. 
-   
-   To learn more about fixing |pre-commit| failures, see 
+   request.
+
+   To learn more about fixing common |pre-commit| failures, see
    :ref:`pre-commit-troubleshooting`.
 
 .. important::

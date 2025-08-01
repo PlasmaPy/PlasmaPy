@@ -91,9 +91,9 @@ Example notebooks
    contributing/workflow
    Coding Guide <contributing/coding_guide>
    contributing/testing_guide
+   contributing/pre-commit
    contributing/doc_guide
    contributing/changelog_guide
-   contributing/pre-commit
 
 .. _new discussion on GitHub: https://github.com/PlasmaPy/PlasmaPy/discussions/new/choose
 .. _on GitHub: https://github.com/PlasmaPy/PlasmaPy
