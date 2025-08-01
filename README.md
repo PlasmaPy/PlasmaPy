@@ -132,8 +132,8 @@ channel; Gitter uses a bridge to link the two.
 
 ### Mailing list
 
-You can subscribe to PlasmaPy's low-volume [mailing list] to receive
-PlasmaPy newsletters and other announcements.
+Subscribe to PlasmaPy's low-volume [mailing list] to receive occasional
+newsletters and announcements.
 
 ## License
 
