@@ -1,8 +1,8 @@
 .. _policies:
 
-********
-Policies
-********
+**********************
+Policies and practices
+**********************
 
 .. contents:: Contents
    :local:
@@ -28,7 +28,7 @@ versions of dependencies. The specific recommendations are that:
 
 Support for dependencies may be dropped sooner than what SPEC 0
 recommends if a more recent release of a dependency contains critical
-bug fixes are important new features.
+bug fixes or includes important new features.
 
 .. note::
 
