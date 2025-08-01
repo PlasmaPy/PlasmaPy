@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Literal
+from typing import Any, Literal, Self
 
 __all__ = [
     "AbstractParticle",
@@ -381,7 +381,7 @@ class AbstractPhysicalParticle(AbstractParticle):
 
         return require <= self.categories
 
-    def __add__(self, other: str | Particle | ParticleList) -> ParticleList:
+    def __add__(self, other: str | Self | ParticleList) -> ParticleList:
         return self._as_particle_list + other
 
     def __radd__(self, other: str) -> ParticleList:
@@ -968,7 +968,7 @@ class Particle(AbstractPhysicalParticle):
         """
         return hash(self.__repr__())
 
-    def __invert__(self) -> Particle:
+    def __invert__(self) -> Self:
         """
         Return the corresponding antiparticle, or raise an
         `~plasmapy.particles.exceptions.ParticleError` if the particle
@@ -1025,7 +1025,7 @@ class Particle(AbstractPhysicalParticle):
         return self._attributes["symbol"]
 
     @property
-    def antiparticle(self) -> Particle:
+    def antiparticle(self) -> Self:
         """
         The antiparticle corresponding to the particle.
 
@@ -1085,7 +1085,7 @@ class Particle(AbstractPhysicalParticle):
         return self._attributes["isotope"]
 
     @property
-    def nucleus(self) -> Particle:
+    def nucleus(self) -> Self:
         """
         Return the nucleus of an atom.
 
@@ -1797,7 +1797,7 @@ class Particle(AbstractPhysicalParticle):
 
     def ionize(
         self, n: int | Literal[np.inf] = 1, inplace: bool = False
-    ) -> Particle | None:
+    ) -> Self | None:
         """
         Create a new |Particle| instance corresponding to the current
         |Particle| after being ionized ``n`` times.
@@ -1888,7 +1888,7 @@ class Particle(AbstractPhysicalParticle):
         else:
             return Particle(base_particle, Z=new_charge_number)
 
-    def recombine(self, n: int = 1, inplace: bool = False) -> Particle | None:
+    def recombine(self, n: int = 1, inplace: bool = False) -> Self | None:
         """
         Create a new |Particle| instance corresponding to the current
         |Particle| after undergoing recombination ``n`` times.
@@ -2339,7 +2339,7 @@ class CustomParticle(AbstractPhysicalParticle):
         *quantities,
         symbol: str | None = None,
         Z: float | None = None,
-    ) -> CustomParticle:
+    ) -> Self:
         """
         An alternate constructor for |CustomParticle| objects where the
         positional arguments correspond to the mass and/or charge in

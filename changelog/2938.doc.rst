@@ -1,0 +1,1 @@
+Expanded the docstring of `~plasmapy.formulary.dimensionless.Hall_parameter`.
