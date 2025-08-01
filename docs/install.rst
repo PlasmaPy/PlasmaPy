@@ -22,14 +22,6 @@ PlasmaPy requires a version of |Python| between |minpython| and
 |maxpython|. If you do not have |Python| installed already, here are the
 instructions to `download Python`_ and install it. 🐍
 
-.. tip::
-
-   New versions of |Python| are released annually in October, and it can
-   take a few months for the scientific Python ecosystem to catch up. If
-   you have trouble installing PlasmaPy on the most recent |Python|
-   version between October and March, then try installing it on the
-   second most recent version.
-
 .. _install-pip:
 
 Installing PlasmaPy with pip
@@ -43,17 +35,19 @@ terminal and run:
 
    python -m pip install plasmapy
 
-On some systems, it might be necessary to specify the |Python| version
-number by using ``python3``, ``python3.8``, ``python3.9``,
-``python3.10``, or ``python3.11`` instead of ``python``.
+.. note::
+
+   On some systems, it might be necessary to specify the |Python|
+   version by using ``python3``, ``python3.11``, ``python3.12``,  or
+   ``python3.13`` instead of ``python``.
 
 To install PlasmaPy on Windows, run:
 
 .. code-block:: bash
 
-   py -3.11 -m pip install plasmapy
+   py -3.13 -m pip install plasmapy
 
-The version of |Python| may be changed from ``3.11`` to another supported
+The version of |Python| may be changed from ``3.13`` to another supported
 Python |minpython|\ + release that has been installed on your computer.
 
 For more detailed information, please refer to this tutorial on
@@ -67,27 +61,47 @@ Installing PlasmaPy with uv
 |uv| is "an extremely fast |Python| package and project manager, written
 in Rust". |uv| lets us create and switch between |Python| environments
 that are isolated from each other and the system's |Python|
-installation. In addition, |uv| provides a `pip drop-in interface`_ for
-common |pip| commands so that |Python| packages on |PyPI| may be
-installed into |uv|-managed
-`virtual environments <virtual environment_>`_ without installing |pip|.
+installation. |uv| provides a `pip drop-in interface`_ for common |pip|
+commands to install packages from |PyPI|.
 
-After `installing uv`_, a `virtual environment`_ with |Python| version
-3.12 can be created by opening a terminal and running:
-
-.. code-block:: bash
-
-   uv venv --python 3.12
-
-|uv| will automatically download |Python| and link it to
-the `virtual environment`_'s directory at (by default) :file:`.venv`. The
-environment can then be activated by running:
+By default, |uv| requires that packages be installed into
+`uv managed virtual environments`_ rather than the system Python
+installation. After `installing uv`_, create a virtual environment by
+opening a terminal and running:
 
 .. code-block:: bash
 
-   source .venv/bin/activate
+   uv venv --python 3.13
 
-Then, to install PlasmaPy into the activated environment, run:
+This command will create a virtual environment managed by |uv| in a new
+:file:`.venv` subdirectory, and then print out the command that will
+activate the virtual environment from the directory that the above
+command was run in. The activation command differs between
+different operating systems and Unix shells.
+
+.. tabs::
+
+   .. group-tab:: Windows
+
+      To activate the virtual environment in Powershell, run:
+
+      .. code-block:: PowerShell
+
+         .venv\Scripts\activate
+
+   .. group-tab:: macOS and Linux
+
+      To activate the virtual environment on POSIX-compliant shells like
+      ``bash``, ``zsh``, and ``sh``, run:
+
+      .. code-block:: bash
+
+         source .venv/bin/activate
+
+      For alternative shells, see the |uv| documentation page for
+      `using a virtual environment`_.
+
+To install PlasmaPy, run:
 
 .. code-block:: bash
 
@@ -101,8 +115,8 @@ Installing PlasmaPy with Conda
 Conda_ is a package management system and environment manager that is
 commonly used in the scientific |Python| ecosystem. Similar to |uv|,
 Conda_ is used to create and manage isolated virtual |Python| environments.
-However, Conda_ can also be used for packages written in languages other
-than |Python|.
+Conda_ can also be used for packages written in languages other than
+|Python|.
 
 After `installing Conda`_ or miniconda_, PlasmaPy can be installed
 into an activated Conda_ environment by opening a terminal and running:
@@ -199,7 +213,7 @@ Obtaining source code from GitHub
 ---------------------------------
 
 If you have |git| installed on your computer, you may clone
-|PlasmaPy's GitHub repository| and access the source code from the most
+|PlasmaPy's GitHub repository| and access the source code for the most
 recent development version by running:
 
 .. code-block:: bash
@@ -268,6 +282,8 @@ package should also be installed.
 .. _project metadata: https://docs.astral.sh/uv/concepts/projects/#project-metadata
 .. _Python project: https://docs.astral.sh/uv/concepts/projects/#projects
 .. _releases: https://github.com/PlasmaPy/PlasmaPy/releases
+.. _using a virtual environment: https://docs.astral.sh/uv/pip/environments/#using-a-virtual-environment
 .. _uv init options: https://docs.astral.sh/uv/reference/cli/#uv-init
+.. _uv managed virtual environments: https://docs.astral.sh/uv/pip/environments
 .. _virtual environment: https://realpython.com/python-virtual-environments-a-primer
 .. _ZIP: https://en.wikipedia.org/wiki/ZIP_(file_format)

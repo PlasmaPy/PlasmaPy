@@ -777,7 +777,7 @@ not noticeably impact performance during typical interactive use, but
 the performance penalty can become significant for numerically intensive
 applications.
 
-A :term:`lite-function` is an optimized version of another `plasmapy`
+A :term:`lite-function` is an optimized version of another PlasmaPy
 function that accepts numbers and |NumPy| arrays in assumed SI units.
 :term:`Lite-functions` skip all validations and instead prioritize
 performance. Most :term:`lite-functions` are defined in

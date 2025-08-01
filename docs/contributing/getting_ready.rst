@@ -264,7 +264,7 @@ when you :py:`import plasmapy`.
 
       .. group-tab:: Windows
 
-         .. code-block:: bash
+         .. code-block:: PowerShell
 
             py -m pip install -e .[docs,tests]
 
