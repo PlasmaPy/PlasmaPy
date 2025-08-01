@@ -839,7 +839,7 @@ def bump_minimum_requirements(session: nox.Session) -> None:
 
 
 # /// script
-# dependencies = ["nox", "dep_logic", "nep29", "pyproject_parser", "setuptools", "uv"]
+# dependencies = ["nox[uv]", "dep_logic", "nep29", "pyproject_parser", "setuptools"]
 # ///
 
 if __name__ == "__main__":
