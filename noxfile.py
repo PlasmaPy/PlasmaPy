@@ -1,3 +1,7 @@
+# /// script
+# dependencies = ["nox[uv]", "dep_logic", "nep29", "pyproject_parser", "setuptools"]
+# ///
+
 """
 Nox is an automation tool used by PlasmaPy to run tests, build
 documentation, and perform other checks. Nox sessions are defined in
@@ -837,10 +841,6 @@ def bump_minimum_requirements(session: nox.Session) -> None:
     updated_requirements = [_update_requirement(dep) for dep in deps_to_update]
     session.run("uv", "add", "--no-sync", *updated_requirements)
 
-
-# /// script
-# dependencies = ["nox[uv]", "dep_logic", "nep29", "pyproject_parser", "setuptools"]
-# ///
 
 if __name__ == "__main__":
     nox.main()
