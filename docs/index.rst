@@ -79,7 +79,7 @@ Example notebooks
    performance_tips
    about/policies
    PlasmaPy Enhancement Proposals <https://github.com/PlasmaPy/PlasmaPy-PLEPs>
-   PlasmaPy website <https://www.plasmapy.org>
+   PlasmaPy Project <https://www.plasmapy.org>
    GitHub Repository <https://github.com/PlasmaPy/PlasmaPy>
 
 .. toctree::
