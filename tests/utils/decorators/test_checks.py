@@ -3,8 +3,8 @@ Tests for 'check` decorators (i.e. decorators that only check objects but do not
 change them).
 """
 
-from contextlib import nullcontext as does_not_raise
 import inspect
+from contextlib import nullcontext as does_not_raise
 from types import LambdaType
 from typing import Any
 from unittest import mock
@@ -472,10 +472,10 @@ class TestCheckUnits:
         assert set(checks.keys()) == set(expected.keys())
 
         # if check key-value not specified then default is assumed
-        for arg_name in expected.keys():
+        for arg_name in expected:
             arg_checks = checks[arg_name]
 
-            for key in default_checks.keys():
+            for key in default_checks:
                 _check = arg_checks[key]
 
                 if key in expected[arg_name]:
