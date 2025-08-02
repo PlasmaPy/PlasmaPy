@@ -439,7 +439,7 @@ class TestCheckUnits:
             ),
         ],
     )
-    @pytest.mark.skipif(astropy.__version__ < '7', reason="see #3065")
+    @pytest.mark.skipif(astropy.__version__ < "7", reason="see #3065")
     def test_cu_method__get_unit_checks(
         self,
         description: str,
