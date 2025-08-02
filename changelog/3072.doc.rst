@@ -1,0 +1,1 @@
+Fixed a documentation build error with the development version of |Sphinx|.
