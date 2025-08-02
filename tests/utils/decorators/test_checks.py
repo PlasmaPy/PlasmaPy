@@ -493,7 +493,7 @@ class TestCheckUnits:
                     #       are equal.  astropy.units.Equivalency is a subclass
                     #       of a list...lets just do elementwise comparison instead
 
-                    assert all(_c == _v for _c, _v in zip(_check, val))
+                    assert all(_c == _v for _c, _v in zip(_check, val, strict=False))
                 else:
                     assert _check == val, description
 
