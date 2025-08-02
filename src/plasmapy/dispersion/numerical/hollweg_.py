@@ -201,21 +201,21 @@ def hollweg(  # noqa: C901, PLR0912, PLR0915
     Examples
     --------
     >>> import astropy.units as u
-    >>> from plasmapy.dispersion.numerical import hollweg_
+    >>> from plasmapy.dispersion.numerical.hollweg_ import hollweg
     >>> inputs = {
-    ...    "k": np.logspace(-7, -2, 2) * u.rad / u.m,
+    ...    "k": [1e-8, 1e-7] * u.rad / u.m,
     ...    "theta": 88 * u.deg,
-    ...    "n_i": 5 * u.cm ** -3,
-    ...    "B": 2.2e-8 * u.T,
-    ...    "T_e": 1.6e6 * u.K,
-    ...    "T_i": 4.0e5 * u.K,
+    ...    "n_i": 1 * u.cm ** -3,
+    ...    "B": 6e-8 * u.T,
+    ...    "T_e": 1.0e6 * u.K,
+    ...    "T_i": 3.0e5 * u.K,
     ...    "ion": "p+",
     ... }
     >>> omegas = hollweg(**inputs)
     >>> omegas
-    {'fast_mode': <Quantity [2.62911663e-02+0.j, 2.27876968e+03+0.j] rad / s>,
-     'alfven_mode': <Quantity [7.48765909e-04+0.j, 2.13800404e+03+0.j] rad / s>,
-     'acoustic_mode': <Quantity [0.00043295+0.j, 0.07358991+0.j] rad / s>}
+    {'fast_mode': <Quantity [0.01314338+0.j, 0.13143385+0.j] rad / s>,
+     'alfven_mode': <Quantity [0.00045661+0.j, 0.00456614+0.j] rad / s>,
+     'acoustic_mode': <Quantity [4.35071546e-05+0.j, 4.35070526e-04+0.j] rad / s>}
     """
 
     # validate arguments
@@ -311,7 +311,7 @@ def hollweg(  # noqa: C901, PLR0912, PLR0915
     # Warn about NOT low-β
     if c_s / v_A > 0.1:
         errmsg = (
-            "The Hollweg dispersion solver is valid the low β regime: "
+            "The Hollweg dispersion solver is valid the low beta regime: "
             "c_s / v_A ≪ 1 (see §1.7 of Bellan 2012, doi: 10.1029/2012ja017856). "
             f"However, c_s / V_A = {cs_vA:.2f}, which may affect the validity "
             "of the solution."
