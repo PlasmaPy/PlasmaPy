@@ -200,7 +200,8 @@ def validate_requirements(session: nox.Session) -> None:
 pytest_command: tuple[str, ...] = (
     "pytest",
     "--pyargs",
-    "--durations=5",
+    "--durations=10",
+    "--durations-min=0.05",
     "--tb=short",
     "-n=auto",
     "--dist=loadfile",
