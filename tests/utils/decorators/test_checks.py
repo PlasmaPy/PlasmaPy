@@ -257,13 +257,16 @@ class TestCheckUnits:
                     "checks": {
                         "x": {
                             "units": [u.K],
-                            "equivalencies": next(iter(u.temperature()))
+                            "equivalencies": next(iter(u.temperature())),
                         },
                         "y": {"units": [u.K], "equivalencies": list(u.temperature())},
                     },
                 },
                 {
-                    "x": {"units": [u.K], "equivalencies": [next(iter(u.temperature()))]},
+                    "x": {
+                        "units": [u.K],
+                        "equivalencies": [next(iter(u.temperature()))],
+                    },
                     "y": {"units": [u.K], "equivalencies": list(u.temperature())},
                 },
                 does_not_warn(),
@@ -476,7 +479,6 @@ class TestCheckUnits:
 
         # if check key-value not specified then default is assumed
         for arg_name, expected_checks in expected.items():
-
             for key in default_checks:  # noqa: PLC0206
                 _check = checks[arg_name][key]
 
