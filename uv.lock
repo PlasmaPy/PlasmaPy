@@ -1578,7 +1578,7 @@ requires-dist = [
     { name = "pandas", specifier = ">=2" },
     { name = "pillow", marker = "extra == 'docs'", specifier = ">=10.4" },
     { name = "plasmapy-sphinx", marker = "extra == 'docs'", specifier = ">=2025.5.1" },
-    { name = "pygments", marker = "extra == 'docs'", specifier = ">=2.19" },
+    { name = "pygments", marker = "extra == 'docs'", specifier = "==2.18" },
     { name = "pytest", marker = "extra == 'tests'", specifier = ">=8.3.1" },
     { name = "pytest-cov", marker = "extra == 'tests'", specifier = ">=5" },
     { name = "pytest-filter-subpackage", marker = "extra == 'tests'", specifier = ">=0.2" },
@@ -1590,7 +1590,7 @@ requires-dist = [
     { name = "setuptools", specifier = ">=66" },
     { name = "sphinx", marker = "extra == 'docs'", specifier = ">=8.2.3,<8.3" },
     { name = "sphinx-changelog", marker = "extra == 'docs'", specifier = ">=1.5" },
-    { name = "sphinx-codeautolink", marker = "extra == 'docs'", specifier = ">=0.17" },
+    { name = "sphinx-codeautolink", marker = "extra == 'docs'", specifier = "==0.15.2" },
     { name = "sphinx-collapse", marker = "extra == 'docs'", specifier = ">=0.1.3" },
     { name = "sphinx-copybutton", marker = "extra == 'docs'", specifier = ">=0.5.2" },
     { name = "sphinx-gallery", marker = "extra == 'docs'", specifier = ">=0.16" },
@@ -1746,11 +1746,11 @@ wheels = [
 
 [[package]]
 name = "pygments"
-version = "2.19.2"
+version = "2.18.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/b0/77/a5b8c569bf593b0140bde72ea885a803b82086995367bf2037de0159d924/pygments-2.19.2.tar.gz", hash = "sha256:636cb2477cec7f8952536970bc533bc43743542f70392ae026374600add5b887", size = 4968631, upload-time = "2025-06-21T13:39:12.283Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/8e/62/8336eff65bcbc8e4cb5d05b55faf041285951b6e80f33e2bff2024788f31/pygments-2.18.0.tar.gz", hash = "sha256:786ff802f32e91311bff3889f6e9a86e81505fe99f2735bb6d60ae0c5004f199", size = 4891905, upload-time = "2024-05-04T13:42:02.013Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/c7/21/705964c7812476f378728bdf590ca4b771ec72385c533964653c68e86bdc/pygments-2.19.2-py3-none-any.whl", hash = "sha256:86540386c03d588bb81d44bc3928634ff26449851e99741617ecb9037ee5ec0b", size = 1225217, upload-time = "2025-06-21T13:39:07.939Z" },
+    { url = "https://files.pythonhosted.org/packages/f7/3f/01c8b82017c199075f8f788d0d906b9ffbbc5a47dc9918a945e13d5a2bda/pygments-2.18.0-py3-none-any.whl", hash = "sha256:b8e6aca0523f3ab76fee51799c488e38782ac06eafcf95e7ba832985c8e7b13a", size = 1205513, upload-time = "2024-05-04T13:41:57.345Z" },
 ]
 
 [[package]]
@@ -2269,15 +2269,15 @@ wheels = [
 
 [[package]]
 name = "sphinx-codeautolink"
-version = "0.17.5"
+version = "0.15.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "beautifulsoup4" },
     { name = "sphinx" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/47/cf/96065111f706555ca3e0b5a7f57f47bae48983d48223d09f8800ba4b9b00/sphinx_codeautolink-0.17.5.tar.gz", hash = "sha256:75098c20aa32de01481fa62409e6d2fbfdde760e6696ae9beb233a77bcb49283", size = 59686, upload-time = "2025-07-09T15:22:35.452Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/09/4e/d0c9894b9dff38ad3db533479b845427e1c57cb3b8527b65259fed71a7a1/sphinx_codeautolink-0.15.2.tar.gz", hash = "sha256:93963a05f17642c8892b06932e013af62c1041a4949524c810dbc5ae8b3ff16d", size = 53067, upload-time = "2024-06-03T16:14:13.815Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/7b/e2/a7232766639b8a447e5e1884f6f33bd704d213bc5d4eb376f81cd5a0cb1d/sphinx_codeautolink-0.17.5-py3-none-any.whl", hash = "sha256:a84595ad3a12da93f82796e638f27e239d07b388037f3d3f69d65fc7ea6e05bf", size = 35399, upload-time = "2025-07-09T15:22:33.85Z" },
+    { url = "https://files.pythonhosted.org/packages/b1/ef/8546618a14e5a491616950b71e9e55de2877a1fecba73e4bc76c62ab53a0/sphinx_codeautolink-0.15.2-py3-none-any.whl", hash = "sha256:44d669ad92d11fd50dd4029887ea285acd95e097cf34a9cae3c6f707c1eb4763", size = 24882, upload-time = "2024-06-03T16:14:11.781Z" },
 ]
 
 [[package]]
