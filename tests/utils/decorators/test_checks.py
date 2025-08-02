@@ -438,8 +438,8 @@ class TestCheckUnits:
     def test_cu_method__get_unit_checks(
         self,
         description: str,
-        setup: dict,
-        expected,
+        setup: dict[str, Any],
+        expected: dict[str, Any],
         warn_context,
         raise_context,
     ) -> None:
