@@ -260,28 +260,35 @@ def kinetic_alfven(  # noqa: C901, PLR0912
 
         # Maximum value for ω/kz test
         if omega_kz_max / v_Te > 0.1 or v_Ti / omega_kz_max > 0.1:
-            warnings.warn(
-                "This calculation produced one or more invalid ω/kz "
-                "value(s), which violates the regime in which the "
-                "dispersion relation is valid (v_Te ≫ ω/kz ≫ v_Ti)",
-                PhysicsWarning,
+            errmsg = (
+                "This calculation produced ω/kz value(s) outside of the "
+                "regime in which the kinetic Alfvén dispersion relation "
+                "is valid: "
+                f"v_Te ({v_Te:.1E} m/s) "
+                f"≫ max(ω/kz) ({omega_kz_max:.1E} m/s) "
+                f"≫ v_Ti ({v_Ti:.1E} m/s)"
             )
+            warnings.warn(errmsg, PhysicsWarning)
 
         # Minimum value for ω/kz test
         if omega_kz_min / v_Te > 0.1 or v_Ti / omega_kz_min > 0.1:
-            warnings.warn(
-                "This calculation produced one or more invalid ω/kz "
-                "value(s) which violates the regime in which the "
-                "dispersion relation is valid (v_Te ≫ ω/kz ≫ v_Ti)",
-                PhysicsWarning,
+            errmsg = (
+                "This calculation produced ω/kz value(s) outside of the "
+                "regime in which the kinetic Alfvén dispersion relation "
+                "is valid: "
+                f"v_Te ({v_Te:.1E} m/s) "
+                f"≫ min(ω/kz) ({omega_kz_min:.1E} m/s) "
+                f"≫ v_Ti ({v_Ti:.1E} m/s)"
             )
+            warnings.warn(errmsg, PhysicsWarning)
 
         # Dispersion relation is only valid in the regime ω << ω_ci
         if w_max / omega_ci > 0.1:
-            warnings.warn(
-                "The calculation produced a high-frequency wave, "
-                "which violates the low frequency assumption (ω ≪ ω_ci)",
-                PhysicsWarning,
+            errmsg = (
+                "The kinetic Alfvén dispersion relation calculation produced a "
+                "high-frequency wave, which violates the low frequency "
+                f"assumption: max(ω) ({w_max:.1E} rad/s) ≪ ω_ci ({omega_ci:.1E} rad/s))"
             )
+            warnings.warn(errmsg, PhysicsWarning)
 
     return omega
