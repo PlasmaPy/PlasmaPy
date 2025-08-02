@@ -215,17 +215,23 @@ def kinetic_alfven(  # noqa: C901, PLR0912
 
     Z = ion.charge_number
     n_e = Z * n_i
-    c_s = speed.ion_sound_speed(
-        T_e=T_e,
-        T_i=T_i,
-        ion=ion,
-        n_e=n_e,
-        gamma_e=gamma_e,
-        gamma_i=gamma_i,
-        Z=Z,
-    )
     v_A = speed.Alfven_speed(B=B, density=n_i, ion=ion)
     omega_ci = pfp.gyrofrequency(B=B, particle=ion, signed=False)
+
+    with warnings.catch_warnings():
+        warnings.filterwarnings(
+            "ignore",
+            category=PhysicsWarning,
+            message="^The non-dispersive limit has been assumed for ion_sound_speed. To prevent this, values must be specified for both n_e and k.$",
+        )
+        c_s = speed.ion_sound_speed(
+            T_e=T_e,
+            T_i=T_i,
+            ion=ion,
+            n_e=n_e,
+            gamma_e=gamma_e,
+            gamma_i=gamma_i,
+        )
 
     # parameters kz
     omega = {}
