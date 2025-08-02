@@ -5,7 +5,6 @@ change them).
 
 from contextlib import nullcontext as does_not_raise
 import inspect
-from textwrap import dedent
 from types import LambdaType
 from typing import Any
 from unittest import mock
@@ -199,11 +198,9 @@ class TestCheckUnits:
         ("description", "setup", "output", "warn_context", "raise_context"),
         [
             (
-                dedent("""
-                x units are defined via decorator kwarg of CheckUnits
-                y units are defined via decorator annotations, additional
-                checks thru CheckUnits kwarg
-                """),
+                "x units are defined via decorator kwarg of CheckUnits "
+                "y units are defined via decorator annotations, additional "
+                "checks thru CheckUnits kwarg",
                 {
                     "function": foo_partial_anno,
                     "args": (2 * u.cm, 3 * u.cm),
@@ -223,11 +220,9 @@ class TestCheckUnits:
                 does_not_raise(),
             ),
             (
-                dedent("""
-                x units are defined via decorator kwarg of CheckUnits
-                y units are defined via function annotations, additional
-                checks thru CheckUnits kwarg
-                """),
+                "x units are defined via decorator kwarg of CheckUnits "
+                "y units are defined via function annotations, additional "
+                "checks thru CheckUnits kwarg",
                 {
                     "function": foo_partial_anno,
                     "args": (2 * u.cm, 3 * u.cm),
