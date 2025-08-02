@@ -491,7 +491,7 @@ class TestCheckUnits:
                     _check = list(_check)
                     val = list(val)
 
-                assert _check == val
+                assert _check == val, description
 
     def test_cu_method__check_unit(self) -> None:
         """
