@@ -491,12 +491,11 @@ class TestCheckUnits:
                     # Note: for some reason an equals comparison of an Equivalency
                     #       and a list are not equal even if all the elements
                     #       are equal.  astropy.units.Equivalency is a subclass
-                    #       of a list...work around is to convert it to a list
+                    #       of a list...lets just do elementwise comparison instead
 
-                    _check = list(_check)
-                    val = list(val)
-
-                assert _check == val, description
+                    assert all(_c == _v for _c, _v in zip(_check, val))
+                else:
+                    assert _check == val, description
 
     def test_cu_method__check_unit(self) -> None:
         """
