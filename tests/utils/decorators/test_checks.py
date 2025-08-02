@@ -3,7 +3,9 @@ Tests for 'check` decorators (i.e. decorators that only check objects but do not
 change them).
 """
 
+from contextlib import nullcontext as does_not_raise
 import inspect
+from textwrap import dedent
 from types import LambdaType
 from typing import Any
 from unittest import mock
@@ -27,6 +29,8 @@ from plasmapy.utils.exceptions import (
     RelativityError,
     RelativityWarning,
 )
+
+does_not_warn = does_not_raise
 
 
 # ----------------------------------------------------------------------------------------
@@ -191,89 +195,86 @@ class TestCheckUnits:
         with pytest.raises(ValueError):
             cu._normalize_equivalencies([("cm", u.cm)])
 
-    def test_cu_method__get_unit_checks(self) -> None:
-        """
-        Test functionality/behavior of the method `_get_unit_checks` on `CheckUnits`.
-        This method reviews the decorator `checks` arguments and wrapped function
-        annotations to build a complete checks dictionary.
-        """
-
-
-        # setup default checks
-        default_checks = {
-            **self.check_defaults.copy(),
-            "units": [self.check_defaults["units"]],
-        }
-
-        # setup test cases
-        # 'setup' = arguments for `_get_unit_checks`
-        # 'output' = expected return from `_get_unit_checks`
-        # 'raises' = if `_get_unit_checks` raises an Exception
-        # 'warns' = if `_get_unit_checks` issues a warning
-        #
-        equivs = [
-            # list of astropy Equivalency objects
-            [u.temperature_energy(), u.temperature()],
-            # list of equivalencies (pre astropy v3.2.1 style)
-            list(u.temperature()),
-        ]
-        _cases = [
-            {
-                "description": "x units are defined via decorator kwarg of CheckUnits\n"
-                "y units are defined via decorator annotations, additional\n"
-                "  checks thru CheckUnits kwarg",
-                "setup": {
-                    "function": self.foo_partial_anno,
-                    "args": (2 * u.cm, 3 * u.cm),
-                    "kwargs": {},
-                    "checks": {"x": {"units": [u.cm], "equivalencies": equivs[0][0]}},
-                },
-                "output": {
-                    "x": {"units": [u.cm], "equivalencies": equivs[0][0]},
-                    "y": {"units": [u.cm]},
-                },
-            },
-            {
-                "description": "x units are defined via decorator kwarg of CheckUnits\n"
-                "y units are defined via function annotations, additional\n"
-                "  checks thru CheckUnits kwarg",
-                "setup": {
-                    "function": self.foo_partial_anno,
+    @pytest.mark.parametrize(
+        ("description", "setup", "output", "warn_context", "raise_context"),
+        [
+            (
+                dedent("""
+                x units are defined via decorator kwarg of CheckUnits
+                y units are defined via decorator annotations, additional
+                checks thru CheckUnits kwarg
+                """),
+                {
+                    "function": foo_partial_anno,
                     "args": (2 * u.cm, 3 * u.cm),
                     "kwargs": {},
                     "checks": {
-                        "x": {"units": [u.cm], "equivalencies": equivs[0]},
+                        "x": {
+                            "units": [u.cm],
+                            "equivalencies": u.temperature_energy(),
+                        },
+                    },
+                },
+                {
+                    "x": {"units": [u.cm], "equivalencies": u.temperature_energy()},
+                    "y": {"units": [u.cm]},
+                },
+                does_not_warn(),
+                does_not_raise(),
+            ),
+            (
+                dedent("""
+                x units are defined via decorator kwarg of CheckUnits
+                y units are defined via function annotations, additional
+                checks thru CheckUnits kwarg
+                """),
+                {
+                    "function": foo_partial_anno,
+                    "args": (2 * u.cm, 3 * u.cm),
+                    "kwargs": {},
+                    "checks": {
+                        "x": {
+                            "units": [u.cm],
+                            "equivalencies": [
+                                u.temperature_energy(),
+                                u.temperature(),
+                            ],
+                        },
                         "y": {"pass_equivalent_units": False},
                     },
                 },
-                "output": {
+                {
                     "x": {
                         "units": [u.cm],
-                        "equivalencies": equivs[0][0] + equivs[0][1],
+                        "equivalencies": u.temperature_energy() + u.temperature(),
                     },
                     "y": {"units": [u.cm], "pass_equivalent_units": False},
                 },
-            },
-            {
-                "description": "equivalencies are a list instead of astropy Equivalency objects",
-                "setup": {
-                    "function": self.foo_no_anno,
+                does_not_warn(),
+                does_not_raise(),
+            ),
+            (
+                "equivalencies are a list instead of astropy Equivalency objects",
+                {
+                    "function": foo_no_anno,
                     "args": (2 * u.K, 3 * u.K),
                     "kwargs": {},
                     "checks": {
-                        "x": {"units": [u.K], "equivalencies": equivs[1][0]},
-                        "y": {"units": [u.K], "equivalencies": equivs[1]},
+                        "x": {"units": [u.K], "equivalencies": list(u.temperature())[0]},
+                        "y": {"units": [u.K], "equivalencies": list(u.temperature())},
                     },
                 },
-                "output": {
-                    "x": {"units": [u.K], "equivalencies": [equivs[1][0]]},
-                    "y": {"units": [u.K], "equivalencies": equivs[1]},
+                {
+                    "x": {"units": [u.K], "equivalencies": [list(u.temperature())[0]]},
+                    "y": {"units": [u.K], "equivalencies": list(u.temperature())},
                 },
-            },
-            {
-                "description": "number of checked arguments exceed number of function arguments",
-                "setup": {
-                    "function": self.foo_partial_anno,
+                does_not_warn(),
+                does_not_raise(),
+            ),
+            (
+                "number of checked arguments exceed number of function arguments",
+                {
+                    "function": foo_partial_anno,
                     "args": (2 * u.cm, 3 * u.cm),
                     "kwargs": {},
                     "checks": {
@@ -282,13 +283,17 @@ class TestCheckUnits:
                         "z": {"units": [u.cm]},
                     },
                 },
-                "warns": PlasmaPyWarning,
-                "output": {"x": {"units": [u.cm]}, "y": {"units": [u.cm]}},
-            },
-            {
-                "description": "arguments passed via *args and **kwargs are ignored",
-                "setup": {
-                    "function": self.foo_stars,
+                {
+                    "x": {"units": [u.cm]},
+                    "y": {"units": [u.cm]},
+                },
+                pytest.warns(PlasmaPyWarning),
+                does_not_raise(),
+            ),
+            (
+                "arguments passed via *args and **kwargs are ignored",
+                {
+                    "function": foo_stars,
                     "args": (2 * u.cm, "hello"),
                     "kwargs": {"z": None},
                     "checks": {
@@ -297,150 +302,190 @@ class TestCheckUnits:
                         "z": {"units": [u.cm]},
                     },
                 },
-                "warns": PlasmaPyWarning,
-                "output": {"x": {"units": [u.cm]}, "y": {"units": [u.cm]}},
-            },
-            {
-                "description": "arguments can be None values",
-                "setup": {
-                    "function": self.foo_with_none,
+                {
+                    "x": {"units": [u.cm]},
+                    "y": {"units": [u.cm]},
+                },
+                pytest.warns(PlasmaPyWarning),
+                does_not_raise(),
+            ),
+            (
+                "arguments can be None values",
+                {
+                    "function": foo_with_none,
                     "args": (2 * u.cm, 3 * u.cm),
                     "kwargs": {},
                     "checks": {"x": {"units": [u.cm, None]}},
                 },
-                "output": {
+                {
                     "x": {"units": [u.cm], "none_shall_pass": True},
                     "y": {"units": [u.cm], "none_shall_pass": True},
                 },
-            },
-            {
-                "description": "checks and annotations do not specify units",
-                "setup": {
-                    "function": self.foo_no_anno,
+                does_not_warn(),
+                does_not_raise(),
+            ),
+            (
+                "checks and annotations do not specify units",
+                {
+                    "function": foo_no_anno,
                     "args": (2 * u.cm, 3 * u.cm),
                     "kwargs": {},
                     "checks": {"x": {"pass_equivalent_units": True}},
                 },
-                "raises": ValueError,
-            },
-            {
-                "description": "units are directly assigned to the check kwarg",
-                "setup": {
-                    "function": self.foo_partial_anno,
+                {},
+                does_not_warn(),
+                pytest.raises(ValueError),
+            ),
+            (
+                "units are directly assigned to the check kwarg",
+                {
+                    "function": foo_partial_anno,
                     "args": (2 * u.cm, 3 * u.cm),
                     "kwargs": {},
                     "checks": {"x": u.cm},
                 },
-                "output": {"x": {"units": [u.cm]}, "y": {"units": [u.cm]}},
-            },
-            {
-                "description": "return units are assigned via checks",
-                "setup": {
-                    "function": self.foo_no_anno,
+                {"x": {"units": [u.cm]}, "y": {"units": [u.cm]}},
+                does_not_warn(),
+                does_not_raise(),
+            ),
+            (
+                "return units are assigned via checks",
+                {
+                    "function": foo_no_anno,
                     "args": (2 * u.km, 3 * u.km),
                     "kwargs": {},
                     "checks": {"checks_on_return": u.km},
                 },
-                "output": {"checks_on_return": {"units": [u.km]}},
-            },
-            {
-                "description": "return units are assigned via annotations",
-                "setup": {
-                    "function": self.foo_return_anno,
+                {"checks_on_return": {"units": [u.km]}},
+                does_not_warn(),
+                does_not_raise(),
+            ),
+            (
+                "return units are assigned via annotations",
+                {
+                    "function": foo_return_anno,
                     "args": (2 * u.cm, 3 * u.cm),
                     "kwargs": {},
                     "checks": {},
                 },
-                "output": {"checks_on_return": {"units": [u.um]}},
-            },
-            {
-                "description": "return units are assigned via annotations and checks arg, but"
+                {"checks_on_return": {"units": [u.um]}},
+                does_not_warn(),
+                does_not_raise(),
+            ),
+            (
+                "return units are assigned via annotations and checks arg, but "
                 "are not consistent",
-                "setup": {
-                    "function": self.foo_return_anno,
+                {
+                    "function": foo_return_anno,
                     "args": (2 * u.cm, 3 * u.cm),
                     "kwargs": {},
                     "checks": {"checks_on_return": {"units": u.km}},
                 },
-                "raises": ValueError,
-            },
-            {
-                "description": "return units are not specified but other checks are",
-                "setup": {
-                    "function": self.foo_no_anno,
+                {},
+                does_not_warn(),
+                pytest.raises(ValueError),
+            ),
+            (
+                "return units are not specified but other checks are",
+                {
+                    "function": foo_no_anno,
                     "args": (2 * u.cm, 3 * u.cm),
                     "kwargs": {},
                     "checks": {"checks_on_return": {"pass_equivalent_units": True}},
                 },
-                "raises": ValueError,
-            },
-            {
-                "description": "no parameter checks for x are defined, but a non-unit annotation"
+                {},
+                does_not_warn(),
+                pytest.raises(ValueError),
+            ),
+            (
+                "no parameter checks for x are defined, but a non-unit annotation "
                 "is used",
-                "setup": {
-                    "function": self.foo_partial_anno,
+                {
+                    "function": foo_partial_anno,
                     "args": (2 * u.cm, 3 * u.cm),
                     "kwargs": {},
                     "checks": {},
                 },
-                "output": {"y": {"units": [u.cm]}},
-            },
-            {
-                "description": "parameter checks defined for x but unit checks calculated from"
+                {"y": {"units": [u.cm]}},
+                does_not_warn(),
+                does_not_raise(),
+            ),
+            (
+                "parameter checks defined for x but unit checks calculated from "
                 "function annotations. Function annotations do NOT define "
                 "a proper unit type.",
-                "setup": {
-                    "function": self.foo_partial_anno,
+                {
+                    "function": foo_partial_anno,
                     "args": (2 * u.cm, 3 * u.cm),
                     "kwargs": {},
                     "checks": {"x": {"pass_equivalent_units": True}},
                 },
-                "raises": ValueError,
-            },
-            {
-                "description": "parameter checks defined for return argument but unit checks "
+                {},
+                does_not_warn(),
+                pytest.raises(ValueError),
+            ),
+            (
+                "parameter checks defined for return argument but unit checks "
                 "calculated from function annotations. Function annotations do "
                 "NOT define a proper unit type.",
-                "setup": {
-                    "function": self.foo_partial_anno,
+                {
+                    "function": foo_partial_anno,
                     "args": (2 * u.cm, 3 * u.cm),
                     "kwargs": {},
                     "checks": {"checks_on_return": {"pass_equivalent_units": True}},
                 },
-                "raises": ValueError,
-            },
-        ]
+                {},
+                does_not_warn(),
+                pytest.raises(ValueError),
+            ),
+        ],
+    )
+    def test_cu_method__get_unit_checks(
+        self,
+        description: str,
+        setup: dict,
+        output,
+        warn_context,
+        raise_context,
+    ) -> None:
+        """
+        Test functionality/behavior of the method `_get_unit_checks` on `CheckUnits`.
+        This method reviews the decorator `checks` arguments and wrapped function
+        annotations to build a complete checks dictionary.
+        """
+
+        # setup default checks
+        default_checks = {
+            **self.check_defaults.copy(),
+            "units": [self.check_defaults["units"]],
+        }
+
+        sig = inspect.signature(setup["function"])
+        bound_args = sig.bind(*setup["args"], **setup["kwargs"])
 
         # perform tests
-        for _ii, case in enumerate(_cases):
-            sig = inspect.signature(case["setup"]["function"])
-            bound_args = sig.bind(*case["setup"]["args"], **case["setup"]["kwargs"])
+        cu = CheckUnits(**setup["checks"])
+        cu.f = setup["function"]
+        with warn_context, raise_context:
+            checks = cu._get_unit_checks(bound_args)
 
-            cu = CheckUnits(**case["setup"]["checks"])
-            cu.f = case["setup"]["function"]
-            if "warns" in case:
-                with pytest.warns(case["warns"]):
-                    checks = cu._get_unit_checks(bound_args)
-            elif "raises" in case:
-                with pytest.raises(case["raises"]):
-                    cu._get_unit_checks(bound_args)
-                continue
-            else:
-                checks = cu._get_unit_checks(bound_args)
+        if not isinstance(raise_context, does_not_raise):
+            # method call raised except, no more tests needed
+            return
 
-            # only expected argument checks exist
-            assert sorted(checks.keys()) == sorted(case["output"].keys())
+        # only expected argument checks exist
+        assert sorted(checks.keys()) == sorted(output.keys())
 
-            # if check key-value not specified then default is assumed
-            for arg_name in case["output"]:
-                arg_checks = checks[arg_name]
+        # if check key-value not specified then default is assumed
+        for arg_name in output:
+            arg_checks = checks[arg_name]
 
-                for key, val in default_checks.items():
-                    if key in case["output"][arg_name]:
-                        val = case["output"][arg_name][key]  # noqa: PLW2901
-                    assert arg_checks[key] == val, (
-                        f"{case['description'] = }\n\n{arg_checks[key] = }\n\n{val = }"
-                    )
+            for key, val in default_checks.items():
+                if key in output[arg_name]:
+                    val = output[arg_name][key]  # noqa: PLW2901
+                assert arg_checks[key] == val, (
+                    f"{description = }\n\n{arg_checks[key] = }\n\n{val = }"
+                )
 
     def test_cu_method__check_unit(self) -> None:
         """
