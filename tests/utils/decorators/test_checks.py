@@ -9,6 +9,7 @@ from types import LambdaType
 from typing import Any
 from unittest import mock
 
+import astropy
 import astropy.units as u
 import numpy as np
 import pytest
@@ -32,9 +33,6 @@ from plasmapy.utils.exceptions import (
 does_not_warn = does_not_raise
 
 
-# ----------------------------------------------------------------------------------------
-# Test Decorator class `CheckBase`
-# ----------------------------------------------------------------------------------------
 class TestCheckBase:
     """
     Test for decorator class :class:`~plasmapy.utils.decorators.checks.CheckBase`.
@@ -441,6 +439,7 @@ class TestCheckUnits:
             ),
         ],
     )
+    @pytest.mark.skipif(astropy.__version__ < '7', reason="see #3065")
     def test_cu_method__get_unit_checks(
         self,
         description: str,
