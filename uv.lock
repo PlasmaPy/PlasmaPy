@@ -1558,7 +1558,7 @@ tests = [
 
 [package.metadata]
 requires-dist = [
-    { name = "astropy", specifier = ">=6.1.1" },
+    { name = "astropy", specifier = ">=6" },
     { name = "docutils", marker = "extra == 'docs'", specifier = ">=0.20.1" },
     { name = "h5py", specifier = ">=3.8" },
     { name = "hypothesis", marker = "extra == 'tests'", specifier = ">=6.108.2" },
