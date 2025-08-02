@@ -472,14 +472,13 @@ class TestCheckUnits:
         assert set(checks.keys()) == set(expected.keys())
 
         # if check key-value not specified then default is assumed
-        for arg_name in expected:
-            arg_checks = checks[arg_name]
+        for arg_name, expected_checks in expected.items():
 
             for key in default_checks:
-                _check = arg_checks[key]
+                _check = checks[arg_name][key]
 
-                if key in expected[arg_name]:
-                    val = expected[arg_name][key]
+                if key in expected_checks:
+                    val = expected_checks[key]
                 else:
                     val = default_checks[key]
 
