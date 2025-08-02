@@ -337,7 +337,7 @@ def hollweg(  # noqa: C901, PLR0912, PLR0915
         errmsg = (
             "The Hollweg dispersion solver is valid in the regime where "
             "ω / ω_ci ≪ 1. However, the maximum value of ω / ω_ci for "
-            f"the solution is {w_wci_max:.2f}, which may affect the
+            f"the solution is {w_wci_max:.2f}, which may affect the "
             "validity of the solution."
         )
         warnings.warn(errmsg, PhysicsWarning)
