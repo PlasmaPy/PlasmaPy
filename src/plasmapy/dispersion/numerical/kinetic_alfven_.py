@@ -160,18 +160,18 @@ def kinetic_alfven(  # noqa: C901, PLR0912
     >>> import astropy.units as u
     >>> from plasmapy.dispersion.numerical import kinetic_alfven_
     >>> inputs = {
-    ...     "B": 80 * u.nT,
-    ...     "ion": "p+",
-    ...     "k": [1e-6, 1e-2] * u.rad / u.m,
-    ...     "n_i": 1e6 * u.m**-3,
-    ...     "T_e": 3e5 * u.K,
+    ...     "B": 1e-8 * u.T,
+    ...     "ion": "D+",
+    ...     "k": [1e-8, 1e-7] * u.rad / u.m,
+    ...     "n_i": 1e5 * u.m**-3,
+    ...     "T_e": 8e5 * u.K,
     ...     "T_i": 2e5 * u.K,
     ...     "theta": 30 * u.deg,
     ...     "gamma_e": 3,
     ...     "gamma_i": 3,
     ... }
     >>> kinetic_alfven(**inputs)
-    {np.float64(30.0): <Quantity [2.691...e-01, 3.860...e+05] rad / s>}
+    {np.float64(30.0): <Quantity [0.00075242, 0.00752616] rad / s>}
     """
 
     # Validate arguments
