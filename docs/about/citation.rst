@@ -1,6 +1,6 @@
 .. _citation:
 
-Acknowledging and citing PlasmaPy
+Acknowledging and Citing PlasmaPy
 =================================
 
 .. |version_to_cite| replace:: 2024.10.0

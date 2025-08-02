@@ -21,6 +21,7 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1436011.svg)](https://doi.org/10.5281/zenodo.1436011)
 [![astropy](http://img.shields.io/badge/powered%20by-Astropy-orange.svg?style=flat&logo=astropy)](http://www.astropy.org/)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
+[![SPEC 0 — Minimum Supported Dependencies](https://img.shields.io/badge/SPEC-0-green?labelColor=%23004811&color=%235CA038)](https://scientific-python.org/specs/spec-0000/)
 
 [PlasmaPy] is an open source, community-developed [Python] package for
 plasma research and education. PlasmaPy intends to be for plasma science
@@ -55,7 +56,7 @@ On some systems, it might be necessary to specify the Python version
 number, for example by using `python3` or `python3.13` instead of
 `python`.
 
-To install PlasmaPy on Windows, open a terminal and run
+To install PlasmaPy in Windows via PowerShell, run:
 
 ```Shell
 py -3.13 -m pip install plasmapy
@@ -131,8 +132,8 @@ channel; Gitter uses a bridge to link the two.
 
 ### Mailing list
 
-You can subscribe to PlasmaPy's low-volume [mailing list] to receive
-PlasmaPy newsletters and other announcements.
+Subscribe to PlasmaPy's low-volume [mailing list] to receive occasional
+newsletters and announcements.
 
 ## License
 
@@ -142,7 +143,7 @@ added [protections against software patents].
 ## Acknowledgments
 
 Development of PlasmaPy has been supported in part by the
-[National Science Foundation], [Department of Energy], [NASA], and the
+[National Science Foundation], [NASA], [Department of Energy], and the
 [Smithsonian Institution]. For more details, please see PlasmaPy's
 documentation page on [authors and credits].
 

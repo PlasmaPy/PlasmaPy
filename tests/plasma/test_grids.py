@@ -514,7 +514,7 @@ def uniform_cartesian_grid():
         0.1 * u.cm,
     ],
 )
-def test_soften_edges(uniform_cartesian_grid, width):
+def test_soften_edges(uniform_cartesian_grid, width) -> None:
     grid = uniform_cartesian_grid
 
     # Find the approximate center of the grid
