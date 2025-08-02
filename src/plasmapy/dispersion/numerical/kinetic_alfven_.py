@@ -158,7 +158,7 @@ def kinetic_alfven(  # noqa: C901, PLR0912
     --------
     >>> import numpy as np
     >>> import astropy.units as u
-    >>> from plasmapy.dispersion.numerical import kinetic_alfven_
+    >>> from plasmapy.dispersion.numerical.kinetic_alfven_ import kinetic_alfven
     >>> inputs = {
     ...     "B": 1e-8 * u.T,
     ...     "ion": "D+",
