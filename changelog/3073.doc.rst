@@ -1,0 +1,3 @@
+Limited the allowed version of |Sphinx| to ``sphinx>=8.2.3,<8.3``
+because planned breaking changes to Sphinx are causing documentation
+build errors due to incompatibilities with some extensions.
