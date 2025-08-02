@@ -195,7 +195,7 @@ class TestCheckUnits:
             cu._normalize_equivalencies([("cm", u.cm)])
 
     @pytest.mark.parametrize(
-        ("description", "setup", "output", "warn_context", "raise_context"),
+        ("description", "setup", "expected", "warn_context", "raise_context"),
         [
             (
                 "x units are defined via decorator kwarg of CheckUnits "
@@ -439,7 +439,7 @@ class TestCheckUnits:
         self,
         description: str,
         setup: dict,
-        output,
+        expected,
         warn_context,
         raise_context,
     ) -> None:
@@ -469,18 +469,30 @@ class TestCheckUnits:
             return
 
         # only expected argument checks exist
-        assert sorted(checks.keys()) == sorted(output.keys())
+        assert set(checks.keys()) == set(expected.keys())
 
         # if check key-value not specified then default is assumed
-        for arg_name in output:
+        for arg_name in expected.keys():
             arg_checks = checks[arg_name]
 
-            for key, val in default_checks.items():
-                if key in output[arg_name]:
-                    val = output[arg_name][key]  # noqa: PLW2901
-                assert arg_checks[key] == val, (
-                    f"{description = }\n\n{arg_checks[key] = }\n\n{val = }"
-                )
+            for key in default_checks.keys():
+                _check = arg_checks[key]
+
+                if key in expected[arg_name]:
+                    val = expected[arg_name][key]
+                else:
+                    val = default_checks[key]
+
+                if key == "equivalencies" and _check is not None and val is not None:
+                    # Note: for some reason an equals comparison of an Equivalency
+                    #       and a list are not equal even if all the elements
+                    #       are equal.  astropy.units.Equivalency is a subclass
+                    #       of a list...work around is to convert it to a list
+
+                    _check = list(_check)
+                    val = list(val)
+
+                assert _check == val
 
     def test_cu_method__check_unit(self) -> None:
         """
