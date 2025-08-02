@@ -310,37 +310,37 @@ def hollweg(  # noqa: C901, PLR0912, PLR0915
 
     # Warn about NOT low-β
     if c_s / v_A > 0.1:
-        warnings.warn(
-            f"This solver is valid in the low-beta regime, "
-            f"c_s/v_A ≪ 1 according to Bellan, 2012, Sec. 1.7 "
-            f"(see documentation for DOI). A c_s/v_A value of {cs_vA:.2f} "
-            f"was calculated which may affect the validity of the solution.",
-            PhysicsWarning,
+        errmsg = (
+            "The Hollweg dispersion solver is valid the low β regime: "
+            "c_s / v_A ≪ 1 (see §1.7 of Bellan 2012, doi: 10.1029/2012ja017856). "
+            f"However, c_s / V_A = {cs_vA:.2f}, which may affect the validity "
+            "of the solution."
         )
+        warnings.warn(errmsg, PhysicsWarning)
 
     # Warn about theta not nearly perpendicular
     theta_diff_max = np.amax(np.abs(thetav - np.pi / 2))
     if theta_diff_max > 0.1:
-        warnings.warn(
-            f"This solver is valid in the regime where propagation is "
-            f"nearly perpendicular to B according to Bellan, 2012, Sec. 1.7 "
-            f"(see documentation for DOI). A |theta - pi/2| value of "
-            f"{theta_diff_max:.2f} was calculated which may affect the "
-            f"validity of the solution.",
-            PhysicsWarning,
+        errmsg = (
+            "The Hollweg dispersion solver is valid in the regime where "
+            "propagation is nearly perpendicular to the magnetic field "
+            "(see §1.7 of Bellan 2012, doi: 10.1029/2012ja017856). "
+            f"However, a |θ - π/2| value of {theta_diff_max:.2f} was "
+            f"calculated, which may affect the validity of the solution."
         )
+        warnings.warn(errmsg, PhysicsWarning)
 
     # dispersion relation is only valid in the regime ω ≪ ω_ci
     w_max = np.max(roots)
     w_wci_max = w_max / omega_ci
     if w_wci_max > 0.1:
-        warnings.warn(
-            f"This solver is valid in the regime ω/ω_ci ≪ 1. A ω "
-            f"value of {w_max:.2f} and a ω/ω_ci value of "
-            f"{w_wci_max:.2f} were calculated which may affect the "
-            f"validity of the solution.",
-            PhysicsWarning,
+        errmsg = (
+            "The Hollweg dispersion solver is valid in the regime where "
+            "ω / ω_ci ≪ 1. However, the maximum value of ω / ω_ci for "
+            f"the solution is {w_wci_max:.2f}, which may affect the
+            "validity of the solution."
         )
+        warnings.warn(errmsg, PhysicsWarning)
 
     return {
         "fast_mode": roots[2, :].squeeze() * u.rad / u.s,
