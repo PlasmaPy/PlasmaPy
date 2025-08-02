@@ -1,0 +1,1 @@
+Removed upper limits on the allowed versions of Astropy and xarray.

@@ -667,9 +667,15 @@ class AbstractGrid(ABC):
                     f"does not match the grid shape {self.shape}."
                 )
 
+            # xarray gained better Quantity support around v2024.11.0, but
+            # this file was originally written with the assumption that
+            # xarray lacks Quantity support. As a workaround, use
+            # `quantity.value` instead of `quantity` in the creation of
+            # this DataArray.
             data = xr.DataArray(
-                quantity, dims=dims, coords=coords, attrs={"unit": quantity.unit}
+                quantity.value, dims=dims, coords=coords, attrs={"unit": quantity.unit}
             )
+
             self.ds[key] = data
 
     @property
