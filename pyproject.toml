@@ -56,7 +56,7 @@ dynamic = [ "version" ]
 # pinned environments in `uv.lock`.
 
 dependencies = [
-  "astropy>=6.1.1",
+  "astropy>=6",
   "h5py>=3.8",
   "lmfit>=1.1",
   "matplotlib>=3.7",
