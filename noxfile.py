@@ -197,15 +197,15 @@ def validate_requirements(session: nox.Session) -> None:
     session.run("uv", "lock", "--check", "--offline", "--no-progress")
 
 
-pytest_command: tuple[str, ...] = (
+pytest_command: list[str] = [
     "pytest",
     "--pyargs",
-    "--durations=10",
-    "--durations-min=0.05",
+    "--durations=6",
+    "--durations-min=0.1",
     "--tb=short",
     "-n=auto",
     "--dist=loadfile",
-)
+]
 
 with_doctests: tuple[str, ...] = ("--doctest-modules", "--doctest-continue-on-failure")
 
