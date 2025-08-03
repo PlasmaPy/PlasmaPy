@@ -31,7 +31,6 @@ from plasmapy.formulary.laser import (
         (np.nan * u.watt / u.m**2, np.nan * u.V / u.m),
     ],
 )
-@pytest.mark.filterwarnings("ignore::astropy.units.UnitsWarning")
 def test_electric_field_amplitude(intensity, expected) -> None:
     result = electric_field_amplitude(intensity=intensity)
     assert_quantity_allclose(result, expected, rtol=1e-6, equal_nan=True, verbose=True)
@@ -84,7 +83,6 @@ def test_aliases(alias, parent) -> None:
         (np.nan * u.V / u.m, np.nan * u.watt / u.m**2),
     ],
 )
-@pytest.mark.filterwarnings("ignore::astropy.units.UnitsWarning")
 def test_intensity(electric_field_amplitude, expected) -> None:
     result = intensity(electric_field_amplitude=electric_field_amplitude)
     assert_quantity_allclose(result, expected, rtol=1e-6, equal_nan=True, verbose=True)
@@ -143,7 +141,6 @@ def test_intensity_warnings(electric_field_amplitude, expected_warning) -> None:
         (np.nan * u.watt / u.m**2, np.nan * u.m, np.nan * u.Watt),
     ],
 )
-@pytest.mark.filterwarnings("ignore::astropy.units.UnitsWarning")
 def test_Gaussian_power(intensity, beam_waist_radius, expected) -> None:
     result = Gaussian_power(intensity=intensity, beam_waist_radius=beam_waist_radius)
     assert_quantity_allclose(result, expected, rtol=1e-6, equal_nan=True, verbose=True)
@@ -182,7 +179,6 @@ def test_Gaussian_power_errors_warnings(
         (np.nan * u.m, np.nan * u.m),
     ],
 )
-@pytest.mark.filterwarnings("ignore::astropy.units.UnitsWarning")
 def test_Gaussian_beam_waist_radius(spot_size_FWHM, expected) -> None:
     result = Gaussian_beam_waist_radius(spot_size_FWHM=spot_size_FWHM)
     assert_quantity_allclose(result, expected, rtol=1e-6, equal_nan=True, verbose=True)
@@ -220,7 +216,6 @@ def test_Gaussian_beam_waist_radius_warnings(spot_size_FWHM, expected_warning) -
         (np.nan * u.m, np.nan * u.m),
     ],
 )
-@pytest.mark.filterwarnings("ignore::astropy.units.UnitsWarning")
 def test_Gaussian_spot_size_FWHM(beam_waist_radius, expected) -> None:
     result = Gaussian_spot_size_FWHM(beam_waist_radius=beam_waist_radius)
     assert_quantity_allclose(result, expected, rtol=1e-6, equal_nan=True, verbose=True)
@@ -258,7 +253,7 @@ def test_Gaussian_spot_size_FWHM_warnings(beam_waist_radius, expected_warning) -
         (np.nan * u.rad / u.s, np.nan * u.m),
     ],
 )
-@pytest.mark.filterwarnings("ignore::astropy.units.UnitsWarning")
+@pytest.mark.filterwarnings("ignore:.*divide by zero.*:RuntimeWarning")
 def test_em_wavelength(angular_frequency, expected) -> None:
     result = em_wavelength(angular_frequency=angular_frequency)
     assert_quantity_allclose(result, expected, rtol=1e-6, equal_nan=True, verbose=True)
@@ -296,7 +291,7 @@ def test_em_wavelength_warnings(angular_frequency, expected_warning) -> None:
         (np.nan * u.m, np.nan * u.rad / u.s),
     ],
 )
-@pytest.mark.filterwarnings("ignore::astropy.units.UnitsWarning")
+@pytest.mark.filterwarnings("ignore:.*divide by zero.*:RuntimeWarning")
 def test_em_angular_frequency(wavelength, expected) -> None:
     result = em_angular_frequency(wavelength=wavelength)
     assert_quantity_allclose(result, expected, rtol=1e-6, equal_nan=True, verbose=True)
@@ -310,6 +305,7 @@ def test_em_angular_frequency(wavelength, expected) -> None:
         (1 * u.kg, u.UnitTypeError),
     ],
 )
+@pytest.mark.filterwarnings("ignore:.*divide by zero.*:RuntimeWarning")
 def test_em_angular_frequency_errors(wavelength, expected) -> None:
     with pytest.raises(expected):
         em_angular_frequency(wavelength=wavelength)
@@ -355,7 +351,6 @@ def test_em_angular_frequency_warning(wavelength, expected_warning) -> None:
         (np.nan * u.Watt / u.m**2, np.nan * u.m, np.nan),
     ],
 )
-@pytest.mark.filterwarnings("ignore::astropy.units.UnitsWarning")
 def test_normalized_vector_potential(intensity, wavelength, expected) -> None:
     result = normalized_vector_potential(intensity=intensity, wavelength=wavelength)
     assert_quantity_allclose(result, expected, rtol=1e-6, equal_nan=True, verbose=True)
@@ -419,7 +414,7 @@ def test_normalized_vector_potential_warning(
         (np.nan * u.m, np.nan * u.m, np.nan * u.m),
     ],
 )
-@pytest.mark.filterwarnings("ignore::astropy.units.UnitsWarning")
+@pytest.mark.filterwarnings("ignore:.*divide by zero.*:RuntimeWarning")
 def test_Gaussian_Rayleigh_length(wavelength, beam_waist_radius, expected) -> None:
     result = Gaussian_Rayleigh_length(
         wavelength=wavelength, beam_waist_radius=beam_waist_radius
