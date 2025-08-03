@@ -129,7 +129,9 @@ class Test_Coulomb_logarithm:
                 V=0 * u.m / u.s,
             )
 
-    @pytest.mark.filterwarnings("ignore:.*speed of light.*:plasmapy.utils.exceptions.RelativityWarning")
+    @pytest.mark.filterwarnings(
+        "ignore:.*speed of light.*:plasmapy.utils.exceptions.RelativityWarning"
+    )
     def test_handle_V_arraysizes(self) -> None:
         """Test that different sized V input array gets handled by _boilerplate"""
         with pytest.warns(CouplingWarning):
@@ -509,7 +511,9 @@ class Test_Coulomb_logarithm:
         )
         assert testTrue, errStr
 
-    @pytest.mark.filterwarnings("ignore:.*no specified units.*:astropy.units.UnitsWarning")
+    @pytest.mark.filterwarnings(
+        "ignore:.*no specified units.*:astropy.units.UnitsWarning"
+    )
     def test_ls_clamp_mininterp_non_scalar_density(self) -> None:
         """
         Test for third version of Coulomb logarithm from Gericke,
@@ -535,7 +539,9 @@ class Test_Coulomb_logarithm:
         )
         assert testTrue.all(), errStr
 
-    @pytest.mark.filterwarnings("ignore:.*no specified units.*:astropy.units.UnitsWarning")
+    @pytest.mark.filterwarnings(
+        "ignore:.*no specified units.*:astropy.units.UnitsWarning"
+    )
     def test_GMS3_non_scalar_density(self) -> None:
         """
         Test for third version of Coulomb logarithm from Gericke,
