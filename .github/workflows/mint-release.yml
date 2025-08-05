@@ -1,4 +1,4 @@
-name: Mint a release 🍬
+name: Mint release 🍬
 
 on:
   workflow_dispatch:
