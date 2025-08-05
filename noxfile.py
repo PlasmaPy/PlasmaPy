@@ -576,6 +576,8 @@ AUTOTYPING_RISKY: tuple[str, ...] = (
 )
 
 
+import shutil
+
 @nox.session
 @nox.parametrize("final", [nox.param(False, id="draft"), nox.param(True, id="final")])
 def changelog(session: nox.Session, final: str) -> None:
@@ -621,25 +623,11 @@ def changelog(session: nox.Session, final: str) -> None:
 
     original_file = pathlib.Path("./CHANGELOG.rst")
     original_file.unlink()
-    destination = pathlib.Path(f"./docs/changelog/{version}.rst")
 
     session.run(*towncrier, "--yes")
 
-
-    options = ("--yes",) if final else ("--draft", "--keep")
-
-    session.run(
-        "towncrier",
-        "build",
-        "--version",
-        version,
-        *options,
-    )
-
-#    if final:
-
-#        original_file.rename(destination)
-
+    destination = pathlib.Path(f"./docs/changelog/{version}.rst")
+    shutil.copy(original_file, destination)
 
 @nox.session
 @nox.parametrize(
