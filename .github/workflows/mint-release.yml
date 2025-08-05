@@ -80,7 +80,7 @@ jobs:
 #    - name: Build changelog with towncrier
 #      run: |
 #        towncrier build --yes --version ${{ github.event.inputs.tag }} --draft | tee docs/changelog/${{ github.event.inputs.tag }}.rst
-#        sed -i -e :a -e '/^\n*$/{$d;N;ba' -e '}' docs/changelog/${{ github.event.inputs.tag }}.rst   # strip empty lines
+##        sed -i -e :a -e '/^\n*$/{$d;N;ba' -e '}' docs/changelog/${{ github.event.inputs.tag }}.rst   # strip empty lines
 #        git add .
 #        towncrier build --yes --version ${{ github.event.inputs.tag }}
 #        git commit --allow-empty -nm "Add changelog entries for v${{ github.event.inputs.tag }}"
