@@ -177,6 +177,7 @@ lint.extend-select = [
   "FBT003", # flake8-boolean-trap
   "FIX",    # flake8-fixme
   "FLY",    # flynt
+  "FURB",   # refurb
   "G",      # flake8-logging-format
   "I",      # isort
   "ICN",    # flake8-import-conventions
@@ -196,6 +197,7 @@ lint.extend-select = [
   "PT",     # flake8-pytest-style
   "PTH",    # flake8-use-pathlib
   "PYI",    # flake8-pyi
+  "Q",      # flake8-quotes
   "RET",    # flake8-return
   "RSE",    # flake8-raise
   "RUF001", # ambiguous-unicode-character-string
@@ -219,6 +221,7 @@ lint.extend-select = [
   "RUF023", # unsorted-dunder-slots
   "RUF024", # mutable-fromkeys-value
   "RUF026", # default-factory-kwarg
+  "RUF028", # invalid-formatter-suppression-comment
   "RUF030", # assert-with-print-message
   "RUF032", # decimal-from-float-literal
   "RUF033", # post-init-default
@@ -227,7 +230,11 @@ lint.extend-select = [
   "RUF041", # unnecessary-nested-literal
   "RUF046", # unnecessary-cast-to-int
   "RUF048", # map-int-version-parsing
+  "RUF049", # dataclass-enum
   "RUF051", # if-key-in-dict-del
+  "RUF053", # class-with-mixed-type-vars
+  "RUF057", # unnecessary-round
+  "RUF058", # starmap-zip
   "RUF100", # unused-noqa
   "RUF101", # redirected-noqa
   "RUF200", # invalid-pyproject-toml
