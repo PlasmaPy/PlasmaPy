@@ -584,8 +584,10 @@ def changelog(session: nox.Session, final: str) -> None:
     """
     Build the changelog with towncrier.
 
-     - 'final': build the combined changelog for the release, and delete
-       the individual changelog entries in `changelog`.
+     - 'final': build the combined changelog for the release, delete
+       the individual changelog entries in `changelog`, and replace
+       `CHANGELOG.rst`. Be sure to commit changes before running this
+       session.
      - 'draft': print the draft changelog to standard output, without
        writing to files
 
@@ -598,7 +600,7 @@ def changelog(session: nox.Session, final: str) -> None:
     if len(session.posargs) != 1:
         raise TypeError(
             "Please provide the version of PlasmaPy to be released "
-            "(i.e., `nox -s changelog -- 2025.10.0`"
+            "(i.e., `nox -s changelog -- 2025.10.0`)"
         )
 
     version = session.posargs[0]
