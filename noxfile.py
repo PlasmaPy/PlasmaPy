@@ -596,28 +596,14 @@ def changelog(session: nox.Session, final: str) -> None:
     if len(session.posargs) != 1:
         raise TypeError(
             "Please provide the version of PlasmaPy to be released "
-            "(i.e., `nox -s changelog -- 2024.9.0`"
-        )
-
-    source_directory = pathlib.Path("./changelog")
-
-    extraneous_files = [
-        file for file in source_directory.glob("changelog/*[0-9]*.*.rst?*")
-    ]
-    if final and extraneous_files:
-        session.error(
-            "Please delete the following extraneous files before "
-            "proceeding, as the presence of these files may cause "
-            f"towncrier errors: {[file for file in extraneous_files]}"
+            "(i.e., `nox -s changelog -- 2025.10.0`"
         )
 
     version = session.posargs[0]
-
     year_pattern = r"(202[4-9]|20[3-9][0-9]|2[1-9][0-9]{2}|[3-9][0-9]{3,})"
     month_pattern = r"(1[0-2]|[1-9])"
     patch_pattern = r"(0?[0-9]|[1-9][0-9])"
     version_pattern = rf"^{year_pattern}\.{month_pattern}\.{patch_pattern}$"
-
     if not re.match(version_pattern, version):
         raise ValueError(
             "Please provide a version of the form YYYY.M.PATCH, where "
@@ -627,25 +613,32 @@ def changelog(session: nox.Session, final: str) -> None:
 
     session.install(".", "towncrier")
 
+    towncrier = ["towncrier", "build", "--version", version]
+
+    if not final:
+        session.run(*towncrier, "--draft", "--keep")
+        return
+
+    original_file = pathlib.Path("./CHANGELOG.rst")
+    original_file.unlink()
+    destination = pathlib.Path(f"./docs/changelog/{version}.rst")
+
+    session.run(*towncrier, "--yes")
+
+
     options = ("--yes",) if final else ("--draft", "--keep")
 
     session.run(
         "towncrier",
         "build",
-        "--config",
-        "pyproject.toml",
-        "--dir",
-        ".",
         "--version",
         version,
         *options,
-        *session.posargs[1:],
     )
 
-    if final:
-        original_file = pathlib.Path("./CHANGELOG.rst")
-        destination = pathlib.Path(f"./docs/changelog/{version}.rst")
-        original_file.rename(destination)
+#    if final:
+
+#        original_file.rename(destination)
 
 
 @nox.session
