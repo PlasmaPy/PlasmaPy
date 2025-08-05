@@ -256,6 +256,11 @@ authors:
   orcid: https://orcid.org/0000-0003-0223-7004
   alias: samaiyahfarid
 
+- given-names: Emmanuel
+  family-names: Ferdman
+  orcid: https://orcid.org/0009-0004-8953-0151
+  alias: emmanuel-ferdman
+
 - given-names: Michael
   family-names: Fischer
 
@@ -281,6 +286,11 @@ authors:
   affiliation: Embry-Riddle Aeronautical University
   orcid: https://orcid.org/0009-0008-3588-0497
   alias: s-gerow
+
+- given-names: Mahlet
+  family-names: Getahun
+  affiliation: Marietta College
+  alias: Getahun-yw-Mahl
 
 - given-names: Jessica
   family-names: Gonzalez
@@ -479,6 +489,12 @@ authors:
   affiliation: College of William & Mary
   alias: LeoMurphy037
 
+- given-names: Bao
+  family-names: Nguyen
+  affiliation: Imperial College London
+  orcid: https://orcid.org/0000-0002-1753-4223
+  alias: wnguyen1312
+
 - given-names: Suzanne
   family-names: Nie
   alias: sznie
@@ -518,6 +534,8 @@ authors:
 - given-names: Roberto Díaz
   family-names: Pérez
   alias: RoberTnf
+
+- alias: Physics-is-awesome
 
 - given-names: Preston
   family-names: Pitzer
@@ -730,21 +748,3 @@ authors:
 - given-names: Carol
   family-names: Zhang
   alias: carolyz
-
-- alias: Physics-is-awesome
-
-- given-names: Bao
-  family-names: Nguyen
-  affiliation: Imperial College London
-  orcid: https://orcid.org/0000-0002-1753-4223
-  alias: wnguyen1312
-
-- given-names: Emmanuel
-  family-names: Ferdman
-  orcid: https://orcid.org/0009-0004-8953-0151
-  alias: emmanuel-ferdman
-
-- given-names: Mahlet
-  family-names: Getahun
-  affiliation: Marietta College
-  alias: Getahun-yw-Mahl
