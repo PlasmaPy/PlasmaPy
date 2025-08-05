@@ -6,11 +6,11 @@ on:
       tag:
         description: Release tag 🏷️
         required: true
-        default: 2024.5.0rc1
+        default: 2025.8.0rc1
       DOI:
         description: Reserved DOI from Zenodo
         required: true
-        default: 10.5281/zenodo.1238132
+        default: 10.5281/zenodo.16747747
 
 jobs:
 
@@ -68,3 +68,5 @@ jobs:
         VERSION="v${{ github.event.inputs.tag }}"
         BRANCH=$(echo $VERSION | awk 'BEGIN{FS=OFS="."} {$3="x"} 1' | cut -f1,2,3 -d'.' | awk -F'rc' '{print $1 ORS $2}')
         git push -u origin $VERSION $BRANCH
+      env:
+        GITHUB_TOKEN: ${{ secrets.WORKFLOW_TOKEN }}
