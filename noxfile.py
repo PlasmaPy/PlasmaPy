@@ -577,9 +577,7 @@ AUTOTYPING_RISKY: tuple[str, ...] = (
 
 
 @nox.session
-@nox.parametrize(
-    "final", [nox.param(False, id="draft"), nox.param(True, id="final")]
-)
+@nox.parametrize("final", [nox.param(False, id="draft"), nox.param(True, id="final")])
 def changelog(session: nox.Session, final: str) -> None:
     """
     Build the changelog with towncrier.
@@ -603,7 +601,9 @@ def changelog(session: nox.Session, final: str) -> None:
 
     source_directory = pathlib.Path("./changelog")
 
-    extraneous_files = [file for file in source_directory.glob("changelog/*[0-9]*.*.rst?*")]
+    extraneous_files = [
+        file for file in source_directory.glob("changelog/*[0-9]*.*.rst?*")
+    ]
     if final and extraneous_files:
         session.error(
             "Please delete the following extraneous files before "
