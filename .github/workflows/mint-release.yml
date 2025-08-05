@@ -1,16 +1,24 @@
-name: Mint release 🍬
+name: Create a tag for a release
 
 on:
   workflow_dispatch:
     inputs:
-      tag:
-        description: Release tag 🏷️
+      version:
+        description: Date-based version 🏷️
         required: true
         default: 2025.8.0rc1
-      DOI:
+      doi:
         description: Reserved DOI from Zenodo
         required: true
         default: 10.5281/zenodo.16747747
+
+
+permissions:
+  contents: write
+
+defaults:
+  run:
+    shell: bash
 
 jobs:
 
@@ -19,54 +27,70 @@ jobs:
 
     steps:
 
-    - name: Checkout code
-      uses: actions/checkout@v4
-      with:
-        persist-credentials: false
-
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.13'
-
-    - name: Install dependencies
+    - name: Validate version input
       run: |
-        pip install towncrier pre-commit ruamel.yaml
+        VERSION=${{ github.event.inputs.version }}
+        if [[ ! ${VERSION} =~ ^2[0-9]{3}\.[0-9]+\.[0-9]+((a|b|rc)[0-9]+)?$ ]]; then
+        echo "::error ::Provide a calendar version like `2025.8.0` (or `2025.8.0a0`, `2025.8.0b0`, or `2025.8.0rc1` for pre-releases)"
+        exit 1
+        fi
+
+    - name: Validate DOI input
+      run: |
+        DOI=${{ github.event.inputs.doi }}
+        if [[ ! ${DOI} =~ ^10\.[0-9]{4,9}/\S+$]]; then
+        echo "::error ::Provide a valid DOI reserved from Zenodo."
+        exit 1
+        fi
 
     - name: Configure git
       run: |
         git config --global user.email "team@plasmapy.org"
         git config --global user.name "PlasmaPy Release Bot"
 
-    - name: Create or checkout branch
-      run: |
-        VERSION="v${{ github.event.inputs.tag }}"
-        BRANCH=$(echo $VERSION | awk 'BEGIN{FS=OFS="."} {$3="x"} 1' | cut -f1,2,3 -d'.' | awk -F'rc' '{print $1 ORS $2}')
-        git checkout $BRANCH 2>/dev/null || git checkout -b $BRANCH
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        persist-credentials: 'false'
 
-    - name: Update CITATION.cff, docs/about/citation.rst with the DOI for the new version.
-      run: |
-        python .github/scripts/citation_updater.py CITATION.cff docs/about/citation.rst docs/changelog/index.rst --version=${{ github.event.inputs.tag}} --doi=${{ github.event.inputs.doi}}
-        git add .
-        git commit -m "Update citation and changelog index entry"
+#    - name: Create or check out branch
+#      run: |
+#        git checkout $BRANCH 2>/dev/null || git checkout -b $BRANCH
 
-    - name: Create changelog
-      run: |
-        towncrier build --yes --version ${{ github.event.inputs.tag }} --draft | tee docs/changelog/${{ github.event.inputs.tag }}.rst
-        sed -i -e :a -e '/^\n*$/{$d;N;ba' -e '}' docs/changelog/${{ github.event.inputs.tag }}.rst   # strip empty lines
-        git add .
-        towncrier build --yes --version ${{ github.event.inputs.tag }}
-        git commit --allow-empty -nm "Add changelog entries for v${{ github.event.inputs.tag }}"
+#    - name: Set up Python
+#      uses: actions/setup-python@v5
+#      with:
+#        python-version: '3.13'
 
-    - name: Tag the release
-      run: |
-        git tag "v${{ github.event.inputs.tag }}" -m "Version v${{ github.event.inputs.tag }}"
-        git tag
+#    - name: Install dependencies
+#      run: |
+#        pip install towncrier pre-commit ruamel.yaml
 
-    - name: Push tag, branch state
-      run: |
-        VERSION="v${{ github.event.inputs.tag }}"
-        BRANCH=$(echo $VERSION | awk 'BEGIN{FS=OFS="."} {$3="x"} 1' | cut -f1,2,3 -d'.' | awk -F'rc' '{print $1 ORS $2}')
-        git push -u origin $VERSION $BRANCH
-      env:
-        GITHUB_TOKEN: ${{ secrets.WORKFLOW_TOKEN }}
+#    - name: Update CITATION.cff & citation.rst with the DOI for the new version.
+#      run: |
+#        python .github/scripts/citation_updater.py CITATION.cff docs/about/citation.rst docs/changelog/index.rst --version=${{ github.event.inputs.version }} --doi=${{ github.event.inputs.doi}}
+#        git add .
+#        git commit -m "Run citation_updater.py"
+
+#    - name: Build changelog with towncrier
+#      run: |
+#        towncrier build --yes --version ${{ github.event.inputs.tag }} --draft | tee docs/changelog/${{ github.event.inputs.tag }}.rst
+#        sed -i -e :a -e '/^\n*$/{$d;N;ba' -e '}' docs/changelog/${{ github.event.inputs.tag }}.rst   # strip empty lines
+#        git add .
+#        towncrier build --yes --version ${{ github.event.inputs.tag }}
+#        git commit --allow-empty -nm "Add changelog entries for v${{ github.event.inputs.tag }}"
+#
+#    - name: Tag the release
+#      run: |
+#        git tag "v${{ github.event.inputs.tag }}" -m "Version v${{ github.event.inputs.tag }}"
+#
+#    - name: Print tags
+#      run: |
+#        git tag
+#
+#    - name: Push tag, branch state
+#      run: |
+#        git push -u origin $VERSION $BRANCH
+#      env:
+#        GITHUB_TOKEN: ${{ secrets.WORKFLOW_TOKEN }}
+#
