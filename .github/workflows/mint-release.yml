@@ -12,7 +12,6 @@ on:
         required: true
         default: 10.5281/zenodo.16747747
 
-
 jobs:
 
   tag:
