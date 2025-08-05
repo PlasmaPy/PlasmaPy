@@ -87,7 +87,7 @@ jobs:
 
     - name: Build changelog with towncrier
       run: |
-        uvx nox -s "changelog(final)"
+        uvx nox -s "changelog(final)" -- ${VERSION}
         git add .
         git commit --allow-empty -m "Build changelog with towncrier for ${VERSION}"
       env:
