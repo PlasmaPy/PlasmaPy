@@ -1,4 +1,4 @@
-name: Prepare a release
+name: Mint a release 🍬
 
 on:
   workflow_dispatch:
@@ -65,25 +65,11 @@ jobs:
     - name: Install the latest version of uv
       uses: astral-sh/setup-uv@v6
 
-#    - name: Update CITATION.cff & citation.rst with the DOI for the new version.
-#      run: |
-#        python .github/scripts/citation_updater.py CITATION.cff docs/about/citation.rst docs/changelog/index.rst --version=${{ github.event.inputs.version }} --doi=${{ github.event.inputs.doi}}
-#        git add .
-#        git commit -m "Run citation_updater.py"
-
     - name: Update version and DOI in CITATION.cff and docs/about/citation.rst
       run: |
         uv run .github/scripts/citation_updater.py CITATION.cff docs/about/citation.rst docs/changelog/index.rst --version=${VERSION} --doi=${DOI}
         git add .
         git commit -m "Update version & DOI in CITATION.cff & citation.rst"
-
-#    - name: Build changelog with towncrier
-#      run: |
-#        towncrier build --yes --version ${{ github.event.inputs.tag }} --draft | tee docs/changelog/${{ github.event.inputs.tag }}.rst
-##        sed -i -e :a -e '/^\n*$/{$d;N;ba' -e '}' docs/changelog/${{ github.event.inputs.tag }}.rst   # strip empty lines
-#        git add .
-#        towncrier build --yes --version ${{ github.event.inputs.tag }}
-#        git commit --allow-empty -nm "Add changelog entries for v${{ github.event.inputs.tag }}"
 
     - name: Build the changelog
       run: |
@@ -99,17 +85,15 @@ jobs:
         git commit -m "Apply changes from pre-commit"
       continue-on-error: true
 
-#    - name: Tag the release
-#      run: |
-#        git tag "v${{ github.event.inputs.tag }}" -m "Version v${{ github.event.inputs.tag }}"
-#
-#    - name: Print tags
-#      run: |
-#        git tag
-#
+    - name: Tag the release
+      run: |
+        git tag "v${VERSION}" -m "Version v${VERSION}"
+        git show "v${VERSION}"
+      env:
+        VERSION: ${{ github.event.inputs.version }}
+
 #    - name: Push tag, branch state
 #      run: |
 #        git push -u origin $VERSION $BRANCH
 #      env:
 #        GITHUB_TOKEN: ${{ secrets.WORKFLOW_TOKEN }}
-#
