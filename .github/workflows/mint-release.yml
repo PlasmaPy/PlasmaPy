@@ -6,11 +6,12 @@ on:
       tag:
         description: Release tag 🏷️
         required: true
-        default: 2024.5.0rc1
+        default: 2025.8.0rc1
       DOI:
         description: Reserved DOI from Zenodo
         required: true
-        default: 10.5281/zenodo.1238132
+        default: 10.5281/zenodo.16747747
+
 
 jobs:
 
