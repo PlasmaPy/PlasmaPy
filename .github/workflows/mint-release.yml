@@ -85,7 +85,7 @@ jobs:
 #        towncrier build --yes --version ${{ github.event.inputs.tag }}
 #        git commit --allow-empty -nm "Add changelog entries for v${{ github.event.inputs.tag }}"
 
-    - name: Build changelog with towncrier
+    - name: Build the changelog
       run: |
         uvx nox -s "changelog(final)" -- ${VERSION}
         git add .
@@ -93,7 +93,11 @@ jobs:
       env:
         VERSION: ${{ github.event.inputs.version }}
 
-    - name: Run pre-commit
+    - name: Apply changes from pre-commit, if necessary
+      run: |
+        pre-commit run --all-files
+        git commit -m "Apply changes from pre-commit"
+      continue-on-error: true
 
 #    - name: Tag the release
 #      run: |
