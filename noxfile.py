@@ -577,8 +577,10 @@ AUTOTYPING_RISKY: tuple[str, ...] = (
 
 
 @nox.session
-@nox.parametrize("do_final", [nox.param(False, id="draft"), nox.param(True, id="final")])
-def changelog(session: nox.Session, do_final: str) -> None:
+@nox.parametrize(
+    "final", [nox.param(False, id="draft"), nox.param(True, id="final")]
+)
+def changelog(session: nox.Session, final: str) -> None:
     """
     Build the changelog with towncrier.
 
@@ -601,12 +603,12 @@ def changelog(session: nox.Session, do_final: str) -> None:
 
     source_directory = pathlib.Path("./changelog")
 
-    extraneous_files = source_directory.glob("changelog/*[0-9]*.*.rst?*")
-    if do_final and extraneous_files:
+    extraneous_files = [file for file in source_directory.glob("changelog/*[0-9]*.*.rst?*")]
+    if final and extraneous_files:
         session.error(
             "Please delete the following extraneous files before "
             "proceeding, as the presence of these files may cause "
-            f"towncrier errors: {extraneous_files}"
+            f"towncrier errors: {[file for file in extraneous_files]}"
         )
 
     version = session.posargs[0]
@@ -619,7 +621,7 @@ def changelog(session: nox.Session, do_final: str) -> None:
     if not re.match(version_pattern, version):
         raise ValueError(
             "Please provide a version of the form YYYY.M.PATCH, where "
-            "YYYY is the year past 2024, M is the one or two digit month, "
+            "YYYY is he year, M is the one or two digit month, "
             "and PATCH is a non-negative integer."
         )
 
@@ -637,7 +639,7 @@ def changelog(session: nox.Session, do_final: str) -> None:
         "--version",
         version,
         *options,
-        *session.posargs,
+        *session.posargs[1:],
     )
 
     if final:
