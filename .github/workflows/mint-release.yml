@@ -1,4 +1,4 @@
-name: Create a tag for a release
+name: Prepare a release
 
 on:
   workflow_dispatch:
@@ -29,19 +29,21 @@ jobs:
 
     - name: Validate version input
       run: |
-        VERSION=${{ github.event.inputs.version }}
         if [[ ! ${VERSION} =~ ^2[0-9]{3}\.[0-9]+\.[0-9]+((a|b|rc)[0-9]+)?$ ]]; then
         echo "::error ::Provide a calendar version like `2025.8.0` (or `2025.8.0a0`, `2025.8.0b0`, or `2025.8.0rc1` for pre-releases)"
         exit 1
         fi
+      env:
+        VERSION: ${{ github.event.inputs.version }}
 
     - name: Validate DOI input
       run: |
-        DOI=${{ github.event.inputs.doi }}
         if [[ ! ${DOI} =~ ^10\.[0-9]{4,9}/\S+$]]; then
         echo "::error ::Provide a valid DOI reserved from Zenodo."
         exit 1
         fi
+      env:
+        DOI: ${{ github.event.inputs.doi }}
 
     - name: Configure git
       run: |
@@ -53,24 +55,27 @@ jobs:
       with:
         persist-credentials: 'false'
 
-#    - name: Create or check out branch
-#      run: |
-#        git checkout $BRANCH 2>/dev/null || git checkout -b $BRANCH
+    - name: Check out branch
+      run: |
+        git branch -f ${BRANCH}
+        git switch ${BRANCH}
+      env:
+        BRANCH: prepare-v${{ github.event.inputs.version }}
 
-#    - name: Set up Python
-#      uses: actions/setup-python@v5
-#      with:
-#        python-version: '3.13'
-
-#    - name: Install dependencies
-#      run: |
-#        pip install towncrier pre-commit ruamel.yaml
+    - name: Install the latest version of uv
+      uses: astral-sh/setup-uv@v6
 
 #    - name: Update CITATION.cff & citation.rst with the DOI for the new version.
 #      run: |
 #        python .github/scripts/citation_updater.py CITATION.cff docs/about/citation.rst docs/changelog/index.rst --version=${{ github.event.inputs.version }} --doi=${{ github.event.inputs.doi}}
 #        git add .
 #        git commit -m "Run citation_updater.py"
+
+    - name: Update version and DOI in CITATION.cff and docs/about/citation.rst
+      run: |
+        uv run .github/scripts/citation_updater.py CITATION.cff docs/about/citation.rst docs/changelog/index.rst --version=${VERSION} --doi=${DOI}
+        git add .
+        git commit -m "Update version & DOI in CITATION.cff & citation.rst"
 
 #    - name: Build changelog with towncrier
 #      run: |
@@ -79,7 +84,17 @@ jobs:
 #        git add .
 #        towncrier build --yes --version ${{ github.event.inputs.tag }}
 #        git commit --allow-empty -nm "Add changelog entries for v${{ github.event.inputs.tag }}"
-#
+
+    - name: Build changelog with towncrier
+      run: |
+        uvx nox -s "changelog(final)"
+        git add .
+        git commit --allow-empty -m "Build changelog with towncrier for ${VERSION}"
+      env:
+        VERSION: ${{ github.event.inputs.version }}
+
+    - name: Run pre-commit
+
 #    - name: Tag the release
 #      run: |
 #        git tag "v${{ github.event.inputs.tag }}" -m "Version v${{ github.event.inputs.tag }}"
