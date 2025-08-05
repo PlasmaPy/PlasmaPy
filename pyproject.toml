@@ -237,7 +237,6 @@ lint.extend-select = [
   "RUF058", # starmap-zip
   "RUF100", # unused-noqa
   "RUF101", # redirected-noqa
-  "RUF102", # invalid-rule-code
   "RUF200", # invalid-pyproject-toml
   "S",      # flake8-bandit
   "SIM",    # flake8-simplify
