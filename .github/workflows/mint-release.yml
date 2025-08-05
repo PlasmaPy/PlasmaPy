@@ -69,3 +69,5 @@ jobs:
         VERSION="v${{ github.event.inputs.tag }}"
         BRANCH=$(echo $VERSION | awk 'BEGIN{FS=OFS="."} {$3="x"} 1' | cut -f1,2,3 -d'.' | awk -F'rc' '{print $1 ORS $2}')
         git push -u origin $VERSION $BRANCH
+      env:
+        GITHUB_TOKEN: ${{ secrets.WORKFLOW_TOKEN }}
