@@ -37,7 +37,7 @@ jobs:
 
     - name: Validate DOI input
       run: |
-        if [[ ! ${DOI} =~ ^10\.[0-9]{4,9}/\S+$ ]]; then
+        if [[ ! ${DOI} =~ ^10\.[0-9]{4,9}/.*$ ]]; then
         echo "::error ::Provide a valid DOI reserved from Zenodo."
         exit 1
         fi
