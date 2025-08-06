@@ -12,7 +12,6 @@ on:
         required: true
         default: 10.5281/zenodo.16747747
 
-
 permissions:
   contents: write
 
@@ -53,7 +52,8 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
       with:
-        persist-credentials: 'false'
+        persist-credentials: true
+        fetch-depth: 0  # fetch all branches and tags prior to creating a new tag
 
     - name: Check out branch
       run: |
@@ -95,5 +95,3 @@ jobs:
 #    - name: Push tag, branch state
 #      run: |
 #        git push -u origin $VERSION $BRANCH
-#      env:
-#        GITHUB_TOKEN: ${{ secrets.WORKFLOW_TOKEN }}
