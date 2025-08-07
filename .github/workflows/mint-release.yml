@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: Date-based version 🏷️
+        description: Version tag 🏷️
         required: true
         default: 2025.8.0rc1
       doi:
@@ -21,7 +21,7 @@ defaults:
 
 jobs:
 
-  tag:
+  mint-release-tag:
     runs-on: ubuntu-latest
 
     steps:
@@ -69,7 +69,11 @@ jobs:
       run: |
         uv run .github/scripts/citation_updater.py CITATION.cff docs/about/citation.rst docs/changelog/index.rst --version=${VERSION} --doi=${DOI}
         git add .
+        git diff --cached
         git commit -m "Update version & DOI in CITATION.cff & citation.rst"
+      env:
+        VERSION: ${{ github.event.inputs.version }}
+        DOI: ${{ github.event.inputs.doi }}
 
     - name: Build the changelog with towncrier if not a prerelease
       run: |
