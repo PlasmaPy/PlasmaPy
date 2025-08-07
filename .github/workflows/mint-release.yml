@@ -73,7 +73,7 @@ jobs:
 
     - name: Build the changelog with towncrier if not a prerelease
       run: |
-        if [[ ! ${VERSION} =~ ^2[0-9]{3}\.[0-9]+\.[0-9]+$ ]]; then
+        if [[ ${VERSION} =~ ^2[0-9]{3}\.[0-9]+\.[0-9]+$ ]]; then
         uvx nox -s "changelog(final)" -- ${VERSION}
         git add .
         git commit --allow-empty -m "Build changelog for ${VERSION}"
