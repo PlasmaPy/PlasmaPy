@@ -14,7 +14,7 @@ on:
 
 jobs:
   create-pull-request:
-    name: Create pre-release pull request
+    name: Create pull request
     runs-on: ubuntu-latest
 
     steps:
@@ -75,9 +75,9 @@ jobs:
     - name: Create pull request
       uses: peter-evans/create-pull-request@271a8d0340265f705b14b6d32b9829c1cb33d45e # v7.0.8
       with:
-        title: Prepare for release
-        commit-message: Build changelog and update package metadata
-        body: This automated pull request builds the changelog and updates package metadata prior to a forthcoming release. After merging, go to this link to [perform the release](https://github.com/PlasmaPy/PlasmaPy/releases/new?tag=v${VERSION}&title=v${VERSION}&target=main).
+        title: Build changelog and update package metadata prior to a release
+        commit-message: Build changelog & update citation info
+        body: This automated pull request builds the changelog with towncrier and updates package metadata prior to a forthcoming release. Merge this pull request prior to drafting the release.
         labels: skip changelog checks
         delete-branch: true
         token: ${{ steps.generate_token.outputs.token }}
