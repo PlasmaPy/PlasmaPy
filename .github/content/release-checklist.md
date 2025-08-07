@@ -80,14 +80,12 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
 [citation page]: https://docs.plasmapy.org/en/stable/about/citation.html
 [community meeting]: https://www.plasmapy.org/meetings/weekly
 [conda-forge feedstock]: https://github.com/conda-forge/plasmapy-feedstock
-[create a pull request]: https://github.com/PlasmaPy/PlasmaPy/compare
 [create a release on github]: https://github.com/PlasmaPy/PlasmaPy/releases/new
 [create an issue for the release]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/create-release-issue.yml
 [documentation]: https://docs.plasmapy/org/en/stable
 [github action for checking hyperlinks]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/linkcheck.yml
 [list of tagged versions]: https://github.com/PlasmaPy/PlasmaPy/tags
 [milestones]: https://github.com/PlasmaPy/PlasmaPy/milestones
-[mint a release]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/mint-release.yml
 [publish to pypi]: https://github.com/PlasmaPy/PlasmaPy/blob/main/.github/workflows/publish-to-pypi.yml
 [release checklist]: https://github.com/PlasmaPy/PlasmaPy/tree/main/.github/content/release-checklist.md
 [release history]: https://pypi.org/project/plasmapy/#history
