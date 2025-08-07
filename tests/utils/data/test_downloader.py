@@ -40,6 +40,7 @@ def downloader_validated(tmpdir_factory) -> Downloader:
 @pytest.mark.skipif(
     not in_ci(), reason="Tests only use authenticated API calls when run in CI."
 )
+@pytest.mark.slow
 def test_api_token(downloader_validated: Downloader) -> None:
     """
     Test whether the API connection is valid
@@ -67,6 +68,7 @@ test_urls = [
 
 @check_database_connection
 @pytest.mark.parametrize(("url", "expected"), test_urls)
+@pytest.mark.slow
 def test_http_request(
     downloader_validated: Downloader, url: str, expected: None | Exception
 ) -> None:
@@ -81,6 +83,7 @@ def test_http_request(
 
 
 @check_database_connection
+@pytest.mark.slow
 def test_blob_file(downloader_validated: Downloader) -> None:
     """
     Test the read and write blob file routines
@@ -100,6 +103,7 @@ def test_blob_file(downloader_validated: Downloader) -> None:
 
 
 @check_database_connection
+@pytest.mark.slow
 def test_update_blob_entry(downloader_validated) -> None:
     """
     Test the logic in the _update_blob_entry function
@@ -167,6 +171,7 @@ def test_get_file(
     "downloader", ["downloader_validated", "downloader_unvalidated"]
 )
 @check_database_connection
+@pytest.mark.slow
 def test_get_local_only_file(downloader: Downloader, request) -> None:
     """
     Test various file retrieval modes
@@ -204,6 +209,7 @@ def test_get_local_only_file(downloader: Downloader, request) -> None:
 
 
 @check_database_connection
+@pytest.mark.slow
 def test_get_file_NIST_PSTAR_datafile(downloader_validated) -> None:
     """Test getting a particular file and checking for known contents"""
 
@@ -219,6 +225,7 @@ def test_get_file_NIST_PSTAR_datafile(downloader_validated) -> None:
 
 @pytest.mark.flaky(reruns=2)
 @check_database_connection
+@pytest.mark.slow
 def test_at_most_one_api_call(downloader_validated) -> None:
     """
     Test that at most one API call is made over multiple queries
@@ -239,6 +246,7 @@ def test_at_most_one_api_call(downloader_validated) -> None:
 
 
 @check_database_connection
+@pytest.mark.slow
 def test_creating_another_downloader(downloader_validated) -> None:
     """
     Test creating a second downloader in the same directory.
@@ -254,6 +262,7 @@ def test_creating_another_downloader(downloader_validated) -> None:
 
 
 @check_database_connection
+@pytest.mark.slow
 def test_ensure_update_blob_dict_runs(downloader_validated: Downloader) -> None:
     """
     Ensure the _update_blob_dict method gets run if it hasn't already.

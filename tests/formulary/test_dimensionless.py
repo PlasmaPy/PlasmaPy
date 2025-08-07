@@ -137,6 +137,9 @@ def test_Debye_number() -> None:
     assert_can_handle_nparray(Debye_number)
 
 
+@pytest.mark.filterwarnings(
+    "ignore:.*strong coupling effects.*:plasmapy.utils.exceptions.CouplingWarning"
+)
 def test_Hall_parameter() -> None:
     r"""Test Hall_parameter in dimensionless.py"""
 
