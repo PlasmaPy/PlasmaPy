@@ -1,2 +1,0 @@
-Updated :file:`tests/utils/decorators/test_checks.py` for compatibility with
-updates to how `astropy.units.Equivalency` handles equality comparisons.

@@ -1,1 +1,0 @@
-Enabled |Particle| to accept a `numpy.integer` object as the first argument to indicate the atomic number.

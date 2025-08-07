@@ -1,2 +1,0 @@
-Fixed a possible bug when using `plasmapy.plasma.grids.AbstractGrid.add_quantities`
-alongside newer versions of |xarray|.
