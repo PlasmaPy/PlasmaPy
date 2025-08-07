@@ -1,2 +1,0 @@
-Enabled :file:`noxfile.py` to be run as a script.
-The commands ``python noxfile.py -s 'tests-3.13(all)'`` and ``nox -s 'tests-3.13(all)'`` can now both be used to run all tests for Python 3.13.

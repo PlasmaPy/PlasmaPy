@@ -1,1 +1,0 @@
-Summarized the dependency support policy from |SPEC 0| at the end of the installation instructions.
