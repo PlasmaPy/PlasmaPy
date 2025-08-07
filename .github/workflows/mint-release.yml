@@ -71,18 +71,21 @@ jobs:
         git add .
         git commit -m "Update version & DOI in CITATION.cff & citation.rst"
 
-    - name: Build the changelog
+    - name: Build the changelog with towncrier if not a prerelease
       run: |
+        if [[ ! ${VERSION} =~ ^2[0-9]{3}\.[0-9]+\.[0-9]+$ ]]; then
         uvx nox -s "changelog(final)" -- ${VERSION}
         git add .
-        git commit --allow-empty -m "Build changelog with towncrier for ${VERSION}"
+        git commit --allow-empty -m "Build changelog for ${VERSION}"
+        fi
       env:
         VERSION: ${{ github.event.inputs.version }}
 
     - name: Apply changes from pre-commit, if necessary
       run: |
-        pre-commit run --all-files
-        git commit -m "Apply changes from pre-commit"
+        pre-commit run --all-files  # fails if changes are needed
+        git add .
+        git commit -m "Apply any needed changes from pre-commit"  # fails if no changes are needed
       continue-on-error: true
 
     - name: Tag the release
