@@ -5,9 +5,9 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
 - [x] [Create an issue for the release]. ✅
 - [ ] Update [milestones] for issues & pull requests (PRs). 🛣️
 
-### Code quality updates
+### Code quality updates (optional, but recommended)
 
-- [ ] Revise changelog entries to make sure that they are understandable, necessary, and correctly categorized. Add the `no changelog entry needed` label to skip doing changelog checks. 📜
+- [ ] ~~Revise changelog entries to make sure that they are understandable, necessary, and correctly categorized. Add the `no changelog entry needed` label to skip doing changelog checks. 📜~~
 - [ ] Run the [GitHub Action for checking hyperlinks] 🔗, and update broken links. Use `linkcheck_allowed_redirects` in [`docs/conf.py`] to allow redirects (e.g., from `doi.org`). Update or delete the `alias` field for authors in [`CITATION.cff`] who have changed their GitHub username.
 - [ ] Run `git log --format="%aN <%aE>" | sort -u`, and update [`.mailmap`] if there are any duplicate contributors in the output. 📧
 - [ ] [Update pinned requirements]. 📍
@@ -16,16 +16,15 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
 > [!CAUTION]
 > As of mid-2025, keep the `pre-commit-search-and-replace` at `v1.0.5` and keep `typos` at a specific version rather than rolling back to `v1`.
 
-### Make sure that all tests are passing on `main`
-
-- [ ] Run the [tests]. [![CI](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/tests.yml)
-- [ ] Run the [weekly tests]. [![weekly tests](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/weekly.yml/badge.svg?branch=main)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/weekly-tests.yml)
-- [ ] ✅ Fix any failures and repeat.
-
 ### Perform the release
 
 - [ ] Begin an upload to [Zenodo] for a new version of [this record], using the `team@plasmapy.org` login. Reserve a DOI. 🏷️
-- [ ] Run the GitHub Action to [mint a release] 🍬, specifying the version (i.e., `2024.10.0` or `2024.10.0rc1` for a release candidate) and copying the reserved DOI from Zenodo. This workflow will update metadata, build the changelog, create the release branch (i.e., `2024.10.x`), and tag the release.
+- [ ] Run the GitHub workflow to [prepare a release], specifying the version (i.e., `2025.8.0`) and copying the reserved DOI from Zenodo. This workflow will create a pull request that builds the changelog and updates package metadata.
+  - [ ] Revise changelog entries to make sure that they are understandable, necessary, and correctly categorized. 📜
+  - [ ] Make sure the pull request is
+  - [ ] Merge the pull request.
+- [ ] Run the [tests]. [![CI](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/tests.yml)
+- [ ] Run the [weekly tests]. [![weekly tests](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/weekly.yml/badge.svg?branch=main)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/weekly-tests.yml)
 - [ ] [Create a release on GitHub]. 🚀
   - Choose the newly created tag (e.g., `v2024.10.0`), and use it as the title. (The release will be performed from the tag, so it is not necessary to select the branch.) 🏷️
   - Set the tag for the previous release, and select the option to automatically generate release notes. 📜
@@ -33,14 +32,6 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
   - For official releases, make sure the checkbox is selected for _Set as the latest release_. For beta releases or release candidates (e.g., `v2024.10.0rc1`), specify it as a pre-release.
   - Click on _Publish release_, which will create the GitHub release and trigger the GitHub workflow to [publish to PyPI]. 🚀
   - Check the [release history] on PyPI to make sure that the release was successful. 🆕
-- [ ] [Create a pull request] to merge the `v2024.10.x` branch back into main.
-  - An example title is: "Merge changes back in from v2024.10.x"
-  - An example description is: "This PR merges changes back in from the v2024.10.0 release. This PR should be merged rather than squashed, and the corresponding branch should not be deleted."
-  - No changelog entry is needed.
-- [ ] Merge **but do not squash** this PR back into `main`, and **do not delete** the `v2024.10.x` branch.
-
-> [!CAUTION]
-> Squashing the pull request back into `main` causes problems by removing the tagged release commit from the history of `main`. For example, `plasmapy.__version__` in development installations is chosen based on the most recent tag in `main`.
 
 ### Following the release
 
