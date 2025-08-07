@@ -79,5 +79,6 @@ jobs:
         commit-message: Build changelog & update citation info
         body: This automated pull request builds the changelog with towncrier and updates package metadata prior to a forthcoming release. Merge this pull request prior to drafting the release.
         labels: skip changelog checks
+        branch: prepare-release
         delete-branch: true
         token: ${{ steps.generate_token.outputs.token }}
