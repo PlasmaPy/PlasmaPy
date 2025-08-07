@@ -1,35 +1,28 @@
-name: Mint release 🍬
+name: Prepare a release
 
 on:
   workflow_dispatch:
     inputs:
       version:
-        description: Version tag 🏷️
+        description: Version
         required: true
-        default: 2025.8.0rc1
+        default: 2025.8.0
       doi:
         description: Reserved DOI from Zenodo
         required: true
         default: 10.5281/zenodo.16747747
 
-permissions:
-  contents: write
-
-defaults:
-  run:
-    shell: bash
-
 jobs:
-
-  mint-release-tag:
+  create-pull-request:
+    name: Create pre-release pull request
     runs-on: ubuntu-latest
 
     steps:
 
     - name: Validate version input
       run: |
-        if [[ ! ${VERSION} =~ ^2[0-9]{3}\.[0-9]+\.[0-9]+((a|b|rc)[0-9]+)?$ ]]; then
-        echo "::error ::Provide a calendar version like `2025.8.0` (or `2025.8.0a0`, `2025.8.0b0`, or `2025.8.0rc1` for pre-releases)"
+        if [[ ! ${VERSION} =~ ^2[0-9]{3}\.[0-9]+\.[0-9]+$ ]]; then
+        echo "::error ::Provide a calendar version like `2025.8.0`"
         exit 1
         fi
       env:
@@ -44,61 +37,47 @@ jobs:
       env:
         DOI: ${{ github.event.inputs.doi }}
 
-    - name: Configure git
-      run: |
-        git config --global user.email "team@plasmapy.org"
-        git config --global user.name "PlasmaPy Release Bot"
-
     - name: Checkout code
       uses: actions/checkout@v4
       with:
-        persist-credentials: true
-        fetch-depth: 0  # fetch all branches and tags prior to creating a new tag
+        persist-credentials: false
 
-    - name: Check out branch
-      run: |
-        git branch -f ${BRANCH}
-        git switch ${BRANCH}
-      env:
-        BRANCH: prepare-v${{ github.event.inputs.version }}
-
-    - name: Install the latest version of uv
+    - name: Install uv
       uses: astral-sh/setup-uv@v6
 
     - name: Update version and DOI in CITATION.cff and docs/about/citation.rst
       run: |
-        uv run .github/scripts/citation_updater.py CITATION.cff docs/about/citation.rst docs/changelog/index.rst --version=${VERSION} --doi=${DOI}
-        git add .
-        git diff --cached
-        git commit -m "Update version & DOI in CITATION.cff & citation.rst"
+        uv run .github/scripts/citation_updater.py CITATION.cff docs/about/citation.rst docs/changelog/index.rst --version=$VERSION --doi=$DOI
       env:
         VERSION: ${{ github.event.inputs.version }}
         DOI: ${{ github.event.inputs.doi }}
 
-    - name: Build the changelog with towncrier if not a prerelease
+    - name: Build the changelog with towncrier
       run: |
-        if [[ ${VERSION} =~ ^2[0-9]{3}\.[0-9]+\.[0-9]+$ ]]; then
-        uvx nox -s "changelog(final)" -- ${VERSION}
-        git add .
-        git commit --allow-empty -m "Build changelog for ${VERSION}"
-        fi
+        uvx nox -s "changelog(final)" -- $VERSION
       env:
         VERSION: ${{ github.event.inputs.version }}
 
-    - name: Apply changes from pre-commit, if necessary
-      run: |
-        pre-commit run --all-files  # fails if changes are needed
-        git add .
-        git commit -m "Apply any needed changes from pre-commit"  # fails if no changes are needed
-      continue-on-error: true
+    # When a PR is created by a GitHub Action, normally the checks will
+    # not be run. While the simplest workaround would have been to open
+    # and close the PR, an alternative is to authenticate with GitHub
+    # App generated tokens (as done below). The instructions for how to
+    # do this are in the documentation for the create-pull-request
+    # action.
 
-    - name: Tag the release
-      run: |
-        git tag "v${VERSION}" -m "Version v${VERSION}"
-        git show "v${VERSION}"
-      env:
-        VERSION: ${{ github.event.inputs.version }}
+    - name: Generate token
+      uses: tibdex/github-app-token@3beb63f4bd073e61482598c45c71c1019b59b73a # v2.1.0
+      id: generate_token
+      with:
+        app_id: ${{ secrets.APP_ID }}
+        private_key: ${{ secrets.APP_PRIVATE_KEY }}
 
-#    - name: Push tag, branch state
-#      run: |
-#        git push -u origin $VERSION $BRANCH
+    - name: Create pull request
+      uses: peter-evans/create-pull-request@271a8d0340265f705b14b6d32b9829c1cb33d45e # v7.0.8
+      with:
+        title: Prepare for release
+        commit-message: Build changelog and update package metadata
+        body: This automated pull request builds the changelog and updates package metadata prior to a forthcoming release. After merging, go to this link to [perform the release](https://github.com/PlasmaPy/PlasmaPy/releases/new?tag=v${VERSION}&title=v${VERSION}&target=main).
+        labels: skip changelog checks
+        delete-branch: true
+        token: ${{ steps.generate_token.outputs.token }}
