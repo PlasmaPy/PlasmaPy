@@ -1257,9 +1257,8 @@ def stopping_power(
     )
 
     @validate_quantities(energies=u.MeV)
-    def cubic_spline(x: u.MeV):
+    def cubic_spline(x: u.Quantity[u.MeV]):
         """Handle units and sanitize IO for logarithmic spline."""
-
         return np.exp(log_cs(np.log(x.to(u.MeV).value))) * u.MeV * u.cm**2 / u.g
 
     # If the user wants the interpolator, return it
@@ -1364,7 +1363,7 @@ def stopping_range(
     log_cs = CubicSpline(x=np.log(baseline_energies_data), y=np.log(range_data))
 
     @validate_quantities(energies=u.MeV)
-    def cubic_spline(x: u.MeV):
+    def cubic_spline(x: u.Quantity[u.MeV]):
         """Handle units and sanitize IO for logarithmic spline."""
 
         return np.exp(log_cs(np.log(x.to(u.MeV).value))) * u.g / u.cm**2
@@ -1471,10 +1470,10 @@ def transmitted_energy_from_thickness(
     log_cs = CubicSpline(x=np.log(range_data), y=np.log(baseline_energies_data))
 
     @validate_quantities
-    def cubic_spline(x: u.g / u.cm**2):
+    def cubic_spline(x: u.Quantity[u.g / u.cm**2]):
         """Handle units and sanitize IO for logarithmic spline."""
 
-        return np.exp(log_cs(np.log(x.to(u.MeV).value))) * u.MeV
+        return np.exp(log_cs(np.log(x.to(u.g / u.cm**2).value))) * u.MeV
 
     # If the user wants the interpolator, return it
     if return_interpolator:
