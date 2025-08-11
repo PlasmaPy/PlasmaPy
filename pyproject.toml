@@ -56,13 +56,12 @@ dynamic = [ "version" ]
 # pinned environments in `uv.lock`.
 
 dependencies = [
-  # astropy upper limit described in https://github.com/PlasmaPy/PlasmaPy/issues/2883
-  "astropy>=5.2,<7",
+  "astropy>=6",
   "h5py>=3.8",
   "lmfit>=1.1",
   "matplotlib>=3.7",
   "mpmath>=1.3",
-  "numpy>=1.24",
+  "numpy>=1.25",
   "packaging>=22",
   "pandas>=2",
   "requests>=2.28",
@@ -70,8 +69,7 @@ dependencies = [
   "setuptools>=66",
   "tqdm>=4.65",
   "wrapt>=1.15",
-  # xarray upper limit described in: https://github.com/PlasmaPy/PlasmaPy/issues/2922
-  "xarray>=2022.12,<=2024.10",
+  "xarray>=2023.7",
 ]
 
 # The documentation build occurs in an isolated environment that is not
@@ -87,7 +85,7 @@ optional-dependencies.docs = [
   "pillow>=10.4",
   "plasmapy-sphinx>=2025.5.1",
   "pygments==2.18",
-  "sphinx>=8.2.3",
+  "sphinx>=8.2.3,<8.3",
   "sphinx-changelog>=1.5",
   "sphinx-codeautolink==0.15.2",
   "sphinx-collapse>=0.1.3",
@@ -179,6 +177,7 @@ lint.extend-select = [
   "FBT003", # flake8-boolean-trap
   "FIX",    # flake8-fixme
   "FLY",    # flynt
+  "FURB",   # refurb
   "G",      # flake8-logging-format
   "I",      # isort
   "ICN",    # flake8-import-conventions
@@ -198,6 +197,7 @@ lint.extend-select = [
   "PT",     # flake8-pytest-style
   "PTH",    # flake8-use-pathlib
   "PYI",    # flake8-pyi
+  "Q",      # flake8-quotes
   "RET",    # flake8-return
   "RSE",    # flake8-raise
   "RUF001", # ambiguous-unicode-character-string
@@ -221,6 +221,7 @@ lint.extend-select = [
   "RUF023", # unsorted-dunder-slots
   "RUF024", # mutable-fromkeys-value
   "RUF026", # default-factory-kwarg
+  "RUF028", # invalid-formatter-suppression-comment
   "RUF030", # assert-with-print-message
   "RUF032", # decimal-from-float-literal
   "RUF033", # post-init-default
@@ -229,7 +230,11 @@ lint.extend-select = [
   "RUF041", # unnecessary-nested-literal
   "RUF046", # unnecessary-cast-to-int
   "RUF048", # map-int-version-parsing
+  "RUF049", # dataclass-enum
   "RUF051", # if-key-in-dict-del
+  "RUF053", # class-with-mixed-type-vars
+  "RUF057", # unnecessary-round
+  "RUF058", # starmap-zip
   "RUF100", # unused-noqa
   "RUF101", # redirected-noqa
   "RUF200", # invalid-pyproject-toml

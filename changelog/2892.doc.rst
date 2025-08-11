@@ -1,1 +1,0 @@
-Removed duplicate section headers for example notebooks in the documentation for `plasmapy.formulary`.

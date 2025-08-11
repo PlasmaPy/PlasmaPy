@@ -1,3 +1,8 @@
+# /// script
+# requires-python = ">=3.13"
+# dependencies = [ "ruamel.yaml" ]
+# ///
+
 """Functionality to update citation information prior to making a release."""
 
 import argparse

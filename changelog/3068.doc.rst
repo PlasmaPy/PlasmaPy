@@ -1,2 +1,0 @@
-Updated the |contributor guide| pages on the |code contribution workflow|
-and :ref:`using pre-commit <using-pre-commit>`.

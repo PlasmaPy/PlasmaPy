@@ -1,1 +1,0 @@
-Updated the :ref:`Feedback and Communication <plasmapy-communication>` page.
