@@ -818,9 +818,15 @@ def bump_minimum_requirements(session: nox.Session) -> None:
     dependencies that were made in the past 24 months, and minor
     releases of Python that were made in the past 36 months.
     """
+
+    # keep NumPy minimum version at >=1.26 until perhaps mid-2026 or
+    # when https://github.com/nasa/Kamodo/issues/154 and
+    # https://github.com/heliophysicsPy/pyhc-core/issues/6 are resolved
+
+    excluded_deps: set[str] = {"numpy"}
+
     pyproject = pyproject_parser.PyProject.load("pyproject.toml")
     deps = pyproject.project["dependencies"]
-    excluded_deps: set[str] = {"ipykernel", "ipywidgets", "voila"}
     deps_to_update = (dep for dep in deps if dep.name not in excluded_deps)
     updated_requirements = [_update_requirement(dep) for dep in deps_to_update]
     session.run("uv", "add", "--no-sync", *updated_requirements)
