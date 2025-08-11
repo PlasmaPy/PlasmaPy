@@ -479,6 +479,10 @@ linkcheck_ignore = [
     r"https://www\.sciencedirect\.com/book/9780123748775/.*",
 ]
 
+# napoleon
+
+napoleon_custom_sections = ["Other Parameters"]
+
 # nbsphinx
 
 nbsphinx_thumbnails = {
