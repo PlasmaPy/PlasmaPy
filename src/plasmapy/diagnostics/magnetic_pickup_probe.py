@@ -74,12 +74,14 @@ def compute_bfield(bdot_voltage: u.Quantity[u.volt], time_array: u.Quantity[u.s]
     >>> loop_area = 1 * u.m**2
     >>> num_loop = 1
     >>> gain = 1
-    bfield = compute_bfield(
-                bdot_voltage,
-                time_array,
-                loop_area,
-                num_loop=num_loop,
-                gain=gain)
+    >>> bfield = compute_bfield(
+    ...     bdot_voltage,
+    ...     time_array,
+    ...     loop_area,
+    ...     num_loop=num_loop,
+    ...     gain=gain,
+    ... )
+    >>> print(bfield)
     """
     if len(bdot_voltage) != len(time_array):
         raise ValueError("sizes of time_array and bdot_voltage are not equal.")
