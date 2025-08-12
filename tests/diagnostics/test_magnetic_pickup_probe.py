@@ -19,9 +19,9 @@ def test_compute_bfield_integrates_voltage_to_field() -> None:
     voltage = np.sin(time / u.s) * u.V
 
     # Set probe parameters
-    loop_area = 1.0 * u.m**2
-    num_loop = 1
-    gain = 1.0
+    loop_area = 2 * u.m**2
+    num_loop = 3
+    gain = 5
 
     # Expected magnetic field is the integral of V(t)/(N*A*gain)
     expected_field = -np.cos(time.value) + 1  # Integral of sin(t) is -cos(t), plus constant

@@ -52,29 +52,26 @@ def compute_bfield(bdot_voltage: u.Quantity[u.volt], time_array: u.Quantity[u.s]
     where :math:`\Phi` is the magnetic flux
     .. math::
         \Phi = \int{BdA}
-    and N is the number of loops.
+    and :math:`N` is the number of loops.
     A magnetic pickup probe works by providing a fixed area loop or loops using a length of conducting wire through 
     which magnetic fields penetrate. As these fields change in time, a voltage is generated that can be measured
-    by some kind of data aquisition device (such as an ossciloscope). We can also assume that the loop is small 
+    by some kind of data acquisition device (such as an oscilloscope). We can also assume that the loop is small 
     enough that the magnetic field through the loop is constant everywhere in the loop (and only changes in time).
     Given this, we can write
     .. math::
         V = -A\frac{dB}{dt}
-    where the voltage becomes preportional only to the change in magnetic field and the area of the loop. Magnetic
+    where the voltage becomes proportional only to the change in magnetic field and the area of the loop. Magnetic
     field as a function of time can be recovered by time integrating :math:`V(t)/NA`.
     
     Examples
     --------
     >>> import numpy as np
     >>> import astropy.units as u
-    time_array = np.linspace(0,4*np.pi,100) #create an time array
-    bdot_voltage = np.sin(time_array) #create a sine wave representing a voltage oscillation
-    loop_area = 1 #define a loop with area that will be in meters squared
-    num_loop = 1
-    gain = 1
-    bdot_voltage = bdot_voltage * u.volt
-    time_array = time_array * u.s
-    loop_area = loop_area * u.m**2
+    >>> time_array = np.linspace(0, 4*np.pi, 100) * u.s
+    >>> bdot_voltage = np.sin(time_array / u.s) * u.V  # create a voltage oscillation
+    >>> loop_area = 1 * u.m**2
+    >>> num_loop = 1
+    >>> gain = 1
     bfield = compute_bfield(
                 bdot_voltage,
                 time_array,
@@ -83,12 +80,13 @@ def compute_bfield(bdot_voltage: u.Quantity[u.volt], time_array: u.Quantity[u.s]
                 gain=gain)
     """
     if len(bdot_voltage) != len(time_array):
-        raise Exception("length of time and voltage arrays in not equal\n")
+        raise ValueError("sizes of time_array and bdot_voltage are not equal.")
     
     bdot_voltage = bdot_voltage.value
     loop_area = loop_area.value
     time_array = time_array.value
     bdot_voltage /= (loop_area*num_loop*gain)
-    magnetic_field_array = cumulative_trapezoid(bdot_voltage, time_array, initial=0)  # Tesla
+    # units are removed by cumulative_trapezoid
+    magnetic_field_array = cumulative_trapezoid(bdot_voltage, time_array, initial=0)  # tesla
 
     return magnetic_field_array * u.T
