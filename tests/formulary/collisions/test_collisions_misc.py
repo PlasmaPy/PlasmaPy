@@ -41,7 +41,7 @@ def test_tabulated_f_mol(theta, tabulated_result):
 
     f_mol_calculated = [_f_mol_n(theta * u.dimensionless_unscaled, n) for n in range(3)]
 
-    assert np.isclose(tabulated_result, f_mol_calculated, atol=1e-5, rtol=0.01).all()
+    assert np.isclose(tabulated_result, f_mol_calculated, rtol=0.01).all()
 
 
 @check_database_connection
