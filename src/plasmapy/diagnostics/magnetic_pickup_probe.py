@@ -32,7 +32,7 @@ def compute_bfield(bdot_voltage: u.Quantity[u.volt], time_array: u.Quantity[u.s]
         The area through which the changing flux is measured in units of meters squared.
 
     num_loop: int
-        The number of loops of the Bdot probe (assumed to be all the same area)
+        The number of loops of the Bdot probe (assumed to be all the same area).
         
     gain: float
         Any dimensionless gains that need to be applied.
