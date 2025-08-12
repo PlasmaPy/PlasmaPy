@@ -15,8 +15,8 @@ from typing import Tuple
 @validate_quantities
 def compute_bfield(bdot_voltage: u.Quantity[u.volt], time_array: u.Quantity[u.s], loop_area: u.Quantity[u.m**2], num_loop: int = 1, gain: float = 1.0) -> u.Quantity[u.T]:
     r"""
-    Takes the voltage output of a magnetic pickup probe (Bdot probe) and time base and 
-    returns the associated array of the magnetic field as a function of time
+    Take the voltage output of a magnetic pickup probe (Bdot probe) and time base and 
+    return the associated array of the magnetic field as a function of time.
 
     Parameters
     ----------
