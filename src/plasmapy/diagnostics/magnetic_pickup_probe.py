@@ -1,6 +1,4 @@
-"""Defines the basic magnetic pickup probe (Bdot probe) analysis
-   
-"""
+"""Defines the basic magnetic pickup probe (Bdot probe) analysis."""
 
 __all__ = ["compute_bfield"]
 
