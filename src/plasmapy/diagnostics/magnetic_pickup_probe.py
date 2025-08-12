@@ -29,7 +29,8 @@ def compute_bfield(bdot_voltage: u.Quantity[u.volt], time_array: u.Quantity[u.s]
         The time series to the data collection in units of seconds.
 
     loop_area: 'astropy.units.Quantity'
-        The area through which the changing flux is measured in units of meters squared.
+        The area through which the changing flux is measured in units
+        convertible to square meters.
 
     num_loop: int
         The number of loops of the Bdot probe (assumed to be all the same area).
