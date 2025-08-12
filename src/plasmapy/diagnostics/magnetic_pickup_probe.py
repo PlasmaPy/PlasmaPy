@@ -53,6 +53,7 @@ def compute_bfield(bdot_voltage: u.Quantity[u.volt], time_array: u.Quantity[u.s]
     .. math::
         \Phi = \int{BdA}
     and :math:`N` is the number of loops.
+
     A magnetic pickup probe works by providing a fixed area loop or loops using a length of conducting wire through 
     which magnetic fields penetrate. As these fields change in time, a voltage is generated that can be measured
     by some kind of data acquisition device (such as an oscilloscope). We can also assume that the loop is small 
