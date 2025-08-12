@@ -7,7 +7,7 @@ New Features
 - Enabled |particle_input| to convert |particle-list-like| arguments passed
   to parameters decorated with |ParticleListLike| into |ParticleList|
   instances. (:pr:`2790`)
-- The new method `~plasmapy.plasma.grids.CartesianGrid.soften_edges` applies an
+- The new method `plasmapy.plasma.grids.CartesianGrid.soften_edges` applies an
   error function mask
   to the edges of all quantities on a grid. This is useful for any application
   where the grid must
@@ -71,8 +71,8 @@ Documentation Improvements
   this file to be private API (which broke PlasmaPy's intersphinx links), and
   recommends that its contents be imported through the `astropy.units`
   namespace.
-  This pull request changes those links to a direct URL to |Astropy
-  Equivalencies|. (:pr:`2915`)
+  This pull request changes those links to a direct URL to
+  |Astropy Equivalencies|. (:pr:`2915`)
 - Added a sentence to the documentation for `plasmapy.dispersion` to describe
   dispersion relations and their usefulness. (:pr:`2932`)
 - Updated the instructions for accessing test results and documentation
@@ -83,9 +83,7 @@ Documentation Improvements
 - Bumped the Python version for documentation builds from 3.12 to 3.13.
   (:pr:`2943`)
 - Updated the instructions on how to install PlasmaPy. (:pr:`2999`)
-- Put office hours an an indefinite hiatus due to the conclusion of the NSF
-  collaborative awards supporting the development and growth of PlasmaPy.
-  (:pr:`3013`)
+- Put office hours on an indefinite hiatus. (:pr:`3013`)
 - Removed the `sphinx-hoverxref
   <https://github.com/readthedocs/sphinx-hoverxref>`_ |Sphinx| extension, since
   it has been deprecated in favor of the |Read the Docs| add-on for `Link
@@ -116,7 +114,7 @@ Backwards Incompatible Changes
   ``num_particles``). Similarly, ``v_init`` is
   now ``v0`` to be consistent with ``x0``. (:pr:`2911`)
 - The method
-  `~plasmapy.simulation.particle_tracker.particle_tracker.ParticleTracker.add_stopping`
+  `plasmapy.simulation.particle_tracker.particle_tracker.ParticleTracker.add_stopping`
   requires that the argument ``I`` must now be a list of |Quantity| objects
   rather than a single
   |Quantity| array. This change is needed because `None` entries are now also

@@ -49,9 +49,9 @@ jobs:
           python: '3.11'
           nox_session: tests-3.11(lowest-direct-skipslow)
 
-        - name: Documentation, Python 3.12, Ubuntu
+        - name: Documentation, Python 3.13, Ubuntu
           os: ubuntu-latest
-          python: '3.12'
+          python: '3.13'
           nox_session: docs
 
         - name: Static type checking with mypy, Python 3.13, Ubuntu
@@ -105,7 +105,7 @@ jobs:
         cache-suffix: ${{ matrix.nox_session }}-${{ matrix.python }}-${{ runner.os }}
 
     - name: Run the check
-      run: uv run --with nox --frozen nox -s '${{ matrix.nox_session }}'
+      run: uvx nox -s '${{ matrix.nox_session }}'
 
     - name: Upload coverage reports to Codecov
       if: ${{ contains(matrix.nox_session, 'cov') }}

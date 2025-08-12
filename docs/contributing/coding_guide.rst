@@ -777,7 +777,7 @@ not noticeably impact performance during typical interactive use, but
 the performance penalty can become significant for numerically intensive
 applications.
 
-A :term:`lite-function` is an optimized version of another `plasmapy`
+A :term:`lite-function` is an optimized version of another PlasmaPy
 function that accepts numbers and |NumPy| arrays in assumed SI units.
 :term:`Lite-functions` skip all validations and instead prioritize
 performance. Most :term:`lite-functions` are defined in
@@ -1096,7 +1096,7 @@ The overall process of performing a release is:
 
 .. _ASCII: https://en.wikipedia.org/wiki/ASCII
 .. _autotyping: https://github.com/JelleZijlstra/autotyping
-.. _cognitive complexity: https://docs.codeclimate.com/docs/cognitive-complexity
+.. _cognitive complexity: https://getdx.com/blog/cognitive-complexity/
 .. _create a release issue: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/create-release-issue.yml
 .. _Cython: https://cython.org
 .. _equivalencies: https://docs.astropy.org/en/stable/units/equivalencies.html

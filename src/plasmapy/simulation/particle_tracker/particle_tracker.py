@@ -855,7 +855,7 @@ class ParticleTracker:
 
         return dt
 
-    def _interpolate_grid(self):
+    def _interpolate_grid(self) -> None:
         # Get a list of positions (input for interpolator)
         pos_tracked = self.x[self._tracked_particle_mask]
 
@@ -1075,7 +1075,7 @@ class ParticleTracker:
             np.bool_
         )
 
-    def _reset_cache(self):
+    def _reset_cache(self) -> None:
         """
         Reset the cached properties.
 

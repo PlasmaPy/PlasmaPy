@@ -1,1 +1,0 @@
-Added `plasmapy_sphinx` as a ``docs`` dependency.

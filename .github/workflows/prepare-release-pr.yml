@@ -1,0 +1,83 @@
+name: Prepare a release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version
+        required: true
+        default: 2025.8.0
+      doi:
+        description: Reserved DOI from Zenodo
+        required: true
+        default: 10.5281/zenodo.16747747
+
+jobs:
+  create-pull-request:
+    name: Create pull request
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: Validate version input
+      run: |
+        if [[ ! ${VERSION} =~ ^2[0-9]{3}\.[0-9]+\.[0-9]+$ ]]; then
+        echo "::error ::Provide a calendar version like `2025.8.0`"
+        exit 1
+        fi
+      env:
+        VERSION: ${{ github.event.inputs.version }}
+
+    - name: Validate DOI input
+      run: |
+        if [[ ! ${DOI} =~ ^10\.[0-9]{4,9}/.*$ ]]; then
+        echo "::error ::Provide a valid DOI reserved from Zenodo."
+        exit 1
+        fi
+      env:
+        DOI: ${{ github.event.inputs.doi }}
+
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        persist-credentials: false
+
+    - name: Install uv
+      uses: astral-sh/setup-uv@v6
+
+    - name: Update version and DOI in CITATION.cff and docs/about/citation.rst
+      run: |
+        uv run .github/scripts/citation_updater.py CITATION.cff docs/about/citation.rst docs/changelog/index.rst --version=$VERSION --doi=$DOI
+      env:
+        VERSION: ${{ github.event.inputs.version }}
+        DOI: ${{ github.event.inputs.doi }}
+
+    - name: Build the changelog with towncrier
+      run: |
+        uvx nox -s "changelog(final)" -- $VERSION
+      env:
+        VERSION: ${{ github.event.inputs.version }}
+
+    # When a PR is created by a GitHub Action, normally the checks will
+    # not be run. While the simplest workaround would have been to open
+    # and close the PR, an alternative is to authenticate with GitHub
+    # App generated tokens (as done below). The instructions for how to
+    # do this are in the documentation for the create-pull-request
+    # action.
+
+    - name: Generate token
+      uses: tibdex/github-app-token@3beb63f4bd073e61482598c45c71c1019b59b73a # v2.1.0
+      id: generate_token
+      with:
+        app_id: ${{ secrets.APP_ID }}
+        private_key: ${{ secrets.APP_PRIVATE_KEY }}
+
+    - name: Create pull request
+      uses: peter-evans/create-pull-request@271a8d0340265f705b14b6d32b9829c1cb33d45e # v7.0.8
+      with:
+        title: Build changelog and update package metadata prior to a release
+        commit-message: Build changelog & update citation info
+        body: This automated pull request builds the changelog with towncrier and updates package metadata prior to a forthcoming release. Merge this pull request prior to drafting the release.
+        labels: skip changelog checks
+        delete-branch: true
+        token: ${{ steps.generate_token.outputs.token }}

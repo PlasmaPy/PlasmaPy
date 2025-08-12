@@ -59,14 +59,12 @@ docpython = "3.12"
 current_python = f"{sys.version_info.major}.{sys.version_info.minor}"
 nox.options.sessions = [f"tests-{current_python}(skipslow)"]
 
-nox.options.default_venv_backend = "uv|virtualenv"
+nox.options.default_venv_backend = "uv"
 
 uv_sync = ("uv", "sync", "--no-progress", "--frozen")
 
 running_on_ci = os.getenv("CI")
 running_on_rtd = os.environ.get("READTHEDOCS") == "True"
-
-uv_requirement = "uv >= 0.6.5"
 
 
 def _create_requirements_pr_message(uv_output: str, session: nox.Session) -> None:
@@ -160,8 +158,6 @@ def requirements(session: nox.Session) -> None:
     pull request message for the GitHub workflow that updates the pinned
     requirements (:file:`.github/workflows/update-pinned-reqs.yml`).
     """
-    session.install(uv_requirement)
-
     uv_lock_upgrade = ["uv", "lock", "--upgrade", "--no-progress"]
 
     # When silent is `True`, `session.run()` returns a multi-line string
@@ -184,7 +180,6 @@ def validate_requirements(session: nox.Session) -> None:
     Verify that the requirements in :file:`uv.lock` are compatible
     with the requirements in `pyproject.toml`.
     """
-    session.install(uv_requirement)
     session.log(
         "🛡 If this check fails, regenerate the pinned requirements in "
         "`uv.lock` with `nox -s requirements`."
@@ -238,8 +233,6 @@ test_specifiers: list = [
 def tests(session: nox.Session, test_specifier: nox._parametrize.Param) -> None:
     """Run tests with pytest."""
 
-    session.install(uv_requirement)
-
     options: list[str] = []
 
     if test_specifier in {"skip slow tests", "lowest-direct-skipslow"}:
@@ -259,12 +252,20 @@ def tests(session: nox.Session, test_specifier: nox._parametrize.Param) -> None:
 
     match test_specifier:
         case "lowest-direct" | "lowest-direct-skipslow":
-            session.install(".[tests]", "--resolution=lowest-direct")
+            session.install(
+                ".[tests]",
+                "--resolution=lowest-direct",
+                "--no-all-extras",
+                f"--python={session.virtualenv.location}",
+                env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
+            )
         case _:
             # From https://nox.thea.codes/en/stable/cookbook.html#using-a-lockfile
             session.run_install(
                 *uv_sync,
                 "--extra=tests",
+                "--no-default-groups",
+                f"--python={session.virtualenv.location}",
                 env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
             )
 
@@ -289,8 +290,6 @@ def run_tests_with_dev_version_of(session: nox.Session, repository: str) -> None
     Running this session helps us catch problems resulting from breaking
     changes in an upstream dependency before its official release.
     """
-
-    session.install(uv_requirement)
 
     if repository == "numpy":
         # From: https://numpy.org/doc/1.26/dev/depending_on_numpy.html
@@ -361,11 +360,11 @@ def docs(session: nox.Session) -> None:
     if running_on_ci:
         session.log(doc_troubleshooting_message)
 
-    session.install(uv_requirement)
-
     session.run_install(
         *uv_sync,
         "--extra=docs",
+        "--no-default-groups",
+        f"--python={session.virtualenv.location}",
         env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
     )
     session.run(*sphinx_base_command, *build_html, *session.posargs)
@@ -481,14 +480,18 @@ These variables are in the form of Python regular expressions:
 @nox.session(python=docpython)
 def linkcheck(session: nox.Session) -> None:
     """Check hyperlinks in documentation."""
+
     if running_on_ci:
         session.log(LINKCHECK_TROUBLESHOOTING)
-    session.install(uv_requirement)
+
     session.run_install(
         *uv_sync,
         "--extra=docs",
+        "--no-default-groups",
+        f"--python={session.virtualenv.location}",
         env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
     )
+
     session.run(*sphinx_base_command, *check_hyperlinks, *session.posargs)
 
 
@@ -516,10 +519,11 @@ def mypy(session: nox.Session) -> None:
     Configuration file: mypy.ini
     """
 
-    session.install(uv_requirement)
     session.run_install(
         *uv_sync,
         "--extra=tests",
+        "--no-default-groups",
+        f"--python={session.virtualenv.location}",
         env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
     )
 
@@ -573,13 +577,15 @@ AUTOTYPING_RISKY: tuple[str, ...] = (
 
 
 @nox.session
-@nox.parametrize("draft", [nox.param(False, id="draft"), nox.param(True, id="final")])
+@nox.parametrize("final", [nox.param(False, id="draft"), nox.param(True, id="final")])
 def changelog(session: nox.Session, final: str) -> None:
     """
     Build the changelog with towncrier.
 
-     - 'final': build the combined changelog for the release, and delete
-       the individual changelog entries in `changelog`.
+     - 'final': build the combined changelog for the release, delete
+       the individual changelog entries in `changelog`, and replace
+       `CHANGELOG.rst`. Be sure to commit changes before running this
+       session.
      - 'draft': print the draft changelog to standard output, without
        writing to files
 
@@ -592,54 +598,36 @@ def changelog(session: nox.Session, final: str) -> None:
     if len(session.posargs) != 1:
         raise TypeError(
             "Please provide the version of PlasmaPy to be released "
-            "(i.e., `nox -s changelog -- 2024.9.0`"
-        )
-
-    source_directory = pathlib.Path("./changelog")
-
-    extraneous_files = source_directory.glob("changelog/*[0-9]*.*.rst?*")
-    if final and extraneous_files:
-        session.error(
-            "Please delete the following extraneous files before "
-            "proceeding, as the presence of these files may cause "
-            f"towncrier errors: {extraneous_files}"
+            "(i.e., `nox -s changelog -- 2025.10.0`)"
         )
 
     version = session.posargs[0]
-
     year_pattern = r"(202[4-9]|20[3-9][0-9]|2[1-9][0-9]{2}|[3-9][0-9]{3,})"
     month_pattern = r"(1[0-2]|[1-9])"
     patch_pattern = r"(0?[0-9]|[1-9][0-9])"
     version_pattern = rf"^{year_pattern}\.{month_pattern}\.{patch_pattern}$"
-
     if not re.match(version_pattern, version):
         raise ValueError(
             "Please provide a version of the form YYYY.M.PATCH, where "
-            "YYYY is the year past 2024, M is the one or two digit month, "
+            "YYYY is he year, M is the one or two digit month, "
             "and PATCH is a non-negative integer."
         )
 
     session.install(".", "towncrier")
 
-    options = ("--yes",) if final else ("--draft", "--keep")
+    towncrier = ["towncrier", "build", "--version", version]
 
-    session.run(
-        "towncrier",
-        "build",
-        "--config",
-        "pyproject.toml",
-        "--dir",
-        ".",
-        "--version",
-        version,
-        *options,
-        *session.posargs,
-    )
+    if not final:
+        session.run(*towncrier, "--draft", "--keep")
+        return
 
-    if final:
-        original_file = pathlib.Path("./CHANGELOG.rst")
-        destination = pathlib.Path(f"./docs/changelog/{version}.rst")
-        original_file.rename(destination)
+    original_file = pathlib.Path("./CHANGELOG.rst")
+    original_file.unlink()
+
+    session.run(*towncrier, "--yes")
+
+    destination = pathlib.Path(f"./docs/changelog/{version}.rst")
+    shutil.copy(original_file, destination)
 
 
 @nox.session
