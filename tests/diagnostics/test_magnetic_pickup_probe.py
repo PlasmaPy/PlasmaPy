@@ -7,7 +7,7 @@ import pytest
 from plasmapy.diagnostics.magnetic_pickup_probe import compute_bfield
 
 
-def test_compute_bfield_integrates_voltage_to_field():
+def test_compute_bfield_integrates_voltage_to_field() -> None:
     """
     Test compute_bfield by inputting a sine wave voltage and checking
     if the output magnetic field matches the integrated waveform.
