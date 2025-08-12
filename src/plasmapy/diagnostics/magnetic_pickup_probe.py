@@ -41,7 +41,8 @@ def compute_bfield(bdot_voltage: u.Quantity[u.volt], time_array: u.Quantity[u.s]
     Returns
     -------
     magnetic_field_array: `astropy.units.Quantity`
-        The array containing the magnetic field in Tesla as a function of time in seconds. 
+        The array containing the magnetic field in units convertible
+        to tesla as a function of time in seconds.
         
     Notes
     -----
