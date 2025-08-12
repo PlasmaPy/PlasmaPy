@@ -16,7 +16,7 @@ def test_compute_bfield_integrates_voltage_to_field() -> None:
     time = np.linspace(0, 2 * np.pi, 1000) * u.s
 
     # Create a sine voltage signal: V(t) = sin(t)
-    voltage = np.sin(time.value) * u.V
+    voltage = np.sin(time / u.s) * u.V
 
     # Set probe parameters
     loop_area = 1.0 * u.m**2
