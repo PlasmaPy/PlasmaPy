@@ -13,7 +13,7 @@ def test_compute_bfield_integrates_voltage_to_field() -> None:
     if the output magnetic field matches the integrated waveform.
     """
     # Create a time array in seconds
-    time = np.linspace(0, 2 * np.pi, 1000) * u.s
+    time = np.linspace(0, 2 * np.pi, 50) * u.s
 
     # Create a sine voltage signal: V(t) = sin(t)
     voltage = np.sin(time / u.s) * u.V
