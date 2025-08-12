@@ -1,7 +1,8 @@
 """Defines the basic magnetic pickup probe (Bdot probe) analysis
    
 """
-__all__ = []
+
+__all__ = ["compute_bfield"]
 
 from warnings import warn
 from scipy.integrate import cumulative_trapezoid
