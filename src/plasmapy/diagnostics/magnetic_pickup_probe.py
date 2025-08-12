@@ -21,9 +21,9 @@ def compute_bfield(bdot_voltage: u.Quantity[u.volt], time_array: u.Quantity[u.s]
     Parameters
     ----------
     bdot_voltage: `astropy.units.Quantity`
-        A data array containing voltage fluctuations from a bdot probe. The
-        array values are proportional to time changing magnetic field via Faradays Law
-        The input values are assumed to be in volts.
+        A data array containing voltage fluctuations from a bdot probe
+        in units convertible to volts. The array values are proportional
+        to time changing magnetic field via Faradays Law.
 
     time_array: `astropy.units.Quantity`
         The time series to the data collection in units of seconds.
