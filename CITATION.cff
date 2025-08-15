@@ -748,3 +748,24 @@ authors:
 - given-names: Carol
   family-names: Zhang
   alias: carolyz
+  
+- given-names: Bao
+  family-names: Nguyen
+  affiliation: Imperial College London
+  orcid: https://orcid.org/0000-0002-1753-4223
+  alias: wnguyen1312
+
+- given-names: Emmanuel
+  family-names: Ferdman
+  orcid: https://orcid.org/0009-0004-8953-0151
+  alias: emmanuel-ferdman
+
+- given-names: Mahlet
+  family-names: Getahun
+  affiliation: Marietta College
+  alias: Getahun-yw-Mahl
+
+- given-names: Maimoona
+  family-names: Irfan
+  affiliation: Bryn Mawr College 
+  alias: mirfan4906
