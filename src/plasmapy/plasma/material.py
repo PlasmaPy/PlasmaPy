@@ -3,6 +3,7 @@ Definition of the material class and helper functions. The module also
 includes type definitions for stopping and ranging data.
 """
 
+from collections.abc import Callable
 from functools import cached_property
 from typing import TypedDict
 
@@ -33,7 +34,9 @@ class MaterialSTARData(TypedDict):
     projected_range: u.Quantity[u.cm]
 
 
-def _construct_log_interpolator(x0: u.Quantity, y0: u.Quantity):
+def _construct_log_interpolator(
+    x0: u.Quantity, y0: u.Quantity
+) -> Callable[[u.Quantity], u.Quantity]:
     """
     Apply a logarithmic transformation to input and output data points,
     allowing for approximation of an exponential relation using
