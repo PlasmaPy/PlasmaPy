@@ -1,0 +1,3 @@
+Added the `~plasmapy.plasma.material` sub-module.
+Added the `~plasmapy.plasmapy.material.Material` class for specifying
+compound materials.
