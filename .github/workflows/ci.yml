@@ -102,6 +102,7 @@ jobs:
       with:
         python-version: ${{ matrix.python }}
         enable-cache: true  # zizmor: ignore[cache-poisoning]
+        cache-suffix: ${{ matrix.nox_session }}-${{ matrix.python }}-${{ runner.os }}
 
     - name: Run the check
       run: uvx nox -s '${{ matrix.nox_session }}'
