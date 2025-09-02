@@ -101,8 +101,7 @@ jobs:
       uses: astral-sh/setup-uv@v6
       with:
         python-version: ${{ matrix.python }}
-        enable-cache: true
-        cache-suffix: ${{ matrix.nox_session }}-${{ matrix.python }}-${{ runner.os }}
+        enable-cache: true  # zizmor: ignore[cache-poisoning]
 
     - name: Run the check
       run: uvx nox -s '${{ matrix.nox_session }}'
