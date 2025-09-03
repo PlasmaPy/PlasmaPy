@@ -1,0 +1,1 @@
+Added particle scattering to the |ParticleTracker| simulation. Particle scattering is simulated using Moliere's theory of multiple scattering with a screened Coulomb potential.
