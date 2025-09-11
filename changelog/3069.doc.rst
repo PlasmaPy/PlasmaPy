@@ -1,2 +1,0 @@
-Upgraded :ref:`PlasmaPy's Code of Conduct <plasmapy-code-of-conduct>` to
-version 3.0 of the Contributor Covenant.

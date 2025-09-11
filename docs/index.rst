@@ -22,13 +22,13 @@ If you are new to PlasmaPy, please check out our
 
 PlasmaPy is developed openly `on GitHub`_, where you can
 `request a new feature`_ or `report a bug`_. We invite you to share
-ideas and ask questions in our |Matrix chat room| or during our
-virtual |community meetings|.
+ideas and ask questions as `GitHub discussions`_ or during our
+|community meetings|.
 
 .. important::
 
    If you use PlasmaPy for work presented in a publication or talk,
-   please help the project by following these instructions to
+   please support the project by following these instructions to
    :ref:`cite or acknowledge <citation>` PlasmaPy.
 
 .. toctree::
@@ -77,8 +77,9 @@ Example notebooks
    bibliography
    glossary
    performance_tips
+   about/policies
    PlasmaPy Enhancement Proposals <https://github.com/PlasmaPy/PlasmaPy-PLEPs>
-   PlasmaPy website <https://www.plasmapy.org>
+   PlasmaPy Project <https://www.plasmapy.org>
    GitHub Repository <https://github.com/PlasmaPy/PlasmaPy>
 
 .. toctree::
@@ -91,10 +92,11 @@ Example notebooks
    contributing/workflow
    Coding Guide <contributing/coding_guide>
    contributing/testing_guide
+   contributing/pre-commit
    contributing/doc_guide
    contributing/changelog_guide
-   contributing/pre-commit
 
+.. _GitHub discussions: https://github.com/PlasmaPy/PlasmaPy/discussions
 .. _new discussion on GitHub: https://github.com/PlasmaPy/PlasmaPy/discussions/new/choose
 .. _on GitHub: https://github.com/PlasmaPy/PlasmaPy
 .. _report a bug: https://github.com/PlasmaPy/PlasmaPy/issues/new?assignees=&labels=Bug&template=bug_report.yml
