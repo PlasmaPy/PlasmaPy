@@ -30,7 +30,7 @@ from plasmapy.utils.exceptions import PlasmaPyWarning
             set(dIdVExtras._fields),
             {"std", "data_slice", "savgol_windows", "savgol_peaks"},
         ),
-        (operator.eq, dIdVExtras._field_defaults, dict()),
+        (operator.eq, dIdVExtras._field_defaults, {}),
     ],
 )
 def test_didv_namedtuple(assert_op, arg1, expected):
