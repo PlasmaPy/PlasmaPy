@@ -648,5 +648,11 @@ def _condition_voltage_window(voltage, voltage_window) -> slice:
         if voltage_window[1] is None
         else int(np.where(voltage <= voltage_window[1])[0][-1])
     )
+    if last_index is None:
+        pass
+    elif last_index == voltage.size-1:
+        last_index = None
+    else:
+        last_index += 1
 
     return slice(first_index, last_index, 1)
