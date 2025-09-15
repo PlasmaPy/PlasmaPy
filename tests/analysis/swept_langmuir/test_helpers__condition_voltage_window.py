@@ -2,6 +2,7 @@
 Tests for
 `plasmapy.analysis.swept_langmuir.helpers._condition_voltage_window`.
 """
+
 import numpy as np
 import pytest
 
@@ -9,26 +10,25 @@ from plasmapy.analysis.swept_langmuir.helpers import _condition_voltage_window
 
 
 class TestConditionVoltageWindow:
-
     @pytest.mark.parametrize(
         ("_raises", "voltage", "voltage_window"),
         [
             # voltage_window is not a list-like or None
-            (pytest.raises(TypeError), np.arange(10.), {"one": 1, "two": 2}),
-            (pytest.raises(TypeError), np.arange(10.), "invalid window"),
-            (pytest.raises(TypeError), np.arange(10.), 5.0),
+            (pytest.raises(TypeError), np.arange(10.0), {"one": 1, "two": 2}),
+            (pytest.raises(TypeError), np.arange(10.0), "invalid window"),
+            (pytest.raises(TypeError), np.arange(10.0), 5.0),
             # voltage_window is wrong size
-            (pytest.raises(ValueError), np.arange(10.), []),
-            (pytest.raises(ValueError), np.arange(10.), [5.0]),
-            (pytest.raises(ValueError), np.arange(10.), (-1.0, 2.0, 5.0)),
+            (pytest.raises(ValueError), np.arange(10.0), []),
+            (pytest.raises(ValueError), np.arange(10.0), [5.0]),
+            (pytest.raises(ValueError), np.arange(10.0), (-1.0, 2.0, 5.0)),
             # voltage_window does not have Real numbers or None
-            (pytest.raises(TypeError), np.arange(10.), ["one", 2]),
-            (pytest.raises(TypeError), np.arange(10.), ["one", "two"]),
-            (pytest.raises(TypeError), np.arange(10.), [(1., 2.), 2.0]),
+            (pytest.raises(TypeError), np.arange(10.0), ["one", 2]),
+            (pytest.raises(TypeError), np.arange(10.0), ["one", "two"]),
+            (pytest.raises(TypeError), np.arange(10.0), [(1.0, 2.0), 2.0]),
             # voltage_window is out of range
-            (pytest.raises(ValueError), np.arange(10.), [-5, -2]),
-            (pytest.raises(ValueError), np.arange(10.), [11, 18]),
-        ]
+            (pytest.raises(ValueError), np.arange(10.0), [-5, -2]),
+            (pytest.raises(ValueError), np.arange(10.0), [11, 18]),
+        ],
     )
     def test_raises(self, _raises, voltage, voltage_window):
         with _raises:
