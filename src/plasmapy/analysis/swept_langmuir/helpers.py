@@ -599,7 +599,7 @@ def _condition_voltage_window(voltage, voltage_window) -> slice:
 
     if voltage_window is None:
         voltage_window = [None, None]
-    elif not isinstance(voltage_window, Sequence):
+    elif not isinstance(voltage_window, Sequence) or isinstance(voltage_window, str):
         raise TypeError(
             f"Expected a 2-element list of floats or None for 'voltage_window', "
             f"but got type {type(voltage_window)}."
