@@ -2,15 +2,9 @@
 Tests for
 `plasmapy.analysis.swept_langmuir.helpers._condition_voltage_window`.
 """
-
-from unittest import mock
-
-import operator
 import numpy as np
 import pytest
 
-from plasmapy.analysis import fit_functions as ffuncs
-from plasmapy.analysis import swept_langmuir as sla
 from plasmapy.analysis.swept_langmuir.helpers import _condition_voltage_window
 
 
