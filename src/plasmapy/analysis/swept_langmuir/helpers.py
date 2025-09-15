@@ -568,7 +568,9 @@ def merge_voltage_clusters(  # noqa: C901, PLR0912
     return new_voltage, new_current
 
 
-def _condition_voltage_window(voltage, voltage_window) -> slice:
+def _condition_voltage_window(  # noqa: C901, PLR0912
+        voltage, voltage_window
+) -> slice:
     """
     Condition ``voltage_window`` and return resulting `slice` object to
     index ``voltage``.
