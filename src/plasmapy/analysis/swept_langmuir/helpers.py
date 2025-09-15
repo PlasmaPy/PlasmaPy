@@ -640,6 +640,8 @@ def _condition_voltage_window(voltage, voltage_window) -> slice:
         if voltage_window[0] is None
         else int(np.where(voltage >= voltage_window[0])[0][0])
     )
+    if first_index == 0:
+        first_index = None
 
     last_index = (
         None
