@@ -572,6 +572,27 @@ def _condition_voltage_window(voltage, voltage_window) -> slice:
     """
     Condition ``voltage_window`` and return resulting `slice` object to
     index ``voltage``.
+
+    Parameters
+    ----------
+    voltage : `numpy.ndarray`
+        1-D numpy array of monotonically increasing probe biases
+        (should be in volts).
+
+    voltage_window : `list[float | None]` | `None`, default: `None`
+        A two-element list ``[v_min, v_max]`` that specifies the voltage
+        range in which the peak slope will be looked for.  Specifying
+        `None` for either the first or second element will result in a
+        window using the lower or upper bound of ``voltage``
+        respectively.  If set to `None` (default), then the whole
+        ``voltage`` window will be used.
+
+    Returns
+    -------
+    voltage_window : `slice`
+         A `slice` object representing the window originally defined
+         by the input ``voltage_window``.
+
     """
     if isinstance(voltage_window, np.ndarray):
         voltage_window = voltage_window.tolist()
