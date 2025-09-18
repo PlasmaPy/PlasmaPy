@@ -897,7 +897,7 @@ class AbstractGrid(ABC):
 
     # This property holds the list of quantity keys currently being interpolated
     # It's used in the following cached properties
-    _interp_args: ClassVar = []
+    _interp_args: list[str] = []
 
     @cached_property
     def _interp_quantities(self):
