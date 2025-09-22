@@ -102,11 +102,12 @@ about these meetings is on the [meetings] page of PlasmaPy's website.
 
 ### Community meetings
 
-PlasmaPy's weekly [community meetings] are a place to talk about code
-development, event planning, and other community happenings. If you have
-an idea for a new feature or would like to become involved in the
+PlasmaPy's [community meetings] are a place to talk about code
+development, event planning, and other community happenings. If you
+have an idea for a new feature or would like to become involved in the
 PlasmaPy project, community meetings are a great place to start. As of
-May 2025, our community meetings are on most Thursdays at 2 pm ET.
+September 2025, our community meetings are usually held every other
+Monday at 1 pm ET.
 
 ## Community
 
