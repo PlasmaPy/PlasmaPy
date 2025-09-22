@@ -41,7 +41,7 @@ from packaging.requirements import Requirement
 # The minimum version of Python should be incremented immediately
 # following the first release after October of each year.
 
-supported_python_versions: tuple[str, ...] = ("3.11", "3.12", "3.13")
+supported_python_versions: tuple[str, ...] = ("3.12", "3.13", "3.14")
 supported_operating_systems: tuple[str, ...] = ("linux", "macos", "windows")
 
 maxpython = max(supported_python_versions)

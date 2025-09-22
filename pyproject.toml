@@ -141,7 +141,7 @@ namespaces = false
 write_to = "src/plasmapy/_version.py"
 
 [tool.ruff]
-target-version = "py311"
+target-version = "py312"
 namespace-packages = [ ".github/workflows", "docs" ]
 extend-exclude = [
   ".hypothesis",
