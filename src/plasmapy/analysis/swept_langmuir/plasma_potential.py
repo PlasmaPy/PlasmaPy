@@ -94,6 +94,18 @@ def _condition_smooth_fractions(smooth_fractions, data_size: int):
             f"{smooth_fractions.tolist()}."
         )
 
+    # condition data_size
+    if not isinstance(data_size, int):
+        raise TypeError(
+            "Expected a positive, non-zero integer for argument 'data_size', "
+            f"but got type {type(data_size)}."
+        )
+    elif data_size < 1:
+        raise ValueError(
+            "Expected a positive, non-zero integer for argument 'data_size', "
+            f"but got {data_size}."
+        )
+
     # create bin sizes (savgol_windows) for the savgol_filter
     savgol_windows = np.unique(np.rint(smooth_fractions * data_size).astype(int))
 
