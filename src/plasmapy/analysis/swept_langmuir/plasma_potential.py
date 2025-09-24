@@ -69,7 +69,10 @@ def _condition_smooth_fractions(smooth_fractions, data_size):
             f"Expected a list-like object for 'smooth_fractions', "
             f"but got type {type(smooth_fractions)}."
         )
-    elif smooth_fractions.ndim != 1:
+    else:
+        smooth_fractions = np.array(smooth_fractions)
+
+    if smooth_fractions.ndim != 1:
         raise ValueError(
             "Expected a 1-D list of floats in the interval (0, 1] for argument "
             f"'smooth_fractions', but got a {smooth_fractions.ndim}-D list.")
