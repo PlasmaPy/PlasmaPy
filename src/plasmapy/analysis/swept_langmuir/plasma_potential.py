@@ -86,8 +86,8 @@ def _condition_smooth_fractions(smooth_fractions, data_size: int):
     smooth_fractions = np.unique(np.sort(smooth_fractions))
     mask1 = smooth_fractions <= 0
     mask2 = smooth_fractions > 1
-    mask = np.logical_and(mask1, mask2)
-    if np.count_nonzero(mask) == 0:
+    mask = np.logical_or(mask1, mask2)
+    if np.count_nonzero(mask) > 0:
         raise ValueError(
             "Expected a 1-D list of floats in the interval (0, 1] for argument "
             f"'smooth_fractions', no elements are within this interval "
