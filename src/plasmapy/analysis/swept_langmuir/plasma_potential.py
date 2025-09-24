@@ -84,8 +84,8 @@ def _condition_smooth_fractions(smooth_fractions, data_size):
         )
 
     smooth_fractions = np.unique(np.sort(smooth_fractions))
-    mask1 = smooth_fractions > 0
-    mask2 = smooth_fractions <= 1
+    mask1 = smooth_fractions <= 0
+    mask2 = smooth_fractions > 1
     mask = np.logical_and(mask1, mask2)
     if np.count_nonzero(mask) == 0:
         raise ValueError(
