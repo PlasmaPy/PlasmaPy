@@ -52,11 +52,12 @@ class dIdVExtras(NamedTuple):  # noqa: N801
     """
 
 
-def _condition_smooth_fractions(smooth_fractions, data_size):
+def _condition_smooth_fractions(smooth_fractions, data_size: int):
     """
     Condition ``smooth_fractions`` and return the resulting
     Savitzky-Golay filter windows sizes, based on the ``data_size``.
     """
+    # condition smooth_fractions
     if smooth_fractions is None:
         # Note: If this default value is changed, then the docstring entry
         #       for smooth_fractions in the find_didv_peak() docstring
