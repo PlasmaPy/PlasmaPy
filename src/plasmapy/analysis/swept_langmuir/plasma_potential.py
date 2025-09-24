@@ -62,16 +62,12 @@ def _condition_smooth_fractions(smooth_fractions, data_size):
         #       for smooth_fractions in the find_didv_peak() docstring
         #       needs to be updated accordingly.
         smooth_fractions = np.linspace(0.01, 0.25, num=30)
-    elif (
-        isinstance(smooth_fractions, Sequence)
-        and not isinstance(smooth_fractions, np.ndarray)
-    ):
-        smooth_fractions = np.array(smooth_fractions)
-
-    if not isinstance(smooth_fractions, np.ndarray):
+    elif isinstance(smooth_fractions, np.ndarray):
+        pass
+    elif not isinstance(smooth_fractions, Sequence) or isinstance(smooth_fractions, str):
         raise TypeError(
-            "Expected a 1-D list of floats in the interval (0, 1] for argument "
-            f"'smooth_fractions', but got type {type(smooth_fractions)}."
+            f"Expected a list-like object for 'smooth_fractions', "
+            f"but got type {type(smooth_fractions)}."
         )
     elif smooth_fractions.ndim != 1:
         raise ValueError(
