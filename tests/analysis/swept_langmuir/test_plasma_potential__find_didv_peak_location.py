@@ -133,3 +133,27 @@ class TestFinddIdVPeakLocation:
 
             # passed kwargs
             assert mock_cvw.call_args[1] == {}
+
+    def test_call_of_condition_smooth_fractions(self) -> None:
+        varr = np.linspace(-20.0, 20.0, 100)
+        carr = np.linspace(-20.0, 20.0, 100)
+
+        with (
+            mock.patch(
+                f"{sla.plasma_potential.__name__}._condition_smooth_fractions",
+                side_effect=sla.plasma_potential._condition_smooth_fractions,
+            )
+            as mock_csf
+        ):
+            # mock_cvw.return_value = varr, carr
+            find_didv_peak_location(voltage=varr, current=carr)
+
+            assert mock_csf.call_count == 1
+
+            # passed args
+            assert len(mock_csf.call_args[0]) == 2
+            assert mock_csf.call_args[0][0] is None  # smooth_fractions arg
+            assert mock_csf.call_args[0][1] == 100  # data_size arg
+
+            # passed kwargs
+            assert mock_csf.call_args[1] == {}
