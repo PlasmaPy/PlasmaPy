@@ -48,3 +48,15 @@ class TestConditionSmoothFractions:
     def test_raises(self, _raises, smooth_fractions, data_size):
         with _raises:
             _condition_smooth_fractions(smooth_fractions, data_size)
+
+    @pytest.mark.parametrize(
+        ("smooth_fractions", "data_size", "expected"),
+        [
+            ([0.2, 0.5, 0.8], 20, np.array([5, 11, 17], dtype=int)),
+            ([0.02, 0.2, 0.5, 0.8], 20, np.array([5, 11, 17], dtype=int)),
+            (None, 50, np.array([3, 5, 7, 9, 11, 13], dtype=int)),
+        ],
+    )
+    def test_expected(self, smooth_fractions, data_size, expected):
+        result = _condition_smooth_fractions(smooth_fractions, data_size)
+        assert np.array_equal(result, expected)
