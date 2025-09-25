@@ -523,6 +523,7 @@ def mypy(session: nox.Session) -> None:
 
     session.run_install(
         *uv_sync,
+        "--quiet",
         "--extra=tests",
         "--no-default-groups",
         f"--python={session.virtualenv.location}",
