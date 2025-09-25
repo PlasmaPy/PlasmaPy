@@ -57,10 +57,14 @@ class TestFinddIdVPeakLocation:
     @pytest.mark.parametrize(
         ("helper", "used_callable"),
         [
-            (sla.helpers.check_sweep, sla.plasma_potential.check_sweep),
             (
                 sla.helpers._condition_voltage_window,
                 sla.plasma_potential._condition_voltage_window,
+            ),
+            (sla.helpers.check_sweep, sla.plasma_potential.check_sweep),
+            (
+                sla.helpers.merge_voltage_clusters,
+                sla.plasma_potential.merge_voltage_clusters,
             ),
         ],
     )
