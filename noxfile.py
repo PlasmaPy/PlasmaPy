@@ -519,6 +519,8 @@ def mypy(session: nox.Session) -> None:
     Configuration file: mypy.ini
     """
 
+    session.install("pip")  # mypy uses pip if --install-types is used
+
     session.run_install(
         *uv_sync,
         "--extra=tests",
