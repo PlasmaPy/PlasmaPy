@@ -7,8 +7,10 @@ __all__ = [
     "check_sweep",
     "find_floating_potential",
     "find_ion_saturation_current",
+    "find_didv_peak_location",
     "merge_voltage_clusters",
     "sort_sweep_arrays",
+    "dIdVExtras",
     "ISatExtras",
     "VFExtras",
 ]
@@ -29,4 +31,8 @@ from plasmapy.analysis.swept_langmuir.ion_saturation_current import (
     ISatExtras,
     find_ion_saturation_current,
     find_isat_,
+)
+from plasmapy.analysis.swept_langmuir.plasma_potential import (
+    dIdVExtras,
+    find_didv_peak_location,
 )
