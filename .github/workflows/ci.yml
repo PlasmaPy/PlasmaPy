@@ -82,7 +82,7 @@ jobs:
     steps:
 
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
       with:
         persist-credentials: false
 
@@ -101,7 +101,7 @@ jobs:
       uses: astral-sh/setup-uv@v6
       with:
         python-version: ${{ matrix.python }}
-        enable-cache: true
+        enable-cache: true  # zizmor: ignore[cache-poisoning]
         cache-suffix: ${{ matrix.nox_session }}-${{ matrix.python }}-${{ runner.os }}
 
     - name: Run the check

@@ -9,7 +9,7 @@ default_language_version:
 repos:
 
 - repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v5.0.0
+  rev: v6.0.0
   hooks:
   - id: check-ast
     name: validate Python code
@@ -28,7 +28,7 @@ repos:
   - id: check-yaml
 
 - repo: https://github.com/python-jsonschema/check-jsonschema
-  rev: 0.33.2
+  rev: 0.33.3
   hooks:
   - id: check-github-workflows
 
@@ -80,14 +80,14 @@ repos:
     - tomli
 
 - repo: https://github.com/crate-ci/typos
-  rev: v1.34.0
+  rev: v1.36.0
   hooks:
   - id: typos
     name: typos (add false positives to _typos.toml)
     exclude: .pre-commit-search-and-replace.yaml
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.12.7
+  rev: v0.12.11
   hooks:
   - id: ruff
     name: ruff (see https://docs.astral.sh/ruff/rules)
