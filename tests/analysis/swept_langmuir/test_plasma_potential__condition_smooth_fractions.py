@@ -34,6 +34,15 @@ class TestConditionSmoothFractions:
             (pytest.raises(ValueError), [0.1, .9, 20.0], 10),
             (pytest.raises(ValueError), [0, 0.1, .9, 1.1], 10),
             (pytest.raises(ValueError), [-20.0, 0, 0.1, .9, 1.1], 10),
+            # data_size not integer
+            (pytest.raises(TypeError), [0.2, 0.5, 0.8], "hello"),
+            (pytest.raises(TypeError), [0.2, 0.5, 0.8], 90.5),
+            # data_size not positive, non-zero integer
+            (pytest.raises(ValueError), [0.2, 0.5, 0.8], 0),
+            (pytest.raises(ValueError), [0.2, 0.5, 0.8], -20),
+            # # computed savgol_windows is null
+            (pytest.raises(ValueError), [0.2, 0.5, 0.8], 1),
+            (pytest.raises(ValueError), [0.02], 20),
         ],
     )
     def test_raises(self, _raises, smooth_fractions, data_size):
