@@ -2,10 +2,6 @@ ci:
   autofix_prs: false
   autoupdate_schedule: quarterly
 
-# Specify the default version of Ruby in case it is not installed
-default_language_version:
-  ruby: 2.7.2
-
 repos:
 
 - repo: https://github.com/pre-commit/pre-commit-hooks
@@ -52,13 +48,6 @@ repos:
     # remove the quotes which will break that action, so we should not
     # run this hook on `labeler.yml` (or certain other files).
     exclude: .github/labeler.yml|.pre-commit-search-and-replace.yaml
-
-- repo: https://github.com/mattlqx/pre-commit-search-and-replace
-  # keep at v1.0.5
-  rev: v1.0.5
-  hooks:
-  - id: search-and-replace
-    exclude: changelog/README.rst|docs/changelog/.*|.sourcery.yaml|docs/_global_substitutions.py|CHANGELOG.rst|docs/contributing/doc_guide.rst
 
 - repo: https://github.com/pre-commit/pygrep-hooks
   rev: v1.10.0
