@@ -374,6 +374,11 @@ def test_asynchronous_time_step_error(
         )
 
 
+@pytest.mark.filterwarnings("ignore:.*divide by zero.*:RuntimeWarning")
+@pytest.mark.filterwarnings("ignore:.*should go to zero.*:RuntimeWarning")
+@pytest.mark.filterwarnings(
+    "ignore:.*invalid value encountered in multiply.*:RuntimeWarning"
+)
 def test_volume_averaged_interpolation(
     time_elapsed_termination_condition_instantiated,
 ) -> None:
@@ -397,21 +402,22 @@ def test_volume_averaged_interpolation(
 
     termination_condition = time_elapsed_termination_condition_instantiated
 
-    with warnings.catch_warnings():
-        warnings.filterwarnings(
-            "ignore", message="Quantities should go to zero at edges of grid"
-        )
-        simulation = ParticleTracker(
-            grid,
-            termination_condition,
-            field_weighting="volume averaged",
-            verbose=False,
-        )
+    simulation = ParticleTracker(
+        grid,
+        termination_condition,
+        field_weighting="volume averaged",
+        verbose=False,
+    )
     simulation.load_particles(x, v, point_particle)
 
     simulation.run()
 
 
+@pytest.mark.filterwarnings("ignore:.*divide by zero.*:RuntimeWarning")
+@pytest.mark.filterwarnings(
+    "ignore:.*invalid value encountered in multiply.*:RuntimeWarning"
+)
+@pytest.mark.filterwarnings("ignore:.*Mean of empty slice.*:RuntimeWarning")
 def test_setup_adaptive_time_step(
     time_elapsed_termination_condition_instantiated,
 ) -> None:
@@ -597,6 +603,11 @@ def test_particle_tracker_add_stopping_errors(
         simulation.add_stopping(method="NIST", materials=["ALUMINUM"])
 
 
+@pytest.mark.filterwarnings("ignore:.*divide by zero.*:RuntimeWarning")
+@pytest.mark.filterwarnings("ignore:.*Mean of empty slice.*:RuntimeWarning")
+@pytest.mark.filterwarnings(
+    "ignore:.*invalid value encountered in multiply.*:RuntimeWarning"
+)
 def test_particle_tracker_Bethe_warning(
     no_particles_on_grids_instantiated,
     memory_interval_save_routine_instantiated,
@@ -750,6 +761,7 @@ class TestParticleTrajectory:
         ],
     )
     @pytest.mark.slow
+    @pytest.mark.filterwarnings("ignore:.*divide by zero.*:RuntimeWarning")
     def test_relativistic_Boris_integrator_fitting(cls, regime, particle) -> None:
         """
         Fit the results of the relativistic Boris integrator using
@@ -873,6 +885,8 @@ class TestParticleTrajectory:
             (0.1, Particle("e-")),
         ],
     )
+    @pytest.mark.filterwarnings("ignore:.*divide by zero.*:RuntimeWarning")
+    @pytest.mark.filterwarnings("ignore::plasmapy.utils.exceptions.RelativityWarning")
     def test_classical_Boris_integrator_fitting(cls, regime, particle) -> None:
         """
         Fit the results of the non-relativistic Boris integrator using
@@ -976,6 +990,7 @@ class TestParticleTrajectory:
         ],
     )
     @pytest.mark.slow
+    @pytest.mark.filterwarnings("ignore:.*divide by zero.*:RuntimeWarning")
     def test_relativity_warning(cls, regime, particle) -> None:
         """
         Fit the results of the non-relativistic Boris integrator using

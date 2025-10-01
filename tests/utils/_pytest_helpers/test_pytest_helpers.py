@@ -98,6 +98,7 @@ f_args_kwargs_expected_whaterror = [
 @pytest.mark.parametrize(
     ("f", "args", "kwargs", "expected", "whaterror"), f_args_kwargs_expected_whaterror
 )
+@pytest.mark.filterwarnings("ignore:.*:plasmapy.utils.exceptions.PlasmaPyWarning")
 def test_run_test(f, args, kwargs, expected, whaterror):
     """
     Test the behavior of the test helper function.

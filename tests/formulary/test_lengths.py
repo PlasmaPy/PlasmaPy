@@ -53,7 +53,8 @@ mu = m_p.to(u.u).value
         ([0, 1] * u.eV, [1, 0] * u.cm**-3, [0, np.inf] * u.m),
     ],
 )
-@pytest.mark.filterwarnings("ignore::astropy.units.UnitsWarning")
+@pytest.mark.filterwarnings("ignore:.*no specified units.*:astropy.units.UnitsWarning")
+@pytest.mark.filterwarnings("ignore:.*divide by zero.*:RuntimeWarning")
 def test_Debye_length(T_e, n_e, expected) -> None:
     result = Debye_length(T_e=T_e, n_e=n_e)
     assert_quantity_allclose(result, expected, rtol=1e-6, equal_nan=True, verbose=True)
