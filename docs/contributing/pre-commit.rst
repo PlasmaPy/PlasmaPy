@@ -12,33 +12,46 @@ Using pre-commit
 Introduction
 ============
 
-PlasmaPy uses |pre-commit| to automate code quality checks and perform
-auto-fixes. |pre-commit| checks are performed on GitHub for every pull
-request.
+PlasmaPy uses |pre-commit| to run code quality checks (via _hooks_
+defined in |.pre-commit-config.yaml|_) and apply automatic fixes, when
+available. All |pre-commit| hooks are run for every pull request (PR).
 
 .. important::
 
-   Automatically fix most |pre-commit| failures on pull requests by
-   commenting:
+   Automatically fix most |pre-commit| failures by commenting
 
       pre-commit.ci autofix
 
-   Adding this comment to the :guilabel:`Conversation` tab of a pull
-   request triggers a new commit that applies automatic fixes made by
-   PlasmaPy's pre-commit hooks. Use :bash:`git pull` to bring changes on
-   GitHub back to your computer.
+   in the :guilabel:`Conversation` tab of a PR. This comment triggers a
+   new commit that applies the available automatic fixes. Use
+   :bash:`git pull` to bring changes on GitHub back to your computer.
+
+   For confusing
 
 Running pre-commit locally
 ==========================
 
-After `installing pre-commit`_, |pre-commit| can be run locally for all
-files in your clone of the repository by running:
+After `installing uv`_, run all |pre-commit| hooks in your clone of the
+repository with:
 
 .. code-block:: bash
 
-   pre-commit run -a
+   uvx pre-commit run -a
 
-The ``-a`` is short for ``--all-files``.
+The ``-a`` is short for ``--all-files``. This
+
+.. tip::
+
+   If you get tired of the verbose output of |pre-commit|, consider
+   using |prek|: an emerging drop-in replacement to |pre-commit| with
+   better performance and improved user experience. To only show failure
+   and error messages, run this command instead:
+
+   .. code-block:: bash
+
+      uvx prek run -a -q
+
+   The ``-q`` is short for ``--quiet``.
 
 .. _pre-commit-troubleshooting:
 
