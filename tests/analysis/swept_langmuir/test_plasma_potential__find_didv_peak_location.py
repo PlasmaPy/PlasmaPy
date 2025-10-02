@@ -17,7 +17,6 @@ from plasmapy.analysis.swept_langmuir.plasma_potential import (
     find_didv_peak_location,
 )
 from plasmapy.utils.exceptions import PlasmaPyWarning
-from tests.analysis.swept_langmuir import SLAFixtures
 
 
 @pytest.mark.parametrize(
@@ -53,15 +52,7 @@ def test_didv_namedtuple_index_field_mapping(index, field_name):
     assert extras[index] == getattr(extras, field_name)
 
 
-class TestFinddIdVPeakLocation(SLAFixtures):
-
-    # @pytest.fixture(scope="class")
-    # def simple_voltage(self):
-    #     return np.linspace(-20.0, 20.0, 100)
-    #
-    # @pytest.fixture(scope="class")
-    # def simple_current(self):
-    #     return np.linspace(-20.0, 20.0, 100)
+class TestFinddIdVPeakLocation:
 
     @pytest.fixture(scope="class")
 
