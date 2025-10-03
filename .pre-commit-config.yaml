@@ -2,10 +2,6 @@ ci:
   autofix_prs: false
   autoupdate_schedule: quarterly
 
-# Specify the default version of Ruby in case it is not installed
-default_language_version:
-  ruby: 2.7.2
-
 repos:
 
 - repo: https://github.com/pre-commit/pre-commit-hooks
@@ -28,7 +24,7 @@ repos:
   - id: check-yaml
 
 - repo: https://github.com/python-jsonschema/check-jsonschema
-  rev: 0.33.3
+  rev: 0.34.0
   hooks:
   - id: check-github-workflows
 
@@ -52,13 +48,6 @@ repos:
     # remove the quotes which will break that action, so we should not
     # run this hook on `labeler.yml` (or certain other files).
     exclude: .github/labeler.yml|.pre-commit-search-and-replace.yaml
-
-- repo: https://github.com/mattlqx/pre-commit-search-and-replace
-  # keep at v1.0.5
-  rev: v1.0.5
-  hooks:
-  - id: search-and-replace
-    exclude: changelog/README.rst|docs/changelog/.*|.sourcery.yaml|docs/_global_substitutions.py|CHANGELOG.rst|docs/contributing/doc_guide.rst
 
 - repo: https://github.com/pre-commit/pygrep-hooks
   rev: v1.10.0
@@ -87,7 +76,7 @@ repos:
     exclude: .pre-commit-search-and-replace.yaml
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.12.11
+  rev: v0.13.2
   hooks:
   - id: ruff
     name: ruff (see https://docs.astral.sh/ruff/rules)
@@ -96,7 +85,7 @@ repos:
     name: autoformat source code with ruff-format
 
 - repo: https://github.com/asottile/blacken-docs
-  rev: 1.19.1
+  rev: 1.20.0
   hooks:
   - id: blacken-docs
     name: autoformat code blocks in docs

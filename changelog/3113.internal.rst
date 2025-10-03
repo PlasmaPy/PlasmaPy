@@ -1,0 +1,1 @@
+Removed ``pre-commit-search-and-replace`` as a |pre-commit| hook.
