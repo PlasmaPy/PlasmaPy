@@ -173,3 +173,33 @@ class TestFinddIdVPeakLocation:
                 voltage_window=voltage_window,
             )
 
+    @pytest.mark.usefixtures("request")
+    @pytest.mark.parametrize(
+        ("voltage", "current", "kwargs", "expected"),
+        [
+            (
+                "simple_voltage",
+                "simple_current_two_arches",
+                {"smooth_fractions": [0.0]},  # no smoothing
+                {"vp": 0.0},
+            ),
+        ],
+    )
+    def test_designed_didv(self, voltage, current, kwargs, expected, request):
+        if isinstance(voltage, str):
+            # assume fixture name
+            voltage = request.getfixturevalue(voltage)
+
+        if isinstance(current, str):
+            # assume fixture name
+            current = request.getfixturevalue(current)
+
+        vp, extras = find_didv_peak_location(voltage, current, **kwargs)
+
+        assert isinstance(vp, float)
+        assert isinstance(extras, dIdVExtras)
+
+        dv = float(np.average(np.diff(voltage)))
+        vp_expected = expected["vp"]
+
+        assert -0.5 * dv < (vp - vp_expected) < 0.5 * dv
