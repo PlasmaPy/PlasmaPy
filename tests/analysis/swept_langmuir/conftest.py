@@ -1,6 +1,7 @@
 """
 pytest fixtures for all swept_langmuir tests.
 """
+
 from pathlib import Path
 
 import numpy as np
@@ -35,9 +36,7 @@ def arch_current(voltage, *, radius, centroid, positive_arch=True):
     #
 
     sign = 1.0 if positive_arch else -1.0
-    return sign * np.sqrt(
-        radius ** 2 - (voltage - centroid[0]) ** 2
-    ) + centroid[1]
+    return sign * np.sqrt(radius**2 - (voltage - centroid[0]) ** 2) + centroid[1]
 
 
 @pytest.fixture(scope="module")

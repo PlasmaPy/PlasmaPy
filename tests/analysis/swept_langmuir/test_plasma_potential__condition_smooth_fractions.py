@@ -24,16 +24,16 @@ class TestConditionSmoothFractions:
             (pytest.raises(ValueError), np.zeros((2, 5)), 10),
             # smooth_fractions elements are NOT floats
             (pytest.raises(ValueError), [1, 2, 3], 10),
-            (pytest.raises(ValueError), ["one", 2., "three"], 10),
+            (pytest.raises(ValueError), ["one", 2.0, "three"], 10),
             # smooth_fractions is out of range.. [0, 1]
             (pytest.raises(ValueError), [-5.0], 10),
             (pytest.raises(ValueError), [5.0], 10),
-            (pytest.raises(ValueError), [-0.5, 0.1, .9, 1.0], 10),
-            (pytest.raises(ValueError), [-0.5, 0, .9, 1.0], 10),
-            (pytest.raises(ValueError), [0.1, .9, 1.1], 10),
-            (pytest.raises(ValueError), [0.1, .9, 20.0], 10),
-            (pytest.raises(ValueError), [0, 0.1, .9, 1.1], 10),
-            (pytest.raises(ValueError), [-20.0, 0, 0.1, .9, 1.1], 10),
+            (pytest.raises(ValueError), [-0.5, 0.1, 0.9, 1.0], 10),
+            (pytest.raises(ValueError), [-0.5, 0, 0.9, 1.0], 10),
+            (pytest.raises(ValueError), [0.1, 0.9, 1.1], 10),
+            (pytest.raises(ValueError), [0.1, 0.9, 20.0], 10),
+            (pytest.raises(ValueError), [0, 0.1, 0.9, 1.1], 10),
+            (pytest.raises(ValueError), [-20.0, 0, 0.1, 0.9, 1.1], 10),
             # data_size not integer
             (pytest.raises(TypeError), [0.2, 0.5, 0.8], "hello"),
             (pytest.raises(TypeError), [0.2, 0.5, 0.8], 90.5),

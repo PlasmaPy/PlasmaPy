@@ -51,7 +51,6 @@ def test_didv_namedtuple_index_field_mapping(index, field_name):
 
 
 class TestFinddIdVPeakLocation:
-
     @pytest.mark.parametrize(
         ("helper", "used_callable"),
         [
@@ -70,7 +69,6 @@ class TestFinddIdVPeakLocation:
         assert helper is used_callable
 
     def test_call_of_check_sweep(self, simple_voltage, simple_current) -> None:
-
         with mock.patch(f"{sla.plasma_potential.__name__}.check_sweep") as mock_cs:
             mock_cs.return_value = simple_voltage, simple_current
             find_didv_peak_location(voltage=simple_voltage, current=simple_current)
@@ -85,12 +83,12 @@ class TestFinddIdVPeakLocation:
             # passed kwargs
             assert mock_cs.call_args[1] == {"strip_units": True}
 
-    def test_call_of_merge_voltage_clusters(self, simple_voltage, simple_current) -> None:
-
-        with (
-            mock.patch(f"{sla.plasma_potential.__name__}.merge_voltage_clusters")
-            as mock_mvc
-        ):
+    def test_call_of_merge_voltage_clusters(
+        self, simple_voltage, simple_current
+    ) -> None:
+        with mock.patch(
+            f"{sla.plasma_potential.__name__}.merge_voltage_clusters"
+        ) as mock_mvc:
             mock_mvc.return_value = simple_voltage, simple_current
             find_didv_peak_location(voltage=simple_voltage, current=simple_current)
 
@@ -104,15 +102,13 @@ class TestFinddIdVPeakLocation:
             # passed kwargs
             assert mock_mvc.call_args[1] == {"voltage_step_size": 0}
 
-    def test_call_of_condition_voltage_window(self, simple_voltage, simple_current) -> None:
-
-        with (
-            mock.patch(
-                f"{sla.plasma_potential.__name__}._condition_voltage_window",
-                side_effect=sla.plasma_potential._condition_voltage_window,
-            )
-            as mock_cvw
-        ):
+    def test_call_of_condition_voltage_window(
+        self, simple_voltage, simple_current
+    ) -> None:
+        with mock.patch(
+            f"{sla.plasma_potential.__name__}._condition_voltage_window",
+            side_effect=sla.plasma_potential._condition_voltage_window,
+        ) as mock_cvw:
             # mock_cvw.return_value = varr, carr
             find_didv_peak_location(voltage=simple_voltage, current=simple_current)
 
@@ -126,15 +122,13 @@ class TestFinddIdVPeakLocation:
             # passed kwargs
             assert mock_cvw.call_args[1] == {}
 
-    def test_call_of_condition_smooth_fractions(self, simple_voltage, simple_current) -> None:
-
-        with (
-            mock.patch(
-                f"{sla.plasma_potential.__name__}._condition_smooth_fractions",
-                side_effect=sla.plasma_potential._condition_smooth_fractions,
-            )
-            as mock_csf
-        ):
+    def test_call_of_condition_smooth_fractions(
+        self, simple_voltage, simple_current
+    ) -> None:
+        with mock.patch(
+            f"{sla.plasma_potential.__name__}._condition_smooth_fractions",
+            side_effect=sla.plasma_potential._condition_smooth_fractions,
+        ) as mock_csf:
             find_didv_peak_location(voltage=simple_voltage, current=simple_current)
 
             assert mock_csf.call_count == 1
@@ -217,13 +211,45 @@ class TestFinddIdVPeakLocation:
         assert isinstance(extras, dIdVExtras)
         assert np.isclose(extras.std, 0.348483)
         assert extras.data_slice == slice(78, None, 1)
-        assert (
-            extras.savgol_windows == [
-                3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
-            ]
-        )
-        assert (extras.savgol_peaks == [
-            -16.4, -17.2, -16.8, -17.2, -17.2, -16.4, -16.4, -16.4, -16.0, -16.8, -16.8,
-            -16.8, -16.8, -16.8, -16.8, -16.8, -16.4, -16.4, -16.0
-            ]
-        )
+        assert extras.savgol_windows == [
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+        ]
+        assert extras.savgol_peaks == [
+            -16.4,
+            -17.2,
+            -16.8,
+            -17.2,
+            -17.2,
+            -16.4,
+            -16.4,
+            -16.4,
+            -16.0,
+            -16.8,
+            -16.8,
+            -16.8,
+            -16.8,
+            -16.8,
+            -16.8,
+            -16.8,
+            -16.4,
+            -16.4,
+            -16.0,
+        ]
