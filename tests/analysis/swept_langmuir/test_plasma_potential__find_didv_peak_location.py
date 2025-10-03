@@ -211,10 +211,21 @@ class TestFinddIdVPeakLocation:
             voltage_window=[-33.814, None],
         )
 
+        # assertions on computed plasma potential
         assert isinstance(vp, float)
-        assert isinstance(extras, dIdVExtras)
-
         assert np.isclose(vp, -16.6526)
 
-        # TODO: add tests of extras
-        assert False
+        # assertions on extras from computation
+        assert isinstance(extras, dIdVExtras)
+        assert np.isclose(extras.std, 0.348483)
+        assert extras.data_slice == slice(78, None, 1)
+        assert (
+            extras.savgol_windows == [
+                3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
+            ],
+        )
+        assert (extras.savgol_peaks == [
+            -16.4, -17.2, -16.8, -17.2, -17.2, -16.4, -16.4, -16.4, -16.0, -16.8, -16.8,
+            -16.8, -16.8, -16.8, -16.8, -16.8, -16.4, -16.4, -16.0
+            ],
+        )
