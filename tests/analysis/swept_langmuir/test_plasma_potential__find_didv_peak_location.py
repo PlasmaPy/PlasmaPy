@@ -203,3 +203,18 @@ class TestFinddIdVPeakLocation:
         vp_expected = expected["vp"]
 
         assert -0.5 * dv < (vp - vp_expected) < 0.5 * dv
+
+    def test_on_pace_data(self, pace_voltage, pace_current):
+        vp, extras = find_didv_peak_location(
+            pace_voltage,
+            pace_current,
+            voltage_window=[-33.814, None],
+        )
+
+        assert isinstance(vp, float)
+        assert isinstance(extras, dIdVExtras)
+
+        assert np.isclose(vp, -16.6526)
+
+        # TODO: add tests of extras
+        assert False
