@@ -23,11 +23,9 @@ class TestConditionSmoothFractions:
             # smooth_fractions elements are NOT floats
             (pytest.raises(ValueError), [1, 2, 3], 10),
             (pytest.raises(ValueError), ["one", 2., "three"], 10),
-            # smooth_fractions is out of range.. (0, 1]
+            # smooth_fractions is out of range.. [0, 1]
             (pytest.raises(ValueError), [-5.0], 10),
-            (pytest.raises(ValueError), [0.0], 10),
             (pytest.raises(ValueError), [5.0], 10),
-            (pytest.raises(ValueError), [0, 0.1, .9, 1.0], 10),
             (pytest.raises(ValueError), [-0.5, 0.1, .9, 1.0], 10),
             (pytest.raises(ValueError), [-0.5, 0, .9, 1.0], 10),
             (pytest.raises(ValueError), [0.1, .9, 1.1], 10),
@@ -52,9 +50,10 @@ class TestConditionSmoothFractions:
     @pytest.mark.parametrize(
         ("smooth_fractions", "data_size", "expected"),
         [
-            ([0.2, 0.5, 0.8], 20, np.array([5, 11, 17], dtype=int)),
-            ([0.02, 0.2, 0.5, 0.8], 20, np.array([5, 11, 17], dtype=int)),
-            (None, 50, np.array([3, 5, 7, 9, 11, 13], dtype=int)),
+            ([0.2, 0.5, 0.8], 20, np.array([4, 10, 16], dtype=int)),
+            ([0.02, 0.2, 0.5, 0.8], 20, np.array([4, 10, 16], dtype=int)),
+            ([0.0, 0.02, 0.2, 0.5, 0.8], 20, np.array([0, 4, 10, 16], dtype=int)),
+            (None, 50, np.array([3, 4, 5, 6, 7, 8, 9, 10, 11, 12], dtype=int)),
         ],
     )
     def test_expected(self, smooth_fractions, data_size, expected):
