@@ -84,7 +84,7 @@ def _condition_smooth_fractions(smooth_fractions, data_size: int):
         )
 
     smooth_fractions = np.unique(np.sort(smooth_fractions))
-    mask1 = smooth_fractions <= 0
+    mask1 = smooth_fractions < 0
     mask2 = smooth_fractions > 1
     mask = np.logical_or(mask1, mask2)
     if np.count_nonzero(mask) > 0:
@@ -113,11 +113,8 @@ def _condition_smooth_fractions(smooth_fractions, data_size: int):
     mask = savgol_windows > 2
     savgol_windows = savgol_windows[mask]
 
-    # force windows sizes to be odd
-    mask = savgol_windows % 2 == 0
-    if np.count_nonzero(mask) > 0:
-        savgol_windows[mask] = savgol_windows[mask] + 1
-        savgol_windows = np.unique(savgol_windows)
+    if 0.0 in smooth_fractions:
+        savgol_windows = np.sort(np.append(savgol_windows, 0))
 
     # do not let windows sizes exceed data_size
     mask = savgol_windows <= data_size
@@ -169,12 +166,13 @@ def find_didv_peak_location(
         ``voltage`` window will be used.
 
     smooth_fractions : `list[float]` | `None`, default: `None`
-        An order list of fractions in the interval :math:`(0, 1]` used
+        An order list of fractions in the interval :math:`[0, 1]` used
         to compute the Savitzky-Golay filter window sizes.  For example,
         if the ``voltage_windows`` had a size of 50, then a
         ``smooth_fraction`` value of 0.5 would result in a
-        Savitzky-Golay window size of 25.  If `None` (default), then
-        ``smooth_fractions`` will default to
+        Savitzky-Golay window size of 25.  For ``smooth_fraction``
+        value of ``0.0`` no smoother will be performed.  If `None`
+        (default), then ``smooth_fractions`` will default to
         ``numpy.linspace(0.01, 0.25, num=30)``.
 
     Notes
@@ -210,8 +208,12 @@ def find_didv_peak_location(
     plasma_potentials = []
     rtn_extras["savgol_windows"] = []
     for _window in savgol_windows:
-        v_smooth = signal.savgol_filter(voltage_slice, _window, 1)
-        c_smooth = signal.savgol_filter(current_slice, _window, 1)
+        if _window == 0:
+            v_smooth = voltage_slice
+            c_smooth = current_slice
+        else:
+            v_smooth = signal.savgol_filter(voltage_slice, _window, 1)
+            c_smooth = signal.savgol_filter(current_slice, _window, 1)
 
         didv = np.gradient(c_smooth, v_smooth)
         imax = np.argmax(didv)
