@@ -54,10 +54,6 @@ def test_didv_namedtuple_index_field_mapping(index, field_name):
 
 class TestFinddIdVPeakLocation:
 
-    @pytest.fixture(scope="class")
-
-    @pytest.fixture(scope="class")
-
     @pytest.mark.parametrize(
         ("helper", "used_callable"),
         [
@@ -152,3 +148,28 @@ class TestFinddIdVPeakLocation:
 
             # passed kwargs
             assert mock_csf.call_args[1] == {}
+
+    @pytest.mark.usefixtures("request")
+    @pytest.mark.parametrize(
+        ("_raises", "voltage", "current", "voltage_window"),
+        [
+            # voltage_window is too small (<3 points)
+            (pytest.raises(ValueError), "simple_voltage", "simple_current", [4, 5]),
+        ],
+    )
+    def test_raises(self, _raises, voltage, current, voltage_window, request):
+        if isinstance(voltage, str):
+            # assume fixture name
+            voltage = request.getfixturevalue(voltage)
+
+        if isinstance(current, str):
+            # assume fixture name
+            current = request.getfixturevalue(current)
+
+        with _raises:
+            find_didv_peak_location(
+                voltage=voltage,
+                current=current,
+                voltage_window=voltage_window,
+            )
+
