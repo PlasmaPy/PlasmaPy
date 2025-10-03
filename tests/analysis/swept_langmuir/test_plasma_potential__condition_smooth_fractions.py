@@ -6,7 +6,9 @@ Tests for
 import numpy as np
 import pytest
 
-from plasmapy.analysis.swept_langmuir.plasma_potential import _condition_smooth_fractions
+from plasmapy.analysis.swept_langmuir.plasma_potential import (
+    _condition_smooth_fractions,
+)
 
 
 class TestConditionSmoothFractions:

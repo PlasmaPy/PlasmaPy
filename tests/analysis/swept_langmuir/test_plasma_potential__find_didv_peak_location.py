@@ -4,19 +4,17 @@ Tests for functionality contained in
 peak slope of the langmuir drives (i.e. peak dI/dV).
 """
 
+import operator
 from unittest import mock
 
 import numpy as np
-import operator
 import pytest
 
-from plasmapy.analysis import fit_functions as ffuncs
 from plasmapy.analysis import swept_langmuir as sla
 from plasmapy.analysis.swept_langmuir.plasma_potential import (
     dIdVExtras,
     find_didv_peak_location,
 )
-from plasmapy.utils.exceptions import PlasmaPyWarning
 
 
 @pytest.mark.parametrize(
