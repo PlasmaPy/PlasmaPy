@@ -1,5 +1,12 @@
+from pathlib import Path
+
 import numpy as np
 import pytest
+
+from plasmapy.analysis.swept_langmuir import sort_sweep_arrays
+
+PACE_DATA_FILE = (Path(__file__).parent / "Pace2015.npy").resolve()
+PACE_DATA = sort_sweep_arrays(*np.load(PACE_DATA_FILE))
 
 
 @pytest.fixture(scope="module")
@@ -74,3 +81,13 @@ def simple_current_two_arches(simple_voltage):
     )
 
     return current
+
+
+@pytest.fixture(scope="module")
+def pace_voltage():
+    return PACE_DATA[0]
+
+
+@pytest.fixture(scope="module")
+def pace_current():
+    return PACE_DATA[1]
