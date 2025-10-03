@@ -52,7 +52,9 @@ class dIdVExtras(NamedTuple):  # noqa: N801
     """
 
 
-def _condition_smooth_fractions(smooth_fractions, data_size: int):
+def _condition_smooth_fractions(  # noqa: C901
+    smooth_fractions, data_size: int
+):
     """
     Condition ``smooth_fractions`` and return the resulting
     Savitzky-Golay filter windows sizes, based on the ``data_size``.
