@@ -75,11 +75,11 @@ def _condition_smooth_fractions(smooth_fractions, data_size: int):
 
     if smooth_fractions.ndim != 1:
         raise ValueError(
-            "Expected a 1-D list of floats in the interval (0, 1] for argument "
+            "Expected a 1-D list of floats in the interval [0, 1] for argument "
             f"'smooth_fractions', but got a {smooth_fractions.ndim}-D list.")
     elif not np.issubdtype(smooth_fractions.dtype, np.floating):
         raise ValueError(
-            "Expected a 1-D list of floats in the interval (0, 1] for argument "
+            "Expected a 1-D list of floats in the interval [0, 1] for argument "
             "'smooth_fractions', not all elements are floats."
         )
 
@@ -89,7 +89,7 @@ def _condition_smooth_fractions(smooth_fractions, data_size: int):
     mask = np.logical_or(mask1, mask2)
     if np.count_nonzero(mask) > 0:
         raise ValueError(
-            "Expected a 1-D list of floats in the interval (0, 1] for argument "
+            "Expected a 1-D list of floats in the interval [0, 1] for argument "
             f"'smooth_fractions', no elements are within this interval "
             f"{smooth_fractions.tolist()}."
         )
