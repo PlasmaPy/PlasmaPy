@@ -331,6 +331,7 @@ lint.per-file-ignores."src/plasmapy/formulary/braginskii.py" = [ "C901", "RET503
 lint.per-file-ignores."src/plasmapy/plasma/sources/*.py" = [ "D102" ]
 lint.per-file-ignores."src/plasmapy/utils/_pytest_helpers/pytest_helpers.py" = [ "BLE001", "PLR", "SLF001" ]
 lint.per-file-ignores."tests/**/__init__.py" = [ "D104" ]
+lint.per-file-ignores."tests/**/conftest.py" = ["D103"]
 lint.per-file-ignores."tests/**/test_*.py" = [
   "D100",
   "D101",
