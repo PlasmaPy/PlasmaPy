@@ -1,3 +1,6 @@
+"""
+pytest fixtures for all swept_langmuir tests
+"""
 from pathlib import Path
 
 import numpy as np
