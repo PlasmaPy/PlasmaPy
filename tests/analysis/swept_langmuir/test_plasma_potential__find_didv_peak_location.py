@@ -6,8 +6,8 @@ peak slope of the langmuir drives (i.e. peak dI/dV).
 
 from unittest import mock
 
-import operator
 import numpy as np
+import operator
 import pytest
 
 from plasmapy.analysis import fit_functions as ffuncs
