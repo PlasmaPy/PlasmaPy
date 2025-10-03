@@ -569,7 +569,7 @@ def merge_voltage_clusters(  # noqa: C901, PLR0912
 
 
 def _condition_voltage_window(  # noqa: C901, PLR0912
-        voltage, voltage_window
+    voltage, voltage_window
 ) -> slice:
     """
     Condition ``voltage_window`` and return resulting `slice` object to
@@ -652,7 +652,7 @@ def _condition_voltage_window(  # noqa: C901, PLR0912
     )
     if last_index is None:
         pass
-    elif last_index == voltage.size-1:
+    elif last_index == voltage.size - 1:
         last_index = None
     else:
         last_index += 1
