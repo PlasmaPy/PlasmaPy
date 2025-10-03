@@ -1,5 +1,5 @@
 """
-pytest fixtures for all swept_langmuir tests
+pytest fixtures for all swept_langmuir tests.
 """
 from pathlib import Path
 
