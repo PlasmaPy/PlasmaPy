@@ -124,7 +124,7 @@ def _get_dependencies_from_pyproject_toml(extras: str | None = None):
         data = tomllib.load(file)
         config = data["project"]
 
-    dependencies = {Requirement(item).name: item for item in config["dependencies"]}
+    dependencies = {Requirement(item): item for item in config["dependencies"]}
 
     if (
         extras is None
@@ -138,8 +138,7 @@ def _get_dependencies_from_pyproject_toml(extras: str | None = None):
     op_deps = {}
     for extra in extras:
         for dep in config["optional-dependencies"][extra]:
-            name = Requirement(dep).name
-            op_deps[name] = dep
+            op_deps[Requirement(dep)] = dep
 
     return {**dependencies, **op_deps}
 
@@ -449,7 +448,10 @@ def build_docs_with_dev_version_of(
     #       had been put on the target package.
     pkg_name = repository.split("/")[-1]
     deps = _get_dependencies_from_pyproject_toml(extras="docs")
-    deps.pop(pkg_name, None)
+    dep_names = {dep: dep.name for dep in deps}
+    for dep, name in dep_names.items():
+        if name == pkg_name:
+            deps.pop(dep)
 
     session.install(
         f"git+https://{site}.com/{repository}",
