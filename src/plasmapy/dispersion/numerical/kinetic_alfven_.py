@@ -158,22 +158,20 @@ def kinetic_alfven(  # noqa: C901, PLR0912
     --------
     >>> import numpy as np
     >>> import astropy.units as u
-    >>> from plasmapy.particles import Particle
-    >>> from plasmapy.dispersion.numerical import kinetic_alfven_
+    >>> from plasmapy.dispersion.numerical.kinetic_alfven_ import kinetic_alfven
     >>> inputs = {
-    ...     "B": 8.3e-9 * u.T,
-    ...     "ion": Particle("p+"),
-    ...     "k": np.logspace(-7, -2, 2) * u.rad / u.m,
-    ...     "n_i": 5 * u.m**-3,
-    ...     "T_e": 1.6e6 * u.K,
-    ...     "T_i": 4.0e5 * u.K,
+    ...     "B": 1e-8 * u.T,
+    ...     "ion": "D+",
+    ...     "k": [1e-8, 1e-7] * u.rad / u.m,
+    ...     "n_i": 1e5 * u.m**-3,
+    ...     "T_e": 8e5 * u.K,
+    ...     "T_i": 2e5 * u.K,
     ...     "theta": 30 * u.deg,
     ...     "gamma_e": 3,
     ...     "gamma_i": 3,
-    ...     "Z": 1,
     ... }
     >>> kinetic_alfven(**inputs)
-    {np.float64(30.0): <Quantity [1.24901116e+00, 3.45301796e+08] rad / s>}
+    {np.float64(30.0): <Quantity [0.00075242, 0.00752616] rad / s>}
     """
 
     # Validate arguments
@@ -217,17 +215,23 @@ def kinetic_alfven(  # noqa: C901, PLR0912
 
     Z = ion.charge_number
     n_e = Z * n_i
-    c_s = speed.ion_sound_speed(
-        T_e=T_e,
-        T_i=T_i,
-        ion=ion,
-        n_e=n_e,
-        gamma_e=gamma_e,
-        gamma_i=gamma_i,
-        Z=Z,
-    )
     v_A = speed.Alfven_speed(B=B, density=n_i, ion=ion)
     omega_ci = pfp.gyrofrequency(B=B, particle=ion, signed=False)
+
+    with warnings.catch_warnings():
+        warnings.filterwarnings(
+            "ignore",
+            category=PhysicsWarning,
+            message="^The non-dispersive limit has been assumed for ion_sound_speed. To prevent this, values must be specified for both n_e and k.$",
+        )
+        c_s = speed.ion_sound_speed(
+            T_e=T_e,
+            T_i=T_i,
+            ion=ion,
+            n_e=n_e,
+            gamma_e=gamma_e,
+            gamma_i=gamma_i,
+        )
 
     # parameters kz
     omega = {}
@@ -256,28 +260,35 @@ def kinetic_alfven(  # noqa: C901, PLR0912
 
         # Maximum value for ω/kz test
         if omega_kz_max / v_Te > 0.1 or v_Ti / omega_kz_max > 0.1:
-            warnings.warn(
-                "This calculation produced one or more invalid ω/kz "
-                "value(s), which violates the regime in which the "
-                "dispersion relation is valid (v_Te ≫ ω/kz ≫ v_Ti)",
-                PhysicsWarning,
+            errmsg = (
+                "This calculation produced ω/kz value(s) outside of the "
+                "regime in which the kinetic Alfvén dispersion relation "
+                "is valid: "
+                f"v_Te ({v_Te:.1E} m/s) "
+                f"≫ max(ω/kz) ({omega_kz_max:.1E} m/s) "
+                f"≫ v_Ti ({v_Ti:.1E} m/s)"
             )
+            warnings.warn(errmsg, PhysicsWarning)
 
         # Minimum value for ω/kz test
         if omega_kz_min / v_Te > 0.1 or v_Ti / omega_kz_min > 0.1:
-            warnings.warn(
-                "This calculation produced one or more invalid ω/kz "
-                "value(s) which violates the regime in which the "
-                "dispersion relation is valid (v_Te ≫ ω/kz ≫ v_Ti)",
-                PhysicsWarning,
+            errmsg = (
+                "This calculation produced ω/kz value(s) outside of the "
+                "regime in which the kinetic Alfvén dispersion relation "
+                "is valid: "
+                f"v_Te ({v_Te:.1E} m/s) "
+                f"≫ min(ω/kz) ({omega_kz_min:.1E} m/s) "
+                f"≫ v_Ti ({v_Ti:.1E} m/s)"
             )
+            warnings.warn(errmsg, PhysicsWarning)
 
         # Dispersion relation is only valid in the regime ω << ω_ci
         if w_max / omega_ci > 0.1:
-            warnings.warn(
-                "The calculation produced a high-frequency wave, "
-                "which violates the low frequency assumption (ω ≪ ω_ci)",
-                PhysicsWarning,
+            errmsg = (
+                "The kinetic Alfvén dispersion relation calculation produced a "
+                "high-frequency wave, which violates the low frequency "
+                f"assumption: max(ω) ({w_max:.1E} rad/s) ≪ ω_ci ({omega_ci:.1E} rad/s))"
             )
+            warnings.warn(errmsg, PhysicsWarning)
 
     return omega
