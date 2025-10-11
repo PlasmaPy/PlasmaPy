@@ -125,3 +125,15 @@ repos:
     - mdformat-frontmatter
     - mdformat-gfm
     - mdformat-gfm-alerts
+
+- repo: https://github.com/jshwi/docsig
+  rev: v0.44.2
+  hooks:
+  - id: docsig
+    args:
+    - --check-class
+    - --check-dunders
+    - --check-overridden
+    - --check-protected
+    - --summary
+    exclude: tests

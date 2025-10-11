@@ -597,3 +597,9 @@ changelog_skip_label = "no changelog entry needed"
 changelog_noop_label = "skip changelog checks"
 whatsnew_label = "needs changelog entry"
 whatsnew_pattern = '''changelog\/\d+\.[a-zA-Z]+(\.\d+)?\.rst'''
+
+[tool.docsig]
+check-dunders = false
+check-overridden = false
+check-protected = false
+summary = true
