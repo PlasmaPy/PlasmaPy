@@ -127,8 +127,8 @@ def angular_freq_to_hz(fn):
     added_doc_bit = """
     Other Parameters
     ----------------
-    to_hz: bool
-        Set `True` to convert function output from angular frequency to Hz
+    to_hz: bool, default: `False`
+        Set `True` to convert function output from angular frequency to Hz.
     """
     if fn.__doc__ is not None:
         fn.__doc__ += added_doc_bit
