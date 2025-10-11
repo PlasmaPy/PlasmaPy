@@ -126,7 +126,6 @@ html_favicon = "./_static/icon.ico"
 modindex_common_prefix = ["plasmapy."]
 pygments_style = "default"  # code highlighting to meet WCAG AA contrast standard
 root_doc = "index"
-source_suffix = ".rst"
 templates_path = ["_templates"]
 maximum_signature_line_length = 90
 sphinxemoji_style = "twemoji"
