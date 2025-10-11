@@ -1,0 +1,1 @@
+Added a Nox session to create and sync a virtual environment corresponding to :file:`uv.lock`.
