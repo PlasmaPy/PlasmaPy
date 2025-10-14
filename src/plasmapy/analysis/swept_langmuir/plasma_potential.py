@@ -224,8 +224,13 @@ def find_didv_peak_location(
         imax = np.argmax(didv)
         if imax.size > 1:
             if np.all(np.diff(imax) == 1):
+                # neighboring indices have the same peak value, take
+                # voltage average
                 vp = np.average(voltage_slice[imax])
             else:
+                # peaks occur at separated indices (i.e. NOT neighboring
+                # indices) ... unable to determine vp just go to the next
+                # savgol window
                 continue
         elif np.isscalar(imax):
             vp = voltage_slice[imax]
