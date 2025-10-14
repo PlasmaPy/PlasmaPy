@@ -143,13 +143,32 @@ class TestFinddIdVPeakLocation:
 
     @pytest.mark.usefixtures("request")
     @pytest.mark.parametrize(
-        ("_raises", "voltage", "current", "voltage_window"),
+        ("_raises", "voltage", "current", "voltage_window", "smooth_fractions"),
         [
             # voltage_window is too small (<3 points)
-            (pytest.raises(ValueError), "simple_voltage", "simple_current", [4, 4.5]),
+            (
+                pytest.raises(ValueError),
+                "simple_voltage",
+                "simple_current",
+                [4, 4.5],
+                None,
+            ),
+            # no valid computer plasma potentials
+            (
+                pytest.raises(RuntimeError),
+                "simple_voltage",
+                np.append(
+                    np.append(np.linspace(0, 10., 50), np.linspace(0, 10., 100)),
+                    np.linspace(0, 10, 50)
+                ),
+                None,
+                [0.0],
+            ),
         ],
     )
-    def test_raises(self, _raises, voltage, current, voltage_window, request):
+    def test_raises(
+        self, _raises, voltage, current, voltage_window, smooth_fractions, request
+    ):
         if isinstance(voltage, str):
             # assume fixture name
             voltage = request.getfixturevalue(voltage)
@@ -158,11 +177,22 @@ class TestFinddIdVPeakLocation:
             # assume fixture name
             current = request.getfixturevalue(current)
 
-        with _raises:
+        with (
+            mock.patch(
+                f"{sla.plasma_potential.__name__}.check_sweep",
+                return_value=(voltage, current),
+            ),
+            mock.patch(
+                f"{sla.plasma_potential.__name__}.merge_voltage_clusters",
+                return_value=(voltage, current),
+            ),
+            _raises,
+        ):
             find_didv_peak_location(
                 voltage=voltage,
                 current=current,
                 voltage_window=voltage_window,
+                smooth_fractions=smooth_fractions,
             )
 
     @pytest.mark.usefixtures("request")
