@@ -242,9 +242,7 @@ def find_didv_peak_location(
         rtn_extras["savgol_windows"].append(int(_window))
 
     if len(plasma_potentials) == 0:
-        raise RuntimeError(
-            "Unable to identify any dI/dV peaks in the Langmuir trace."
-        )
+        raise RuntimeError("Unable to identify any dI/dV peaks in the Langmuir trace.")
 
     rtn_extras["savgol_peaks"] = plasma_potentials
     rtn_extras["std"] = float(np.std(plasma_potentials))

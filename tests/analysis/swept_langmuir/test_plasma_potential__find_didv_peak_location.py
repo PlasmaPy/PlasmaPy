@@ -158,8 +158,8 @@ class TestFinddIdVPeakLocation:
                 pytest.raises(RuntimeError),
                 "simple_voltage",
                 np.append(
-                    np.append(np.linspace(0, 10., 50), np.linspace(0, 10., 100)),
-                    np.linspace(0, 10, 50)
+                    np.append(np.linspace(0, 10.0, 50), np.linspace(0, 10.0, 100)),
+                    np.linspace(0, 10, 50),
                 ),
                 None,
                 [0.0],
@@ -296,7 +296,7 @@ class TestFinddIdVPeakLocation:
         self, argmax_return, expected, simple_voltage, simple_current
     ):
         with mock.patch("numpy.where") as mock_argmax:
-            mock_argmax.return_value = (argmax_return, )
+            mock_argmax.return_value = (argmax_return,)
 
             vp, extras = find_didv_peak_location(
                 simple_voltage,
@@ -308,4 +308,3 @@ class TestFinddIdVPeakLocation:
             assert np.isclose(vp, expected)
 
             mock_argmax.reset_mock()
-
