@@ -221,7 +221,8 @@ def find_didv_peak_location(
             c_smooth = signal.savgol_filter(current_slice, _window, 1)
 
         didv = np.gradient(c_smooth, v_smooth)
-        imax = np.argmax(didv)
+        didv_max = np.max(didv)
+        imax = np.where(np.isclose(didv, didv_max, atol=0.0))[0]
         if imax.size > 1:
             if np.all(np.diff(imax) == 1):
                 # neighboring indices have the same peak value, take
