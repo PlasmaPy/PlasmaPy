@@ -146,7 +146,7 @@ class TestFinddIdVPeakLocation:
         ("_raises", "voltage", "current", "voltage_window"),
         [
             # voltage_window is too small (<3 points)
-            (pytest.raises(ValueError), "simple_voltage", "simple_current", [4, 5]),
+            (pytest.raises(ValueError), "simple_voltage", "simple_current", [4, 4.5]),
         ],
     )
     def test_raises(self, _raises, voltage, current, voltage_window, request):
