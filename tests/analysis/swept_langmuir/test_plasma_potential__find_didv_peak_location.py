@@ -283,3 +283,29 @@ class TestFinddIdVPeakLocation:
             -16.4,
             -16.0,
         ]
+
+    @pytest.mark.parametrize(
+        ("argmax_return", "expected"),
+        [
+            (np.array([10, 11, 12], dtype=np.int64), -17.78894472),
+            (np.array([45], dtype=np.int64), -10.95477386),
+            (np.int64(45), -10.95477386),
+        ],
+    )
+    def test_peak_index_identification(
+        self, argmax_return, expected, simple_voltage, simple_current
+    ):
+        with mock.patch("numpy.where") as mock_argmax:
+            mock_argmax.return_value = (argmax_return, )
+
+            vp, extras = find_didv_peak_location(
+                simple_voltage,
+                simple_current,
+                voltage_window=None,
+                smooth_fractions=[0.1],
+            )
+
+            assert np.isclose(vp, expected)
+
+            mock_argmax.reset_mock()
+
