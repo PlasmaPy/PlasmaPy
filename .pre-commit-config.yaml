@@ -47,7 +47,7 @@ repos:
     # be put in quotes. However, the pretty-format-yaml hook will
     # remove the quotes which will break that action, so we should not
     # run this hook on `labeler.yml` (or certain other files).
-    exclude: .github/labeler.yml|.pre-commit-search-and-replace.yaml
+    exclude: .github/labeler.yml
 
 - repo: https://github.com/pre-commit/pygrep-hooks
   rev: v1.10.0
@@ -65,6 +65,7 @@ repos:
   - id: codespell
     name: codespell (add false positives to pyproject.toml)
     args: [--write-changes]
+    exclude: CITATION.cff
     additional_dependencies:
     - tomli
 
@@ -73,7 +74,7 @@ repos:
   hooks:
   - id: typos
     name: typos (add false positives to _typos.toml)
-    exclude: .pre-commit-search-and-replace.yaml
+    exclude: CITATION.cff
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
   rev: v0.13.3
