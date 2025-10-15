@@ -47,7 +47,7 @@ repos:
     # be put in quotes. However, the pretty-format-yaml hook will
     # remove the quotes which will break that action, so we should not
     # run this hook on `labeler.yml` (or certain other files).
-    exclude: .github/labeler.yml|.pre-commit-search-and-replace.yaml
+    exclude: .github/labeler.yml
 
 - repo: https://github.com/pre-commit/pygrep-hooks
   rev: v1.10.0
@@ -65,18 +65,24 @@ repos:
   - id: codespell
     name: codespell (add false positives to pyproject.toml)
     args: [--write-changes]
+    exclude: CITATION.cff
     additional_dependencies:
     - tomli
 
-- repo: https://github.com/crate-ci/typos
-  rev: v1.36.0
+- repo: https://github.com/adhtruong/mirrors-typos
+  # Running `pre-commit autoupdate` on the crate-ci/typos repo changes
+  # the version from v1.x.y to v1, which points to the latest version of
+  # typos. Using a mirror without a v1 tag prevents spontaneous
+  # unrelated failures when a new release of typos detects new probable
+  # spelling errors.
+  rev: v1.38.1
   hooks:
   - id: typos
     name: typos (add false positives to _typos.toml)
-    exclude: .pre-commit-search-and-replace.yaml
+    exclude: CITATION.cff|docs/notebooks/dispersion/stix_dispersion.ipynb
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.13.2
+  rev: v0.13.3
   hooks:
   - id: ruff-check
     name: ruff (see https://docs.astral.sh/ruff/rules)
@@ -106,7 +112,7 @@ repos:
     additional_dependencies: ['validate-pyproject-schema-store[all]']
 
 - repo: https://github.com/tox-dev/pyproject-fmt
-  rev: v2.6.0
+  rev: v2.7.0
   hooks:
   - id: pyproject-fmt
 
