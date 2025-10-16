@@ -164,6 +164,10 @@ def requirements(session: nox.Session) -> None:
     """
     uv_lock_upgrade = ["uv", "lock", "--upgrade", "--no-progress"]
 
+    if pathlib.Path(root_dir / ".git/MERGE_HEAD").exists():
+        session.log("A git merge in progress, so delete uv.lock in case of conflicts")
+        pathlib.Path(root_dir / "uv.lock").unlink(missing_ok=True)
+
     # When silent is `True`, `session.run()` returns a multi-line string
     # with the standard output and standard error.
 
