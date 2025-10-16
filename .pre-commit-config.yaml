@@ -117,7 +117,7 @@ repos:
   - id: pyproject-fmt
 
 - repo: https://github.com/hukkin/mdformat
-  rev: 1.0.0
+  rev: 0.7.22
   hooks:
   - id: mdformat
     name: Format .md files
@@ -126,6 +126,7 @@ repos:
     # .github/content, and some files use semantic line breaks.
     exclude: licenses/.*|LICENSE.md|PATENT.md
     additional_dependencies:
+    - mdformat-footnote
     - mdformat-frontmatter
     - mdformat-gfm
     - mdformat-gfm-alerts
