@@ -126,8 +126,7 @@ repos:
     # .github/content, and some files use semantic line breaks.
     exclude: licenses/.*|LICENSE.md|PATENT.md
     additional_dependencies:
-    - mdformat-black
-    - mdformat-footnote
     - mdformat-frontmatter
     - mdformat-gfm
     - mdformat-gfm-alerts
+    - mdformat-ruff
