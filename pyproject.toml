@@ -25,7 +25,7 @@ license = { file = "LICENSE.md" }
 # SPEC 0 recommends that projects drop support for Python versions 3
 # years after their initial release. See:
 # https://scientific-python.org/specs/spec-0000
-requires-python = ">=3.11"
+requires-python = ">=3.12"
 
 # Add classifiers from https://pypi.org/classifiers
 classifiers = [
@@ -36,7 +36,6 @@ classifiers = [
   "Natural Language :: English",
   "Operating System :: OS Independent",
   "Programming Language :: Python :: 3 :: Only",
-  "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
   "Programming Language :: Python :: 3.14",
