@@ -147,15 +147,15 @@ def _get_dependencies_from_pyproject_toml(extras: str | None = None):
 @nox.session
 def requirements(session: nox.Session) -> None:
     """
-    Regenerate the pinned requirements for running tests and building
+    Regenerate the locked requirements for running tests and building
     documentation.
 
     This workflow updates :file:`uv.lock` to contain pinned requirements
     for different versions of Python, different operating systems, and
-    different dependency sets (i.e., `docs` or `tests`).
+    different dependency sets.
 
-    When run in CI, this session will create a file that contains the
-    pull request message for the GitHub workflow that updates the pinned
+    When run in CI, this session creates a file that contains the pull
+    request message for the GitHub workflow that updates the pinned
     requirements (:file:`.github/workflows/update-pinned-reqs.yml`).
     """
     uv_lock_upgrade = ["uv", "lock", "--upgrade", "--no-progress"]
