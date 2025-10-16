@@ -1,6 +1,6 @@
 ci:
   autofix_prs: false
-  autoupdate_schedule: weekly
+  autoupdate_schedule: monthly
 
 repos:
 
@@ -117,6 +117,7 @@ repos:
   - id: pyproject-fmt
 
 - repo: https://github.com/hukkin/mdformat
+  # Because some plugins require mdformat<0.8, pin mdformat at 0.7.22 for now
   rev: 0.7.22
   hooks:
   - id: mdformat
