@@ -47,7 +47,7 @@ supported_operating_systems: tuple[str, ...] = ("linux", "macos", "windows")
 maxpython = max(supported_python_versions)
 minpython = min(supported_python_versions)
 
-_HERE = pathlib.Path(__file__).parent
+root_dir = pathlib.Path(__file__).parent
 
 # The documentation should be build always using the same version of
 # Python, which should be the latest version of Python supported by Read
@@ -83,8 +83,12 @@ def _create_requirements_pr_message(uv_output: str, session: nox.Session) -> Non
         The multi-line output of ``session.run(..., silent=True)``.
     """
 
-    pr_template = pathlib.Path("./.github/content/update-requirements-pr-template.md")
-    pr_message = pathlib.Path("./.github/content/update-requirements-pr-body.md")
+    pr_template = pathlib.Path(
+        root_dir / "./.github/content/update-requirements-pr-template.md"
+    )
+    pr_message = pathlib.Path(
+        root_dir / "./.github/content/update-requirements-pr-body.md"
+    )
 
     shutil.copy(pr_template, pr_message)
 
@@ -119,8 +123,8 @@ def _create_requirements_pr_message(uv_output: str, session: nox.Session) -> Non
 
 
 def _get_dependencies_from_pyproject_toml(extras: str | None = None):
-    _PYTPROJECT_TOML = (_HERE / "pyproject.toml").resolve()
-    with _PYTPROJECT_TOML.open(mode="rb") as file:
+    _PYPROJECT_TOML = (root_dir / "pyproject.toml").resolve()
+    with _PYPROJECT_TOML.open(mode="rb") as file:
         data = tomllib.load(file)
         config = data["project"]
 
@@ -624,12 +628,12 @@ def changelog(session: nox.Session, final: str) -> None:
         session.run(*towncrier, "--draft", "--keep")
         return
 
-    original_file = pathlib.Path("./CHANGELOG.rst")
+    original_file = pathlib.Path(root_dir / "CHANGELOG.rst")
     original_file.unlink()
 
     session.run(*towncrier, "--yes")
 
-    destination = pathlib.Path(f"./docs/changelog/{version}.rst")
+    destination = pathlib.Path(root_dir / f"docs/changelog/{version}.rst")
     shutil.copy(original_file, destination)
 
 
@@ -679,7 +683,7 @@ def monkeytype(session: nox.Session) -> None:
     session.install(".[tests]")
     session.install("MonkeyType", "pytest-monkeytype", "pre-commit")
 
-    database = pathlib.Path("./monkeytype.sqlite3")
+    database = pathlib.Path(root_dir / "monkeytype.sqlite3")
 
     if not database.exists():
         session.log(f"File {database.absolute()} not found. Running MonkeyType.")
