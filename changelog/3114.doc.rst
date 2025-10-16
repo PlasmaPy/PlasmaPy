@@ -1,0 +1,1 @@
+Discussed usage of |prek| as an alternative to |pre-commit| in the |contributor guide|.
