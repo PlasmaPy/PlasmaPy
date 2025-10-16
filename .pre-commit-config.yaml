@@ -1,6 +1,6 @@
 ci:
   autofix_prs: false
-  autoupdate_schedule: quarterly
+  autoupdate_schedule: monthly
 
 repos:
 
@@ -24,7 +24,7 @@ repos:
   - id: check-yaml
 
 - repo: https://github.com/python-jsonschema/check-jsonschema
-  rev: 0.34.0
+  rev: 0.34.1
   hooks:
   - id: check-github-workflows
 
@@ -82,7 +82,7 @@ repos:
     exclude: CITATION.cff|docs/notebooks/dispersion/stix_dispersion.ipynb
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.13.3
+  rev: v0.14.0
   hooks:
   - id: ruff
     name: ruff (see https://docs.astral.sh/ruff/rules)
@@ -112,11 +112,12 @@ repos:
     additional_dependencies: ['validate-pyproject-schema-store[all]']
 
 - repo: https://github.com/tox-dev/pyproject-fmt
-  rev: v2.7.0
+  rev: v2.11.0
   hooks:
   - id: pyproject-fmt
 
 - repo: https://github.com/hukkin/mdformat
+  # Because some plugins require mdformat<0.8, pin mdformat at 0.7.22 for now
   rev: 0.7.22
   hooks:
   - id: mdformat
@@ -126,8 +127,8 @@ repos:
     # .github/content, and some files use semantic line breaks.
     exclude: licenses/.*|LICENSE.md|PATENT.md
     additional_dependencies:
-    - mdformat-black
     - mdformat-footnote
     - mdformat-frontmatter
     - mdformat-gfm
     - mdformat-gfm-alerts
+    - mdformat-ruff
