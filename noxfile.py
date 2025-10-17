@@ -162,19 +162,22 @@ def requirements(session: nox.Session) -> None:
     request message for the GitHub workflow that updates the pinned
     requirements (:file:`.github/workflows/update-pinned-reqs.yml`).
     """
-    uv_lock_upgrade = ["uv", "lock", "--upgrade", "--no-progress"]
 
-    if pathlib.Path(root_dir / ".git/MERGE_HEAD").exists():
-        session.log("A git merge in progress, so delete uv.lock in case of conflicts")
-        pathlib.Path(root_dir / "uv.lock").unlink(missing_ok=True)
+    # Running `uv lock` fails when `uv.lock` has a merge conflict or
+    # is otherwise invalid. To avoid situations like this, preemptively
+    # delete `uv.lock`. Since `uv lock` uses information in `uv.lock`
+    # even if `--upgrade` is specified, deleting `uv.lock` may make
+    # running `uv lock` more deterministic.
 
-    # When silent is `True`, `session.run()` returns a multi-line string
-    # with the standard output and standard error.
+    lockfile = pathlib.Path(root_dir / "uv.lock")
+    lockfile.unlink(missing_ok=True)
 
     uv_output: str | bool = session.run(
-        *uv_lock_upgrade,
-        *session.posargs,
-        silent=running_on_ci,
+        "uv",
+        "lock",
+        "--upgrade",
+        "--no-progress",
+        silent=running_on_ci,  # return a multi-line string with stdout & stderr if true
     )
 
     if running_on_ci:
