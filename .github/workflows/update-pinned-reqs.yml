@@ -21,7 +21,7 @@ jobs:
     - name: Install uv
       uses: astral-sh/setup-uv@v7
       with:
-        python: 3.13
+        python: 3.14
 
     - name: Run Nox session to regenerate requirements
       run: uvx nox -s requirements
