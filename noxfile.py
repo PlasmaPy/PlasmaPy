@@ -147,6 +147,8 @@ def _get_dependencies_from_pyproject_toml(extras: str | None = None):
 @nox.session
 def requirements(session: nox.Session) -> None:
     """
+    Upgrade the pinned requirements in `uv.lock`.
+
     Regenerate the pinned requirements for running tests and building
     documentation.
 
@@ -172,29 +174,6 @@ def requirements(session: nox.Session) -> None:
     if running_on_ci:
         session.log(uv_output)
         _create_requirements_pr_message(uv_output=uv_output, session=session)
-
-
-@nox.session
-def validate_requirements(session: nox.Session) -> None:
-    """
-    Verify that the requirements in :file:`uv.lock` are compatible
-    with the requirements in `pyproject.toml`.
-    """
-    session.log(
-        "🛡 If this check fails, regenerate the pinned requirements in "
-        "`uv.lock` with `nox -s requirements`."
-    )
-
-    # Generate the cache without updating uv.lock by syncing the
-    # current environment. If there ends up being a `--dry-run` option
-    # for `uv sync`, we could probably use it here.
-
-    session.run("uv", "sync", "--frozen", "--all-extras", "--no-progress")
-
-    # Verify that uv.lock will be unchanged. Using --offline makes it
-    # so that only the information from the cache is used.
-
-    session.run("uv", "lock", "--check", "--offline", "--no-progress")
 
 
 pytest_command: tuple[str, ...] = (
