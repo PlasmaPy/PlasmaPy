@@ -658,17 +658,16 @@ Dependencies and requirements
   - Support for core package dependencies be dropped **2 years** after
     their initial release.
 
-* The |uv.lock|_ file contains pinned requirements files
-  for use in continuous integration tests.
+* The file |uv.lock|_ defines the Python environments used in CI. This
+  lockfile is periodically updated via automated pull requests to
+  `update pinned requirements`_, defined in this
+  `workflow <https://github.com/PlasmaPy/PlasmaPy/blob/main/.github/workflows/update-pinned-reqs.yml>`__.
 
-  - These files are updated periodically via pull requests created by a
-    GitHub workflow to `update pinned requirements`_, defined in this
-    `script <https://github.com/PlasmaPy/PlasmaPy/blob/main/.github/workflows/update-pinned-reqs.yml>`__.
+  - The consistency of the |uv.lock|_ and |pyproject.toml|_ is verified
+    via a |pre-commit| hook.
 
-  - When updating requirements in |pyproject.toml|_, run
-    :bash:`nox -s requirements` to update the pinned requirements files.
-
-  - Validate requirements with :bash:`nox -s validate_requirements`.
+  - To upgrade the versions of dependencies to the most recent versions,
+    run :bash:`nox -s requirements`.
 
 * Even if a dependency is unlikely to be shared with packages installed
   alongside PlasmaPy, that dependency may have strict requirements that
