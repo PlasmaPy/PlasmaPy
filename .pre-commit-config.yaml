@@ -82,7 +82,7 @@ repos:
     exclude: CITATION.cff|docs/notebooks/dispersion/stix_dispersion.ipynb
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.14.0
+  rev: v0.14.1
   hooks:
   - id: ruff
     name: ruff (see https://docs.astral.sh/ruff/rules)
