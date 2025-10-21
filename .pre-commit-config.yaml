@@ -96,7 +96,7 @@ repos:
     # docstrings are formatted using the ruff-format hook
     exclude: docs/contributing/coding_guide.rst|.*\.py
     additional_dependencies:
-    - black==24.4.2
+    - black==25.9.0
 
 - repo: https://github.com/sphinx-contrib/sphinx-lint
   rev: v1.0.0
