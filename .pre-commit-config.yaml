@@ -142,7 +142,7 @@ repos:
   hooks:
   - id: cff
     name: validate CITATION.cff
-    entry: uvx cffconvert --validate
+    entry: cffconvert --validate
     language: python
-    additional_dependencies: [uv]
+    additional_dependencies: [cffconvert]
     pass_filenames: false
