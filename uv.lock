@@ -1570,7 +1570,7 @@ requires-dist = [
     { name = "nox", extras = ["uv"], marker = "extra == 'tests'", specifier = ">=2025.5.1" },
     { name = "numpy", specifier = ">=2" },
     { name = "numpydoc", marker = "extra == 'docs'", specifier = ">=1.7" },
-    { name = "pandas", specifier = ">=2.1" },
+    { name = "pandas", specifier = ">=2.2" },
     { name = "pillow", marker = "extra == 'docs'", specifier = ">=10.4" },
     { name = "plasmapy-sphinx", marker = "extra == 'docs'", specifier = ">=2025.5.1" },
     { name = "pygments", marker = "extra == 'docs'", specifier = "==2.18" },
