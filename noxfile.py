@@ -686,6 +686,9 @@ def manifest(session: nox.Session) -> None:
     positives can be ignored by adding file patterns and paths to
     `ignore` under `[tool.check-manifest]` in `pyproject.toml`.
     """
+    # check-manifest would be suitable as a pre-commit hook, except that
+    # it requires ∼10 seconds to build the package, which would triple
+    # the time needed to run pre-commit
     session.install("check-manifest")
     session.run("check-manifest", *session.posargs)
 
