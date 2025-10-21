@@ -677,13 +677,6 @@ def monkeytype(session: nox.Session) -> None:
 
 
 @nox.session
-def cff(session: nox.Session) -> None:
-    """Validate CITATION.cff against the metadata standard."""
-    session.install("cffconvert")
-    session.run("cffconvert", "--validate", *session.posargs)
-
-
-@nox.session
 def manifest(session: nox.Session) -> None:
     """
     Check for missing files in MANIFEST.in.

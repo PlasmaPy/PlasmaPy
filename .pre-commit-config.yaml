@@ -138,3 +138,12 @@ repos:
     - mdformat-gfm
     - mdformat-gfm-alerts
     - mdformat-ruff
+
+- repo: local
+  hooks:
+  - id: cff
+    name: validate CITATION.cff
+    entry: uvx cffconvert --validate
+    language: python
+    additional_dependencies: [uv]
+    pass_filenames: false

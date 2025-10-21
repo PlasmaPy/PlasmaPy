@@ -64,11 +64,6 @@ jobs:
           python: '3.13'
           nox_session: build
 
-        - name: Validate CITATION.cff
-          os: ubuntu-latest
-          python: '3.13'
-          nox_session: cff
-
         - name: Check workflow security with zizmor
           os: ubuntu-latest
           python: '3.13'
