@@ -270,7 +270,6 @@ lint.ignore = [
   "N803",    # invalid-argument-name
   "N806",    # non-lowercase-variable-in-function
   "N816",    # mixed-case-variable-in-global-scope
-  "PERF203", # try-except-in-loop (remove when we require Python ≥ 3.11)
   "PLC2401", # non-ascii-name (flags variables used as mathematical symbols)
   "PLC2403", # non-ascii-import-name
   "PLE0605", # invalid-all-format (flags `__all__ += __lite_funcs`, etc.)
