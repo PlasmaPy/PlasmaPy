@@ -1,6 +1,7 @@
 ci:
   autofix_prs: false
   autoupdate_schedule: monthly
+  skip: [uv-lock]
 
 repos:
 
@@ -120,8 +121,7 @@ repos:
   rev: 0.9.4
   hooks:
   - id: uv-lock
-    name: uv-lock (run `nox -s requirements` if autofix fails)
-    args: [--offline]
+    name: uv-lock (skipped in CI; use `nox -s requirements` for problems)
 
 - repo: https://github.com/hukkin/mdformat
   # some plugins require mdformat<0.8, so pin mdformat at 0.7.22 for now
