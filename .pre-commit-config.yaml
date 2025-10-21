@@ -138,7 +138,11 @@ repos:
     - mdformat-gfm-alerts
     - mdformat-ruff
 
-- repo: https://github.com/citation-file-format/cffconvert
-  rev: 054bda51dbe278b3e86f27c890e3f3ac877d616c
+- repo: local
   hooks:
-  - id: validate-cff
+  - id: cff
+    name: validate CITATION.cff
+    entry: uvx cffconvert --validate
+    language: python
+    additional_dependencies: [uv]
+    pass_filenames: false
