@@ -1,7 +1,7 @@
 ci:
   autofix_prs: false
   autoupdate_schedule: monthly
-#  skip: [uv-lock]
+  skip: [uv-lock]
 
 repos:
 
@@ -119,18 +119,10 @@ repos:
 
 - repo: https://github.com/astral-sh/uv-pre-commit
   rev: 0.9.4
-  # uv hooks do not work on pre-commit.ci because pre-commit.ci blocks
-  # network access, and
+  # running pre-commit.ci autofix
   hooks:
   - id: uv-lock
     name: uv-lock (skipped in CI; use `nox -s requirements` for problems)
-    args: [--check]
-    additional_dependencies:
-    - setuptools>=61.2
-    - setuptools-scm>=6.3.2
-    - wheel>=0.37
-    env:
-      UV_NO_BUILD_ISOLATION: "1"
 
 - repo: https://github.com/hukkin/mdformat
   # some plugins require mdformat<0.8, so pin mdformat at 0.7.22 for now
