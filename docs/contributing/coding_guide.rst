@@ -663,7 +663,7 @@ Dependencies and requirements
   `update pinned requirements`_, defined in this
   `workflow <https://github.com/PlasmaPy/PlasmaPy/blob/main/.github/workflows/update-pinned-reqs.yml>`__.
 
-  - The consistency of the |uv.lock|_ and |pyproject.toml|_ is verified
+  - The consistency of |uv.lock|_ and |pyproject.toml|_ is verified
     via a |pre-commit| hook.
 
   - To upgrade the versions of dependencies to the most recent versions,
