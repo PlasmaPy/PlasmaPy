@@ -172,6 +172,7 @@ def requirements(session: nox.Session) -> None:
         session.log(uv_output)
         _create_requirements_pr_message(uv_output=uv_output, session=session)
 
+
 @nox.session
 def validate_requirements(session: nox.Session) -> None:
     """
@@ -193,6 +194,8 @@ def validate_requirements(session: nox.Session) -> None:
     # so that only the information from the cache is used.
 
     session.run("uv", "lock", "--check", "--offline", "--no-progress")
+
+
 pytest_command: tuple[str, ...] = (
     "pytest",
     "--pyargs",
