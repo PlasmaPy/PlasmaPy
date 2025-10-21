@@ -120,7 +120,7 @@ repos:  # https://pre-commit.com/#adding-pre-commit-plugins-to-your-project
     name: format pyproject.toml
 
 - repo: https://github.com/astral-sh/uv-pre-commit
-  rev: 0.9.4
+  rev: 0.9.5
   hooks:
     # running uv lock requires network access or a warm cache, so it
     # cannot be run via pre-commit.ci, even with the `--offline`,
