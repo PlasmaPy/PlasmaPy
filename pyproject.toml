@@ -39,6 +39,7 @@ classifiers = [
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
   "Topic :: Scientific/Engineering :: Astronomy",
   "Topic :: Scientific/Engineering :: Physics",
 ]
@@ -66,7 +67,6 @@ dependencies = [
   "pandas>=2",
   "requests>=2.28",
   "scipy>=1.10",
-  "setuptools>=66",
   "tqdm>=4.65",
   "wrapt>=1.15",
   "xarray>=2023.7",
@@ -106,7 +106,7 @@ optional-dependencies.docs = [
 # requirements to ensure that tests are run in consistent environments.
 optional-dependencies.tests = [
   "hypothesis>=6.108.2",
-  "mypy>=1.11",
+  "mypy>=1.18.2",
   "nox[uv]>=2025.5.1",
   "pytest>=8.3.1",
   "pytest-cov>=5",

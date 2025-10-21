@@ -1,6 +1,10 @@
-# Dependabot submits automated pull requests that update the versions of
-# GitHub actions used by PlasmaPy. For documentation, see:
-# https://docs.github.com/en/code-security/dependabot
+# Dependabot creates pull requests to update versions of dependencies,
+# including in the GitHub Actions ecosystem.
+
+# Documentation: https://docs.github.com/en/code-security/dependabot
+
+# Updates to uv.lock are handled via `nox -s requirements` which is run
+# in a separate GitHub workflow to update pinned requirements.
 
 version: 2
 
@@ -14,4 +18,6 @@ updates:
   reviewers:
   - namurphy
   schedule:
-    interval: daily
+    interval: weekly
+  cooldown:
+    default-days: 7
