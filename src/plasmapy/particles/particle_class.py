@@ -2736,11 +2736,7 @@ ParticleLike: type = typing.Union[  # noqa: UP007
     CustomParticle,
     u.Quantity,
 ]
-
-# Using typing.Union in ParticleLike lets us define ParticleLike.__doc__
-
-ParticleLike.__doc__ = r"""
-An `object` is particle-like if it can be identified as an instance of
+r"""An `object` is particle-like if it can be identified as an instance of
 `~plasmapy.particles.particle_class.Particle` or
 `~plasmapy.particles.particle_class.CustomParticle`, or cast into one.
 
