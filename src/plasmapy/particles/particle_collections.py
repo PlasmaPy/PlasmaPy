@@ -614,8 +614,7 @@ Raises
 ParticleList.reverse.__doc__ = """Reverse the |ParticleList| in place."""
 
 ParticleListLike: type = Union[ParticleList, Sequence[ParticleLike]]  # noqa: UP007
-
-ParticleListLike.__doc__ = r"""
+r"""
 An `object` is |particle-list-like| if it can be identified as a
 |ParticleList| or cast into one.
 
