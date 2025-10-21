@@ -1,3 +1,3 @@
-Replaced the |Nox| session and GitHub check to check the consistency
-between :file:`pyproject.toml` and :file:`uv.lock` with a |pre-commit|
-hook.
+Added a |pre-commit| hook to update :file:`uv.lock` if any changes to
+requirements were made in :file:`pyproject.toml`. This hook is not run
+on ``pre-commit.ci`` because it requires network access.
