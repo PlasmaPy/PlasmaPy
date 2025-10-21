@@ -119,7 +119,9 @@ repos:
 
 - repo: https://github.com/astral-sh/uv-pre-commit
   rev: 0.9.4
-  # running pre-commit.ci autofix
+  # running uv lock requires network access or a warm cache, so it
+  # cannot be run via pre-commit.ci because the platform forbids
+  # network access outside of installation steps
   hooks:
   - id: uv-lock
     name: uv-lock (skipped in CI; use `nox -s requirements` for problems)
