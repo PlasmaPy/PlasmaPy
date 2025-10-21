@@ -2728,7 +2728,7 @@ def molecule(symbol: str, Z: int | None = None) -> Particle | CustomParticle:
 # If ParticleLike is renamed or moves out of particle_class.py, check
 # for a link to its doc page in error messages in _factory.py.
 
-ParticleLike: type = typing.Union[  # noqa: UP007
+ParticleLike: typing.Union = typing.Union[  # noqa: UP007
     str,
     int,
     np.integer,
