@@ -149,9 +149,6 @@ def requirements(session: nox.Session) -> None:
     """
     Upgrade the pinned requirements in `uv.lock`.
 
-    Regenerate the pinned requirements for running tests and building
-    documentation.
-
     This workflow updates :file:`uv.lock` to contain pinned requirements
     for different versions of Python, different operating systems, and
     different dependency sets (i.e., `docs` or `tests`).
