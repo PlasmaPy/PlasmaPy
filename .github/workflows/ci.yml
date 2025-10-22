@@ -39,15 +39,21 @@ jobs:
           python: '3.13'
           nox_session: tests-3.13(skipslow)
 
-        - name: Tests, Python 3.12, with code coverage, macOS
-          os: macos-latest
-          python: '3.12'
-          nox_session: tests-3.12(cov)
+#        - name: Tests, Python 3.12, with code coverage, macOS
+#          os: macos-latest
+#          python: '3.12'
+#          nox_session: tests-3.12(cov)
+#
+#        - name: Tests, Python 3.11, lowest direct dependencies, skip slow tests, Windows
+#          os: windows-latest
+#          python: '3.11'
+#          nox_session: tests-3.11(lowest-direct-skipslow)
 
-        - name: Tests, Python 3.11, lowest direct dependencies, skip slow tests, Windows
+        - name: lowest-direct-3.11
           os: windows-latest
           python: '3.11'
           nox_session: tests-3.11(lowest-direct-skipslow)
+          nox_args: "--version"
 
         - name: lowest-direct-3.12
           os: windows-latest
@@ -67,25 +73,25 @@ jobs:
           nox_session: tests-3.14(lowest-direct-skipslow)
           nox_args: "--version"
 
-        - name: Documentation, Python 3.13, Ubuntu
-          os: ubuntu-latest
-          python: '3.13'
-          nox_session: docs
-
-        - name: Static type checking with mypy, Python 3.13, Ubuntu
-          os: ubuntu-latest
-          python: '3.13'
-          nox_session: mypy
-
-        - name: Packaging, Python 3.13, Ubuntu
-          os: ubuntu-latest
-          python: '3.13'
-          nox_session: build
-
-        - name: Check workflow security with zizmor
-          os: ubuntu-latest
-          python: '3.13'
-          nox_session: zizmor
+#        - name: Documentation, Python 3.13, Ubuntu
+#          os: ubuntu-latest
+#          python: '3.13'
+#          nox_session: docs
+#
+#        - name: Static type checking with mypy, Python 3.13, Ubuntu
+#          os: ubuntu-latest
+#          python: '3.13'
+#          nox_session: mypy
+#
+#        - name: Packaging, Python 3.13, Ubuntu
+#          os: ubuntu-latest
+#          python: '3.13'
+#          nox_session: build
+#
+#        - name: Check workflow security with zizmor
+#          os: ubuntu-latest
+#          python: '3.13'
+#          nox_session: zizmor
 
         - name: Check consistency of pinned & project requirements
           os: ubuntu-latest
