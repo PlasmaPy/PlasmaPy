@@ -2728,15 +2728,10 @@ def molecule(symbol: str, Z: int | None = None) -> Particle | CustomParticle:
 # If ParticleLike is renamed or moves out of particle_class.py, check
 # for a link to its doc page in error messages in _factory.py.
 
-ParticleLike: typing.Union = typing.Union[  # noqa: UP007
-    str,
-    int,
-    np.integer,
-    Particle,
-    CustomParticle,
-    u.Quantity,
-]
-r"""An `object` is particle-like if it can be identified as an instance of
+type ParticleLike = str | int | np.integer | Particle | CustomParticle | u.Quantity
+
+ParticleLike.__doc__ = r"""
+An `object` is particle-like if it can be identified as an instance of
 `~plasmapy.particles.particle_class.Particle` or
 `~plasmapy.particles.particle_class.CustomParticle`, or cast into one.
 
