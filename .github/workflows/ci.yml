@@ -49,6 +49,24 @@ jobs:
           python: '3.11'
           nox_session: tests-3.11(lowest-direct-skipslow)
 
+        - name: lowest-direct-3.12
+          os: windows-latest
+          python: '3.12'
+          nox_session: tests-3.12(lowest-direct-skipslow)
+          nox_args: "--version"
+
+        - name: lowest-direct-3.13
+          os: windows-latest
+          python: '3.13'
+          nox_session: tests-3.13(lowest-direct-skipslow)
+          nox_args: "--version"
+
+        - name: lowest-direct-3.14
+          os: windows-latest
+          python: '3.14'
+          nox_session: tests-3.14(lowest-direct-skipslow)
+          nox_args: "--version"
+
         - name: Documentation, Python 3.13, Ubuntu
           os: ubuntu-latest
           python: '3.13'
@@ -99,7 +117,7 @@ jobs:
         cache-suffix: ${{ matrix.nox_session }}-${{ matrix.python }}-${{ runner.os }}
 
     - name: Run the check
-      run: uvx nox -s '${{ matrix.nox_session }}'
+      run: uvx nox -s '${{ matrix.nox_session }}' -- ${{ matrix.nox_args }}
 
     - name: Upload coverage reports to Codecov
       if: ${{ contains(matrix.nox_session, 'cov') }}
