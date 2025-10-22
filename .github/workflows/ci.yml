@@ -33,65 +33,41 @@ jobs:
       matrix:
         include:
 
-#        - name: Tests, Python 3.13, skip slow tests, doctests, Ubuntu
-#          # Doctests are run only for most recent Python (see noxfile.py)
-#          os: ubuntu-latest
-#          python: '3.13'
-#          nox_session: tests-3.13(skipslow)
+        - name: Tests, Python 3.13, skip slow tests, doctests, Ubuntu
+          # Doctests are run only for most recent Python (see noxfile.py)
+          os: ubuntu-latest
+          python: '3.13'
+          nox_session: tests-3.13(skipslow)
 
-#        - name: Tests, Python 3.12, with code coverage, macOS
-#          os: macos-latest
-#          python: '3.12'
-#          nox_session: tests-3.12(cov)
-#
-#        - name: Tests, Python 3.11, lowest direct dependencies, skip slow tests, Windows
-#          os: windows-latest
-#          python: '3.11'
-#          nox_session: tests-3.11(lowest-direct-skipslow)
+        - name: Tests, Python 3.12, with code coverage, macOS
+          os: macos-latest
+          python: '3.12'
+          nox_session: tests-3.12(cov)
 
-        - name: lowest-direct-3.11
+        - name: Tests, Python 3.11, lowest direct dependencies, skip slow tests, Windows
           os: windows-latest
           python: '3.11'
           nox_session: tests-3.11(lowest-direct-skipslow)
-          nox_args: --version
 
-        - name: lowest-direct-3.12
-          os: windows-latest
-          python: '3.12'
-          nox_session: tests-3.12(lowest-direct-skipslow)
-          nox_args: --version
-
-        - name: lowest-direct-3.13
-          os: windows-latest
+        - name: Documentation, Python 3.13, Ubuntu
+          os: ubuntu-latest
           python: '3.13'
-          nox_session: tests-3.13(lowest-direct-skipslow)
-          nox_args: --version
+          nox_session: docs
 
-        - name: lowest-direct-3.14
-          os: windows-latest
-          python: '3.14'
-          nox_session: tests-3.14(lowest-direct-skipslow)
-          nox_args: --version
+        - name: Static type checking with mypy, Python 3.13, Ubuntu
+          os: ubuntu-latest
+          python: '3.13'
+          nox_session: mypy
 
-#        - name: Documentation, Python 3.13, Ubuntu
-#          os: ubuntu-latest
-#          python: '3.13'
-#          nox_session: docs
-#
-#        - name: Static type checking with mypy, Python 3.13, Ubuntu
-#          os: ubuntu-latest
-#          python: '3.13'
-#          nox_session: mypy
-#
-#        - name: Packaging, Python 3.13, Ubuntu
-#          os: ubuntu-latest
-#          python: '3.13'
-#          nox_session: build
-#
-#        - name: Check workflow security with zizmor
-#          os: ubuntu-latest
-#          python: '3.13'
-#          nox_session: zizmor
+        - name: Packaging, Python 3.13, Ubuntu
+          os: ubuntu-latest
+          python: '3.13'
+          nox_session: build
+
+        - name: Check workflow security with zizmor
+          os: ubuntu-latest
+          python: '3.13'
+          nox_session: zizmor
 
         - name: Check consistency of pinned & project requirements
           os: ubuntu-latest
@@ -123,7 +99,7 @@ jobs:
         cache-suffix: ${{ matrix.nox_session }}-${{ matrix.python }}-${{ runner.os }}
 
     - name: Run the check
-      run: uvx nox -s '${{ matrix.nox_session }}' -- ${{ matrix.nox_args }}
+      run: uvx nox -s '${{ matrix.nox_session }}'
 
     - name: Upload coverage reports to Codecov
       if: ${{ contains(matrix.nox_session, 'cov') }}
