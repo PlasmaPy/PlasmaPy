@@ -1,4 +1,4 @@
-name: conda
+name: conda-forge
 
 on:
   schedule:
@@ -7,7 +7,7 @@ on:
 
 jobs:
 
-  install-via-conda-forge:
+  install:
     name: Install PlasmaPy from conda-forge
     runs-on: ubuntu-latest
     if: (github.repository == 'PlasmaPy/PlasmaPy' && github.ref == 'refs/heads/main' && github.event_name != 'pull_request') || github.event_name == 'workflow_dispatch'
