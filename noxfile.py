@@ -147,8 +147,7 @@ def _get_dependencies_from_pyproject_toml(extras: str | None = None):
 @nox.session
 def requirements(session: nox.Session) -> None:
     """
-    Regenerate the pinned requirements for running tests and building
-    documentation.
+    Upgrade the pinned requirements in `uv.lock`.
 
     This workflow updates :file:`uv.lock` to contain pinned requirements
     for different versions of Python, different operating systems, and
@@ -698,13 +697,6 @@ def monkeytype(session: nox.Session) -> None:
 
 
 @nox.session
-def cff(session: nox.Session) -> None:
-    """Validate CITATION.cff against the metadata standard."""
-    session.install("cffconvert")
-    session.run("cffconvert", "--validate", *session.posargs)
-
-
-@nox.session
 def manifest(session: nox.Session) -> None:
     """
     Check for missing files in MANIFEST.in.
@@ -714,6 +706,9 @@ def manifest(session: nox.Session) -> None:
     positives can be ignored by adding file patterns and paths to
     `ignore` under `[tool.check-manifest]` in `pyproject.toml`.
     """
+    # check-manifest would be suitable as a pre-commit hook, except that
+    # it requires ∼10 seconds to build the package, which would triple
+    # the time needed to run pre-commit
     session.install("check-manifest")
     session.run("check-manifest", *session.posargs)
 
