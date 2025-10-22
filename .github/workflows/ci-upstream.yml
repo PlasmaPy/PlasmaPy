@@ -1,6 +1,7 @@
 # Define continuous integration (CI) checks that are run against the
-# most recent unreleased versions of upstream dependencies. The checks
-# are defined in noxfile.py.
+# most recent unreleased versions of upstream dependencies. The intention
+# is to discover and address breaking changes before they make their way
+# into a release. The checks are defined in noxfile.py.
 
 name: upstream tests
 
