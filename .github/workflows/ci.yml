@@ -1,6 +1,13 @@
-# This file invokes Nox sessions to run tests, build documentation, and
-# perform other continuous integration (CI) checks. The Nox sessions are
-# defined in noxfile.py.
+# Define continuous integration (CI) checks to be performed during
+# pull requests, such as running tests and building documentation.
+#
+# The checks are defined in noxfile.py. After installing uv, the checks
+# can be run locally with
+#
+#    uvx nox -s '<nox_session>'
+#
+# where <nox_session> is replaced by the name of the session. Quotes are
+# necessary around <nox_session> when it contains parentheses.
 
 name: CI
 
@@ -59,8 +66,8 @@ jobs:
           python: '3.14'
           nox_session: mypy
 
-        - name: Packaging, Python 3.14, Ubuntu
-          os: ubuntu-latest
+        - name: Packaging, Python 3.14, Windows
+          os: windows-latest
           python: '3.14'
           nox_session: build
 
