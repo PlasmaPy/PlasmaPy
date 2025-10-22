@@ -80,7 +80,7 @@ jobs:
           python: '3.12'
           nox_session: build_docs_with_dev_version_of(plasmapy_sphinx)
 
-     steps:
+    steps:
 
     - name: Checkout code
       uses: actions/checkout@v5
