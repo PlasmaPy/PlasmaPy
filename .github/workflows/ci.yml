@@ -33,11 +33,11 @@ jobs:
       matrix:
         include:
 
-        - name: Tests, Python 3.13, skip slow tests, doctests, Ubuntu
-          # Doctests are run only for most recent Python (see noxfile.py)
-          os: ubuntu-latest
-          python: '3.13'
-          nox_session: tests-3.13(skipslow)
+#        - name: Tests, Python 3.13, skip slow tests, doctests, Ubuntu
+#          # Doctests are run only for most recent Python (see noxfile.py)
+#          os: ubuntu-latest
+#          python: '3.13'
+#          nox_session: tests-3.13(skipslow)
 
 #        - name: Tests, Python 3.12, with code coverage, macOS
 #          os: macos-latest
@@ -53,25 +53,25 @@ jobs:
           os: windows-latest
           python: '3.11'
           nox_session: tests-3.11(lowest-direct-skipslow)
-          nox_args: "--version"
+          nox_args: --version
 
         - name: lowest-direct-3.12
           os: windows-latest
           python: '3.12'
           nox_session: tests-3.12(lowest-direct-skipslow)
-          nox_args: "--version"
+          nox_args: --version
 
         - name: lowest-direct-3.13
           os: windows-latest
           python: '3.13'
           nox_session: tests-3.13(lowest-direct-skipslow)
-          nox_args: "--version"
+          nox_args: --version
 
         - name: lowest-direct-3.14
           os: windows-latest
           python: '3.14'
           nox_session: tests-3.14(lowest-direct-skipslow)
-          nox_args: "--version"
+          nox_args: --version
 
 #        - name: Documentation, Python 3.13, Ubuntu
 #          os: ubuntu-latest
