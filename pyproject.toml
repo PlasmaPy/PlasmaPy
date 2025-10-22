@@ -139,6 +139,9 @@ namespaces = false
 [tool.setuptools_scm]
 write_to = "src/plasmapy/_version.py"
 
+[tool.uv]
+no-build-package = [ "numpy", "matplotlib", "scipy", "astropy", "h5py", "pandas", "wrapt" ]
+
 [tool.ruff]
 target-version = "py311"
 namespace-packages = [ ".github/workflows", "docs" ]
@@ -596,6 +599,3 @@ changelog_skip_label = "no changelog entry needed"
 changelog_noop_label = "skip changelog checks"
 whatsnew_label = "needs changelog entry"
 whatsnew_pattern = '''changelog\/\d+\.[a-zA-Z]+(\.\d+)?\.rst'''
-
-[tool.uv]
-no-build-package = [ "numpy", "matplotlib", "scipy", "astropy", "h5py", "pandas", "wrapt" ]
