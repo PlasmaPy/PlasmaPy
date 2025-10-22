@@ -1568,7 +1568,7 @@ requires-dist = [
     { name = "nbsphinx", marker = "extra == 'docs'", specifier = ">=0.9.4" },
     { name = "nox", extras = ["uv"], marker = "extra == 'docs'", specifier = ">=2025.5.1" },
     { name = "nox", extras = ["uv"], marker = "extra == 'tests'", specifier = ">=2025.5.1" },
-    { name = "numpy", specifier = ">=1.26" },
+    { name = "numpy", specifier = ">=2" },
     { name = "numpydoc", marker = "extra == 'docs'", specifier = ">=1.7" },
     { name = "pandas", specifier = ">=2.2" },
     { name = "pillow", marker = "extra == 'docs'", specifier = ">=10.4" },
