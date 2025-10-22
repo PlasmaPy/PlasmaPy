@@ -5,7 +5,7 @@ __all__ = ["ParticleList", "ParticleListLike"]
 import collections
 import contextlib
 from collections.abc import Callable, Iterable, Sequence
-from typing import Literal, Union, overload
+from typing import Literal, overload
 
 import astropy.units as u
 import numpy as np
