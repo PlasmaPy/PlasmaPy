@@ -193,7 +193,7 @@ release:
       '.github/workflows/*release*',
     ]
 
-'run weekly tests in CI':
+'run comprehensive tests':
   - changed-files:
     - any-glob-to-any-file: [
       '.github/workflows/*weekly*.yml',
