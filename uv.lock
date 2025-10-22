@@ -1766,7 +1766,7 @@ requires-dist = [
     { name = "pytest-rerunfailures", marker = "extra == 'tests'", specifier = ">=14" },
     { name = "pytest-xdist", marker = "extra == 'tests'", specifier = ">=3.6.1" },
     { name = "requests", specifier = ">=2.30" },
-    { name = "scipy", specifier = ">=1.11" },
+    { name = "scipy", specifier = ">=1.16" },
     { name = "sphinx", marker = "extra == 'docs'", specifier = ">=8.2.3,<8.3" },
     { name = "sphinx-changelog", marker = "extra == 'docs'", specifier = ">=1.5" },
     { name = "sphinx-codeautolink", marker = "extra == 'docs'", specifier = "==0.15.2" },

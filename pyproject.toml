@@ -1,7 +1,7 @@
 [build-system]
 build-backend = "setuptools.build_meta"
 requires = [
-  "setuptools>=70",
+  "setuptools>=77",
   "setuptools-scm>=8.1",
   "wheel>=0.43",
 ]
@@ -64,7 +64,7 @@ dependencies = [
   "packaging>=24",
   "pandas>=2.1.4",
   "requests>=2.30",
-  "scipy>=1.11",
+  "scipy>=1.16",
   "tqdm>=4.65",
   "wrapt>=1.15",
   "xarray>=2024.5",
