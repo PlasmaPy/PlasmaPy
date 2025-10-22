@@ -2729,8 +2729,7 @@ def molecule(symbol: str, Z: int | None = None) -> Particle | CustomParticle:
 # for a link to its doc page in error messages in _factory.py.
 
 type ParticleLike = str | int | np.integer | Particle | CustomParticle | u.Quantity
-
-ParticleLike.__doc__ = r"""
+r"""
 An `object` is particle-like if it can be identified as an instance of
 `~plasmapy.particles.particle_class.Particle` or
 `~plasmapy.particles.particle_class.CustomParticle`, or cast into one.
