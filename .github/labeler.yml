@@ -196,7 +196,10 @@ release:
 'run comprehensive tests':
   - changed-files:
     - any-glob-to-any-file: [
-      '.github/workflows/*weekly*.yml',
+      '.github/workflows/ci-comprehensive.yml',
+      'pyproject.toml',
+      'uv.lock',
+      'noxfile.py',
     ]
 
 'static type checking':
