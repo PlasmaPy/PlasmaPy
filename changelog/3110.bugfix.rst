@@ -1,0 +1,4 @@
+Fixed an `AttributeError` that was raised when attempting to set
+the ``__doc__`` attribute of |ParticleLike| and |ParticleListLike|.
+This error prevents previous versions of PlasmaPy from being used with
+Python 3.14sissu)
