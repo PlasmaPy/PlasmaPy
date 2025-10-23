@@ -124,7 +124,7 @@ def _get_dependencies_from_pyproject_toml(extras: str | None = None):
         data = tomllib.load(file)
         config = data["project"]
 
-    dependencies = {Requirement(item).name: item for item in config["dependencies"]}
+    dependencies = {Requirement(item): item for item in config["dependencies"]}
 
     if (
         extras is None
@@ -138,8 +138,7 @@ def _get_dependencies_from_pyproject_toml(extras: str | None = None):
     op_deps = {}
     for extra in extras:
         for dep in config["optional-dependencies"][extra]:
-            name = Requirement(dep).name
-            op_deps[name] = dep
+            op_deps[Requirement(dep)] = dep
 
     return {**dependencies, **op_deps}
 
@@ -273,39 +272,37 @@ def tests(session: nox.Session, test_specifier: nox._parametrize.Param) -> None:
 
 @nox.session(python=maxpython)
 @nox.parametrize(
-    ["repository"],
+    ["package"],
     [
         nox.param("numpy", id="numpy"),
-        nox.param("https://github.com/astropy/astropy", id="astropy"),
-        nox.param("https://github.com/pydata/xarray", id="xarray"),
+        nox.param("astropy", id="astropy"),
+        nox.param("pandas", id="pandas"),
+        nox.param("xarray", id="xarray"),
         nox.param("https://github.com/lmfit/lmfit-py", id="lmfit"),
-        nox.param("https://github.com/pandas-dev/pandas", id="pandas"),
     ],
 )
-def run_tests_with_dev_version_of(session: nox.Session, repository: str) -> None:
+def run_tests_with_dev_version_of(session: nox.Session, package: str) -> None:
     """
     Run tests against the development branch of a dependency.
 
     Running this session helps us catch problems resulting from breaking
     changes in an upstream dependency before its official release.
     """
-
-    if repository == "numpy":
-        # From: https://numpy.org/doc/1.26/dev/depending_on_numpy.html
+    if package.startswith("https"):
+        session.install(f"git+{package}")
+    else:
         session.run_install(
             "uv",
             "pip",
             "install",
-            "-U",
-            "--pre",
-            "--only-binary",
-            ":all:",
-            "-i",
-            "https://pypi.anaconda.org/scientific-python-nightly-wheels/simple",
-            "numpy",
+            "--upgrade",
+            package,
+            env={
+                "UV_INDEX": "https://pypi.anaconda.org/scientific-python-nightly-wheels/simple",
+                "UV_INDEX_STRATEGY": "unsafe-best-match",
+                "UV_PRERELEASE": "allow",
+            },
         )
-    else:
-        session.install(f"git+{repository}")
 
     session.install(".[tests]")
     session.run(*pytest_command, *session.posargs)
@@ -450,7 +447,10 @@ def build_docs_with_dev_version_of(
     #       had been put on the target package.
     pkg_name = repository.split("/")[-1]
     deps = _get_dependencies_from_pyproject_toml(extras="docs")
-    deps.pop(pkg_name, None)
+    dep_names = {dep: dep.name for dep in deps}
+    for dep, name in dep_names.items():
+        if name == pkg_name:
+            deps.pop(dep)
 
     session.install(
         f"git+https://{site}.com/{repository}",

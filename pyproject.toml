@@ -139,6 +139,9 @@ namespaces = false
 [tool.setuptools_scm]
 write_to = "src/plasmapy/_version.py"
 
+[tool.uv]
+no-build-package = [ "numpy", "matplotlib", "scipy", "astropy", "h5py", "pandas", "wrapt" ]
+
 [tool.ruff]
 target-version = "py311"
 namespace-packages = [ ".github/workflows", "docs" ]
