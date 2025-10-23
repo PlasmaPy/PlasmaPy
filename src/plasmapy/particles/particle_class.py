@@ -2733,7 +2733,9 @@ def molecule(symbol: str, Z: int | None = None) -> Particle | CustomParticle:
 # To learn more about problems related to adding a docstring for a type
 # alias, see comments in https://github.com/PlasmaPy/PlasmaPy/pull/3110
 
-ParticleLike: TypeAlias = str | int | np.integer | Particle | CustomParticle | u.Quantity
+ParticleLike: TypeAlias = (  # noqa: UP040
+    str | int | np.integer | Particle | CustomParticle | u.Quantity
+)
 r"""
 An `object` is particle-like if it can be identified as an instance of
 `~plasmapy.particles.particle_class.Particle` or
