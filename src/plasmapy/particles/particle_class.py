@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Literal, Self
+from typing import Any, Literal, Self, TypeAlias
 
 __all__ = [
     "AbstractParticle",
@@ -2727,7 +2727,13 @@ def molecule(symbol: str, Z: int | None = None) -> Particle | CustomParticle:
 # If ParticleLike is renamed or moves out of particle_class.py, check
 # for a link to its doc page in error messages in _factory.py.
 
-type ParticleLike = str | int | np.integer | Particle | CustomParticle | u.Quantity
+# Making the definition of ParticleLike into a `type` statement led to
+# 'reference target not found' errors
+
+# To learn more about problems related to adding a docstring for a type
+# alias, see comments in https://github.com/PlasmaPy/PlasmaPy/pull/3110
+
+ParticleLike: TypeAlias = str | int | np.integer | Particle | CustomParticle | u.Quantity
 r"""
 An `object` is particle-like if it can be identified as an instance of
 `~plasmapy.particles.particle_class.Particle` or
