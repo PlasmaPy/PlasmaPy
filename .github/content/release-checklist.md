@@ -13,19 +13,24 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
 - [ ] [Update pinned requirements]. 📍
 - [ ] Run `pre-commit autoupdate` followed by `pre-commit run --all-files`. Fix any new errors and commit the changes. 🧹
 
-
 ### Perform the release
 
 - [ ] Begin an upload to [Zenodo] for a new version of [this record], using the `team@plasmapy.org` login. Reserve a DOI. 🔢
+
 - [ ] Run the GitHub workflow to [prepare a release], specifying the version (i.e., `2025.8.0`) and copying the reserved DOI from Zenodo. This workflow will create a pull request that builds the changelog and updates package metadata. 🤖
+
   - [ ] Revise changelog entries to make sure that they are understandable, necessary, and correctly categorized. 📜
   - [ ] Make sure that all tests are passing in the pull request. ✅
   - [ ] Merge the pull request. 📦
+
 - [ ] Run the [tests]. [![CI](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/tests.yml) 🧪
+
 - [ ] Run the [comprehensive tests]. [![comprehensive tests](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/ci-comprehensive.yml/badge.svg?branch=main)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/ci-comprehensive.yml) 🔍
+
 - [ ] Run the [upstream tests]. [![upstream tests](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/ci-upstream.yml/badge.svg?branch=main)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/ci-upstream.yml) 🔮
 
 - [ ] [Create a release on GitHub]. 🚀
+
   - Choose the newly created tag (e.g., `v2024.10.0`), and use it as the title. (The release will be performed from the tag, so it is not necessary to select the branch.) 🏷️
   - Set the tag for the previous release, and select the option to automatically generate release notes. 📜
   - Select the option to create a discussion for the release under the _General_ category. 📣
@@ -76,7 +81,7 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
 - [ ] Close this issue. 🏁
 
 [citation page]: https://docs.plasmapy.org/en/stable/about/citation.html
-[community meeting]: https://www.plasmapy.org/meetings/weekly
+[comprehensive tests]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/ci-comprehensive.yml
 [conda-forge feedstock]: https://github.com/conda-forge/plasmapy-feedstock
 [create a release on github]: https://github.com/PlasmaPy/PlasmaPy/releases/new
 [create an issue for the next release]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/create-release-issue.yml
@@ -92,7 +97,6 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
 [this record]: https://zenodo.org/doi/10.5281/zenodo.6774349
 [update pinned requirements]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/update-pinned-reqs.yml
 [versions page on rtd]: https://readthedocs.org/projects/plasmapy/versions/
-[weekly tests]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/weekly.yml
 [zenodo]: https://zenodo.org/me/uploads
 [`.mailmap`]: https://github.com/PlasmaPy/PlasmaPy/blob/main/.mailmap
 [`citation.cff`]: https://github.com/PlasmaPy/PlasmaPy/blob/main/CITATION.cff
