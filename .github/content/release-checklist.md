@@ -34,8 +34,8 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
   - Choose the newly created tag (e.g., `v2025.10.0`), and use it as the title. (The release will be performed from the tag, so it is not necessary to select the branch.) 🏷️
   - Set the tag for the previous release, and select the option to automatically generate release notes. 📜
   - Select the option to create a discussion for the release under the _General_ category. 📣
-  - For official releases, make sure the checkbox is selected for _Set as the latest release_. For beta releases or release candidates (e.g., `v2025.10.0rc1`), specify it as a pre-release. 🆕
-  - Click on _Publish release_, which will create the GitHub release and trigger the GitHub workflow to [publish to PyPI]. 🚀
+  - For official releases, choose _Set as the latest release_. For beta releases or release candidates (e.g., `v2025.10.0rc1`), specify it as a pre-release. 🆕
+  - Click on <kbd>Publish release</kbd>, which will create the GitHub release and trigger the GitHub workflow to [publish to PyPI]. 🚀
   - Check the [release history] on PyPI to make sure that the release was successful. 🗓️
 
 ### Following the release
@@ -46,7 +46,7 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
   - [ ] Update the bibliography. 📖
   - [ ] Publish the record. 🏛️
 - [ ] Fix any problems with the automated pull request to [conda-forge feedstock], if necessary. This step should be automatic, but may take a while. 🔧
-- [ ] Update requirements in the [conda-forge feedstock] in `recipe/meta.yaml`, in particular when there is a new version of Python. 🔄
+- [ ] Update requirements in the [conda-forge feedstock] in [`recipe/meta.yaml`], in particular when there is a new version of Python. 🔄
 
 > [!TIP]
 > To compare two files across different tags, use commands like:
@@ -103,4 +103,5 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
 [`.mailmap`]: https://github.com/PlasmaPy/PlasmaPy/blob/main/.mailmap
 [`citation.cff`]: https://github.com/PlasmaPy/PlasmaPy/blob/main/CITATION.cff
 [`docs/conf.py`]: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/conf.py
+[`recipe/meta.yaml`]: https://github.com/conda-forge/plasmapy-feedstock/blob/main/recipe/meta.yaml
 [`stable`]: https://github.com/PlasmaPy/PlasmaPy/tree/stable
