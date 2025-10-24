@@ -118,7 +118,7 @@ jobs:
       if: ${{ contains(matrix.nox_session, 'cov') }}
       uses: codecov/codecov-action@v5
       with:
-        file: ./coverage.xml
+        files: ./coverage.xml
         fail_ci_if_error: false
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
