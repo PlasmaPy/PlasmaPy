@@ -1,3 +1,8 @@
+# /// script
+# requires-python = ">=3.12"
+# dependencies = ["nox"]
+# ///
+
 """
 Nox is an automation tool used by PlasmaPy to run tests, build
 documentation, and perform other checks. Nox sessions are defined in
@@ -292,9 +297,9 @@ def tests(session: nox.Session, test_specifier: nox._parametrize.Param) -> None:
         nox.param("https://github.com/lmfit/lmfit-py", id="lmfit"),
     ],
 )
-def run_tests_with_dev_version_of(session: nox.Session, package: str) -> None:
+def test_upstream(session: nox.Session, package: str) -> None:
     """
-    Run tests against the development branch of a dependency.
+    Run tests against the development branch of an upstream dependency.
 
     Running this session helps us catch problems resulting from breaking
     changes in an upstream dependency before its official release.
@@ -444,11 +449,9 @@ def docs_bundle_htmlzip(session: nox.Session) -> None:
         nox.param("github", "plasmapy/plasmapy_sphinx", id="plasmapy_sphinx"),
     ],
 )
-def build_docs_with_dev_version_of(
-    session: nox.Session, site: str, repository: str
-) -> None:
+def docs_upstream(session: nox.Session, site: str, repository: str) -> None:
     """
-    Build documentation against the development branch of a dependency.
+    Build documentation against the development branch of an upstream dependency.
 
     The purpose of this session is to catch bugs and breaking changes
     so that they can be fixed or updated earlier rather than later.
@@ -772,10 +775,6 @@ def zizmor(session: nox.Session) -> None:
     session.install("zizmor")
     session.run("zizmor", ".github", "--no-progress", "--color=auto", *session.posargs)
 
-
-# /// script
-# dependencies = ["nox"]
-# ///
 
 if __name__ == "__main__":
     nox.main()
