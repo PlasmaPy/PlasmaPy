@@ -36,6 +36,7 @@ def downloader_validated(tmpdir_factory) -> Downloader:
     return Downloader(directory=path, api_token=api_token)
 
 
+@pytest.mark.slow
 @check_database_connection
 @pytest.mark.skipif(
     not in_ci(), reason="Tests only use authenticated API calls when run in CI."
@@ -50,6 +51,7 @@ def test_api_token(downloader_validated: Downloader) -> None:
     assert limit >= 5000
 
 
+@pytest.mark.slow
 @pytest.fixture(scope="module")
 @check_database_connection
 def downloader_unvalidated(tmpdir_factory) -> Downloader:
@@ -67,6 +69,7 @@ test_urls = [
 
 
 @check_database_connection
+@pytest.mark.slow
 @pytest.mark.parametrize(("url", "expected"), test_urls)
 @pytest.mark.slow
 def test_http_request(
@@ -167,6 +170,7 @@ def test_get_file(
         assert dl.get_file(filename) == filepath
 
 
+@pytest.mark.slow
 @pytest.mark.parametrize(
     "downloader", ["downloader_validated", "downloader_unvalidated"]
 )
@@ -208,6 +212,7 @@ def test_get_local_only_file(downloader: Downloader, request) -> None:
         dl.get_file("not_anywhere.txt")
 
 
+@pytest.mark.slow
 @check_database_connection
 @pytest.mark.slow
 def test_get_file_NIST_PSTAR_datafile(downloader_validated) -> None:
@@ -223,7 +228,11 @@ def test_get_file_NIST_PSTAR_datafile(downloader_validated) -> None:
     assert np.allclose(arr[0, :], np.array([1e-3, 1.043e2]))
 
 
-@pytest.mark.flaky(reruns=2)
+@pytest.mark.skip(
+    "This test fails intermittently, but should be un-skipped when "
+    "updating the downloader."
+)
+@pytest.mark.slow
 @check_database_connection
 @pytest.mark.slow
 def test_at_most_one_api_call(downloader_validated) -> None:
@@ -245,6 +254,7 @@ def test_at_most_one_api_call(downloader_validated) -> None:
     assert used1 <= used0 + 1
 
 
+@pytest.mark.slow
 @check_database_connection
 @pytest.mark.slow
 def test_creating_another_downloader(downloader_validated) -> None:
@@ -261,6 +271,7 @@ def test_creating_another_downloader(downloader_validated) -> None:
     assert dl2.get_file(filename) == filepath
 
 
+@pytest.mark.slow
 @check_database_connection
 @pytest.mark.slow
 def test_ensure_update_blob_dict_runs(downloader_validated: Downloader) -> None:

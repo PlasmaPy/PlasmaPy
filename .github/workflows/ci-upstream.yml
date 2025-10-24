@@ -1,0 +1,118 @@
+# Define continuous integration (CI) checks that are run against the
+# most recent unreleased versions of upstream dependencies. The intention
+# is to discover and address breaking changes before they make their way
+# into a release. The checks are defined in noxfile.py.
+
+name: upstream tests
+
+on:
+  schedule:
+  - cron: 37 7 * * 1
+  workflow_dispatch:
+  pull_request:
+    types: [labeled, opened, synchronize, reopened]
+    branches:
+    - main
+
+permissions: {}
+
+env:
+  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+jobs:
+
+  weekly:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'run upstream tests')) ||
+      (github.event_name == 'schedule' && github.repository == 'PlasmaPy/PlasmaPy' && github.ref == 'refs/heads/main')
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+        include:
+
+        - name: Tests, Python 3.14, astropy-dev, Ubuntu
+          os: ubuntu-latest
+          python: '3.14'
+          nox_session: test_upstream(astropy)
+
+        - name: Tests, Python 3.14, numpy-dev, Ubuntu
+          os: ubuntu-latest
+          python: '3.14'
+          nox_session: test_upstream(numpy)
+
+        - name: Tests, Python 3.14, xarray-dev, Ubuntu
+          os: ubuntu-latest
+          python: '3.14'
+          nox_session: test_upstream(xarray)
+
+        - name: Tests, Python 3.14, pandas-dev, Ubuntu
+          os: ubuntu-latest
+          python: '3.14'
+          nox_session: test_upstream(pandas)
+
+        - name: Tests, Python 3.14, lmfit-dev, Ubuntu
+          os: ubuntu-latest
+          python: '3.14'
+          nox_session: test_upstream(lmfit)
+
+        - name: Documentation, Python 3.13, sphinx-dev, Ubuntu
+          os: ubuntu-latest
+          python: '3.13'
+          nox_session: docs_upstream(sphinx)
+
+        - name: Documentation, Python 3.13, sphinx_rtd_theme-dev, Ubuntu
+          os: ubuntu-latest
+          python: '3.13'
+          nox_session: docs_upstream(sphinx_rtd_theme)
+
+        - name: Documentation, Python 3.13, nbsphinx-dev, Ubuntu
+          os: ubuntu-latest
+          python: '3.13'
+          nox_session: docs_upstream(nbsphinx)
+
+        - name: Documentation, Python 3.13, plasmapy_sphinx-dev, Ubuntu
+          os: ubuntu-latest
+          python: '3.13'
+          nox_session: docs_upstream(plasmapy_sphinx)
+
+    steps:
+
+    - name: Checkout code
+      uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+
+    - name: Install Graphviz for doc builds
+      if: contains(matrix.nox_session, 'docs')
+      uses: ts-graphviz/setup-graphviz@v2
+
+    - name: Install pandoc for doc builds
+      # This step requires Ubuntu
+      if: contains(matrix.nox_session, 'docs')
+      run: |
+        sudo apt update
+        sudo apt-get install -y pandoc
+
+    - name: Install uv
+      uses: astral-sh/setup-uv@v7
+      with:
+        python-version: ${{ matrix.python }}
+        enable-cache: true
+        cache-suffix: ${{ matrix.nox_session }}-${{ matrix.python }}-${{ runner.os }}
+
+    - name: Run Nox session
+      run: uvx nox -s '${{ matrix.nox_session }}'
+
+    - name: Upload coverage reports to Codecov
+      if: ${{ contains(matrix.nox_session, 'cov') }}
+      uses: codecov/codecov-action@v5
+      with:
+        files: ./coverage.xml
+        fail_ci_if_error: false
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

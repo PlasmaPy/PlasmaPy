@@ -3,9 +3,9 @@
 Acknowledging and Citing PlasmaPy
 =================================
 
-.. |version_to_cite| replace:: 2024.10.0
-.. |doi_hyperlink| replace:: https://doi.org/10.5281/zenodo.14010450
-.. |citation_year| replace:: 2024
+.. |version_to_cite| replace:: 2025.8.0
+.. |doi_hyperlink| replace:: https://doi.org/10.5281/zenodo.16747747
+.. |citation_year| replace:: 2025
 
 .. These substitutions are automatically updated by the GitHub Action
    to mint a release.
