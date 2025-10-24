@@ -32,7 +32,7 @@ Creating Plasma Objects
 Plasma objects are constructed using the special factory class
 `~plasmapy.plasma.plasma_factory.Plasma`: ::
 
-    >>> from plasmapy.plasma import Plasma
+    >>> from plasmapy.plasma.plasma_factory import Plasma
     >>> Plasma(T_e=T_e, n_e=n_e, Z=Z, particle=particle)  # doctest: +SKIP
 
 The result of a call to `~plasmapy.plasma.plasma_factory.Plasma` will be

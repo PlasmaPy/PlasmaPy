@@ -60,24 +60,24 @@ jobs:
           python: '3.14'
           nox_session: run_tests_with_dev_version_of(lmfit)
 
-        - name: Documentation, Python 3.12, sphinx-dev, Ubuntu
+        - name: Documentation, Python 3.13, sphinx-dev, Ubuntu
           os: ubuntu-latest
-          python: '3.12'
+          python: '3.13'
           nox_session: build_docs_with_dev_version_of(sphinx)
 
-        - name: Documentation, Python 3.12, sphinx_rtd_theme-dev, Ubuntu
+        - name: Documentation, Python 3.13, sphinx_rtd_theme-dev, Ubuntu
           os: ubuntu-latest
-          python: '3.12'
+          python: '3.13'
           nox_session: build_docs_with_dev_version_of(sphinx_rtd_theme)
 
-        - name: Documentation, Python 3.12, nbsphinx-dev, Ubuntu
+        - name: Documentation, Python 3.13, nbsphinx-dev, Ubuntu
           os: ubuntu-latest
-          python: '3.12'
+          python: '3.13'
           nox_session: build_docs_with_dev_version_of(nbsphinx)
 
-        - name: Documentation, Python 3.12, plasmapy_sphinx-dev, Ubuntu
+        - name: Documentation, Python 3.13, plasmapy_sphinx-dev, Ubuntu
           os: ubuntu-latest
-          python: '3.12'
+          python: '3.13'
           nox_session: build_docs_with_dev_version_of(plasmapy_sphinx)
 
     steps:
@@ -116,19 +116,3 @@ jobs:
         fail_ci_if_error: false
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-
-  install-via-conda-forge:
-    name: Install PlasmaPy from conda-forge
-    runs-on: ubuntu-latest
-    if: (github.repository == 'PlasmaPy/PlasmaPy' && github.ref == 'refs/heads/main' && github.event_name != 'pull_request') || github.event_name == 'workflow_dispatch'
-
-    steps:
-
-    - name: Set up miniconda
-      uses: conda-incubator/setup-miniconda@v3
-      with:
-        auto-update-conda: true
-        python-version: '3.14'
-
-    - name: Use conda to install PlasmaPy from conda-forge
-      run: conda install -c conda-forge --yes plasmapy

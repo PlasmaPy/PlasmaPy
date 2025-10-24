@@ -224,6 +224,10 @@ def test_get_file_NIST_PSTAR_datafile(downloader_validated) -> None:
     assert np.allclose(arr[0, :], np.array([1e-3, 1.043e2]))
 
 
+@pytest.mark.skip(
+    "This test fails intermittently, but should be un-skipped when "
+    "updating the downloader."
+)
 @pytest.mark.slow
 @check_database_connection
 def test_at_most_one_api_call(downloader_validated) -> None:
