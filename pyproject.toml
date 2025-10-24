@@ -109,7 +109,7 @@ optional-dependencies.tests = [
   "pytest-filter-subpackage>=0.2",
   "pytest-regressions>=2.8.3",
   "pytest-rerunfailures>=16.1",
-  "pytest-xdist>=3.8.0",
+  "pytest-xdist>=3.8",
 ]
 urls.Changelog = "https://docs.plasmapy.org/en/stable/whatsnew/index.html"
 urls.Chat = "https://plasmapy.org/chat"
