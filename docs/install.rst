@@ -30,6 +30,11 @@ instructions to `download Python`_ and install it. :snake:
    version between October and March, then try installing it on the
    second most recent version.
 
+.. note::
+
+   PlasmaPy versions through ``v2025.8.0`` require Python 3.13 or
+   earlier and are incompatible with Python 3.14.
+
 .. _install-pip:
 
 Installing PlasmaPy with pip
