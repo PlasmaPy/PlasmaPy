@@ -1,0 +1,2 @@
+Added a |Nox| session to automatically update minimal versions of dependencies
+to follow the recommendations of |SPEC 0|.
