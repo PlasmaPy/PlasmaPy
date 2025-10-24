@@ -449,9 +449,7 @@ def docs_bundle_htmlzip(session: nox.Session) -> None:
         nox.param("github", "plasmapy/plasmapy_sphinx", id="plasmapy_sphinx"),
     ],
 )
-def docs_upstream(
-    session: nox.Session, site: str, repository: str
-) -> None:
+def docs_upstream(session: nox.Session, site: str, repository: str) -> None:
     """
     Build documentation against the development branch of an upstream dependency.
 
