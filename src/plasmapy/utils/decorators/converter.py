@@ -124,8 +124,6 @@ def angular_freq_to_hz(fn):
 
     fn = wrapper(fn)
 
-
-
     added_doc_bit = """
 Other Parameters
 ----------------

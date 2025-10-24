@@ -131,10 +131,10 @@ templates_path = ["_templates"]
 maximum_signature_line_length = 90
 sphinxemoji_style = "twemoji"
 
-#suppress_warnings = [
+# suppress_warnings = [
 #    "autosummary.import_cycle",
 #    "docutils",  # to suppress complaints about the add docstring section for to_hz
-#]
+# ]
 
 # Specify patterns to ignore when doing a nitpicky documentation build.
 # These may include common expressions like "real number" as well as
