@@ -151,12 +151,6 @@ def gyroradius(
         If `True`, the relativistic formula for gyroradius will be used.
         If `False`, the non-relativistic formula will be used.
 
-    mass_numb : integer, |keyword-only|, optional
-        The mass number, if not provided in ``particle``.
-
-    Z : real number, |keyword-only|, optional
-        The |charge number|, if not provided in ``particle``.
-
     Returns
     -------
     r_L : `~astropy.units.Quantity`
@@ -165,6 +159,14 @@ def gyroradius(
         perpendicular component of particle velocity as inputted, or
         the most probable speed for a particle within a Maxwellian
         distribution for the particle temperature.
+
+    Other Parameters
+    ----------------
+    mass_numb : integer, |keyword-only|, optional
+        The mass number, if not provided in ``particle``.
+
+    Z : real number, |keyword-only|, optional
+        The |charge number|, if not provided in ``particle``.
 
     Raises
     ------
@@ -355,16 +357,18 @@ def inertial_length(
         Representation of the particle species (e.g., 'p+' for protons,
         'D+' for deuterium, or 'He-4 +1' for singly ionized helium-4).
 
+    Returns
+    -------
+    d : `~astropy.units.Quantity`
+        The particle's inertial length in meters.
+
+    Other Parameters
+    ----------------
     mass_numb : integer, |keyword-only|, optional
         The mass number, if not provided in ``particle``.
 
     Z : real number, |keyword-only|, optional
         The |charge number|, if not provided in ``particle``.
-
-    Returns
-    -------
-    d : `~astropy.units.Quantity`
-        The particle's inertial length in meters.
 
     Raises
     ------

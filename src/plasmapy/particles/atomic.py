@@ -206,16 +206,18 @@ def particle_mass(
         particle; an integer representing an atomic number; or a
         |Particle|.
 
+    Returns
+    -------
+    `~astropy.units.Quantity`
+        The mass of the particle.
+
+    Other Parameters
+    ----------------
     mass_numb : integer, |keyword-only|, optional
         The mass number of an isotope.
 
     Z : integer, |keyword-only|, optional
         The |charge number| of an ion or neutral atom.
-
-    Returns
-    -------
-    `~astropy.units.Quantity`
-        The mass of the particle.
 
     Raises
     ------
@@ -254,13 +256,15 @@ def isotopic_abundance(isotope: ParticleLike, mass_numb: int | None = None) -> f
         A string representing an element or isotope, or an integer
         representing the atomic number of an element.
 
-    mass_numb : integer, |keyword-only|, optional
-        The mass number of an isotope.
-
     Returns
     -------
     `float`
         The relative isotopic abundance in the terrestrial environment.
+
+    Other Parameters
+    ----------------
+    mass_numb : integer, |keyword-only|, optional
+        The mass number of an isotope.
 
     Raises
     ------
@@ -410,13 +414,15 @@ def is_stable(particle: ParticleLike, mass_numb: int | None = None) -> bool:
         A string representing an isotope or particle, or an integer
         representing an atomic number.
 
-    mass_numb : integer, |keyword-only|, optional
-        The mass number of an isotope.
-
     Returns
     -------
     `bool`
         `True` if the isotope is stable, `False` if it is unstable.
+
+    Other Parameters
+    ----------------
+    mass_numb : integer, |keyword-only|, optional
+        The mass number of an isotope.
 
     Raises
     ------
@@ -461,13 +467,15 @@ def half_life(particle: ParticleLike, mass_numb: int | None = None) -> u.Quantit
         representing an atomic number, or an instance of the |Particle|
         class.
 
-    mass_numb : integer, |keyword-only|, optional
-        The mass number of an isotope.
-
     Returns
     -------
     `~astropy.units.Quantity`
         The half-life of the isotope or particle in units of seconds.
+
+    Other Parameters
+    ----------------
+    mass_numb : integer, |keyword-only|, optional
+        The mass number of an isotope.
 
     Raises
     ------
