@@ -7,7 +7,7 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
 
 ### Code quality updates (optional, but recommended)
 
-- [ ] ~~Revise changelog entries to make sure that they are understandable, necessary, and correctly categorized. Add the `no changelog entry needed` label to skip doing changelog checks. 📜~~
+- [ ] Revise changelog entries to make sure that they are understandable, necessary, and correctly categorized. Add the `no changelog entry needed` label to skip doing changelog checks. 📜
 - [ ] Run the [GitHub Action for checking hyperlinks] 🔗, and update broken links. Use `linkcheck_allowed_redirects` in [`docs/conf.py`] to allow redirects (e.g., from `doi.org`). Update or delete the `alias` field for authors in [`CITATION.cff`] who have changed their GitHub username.
 - [ ] Run `git log --format="%aN <%aE>" | sort -u`, and update [`.mailmap`] if there are any duplicate contributors in the output. 📧
 - [ ] [Update pinned requirements]. 📍
