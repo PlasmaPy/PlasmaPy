@@ -2,16 +2,16 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
 
 ### Planning the release
 
-- [x] 📝 [Create an issue for the release].
-- [ ] 🛣 Update [milestones] for issues & pull requests (PRs).
+- [x] [Create an issue for the release]. 📝
+- [ ] Update [milestones] for issues & pull requests (PRs). 🛣️
 
 ### Code quality updates (optional, but recommended)
 
-- [ ] Revise changelog entries to make sure that they are understandable, necessary, and correctly categorized. Add the `no changelog entry needed` label to skip doing changelog checks. 📜
+- [ ] Revise changelog entries to make sure that they are understandable, necessary, and correctly categorized. Add the https://github.com/PlasmaPy/PlasmaPy/labels/skip%20changelog%checks label to skip doing changelog checks. 📜
 - [ ] Run the [GitHub Action for checking hyperlinks], and update broken links. Use `linkcheck_allowed_redirects` in [`docs/conf.py`] to allow redirects (e.g., from `doi.org`). Update or delete the `alias` field for authors in [`CITATION.cff`] who have changed their GitHub username. 🔗
 - [ ] Run `git log --format="%aN <%aE>" | sort -u`, and update [`.mailmap`] if there are any duplicate contributors in the output. 📫
-- [ ] [Update pinned requirements]. 📍
-- [ ] Run `pre-commit autoupdate` followed by `pre-commit run --all-files`. Fix any new errors and commit the changes. 🧹
+- [ ] [Update pinned requirements] in `uv.lock`. 📍
+- [ ] Run `pre-commit autoupdate` followed by `pre-commit run --all-files`. Fix new errors and commit the changes. 🧹
 
 ### Perform the release
 
@@ -23,18 +23,18 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
   - [ ] Make sure that all tests are passing in the pull request. ✅
   - [ ] Merge the pull request. 📦
 
-- [ ] Run the [tests]. [![CI](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/tests.yml) 🧪
+- [ ] Run the [tests]. [![CI](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/ci.yml/badge.svg)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/ci.yml) 🧪
 
-- [ ] Run the [comprehensive tests]. [![comprehensive tests](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/ci-comprehensive.yml/badge.svg?branch=main)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/ci-comprehensive.yml) 🔍
+- [ ] Run the [comprehensive tests]. [![comprehensive tests](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/ci-comprehensive.yml/badge.svg)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/ci-comprehensive.yml) 🔍
 
-- [ ] Run the [upstream tests]. [![upstream tests](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/ci-upstream.yml/badge.svg?branch=main)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/ci-upstream.yml) 🔮
+- [ ] Run the [upstream tests]. [![upstream tests](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/ci-upstream.yml/badge.svg)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/ci-upstream.yml) 🔮
 
 - [ ] [Create a release on GitHub]. 🚀
 
-  - Choose the newly created tag (e.g., `v2024.10.0`), and use it as the title. (The release will be performed from the tag, so it is not necessary to select the branch.) 🏷️
+  - Choose the newly created tag (e.g., `v2025.10.0`), and use it as the title. (The release will be performed from the tag, so it is not necessary to select the branch.) 🏷️
   - Set the tag for the previous release, and select the option to automatically generate release notes. 📜
   - Select the option to create a discussion for the release under the _General_ category. 📣
-  - For official releases, make sure the checkbox is selected for _Set as the latest release_. For beta releases or release candidates (e.g., `v2024.10.0rc1`), specify it as a pre-release. 🆕
+  - For official releases, make sure the checkbox is selected for _Set as the latest release_. For beta releases or release candidates (e.g., `v2025.10.0rc1`), specify it as a pre-release. 🆕
   - Click on _Publish release_, which will create the GitHub release and trigger the GitHub workflow to [publish to PyPI]. 🚀
   - Check the [release history] on PyPI to make sure that the release was successful. 🗓️
 
@@ -59,12 +59,12 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
 ### Update documentation
 
 - [ ] Delete the [`stable`] branch on GitHub if it exists. 🗑️
-- [ ] Activate the current and prior release on the [versions page on RTD], if necessary. If the documentation fails to build for a release, activate the corresponding branch (e.g., activate the `v2023.10.x` branch instead of the `v2023.10.0` tag). ⚙️
+- [ ] Activate the current and prior release on the [versions page on RTD], if necessary. If the documentation fails to build for a release, activate the corresponding branch (e.g., activate the `v2025.10.x` branch instead of the `v2025.10.0` tag). ⚙️
 - [ ] Verify that the [citation page] is up-to-date and the DOI link points to the most recent release. 🧾
 - [ ] Check that the [documentation] builds correctly for the release branch. 📘
 
 > [!TIP]
-> If the documentation build fails, create a new [`stable`] branch from the release branch (e.g., `2024.10.x`) and fix any problems with the documentation build. The [`stable`] branch is needed if the documentation build for the release fails or if we make any changes to the documentation between releases. The [stable documentation build] will point to the [`stable`] branch on GitHub if it exists. Otherwise, it will point to the most recent release on GitHub. 📚
+> If the documentation build fails, create a new [`stable`] branch from the release branch (e.g., `2025.10.x`) and fix any problems with the documentation build. The [`stable`] branch is needed if the documentation build for the release fails or if we make any changes to the documentation between releases. The [stable documentation build] will point to the [`stable`] branch on GitHub if it exists. Otherwise, it will point to the most recent release on GitHub. 📚
 
 ## Test the release
 
@@ -89,6 +89,7 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
 [github action for checking hyperlinks]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/linkcheck.yml
 [list of tagged versions]: https://github.com/PlasmaPy/PlasmaPy/tags
 [milestones]: https://github.com/PlasmaPy/PlasmaPy/milestones
+[prepare a release]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/prepare-release-pr.yml
 [publish to pypi]: https://github.com/PlasmaPy/PlasmaPy/blob/main/.github/workflows/publish-to-pypi.yml
 [release checklist]: https://github.com/PlasmaPy/PlasmaPy/tree/main/.github/content/release-checklist.md
 [release history]: https://pypi.org/project/plasmapy/#history
@@ -96,6 +97,7 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
 [tests]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/tests.yml
 [this record]: https://zenodo.org/doi/10.5281/zenodo.6774349
 [update pinned requirements]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/update-pinned-reqs.yml
+[upstream tests]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/ci-comprehensive.yml
 [versions page on rtd]: https://readthedocs.org/projects/plasmapy/versions/
 [zenodo]: https://zenodo.org/me/uploads
 [`.mailmap`]: https://github.com/PlasmaPy/PlasmaPy/blob/main/.mailmap
