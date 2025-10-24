@@ -67,7 +67,6 @@ test_urls = [
 ]
 
 
-
 @check_database_connection
 @pytest.mark.slow
 @pytest.mark.parametrize(("url", "expected"), test_urls)
@@ -244,6 +243,7 @@ def test_at_most_one_api_call(downloader_validated) -> None:
     limit, used1 = downloader_validated._api_usage
 
     assert used1 <= used0 + 1
+
 
 @pytest.mark.slow
 @check_database_connection
