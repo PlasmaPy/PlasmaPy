@@ -21,11 +21,11 @@ keywords = [
   "space plasmas",
 ]
 
-license = { file = "LICENSE.md" }
+license-files = [ "LICENSE.md" ]
 # SPEC 0 recommends that projects drop support for Python versions 3
 # years after their initial release. See:
 # https://scientific-python.org/specs/spec-0000
-requires-python = ">=3.11"
+requires-python = ">=3.12"
 
 # Add classifiers from https://pypi.org/classifiers
 classifiers = [
@@ -34,7 +34,6 @@ classifiers = [
   "Natural Language :: English",
   "Operating System :: OS Independent",
   "Programming Language :: Python :: 3 :: Only",
-  "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
   "Programming Language :: Python :: 3.14",
@@ -55,7 +54,7 @@ dynamic = [ "version" ]
 # pinned environments in `uv.lock`.
 
 dependencies = [
-  "astropy>=6.0.1",
+  "astropy>=6",
   "h5py>=3.11",
   "lmfit>=1.3",
   "matplotlib>=3.8",
@@ -69,7 +68,6 @@ dependencies = [
   "wrapt>=1.15",
   "xarray>=2024.5",
 ]
-
 # The documentation build occurs in an isolated environment that is not
 # user-facing, so we can have stricter requirements.
 optional-dependencies.docs = [
@@ -143,7 +141,7 @@ write_to = "src/plasmapy/_version.py"
 no-build-package = [ "numpy", "matplotlib", "scipy", "astropy", "h5py", "pandas", "wrapt" ]
 
 [tool.ruff]
-target-version = "py311"
+target-version = "py312"
 namespace-packages = [ ".github/workflows", "docs" ]
 extend-exclude = [
   ".hypothesis",
@@ -272,7 +270,6 @@ lint.ignore = [
   "N803",    # invalid-argument-name
   "N806",    # non-lowercase-variable-in-function
   "N816",    # mixed-case-variable-in-global-scope
-  "PERF203", # try-except-in-loop (remove when we require Python ≥ 3.11)
   "PLC2401", # non-ascii-name (flags variables used as mathematical symbols)
   "PLC2403", # non-ascii-import-name
   "PLE0605", # invalid-all-format (flags `__all__ += __lite_funcs`, etc.)

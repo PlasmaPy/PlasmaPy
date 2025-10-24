@@ -1,4 +1,9 @@
-name: weekly tests
+# Define continuous integration (CI) checks that are run against the
+# most recent unreleased versions of upstream dependencies. The intention
+# is to discover and address breaking changes before they make their way
+# into a release. The checks are defined in noxfile.py.
+
+name: upstream tests
 
 on:
   schedule:
@@ -21,7 +26,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     if: >-
       github.event_name == 'workflow_dispatch' ||
-      (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'run weekly tests in CI')) ||
+      (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'run upstream tests')) ||
       (github.event_name == 'schedule' && github.repository == 'PlasmaPy/PlasmaPy' && github.ref == 'refs/heads/main')
 
     strategy:
@@ -30,120 +35,50 @@ jobs:
       matrix:
         include:
 
-        - name: Tests, Python 3.13, doctests, macOS
-          os: macos-latest
-          python: '3.13'
-          nox_session: tests-3.13(all)
-
-        - name: Tests, Python 3.12, with code coverage, Windows
-          os: windows-latest
-          python: '3.12'
-          nox_session: tests-3.12(cov)
-
-        - name: Tests, Python 3.11, Ubuntu
+        - name: Tests, Python 3.14, astropy-dev, Ubuntu
           os: ubuntu-latest
-          python: '3.11'
-          nox_session: tests-3.11(all)
-
-        - name: Tests, Python 3.11, lowest direct dependencies, Ubuntu
-          os: ubuntu-latest
-          python: '3.11'
-          nox_session: tests-3.11(lowest-direct)
-
-        - name: Tests, Python 3.13, astropy-dev, Ubuntu
-          os: ubuntu-latest
-          python: '3.13'
+          python: '3.14'
           nox_session: run_tests_with_dev_version_of(astropy)
 
-        - name: Tests, Python 3.13, numpy-dev, Ubuntu
+        - name: Tests, Python 3.14, numpy-dev, Ubuntu
           os: ubuntu-latest
-          python: '3.13'
+          python: '3.14'
           nox_session: run_tests_with_dev_version_of(numpy)
 
-        - name: Tests, Python 3.13, xarray-dev, Ubuntu
+        - name: Tests, Python 3.14, xarray-dev, Ubuntu
           os: ubuntu-latest
-          python: '3.13'
+          python: '3.14'
           nox_session: run_tests_with_dev_version_of(xarray)
 
-        - name: Tests, Python 3.13, pandas-dev, Ubuntu
+        - name: Tests, Python 3.14, pandas-dev, Ubuntu
           os: ubuntu-latest
-          python: '3.13'
+          python: '3.14'
           nox_session: run_tests_with_dev_version_of(pandas)
 
-        - name: Tests, Python 3.13, lmfit-dev, Ubuntu
+        - name: Tests, Python 3.14, lmfit-dev, Ubuntu
           os: ubuntu-latest
-          python: '3.13'
+          python: '3.14'
           nox_session: run_tests_with_dev_version_of(lmfit)
 
-        - name: Documentation, Python 3.13, Ubuntu
+        - name: Documentation, Python 3.12, sphinx-dev, Ubuntu
           os: ubuntu-latest
-          python: '3.13'
-          nox_session: docs
-
-        - name: Documentation, Python 3.13, sphinx-dev, Ubuntu
-          os: ubuntu-latest
-          python: '3.13'
+          python: '3.12'
           nox_session: build_docs_with_dev_version_of(sphinx)
 
-        - name: Documentation, Python 3.13, sphinx_rtd_theme-dev, Ubuntu
+        - name: Documentation, Python 3.12, sphinx_rtd_theme-dev, Ubuntu
           os: ubuntu-latest
-          python: '3.13'
+          python: '3.12'
           nox_session: build_docs_with_dev_version_of(sphinx_rtd_theme)
 
-        - name: Documentation, Python 3.13, nbsphinx-dev, Ubuntu
+        - name: Documentation, Python 3.12, nbsphinx-dev, Ubuntu
           os: ubuntu-latest
-          python: '3.13'
+          python: '3.12'
           nox_session: build_docs_with_dev_version_of(nbsphinx)
 
         - name: Documentation, Python 3.12, plasmapy_sphinx-dev, Ubuntu
           os: ubuntu-latest
           python: '3.12'
           nox_session: build_docs_with_dev_version_of(plasmapy_sphinx)
-
-        - name: Static type checking with mypy, Python 3.13, Windows
-          os: windows-latest
-          python: '3.13'
-          nox_session: mypy
-
-        - name: Packaging, Python 3.13, Windows
-          os: windows-latest
-          python: '3.13'
-          nox_session: build
-
-        - name: Packaging, Python 3.12, Ubuntu
-          os: ubuntu-latest
-          python: '3.12'
-          nox_session: build
-
-        - name: Packaging, Python 3.11, macOS
-          os: macos-latest
-          python: '3.11'
-          nox_session: build
-
-        - name: Import PlasmaPy, Python 3.13, macOS
-          os: macos-latest
-          python: '3.13'
-          nox_session: import
-
-        - name: Import PlasmaPy, Python 3.12, Ubuntu
-          os: ubuntu-latest
-          python: '3.12'
-          nox_session: import
-
-        - name: Import PlasmaPy, Python 3.11, Windows
-          os: windows-latest
-          python: '3.11'
-          nox_session: import
-
-        - name: Check MANIFEST.in
-          os: ubuntu-latest
-          python: '3.13'
-          nox_session: manifest
-
-        - name: Lint
-          os: ubuntu-latest
-          python: '3.13'
-          nox_session: lint
 
     steps:
 
@@ -193,7 +128,7 @@ jobs:
       uses: conda-incubator/setup-miniconda@v3
       with:
         auto-update-conda: true
-        python-version: '3.11'
+        python-version: '3.14'
 
     - name: Use conda to install PlasmaPy from conda-forge
       run: conda install -c conda-forge --yes plasmapy

@@ -1546,7 +1546,7 @@ PlasmaPy's documentation build.
 To figure out if a new release caused the error, search |PyPI| for
 recently released packages, including `packages related to Sphinx`_ and
 any that came up in the error message. You can also check if the same
-documentation build failure happened in the `weekly tests`_ on the
+documentation build failure happened in the `comprehensive tests`_ on the
 ``main`` branch. After identifying the package that caused the error, a
 pull request can be submitted that sets a temporary maximum allowed
 version of the package that can be revisited later.
@@ -1626,7 +1626,7 @@ example Jupyter notebooks, the tables of contents are in
 .. _style overrides: https://docs.readthedocs.com/platform/stable/guides/adding-custom-css.html
 .. _toctree: https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#table-of-contents
 .. _warns: https://numpydoc.readthedocs.io/en/latest/format.html#warns
-.. _weekly tests: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/weekly.yml
+.. _comprehensive tests: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/ci-comprehensive.yml
 .. _Wikipedia: https://www.wikipedia.org
 
 .. ----------------------

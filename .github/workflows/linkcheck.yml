@@ -1,7 +1,15 @@
-name: Check hyperlinks
-
+# Check that hyperlinks in the documentation are up-to-date.
+#
 # To check hyperlinks on a pull request, add the label entitled
-# 'perform linkcheck in CI'.
+# 'perform linkcheck in CI'. After installing uv, the checks can be run
+# locally with
+#
+#    uvx nox -s linkcheck
+#
+# The workflow is defined in noxfile.py.
+
+
+name: Check hyperlinks
 
 on:
   schedule:
