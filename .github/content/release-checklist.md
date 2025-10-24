@@ -21,7 +21,7 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
 - [ ] Begin an upload to [Zenodo] for a new version of [this record], using the `team@plasmapy.org` login. Reserve a DOI. 🏷️
 - [ ] Run the GitHub workflow to [prepare a release], specifying the version (i.e., `2025.8.0`) and copying the reserved DOI from Zenodo. This workflow will create a pull request that builds the changelog and updates package metadata.
   - [ ] Revise changelog entries to make sure that they are understandable, necessary, and correctly categorized. 📜
-  - [ ] Make sure the pull request is
+  - [ ] Make sure that all tests are passing in the pull request 
   - [ ] Merge the pull request.
 - [ ] Run the [tests]. [![CI](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/tests.yml)
 - [ ] Run the [weekly tests]. [![weekly tests](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/weekly.yml/badge.svg?branch=main)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/weekly-tests.yml)
