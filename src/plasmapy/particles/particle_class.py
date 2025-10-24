@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Literal, Self
+from typing import Any, Literal, Self, TypeAlias
 
 __all__ = [
     "AbstractParticle",
@@ -16,13 +16,12 @@ __all__ = [
 ]
 
 import json
-import typing
 import warnings
 from abc import ABC, abstractmethod
 from collections import defaultdict, namedtuple
 from datetime import datetime, timezone
 from numbers import Integral, Real
-from typing import TYPE_CHECKING, TypeAlias
+from typing import TYPE_CHECKING
 
 import astropy.constants as const
 import astropy.units as u
@@ -2728,18 +2727,16 @@ def molecule(symbol: str, Z: int | None = None) -> Particle | CustomParticle:
 # If ParticleLike is renamed or moves out of particle_class.py, check
 # for a link to its doc page in error messages in _factory.py.
 
-ParticleLike: TypeAlias = typing.Union[  # noqa: UP007
-    str,
-    int,
-    np.integer,
-    Particle,
-    CustomParticle,
-    u.Quantity,
-]
+# Making the definition of ParticleLike into a `type` statement led to
+# 'reference target not found' errors
 
-# Using typing.Union in ParticleLike lets us define ParticleLike.__doc__
+# To learn more about problems related to adding a docstring for a type
+# alias, see comments in https://github.com/PlasmaPy/PlasmaPy/pull/3110
 
-ParticleLike.__doc__ = r"""
+ParticleLike: TypeAlias = (  # noqa: UP040
+    str | int | np.integer | Particle | CustomParticle | u.Quantity
+)
+r"""
 An `object` is particle-like if it can be identified as an instance of
 `~plasmapy.particles.particle_class.Particle` or
 `~plasmapy.particles.particle_class.CustomParticle`, or cast into one.

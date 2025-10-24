@@ -1,0 +1,2 @@
+Replaced the |Nox| session and GitHub check to validate :file:`CITATION.cff`
+with a |pre-commit| hook.

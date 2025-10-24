@@ -5,7 +5,7 @@ from typing import Any, TypeVar
 
 _F = TypeVar("_F", bound=Callable[..., Any])
 
-def decorator(
+def decorator(  # noqa: UP047
     wrapper: _F,
     enabled: Any = None,
     adapter: Any = None,

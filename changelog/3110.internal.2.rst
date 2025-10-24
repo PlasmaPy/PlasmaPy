@@ -1,0 +1,6 @@
+Split up the weekly continuous integration tests previously
+in :file:`.github/workflows/weekly.yml` into :file:`ci-comprehensive.yml`
+for comprehensive tests, :file:`ci-upstream.yml` for tests
+and documentation builds performed with the latest unreleased versions
+of upstream dependencies, and :file:`conda.yml` for attempting an
+installation of PlasmaPy using miniconda.
