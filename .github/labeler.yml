@@ -17,9 +17,9 @@ bugfix:
 CI:
   - changed-files:
     - any-glob-to-any-file: [
-      '.github/workflows/ci.yml',
+      '.github/workflows/check*.yml',
+      '.github/workflows/ci*.yml',
       '.github/workflows/linkcheck.yml',
-      '.github/workflows/weekly.yml',
       '.pre-commit-config.yaml',
       '.readthedocs.yml',
       'codecov.yaml',
