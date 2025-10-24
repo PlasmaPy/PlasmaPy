@@ -53,16 +53,16 @@ python -m pip install plasmapy
 ```
 
 On some systems, it might be necessary to specify the Python version
-number, for example by using `python3` or `python3.13` instead of
+number, for example by using `python3` or `python3.14` instead of
 `python`.
 
 To install PlasmaPy in Windows via PowerShell, run:
 
 ```Shell
-py -3.13 -m pip install plasmapy
+py -3.14 -m pip install plasmapy
 ```
 
-The `3.13` may be replaced by any version of Python that is installed
+The `3.14` may be replaced by any version of Python that is installed
 and supported by PlasmaPy.
 
 ## Citing PlasmaPy
