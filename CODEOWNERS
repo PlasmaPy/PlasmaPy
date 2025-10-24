@@ -7,15 +7,13 @@
 # Tip: IDEs like PyCharm may have features or extensions that validate
 # CODEOWNERS files and check that paths that are listed match any files.
 
-* @PlasmaPy/plasmapy-reviewers
-
 # subpackages
 
 *pytest_helpers/ @namurphy
 analysis/ @rocco8773
 diagnostics/ @rocco8773
 **/diagnostics/charged_particle_radiography/ @pheuer
-dispersion/ @ejohnson-96
+dispersion/ @namurphy
 **/utils/decorators/ @rocco8773
 
 # subpackage files (with wildcards to include tests)
@@ -31,7 +29,6 @@ docs/_author_list_from_cff.py @namurphy
 docs/_global_substitutions.py @namurphy
 docs/conf.py @namurphy
 docs/contributing/ @namurphy
-docs/plasmapy_sphinx/ @rocco8773
 
 # project files
 
