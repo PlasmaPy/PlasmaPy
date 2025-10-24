@@ -1,3 +1,8 @@
+# /// script
+# requires-python = ">=3.12"
+# dependencies = ["nox"]
+# ///
+
 """
 Nox is an automation tool used by PlasmaPy to run tests, build
 documentation, and perform other checks. Nox sessions are defined in
@@ -772,10 +777,6 @@ def zizmor(session: nox.Session) -> None:
     session.install("zizmor")
     session.run("zizmor", ".github", "--no-progress", "--color=auto", *session.posargs)
 
-
-# /// script
-# dependencies = ["nox"]
-# ///
 
 if __name__ == "__main__":
     nox.main()
