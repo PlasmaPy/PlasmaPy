@@ -8,7 +8,8 @@ top-level [`noxfile.py`](../../noxfile.py).
 Continuous integration (CI) workflows include:
 
 - [`ci.yml`](./ci.yml) — perform CI checks during pull requests (PRs)
-- [`weekly.yml`](./weekly.yml) — run weekly tests
+- [`ci-comprehensive.yml`](./ci-comprehensive.yml) — run comprehensive tests
+- [`ci-upstream.yml`](./ci-upstream.yml) — test against bleeding edge versions of upstream dependencies
 - [`check-author-included.yml`](./check-author-included.yml) — verify
   that the author of a PR is included in the top-level
   [`CITATION.cff`](../../CITATION.cff) metadata file
