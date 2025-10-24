@@ -21,7 +21,6 @@ def in_ci() -> bool:
 
 
 @pytest.fixture(scope="module")
-@check_database_connection
 def downloader_validated(tmpdir_factory) -> Downloader:
     api_token = os.environ["GH_TOKEN"] if in_ci() else None
 
@@ -50,9 +49,7 @@ def test_api_token(downloader_validated: Downloader) -> None:
     assert limit >= 5000
 
 
-@pytest.mark.slow
 @pytest.fixture(scope="module")
-@check_database_connection
 def downloader_unvalidated(tmpdir_factory) -> Downloader:
     path = tmpdir_factory.mktemp("unvalidated")
 
