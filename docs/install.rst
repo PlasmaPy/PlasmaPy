@@ -30,6 +30,11 @@ instructions to `download Python`_ and install it. :snake:
    version between October and March, then try installing it on the
    second most recent version.
 
+.. note::
+
+   PlasmaPy versions through ``v2025.8.0`` require Python 3.13 or
+   earlier and are incompatible with Python 3.14.
+
 .. _install-pip:
 
 Installing PlasmaPy with pip
@@ -44,16 +49,16 @@ terminal and run:
    python -m pip install plasmapy
 
 On some systems, it might be necessary to specify the |Python| version
-number by using ``python3``, ``python3.8``, ``python3.9``,
-``python3.10``, or ``python3.11`` instead of ``python``.
+number by using ``python3``, ``python3.12``, ``python3.13``,
+or ``python3.14`` instead of ``python``.
 
 To install PlasmaPy on Windows, run:
 
 .. code-block:: bash
 
-   py -3.11 -m pip install plasmapy
+   py -3.14 -m pip install plasmapy
 
-The version of |Python| may be changed from ``3.11`` to another supported
+The version of |Python| may be changed from ``3.14`` to another supported
 Python |minpython|\ + release that has been installed on your computer.
 
 For more detailed information, please refer to this tutorial on
@@ -77,7 +82,7 @@ After `installing uv`_, a `virtual environment`_ with |Python| version
 
 .. code-block:: bash
 
-   uv venv --python 3.12
+   uv venv --python 3.14
 
 |uv| will automatically download |Python| and link it to
 the `virtual environment`_'s directory at (by default) :file:`.venv`. The

@@ -41,20 +41,20 @@ from packaging.requirements import Requirement
 # The minimum version of Python should be incremented immediately
 # following the first release after October of each year.
 
-supported_python_versions: tuple[str, ...] = ("3.11", "3.12", "3.13")
+supported_python_versions: tuple[str, ...] = ("3.12", "3.13", "3.14")
 supported_operating_systems: tuple[str, ...] = ("linux", "macos", "windows")
 
 maxpython = max(supported_python_versions)
 minpython = min(supported_python_versions)
 
-_HERE = pathlib.Path(__file__).parent
+root_dir = pathlib.Path(__file__).parent
 
 # The documentation should be build always using the same version of
 # Python, which should be the latest version of Python supported by Read
 # the Docs. Because Read the Docs takes some time to support new
 # releases of Python, we should not link docpython to maxpython.
 
-docpython = "3.12"
+docpython = "3.13"
 
 current_python = f"{sys.version_info.major}.{sys.version_info.minor}"
 nox.options.sessions = [f"tests-{current_python}(skipslow)"]
@@ -83,8 +83,12 @@ def _create_requirements_pr_message(uv_output: str, session: nox.Session) -> Non
         The multi-line output of ``session.run(..., silent=True)``.
     """
 
-    pr_template = pathlib.Path("./.github/content/update-requirements-pr-template.md")
-    pr_message = pathlib.Path("./.github/content/update-requirements-pr-body.md")
+    pr_template = pathlib.Path(
+        root_dir / "./.github/content/update-requirements-pr-template.md"
+    )
+    pr_message = pathlib.Path(
+        root_dir / "./.github/content/update-requirements-pr-body.md"
+    )
 
     shutil.copy(pr_template, pr_message)
 
@@ -119,12 +123,12 @@ def _create_requirements_pr_message(uv_output: str, session: nox.Session) -> Non
 
 
 def _get_dependencies_from_pyproject_toml(extras: str | None = None):
-    _PYTPROJECT_TOML = (_HERE / "pyproject.toml").resolve()
-    with _PYTPROJECT_TOML.open(mode="rb") as file:
+    _PYPROJECT_TOML = (root_dir / "pyproject.toml").resolve()
+    with _PYPROJECT_TOML.open(mode="rb") as file:
         data = tomllib.load(file)
         config = data["project"]
 
-    dependencies = {Requirement(item).name: item for item in config["dependencies"]}
+    dependencies = {Requirement(item): item for item in config["dependencies"]}
 
     if (
         extras is None
@@ -138,8 +142,7 @@ def _get_dependencies_from_pyproject_toml(extras: str | None = None):
     op_deps = {}
     for extra in extras:
         for dep in config["optional-dependencies"][extra]:
-            name = Requirement(dep).name
-            op_deps[name] = dep
+            op_deps[Requirement(dep)] = dep
 
     return {**dependencies, **op_deps}
 
@@ -147,26 +150,32 @@ def _get_dependencies_from_pyproject_toml(extras: str | None = None):
 @nox.session
 def requirements(session: nox.Session) -> None:
     """
-    Regenerate the pinned requirements for running tests and building
-    documentation.
+    Upgrade the pinned requirements in `uv.lock`.
 
     This workflow updates :file:`uv.lock` to contain pinned requirements
     for different versions of Python, different operating systems, and
-    different dependency sets (i.e., `docs` or `tests`).
+    different dependency sets.
 
-    When run in CI, this session will create a file that contains the
-    pull request message for the GitHub workflow that updates the pinned
+    When run in CI, this session creates a file that contains the pull
+    request message for the GitHub workflow that updates the pinned
     requirements (:file:`.github/workflows/update-pinned-reqs.yml`).
     """
-    uv_lock_upgrade = ["uv", "lock", "--upgrade", "--no-progress"]
 
-    # When silent is `True`, `session.run()` returns a multi-line string
-    # with the standard output and standard error.
+    # Running `uv lock` fails when `uv.lock` has a merge conflict or
+    # is otherwise invalid. To avoid situations like this, preemptively
+    # delete `uv.lock`. Since `uv lock` uses information in `uv.lock`
+    # even if `--upgrade` is specified, deleting `uv.lock` may make
+    # running `uv lock` more deterministic.
+
+    lockfile = pathlib.Path(root_dir / "uv.lock")
+    lockfile.unlink(missing_ok=True)
 
     uv_output: str | bool = session.run(
-        *uv_lock_upgrade,
-        *session.posargs,
-        silent=running_on_ci,
+        "uv",
+        "lock",
+        "--upgrade",
+        "--no-progress",
+        silent=running_on_ci,  # return a multi-line string with stdout & stderr if true
     )
 
     if running_on_ci:
@@ -274,39 +283,37 @@ def tests(session: nox.Session, test_specifier: nox._parametrize.Param) -> None:
 
 @nox.session(python=maxpython)
 @nox.parametrize(
-    ["repository"],
+    ["package"],
     [
         nox.param("numpy", id="numpy"),
-        nox.param("https://github.com/astropy/astropy", id="astropy"),
-        nox.param("https://github.com/pydata/xarray", id="xarray"),
+        nox.param("astropy", id="astropy"),
+        nox.param("pandas", id="pandas"),
+        nox.param("xarray", id="xarray"),
         nox.param("https://github.com/lmfit/lmfit-py", id="lmfit"),
-        nox.param("https://github.com/pandas-dev/pandas", id="pandas"),
     ],
 )
-def run_tests_with_dev_version_of(session: nox.Session, repository: str) -> None:
+def run_tests_with_dev_version_of(session: nox.Session, package: str) -> None:
     """
     Run tests against the development branch of a dependency.
 
     Running this session helps us catch problems resulting from breaking
     changes in an upstream dependency before its official release.
     """
-
-    if repository == "numpy":
-        # From: https://numpy.org/doc/1.26/dev/depending_on_numpy.html
+    if package.startswith("https"):
+        session.install(f"git+{package}")
+    else:
         session.run_install(
             "uv",
             "pip",
             "install",
-            "-U",
-            "--pre",
-            "--only-binary",
-            ":all:",
-            "-i",
-            "https://pypi.anaconda.org/scientific-python-nightly-wheels/simple",
-            "numpy",
+            "--upgrade",
+            package,
+            env={
+                "UV_INDEX": "https://pypi.anaconda.org/scientific-python-nightly-wheels/simple",
+                "UV_INDEX_STRATEGY": "unsafe-best-match",
+                "UV_PRERELEASE": "allow",
+            },
         )
-    else:
-        session.install(f"git+{repository}")
 
     session.install(".[tests]")
     session.run(*pytest_command, *session.posargs)
@@ -451,7 +458,10 @@ def build_docs_with_dev_version_of(
     #       had been put on the target package.
     pkg_name = repository.split("/")[-1]
     deps = _get_dependencies_from_pyproject_toml(extras="docs")
-    deps.pop(pkg_name, None)
+    dep_names = {dep: dep.name for dep in deps}
+    for dep, name in dep_names.items():
+        if name == pkg_name:
+            deps.pop(dep)
 
     session.install(
         f"git+https://{site}.com/{repository}",
@@ -519,8 +529,11 @@ def mypy(session: nox.Session) -> None:
     Configuration file: mypy.ini
     """
 
+    session.install("pip")  # mypy uses pip if --install-types is used
+
     session.run_install(
         *uv_sync,
+        "--quiet",
         "--extra=tests",
         "--no-default-groups",
         f"--python={session.virtualenv.location}",
@@ -621,12 +634,12 @@ def changelog(session: nox.Session, final: str) -> None:
         session.run(*towncrier, "--draft", "--keep")
         return
 
-    original_file = pathlib.Path("./CHANGELOG.rst")
+    original_file = pathlib.Path(root_dir / "CHANGELOG.rst")
     original_file.unlink()
 
     session.run(*towncrier, "--yes")
 
-    destination = pathlib.Path(f"./docs/changelog/{version}.rst")
+    destination = pathlib.Path(root_dir / f"docs/changelog/{version}.rst")
     shutil.copy(original_file, destination)
 
 
@@ -676,7 +689,7 @@ def monkeytype(session: nox.Session) -> None:
     session.install(".[tests]")
     session.install("MonkeyType", "pytest-monkeytype", "pre-commit")
 
-    database = pathlib.Path("./monkeytype.sqlite3")
+    database = pathlib.Path(root_dir / "monkeytype.sqlite3")
 
     if not database.exists():
         session.log(f"File {database.absolute()} not found. Running MonkeyType.")
@@ -695,13 +708,6 @@ def monkeytype(session: nox.Session) -> None:
 
 
 @nox.session
-def cff(session: nox.Session) -> None:
-    """Validate CITATION.cff against the metadata standard."""
-    session.install("cffconvert")
-    session.run("cffconvert", "--validate", *session.posargs)
-
-
-@nox.session
 def manifest(session: nox.Session) -> None:
     """
     Check for missing files in MANIFEST.in.
@@ -711,6 +717,9 @@ def manifest(session: nox.Session) -> None:
     positives can be ignored by adding file patterns and paths to
     `ignore` under `[tool.check-manifest]` in `pyproject.toml`.
     """
+    # check-manifest would be suitable as a pre-commit hook, except that
+    # it requires ∼10 seconds to build the package, which would triple
+    # the time needed to run pre-commit
     session.install("check-manifest")
     session.run("check-manifest", *session.posargs)
 

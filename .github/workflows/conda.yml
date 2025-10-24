@@ -1,0 +1,26 @@
+name: conda-forge
+
+on:
+  schedule:
+  - cron: 37 7 * * 1
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+
+  install:
+    name: Install PlasmaPy from conda-forge
+    runs-on: ubuntu-latest
+    if: (github.repository == 'PlasmaPy/PlasmaPy' && github.ref == 'refs/heads/main' && github.event_name != 'pull_request') || github.event_name == 'workflow_dispatch'
+
+    steps:
+
+    - name: Set up miniconda
+      uses: conda-incubator/setup-miniconda@v3
+      with:
+        auto-update-conda: true
+        python-version: '3.14'
+
+    - name: Use conda to install PlasmaPy from conda-forge
+      run: conda install -c conda-forge --yes plasmapy

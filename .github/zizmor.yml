@@ -20,7 +20,7 @@ rules:
 
   excessive-permissions:
     ignore:
-    - create-release-issue.yml:11:3
+    - create-release-issue.yml:16:3
     - changelog.yml:9:3
     - changelog.yml:10:3
     - comment-on-pr.yml:8:3
@@ -29,7 +29,8 @@ rules:
     - update-pinned-reqs.yml:9:3
   template-injection:
     ignore:
-    - create-release-issue.yml:21:7
+    - create-release-issue.yml:30:42
+    - create-release-issue.yml:31:46
   use-trusted-publishing:
     ignore:
     - publish-to-pypi.yml:36:7

@@ -1,9 +1,9 @@
 [build-system]
 build-backend = "setuptools.build_meta"
 requires = [
-  "setuptools>=61.2",
-  "setuptools-scm>=6.3.2",
-  "wheel>=0.37",
+  "setuptools>=77",
+  "setuptools-scm>=8.1",
+  "wheel>=0.43",
 ]
 
 [project]
@@ -21,24 +21,22 @@ keywords = [
   "space plasmas",
 ]
 
-license = { file = "LICENSE.md" }
+license-files = [ "LICENSE.md" ]
 # SPEC 0 recommends that projects drop support for Python versions 3
 # years after their initial release. See:
 # https://scientific-python.org/specs/spec-0000
-requires-python = ">=3.11"
+requires-python = ">=3.12"
 
 # Add classifiers from https://pypi.org/classifiers
 classifiers = [
-  "Development Status :: 4 - Beta",
   "Intended Audience :: Education",
   "Intended Audience :: Science/Research",
-  "License :: OSI Approved :: BSD License",
   "Natural Language :: English",
   "Operating System :: OS Independent",
   "Programming Language :: Python :: 3 :: Only",
-  "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
   "Topic :: Scientific/Engineering :: Astronomy",
   "Topic :: Scientific/Engineering :: Physics",
 ]
@@ -57,21 +55,19 @@ dynamic = [ "version" ]
 
 dependencies = [
   "astropy>=6",
-  "h5py>=3.8",
-  "lmfit>=1.1",
-  "matplotlib>=3.7",
+  "h5py>=3.11",
+  "lmfit>=1.3",
+  "matplotlib>=3.8",
   "mpmath>=1.3",
-  "numpy>=1.25",
-  "packaging>=22",
-  "pandas>=2",
-  "requests>=2.28",
-  "scipy>=1.10",
-  "setuptools>=66",
+  "numpy>=1.26",
+  "packaging>=24",
+  "pandas>=2.1.4",
+  "requests>=2.30",
+  "scipy>=1.11",
   "tqdm>=4.65",
   "wrapt>=1.15",
-  "xarray>=2023.7",
+  "xarray>=2024.5",
 ]
-
 # The documentation build occurs in an isolated environment that is not
 # user-facing, so we can have stricter requirements.
 optional-dependencies.docs = [
@@ -106,7 +102,7 @@ optional-dependencies.docs = [
 # requirements to ensure that tests are run in consistent environments.
 optional-dependencies.tests = [
   "hypothesis>=6.108.2",
-  "mypy>=1.11",
+  "mypy>=1.18.2",
   "nox[uv]>=2025.5.1",
   "pytest>=8.3.1",
   "pytest-cov>=5",
@@ -141,8 +137,11 @@ namespaces = false
 [tool.setuptools_scm]
 write_to = "src/plasmapy/_version.py"
 
+[tool.uv]
+no-build-package = [ "numpy", "matplotlib", "scipy", "astropy", "h5py", "pandas", "wrapt" ]
+
 [tool.ruff]
-target-version = "py311"
+target-version = "py312"
 namespace-packages = [ ".github/workflows", "docs" ]
 extend-exclude = [
   ".hypothesis",
@@ -271,7 +270,6 @@ lint.ignore = [
   "N803",    # invalid-argument-name
   "N806",    # non-lowercase-variable-in-function
   "N816",    # mixed-case-variable-in-global-scope
-  "PERF203", # try-except-in-loop (remove when we require Python ≥ 3.11)
   "PLC2401", # non-ascii-name (flags variables used as mathematical symbols)
   "PLC2403", # non-ascii-import-name
   "PLE0605", # invalid-all-format (flags `__all__ += __lite_funcs`, etc.)
