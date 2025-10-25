@@ -7,6 +7,7 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
 
 ### Code quality updates (optional, but recommended)
 
+- [ ] Run the [upstream tests] and fix any failures, as appropriate. [![upstream tests](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/ci-upstream.yml/badge.svg)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/ci-upstream.yml) These tests help us find and fix breaking changes before they make it into production. 🔮
 - [ ] Run the [GitHub Action for checking hyperlinks], and update broken links. Use `linkcheck_allowed_redirects` in [`docs/conf.py`] to allow redirects (e.g., from `doi.org`). Update or delete the `alias` field for authors in [`CITATION.cff`] who have changed their GitHub username. 🔗
 - [ ] Run `git log --format="%aN <%aE>" | sort -u`, and update [`.mailmap`] if there are any duplicate contributors in the output. 📫
 - [ ] [Update pinned requirements] in `uv.lock`. 📍
@@ -25,8 +26,6 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
 - [ ] Run the [tests]. [![CI](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/ci.yml/badge.svg)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/ci.yml) 🧪
 
 - [ ] Run the [comprehensive tests]. [![comprehensive tests](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/ci-comprehensive.yml/badge.svg)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/ci-comprehensive.yml) 🔍
-
-- [ ] Run the [upstream tests]. [![upstream tests](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/ci-upstream.yml/badge.svg)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/ci-upstream.yml) 🔮
 
 - [ ] [Create a release on GitHub]. 🚀
 
@@ -83,6 +82,7 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
 [comprehensive tests]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/ci-comprehensive.yml
 [conda-forge feedstock]: https://github.com/conda-forge/plasmapy-feedstock
 [create a release on github]: https://github.com/PlasmaPy/PlasmaPy/releases/new
+[create an issue for the release]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/create-release-issue.yml
 [create an issue for the next release]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/create-release-issue.yml
 [documentation]: https://docs.plasmapy/org/en/stable
 [github action for checking hyperlinks]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/linkcheck.yml
