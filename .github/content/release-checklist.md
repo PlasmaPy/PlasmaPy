@@ -84,7 +84,7 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
 [create a release on github]: https://github.com/PlasmaPy/PlasmaPy/releases/new
 [create an issue for the release]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/create-release-issue.yml
 [create an issue for the next release]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/create-release-issue.yml
-[documentation]: https://docs.plasmapy/org/en/stable
+[documentation]: https://docs.plasmapy.org/en/stable
 [github action for checking hyperlinks]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/linkcheck.yml
 [list of tagged versions]: https://github.com/PlasmaPy/PlasmaPy/tags
 [milestones]: https://github.com/PlasmaPy/PlasmaPy/milestones
