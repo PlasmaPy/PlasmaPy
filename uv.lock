@@ -1583,7 +1583,7 @@ requires-dist = [
     { name = "pytest-xdist", marker = "extra == 'tests'", specifier = ">=3.8" },
     { name = "requests", specifier = ">=2.30" },
     { name = "scipy", specifier = ">=1.11" },
-    { name = "sphinx", marker = "extra == 'docs'", specifier = ">=8.2.3,<8.3" },
+    { name = "sphinx", marker = "extra == 'docs'", specifier = ">=8.2.3" },
     { name = "sphinx-changelog", marker = "extra == 'docs'", specifier = ">=1.6" },
     { name = "sphinx-codeautolink", marker = "extra == 'docs'", specifier = "==0.17.5" },
     { name = "sphinx-collapse", marker = "extra == 'docs'", specifier = ">=0.1.3" },
