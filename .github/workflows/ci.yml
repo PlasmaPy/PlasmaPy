@@ -61,11 +61,6 @@ jobs:
           python: '3.13'
           nox_session: docs
 
-        - name: Documentation, Python 3.14, Ubuntu  # temporary! remove this!
-          os: ubuntu-latest
-          python: '3.14'
-          nox_session: docs
-
         - name: Static type checking with mypy, Python 3.14, Ubuntu
           os: ubuntu-latest
           python: '3.14'

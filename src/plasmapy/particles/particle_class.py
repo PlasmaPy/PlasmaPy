@@ -528,7 +528,7 @@ class Particle(AbstractPhysicalParticle):
     2
     >>> deuteron.mass_number
     2
-    >>> deuteron.binding_energy.to("MeV")
+    >>> deuteron.nuclear_binding_energy.to("MeV")
     <Quantity 2.224... MeV>
     >>> alpha.charge
     <Quantity 3.20435...e-19 C>
@@ -1463,19 +1463,6 @@ class Particle(AbstractPhysicalParticle):
         nuclear_binding_energy = mass_defect * const.c**2
 
         return nuclear_binding_energy.to(u.J)
-
-    @property
-    def binding_energy(self) -> u.Quantity[u.J]:
-        """
-        DEPRECATED - Please use nuclear_binding_energy instead.
-        This property will be removed in a future release.
-        """
-        warnings.warn(
-            "The binding_energy property is deprecated and will be removed in a future release. "
-            "Please use the nuclear_binding_energy property instead.",
-            FutureWarning,
-        )
-        return self.nuclear_binding_energy
 
     @property
     def atomic_number(self) -> int:

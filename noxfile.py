@@ -211,14 +211,15 @@ def validate_requirements(session: nox.Session) -> None:
     session.run("uv", "lock", "--check", "--offline", "--no-progress")
 
 
-pytest_command: tuple[str, ...] = (
+pytest_command: list[str] = [
     "pytest",
     "--pyargs",
-    "--durations=5",
+    "--durations=6",
+    "--durations-min=0.2",
     "--tb=short",
     "-n=auto",
     "--dist=loadfile",
-)
+]
 
 with_doctests: tuple[str, ...] = ("--doctest-modules", "--doctest-continue-on-failure")
 
@@ -230,6 +231,8 @@ with_coverage: tuple[str, ...] = (
     "--cov-report",
     "xml:coverage.xml",
 )
+
+report_warnings_rather_than_treat_them_as_errors = ("-W", "once")
 
 skipslow: tuple[str, ...] = ("-m", "not slow")
 
@@ -254,6 +257,9 @@ def tests(session: nox.Session, test_specifier: nox._parametrize.Param) -> None:
 
     if test_specifier == "with code coverage":
         options += with_coverage
+
+    if test_specifier in {"lowest-direct", "lowest-direct-skipslow"}:
+        options += report_warnings_rather_than_treat_them_as_errors
 
     # Doctests are only run with the most recent versions of Python and
     # other dependencies because there may be subtle differences in the
