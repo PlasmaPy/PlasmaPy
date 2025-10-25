@@ -489,18 +489,20 @@ ELLIPSIS
 NUMBER
 IGNORE_EXCEPTION_DETAIL"""
 filterwarnings = [
-  # ubiquitous warning in particle tracker
+  # treat warnings as errors by default; pass `-W once` to pytest to show them
+  "error",
+  # ubiquitous warning in particle tracker (see issue #2514)
   "ignore:.*Quantities should go to zero at edges of grid.*:RuntimeWarning",
   # occasional warning from downloader tests
   "ignore:.*API rate limit exceeded.*:UserWarning",
-  # hypothesis plugin
-  "ignore:.*Marks applied to fixtures have no effect.*:pytest.PytestRemovedIn9Warning",
-  # deprecated in NumPy 2.1
+  # for numpy.reshape calls, newshape kwarg is deprecated; use shape instead or pass positionally
   "ignore:.*newshape.*:DeprecationWarning",
   # see https://github.com/PlasmaPy/PlasmaPy/issues/2319
   "ignore:.*MultiIndex.*:FutureWarning",
   # deprecated in NumPy 1.25
   "ignore:.*conversion of an array with ndim > 0 to a scalar.*:DeprecationWarning",
+  # deprecated in Astropy 7.1
+  "ignore:.*products involving a unit and a 'str' instance are deprecated.*:astropy.utils.exceptions.AstropyDeprecationWarning",
 ]
 norecursedirs = [
   '*egg-info*',
