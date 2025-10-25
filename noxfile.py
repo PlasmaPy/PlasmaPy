@@ -215,7 +215,7 @@ pytest_command: list[str] = [
     "pytest",
     "--pyargs",
     "--durations=6",
-    "--durations-min=0.1",
+    "--durations-min=0.2",
     "--tb=short",
     "-n=auto",
     "--dist=loadfile",
