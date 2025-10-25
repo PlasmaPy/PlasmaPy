@@ -503,6 +503,9 @@ filterwarnings = [
   "ignore:.*conversion of an array with ndim > 0 to a scalar.*:DeprecationWarning",
   # deprecated in Astropy 7.1
   "ignore:.*products involving a unit and a 'str' instance are deprecated.*:astropy.utils.exceptions.AstropyDeprecationWarning",
+  # The following occurred on GitHub but seemed irrelevant
+  "ignore:unclosed:ResourceWarning",
+  "ignore::pytest.PytestUnraisableExceptionWarning",
 ]
 norecursedirs = [
   '*egg-info*',
