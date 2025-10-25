@@ -1,2 +1,0 @@
-Incorporated the ``plasmapy_theme`` via the `plasmapy_sphinx.theme`
-extension.

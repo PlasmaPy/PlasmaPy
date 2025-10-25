@@ -67,7 +67,7 @@ supported PlasmaPy development.
 .. _CRANE: https://www.cranephysics.org
 .. _Fair4Fusion: https://fair4fusion.eu
 .. _MagNetUS: https://sites.google.com/view/frontier-science-magnetus/magnetus?pli=1
-.. _OLUG: https://www.lle.rochester.edu/about-the-laboratory-for-laser-energetics/omega-laser-facility-users-group
+.. _OLUG: https://www.lle.rochester.edu/omega-laser-facility/user-community/olug/
 .. _OMFIT: https://omfit.io
 .. _Open Astronomy: https://openastronomy.org
 .. _PPPL: https://www.pppl.gov
