@@ -16,7 +16,7 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
 
 - [ ] Begin an upload to [Zenodo] for a new version of [this record], using the `team@plasmapy.org` login. Reserve a DOI. 🔢
 
-- [ ] Run the GitHub workflow to [prepare a release], specifying the version (i.e., `2025.8.0`) and copying the reserved DOI from Zenodo. This workflow will create a pull request that builds the changelog and updates package metadata. 🤖
+- [ ] Run the GitHub workflow to [prepare a release], specifying the version (i.e., `2026.1.0`) and copying the reserved DOI from Zenodo. This workflow will create a pull request that builds the changelog and updates package metadata. 🤖
 
   - [ ] Revise changelog entries to make sure that they are understandable, necessary, and correctly categorized. 📜
   - [ ] Make sure that all tests are passing in the pull request. ✅
@@ -30,10 +30,10 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
 
 - [ ] [Create a release on GitHub]. 🚀
 
-  - Choose the newly created tag (e.g., `v2025.10.0`), and use it as the title. (The release will be performed from the tag, so it is not necessary to select the branch.) 🏷️
+  - Choose the newly created tag (e.g., `v2026.1.0`), and use it as the title. (The release will be performed from the tag, so it is not necessary to select the branch.) 🏷️
   - Set the tag for the previous release, and select the option to automatically generate release notes. 📜
   - Select the option to create a discussion for the release under the _General_ category. 📣
-  - For official releases, choose _Set as the latest release_. For beta releases or release candidates (e.g., `v2025.10.0rc1`), specify it as a pre-release. 🆕
+  - For official releases, choose _Set as the latest release_. For beta releases or release candidates (e.g., `v2026.1.0rc1`), specify it as a pre-release. 🆕
   - Click on <kbd>Publish release</kbd>, which will create the GitHub release and trigger the GitHub workflow to [publish to PyPI]. 🚀
   - Check the [release history] on PyPI to make sure that the release was successful. 🗓️
 
@@ -58,7 +58,7 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
 ### Update documentation
 
 - [ ] Delete the [`stable`] branch on GitHub if it exists. 🗑️
-- [ ] Activate the current and prior release on the [versions page on RTD], if necessary. If the documentation fails to build for a release, activate the corresponding branch (e.g., activate the `v2025.10.x` branch instead of the `v2025.10.0` tag). ⚙️
+- [ ] Activate the current and prior release on the [versions page on RTD], if necessary. If the documentation fails to build for a release, activate the corresponding branch (e.g., activate the `v2026.1.x` branch instead of the `v2026.1.0` tag). ⚙️
 - [ ] Verify that the [citation page] is up-to-date and the DOI link points to the most recent release. 🧾
 - [ ] Check that the [documentation] builds correctly for the release branch. 📘
 
@@ -75,7 +75,7 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
 ## After the release
 
 - [ ] Update the [release checklist], as needed. 📋
-  - An example changelog entry is: "Updated the release checklist following the `v2025.8.0` release." ✍️
+  - An example changelog entry is: "Updated the release checklist following the `v2026.1.0` release." ✍️
 - [ ] [Create an issue for the next release]. ⏳
 - [ ] Close this issue. 🏁
 
