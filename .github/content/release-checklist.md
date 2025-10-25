@@ -7,7 +7,7 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
 
 ### Code quality updates (optional, but recommended)
 
-- [ ] Revise changelog entries to make sure that they are understandable, necessary, and correctly categorized. Add the https://github.com/PlasmaPy/PlasmaPy/labels/skip%20changelog%checks label to skip doing changelog checks. 📜
+- [ ] Run the [upstream tests] and fix any failures, as appropriate. [![upstream tests](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/ci-upstream.yml/badge.svg)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/ci-upstream.yml) These tests help us find and fix breaking changes before they make it into production. 🔮
 - [ ] Run the [GitHub Action for checking hyperlinks], and update broken links. Use `linkcheck_allowed_redirects` in [`docs/conf.py`] to allow redirects (e.g., from `doi.org`). Update or delete the `alias` field for authors in [`CITATION.cff`] who have changed their GitHub username. 🔗
 - [ ] Run `git log --format="%aN <%aE>" | sort -u`, and update [`.mailmap`] if there are any duplicate contributors in the output. 📫
 - [ ] [Update pinned requirements] in `uv.lock`. 📍
@@ -17,7 +17,7 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
 
 - [ ] Begin an upload to [Zenodo] for a new version of [this record], using the `team@plasmapy.org` login. Reserve a DOI. 🔢
 
-- [ ] Run the GitHub workflow to [prepare a release], specifying the version (i.e., `2025.8.0`) and copying the reserved DOI from Zenodo. This workflow will create a pull request that builds the changelog and updates package metadata. 🤖
+- [ ] Run the GitHub workflow to [prepare a release], specifying the version (i.e., `2026.1.0`) and copying the reserved DOI from Zenodo. This workflow will create a pull request that builds the changelog and updates package metadata. 🤖
 
   - [ ] Revise changelog entries to make sure that they are understandable, necessary, and correctly categorized. 📜
   - [ ] Make sure that all tests are passing in the pull request. ✅
@@ -27,14 +27,12 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
 
 - [ ] Run the [comprehensive tests]. [![comprehensive tests](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/ci-comprehensive.yml/badge.svg)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/ci-comprehensive.yml) 🔍
 
-- [ ] Run the [upstream tests]. [![upstream tests](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/ci-upstream.yml/badge.svg)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/ci-upstream.yml) 🔮
-
 - [ ] [Create a release on GitHub]. 🚀
 
-  - Choose the newly created tag (e.g., `v2025.10.0`), and use it as the title. (The release will be performed from the tag, so it is not necessary to select the branch.) 🏷️
+  - Choose the newly created tag (e.g., `v2026.1.0`), and use it as the title. (The release will be performed from the tag, so it is not necessary to select the branch.) 🏷️
   - Set the tag for the previous release, and select the option to automatically generate release notes. 📜
   - Select the option to create a discussion for the release under the _General_ category. 📣
-  - For official releases, choose _Set as the latest release_. For beta releases or release candidates (e.g., `v2025.10.0rc1`), specify it as a pre-release. 🆕
+  - For official releases, choose _Set as the latest release_. For beta releases or release candidates (e.g., `v2026.1.0rc1`), specify it as a pre-release. 🆕
   - Click on <kbd>Publish release</kbd>, which will create the GitHub release and trigger the GitHub workflow to [publish to PyPI]. 🚀
   - Check the [release history] on PyPI to make sure that the release was successful. 🗓️
 
@@ -59,7 +57,7 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
 ### Update documentation
 
 - [ ] Delete the [`stable`] branch on GitHub if it exists. 🗑️
-- [ ] Activate the current and prior release on the [versions page on RTD], if necessary. If the documentation fails to build for a release, activate the corresponding branch (e.g., activate the `v2025.10.x` branch instead of the `v2025.10.0` tag). ⚙️
+- [ ] Activate the current and prior release on the [versions page on RTD], if necessary. If the documentation fails to build for a release, activate the corresponding branch (e.g., activate the `v2026.1.x` branch instead of the `v2026.1.0` tag). ⚙️
 - [ ] Verify that the [citation page] is up-to-date and the DOI link points to the most recent release. 🧾
 - [ ] Check that the [documentation] builds correctly for the release branch. 📘
 
@@ -76,7 +74,7 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
 ## After the release
 
 - [ ] Update the [release checklist], as needed. 📋
-  - An example changelog entry is: "Updated the release checklist following the `v2025.8.0` release." ✍️
+  - An example changelog entry is: "Updated the release checklist following the `v2026.1.0` release." ✍️
 - [ ] [Create an issue for the next release]. ⏳
 - [ ] Close this issue. 🏁
 
@@ -84,8 +82,9 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
 [comprehensive tests]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/ci-comprehensive.yml
 [conda-forge feedstock]: https://github.com/conda-forge/plasmapy-feedstock
 [create a release on github]: https://github.com/PlasmaPy/PlasmaPy/releases/new
+[create an issue for the release]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/create-release-issue.yml
 [create an issue for the next release]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/create-release-issue.yml
-[documentation]: https://docs.plasmapy/org/en/stable
+[documentation]: https://docs.plasmapy.org/en/stable
 [github action for checking hyperlinks]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/linkcheck.yml
 [list of tagged versions]: https://github.com/PlasmaPy/PlasmaPy/tags
 [milestones]: https://github.com/PlasmaPy/PlasmaPy/milestones
