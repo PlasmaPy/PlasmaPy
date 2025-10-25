@@ -81,7 +81,7 @@ optional-dependencies.docs = [
   "pillow>=12",
   "plasmapy-sphinx>=2025.5.1",
   "pygments==2.19.2",
-  "sphinx>=8.2.3,<8.3",
+  "sphinx>=8.2.3",
   "sphinx-changelog>=1.6",
   "sphinx-codeautolink==0.17.5",
   "sphinx-collapse>=0.1.3",
