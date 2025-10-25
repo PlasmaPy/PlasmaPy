@@ -232,6 +232,8 @@ with_coverage: tuple[str, ...] = (
     "xml:coverage.xml",
 )
 
+report_warnings_rather_than_treat_them_as_errors = ("-W", "once")
+
 skipslow: tuple[str, ...] = ("-m", "not slow")
 
 test_specifiers: list = [
@@ -255,6 +257,9 @@ def tests(session: nox.Session, test_specifier: nox._parametrize.Param) -> None:
 
     if test_specifier == "with code coverage":
         options += with_coverage
+
+    if test_specifier in {"lowest-direct", "lowest-direct-skipslow"}:
+        options += report_warnings_rather_than_treat_them_as_errors
 
     # Doctests are only run with the most recent versions of Python and
     # other dependencies because there may be subtle differences in the
