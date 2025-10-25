@@ -1,2 +1,0 @@
-Warnings issued during tests are now converted to errors, except when
-testing against the lowest allowed versions of direct dependencies.

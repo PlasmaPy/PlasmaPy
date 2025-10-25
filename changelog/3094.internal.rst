@@ -1,1 +1,0 @@
-Removed obsolete configuration settings from :file:`mypy.ini`.

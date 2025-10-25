@@ -1,3 +1,0 @@
-Removed the ``binding_energy`` attribute of |Particle|, which had
-previously been deprecated in favor
-of `~plasmapy.particles.particle_class.Particle.nuclear_binding_energy`.
