@@ -1,2 +1,0 @@
-Reduced the number of warnings reported during tests to zero when tests
-are run against the most recent versions of dependencies.

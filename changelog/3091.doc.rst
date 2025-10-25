@@ -1,1 +1,0 @@
-Set documentation builds in continuous integration tests to use Python 3.13.

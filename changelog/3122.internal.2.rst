@@ -1,3 +1,0 @@
-Added a |pre-commit| hook to update :file:`uv.lock` if any changes to
-requirements were made in :file:`pyproject.toml`. This hook is not run
-on ``pre-commit.ci`` because it requires network access.

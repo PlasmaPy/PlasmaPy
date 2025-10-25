@@ -1,2 +1,0 @@
-Removed some |pre-commit| hooks that are covered by |ruff| rules, such
-as ``python-check-blanket-noqa``.
