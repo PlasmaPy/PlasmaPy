@@ -72,8 +72,8 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
 
 - [ ] After activating a new virtual or conda environment, make sure that the released version installs correctly with `pip install --upgrade plasmapy`. 💻
 - [ ] Open Python and run `import plasmapy`, `dir(plasmapy)`, and `plasmapy.__version__`. 🐍
-- [ ] Verify that the new version can be installed with conda. 🧩
 - [ ] Verify that the new version can be installed with uv. 🌈
+- [ ] Run the workflow to [test installation via conda-forge]. 🧩
 
 ## After the release
 
@@ -99,6 +99,7 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
 [release checklist]: https://github.com/PlasmaPy/PlasmaPy/tree/main/.github/content/release-checklist.md
 [release history]: https://pypi.org/project/plasmapy/#history
 [stable documentation build]: https://docs.plasmapy.org/en/stable
+[test installation via conda-forge]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/conda.yml
 [tests]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/tests.yml
 [this record]: https://zenodo.org/doi/10.5281/zenodo.6774349
 [update pinned requirements]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/update-pinned-reqs.yml
