@@ -1,1 +1,1 @@
-Updated the release checklist following the `v2025.10.0` release.
+Updated the release checklist following the ``v2025.10.0`` release.
