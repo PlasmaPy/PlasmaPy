@@ -35,7 +35,9 @@ jobs:
         channels: conda-forge
 
     - name: Install PlasmaPy from conda-forge
-      run: conda install --yes plasmapy=${{ github.event.inputs.version }}
+      run: conda install --yes plasmapy=${GITHUB_EVENT_INPUTS_VERSION}
+      env:
+        GITHUB_EVENT_INPUTS_VERSION: ${{ github.event.inputs.version }}
 
     - name: Import PlasmaPy and print version
       run: python -c "import plasmapy; print(plasmapy.__version__)"
