@@ -28,9 +28,11 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
-    - run: pip install --upgrade plasmapy==${PLASMAPY_VERSION}
-      env:
-        PLASMAPY_VERSION: ${{ github.event.inputs.version }}
+    - name: Upgrade pip
+      run: pip install --upgrade pip
+
+    - name: Install PlasmaPy from PyPI
+      run: pip install --upgrade plasmapy==${{ github.event.inputs.version }} # zizmor: ignore[template-injection]
 
     - name: Import PlasmaPy and print version
       run: python -c "import plasmapy; print(plasmapy.__version__)"
@@ -57,9 +59,7 @@ jobs:
         enable-cache: false
 
     - name: Install PlasmaPy from PyPI via uv
-      run: uv pip install plasmapy==${PLASMAPY_VERSION}
-      env:
-        PLASMAPY_VERSION: ${{ github.event.inputs.version }}
+      run: uv pip install plasmapy==${{ github.event.inputs.version }}  # zizmor: ignore[template-injection]
 
     - name: Import PlasmaPy and print version
       run: python -c "import plasmapy; print(plasmapy.__version__)"
@@ -83,13 +83,11 @@ jobs:
     steps:
     - uses: conda-incubator/setup-miniconda@v3
       with:
-        python-version: ${{ matrix.python_version }}
+        python-version: ${{ matrix.python-version }}
         channels: conda-forge
 
     - name: Install PlasmaPy from conda-forge
-      run: conda install --yes plasmapy=${PLASMAPY_VERSION}
-      env:
-        PLASMAPY_VERSION: ${{ github.event.inputs.version }}
+      run: conda install --yes plasmapy=${{ github.event.inputs.version }}  # zizmor: ignore[template-injection]
 
     - name: Import PlasmaPy and print version
       run: python -c "import plasmapy; print(plasmapy.__version__)"
