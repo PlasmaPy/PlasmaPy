@@ -32,9 +32,12 @@ jobs:
       env:
         GITHUB_EVENT_INPUTS_VERSION: ${{ github.event.inputs.version }}
 
+    - name: Import PlasmaPy and print version
+      run: python -c "import plasmapy; print(plasmapy.__version__)"
+
   uv:
 
-    name: uv, v${{ github.event.inputs.version }}, py${{ matrix.python-version }}, ${{ matrix.os }}
+    name: uv, ${{ github.event.inputs.version }}, py${{ matrix.python-version }}, ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     timeout-minutes: 15
 
@@ -63,7 +66,7 @@ jobs:
 
   conda-forge:
 
-    name: conda-forge, v${{ github.event.inputs.version }}, py${{ matrix.python-version }}, ${{ matrix.os }}
+    name: conda-forge, ${{ github.event.inputs.version }}, py${{ matrix.python-version }}, ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     timeout-minutes: 15
 
