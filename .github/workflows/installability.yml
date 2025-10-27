@@ -12,6 +12,35 @@ permissions: {}
 
 jobs:
 
+  uv:
+
+    name: uv, v${{ github.event.inputs.version }}, py-${{ matrix.python-version }}, ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+
+    env:
+      UV_SYSTEM_PYTHON: 1
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+        python-version: ['3.12', '3.13', '3.14']
+
+    steps:
+    - name: Install uv and set the Python version
+      uses: astral-sh/setup-uv@v6
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install PlasmaPy from PyPI via uv
+      run: uv pip install plasmapy==${GITHUB_EVENT_INPUTS_VERSION}
+      env:
+        GITHUB_EVENT_INPUTS_VERSION: ${{ github.event.inputs.version }}
+
+    - name: Import PlasmaPy and print version
+      run: python -c "import plasmapy; print(plasmapy.__version__)"
+
   conda-forge:
 
     name: conda-forge, v${{ github.event.inputs.version }}, py-${{ matrix.python-version }}, ${{ matrix.os }}
@@ -42,31 +71,3 @@ jobs:
     - name: Import PlasmaPy and print version
       run: python -c "import plasmapy; print(plasmapy.__version__)"
 
-  uv:
-
-    name: uv, v${{ github.event.inputs.version }}, py-${{ matrix.python-version }}, ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-    timeout-minutes: 15
-
-    env:
-      UV_SYSTEM_PYTHON: 1
-
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [windows-latest, macos-latest, ubuntu-latest]
-        python-version: ['3.12', '3.13', '3.14']
-
-    steps:
-    - name: Install uv and set the Python version
-      uses: astral-sh/setup-uv@v6
-      with:
-        python-version: ${{ matrix.python-version }}
-
-    - name: Install PlasmaPy from PyPI via uv
-      run: uv pip install plasmapy==${GITHUB_EVENT_INPUTS_VERSION}
-      env:
-        GITHUB_EVENT_INPUTS_VERSION: ${{ github.event.inputs.version }}
-
-    - name: Import PlasmaPy and print version
-      run: python -c "import plasmapy; print(plasmapy.__version__)"
