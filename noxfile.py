@@ -753,7 +753,9 @@ def lint(session: nox.Session) -> None:
 zizmor_troubleshooting_message = """
 
 🪧 Run this check locally with `nox -s zizmor` to find potential
-security vulnerabilities in GitHub workflows.
+security vulnerabilities in GitHub workflows and perform safe fixes.
+
+🧰 Perform safe and unsafe fixes with `nox -s zizmor -- --fix=all`.
 
 📜 Audit rules: https://woodruffw.github.io/zizmor/audits
 
@@ -767,19 +769,28 @@ or add the appropriate configuration settings to: .github/zizmor.yml
 @nox.session
 def zizmor(session: nox.Session) -> None:
     """
-    Find common security issues in GitHub Actions.
+    Find common security issues in GitHub Actions and perform safe fixes.
 
     Because some of the zizmor audit rules require a GitHub token,
     running this check locally may produce different results than
     running it in CI.
 
+    To perform unsafe fixes, run `nox -s zizmor -- --fix=all`.
+
     Configuration file: .github/zizmor.yml
     """
-    if running_on_ci:
-        session.log(zizmor_troubleshooting_message)
+    session.log(zizmor_troubleshooting_message)
+
+    args = ["--no-progress", "--color=auto", *session.posargs]
+    if not session.posargs:
+        args.append("--fix=safe")
 
     session.install("zizmor")
-    session.run("zizmor", ".github", "--no-progress", "--color=auto", *session.posargs)
+    session.run(
+        "zizmor",
+        ".github",
+        *args,
+    )
 
 
 if __name__ == "__main__":
