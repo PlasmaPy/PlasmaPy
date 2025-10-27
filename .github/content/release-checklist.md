@@ -83,8 +83,8 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
 [comprehensive tests]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/ci-comprehensive.yml
 [conda-forge feedstock]: https://github.com/conda-forge/plasmapy-feedstock
 [create a release on github]: https://github.com/PlasmaPy/PlasmaPy/releases/new
-[create an issue for the release]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/create-release-issue.yml
 [create an issue for the next release]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/create-release-issue.yml
+[create an issue for the release]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/create-release-issue.yml
 [documentation]: https://docs.plasmapy.org/en/stable
 [github action for checking hyperlinks]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/linkcheck.yml
 [gitmailmap documentation]: https://git-scm.com/docs/gitmailmap
@@ -103,8 +103,8 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
 [versions page on rtd]: https://readthedocs.org/projects/plasmapy/versions/
 [zenodo]: https://zenodo.org/me/uploads
 [`.mailmap`]: https://github.com/PlasmaPy/PlasmaPy/blob/main/.mailmap
+[`.pre-commit-config.yaml`]: https://github.com/PlasmaPy/PlasmaPy/blob/main/.pre-commit-config.yaml
 [`citation.cff`]: https://github.com/PlasmaPy/PlasmaPy/blob/main/CITATION.cff
 [`docs/conf.py`]: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/conf.py
-[`.pre-commit-config.yaml`]: https://github.com/PlasmaPy/PlasmaPy/blob/main/.pre-commit-config.yaml
 [`recipe/meta.yaml`]: https://github.com/conda-forge/plasmapy-feedstock/blob/main/recipe/meta.yaml
 [`stable`]: https://github.com/PlasmaPy/PlasmaPy/tree/stable
