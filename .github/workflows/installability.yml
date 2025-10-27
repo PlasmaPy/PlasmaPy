@@ -1,4 +1,4 @@
-name: Install PlasmaPy release
+name: Installability
 
 on:
   workflow_dispatch:
@@ -12,9 +12,29 @@ permissions: {}
 
 jobs:
 
+  pip:
+    name: pip, v${{ github.event.inputs.version }}, py${{ matrix.python-version }}, ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+        python-version: ['3.12', '3.13', '3.14']
+
+    steps:
+    - uses: actions/setup-python@v6
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - run: pip install --upgrade plasmapy==${GITHUB_EVENT_INPUTS_VERSION}
+      env:
+        GITHUB_EVENT_INPUTS_VERSION: ${{ github.event.inputs.version }}
+
   uv:
 
-    name: uv, v${{ github.event.inputs.version }}, py-${{ matrix.python-version }}, ${{ matrix.os }}
+    name: uv, v${{ github.event.inputs.version }}, py${{ matrix.python-version }}, ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     timeout-minutes: 15
 
@@ -43,7 +63,7 @@ jobs:
 
   conda-forge:
 
-    name: conda-forge, v${{ github.event.inputs.version }}, py-${{ matrix.python-version }}, ${{ matrix.os }}
+    name: conda-forge, v${{ github.event.inputs.version }}, py${{ matrix.python-version }}, ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     timeout-minutes: 15
 
@@ -70,4 +90,3 @@ jobs:
 
     - name: Import PlasmaPy and print version
       run: python -c "import plasmapy; print(plasmapy.__version__)"
-
