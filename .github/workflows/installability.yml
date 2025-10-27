@@ -32,7 +32,7 @@ jobs:
       run: pip install --upgrade pip
 
     - name: Install PlasmaPy from PyPI
-      run: pip install --upgrade plasmapy==${{ github.event.inputs.version }} # zizmor: ignore[template-injection]
+      run: pip install --upgrade plasmapy==${{ github.event.inputs.version }}  # zizmor: ignore[template-injection]
 
     - name: Import PlasmaPy and print version
       run: python -c "import plasmapy; print(plasmapy.__version__)"
