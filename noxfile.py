@@ -439,7 +439,7 @@ def docs_bundle_htmlzip(session: nox.Session) -> None:
 
     cwd = pathlib.Path.cwd()
     session.chdir(f"{READTHEDOCS_OUTPUT / 'htmlzip'}")
-    session.run("zip", "-r", "-m", f"{zip_name}", ".")
+    session.run("zip", "-r", "-m", f"{zip_name}", ".", external=True)
     session.chdir(f"{cwd}")
 
     session.log(f"The htmlzip was placed in: {READTHEDOCS_OUTPUT / 'htmlzip'}")
