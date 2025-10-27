@@ -28,9 +28,7 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
-    - run: pip install --upgrade plasmapy==${GITHUB_EVENT_INPUTS_VERSION}
-      env:
-        GITHUB_EVENT_INPUTS_VERSION: ${{ github.event.inputs.version }}
+    - run: pip install --upgrade plasmapy==${{ github.event.inputs.version }}
 
     - name: Import PlasmaPy and print version
       run: python -c "import plasmapy; print(plasmapy.__version__)"
@@ -55,11 +53,10 @@ jobs:
       uses: astral-sh/setup-uv@v6
       with:
         python-version: ${{ matrix.python-version }}
+        activate-environment: true
 
     - name: Install PlasmaPy from PyPI via uv
-      run: uv pip install plasmapy==${GITHUB_EVENT_INPUTS_VERSION}
-      env:
-        GITHUB_EVENT_INPUTS_VERSION: ${{ github.event.inputs.version }}
+      run: uv pip install plasmapy==${{ github.event.inputs.version }}
 
     - name: Import PlasmaPy and print version
       run: python -c "import plasmapy; print(plasmapy.__version__)"
