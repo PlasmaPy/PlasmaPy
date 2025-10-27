@@ -5,14 +5,17 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
 - [x] [Create an issue for the release]. 📝
 - [ ] Update [milestones] for issues & pull requests (PRs). 🛣️
 
-### Quality assurance checks (optional but recommended)
+### Quality assurance checks (low priority)
 
-- [ ] Run the [upstream tests] and fix failures, as appropriate. These checks run tests and build documentation against unreleased versions of core dependencies. [![upstream tests](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/ci-upstream.yml/badge.svg)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/ci-upstream.yml)
 - [ ] Run the [GitHub Action for checking hyperlinks], and update broken links. Use `linkcheck_allowed_redirects` in [`docs/conf.py`] to allow redirects (e.g., from `doi.org`). Update or delete the `alias` field for authors in [`CITATION.cff`] who have changed their GitHub username. 🔗
 - [ ] Run `git log --format="%aN <%aE>" | sort -u`, and update [`.mailmap`] if there are any duplicate contributors in the output ([gitmailmap documentation]). 📫
-- [ ] [Update pinned requirements] in `uv.lock`. 📍
+
+### Quality assurance checks (high priority)
+
+- [ ] [Update pinned requirements] in `uv.lock`, and fix new test failures. 📍
 - [ ] Run `pre-commit autoupdate` followed by `pre-commit run --all-files`. Fix new errors and commit the changes. 🧹
   - Occasionally, certain hooks may need to be manually downgraded after running `pre-commit autoupdate` because of problems with the latest versions of these hooks. Look for comments in [`.pre-commit-config.yaml`] for guidance. 🪝
+- [ ] Run the [upstream tests] and fix failures, as appropriate. These checks run tests and build documentation against unreleased versions of core dependencies. [![upstream tests](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/ci-upstream.yml/badge.svg)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/ci-upstream.yml)
 
 ### Perform the release
 
