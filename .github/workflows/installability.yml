@@ -13,7 +13,7 @@ permissions: {}
 jobs:
 
   pip:
-    name: pip, v${{ github.event.inputs.version }}, py${{ matrix.python-version }}, ${{ matrix.os }}
+    name: pip, ${{ github.event.inputs.version }}, py${{ matrix.python-version }}, ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     timeout-minutes: 15
 
@@ -28,7 +28,9 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
-    - run: pip install --upgrade plasmapy==${{ github.event.inputs.version }}
+    - run: pip install --upgrade plasmapy==${PLASMAPY_VERSION}
+      env:
+        PLASMAPY_VERSION: ${{ github.event.inputs.version }}
 
     - name: Import PlasmaPy and print version
       run: python -c "import plasmapy; print(plasmapy.__version__)"
@@ -55,7 +57,9 @@ jobs:
         enable-cache: false
 
     - name: Install PlasmaPy from PyPI via uv
-      run: uv pip install plasmapy==${{ github.event.inputs.version }}
+      run: uv pip install plasmapy==${PLASMAPY_VERSION}
+      env:
+        PLASMAPY_VERSION: ${{ github.event.inputs.version }}
 
     - name: Import PlasmaPy and print version
       run: python -c "import plasmapy; print(plasmapy.__version__)"
@@ -83,9 +87,9 @@ jobs:
         channels: conda-forge
 
     - name: Install PlasmaPy from conda-forge
-      run: conda install --yes plasmapy=${GITHUB_EVENT_INPUTS_VERSION}
+      run: conda install --yes plasmapy=${PLASMAPY_VERSION}
       env:
-        GITHUB_EVENT_INPUTS_VERSION: ${{ github.event.inputs.version }}
+        PLASMAPY_VERSION: ${{ github.event.inputs.version }}
 
     - name: Import PlasmaPy and print version
       run: python -c "import plasmapy; print(plasmapy.__version__)"
