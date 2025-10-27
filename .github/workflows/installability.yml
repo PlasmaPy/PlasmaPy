@@ -51,6 +51,8 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
         activate-environment: true
+        ignore-empty-workdir: true
+        enable-cache: false
 
     - name: Install PlasmaPy from PyPI via uv
       run: uv pip install plasmapy==${{ github.event.inputs.version }}
