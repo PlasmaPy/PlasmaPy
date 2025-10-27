@@ -769,13 +769,14 @@ or add the appropriate configuration settings to: .github/zizmor.yml
 @nox.session
 def zizmor(session: nox.Session) -> None:
     """
-    Find common security issues in GitHub Actions and perform safe fixes.
+    Find common security issues in GitHub Actions.
 
     Because some of the zizmor audit rules require a GitHub token,
     running this check locally may produce different results than
     running it in CI.
 
-    To perform unsafe fixes, run `nox -s zizmor -- --fix=all`.
+    If no positional arguments are provided, safe fixes will be applied.
+    To perform unsafe fixes, run `nox -s zizmor -- --fix=unsafe-only`.
 
     Configuration file: .github/zizmor.yml
     """
