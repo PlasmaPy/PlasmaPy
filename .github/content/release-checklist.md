@@ -5,13 +5,14 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
 - [x] [Create an issue for the release]. 📝
 - [ ] Update [milestones] for issues & pull requests (PRs). 🛣️
 
-### Code quality updates (optional, but recommended)
+### Quality assurance checks (optional but recommended)
 
-- [ ] Run the [upstream tests] and fix any failures, as appropriate. [![upstream tests](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/ci-upstream.yml/badge.svg)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/ci-upstream.yml) These tests help us find and fix breaking changes before they make it into production. 🔮
+- [ ] Run the [upstream tests] and fix failures, as appropriate. These checks run tests and build documentation against unreleased versions of core dependencies. [![upstream tests](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/ci-upstream.yml/badge.svg)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/ci-upstream.yml)
 - [ ] Run the [GitHub Action for checking hyperlinks], and update broken links. Use `linkcheck_allowed_redirects` in [`docs/conf.py`] to allow redirects (e.g., from `doi.org`). Update or delete the `alias` field for authors in [`CITATION.cff`] who have changed their GitHub username. 🔗
-- [ ] Run `git log --format="%aN <%aE>" | sort -u`, and update [`.mailmap`] if there are any duplicate contributors in the output. 📫
+- [ ] Run `git log --format="%aN <%aE>" | sort -u`, and update [`.mailmap`] if there are any duplicate contributors in the output ([gitmailmap documentation]). 📫
 - [ ] [Update pinned requirements] in `uv.lock`. 📍
 - [ ] Run `pre-commit autoupdate` followed by `pre-commit run --all-files`. Fix new errors and commit the changes. 🧹
+  - Occasionally, certain hooks may need to be manually downgraded after running `pre-commit autoupdate` because of problems with the latest versions of these hooks. Look for comments in [`.pre-commit-config.yaml`] for guidance. 🪝
 
 ### Perform the release
 
@@ -75,7 +76,7 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
 
 - [ ] Update the [release checklist], as needed. 📋
   - An example changelog entry is: "Updated the release checklist following the `v2026.1.0` release." ✍️
-- [ ] [Create an issue for the next release]. ⏳
+- [ ] [Create an issue for the next release], and then [pin the issue]. ⏳
 - [ ] Close this issue. 🏁
 
 [citation page]: https://docs.plasmapy.org/en/stable/about/citation.html
@@ -86,8 +87,10 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
 [create an issue for the next release]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/create-release-issue.yml
 [documentation]: https://docs.plasmapy.org/en/stable
 [github action for checking hyperlinks]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/linkcheck.yml
+[gitmailmap documentation]: https://git-scm.com/docs/gitmailmap
 [list of tagged versions]: https://github.com/PlasmaPy/PlasmaPy/tags
 [milestones]: https://github.com/PlasmaPy/PlasmaPy/milestones
+[pin the issue]: https://docs.github.com/en/issues/tracking-your-work-with-issues/administering-issues/pinning-an-issue-to-your-repository
 [prepare a release]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/prepare-release-pr.yml
 [publish to pypi]: https://github.com/PlasmaPy/PlasmaPy/blob/main/.github/workflows/publish-to-pypi.yml
 [release checklist]: https://github.com/PlasmaPy/PlasmaPy/tree/main/.github/content/release-checklist.md
@@ -102,5 +105,6 @@ This issue contains the procedure for releasing a new version of PlasmaPy.
 [`.mailmap`]: https://github.com/PlasmaPy/PlasmaPy/blob/main/.mailmap
 [`citation.cff`]: https://github.com/PlasmaPy/PlasmaPy/blob/main/CITATION.cff
 [`docs/conf.py`]: https://github.com/PlasmaPy/PlasmaPy/blob/main/docs/conf.py
+[`.pre-commit-config.yaml`]: https://github.com/PlasmaPy/PlasmaPy/blob/main/.pre-commit-config.yaml
 [`recipe/meta.yaml`]: https://github.com/conda-forge/plasmapy-feedstock/blob/main/recipe/meta.yaml
 [`stable`]: https://github.com/PlasmaPy/PlasmaPy/tree/stable
