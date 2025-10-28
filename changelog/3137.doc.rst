@@ -1,0 +1,1 @@
+Drop ``sphinx.ext.graphviz`` to speed up documentation builds in CI.
