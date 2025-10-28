@@ -323,7 +323,6 @@ when you :py:`import plasmapy`.
 .. _frequently used Unix commands: https://www.geeksforgeeks.org/linux-unix/essential-linuxunix-commands/
 .. _git commands for setup and config: https://git-scm.com/book/en/v2/Appendix-C%3A-Git-Commands-Setup-and-Config
 .. _install git: https://git-scm.com/book/en/v2/Getting-Started-Installing-Git
-.. _install Graphviz: https://graphviz.org/download
 .. _install pandoc: https://pandoc.org/installing.html
 .. _installing Anaconda Navigator: https://www.anaconda.com/docs/tools/anaconda-navigator/install
 .. _installing Conda: https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html

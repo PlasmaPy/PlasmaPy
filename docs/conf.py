@@ -90,7 +90,6 @@ extensions = [
     "notfound.extension",
     "sphinx.ext.duration",
     "sphinx.ext.extlinks",
-    "sphinx.ext.graphviz",
     "sphinx.ext.intersphinx",
     "sphinx.ext.mathjax",
     "sphinx.ext.napoleon",

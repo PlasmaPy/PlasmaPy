@@ -1052,7 +1052,6 @@ extensions:
 * `sphinx.ext.autodoc` for including documentation from docstrings.
 * `sphinx.ext.extlinks` for shortening links to external sites (e.g.,
   :rst:role:`orcid` and :rst:role:`wikipedia`).
-* `sphinx.ext.graphviz` to allow Graphviz_ graphs to be included.
 * `sphinx.ext.intersphinx` for linking to other projects' documentation.
 * `sphinx.ext.mathjax` for math rendering with MathJax_.
 * `sphinx.ext.napoleon` for allowing NumPy style docstrings.
@@ -1313,7 +1312,6 @@ running:
 
 It may also be necessary to install the following software:
 
-* `graphviz <https://graphviz.org/download>`__
 * `pandoc <https://pandoc.org/installing.html>`__
 * make_ (not necessary for building the documentation with |Nox| or
   sphinx_build)
@@ -1599,7 +1597,6 @@ example Jupyter notebooks, the tables of contents are in
 .. _doctests: https://docs.pytest.org/en/6.2.x/doctest.html
 .. _full list of emoji codes: https://sphinxemojicodes.readthedocs.io/en/stable/#supported-codes
 .. _GitHub Flavored Markdown: https://github.github.com/gfm
-.. _Graphviz: https://graphviz.org
 .. _intersphinx: https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html
 .. _issues: https://github.com/PlasmaPy/PlasmaPy/issues
 .. _metadata field: https://www.sphinx-doc.org/en/master/usage/restructuredtext/field-lists.html#special-metadata-fields
