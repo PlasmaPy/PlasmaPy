@@ -343,13 +343,17 @@ sphinx_base_command: list[str] = [
     doc_build_dir,
     "--nitpicky",
     "--keep-going",
+    "--show-traceback",
 ]
 
 if not running_on_rtd:
     sphinx_base_command.extend(
         [
             "--fail-on-warning",
+            "--exception-on-warning",
+            "--verbose",
 #            "--quiet",
+
         ]
     )
 
