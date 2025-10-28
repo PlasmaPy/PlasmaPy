@@ -100,14 +100,22 @@ jobs:
       with:
         persist-credentials: false
 
+    - name: Install graphviz and pandoc for doc builds
+      if: contains(matrix.nox_session, 'docs')
+      # This step uses `apt`, so Ubuntu is required for documentation builds.
+      uses: awalsh128/cache-apt-pkgs-action@acb598e5ddbc6f68a970c5da0688d2f3a9f04d05
+      with:
+        packages: graphviz pandoc
+        version: latest
+
     - name: Install uv
       uses: astral-sh/setup-uv@v7
       with:
         python-version: ${{ matrix.python }}
-        enable-cache: true
+        enable-cache: true  # zizmor: ignore[cache-poisoning]
         cache-suffix: ${{ matrix.nox_session }}-${{ matrix.python }}-${{ runner.os }}
 
-    - name: Run Nox session
+    - name: Run the check
       run: uvx nox -s '${{ matrix.nox_session }}'
 
     - name: Upload coverage reports to Codecov
