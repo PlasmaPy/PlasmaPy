@@ -95,7 +95,7 @@ jobs:
         init-shell: bash
         environment-name: micromamba-env
         cache-environment: true
-        post-cleanup: 'all'
+        post-cleanup: all
 
     - name: Install uv
       uses: astral-sh/setup-uv@v7
