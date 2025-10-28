@@ -349,7 +349,7 @@ if not running_on_rtd:
     sphinx_base_command.extend(
         [
             "--fail-on-warning",
-            "--quiet",
+#            "--quiet",
         ]
     )
 
