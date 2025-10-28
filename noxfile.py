@@ -352,8 +352,7 @@ if not running_on_rtd:
             "--fail-on-warning",
             "--exception-on-warning",
             "--verbose",
-#            "--quiet",
-
+            #            "--quiet",
         ]
     )
 
