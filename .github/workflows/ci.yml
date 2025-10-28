@@ -94,6 +94,7 @@ jobs:
       with:
         create-args: graphviz pandoc -c conda-forge
         init-shell: bash powershell
+        environment-name: micromamba-env
         cache-environment: true
         post-cleanup: 'all'
 
