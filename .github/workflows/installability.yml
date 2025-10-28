@@ -1,0 +1,93 @@
+name: Installability
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version of PlasmaPy to install from conda-forge
+        required: true
+        default: 2025.10.0
+
+permissions: {}
+
+jobs:
+
+  pip:
+    name: pip, ${{ github.event.inputs.version }}, py${{ matrix.python-version }}, ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+        python-version: ['3.12', '3.13', '3.14']
+
+    steps:
+    - uses: actions/setup-python@v6
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Upgrade pip
+      run: python -m pip install --upgrade pip
+
+    - name: Install PlasmaPy from PyPI
+      run: python -m pip install --upgrade plasmapy==${{ github.event.inputs.version }}  # zizmor: ignore[template-injection]
+
+    - name: Import PlasmaPy and print version
+      run: python -c "import plasmapy; print(plasmapy.__version__)"
+
+  uv:
+
+    name: uv, ${{ github.event.inputs.version }}, py${{ matrix.python-version }}, ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+        python-version: ['3.12', '3.13', '3.14']
+
+    steps:
+    - name: Install uv and set the Python version
+      uses: astral-sh/setup-uv@v6
+      with:
+        python-version: ${{ matrix.python-version }}
+        activate-environment: true
+        ignore-empty-workdir: true
+        enable-cache: false
+
+    - name: Install PlasmaPy from PyPI via uv
+      run: uv pip install plasmapy==${{ github.event.inputs.version }}  # zizmor: ignore[template-injection]
+
+    - name: Import PlasmaPy and print version
+      run: python -c "import plasmapy; print(plasmapy.__version__)"
+
+  conda-forge:
+
+    name: conda-forge, ${{ github.event.inputs.version }}, py${{ matrix.python-version }}, ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+
+    defaults:
+      run:
+        shell: bash -el {0}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+        python-version: ['3.12', '3.13', '3.14']
+
+    steps:
+    - uses: conda-incubator/setup-miniconda@v3
+      with:
+        python-version: ${{ matrix.python-version }}
+        channels: conda-forge
+
+    - name: Install PlasmaPy from conda-forge
+      run: conda install --yes plasmapy=${{ github.event.inputs.version }}  # zizmor: ignore[template-injection]
+
+    - name: Import PlasmaPy and print version
+      run: python -c "import plasmapy; print(plasmapy.__version__)"
