@@ -57,7 +57,7 @@ jobs:
           nox_session: tests-3.12(lowest-direct-skipslow)
 
         - name: Documentation, Python 3.13, Ubuntu
-          os: ubuntu-latest
+          os: ubuntu-latest  # apt is needed to install graphviz & pandoc
           python: '3.13'
           nox_session: docs
 
@@ -88,20 +88,12 @@ jobs:
       with:
         persist-credentials: false
 
-    - name: Install graphviz and pandoc for doc builds
+    - name: Install graphviz and pandoc (requires Ubuntu)
       if: contains(matrix.nox_session, 'docs')
-      uses: awalsh128/cache-apt-pkgs-action@v1
+      uses: awalsh128/cache-apt-pkgs-action@acb598e5ddbc6f68a970c5da0688d2f3a9f04d05
       with:
         packages: graphviz pandoc
         version: latest
-
-    - name: Verify graphviz and pandoc installation
-      if: contains(matrix.nox_session, 'docs')
-      run: |
-        which dot
-        dot -V
-        which pandoc
-        pandoc --version
 
     - name: Install uv
       uses: astral-sh/setup-uv@v7
