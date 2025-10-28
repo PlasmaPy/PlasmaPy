@@ -95,6 +95,14 @@ jobs:
         packages: graphviz pandoc
         version: latest
 
+    - name: Verify graphviz and pandoc installation
+      if: contains(matrix.nox_session, 'docs')
+      run: |
+        which dot
+        dot -V
+        which pandoc
+        pandoc --version
+
     - name: Install uv
       uses: astral-sh/setup-uv@v7
       with:
