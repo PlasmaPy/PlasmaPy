@@ -93,7 +93,7 @@ jobs:
       if: ${{ contains(matrix.nox_session, 'docs') }}
       with:
         create-args: graphviz pandoc -c conda-forge
-        init-shell: bash powershell
+        init-shell: bash
         environment-name: micromamba-env
         cache-environment: true
         post-cleanup: 'all'
@@ -106,7 +106,7 @@ jobs:
         cache-suffix: ${{ matrix.nox_session }}-${{ matrix.python }}-${{ runner.os }}
 
     - name: Run the check
-      shell: bash
+      shell: bash -el {0}
       run: uvx nox -s '${{ matrix.nox_session }}'
 
     - name: Upload coverage reports to Codecov
