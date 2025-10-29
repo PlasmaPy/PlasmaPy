@@ -93,6 +93,11 @@ jobs:
           python: '3.14'
           nox_session: lint
 
+        - name: Documentation, Python 3.13, Windows
+          os: windows-latest
+          python: '3.13'
+          nox_session: docs
+
     steps:
 
     - name: Checkout code
@@ -100,14 +105,25 @@ jobs:
       with:
         persist-credentials: false
 
+    - name: Install graphviz and pandoc for doc builds
+      if: ${{ contains(matrix.nox_session, 'docs') }}
+      uses: mamba-org/setup-micromamba@v2
+      with:
+        create-args: graphviz pandoc -c conda-forge
+        init-shell: bash
+        environment-name: micromamba-env
+        cache-environment: true
+        post-cleanup: all
+
     - name: Install uv
       uses: astral-sh/setup-uv@v7
       with:
         python-version: ${{ matrix.python }}
-        enable-cache: true
+        enable-cache: true  # zizmor: ignore[cache-poisoning]
         cache-suffix: ${{ matrix.nox_session }}-${{ matrix.python }}-${{ runner.os }}
 
-    - name: Run Nox session
+    - name: Run Nox session ${{ matrix.nox_session }}
+      shell: bash -el {0}
       run: uvx nox -s '${{ matrix.nox_session }}'
 
     - name: Upload coverage reports to Codecov

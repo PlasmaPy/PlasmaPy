@@ -88,16 +88,15 @@ jobs:
       with:
         persist-credentials: false
 
-    - name: Install Graphviz for doc builds
-      if: contains(matrix.nox_session, 'docs')
-      uses: ts-graphviz/setup-graphviz@v2
-
-    - name: Install pandoc for doc builds
-      # This step requires Ubuntu
-      if: contains(matrix.nox_session, 'docs')
-      run: |
-        sudo apt update
-        sudo apt-get install -y pandoc
+    - name: Install graphviz and pandoc for doc builds
+      if: ${{ contains(matrix.nox_session, 'docs') }}
+      uses: mamba-org/setup-micromamba@v2
+      with:
+        create-args: graphviz pandoc -c conda-forge
+        init-shell: bash
+        environment-name: micromamba-env
+        cache-environment: true
+        post-cleanup: all
 
     - name: Install uv
       uses: astral-sh/setup-uv@v7
@@ -106,7 +105,8 @@ jobs:
         enable-cache: true  # zizmor: ignore[cache-poisoning]
         cache-suffix: ${{ matrix.nox_session }}-${{ matrix.python }}-${{ runner.os }}
 
-    - name: Run the check
+    - name: Run Nox session ${{ matrix.nox_session }}
+      shell: bash -el {0}
       run: uvx nox -s '${{ matrix.nox_session }}'
 
     - name: Upload coverage reports to Codecov

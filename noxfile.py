@@ -378,6 +378,9 @@ def docs(session: nox.Session) -> None:
     if running_on_ci:
         session.log(doc_troubleshooting_message)
 
+    session.run_install("dot", "-V", external=True)
+    session.run_install("pandoc", "--version", external=True)
+
     session.run_install(
         *uv_sync,
         "--extra=docs",
