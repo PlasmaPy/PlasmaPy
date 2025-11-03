@@ -130,7 +130,7 @@ repos:  # https://pre-commit.com/#adding-pre-commit-plugins-to-your-project
 
 - repo: https://github.com/hukkin/mdformat
   # some plugins require mdformat<0.8, so pin mdformat at 0.7.22 for now
-  rev: 1.0.0
+  rev: 0.7.22
   hooks:
   - id: mdformat
     name: format .md files
