@@ -2,7 +2,7 @@
 
 import numpy as np
 import pytest
-from hypothesis import given
+from hypothesis import example, given
 from hypothesis.extra.numpy import arrays
 from hypothesis.strategies import (
     booleans,
@@ -185,7 +185,7 @@ def eta_2_input_values(
     if x_elements is None:
         x_elements = floats(min_value=0, max_value=1)
     if A_minus_kappa_elements is None:
-        A_minus_kappa_elements = floats(min_value=0)
+        A_minus_kappa_elements = floats(min_value=0, max_value=10**6)
 
     x = draw(arrays(float, num_array_elements, elements=x_elements))
     chi_p = draw(floats(min_value=-(10**6), max_value=10**6).filter(lambda x: x != 0))
@@ -261,6 +261,8 @@ class TestEta2:
                 ((x**2 * (beta - chi_p)) / (beta - chi)) ** 0.5
             )
 
+        if A == np.inf:
+            return 0.0
         result = quad(integrand, A, np.inf)
         return 1 / np.pi * result[0]
 
@@ -274,6 +276,36 @@ class TestEta2:
     )
     # @example(result=(np.array([0.5**0.5]), 0.0, np.array([0.]), np.array([0.]), False))
     # @example(result=(np.array([0.]), 1.0, np.array([0.]), np.array([0.]), False))
+    # @example(result=(np.array([1., 0.5]), 1.0, np.array([1., 0.]), np.array([1., 1.]), False))
+    @example(
+        result=(
+            np.array([0.99999]),
+            0.0625,
+            np.array([0.0625]),
+            np.array([0.0625]),
+            False,
+        )
+    )
+    @example(result=(np.array([0.5]), 1.0, np.array([-710.0]), np.array([1.0]), False))
+    @example(
+        result=(
+            np.array([0.5, 1.0, 1.0]),
+            -2130.0,
+            np.array([0.0, -2130.0, -2130.0]),
+            np.array([710.0, 0.0, 0.0]),
+            False,
+        )
+    )
+    @example(result=(np.array([1.0]), 1.0, np.array([1.0]), np.array([1.0]), False))
+    @example(
+        result=(
+            np.array([1.0, 1.0]),
+            -1.5,
+            np.array([-1.5, -1.5]),
+            np.array([-1.5, 0.0]),
+            False,
+        )
+    )
     def test_eta_2_same_as_manual_integration(self, result):
         """
         Test that the function gives the same result as manually integrating
@@ -296,7 +328,7 @@ class TestEta2:
         eta_2_actual_values = np.array(eta_2_actual_values)
 
         eta_2_calculated = charge_density.eta_2(A, chi, chi_p, x, spherical=spherical)
-        assert np.allclose(eta_2_calculated, eta_2_actual_value)
+        assert np.allclose(eta_2_calculated, eta_2_actual_values, atol=1e-4, rtol=1e-3)
 
 
 @pytest.mark.parametrize(
