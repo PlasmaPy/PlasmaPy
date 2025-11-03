@@ -53,8 +53,9 @@ mu = m_p.to(u.u).value
         ([0, 1] * u.eV, [1, 0] * u.cm**-3, [0, np.inf] * u.m),
     ],
 )
-@pytest.mark.filterwarnings("ignore::astropy.units.UnitsWarning")
-def test_Debye_length(T_e, n_e, expected):
+@pytest.mark.filterwarnings("ignore:.*no specified units.*:astropy.units.UnitsWarning")
+@pytest.mark.filterwarnings("ignore:.*divide by zero.*:RuntimeWarning")
+def test_Debye_length(T_e, n_e, expected) -> None:
     result = Debye_length(T_e=T_e, n_e=n_e)
     assert_quantity_allclose(result, expected, rtol=1e-6, equal_nan=True, verbose=True)
     assert result.unit == u.m
@@ -69,7 +70,7 @@ def test_Debye_length(T_e, n_e, expected):
         (1 * u.kg, 5 * u.m**-3, u.UnitTypeError),
     ],
 )
-def test_Debye_length_errors(T_e, n_e, expected):
+def test_Debye_length_errors(T_e, n_e, expected) -> None:
     with pytest.raises(expected):
         Debye_length(T_e=T_e, n_e=n_e)
 
@@ -81,7 +82,7 @@ def test_Debye_length_errors(T_e, n_e, expected):
         (5 * u.K, 5, u.UnitsWarning),
     ],
 )
-def test_Deybe_length_warnings(T_e, n_e, expected_warning):
+def test_Deybe_length_warnings(T_e, n_e, expected_warning) -> None:
     with pytest.warns(expected_warning):
         Debye_length(T_e=T_e, n_e=n_e)
 
@@ -332,8 +333,8 @@ class TestGyroradius:
     def test_warns(self, args, kwargs, expected, _warns) -> None:
         with pytest.warns(_warns):
             rc = gyroradius(*args, **kwargs)
-            if expected is not None:
-                assert np.allclose(rc, expected)
+        if expected is not None:
+            assert np.allclose(rc, expected)
 
     def test_keeps_arguments_unchanged(self) -> None:
         Vperp1 = u.Quantity([np.nan, 1], unit=u.m / u.s)
@@ -390,9 +391,7 @@ def test_inertial_length() -> None:
 
     with pytest.warns(u.UnitsWarning):
         inertial_length_no_units = inertial_length(1e19, particle="p+")
-        assert inertial_length_no_units == inertial_length(
-            1e19 * u.m**-3, particle="p+"
-        )
+    assert inertial_length_no_units == inertial_length(1e19 * u.m**-3, particle="p+")
 
     assert inertial_length(n_e, "e-").unit.is_equivalent(u.m)
 

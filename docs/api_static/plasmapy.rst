@@ -1,7 +1,7 @@
 :orphan:
 
-PlasmaPy: An Python package for plasma research and education
-=============================================================
+PlasmaPy
+========
 
 .. currentmodule:: plasmapy
 

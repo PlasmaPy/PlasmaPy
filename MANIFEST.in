@@ -1,5 +1,7 @@
+# MANIFEST.in specifies the files are to be included in the source
+# distribution (sdist) of PlasmaPy.
+
 graft changelog
-graft ci_requirements
 graft docs
 graft licenses
 graft src
@@ -7,7 +9,6 @@ graft tests
 graft tools
 graft type_stubs
 
-include *.ini
 include *.ini *.toml *.yaml *.yml
 include *.md
 include *.py
@@ -21,9 +22,20 @@ include binder/requirements.txt
 include CITATION.cff
 include CODEOWNERS
 
-global-exclude _build build _authors.rst _version.py
+global-exclude _authors.rst
 global-exclude *.o *.py[cod]
+global-exclude uv.lock
 
-# Only for editable installs
+prune **/_build
+prune **/build
 prune docs/api
+
+# The following directory is only used to get the version right for
+# editable installations.
+
 prune src/plasmapy/_dev
+
+# The following file needs to be in the sdist so that the version
+# appears correctly on Read the Docs.
+
+include src/plasmapy/_version.py

@@ -129,6 +129,9 @@ class Test_Coulomb_logarithm:
                 V=0 * u.m / u.s,
             )
 
+    @pytest.mark.filterwarnings(
+        "ignore:.*speed of light.*:plasmapy.utils.exceptions.RelativityWarning"
+    )
     def test_handle_V_arraysizes(self) -> None:
         """Test that different sized V input array gets handled by _boilerplate"""
         with pytest.warns(CouplingWarning):
@@ -310,8 +313,7 @@ class Test_Coulomb_logarithm:
             )
         testTrue = np.isclose(methodVal, self.gms1, rtol=1e-6, atol=0.0)
         errStr = (
-            f"Coulomb logarithm for GMS-1 should be "
-            f"{self.gms1} and not {methodVal}."
+            f"Coulomb logarithm for GMS-1 should be {self.gms1} and not {methodVal}."
         )
         assert testTrue, errStr
 
@@ -384,8 +386,7 @@ class Test_Coulomb_logarithm:
             )
         testTrue = np.isclose(methodVal, self.gms2, rtol=1e-6, atol=0.0)
         errStr = (
-            f"Coulomb logarithm for GMS-2 should be "
-            f"{self.gms2} and not {methodVal}."
+            f"Coulomb logarithm for GMS-2 should be {self.gms2} and not {methodVal}."
         )
         assert testTrue, errStr
 
@@ -458,8 +459,7 @@ class Test_Coulomb_logarithm:
             )
         testTrue = np.isclose(methodVal, self.gms3, rtol=1e-6, atol=0.0)
         errStr = (
-            f"Coulomb logarithm for GMS-3 should be "
-            f"{self.gms3} and not {methodVal}."
+            f"Coulomb logarithm for GMS-3 should be {self.gms3} and not {methodVal}."
         )
         assert testTrue, errStr
 
@@ -511,6 +511,9 @@ class Test_Coulomb_logarithm:
         )
         assert testTrue, errStr
 
+    @pytest.mark.filterwarnings(
+        "ignore:.*no specified units.*:astropy.units.UnitsWarning"
+    )
     def test_ls_clamp_mininterp_non_scalar_density(self) -> None:
         """
         Test for third version of Coulomb logarithm from Gericke,
@@ -536,6 +539,9 @@ class Test_Coulomb_logarithm:
         )
         assert testTrue.all(), errStr
 
+    @pytest.mark.filterwarnings(
+        "ignore:.*no specified units.*:astropy.units.UnitsWarning"
+    )
     def test_GMS3_non_scalar_density(self) -> None:
         """
         Test for third version of Coulomb logarithm from Gericke,
@@ -596,8 +602,7 @@ class Test_Coulomb_logarithm:
             )
         testTrue = np.isclose(methodVal, self.gms4, rtol=1e-6, atol=0.0)
         errStr = (
-            f"Coulomb logarithm for GMS-4 should be "
-            f"{self.gms4} and not {methodVal}."
+            f"Coulomb logarithm for GMS-4 should be {self.gms4} and not {methodVal}."
         )
         assert testTrue, errStr
 
@@ -686,8 +691,7 @@ class Test_Coulomb_logarithm:
             )
         testTrue = np.isclose(methodVal, self.gms5, rtol=1e-6, atol=0.0)
         errStr = (
-            f"Coulomb logarithm for GMS-5 should be "
-            f"{self.gms5} and not {methodVal}."
+            f"Coulomb logarithm for GMS-5 should be {self.gms5} and not {methodVal}."
         )
         assert testTrue, errStr
 
@@ -776,8 +780,7 @@ class Test_Coulomb_logarithm:
             )
         testTrue = np.isclose(methodVal, self.gms6, rtol=1e-6, atol=0.0)
         errStr = (
-            f"Coulomb logarithm for GMS-6 should be "
-            f"{self.gms6} and not {methodVal}."
+            f"Coulomb logarithm for GMS-6 should be {self.gms6} and not {methodVal}."
         )
         assert testTrue, errStr
 

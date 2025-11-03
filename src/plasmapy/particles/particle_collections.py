@@ -5,7 +5,7 @@ __all__ = ["ParticleList", "ParticleListLike"]
 import collections
 import contextlib
 from collections.abc import Callable, Iterable, Sequence
-from typing import Literal, TypeAlias, Union, overload
+from typing import Literal, TypeAlias, overload
 
 import astropy.units as u
 import numpy as np
@@ -223,7 +223,7 @@ class ParticleList(collections.UserList):
         return f"ParticleList({self.symbols!r})"
 
     def __gt__(self, other):
-        from plasmapy.particles.nuclear import nuclear_reaction_energy
+        from plasmapy.particles.nuclear import nuclear_reaction_energy  # noqa: PLC0415
 
         other_as_particle_list = self._cast_other_as_particle_list(other)
         return nuclear_reaction_energy(
@@ -613,9 +613,8 @@ Raises
 
 ParticleList.reverse.__doc__ = """Reverse the |ParticleList| in place."""
 
-ParticleListLike: TypeAlias = Union[ParticleList, Sequence[ParticleLike]]  # noqa: UP007
-
-ParticleListLike.__doc__ = r"""
+ParticleListLike: TypeAlias = ParticleList | Sequence[ParticleLike]  # noqa: UP040
+r"""
 An `object` is |particle-list-like| if it can be identified as a
 |ParticleList| or cast into one.
 

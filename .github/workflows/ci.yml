@@ -1,3 +1,14 @@
+# Define continuous integration (CI) checks to be performed during
+# pull requests, such as running tests and building documentation.
+#
+# The checks are defined in noxfile.py. After installing uv, the checks
+# can be run locally with
+#
+#    uvx nox -s '<nox_session>'
+#
+# where <nox_session> is replaced by the name of the session. Quotes are
+# necessary around <nox_session> when it contains parentheses.
+
 name: CI
 
 on:
@@ -11,12 +22,12 @@ on:
   pull_request:
   workflow_dispatch:
 
+permissions: {}  # disables all GitHub permissions for the workflow
+
 env:
-  DOC_TROUBLESHOOTING: "Warnings like 'reference target not found' occur when Sphinx tries to interpret text as a Python object, but is unable to do so. This warning can often be fixed by surrounding text in double back ticks instead of single back ticks (e.g., by changing `y` to ``y``) so that it gets formatted as an in-line literal. For more information about addressing documentation build failures, please check out the documentation troubleshooting guide at: https://docs.plasmapy.org/en/latest/contributing/doc_guide.html#troubleshooting"
   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
-
 
   tests:
     name: ${{ matrix.name }}
@@ -29,117 +40,80 @@ jobs:
       matrix:
         include:
 
-        - name: Tests, Python 3.12, skip slow tests, doctests, Ubuntu
+        - name: Tests, Python 3.14, skip slow tests, doctests, Ubuntu
+          # Doctests are run only for most recent Python (see noxfile.py)
           os: ubuntu-latest
-          python: '3.12'
-          nox_session: tests-3.12(skipslow)
+          python: '3.14'
+          nox_session: tests-3.14(skipslow)
 
-        - name: Tests, Python 3.11, with code coverage, macOS
+        - name: Tests, Python 3.13, with code coverage, macOS
           os: macos-latest
-          python: '3.11'
-          nox_session: tests-3.11(cov)
+          python: '3.13'
+          nox_session: tests-3.13(cov)
 
-        - name: Tests, Python 3.10, lowest direct dependencies, Windows
+        - name: Tests, Python 3.12, lowest direct dependencies, skip slow tests, Windows
           os: windows-latest
-          python: '3.10'
-          nox_session: tests-3.10(lowest-direct)
-
-        - name: Packaging, Python 3.12, Ubuntu
-          os: ubuntu-latest
           python: '3.12'
-          nox_session: build
+          nox_session: tests-3.12(lowest-direct-skipslow)
 
-        - name: Import PlasmaPy, Python 3.10, Windows
-          os: windows-latest
-          python: '3.10'
-          nox_session: import
-
-        - name: Static type checking with mypy, Python 3.12, Ubuntu
+        - name: Documentation, Python 3.13, Ubuntu
           os: ubuntu-latest
-          python: '3.12'
+          python: '3.13'
+          nox_session: docs
+
+        - name: Static type checking with mypy, Python 3.14, Ubuntu
+          os: ubuntu-latest
+          python: '3.14'
           nox_session: mypy
 
-        - name: Validate CITATION.cff
-          os: ubuntu-latest
-          python: '3.12'
-          nox_session: cff
+        - name: Packaging, Python 3.14, Windows
+          os: windows-latest
+          python: '3.14'
+          nox_session: build
 
-        - name: Check MANIFEST.in
+        - name: Check workflow security with zizmor
           os: ubuntu-latest
-          python: '3.12'
-          nox_session: manifest
+          python: '3.14'
+          nox_session: zizmor
+
+        - name: Check consistency of pinned & project requirements
+          os: ubuntu-latest
+          python: '3.14'
+          nox_session: validate_requirements
 
     steps:
 
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
       with:
-        fetch-depth: 0
+        persist-credentials: false
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
+    - name: Install graphviz and pandoc for doc builds
+      if: ${{ contains(matrix.nox_session, 'docs') }}
+      uses: mamba-org/setup-micromamba@v2
+      with:
+        create-args: graphviz pandoc -c conda-forge
+        init-shell: bash
+        environment-name: micromamba-env
+        cache-environment: true
+        post-cleanup: all
+
+    - name: Install uv
+      uses: astral-sh/setup-uv@v7
       with:
         python-version: ${{ matrix.python }}
-        cache: pip
+        enable-cache: true  # zizmor: ignore[cache-poisoning]
+        cache-suffix: ${{ matrix.nox_session }}-${{ matrix.python }}-${{ runner.os }}
 
-    - name: Install nox and uv
-      run: python -m pip install --progress-bar off --upgrade nox uv
-
-    - name: Cache .nox
-      uses: actions/cache@v4
-      with:
-        path: |
-          .nox
-        # Invalidate the cache after changes to pyproject.toml or any
-        # requirements files.
-        key: ${{ matrix.nox_session }}-${{ runner.os }}-${{ hashFiles('pyproject.toml', 'ci_requirements/tests-*.txt') }}
-
-    - name: Run tests
-      run: nox -e '${{ matrix.nox_session }}'
+    - name: Run Nox session ${{ matrix.nox_session }}
+      shell: bash -el {0}
+      run: uvx nox -s '${{ matrix.nox_session }}'
 
     - name: Upload coverage reports to Codecov
       if: ${{ contains(matrix.nox_session, 'cov') }}
-      uses: codecov/codecov-action@v4
+      uses: codecov/codecov-action@v5
       with:
-        file: ./coverage.xml
+        files: ./coverage.xml
         fail_ci_if_error: false
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-
-  documentation:
-
-    name: Documentation, Python 3.12, Ubuntu
-    runs-on: ubuntu-latest
-
-    steps:
-
-    - name: Checkout code
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-
-    - name: Install graphviz and pandoc
-      run: sudo apt-get install graphviz pandoc
-
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.12'
-        cache: pip
-
-    - name: Install nox uv
-      run: python -m pip install --progress-bar off --upgrade nox uv
-
-    - name: Cache
-      uses: actions/cache@v4
-      with:
-        path: |
-          .nox
-        key: docs-${{ runner.os }}-${{ hashFiles('requirements.txt') }}
-
-    - name: Build documentation with Sphinx
-      run: nox -e docs -- -q
-
-    - name: Print troubleshooting information on failure
-      if: ${{ failure() }}
-      run: echo -e $DOC_TROUBLESHOOTING

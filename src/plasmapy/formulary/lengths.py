@@ -68,6 +68,10 @@ def Debye_length(T_e: u.Quantity[u.K], n_e: u.Quantity[u.m**-3]) -> u.Quantity[u
     : `~astropy.units.UnitsWarning`
         If units are not provided, SI units are assumed.
 
+    See Also
+    --------
+    ~plasmapy.formulary.dimensionless.Debye_number
+
     Notes
     -----
     Plasmas will generally be quasineutral on length scales
@@ -76,10 +80,6 @@ def Debye_length(T_e: u.Quantity[u.K], n_e: u.Quantity[u.m**-3]) -> u.Quantity[u
     The electrical potential will drop by a factor of
     :math:`∼\frac{1}{e}` every Debye length away from the vicinity of a
     charged particle.
-
-    See Also
-    --------
-    ~plasmapy.formulary.dimensionless.Debye_number
 
     Examples
     --------
@@ -151,6 +151,12 @@ def gyroradius(
         If `True`, the relativistic formula for gyroradius will be used.
         If `False`, the non-relativistic formula will be used.
 
+    mass_numb : integer, |keyword-only|, optional
+        The mass number, if not provided in ``particle``.
+
+    Z : real number, |keyword-only|, optional
+        The |charge number|, if not provided in ``particle``.
+
     Returns
     -------
     r_L : `~astropy.units.Quantity`
@@ -159,14 +165,6 @@ def gyroradius(
         perpendicular component of particle velocity as inputted, or
         the most probable speed for a particle within a Maxwellian
         distribution for the particle temperature.
-
-    Other Parameters
-    ----------------
-    mass_numb : integer, |keyword-only|, optional
-        The mass number, if not provided in ``particle``.
-
-    Z : real number, |keyword-only|, optional
-        The |charge number|, if not provided in ``particle``.
 
     Raises
     ------
@@ -357,18 +355,16 @@ def inertial_length(
         Representation of the particle species (e.g., 'p+' for protons,
         'D+' for deuterium, or 'He-4 +1' for singly ionized helium-4).
 
-    Returns
-    -------
-    d : `~astropy.units.Quantity`
-        The particle's inertial length in meters.
-
-    Other Parameters
-    ----------------
     mass_numb : integer, |keyword-only|, optional
         The mass number, if not provided in ``particle``.
 
     Z : real number, |keyword-only|, optional
         The |charge number|, if not provided in ``particle``.
+
+    Returns
+    -------
+    d : `~astropy.units.Quantity`
+        The particle's inertial length in meters.
 
     Raises
     ------

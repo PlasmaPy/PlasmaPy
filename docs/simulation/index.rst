@@ -9,12 +9,12 @@ Simulation (`plasmapy.simulation`)
 
 .. toctree::
    :maxdepth: 1
-   :caption: Sub-Packages & Modules
+   :caption: Subpackages & Modules
 
    Particle Tracker <particle_tracker/index>
    abstractions
    particle_integrators
-
+   resolution_constraints
 
 .. attention::
 
@@ -26,6 +26,14 @@ Introduction
 The `~plasmapy.simulation` subpackage provides basic, didactic reference
 implementations of popular methods of simulating plasmas, and interfaces
 to common simulation tools.
+
+Example notebooks
+=================
+
+.. nbgallery::
+   :glob:
+
+   ../notebooks/simulation/*
 
 API
 ===

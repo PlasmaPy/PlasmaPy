@@ -63,7 +63,7 @@ def test_Plasma3D_setup(grid_dimensions, expected_size: int) -> None:
     assert test_plasma.electric_field.si.unit == u.V / u.m
 
 
-@pytest.mark.slow()
+@pytest.mark.slow
 def test_Plasma3D_derived_vars() -> None:
     r"""Function to test derived variables of the Plasma3D class.
 
@@ -106,7 +106,7 @@ def test_Plasma3D_derived_vars() -> None:
     assert np.allclose(test_plasma.alfven_speed.value, 10.92548431)
 
 
-@pytest.mark.slow()
+@pytest.mark.slow
 def test_Plasma3D_add_magnetostatics() -> None:
     r"""Function to test add_magnetostatic function"""
     dipole = magnetostatics.MagneticDipole(
@@ -195,7 +195,7 @@ class Test_PlasmaBlobRegimes:
         n_e = 1e15 * u.cm**-3
         Z = 2.5 * u.dimensionless_unscaled
         particle = "p+"
-        with pytest.warns(
+        with pytest.warns(  # noqa: PT031
             CouplingWarning, match="you might have strong coupling effects"
         ):
             blob = plasmablob.PlasmaBlob(T_e=T_e, n_e=n_e, Z=Z, particle=particle)

@@ -13,13 +13,26 @@ from urllib.parse import urljoin
 
 import requests
 
-__all__ = ["Downloader"]
+__all__ = ["_API_CONNECTION_ESTABLISHED", "Downloader"]
 
+_API_CONNECTION_ESTABLISHED = False
 _IS_CI = "GH_TOKEN" in os.environ
 
 
 # TODO: use a config file variable to allow users to set a location
 # for the data download folder?
+
+try:
+    response = requests.get("https://api.github.com/", timeout=10)
+
+    _API_CONNECTION_ESTABLISHED = response.status_code == 200
+except (
+    requests.exceptions.ConnectionError,
+    requests.exceptions.ReadTimeout,
+) as e:  # coverage: ignore
+    # TODO: logging library when??
+    print(f"Failed to connect to GitHub API:\n{e}")  # noqa: T201
+    _API_CONNECTION_ESTABLISHED = False
 
 
 class Downloader:
@@ -64,7 +77,7 @@ class Downloader:
         directory: Path | None = None,
         validate: bool = True,
         api_token: str | None = None,
-    ):
+    ) -> None:
         if directory is None:
             # No test coverage for default directory, since pytest always
             # saves into a temporary directory
@@ -201,7 +214,7 @@ class Downloader:
             warnings.warn(
                 "URL did not return the expected JSON file: "
                 f"{self._API_BASE_URL}. "
-                f"Response content: {reply.content}. Exception: {err}"
+                f"Response content: {reply.content.decode('utf-8')}. Exception: {err}"
             )
             self._validate = False
             return None
@@ -274,7 +287,10 @@ class Downloader:
         # Only send GitHub api authorization if querying GitHub
         # auth = self._api_auth if "github.com" in url else None
 
-        headers = {"Content-Type": "application/json"}
+        headers = {
+            "Content-Type": "application/json",
+            "User-Agent": "PlasmaPy.utils.Downloader",
+        }
 
         if self._api_token is not None:
             headers["authorization"] = f"Bearer {self._api_token}"

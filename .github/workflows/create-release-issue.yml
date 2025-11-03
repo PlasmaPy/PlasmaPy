@@ -1,3 +1,8 @@
+# Define a workflow to create an issue with the checklist for a
+# forthcoming release.
+#
+# The checklist template is at: .github/content/release-checklist.md
+
 name: Create issue
 
 on:
@@ -14,7 +19,9 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
+      with:
+        persist-credentials: false
 
     - name: Create issue
       env:

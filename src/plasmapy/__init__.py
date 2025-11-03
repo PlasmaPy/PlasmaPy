@@ -26,13 +26,6 @@ __all__ = [
 
 import sys
 
-if sys.version_info < (3, 9):  # coverage: ignore # noqa: UP036
-    raise ImportError(
-        "This version of PlasmaPy does not support Python "
-        f"{sys.version.split()[0]}. Please upgrade to a newer version "
-        "of Python."
-    )
-
 from plasmapy import (
     analysis,
     diagnostics,
@@ -87,8 +80,8 @@ def online_help(query: str) -> None:  # coverage: ignore
     query : str
         The search query.
     """
-    import webbrowser
-    from urllib.parse import urlencode
+    import webbrowser  # noqa: PLC0415
+    from urllib.parse import urlencode  # noqa: PLC0415
 
     url = (
         "http://docs.plasmapy.org/en/stable/search.html?"

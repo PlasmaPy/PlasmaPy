@@ -1,8 +1,8 @@
 .. _getting ready to contribute:
 
-***************************
-Getting Ready to Contribute
-***************************
+******************************
+Getting Ready to Contribute 🎉
+******************************
 
 .. contents:: Table of Contents
    :depth: 2
@@ -21,8 +21,8 @@ contributors can take to get set up to contribute to PlasmaPy. After
 taking these steps, you'll be ready to go through the :ref:`code
 contribution workflow <workflow>`.
 
-If you run into any problems, please feel free to reach out to us in our
-|Matrix chat room| or during our weekly |office hours|.
+If you run into any problems, please feel free to reach out to us during
+one of our |community meetings|.
 
 Pre-requisites
 ==============
@@ -154,7 +154,7 @@ Initial setup
    new directory called :file:`repos/` in your home directory (denoted
    by :bash:`~`), run:
 
-   .. code-block::
+   .. code-block:: bash
 
       mkdir ~/repos
       cd ~/repos
@@ -228,10 +228,11 @@ environment`_ instead.
    open a terminal, or can be added to the appropriate configuration
    file (i.e., :file:`.bashrc` for bash or :file:`.zshrc` for zsh).
 
-Installing your clone of PlasmaPy
-=================================
 
-This section covers how to make an |editable installation| of your
+Installing your clone of PlasmaPy 🦹
+====================================
+
+🏁 This section covers how to make an |editable installation| of your
 clone of PlasmaPy. Making the PlasmaPy installation *editable* means
 that if you modify the source code, then those changes will be included
 when you :py:`import plasmapy`.
@@ -257,13 +258,13 @@ when you :py:`import plasmapy`.
 
       conda activate plasmapy-dev
 
-4. Run the command to install PlasmaPy for your operating system:
+4. Run 🏃 the command to install PlasmaPy for your operating system:
 
    .. tabs::
 
       .. group-tab:: Windows
 
-         .. code-block:: bash
+         .. code-block:: PowerShell
 
             py -m pip install -e .[docs,tests]
 
@@ -283,7 +284,7 @@ when you :py:`import plasmapy`.
 
       Replace ``py`` with ``python`` if you are not using conda.
 
-   The :bash:`-e` specifies that this will be an
+   The :bash:`-e` flag specifies that this will be an
    |editable installation|.
 
    .. tip::
@@ -312,24 +313,24 @@ when you :py:`import plasmapy`.
       >>> reload(plasmapy)
 
 .. _Add a new SSH key to your GitHub account: https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account
-.. _Anaconda Navigator: https://docs.anaconda.com/free/navigator
-.. _Anaconda: https://docs.anaconda.com
+.. _Anaconda Navigator: https://www.anaconda.com/docs/tools/anaconda-navigator/main
+.. _Anaconda: https://www.anaconda.com/docs/main
 .. _clone: https://github.com/git-guides/git-clone
 .. _Conda: https://docs.conda.io
-.. _creating an environment: https://docs.anaconda.com/navigator/tutorials/manage-environments/#creating-a-new-environment
+.. _creating an environment: https://www.anaconda.com/docs/tools/anaconda-navigator/tutorials/manage-environments#creating-a-new-environment
 .. _download Python: https://www.python.org/downloads
 .. _fork: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/about-forks
-.. _frequently used Unix commands: https://faculty.tru.ca/nmora/Frequently%20used%20UNIX%20commands.pdf
+.. _frequently used Unix commands: https://www.geeksforgeeks.org/linux-unix/essential-linuxunix-commands/
 .. _git commands for setup and config: https://git-scm.com/book/en/v2/Appendix-C%3A-Git-Commands-Setup-and-Config
 .. _install git: https://git-scm.com/book/en/v2/Getting-Started-Installing-Git
 .. _install Graphviz: https://graphviz.org/download
 .. _install pandoc: https://pandoc.org/installing.html
-.. _installing Anaconda Navigator: https://docs.anaconda.com/free/navigator/install
-.. _installing Conda: https://conda.io/projects/conda/en/latest/user-guide/install/index.html
+.. _installing Anaconda Navigator: https://www.anaconda.com/docs/tools/anaconda-navigator/install
+.. _installing Conda: https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html
 .. _installing Python: https://realpython.com/installing-python
 .. _installing WSL: https://learn.microsoft.com/en-us/windows/wsl/install
 .. _miniconda: https://docs.conda.io/en/latest/miniconda.html
-.. _opening Powershell: https://learn.microsoft.com/en-us/powershell/scripting/windows-powershell/starting-windows-powershell?view=powershell-7.3
+.. _opening Powershell: https://learn.microsoft.com/en-us/powershell/scripting/windows-powershell/starting-windows-powershell?view=powershell-7.4
 .. _powershell: https://learn.microsoft.com/en-us/powershell
 .. _Real Python: https://realpython.com
 .. _remote: https://github.com/git-guides/git-remote
@@ -337,7 +338,7 @@ when you :py:`import plasmapy`.
 .. _terminal user guide: https://support.apple.com/guide/terminal/welcome/mac
 .. _this xkcd comic: https://xkcd.com/1987
 .. _unix tutorial: https://www.hpc.iastate.edu/guides/unix-introduction/unix-tutorial-1
-.. _using an environment: https://docs.anaconda.com/navigator/tutorials/manage-environments/#using-an-environment
+.. _using an environment: https://www.anaconda.com/docs/tools/anaconda-navigator/tutorials/manage-environments#using-an-environment
 .. _venv: https://docs.python.org/3/library/venv.html
 .. _virtual environment: https://realpython.com/python-virtual-environments-a-primer
 .. _Windows Subsystem for Linux: https://learn.microsoft.com/en-us/windows/wsl

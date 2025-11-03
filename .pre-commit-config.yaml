@@ -1,118 +1,154 @@
-ci:
+# configuration file for pre-commit and pre-commit.ci
+# https://docs.plasmapy.org/en/latest/contributing/pre-commit.html
+
+ci:  # https://pre-commit.ci/#configuration
   autofix_prs: false
   autoupdate_schedule: monthly
+  # skip hooks that require network access, which pre-commit.ci forbids
+  skip: [uv-lock]
 
-# Specify the default version of Ruby in case it is not installed
-default_language_version:
-  ruby: 2.7.2
-
-repos:
+repos:  # https://pre-commit.com/#adding-pre-commit-plugins-to-your-project
 
 - repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v4.6.0
+  rev: v6.0.0
   hooks:
   - id: check-ast
     name: validate Python code
+  - id: trailing-whitespace
+    exclude: .*\.py  # use ruff format instead
+  - id: end-of-file-fixer
+    exclude: .*\.py
   - id: check-merge-conflict
-    name: check for git merge conflicts
     exclude: .*\.rst
   - id: check-case-conflict
-    name: check for filename case conflicts
+  - id: check-illegal-windows-names
   - id: name-tests-test
     args: [--pytest-test-first]
     exclude: src/plasmapy/tests/_helpers/.*
-  - id: trailing-whitespace
-  - id: end-of-file-fixer
+  - id: detect-private-key
+  - id: fix-byte-order-marker
+  - id: mixed-line-ending
+    args: [--fix=lf]
+  - id: forbid-submodules
   - id: check-json
   - id: check-toml
   - id: check-yaml
 
+- repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
+  rev: v2.15.0
+  hooks:
+  - id: pretty-format-yaml
+    args: [--autofix]
+    # Labels with spaces must be put in quotes in `labeler.yml`.
+    # pretty-format-yaml removes those quotes and breaks the action.
+    exclude: .github/labeler.yml
+  - id: pretty-format-ini
+    args: [--autofix]
+
 - repo: https://github.com/python-jsonschema/check-jsonschema
-  rev: 0.28.4
+  rev: 0.34.1
   hooks:
   - id: check-github-workflows
 
 - repo: https://github.com/sirosen/texthooks
-  rev: 0.6.6
+  rev: 0.7.1
   hooks:
   - id: fix-smartquotes
   - id: fix-spaces
   - id: fix-ligatures
   - id: forbid-bidi-controls
 
-- repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
-  rev: v2.13.0
-  hooks:
-  - id: pretty-format-ini
-    args: [--autofix]
-  - id: pretty-format-yaml
-    args: [--autofix]
-    # For the labeler GitHub Action, labels with spaces in them must
-    # be put in quotes. However, the pretty-format-yaml hook will
-    # remove the quotes which will break that action, so we should not
-    # run this hook on `labeler.yml` (or certain other files).
-    exclude: .github/labeler.yml|.pre-commit-search-and-replace.yaml
-
-- repo: https://github.com/mattlqx/pre-commit-search-and-replace
-  rev: v1.0.5
-  hooks:
-  - id: search-and-replace
-    exclude: changelog/.*|docs/changelog/.*|.sourcery.yaml|docs/_global_substitutions.py|CHANGELOG.rst
-
 - repo: https://github.com/pre-commit/pygrep-hooks
   rev: v1.10.0
+  # skip the hooks in this repo covered by ruff rules
   hooks:
-  - id: python-check-blanket-noqa
-    name: noqa comments have an error code
-    exclude: ^docs/plasmapy_sphinx/
   - id: rst-directive-colons
   - id: rst-inline-touching-normal
   - id: text-unicode-replacement-char
 
 - repo: https://github.com/codespell-project/codespell
-  rev: v2.3.0
+  rev: v2.4.1
   hooks:
   - id: codespell
     name: codespell (add false positives to pyproject.toml)
     args: [--write-changes]
-    additional_dependencies:
-    - tomli
+    exclude: CITATION.cff
 
-- repo: https://github.com/crate-ci/typos
-  rev: v1.22.0
+- repo: https://github.com/adhtruong/mirrors-typos
+  # use mirrors-typos because `pre-commit autoupdate` drops the version
+  # of the primary typos repo from v1.x.y to v1
+  rev: v1.39.0
   hooks:
   - id: typos
     name: typos (add false positives to _typos.toml)
+    exclude: CITATION.cff|docs/notebooks/dispersion/stix_dispersion.ipynb
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.4.7
+  rev: v0.14.3
   hooks:
-  - id: ruff
-    name: ruff (see https://docs.astral.sh/ruff/rules)
+  - id: ruff-check
+    name: ruff-check (see https://docs.astral.sh/ruff/rules)
     args: [--fix]
   - id: ruff-format
-    name: autoformat source code with ruff-format
 
 - repo: https://github.com/asottile/blacken-docs
-  rev: 1.16.0
+  rev: 1.20.0
   hooks:
   - id: blacken-docs
     name: autoformat code blocks in docs
     # docstrings are formatted using the ruff-format hook
     exclude: docs/contributing/coding_guide.rst|.*\.py
     additional_dependencies:
-    - black==24.3.0
+    - black==25.9.0
 
 - repo: https://github.com/sphinx-contrib/sphinx-lint
-  rev: v0.9.1
+  rev: v1.0.1
   hooks:
   - id: sphinx-lint
 
-- repo: https://github.com/nbQA-dev/nbQA
-  rev: 1.8.5
+- repo: https://github.com/abravalheri/validate-pyproject
+  rev: v0.24.1
   hooks:
-  - id: nbqa-check-ast
-    name: validate Python notebooks
-  - id: nbqa-ruff
-    name: ruff for notebooks (see https://docs.astral.sh/ruff/rules)
-    args: [--fix, '--select=A,ARG,B,BLE,C,C4,E,F,FLY,I,INT,ISC,PERF,PIE,PLC,PLE,PYI,Q003,RET,RSE,SIM,TID,TRY,UP,W', '--ignore=B007,B008,B015,B018,E402,E501,E741,SIM114']
+  - id: validate-pyproject
+    name: validate pyproject.toml
+    additional_dependencies: ['validate-pyproject-schema-store[all]']
+
+- repo: https://github.com/tox-dev/pyproject-fmt
+  rev: v2.11.0
+  hooks:
+  - id: pyproject-fmt
+    name: format pyproject.toml
+
+- repo: https://github.com/astral-sh/uv-pre-commit
+  rev: 0.9.7
+  hooks:
+    # running uv lock requires network access or a warm cache, so it
+    # cannot be run via pre-commit.ci, even with the `--offline`,
+    # `--no-index`, and/or `--check` flags
+  - id: uv-lock
+    name: uv-lock (skipped in CI; use `nox -s requirements` for problems)
+
+- repo: https://github.com/hukkin/mdformat
+  # some plugins require mdformat<0.8, so pin mdformat at 0.7.22 for now
+  rev: 0.7.22
+  hooks:
+  - id: mdformat
+    name: format .md files
+    # skip wrapping line length to preserve semantic line breaks and
+    # avoid messing up GitHub formatting of files in .github/content
+    exclude: licenses/.*|LICENSE.md|PATENT.md
+    additional_dependencies:
+    - mdformat-footnote
+    - mdformat-frontmatter
+    - mdformat-gfm
+    - mdformat-gfm-alerts
+    - mdformat-ruff
+
+- repo: local
+  hooks:
+  - id: cff
+    name: validate CITATION.cff
+    entry: cffconvert --validate
+    language: python
+    additional_dependencies: [cffconvert]
+    pass_filenames: false

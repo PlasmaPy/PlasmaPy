@@ -86,8 +86,8 @@ def cold_plasma_permittivity_SDP(
 
     Notes
     -----
-    The dielectric permittivity tensor is expressed in the Stix frame with
-    the :math:`\exp(-i ω t)` time-harmonic convention as
+    The dielectric permittivity tensor is expressed in the Stix frame
+    with the :math:`\exp(-i ω t)` time-harmonic convention as
     :math:`ε = ε_0 A`, with :math:`A` being
 
     .. math::
@@ -187,7 +187,7 @@ def cold_plasma_permittivity_LRP(
     -----
     In the rotating frame defined by
     :math:`(\mathbf{u}_{+}, \mathbf{u}_{-}, \mathbf{u}_z)`
-    with :math:`\mathbf{u}_{\pm}=(\mathbf{u}_x \pm \mathbf{u}_y)/\sqrt{2}`,
+    with :math:`\mathbf{u}_{±}=(\mathbf{u}_x ± \mathbf{u}_y)/\sqrt{2}`,
     the dielectric tensor takes a diagonal form with elements L, R, P with:
 
     .. math::
@@ -284,7 +284,7 @@ def permittivity_1D_Maxwellian_lite(omega, kWave, vth, wp):
     >>> wp = plasma_frequency(n=n, particle=particle, Z=Z).value
     >>> k_wave = omega / vth
     >>> permittivity_1D_Maxwellian_lite(omega, k_wave, vth=vth, wp=wp)
-    (-6.72794...e-08+5.76024...e-07j)
+    np.complex128(-6.72794...e-08+5.76024...e-07j)
     """
 
     # scattering parameter alpha.
@@ -392,7 +392,7 @@ def permittivity_1D_Maxwellian(
     >>> permittivity_1D_Maxwellian.lite(
     ...     omega.value, k_wave.value, vth=vth.value, wp=wp.value
     ... )
-    (-6.72955...e-08+5.76163...e-07j)
+    np.complex128(-6.72955...e-08+5.76163...e-07j)
     """
     vth = thermal_speed(T=T, particle=particle, method="most_probable").value
     wp = plasma_frequency(n=n, particle=particle, Z=z_mean).value

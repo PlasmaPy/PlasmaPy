@@ -64,7 +64,7 @@ def Lorentz_factor(V: u.Quantity[u.m / u.s]):
     >>> import astropy.units as u
     >>> velocity = 1.4e8 * u.m / u.s
     >>> Lorentz_factor(velocity)
-    1.130885603948959
+     np.float64(1.1308856039...)
     >>> Lorentz_factor(299792458 * u.m / u.s)
     inf
     """
@@ -130,13 +130,6 @@ def relativistic_energy(
         The |charge number| of an ion or neutral atom, if not provided
         to ``particle``.
 
-    Returns
-    -------
-    `~astropy.units.Quantity`
-        The total energy of the relativistic body.
-
-    Other Parameters
-    ----------------
     m : `object`
         Formerly the mass of the body. Will raise a `TypeError` if
         provided. Use ``particle`` instead.
@@ -144,6 +137,11 @@ def relativistic_energy(
     v : `object`
         Formerly the velocity of the body. Will raise a `TypeError` if
         provided. Use ``V`` instead.
+
+    Returns
+    -------
+    `~astropy.units.Quantity`
+        The total energy of the relativistic body.
 
     Raises
     ------
@@ -254,10 +252,10 @@ class RelativisticBody:
     Particle("p+")
     >>> relativistic_proton.velocity
     <Quantity 1.03697...e+08 m / s>
-    >>> relativistic_proton.v_over_c
-    0.3458980898746...
-    >>> relativistic_proton.lorentz_factor
-    1.0657889247888...
+    >>> print(relativistic_proton.v_over_c)
+    0.34589808987468...
+    >>> print(relativistic_proton.lorentz_factor)
+    1.06578892478889...
     >>> relativistic_proton.mass_energy.to("GeV")
     <Quantity 0.93827... GeV>
     >>> relativistic_proton.total_energy.to("GeV")
@@ -508,7 +506,7 @@ class RelativisticBody:
         if γ < 1:
             raise ValueError("The Lorentz factor must be ≥ 1")
 
-        self.velocity = c * np.sqrt(1 - γ**-2)
+        self.velocity = c * np.sqrt(1 - γ**-2)  # type: ignore[operator]
 
     @momentum.setter
     @validate_quantities
@@ -533,3 +531,6 @@ class RelativisticBody:
             if self_value != other_value:
                 return False
         return True
+
+    def __hash__(self) -> int:
+        return hash(repr(self))

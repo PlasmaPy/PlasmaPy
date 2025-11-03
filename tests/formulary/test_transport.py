@@ -48,7 +48,7 @@ def count_decimal_places(digits):
     return len(fractional)
 
 
-@pytest.mark.slow()
+@pytest.mark.slow
 class Test_classical_transport:
     @classmethod
     def setup_class(cls) -> None:
@@ -234,6 +234,7 @@ class Test_classical_transport:
                 Z=-1,
             )
 
+    @pytest.mark.filterwarnings("ignore::plasmapy.utils.exceptions.RelativityWarning")
     def test_coulomb_log_warnings(self) -> None:
         """Should warn CouplingWarning if coulomb log is near 1"""
         with pytest.warns(CouplingWarning):
@@ -256,6 +257,7 @@ class Test_classical_transport:
                 coulomb_log_ei=1.3,
             )
 
+    @pytest.mark.filterwarnings("ignore::plasmapy.utils.exceptions.RelativityWarning")
     def test_coulomb_log_errors(self) -> None:
         """Should raise PhysicsError if coulomb log is < 1"""
         with pytest.raises(PhysicsError):
@@ -969,9 +971,9 @@ class Test__nondim_visc_e_braginskii:
         beta_hat = _nondim_visc_e_braginskii(self.big_hall, Z)
         if idx == 0:
             assert np.isclose(beta_hat[idx], expected, atol=1e-2)
-        elif idx in (1, 2):
+        elif idx in {1, 2}:
             assert np.isclose(beta_hat[idx] * self.big_hall**2, expected, atol=1e-2)
-        elif idx in (3, 4):
+        elif idx in {3, 4}:
             assert np.isclose(beta_hat[idx] * self.big_hall, expected, atol=1e-1)
 
 
@@ -987,7 +989,7 @@ def test__nondim_tc_e_spitzer(Z) -> None:
     if Z == 1:
         kappa_check = 3.203
         rtol = 1e-3
-    elif Z in (2, 4):
+    elif Z in {2, 4}:
         kappa_check = _nondim_tc_e_braginskii(0, Z, "par")
         rtol = 2e-2
     elif Z == 16:
@@ -1006,7 +1008,7 @@ def test__nondim_resist_spitzer(Z) -> None:
     if Z == 1:
         alpha_check = 0.5064
         rtol = 1e-3
-    elif Z in (2, 4, np.inf):
+    elif Z in {2, 4, np.inf}:
         alpha_check = _nondim_resist_braginskii(0, Z, "par")
         rtol = 2e-2
     elif Z == 16:
@@ -1022,7 +1024,7 @@ def test__nondim_tec_spitzer(Z) -> None:
     if Z == 1:
         beta_check = 0.699
         rtol = 1e-3
-    elif Z in (2, 4, np.inf):
+    elif Z in {2, 4, np.inf}:
         beta_check = _nondim_tec_braginskii(0, Z, "par")
         rtol = 2e-2
     elif Z == 16:

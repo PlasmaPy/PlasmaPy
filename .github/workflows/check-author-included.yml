@@ -4,6 +4,8 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 
+permissions: {}
+
 jobs:
   authors-included:
     name: Author in CITATION.cff
@@ -11,15 +13,15 @@ jobs:
     steps:
 
     - name: Checkout code
-      uses: actions/checkout@v4
-
-    - name: Set up Python
-      uses: actions/setup-python@v5
+      uses: actions/checkout@v5
       with:
-        python-version: 3.12
+        persist-credentials: false
 
-    - name: Install dependencies
-      run: pip install requests
+    - name: Install uv
+      uses: astral-sh/setup-uv@v7
+      with:
+        enable-cache: true
+        cache-suffix: author-cff
 
     - name: Check that author usernames are in CITATION.cff
       env:
@@ -27,4 +29,4 @@ jobs:
         PR_NUMBER: ${{ github.event.pull_request.number }}
         GITHUB_REPOSITORY: ${{ github.repository }}
         GITHUB_HEAD_REF: ${{ github.head_ref }}
-      run: python .github/scripts/authors_in_cff.py
+      run: uv run .github/scripts/authors_in_cff.py

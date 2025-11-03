@@ -9,11 +9,11 @@ __all__ = [
     "CartesianGrid",
     "NonUniformCartesianGrid",
 ]
-
 import contextlib
 import warnings
 from abc import ABC, abstractmethod
 from collections import namedtuple
+from collections.abc import Iterable
 from functools import cached_property
 from typing import ClassVar
 
@@ -23,6 +23,7 @@ import pandas as pd
 import scipy.interpolate as interp
 import xarray as xr
 from scipy.spatial import distance
+from scipy.special import erf
 
 from plasmapy.utils.decorators.helpers import modify_docstring
 
@@ -78,7 +79,7 @@ class AbstractGrid(ABC):
 
     """
 
-    def __init__(self, *seeds: Sequence[int], num: int = 100, **kwargs) -> None:
+    def __init__(self, *seeds: Sequence[u.Quantity], num: int = 100, **kwargs) -> None:
         # Initialize some variables
         self._interpolator = None
         self._is_uniform = None
@@ -126,6 +127,8 @@ class AbstractGrid(ABC):
         RecognizedQuantity("B_y", "Magnetic field (y component)", u.T),
         RecognizedQuantity("B_z", "Magnetic field (z component)", u.T),
         RecognizedQuantity("phi", "Electric Scalar Potential", u.V),
+        RecognizedQuantity("n_e", "Electron Number Density", 1 / u.m**3),
+        RecognizedQuantity("dEdx", "Stopping Power", u.J * u.m**2 / u.kg),
     ]
 
     # Create a dict of recognized quantities for fast access by key
@@ -133,8 +136,8 @@ class AbstractGrid(ABC):
     for _rq in _recognized_quantities_list:
         _recognized_quantities[_rq.key] = _rq
 
-    @property
-    def recognized_quantities(self):
+    @classmethod
+    def recognized_quantities(cls):
         r"""
         A dictionary of standard key names representing particular physical
         quantities. Using these keys allows these
@@ -142,11 +145,11 @@ class AbstractGrid(ABC):
         Each entry contains a tuple containing a description and the unit
         associated with the quantity.
         """
-        return self._recognized_quantities
+        return cls._recognized_quantities
 
     def require_quantities(
         self,
-        req_quantities,
+        req_quantities: Iterable[str],
         replace_with_zeros: bool = False,
         warn_on_replace_with_zeros: bool = True,
     ):
@@ -157,7 +160,7 @@ class AbstractGrid(ABC):
 
         Parameters
         ----------
-        req_quantities : `list` of `str`
+        req_quantities : ``iterable`` of `str`
             A list of quantity keys that are required.
 
         replace_with_zeros : `bool`, optional
@@ -187,10 +190,9 @@ class AbstractGrid(ABC):
                 # If missing, warn user and then replace with an array of zeros
                 if not replace_with_zeros:
                     raise KeyError(
-                        f"{rq} is not specified for the provided "
-                        "grid but is required."
+                        f"{rq} is not specified for the provided grid but is required."
                     )
-                elif rq not in self.recognized_quantities:
+                elif rq not in self.recognized_quantities():
                     raise KeyError(
                         f"{rq} is not a recognized key, and "
                         "so cannot be automatically assumed "
@@ -204,7 +206,7 @@ class AbstractGrid(ABC):
                         RuntimeWarning,
                     )
 
-                unit = self.recognized_quantities[rq].unit
+                unit = self.recognized_quantities()[rq].unit
                 arg = {rq: np.zeros(self.shape) * unit}
                 self.add_quantities(**arg)
 
@@ -238,8 +240,8 @@ class AbstractGrid(ABC):
             s += f"\t-> {coords[i]} ({ax_units[i]}) {ax_dtypes[i]} ({shape[i]},)\n"
 
         keys = self.quantities
-        rkeys = [k for k in keys if k in list(self.recognized_quantities.keys())]
-        nrkeys = [k for k in keys if k not in list(self.recognized_quantities.keys())]
+        rkeys = [k for k in keys if k in list(self.recognized_quantities().keys())]
+        nrkeys = [k for k in keys if k not in list(self.recognized_quantities().keys())]
 
         s += line_sep + "Recognized Quantities:\n"
         if not rkeys:
@@ -388,7 +390,7 @@ class AbstractGrid(ABC):
     # *************************************************************************
     # 1D axes and step sizes (valid only for uniform grids)
     # *************************************************************************
-    @property
+    @cached_property
     def si_scale_factors(self) -> list[float]:
         """
         3-element list containing unitless scale factors for converting
@@ -441,7 +443,7 @@ class AbstractGrid(ABC):
         ax = self._get_ax(axis=axis, si=si)
         return np.mean(np.gradient(ax))
 
-    @property
+    @cached_property
     def _ax0_si(self):
         """
         The :attr:`ax0` axis without units, but scaled such that its values
@@ -451,7 +453,7 @@ class AbstractGrid(ABC):
         """
         return self._get_ax(axis=0, si=True)
 
-    @property
+    @cached_property
     def ax0(self):
         r"""
         First axis of the grid.
@@ -460,7 +462,7 @@ class AbstractGrid(ABC):
         """
         return self._get_ax(axis=0)
 
-    @property
+    @cached_property
     def _ax1_si(self):
         """
         The :attr:`ax1` axis without units, but scaled such that its values
@@ -470,7 +472,7 @@ class AbstractGrid(ABC):
         """
         return self._get_ax(axis=1, si=True)
 
-    @property
+    @cached_property
     def ax1(self):
         r"""
         Second axis of the grid.
@@ -479,7 +481,7 @@ class AbstractGrid(ABC):
         """
         return self._get_ax(axis=1)
 
-    @property
+    @cached_property
     def _ax2_si(self):
         """
         The :attr:`ax2` axis without units, but scaled such that its values
@@ -489,7 +491,7 @@ class AbstractGrid(ABC):
         """
         return self._get_ax(axis=2, si=True)
 
-    @property
+    @cached_property
     def ax2(self):
         r"""
         Third axis of the grid.
@@ -498,7 +500,7 @@ class AbstractGrid(ABC):
         """
         return self._get_ax(axis=2)
 
-    @property
+    @cached_property
     def _dax0_si(self):
         """
         Grid step size along axis :attr:`ax0` without units and scaled such
@@ -508,7 +510,7 @@ class AbstractGrid(ABC):
         """
         return self._get_dax(axis=0, si=True)
 
-    @property
+    @cached_property
     def dax0(self):
         r"""
         Grid step size along axis :attr:`ax0`.
@@ -517,7 +519,7 @@ class AbstractGrid(ABC):
         """
         return self._get_dax(axis=0)
 
-    @property
+    @cached_property
     def _dax1_si(self):
         """
         Grid step size along axis :attr:`ax1` without units and scaled such
@@ -527,7 +529,7 @@ class AbstractGrid(ABC):
         """
         return self._get_dax(axis=1, si=True)
 
-    @property
+    @cached_property
     def dax1(self):
         r"""
         Grid step size along axis :attr:`ax1`.
@@ -536,7 +538,7 @@ class AbstractGrid(ABC):
         """
         return self._get_dax(axis=1)
 
-    @property
+    @cached_property
     def _dax2_si(self):
         """
         Grid step size along axis :attr:`ax2` without units and scaled such
@@ -546,7 +548,7 @@ class AbstractGrid(ABC):
         """
         return self._get_dax(axis=2, si=True)
 
-    @property
+    @cached_property
     def dax2(self):
         r"""
         Grid step size along axis :attr:`ax2`.
@@ -631,14 +633,14 @@ class AbstractGrid(ABC):
             # Check key against a list of "known" keys with pre-defined
             # meanings (eg. E_x, n_e) and raise a warning if a "non-standard"
             # key is being used so the user is aware.
-            if key in self.recognized_quantities:
+            if key in self.recognized_quantities():
                 try:
-                    quantity.to(self.recognized_quantities[key].unit)
+                    quantity.to(self.recognized_quantities()[key].unit)
                 except u.UnitConversionError as ex:
                     raise ValueError(
                         f"Units provided for {key} ({quantity.unit}) "
                         "are not compatible with the correct units "
-                        f"for that recognized key ({self.recognized_quantities[key]})."
+                        f"for that recognized key ({self.recognized_quantities()[key]})."
                     ) from ex
 
             else:
@@ -665,9 +667,15 @@ class AbstractGrid(ABC):
                     f"does not match the grid shape {self.shape}."
                 )
 
+            # xarray gained better Quantity support around v2024.11.0, but
+            # this file was originally written with the assumption that
+            # xarray lacks Quantity support. As a workaround, use
+            # `quantity.value` instead of `quantity` in the creation of
+            # this DataArray.
             data = xr.DataArray(
-                quantity, dims=dims, coords=coords, attrs={"unit": quantity.unit}
+                quantity.value, dims=dims, coords=coords, attrs={"unit": quantity.unit}
             )
+
             self.ds[key] = data
 
     @property
@@ -714,67 +722,70 @@ class AbstractGrid(ABC):
         """
 
         # Store variables in dict for validation
-        var = {"stop": stop, "start": start, "num": num}
+        event_values = {"stop": stop, "start": start, "num": num}
 
-        # Ensure that start and stop end up as a list of three u.Quantity objs
-        # and num a list of three integers
-        # TODO: python3.10: simplify using structural pattern matching
-        for k in ("start", "stop"):
+        # Ensure that start and stop end up as a list of three u.Quantity
+        # objects and num a list of three integers
+        for event in ("start", "stop"):
             # Convert tuple to list
-            if isinstance(var[k], tuple):
-                var[k] = list(var[k])
+            if isinstance(event_values[event], tuple):
+                event_values[event] = list(event_values[event])
 
-            if isinstance(var[k], list):
-                if len(var[k]) == 1:
-                    var[k] = var[k] * 3
+            if isinstance(event_values[event], list):
+                if len(event_values[event]) == 1:
+                    event_values[event] = event_values[event] * 3
 
                 # Make sure it's a list of quantities
-                if not all(isinstance(v, u.Quantity) for v in var[k]):
+                if not all(isinstance(v, u.Quantity) for v in event_values[event]):
                     raise TypeError(
-                        f"The argument `{k}` must be an "
+                        f"The argument `{event}` must be an "
                         "`astropy.units.Quantity` or a list of same, "
-                        f"but a {type(var[k])} was given."
+                        f"but a {type(event_values[event])} was given."
                     )
-            elif isinstance(var[k], u.Quantity):
+            elif isinstance(event_values[event], u.Quantity):
                 # Extend to 3 elements if only one is given
                 # Case of >1 but != 3 is handled later
-                var[k] = [var[k]] * 3 if var[k].size == 1 else list(var[k])
+                event_values[event] = (
+                    [event_values[event]] * 3
+                    if event_values[event].size == 1
+                    else list(event_values[event])
+                )
             else:
                 raise TypeError(
-                    f"The argument `{k}` must be an "
+                    f"The argument `{event}` must be an "
                     "`astropy.units.Quantity` or a list of same, "
-                    f"but a {type(var[k])} was given."
+                    f"but a {type(event_values[event])} was given."
                 )
 
         # Convert tuple to list
-        if isinstance(var["num"], tuple):
-            var["num"] = list(var["num"])
+        if isinstance(event_values["num"], tuple):
+            event_values["num"] = list(event_values["num"])
 
-        if isinstance(var["num"], list):
-            if len(var["num"]) == 1:
-                var["num"] = var["num"] * 3
-        elif isinstance(var["num"], int):
-            var["num"] = [var["num"]] * 3
+        if isinstance(event_values["num"], list):
+            if len(event_values["num"]) == 1:
+                event_values["num"] = event_values["num"] * 3
+        elif isinstance(event_values["num"], int):
+            event_values["num"] = [event_values["num"]] * 3
         else:
             raise TypeError(
                 f"The argument `num` must be an int or list of "
-                f"same, but a {type(var[k])} was given."
+                f"same, but a {type(event_values[event])} was given."
             )
 
         # Check to make sure all lists now contain three values
         # (throws exception if user supplies a list of two, say)
-        for k in var:
-            if len(var[k]) != 3:
+        for event, event_value in event_values.items():
+            if len(event_value) != 3:
                 raise TypeError(
-                    f"{k} must be either a single value or a "
+                    f"{event} must be either a single value or a "
                     "list of three values, but "
-                    f"({len(var[k])} values were given)."
+                    f"({len(event_value)} values were given)."
                 )
 
         # Take variables back out of dict
-        start = var["start"]
-        stop = var["stop"]
-        num = var["num"]
+        start = event_values["start"]
+        stop = event_values["stop"]
+        num = event_values["num"]
 
         # Extract units from input arrays (if they are there), then
         # remove the units from those arrays
@@ -886,7 +897,7 @@ class AbstractGrid(ABC):
 
     # This property holds the list of quantity keys currently being interpolated
     # It's used in the following cached properties
-    _interp_args: ClassVar = []
+    _interp_args: ClassVar[list[str]] = []
 
     @cached_property
     def _interp_quantities(self):
@@ -1061,11 +1072,10 @@ class CartesianGrid(AbstractGrid):
                 self.units[i].to(u.m)
             except u.UnitConversionError as ex:
                 raise ValueError(
-                    "Units of grid are not valid for a Cartesian "
-                    f"grid: {self.units}."
+                    f"Units of grid are not valid for a Cartesian grid: {self.units}."
                 ) from ex
 
-    @property
+    @cached_property
     def grid_resolution(self):
         r"""
         A scalar estimate of the grid resolution, calculated as the
@@ -1103,6 +1113,58 @@ class CartesianGrid(AbstractGrid):
         Tmax = np.min(Tmax)
 
         return Tmin < Tmax
+
+    def soften_edges(self, width: u.Quantity | None = None) -> None:
+        """
+        Applies a mask to soften the edges of the quantity arrays.
+
+        Grid values are multiplied by an error function in each dimension, ensuring
+        that quantities go to zero near the boundaries of the grid. As a result,
+        quantities in the center of the grid are multiplied by a value close to but not
+        identical to one.
+
+        Applying this mask to vector fields may alter divergence constraints, e.g.
+        a magnetic field may no longer be divergence-free near the edges after the
+        mask is applied.
+
+        Parameters
+        ----------
+        width : `~astropy.units.Quantity`, optional
+            Width of the transition region in units of length.
+            Defaults to 10% of the size of the grid.
+
+        """
+        if isinstance(width, u.Quantity):
+            width = [
+                width,
+            ] * 3
+
+        mask = np.ones(self.shape)
+        for i, pts in enumerate([self.pts0, self.pts1, self.pts2]):
+            w = 0.1 * (np.max(pts) - np.min(pts)) if width is None else width[i]
+
+            sigma = w / 4
+            pad = 2
+            x1 = np.min(pts) + pad * sigma
+            x2 = np.max(pts) - pad * sigma
+            mask *= (
+                0.5
+                * (erf((pts - x1) / sigma) + 1)
+                * -0.5
+                * (erf((pts - x2) / sigma) - 1)
+            )
+
+        edge_mask = np.ones(self.shape)
+        edge_mask[0, :, :] = 0
+        edge_mask[-1, :, :] = 0
+        edge_mask[:, 0, :] = 0
+        edge_mask[:, -1, :] = 0
+        edge_mask[:, :, 0] = 0
+        edge_mask[:, :, -1] = 0
+
+        # Apply the mask
+        for quantity in self.quantities:
+            self.ds[quantity].data = self.ds[quantity].data * mask * edge_mask
 
     @modify_docstring(prepend=AbstractGrid.nearest_neighbor_interpolator.__doc__)
     def nearest_neighbor_interpolator(
@@ -1175,7 +1237,7 @@ class CartesianGrid(AbstractGrid):
         This interpolator approximates the value of a quantity at a given
         interpolation point using a weighted sum of the values at the eight grid
         vertices that surround the point. The weighting factors are calculated by
-        defining a volume :math:`dx \\times dy \\times dz`
+        defining a volume :math:`dx × dy × dz`
         (where :math:`dx`, :math:`dy`, and :math:`dz` are the grid
         spacings in each direction) around each grid vertex and around the
         interpolation point. The contribution of each grid vertex is then
@@ -1327,8 +1389,7 @@ class NonUniformCartesianGrid(AbstractGrid):
                 self.units[i].to(u.m)
             except u.UnitConversionError as ex:
                 raise ValueError(
-                    "Units of grid are not valid for a Cartesian "
-                    f"grid: {self.units}."
+                    f"Units of grid are not valid for a Cartesian grid: {self.units}."
                 ) from ex
 
     @property

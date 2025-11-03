@@ -18,32 +18,32 @@ new software tools for plasma research.
 
 If you are new to PlasmaPy, please check out our
 :ref:`getting started notebooks <getting-started-notebooks>` and our
-:ref:`example gallery <examples>`. We invite you to share ideas and ask
-questions in our |Matrix chat room| or during our weekly virtual
-|office hours|.
+:ref:`example gallery <examples>`.
 
 PlasmaPy is developed openly `on GitHub`_, where you can
-`request a new feature`_ or `report a bug`_.
+`request a new feature`_ or `report a bug`_. We invite you to share
+ideas and ask questions as `GitHub discussions`_ or during our
+|community meetings|.
 
 .. important::
 
    If you use PlasmaPy for work presented in a publication or talk,
-   please help the project by following these instructions to
+   please support the project by following these instructions to
    :ref:`cite or acknowledge <citation>` PlasmaPy.
 
 .. toctree::
-   :caption: First Steps
+   :caption: First steps
    :maxdepth: 1
 
-   Installing <install>
-   getting_started
+   Installation <install>
+   Getting Started <getting_started>
    examples
    COMMUNICATION
    Code of Conduct <CODE_OF_CONDUCT.rst>
    about/citation
 
-Example highlights
-------------------
+Example notebooks
+-----------------
 
 .. nbgallery::
    :hidden:
@@ -70,31 +70,33 @@ Example highlights
 
 .. toctree::
    :maxdepth: 1
-   :caption: All the Rest
+   :caption: Project details
 
    changelog/index
    about/credits
    bibliography
    glossary
    performance_tips
+   about/policies
    PlasmaPy Enhancement Proposals <https://github.com/PlasmaPy/PlasmaPy-PLEPs>
-   PlasmaPy website <https://www.plasmapy.org>
+   PlasmaPy Project <https://www.plasmapy.org>
    GitHub Repository <https://github.com/PlasmaPy/PlasmaPy>
 
 .. toctree::
    :maxdepth: 1
-   :caption: Contributor Guide
+   :caption: Contributing
 
-   Overview <contributing/index>
-   contributing/getting_ready
+   Contributor Guide <contributing/index>
+   contributing/many_ways
+   Getting Ready to Contribute <contributing/getting_ready>
    contributing/workflow
-   contributing/coding_guide
-   contributing/pre-commit
-   contributing/changelog_guide
-   contributing/doc_guide
+   Coding Guide <contributing/coding_guide>
    contributing/testing_guide
-   contributing/release_guide
+   contributing/pre-commit
+   contributing/doc_guide
+   contributing/changelog_guide
 
+.. _GitHub discussions: https://github.com/PlasmaPy/PlasmaPy/discussions
 .. _new discussion on GitHub: https://github.com/PlasmaPy/PlasmaPy/discussions/new/choose
 .. _on GitHub: https://github.com/PlasmaPy/PlasmaPy
 .. _report a bug: https://github.com/PlasmaPy/PlasmaPy/issues/new?assignees=&labels=Bug&template=bug_report.yml

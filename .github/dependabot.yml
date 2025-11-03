@@ -1,3 +1,11 @@
+# Dependabot creates pull requests to update versions of dependencies,
+# including in the GitHub Actions ecosystem.
+
+# Documentation: https://docs.github.com/en/code-security/dependabot
+
+# Updates to uv.lock are handled via `nox -s requirements` which is run
+# in a separate GitHub workflow to update pinned requirements.
+
 version: 2
 
 updates:
@@ -10,4 +18,6 @@ updates:
   reviewers:
   - namurphy
   schedule:
-    interval: daily
+    interval: weekly
+  cooldown:
+    default-days: 7

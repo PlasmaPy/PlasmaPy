@@ -35,60 +35,60 @@ def temp_ratio(  # noqa: C901
     verbose: bool = False,
 ):
     r"""
-    Calculate the thermalization ratio for a plasma in transit, taken
-    from :cite:t:`maruca:2013` and :cite:t:`johnson:2023a`. This
-    function allows the thermalization of a plasma to be modeled,
-    predicting the temperature ratio for different ion species
-    within a plasma at a different point in space.
+    Calculate the thermalization ratio for a plasma in transit.
+
+    This function allows the thermalization of a plasma to be modeled,
+    predicting the temperature ratio for different ion species within a
+    plasma at a different point in space. Taken from
+    :cite:t:`maruca:2013` and :cite:t:`johnson:2023a`.
 
     Parameters
     ----------
     r_0 : `~astropy.units.Quantity`, |keyword-only|
-        Starting position of the plasma in units convertible
-        to astronomical units.
+        Starting position of the plasma in units convertible to
+        astronomical units.
 
-    r_n : `~astropy.units.Quantity`
-        Final position of the plasma in units convertible
-        to astronomical units.
+    r_n : `~astropy.units.Quantity`, |keyword-only|
+        Final position of the plasma in units convertible to
+        astronomical units.
 
-    n_1 : `~astropy.units.Quantity`
-        The primary ion number density in units convertible
-        to m\ :sup:`-3`.
+    n_1 : `~astropy.units.Quantity`, |keyword-only|
+        The primary ion number density in units convertible to
+        m\ :sup:`-3`.
 
-    n_2 : `~astropy.units.Quantity`
-        The secondary ion number density in units convertible
-        to m\ :sup:`-3`.
+    n_2 : `~astropy.units.Quantity`, |keyword-only|
+        The secondary ion number density in units convertible to
+        m\ :sup:`-3`.
 
-    v_1 : `~astropy.units.Quantity`
+    v_1 : `~astropy.units.Quantity`, |keyword-only|
         The primary ion speed in units convertible to km s\ :sup:`-1`.
 
-    T_1 : `~astropy.units.Quantity`
-        Temperature of the primary ion in units convertible to
-        temperature K.
+    T_1 : `~astropy.units.Quantity`, |keyword-only|
+        Temperature of the primary ion in units convertible to kelvin.
 
-    T_2 : `~astropy.units.Quantity`
+    T_2 : `~astropy.units.Quantity`, |keyword-only|
         Temperature of the secondary ion in units convertible to
-        temperature K.
+        kelvin.
 
-    ions : |particle-list-like|, default: ``("p+, "He-4 2+")``
-        Particle list containing two (2) particles, primary ion of
-        interest is entered first, followed by the secondary ion.
+    ions : |particle-list-like|, |keyword-only|, default: ``("p+, "He-4 2+")``
+        Particle list containing two particles, with the primary ion
+        first and the secondary ion second.
 
-    n_step : positive integer
-        The number of intervals used in solving a differential
-        equation via the Euler method.
+    n_step : `int`, |keyword-only|
+        The number of intervals used in solving a differential equation
+        via the Euler method. Must be positive.
 
-    density_scale : real number, default: -1.8
+    density_scale : `float`, |keyword-only|, default: ``-1.8``
         The value used as the scaling parameter for the primary ion
         density. The default value is taken from
         :cite:t:`hellinger:2011`.
 
-    velocity_scale : `float`, default: -0.2
+    velocity_scale : `float`, |keyword-only|, default: ``-0.2``
         The value used as the scaling parameter for the primary ion
         velocity. The default value is taken from
         :cite:t:`hellinger:2011`.
 
-    temperature_scale : `float`, default: -0.74
+    temperature_scale : `float`, |keyword-only|, default: ``-0.74``
         The value used as the scaling parameter for the primary ion
         temperature. The default value is taken from
         :cite:t:`hellinger:2011`.
@@ -96,8 +96,8 @@ def temp_ratio(  # noqa: C901
     Returns
     -------
     theta : `float`
-        The dimensionless ion temperature ratio prediction
-        for the distance provided.
+        The dimensionless ion temperature ratio prediction for the
+        distance provided.
 
     Raises
     ------
@@ -118,55 +118,55 @@ def temp_ratio(  # noqa: C901
 
     .. math::
 
-        \theta_{21} = \frac{T_{2}}{T_{1}} \, ,
+        θ_{21} = \frac{T_2}{T_1} \, ,
 
-    where :math:`T_{1}` and :math:`T_{2}` are the scalar temperatures
-    for the primary ion of interest and the secondary ion, respectively.
-    The scalar temperature defined as:
+    where :math:`T_1` and :math:`T_2` are the scalar temperatures for
+    the primary ion of interest and the secondary ion, respectively. The
+    scalar temperature defined as:
 
     .. math::
 
-        T_{\rm i} = \frac{2T_{{\rm i}, \perp} + T_{{\rm i}, \parallel}}{3} \, ,
+        T_{\rm i} = \frac{2T_{{\rm i}, ⟂} + T_{{\rm i}, ∥}}{3} \, ,
 
-    where :math:`T_{{\rm i}, \perp}` and :math:`T_{{\rm i}, \parallel}`
-    are the temperature of the :math:`{\rm i}`-particles along the
+    where :math:`T_{{\rm i}, ⟂}` and :math:`T_{{\rm i}, ∥}`
+    are the temperature of the :math:`\mathrm{i}`-particles along the
     axes perpendicular and parallel to the ambient magnetic field.
 
     In order to determine how extensively an individual parcel of
-    plasma has been processed by Coulomb collisions :cite:p:`maruca:2013`
-    introduced an approached called collisional analysis. This paper seeks
-    to quantify how collisions affect the plasma's departures from
-    LTE, the equation for collisional thermalization
-    from :cite:t:`maruca:2013` is given below:
+    plasma has been processed by Coulomb collisions, :cite:t:`maruca:2013`
+    introduced an approached called collisional analysis. This paper
+    quantifies how collisions affect the plasma's departures from LTE.
+    The equation for collisional thermalization :cite:p:`maruca:2013`
+    is:
 
      .. math::
 
-        \frac{d \theta_{21}}{dr} = A \left (
-        \frac{n_1}{v_1 T_1^{3/2}} \right ) \frac{\left( \mu_{1} \mu_{2}
-        \right )^{1/2} Z_{1} Z_{2} \left( 1 - \theta_{21} \right )
-        \left(1 + \eta_{21}\theta_{21} \right )}{\left(
-        \frac{\mu_{2}}{\mu_{1}} + \theta_{21} \right )^{3/2}} \lambda_{21}
+        \frac{d θ_{21}}{dr} = A \left (
+        \frac{n_1}{v_1 T_1^{3/2}} \right ) \frac{\left( μ_1 μ_2
+        \right )^{1/2} Z_1 Z_2 \left( 1 - θ_{21} \right )
+        \left(1 + η_{21}θ_{21} \right )}{\left(
+        \frac{μ_2}{μ_1} + θ_{21} \right )^{3/2}} λ_{21}
 
     and
 
     .. math::
 
-         \lambda_{21} = 9 + \ln \left| B \left ( \frac{T^{3}_{1}}{n_{1}}
-         \right )^{1/2} \left( \frac{Z_{1}Z_{2}(\mu_{1} + \mu_{2}) }{\theta_{21} +
-         \frac{\mu_{2}}{\mu_1}} \right )
-         \left( \frac{n_{2}Z_{2}^{2}}{n_{1}Z_{1}^{2}} + \theta_{21}
+         λ_{21} = 9 + \ln \left| B \left ( \frac{T^3_1}{n_1}
+         \right )^{1/2} \left( \frac{Z_1Z_2(μ_1 + μ_2) }{θ_{21} +
+         \frac{μ_2}{μ_1}} \right )
+         \left( \frac{n_2 Z_2^2}{n_1 Z_1^2} + θ_{21}
          \right)^{1/2}\right |
 
-    With :math:`\eta = \frac{n_{2}}{n_{1}}`, :math:`\theta =
-    \frac{T_{2}}{T_{1}}`, :math:`A = 2.60 \times 10^{7} \, {\rm cm}^{3}
+    With :math:`η = \frac{n_2}{n_1}`, :math:`θ =
+    \frac{T_2}{T_1}`, :math:`A = 2.60 × 10^{7} \, {\rm cm}^3
     \, {\rm km} \, {\rm K}^{3/2} \, {\rm s}^{-1} \, {\rm au}^{-1}`,
-    and :math:`B = 1 \, {\rm cm}^{-3/2}{\rm K}^{-3/2}`.
+    and :math:`B = 1 \, {\rm cm}^{-3/2}{~\rm K}^{-3/2}`.
 
     The thermalization is from Coulomb collisions, which assumes
     "soft", small-angle deflections mediated by the electrostatic
-    force :cite:t:`baumjohann:1997`. It is assumed that there is no
+    force :cite:p:`baumjohann:1997`. It is assumed that there is no
     relative drift between the ion species and that it is a mixed ion
-    collision, the Coulomb logarithm for a mixed ion collision is
+    collision, and the Coulomb logarithm for a mixed ion collision is
     given by :cite:t:`nrlformulary:2019`.
 
     The density, velocity and temperature of the primary ion can be
@@ -196,7 +196,7 @@ def temp_ratio(  # noqa: C901
     >>> helio.temp_ratio(
     ...     r_0=r_0, r_n=r_n, n_1=n_1, n_2=n_2, v_1=v_1, T_1=T_1, T_2=T_2, ions=ions
     ... )
-    [2.78928645832..., 1.04007368797..., 1.06914450183...]
+    [np.float64(2.78928645...), np.float64(1.04007...), np.float64(1.06914...)]
     """
 
     # Validate ions argument
