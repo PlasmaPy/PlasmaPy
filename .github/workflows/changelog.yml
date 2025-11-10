@@ -31,6 +31,9 @@ jobs:
 
         # Written in JavaScript, using Node.js syntax.
         script: |
+
+          // Define regular expressions for pull requests not requiring
+          // a changelog entry.
           function buildPatterns() {
             return [
               /^bump .* from .* to .*/i,
@@ -42,6 +45,13 @@ jobs:
             ];
           }
 
+          // Check whether the pull request title matches any of the provided patterns.
+          function matchesTitle(title, pullRequestTitlePatterns) {
+            const t = title || "";
+            return pullRequestTitlePatterns.some(rx => rx.test(t));
+          }
+
+          // Retrieve pull request metadata using the GitHub REST API.
           async function getPullRequest(octokit, ctx) {
             const { data } = await octokit.rest.pulls.get({
               owner: ctx.repo.owner,
@@ -51,11 +61,7 @@ jobs:
             return data;
           }
 
-          function matchesTitle(title, pullRequestTitlePatterns) {
-            const t = title || "";
-            return pullRequestTitlePatterns.some(rx => rx.test(t));
-          }
-
+          // Label a pull request.
           async function addLabel(octokit, ctx, issueNumber, label) {
             await octokit.rest.issues.addLabels({
               owner: ctx.repo.owner,
