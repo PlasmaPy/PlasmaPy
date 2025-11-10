@@ -80,7 +80,7 @@ jobs:
           const pr = await getPullRequest(github, context);
 
           if (matchesTitle(pr.title, pullRequestTitlePatterns)) {
-            await addLabel(github, context, context.issue.number, 'no changelog entry needed');
+            await addLabel(github, context, context.issue.number, 'skip changelog checks');
           }
 
   changelog_checker:
