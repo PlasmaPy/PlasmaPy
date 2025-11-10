@@ -36,7 +36,6 @@ jobs:
 
         # Written in JavaScript, using Node.js syntax.
         script: |
-
           // Define regular expressions for pull requests not requiring
           // a changelog entry.
           function buildPatterns() {
