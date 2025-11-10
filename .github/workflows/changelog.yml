@@ -29,8 +29,16 @@ jobs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
-          // Regular expression to match the PR title pattern "Bump * from * to *"
-          const bumpPattern = /^Bump .* from .* to .*/;
+          // Case-insensitive regular expressions to match PR titles
+          const bumpPattern = /^Bump .* from .* to .*/i;
+          const patterns = [
+            /autoupdate/i,
+            /Minor/i,
+            /Fix typo/i,
+            /Update changelog entries/i,
+            /Update changelog prior to/i,
+            /Update pinned requirements/i,
+          ];
 
           // Fetch the PR
           const { data: pullRequest } = await github.rest.pulls.get({
@@ -39,16 +47,12 @@ jobs:
             pull_number: context.issue.number,
           });
 
-          if (
-            pullRequest.title.includes('autoupdate') ||
-            pullRequest.title.includes('Minor') ||
-            pullRequest.title.includes('Fix typo') ||
-            pullRequest.title.includes('Update changelog entries') ||
-            pullRequest.title.includes('Update changelog prior to') ||
-            pullRequest.title.includes('Update pinned requirements') ||
-            bumpPattern.test(pullRequest.title)
-          ) {
-            // If yes, then apply the label "no changelog entry needed"
+          const title = pullRequest.title || "";
+
+          // Check if title matches any of the patterns
+          const matches = bumpPattern.test(title) || patterns.some(r => r.test(title));
+
+          if (matches) {
             await github.rest.issues.addLabels({
               owner: context.repo.owner,
               repo: context.repo.repo,
