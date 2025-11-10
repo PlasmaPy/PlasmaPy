@@ -63,7 +63,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: add-no-changelog-label
     steps:
-    - uses: scientific-python/action-towncrier-changelog@v1
+    - uses: scientific-python/action-towncrier-changelog@v2
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         BOT_USERNAME: changelog-bot
