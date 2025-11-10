@@ -39,6 +39,7 @@ jobs:
             'priority: medium',
             'priority: very high',
             'prototype 🏗️',
+            'skip changelog checks',
             'Stale',
             'status: assigned',
             'status: dormant',
