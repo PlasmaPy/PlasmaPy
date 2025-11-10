@@ -1,13 +1,14 @@
+# Verify that a pull request has a valid changelog entry.
+#
+# The verification is skipped if either of the `no changelog entry needed`
+# or `skip changelog checks` labels have been applied. These labels are
+# automatically applied to certain automated or minor pull requests.
+
 name: Changelog
 
 on:
   pull_request:
     types: [opened, synchronize, reopened, edited, labeled, unlabeled]
-
-permissions:
-  contents: read
-  pull-requests: write
-  issues: write
 
 env:
   CHANGELOG_INSTRUCTIONS: "⚠️ Please add a changelog entry at `changelog/NUMBER.TYPE.rst`, where `NUMBER` is the pull request number and `TYPE` is one of `feature`, `trivial`, `doc`, `internal`, `bugfix`, `breaking`, or `removal`.\n\nMinor change such as typo fixes and hyperlink updates do not need a changelog entry.\n\nFor details, see: https://docs.plasmapy.org/en/latest/contributing/changelog_guide.html#adding-a-changelog-entry"
@@ -20,7 +21,6 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
-      issues: write
 
     steps:
 
@@ -46,7 +46,6 @@ jobs:
             pullRequest.title.includes('Update changelog entries') ||
             pullRequest.title.includes('Update changelog prior to') ||
             pullRequest.title.includes('Update pinned requirements') ||
-            pullRequest.title.includes('Update release checklist') ||
             bumpPattern.test(pullRequest.title)
           ) {
             // If yes, then apply the label "no changelog entry needed"
@@ -58,12 +57,26 @@ jobs:
             });
           }
 
-  changelog-checker:
-    name: Validate towncrier changelog entry
+  changelog_checker:
+    name: Validate changelog entry
     runs-on: ubuntu-latest
     needs: add-no-changelog-label
+    permissions:
+      contents: read
+      pull-requests: write
+
     steps:
-    - uses: scientific-python/action-towncrier-changelog@v1
+
+    - uses: actions/checkout@v5
+      with:
+        sparse-checkout: |
+          changelog
+          pyproject.toml
+        persist-credentials: false
+
+    - name: Validate changelog entry with towncrier
+      uses: scientific-python/action-towncrier-changelog@v2
+      # see [tool.changelog-bot] in pyproject.toml for configuration
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         BOT_USERNAME: changelog-bot
