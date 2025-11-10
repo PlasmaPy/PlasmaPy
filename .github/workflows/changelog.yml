@@ -24,10 +24,12 @@ jobs:
 
     steps:
 
-    - name: Add no changelog label
+    - name: Add no changelog label for PR titles matching regular expressions
       uses: actions/github-script@v8
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
+
+        # Written in JavaScript, using Node.js syntax
         script: |
           // Case-insensitive regular expressions to match PR titles
           const bumpPattern = /^Bump .* from .* to .*/i;
