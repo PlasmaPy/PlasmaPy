@@ -25,6 +25,7 @@ jobs:
     steps:
 
     - name: Add no changelog label for PR titles matching regular expressions
+      if: ${{ !contains(github.event.pull_request.labels.*.name, 'skip changelog checks') }}
       uses: actions/github-script@v8
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
