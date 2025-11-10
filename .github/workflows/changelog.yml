@@ -1,3 +1,9 @@
+# Verify that a pull request has a valid changelog entry.
+#
+# This check is skipped if either of the `no changelog entry needed` or
+# `skip changelog checks` labels have been applied. This workflow
+# automatically adds one of these labels to certain pull requests.
+
 name: Changelog
 
 on:
@@ -24,6 +30,13 @@ jobs:
 
     steps:
 
+    - uses: actions/checkout@v5
+      with:
+        sparse-checkout: |
+          changelog
+          pyproject.toml
+        persist-credentials: false
+
     - name: Add no changelog label
       uses: actions/github-script@v8
       with:
@@ -46,7 +59,6 @@ jobs:
             pullRequest.title.includes('Update changelog entries') ||
             pullRequest.title.includes('Update changelog prior to') ||
             pullRequest.title.includes('Update pinned requirements') ||
-            pullRequest.title.includes('Update release checklist') ||
             bumpPattern.test(pullRequest.title)
           ) {
             // If yes, then apply the label "no changelog entry needed"
