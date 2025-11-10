@@ -28,13 +28,6 @@ jobs:
 
     steps:
 
-    - uses: actions/checkout@v5
-      with:
-        sparse-checkout: |
-          changelog
-          pyproject.toml
-        persist-credentials: false
-
     - name: Add no changelog label
       uses: actions/github-script@v8
       with:
@@ -69,10 +62,19 @@ jobs:
           }
 
   changelog-checker:
+
     name: Validate towncrier changelog entry
     runs-on: ubuntu-latest
     needs: add-no-changelog-label
     steps:
+
+    - uses: actions/checkout@v5
+      with:
+        sparse-checkout: |
+          changelog
+          pyproject.toml
+        persist-credentials: false
+
     - uses: scientific-python/action-towncrier-changelog@v2
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
