@@ -75,6 +75,7 @@ jobs:
         persist-credentials: false
 
     - uses: scientific-python/action-towncrier-changelog@v2
+      # see [tool.changelog-bot] in pyproject.toml for configuration
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         BOT_USERNAME: changelog-bot
