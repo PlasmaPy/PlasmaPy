@@ -1,18 +1,14 @@
 # Verify that a pull request has a valid changelog entry.
 #
-# This check is skipped if either of the `no changelog entry needed` or
-# `skip changelog checks` labels have been applied. This workflow
-# automatically adds one of these labels to certain pull requests.
+# The verification is skipped if either of the `no changelog entry needed`
+# or `skip changelog checks` labels have been applied. These labels are
+# automatically applied to certain automated or minor pull requests.
 
 name: Changelog
 
 on:
   pull_request:
     types: [opened, synchronize, reopened, edited, labeled, unlabeled]
-
-permissions:
-  contents: read
-  pull-requests: write
 
 env:
   CHANGELOG_INSTRUCTIONS: "⚠️ Please add a changelog entry at `changelog/NUMBER.TYPE.rst`, where `NUMBER` is the pull request number and `TYPE` is one of `feature`, `trivial`, `doc`, `internal`, `bugfix`, `breaking`, or `removal`.\n\nMinor change such as typo fixes and hyperlink updates do not need a changelog entry.\n\nFor details, see: https://docs.plasmapy.org/en/latest/contributing/changelog_guide.html#adding-a-changelog-entry"
@@ -61,11 +57,14 @@ jobs:
             });
           }
 
-  changelog-checker:
-
+  changelog_checker:
     name: Validate towncrier changelog entry
     runs-on: ubuntu-latest
     needs: add-no-changelog-label
+    permissions:
+      contents: read
+      pull-requests: write
+
     steps:
 
     - uses: actions/checkout@v5
