@@ -32,6 +32,7 @@ jobs:
       if: contains(github.event.pull_request.labels.*.name, 'needs changelog entry')
       run: |
         gh issue edit ${{ github.event.pull_request.number }} \
+          --repo "${{ github.repository }}" \
           --remove-label "skip changelog checks" \
           --remove-label "no changelog entry needed"
       env:
