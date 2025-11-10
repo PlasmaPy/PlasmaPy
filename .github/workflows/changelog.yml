@@ -103,9 +103,6 @@ jobs:
     - name: Validate changelog entry with towncrier
       # see [tool.changelog-bot] in pyproject.toml for configuration
       uses: scientific-python/action-towncrier-changelog@v2
-      # This action fails if "no changelog entry needed" is applied, so
-      # use a conditional to make a changelog entry optional in this case.
-      if: ${{ !( contains(github.event.pull_request.labels.*.name, 'no changelog entry needed') ) }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         BOT_USERNAME: changelog-bot
