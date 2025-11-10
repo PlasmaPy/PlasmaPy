@@ -29,33 +29,47 @@ jobs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
 
-        # Written in JavaScript, using Node.js syntax
+        # Written in JavaScript, using Node.js syntax.
         script: |
-          const pullRequestTitlePatterns = [
-            /^bump .* from .* to .*/i,
-            /autoupdate/i,
-            /fix typo/i,
-            /update changelog entries/i,
-            /update changelog prior to/i,
-            /update pinned requirements/i,
-          ];
+          function buildPatterns() {
+            return [
+              /^bump .* from .* to .*/i,
+              /autoupdate/i,
+              /fix typo/i,
+              /update changelog entries/i,
+              /update changelog prior to/i,
+              /update pinned requirements/i,
+            ];
+          }
 
-          // Fetch the PR
-          const { data: pullRequest } = await github.rest.pulls.get({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            pull_number: context.issue.number,
-          });
-
-          const title = pullRequest.title || "";
-
-          if (pullRequestTitlePatterns.some(r => r.test(title))) {
-            await github.rest.issues.addLabels({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              labels: ['no changelog entry needed'],
+          async function getPullRequest(octokit, ctx) {
+            const { data } = await octokit.rest.pulls.get({
+              owner: ctx.repo.owner,
+              repo: ctx.repo.repo,
+              pull_number: ctx.issue.number,
             });
+            return data;
+          }
+
+          function matchesTitle(title, pullRequestTitlePatterns) {
+            const t = title || "";
+            return pullRequestTitlePatterns.some(rx => rx.test(t));
+          }
+
+          async function addLabel(octokit, ctx, issueNumber, label) {
+            await octokit.rest.issues.addLabels({
+              owner: ctx.repo.owner,
+              repo: ctx.repo.repo,
+              issue_number: issueNumber,
+              labels: [label],
+            });
+          }
+
+          const pullRequestTitlePatterns = buildPatterns();
+          const pr = await getPullRequest(github, context);
+
+          if (matchesTitle(pr.title, pullRequestTitlePatterns)) {
+            await addLabel(github, context, context.issue.number, 'no changelog entry needed');
           }
 
   changelog_checker:
