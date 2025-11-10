@@ -13,7 +13,6 @@ on:
 permissions:
   contents: read
   pull-requests: write
-  issues: write
 
 env:
   CHANGELOG_INSTRUCTIONS: "⚠️ Please add a changelog entry at `changelog/NUMBER.TYPE.rst`, where `NUMBER` is the pull request number and `TYPE` is one of `feature`, `trivial`, `doc`, `internal`, `bugfix`, `breaking`, or `removal`.\n\nMinor change such as typo fixes and hyperlink updates do not need a changelog entry.\n\nFor details, see: https://docs.plasmapy.org/en/latest/contributing/changelog_guide.html#adding-a-changelog-entry"
@@ -26,7 +25,6 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
-      issues: write
 
     steps:
 
