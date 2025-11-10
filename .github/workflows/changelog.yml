@@ -58,7 +58,7 @@ jobs:
           }
 
   changelog_checker:
-    name: Validate towncrier changelog entry
+    name: Validate changelog entry
     runs-on: ubuntu-latest
     needs: add-no-changelog-label
     permissions:
@@ -74,7 +74,8 @@ jobs:
           pyproject.toml
         persist-credentials: false
 
-    - uses: scientific-python/action-towncrier-changelog@v2
+    - name: Validate changelog entry with towncrier
+      uses: scientific-python/action-towncrier-changelog@v2
       # see [tool.changelog-bot] in pyproject.toml for configuration
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
