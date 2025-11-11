@@ -101,10 +101,10 @@ optional-dependencies.docs = [
 # Test dependencies are not user-facing, so we can set stricter
 # requirements to ensure that tests are run in consistent environments.
 optional-dependencies.tests = [
-  "hypothesis>=6.142.3",
+  "hypothesis>=6.147",
   "mypy>=1.18.2",
   "nox[uv]>=2025.10.16",
-  "pytest>=8.4.2",
+  "pytest>=9",
   "pytest-cov>=7",
   "pytest-filter-subpackage>=0.2",
   "pytest-regressions>=2.8.3",
