@@ -50,12 +50,15 @@ Department of Energy through grant DE-SC0016363 that was funded through
 the NSF-DOE Partnership on Basic Plasma Science and Engineering; a
 Scholarly Studies grant awarded by the Smithsonian Institution; Google
 Summer of Code; and NASA Heliophysics Data Environment Enhancements
-(HDEE) grant 80NSSC20K0174. PlasmaPy is being developed with support
-from the U.S. National Science Foundation through grants 1931388,
-1931393, 1931429, and 1931435 that were awarded through `a collaborative
-proposal
-<https://doi.org/10.5281/zenodo.3406803>`__ submitted to the
-Cyberinfrastructure for Sustained Scientific Innovation (CSSI) program.
+(HDEE) grant 80NSSC20K0174. PlasmaPy development from October 2019 to
+September 2025 was supported by the U.S. National Science Foundation
+(NSF) through grants 1931388, 1931393, 1931429, and 1931435 that were
+awarded via a `collaborative proposal`_ submitted to NSF's
+`Cyberinfrastructure for Sustained Scientific Innovation`_ (CSSI) program.
+`PlasmaPy infrastructure and maintenance`_ from August 2025 through
+July 2028 for two person-months per year is supported by NASA
+Heliophysics Tools and Methods grant 80NSSC25K0360 to the Smithsonian
+Astrophysical Observatory.
 
 All opinions, findings, conclusions, and recommendations expressed in
 this material are those of the authors and do not necessarily reflect
@@ -64,12 +67,15 @@ supported PlasmaPy development.
 
 .. _BaPSF: https://plasma.physics.ucla.edu
 .. _The Carpentries: https://carpentries.org/
+.. _collaborative proposal: https://doi.org/10.5281/zenodo.3406803
 .. _CRANE: https://www.cranephysics.org
+.. _Cyberinfrastructure for Sustained Scientific Innovation:
 .. _Fair4Fusion: https://fair4fusion.eu
 .. _MagNetUS: https://sites.google.com/view/frontier-science-magnetus/magnetus?pli=1
 .. _OLUG: https://www.lle.rochester.edu/omega-laser-facility/user-community/olug/
 .. _OMFIT: https://omfit.io
 .. _Open Astronomy: https://openastronomy.org
+.. _PlasmaPy infrastructure and maintenance: https://doi.org/10.5281/zenodo.17148678
 .. _PPPL: https://www.pppl.gov
 .. _pyOpenSci: https://www.pyopensci.org
 .. _Python in Heliophysics Community: https://heliopython.org
