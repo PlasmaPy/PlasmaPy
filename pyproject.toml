@@ -477,17 +477,18 @@ ignore = [
   "src/plasmapy/_version.py",
 ]
 
-[tool.pytest.ini_options]
+[tool.pytest]
 testpaths = [ '.' ]
 xfail_strict = true
 markers = [
   "slow: marks tests as slow (deselect with '-m \"not slow\"')",
 ]
-doctest_optionflags = """
-NORMALIZE_WHITESPACE
-ELLIPSIS
-NUMBER
-IGNORE_EXCEPTION_DETAIL"""
+doctest_optionflags = [
+  "NORMALIZE_WHITESPACE",
+  "ELLIPSIS",
+  "NUMBER",
+  "IGNORE_EXCEPTION_DETAIL",
+]
 filterwarnings = [
   # treat warnings as errors by default; pass `-W once` to pytest to show them
   "error",
