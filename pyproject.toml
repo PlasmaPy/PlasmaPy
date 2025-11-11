@@ -478,7 +478,6 @@ ignore = [
 ]
 
 [tool.pytest]
-minversion = "9.0.0"
 testpaths = [ '.' ]
 xfail_strict = true
 markers = [
