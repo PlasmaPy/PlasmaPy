@@ -7,7 +7,7 @@ PlasmaPy Coordinating Committee
 
 * :user:`Erik Everson <rocco8773>`
 * :user:`Nicholas Murphy <namurphy>`
-* :user:`Dominik Stańczak-Marikin <StanczakDominik>`
+* David Schaffner
 
 PlasmaPy contributors
 =====================
