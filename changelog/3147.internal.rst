@@ -1,1 +1,3 @@
-Updated the pytest configuration to use the
+Switched the pytest configuration in :file:`pyproject.toml` to use the
+modern TOML configuration (available for `pytest>=9`) rather than the legacy
+INI compatibility mode.
