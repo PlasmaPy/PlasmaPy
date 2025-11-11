@@ -1,0 +1,3 @@
+Updated the acknowledgements page to include a new NASA award supporting
+work on
+`PlasmaPy infrastructure and maintenance <https://doi.org/10.5281/zenodo.17148678>`__.
