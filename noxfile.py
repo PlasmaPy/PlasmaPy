@@ -100,34 +100,39 @@ def _create_requirements_pr_message(uv_output: str, session: nox.Session) -> Non
 
     shutil.copy(pr_template, pr_message)
 
-    lines = [
+    preamble = [
         "",
         "| package | old version | new version |",
         "| :-----: | :---------: | :---------: |",
     ]
 
-    for package_update in uv_output.splitlines():
-        if not package_update.startswith("Updated"):
-            session.debug(f"Line not added to table: {package_update}")
+    lines = []
+    for line in uv_output.splitlines():
+        if line.startswith("Resolved") or not line:
+            continue
+
+        if not line.startswith("Updated"):
+            session.warn(f"Line not added to table: {line}")
             continue
 
         try:
             # An example line is "Updated nbsphinx v0.9.6 -> v0.9.7"
-            _, package_, old_version_, _, new_version_ = package_update.split()
+            _, package_name_, old_version_, _, new_version_ = line.strip().split()
         except ValueError:
-            session.debug(f"Line not added to table: {package_update}:")
+            session.warn(f"Line not added to table: {line}:")
             continue
 
         old_version = f"{old_version_.removeprefix('v')}"
         new_version = f"{new_version_.removeprefix('v')}"
 
-        pypi_link = f"https://pypi.org/project/{package_}/{new_version}"
-        package = f"[`{package_}`]({pypi_link})"
+        pypi_link = f"https://pypi.org/project/{package_name_}/{new_version}"
+        package_name = f"[`{package_name_}`]({pypi_link})"
 
-        lines.append(f"| {package} | `{old_version}` | `{new_version}` |")
+        lines.append(f"| {package_name} | `{old_version}` | `{new_version}` |")
 
+    table_of_updates = "\n".join(preamble + lines)
     with pr_message.open(mode="a") as file:
-        file.write("\n".join(lines))
+        file.write(table_of_updates)
 
 
 def _get_dependencies_from_pyproject_toml(extras: str | None = None):
