@@ -82,6 +82,9 @@ def _create_requirements_pr_message(uv_output: str, session: nox.Session) -> Non
     body of the pull request message used in the workflow for updating
     requirements.
 
+    ⚠️ This function requires that `uv.lock` existed before
+    `uv lock --upgrade` was run.
+
     Parameters
     ----------
     uv_output : str
