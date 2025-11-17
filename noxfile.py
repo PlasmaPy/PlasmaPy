@@ -163,7 +163,7 @@ def _get_dependencies_from_pyproject_toml(extras: str | None = None):
 @nox.session
 def requirements(session: nox.Session) -> None:
     """
-    Upgrade the pinned requirements in `uv.lock`.
+    Upgrade pinned requirements in `uv.lock`.
 
     This workflow updates :file:`uv.lock` to contain pinned requirements
     for different versions of Python, different operating systems, and
