@@ -174,12 +174,6 @@ def requirements(session: nox.Session) -> None:
     requirements (:file:`.github/workflows/update-pinned-reqs.yml`).
     """
 
-    # Running `uv lock` fails when `uv.lock` has a merge conflict or
-    # is otherwise invalid. To avoid situations like this, preemptively
-    # delete `uv.lock`. Since `uv lock` uses information in `uv.lock`
-    # even if `--upgrade` is specified, deleting `uv.lock` may make
-    # running `uv lock` more deterministic.
-
     lockfile = pathlib.Path(root_dir / "uv.lock")
     lockfile.unlink(missing_ok=True)
 
