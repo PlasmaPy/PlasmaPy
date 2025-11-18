@@ -175,7 +175,15 @@ def requirements(session: nox.Session) -> None:
     """
 
     lockfile = pathlib.Path(root_dir / "uv.lock")
-    lockfile.unlink(missing_ok=True)
+    try:
+        if lockfile.exists():
+            session.run("uv", "lock", "--check")
+        else:
+            session.log("🪧 File 'uv.lock' not found. Continuing.")
+    except nox.command.CommandFailed:
+        session.warn("⚠️ 'uv.lock' is invalid, possibly due to a git merge conflict.")
+        session.log("Deleting 'uv.lock' and continuing.")
+        lockfile.unlink()
 
     uv_output: str | bool = session.run(
         "uv",
