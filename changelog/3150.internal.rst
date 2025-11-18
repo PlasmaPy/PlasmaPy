@@ -1,0 +1,1 @@
+Updated the Nox session that upgrades :file:`uv.lock` to only delete :file:`uv.lock` beforehand if the file is invalid.
