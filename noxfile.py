@@ -188,6 +188,7 @@ def requirements(session: nox.Session) -> None:
         "lock",
         "--upgrade",
         "--no-progress",
+        *session.posargs,
         silent=running_on_ci,  # return a multi-line string with stdout & stderr if true
     )
 
