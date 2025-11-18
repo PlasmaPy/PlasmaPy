@@ -139,7 +139,6 @@ repos:  # https://pre-commit.com/#adding-pre-commit-plugins-to-your-project
     exclude: licenses/.*|LICENSE.md|PATENT.md
     additional_dependencies:
     - mdformat-footnote
-    - mdformat-frontmatter
     - mdformat-gfm
     - mdformat-gfm-alerts
     - mdformat-ruff
