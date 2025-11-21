@@ -84,7 +84,7 @@ repos:
 - repo: https://github.com/astral-sh/ruff-pre-commit
   rev: v0.14.1
   hooks:
-  - id: ruff-check
+  - id: ruff
     name: ruff (see https://docs.astral.sh/ruff/rules)
     args: [--fix]
   - id: ruff-format

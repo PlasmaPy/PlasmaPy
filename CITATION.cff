@@ -1,10 +1,10 @@
 title: PlasmaPy
 type: software
-version: 2025.8.0
+version: 2025.10.0
 identifiers:
 - type: doi
-  value: 10.5281/zenodo.16747747
-date-released: '2025-08-07'
+  value: 10.5281/zenodo.17438685
+date-released: '2025-10-25'
 message: >-
   Please cite the specific version of PlasmaPy used
   during a research project.
@@ -106,7 +106,7 @@ authors:
 - given-names: Ataf Fazledin
   family-names: Ahamed
   affiliation: OpenRefactory Inc.
-  alias: fazledyn-or
+  alias: fazledyn
 
 - given-names: Christoper
   family-names: Arran

@@ -1,0 +1,3 @@
+Renamed :file:`.github/workflows/conda.yml` to :file:`.github/workflows/installability.yml`,
+and added workflows to test that a new release of PlasmaPy can be installed from the Python Package Index
+with pip and uv, and from conda-forge with miniconda.

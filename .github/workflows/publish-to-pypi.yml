@@ -35,5 +35,6 @@ jobs:
     - name: Upload package to PyPI
       uses: pypa/gh-action-pypi-publish@v1.13.0
       with:
+        # TODO: set up trusted publishing https://docs.pypi.org/trusted-publishers/
         user: __token__
         password: ${{ secrets.PYPI_API_TOKEN }}

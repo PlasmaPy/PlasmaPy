@@ -1,3 +1,8 @@
+# /// script
+# requires-python = ">=3.12"
+# dependencies = ["nox"]
+# ///
+
 """
 Nox is an automation tool used by PlasmaPy to run tests, build
 documentation, and perform other checks. Nox sessions are defined in
@@ -41,20 +46,20 @@ from packaging.requirements import Requirement
 # The minimum version of Python should be incremented immediately
 # following the first release after October of each year.
 
-supported_python_versions: tuple[str, ...] = ("3.11", "3.12", "3.13")
+supported_python_versions: tuple[str, ...] = ("3.12", "3.13", "3.14")
 supported_operating_systems: tuple[str, ...] = ("linux", "macos", "windows")
 
 maxpython = max(supported_python_versions)
 minpython = min(supported_python_versions)
 
-_HERE = pathlib.Path(__file__).parent
+root_dir = pathlib.Path(__file__).parent
 
 # The documentation should be build always using the same version of
 # Python, which should be the latest version of Python supported by Read
 # the Docs. Because Read the Docs takes some time to support new
 # releases of Python, we should not link docpython to maxpython.
 
-docpython = "3.12"
+docpython = "3.13"
 
 current_python = f"{sys.version_info.major}.{sys.version_info.minor}"
 nox.options.sessions = [f"tests-{current_python}(skipslow)"]
@@ -77,54 +82,66 @@ def _create_requirements_pr_message(uv_output: str, session: nox.Session) -> Non
     body of the pull request message used in the workflow for updating
     requirements.
 
+    ⚠️ This function requires that `uv.lock` existed before
+    `uv lock --upgrade` was run.
+
     Parameters
     ----------
     uv_output : str
         The multi-line output of ``session.run(..., silent=True)``.
     """
 
-    pr_template = pathlib.Path("./.github/content/update-requirements-pr-template.md")
-    pr_message = pathlib.Path("./.github/content/update-requirements-pr-body.md")
+    pr_template = pathlib.Path(
+        root_dir / "./.github/content/update-requirements-pr-template.md"
+    )
+    pr_message = pathlib.Path(
+        root_dir / "./.github/content/update-requirements-pr-body.md"
+    )
 
     shutil.copy(pr_template, pr_message)
 
-    lines = [
+    preamble = [
         "",
         "| package | old version | new version |",
         "| :-----: | :---------: | :---------: |",
     ]
 
-    for package_update in uv_output.splitlines():
-        if not package_update.startswith("Updated"):
-            session.debug(f"Line not added to table: {package_update}")
+    lines = []
+    for line in uv_output.splitlines():
+        if line.startswith("Resolved") or not line:
+            continue
+
+        if not line.startswith("Updated"):
+            session.warn(f"Line not added to table: {line}")
             continue
 
         try:
             # An example line is "Updated nbsphinx v0.9.6 -> v0.9.7"
-            _, package_, old_version_, _, new_version_ = package_update.split()
+            _, package_name_, old_version_, _, new_version_ = line.strip().split()
         except ValueError:
-            session.debug(f"Line not added to table: {package_update}:")
+            session.warn(f"Line not added to table: {line}:")
             continue
 
         old_version = f"{old_version_.removeprefix('v')}"
         new_version = f"{new_version_.removeprefix('v')}"
 
-        pypi_link = f"https://pypi.org/project/{package_}/{new_version}"
-        package = f"[`{package_}`]({pypi_link})"
+        pypi_link = f"https://pypi.org/project/{package_name_}/{new_version}"
+        package_name = f"[`{package_name_}`]({pypi_link})"
 
-        lines.append(f"| {package} | `{old_version}` | `{new_version}` |")
+        lines.append(f"| {package_name} | `{old_version}` | `{new_version}` |")
 
+    table_of_updates = "\n".join(preamble + lines)
     with pr_message.open(mode="a") as file:
-        file.write("\n".join(lines))
+        file.write(table_of_updates)
 
 
 def _get_dependencies_from_pyproject_toml(extras: str | None = None):
-    _PYTPROJECT_TOML = (_HERE / "pyproject.toml").resolve()
-    with _PYTPROJECT_TOML.open(mode="rb") as file:
+    _PYPROJECT_TOML = (root_dir / "pyproject.toml").resolve()
+    with _PYPROJECT_TOML.open(mode="rb") as file:
         data = tomllib.load(file)
         config = data["project"]
 
-    dependencies = {Requirement(item).name: item for item in config["dependencies"]}
+    dependencies = {Requirement(item): item for item in config["dependencies"]}
 
     if (
         extras is None
@@ -138,8 +155,7 @@ def _get_dependencies_from_pyproject_toml(extras: str | None = None):
     op_deps = {}
     for extra in extras:
         for dep in config["optional-dependencies"][extra]:
-            name = Requirement(dep).name
-            op_deps[name] = dep
+            op_deps[Requirement(dep)] = dep
 
     return {**dependencies, **op_deps}
 
@@ -147,26 +163,35 @@ def _get_dependencies_from_pyproject_toml(extras: str | None = None):
 @nox.session
 def requirements(session: nox.Session) -> None:
     """
-    Regenerate the pinned requirements for running tests and building
-    documentation.
+    Upgrade the lockfile used to run tests and build documentation.
 
     This workflow updates :file:`uv.lock` to contain pinned requirements
     for different versions of Python, different operating systems, and
-    different dependency sets (i.e., `docs` or `tests`).
+    different dependency sets.
 
-    When run in CI, this session will create a file that contains the
-    pull request message for the GitHub workflow that updates the pinned
+    When run in CI, this session creates a file that contains the pull
+    request message for the GitHub workflow that updates the pinned
     requirements (:file:`.github/workflows/update-pinned-reqs.yml`).
     """
-    uv_lock_upgrade = ["uv", "lock", "--upgrade", "--no-progress"]
 
-    # When silent is `True`, `session.run()` returns a multi-line string
-    # with the standard output and standard error.
+    lockfile = pathlib.Path(root_dir / "uv.lock")
+    try:
+        if lockfile.exists():
+            session.run("uv", "lock", "--check")
+        else:
+            session.log("🪧 File 'uv.lock' not found. Continuing.")
+    except nox.command.CommandFailed:
+        session.warn("⚠️ 'uv.lock' is invalid, possibly due to a git merge conflict.")
+        session.log("Deleting 'uv.lock' and continuing.")
+        lockfile.unlink()
 
     uv_output: str | bool = session.run(
-        *uv_lock_upgrade,
+        "uv",
+        "lock",
+        "--upgrade",
+        "--no-progress",
         *session.posargs,
-        silent=running_on_ci,
+        silent=running_on_ci,  # return a multi-line string with stdout & stderr if true
     )
 
     if running_on_ci:
@@ -197,14 +222,15 @@ def validate_requirements(session: nox.Session) -> None:
     session.run("uv", "lock", "--check", "--offline", "--no-progress")
 
 
-pytest_command: tuple[str, ...] = (
+pytest_command: list[str] = [
     "pytest",
     "--pyargs",
-    "--durations=5",
+    "--durations=6",
+    "--durations-min=0.2",
     "--tb=short",
     "-n=auto",
     "--dist=loadfile",
-)
+]
 
 with_doctests: tuple[str, ...] = ("--doctest-modules", "--doctest-continue-on-failure")
 
@@ -216,6 +242,8 @@ with_coverage: tuple[str, ...] = (
     "--cov-report",
     "xml:coverage.xml",
 )
+
+report_warnings_rather_than_treat_them_as_errors = ("-W", "once")
 
 skipslow: tuple[str, ...] = ("-m", "not slow")
 
@@ -240,6 +268,9 @@ def tests(session: nox.Session, test_specifier: nox._parametrize.Param) -> None:
 
     if test_specifier == "with code coverage":
         options += with_coverage
+
+    if test_specifier in {"lowest-direct", "lowest-direct-skipslow"}:
+        options += report_warnings_rather_than_treat_them_as_errors
 
     # Doctests are only run with the most recent versions of Python and
     # other dependencies because there may be subtle differences in the
@@ -274,39 +305,37 @@ def tests(session: nox.Session, test_specifier: nox._parametrize.Param) -> None:
 
 @nox.session(python=maxpython)
 @nox.parametrize(
-    ["repository"],
+    ["package"],
     [
         nox.param("numpy", id="numpy"),
-        nox.param("https://github.com/astropy/astropy", id="astropy"),
-        nox.param("https://github.com/pydata/xarray", id="xarray"),
+        nox.param("astropy", id="astropy"),
+        nox.param("pandas", id="pandas"),
+        nox.param("xarray", id="xarray"),
         nox.param("https://github.com/lmfit/lmfit-py", id="lmfit"),
-        nox.param("https://github.com/pandas-dev/pandas", id="pandas"),
     ],
 )
-def run_tests_with_dev_version_of(session: nox.Session, repository: str) -> None:
+def test_upstream(session: nox.Session, package: str) -> None:
     """
-    Run tests against the development branch of a dependency.
+    Run tests against the development branch of an upstream dependency.
 
     Running this session helps us catch problems resulting from breaking
     changes in an upstream dependency before its official release.
     """
-
-    if repository == "numpy":
-        # From: https://numpy.org/doc/1.26/dev/depending_on_numpy.html
+    if package.startswith("https"):
+        session.install(f"git+{package}")
+    else:
         session.run_install(
             "uv",
             "pip",
             "install",
-            "-U",
-            "--pre",
-            "--only-binary",
-            ":all:",
-            "-i",
-            "https://pypi.anaconda.org/scientific-python-nightly-wheels/simple",
-            "numpy",
+            "--upgrade",
+            package,
+            env={
+                "UV_INDEX": "https://pypi.anaconda.org/scientific-python-nightly-wheels/simple",
+                "UV_INDEX_STRATEGY": "unsafe-best-match",
+                "UV_PRERELEASE": "allow",
+            },
         )
-    else:
-        session.install(f"git+{repository}")
 
     session.install(".[tests]")
     session.run(*pytest_command, *session.posargs)
@@ -359,6 +388,9 @@ def docs(session: nox.Session) -> None:
 
     if running_on_ci:
         session.log(doc_troubleshooting_message)
+
+    session.run_install("dot", "-V", external=True)
+    session.run_install("pandoc", "--version", external=True)
 
     session.run_install(
         *uv_sync,
@@ -421,7 +453,7 @@ def docs_bundle_htmlzip(session: nox.Session) -> None:
 
     cwd = pathlib.Path.cwd()
     session.chdir(f"{READTHEDOCS_OUTPUT / 'htmlzip'}")
-    session.run("zip", "-r", "-m", f"{zip_name}", ".")
+    session.run("zip", "-r", "-m", f"{zip_name}", ".", external=True)
     session.chdir(f"{cwd}")
 
     session.log(f"The htmlzip was placed in: {READTHEDOCS_OUTPUT / 'htmlzip'}")
@@ -437,11 +469,9 @@ def docs_bundle_htmlzip(session: nox.Session) -> None:
         nox.param("github", "plasmapy/plasmapy_sphinx", id="plasmapy_sphinx"),
     ],
 )
-def build_docs_with_dev_version_of(
-    session: nox.Session, site: str, repository: str
-) -> None:
+def docs_upstream(session: nox.Session, site: str, repository: str) -> None:
     """
-    Build documentation against the development branch of a dependency.
+    Build documentation against the development branch of an upstream dependency.
 
     The purpose of this session is to catch bugs and breaking changes
     so that they can be fixed or updated earlier rather than later.
@@ -451,7 +481,10 @@ def build_docs_with_dev_version_of(
     #       had been put on the target package.
     pkg_name = repository.split("/")[-1]
     deps = _get_dependencies_from_pyproject_toml(extras="docs")
-    deps.pop(pkg_name, None)
+    dep_names = {dep: dep.name for dep in deps}
+    for dep, name in dep_names.items():
+        if name == pkg_name:
+            deps.pop(dep)
 
     session.install(
         f"git+https://{site}.com/{repository}",
@@ -624,12 +657,12 @@ def changelog(session: nox.Session, final: str) -> None:
         session.run(*towncrier, "--draft", "--keep")
         return
 
-    original_file = pathlib.Path("./CHANGELOG.rst")
+    original_file = pathlib.Path(root_dir / "CHANGELOG.rst")
     original_file.unlink()
 
     session.run(*towncrier, "--yes")
 
-    destination = pathlib.Path(f"./docs/changelog/{version}.rst")
+    destination = pathlib.Path(root_dir / f"docs/changelog/{version}.rst")
     shutil.copy(original_file, destination)
 
 
@@ -679,7 +712,7 @@ def monkeytype(session: nox.Session) -> None:
     session.install(".[tests]")
     session.install("MonkeyType", "pytest-monkeytype", "pre-commit")
 
-    database = pathlib.Path("./monkeytype.sqlite3")
+    database = pathlib.Path(root_dir / "monkeytype.sqlite3")
 
     if not database.exists():
         session.log(f"File {database.absolute()} not found. Running MonkeyType.")
@@ -698,13 +731,6 @@ def monkeytype(session: nox.Session) -> None:
 
 
 @nox.session
-def cff(session: nox.Session) -> None:
-    """Validate CITATION.cff against the metadata standard."""
-    session.install("cffconvert")
-    session.run("cffconvert", "--validate", *session.posargs)
-
-
-@nox.session
 def manifest(session: nox.Session) -> None:
     """
     Check for missing files in MANIFEST.in.
@@ -714,6 +740,9 @@ def manifest(session: nox.Session) -> None:
     positives can be ignored by adding file patterns and paths to
     `ignore` under `[tool.check-manifest]` in `pyproject.toml`.
     """
+    # check-manifest would be suitable as a pre-commit hook, except that
+    # it requires ∼10 seconds to build the package, which would triple
+    # the time needed to run pre-commit
     session.install("check-manifest")
     session.run("check-manifest", *session.posargs)
 
@@ -738,7 +767,9 @@ def lint(session: nox.Session) -> None:
 zizmor_troubleshooting_message = """
 
 🪧 Run this check locally with `nox -s zizmor` to find potential
-security vulnerabilities in GitHub workflows.
+security vulnerabilities in GitHub workflows and perform safe fixes.
+
+🧰 Perform safe and unsafe fixes with `nox -s zizmor -- --fix=all`.
 
 📜 Audit rules: https://woodruffw.github.io/zizmor/audits
 
@@ -758,18 +789,24 @@ def zizmor(session: nox.Session) -> None:
     running this check locally may produce different results than
     running it in CI.
 
+    If no positional arguments are provided, safe fixes will be applied.
+    To perform unsafe fixes, run `nox -s zizmor -- --fix=unsafe-only`.
+
     Configuration file: .github/zizmor.yml
     """
-    if running_on_ci:
-        session.log(zizmor_troubleshooting_message)
+    session.log(zizmor_troubleshooting_message)
+
+    args = ["--no-progress", "--color=auto", *session.posargs]
+    if not session.posargs:
+        args.append("--fix=safe")
 
     session.install("zizmor")
-    session.run("zizmor", ".github", "--no-progress", "--color=auto", *session.posargs)
+    session.run(
+        "zizmor",
+        ".github",
+        *args,
+    )
 
-
-# /// script
-# dependencies = ["nox"]
-# ///
 
 if __name__ == "__main__":
     nox.main()

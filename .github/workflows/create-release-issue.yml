@@ -1,3 +1,8 @@
+# Define a workflow to create an issue with the checklist for a
+# forthcoming release.
+#
+# The checklist template is at: .github/content/release-checklist.md
+
 name: Create issue
 
 on:

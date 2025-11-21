@@ -1,69 +1,107 @@
+# Verify that a pull request has a valid changelog entry.
+#
+# The verification is skipped if either of the `no changelog entry needed`
+# or `skip changelog checks` labels have been applied. These labels are
+# automatically applied to certain automated or minor pull requests.
+
 name: Changelog
 
 on:
   pull_request:
     types: [opened, synchronize, reopened, edited, labeled, unlabeled]
 
-permissions:
-  contents: read
-  pull-requests: write
-  issues: write
+concurrency:
+  group: changelog-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
 
 env:
-  CHANGELOG_INSTRUCTIONS: "⚠️ Please add a changelog entry at `changelog/NUMBER.TYPE.rst`, where `NUMBER` is the pull request number and `TYPE` is one of `feature`, `trivial`, `doc`, `internal`, `bugfix`, `breaking`, or `removal`.\n\nMinor change such as typo fixes and hyperlink updates do not need a changelog entry.\n\nFor details, see: https://docs.plasmapy.org/en/latest/contributing/changelog_guide.html#adding-a-changelog-entry"
-
+  CHANGELOG_INSTRUCTIONS: "⚠️ Please add a changelog entry at `changelog/NUMBER.TYPE.rst`, where `NUMBER` is the pull request number and `TYPE` is one of `feature`, `trivial`, `doc`, `internal`, `bugfix`, `breaking`, or `removal`.\n\nMinor changes such as typo fixes and hyperlink updates do not need a changelog entry.\n\nFor details, see: https://docs.plasmapy.org/en/latest/contributing/changelog_guide.html#adding-a-changelog-entry"
 
 jobs:
+
   add-no-changelog-label:
     name: Add no changelog label
     runs-on: ubuntu-latest
     permissions:
       contents: read
       pull-requests: write
-      issues: write
 
     steps:
 
-    - name: Add no changelog label
+    - name: Add no changelog label for PR titles matching regular expressions
+      if: ${{ !(contains(github.event.pull_request.labels.*.name, 'skip changelog checks') || contains(github.event.pull_request.labels.*.name, 'needs changelog entry') ) }}
       uses: actions/github-script@v8
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
+
+        # Written in JavaScript, using Node.js syntax.
         script: |
-          // Regular expression to match the PR title pattern "Bump * from * to *"
-          const bumpPattern = /^Bump .* from .* to .*/;
+          // Define regular expressions for pull requests not requiring
+          // a changelog entry.
+          function buildPatterns() {
+            return [
+              /^bump .* from .* to .*/i,
+              /autoupdate/i,
+              /fix typo/i,
+              /update changelog entries/i,
+              /update changelog prior to/i,
+              /update pinned requirements/i,
+            ];
+          }
 
-          // Fetch the PR
-          const { data: pullRequest } = await github.rest.pulls.get({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            pull_number: context.issue.number,
-          });
+          // Check whether the pull request title matches any of the provided patterns.
+          function matchesTitle(title, pullRequestTitlePatterns) {
+            const t = title || "";
+            return pullRequestTitlePatterns.some(rx => rx.test(t));
+          }
 
-          if (
-            pullRequest.title.includes('autoupdate') ||
-            pullRequest.title.includes('Minor') ||
-            pullRequest.title.includes('Fix typo') ||
-            pullRequest.title.includes('Update changelog entries') ||
-            pullRequest.title.includes('Update changelog prior to') ||
-            pullRequest.title.includes('Update pinned requirements') ||
-            pullRequest.title.includes('Update release checklist') ||
-            bumpPattern.test(pullRequest.title)
-          ) {
-            // If yes, then apply the label "no changelog entry needed"
-            await github.rest.issues.addLabels({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              labels: ['no changelog entry needed'],
+          // Retrieve pull request metadata using the GitHub REST API.
+          async function getPullRequest(octokit, ctx) {
+            const { data } = await octokit.rest.pulls.get({
+              owner: ctx.repo.owner,
+              repo: ctx.repo.repo,
+              pull_number: ctx.issue.number,
+            });
+            return data;
+          }
+
+          // Label a pull request.
+          async function addLabel(octokit, ctx, issueNumber, label) {
+            await octokit.rest.issues.addLabels({
+              owner: ctx.repo.owner,
+              repo: ctx.repo.repo,
+              issue_number: issueNumber,
+              labels: [label],
             });
           }
 
-  changelog-checker:
-    name: Validate towncrier changelog entry
+          const pullRequestTitlePatterns = buildPatterns();
+          const pr = await getPullRequest(github, context);
+
+          if (matchesTitle(pr.title, pullRequestTitlePatterns)) {
+            await addLabel(github, context, context.issue.number, 'skip changelog checks');
+          }
+
+  changelog_checker:
+    name: Validate changelog entry
     runs-on: ubuntu-latest
     needs: add-no-changelog-label
+    permissions:
+      contents: read
+      pull-requests: write
+
     steps:
-    - uses: scientific-python/action-towncrier-changelog@v1
+
+    - uses: actions/checkout@v5
+      with:
+        sparse-checkout: |
+          changelog
+          pyproject.toml
+        persist-credentials: false
+
+    - name: Validate changelog entry with towncrier
+      # see [tool.changelog-bot] in pyproject.toml for configuration
+      uses: scientific-python/action-towncrier-changelog@v2
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         BOT_USERNAME: changelog-bot

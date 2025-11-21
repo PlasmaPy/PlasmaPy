@@ -21,7 +21,7 @@ jobs:
     - name: Install uv
       uses: astral-sh/setup-uv@v7
       with:
-        python: 3.13
+        python-version: 3.14
 
     - name: Run Nox session to regenerate requirements
       run: uvx nox -s requirements
@@ -49,6 +49,7 @@ jobs:
         # The PR body message is generated dynamically via `nox -s requirements` in CI
         body-path: .github/content/update-requirements-pr-body.md
         labels: no changelog entry needed, requirements
+        branch: update-uv-lock
         base: main
         delete-branch: true
         token: ${{ steps.generate_token.outputs.token }}
