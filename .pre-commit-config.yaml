@@ -1,19 +1,24 @@
-# configuration file for pre-commit and pre-commit.ci
-# https://docs.plasmapy.org/en/latest/contributing/pre-commit.html
+# Configuration file for pre-commit and pre-commit.ci.
+#
+# Contributor guide: https://docs.plasmapy.org/en/latest/contributing/pre-commit.html
+#
+# Configuration references
+#  - pre-commit: https://pre-commit.com/#adding-pre-commit-plugins-to-your-project
+#  - pre-commit.ci: https://pre-commit.ci/#configuration
 
-ci:  # https://pre-commit.ci/#configuration
+ci:
   autofix_prs: false
   autoupdate_schedule: monthly
-  # skip hooks that require network access, which pre-commit.ci forbids
+  # Skip hooks that require network access, which pre-commit.ci forbids.
   skip: [uv-lock]
 
-repos:  # https://pre-commit.com/#adding-pre-commit-plugins-to-your-project
+repos:
 
 - repo: https://github.com/pre-commit/pre-commit-hooks
   rev: v6.0.0
   hooks:
   - id: check-ast
-    name: validate Python code
+    name: validate python
   - id: trailing-whitespace
     exclude: .*\.py  # use ruff format instead
   - id: end-of-file-fixer
@@ -58,14 +63,6 @@ repos:  # https://pre-commit.com/#adding-pre-commit-plugins-to-your-project
   - id: fix-ligatures
   - id: forbid-bidi-controls
 
-- repo: https://github.com/pre-commit/pygrep-hooks
-  rev: v1.10.0
-  # skip the hooks in this repo covered by ruff rules
-  hooks:
-  - id: rst-directive-colons
-  - id: rst-inline-touching-normal
-  - id: text-unicode-replacement-char
-
 - repo: https://github.com/codespell-project/codespell
   rev: v2.4.1
   hooks:
@@ -75,8 +72,8 @@ repos:  # https://pre-commit.com/#adding-pre-commit-plugins-to-your-project
     exclude: CITATION.cff
 
 - repo: https://github.com/adhtruong/mirrors-typos
-  # use mirrors-typos because `pre-commit autoupdate` drops the version
-  # of the primary typos repo from v1.x.y to v1
+  # Use mirrors-typos because `pre-commit autoupdate` has been reverting
+  # the version of the primary typos repo from v1.x.y to v1.
   rev: v1.39.2
   hooks:
   - id: typos
@@ -84,7 +81,7 @@ repos:  # https://pre-commit.com/#adding-pre-commit-plugins-to-your-project
     exclude: CITATION.cff|docs/notebooks/dispersion/stix_dispersion.ipynb
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.14.5
+  rev: v0.14.6
   hooks:
   - id: ruff-check
     name: ruff-check (see https://docs.astral.sh/ruff/rules)
@@ -97,51 +94,24 @@ repos:  # https://pre-commit.com/#adding-pre-commit-plugins-to-your-project
   - id: blacken-docs
     name: autoformat code blocks in docs
     # docstrings are formatted using the ruff-format hook
-    exclude: docs/contributing/coding_guide.rst|.*\.py
+    exclude: .*\.py|docs/contributing/coding_guide.rst
     additional_dependencies:
-    - black==25.9.0
+    - black
+
+- repo: https://github.com/pre-commit/pygrep-hooks
+  rev: v1.10.0
+  # skip the hooks in this repo covered by ruff rules
+  hooks:
+  - id: rst-directive-colons
+  - id: rst-inline-touching-normal
+  - id: text-unicode-replacement-char
 
 - repo: https://github.com/sphinx-contrib/sphinx-lint
-  rev: v1.0.1
+  rev: v1.0.2
   hooks:
   - id: sphinx-lint
+    name: validate reStructuredText
 
-- repo: https://github.com/abravalheri/validate-pyproject
-  rev: v0.24.1
-  hooks:
-  - id: validate-pyproject
-    name: validate pyproject.toml
-    additional_dependencies: ['validate-pyproject-schema-store[all]']
-
-- repo: https://github.com/tox-dev/pyproject-fmt
-  rev: v2.11.1
-  hooks:
-  - id: pyproject-fmt
-    name: format pyproject.toml
-
-- repo: https://github.com/astral-sh/uv-pre-commit
-  rev: 0.9.10
-  hooks:
-    # running uv lock requires network access or a warm cache, so it
-    # cannot be run via pre-commit.ci, even with the `--offline`,
-    # `--no-index`, and/or `--check` flags
-  - id: uv-lock
-    name: uv-lock (skipped in CI; use `nox -s requirements` for problems)
-
-- repo: https://github.com/hukkin/mdformat
-  # some plugins require mdformat<0.8, so pin mdformat at 0.7.22 for now
-  rev: 1.0.0
-  hooks:
-  - id: mdformat
-    name: format .md files
-    # skip wrapping line length to preserve semantic line breaks and
-    # avoid messing up GitHub formatting of files in .github/content
-    exclude: licenses/.*|LICENSE.md|PATENT.md
-    additional_dependencies:
-    - mdformat-footnote
-    - mdformat-gfm
-    - mdformat-gfm-alerts
-    - mdformat-ruff
 
 - repo: local
   hooks:
@@ -151,3 +121,38 @@ repos:  # https://pre-commit.com/#adding-pre-commit-plugins-to-your-project
     language: python
     additional_dependencies: [cffconvert]
     pass_filenames: false
+
+- repo: https://github.com/astral-sh/uv-pre-commit
+  rev: 0.9.11
+  hooks:
+    # running uv lock requires network access or a warm cache, so it
+    # cannot be run via pre-commit.ci, even with the `--offline`,
+    # `--no-index`, and/or `--check` flags
+  - id: uv-lock
+    name: uv lock (skipped in CI; use `nox -s requirements` for problems)
+
+- repo: https://github.com/hukkin/mdformat
+  rev: 1.0.0
+  hooks:
+  - id: mdformat
+    name: format markdown
+    # skip wrapping line length to preserve semantic line breaks and
+    # avoid messing up GitHub formatting of files in .github/content
+    exclude: licenses/.*|LICENSE.md|PATENT.md
+    additional_dependencies:
+    - mdformat-footnote
+    - mdformat-gfm
+    - mdformat-gfm-alerts
+    - mdformat-ruff
+
+- repo: https://github.com/tox-dev/pyproject-fmt
+  rev: v2.11.1
+  hooks:
+  - id: pyproject-fmt
+    name: format pyproject.toml
+
+- repo: https://github.com/abravalheri/validate-pyproject
+  rev: v0.24.1
+  hooks:
+  - id: validate-pyproject
+    additional_dependencies: ['validate-pyproject-schema-store[all,store]']
