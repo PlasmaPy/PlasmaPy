@@ -43,6 +43,16 @@ classifiers = [
 
 dynamic = [ "version" ]
 
+urls.Changelog = "https://docs.plasmapy.org/en/stable/whatsnew/index.html"
+urls.Chat = "https://plasmapy.org/chat"
+urls.Documentation = "https://docs.plasmapy.org/"
+urls.Issues = "https://github.com/PlasmaPy/plasmapy/issues/"
+urls.Source = "https://github.com/PlasmaPy/plasmapy"
+urls.website = "https://www.plasmapy.org"
+
+# Remove references to plasma calculator after mid-2026
+scripts.plasma-calculator = "plasmapy.utils.calculator:main"
+
 # SPEC 0 recommends that support for core packages should be dropped 2
 # years after their initial release.
 
@@ -68,15 +78,28 @@ dependencies = [
   "wrapt>=1.15",
   "xarray>=2024.5",
 ]
-# The documentation build occurs in an isolated environment that is not
-# user-facing, so we can have stricter requirements.
-optional-dependencies.docs = [
+
+[dependency-groups]
+# Define development dependencies using dependency groups (see PEP 735).
+# Because dependency groups are excluded from built distributions of
+# packages, SPEC 0 does not apply.
+dev = [
+  "pre-commit>=4.5",
+  {include-group = "dev-tools"},
+  {include-group = "docs"},
+  {include-group = "test"},
+  {include-group = "type_check"},
+]
+dev-tools = [
+  "nox>=2025.10.16",
+  "uv>=0.9.12",
+]
+docs = [
   "docutils>=0.21.2",
   "ipykernel>=7.0.1",
   "ipywidgets>=8.1.7",
   "jinja2>=3.1.6",
   "nbsphinx>=0.9.6",
-  "nox[uv]>=2025.10.16",
   "numpydoc>=1.9",
   "pillow>=12",
   "plasmapy-sphinx>=2025.5.1",
@@ -97,29 +120,23 @@ optional-dependencies.docs = [
   "sphinxemoji>=0.3.1",
   "towncrier>=24.8",
   "unidecode>=1.4",
+  {include-group = "dev-tools"},
 ]
-# Test dependencies are not user-facing, so we can set stricter
-# requirements to ensure that tests are run in consistent environments.
-optional-dependencies.tests = [
+
+test = [
   "hypothesis>=6.142.3",
-  "mypy>=1.18.2",
-  "nox[uv]>=2025.10.16",
   "pytest>=8.4.2",
   "pytest-cov>=7",
   "pytest-filter-subpackage>=0.2",
   "pytest-regressions>=2.8.3",
   "pytest-rerunfailures>=16.1",
   "pytest-xdist>=3.8",
+  {include-group = "dev-tools"},
 ]
-urls.Changelog = "https://docs.plasmapy.org/en/stable/whatsnew/index.html"
-urls.Chat = "https://plasmapy.org/chat"
-urls.Documentation = "https://docs.plasmapy.org/"
-urls.Issues = "https://github.com/PlasmaPy/plasmapy/issues/"
-urls.Source = "https://github.com/PlasmaPy/plasmapy"
-urls.website = "https://www.plasmapy.org"
-
-# Remove references to plasma calculator after mid-2026
-scripts.plasma-calculator = "plasmapy.utils.calculator:main"
+type_check = [
+  "mypy>=1.18.2",
+  {include-group = "dev-tools"},
+]
 
 [tool.setuptools]
 include-package-data = true
