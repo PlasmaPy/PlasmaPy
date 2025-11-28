@@ -59,7 +59,7 @@ root_dir = pathlib.Path(__file__).parent
 # the Docs. Because Read the Docs takes some time to support new
 # releases of Python, we should not link docpython to maxpython.
 
-docpython = "3.13"
+docpython = "3.14"
 
 current_python = f"{sys.version_info.major}.{sys.version_info.minor}"
 nox.options.sessions = [f"tests-{current_python}(skipslow)"]
