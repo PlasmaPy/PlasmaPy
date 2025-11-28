@@ -93,9 +93,9 @@ jobs:
           python: '3.14'
           nox_session: lint
 
-        - name: Documentation, Python 3.13, Windows
+        - name: Documentation, Python 3.14, Windows
           os: windows-latest
-          python: '3.13'
+          python: '3.14'
           nox_session: docs
 
     steps:

@@ -55,7 +55,7 @@ newsletters and announcements.
 Reporting security vulnerabilities
 ----------------------------------
 
-Please use this link to `privately report a security vulnerability`_
+Please use this link to `privately report a security vulnerability`_.
 
 .. _community meetings: https://www.plasmapy.org/meetings/weekly/
 .. _GitHub Discussions page: https://github.com/PlasmaPy/PlasmaPy/discussions
