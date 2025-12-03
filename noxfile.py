@@ -263,11 +263,11 @@ def tests(session: nox.Session, test_specifier: nox._parametrize.Param) -> None:
                 ".",
                 "--resolution=lowest-direct",
                 "--group=test",
-                f"--python={session.virtualenv.location}",
-                env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
             )
         case _:
             # From https://nox.thea.codes/en/stable/cookbook.html#using-a-lockfile
+            # If we separate out the lowest-direct tests, then we can use
+            # @nox_uv.session for tests too.
             session.run_install(
                 *uv_sync,
                 "--group=test",
