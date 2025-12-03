@@ -105,9 +105,7 @@ about these meetings is on the [meetings] page of PlasmaPy's website.
 PlasmaPy's [community meetings] are a place to talk about code
 development, event planning, and other community happenings. If you
 have an idea for a new feature or would like to become involved in the
-PlasmaPy project, community meetings are a great place to start. As of
-September 2025, our community meetings are usually held every other
-Monday at 1 pm ET.
+PlasmaPy project, community meetings are a great place to start.
 
 ## Community
 
@@ -117,8 +115,9 @@ Please feel free to reach out to us at [team@plasmapy.org] or stop by
 one of our [community meetings] with any ideas, questions, and/or puns
 about computational magnetohydrodynamics.
 
-Please use these links to [submit a feature request] and to
-[submit a bug report] on PlasmaPy's GitHub repository.
+Please use these links to [submit a feature request],
+[submit a bug report], or [privately report a security vulnerability]
+on PlasmaPy's GitHub repository.
 
 ### GitHub discussions
 
@@ -171,6 +170,7 @@ documentation page on [authors and credits].
 [national science foundation]: https://nsf.gov
 [plasmapy]: https://www.plasmapy.org
 [plasmapy community on zenodo]: https://zenodo.org/communities/plasmapy
+[privately report a security vulnerability]: https://github.com/plasmapy/plasmapy/security/advisories/new
 [protections against software patents]: ./PATENT.md
 [python]: https://www.python.org
 [smithsonian institution]: https://www.si.edu

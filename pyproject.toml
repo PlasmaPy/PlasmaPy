@@ -125,6 +125,7 @@ docs = [
 
 test = [
   "hypothesis>=6.142.3",
+  "nox[uv]>=2025.10.16",
   "pytest>=8.4.2",
   "pytest-cov>=7",
   "pytest-filter-subpackage>=0.2",
@@ -134,7 +135,7 @@ test = [
   {include-group = "dev-tools"},
 ]
 type_check = [
-  "mypy>=1.18.2",
+  "mypy>=1.19",
   {include-group = "dev-tools"},
 ]
 
