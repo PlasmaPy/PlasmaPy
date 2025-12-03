@@ -376,7 +376,7 @@ PlasmaPy's documentation guide at:
 """
 
 
-@nox.session(python=docpython)
+@nox_uv.session(python=docpython, uv_groups=["docs"])
 def docs(session: nox.Session) -> None:
     """
     Build documentation with Sphinx.
@@ -392,13 +392,6 @@ def docs(session: nox.Session) -> None:
     session.run_install("dot", "-V", external=True)
     session.run_install("pandoc", "--version", external=True)
 
-    session.run_install(
-        *uv_sync,
-        "--extra=docs",
-        "--no-default-groups",
-        f"--python={session.virtualenv.location}",
-        env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
-    )
     session.run(*sphinx_base_command, *build_html, *session.posargs)
 
     landing_page = pathlib.Path(doc_build_dir) / "index.html"
