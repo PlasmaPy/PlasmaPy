@@ -215,7 +215,7 @@ def validate_requirements(session: nox.Session) -> None:
     # current environment. If there ends up being a `--dry-run` option
     # for `uv sync`, we could probably use it here.
 
-    session.run("uv", "sync", "--frozen", "--all-extras", "--no-progress")
+    session.run("uv", "sync", "--frozen", "--all-extras", "--all-groups", "--no-progress")
 
     # Verify that uv.lock will be unchanged. Using --offline makes it
     # so that only the information from the cache is used.
