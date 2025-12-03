@@ -43,16 +43,6 @@ classifiers = [
 
 dynamic = [ "version" ]
 
-urls.Changelog = "https://docs.plasmapy.org/en/stable/whatsnew/index.html"
-urls.Chat = "https://plasmapy.org/chat"
-urls.Documentation = "https://docs.plasmapy.org/"
-urls.Issues = "https://github.com/PlasmaPy/plasmapy/issues/"
-urls.Source = "https://github.com/PlasmaPy/plasmapy"
-urls.website = "https://www.plasmapy.org"
-
-# Remove references to plasma calculator after mid-2026
-scripts.plasma-calculator = "plasmapy.utils.calculator:main"
-
 # SPEC 0 recommends that support for core packages should be dropped 2
 # years after their initial release.
 
@@ -78,6 +68,15 @@ dependencies = [
   "wrapt>=1.15",
   "xarray>=2024.5",
 ]
+urls.Changelog = "https://docs.plasmapy.org/en/stable/whatsnew/index.html"
+urls.Chat = "https://plasmapy.org/chat"
+urls.Documentation = "https://docs.plasmapy.org/"
+urls.Issues = "https://github.com/PlasmaPy/plasmapy/issues/"
+urls.Source = "https://github.com/PlasmaPy/plasmapy"
+urls.website = "https://www.plasmapy.org"
+
+# Remove references to plasma calculator after mid-2026
+scripts.plasma-calculator = "plasmapy.utils.calculator:main"
 
 [dependency-groups]
 # Define development dependencies using dependency groups (see PEP 735).
@@ -85,15 +84,20 @@ dependencies = [
 # packages, SPEC 0 does not apply.
 dev = [
   "pre-commit>=4.5",
-  {include-group = "dev-tools"},
-  {include-group = "docs"},
-  {include-group = "test"},
-  {include-group = "type_check"},
+  { include-group = "dev-tools" },
+  { include-group = "docs" },
+  { include-group = "test" },
+  { include-group = "type_check" },
 ]
-dev-tools = [
-  "nox>=2025.10.16",
-  "nox-uv>=0.6.3",
-  "uv>=0.9.12",
+test = [
+  "hypothesis>=6.148.5",
+  "pytest>=9.0.1",
+  "pytest-cov>=7",
+  "pytest-filter-subpackage>=0.2",
+  "pytest-regressions>=2.8.3",
+  "pytest-rerunfailures>=16.1",
+  "pytest-xdist>=3.8",
+  { include-group = "dev-tools" },
 ]
 docs = [
   "docutils>=0.21.2",
@@ -122,22 +126,17 @@ docs = [
   "sphinxemoji>=0.3.1",
   "towncrier>=24.8",
   "unidecode>=1.4",
-  {include-group = "dev-tools"},
+  { include-group = "dev-tools" },
 ]
-test = [
-  "hypothesis>=6.148.5",
-  "pytest>=9.0.1",
-  "pytest-cov>=7",
-  "pytest-filter-subpackage>=0.2",
-  "pytest-regressions>=2.8.3",
-  "pytest-rerunfailures>=16.1",
-  "pytest-xdist>=3.8",
-  {include-group = "dev-tools"},
+dev-tools = [
+  "nox>=2025.10.16",
+  "nox-uv>=0.6.3",
+  "uv>=0.9.12",
 ]
 type_check = [
   "mypy>=1.19",
-  {include-group = "dev-tools"},
-  {include-group = "test"},
+  { include-group = "dev-tools" },
+  { include-group = "test" },
 ]
 
 [tool.setuptools]
