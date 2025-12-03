@@ -136,31 +136,6 @@ def _create_requirements_pr_message(uv_output: str, session: nox.Session) -> Non
         file.write(table_of_updates)
 
 
-def _get_dependencies_from_pyproject_toml(extras: str | None = None):
-    _PYPROJECT_TOML = (root_dir / "pyproject.toml").resolve()
-    with _PYPROJECT_TOML.open(mode="rb") as file:
-        data = tomllib.load(file)
-        config = data["project"]
-
-    dependencies = {Requirement(item): item for item in config["dependencies"]}
-
-    if (
-        extras is None
-        or "optional-dependencies" not in config
-        or not isinstance(extras, str)
-        or (extras not in config["optional-dependencies"] and extras != "all")
-    ):
-        return dependencies
-
-    extras = [extras] if extras != "all" else list(config["optional-dependencies"])
-    op_deps = {}
-    for extra in extras:
-        for dep in config["optional-dependencies"][extra]:
-            op_deps[Requirement(dep)] = dep
-
-    return {**dependencies, **op_deps}
-
-
 @nox.session
 def requirements(session: nox.Session) -> None:
     """
@@ -452,7 +427,7 @@ def docs_bundle_htmlzip(session: nox.Session) -> None:
     session.log(f"The htmlzip was placed in: {READTHEDOCS_OUTPUT / 'htmlzip'}")
 
 
-@nox.session(python=docpython)
+@nox_uv.session(python=docpython, uv_groups=["docs"])
 @nox.parametrize(
     ["site", "repository"],
     [
@@ -469,22 +444,7 @@ def docs_upstream(session: nox.Session, site: str, repository: str) -> None:
     The purpose of this session is to catch bugs and breaking changes
     so that they can be fixed or updated earlier rather than later.
     """
-    # Individual dependencies are installed in this fashion to avoid
-    # resolution conflicts if an upper dependency limit had been put on
-    # the target package.
-    pkg_name = repository.split("/")[-1]
-    deps = _get_dependencies_from_pyproject_toml(extras="docs")
-    dep_names = {dep: dep.name for dep in deps}
-    for dep, name in dep_names.items():
-        if name == pkg_name:
-            deps.pop(dep)
-
-    session.install(
-        f"git+https://{site}.com/{repository}",
-        *list(deps.values()),
-        silent=False,
-    )
-    session.install("--no-deps", ".")
+    session.install(f"git+https://{site}.com/{repository}")
     session.run(*sphinx_base_command, *build_html, *session.posargs)
 
 
