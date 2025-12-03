@@ -303,7 +303,7 @@ def tests(session: nox.Session, test_specifier: nox._parametrize.Param) -> None:
     session.run(*pytest_command, *options, *session.posargs)
 
 
-@nox.session(python=maxpython)
+@nox_uv.session(python=maxpython, uv_groups=["test"])
 @nox.parametrize(
     ["package"],
     [
