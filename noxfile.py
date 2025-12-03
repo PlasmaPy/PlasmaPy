@@ -599,7 +599,7 @@ def changelog(session: nox.Session, final: str) -> None:
     When executing this session, provide the version of the release, as
     in this example:
 
-       nox -s 'changelog(final)' -- 2024.7.0
+       nox -s 'changelog(final)' -- 2026.2.0
     """
 
     if len(session.posargs) != 1:
