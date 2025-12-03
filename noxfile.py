@@ -503,20 +503,12 @@ These variables are in the form of Python regular expressions:
 """
 
 
-@nox.session(python=docpython)
+@nox_uv.session(python=docpython, uv_groups="docs")
 def linkcheck(session: nox.Session) -> None:
     """Check hyperlinks in documentation."""
 
     if running_on_ci:
         session.log(LINKCHECK_TROUBLESHOOTING)
-
-    session.run_install(
-        *uv_sync,
-        "--extra=docs",
-        "--no-default-groups",
-        f"--python={session.virtualenv.location}",
-        env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
-    )
 
     session.run(*sphinx_base_command, *check_hyperlinks, *session.posargs)
 
