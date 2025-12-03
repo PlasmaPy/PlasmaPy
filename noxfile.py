@@ -336,8 +336,8 @@ def test_upstream(session: nox.Session, package: str) -> None:
                 "UV_PRERELEASE": "allow",
             },
         )
+        session.run("uv", "pip", "show", package)
 
-    session.run("uv", "pip", "show", package)
     session.run(*pytest_command, *session.posargs)
 
 
