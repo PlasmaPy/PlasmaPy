@@ -672,7 +672,7 @@ def autotyping(session: nox.Session, options: tuple[str, ...]) -> None:
     session.run("python", "-m", "autotyping", *options, *paths, *session.posargs)
 
 
-@nox.session
+@nox_uv.session(python=maxpython, uv_groups=["test"])
 def monkeytype(session: nox.Session) -> None:
     """
     Add type hints to a module based on variable types from running pytest.
