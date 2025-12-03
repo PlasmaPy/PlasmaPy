@@ -645,7 +645,7 @@ def changelog(session: nox.Session, final: str) -> None:
     shutil.copy(original_file, destination)
 
 
-@nox.session
+@nox_uv.session(python=minpython, uv_groups=["test,docs"])
 @nox.parametrize(
     "options",
     [
