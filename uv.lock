@@ -1687,7 +1687,7 @@ type-check = [
 
 [package.metadata]
 requires-dist = [
-    { name = "astropy", specifier = ">=6" },
+    { name = "astropy", specifier = ">=6.1" },
     { name = "h5py", specifier = ">=3.11" },
     { name = "lmfit", specifier = ">=1.3" },
     { name = "matplotlib", specifier = ">=3.8" },
