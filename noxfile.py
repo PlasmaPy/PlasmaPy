@@ -469,9 +469,9 @@ def docs_upstream(session: nox.Session, site: str, repository: str) -> None:
     The purpose of this session is to catch bugs and breaking changes
     so that they can be fixed or updated earlier rather than later.
     """
-    # Note: Individual dependencies are install in this fashion to
-    #       avoid resolution conflicts if an upper dependency limit
-    #       had been put on the target package.
+    # Individual dependencies are installed in this fashion to avoid
+    # resolution conflicts if an upper dependency limit had been put on
+    # the target package.
     pkg_name = repository.split("/")[-1]
     deps = _get_dependencies_from_pyproject_toml(extras="docs")
     dep_names = {dep: dep.name for dep in deps}
