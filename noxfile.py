@@ -337,7 +337,7 @@ def test_upstream(session: nox.Session, package: str) -> None:
             },
         )
 
-    session.install(".[tests]")
+    session.run("uv", "pip", "show", package)
     session.run(*pytest_command, *session.posargs)
 
 
