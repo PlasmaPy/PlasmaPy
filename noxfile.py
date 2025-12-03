@@ -410,7 +410,7 @@ def docs_bundle_htmlzip(session: nox.Session) -> None:
 
     if not running_on_rtd:
         session.log(
-            "Process is NOT being run on Read the Docs.  Will not html ZIP file."
+            "Process is NOT being run on Read the Docs. Will not html ZIP file."
         )
         return None
 
@@ -666,7 +666,7 @@ def autotyping(session: nox.Session, options: tuple[str, ...]) -> None:
 
         nox -s 'autotyping(safe)' -- noxfile.py
     """
-    session.install(".[tests,docs]", "autotyping", "typing_extensions")
+    session.install("autotyping", "typing_extensions")
     DEFAULT_PATHS = ("src", "tests", "tools", "*.py", ".github", "docs/*.py")
     paths = session.posargs or DEFAULT_PATHS
     session.run("python", "-m", "autotyping", *options, *paths, *session.posargs)
