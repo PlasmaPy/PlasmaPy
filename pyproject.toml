@@ -137,6 +137,7 @@ test = [
 type_check = [
   "mypy>=1.19",
   {include-group = "dev-tools"},
+  {include-group = "test"},
 ]
 
 [tool.setuptools]

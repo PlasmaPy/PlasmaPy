@@ -1672,9 +1672,16 @@ test = [
     { name = "uv" },
 ]
 type-check = [
+    { name = "hypothesis" },
     { name = "mypy" },
     { name = "nox" },
     { name = "nox-uv" },
+    { name = "pytest" },
+    { name = "pytest-cov" },
+    { name = "pytest-filter-subpackage" },
+    { name = "pytest-regressions" },
+    { name = "pytest-rerunfailures" },
+    { name = "pytest-xdist" },
     { name = "uv" },
 ]
 
@@ -1783,9 +1790,16 @@ test = [
     { name = "uv", specifier = ">=0.9.12" },
 ]
 type-check = [
+    { name = "hypothesis", specifier = ">=6.148.5" },
     { name = "mypy", specifier = ">=1.19" },
     { name = "nox", specifier = ">=2025.10.16" },
     { name = "nox-uv", specifier = ">=0.6.3" },
+    { name = "pytest", specifier = ">=9.0.1" },
+    { name = "pytest-cov", specifier = ">=7" },
+    { name = "pytest-filter-subpackage", specifier = ">=0.2" },
+    { name = "pytest-regressions", specifier = ">=2.8.3" },
+    { name = "pytest-rerunfailures", specifier = ">=16.1" },
+    { name = "pytest-xdist", specifier = ">=3.8" },
     { name = "uv", specifier = ">=0.9.12" },
 ]
 
