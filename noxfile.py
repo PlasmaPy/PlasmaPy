@@ -35,11 +35,9 @@ import pathlib
 import re
 import shutil
 import sys
-import tomllib
 
 import nox
 import nox_uv
-from packaging.requirements import Requirement
 
 # SPEC 0 indicates that scientific Python packages should support
 # versions of Python that have been released in the last 3 years, or
@@ -190,7 +188,9 @@ def validate_requirements(session: nox.Session) -> None:
     # current environment. If there ends up being a `--dry-run` option
     # for `uv sync`, we could probably use it here.
 
-    session.run("uv", "sync", "--frozen", "--all-extras", "--all-groups", "--no-progress")
+    session.run(
+        "uv", "sync", "--frozen", "--all-extras", "--all-groups", "--no-progress"
+    )
 
     # Verify that uv.lock will be unchanged. Using --offline makes it
     # so that only the information from the cache is used.
@@ -293,8 +293,8 @@ def test_upstream(session: nox.Session, package: str) -> None:
     """
     Run tests against the development branch of an upstream dependency.
 
-    Running this session helps us catch problems resulting from breaking
-    changes in an upstream dependency before its official release.
+    Testing against unreleased versions of upstream dependencies helps
+    us catch problems before they make it into an official release.
     """
     if package.startswith("https"):
         session.install(f"git+{package}")
@@ -370,7 +370,6 @@ def docs(session: nox.Session) -> None:
     session.run(*sphinx_base_command, *build_html, *session.posargs)
 
     landing_page = pathlib.Path(doc_build_dir) / "index.html"
-
     if landing_page.exists():
         session.log(f"The documentation may be previewed at {landing_page}")
     else:
@@ -384,10 +383,7 @@ def docs_bundle_htmlzip(session: nox.Session) -> None:
     """
 
     if not running_on_rtd:
-        session.log(
-            "Process is NOT being run on Read the Docs. Will not html ZIP file."
-        )
-        return None
+        session.error("This session must be run on Read the Docs.")
 
     html_build_dir = pathlib.Path(doc_build_dir)
     html_landing_page = (html_build_dir / "index.html").resolve()
