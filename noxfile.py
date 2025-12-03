@@ -1,6 +1,6 @@
 # /// script
 # requires-python = ">=3.12"
-# dependencies = ["nox"]
+# dependencies = ["nox", "nox-uv", "uv"]
 # ///
 
 """
@@ -38,6 +38,7 @@ import sys
 import tomllib
 
 import nox
+import nox_uv
 from packaging.requirements import Requirement
 
 # SPEC 0 indicates that scientific Python packages should support
@@ -284,9 +285,9 @@ def tests(session: nox.Session, test_specifier: nox._parametrize.Param) -> None:
     match test_specifier:
         case "lowest-direct" | "lowest-direct-skipslow":
             session.install(
-                ".[tests]",
+                ".",
                 "--resolution=lowest-direct",
-                "--no-all-extras",
+                "--group=test",
                 f"--python={session.virtualenv.location}",
                 env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
             )
@@ -294,8 +295,7 @@ def tests(session: nox.Session, test_specifier: nox._parametrize.Param) -> None:
             # From https://nox.thea.codes/en/stable/cookbook.html#using-a-lockfile
             session.run_install(
                 *uv_sync,
-                "--extra=tests",
-                "--no-default-groups",
+                "--group=test",
                 f"--python={session.virtualenv.location}",
                 env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
             )
@@ -544,29 +544,16 @@ mypy error code. Please use sparingly!
 """
 
 
-@nox.session(python=maxpython)
+@nox_uv.session(python=maxpython, uv_groups=["type_check"])
 def mypy(session: nox.Session) -> None:
     """
     Perform static type checking.
 
     Configuration file: mypy.ini
     """
-
-    session.install("pip")  # mypy uses pip if --install-types is used
-
-    session.run_install(
-        *uv_sync,
-        "--quiet",
-        "--extra=tests",
-        "--no-default-groups",
-        f"--python={session.virtualenv.location}",
-        env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
-    )
-
     if running_on_ci:
         session.log(MYPY_TROUBLESHOOTING)
-
-    MYPY_COMMAND: tuple[str, ...] = (
+    session.run(
         "mypy",
         ".",
         "--install-types",
@@ -574,9 +561,8 @@ def mypy(session: nox.Session) -> None:
         "--show-error-context",
         "--show-error-code-links",
         "--pretty",
+        *session.posargs,
     )
-
-    session.run(*MYPY_COMMAND, *session.posargs)
 
 
 @nox.session(name="import")
