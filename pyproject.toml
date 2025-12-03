@@ -92,15 +92,16 @@ dev = [
 ]
 dev-tools = [
   "nox>=2025.10.16",
+  "nox-uv>=0.6.3",
   "uv>=0.9.12",
 ]
 docs = [
   "docutils>=0.21.2",
-  "ipykernel>=7.0.1",
-  "ipywidgets>=8.1.7",
+  "ipykernel>=7.1",
+  "ipywidgets>=8.1.8",
   "jinja2>=3.1.6",
-  "nbsphinx>=0.9.6",
-  "numpydoc>=1.9",
+  "nbsphinx>=0.9.8",
+  "numpydoc>=1.10",
   "pillow>=12",
   "plasmapy-sphinx>=2025.5.1",
   "pygments==2.19.2",
@@ -109,24 +110,23 @@ docs = [
   "sphinx-codeautolink==0.17.5",
   "sphinx-collapse>=0.1.3",
   "sphinx-copybutton>=0.5.2",
-  "sphinx-gallery>=0.19",
+  "sphinx-gallery>=0.20",
   "sphinx-issues>=5.0.1",
   "sphinx-notfound-page>=1.1",
   "sphinx-reredirects>=1",
   "sphinx-rtd-theme>=3.0.2",
   "sphinx-tabs>=3.4.7",
   "sphinxcontrib-bibtex>=2.6.5",
-  "sphinxcontrib-globalsubs>=0.1.2",
+  # sphinxcontrib-globalsubs>=1 needs sphinx>=9
+  "sphinxcontrib-globalsubs<1",
   "sphinxemoji>=0.3.1",
   "towncrier>=24.8",
   "unidecode>=1.4",
   {include-group = "dev-tools"},
 ]
-
 test = [
-  "hypothesis>=6.142.3",
-  "nox[uv]>=2025.10.16",
-  "pytest>=8.4.2",
+  "hypothesis>=6.148.5",
+  "pytest>=9.0.1",
   "pytest-cov>=7",
   "pytest-filter-subpackage>=0.2",
   "pytest-regressions>=2.8.3",
