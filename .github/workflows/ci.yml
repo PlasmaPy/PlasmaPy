@@ -56,9 +56,9 @@ jobs:
           python: '3.12'
           nox_session: tests-3.12(lowest-direct-skipslow)
 
-        - name: Documentation, Python 3.13, Ubuntu
+        - name: Documentation, Python 3.14, Ubuntu
           os: ubuntu-latest
-          python: '3.13'
+          python: '3.14'
           nox_session: docs
 
         - name: Static type checking with mypy, Python 3.14, Ubuntu
@@ -84,7 +84,7 @@ jobs:
     steps:
 
     - name: Checkout code
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
       with:
         persist-credentials: false
 

@@ -102,7 +102,7 @@ optional-dependencies.docs = [
 # requirements to ensure that tests are run in consistent environments.
 optional-dependencies.tests = [
   "hypothesis>=6.147",
-  "mypy>=1.18.2",
+  "mypy>=1.19",
   "nox[uv]>=2025.10.16",
   "pytest>=9.0.1",
   "pytest-cov>=7",

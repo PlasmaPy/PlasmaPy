@@ -60,30 +60,30 @@ jobs:
           python: '3.14'
           nox_session: test_upstream(lmfit)
 
-        - name: Documentation, Python 3.13, sphinx-dev, Ubuntu
+        - name: Documentation, Python 3.14, sphinx-dev, Ubuntu
           os: ubuntu-latest
-          python: '3.13'
+          python: '3.14'
           nox_session: docs_upstream(sphinx)
 
-        - name: Documentation, Python 3.13, sphinx_rtd_theme-dev, Ubuntu
+        - name: Documentation, Python 3.14, sphinx_rtd_theme-dev, Ubuntu
           os: ubuntu-latest
-          python: '3.13'
+          python: '3.14'
           nox_session: docs_upstream(sphinx_rtd_theme)
 
-        - name: Documentation, Python 3.13, nbsphinx-dev, Ubuntu
+        - name: Documentation, Python 3.14, nbsphinx-dev, Ubuntu
           os: ubuntu-latest
-          python: '3.13'
+          python: '3.14'
           nox_session: docs_upstream(nbsphinx)
 
         - name: Documentation, Python 3.13, plasmapy_sphinx-dev, Ubuntu
           os: ubuntu-latest
-          python: '3.13'
+          python: '3.14'
           nox_session: docs_upstream(plasmapy_sphinx)
 
     steps:
 
     - name: Checkout code
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
       with:
         persist-credentials: false
 
