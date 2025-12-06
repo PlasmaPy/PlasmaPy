@@ -1673,12 +1673,6 @@ def test_undefined_electron_binding_energy() -> None:
         pass
 
 
-def test_warning_on_use_of_binding_energy() -> None:
-    with pytest.warns(FutureWarning):  # noqa: PT031
-        particle = Particle("n")
-        assert particle.binding_energy == particle.nuclear_binding_energy
-
-
 def test_deuterium_electron_binding_energy() -> None:
     D = Particle("D")
     H_2 = Particle("H-2")

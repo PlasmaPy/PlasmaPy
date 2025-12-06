@@ -14,14 +14,14 @@ jobs:
     steps:
 
     - name: Checkout code
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
       with:
         persist-credentials: false
 
     - name: Install uv
       uses: astral-sh/setup-uv@v7
       with:
-        python: 3.14
+        python-version: 3.14
 
     - name: Run Nox session to regenerate requirements
       run: uvx nox -s requirements
@@ -41,7 +41,7 @@ jobs:
         private_key: ${{ secrets.APP_PRIVATE_KEY }}
 
     - name: Create pull request
-      uses: peter-evans/create-pull-request@271a8d0340265f705b14b6d32b9829c1cb33d45e # v7.0.8
+      uses: peter-evans/create-pull-request@84ae59a2cdc2258d6fa0732dd66352dddae2a412 # v7.0.9
       with:
         title: Update pinned requirements 📍
         add-paths: uv.lock

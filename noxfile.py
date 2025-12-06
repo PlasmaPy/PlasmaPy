@@ -59,7 +59,7 @@ root_dir = pathlib.Path(__file__).parent
 # the Docs. Because Read the Docs takes some time to support new
 # releases of Python, we should not link docpython to maxpython.
 
-docpython = "3.13"
+docpython = "3.14"
 
 current_python = f"{sys.version_info.major}.{sys.version_info.minor}"
 nox.options.sessions = [f"tests-{current_python}(skipslow)"]
@@ -82,6 +82,9 @@ def _create_requirements_pr_message(uv_output: str, session: nox.Session) -> Non
     body of the pull request message used in the workflow for updating
     requirements.
 
+    ⚠️ This function requires that `uv.lock` existed before
+    `uv lock --upgrade` was run.
+
     Parameters
     ----------
     uv_output : str
@@ -97,34 +100,39 @@ def _create_requirements_pr_message(uv_output: str, session: nox.Session) -> Non
 
     shutil.copy(pr_template, pr_message)
 
-    lines = [
+    preamble = [
         "",
         "| package | old version | new version |",
         "| :-----: | :---------: | :---------: |",
     ]
 
-    for package_update in uv_output.splitlines():
-        if not package_update.startswith("Updated"):
-            session.debug(f"Line not added to table: {package_update}")
+    lines = []
+    for line in uv_output.splitlines():
+        if line.startswith("Resolved") or not line:
+            continue
+
+        if not line.startswith("Updated"):
+            session.warn(f"Line not added to table: {line}")
             continue
 
         try:
             # An example line is "Updated nbsphinx v0.9.6 -> v0.9.7"
-            _, package_, old_version_, _, new_version_ = package_update.split()
+            _, package_name_, old_version_, _, new_version_ = line.strip().split()
         except ValueError:
-            session.debug(f"Line not added to table: {package_update}:")
+            session.warn(f"Line not added to table: {line}:")
             continue
 
         old_version = f"{old_version_.removeprefix('v')}"
         new_version = f"{new_version_.removeprefix('v')}"
 
-        pypi_link = f"https://pypi.org/project/{package_}/{new_version}"
-        package = f"[`{package_}`]({pypi_link})"
+        pypi_link = f"https://pypi.org/project/{package_name_}/{new_version}"
+        package_name = f"[`{package_name_}`]({pypi_link})"
 
-        lines.append(f"| {package} | `{old_version}` | `{new_version}` |")
+        lines.append(f"| {package_name} | `{old_version}` | `{new_version}` |")
 
+    table_of_updates = "\n".join(preamble + lines)
     with pr_message.open(mode="a") as file:
-        file.write("\n".join(lines))
+        file.write(table_of_updates)
 
 
 def _get_dependencies_from_pyproject_toml(extras: str | None = None):
@@ -155,7 +163,7 @@ def _get_dependencies_from_pyproject_toml(extras: str | None = None):
 @nox.session
 def requirements(session: nox.Session) -> None:
     """
-    Upgrade the pinned requirements in `uv.lock`.
+    Upgrade the lockfile used to run tests and build documentation.
 
     This workflow updates :file:`uv.lock` to contain pinned requirements
     for different versions of Python, different operating systems, and
@@ -166,20 +174,23 @@ def requirements(session: nox.Session) -> None:
     requirements (:file:`.github/workflows/update-pinned-reqs.yml`).
     """
 
-    # Running `uv lock` fails when `uv.lock` has a merge conflict or
-    # is otherwise invalid. To avoid situations like this, preemptively
-    # delete `uv.lock`. Since `uv lock` uses information in `uv.lock`
-    # even if `--upgrade` is specified, deleting `uv.lock` may make
-    # running `uv lock` more deterministic.
-
     lockfile = pathlib.Path(root_dir / "uv.lock")
-    lockfile.unlink(missing_ok=True)
+    try:
+        if lockfile.exists():
+            session.run("uv", "lock", "--check")
+        else:
+            session.log("🪧 File 'uv.lock' not found. Continuing.")
+    except nox.command.CommandFailed:
+        session.warn("⚠️ 'uv.lock' is invalid, possibly due to a git merge conflict.")
+        session.log("Deleting 'uv.lock' and continuing.")
+        lockfile.unlink()
 
     uv_output: str | bool = session.run(
         "uv",
         "lock",
         "--upgrade",
         "--no-progress",
+        *session.posargs,
         silent=running_on_ci,  # return a multi-line string with stdout & stderr if true
     )
 
@@ -211,14 +222,15 @@ def validate_requirements(session: nox.Session) -> None:
     session.run("uv", "lock", "--check", "--offline", "--no-progress")
 
 
-pytest_command: tuple[str, ...] = (
+pytest_command: list[str] = [
     "pytest",
     "--pyargs",
-    "--durations=5",
+    "--durations=6",
+    "--durations-min=0.2",
     "--tb=short",
     "-n=auto",
     "--dist=loadfile",
-)
+]
 
 with_doctests: tuple[str, ...] = ("--doctest-modules", "--doctest-continue-on-failure")
 
@@ -230,6 +242,8 @@ with_coverage: tuple[str, ...] = (
     "--cov-report",
     "xml:coverage.xml",
 )
+
+report_warnings_rather_than_treat_them_as_errors = ("-W", "once")
 
 skipslow: tuple[str, ...] = ("-m", "not slow")
 
@@ -254,6 +268,9 @@ def tests(session: nox.Session, test_specifier: nox._parametrize.Param) -> None:
 
     if test_specifier == "with code coverage":
         options += with_coverage
+
+    if test_specifier in {"lowest-direct", "lowest-direct-skipslow"}:
+        options += report_warnings_rather_than_treat_them_as_errors
 
     # Doctests are only run with the most recent versions of Python and
     # other dependencies because there may be subtle differences in the
@@ -372,6 +389,9 @@ def docs(session: nox.Session) -> None:
     if running_on_ci:
         session.log(doc_troubleshooting_message)
 
+    session.run_install("dot", "-V", external=True)
+    session.run_install("pandoc", "--version", external=True)
+
     session.run_install(
         *uv_sync,
         "--extra=docs",
@@ -433,7 +453,7 @@ def docs_bundle_htmlzip(session: nox.Session) -> None:
 
     cwd = pathlib.Path.cwd()
     session.chdir(f"{READTHEDOCS_OUTPUT / 'htmlzip'}")
-    session.run("zip", "-r", "-m", f"{zip_name}", ".")
+    session.run("zip", "-r", "-m", f"{zip_name}", ".", external=True)
     session.chdir(f"{cwd}")
 
     session.log(f"The htmlzip was placed in: {READTHEDOCS_OUTPUT / 'htmlzip'}")
@@ -747,7 +767,9 @@ def lint(session: nox.Session) -> None:
 zizmor_troubleshooting_message = """
 
 🪧 Run this check locally with `nox -s zizmor` to find potential
-security vulnerabilities in GitHub workflows.
+security vulnerabilities in GitHub workflows and perform safe fixes.
+
+🧰 Perform safe and unsafe fixes with `nox -s zizmor -- --fix=all`.
 
 📜 Audit rules: https://woodruffw.github.io/zizmor/audits
 
@@ -767,13 +789,23 @@ def zizmor(session: nox.Session) -> None:
     running this check locally may produce different results than
     running it in CI.
 
+    If no positional arguments are provided, safe fixes will be applied.
+    To perform unsafe fixes, run `nox -s zizmor -- --fix=unsafe-only`.
+
     Configuration file: .github/zizmor.yml
     """
-    if running_on_ci:
-        session.log(zizmor_troubleshooting_message)
+    session.log(zizmor_troubleshooting_message)
+
+    args = ["--no-progress", "--color=auto", *session.posargs]
+    if not session.posargs:
+        args.append("--fix=safe")
 
     session.install("zizmor")
-    session.run("zizmor", ".github", "--no-progress", "--color=auto", *session.posargs)
+    session.run(
+        "zizmor",
+        ".github",
+        *args,
+    )
 
 
 if __name__ == "__main__":

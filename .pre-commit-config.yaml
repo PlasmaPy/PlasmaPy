@@ -46,7 +46,7 @@ repos:  # https://pre-commit.com/#adding-pre-commit-plugins-to-your-project
     args: [--autofix]
 
 - repo: https://github.com/python-jsonschema/check-jsonschema
-  rev: 0.34.1
+  rev: 0.35.0
   hooks:
   - id: check-github-workflows
 
@@ -77,14 +77,14 @@ repos:  # https://pre-commit.com/#adding-pre-commit-plugins-to-your-project
 - repo: https://github.com/adhtruong/mirrors-typos
   # use mirrors-typos because `pre-commit autoupdate` drops the version
   # of the primary typos repo from v1.x.y to v1
-  rev: v1.38.1
+  rev: v1.40.0
   hooks:
   - id: typos
     name: typos (add false positives to _typos.toml)
     exclude: CITATION.cff|docs/notebooks/dispersion/stix_dispersion.ipynb
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.14.1
+  rev: v0.14.7
   hooks:
   - id: ruff-check
     name: ruff-check (see https://docs.astral.sh/ruff/rules)
@@ -102,7 +102,7 @@ repos:  # https://pre-commit.com/#adding-pre-commit-plugins-to-your-project
     - black==25.9.0
 
 - repo: https://github.com/sphinx-contrib/sphinx-lint
-  rev: v1.0.0
+  rev: v1.0.2
   hooks:
   - id: sphinx-lint
 
@@ -114,13 +114,13 @@ repos:  # https://pre-commit.com/#adding-pre-commit-plugins-to-your-project
     additional_dependencies: ['validate-pyproject-schema-store[all]']
 
 - repo: https://github.com/tox-dev/pyproject-fmt
-  rev: v2.11.0
+  rev: v2.11.1
   hooks:
   - id: pyproject-fmt
     name: format pyproject.toml
 
 - repo: https://github.com/astral-sh/uv-pre-commit
-  rev: 0.9.5
+  rev: 0.9.13
   hooks:
     # running uv lock requires network access or a warm cache, so it
     # cannot be run via pre-commit.ci, even with the `--offline`,
@@ -130,7 +130,7 @@ repos:  # https://pre-commit.com/#adding-pre-commit-plugins-to-your-project
 
 - repo: https://github.com/hukkin/mdformat
   # some plugins require mdformat<0.8, so pin mdformat at 0.7.22 for now
-  rev: 0.7.22
+  rev: 1.0.0
   hooks:
   - id: mdformat
     name: format .md files
@@ -139,7 +139,6 @@ repos:  # https://pre-commit.com/#adding-pre-commit-plugins-to-your-project
     exclude: licenses/.*|LICENSE.md|PATENT.md
     additional_dependencies:
     - mdformat-footnote
-    - mdformat-frontmatter
     - mdformat-gfm
     - mdformat-gfm-alerts
     - mdformat-ruff

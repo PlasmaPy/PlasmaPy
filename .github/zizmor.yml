@@ -9,6 +9,7 @@ rules:
         astral-sh/setup-uv: ref-pin
         codecov/codecov-action: ref-pin
         conda-incubator/setup-miniconda: ref-pin
+        mamba-org/setup-micromamba: ref-pin
         pypa/*: ref-pin
         scientific-python/*: ref-pin
         ts-graphviz/setup-graphviz: ref-pin
@@ -21,8 +22,6 @@ rules:
   excessive-permissions:
     ignore:
     - create-release-issue.yml:16:3
-    - changelog.yml:9:3
-    - changelog.yml:10:3
     - comment-on-pr.yml:8:3
     - prepare-release-pr.yml:16:3
     - unlabel-pr-after-merge.yml:8:3

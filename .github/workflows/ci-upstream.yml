@@ -60,52 +60,52 @@ jobs:
           python: '3.14'
           nox_session: test_upstream(lmfit)
 
-        - name: Documentation, Python 3.13, sphinx-dev, Ubuntu
+        - name: Documentation, Python 3.14, sphinx-dev, Ubuntu
           os: ubuntu-latest
-          python: '3.13'
+          python: '3.14'
           nox_session: docs_upstream(sphinx)
 
-        - name: Documentation, Python 3.13, sphinx_rtd_theme-dev, Ubuntu
+        - name: Documentation, Python 3.14, sphinx_rtd_theme-dev, Ubuntu
           os: ubuntu-latest
-          python: '3.13'
+          python: '3.14'
           nox_session: docs_upstream(sphinx_rtd_theme)
 
-        - name: Documentation, Python 3.13, nbsphinx-dev, Ubuntu
+        - name: Documentation, Python 3.14, nbsphinx-dev, Ubuntu
           os: ubuntu-latest
-          python: '3.13'
+          python: '3.14'
           nox_session: docs_upstream(nbsphinx)
 
         - name: Documentation, Python 3.13, plasmapy_sphinx-dev, Ubuntu
           os: ubuntu-latest
-          python: '3.13'
+          python: '3.14'
           nox_session: docs_upstream(plasmapy_sphinx)
 
     steps:
 
     - name: Checkout code
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
       with:
         persist-credentials: false
 
-    - name: Install Graphviz for doc builds
-      if: contains(matrix.nox_session, 'docs')
-      uses: ts-graphviz/setup-graphviz@v2
-
-    - name: Install pandoc for doc builds
-      # This step requires Ubuntu
-      if: contains(matrix.nox_session, 'docs')
-      run: |
-        sudo apt update
-        sudo apt-get install -y pandoc
+    - name: Install graphviz and pandoc for doc builds
+      if: ${{ contains(matrix.nox_session, 'docs') }}
+      uses: mamba-org/setup-micromamba@v2
+      with:
+        create-args: graphviz pandoc -c conda-forge
+        init-shell: bash
+        environment-name: micromamba-env
+        cache-environment: true
+        post-cleanup: all
 
     - name: Install uv
       uses: astral-sh/setup-uv@v7
       with:
         python-version: ${{ matrix.python }}
-        enable-cache: true
+        enable-cache: true  # zizmor: ignore[cache-poisoning]
         cache-suffix: ${{ matrix.nox_session }}-${{ matrix.python }}-${{ runner.os }}
 
-    - name: Run Nox session
+    - name: Run Nox session ${{ matrix.nox_session }}
+      shell: bash -el {0}
       run: uvx nox -s '${{ matrix.nox_session }}'
 
     - name: Upload coverage reports to Codecov

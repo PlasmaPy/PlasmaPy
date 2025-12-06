@@ -102,7 +102,7 @@ optional-dependencies.docs = [
 # requirements to ensure that tests are run in consistent environments.
 optional-dependencies.tests = [
   "hypothesis>=6.142.3",
-  "mypy>=1.18.2",
+  "mypy>=1.19",
   "nox[uv]>=2025.10.16",
   "pytest>=8.4.2",
   "pytest-cov>=7",
@@ -489,8 +489,23 @@ ELLIPSIS
 NUMBER
 IGNORE_EXCEPTION_DETAIL"""
 filterwarnings = [
-  "ignore:.*deprecated in traitlets 4.2.*:DeprecationWarning",
-  "ignore:.*MultiIndex.*:DeprecationWarning",                  # https://github.com/PlasmaPy/PlasmaPy/issues/2319
+  # treat warnings as errors by default; pass `-W once` to pytest to show them
+  "error",
+  # ubiquitous warning in particle tracker (see issue #2514)
+  "ignore:.*Quantities should go to zero at edges of grid.*:RuntimeWarning",
+  # occasional warning from downloader tests
+  "ignore:.*API rate limit exceeded.*:UserWarning",
+  # for numpy.reshape calls, newshape kwarg is deprecated; use shape instead or pass positionally
+  "ignore:.*newshape.*:DeprecationWarning",
+  # see https://github.com/PlasmaPy/PlasmaPy/issues/2319
+  "ignore:.*MultiIndex.*:FutureWarning",
+  # deprecated in NumPy 1.25
+  "ignore:.*conversion of an array with ndim > 0 to a scalar.*:DeprecationWarning",
+  # deprecated in Astropy 7.1
+  "ignore:.*products involving a unit and a 'str' instance are deprecated.*:astropy.utils.exceptions.AstropyDeprecationWarning",
+  # The following occurred on GitHub but seemed irrelevant
+  "ignore:unclosed:ResourceWarning",
+  "ignore::pytest.PytestUnraisableExceptionWarning",
 ]
 norecursedirs = [
   '*egg-info*',

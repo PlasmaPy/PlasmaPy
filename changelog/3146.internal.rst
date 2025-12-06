@@ -1,0 +1,1 @@
+Updated the GitHub workflow for labeling pull requests that do not need changelog entries.
