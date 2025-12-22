@@ -1,1 +1,1 @@
-Fixed problems arising from NumPy 2.4.
+Remove usage of deprecated features that were removed in NumPy ``v2.4.0``.
