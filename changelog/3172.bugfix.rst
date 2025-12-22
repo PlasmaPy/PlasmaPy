@@ -1,0 +1,1 @@
+Fixed problems arising from NumPy 2.4.
