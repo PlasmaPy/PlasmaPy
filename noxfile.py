@@ -496,6 +496,7 @@ def mypy(session: nox.Session) -> None:
     """
     if running_on_ci:
         session.log(MYPY_TROUBLESHOOTING)
+
     session.run(
         "mypy",
         ".",

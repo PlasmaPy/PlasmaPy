@@ -777,7 +777,7 @@ class CheckUnits(CheckBase):
         :class:`astropy.units.UnitTypeError`
             If the units of ``arg`` do not satisfy conditions of ``arg_checks``
         """
-        arg, unit, equiv, err = self._check_unit_core(arg, arg_name, arg_checks)
+        arg, _unit, _equiv, err = self._check_unit_core(arg, arg_name, arg_checks)
         if err is not None:
             raise err
 
