@@ -552,8 +552,6 @@ def mypy(session: nox.Session) -> None:
     Configuration file: mypy.ini
     """
 
-    session.install("pip")  # mypy uses pip if --install-types is used
-
     session.run_install(
         *uv_sync,
         "--quiet",
@@ -562,6 +560,8 @@ def mypy(session: nox.Session) -> None:
         f"--python={session.virtualenv.location}",
         env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
     )
+
+    session.install("pip")  # mypy uses pip if --install-types is used
 
     if running_on_ci:
         session.log(MYPY_TROUBLESHOOTING)

@@ -1334,7 +1334,7 @@ def _nondim_resist_spitzer(Z, field_orientation):
     if field_orientation in {"perpendicular", "perp"}:
         return alpha_perp
 
-    (gamma_E, gamma_T, delta_E, delta_T) = _get_spitzer_harm_coeffs(Z)
+    (gamma_E, _gamma_T, _delta_E, _delta_T) = _get_spitzer_harm_coeffs(Z)
     alpha_par = (3 * np.pi / 32) * (1 / gamma_E)
     if field_orientation in {"parallel", "par"}:
         return alpha_par
@@ -1350,7 +1350,7 @@ def _nondim_tec_spitzer(Z):
 
     This result is for parallel field or unmagnetized plasma only.
     """
-    (gamma_E, gamma_T, delta_E, delta_T) = _get_spitzer_harm_coeffs(Z)
+    (gamma_E, _gamma_T, delta_E, _delta_T) = _get_spitzer_harm_coeffs(Z)
     beta = 5 / 2 * (8 / 5 * (delta_E / gamma_E) - 1)
     return beta
 

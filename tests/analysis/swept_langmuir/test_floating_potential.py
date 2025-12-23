@@ -252,7 +252,7 @@ class TestFindFloatingPotential:
         """
         voltage = self._voltage
         current = self._linear_current if fit_type == "linear" else self._exp_current
-        vf, extras = find_floating_potential(
+        _vf, extras = find_floating_potential(
             voltage,
             current,
             min_points=min_points,

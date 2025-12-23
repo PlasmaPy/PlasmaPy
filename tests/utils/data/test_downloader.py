@@ -44,7 +44,7 @@ def test_api_token(downloader_validated: Downloader) -> None:
     """
     Test whether the API connection is valid
     """
-    limit, used = downloader_validated._api_usage
+    limit, _used = downloader_validated._api_usage
     # API limit is 5000/hr for auth user accounts, 60/hr without auth
     assert limit >= 5000
 
@@ -236,12 +236,12 @@ def test_at_most_one_api_call(downloader_validated) -> None:
 
     files = ["NIST_PSTAR_aluminum.txt", "plasmapy_logo.png", "test.h5"]
 
-    limit, used0 = downloader_validated._api_usage
+    _limit0, used0 = downloader_validated._api_usage
 
     for file in files:
         downloader_validated.get_file(file)
 
-    limit, used1 = downloader_validated._api_usage
+    _limit1, used1 = downloader_validated._api_usage
 
     assert used1 <= used0 + 1
 
