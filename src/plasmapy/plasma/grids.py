@@ -863,7 +863,6 @@ class AbstractGrid(ABC):
             ax2_min, ax2_max = np.min(self.ax2.si.value), np.max(self.ax2.si.value)
 
         else:
-            pts0, pts1, pts2 = self.grids
             ax0_min, ax0_max = np.min(self.pts0).si.value, np.max(self.pts0).si.value
             ax1_min, ax1_max = np.min(self.pts1).si.value, np.max(self.pts1).si.value
             ax2_min, ax2_max = np.min(self.pts2).si.value, np.max(self.pts2).si.value
