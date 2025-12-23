@@ -748,7 +748,7 @@ def run_fit(  # noqa: C901
     settings,
     noise_amp: float = 0.05,
     fit_method: str = "differential_evolution",
-    fit_kws: dict | None = None,
+    fit_kws: dict[str, object] | None = None,
     max_iter=None,
     require_redchi: float = 1.0,
     # If false, don't perform the actual fit but instead just create the Model
