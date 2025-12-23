@@ -44,7 +44,7 @@ from plasmapy.utils.exceptions import CouplingWarning, PhysicsError, RelativityW
 
 def count_decimal_places(digits):
     """Return the number of decimal places of the input digit string"""
-    integral, _, fractional = digits.partition(".")
+    _integral, _, fractional = digits.partition(".")
     return len(fractional)
 
 

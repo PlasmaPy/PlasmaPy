@@ -165,7 +165,7 @@ def test_multiple_grids() -> None:
 
     size = np.array([[-1, 1], [-1, 1]]) * 5 * u.cm
     bins = [100, 100]
-    hax, vax, values = cpr.synthetic_radiograph(sim, size=size, bins=bins)
+    _hax, _vax, _values = cpr.synthetic_radiograph(sim, size=size, bins=bins)
 
 
 def run_1D_example(name: str):
@@ -194,7 +194,7 @@ def run_1D_example(name: str):
 
     size = np.array([[-1, 1], [-1, 1]]) * 10 * u.cm
     bins = [200, 60]
-    hax, vax, values = cpr.synthetic_radiograph(sim, size=size, bins=bins)
+    hax, _vax, values = cpr.synthetic_radiograph(sim, size=size, bins=bins)
 
     values = np.mean(values[:, 20:40], axis=1)
 
@@ -372,7 +372,7 @@ def test_input_validation() -> None:
     with pytest.warns(
         RuntimeWarning, match="of the particles are shown on this synthetic radiograph."
     ):
-        hax, vax, values = cpr.synthetic_radiograph(sim, size=size)
+        _hax, _vax, _values = cpr.synthetic_radiograph(sim, size=size)
 
 
 @pytest.mark.slow
@@ -615,7 +615,7 @@ class TestSyntheticRadiograph:
         """
         Verifies that the no grid option runs - no good tests for whether it is correct currently
         """
-        x, y, i = cpr.synthetic_radiograph(self.sim_results, ignore_grid=True)
+        _x, _y, _i = cpr.synthetic_radiograph(self.sim_results, ignore_grid=True)
 
     @pytest.mark.parametrize(
         ("args", "kwargs", "expected"),
@@ -879,7 +879,7 @@ def test_add_wire_mesh_accuracy() -> None:
     # Expect a warning because many particles are off the radiograph
     # (Chose max_theta so corners are covered)
     with pytest.warns(RuntimeWarning):
-        h, v, i = cpr.synthetic_radiograph(sim, size=size, bins=bins)
+        h, _v, i = cpr.synthetic_radiograph(sim, size=size, bins=bins)
 
     # Sum up the vertical direction
     line = np.sum(i, axis=1)
@@ -950,10 +950,10 @@ def test_radiography_disk_save_routine(tmp_path) -> None:
     assert path.is_file()
 
     # Make synthetic radiograph from sim object
-    h, v, i1 = cpr.synthetic_radiograph(sim)
+    _h, _v, i1 = cpr.synthetic_radiograph(sim)
 
     # Load from tmppath and make synthetic radiograph
-    h, v, i2 = cpr.synthetic_radiograph(path)
+    _h, _v, i2 = cpr.synthetic_radiograph(path)
 
     # The two synthetic radiographs should be identical
     assert np.allclose(i1, i2)

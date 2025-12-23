@@ -284,7 +284,8 @@ def test_notch_errors(notch, single_species_collective_args) -> None:
     args, kwargs = spectral_density_args_kwargs(single_species_collective_args)
     kwargs["notch"] = notch
     with pytest.raises(ValueError):
-        alpha, Skw = thomson.spectral_density(*args, **kwargs)
+        # prefix unused unpacked values with _
+        _alpha, _Skw = thomson.spectral_density(*args, **kwargs)
 
 
 @pytest.mark.slow
@@ -311,7 +312,7 @@ def test_spectral_density_minimal_arguments(single_species_collective_args) -> N
         if key in kwargs:
             del kwargs[key]
 
-    alpha, Skw = thomson.spectral_density(*args, **kwargs)
+    _alpha, _Skw = thomson.spectral_density(*args, **kwargs)
 
 
 def test_single_species_collective_lite(single_species_collective_args) -> None:
@@ -343,7 +344,7 @@ def test_spectral_density_lite_minimal_arguments(
         if key in kwargs:
             del kwargs[key]
 
-    alpha, Skw = thomson.spectral_density.lite(*args, **kwargs)
+    _alpha, _Skw = thomson.spectral_density.lite(*args, **kwargs)
 
 
 @pytest.fixture
@@ -378,14 +379,14 @@ def test_efract_sum_error(single_species_collective_args) -> None:
     args, kwargs = spectral_density_args_kwargs(single_species_collective_args)
     kwargs["efract"] = np.array([2.0])  # Sum is not 1
     with pytest.raises(ValueError):
-        alpha, Skw = thomson.spectral_density(*args, **kwargs)
+        _alpha, _Skw = thomson.spectral_density(*args, **kwargs)
 
 
 def test_ifract_sum_error(single_species_collective_args) -> None:
     args, kwargs = spectral_density_args_kwargs(single_species_collective_args)
     kwargs["ifract"] = np.array([0.5, 1.2])  # Sum is not 1
     with pytest.raises(ValueError):
-        alpha, Skw = thomson.spectral_density(*args, **kwargs)
+        _alpha, _Skw = thomson.spectral_density(*args, **kwargs)
 
 
 @pytest.fixture
@@ -412,7 +413,7 @@ def test_multiple_species_collective_spectrum(
     Compares the generated spectrum to previously determined values
     """
 
-    alpha, wavelength, Skw = multiple_species_collective_spectrum
+    _alpha, wavelength, Skw = multiple_species_collective_spectrum
 
     # Compute the width and max of the spectrum, and the wavelength
     # of the max (sensitive to ion vel)
@@ -605,11 +606,10 @@ def test_spectral_density_input_errors(
     args, kwargs = spectral_density_args_kwargs(args)
 
     if error is None:
-        alpha, Skw = thomson.spectral_density(*args, **kwargs)
-
+        _alpha, _Skw = thomson.spectral_density(*args, **kwargs)
     else:
         with pytest.raises(error) as excinfo:
-            alpha, Skw = thomson.spectral_density(*args, **kwargs)
+            _alpha, _Skw = thomson.spectral_density(*args, **kwargs)
 
             # If msg is not None, check that this string is a subset of the
             # error message
@@ -637,7 +637,7 @@ def test_split_populations() -> None:
     ifract = np.array([1.0])
     efract = np.array([1.0])
 
-    alpha, Skw0 = thomson.spectral_density(
+    _alpha, Skw0 = thomson.spectral_density(
         wavelengths,
         probe_wavelength,
         n,
@@ -658,7 +658,7 @@ def test_split_populations() -> None:
     ifract = np.array([0.2, 0.8])
     efract = np.array([0.8, 0.2])
 
-    alpha, Skw1 = thomson.spectral_density(
+    _alpha, Skw1 = thomson.spectral_density(
         wavelengths,
         probe_wavelength,
         n,
@@ -687,11 +687,11 @@ def test_thomson_with_instrument_function(single_species_collective_args) -> Non
 
     args, kwargs = spectral_density_args_kwargs(single_species_collective_args)
 
-    alpha, Skw_with = thomson.spectral_density(
+    _alpha, Skw_with = thomson.spectral_density(
         *args, **kwargs, instr_func=example_instr_func
     )
 
-    alpha, Skw_without = thomson.spectral_density(*args, **kwargs)
+    _alpha, Skw_without = thomson.spectral_density(*args, **kwargs)
 
     # Assert that the instrument function has made the IAW peak wider
     w1 = width_at_value(wavelengths.value, Skw_with.value, 2e-13)
@@ -713,7 +713,7 @@ def test_thomson_with_invalid_instrument_function(
     kwargs["instr_func"] = instr_func
 
     with pytest.raises(ValueError):
-        alpha, Skw_with = thomson.spectral_density(*args, **kwargs)
+        _alpha, _Skw_with = thomson.spectral_density(*args, **kwargs)
 
 
 def test_param_to_array_fcns() -> None:
@@ -742,15 +742,14 @@ def test_param_to_array_fcns() -> None:
     assert np.mean(arr) == 2
 
 
-def run_fit(
+def run_fit(  # noqa: C901
     wavelengths,
     params,
     settings,
     noise_amp: float = 0.05,
     fit_method: str = "differential_evolution",
-    fit_kws={},  # noqa: B006
+    fit_kws: dict | None = None,
     max_iter=None,
-    check_errors: bool = True,  # noqa: ARG001
     require_redchi: float = 1.0,
     # If false, don't perform the actual fit but instead just create the Model
     run_fit: bool = True,
@@ -764,9 +763,10 @@ def run_fit(
     moved to parameters later in this function.
     """
 
-    wavelengths = (wavelengths * u.m).to(u.nm)
+    if fit_kws is None:
+        fit_kws = {}
 
-    true_params = copy.deepcopy(params)  # noqa: F841
+    wavelengths = (wavelengths * u.m).to(u.nm)
 
     skeys = list(settings.keys())
     pkeys = list(params.keys())
@@ -814,7 +814,7 @@ def run_fit(
     ion_vel = ion_speed[:, np.newaxis] * ion_vdir
 
     # Create the synthetic data
-    alpha, Skw = thomson.spectral_density(
+    _alpha, Skw = thomson.spectral_density(
         wavelengths,
         probe_wavelength * u.m,
         n * u.m**-3,
@@ -1258,7 +1258,7 @@ def test_fit_with_minimal_parameters() -> None:
     T_i = 20 * u.eV
     T_e = 10 * u.eV
 
-    alpha, Skw = thomson.spectral_density(
+    _alpha, Skw = thomson.spectral_density(
         wavelengths,
         probe_wavelength,
         n,
