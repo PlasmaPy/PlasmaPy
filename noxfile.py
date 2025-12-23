@@ -174,25 +174,17 @@ def requirements(session: nox.Session) -> None:
     requirements (:file:`.github/workflows/update-pinned-reqs.yml`).
     """
 
-    lockfile = pathlib.Path(root_dir / "uv.lock")
-    try:
-        if lockfile.exists():
-            session.run("uv", "lock", "--check")
-        else:
-            session.log("🪧 File 'uv.lock' not found. Continuing.")
-    except nox.command.CommandFailed:
-        session.warn("⚠️ 'uv.lock' is invalid, possibly due to a git merge conflict.")
-        session.log("Deleting 'uv.lock' and continuing.")
-        lockfile.unlink()
+    uv_lock = ("uv", "lock", "--upgrade", "--no-progress", *session.posargs)
 
-    uv_output: str | bool = session.run(
-        "uv",
-        "lock",
-        "--upgrade",
-        "--no-progress",
-        *session.posargs,
-        silent=running_on_ci,  # return a multi-line string with stdout & stderr if true
-    )
+    try:
+        uv_output: str | bool = session.run(*uv_lock, silent=running_on_ci)
+    except nox.command.CommandFailed:
+        session.warn(
+            "⚠️ 'uv.lock' invalid, most likely due to a git merge conflict. "
+            "Checking out 'uv.lock' from the branch being merged into this one."
+        )
+        session.run("git", "checkout", "--theirs", "--", "uv.lock", external=True)
+        uv_output: str | bool = session.run(*uv_lock, silent=running_on_ci)
 
     if running_on_ci:
         session.log(uv_output)
