@@ -135,6 +135,7 @@ dev-tools = [
 ]
 type_check = [
   "mypy>=1.19",
+  "pip>=25.3",
   { include-group = "dev-tools" },
   { include-group = "test" },
 ]
