@@ -177,12 +177,14 @@ def requirements(session: nox.Session) -> None:
     uv_lock = ("uv", "lock", "--upgrade", "--no-progress", *session.posargs)
 
     try:
+        # Using session.run() with silent=True returns the command output
         uv_output: str | bool = session.run(*uv_lock, silent=running_on_ci)
     except nox.command.CommandFailed:
-        session.warn(
-            "⚠️ 'uv.lock' invalid, most likely due to a git merge conflict. "
-            "Checking out 'uv.lock' from the branch being merged into this one."
+        session.warn("⚠️ File uv.lock is invalid, likely due to a git merge conflict.")
+        session.log(
+            "📥 Checking out uv.lock from the branch being merged into this one."
         )
+        session.log("🪧 If this is unsuccessful, delete uv.lock and try again.")
         session.run("git", "checkout", "--theirs", "--", "uv.lock", external=True)
         uv_output: str | bool = session.run(*uv_lock, silent=running_on_ci)
 
