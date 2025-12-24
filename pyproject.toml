@@ -101,10 +101,10 @@ optional-dependencies.docs = [
 # Test dependencies are not user-facing, so we can set stricter
 # requirements to ensure that tests are run in consistent environments.
 optional-dependencies.tests = [
-  "hypothesis>=6.142.3",
+  "hypothesis>=6.147",
   "mypy>=1.19",
   "nox[uv]>=2025.10.16",
-  "pytest>=8.4.2",
+  "pytest>=9.0.1",
   "pytest-cov>=7",
   "pytest-filter-subpackage>=0.2",
   "pytest-regressions>=2.8.3",
@@ -479,17 +479,18 @@ ignore = [
   "src/plasmapy/_version.py",
 ]
 
-[tool.pytest.ini_options]
+[tool.pytest]
 testpaths = [ '.' ]
 xfail_strict = true
 markers = [
   "slow: marks tests as slow (deselect with '-m \"not slow\"')",
 ]
-doctest_optionflags = """
-NORMALIZE_WHITESPACE
-ELLIPSIS
-NUMBER
-IGNORE_EXCEPTION_DETAIL"""
+doctest_optionflags = [
+  "NORMALIZE_WHITESPACE",
+  "ELLIPSIS",
+  "NUMBER",
+  "IGNORE_EXCEPTION_DETAIL",
+]
 filterwarnings = [
   # treat warnings as errors by default; pass `-W once` to pytest to show them
   "error",
