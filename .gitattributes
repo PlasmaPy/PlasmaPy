@@ -10,19 +10,25 @@
 *.c text diff=cpp
 *.cff text
 *.css text diff=css
+*.csv text
 *.html text diff=html
 *.json text
 *.md text diff=markdown
 *.py text diff=python
+*.pyi text diff=python
 *.pyx text diff=python
 *.rst text
+*.txt text
+*.sh text diff=bash
 *.yaml text
 *.yml text
 
-# Mark file formats that are binary
+*.gif binary
 *.h5 binary
 *.hdf5 binary
 *.ico binary
+*.jpeg binary
+*.jpg binary
 *.npy binary
 *.png binary
 
