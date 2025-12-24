@@ -1,6 +1,10 @@
 # Auto-detect if a file is a text file and set line endings to LF
 * text=auto eol=lf
 
+# Define macros
+
+[attr]lockfile text -diff -merge
+
 # Mark file types as text files & improve git diff headers
 *.bib text diff=bibtex
 *.c text diff=cpp
@@ -21,3 +25,6 @@
 *.ico binary
 *.npy binary
 *.png binary
+
+# Generated files
+uv.lock lockfile
