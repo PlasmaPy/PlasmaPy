@@ -72,6 +72,13 @@ running_on_ci = os.getenv("CI")
 running_on_rtd = os.environ.get("READTHEDOCS") == "True"
 
 
+@nox.session(python=current_python)
+def dev(session: nox.Session) -> None:
+    """Set up a development environment."""
+    session.run("uv", "venv", "--python", maxpython, "--no-progress")
+    session.run("uv", "sync", "--frozen", "--all-extras", "--no-progress")
+
+
 def _create_requirements_pr_message(uv_output: str, session: nox.Session) -> None:
     """
     Create the pull request message during requirements updates.
