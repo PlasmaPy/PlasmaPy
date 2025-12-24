@@ -3,29 +3,33 @@
 # Auto-detect if a file is a text file and set line endings to LF
 * text=auto eol=lf
 
-# Define macros
+# Text files (use only diff values shown in git documentation)
+*.bat text
+*.bib text diff=bibtex
+*.c text diff=cpp
+*.cff text
+*.css text diff=css
+*.csv text
+*.f text diff=fortran
+*.h text diff=cpp
+*.html text diff=html
+*.ini text
+*.json text
+*.md text diff=markdown
+*.py text diff=python
+*.pyi text diff=python
+*.pyx text diff=python
+*.rs text diff=rust
+*.rst text
+*.sh text diff=bash
+*.svg text -diff -merge
+*.toml text
+*.txt text
+*.yaml text
+*.yml text
+py.typed text
 
-[attr]lockfile text -diff -merge
-[attr]utf8 text encoding=utf-8
-
-# Mark file types as utf8 files & improve git diff headers
-*.bib utf8 diff=bibtex
-*.c utf8 diff=cpp
-*.cff utf8
-*.css utf8 diff=css
-*.csv utf8
-*.html utf8 diff=html
-*.json utf8
-*.md utf8 diff=markdown
-*.py utf8 diff=python
-*.pyi utf8 diff=python
-*.pyx utf8 diff=python
-*.rst utf8
-*.txt utf8
-*.sh utf8 diff=bash
-*.yaml utf8
-*.yml utf8
-
+# Binary files
 *.gif binary
 *.h5 binary
 *.hdf5 binary
@@ -35,5 +39,8 @@
 *.npy binary
 *.png binary
 
-# Generated files
-uv.lock lockfile
+# Do not show diffs for generated files. During merge conflicts, use the
+# file from the current branch as the default to prevent invalidation of
+# the lockfile with merge conflict markers.
+uv.lock text -diff -merge
+pylock*.toml text -diff -merge
