@@ -6,24 +6,25 @@
 # Define macros
 
 [attr]lockfile text -diff -merge
+[attr]utf8 text encoding=utf-8
 
-# Mark file types as text files & improve git diff headers
-*.bib text diff=bibtex
-*.c text diff=cpp
-*.cff text
-*.css text diff=css
-*.csv text
-*.html text diff=html
-*.json text
-*.md text diff=markdown
-*.py text diff=python
-*.pyi text diff=python
-*.pyx text diff=python
-*.rst text
-*.txt text
-*.sh text diff=bash
-*.yaml text
-*.yml text
+# Mark file types as utf8 files & improve git diff headers
+*.bib utf8 diff=bibtex
+*.c utf8 diff=cpp
+*.cff utf8
+*.css utf8 diff=css
+*.csv utf8
+*.html utf8 diff=html
+*.json utf8
+*.md utf8 diff=markdown
+*.py utf8 diff=python
+*.pyi utf8 diff=python
+*.pyx utf8 diff=python
+*.rst utf8
+*.txt utf8
+*.sh utf8 diff=bash
+*.yaml utf8
+*.yml utf8
 
 *.gif binary
 *.h5 binary
