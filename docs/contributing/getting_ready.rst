@@ -1,8 +1,8 @@
 .. _getting ready to contribute:
 
-******************************
-Getting Ready to Contribute 🎉
-******************************
+***************************
+Getting Ready to Contribute
+***************************
 
 .. contents:: Table of Contents
    :depth: 2
@@ -66,33 +66,6 @@ operating systems.
 
       Open a terminal by using :kbd:`Ctrl + Alt + T`.
 
-.. _installing-uv:
-
-Installing uv
--------------
-
-|uv| is an extremely fast Python package and project manager used
-throughout development.
-
-Please follow these instructions to **`install uv`_**.
-
-Installing Python
------------------
-
-
-
-.. note::
-
-   PlasmaPy requires a version of Python between |minpython| and
-   |maxpython|. We recommend using Python |maxpython|.
-
-.. note::
-
-   There are many other equally good ways to install Python. Python's
-   website describes how to `download Python`_. `Real Python`_ has
-   instructions on `installing Python`_ for several different operating
-   systems (if working within WSL_, follow the Linux instructions).
-
 Using git and GitHub
 --------------------
 
@@ -134,12 +107,15 @@ contributing code to PlasmaPy, please take the following steps:
    commands for setup and config`_.
 
 #. `Add a new SSH key to your GitHub account`_. This step is needed for
-   authentication purposes.
+   security and authentication.
 
 .. _initial-setup:
 
-Initial setup
-=============
+Getting set up to contribute
+============================
+
+Clone the repository
+--------------------
 
 #. Log in to |GitHub|.
 
@@ -167,7 +143,7 @@ Initial setup
 
       git clone git@github.com:YOUR-USERNAME/PlasmaPy.git
 
-   .. tip::
+   .. important::
 
       If you have trouble connecting to GitHub, you may need to `add a
       new SSH key to your GitHub account`_.
@@ -189,133 +165,61 @@ Initial setup
    corresponds to your fork_ and :bash:`upstream` corresponds to
    |PlasmaPy's GitHub repository|.
 
-Setting up a Python environment
-===============================
+.. _install-uv:
 
-If you plan to make multiple contributions, we recommend setting up a
-Python environment specifically for PlasmaPy. This section describes how
-to set up a Conda_ environment from the command line, which can be done
-after installing Conda or `Anaconda Navigator`_ as described in the
-section on :ref:`getting Python <installing-python>`. If you did not use
-Conda or Anaconda to install Python, we suggest using a `virtual
-environment`_ instead.
+Install uv
+----------
 
-.. tip::
+|uv| is an extremely fast Python package and project manager used
+ubiquitiously during PlasmaPy development.
 
-   Using Conda/virtual environments helps avoid situations as in `this
-   xkcd comic`_.
+|Open a terminal| and follow these instructions to **`install uv`_**.
 
-#. |Open a terminal|.
+Install Nox
+-----------
 
-#. Create a Conda environment named ``plasmapy-dev`` by running:
+Nox is an automation tool used by PlasmaPy to run tests, build
+documentation, and perform code quality checks. Install Nox with:
 
-   .. code-block:: bash
+.. code-block:: bash
 
-      conda create -n plasmapy-dev python=3.12
+   uv tool install nox
 
-   The :bash:`-n` flag is used to specify the name of the environment.
-   The ``3.12`` can be replaced with any version of Python from
-   |minpython| to |maxpython|.
+Install pre-commit
+------------------
 
-#. Activate the environment with:
+|pre-commit| is a framework for running code quality checks and
+performing automated fixes. Install pre-commit with:
 
-   .. code-block:: bash
+.. code-block:: bash
 
-      conda activate plasmapy-dev
+   uv tool install pre-commit
 
-   The :bash:`conda activate` command will need to be run every time you
-   open a terminal, or can be added to the appropriate configuration
-   file (i.e., :file:`.bashrc` for bash or :file:`.zshrc` for zsh).
+Create a virtual environment
+----------------------------
 
+To create a virtual environment, run:
 
-Installing your clone of PlasmaPy 🦹
-====================================
+.. code-block:: bash
 
-🏁 This section covers how to make an |editable installation| of your
-clone of PlasmaPy. Making the PlasmaPy installation *editable* means
-that if you modify the source code, then those changes will be included
-when you :py:`import plasmapy`.
+   uv venv
 
-1. |Open a terminal|.
+The output will provide a command to `activate the virtual environment`_.
+This command is likely :bash:`source .venv/bin/activate` on
+Linux, macOS, or WSL; and :bash:`.venv\Scripts\activate` when using
+Windows PowerShell (which may need to be run as an administrator).
 
-2. Navigate to the directory for your clone of PlasmaPy, which should be
-   named :file:`PlasmaPy`. For example, if you ran the :bash:`git clone`
-   command in the :file:`~/repos/` directory, then run:
+To sync the virtual environment with the development environment, run:
 
-   .. code-block:: bash
+.. code-block:: bash
 
-      cd ~/repos/PlasmaPy
+   uv sync
 
-   .. note::
-
-      In Windows, the directory path will be :file:`C:\\Users\\<username>\\repos\\PlasmaPy`.
-
-3. If you created a Conda_ environment for contributing to PlasmaPy,
-   activate it with:
-
-   .. code-block:: bash
-
-      conda activate plasmapy-dev
-
-4. Run 🏃 the command to install PlasmaPy for your operating system:
-
-   .. tabs::
-
-      .. group-tab:: Windows
-
-         .. code-block:: PowerShell
-
-            py -m pip install -e .[docs,tests]
-
-      .. group-tab:: macOS
-
-         .. code-block:: bash
-
-            python -m pip install -e '.[docs,tests]'
-
-      .. group-tab:: Linux/WSL
-
-         .. code-block:: bash
-
-            python -m pip install -e .[docs,tests]
-
-   .. note::
-
-      Replace ``py`` with ``python`` if you are not using conda.
-
-   The :bash:`-e` flag specifies that this will be an
-   |editable installation|.
-
-   .. tip::
-
-      If the above command does not work, try running
-
-      .. code-block:: bash
-
-         pip install -r requirements.txt
-
-      This command will install that packages that PlasmaPy depends on,
-      but not PlasmaPy itself.
-
-.. hint::
-
-   If you import a package after doing an editable installation, then
-   changes made after the :py:`import` step will not be immediately
-   available during a Python session. To re-import the package, use
-   `importlib.reload`:
-
-   .. code-block:: pycon
-
-      >>> from importlib import reload
-      >>> import plasmapy
-      >>> # now change the source code
-      >>> reload(plasmapy)
+And with that, you're set up to contribute to PlasmaPy!
 
 .. _Add a new SSH key to your GitHub account: https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account
-.. _Anaconda Navigator: https://www.anaconda.com/docs/tools/anaconda-navigator/main
-.. _Anaconda: https://www.anaconda.com/docs/main
+.. _activate the virtual environment: https://docs.astral.sh/uv/pip/environments/#activating-a-virtual-environment
 .. _clone: https://github.com/git-guides/git-clone
-.. _Conda: https://docs.conda.io
 .. _creating an environment: https://www.anaconda.com/docs/tools/anaconda-navigator/tutorials/manage-environments#creating-a-new-environment
 .. _download Python: https://www.python.org/downloads
 .. _fork: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/about-forks
