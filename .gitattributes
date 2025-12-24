@@ -1,3 +1,12 @@
+# The .gitattributes file defines how git handles different files with
+# respect to line endings, diffs, merges, and encodings.
+
+# To see all file types, use:
+#     git ls-files | awk -F. 'NF>1 {print $NF}' | sort -u
+
+# Test these settings with commands like:
+#     git check-attr -a uv.lock
+
 # docs: https://git-scm.com/docs/gitattributes
 
 # Auto-detect if a file is a text file and set line endings to LF
