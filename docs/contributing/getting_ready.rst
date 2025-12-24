@@ -205,7 +205,7 @@ To create a virtual environment, run:
    uv venv
 
 The output will provide a command to `activate the virtual environment`_.
-This command is likely :bash:`source .venv/bin/activate` on
+This command is most often :bash:`source .venv/bin/activate` on
 Linux, macOS, or WSL; and :bash:`.venv\Scripts\activate` when using
 Windows PowerShell (which may need to be run as an administrator).
 
