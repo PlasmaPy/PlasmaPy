@@ -140,9 +140,6 @@ type_check = [
   { include-group = "test" },
 ]
 
-[tool.uv.dependency-groups]
-docs = {requires-python = "==3.14"}
-
 [tool.setuptools]
 include-package-data = true
 
