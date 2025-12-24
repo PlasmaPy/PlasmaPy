@@ -348,9 +348,9 @@ def _merge_voltage_clusters__within_dv(  # noqa: C901
     if cluster_mask[-1] and indices[-1] != voltage.size - 1:
         # last element in voltage is in a cluster
         indices = np.append(indices, [voltage.size - 1])
-    indices = np.reshape(indices, newshape=(int(indices.size / 2), 2))
-    # ^ using newshape kwarg for backwards compatibility, newshape kwarg
-    #   has been deprecated since numpy v2.1
+
+    newshape = (int(indices.size / 2), 2)
+    indices = np.reshape(indices, newshape)
 
     # merge clusters and update new_voltage and new_current
     for ii in range(indices.shape[0]):
