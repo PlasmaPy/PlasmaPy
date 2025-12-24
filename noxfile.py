@@ -56,7 +56,11 @@ root_dir = pathlib.Path(__file__).parent
 # The documentation should be build always using the same version of
 # Python, which should be the latest version of Python supported by Read
 # the Docs. Because Read the Docs takes some time to support new
-# releases of Python, we should not link docpython to maxpython.
+# releases of Python, docpython should stay independent of maxpython.
+#
+# Changing docpython also requires updating .readthedocs.yml,
+# tool.uv.dependency-groups.docs in pyproject.toml, and the GitHub
+# workflows for building the documentation.
 
 docpython = "3.14"
 
