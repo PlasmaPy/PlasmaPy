@@ -19,7 +19,6 @@
 *.cff text
 *.css text diff=css
 *.csv text
-*.f text diff=fortran
 *.h text diff=cpp
 *.html text diff=html
 *.ini text
@@ -51,5 +50,5 @@ py.typed text
 # Do not show diffs for generated files. During merge conflicts, use the
 # file from the current branch as the default to prevent invalidation of
 # the lockfile with merge conflict markers.
-uv.lock text -diff -merge
+*.lock text -diff -merge
 pylock*.toml text -diff -merge
