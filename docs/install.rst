@@ -40,7 +40,7 @@ instructions to `download Python`_ and install it. :snake:
 Installing PlasmaPy with pip
 ============================
 
-To install the most recent release of `plasmapy` on |PyPI| with |pip| into
+To install the most recent release of PlasmaPy on |PyPI| with |pip| into
 an existing |Python| |minpython|\ + environment on macOS or Linux, open a
 terminal and run:
 
@@ -92,7 +92,7 @@ environment can then be activated by running:
 
    source .venv/bin/activate
 
-Then, to install `plasmapy` into the activated environment, run:
+Then, to install PlasmaPy into the activated environment, run:
 
 .. code-block:: bash
 
@@ -116,14 +116,14 @@ into an activated Conda_ environment by opening a terminal and running:
 
    conda install -c conda-forge plasmapy
 
-Here :bash:`-c conda-forge` indicates that `plasmapy` should be installed
+Here :bash:`-c conda-forge` indicates that PlasmaPy should be installed
 from the conda-forge_ channel.
 
-To install `plasmapy` into another existing Conda_ environment, append
+To install PlasmaPy into another existing Conda_ environment, append
 :samp:`-n {env_name}` to the previous command, where :samp:`{env_name}`
 is replaced with the name of the environment.
 
-To create a new environment with `plasmapy` installed in it, run:
+To create a new environment with PlasmaPy installed in it, run:
 
 .. code-block:: bash
 
@@ -136,7 +136,7 @@ This step may take several minutes. To activate this environment, run:
 
    conda activate env_name
 
-To update `plasmapy` to the most recent version within a currently
+To update PlasmaPy to the most recent version within a currently
 activated Conda_ environment, run:
 
 .. code-block:: bash
@@ -176,7 +176,7 @@ click on :guilabel:`Update channels` and then :guilabel:`Update index`.
 .. Is clicking on `Update index` actually necessary?
 
 Next, while on the :guilabel:`Environments` tab, select the environment
-that you would like to install `plasmapy` in. The default is generally
+that you would like to install PlasmaPy in. The default is generally
 ``base (root)``. Optionally, you may select :guilabel:`Create` to start
 a new environment. In the search bar, enter ``plasmapy``. Click on the
 checkbox next to ``plasmapy``, and select :guilabel:`Apply` to begin the
@@ -195,7 +195,7 @@ Obtaining official releases
 ---------------------------
 
 A ZIP_ file containing the source code for official releases of
-`plasmapy` can be obtained `from PyPI`_ or `from Zenodo`_.
+PlasmaPy can be obtained `from PyPI`_ or `from Zenodo`_.
 
 Alternatively, official releases since 0.7.0 can be downloaded from the
 releases_ page on |PlasmaPy's GitHub repository|.
@@ -224,7 +224,7 @@ code.
 Building and installing
 -----------------------
 
-To install the downloaded version of `plasmapy`, enter the
+To install the downloaded version of PlasmaPy, enter the
 :file:`PlasmaPy` directory and run:
 
 .. code-block:: bash
