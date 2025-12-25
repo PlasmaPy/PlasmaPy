@@ -6,8 +6,8 @@ Installing PlasmaPy
 
 .. note::
 
-   If you would like to contribute to PlasmaPy, please check out the
-   |contributor guide|. :sunny:
+   If you would like to contribute to PlasmaPy, please check out our
+   handy |contributor guide|. :sunny:
 
 .. contents:: Contents
    :local:
@@ -25,7 +25,7 @@ instructions to `download Python`_ and install it. :snake:
 .. note::
 
    PlasmaPy versions through ``v2025.8.0`` require Python 3.13 or
-   earlier and are incompatible with Python 3.14.
+   earlier and are incompatible with Python 3.14 (:issue:`3123`).
 
 .. _install-pip:
 
@@ -50,13 +50,10 @@ To install PlasmaPy on Windows, run:
 
    py -3.14 -m pip install plasmapy
 
-The version of |Python| may be changed from ``3.14`` to another supported
-Python |minpython|\ + release that has been installed on your computer.
-
 For more detailed information, please refer to this tutorial on
 `installing packages`_.
 
-.. _install-uv:
+.. _install-with-uv:
 
 Installing PlasmaPy with uv
 ===========================
@@ -69,8 +66,8 @@ common |pip| commands so that |Python| packages on |PyPI| may be
 installed into |uv|-managed
 `virtual environments <virtual environment_>`_ without installing |pip|.
 
-After `installing uv`_, a `virtual environment`_ with |Python| version
-3.12 can be created by opening a terminal and running:
+After |installing uv|, a `virtual environment`_ with |Python| version
+3.14 can be created by opening a terminal and running:
 
 .. code-block:: bash
 
@@ -95,13 +92,8 @@ Then, to install PlasmaPy into the activated environment, run:
 Installing PlasmaPy with Conda
 ==============================
 
-Conda_ is a package management system and environment manager that is
-commonly used in the scientific |Python| ecosystem. Similar to |uv|,
-Conda_ is used to create and manage isolated virtual |Python| environments.
-However, Conda_ can also be used for packages written in languages other
-than |Python|.
-
-After `installing Conda`_ or miniconda_, `plasmapy` can be installed
+Conda_ is an open source package and environment manager. After
+`installing Conda`_ or miniconda_, PlasmaPy can be installed
 into an activated Conda_ environment by opening a terminal and running:
 
 .. code-block:: bash
@@ -257,7 +249,6 @@ package should also be installed.
 .. _installing Anaconda Navigator: https://www.anaconda.com/docs/tools/anaconda-navigator/install
 .. _installing Conda: https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html
 .. _installing packages: https://packaging.python.org/en/latest/tutorials/installing-packages/#installing-from-vcs
-.. _installing uv: https://docs.astral.sh/uv/getting-started/installation/#installing-uv
 .. _getting started with Anaconda Navigator: https://www.anaconda.com/docs/tools/anaconda-navigator/getting-started
 .. _miniconda: https://docs.conda.io/en/latest/miniconda.html
 .. _pip drop-in interface: https://docs.astral.sh/uv/pip/#the-pip-interface
