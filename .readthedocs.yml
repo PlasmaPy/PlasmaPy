@@ -23,13 +23,14 @@ build:
     - asdf plugin add uv
     - asdf install uv latest
     - asdf global uv latest
+    - uv sync --exact --frozen --only-group docs --only-group dev-tools --python 3.14
 
     build:
       html:
-      - uvx nox -s docs
+      - nox -s docs --python=3.14
 
       htmlzip:
-      - uvx nox -s docs_bundle_htmlzip
+      - nox -s docs_bundle_htmlzip
 
     post_build:
     - echo $'\n'⚠️ For help deciphering documentation build error messages, see:$'\n\n'\ \ https://docs.plasmapy.org/en/latest/contributing/doc_guide.html#troubleshooting
