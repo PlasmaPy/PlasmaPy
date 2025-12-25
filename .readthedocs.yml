@@ -23,11 +23,13 @@ build:
     - asdf plugin add uv
     - asdf install uv latest
     - asdf global uv latest
+
+    install:
     - uv sync --exact --frozen --only-group docs --only-group dev-tools --python 3.14
 
     build:
       html:
-      - nox -s docs --python=3.14
+      - nox -s docs
 
       htmlzip:
       - nox -s docs_bundle_htmlzip
