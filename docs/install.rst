@@ -22,14 +22,6 @@ PlasmaPy requires a version of |Python| between |minpython| and
 |maxpython|. If you do not have |Python| installed already, here are the
 instructions to `download Python`_ and install it. :snake:
 
-.. tip::
-
-   New versions of |Python| are released annually in October, and it can
-   take a few months for the scientific Python ecosystem to catch up. If
-   you have trouble installing `plasmapy` on the most recent |Python|
-   version between October and March, then try installing it on the
-   second most recent version.
-
 .. note::
 
    PlasmaPy versions through ``v2025.8.0`` require Python 3.13 or
