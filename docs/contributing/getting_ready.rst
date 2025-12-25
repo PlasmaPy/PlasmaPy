@@ -173,7 +173,7 @@ Install uv
 |uv| is an extremely fast Python package and project manager used
 ubiquitiously during PlasmaPy development.
 
-|Open a terminal| and follow these instructions to **`install uv`_**.
+|Open a terminal| and follow these instructions to |install uv|.
 
 Install Nox
 -----------
@@ -229,7 +229,6 @@ And with that, you're set up to contribute to PlasmaPy!
 .. _install Graphviz: https://graphviz.org/download
 .. _install pandoc: https://pandoc.org/installing.html
 .. _installing Python: https://realpython.com/installing-python
-.. _install uv: https://docs.astral.sh/uv/getting-started/installation
 .. _installing WSL: https://learn.microsoft.com/en-us/windows/wsl/install
 .. _miniconda: https://docs.conda.io/en/latest/miniconda.html
 .. _opening Powershell: https://learn.microsoft.com/en-us/powershell/scripting/windows-powershell/starting-windows-powershell?view=powershell-7.4
