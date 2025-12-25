@@ -215,16 +215,6 @@ To install the downloaded version of PlasmaPy, enter the
 
    pip install .
 
-If you expect to occasionally edit the source code, instead run:
-
-.. code-block:: bash
-
-   pip install -e ".[tests,docs]"
-
-The ``-e`` flag makes the installation editable and ``[tests,docs]``
-specifies that all of the additional dependencies used while testing the
-package should also be installed.
-
 .. note::
 
    If you noticed any places where the installation instructions could
