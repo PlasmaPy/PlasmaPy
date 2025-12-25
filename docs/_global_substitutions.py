@@ -130,6 +130,8 @@ links_to_become_subs: dict[str, str] = {
     "GitHub Actions": "https://docs.github.com/en/actions",
     "GitHub": "https://github.com",
     "h5py": "https://www.h5py.org",
+    "install uv": "https://docs.astral.sh/uv/getting-started/installation",
+    "installing uv": "https://docs.astral.sh/uv/getting-started/installation",
     "intersphinx": "https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html",
     "Jupyter": "https://jupyter.org",
     "lmfit": "https://lmfit.github.io/lmfit-py",
