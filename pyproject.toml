@@ -97,7 +97,6 @@ test = [
   "pytest-regressions>=2.8.3",
   "pytest-rerunfailures>=16.1",
   "pytest-xdist>=3.8",
-  { include-group = "dev-tools" },
 ]
 docs = [
   "docutils>=0.21.2",
@@ -126,7 +125,6 @@ docs = [
   "sphinxemoji>=0.3.1",
   "towncrier>=24.8",
   "unidecode>=1.4",
-  { include-group = "dev-tools" },
 ]
 dev-tools = [
   "nox>=2025.10.16",
@@ -136,7 +134,6 @@ dev-tools = [
 type_check = [
   "mypy>=1.19",
   "pip>=25.3",
-  { include-group = "dev-tools" },
   { include-group = "test" },
 ]
 
