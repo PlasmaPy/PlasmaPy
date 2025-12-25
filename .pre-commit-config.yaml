@@ -1,13 +1,30 @@
-# configuration file for pre-commit and pre-commit.ci
-# https://docs.plasmapy.org/en/latest/contributing/pre-commit.html
+# pre-commit is a framework for running code quality checks and making
+# automated fixes. These checks are defined below as "hooks", which each
+# run a specific tool or perform a specific check.
+#
+# All of these hooks are run on every pull request via pre-commit.ci. To
+# apply all pre-commit autofixes on a pull request, add the following
+# comment to the conversation tab:
+#
+#     pre-commit.ci autofix
+#
+# To perform all checks and apply all autofixes, run:
+#
+#     pre-commit run --all-files
+#
+# For more information, please refer to the following resources.
+#
+# PlasmaPy Contributor Guide: https://docs.plasmapy.org/en/latest/contributing/pre-commit.html
+# pre-commit.ci configuration: https://pre-commit.ci/#configuration
+# pre-commit docs: https://pre-commit.com/#adding-pre-commit-plugins-to-your-project
 
-ci:  # https://pre-commit.ci/#configuration
+ci:
   autofix_prs: false
   autoupdate_schedule: monthly
   # skip hooks that require network access, which pre-commit.ci forbids
   skip: [uv-lock]
 
-repos:  # https://pre-commit.com/#adding-pre-commit-plugins-to-your-project
+repos:
 
 - repo: https://github.com/pre-commit/pre-commit-hooks
   rev: v6.0.0
