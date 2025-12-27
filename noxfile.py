@@ -1,6 +1,6 @@
 # /// script
 # requires-python = ">=3.12"
-# dependencies = ["nox"]
+# dependencies = ["nox", "nox_uv"]
 # ///
 
 """
@@ -46,11 +46,14 @@ from packaging.requirements import Requirement
 # The minimum version of Python should be incremented immediately
 # following the first release after October of each year.
 
-supported_python_versions: tuple[str, ...] = ("3.12", "3.13", "3.14")
+supported_python_versions: tuple[str, ...] = ["3.12", "3.13", "3.14"]
 supported_operating_systems: tuple[str, ...] = ("linux", "macos", "windows")
 
 maxpython = max(supported_python_versions)
 minpython = min(supported_python_versions)
+
+_maxversions = maxpython.split(".")
+unreleased_python = f"{_maxversions[0]}.{int(_maxversions[1]) + 1}"
 
 root_dir = pathlib.Path(__file__).parent
 
@@ -70,7 +73,6 @@ uv_sync = ("uv", "sync", "--no-progress", "--frozen")
 
 running_on_ci = os.getenv("CI")
 running_on_rtd = os.environ.get("READTHEDOCS") == "True"
-
 
 def _create_requirements_pr_message(uv_output: str, session: nox.Session) -> None:
     """
@@ -295,6 +297,17 @@ def tests(session: nox.Session, test_specifier: nox._parametrize.Param) -> None:
             )
 
     session.run(*pytest_command, *options, *session.posargs)
+
+
+@nox_uv.session(python=unreleased_python, uv_groups=["tests"])
+def test_unreleased_python(session: nox.Session) -> None:
+    """
+    Run tests against alpha, beta, and release candidate versions of Python.
+
+    This session may fail in October or November if a new version of
+    version of Python has been released but no alpha or
+    """
+    session.run(*pytest_command, *session.posargs)
 
 
 @nox.session(python=maxpython)
