@@ -6,8 +6,8 @@ Installing PlasmaPy
 
 .. note::
 
-   If you would like to contribute to PlasmaPy, please check out the
-   |contributor guide|. :sunny:
+   If you would like to contribute to PlasmaPy, please check out our
+   handy |contributor guide|. :sunny:
 
 .. contents:: Contents
    :local:
@@ -22,25 +22,17 @@ PlasmaPy requires a version of |Python| between |minpython| and
 |maxpython|. If you do not have |Python| installed already, here are the
 instructions to `download Python`_ and install it. :snake:
 
-.. tip::
-
-   New versions of |Python| are released annually in October, and it can
-   take a few months for the scientific Python ecosystem to catch up. If
-   you have trouble installing `plasmapy` on the most recent |Python|
-   version between October and March, then try installing it on the
-   second most recent version.
-
 .. note::
 
    PlasmaPy versions through ``v2025.8.0`` require Python 3.13 or
-   earlier and are incompatible with Python 3.14.
+   earlier and are incompatible with Python 3.14 (:issue:`3123`).
 
 .. _install-pip:
 
 Installing PlasmaPy with pip
 ============================
 
-To install the most recent release of `plasmapy` on |PyPI| with |pip| into
+To install the most recent release of PlasmaPy on |PyPI| with |pip| into
 an existing |Python| |minpython|\ + environment on macOS or Linux, open a
 terminal and run:
 
@@ -58,13 +50,10 @@ To install PlasmaPy on Windows, run:
 
    py -3.14 -m pip install plasmapy
 
-The version of |Python| may be changed from ``3.14`` to another supported
-Python |minpython|\ + release that has been installed on your computer.
-
 For more detailed information, please refer to this tutorial on
 `installing packages`_.
 
-.. _install-uv:
+.. _install-with-uv:
 
 Installing PlasmaPy with uv
 ===========================
@@ -77,8 +66,8 @@ common |pip| commands so that |Python| packages on |PyPI| may be
 installed into |uv|-managed
 `virtual environments <virtual environment_>`_ without installing |pip|.
 
-After `installing uv`_, a `virtual environment`_ with |Python| version
-3.12 can be created by opening a terminal and running:
+After |installing uv|, a `virtual environment`_ with |Python| version
+3.14 can be created by opening a terminal and running:
 
 .. code-block:: bash
 
@@ -92,7 +81,7 @@ environment can then be activated by running:
 
    source .venv/bin/activate
 
-Then, to install `plasmapy` into the activated environment, run:
+Then, to install PlasmaPy into the activated environment, run:
 
 .. code-block:: bash
 
@@ -103,27 +92,22 @@ Then, to install `plasmapy` into the activated environment, run:
 Installing PlasmaPy with Conda
 ==============================
 
-Conda_ is a package management system and environment manager that is
-commonly used in the scientific |Python| ecosystem. Similar to |uv|,
-Conda_ is used to create and manage isolated virtual |Python| environments.
-However, Conda_ can also be used for packages written in languages other
-than |Python|.
-
-After `installing Conda`_ or miniconda_, `plasmapy` can be installed
+Conda_ is an open source package and environment manager. After
+`installing Conda`_ or miniconda_, PlasmaPy can be installed
 into an activated Conda_ environment by opening a terminal and running:
 
 .. code-block:: bash
 
    conda install -c conda-forge plasmapy
 
-Here :bash:`-c conda-forge` indicates that `plasmapy` should be installed
+Here :bash:`-c conda-forge` indicates that PlasmaPy should be installed
 from the conda-forge_ channel.
 
-To install `plasmapy` into another existing Conda_ environment, append
+To install PlasmaPy into another existing Conda_ environment, append
 :samp:`-n {env_name}` to the previous command, where :samp:`{env_name}`
 is replaced with the name of the environment.
 
-To create a new environment with `plasmapy` installed in it, run:
+To create a new environment with PlasmaPy installed in it, run:
 
 .. code-block:: bash
 
@@ -136,7 +120,7 @@ This step may take several minutes. To activate this environment, run:
 
    conda activate env_name
 
-To update `plasmapy` to the most recent version within a currently
+To update PlasmaPy to the most recent version within a currently
 activated Conda_ environment, run:
 
 .. code-block:: bash
@@ -176,7 +160,7 @@ click on :guilabel:`Update channels` and then :guilabel:`Update index`.
 .. Is clicking on `Update index` actually necessary?
 
 Next, while on the :guilabel:`Environments` tab, select the environment
-that you would like to install `plasmapy` in. The default is generally
+that you would like to install PlasmaPy in. The default is generally
 ``base (root)``. Optionally, you may select :guilabel:`Create` to start
 a new environment. In the search bar, enter ``plasmapy``. Click on the
 checkbox next to ``plasmapy``, and select :guilabel:`Apply` to begin the
@@ -195,7 +179,7 @@ Obtaining official releases
 ---------------------------
 
 A ZIP_ file containing the source code for official releases of
-`plasmapy` can be obtained `from PyPI`_ or `from Zenodo`_.
+PlasmaPy can be obtained `from PyPI`_ or `from Zenodo`_.
 
 Alternatively, official releases since 0.7.0 can be downloaded from the
 releases_ page on |PlasmaPy's GitHub repository|.
@@ -224,22 +208,12 @@ code.
 Building and installing
 -----------------------
 
-To install the downloaded version of `plasmapy`, enter the
+To install the downloaded version of PlasmaPy, enter the
 :file:`PlasmaPy` directory and run:
 
 .. code-block:: bash
 
    pip install .
-
-If you expect to occasionally edit the source code, instead run:
-
-.. code-block:: bash
-
-   pip install -e ".[tests,docs]"
-
-The ``-e`` flag makes the installation editable and ``[tests,docs]``
-specifies that all of the additional dependencies used while testing the
-package should also be installed.
 
 .. note::
 
@@ -265,7 +239,6 @@ package should also be installed.
 .. _installing Anaconda Navigator: https://www.anaconda.com/docs/tools/anaconda-navigator/install
 .. _installing Conda: https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html
 .. _installing packages: https://packaging.python.org/en/latest/tutorials/installing-packages/#installing-from-vcs
-.. _installing uv: https://docs.astral.sh/uv/getting-started/installation/#installing-uv
 .. _getting started with Anaconda Navigator: https://www.anaconda.com/docs/tools/anaconda-navigator/getting-started
 .. _miniconda: https://docs.conda.io/en/latest/miniconda.html
 .. _pip drop-in interface: https://docs.astral.sh/uv/pip/#the-pip-interface
