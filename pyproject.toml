@@ -90,8 +90,8 @@ dev = [
   { include-group = "type_check" },
 ]
 test = [
-  "hypothesis>=6.148.5",
-  "pytest>=9.0.1",
+  "hypothesis>=6.148.9",
+  "pytest>=9.0.2",
   "pytest-cov>=7",
   "pytest-filter-subpackage>=0.2",
   "pytest-regressions>=2.8.3",
@@ -132,7 +132,7 @@ dev-tools = [
   "uv>=0.9.12",
 ]
 type_check = [
-  "mypy>=1.19",
+  "mypy>=1.19.1",
   "pip>=25.3",
   { include-group = "test" },
 ]
@@ -153,6 +153,7 @@ namespaces = false
 write_to = "src/plasmapy/_version.py"
 
 [tool.uv]
+# Prefer pre-built distributions when using lowest-direct resolution strategy or when using nightly wheels
 no-build-package = [ "numpy", "matplotlib", "scipy", "astropy", "h5py", "pandas", "wrapt" ]
 
 [tool.ruff]
