@@ -1,3 +1,2 @@
-Development dependencies are now defined using dependency groups rather than via optional
-dependencies because these dependencies are not intended for use by end users. Commands
-like ``pip install plasmapy[docs,tests]`` will no longer work.
+Development dependencies are now defined using dependency groups (see :pep:`735`) rather than via optional
+dependencies. Commands like ``pip install plasmapy[docs,tests]`` will no longer install the dependencies used for documentation and test builds.
