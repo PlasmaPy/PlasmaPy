@@ -640,16 +640,15 @@ def manifest(session: nox.Session) -> None:
 @nox.session
 def lint(session: nox.Session) -> None:
     """
-    Run all pre-commit hooks on all files.
+    Run all pre-commit hooks on all files with prek.
 
     Configuration file: .pre-commit-config.yaml
     """
-    session.install("pre-commit")
+    session.install("prek")
     session.run(
-        "pre-commit",
+        "prek",
         "run",
         "--all-files",
-        "--show-diff-on-failure",
         *session.posargs,
     )
 
