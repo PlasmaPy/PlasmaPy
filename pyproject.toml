@@ -611,6 +611,11 @@ name = "Internal Changes and Refactorings"
 showcontent = true
 
 [[tool.towncrier.type]]
+directory = "test"
+name = "Updates to Software Testing"
+showcontent = true
+
+[[tool.towncrier.type]]
 directory = "trivial"
 name = "Additional Changes"
 showcontent = true
