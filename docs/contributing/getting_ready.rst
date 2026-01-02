@@ -16,13 +16,12 @@ Introduction
 ============
 
 Thank you for considering contributing to PlasmaPy — we really
-appreciate it!  This page goes through the steps that first-time
-contributors can take to get set up to contribute to PlasmaPy. After
-taking these steps, you'll be ready to go through the :ref:`code
-contribution workflow <workflow>`.
+appreciate it! This page describes how to get set up to contribute to
+PlasmaPy. After taking these steps, you'll be ready to go through the
+:ref:`code contribution workflow <workflow>`.
 
 If you run into any problems, please feel free to reach out to us during
-one of our |community meetings|.
+our |community meetings|.
 
 Pre-requisites
 ==============
@@ -178,7 +177,7 @@ ubiquitiously during PlasmaPy development.
 Install Nox
 -----------
 
-Nox is an automation tool used by PlasmaPy to run tests, build
+|Nox| is an automation tool used by PlasmaPy to run tests, build
 documentation, and perform code quality checks. Install Nox with:
 
 .. code-block:: bash
@@ -206,7 +205,7 @@ To create a virtual environment, run:
 
 The output will provide a command to `activate the virtual environment`_.
 This command is most often :bash:`source .venv/bin/activate` on
-Linux, macOS, or WSL; and :bash:`.venv\Scripts\activate` when using
+Linux, macOS, or WSL; and ``.venv\Scripts\activate`` when using
 Windows PowerShell (which may need to be run as an administrator).
 
 To sync the virtual environment with the development environment, run:
@@ -214,6 +213,8 @@ To sync the virtual environment with the development environment, run:
 .. code-block:: bash
 
    uv sync
+
+And with that, you're all set up to contribute to PlasmaPy!
 
 .. tip::
 
@@ -226,8 +227,6 @@ To sync the virtual environment with the development environment, run:
       python -m pip install -e . --group dev
 
    The ``-e`` indicates that the installation is editable.
-
-And with that, you're set up to contribute to PlasmaPy!
 
 .. _Add a new SSH key to your GitHub account: https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account
 .. _activate the virtual environment: https://docs.astral.sh/uv/pip/environments/#activating-a-virtual-environment
