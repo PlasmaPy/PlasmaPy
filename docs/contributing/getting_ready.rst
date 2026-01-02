@@ -215,6 +215,18 @@ To sync the virtual environment with the development environment, run:
 
    uv sync
 
+.. tip::
+
+   To install PlasmaPy and developer dependency groups into an activated
+   virtual environment not managed by |uv|, enter the top-level directory
+   of your local clone of PlasmaPy and run:
+
+   .. code-block:: bash
+
+      python -m pip install -e . --group dev
+
+   The ``-e`` indicates that the installation is editable.
+
 And with that, you're set up to contribute to PlasmaPy!
 
 .. _Add a new SSH key to your GitHub account: https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account
