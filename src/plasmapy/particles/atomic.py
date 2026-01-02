@@ -1256,7 +1256,7 @@ def stopping_power(
         x=np.log(baseline_energies_data), y=np.log(relevant_stopping_data)
     )
 
-    @validate_quantities(energies=u.MeV)
+    @validate_quantities(x=u.MeV)
     def cubic_spline(x: u.Quantity[u.MeV]):
         """Handle units and sanitize IO for logarithmic spline."""
         return np.exp(log_cs(np.log(x.to(u.MeV).value))) * u.MeV * u.cm**2 / u.g
@@ -1362,7 +1362,7 @@ def stopping_range(
     # Interpolate NIST data to the user-provided energy values. Uses log-log scale fed into a cubic spline.
     log_cs = CubicSpline(x=np.log(baseline_energies_data), y=np.log(range_data))
 
-    @validate_quantities(energies=u.MeV)
+    @validate_quantities(x=u.MeV)
     def cubic_spline(x: u.Quantity[u.MeV]):
         """Handle units and sanitize IO for logarithmic spline."""
 
