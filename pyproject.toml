@@ -83,7 +83,6 @@ scripts.plasma-calculator = "plasmapy.utils.calculator:main"
 # Because dependency groups are excluded from built distributions of
 # packages, SPEC 0 does not apply.
 dev = [
-  "pre-commit>=4.5",
   { include-group = "dev-tools" },
   { include-group = "docs" },
   { include-group = "test" },
@@ -127,9 +126,11 @@ docs = [
   "unidecode>=1.4",
 ]
 dev-tools = [
-  "nox>=2025.10.16",
+  "nox>=2025.11.12",
   "nox-uv>=0.6.3",
-  "uv>=0.9.12",
+  "pre-commit>=4.5.1",
+  # Include ruff so that IDEs
+  "ruff>=0.14.10",
 ]
 type_check = [
   "mypy>=1.19.1",
