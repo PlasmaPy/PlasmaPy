@@ -20,18 +20,18 @@ jobs:
 
     - name: Install uv
       uses: astral-sh/setup-uv@v7
-      with:
-        python-version: 3.14
 
-    - name: Run Nox session to regenerate requirements
+    - name: Run Nox session to update uv.lock
       run: uvx nox -s requirements
+      with:
+        enable-cache: true
 
-    # When a PR is created by a GitHub Action, normally the checks will
-    # not be run. While the simplest workaround would have been to open
-    # and close the PR, an alternative is to authenticate with GitHub
-    # App generated tokens (as done below). The instructions for how to
-    # do this are in the documentation for the create-pull-request
-    # action.
+    # When a pull request is created by a GitHub Action, normally the
+    # checks will not be run. While the simplest workaround would have
+    # been to open and close the PR, an alternative is to authenticate
+    # with GitHub App generated tokens (as done below). The instructions
+    # for how to do this are in the documentation for the
+    # peter-evans/create-pull-request action.
 
     - name: Generate token
       uses: tibdex/github-app-token@3beb63f4bd073e61482598c45c71c1019b59b73a # v2.1.0
@@ -45,7 +45,7 @@ jobs:
       with:
         title: Update pinned requirements 📍
         add-paths: uv.lock
-        commit-message: Update requirements with 'nox -s requirements'
+        commit-message: Update uv.lock with 'nox -s requirements'
         # The PR body message is generated dynamically via `nox -s requirements` in CI
         body-path: .github/content/update-requirements-pr-body.md
         labels: no changelog entry needed, requirements
