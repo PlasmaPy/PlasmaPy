@@ -127,6 +127,9 @@ repos:  # https://pre-commit.com/#adding-pre-commit-plugins-to-your-project
     # `--no-index`, and/or `--check` flags
   - id: uv-lock
     name: uv-lock (skipped in CI; run `nox -s lock` for problems)
+    # The cooldown defined here must be identical to the cooldown
+    # defined when running `nox -s lock`.
+    args: [ --exclude-newer, 3 days ]
 
 - repo: https://github.com/hukkin/mdformat
   # some plugins require mdformat<0.8, so pin mdformat at 0.7.22 for now

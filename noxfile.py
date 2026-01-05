@@ -161,7 +161,7 @@ def _get_dependencies_from_pyproject_toml(extras: str | None = None):
 @nox.session
 def lock(session: nox.Session) -> None:
     """
-    Update the Python environments used in CI.
+    Update the Python environments used in CI with a dependency cooldown.
 
     This session updates uv.lock: the cross-platform lockfile that
     defines the exact Python environments used when running tests,
@@ -173,8 +173,8 @@ def lock(session: nox.Session) -> None:
     (:file:`.github/workflows/update-uv-lock.yml`).
     """
 
-    # Use a cooldown period to allow security vulnerabilities and bugs
-    # in upstream dependencies to be identified and fixed.
+    # The cooldown defined here must be identical to the cooldown period
+    # defined in the uv-lock hook in .pre-commit-config.yaml.
     cooldown = "3 days"
 
     uv_lock = (
