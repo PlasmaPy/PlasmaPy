@@ -92,10 +92,10 @@ def _create_lockfile_pr_message(uv_output: str, session: nox.Session) -> None:
     """
 
     pr_template = pathlib.Path(
-        root_dir / "./.github/content/update-requirements-pr-template.md"
+        root_dir / "./.github/content/update-uv-lock-pr-template.md"
     )
     pr_message = pathlib.Path(
-        root_dir / "./.github/content/update-requirements-pr-body.md"
+        root_dir / "./.github/content/update-uv-lock-pr-body.md"
     )
 
     shutil.copy(pr_template, pr_message)
