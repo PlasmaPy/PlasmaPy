@@ -46,7 +46,7 @@ repos:  # https://pre-commit.com/#adding-pre-commit-plugins-to-your-project
     args: [--autofix]
 
 - repo: https://github.com/python-jsonschema/check-jsonschema
-  rev: 0.35.0
+  rev: 0.36.0
   hooks:
   - id: check-github-workflows
 
@@ -77,14 +77,14 @@ repos:  # https://pre-commit.com/#adding-pre-commit-plugins-to-your-project
 - repo: https://github.com/adhtruong/mirrors-typos
   # use mirrors-typos because `pre-commit autoupdate` drops the version
   # of the primary typos repo from v1.x.y to v1
-  rev: v1.40.0
+  rev: v1.41.0
   hooks:
   - id: typos
     name: typos (add false positives to _typos.toml)
     exclude: CITATION.cff|docs/notebooks/dispersion/stix_dispersion.ipynb
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.14.7
+  rev: v0.14.10
   hooks:
   - id: ruff-check
     name: ruff-check (see https://docs.astral.sh/ruff/rules)
@@ -120,7 +120,7 @@ repos:  # https://pre-commit.com/#adding-pre-commit-plugins-to-your-project
     name: format pyproject.toml
 
 - repo: https://github.com/astral-sh/uv-pre-commit
-  rev: 0.9.13
+  rev: 0.9.21
   hooks:
     # running uv lock requires network access or a warm cache, so it
     # cannot be run via pre-commit.ci, even with the `--offline`,
