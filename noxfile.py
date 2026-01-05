@@ -161,7 +161,7 @@ def _get_dependencies_from_pyproject_toml(extras: str | None = None):
 
 
 @nox.session
-def requirements(session: nox.Session) -> None:
+def lock(session: nox.Session) -> None:
     """
     Upgrade the lockfile used to run tests and build documentation.
 
