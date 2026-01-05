@@ -213,8 +213,16 @@ def lock(session: nox.Session) -> None:
 @nox.session
 def validate_lockfile(session: nox.Session) -> None:
     """
-    Verify that the requirements in :file:`uv.lock` are compatible
-    with the requirements in `pyproject.toml`.
+    Ensure consistency of uv.lock with requirements in pyproject.toml.
+
+    This session invokes the uv-lock hook for pre-commit to update
+    check and update uv.lock.
+
+    While this check is normally performed locally when running
+    pre-commit (or prek), the uv-lock hook is not run on pre-commit.ci
+    since pre-commit.ci blocks network access. A separate session is
+    necessary so that the validity of uv.lock can be confirmed through a
+    GitHub workflow.
     """
     session.log(
         "🛡 If this check fails, update `uv.lock` with `nox -s lock`."
