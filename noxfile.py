@@ -223,20 +223,25 @@ def validate_lockfile(session: nox.Session) -> None:
     necessary so that the validity of uv.lock can be confirmed through a
     GitHub workflow.
     """
-    session.log(
-        "🛡 If this check fails, update `uv.lock` with `nox -s lock`."
-    )
+    if running_on_ci:
+        errmsg = (
+            "The Python environments in file 'uv.lock' are inconsistent "
+            "with the requirements defined in 'pyproject.toml'. "
+            "After installing uv, this problem can be fixed by running "
+            "`uvx nox -s validate_lockfile` in the top-level directory "
+            "of your clone of PlasmaPy, and then pushing the updated "
+            "'uv.lock' to GitHub. "
+        )
+    else:
+        errmsg = (
+            "File 'uv.lock' has been updated for consistency with the "
+            "requirements defined in 'pyproject.toml'."
+        )
 
-    # Generate the cache without updating uv.lock by syncing the
-    # current environment. If there ends up being a `--dry-run` option
-    # for `uv sync`, we could probably use it here.
-
-    session.run("uv", "sync", "--frozen", "--all-extras", "--no-progress")
-
-    # Verify that uv.lock will be unchanged. Using --offline makes it
-    # so that only the information from the cache is used.
-
-    session.run("uv", "lock", "--check", "--offline", "--no-progress")
+    try:
+        session.run("uvx", "prek", "run", "uv-lock", "--files", "uv.lock", "--quiet")
+    except nox.command.CommandFailed:
+        session.error(errmsg)
 
 
 pytest_command: list[str] = [
