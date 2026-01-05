@@ -163,18 +163,24 @@ def _get_dependencies_from_pyproject_toml(extras: str | None = None):
 @nox.session
 def lock(session: nox.Session) -> None:
     """
-    Upgrade the lockfile used to run tests and build documentation.
+    Update the Python environments used in CI.
 
-    This workflow updates :file:`uv.lock` to contain pinned requirements
-    for different versions of Python, different operating systems, and
-    different dependency sets.
+    This session updates uv.lock: the cross-platform lockfile that
+    defines the exact Python environments used when running tests,
+    building documentation, and performing continuous integration (CI)
+    checks.
 
-    When run in CI, this session creates a file that contains the pull
-    request message for the GitHub workflow that updates the pinned
-    requirements (:file:`.github/workflows/update-pinned-reqs.yml`).
+    When run in CI, this session generates a file that contains the pull
+    request message for the GitHub workflow that uses this session
+    (:file:`.github/workflows/update-uv-lock.yml`).
     """
 
-    uv_lock = ("uv", "lock", "--upgrade", "--no-progress", *session.posargs)
+    # Use a cooldown period to allow security vulnerabilities and bugs
+    # in upstream dependencies to be identified and fixed.
+    cooldown = "3 days"
+
+    uv_lock = ("uv", "lock", "--upgrade", "--no-progress", "--exclude-newer", cooldown, *session.posargs)
+    session.log(f"Using a cooldown of {cooldown}.")
 
     try:
         # Using session.run() with silent=True returns the command output
@@ -200,8 +206,7 @@ def validate_lockfile(session: nox.Session) -> None:
     with the requirements in `pyproject.toml`.
     """
     session.log(
-        "🛡 If this check fails, regenerate the pinned requirements in "
-        "`uv.lock` with `nox -s requirements`."
+        "🛡 If this check fails, update `uv.lock` with `nox -s lock`."
     )
 
     # Generate the cache without updating uv.lock by syncing the

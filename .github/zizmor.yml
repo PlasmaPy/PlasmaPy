@@ -25,7 +25,7 @@ rules:
     - comment-on-pr.yml:8:3
     - prepare-release-pr.yml:16:3
     - unlabel-pr-after-merge.yml:8:3
-    - update-pinned-reqs.yml:9:3
+    - update-uv-lock.yml:9:3
   template-injection:
     ignore:
     - create-release-issue.yml:30:42

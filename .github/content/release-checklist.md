@@ -12,7 +12,7 @@ This issue is created from the [release checklist] for releasing a new version o
 
 ### Quality assurance checks (high priority)
 
-- [ ] [Update pinned requirements] in `uv.lock`, and fix new test failures. 📍
+- [ ] [Update `uv.lock`], and fix new test failures. 🔒
 
 - [ ] Run `pre-commit autoupdate` followed by `pre-commit run --all-files`. Fix new errors and commit the changes. [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/PlasmaPy/PlasmaPy/main.svg)](https://results.pre-commit.ci/latest/github/PlasmaPy/PlasmaPy/main)
 
@@ -106,7 +106,8 @@ Within a day, an automated PR will be made to PlasmaPy's [conda-forge feedstock]
 [stable documentation build]: https://docs.plasmapy.org/en/stable
 [tests]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/ci.yml
 [this record]: https://zenodo.org/doi/10.5281/zenodo.6774349
-[update pinned requirements]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/update-pinned-reqs.yml
+
+[update `uv.lock`]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/update-uv-lock.yml
 [upstream tests]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/ci-upstream.yml
 [versions page on rtd]: https://readthedocs.org/projects/plasmapy/versions/
 [zenodo]: https://zenodo.org/me/uploads

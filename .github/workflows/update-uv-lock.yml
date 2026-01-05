@@ -7,7 +7,7 @@ on:
 
 jobs:
   update-requirements:
-    name: Regenerate requirements
+    name: Update lockfile
     runs-on: ubuntu-latest
     if: github.repository == 'PlasmaPy/PlasmaPy'
 
@@ -22,9 +22,7 @@ jobs:
       uses: astral-sh/setup-uv@v7
 
     - name: Run Nox session to update uv.lock
-      run: uvx nox -s requirements
-      with:
-        enable-cache: true
+      run: uvx nox -s lock
 
     # When a pull request is created by a GitHub Action, normally the
     # checks will not be run. While the simplest workaround would have
@@ -43,11 +41,13 @@ jobs:
     - name: Create pull request
       uses: peter-evans/create-pull-request@98357b18bf14b5342f975ff684046ec3b2a07725 # v8.0.0
       with:
-        title: Update pinned requirements 📍
+        title: Update lockfile used in CI
         add-paths: uv.lock
         commit-message: Update uv.lock with 'nox -s requirements'
         # The PR body message is generated dynamically via `nox -s requirements` in CI
         body-path: .github/content/update-requirements-pr-body.md
+        commit-message: Update uv.lock with 'nox -s lock'
+        # The PR body message is generated dynamically via `nox -s lock` in CI
         labels: no changelog entry needed, requirements
         branch: update-uv-lock
         base: main
