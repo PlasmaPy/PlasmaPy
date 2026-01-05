@@ -1,0 +1,3 @@
+Renamed and revised |Nox| sessions for updating :file:`uv.lock` and
+validating :file:`uv.lock` against the requirements defined
+in :file:`pyproject.toml`.

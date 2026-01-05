@@ -79,7 +79,7 @@ jobs:
         - name: Check consistency of pinned & project requirements
           os: ubuntu-latest
           python: '3.14'
-          nox_session: validate_requirements
+          nox_session: validate_lockfile
 
     steps:
 

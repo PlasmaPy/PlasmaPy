@@ -45,7 +45,7 @@ jobs:
               /fix typo/i,
               /update changelog entries/i,
               /update changelog prior to/i,
-              /update pinned requirements/i,
+              /update lockfile/i,
             ];
           }
 
