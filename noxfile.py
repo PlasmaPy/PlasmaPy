@@ -194,7 +194,7 @@ def lock(session: nox.Session) -> None:
 
 
 @nox.session
-def validate_requirements(session: nox.Session) -> None:
+def validate_lockfile(session: nox.Session) -> None:
     """
     Verify that the requirements in :file:`uv.lock` are compatible
     with the requirements in `pyproject.toml`.
