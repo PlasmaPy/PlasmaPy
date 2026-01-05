@@ -97,7 +97,6 @@ Within a day, an automated PR will be made to PlasmaPy's [conda-forge feedstock]
 [create a release on github]: https://github.com/PlasmaPy/PlasmaPy/releases/new
 [create an issue for the next release]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/create-release-issue.yml
 [create an issue for the release]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/create-release-issue.yml
-
 [github workflow for checking hyperlinks]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/linkcheck.yml
 [gitmailmap documentation]: https://git-scm.com/docs/gitmailmap
 [installability tests]: https://github.com/PlasmaPy/PlasmaPy/blob/main/.github/workflows/installability.yml
@@ -111,7 +110,6 @@ Within a day, an automated PR will be made to PlasmaPy's [conda-forge feedstock]
 [stable documentation build]: https://docs.plasmapy.org/en/stable
 [tests]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/ci.yml
 [this record]: https://zenodo.org/doi/10.5281/zenodo.6774349
-
 [update `uv.lock`]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/update-uv-lock.yml
 [upstream tests]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/ci-upstream.yml
 [versions page on rtd]: https://readthedocs.org/projects/plasmapy/versions/
