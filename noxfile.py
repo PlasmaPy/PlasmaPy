@@ -72,7 +72,7 @@ running_on_ci: bool = os.getenv("CI") is not None
 running_on_rtd: bool = os.environ.get("READTHEDOCS") == "True"
 
 
-def _create_requirements_pr_message(uv_output: str, session: nox.Session) -> None:
+def _create_lockfile_pr_message(uv_output: str, session: nox.Session) -> None:
     """
     Create the pull request message during requirements updates.
 
@@ -199,8 +199,7 @@ def lock(session: nox.Session) -> None:
             "📥 Checking out uv.lock from the branch being merged into this one."
         )
         session.log(
-            "🪧 If this next attempt is unsuccessful, delete uv.lock "
-            "and try again."
+            "🪧 If this next attempt is unsuccessful, delete uv.lock and try again."
         )
         session.run("git", "checkout", "--theirs", "--", "uv.lock", external=True)
         uv_output: str | bool = session.run(*uv_lock, silent=running_on_ci)
