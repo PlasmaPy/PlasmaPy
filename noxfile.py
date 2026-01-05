@@ -68,8 +68,8 @@ nox.options.default_venv_backend = "uv"
 
 uv_sync = ("uv", "sync", "--no-progress", "--frozen")
 
-running_on_ci = os.getenv("CI")
-running_on_rtd = os.environ.get("READTHEDOCS") == "True"
+running_on_ci: bool = os.getenv("CI") is not None
+running_on_rtd: bool = os.environ.get("READTHEDOCS") == "True"
 
 
 def _create_requirements_pr_message(uv_output: str, session: nox.Session) -> None:
@@ -179,24 +179,35 @@ def lock(session: nox.Session) -> None:
     # in upstream dependencies to be identified and fixed.
     cooldown = "3 days"
 
-    uv_lock = ("uv", "lock", "--upgrade", "--no-progress", "--exclude-newer", cooldown, *session.posargs)
+    uv_lock = (
+        "uv",
+        "lock",
+        "--upgrade",
+        "--no-progress",
+        "--exclude-newer",
+        cooldown,
+        *session.posargs,
+    )
     session.log(f"Using a cooldown of {cooldown}.")
 
     try:
-        # Using session.run() with silent=True returns the command output
+        # Use session.run() with silent=True to return the command output
         uv_output: str | bool = session.run(*uv_lock, silent=running_on_ci)
     except nox.command.CommandFailed:
-        session.warn("⚠️ File uv.lock is invalid, likely due to a git merge conflict.")
+        session.warn("⚠️ uv.lock is invalid, likely due to a git merge conflict.")
         session.log(
             "📥 Checking out uv.lock from the branch being merged into this one."
         )
-        session.log("🪧 If this is unsuccessful, delete uv.lock and try again.")
+        session.log(
+            "🪧 If this next attempt is unsuccessful, delete uv.lock "
+            "and try again."
+        )
         session.run("git", "checkout", "--theirs", "--", "uv.lock", external=True)
         uv_output: str | bool = session.run(*uv_lock, silent=running_on_ci)
 
     if running_on_ci:
         session.log(uv_output)
-        _create_requirements_pr_message(uv_output=uv_output, session=session)
+        _create_lockfile_pr_message(uv_output=uv_output, session=session)
 
 
 @nox.session
