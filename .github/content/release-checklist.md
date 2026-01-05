@@ -7,7 +7,11 @@ This issue is created from the [release checklist] for releasing a new version o
 
 ### Quality assurance checks (low priority)
 
-- [ ] Run the [GitHub Action for checking hyperlinks], and update broken links. Use `linkcheck_allowed_redirects` in [`docs/conf.py`] to allow redirects (e.g., from `doi.org`). Update or delete the `alias` field for authors in [`CITATION.cff`] who have changed their GitHub username. [![linkcheck](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/linkcheck.yml/badge.svg)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/linkcheck.yml)
+- [ ] Run the [GitHub workflow for checking hyperlinks], and update
+  broken links. Use `linkcheck_allowed_redirects` in [`docs/conf.py`] to
+  allow redirects (e.g., from `doi.org`). Update or delete the `alias`
+  field for authors in [`CITATION.cff`] who have changed their GitHub
+  username. [![linkcheck](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/linkcheck.yml/badge.svg)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/linkcheck.yml)
 - [ ] Run `git log --format="%aN <%aE>" | sort -u`, and update [`.mailmap`] if there are any duplicate contributors in the output ([gitmailmap documentation]). 📫
 
 ### Quality assurance checks (high priority)
@@ -93,7 +97,8 @@ Within a day, an automated PR will be made to PlasmaPy's [conda-forge feedstock]
 [create a release on github]: https://github.com/PlasmaPy/PlasmaPy/releases/new
 [create an issue for the next release]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/create-release-issue.yml
 [create an issue for the release]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/create-release-issue.yml
-[github action for checking hyperlinks]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/linkcheck.yml
+
+[github workflow for checking hyperlinks]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/linkcheck.yml
 [gitmailmap documentation]: https://git-scm.com/docs/gitmailmap
 [installability tests]: https://github.com/PlasmaPy/PlasmaPy/blob/main/.github/workflows/installability.yml
 [list of tagged versions]: https://github.com/PlasmaPy/PlasmaPy/tags
