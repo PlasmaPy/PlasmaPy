@@ -1,0 +1,2 @@
+Renamed and revised |Nox| sessions for updating and checking :file:`uv.lock`.
+
