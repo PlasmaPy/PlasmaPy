@@ -676,20 +676,16 @@ Dependencies and requirements
   heliopythoniverse because voila_ had strict dependencies on packages
   in the Jupyter ecosystem.
 
-* Only set maximum or exact requirements (e.g., ``numpy <= 2.0.0`` or
-  ``scipy == 1.13.1``) when absolutely necessary. After setting a
-  maximum or exact requirement, create a GitHub issue to loosen that
-  requirement.
+* Only set upper limits (e.g., ``numpy<2.4.0``) or exact requirements
+  (e.g., ``numpy==2.3.0``) when absolutely necessary. When doing so,
+  create a GitHub issue to loosen that requirement.
 
   .. important::
 
-     Maximum requirements can lead to version conflicts when installed
-     alongside other packages. It is preferable to update PlasmaPy to
-     become compatible with the latest versions of its dependencies than
-     to set a maximum requirement.
-
-* It sometimes takes a few months for packages like Numba to become
-  compatible with the newest minor version of |Python|.
+     Upper limits on dependencies can lead to version conflicts when
+     installed alongside other packages. It is preferable to update
+     PlasmaPy to become compatible with the latest versions of its
+     dependencies than to set an upper limit on a requirements.
 
 * The ``tests`` and ``docs`` dependency sets are required for running
   tests and building documentation, but are not required for package
