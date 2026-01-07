@@ -5,6 +5,9 @@ import pytest
 from plasmapy.formulary.collisions.misc import (
     Bethe_stopping,
     Spitzer_resistivity,
+    _f_mol_n,
+    _f_mol_tabulated,
+    _ϑ_tabulated,
     mobility,
 )
 from plasmapy.formulary.relativity import RelativisticBody
@@ -18,6 +21,27 @@ from plasmapy.utils.exceptions import CouplingWarning, PhysicsWarning
 check_database_connection = pytest.mark.skipif(
     not _API_CONNECTION_ESTABLISHED, reason="failed to connect to data repository"
 )
+
+
+@pytest.mark.parametrize(
+    ("theta", "tabulated_result"),
+    [
+        (
+            ϑ,
+            tabulated_result,
+        )
+        for ϑ, tabulated_result in zip(_ϑ_tabulated, _f_mol_tabulated, strict=True)
+    ],
+)
+def test_tabulated_f_mol(theta, tabulated_result):
+    """
+    Bethe provides the values of Eq. 26 for relevant `ϑ` in Table II. The
+    accuracy of these values are tested against an evaluation of Eq. 26.
+    """
+
+    f_mol_calculated = [_f_mol_n(theta * u.dimensionless_unscaled, n) for n in range(3)]
+
+    assert np.isclose(tabulated_result, f_mol_calculated, rtol=0.01).all()
 
 
 @check_database_connection
