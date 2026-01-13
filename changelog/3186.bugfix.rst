@@ -1,2 +1,2 @@
-Fixed bug in tests for `~plasmapy.diagnostics.thomson` with NumPy 2.4 where `numpy.random.uniform` returned 
+Fixed bug in tests for `~plasmapy.diagnostics.thomson` with NumPy 2.4 where `numpy.random.uniform` returned
 an array that needed to be cast as a float.
