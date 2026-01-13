@@ -1,0 +1,1 @@
+Fixes bug in tests for `thomson.py` in python 3.14 where `np.random.uniform` returned an array that needed to be cast as a float.
