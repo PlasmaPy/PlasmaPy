@@ -3,7 +3,7 @@ revision = 3
 requires-python = ">=3.12"
 
 [options]
-exclude-newer = "2026-01-09T10:47:22.382746196Z"
+exclude-newer = "2026-01-10T22:15:59.104092Z"
 exclude-newer-span = "P3D"
 
 [[package]]
@@ -1611,7 +1611,7 @@ requires-dist = [
     { name = "nbsphinx", marker = "extra == 'docs'", specifier = ">=0.9.6" },
     { name = "nox", extras = ["uv"], marker = "extra == 'docs'", specifier = ">=2025.10.16" },
     { name = "nox", extras = ["uv"], marker = "extra == 'tests'", specifier = ">=2025.10.16" },
-    { name = "numpy", specifier = ">=1.26,<2.4" },
+    { name = "numpy", specifier = ">=1.26" },
     { name = "numpydoc", marker = "extra == 'docs'", specifier = ">=1.9" },
     { name = "packaging", specifier = ">=24" },
     { name = "pandas", specifier = ">=2.1.4" },
