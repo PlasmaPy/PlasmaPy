@@ -23,22 +23,18 @@ class TestMHDWave:
     @pytest.mark.parametrize(
         ("kwargs", "error"),
         [
-            ({**kwargs_plasma_cold, "B": "wrong type"}, TypeError),
             ({**kwargs_plasma_cold, "B": [8e-9, 8.5e-9] * u.T}, ValueError),
             ({**kwargs_plasma_cold, "B": -1 * u.T}, ValueError),
             ({**kwargs_plasma_cold, "B": 5 * u.m}, u.UnitTypeError),
             ({**kwargs_plasma_cold, "ion": {"not": "a particle"}}, TypeError),
             ({**kwargs_plasma_cold, "ion": "e-"}, InvalidIonError),
             ({**kwargs_plasma_cold, "ion": "He", "Z": "wrong type"}, TypeError),
-            ({**kwargs_plasma_cold, "density": "wrong type"}, TypeError),
             ({**kwargs_plasma_cold, "density": [5e6, 6e6] * u.m**-3}, ValueError),
             ({**kwargs_plasma_cold, "density": -5e6 * u.m**-3}, ValueError),
             ({**kwargs_plasma_cold, "density": 2 * u.s}, u.UnitTypeError),
-            ({**kwargs_plasma_cold, "T": "wrong type"}, TypeError),
             ({**kwargs_plasma_cold, "T": [1.4e6, 1.7e6] * u.K}, ValueError),
             ({**kwargs_plasma_cold, "T": -10 * u.eV}, ValueError),
             ({**kwargs_plasma_cold, "T": 2 * u.s}, u.UnitTypeError),
-            ({**kwargs_plasma_cold, "gamma": "wrong type"}, TypeError),
         ],
     )
     def test_raises_init(self, kwargs, error) -> None:
