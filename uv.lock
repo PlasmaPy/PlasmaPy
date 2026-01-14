@@ -3,7 +3,7 @@ revision = 3
 requires-python = ">=3.12"
 
 [options]
-exclude-newer = "2026-01-11T20:40:20.092687132Z"
+exclude-newer = "2026-01-11T20:46:05.216418581Z"
 exclude-newer-span = "P3D"
 
 [[package]]
@@ -1717,7 +1717,7 @@ dev = [
     { name = "mypy", specifier = ">=1.19.1" },
     { name = "nbsphinx", specifier = ">=0.9.8" },
     { name = "nox", specifier = ">=2025.11.12" },
-    { name = "nox-uv", specifier = ">=0.6.3" },
+    { name = "nox-uv", specifier = ">=0.7" },
     { name = "numpydoc", specifier = ">=1.10" },
     { name = "pillow", specifier = ">=12" },
     { name = "pip", specifier = ">=25.3" },
@@ -1730,7 +1730,7 @@ dev = [
     { name = "pytest-regressions", specifier = ">=2.9.1" },
     { name = "pytest-rerunfailures", specifier = ">=16.1" },
     { name = "pytest-xdist", specifier = ">=3.8" },
-    { name = "ruff", specifier = ">=0.14.10" },
+    { name = "ruff", specifier = ">=0.14.11" },
     { name = "sphinx", specifier = ">=8.2.3,<8.3" },
     { name = "sphinx-changelog", specifier = ">=1.6" },
     { name = "sphinx-codeautolink", specifier = "==0.17.5" },
@@ -1750,9 +1750,9 @@ dev = [
 ]
 dev-tools = [
     { name = "nox", specifier = ">=2025.11.12" },
-    { name = "nox-uv", specifier = ">=0.6.3" },
+    { name = "nox-uv", specifier = ">=0.7" },
     { name = "pre-commit", specifier = ">=4.5.1" },
-    { name = "ruff", specifier = ">=0.14.10" },
+    { name = "ruff", specifier = ">=0.14.11" },
 ]
 docs = [
     { name = "docutils", specifier = ">=0.21.2" },

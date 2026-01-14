@@ -127,10 +127,10 @@ docs = [
 ]
 dev-tools = [
   "nox>=2025.11.12",
-  "nox-uv>=0.6.3",
+  "nox-uv>=0.7",
   "pre-commit>=4.5.1",
   # Include ruff to make it available for IDEs in virtual environments
-  "ruff>=0.14.10",
+  "ruff>=0.14.11",
 ]
 type_check = [
   "mypy>=1.19.1",
