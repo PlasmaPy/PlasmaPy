@@ -22,7 +22,7 @@ This issue is created from the [release checklist] for releasing a new version o
 - [ ] [Upgrade `uv.lock`], and fix new test failures. 🔒
 
 - [ ] Remove any remaining upper limits in the `dependencies` field in [
-  `pyproject.toml`]. ⏩
+  `pyproject.toml`][`pyproject.toml`]. ⏩
 
 - [ ] Run `pre-commit autoupdate` followed by `pre-commit run --all-files`. Fix new errors and commit the changes. [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/PlasmaPy/PlasmaPy/main.svg)](https://results.pre-commit.ci/latest/github/PlasmaPy/PlasmaPy/main)
 
