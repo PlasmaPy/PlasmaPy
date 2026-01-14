@@ -513,7 +513,7 @@ doctest_optionflags = [
   "IGNORE_EXCEPTION_DETAIL",
 ]
 filterwarnings = [
-  # treat warnings as errors by default; pass `-W once` to pytest to show them
+  # treat warnings as errors, except as specified below
   "error",
   # ubiquitous warning in particle tracker (see issue #2514)
   "ignore:.*Quantities should go to zero at edges of grid.*:RuntimeWarning",
