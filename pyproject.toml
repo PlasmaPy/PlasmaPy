@@ -525,9 +525,10 @@ filterwarnings = [
   # for numpy.reshape calls, newshape kwarg is deprecated; use shape instead or pass positionally
   "once:.*MultiIndex.*:FutureWarning",
 
-  # The following rarely occurred on GitHub but seemed irrelevant
+  # the following warnings have occurred on GitHub but are likely unimportant
   "once:unclosed:ResourceWarning",
   "once::pytest.PytestUnraisableExceptionWarning",
+  "once:XDG_CONFIG_HOME:astropy.utils.exceptions.AstropyUserWarning",
 ]
 norecursedirs = [
   '*egg-info*',
