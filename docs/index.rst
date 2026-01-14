@@ -29,7 +29,8 @@ ideas and ask questions as `GitHub discussions`_ or during our
 
    If you use PlasmaPy for work presented in a publication or talk,
    please support the project by following these instructions to
-   :ref:`cite or acknowledge <citation>` PlasmaPy.
+   :ref:`cite or acknowledge <citation>` PlasmaPy. We really appreciate
+   it!
 
 .. toctree::
    :caption: First steps
