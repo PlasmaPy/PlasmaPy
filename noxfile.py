@@ -341,16 +341,12 @@ sphinx_base_command: list[str] = [
     "docs/",
     doc_build_dir,
     "--nitpicky",
+    "--quiet",
     "--keep-going",
 ]
 
 if not running_on_rtd:
-    sphinx_base_command.extend(
-        [
-            "--fail-on-warning",
-            "--quiet",
-        ]
-    )
+    sphinx_base_command.extend(["--fail-on-warning"])
 
 build_html: tuple[str, ...] = ("--builder", "html")
 check_hyperlinks: tuple[str, ...] = ("--builder", "linkcheck")
