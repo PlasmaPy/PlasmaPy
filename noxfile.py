@@ -150,21 +150,13 @@ def lock(session: nox.Session) -> None:
     (:file:`.github/workflows/update-uv-lock.yml`).
     """
 
-    # The cooldown defined here must be identical to the cooldown period
-    # defined in the uv-lock hook in .pre-commit-config.yaml.
-    cooldown = "2 days"
-
     uv_lock = (
         "uv",
         "lock",
         "--upgrade",
         "--no-progress",
-        "--exclude-newer",
-        cooldown,
         *session.posargs,
     )
-    session.log(f"Using a cooldown of {cooldown}.")
-
     try:
         # Use session.run() with silent=True to return the command output
         uv_output: str | bool = session.run(*uv_lock, silent=running_on_ci)

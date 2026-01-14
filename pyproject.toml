@@ -154,6 +154,9 @@ namespaces = false
 write_to = "src/plasmapy/_version.py"
 
 [tool.uv]
+# Use a dependency cooldown so that security vulnerabilities in upstream
+# packages can be identified and yanked before we start using them.
+exclude-newer = "3 days"
 # Prefer pre-built distributions when using lowest-direct resolution strategy or when using nightly wheels
 no-build-package = [ "numpy", "matplotlib", "scipy", "astropy", "h5py", "pandas", "wrapt" ]
 
