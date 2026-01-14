@@ -382,9 +382,9 @@ def docs(session: nox.Session) -> None:
         session.error(f"Documentation preview landing page not found: {landing_page}")
 
 
-@nox.session(python=docpython, reuse_venv=True)
-def docs_bundle_htmlzip(session: nox.Session) -> None:
-    """Convert html documentation build into a bundled html zip file."""
+@nox_uv.session(python=docpython, uv_groups=["docs"])
+def htmlzip(session: nox.Session) -> None:
+    """Bundle documentation build into a zip file on Read the Docs."""
 
     if not running_on_rtd:
         session.error("This session must be run on Read the Docs.")

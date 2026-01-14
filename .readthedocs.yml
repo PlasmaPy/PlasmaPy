@@ -32,7 +32,7 @@ build:
         - nox -s docs
 
       htmlzip:
-        - nox -s docs_bundle_htmlzip
+        - nox -s htmlzip
 
     post_build:
     - echo $'\n'⚠️ For help deciphering documentation build error messages, see:$'\n\n'\ \ https://docs.plasmapy.org/en/latest/contributing/doc_guide.html#troubleshooting
