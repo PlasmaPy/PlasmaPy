@@ -1,0 +1,1 @@
+The |getting ready to contribute| page of the |contributor guide| has been updated to show how to set up a virtual environment for development purposes using |uv| and install the dependency groups used for development.

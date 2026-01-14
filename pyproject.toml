@@ -50,11 +50,11 @@ dynamic = [ "version" ]
 # make it harder to resolve environments when PlasmaPy is installed
 # alongside other packages, such as in the heliopythoniverse.
 
-# When updating dependencies, run `nox -s lock` to update the
+# When updating dependencies, run `nox -s lock` to upgrade the
 # pinned environments in `uv.lock`.
 
 dependencies = [
-  "astropy>=6",
+  "astropy>=6.1.3",
   "h5py>=3.11",
   "lmfit>=1.3",
   "matplotlib>=3.8",
@@ -68,49 +68,6 @@ dependencies = [
   "wrapt>=1.15",
   "xarray>=2024.5",
 ]
-# The documentation build occurs in an isolated environment that is not
-# user-facing, so we can have stricter requirements.
-optional-dependencies.docs = [
-  "docutils>=0.21.2",
-  "ipykernel>=7.0.1",
-  "ipywidgets>=8.1.7",
-  "jinja2>=3.1.6",
-  "nbsphinx>=0.9.6",
-  "nox[uv]>=2025.10.16",
-  "numpydoc>=1.9",
-  "pillow>=12",
-  "plasmapy-sphinx>=2025.5.1",
-  "pygments==2.19.2",
-  "sphinx>=8.2.3,<8.3",
-  "sphinx-changelog>=1.6",
-  "sphinx-codeautolink==0.17.5",
-  "sphinx-collapse>=0.1.3",
-  "sphinx-copybutton>=0.5.2",
-  "sphinx-gallery>=0.19",
-  "sphinx-issues>=5.0.1",
-  "sphinx-notfound-page>=1.1",
-  "sphinx-reredirects>=1",
-  "sphinx-rtd-theme>=3.0.2",
-  "sphinx-tabs>=3.4.7",
-  "sphinxcontrib-bibtex>=2.6.5",
-  "sphinxcontrib-globalsubs>=0.1.2",
-  "sphinxemoji>=0.3.1",
-  "towncrier>=24.8",
-  "unidecode>=1.4",
-]
-# Test dependencies are not user-facing, so we can set stricter
-# requirements to ensure that tests are run in consistent environments.
-optional-dependencies.tests = [
-  "hypothesis>=6.142.3",
-  "mypy>=1.19",
-  "nox[uv]>=2025.10.16",
-  "pytest>=8.4.2",
-  "pytest-cov>=7",
-  "pytest-filter-subpackage>=0.2",
-  "pytest-regressions>=2.8.3",
-  "pytest-rerunfailures>=16.1",
-  "pytest-xdist>=3.8",
-]
 urls.Changelog = "https://docs.plasmapy.org/en/stable/whatsnew/index.html"
 urls.Chat = "https://plasmapy.org/chat"
 urls.Documentation = "https://docs.plasmapy.org/"
@@ -120,6 +77,66 @@ urls.website = "https://www.plasmapy.org"
 
 # Remove references to plasma calculator after mid-2026
 scripts.plasma-calculator = "plasmapy.utils.calculator:main"
+
+[dependency-groups]
+# Define development dependencies using dependency groups (see PEP 735).
+# Because dependency groups are excluded from built distributions of
+# packages, SPEC 0 does not apply.
+dev = [
+  { include-group = "dev-tools" },
+  { include-group = "docs" },
+  { include-group = "test" },
+  { include-group = "type_check" },
+]
+test = [
+  "hypothesis>=6.148.9",
+  "pytest>=9.0.2",
+  "pytest-cov>=7",
+  "pytest-filter-subpackage>=0.2",
+  "pytest-regressions>=2.8.3",
+  "pytest-rerunfailures>=16.1",
+  "pytest-xdist>=3.8",
+]
+docs = [
+  "docutils>=0.21.2",
+  "ipykernel>=7.1",
+  "ipywidgets>=8.1.8",
+  "jinja2>=3.1.6",
+  "nbsphinx>=0.9.8",
+  "numpydoc>=1.10",
+  "pillow>=12",
+  "plasmapy-sphinx>=2025.5.1",
+  "pygments==2.19.2",
+  "sphinx>=8.2.3,<8.3",
+  "sphinx-changelog>=1.6",
+  "sphinx-codeautolink==0.17.5",
+  "sphinx-collapse>=0.1.3",
+  "sphinx-copybutton>=0.5.2",
+  "sphinx-gallery>=0.20",
+  "sphinx-issues>=5.0.1",
+  "sphinx-notfound-page>=1.1",
+  "sphinx-reredirects>=1",
+  "sphinx-rtd-theme>=3.0.2",
+  "sphinx-tabs>=3.4.7",
+  "sphinxcontrib-bibtex>=2.6.5",
+  # sphinxcontrib-globalsubs>=1 needs sphinx>=9
+  "sphinxcontrib-globalsubs==0.1.2",
+  "sphinxemoji>=0.3.1",
+  "towncrier>=24.8",
+  "unidecode>=1.4",
+]
+dev-tools = [
+  "nox>=2025.11.12",
+  "nox-uv>=0.6.3",
+  "pre-commit>=4.5.1",
+  # Include ruff to make it available for IDEs in virtual environments
+  "ruff>=0.14.10",
+]
+type_check = [
+  "mypy>=1.19.1",
+  "pip>=25.3",
+  { include-group = "test" },
+]
 
 [tool.setuptools]
 include-package-data = true
@@ -137,6 +154,10 @@ namespaces = false
 write_to = "src/plasmapy/_version.py"
 
 [tool.uv]
+# Use a dependency cooldown so that security vulnerabilities in upstream
+# packages can be identified and yanked before we start using them.
+exclude-newer = "3 days"
+# Prefer pre-built distributions when using lowest-direct resolution strategy or when using nightly wheels
 no-build-package = [ "numpy", "matplotlib", "scipy", "astropy", "h5py", "pandas", "wrapt" ]
 
 [tool.ruff]
@@ -592,6 +613,11 @@ showcontent = true
 [[tool.towncrier.type]]
 directory = "internal"
 name = "Internal Changes and Refactorings"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "test"
+name = "Updates to Software Testing"
 showcontent = true
 
 [[tool.towncrier.type]]

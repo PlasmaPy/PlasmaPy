@@ -1,13 +1,30 @@
-# configuration file for pre-commit and pre-commit.ci
-# https://docs.plasmapy.org/en/latest/contributing/pre-commit.html
+# pre-commit is a framework for running code quality checks and making
+# automated fixes. These checks are defined below as "hooks", which each
+# run a specific tool or perform a specific check.
+#
+# All of these hooks are run on every pull request via pre-commit.ci. To
+# apply all pre-commit autofixes on a pull request, add the following
+# comment to the conversation tab:
+#
+#     pre-commit.ci autofix
+#
+# To perform all checks and apply all autofixes, run:
+#
+#     pre-commit run --all-files
+#
+# For more information, please refer to the following resources.
+#
+# PlasmaPy Contributor Guide: https://docs.plasmapy.org/en/latest/contributing/pre-commit.html
+# pre-commit.ci configuration: https://pre-commit.ci/#configuration
+# pre-commit docs: https://pre-commit.com/#adding-pre-commit-plugins-to-your-project
 
-ci:  # https://pre-commit.ci/#configuration
+ci:
   autofix_prs: false
   autoupdate_schedule: monthly
   # skip hooks that require network access, which pre-commit.ci forbids
   skip: [uv-lock]
 
-repos:  # https://pre-commit.com/#adding-pre-commit-plugins-to-your-project
+repos:
 
 - repo: https://github.com/pre-commit/pre-commit-hooks
   rev: v6.0.0
@@ -35,7 +52,7 @@ repos:  # https://pre-commit.com/#adding-pre-commit-plugins-to-your-project
   - id: check-yaml
 
 - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
-  rev: v2.15.0
+  rev: v2.16.0
   hooks:
   - id: pretty-format-yaml
     args: [--autofix]
@@ -77,14 +94,14 @@ repos:  # https://pre-commit.com/#adding-pre-commit-plugins-to-your-project
 - repo: https://github.com/adhtruong/mirrors-typos
   # use mirrors-typos because `pre-commit autoupdate` drops the version
   # of the primary typos repo from v1.x.y to v1
-  rev: v1.41.0
+  rev: v1.42.0
   hooks:
   - id: typos
     name: typos (add false positives to _typos.toml)
     exclude: CITATION.cff|docs/notebooks/dispersion/stix_dispersion.ipynb
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.14.10
+  rev: v0.14.11
   hooks:
   - id: ruff-check
     name: ruff-check (see https://docs.astral.sh/ruff/rules)
@@ -120,19 +137,15 @@ repos:  # https://pre-commit.com/#adding-pre-commit-plugins-to-your-project
     name: format pyproject.toml
 
 - repo: https://github.com/astral-sh/uv-pre-commit
-  rev: 0.9.21
+  rev: 0.9.24
   hooks:
     # running uv lock requires network access or a warm cache, so it
     # cannot be run via pre-commit.ci, even with the `--offline`,
     # `--no-index`, and/or `--check` flags
   - id: uv-lock
-    name: uv-lock (skipped in CI; run `nox -s lock` for problems)
-    # The cooldown defined here must be identical to the cooldown
-    # defined when running `nox -s lock`.
-    args: [--exclude-newer, 3 days]
+    name: uv-lock (skipped in CI; use `nox -s requirements` for problems)
 
 - repo: https://github.com/hukkin/mdformat
-  # some plugins require mdformat<0.8, so pin mdformat at 0.7.22 for now
   rev: 1.0.0
   hooks:
   - id: mdformat

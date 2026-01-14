@@ -4,7 +4,7 @@
 # Documentation: https://docs.github.com/en/code-security/dependabot
 
 # Updates to uv.lock are handled via `nox -s lock` which is run
-# in a separate GitHub workflow to update uv.lock.
+# in a separate GitHub workflow to upgrade uv.lock.
 
 version: 2
 
