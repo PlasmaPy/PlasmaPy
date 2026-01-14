@@ -306,7 +306,7 @@ class TestStix:
         Test on the known solutions for theta = 0,
         see Stix ch. 1 eqn 37.
         """
-        S, P, D = self.spd(**kwargs)
+        S, _P, D = self.spd(**kwargs)
         R = S + D
         L = S - D
 

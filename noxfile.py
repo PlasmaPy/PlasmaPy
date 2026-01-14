@@ -68,11 +68,11 @@ nox.options.default_venv_backend = "uv"
 
 uv_sync = ("uv", "sync", "--no-progress", "--frozen")
 
-running_on_ci = os.getenv("CI")
-running_on_rtd = os.environ.get("READTHEDOCS") == "True"
+running_on_ci: bool = os.getenv("CI") is not None
+running_on_rtd: bool = os.environ.get("READTHEDOCS") == "True"
 
 
-def _create_requirements_pr_message(uv_output: str, session: nox.Session) -> None:
+def _create_lockfile_pr_message(uv_output: str, session: nox.Session) -> None:
     """
     Create the pull request message during requirements updates.
 
@@ -92,11 +92,9 @@ def _create_requirements_pr_message(uv_output: str, session: nox.Session) -> Non
     """
 
     pr_template = pathlib.Path(
-        root_dir / "./.github/content/update-requirements-pr-template.md"
+        root_dir / "./.github/content/update-uv-lock-pr-template.md"
     )
-    pr_message = pathlib.Path(
-        root_dir / "./.github/content/update-requirements-pr-body.md"
-    )
+    pr_message = pathlib.Path(root_dir / "./.github/content/update-uv-lock-pr-body.md")
 
     shutil.copy(pr_template, pr_message)
 
@@ -161,65 +159,87 @@ def _get_dependencies_from_pyproject_toml(extras: str | None = None):
 
 
 @nox.session
-def requirements(session: nox.Session) -> None:
+def lock(session: nox.Session) -> None:
     """
-    Upgrade the lockfile used to run tests and build documentation.
+    Update the Python environments used in CI with a dependency cooldown.
 
-    This workflow updates :file:`uv.lock` to contain pinned requirements
-    for different versions of Python, different operating systems, and
-    different dependency sets.
+    This session updates uv.lock: the cross-platform lockfile that
+    defines the exact Python environments used when running tests,
+    building documentation, and performing continuous integration (CI)
+    checks.
 
-    When run in CI, this session creates a file that contains the pull
-    request message for the GitHub workflow that updates the pinned
-    requirements (:file:`.github/workflows/update-pinned-reqs.yml`).
+    When run in CI, this session generates a file that contains the pull
+    request message for the GitHub workflow that uses this session
+    (:file:`.github/workflows/update-uv-lock.yml`).
     """
 
-    lockfile = pathlib.Path(root_dir / "uv.lock")
-    try:
-        if lockfile.exists():
-            session.run("uv", "lock", "--check")
-        else:
-            session.log("🪧 File 'uv.lock' not found. Continuing.")
-    except nox.command.CommandFailed:
-        session.warn("⚠️ 'uv.lock' is invalid, possibly due to a git merge conflict.")
-        session.log("Deleting 'uv.lock' and continuing.")
-        lockfile.unlink()
+    # The cooldown defined here must be identical to the cooldown period
+    # defined in the uv-lock hook in .pre-commit-config.yaml.
+    cooldown = "3 days"
 
-    uv_output: str | bool = session.run(
+    uv_lock = (
         "uv",
         "lock",
         "--upgrade",
         "--no-progress",
+        "--exclude-newer",
+        cooldown,
         *session.posargs,
-        silent=running_on_ci,  # return a multi-line string with stdout & stderr if true
     )
+    session.log(f"Using a cooldown of {cooldown}.")
+
+    try:
+        # Use session.run() with silent=True to return the command output
+        uv_output: str | bool = session.run(*uv_lock, silent=running_on_ci)
+    except nox.command.CommandFailed:
+        session.warn("⚠️ uv.lock is invalid, likely due to a git merge conflict.")
+        session.log(
+            "📥 Checking out uv.lock from the branch being merged into this one."
+        )
+        session.log(
+            "🪧 If this next attempt is unsuccessful, delete uv.lock and try again."
+        )
+        session.run("git", "checkout", "--theirs", "--", "uv.lock", external=True)
+        uv_output: str | bool = session.run(*uv_lock, silent=running_on_ci)
 
     if running_on_ci:
         session.log(uv_output)
-        _create_requirements_pr_message(uv_output=uv_output, session=session)
+        _create_lockfile_pr_message(uv_output=uv_output, session=session)
 
 
 @nox.session
-def validate_requirements(session: nox.Session) -> None:
+def validate_lockfile(session: nox.Session) -> None:
     """
-    Verify that the requirements in :file:`uv.lock` are compatible
-    with the requirements in `pyproject.toml`.
+    Ensure consistency of uv.lock with requirements in pyproject.toml.
+
+    This session invokes the uv-lock hook for pre-commit to update
+    check and update uv.lock.
+
+    While this check is normally performed locally when running
+    pre-commit (or prek), the uv-lock hook is not run on pre-commit.ci
+    since pre-commit.ci blocks network access. A separate session is
+    necessary so that the validity of uv.lock can be confirmed through a
+    GitHub workflow.
     """
-    session.log(
-        "🛡 If this check fails, regenerate the pinned requirements in "
-        "`uv.lock` with `nox -s requirements`."
-    )
+    if running_on_ci:
+        errmsg = (
+            "The Python environments in file 'uv.lock' are inconsistent "
+            "with the requirements defined in 'pyproject.toml'. "
+            "After installing uv, this problem can be fixed by running "
+            "`uvx nox -s validate_lockfile` in the top-level directory "
+            "of your clone of PlasmaPy, and then pushing the updated "
+            "'uv.lock' to GitHub. "
+        )
+    else:
+        errmsg = (
+            "File 'uv.lock' has been updated for consistency with the "
+            "requirements defined in 'pyproject.toml'."
+        )
 
-    # Generate the cache without updating uv.lock by syncing the
-    # current environment. If there ends up being a `--dry-run` option
-    # for `uv sync`, we could probably use it here.
-
-    session.run("uv", "sync", "--frozen", "--all-extras", "--no-progress")
-
-    # Verify that uv.lock will be unchanged. Using --offline makes it
-    # so that only the information from the cache is used.
-
-    session.run("uv", "lock", "--check", "--offline", "--no-progress")
+    try:
+        session.run("uvx", "prek", "run", "uv-lock", "--files", "uv.lock", "--quiet")
+    except nox.command.CommandFailed:
+        session.error(errmsg)
 
 
 pytest_command: list[str] = [
@@ -552,8 +572,6 @@ def mypy(session: nox.Session) -> None:
     Configuration file: mypy.ini
     """
 
-    session.install("pip")  # mypy uses pip if --install-types is used
-
     session.run_install(
         *uv_sync,
         "--quiet",
@@ -562,6 +580,8 @@ def mypy(session: nox.Session) -> None:
         f"--python={session.virtualenv.location}",
         env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
     )
+
+    session.install("pip")  # mypy uses pip if --install-types is used
 
     if running_on_ci:
         session.log(MYPY_TROUBLESHOOTING)

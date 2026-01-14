@@ -834,7 +834,7 @@ class TestParticleTrajectory:
         Theory Fitting
         --------------
         """
-        relativistic_theory_x, relativistic_theory_z = cls.ExB_trajectory_case_one(
+        relativistic_theory_x, _relativistic_theory_z = cls.ExB_trajectory_case_one(
             save_routine.results["time"],
             E_0,
             B_0,
@@ -854,7 +854,7 @@ class TestParticleTrajectory:
         # the relativistic trajectory within the defined tolerance parameters.
         if regime >= 0.5:
             # Calculate the classical analytic trajectory with all else being equal
-            calculate_theory_x, calculate_theory_z = cls.ExB_trajectory_case_one(
+            calculate_theory_x, _calculate_theory_z = cls.ExB_trajectory_case_one(
                 save_routine.results["time"],
                 E_0,
                 B_0,
@@ -960,7 +960,7 @@ class TestParticleTrajectory:
         Theory Fitting
         --------------
         """
-        classical_theory_x, classical_theory_z = cls.ExB_trajectory_case_one(
+        classical_theory_x, _classical_theory_z = cls.ExB_trajectory_case_one(
             save_routine.results["time"],
             E_0,
             B_0,
