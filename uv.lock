@@ -3,8 +3,8 @@ revision = 3
 requires-python = ">=3.12"
 
 [options]
-exclude-newer = "2026-01-12T17:13:27.475518425Z"
-exclude-newer-span = "P2D"
+exclude-newer = "2026-01-11T18:33:56.972346692Z"
+exclude-newer-span = "P3D"
 
 [[package]]
 name = "alabaster"
@@ -67,11 +67,11 @@ wheels = [
 
 [[package]]
 name = "astropy-iers-data"
-version = "0.2026.1.12.0.42.13"
+version = "0.2026.1.5.0.43.43"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/5a/f2/c4142b85aca6dadf728cb8c4cd11928cb0912f0bffdcf8bf24d14f784932/astropy_iers_data-0.2026.1.12.0.42.13.tar.gz", hash = "sha256:3a13095e97f551d3b49fb14613ec7b9e7f91bffe30189c8ed14e7911d1d2579f", size = 1919189, upload-time = "2026-01-12T00:42:59.724Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/0a/c1/d68a53ee79732cfebab43f8e2456f4dd3d884c18facddb9cd423f9222940/astropy_iers_data-0.2026.1.5.0.43.43.tar.gz", hash = "sha256:c0b28b8c29d60751d5d0008cda47537aadac2cb378be77a7c6bdb15d4c38b612", size = 1918713, upload-time = "2026-01-05T00:44:22.227Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/9d/1d/9c0f809bf0706eed0f4cdb6d515d0a9acab44d903acf6c45f31a5cfcacc2/astropy_iers_data-0.2026.1.12.0.42.13-py3-none-any.whl", hash = "sha256:1ed3e665ad8938cd4410ee205894ff6ca4d1d5bd6b0357a94cc39e55150398ba", size = 1975734, upload-time = "2026-01-12T00:42:58.446Z" },
+  { url = "https://files.pythonhosted.org/packages/57/61/2d06c08f022c9b617b79f6c55d88e596c1795a1d211e6bf584ac4b9e9506/astropy_iers_data-0.2026.1.5.0.43.43-py3-none-any.whl", hash = "sha256:fe2c35e9abc99142083d717ea76bf7bde373dc12e502aaeced28ae4ff9bfc345", size = 1975217, upload-time = "2026-01-05T00:44:20.948Z" },
 ]
 
 [[package]]
@@ -655,14 +655,14 @@ wheels = [
 
 [[package]]
 name = "hypothesis"
-version = "6.150.1"
+version = "6.150.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "sortedcontainers" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/ad/4e/cd3a398b9834386a79f4eb777dc4004ca439c1019d324771ec8196fc8354/hypothesis-6.150.1.tar.gz", hash = "sha256:dc79672b3771e92e6563ca0c56a24135438f319b257a1a1982deb8fbb791be89", size = 474924, upload-time = "2026-01-12T08:45:45.416Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/ab/20/37805e8871ffd4bf4958c2e13d608fe1fc914d00f3707b35744ab62751a4/hypothesis-6.150.0.tar.gz", hash = "sha256:ac263bdaf338f4899a9a56e8224304e29b3ad91799e0274783c49abd91ea35ac", size = 474629, upload-time = "2026-01-06T17:08:27.582Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/22/18/f43815244cd99b54d8ac9f44f9799bb7c0115e48e29bc7a1899c0589ee48/hypothesis-6.150.1-py3-none-any.whl", hash = "sha256:7badb28a0da323d6afaf25eae1c93932cb8ac06193355f5e080d6e6465a51da5", size = 542374, upload-time = "2026-01-12T08:45:41.854Z" },
+  { url = "https://files.pythonhosted.org/packages/0f/6c/49e29a0b856be17048fa4a216cc21bf914623f66305f6327b7a9bcec6871/hypothesis-6.150.0-py3-none-any.whl", hash = "sha256:caf1f752418c49ac805f11d909c5831aaceb96762aa3895e0c702468dedbe3fe", size = 542064, upload-time = "2026-01-06T17:08:25.643Z" },
 ]
 
 [[package]]
@@ -2570,16 +2570,16 @@ wheels = [
 
 [[package]]
 name = "sphinx-rtd-theme"
-version = "3.1.0"
+version = "3.0.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "docutils" },
     { name = "sphinx" },
     { name = "sphinxcontrib-jquery" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/84/68/a1bfbf38c0f7bccc9b10bbf76b94606f64acb1552ae394f0b8285bfaea25/sphinx_rtd_theme-3.1.0.tar.gz", hash = "sha256:b44276f2c276e909239a4f6c955aa667aaafeb78597923b1c60babc76db78e4c", size = 7620915, upload-time = "2026-01-12T16:03:31.17Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/91/44/c97faec644d29a5ceddd3020ae2edffa69e7d00054a8c7a6021e82f20335/sphinx_rtd_theme-3.0.2.tar.gz", hash = "sha256:b7457bc25dda723b20b086a670b9953c859eab60a2a03ee8eb2bb23e176e5f85", size = 7620463, upload-time = "2024-11-13T11:06:04.545Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/87/c7/b5c8015d823bfda1a346adb2c634a2101d50bb75d421eb6dcb31acd25ebc/sphinx_rtd_theme-3.1.0-py2.py3-none-any.whl", hash = "sha256:1785824ae8e6632060490f67cf3a72d404a85d2d9fc26bce3619944de5682b89", size = 7655617, upload-time = "2026-01-12T16:03:28.101Z" },
+  { url = "https://files.pythonhosted.org/packages/85/77/46e3bac77b82b4df5bb5b61f2de98637724f246b4966cfc34bc5895d852a/sphinx_rtd_theme-3.0.2-py2.py3-none-any.whl", hash = "sha256:422ccc750c3a3a311de4ae327e82affdaf59eb695ba4936538552f3b00f4ee13", size = 7655561, upload-time = "2024-11-13T11:06:02.094Z" },
 ]
 
 [[package]]
