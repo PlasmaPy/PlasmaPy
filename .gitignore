@@ -1,8 +1,8 @@
 # Please put PlasmaPy-specific or custom content near the top of this file.
 # The bottom part of this file is reserved for templates copied from elsewhere.
 
-# Auto-generated PR message from running `nox -s requirements` in CI
-.github/content/update-requirements-pr-body.md
+# Auto-generated PR message from running `nox -s lock` in CI
+.github/content/update-uv-lock-pr-body.md
 
 # Downloaded data files
 src/plasmapy/utils/data/downloads/

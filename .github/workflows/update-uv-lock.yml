@@ -1,4 +1,4 @@
-name: Update pinned requirements
+name: Update requirements lockfile
 
 on:
   schedule:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   update-requirements:
-    name: Regenerate requirements
+    name: Update lockfile
     runs-on: ubuntu-latest
     if: github.repository == 'PlasmaPy/PlasmaPy'
 
@@ -21,17 +21,17 @@ jobs:
     - name: Install uv
       uses: astral-sh/setup-uv@v7
       with:
-        python-version: 3.14
+        enable-cache: true
 
-    - name: Run Nox session to regenerate requirements
-      run: uvx nox -s requirements
+    - name: Run Nox session to update uv.lock
+      run: uvx nox -s lock
 
-    # When a PR is created by a GitHub Action, normally the checks will
-    # not be run. While the simplest workaround would have been to open
-    # and close the PR, an alternative is to authenticate with GitHub
-    # App generated tokens (as done below). The instructions for how to
-    # do this are in the documentation for the create-pull-request
-    # action.
+    # When a pull request is created by a GitHub Action, normally the
+    # checks will not be run. While the simplest workaround would have
+    # been to open and close the PR, an alternative is to authenticate
+    # with GitHub App generated tokens (as done below). The instructions
+    # for how to do this are in the documentation for the
+    # peter-evans/create-pull-request action.
 
     - name: Generate token
       uses: tibdex/github-app-token@3beb63f4bd073e61482598c45c71c1019b59b73a # v2.1.0
@@ -43,11 +43,11 @@ jobs:
     - name: Create pull request
       uses: peter-evans/create-pull-request@98357b18bf14b5342f975ff684046ec3b2a07725 # v8.0.0
       with:
-        title: Update pinned requirements 📍
+        title: Update lockfile used in CI
         add-paths: uv.lock
-        commit-message: Update requirements with 'nox -s requirements'
-        # The PR body message is generated dynamically via `nox -s requirements` in CI
-        body-path: .github/content/update-requirements-pr-body.md
+        commit-message: Update uv.lock with 'nox -s lock'
+        # The PR body message is generated dynamically via `nox -s lock` in CI
+        body-path: .github/content/update-uv-lock-pr-body.md
         labels: no changelog entry needed, requirements
         branch: update-uv-lock
         base: main

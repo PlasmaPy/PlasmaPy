@@ -842,8 +842,10 @@ def run_fit(  # noqa: C901
     # search space (to make the algorithm do some work!)
     for p in list(params.keys()):
         if params[p].vary:
-            params[p].value = np.random.uniform(  # noqa: NPY002
-                low=params[p].min, high=params[p].max, size=1
+            params[p].value = float(
+                np.random.uniform(  # noqa: NPY002
+                    low=params[p].min, high=params[p].max, size=1
+                )[0]
             )
 
     # Make the model, then perform the fit
