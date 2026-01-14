@@ -384,9 +384,7 @@ def docs(session: nox.Session) -> None:
 
 @nox.session(python=docpython, reuse_venv=True)
 def docs_bundle_htmlzip(session: nox.Session) -> None:
-    """
-    Convert html built docs to a bundle html zip file.
-    """
+    """Convert html documentation build into a bundled html zip file."""
 
     if not running_on_rtd:
         session.error("This session must be run on Read the Docs.")
