@@ -64,7 +64,6 @@ root_dir = pathlib.Path(__file__).parent
 docpython = "3.14"
 
 current_python = f"{sys.version_info.major}.{sys.version_info.minor}"
-nox.options.sessions = [f"tests-{current_python}(skipslow)"]
 
 nox.options.default_venv_backend = "uv"
 
@@ -72,6 +71,10 @@ uv_sync = ("uv", "sync", "--no-progress", "--frozen")
 
 running_on_ci: bool = os.getenv("CI") is not None
 running_on_rtd: bool = os.environ.get("READTHEDOCS") == "True"
+
+# Define what sessions get run when running `nox` without a session
+nox.options.sessions = [f"tests-{current_python}(all)"]
+
 
 
 def _create_lockfile_pr_message(uv_output: str, session: nox.Session) -> None:
