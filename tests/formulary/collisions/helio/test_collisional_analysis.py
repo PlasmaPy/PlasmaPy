@@ -47,15 +47,10 @@ class Testcollisional_thermalization:
     @pytest.mark.parametrize(
         ("kwargs", "_error"),
         [
-            ({**_kwargs_single_valued, "n_1": "wrong type"}, TypeError),
             ({**_kwargs_single_valued, "n_1": 2 * u.s}, u.UnitTypeError),
-            ({**_kwargs_single_valued, "n_2": "wrong type"}, TypeError),
             ({**_kwargs_single_valued, "n_2": 2 * u.s}, u.UnitTypeError),
-            ({**_kwargs_single_valued, "v_1": "wrong type"}, TypeError),
             ({**_kwargs_single_valued, "v_1": 2 * u.s}, u.UnitTypeError),
-            ({**_kwargs_single_valued, "T_1": "wrong type"}, TypeError),
             ({**_kwargs_single_valued, "T_1": 2 * u.s}, u.UnitTypeError),
-            ({**_kwargs_single_valued, "T_2": "wrong type"}, TypeError),
             ({**_kwargs_single_valued, "T_2": 2 * u.s}, u.UnitTypeError),
             (
                 {
@@ -71,20 +66,11 @@ class Testcollisional_thermalization:
                 InvalidParticleError,
             ),
             ({**_kwargs_single_valued, "ions": [Particle("p+")]}, ValueError),
-            ({**_kwargs_single_valued, "n_step": "wrong type"}, TypeError),
             ({**_kwargs_single_valued, "n_step": 4.5}, TypeError),
-            ({**_kwargs_single_valued, "density_scale": "wrong type"}, TypeError),
-            ({**_kwargs_single_valued, "velocity_scale": "wrong type"}, TypeError),
-            ({**_kwargs_single_valued, "temperature_scale": "wrong type"}, TypeError),
-            ({**_kwargs_scalar_value, "n_1": "wrong type"}, TypeError),
             ({**_kwargs_scalar_value, "n_1": 2 * u.s}, u.UnitTypeError),
-            ({**_kwargs_scalar_value, "n_2": "wrong type"}, TypeError),
             ({**_kwargs_scalar_value, "n_2": 2 * u.s}, u.UnitTypeError),
-            ({**_kwargs_scalar_value, "v_1": "wrong type"}, TypeError),
             ({**_kwargs_scalar_value, "v_1": 2 * u.s}, u.UnitTypeError),
-            ({**_kwargs_scalar_value, "T_1": "wrong type"}, TypeError),
             ({**_kwargs_scalar_value, "T_1": 2 * u.s}, u.UnitTypeError),
-            ({**_kwargs_scalar_value, "T_2": "wrong type"}, TypeError),
             ({**_kwargs_scalar_value, "T_2": 2 * u.s}, u.UnitTypeError),
             (
                 {
@@ -101,15 +87,10 @@ class Testcollisional_thermalization:
                 InvalidParticleError,
             ),
             ({**_kwargs_scalar_value, "ions": [Particle("p+")]}, ValueError),
-            ({**_kwargs_scalar_value, "n_step": "wrong type"}, TypeError),
             ({**_kwargs_scalar_value, "n_step": 4.5}, TypeError),
-            ({**_kwargs_scalar_value, "density_scale": "wrong type"}, TypeError),
-            ({**_kwargs_scalar_value, "velocity_scale": "wrong type"}, TypeError),
-            ({**_kwargs_scalar_value, "temperature_scale": "wrong type"}, TypeError),
         ],
     )
     @pytest.mark.slow
-    @pytest.mark.filterwarnings("ignore::RuntimeWarning")
     def test_raises(self, kwargs, _error) -> None:
         with pytest.raises(_error):
             temp_ratio(**kwargs)

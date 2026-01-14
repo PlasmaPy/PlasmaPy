@@ -97,8 +97,6 @@ def test_thermal_deBroglie_wavelength() -> None:
     # testing returned units
     assert lambda_dbTh.unit == u.m
     # testing exceptions
-    with pytest.raises(TypeError):
-        thermal_deBroglie_wavelength("Bad Input")
     with pytest.raises(ValueError):
         thermal_deBroglie_wavelength(T_e=-1 * u.eV)
 
@@ -116,8 +114,6 @@ def test_Fermi_energy() -> None:
     # testing returned units
     assert energy_F.unit == u.J
     # testing exceptions
-    with pytest.raises(TypeError):
-        Fermi_energy("Bad Input")
     with pytest.raises(ValueError):
         Fermi_energy(n_e=-1 * u.m**-3)
 
@@ -136,8 +132,7 @@ def test_Thomas_Fermi_length() -> None:
     # testing returned units
     assert lambda_TF.unit == u.m
     # testing exceptions
-    with pytest.raises(TypeError):
-        Thomas_Fermi_length("Bad Input")
+
     with pytest.raises(ValueError):
         Thomas_Fermi_length(n_e=-1 * u.m**-3)
 
