@@ -3,7 +3,7 @@ revision = 3
 requires-python = ">=3.12"
 
 [options]
-exclude-newer = "2026-01-11T20:37:56.744824491Z"
+exclude-newer = "2026-01-11T20:40:20.092687132Z"
 exclude-newer-span = "P3D"
 
 [[package]]
@@ -1710,7 +1710,7 @@ requires-dist = [
 [package.metadata.requires-dev]
 dev = [
     { name = "docutils", specifier = ">=0.21.2" },
-    { name = "hypothesis", specifier = ">=6.148.9" },
+    { name = "hypothesis", specifier = ">=6.150" },
     { name = "ipykernel", specifier = ">=7.1" },
     { name = "ipywidgets", specifier = ">=8.1.8" },
     { name = "jinja2", specifier = ">=3.1.6" },
@@ -1727,7 +1727,7 @@ dev = [
     { name = "pytest", specifier = ">=9.0.2" },
     { name = "pytest-cov", specifier = ">=7" },
     { name = "pytest-filter-subpackage", specifier = ">=0.2" },
-    { name = "pytest-regressions", specifier = ">=2.8.3" },
+    { name = "pytest-regressions", specifier = ">=2.9.1" },
     { name = "pytest-rerunfailures", specifier = ">=16.1" },
     { name = "pytest-xdist", specifier = ">=3.8" },
     { name = "ruff", specifier = ">=0.14.10" },
@@ -1782,22 +1782,22 @@ docs = [
     { name = "unidecode", specifier = ">=1.4" },
 ]
 test = [
-    { name = "hypothesis", specifier = ">=6.148.9" },
+    { name = "hypothesis", specifier = ">=6.150" },
     { name = "pytest", specifier = ">=9.0.2" },
     { name = "pytest-cov", specifier = ">=7" },
     { name = "pytest-filter-subpackage", specifier = ">=0.2" },
-    { name = "pytest-regressions", specifier = ">=2.8.3" },
+    { name = "pytest-regressions", specifier = ">=2.9.1" },
     { name = "pytest-rerunfailures", specifier = ">=16.1" },
     { name = "pytest-xdist", specifier = ">=3.8" },
 ]
 type-check = [
-    { name = "hypothesis", specifier = ">=6.148.9" },
+    { name = "hypothesis", specifier = ">=6.150" },
     { name = "mypy", specifier = ">=1.19.1" },
     { name = "pip", specifier = ">=25.3" },
     { name = "pytest", specifier = ">=9.0.2" },
     { name = "pytest-cov", specifier = ">=7" },
     { name = "pytest-filter-subpackage", specifier = ">=0.2" },
-    { name = "pytest-regressions", specifier = ">=2.8.3" },
+    { name = "pytest-regressions", specifier = ">=2.9.1" },
     { name = "pytest-rerunfailures", specifier = ">=16.1" },
     { name = "pytest-xdist", specifier = ">=3.8" },
 ]

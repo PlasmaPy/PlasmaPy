@@ -89,11 +89,11 @@ dev = [
   { include-group = "type_check" },
 ]
 test = [
-  "hypothesis>=6.148.9",
+  "hypothesis>=6.150",
   "pytest>=9.0.2",
   "pytest-cov>=7",
   "pytest-filter-subpackage>=0.2",
-  "pytest-regressions>=2.8.3",
+  "pytest-regressions>=2.9.1",
   "pytest-rerunfailures>=16.1",
   "pytest-xdist>=3.8",
 ]
