@@ -76,7 +76,6 @@ running_on_rtd: bool = os.environ.get("READTHEDOCS") == "True"
 nox.options.sessions = [f"tests-{current_python}(all)"]
 
 
-
 def _create_lockfile_pr_message(uv_output: str, session: nox.Session) -> None:
     """
     Create the pull request message during requirements updates.
