@@ -1,4 +1,4 @@
-name: Upgrade requirements lockfile
+name: Upgrade uv.lock
 
 on:
   schedule:
