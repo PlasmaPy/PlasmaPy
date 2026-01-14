@@ -179,24 +179,19 @@ def lock(session: nox.Session) -> None:
 @nox.session
 def validate_lockfile(session: nox.Session) -> None:
     """
-    Ensure consistency of uv.lock with requirements in pyproject.toml.
+    Ensure that uv.lock is consistent with pyproject.toml.
 
-    This session invokes the uv-lock hook for pre-commit to update
-    check and update uv.lock.
-
-    While this check is normally performed locally when running
-    pre-commit (or prek), the uv-lock hook is not run on pre-commit.ci
-    since pre-commit.ci blocks network access. A separate session is
-    necessary so that the validity of uv.lock can be confirmed through a
-    GitHub workflow.
+    This check is normally performed locally when running pre-commit or
+    prek. Because pre-commit.ci blocks network access, this check is
+    instead done in CI via a GitHub workflow that calls this session.
     """
     if running_on_ci:
         errmsg = (
             "The Python environments in file 'uv.lock' are inconsistent "
             "with the requirements defined in 'pyproject.toml'. "
-            "After installing uv, this problem can be fixed by running "
-            "`uvx nox -s validate_lockfile` in the top-level directory "
-            "of your clone of PlasmaPy, and then pushing the updated "
+            "After installing Nox, this problem can be fixed by running "
+            "`nox -s validate_lockfile` in the top-level directory of "
+            "your clone of PlasmaPy, and then pushing the updated "
             "'uv.lock' to GitHub. "
         )
     else:
@@ -206,7 +201,7 @@ def validate_lockfile(session: nox.Session) -> None:
         )
 
     try:
-        session.run("uvx", "prek", "run", "uv-lock", "--files", "uv.lock")
+        session.run("uv", "lock", "--no-progress")
     except nox.command.CommandFailed:
         session.error(errmsg)
 
@@ -215,7 +210,7 @@ pytest_command: list[str] = [
     "pytest",
     "--pyargs",
     "--durations=6",
-    "--durations-min=0.2",
+    "--durations-min=0.2",  # in seconds, as min ≡ minimum
     "--tb=short",
     "-n=auto",
     "--dist=loadfile",
