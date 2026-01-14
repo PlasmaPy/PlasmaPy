@@ -660,14 +660,14 @@ Dependencies and requirements
 
 * The file |uv.lock|_ defines the Python environments used in CI. This
   lockfile is periodically updated via automated pull requests to
-  `update the lockfile`_, defined in this
-  `workflow <https://github.com/PlasmaPy/PlasmaPy/blob/main/.github/workflows/update-uv-lock.yml>`__.
+  `upgrade the lockfile`_, defined in this
+  `workflow <https://github.com/PlasmaPy/PlasmaPy/blob/main/.github/workflows/upgrade-uv-lock.yml>`__.
 
   - The consistency of |uv.lock|_ and |pyproject.toml|_ is verified
     via a |pre-commit| hook.
 
-  - To upgrade the versions of dependencies to the most recent versions,
-    run :bash:`nox -s lock`.
+  - To upgrade the versions of dependencies used in CI, run
+    :bash:`nox -s lock`.
 
 * Even if a dependency is unlikely to be shared with packages installed
   alongside PlasmaPy, that dependency may have strict requirements that
@@ -1113,7 +1113,7 @@ The overall process of performing a release is:
 .. _security policy: https://github.com/PlasmaPy/PlasmaPy/blob/main/.github/SECURITY.md
 .. _TOML: https://toml.io/en/v1.0.0
 .. _type hints cheat sheet: https://mypy.readthedocs.io/en/stable/cheat_sheet_py3.html
-.. _update the lockfile: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/update-uv-lock.yml
+.. _upgrade the lockfile: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/upgrade-uv-lock.yml
 .. _voila: https://voila.readthedocs.io
 .. _writing your pyproject.toml file: https://packaging.python.org/en/latest/guides/writing-pyproject-toml/
 

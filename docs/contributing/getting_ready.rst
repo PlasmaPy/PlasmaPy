@@ -1,8 +1,8 @@
 .. _getting ready to contribute:
 
-******************************
-Getting Ready to Contribute 🎉
-******************************
+***************************
+Getting Ready to Contribute
+***************************
 
 .. contents:: Table of Contents
    :depth: 2
@@ -16,13 +16,12 @@ Introduction
 ============
 
 Thank you for considering contributing to PlasmaPy — we really
-appreciate it!  This page goes through the steps that first-time
-contributors can take to get set up to contribute to PlasmaPy. After
-taking these steps, you'll be ready to go through the :ref:`code
-contribution workflow <workflow>`.
+appreciate it! This page describes how to get set up to contribute to
+PlasmaPy. After taking these steps, you'll be ready to go through the
+:ref:`code contribution workflow <workflow>`.
 
 If you run into any problems, please feel free to reach out to us during
-one of our |community meetings|.
+our |community meetings|.
 
 Pre-requisites
 ==============
@@ -66,34 +65,6 @@ operating systems.
 
       Open a terminal by using :kbd:`Ctrl + Alt + T`.
 
-.. _installing-python:
-
-Installing Python
------------------
-
-.. note::
-
-   PlasmaPy requires a version of Python between |minpython| and
-   |maxpython|. We recommend using Python |maxpython|.
-
-We suggest using Anaconda_ to install |Python|. Anaconda_ is a versatile
-package and environment management system which is widely used in the
-data science and scientific Python communities. Anaconda includes
-`Anaconda Navigator`_ as its graphical user interface (GUI) and Conda_
-as its command line interface (CLI).
-
-* If you prefer a GUI, follow these instructions on `installing Anaconda
-  Navigator`_.
-
-* If you prefer a CLI, follow these instructions on `installing Conda`_.
-
-.. note::
-
-   There are many other equally good ways to install Python. Python's
-   website describes how to `download Python`_. `Real Python`_ has
-   instructions on `installing Python`_ for several different operating
-   systems (if working within WSL_, follow the Linux instructions).
-
 Using git and GitHub
 --------------------
 
@@ -135,12 +106,15 @@ contributing code to PlasmaPy, please take the following steps:
    commands for setup and config`_.
 
 #. `Add a new SSH key to your GitHub account`_. This step is needed for
-   authentication purposes.
+   security and authentication.
 
 .. _initial-setup:
 
-Initial setup
-=============
+Getting set up to contribute
+============================
+
+Clone the repository
+--------------------
 
 #. Log in to |GitHub|.
 
@@ -168,7 +142,7 @@ Initial setup
 
       git clone git@github.com:YOUR-USERNAME/PlasmaPy.git
 
-   .. tip::
+   .. important::
 
       If you have trouble connecting to GitHub, you may need to `add a
       new SSH key to your GitHub account`_.
@@ -190,133 +164,73 @@ Initial setup
    corresponds to your fork_ and :bash:`upstream` corresponds to
    |PlasmaPy's GitHub repository|.
 
-Setting up a Python environment
-===============================
+.. _install-uv:
 
-If you plan to make multiple contributions, we recommend setting up a
-Python environment specifically for PlasmaPy. This section describes how
-to set up a Conda_ environment from the command line, which can be done
-after installing Conda or `Anaconda Navigator`_ as described in the
-section on :ref:`getting Python <installing-python>`. If you did not use
-Conda or Anaconda to install Python, we suggest using a `virtual
-environment`_ instead.
+Install uv
+----------
+
+|uv| is an extremely fast Python package and project manager used
+ubiquitiously during PlasmaPy development.
+
+|Open a terminal| and follow these instructions to |install uv|.
+
+Install Nox
+-----------
+
+|Nox| is an automation tool used by PlasmaPy to run tests, build
+documentation, and perform code quality checks. Install Nox with:
+
+.. code-block:: bash
+
+   uv tool install nox
+
+Install pre-commit
+------------------
+
+|pre-commit| is a framework for running code quality checks and
+performing automated fixes. Install pre-commit with:
+
+.. code-block:: bash
+
+   uv tool install pre-commit
+
+Create a virtual environment
+----------------------------
+
+To create a virtual environment, run:
+
+.. code-block:: bash
+
+   uv venv
+
+The output will provide a command to `activate the virtual environment`_.
+This command is most often :bash:`source .venv/bin/activate` on
+Linux, macOS, or WSL; and ``.venv\Scripts\activate`` when using
+Windows PowerShell (which may need to be run as an administrator).
+
+To sync the virtual environment with the development environment, run:
+
+.. code-block:: bash
+
+   uv sync
+
+And with that, you're all set up to contribute to PlasmaPy!
 
 .. tip::
 
-   Using Conda/virtual environments helps avoid situations as in `this
-   xkcd comic`_.
-
-#. |Open a terminal|.
-
-#. Create a Conda environment named ``plasmapy-dev`` by running:
+   To install PlasmaPy and developer dependency groups into an activated
+   virtual environment not managed by |uv|, enter the top-level directory
+   of your local clone of PlasmaPy and run:
 
    .. code-block:: bash
 
-      conda create -n plasmapy-dev python=3.12
+      python -m pip install -e . --group dev
 
-   The :bash:`-n` flag is used to specify the name of the environment.
-   The ``3.12`` can be replaced with any version of Python from
-   |minpython| to |maxpython|.
-
-#. Activate the environment with:
-
-   .. code-block:: bash
-
-      conda activate plasmapy-dev
-
-   The :bash:`conda activate` command will need to be run every time you
-   open a terminal, or can be added to the appropriate configuration
-   file (i.e., :file:`.bashrc` for bash or :file:`.zshrc` for zsh).
-
-
-Installing your clone of PlasmaPy 🦹
-====================================
-
-🏁 This section covers how to make an |editable installation| of your
-clone of PlasmaPy. Making the PlasmaPy installation *editable* means
-that if you modify the source code, then those changes will be included
-when you :py:`import plasmapy`.
-
-1. |Open a terminal|.
-
-2. Navigate to the directory for your clone of PlasmaPy, which should be
-   named :file:`PlasmaPy`. For example, if you ran the :bash:`git clone`
-   command in the :file:`~/repos/` directory, then run:
-
-   .. code-block:: bash
-
-      cd ~/repos/PlasmaPy
-
-   .. note::
-
-      In Windows, the directory path will be :file:`C:\\Users\\<username>\\repos\\PlasmaPy`.
-
-3. If you created a Conda_ environment for contributing to PlasmaPy,
-   activate it with:
-
-   .. code-block:: bash
-
-      conda activate plasmapy-dev
-
-4. Run 🏃 the command to install PlasmaPy for your operating system:
-
-   .. tabs::
-
-      .. group-tab:: Windows
-
-         .. code-block:: PowerShell
-
-            py -m pip install -e .[docs,tests]
-
-      .. group-tab:: macOS
-
-         .. code-block:: bash
-
-            python -m pip install -e '.[docs,tests]'
-
-      .. group-tab:: Linux/WSL
-
-         .. code-block:: bash
-
-            python -m pip install -e .[docs,tests]
-
-   .. note::
-
-      Replace ``py`` with ``python`` if you are not using conda.
-
-   The :bash:`-e` flag specifies that this will be an
-   |editable installation|.
-
-   .. tip::
-
-      If the above command does not work, try running
-
-      .. code-block:: bash
-
-         pip install -r requirements.txt
-
-      This command will install that packages that PlasmaPy depends on,
-      but not PlasmaPy itself.
-
-.. hint::
-
-   If you import a package after doing an editable installation, then
-   changes made after the :py:`import` step will not be immediately
-   available during a Python session. To re-import the package, use
-   `importlib.reload`:
-
-   .. code-block:: pycon
-
-      >>> from importlib import reload
-      >>> import plasmapy
-      >>> # now change the source code
-      >>> reload(plasmapy)
+   The ``-e`` indicates that the installation is editable.
 
 .. _Add a new SSH key to your GitHub account: https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account
-.. _Anaconda Navigator: https://www.anaconda.com/docs/tools/anaconda-navigator/main
-.. _Anaconda: https://www.anaconda.com/docs/main
+.. _activate the virtual environment: https://docs.astral.sh/uv/pip/environments/#activating-a-virtual-environment
 .. _clone: https://github.com/git-guides/git-clone
-.. _Conda: https://docs.conda.io
 .. _creating an environment: https://www.anaconda.com/docs/tools/anaconda-navigator/tutorials/manage-environments#creating-a-new-environment
 .. _download Python: https://www.python.org/downloads
 .. _fork: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/about-forks
@@ -325,8 +239,6 @@ when you :py:`import plasmapy`.
 .. _install git: https://git-scm.com/book/en/v2/Getting-Started-Installing-Git
 .. _install Graphviz: https://graphviz.org/download
 .. _install pandoc: https://pandoc.org/installing.html
-.. _installing Anaconda Navigator: https://www.anaconda.com/docs/tools/anaconda-navigator/install
-.. _installing Conda: https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html
 .. _installing Python: https://realpython.com/installing-python
 .. _installing WSL: https://learn.microsoft.com/en-us/windows/wsl/install
 .. _miniconda: https://docs.conda.io/en/latest/miniconda.html
