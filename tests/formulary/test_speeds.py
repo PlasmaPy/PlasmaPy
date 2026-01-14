@@ -50,9 +50,9 @@ class TestAlfvenSpeed:
             ((np.inf * u.T, 1 * u.m**-3), {"ion": "p"}, RelativityError),
             ((-np.inf * u.T, 1 * u.m**-3), {"ion": "p"}, RelativityError),
             (
-                    (1 * u.T, 5e19 * u.m ** -3),
-                    {"ion": "invalid particle"},
-                    InvalidParticleError,
+                (1 * u.T, 5e19 * u.m**-3),
+                {"ion": "invalid particle"},
+                InvalidParticleError,
             ),
             ((1 * u.T, 1.0e18 * u.m**-3), {"ion": ["He"]}, InvalidIonError),
             ((1 * u.T, 1.0e-9 * u.kg * u.m**-3), {"ion": ["He+"]}, ValueError),
