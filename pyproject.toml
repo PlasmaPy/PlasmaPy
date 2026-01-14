@@ -515,21 +515,18 @@ doctest_optionflags = [
 filterwarnings = [
   # treat warnings as errors, except as specified below
   "error",
+
   # ubiquitous warning in particle tracker (see issue #2514)
   "ignore:.*Quantities should go to zero at edges of grid.*:RuntimeWarning",
+
   # occasional warning from downloader tests
-  "ignore:.*API rate limit exceeded.*:UserWarning",
+  "once:.*API rate limit exceeded.*:UserWarning",
+
   # for numpy.reshape calls, newshape kwarg is deprecated; use shape instead or pass positionally
-  "ignore:.*newshape.*:DeprecationWarning",
-  # see https://github.com/PlasmaPy/PlasmaPy/issues/2319
-  "ignore:.*MultiIndex.*:FutureWarning",
-  # deprecated in NumPy 1.25
-  "ignore:.*conversion of an array with ndim > 0 to a scalar.*:DeprecationWarning",
-  # deprecated in Astropy 7.1
-  "ignore:.*products involving a unit and a 'str' instance are deprecated.*:astropy.utils.exceptions.AstropyDeprecationWarning",
-  # The following occurred on GitHub but seemed irrelevant
-  "ignore:unclosed:ResourceWarning",
-  "ignore::pytest.PytestUnraisableExceptionWarning",
+  "once:.*MultiIndex.*:FutureWarning",
+  # The following rarely occurred on GitHub but seemed irrelevant
+  "once:unclosed:ResourceWarning",
+  "once::pytest.PytestUnraisableExceptionWarning",
 ]
 norecursedirs = [
   '*egg-info*',
