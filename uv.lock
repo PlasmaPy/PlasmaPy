@@ -3,7 +3,7 @@ revision = 3
 requires-python = ">=3.12"
 
 [options]
-exclude-newer = "2026-01-11T19:33:53.371373505Z"
+exclude-newer = "2026-01-11T20:46:05.216418581Z"
 exclude-newer-span = "P3D"
 
 [[package]]
@@ -71,7 +71,7 @@ version = "0.2026.1.5.0.43.43"
 source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/0a/c1/d68a53ee79732cfebab43f8e2456f4dd3d884c18facddb9cd423f9222940/astropy_iers_data-0.2026.1.5.0.43.43.tar.gz", hash = "sha256:c0b28b8c29d60751d5d0008cda47537aadac2cb378be77a7c6bdb15d4c38b612", size = 1918713, upload-time = "2026-01-05T00:44:22.227Z" }
 wheels = [
-  { url = "https://files.pythonhosted.org/packages/57/61/2d06c08f022c9b617b79f6c55d88e596c1795a1d211e6bf584ac4b9e9506/astropy_iers_data-0.2026.1.5.0.43.43-py3-none-any.whl", hash = "sha256:fe2c35e9abc99142083d717ea76bf7bde373dc12e502aaeced28ae4ff9bfc345", size = 1975217, upload-time = "2026-01-05T00:44:20.948Z" },
+    { url = "https://files.pythonhosted.org/packages/57/61/2d06c08f022c9b617b79f6c55d88e596c1795a1d211e6bf584ac4b9e9506/astropy_iers_data-0.2026.1.5.0.43.43-py3-none-any.whl", hash = "sha256:fe2c35e9abc99142083d717ea76bf7bde373dc12e502aaeced28ae4ff9bfc345", size = 1975217, upload-time = "2026-01-05T00:44:20.948Z" },
 ]
 
 [[package]]
@@ -662,7 +662,7 @@ dependencies = [
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/ab/20/37805e8871ffd4bf4958c2e13d608fe1fc914d00f3707b35744ab62751a4/hypothesis-6.150.0.tar.gz", hash = "sha256:ac263bdaf338f4899a9a56e8224304e29b3ad91799e0274783c49abd91ea35ac", size = 474629, upload-time = "2026-01-06T17:08:27.582Z" }
 wheels = [
-  { url = "https://files.pythonhosted.org/packages/0f/6c/49e29a0b856be17048fa4a216cc21bf914623f66305f6327b7a9bcec6871/hypothesis-6.150.0-py3-none-any.whl", hash = "sha256:caf1f752418c49ac805f11d909c5831aaceb96762aa3895e0c702468dedbe3fe", size = 542064, upload-time = "2026-01-06T17:08:25.643Z" },
+    { url = "https://files.pythonhosted.org/packages/0f/6c/49e29a0b856be17048fa4a216cc21bf914623f66305f6327b7a9bcec6871/hypothesis-6.150.0-py3-none-any.whl", hash = "sha256:caf1f752418c49ac805f11d909c5831aaceb96762aa3895e0c702468dedbe3fe", size = 542064, upload-time = "2026-01-06T17:08:25.643Z" },
 ]
 
 [[package]]
@@ -1710,14 +1710,14 @@ requires-dist = [
 [package.metadata.requires-dev]
 dev = [
     { name = "docutils", specifier = ">=0.21.2" },
-    { name = "hypothesis", specifier = ">=6.148.9" },
+    { name = "hypothesis", specifier = ">=6.150" },
     { name = "ipykernel", specifier = ">=7.1" },
     { name = "ipywidgets", specifier = ">=8.1.8" },
     { name = "jinja2", specifier = ">=3.1.6" },
     { name = "mypy", specifier = ">=1.19.1" },
     { name = "nbsphinx", specifier = ">=0.9.8" },
     { name = "nox", specifier = ">=2025.11.12" },
-    { name = "nox-uv", specifier = ">=0.6.3" },
+    { name = "nox-uv", specifier = ">=0.7" },
     { name = "numpydoc", specifier = ">=1.10" },
     { name = "pillow", specifier = ">=12" },
     { name = "pip", specifier = ">=25.3" },
@@ -1727,10 +1727,10 @@ dev = [
     { name = "pytest", specifier = ">=9.0.2" },
     { name = "pytest-cov", specifier = ">=7" },
     { name = "pytest-filter-subpackage", specifier = ">=0.2" },
-    { name = "pytest-regressions", specifier = ">=2.8.3" },
+    { name = "pytest-regressions", specifier = ">=2.9.1" },
     { name = "pytest-rerunfailures", specifier = ">=16.1" },
     { name = "pytest-xdist", specifier = ">=3.8" },
-    { name = "ruff", specifier = ">=0.14.10" },
+    { name = "ruff", specifier = ">=0.14.11" },
     { name = "sphinx", specifier = ">=8.2.3,<8.3" },
     { name = "sphinx-changelog", specifier = ">=1.6" },
     { name = "sphinx-codeautolink", specifier = "==0.17.5" },
@@ -1750,9 +1750,9 @@ dev = [
 ]
 dev-tools = [
     { name = "nox", specifier = ">=2025.11.12" },
-    { name = "nox-uv", specifier = ">=0.6.3" },
+    { name = "nox-uv", specifier = ">=0.7" },
     { name = "pre-commit", specifier = ">=4.5.1" },
-    { name = "ruff", specifier = ">=0.14.10" },
+    { name = "ruff", specifier = ">=0.14.11" },
 ]
 docs = [
     { name = "docutils", specifier = ">=0.21.2" },
@@ -1782,22 +1782,22 @@ docs = [
     { name = "unidecode", specifier = ">=1.4" },
 ]
 test = [
-    { name = "hypothesis", specifier = ">=6.148.9" },
+    { name = "hypothesis", specifier = ">=6.150" },
     { name = "pytest", specifier = ">=9.0.2" },
     { name = "pytest-cov", specifier = ">=7" },
     { name = "pytest-filter-subpackage", specifier = ">=0.2" },
-    { name = "pytest-regressions", specifier = ">=2.8.3" },
+    { name = "pytest-regressions", specifier = ">=2.9.1" },
     { name = "pytest-rerunfailures", specifier = ">=16.1" },
     { name = "pytest-xdist", specifier = ">=3.8" },
 ]
 type-check = [
-    { name = "hypothesis", specifier = ">=6.148.9" },
+    { name = "hypothesis", specifier = ">=6.150" },
     { name = "mypy", specifier = ">=1.19.1" },
     { name = "pip", specifier = ">=25.3" },
     { name = "pytest", specifier = ">=9.0.2" },
     { name = "pytest-cov", specifier = ">=7" },
     { name = "pytest-filter-subpackage", specifier = ">=0.2" },
-    { name = "pytest-regressions", specifier = ">=2.8.3" },
+    { name = "pytest-regressions", specifier = ">=2.9.1" },
     { name = "pytest-rerunfailures", specifier = ">=16.1" },
     { name = "pytest-xdist", specifier = ">=3.8" },
 ]
@@ -2579,7 +2579,7 @@ dependencies = [
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/91/44/c97faec644d29a5ceddd3020ae2edffa69e7d00054a8c7a6021e82f20335/sphinx_rtd_theme-3.0.2.tar.gz", hash = "sha256:b7457bc25dda723b20b086a670b9953c859eab60a2a03ee8eb2bb23e176e5f85", size = 7620463, upload-time = "2024-11-13T11:06:04.545Z" }
 wheels = [
-  { url = "https://files.pythonhosted.org/packages/85/77/46e3bac77b82b4df5bb5b61f2de98637724f246b4966cfc34bc5895d852a/sphinx_rtd_theme-3.0.2-py2.py3-none-any.whl", hash = "sha256:422ccc750c3a3a311de4ae327e82affdaf59eb695ba4936538552f3b00f4ee13", size = 7655561, upload-time = "2024-11-13T11:06:02.094Z" },
+    { url = "https://files.pythonhosted.org/packages/85/77/46e3bac77b82b4df5bb5b61f2de98637724f246b4966cfc34bc5895d852a/sphinx_rtd_theme-3.0.2-py2.py3-none-any.whl", hash = "sha256:422ccc750c3a3a311de4ae327e82affdaf59eb695ba4936538552f3b00f4ee13", size = 7655561, upload-time = "2024-11-13T11:06:02.094Z" },
 ]
 
 [[package]]

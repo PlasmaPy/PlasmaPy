@@ -89,11 +89,11 @@ dev = [
   { include-group = "type_check" },
 ]
 test = [
-  "hypothesis>=6.148.9",
+  "hypothesis>=6.150",
   "pytest>=9.0.2",
   "pytest-cov>=7",
   "pytest-filter-subpackage>=0.2",
-  "pytest-regressions>=2.8.3",
+  "pytest-regressions>=2.9.1",
   "pytest-rerunfailures>=16.1",
   "pytest-xdist>=3.8",
 ]
@@ -127,10 +127,10 @@ docs = [
 ]
 dev-tools = [
   "nox>=2025.11.12",
-  "nox-uv>=0.6.3",
+  "nox-uv>=0.7",
   "pre-commit>=4.5.1",
   # Include ruff to make it available for IDEs in virtual environments
-  "ruff>=0.14.10",
+  "ruff>=0.14.11",
 ]
 type_check = [
   "mypy>=1.19.1",
@@ -500,17 +500,18 @@ ignore = [
   "src/plasmapy/_version.py",
 ]
 
-[tool.pytest.ini_options]
+[tool.pytest]
 testpaths = [ '.' ]
 xfail_strict = true
 markers = [
   "slow: marks tests as slow (deselect with '-m \"not slow\"')",
 ]
-doctest_optionflags = """
-NORMALIZE_WHITESPACE
-ELLIPSIS
-NUMBER
-IGNORE_EXCEPTION_DETAIL"""
+doctest_optionflags = [
+  "NORMALIZE_WHITESPACE",
+  "ELLIPSIS",
+  "NUMBER",
+  "IGNORE_EXCEPTION_DETAIL",
+]
 filterwarnings = [
   # treat warnings as errors by default; pass `-W once` to pytest to show them
   "error",
