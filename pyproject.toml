@@ -50,7 +50,7 @@ dynamic = [ "version" ]
 # make it harder to resolve environments when PlasmaPy is installed
 # alongside other packages, such as in the heliopythoniverse.
 
-# When updating dependencies, run `nox -s lock` to update the
+# When updating dependencies, run `nox -s lock` to upgrade the
 # pinned environments in `uv.lock`.
 
 dependencies = [

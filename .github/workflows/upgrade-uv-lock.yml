@@ -6,8 +6,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  update-requirements:
-    name: Update lockfile
+  upgrade-requirements:
+    name: Upgrade uv.lock
     runs-on: ubuntu-latest
     if: github.repository == 'PlasmaPy/PlasmaPy'
 
@@ -23,7 +23,7 @@ jobs:
       with:
         enable-cache: true
 
-    - name: Run Nox session to update uv.lock
+    - name: Run Nox session to upgrade uv.lock
       run: uvx nox -s lock
 
     # When a pull request is created by a GitHub Action, normally the
@@ -43,13 +43,13 @@ jobs:
     - name: Create pull request
       uses: peter-evans/create-pull-request@98357b18bf14b5342f975ff684046ec3b2a07725 # v8.0.0
       with:
-        title: Update lockfile used in CI
+        title: Upgrade uv.lock
         add-paths: uv.lock
-        commit-message: Update uv.lock with 'nox -s lock'
+        commit-message: Upgrade uv.lock with 'nox -s lock'
         # The PR body message is generated dynamically via `nox -s lock` in CI
-        body-path: .github/content/update-uv-lock-pr-body.md
+        body-path: .github/content/upgrade-uv-lock-pr-body.md
         labels: no changelog entry needed, requirements
-        branch: update-uv-lock
+        branch: upgrade-uv-lock
         base: main
         delete-branch: true
         token: ${{ steps.generate_token.outputs.token }}

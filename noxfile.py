@@ -94,9 +94,9 @@ def _create_lockfile_pr_message(uv_output: str, session: nox.Session) -> None:
     """
 
     pr_template = pathlib.Path(
-        root_dir / "./.github/content/update-uv-lock-pr-template.md"
+        root_dir / "./.github/content/upgrade-uv-lock-pr-template.md"
     )
-    pr_message = pathlib.Path(root_dir / "./.github/content/update-uv-lock-pr-body.md")
+    pr_message = pathlib.Path(root_dir / "./.github/content/upgrade-uv-lock-pr-body.md")
 
     shutil.copy(pr_template, pr_message)
 
@@ -130,24 +130,24 @@ def _create_lockfile_pr_message(uv_output: str, session: nox.Session) -> None:
 
         lines.append(f"| {package_name} | `{old_version}` | `{new_version}` |")
 
-    table_of_updates = "\n".join(preamble + lines)
+    table_of_package_upgrades = "\n".join(preamble + lines)
     with pr_message.open(mode="a") as file:
-        file.write(table_of_updates)
+        file.write(table_of_package_upgrades)
 
 
 @nox.session
 def lock(session: nox.Session) -> None:
     """
-    Update the Python environments used in CI with a dependency cooldown.
+    Upgrade Python environments used in CI, with a dependency cooldown.
 
-    This session updates uv.lock: the cross-platform lockfile that
+    This session upgrades uv.lock: the cross-platform lockfile that
     defines the exact Python environments used when running tests,
     building documentation, and performing continuous integration (CI)
     checks.
 
     When run in CI, this session generates a file that contains the pull
     request message for the GitHub workflow that uses this session
-    (:file:`.github/workflows/update-uv-lock.yml`).
+    (:file:`.github/workflows/upgrade-uv-lock.yml`).
     """
 
     uv_lock = (
