@@ -25,7 +25,7 @@ build:
     - asdf global uv latest
 
     install:
-    - uv sync --exact --frozen --only-group docs --only-group dev-tools --python 3.14
+      - uv sync --exact --frozen --only-group nox --only-group docs --python 3.14
 
     build:
       html:
