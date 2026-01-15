@@ -1,0 +1,4 @@
+Dropped usage of the ``newshape`` parameter from `numpy.reshape` that was
+deprecated in the ``v2.1.0`` and removed in the ``v2.4.0`` releases of NumPy.
+Usage of this parameter led to an error
+in `~plasmapy.analysis.swept_langmuir.helpers.merge_voltage_clusters`.

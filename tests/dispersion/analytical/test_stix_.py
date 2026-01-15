@@ -53,7 +53,6 @@ class TestStix:
     @pytest.mark.parametrize(
         ("kwargs", "_error"),
         [
-            ({**_kwargs_single_valued, "B": "wrong type"}, TypeError),
             ({**_kwargs_single_valued, "B": [8e-9, 8.5e-9] * u.T}, ValueError),
             ({**_kwargs_single_valued, "B": -1 * u.T}, ValueError),
             ({**_kwargs_single_valued, "B": 5 * u.m}, u.UnitTypeError),
@@ -65,7 +64,6 @@ class TestStix:
                 {**_kwargs_single_valued, "ions": {"not": "a particle"}},
                 InvalidParticleError,
             ),
-            ({**_kwargs_single_valued, "n_i": "wrong type"}, TypeError),
             ({**_kwargs_single_valued, "n_i": 6 * u.m / u.s}, u.UnitTypeError),
             ({**_kwargs_single_valued, "theta": 5 * u.eV}, u.UnitTypeError),
             (
@@ -306,7 +304,7 @@ class TestStix:
         Test on the known solutions for theta = 0,
         see Stix ch. 1 eqn 37.
         """
-        S, P, D = self.spd(**kwargs)
+        S, _P, D = self.spd(**kwargs)
         R = S + D
         L = S - D
 

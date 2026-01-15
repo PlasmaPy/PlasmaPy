@@ -719,7 +719,7 @@ class Particle(AbstractPhysicalParticle):
         if self.symbol == "p+":
             categories.update({"element", "isotope", "ion"})
 
-        argument, mass_numb, Z = self.__inputs
+        _argument, mass_numb, Z = self.__inputs
 
         if mass_numb is None and Z is None:
             return

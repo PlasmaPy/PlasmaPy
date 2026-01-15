@@ -7,12 +7,22 @@ This issue is created from the [release checklist] for releasing a new version o
 
 ### Quality assurance checks (low priority)
 
-- [ ] Run the [GitHub Action for checking hyperlinks], and update broken links. Use `linkcheck_allowed_redirects` in [`docs/conf.py`] to allow redirects (e.g., from `doi.org`). Update or delete the `alias` field for authors in [`CITATION.cff`] who have changed their GitHub username. [![linkcheck](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/linkcheck.yml/badge.svg)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/linkcheck.yml)
-- [ ] Run `git log --format="%aN <%aE>" | sort -u`, and update [`.mailmap`] if there are any duplicate contributors in the output ([gitmailmap documentation]). 📫
+- [ ] Run the [GitHub workflow for checking hyperlinks], and update
+  broken links. Use `linkcheck_allowed_redirects` in [`docs/conf.py`] to
+  allow redirects (e.g., from `doi.org`). Update or delete the `alias`
+  field for authors in [`CITATION.cff`] who have changed their GitHub
+  username. [![linkcheck](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/linkcheck.yml/badge.svg)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/linkcheck.yml)
+
+- [ ] Run `git log --format="%aN <%aE>" | sort -u` in a bash terminal,
+  and update [`.mailmap`] if there are any duplicate contributors in the
+  output ([gitmailmap documentation]). 📫
 
 ### Quality assurance checks (high priority)
 
-- [ ] [Update pinned requirements] in `uv.lock`, and fix new test failures. 📍
+- [ ] [Upgrade `uv.lock`], and fix new test failures. 🔒
+
+- [ ] Remove any remaining upper limits in the `dependencies` field in [
+  `pyproject.toml`][`pyproject.toml`]. ⏩
 
 - [ ] Run `pre-commit autoupdate` followed by `pre-commit run --all-files`. Fix new errors and commit the changes. [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/PlasmaPy/PlasmaPy/main.svg)](https://results.pre-commit.ci/latest/github/PlasmaPy/PlasmaPy/main)
 
@@ -62,7 +72,11 @@ This issue is created from the [release checklist] for releasing a new version o
 ### Documentation
 
 - [ ] Delete the [`stable`] branch on GitHub if it exists. 🗑️
-- [ ] Verify that the current and previous release are activated on the [versions page on RTD]. 📚 [![Read the Docs Status](https://readthedocs.org/projects/plasmapy/badge/?version=latest)](http://plasmapy.readthedocs.io/en/latest/?badge=latest)
+
+- [ ] Verify that the current and previous release are activated on
+  the [versions page on RTD].
+  📚 [![Read the Docs Status](https://readthedocs.org/projects/plasmapy/badge/?version=stable)](http://plasmapy.readthedocs.io/en/latest/?badge=stable)
+
 - [ ] Verify that the [citation page] is up-to-date and the DOI link points to the most recent release. 🧾
 
 ## Availability on conda-forge
@@ -70,8 +84,11 @@ This issue is created from the [release checklist] for releasing a new version o
 Within a day, an automated PR will be made to PlasmaPy's [conda-forge feedstock], which will require updates if any requirements have changed.
 
 - [ ] Update [`recipe/meta.yaml`] to match [`pyproject.toml`] in the release. 🔧
+
 - [ ] Verify that `python_min` near the beginning of [`recipe/meta.yaml`] is consistent with `requires-python` [`pyproject.toml`]. 🐍
+
 - [ ] Merge the PR to the conda-forge feedstock. 🚀
+
 - [ ] Verify that the new version shows up on conda-forge. 📦 [![Conda version](https://img.shields.io/conda/v/conda-forge/plasmapy?style=flat&logo=anaconda)](https://img.shields.io/conda/v/conda-forge/plasmapy)
 
 > [!TIP]
@@ -84,7 +101,9 @@ Within a day, an automated PR will be made to PlasmaPy's [conda-forge feedstock]
 ## After the release
 
 - [ ] Update the [release checklist], if necessary. 📋
+
 - [ ] [Create an issue for the next release], and then [pin the issue]. ⏳
+
 - [ ] Close the issue and celebrate. 🎆
 
 [citation page]: https://docs.plasmapy.org/en/stable/about/citation.html
@@ -93,7 +112,7 @@ Within a day, an automated PR will be made to PlasmaPy's [conda-forge feedstock]
 [create a release on github]: https://github.com/PlasmaPy/PlasmaPy/releases/new
 [create an issue for the next release]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/create-release-issue.yml
 [create an issue for the release]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/create-release-issue.yml
-[github action for checking hyperlinks]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/linkcheck.yml
+[github workflow for checking hyperlinks]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/linkcheck.yml
 [gitmailmap documentation]: https://git-scm.com/docs/gitmailmap
 [installability tests]: https://github.com/PlasmaPy/PlasmaPy/blob/main/.github/workflows/installability.yml
 [list of tagged versions]: https://github.com/PlasmaPy/PlasmaPy/tags
@@ -106,7 +125,7 @@ Within a day, an automated PR will be made to PlasmaPy's [conda-forge feedstock]
 [stable documentation build]: https://docs.plasmapy.org/en/stable
 [tests]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/ci.yml
 [this record]: https://zenodo.org/doi/10.5281/zenodo.6774349
-[update pinned requirements]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/update-pinned-reqs.yml
+[upgrade `uv.lock`]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/upgrade-uv-lock.yml
 [upstream tests]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/ci-upstream.yml
 [versions page on rtd]: https://readthedocs.org/projects/plasmapy/versions/
 [zenodo]: https://zenodo.org/me/uploads
