@@ -14,7 +14,7 @@ PlasmaPy Documentation
 |PlasmaPy| is an open source community-developed |Python| |minpython|\ +
 package for plasma research and education. PlasmaPy is a platform by
 which the plasma community can share code and collaboratively develop
-new software tools for plasma research.
+new software tools for plasma research. |:sparkles:|
 
 If you are new to PlasmaPy, please check out our
 :ref:`getting started notebooks <getting-started-notebooks>` and our

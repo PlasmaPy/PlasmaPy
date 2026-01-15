@@ -16,9 +16,9 @@ Introduction
 ============
 
 Thank you for considering contributing to PlasmaPy — we really
-appreciate it! This page describes how to get set up to contribute to
-PlasmaPy. After taking these steps, you'll be ready to go through the
-:ref:`code contribution workflow <workflow>`.
+appreciate it! |:seedling:| This page describes how to get set up to
+contribute to PlasmaPy. After taking these steps, you'll be ready to go
+through the :ref:`code contribution workflow <workflow>`. |:recycle:|
 
 If you run into any problems, please feel free to reach out to us during
 our |community meetings|.
