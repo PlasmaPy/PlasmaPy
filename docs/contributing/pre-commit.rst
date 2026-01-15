@@ -12,9 +12,9 @@ Using pre-commit
 Introduction
 ============
 
-PlasmaPy uses |pre-commit| to automate code quality checks and perform
-auto-fixes. |pre-commit| checks are performed on GitHub for every pull
-request.
+PlasmaPy uses |pre-commit| to autoformat code, automate code quality
+checks, and perform automated fixes if available. |pre-commit| checks
+are performed on GitHub for every pull request.
 
 .. important::
 
