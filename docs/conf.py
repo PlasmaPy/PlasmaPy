@@ -234,6 +234,7 @@ htmlhelp_basename = "PlasmaPydoc"
 
 autoclass_content = "both"
 autodoc_typehints_format = "short"
+autodoc_use_legacy_class_based = True
 
 # sphinxcontrib-bibtex
 
