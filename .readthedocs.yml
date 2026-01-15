@@ -19,20 +19,26 @@ build:
 
   jobs:
 
-    create_environment:
+    pre_create_environment:
     - asdf plugin add uv
     - asdf install uv latest
     - asdf global uv latest
 
+    create_environment:
+    - uv venv "${READTHEDOCS_VIRTUALENV_PATH}"
+
+    post_create_environment:
+    - uv tool install nox --with=nox-uv
+
     install:
-    - uv sync --exact --frozen --only-group docs --only-group dev-tools --python 3.14
+    - UV_PROJECT_ENVIRONMENT="${READTHEDOCS_VIRTUALENV_PATH}" uv sync --frozen --group docs
 
     build:
       html:
-      - uvx nox -s docs
+      - nox -s docs
 
       htmlzip:
-      - uvx nox -s docs_bundle_htmlzip
+      - nox -s docs_bundle_htmlzip
 
     post_build:
     - echo $'\n'⚠️ For help deciphering documentation build error messages, see:$'\n\n'\ \ https://docs.plasmapy.org/en/latest/contributing/doc_guide.html#troubleshooting

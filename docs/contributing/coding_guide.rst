@@ -1,8 +1,8 @@
 .. _coding guide:
 
-***************
-Coding Guide 👾
-***************
+************
+Coding Guide
+************
 
 .. contents:: Table of Contents
    :depth: 2

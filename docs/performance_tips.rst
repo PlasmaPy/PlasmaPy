@@ -7,7 +7,7 @@ Performance Tips
 Most of the time, readability is more important than the performance of
 scientific software. This page contains tips for improving the
 performance of PlasmaPy for situations where performance becomes a
-bottleneck 🐢.
+bottleneck. |:turtle:|
 
 Python versions
 ===============

@@ -382,11 +382,9 @@ def docs(session: nox.Session) -> None:
         session.error(f"Documentation preview landing page not found: {landing_page}")
 
 
-@nox.session(python=docpython, reuse_venv=True)
-def docs_bundle_htmlzip(session: nox.Session) -> None:
-    """
-    Convert html built docs to a bundle html zip file.
-    """
+@nox_uv.session(python=docpython, uv_groups=["docs"])
+def htmlzip(session: nox.Session) -> None:
+    """Bundle documentation build into a zip file on Read the Docs."""
 
     if not running_on_rtd:
         session.error("This session must be run on Read the Docs.")
@@ -418,8 +416,9 @@ def docs_bundle_htmlzip(session: nox.Session) -> None:
     READTHEDOCS_PROJECT = os.environ.get("READTHEDOCS_PROJECT")
     READTHEDOCS_LANGUAGE = os.environ.get("READTHEDOCS_LANGUAGE")
     READTHEDOCS_VERSION = os.environ.get("READTHEDOCS_VERSION")
+
+    # mimic RTD default naming convention
     zip_name = f"{READTHEDOCS_PROJECT}-{READTHEDOCS_LANGUAGE}-{READTHEDOCS_VERSION}.zip"
-    # ^ this name mimics how RTD does it by default
 
     cwd = pathlib.Path.cwd()
     session.chdir(f"{READTHEDOCS_OUTPUT / 'htmlzip'}")

@@ -3,7 +3,7 @@ revision = 3
 requires-python = ">=3.12"
 
 [options]
-exclude-newer = "2026-01-11T20:46:05.216418581Z"
+exclude-newer = "2026-01-12T00:17:16.777344299Z"
 exclude-newer-span = "P3D"
 
 [[package]]
@@ -1636,12 +1636,6 @@ dev = [
     { name = "towncrier" },
     { name = "unidecode" },
 ]
-dev-tools = [
-    { name = "nox" },
-    { name = "nox-uv" },
-    { name = "pre-commit" },
-    { name = "ruff" },
-]
 docs = [
     { name = "docutils" },
     { name = "ipykernel" },
@@ -1668,6 +1662,14 @@ docs = [
     { name = "sphinxemoji" },
     { name = "towncrier" },
     { name = "unidecode" },
+]
+lint = [
+    { name = "pre-commit" },
+    { name = "ruff" },
+]
+nox = [
+    { name = "nox" },
+    { name = "nox-uv" },
 ]
 test = [
     { name = "hypothesis" },
@@ -1748,12 +1750,6 @@ dev = [
     { name = "towncrier", specifier = ">=24.8" },
     { name = "unidecode", specifier = ">=1.4" },
 ]
-dev-tools = [
-    { name = "nox", specifier = ">=2025.11.12" },
-    { name = "nox-uv", specifier = ">=0.7" },
-    { name = "pre-commit", specifier = ">=4.5.1" },
-    { name = "ruff", specifier = ">=0.14.11" },
-]
 docs = [
     { name = "docutils", specifier = ">=0.21.2" },
     { name = "ipykernel", specifier = ">=7.1" },
@@ -1780,6 +1776,14 @@ docs = [
     { name = "sphinxemoji", specifier = ">=0.3.1" },
     { name = "towncrier", specifier = ">=24.8" },
     { name = "unidecode", specifier = ">=1.4" },
+]
+lint = [
+    { name = "pre-commit", specifier = ">=4.5.1" },
+    { name = "ruff", specifier = ">=0.14.11" },
+]
+nox = [
+    { name = "nox", specifier = ">=2025.11.12" },
+    { name = "nox-uv", specifier = ">=0.7" },
 ]
 test = [
     { name = "hypothesis", specifier = ">=6.150" },
