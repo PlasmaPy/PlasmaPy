@@ -17,9 +17,9 @@ Version support policy for dependencies
 
 PlasmaPy generally follows the time-based policy for dropping
 dependencies as recommended in |SPEC 0|. SPEC 0 recommends a common
-dependenc support policy across the scientific Python ecosystem. This
-policy balances the need to reduce maintenance burden with the need to
-support older versions of dependencies.
+dependency support policy across the scientific Python ecosystem. This
+policy balances reducing maintenance burden with the need to support
+older versions of dependencies.
 
 The specific recommendations are that:
 
