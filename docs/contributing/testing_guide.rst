@@ -27,13 +27,13 @@ install |Nox| and |uv|:
 
       .. code-block:: bash
 
-         python -m pip install nox uv
+         python -m pip install uv nox nox-uv
 
    .. group-tab:: Windows
 
       .. code-block:: PowerShell
 
-         py -m pip install nox uv
+         py -m pip install uv nox nox-uv
 
 To run tests, navigate to a directory within your local clone of
 PlasmaPy and run:
@@ -42,8 +42,7 @@ PlasmaPy and run:
 
    nox
 
-This command will invoke `pytest` to run PlasmaPy's tests, excluding the
-tests marked as slow.
+This command will invoke `pytest` to run PlasmaPy's tests.
 
 Writing tests
 -------------
