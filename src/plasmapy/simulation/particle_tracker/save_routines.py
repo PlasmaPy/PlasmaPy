@@ -82,6 +82,13 @@ class AbstractSaveRoutine(ABC):
         """Return the results of the simulation.
         The quantities returned depend on those defined in the body of the save routine.
         """
+        assert self._particle_tracker is not None, (
+            "Please instantiate a simulation before attempting to retrieve its results"
+        )
+        assert self._particle_tracker._has_run, (  # noqa: SLF001
+            "Please run the simulation before attempting to retrieve its results."
+        )
+
         return self._apply_units_to_results()
 
     def save(self) -> None:

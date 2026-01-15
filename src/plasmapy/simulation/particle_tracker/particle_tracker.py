@@ -302,6 +302,15 @@ class ParticleTracker:
 
         return self._v
 
+    @cached_property
+    def speeds(self) -> np.ndarray | None:
+        """An array of scalars representing the speeds of the particles in meters per second.
+
+        The array has shape (``num_particles``, 1).
+        """
+
+        return np.linalg.norm(self.v, axis=-1, keepdims=True)
+
     # TODO: Is it at all frequent that users will want to evolve multiple species?
     #  or will this language only be confusing
     @cached_property
@@ -540,7 +549,6 @@ class ParticleTracker:
 
         return True
 
-    @particle_input(require="isotope")
     @validate_quantities
     def add_stopping(
         self,
@@ -586,7 +594,7 @@ class ParticleTracker:
 
         # Check inputs for user error and raise respective exceptions/warnings if
         # necessary.
-
+        self._enforce_particle_creation("adding stopping")
         self._validate_stopping_inputs(method, materials, I)
 
         match method:
@@ -629,6 +637,7 @@ class ParticleTracker:
                 )
 
         self._do_stopping = True
+        self._stopping_method = method
         self._log(f"Stopping module activated using the {method} method")
 
     @particle_input(require="isotope")
@@ -787,7 +796,7 @@ class ParticleTracker:
 
         """
 
-        self._enforce_particle_creation()
+        self._enforce_particle_creation("running the simulation")
 
         self._setup_for_interpolator()
 
@@ -1076,6 +1085,58 @@ class ParticleTracker:
         # Reset cached properties since particles may have moved off-grid
         self._reset_cache()
 
+    def _Bethe_energy_loss_per_length(self):
+        stopping_power = np.zeros((self.num_particles_tracked, 1))
+        current_speeds = self.speeds[self._tracked_particle_mask]
+
+        for cs in self._stopping_power_interpolators:
+            if cs is None:
+                continue
+
+            interpolation_result = cs(
+                current_speeds,
+                self._total_grid_values["n_e"].si.value[
+                    self._tracked_particle_mask, np.newaxis
+                ],
+            )
+
+            stopping_power += interpolation_result
+
+        energy_loss_per_length = stopping_power
+
+        if (
+            not self._raised_energy_warning
+            and np.min(energy_loss_per_length * u.J).to(u.MeV).value < 1
+        ):
+            self._raised_energy_warning = True
+
+            warnings.warn(
+                "The Bethe model is only valid for high energy particles. Consider using"
+                "NIST stopping if you require accurate stopping powers at lower energies.",
+                category=PhysicsWarning,
+            )
+
+        return energy_loss_per_length
+
+    def _NIST_energy_loss_per_length(self):
+        stopping_power = np.zeros((self.num_particles_tracked, 1))
+        relevant_kinetic_energy = (
+            self._particle_kinetic_energy[self._tracked_particle_mask] * u.J
+        )
+
+        for cs in self._stopping_power_interpolators:
+            if cs is None:
+                continue
+
+            stopping_power += cs(relevant_kinetic_energy).si.value
+
+        return np.multiply(
+            stopping_power,
+            self._total_grid_values["rho"].si.value[
+                self._tracked_particle_mask, np.newaxis
+            ],
+        )
+
     def _update_velocity_stopping(self) -> None:
         r"""
         Apply stopping to the simulated particles using the provided stopping
@@ -1083,60 +1144,19 @@ class ParticleTracker:
         new energy values of the particles, and then updating the particles'
         velocity to match these energies.
         """
-
-        current_speeds = np.linalg.norm(
-            self.v[self._tracked_particle_mask], axis=-1, keepdims=True
-        )
-        velocity_unit_vectors = np.multiply(
-            1 / current_speeds, self.v[self._tracked_particle_mask]
-        )
+        current_velocities = self.v[self._tracked_particle_mask]
+        current_speeds = self.speeds[self._tracked_particle_mask]
+        velocity_unit_vectors = np.multiply(1 / current_speeds, current_velocities)
         dx = np.multiply(current_speeds, self.dt)
-
-        stopping_power = np.zeros((self.num_particles_tracked, 1))
-        relevant_kinetic_energy = (
-            self._particle_kinetic_energy[self._tracked_particle_mask] * u.J
-        )
 
         # Apply all previously created stopping power interpolators
         # These are created prior to run, for each grid where they apply
         # in add_stopping()
         match self._stopping_method:
-            case "NIST":
-                for cs in self._stopping_power_interpolators:
-                    if cs is not None:
-                        stopping_power += cs(relevant_kinetic_energy).si.value
-
-                energy_loss_per_length = np.multiply(
-                    stopping_power,
-                    self._total_grid_values["rho"].si.value[
-                        self._tracked_particle_mask, np.newaxis
-                    ],
-                )
             case "Bethe":
-                for cs in self._stopping_power_interpolators:
-                    if cs is not None:
-                        interpolation_result = cs(
-                            current_speeds,
-                            self._total_grid_values["n_e"].si.value[
-                                self._tracked_particle_mask, np.newaxis
-                            ],
-                        )
-
-                        stopping_power += interpolation_result
-
-                energy_loss_per_length = stopping_power
-
-                if (
-                    not self._raised_energy_warning
-                    and np.min(energy_loss_per_length * u.J).to(u.MeV).value < 1
-                ):
-                    self._raised_energy_warning = True
-
-                    warnings.warn(
-                        "The Bethe model is only valid for high energy particles. Consider using"
-                        "NIST stopping if you require accurate stopping powers at lower energies.",
-                        category=PhysicsWarning,
-                    )
+                energy_loss_per_length = self._Bethe_energy_loss_per_length()
+            case "NIST":
+                energy_loss_per_length = self._NIST_energy_loss_per_length()
 
         # Energy loss per unit length is positive by convention, therefore we have
         # to include a minus sign here
@@ -1392,14 +1412,13 @@ class ParticleTracker:
         """Return if the simulation is applying the same time step across all particles."""
         return self._is_synchronized_time_step
 
-    def _enforce_particle_creation(self) -> None:
+    def _enforce_particle_creation(self, user_friendly_method_name: str) -> None:
         """Ensure the array position array `x` has been populated."""
 
         # Check to make sure particles have already been generated
         if not hasattr(self, "x"):
             raise ValueError(
-                "Either the create_particles or load_particles method must be "
-                "called before running the particle tracing algorithm."
+                f"Particles must be loaded using `load_particles` before {user_friendly_method_name}!"
             )
 
     def _enforce_order(self) -> None:
