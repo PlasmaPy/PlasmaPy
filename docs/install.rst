@@ -7,7 +7,7 @@ Installing PlasmaPy
 .. note::
 
    If you would like to contribute to PlasmaPy, please check out our
-   handy |contributor guide|. |:seeding:|
+   handy |contributor guide|. |:seedling:|
 
 .. contents:: Contents
    :local:
