@@ -3,7 +3,7 @@ Calculation of Coulomb logarithms and cross-sections.
 
 Coulomb collisions are collisions where the interaction force is
 conveyed via the electric field, instead of any kind of contact force.
-These collisions  usually result in relatively small deflections of
+These collisions usually result in relatively small deflections of
 particle trajectories. However, given that there are many charged
 particles in a plasma, one has to take into account the cumulative
 effects of many such collisions.
