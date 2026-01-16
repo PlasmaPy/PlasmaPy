@@ -7,7 +7,7 @@ import astropy.units as u
 from plasmapy.utils.decorators.validators import validate_quantities
 
 
-@validate_quantities  # type: ignore[misc]
+@validate_quantities  # type: ignore[untyped-decorator]
 def annotated_function(mass: u.Quantity[u.g]) -> u.Quantity[u.kg]:
     return mass
 

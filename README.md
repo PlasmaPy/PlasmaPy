@@ -13,7 +13,7 @@
 [![YouTube](https://img.shields.io/badge/YouTube%20-subscribe-red?style=flat&logo=youtube)](https://www.youtube.com/channel/UCSH6qzslhqIZKTAJmHPxIxw)
 
 [![CI](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/ci.yml/badge.svg)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/ci.yml)
-[![weekly tests](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/weekly.yml/badge.svg)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/weekly.yml)
+[![comprehensive tests](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/ci-comprehensive.yml/badge.svg)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/ci-comprehensive.yml)
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/PlasmaPy/PlasmaPy/main.svg)](https://results.pre-commit.ci/latest/github/PlasmaPy/PlasmaPy/main)
 [![codecov](https://codecov.io/gh/PlasmaPy/PlasmaPy/branch/main/graph/badge.svg)](https://codecov.io/gh/PlasmaPy/PlasmaPy)
 [![Read the Docs Status](https://readthedocs.org/projects/plasmapy/badge/?version=latest)](http://plasmapy.readthedocs.io/en/latest/?badge=latest)
@@ -21,6 +21,7 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1436011.svg)](https://doi.org/10.5281/zenodo.1436011)
 [![astropy](http://img.shields.io/badge/powered%20by-Astropy-orange.svg?style=flat&logo=astropy)](http://www.astropy.org/)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
+[![SPEC 0 — Minimum Supported Dependencies](https://img.shields.io/badge/SPEC-0-green?labelColor=%23004811&color=%235CA038)](https://scientific-python.org/specs/spec-0000/)
 
 [PlasmaPy] is an open source, community-developed [Python] package for
 plasma research and education. PlasmaPy intends to be for plasma science
@@ -52,16 +53,16 @@ python -m pip install plasmapy
 ```
 
 On some systems, it might be necessary to specify the Python version
-number, for example by using `python3` or `python3.13` instead of
+number, for example by using `python3` or `python3.14` instead of
 `python`.
 
 To install PlasmaPy in Windows via PowerShell, run:
 
 ```Shell
-py -3.13 -m pip install plasmapy
+py -3.14 -m pip install plasmapy
 ```
 
-The `3.13` may be replaced by any version of Python that is installed
+The `3.14` may be replaced by any version of Python that is installed
 and supported by PlasmaPy.
 
 ## Citing PlasmaPy
@@ -101,11 +102,10 @@ about these meetings is on the [meetings] page of PlasmaPy's website.
 
 ### Community meetings
 
-PlasmaPy's weekly [community meetings] are a place to talk about code
-development, event planning, and other community happenings. If you have
-an idea for a new feature or would like to become involved in the
-PlasmaPy project, community meetings are a great place to start. As of
-May 2025, our community meetings are on most Thursdays at 2 pm ET.
+PlasmaPy's [community meetings] are a place to talk about code
+development, event planning, and other community happenings. If you
+have an idea for a new feature or would like to become involved in the
+PlasmaPy project, community meetings are a great place to start.
 
 ## Community
 
@@ -115,8 +115,9 @@ Please feel free to reach out to us at [team@plasmapy.org] or stop by
 one of our [community meetings] with any ideas, questions, and/or puns
 about computational magnetohydrodynamics.
 
-Please use these links to [submit a feature request] and to
-[submit a bug report] on PlasmaPy's GitHub repository.
+Please use these links to [submit a feature request],
+[submit a bug report], or [privately report a security vulnerability]
+on PlasmaPy's GitHub repository.
 
 ### GitHub discussions
 
@@ -131,8 +132,8 @@ channel; Gitter uses a bridge to link the two.
 
 ### Mailing list
 
-You can subscribe to PlasmaPy's low-volume [mailing list] to receive
-PlasmaPy newsletters and other announcements.
+Subscribe to PlasmaPy's low-volume [mailing list] to receive occasional
+newsletters and announcements.
 
 ## License
 
@@ -169,6 +170,7 @@ documentation page on [authors and credits].
 [national science foundation]: https://nsf.gov
 [plasmapy]: https://www.plasmapy.org
 [plasmapy community on zenodo]: https://zenodo.org/communities/plasmapy
+[privately report a security vulnerability]: https://github.com/plasmapy/plasmapy/security/advisories/new
 [protections against software patents]: ./PATENT.md
 [python]: https://www.python.org
 [smithsonian institution]: https://www.si.edu

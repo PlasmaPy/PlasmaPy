@@ -215,7 +215,7 @@ def mobility(
     # we do this after collision_frequency since collision_frequency
     # already has a _process_inputs check and we are doing this just
     # to recover the charges, mass, etc.
-    T, masses, charges, reduced_mass_, V = _process_inputs(T=T, species=species, V=V)
+    T, _masses, charges, reduced_mass_, V = _process_inputs(T=T, species=species, V=V)
     z_val = (charges[0] + charges[1]) / 2 if np.isnan(z_mean) else z_mean * _e
     return z_val / (reduced_mass_ * freq)
 
@@ -450,7 +450,7 @@ def Spitzer_resistivity(
         T=T, n=n, species=species, z_mean=z_mean, V=V, method=method
     )
     # fetching additional parameters
-    T, masses, charges, reduced_mass_, V = _process_inputs(T=T, species=species, V=V)
+    T, _masses, charges, reduced_mass_, V = _process_inputs(T=T, species=species, V=V)
     return (
         freq * reduced_mass_ / (n * charges[0] * charges[1])
         if np.isnan(z_mean)

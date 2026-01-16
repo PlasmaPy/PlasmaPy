@@ -1,0 +1,232 @@
+PlasmaPy v2025.8.0 (2025-08-07)
+===============================
+
+New Features
+------------
+
+- Enabled |particle_input| to convert |particle-list-like| arguments passed
+  to parameters decorated with |ParticleListLike| into |ParticleList|
+  instances. (:pr:`2790`)
+- The new method `plasmapy.plasma.grids.CartesianGrid.soften_edges` applies an
+  error function mask
+  to the edges of all quantities on a grid. This is useful for any application
+  where the grid must
+  go to zero smoothly at the edges (e.g., for particle tracking with
+  |ParticleTracker|). (:pr:`2911`)
+- Added the ``source_vdir`` keyword to the
+  `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography.Tracker.create_particles`
+  method of
+  `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography.Tracker`
+  to explicitly define the
+  orientation of the mean velocity of the source particles. (:pr:`2968`)
+- Added the ``detector_vdir`` keyword to
+  `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography.Tracker`
+  to explicitly define the detector's vertical surface vector. (:pr:`2968`)
+- Added a new module, `plasmapy.formulary.laser`, to make calculations related
+  to laser pulses. Added the first function,
+  `~plasmapy.formulary.laser.electric_field_amplitude`, which calculates the
+  electric field strength from intensity. (:pr:`3021`)
+- Added `plasmapy.formulary.laser.intensity` to calculate intensity from the
+  electric field amplitude for a laser. (:pr:`3032`)
+- Added helper function
+  `~plasmapy.analysis.swept_langmuir.helpers.sort_sweep_arrays` to
+  `plasmapy.analysis.swept_langmuir`. (:pr:`3034`)
+- Added `~plasmapy.formulary.laser.em_wavelength`,
+  `~plasmapy.formulary.laser.em_angular_frequency`,
+  `~plasmapy.formulary.laser.Gaussian_beam_waist_radius`,
+  `~plasmapy.formulary.laser.Gaussian_spot_size_FWHM`,
+  `~plasmapy.formulary.laser.Gaussian_power`,
+  `~plasmapy.formulary.laser.Gaussian_Rayleigh_length`, and
+  `~plasmapy.formulary.laser.normalized_vector_potential` to
+  `plasmapy.formulary.laser`. (:pr:`3036`)
+- Added helper function
+  `~plasmapy.analysis.swept_langmuir.helpers.merge_voltage_clusters` to
+  `plasmapy.analysis.swept_langmuir`. (:pr:`3037`)
+
+
+Documentation Improvements
+--------------------------
+
+- Incorporated the ``plasmapy_theme`` via the `plasmapy_sphinx.theme`
+  extension. (:pr:`1643`)
+- Removed :file:`docs/plasmapy_sphinx` and put `plasmapy_sphinx` into its own
+  repository at https://github.com/PlasmaPy/plasmapy_sphinx\ . (:pr:`1643`)
+- Added `plasmapy_sphinx` as a ``docs`` dependency. (:pr:`1643`)
+- Removed upper dependency limit on `sphinx`, and added lower limit of
+  ``>=8.2.3``. (:pr:`1643`)
+- Created a GitHub workflow (in :file:`weekly.yml` and :file:`noxfile.py`)
+  to build documentation using the latest development version of
+  `plasmapy_sphinx` on a weekly basis. (:pr:`1643`)
+- Incorporated `sphinx` extensions `plasmapy_sphinx.ext.autodoc` and
+  `plasmapy_sphinx.ext.directives`. (:pr:`1643`)
+- Updated author metadata in :file:`CITATION.cff`. (:pr:`2890`)
+- Removed duplicate section headers for example notebooks in the documentation
+  for `plasmapy.formulary`. (:pr:`2892`)
+- Added acknowledgements to several organizations that have supported PlasmaPy
+  or are aligned with its mission. (:pr:`2895`)
+- Fixed formatting problems and improved verb tense consistency in prior
+  changelog entries. (:pr:`2901`)
+- Fixed references to the ``astropy.units.equivalencies`` module in the docs.
+  Astropy now considers
+  this file to be private API (which broke PlasmaPy's intersphinx links), and
+  recommends that its contents be imported through the `astropy.units`
+  namespace.
+  This pull request changes those links to a direct URL to
+  |Astropy Equivalencies|. (:pr:`2915`)
+- Added a sentence to the documentation for `plasmapy.dispersion` to describe
+  dispersion relations and their usefulness. (:pr:`2932`)
+- Updated the instructions for accessing test results and documentation
+  previews in the |contributor guide| after recent changes to GitHub's user
+  interface. (:pr:`2935`)
+- Expanded the docstring of `~plasmapy.formulary.dimensionless.Hall_parameter`.
+  (:pr:`2938`)
+- Bumped the Python version for documentation builds from 3.12 to 3.13.
+  (:pr:`2943`)
+- Updated the instructions on how to install PlasmaPy. (:pr:`2999`)
+- Put office hours on an indefinite hiatus. (:pr:`3013`)
+- Removed the `sphinx-hoverxref
+  <https://github.com/readthedocs/sphinx-hoverxref>`_ |Sphinx| extension, since
+  it has been deprecated in favor of the |Read the Docs| add-on for `Link
+  Previews <https://docs.readthedocs.com/platform/stable/link-previews.html>`_\
+  . (:pr:`3024`)
+- Fixed broken hyperlinks and permanent redirects. (:pr:`3056`)
+- Summarized the dependency support policy from |SPEC 0| at the end of the
+  installation instructions. (:pr:`3059`)
+- Updated the |contributor guide| pages on the |code contribution workflow|
+  and :ref:`using pre-commit <using-pre-commit>`. (:pr:`3068`)
+- Upgraded :ref:`PlasmaPy's Code of Conduct <plasmapy-code-of-conduct>` to
+  version 3.0 of the Contributor Covenant. (:pr:`3069`)
+- Updated the :ref:`Feedback and Communication <plasmapy-communication>` page.
+  (:pr:`3070`)
+- Limited the allowed version of |Sphinx| to ``sphinx>=8.2.3,<8.3``
+  because planned breaking changes to Sphinx are causing documentation
+  build errors due to incompatibilities with some extensions. (:pr:`3073`)
+
+
+Backwards Incompatible Changes
+------------------------------
+
+- Variables in |ParticleTracker|
+  and
+  `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography.Tracker`
+  have been updated
+  such that ``n*`` is now ``num_*`` (e.g., ``nparticles`` is now
+  ``num_particles``). Similarly, ``v_init`` is
+  now ``v0`` to be consistent with ``x0``. (:pr:`2911`)
+- The method
+  `plasmapy.simulation.particle_tracker.particle_tracker.ParticleTracker.add_stopping`
+  requires that the argument ``I`` must now be a list of |Quantity| objects
+  rather than a single
+  |Quantity| array. This change is needed because `None` entries are now also
+  accepted to that
+  keyword as placeholders for grids on which stopping will not be applied.
+  (:pr:`2911`)
+- |ParticleTracker| no longer accepts the parameter ``req_quantities``, but
+  instead automatically requires
+  quantities required by the tracker for the given setup. Users wishing to
+  require quantities
+  may use the method `~plasmapy.plasma.grids.AbstractGrid.require_quantities`.
+  (:pr:`2911`)
+- Removed the prototype plasma calculator from PlasmaPy so that it can be
+  included in the |plasmapy-calculator| standalone package. (:pr:`3060`)
+
+
+Deprecations and Planned Removals
+---------------------------------
+
+- Removed :file:`src/plasmapy/dispersion/dispersionfunction.py`, which was
+  deprecated in ``v2023.10.0``.  The functionality for the plasma dispersion
+  function is in `plasmapy.dispersion.dispersion_functions`. (:pr:`2897`)
+
+
+Bug Fixes
+---------
+
+- Enabled |Particle| to accept a `numpy.integer` object as the first argument
+  to indicate the atomic number. (:pr:`3045`)
+- Fixed a possible bug when using
+  `plasmapy.plasma.grids.AbstractGrid.add_quantities`
+  alongside newer versions of |xarray|. (:pr:`3065`)
+
+
+Internal Changes and Refactorings
+---------------------------------
+
+- Dropped support for Python 3.10 and bumped the minimum required
+  versions of several dependencies following |SPEC 0|. (:pr:`2880`)
+- Updated the release checklist following the ``v2024.10.0`` release.
+  (:pr:`2886`)
+- Used `typing.Self` for type hint annotations for |Particle| and
+  |CustomParticle|. (:pr:`2887`)
+- Modified tests for `~plasmapy.diagnostics.thomson.spectral_density` to cover
+  the case of multiple electron species. (:pr:`2906`)
+- The internal structure of
+  `~plasmapy.simulation.particle_tracker.particle_tracker.ParticleTracker` was
+  optimized by caching some variables (e.g., ``tracked_particle_mask``) which
+  are then reset after every
+  push cycle by a ``_reset_cache`` method. Instead of adding zero arrays for
+  missing quantities, only
+  quantities provided on the grid are interpolated, and other required
+  quantities are filled in with an
+  array of zeros automatically. Particle stopping can now be enabled on a
+  subset of the provided grids.
+  Adaptive time steps do not include magnetic field candidates if a magnetic
+  field does not exist on the grid.
+  The adaptive timestep is now set to that of the highest resolution grid for
+  particles that are not
+  currently on any grid. (:pr:`2911`)
+- Added ``User-Agent`` to the header of
+  `~plasmapy.utils.data.downloader.Downloader` to
+  resolve an issue with GitHub blocking API access. (:pr:`2915`)
+- Updated :file:`validators.py`. (:pr:`2919`)
+- Began using :file:`uv.lock` to pin the versions of dependencies used
+  in tests and documentation builds. Previously, pinned requirements had
+  been stored in :file:`requirements.txt` style files in
+  :file:`ci_requirements/` that were generated with ``uv pip compile``
+  for each operating system, Python version, and dependency set. Using
+  :file:`uv.lock` lets us store requirements information for
+  different operating systems, Python versions, and dependency sets in
+  a single file. (:pr:`2937`)
+- Switched from using ``actions/setup-python`` to ``astral-sh/setup-uv`` in
+  GitHub workflows. (:pr:`2959`)
+- Enabled :file:`noxfile.py` to be run as a script.
+  The commands ``python noxfile.py -s 'tests-3.13(all)'`` and ``nox -s
+  'tests-3.13(all)'`` can now both be used to run all tests for Python 3.13.
+  (:pr:`2961`)
+- Updated the ``requirements`` session for Nox so that the GitHub workflow
+  now includes a table of the old and new versions of dependencies in the
+  body of the pull request. (:pr:`2964`)
+- Enabled ``pyproject-fmt`` as an autoformatter and ``validate-pyproject`` as a
+  validator for :file:`pyproject.toml` via |pre-commit|. (:pr:`2974`)
+- Added a |Nox| session to perform security audits of GitHub workflows with
+  ``zizmor`` in CI. (:pr:`2975`)
+- Enabled a |pre-commit| hook for ``mdformat`` to automatically format
+  GitHub-flavored Markdown files. (:pr:`2981`)
+- Added a security policy at :file:`.github/SECURITY.md` and enabled private
+  security reporting through GitHub. (:pr:`2985`)
+- Reorganized :file:`.gitignore` to put content that is custom or
+  PlasmaPy-specific
+  at the top of the file, followed by content adapted from :file:`.gitignore`
+  templates at the bottom. (:pr:`2997`)
+- Set |uv| as the sole backend to Nox, and changed the ``docs`` and ``tests``
+  dependency sets to include ``nox[uv]`` instead of ``nox``. (:pr:`2998`)
+- Refactored tests for the `~plasmapy.diagnostics.charged_particle_radiography`
+  module to reduce test runtime. (:pr:`3039`)
+- Removed upper limits on the allowed versions of Astropy and xarray.
+  (:pr:`3065`)
+- Parametrized tests within :file:`tests/utils/decorators.test_checks.py`.
+  (:pr:`3065`)
+- Updated :file:`tests/utils/decorators/test_checks.py` for compatibility with
+  updates to how `astropy.units.Equivalency` handles equality comparisons.
+  (:pr:`3065`)
+
+
+Additional Changes
+------------------
+
+- The ``ax#``, ``dx#`` and ``*_si`` properties of
+  `~plasmapy.plasma.grids.AbstractGrid` are now
+  cached properties for faster access, since these attributes do not change
+  after the grid has been initialized. (:pr:`2911`)
+- Updated the configuration to automatically label pull requests on GitHub.
+  (:pr:`2984`)

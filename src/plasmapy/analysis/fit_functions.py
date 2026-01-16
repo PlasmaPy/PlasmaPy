@@ -885,7 +885,7 @@ class ExponentialPlusLinear(AbstractFitFunction):
         """
         x, x_err = self._check_func_err_params(x, x_err)
 
-        a, alpha, m, b = self.params
+        a, alpha, m, _b = self.params
 
         exp_y, exp_err = self._exponential(x, x_err=x_err, reterr=True)
         lin_y, lin_err = self._linear(x, x_err=x_err, reterr=True)

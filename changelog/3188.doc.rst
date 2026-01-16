@@ -1,0 +1,1 @@
+Made minor documentation updates and fixed a configuration issue with the Read the Docs build.

@@ -1,0 +1,2 @@
+Updated the workflow to verify that a PlasmaPy release can be installed via
+``conda-forge``.

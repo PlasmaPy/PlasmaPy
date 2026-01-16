@@ -1,1 +1,0 @@
-Added a sentence to the documentation for `plasmapy.dispersion` to describe dispersion relations and their usefulness.

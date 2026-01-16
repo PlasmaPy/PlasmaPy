@@ -1,6 +1,13 @@
-# This file invokes Nox sessions to run tests, build documentation, and
-# perform other continuous integration (CI) checks. The Nox sessions are
-# defined in noxfile.py.
+# Define continuous integration (CI) checks to be performed during
+# pull requests, such as running tests and building documentation.
+#
+# The checks are defined in noxfile.py. After installing uv, the checks
+# can be run locally with
+#
+#    uvx nox -s '<nox_session>'
+#
+# where <nox_session> is replaced by the name of the session. Quotes are
+# necessary around <nox_session> when it contains parentheses.
 
 name: CI
 
@@ -33,85 +40,80 @@ jobs:
       matrix:
         include:
 
-        - name: Tests, Python 3.13, skip slow tests, doctests, Ubuntu
+        - name: Tests, Python 3.14, skip slow tests, doctests, Ubuntu
           # Doctests are run only for most recent Python (see noxfile.py)
           os: ubuntu-latest
-          python: '3.13'
-          nox_session: tests-3.13(skipslow)
+          python: '3.14'
+          nox_session: tests-3.14(skipslow)
 
-        - name: Tests, Python 3.12, with code coverage, macOS
+        - name: Tests, Python 3.13, with code coverage, macOS
           os: macos-latest
-          python: '3.12'
-          nox_session: tests-3.12(cov)
+          python: '3.13'
+          nox_session: tests-3.13(cov)
 
-        - name: Tests, Python 3.11, lowest direct dependencies, skip slow tests, Windows
+        - name: Tests, Python 3.12, lowest direct dependencies, skip slow tests, Windows
           os: windows-latest
-          python: '3.11'
-          nox_session: tests-3.11(lowest-direct-skipslow)
-
-        - name: Documentation, Python 3.12, Ubuntu
-          os: ubuntu-latest
           python: '3.12'
+          nox_session: tests-3.12(lowest-direct-skipslow)
+
+        - name: Documentation, Python 3.14, Ubuntu
+          os: ubuntu-latest
+          python: '3.14'
           nox_session: docs
 
-        - name: Static type checking with mypy, Python 3.13, Ubuntu
+        - name: Static type checking with mypy, Python 3.14, Ubuntu
           os: ubuntu-latest
-          python: '3.13'
+          python: '3.14'
           nox_session: mypy
 
-        - name: Packaging, Python 3.13, Ubuntu
-          os: ubuntu-latest
-          python: '3.13'
+        - name: Packaging, Python 3.14, Windows
+          os: windows-latest
+          python: '3.14'
           nox_session: build
-
-        - name: Validate CITATION.cff
-          os: ubuntu-latest
-          python: '3.13'
-          nox_session: cff
 
         - name: Check workflow security with zizmor
           os: ubuntu-latest
-          python: '3.13'
+          python: '3.14'
           nox_session: zizmor
 
         - name: Check consistency of pinned & project requirements
           os: ubuntu-latest
-          python: '3.13'
-          nox_session: validate_requirements
+          python: '3.14'
+          nox_session: validate_lockfile
 
     steps:
 
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with:
         persist-credentials: false
 
-    - name: Install Graphviz for doc builds
-      if: contains(matrix.nox_session, 'docs')
-      uses: ts-graphviz/setup-graphviz@v2
-
-    - name: Install pandoc for doc builds
-      # This step requires Ubuntu
-      if: contains(matrix.nox_session, 'docs')
-      run: |
-        sudo apt update
-        sudo apt-get install -y pandoc
+    - name: Install graphviz and pandoc for doc builds
+      if: ${{ contains(matrix.nox_session, 'docs') }}
+      uses: mamba-org/setup-micromamba@v2
+      with:
+        create-args: graphviz pandoc -c conda-forge
+        init-shell: bash
+        environment-name: micromamba-env
+        cache-environment: true
+        post-cleanup: all
 
     - name: Install uv
-      uses: astral-sh/setup-uv@v6
+      uses: astral-sh/setup-uv@v7
       with:
         python-version: ${{ matrix.python }}
-        enable-cache: true
+        enable-cache: true  # zizmor: ignore[cache-poisoning]
         cache-suffix: ${{ matrix.nox_session }}-${{ matrix.python }}-${{ runner.os }}
 
-    - name: Run the check
+    - name: Run Nox session ${{ matrix.nox_session }}
+      shell: bash -el {0}
       run: uvx nox -s '${{ matrix.nox_session }}'
 
     - name: Upload coverage reports to Codecov
       if: ${{ contains(matrix.nox_session, 'cov') }}
       uses: codecov/codecov-action@v5
       with:
-        file: ./coverage.xml
+        files: ./coverage.xml
         fail_ci_if_error: false
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

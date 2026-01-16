@@ -30,7 +30,6 @@ class TestKinetic_Alfven:
     @pytest.mark.parametrize(
         ("kwargs", "_error"),
         [
-            ({**_kwargs_single_valued, "B": "wrong type"}, TypeError),
             ({**_kwargs_single_valued, "B": [1e-9, 2e-9, 3e-9] * u.T}, ValueError),
             ({**_kwargs_single_valued, "B": -1 * u.T}, ValueError),
             ({**_kwargs_single_valued, "B": 5 * u.m}, u.UnitTypeError),
@@ -39,23 +38,17 @@ class TestKinetic_Alfven:
             ({**_kwargs_single_valued, "k": 0 * u.rad / u.m}, ValueError),
             ({**_kwargs_single_valued, "k": -1.0 * u.rad / u.m}, ValueError),
             ({**_kwargs_single_valued, "k": 5 * u.s}, u.UnitTypeError),
-            ({**_kwargs_single_valued, "n_i": "wrong type"}, TypeError),
             ({**_kwargs_single_valued, "n_i": [5e6, 6e6] * u.m**-3}, ValueError),
             ({**_kwargs_single_valued, "n_i": -5e6 * u.m**-3}, ValueError),
             ({**_kwargs_single_valued, "n_i": 2 * u.s}, u.UnitTypeError),
-            ({**_kwargs_single_valued, "T_e": "wrong type"}, TypeError),
             ({**_kwargs_single_valued, "T_e": [1.4e6, 1.7e6] * u.K}, ValueError),
             ({**_kwargs_single_valued, "T_e": -10 * u.eV}, ValueError),
             ({**_kwargs_single_valued, "T_e": 2 * u.s}, u.UnitTypeError),
-            ({**_kwargs_single_valued, "T_i": "wrong type"}, TypeError),
             ({**_kwargs_single_valued, "T_i": [4e5, 5e5] * u.K}, ValueError),
             ({**_kwargs_single_valued, "T_i": -1 * u.eV}, ValueError),
             ({**_kwargs_single_valued, "T_i": 2 * u.s}, u.UnitTypeError),
             ({**_kwargs_single_valued, "theta": np.ones((3, 2)) * u.deg}, ValueError),
             ({**_kwargs_single_valued, "theta": 5 * u.eV}, u.UnitTypeError),
-            ({**_kwargs_single_valued, "gamma_e": "wrong type"}, TypeError),
-            ({**_kwargs_single_valued, "gamma_i": "wrong type"}, TypeError),
-            ({**_kwargs_single_valued, "Z": "wrong type"}, TypeError),
         ],
     )
     def test_raises(self, kwargs, _error) -> None:

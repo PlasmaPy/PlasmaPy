@@ -514,7 +514,7 @@ def uniform_cartesian_grid():
         0.1 * u.cm,
     ],
 )
-def test_soften_edges(uniform_cartesian_grid, width):
+def test_soften_edges(uniform_cartesian_grid, width) -> None:
     grid = uniform_cartesian_grid
 
     # Find the approximate center of the grid
@@ -868,15 +868,16 @@ def test_volume_averaged_interpolator_handle_out_of_bounds(
 def test_volume_averaged_interpolator_persistence(uniform_cartesian_grid) -> None:
     # Try running with persistence
     pos = np.array([[0.1, -0.3, 0], [0.1, -0.3, 0]]) * u.cm
-    p1, p2 = uniform_cartesian_grid.volume_averaged_interpolator(
+    _p1, _p2 = uniform_cartesian_grid.volume_averaged_interpolator(
         pos, "x", "y", persistent=True
     )
-    p1, p2 = uniform_cartesian_grid.volume_averaged_interpolator(
+
+    _p1, _p2 = uniform_cartesian_grid.volume_averaged_interpolator(
         pos, "x", "y", persistent=True
     )
     # Try changing the arg list, make sure it catches this and auto-reverts
     # to non-persistent interpolation in that case
-    p1, p2 = uniform_cartesian_grid.volume_averaged_interpolator(
+    p1, _p2 = uniform_cartesian_grid.volume_averaged_interpolator(
         pos, "x", persistent=True
     )
     assert p1.size == 1
@@ -969,7 +970,7 @@ def test_volume_averaged_interpolator_compare_NN_3D(uniform_cartesian_grid) -> N
 def test_NonUniformCartesianGrid() -> None:
     grid = grids.NonUniformCartesianGrid(-1 * u.cm, 1 * u.cm, num=10)
 
-    pts0, pts1, pts2 = grid.grids
+    pts0, _pts1, _pts2 = grid.grids
 
     grid.add_quantities(x=pts0)
     # We'll need to switch from print() to using logging library

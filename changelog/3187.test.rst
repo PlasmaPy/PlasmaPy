@@ -1,0 +1,4 @@
+Removed several tests that were checking that passing a wrong type into
+certain functions raised a `TypeError`. These tests had been issuing a
+deprecation warning from Astropy related to multiplication of a unit and `str`
+instance.

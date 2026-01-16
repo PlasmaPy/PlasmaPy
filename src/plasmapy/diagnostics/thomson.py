@@ -716,7 +716,7 @@ def _spectral_density_model(wavelengths, settings=None, **params):
     # lite function takes ion mass, not mu=m_i/m_p
     ion_mass = ion_mu * m_p_si_unitless
 
-    alpha, model_Skw = spectral_density_lite(
+    _alpha, model_Skw = spectral_density_lite(
         wavelengths,
         probe_wavelength,
         n,

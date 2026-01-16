@@ -1,5 +1,5 @@
 """
-Locating and analyzing 3D magnetic null points.
+Prototype functionality to find and analyze 3D magnetic null points in a grid.
 
 .. attention::
 
@@ -23,7 +23,7 @@ from collections.abc import Callable
 
 import numpy as np
 
-# Declare Constants & global variables
+# Declare constants & global variables
 _EQUALITY_ATOL = 1e-10
 _MAX_RECURSION_LEVEL = 10
 _recursion_level = 0
@@ -458,9 +458,9 @@ def _trilinear_jacobian(vspace, cell):
     particular coordinate in that grid cell.
     """
     # Calculating coefficients
-    ax, bx, cx, dx, ex, fx, gx, hx = _trilinear_coeff_cal(vspace, cell)[0]
-    ay, by, cy, dy, ey, fy, gy, hy = _trilinear_coeff_cal(vspace, cell)[1]
-    az, bz, cz, dz, ez, fz, gz, hz = _trilinear_coeff_cal(vspace, cell)[2]
+    _ax, bx, cx, dx, ex, fx, gx, hx = _trilinear_coeff_cal(vspace, cell)[0]
+    _ay, by, cy, dy, ey, fy, gy, hy = _trilinear_coeff_cal(vspace, cell)[1]
+    _az, bz, cz, dz, ez, fz, gz, hz = _trilinear_coeff_cal(vspace, cell)[2]
 
     def jacobian_func(xInput, yInput, zInput):
         dBxdx = bx + ex * yInput + fx * zInput + hx * yInput * zInput
@@ -604,14 +604,14 @@ def _bilinear_root(a1, b1, c1, d1, a2, b2, c2, d2):  # noqa: C901, PLR0911, PLR0
     if np.isclose(a, 0, atol=_EQUALITY_ATOL):
         if np.isclose(b, 0, atol=_EQUALITY_ATOL):
             return np.array([])
-        x1 = (-1.0 * c) / b
-        x2 = (-1.0 * c) / b
+        x1 = -c / b
+        x2 = -c / b
 
     else:
         if (b**2 - 4.0 * a * c) < 0:
             return np.array([])
-        x1 = (-1.0 * b + (b**2 - 4.0 * a * c) ** 0.5) / (2.0 * a)
-        x2 = (-1.0 * b - (b**2 - 4.0 * a * c) ** 0.5) / (2.0 * a)
+        x1 = (-b + (b**2 - 4.0 * a * c) ** 0.5) / (2.0 * a)
+        x2 = (-b - (b**2 - 4.0 * a * c) ** 0.5) / (2.0 * a)
 
     y1 = None
     y2 = None
@@ -1381,13 +1381,13 @@ def _classify_null_point(vspace, cell, loc):
     M = jcb(loc[0], loc[1], loc[2])
     if not np.isclose(np.trace(M), 0, atol=_EQUALITY_ATOL):
         raise NonZeroDivergence
-    eigen_vals, eigen_vectors = np.linalg.eig(M)
+    _eigenvalues, _eigenvectors = np.linalg.eig(M)
     # using the notation from Parnell et al. (1996)
-    R = -1.0 * np.linalg.det(M)
+    R = -np.linalg.det(M)
     Q = -0.5 * np.trace(np.matmul(M, M))
 
     discriminant = (Q**3 / 27.0) + (R**2 / 4.0)
-    determinant = -1.0 * R
+    determinant = -R
     if np.isclose(discriminant, 0, atol=_EQUALITY_ATOL):
         if np.allclose(M, M.T, atol=_EQUALITY_ATOL):  # Checking if M is symmetric
             null_point_type = "Proper radial null"

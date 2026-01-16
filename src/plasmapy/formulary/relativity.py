@@ -130,13 +130,6 @@ def relativistic_energy(
         The |charge number| of an ion or neutral atom, if not provided
         to ``particle``.
 
-    Returns
-    -------
-    `~astropy.units.Quantity`
-        The total energy of the relativistic body.
-
-    Other Parameters
-    ----------------
     m : `object`
         Formerly the mass of the body. Will raise a `TypeError` if
         provided. Use ``particle`` instead.
@@ -144,6 +137,11 @@ def relativistic_energy(
     v : `object`
         Formerly the velocity of the body. Will raise a `TypeError` if
         provided. Use ``V`` instead.
+
+    Returns
+    -------
+    `~astropy.units.Quantity`
+        The total energy of the relativistic body.
 
     Raises
     ------

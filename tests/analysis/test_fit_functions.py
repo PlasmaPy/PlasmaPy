@@ -457,7 +457,7 @@ class TestFFExponentialPlusLinear(BaseFFTests):
         return a * np.exp(alpha * x) + m * x + b
 
     def func_err(self, x, params, param_errors, x_err=None):
-        a, alpha, m, b = params
+        a, alpha, m, _b = params
         a_err, alpha_err, m_err, b_err = param_errors
 
         exp_y = a * np.exp(alpha * x)
@@ -503,7 +503,7 @@ class TestFFExponentialPlusOffset(BaseFFTests):
         return a * np.exp(alpha * x) + b
 
     def func_err(self, x, params, param_errors, x_err=None):
-        a, alpha, b = params
+        a, alpha, _b = params
         a_err, alpha_err, b_err = param_errors
 
         exp_y = a * np.exp(alpha * x)
@@ -550,7 +550,7 @@ class TestFFLinear(BaseFFTests):
         return m * x + b
 
     def func_err(self, x, params, param_errors, x_err=None):
-        m, b = params
+        m, _b = params
         m_err, b_err = param_errors
 
         m_term = (m_err * x) ** 2

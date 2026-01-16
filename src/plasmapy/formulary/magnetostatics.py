@@ -471,7 +471,7 @@ class InfiniteStraightWire(Wire):
         """
         r = np.cross(self.direction, p - self.p0)
         B_unit = r / np.linalg.norm(r)
-        r = np.linalg.norm(r)
+        r = np.linalg.norm(r)  # type: ignore[assignment]
 
         return B_unit / r * const.mu0.value / 2 / np.pi * self.current * u.T
 

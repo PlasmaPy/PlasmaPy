@@ -15,12 +15,12 @@ jobs:
     steps:
 
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with:
         persist-credentials: false
 
     - name: Set up Python
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: 3.13
 
@@ -33,7 +33,8 @@ jobs:
       run: python -m build
 
     - name: Upload package to PyPI
-      uses: pypa/gh-action-pypi-publish@v1.12.4
+      uses: pypa/gh-action-pypi-publish@v1.13.0
       with:
+        # TODO: set up trusted publishing https://docs.pypi.org/trusted-publishers/
         user: __token__
         password: ${{ secrets.PYPI_API_TOKEN }}

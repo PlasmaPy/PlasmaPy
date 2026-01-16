@@ -1,13 +1,13 @@
 .. _plasmapy-install:
 
-**********************
-Installing PlasmaPy ☀️
-**********************
+*******************
+Installing PlasmaPy
+*******************
 
 .. note::
 
-   If you would like to contribute to PlasmaPy, please check out the
-   |contributor guide|.
+   If you would like to contribute to PlasmaPy, please check out our
+   handy |contributor guide|. |:seedling:|
 
 .. contents:: Contents
    :local:
@@ -20,7 +20,12 @@ Installing Python
 
 PlasmaPy requires a version of |Python| between |minpython| and
 |maxpython|. If you do not have |Python| installed already, here are the
-instructions to `download Python`_ and install it. 🐍
+instructions to `download Python`_ and install it. |:snake:|
+
+.. note::
+
+   PlasmaPy versions through ``v2025.8.0`` require Python 3.13 or
+   earlier and are incompatible with Python 3.14 (:issue:`3123`).
 
 .. _install-pip:
 
@@ -35,25 +40,20 @@ terminal and run:
 
    python -m pip install plasmapy
 
-.. note::
-
-   On some systems, it might be necessary to specify the |Python|
-   version by using ``python3``, ``python3.11``, ``python3.12``,  or
-   ``python3.13`` instead of ``python``.
+On some systems, it might be necessary to specify the |Python| version
+number by using ``python3``, ``python3.12``, ``python3.13``,
+or ``python3.14`` instead of ``python``.
 
 To install PlasmaPy on Windows, run:
 
 .. code-block:: bash
 
-   py -3.13 -m pip install plasmapy
-
-The version of |Python| may be changed from ``3.13`` to another supported
-Python |minpython|\ + release that has been installed on your computer.
+   py -3.14 -m pip install plasmapy
 
 For more detailed information, please refer to this tutorial on
 `installing packages`_.
 
-.. _install-uv:
+.. _install-with-uv:
 
 Installing PlasmaPy with uv
 ===========================
@@ -61,47 +61,27 @@ Installing PlasmaPy with uv
 |uv| is "an extremely fast |Python| package and project manager, written
 in Rust". |uv| lets us create and switch between |Python| environments
 that are isolated from each other and the system's |Python|
-installation. |uv| provides a `pip drop-in interface`_ for common |pip|
-commands to install packages from |PyPI|.
+installation. In addition, |uv| provides a `pip drop-in interface`_ for
+common |pip| commands so that |Python| packages on |PyPI| may be
+installed into |uv|-managed
+`virtual environments <virtual environment_>`_ without installing |pip|.
 
-By default, |uv| requires that packages be installed into
-`uv managed virtual environments`_ rather than the system Python
-installation. After `installing uv`_, create a virtual environment by
-opening a terminal and running:
+After |installing uv|, a `virtual environment`_ with |Python| version
+3.14 can be created by opening a terminal and running:
 
 .. code-block:: bash
 
-   uv venv --python 3.13
+   uv venv --python 3.14
 
-This command will create a virtual environment managed by |uv| in a new
-:file:`.venv` subdirectory, and then print out the command that will
-activate the virtual environment from the directory that the above
-command was run in. The activation command differs between
-different operating systems and Unix shells.
+|uv| will automatically download |Python| and link it to
+the `virtual environment`_'s directory at (by default) :file:`.venv`. The
+environment can then be activated by running:
 
-.. tabs::
+.. code-block:: bash
 
-   .. group-tab:: Windows
+   source .venv/bin/activate
 
-      To activate the virtual environment in Powershell, run:
-
-      .. code-block:: PowerShell
-
-         .venv\Scripts\activate
-
-   .. group-tab:: macOS and Linux
-
-      To activate the virtual environment on POSIX-compliant shells like
-      ``bash``, ``zsh``, and ``sh``, run:
-
-      .. code-block:: bash
-
-         source .venv/bin/activate
-
-      For alternative shells, see the |uv| documentation page for
-      `using a virtual environment`_.
-
-To install PlasmaPy, run:
+Then, to install PlasmaPy into the activated environment, run:
 
 .. code-block:: bash
 
@@ -112,13 +92,8 @@ To install PlasmaPy, run:
 Installing PlasmaPy with Conda
 ==============================
 
-Conda_ is a package management system and environment manager that is
-commonly used in the scientific |Python| ecosystem. Similar to |uv|,
-Conda_ is used to create and manage isolated virtual |Python| environments.
-Conda_ can also be used for packages written in languages other than
-|Python|.
-
-After `installing Conda`_ or miniconda_, PlasmaPy can be installed
+Conda_ is an open source package and environment manager. After
+`installing Conda`_ or miniconda_, PlasmaPy can be installed
 into an activated Conda_ environment by opening a terminal and running:
 
 .. code-block:: bash
@@ -213,7 +188,7 @@ Obtaining source code from GitHub
 ---------------------------------
 
 If you have |git| installed on your computer, you may clone
-|PlasmaPy's GitHub repository| and access the source code for the most
+|PlasmaPy's GitHub repository| and access the source code from the most
 recent development version by running:
 
 .. code-block:: bash
@@ -221,34 +196,24 @@ recent development version by running:
    git clone https://github.com/PlasmaPy/PlasmaPy.git
 
 The repository will be cloned inside a new subdirectory called
-:file:`PlasmaPy/`.
+:file:`PlasmaPy`.
 
 If you do not have |git| installed on your computer, then you may
 download the most recent source code from |PlasmaPy's GitHub repository|
 by going to :guilabel:`Code` and selecting :guilabel:`Download ZIP`.
 `Unzipping <https://www.wikihow.com/Unzip-a-File>`__ the file will
-create a subdirectory called :file:`PlasmaPy/` that contains the source
+create a subdirectory called :file:`PlasmaPy` that contains the source
 code.
 
 Building and installing
 -----------------------
 
 To install the downloaded version of PlasmaPy, enter the
-:file:`PlasmaPy/` directory and run:
+:file:`PlasmaPy` directory and run:
 
 .. code-block:: bash
 
    pip install .
-
-If you expect to occasionally edit the source code, instead run:
-
-.. code-block:: bash
-
-   pip install -e ".[tests,docs]"
-
-The ``-e`` flag makes the installation editable and ``[tests,docs]``
-specifies that all of the additional dependencies used while testing the
-package should also be installed.
 
 .. note::
 
@@ -274,7 +239,6 @@ package should also be installed.
 .. _installing Anaconda Navigator: https://www.anaconda.com/docs/tools/anaconda-navigator/install
 .. _installing Conda: https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html
 .. _installing packages: https://packaging.python.org/en/latest/tutorials/installing-packages/#installing-from-vcs
-.. _installing uv: https://docs.astral.sh/uv/getting-started/installation/#installing-uv
 .. _getting started with Anaconda Navigator: https://www.anaconda.com/docs/tools/anaconda-navigator/getting-started
 .. _miniconda: https://docs.conda.io/en/latest/miniconda.html
 .. _pip drop-in interface: https://docs.astral.sh/uv/pip/#the-pip-interface
@@ -282,8 +246,6 @@ package should also be installed.
 .. _project metadata: https://docs.astral.sh/uv/concepts/projects/#project-metadata
 .. _Python project: https://docs.astral.sh/uv/concepts/projects/#projects
 .. _releases: https://github.com/PlasmaPy/PlasmaPy/releases
-.. _using a virtual environment: https://docs.astral.sh/uv/pip/environments/#using-a-virtual-environment
 .. _uv init options: https://docs.astral.sh/uv/reference/cli/#uv-init
-.. _uv managed virtual environments: https://docs.astral.sh/uv/pip/environments
 .. _virtual environment: https://realpython.com/python-virtual-environments-a-primer
 .. _ZIP: https://en.wikipedia.org/wiki/ZIP_(file_format)

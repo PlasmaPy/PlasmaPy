@@ -747,7 +747,7 @@ def collision_frequency(
         ),
     )
 
-    T, masses, charges, reduced_mass, V_r = misc._process_inputs(  # noqa: SLF001
+    T, _masses, _charges, reduced_mass, V_r = misc._process_inputs(  # noqa: SLF001
         T=T, species=species, V=V
     )
     # using a more descriptive name for the thermal velocity using

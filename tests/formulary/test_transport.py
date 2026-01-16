@@ -44,7 +44,7 @@ from plasmapy.utils.exceptions import CouplingWarning, PhysicsError, RelativityW
 
 def count_decimal_places(digits):
     """Return the number of decimal places of the input digit string"""
-    integral, _, fractional = digits.partition(".")
+    _integral, _, fractional = digits.partition(".")
     return len(fractional)
 
 
@@ -234,6 +234,7 @@ class Test_classical_transport:
                 Z=-1,
             )
 
+    @pytest.mark.filterwarnings("ignore::plasmapy.utils.exceptions.RelativityWarning")
     def test_coulomb_log_warnings(self) -> None:
         """Should warn CouplingWarning if coulomb log is near 1"""
         with pytest.warns(CouplingWarning):
@@ -256,6 +257,7 @@ class Test_classical_transport:
                 coulomb_log_ei=1.3,
             )
 
+    @pytest.mark.filterwarnings("ignore::plasmapy.utils.exceptions.RelativityWarning")
     def test_coulomb_log_errors(self) -> None:
         """Should raise PhysicsError if coulomb log is < 1"""
         with pytest.raises(PhysicsError):

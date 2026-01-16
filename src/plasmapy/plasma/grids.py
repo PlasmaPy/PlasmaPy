@@ -665,9 +665,15 @@ class AbstractGrid(ABC):
                     f"does not match the grid shape {self.shape}."
                 )
 
+            # xarray gained better Quantity support around v2024.11.0, but
+            # this file was originally written with the assumption that
+            # xarray lacks Quantity support. As a workaround, use
+            # `quantity.value` instead of `quantity` in the creation of
+            # this DataArray.
             data = xr.DataArray(
-                quantity, dims=dims, coords=coords, attrs={"unit": quantity.unit}
+                quantity.value, dims=dims, coords=coords, attrs={"unit": quantity.unit}
             )
+
             self.ds[key] = data
 
     @property
@@ -855,7 +861,6 @@ class AbstractGrid(ABC):
             ax2_min, ax2_max = np.min(self.ax2.si.value), np.max(self.ax2.si.value)
 
         else:
-            pts0, pts1, pts2 = self.grids
             ax0_min, ax0_max = np.min(self.pts0).si.value, np.max(self.pts0).si.value
             ax1_min, ax1_max = np.min(self.pts1).si.value, np.max(self.pts1).si.value
             ax2_min, ax2_max = np.min(self.pts2).si.value, np.max(self.pts2).si.value
@@ -889,7 +894,7 @@ class AbstractGrid(ABC):
 
     # This property holds the list of quantity keys currently being interpolated
     # It's used in the following cached properties
-    _interp_args: ClassVar = []
+    _interp_args: ClassVar[list[str]] = []
 
     @cached_property
     def _interp_quantities(self):
