@@ -1,4 +1,4 @@
-"""Frequency parameters related to collisions."""
+"""Frequencies related to particle collisions."""
 
 __all__ = [
     "SingleParticleCollisionFrequencies",
@@ -25,8 +25,10 @@ from plasmapy.utils.exceptions import PhysicsError, PlasmaPyFutureWarning
 
 class SingleParticleCollisionFrequencies:
     r"""
-    Compute collision frequencies between test particles (labeled 'a')
-    and field particles (labeled 'b').
+    Compute collision frequencies between particles.
+
+    Test particles are labeled :math:`a` and field particles are
+    labeled :math:`b`.
 
     Parameters
     ----------
@@ -191,13 +193,13 @@ class SingleParticleCollisionFrequencies:
     @cached_property
     def momentum_loss(self):
         """
-        The momentum loss rate due to collisions.
+        Momentum loss rate due to collisions.
         """
         return (1 + self._mass_ratio) * self.phi * self.Lorentz_collision_frequency
 
     @cached_property
     def transverse_diffusion(self):
-        """The rate of transverse diffusion due to collisions."""
+        """Rate of transverse diffusion due to collisions."""
         return (
             2
             * ((1 - 1 / (2 * self.x)) * self.phi + self._phi_prime)
@@ -206,16 +208,12 @@ class SingleParticleCollisionFrequencies:
 
     @cached_property
     def parallel_diffusion(self):
-        """
-        The rate of parallel diffusion due to collisions.
-        """
+        """Rate of parallel diffusion due to collisions."""
         return (self.phi / self.x) * self.Lorentz_collision_frequency
 
     @cached_property
     def energy_loss(self):
-        """
-        The energy loss rate due to collisions.
-        """
+        """Energy loss rate due to collisions."""
         return (
             2
             * (self._mass_ratio * self.phi - self._phi_prime)
@@ -239,10 +237,10 @@ class SingleParticleCollisionFrequencies:
         velocity, and :math:`\ln{Λ}` is the Coulomb logarithm
         accounting for small angle collisions.
 
-        See Equation (2.86) in :cite:t:`callen:unpublished`.
+        See equation 2.86 in :cite:t:`callen:unpublished`.
 
         The Lorentz collision frequency is equivalent to the variable
-        :math:`ν_0^{α/β}` on p. 31 of :cite:t:`nrlformulary:2019`.
+        :math:`ν_0^{α/β}` on page 31 of :cite:t:`nrlformulary:2019`.
 
         This form of the Lorentz collision frequency differs from the
         form found in
@@ -444,7 +442,7 @@ class MaxwellianCollisionFrequencies:
     @cached_property
     def Lorentz_collision_frequency(self):
         r"""
-        The Lorentz collision frequency.
+        Frequency of small-angle Coulomb collisions between particles.
 
         The Lorentz collision frequency (see Ch. 5 of
         :cite:t:`chen:2016`) is given by
@@ -455,11 +453,11 @@ class MaxwellianCollisionFrequencies:
 
         where :math:`n` is the particle number density, :math:`σ` is the
         collisional cross-section, :math:`v` is the mean thermal
-        velocity between particle species (see Equation 2.133 in
+        velocity between particle species (see Eq. 2.133 in
         :cite:t:`callen:unpublished`), and :math:`\ln{Λ}` is the Coulomb
         logarithm accounting for small angle collisions.
 
-        See Equation (2.86) in :cite:t:`callen:unpublished`.
+        See Eq. 2.86 in :cite:t:`callen:unpublished`.
 
         This form of the Lorentz collision frequency differs from the
         form found in |SingleParticleCollisionFrequencies| in that
@@ -467,7 +465,8 @@ class MaxwellianCollisionFrequencies:
         in this method (as opposed to the drift velocity between
         species).
         """
-
+        # Did Eq. 2.133 from callen:unpublished get renumbered since
+        # this docstring was first written?
         return (
             4
             * np.pi
@@ -779,8 +778,7 @@ def collision_frequency(
             * reduced_mass
             / m_e
         )
-        # !!! may also need to correct Coulomb logarithm to be
-        # electron-electron version !!!
+        # ⚠️ May also need to correct Coulomb logarithm to be electron-electron version
     else:
         # ion-ion collision
         # if a velocity was passed, we use that instead of the reduced
