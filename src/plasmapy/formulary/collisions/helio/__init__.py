@@ -1,7 +1,7 @@
 """
-Heliospheric plasma science functionality related to plasma collisions.
+Functionality related to collisions in heliospheric plasma.
 
-Includes applications to the solar wind.
+Applications include the solar wind.
 """
 
 __all__ = ["temp_ratio"]
