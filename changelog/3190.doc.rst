@@ -1,0 +1,1 @@
+Updated subpackage headers and docstrings in `plasmapy.formulary`.
