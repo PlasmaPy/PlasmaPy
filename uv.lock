@@ -3,7 +3,7 @@ revision = 3
 requires-python = ">=3.12"
 
 [options]
-exclude-newer = "2026-01-12T00:17:16.777344299Z"
+exclude-newer = "2026-01-12T22:05:02.824733565Z"
 exclude-newer-span = "P3D"
 
 [[package]]
@@ -525,11 +525,11 @@ wheels = [
 
 [[package]]
 name = "docutils"
-version = "0.21.2"
+version = "0.22.4"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/ae/ed/aefcc8cd0ba62a0560c3c18c33925362d46c6075480bfa4df87b28e169a9/docutils-0.21.2.tar.gz", hash = "sha256:3a6b18732edf182daa3cd12775bbb338cf5691468f91eeeb109deff6ebfa986f", size = 2204444, upload-time = "2024-04-23T18:57:18.24Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/ae/b6/03bb70946330e88ffec97aefd3ea75ba575cb2e762061e0e62a213befee8/docutils-0.22.4.tar.gz", hash = "sha256:4db53b1fde9abecbb74d91230d32ab626d94f6badfc575d6db9194a49df29968", size = 2291750, upload-time = "2025-12-18T19:00:26.443Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/8f/d7/9322c609343d929e75e7e5e6255e614fcc67572cfd083959cdef3b7aad79/docutils-0.21.2-py3-none-any.whl", hash = "sha256:dafca5b9e384f0e419294eb4d2ff9fa826435bf15f15b7bd45723e8ad76811b2", size = 587408, upload-time = "2024-04-23T18:57:14.835Z" },
+    { url = "https://files.pythonhosted.org/packages/02/10/5da547df7a391dcde17f59520a231527b8571e6f46fc8efb02ccb370ab12/docutils-0.22.4-py3-none-any.whl", hash = "sha256:d0013f540772d1420576855455d050a2180186c91c15779301ac2ccb3eeb68de", size = 633196, upload-time = "2025-12-18T19:00:18.077Z" },
 ]
 
 [[package]]
@@ -1711,7 +1711,7 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "docutils", specifier = ">=0.21.2" },
+    { name = "docutils", specifier = ">=0.22" },
     { name = "hypothesis", specifier = ">=6.150" },
     { name = "ipykernel", specifier = ">=7.1" },
     { name = "ipywidgets", specifier = ">=8.1.8" },
@@ -1721,7 +1721,7 @@ dev = [
     { name = "nox", specifier = ">=2025.11.12" },
     { name = "nox-uv", specifier = ">=0.7" },
     { name = "numpydoc", specifier = ">=1.10" },
-    { name = "pillow", specifier = ">=12" },
+    { name = "pillow", specifier = ">=12.1" },
     { name = "pip", specifier = ">=25.3" },
     { name = "plasmapy-sphinx", specifier = ">=2025.5.1" },
     { name = "pre-commit", specifier = ">=4.5.1" },
@@ -1733,7 +1733,7 @@ dev = [
     { name = "pytest-rerunfailures", specifier = ">=16.1" },
     { name = "pytest-xdist", specifier = ">=3.8" },
     { name = "ruff", specifier = ">=0.14.11" },
-    { name = "sphinx", specifier = ">=8.2.3,<8.3" },
+    { name = "sphinx", specifier = ">=9.1" },
     { name = "sphinx-changelog", specifier = ">=1.6" },
     { name = "sphinx-codeautolink", specifier = "==0.17.5" },
     { name = "sphinx-collapse", specifier = ">=0.1.3" },
@@ -1741,26 +1741,26 @@ dev = [
     { name = "sphinx-gallery", specifier = ">=0.20" },
     { name = "sphinx-issues", specifier = ">=5.0.1" },
     { name = "sphinx-notfound-page", specifier = ">=1.1" },
-    { name = "sphinx-reredirects", specifier = ">=1" },
-    { name = "sphinx-rtd-theme", specifier = ">=3.0.2" },
+    { name = "sphinx-reredirects", specifier = ">=1.1" },
+    { name = "sphinx-rtd-theme", specifier = ">=3.1" },
     { name = "sphinx-tabs", specifier = ">=3.4.7" },
     { name = "sphinxcontrib-bibtex", specifier = ">=2.6.5" },
-    { name = "sphinxcontrib-globalsubs", specifier = "==0.1.2" },
-    { name = "sphinxemoji", specifier = ">=0.3.1" },
+    { name = "sphinxcontrib-globalsubs", specifier = ">=1" },
+    { name = "sphinxemoji", specifier = ">=0.3.2" },
     { name = "towncrier", specifier = ">=24.8" },
     { name = "unidecode", specifier = ">=1.4" },
 ]
 docs = [
-    { name = "docutils", specifier = ">=0.21.2" },
+    { name = "docutils", specifier = ">=0.22" },
     { name = "ipykernel", specifier = ">=7.1" },
     { name = "ipywidgets", specifier = ">=8.1.8" },
     { name = "jinja2", specifier = ">=3.1.6" },
     { name = "nbsphinx", specifier = ">=0.9.8" },
     { name = "numpydoc", specifier = ">=1.10" },
-    { name = "pillow", specifier = ">=12" },
+    { name = "pillow", specifier = ">=12.1" },
     { name = "plasmapy-sphinx", specifier = ">=2025.5.1" },
     { name = "pygments", specifier = "==2.19.2" },
-    { name = "sphinx", specifier = ">=8.2.3,<8.3" },
+    { name = "sphinx", specifier = ">=9.1" },
     { name = "sphinx-changelog", specifier = ">=1.6" },
     { name = "sphinx-codeautolink", specifier = "==0.17.5" },
     { name = "sphinx-collapse", specifier = ">=0.1.3" },
@@ -1768,12 +1768,12 @@ docs = [
     { name = "sphinx-gallery", specifier = ">=0.20" },
     { name = "sphinx-issues", specifier = ">=5.0.1" },
     { name = "sphinx-notfound-page", specifier = ">=1.1" },
-    { name = "sphinx-reredirects", specifier = ">=1" },
-    { name = "sphinx-rtd-theme", specifier = ">=3.0.2" },
+    { name = "sphinx-reredirects", specifier = ">=1.1" },
+    { name = "sphinx-rtd-theme", specifier = ">=3.1" },
     { name = "sphinx-tabs", specifier = ">=3.4.7" },
     { name = "sphinxcontrib-bibtex", specifier = ">=2.6.5" },
-    { name = "sphinxcontrib-globalsubs", specifier = "==0.1.2" },
-    { name = "sphinxemoji", specifier = ">=0.3.1" },
+    { name = "sphinxcontrib-globalsubs", specifier = ">=1" },
+    { name = "sphinxemoji", specifier = ">=0.3.2" },
     { name = "towncrier", specifier = ">=24.8" },
     { name = "unidecode", specifier = ">=1.4" },
 ]
@@ -2230,18 +2230,6 @@ wheels = [
 ]
 
 [[package]]
-name = "roman-numerals-py"
-version = "4.1.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "roman-numerals" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/cb/b5/de96fca640f4f656eb79bbee0e79aeec52e3e0e359f8a3e6a0d366378b64/roman_numerals_py-4.1.0.tar.gz", hash = "sha256:f5d7b2b4ca52dd855ef7ab8eb3590f428c0b1ea480736ce32b01fef2a5f8daf9", size = 4274, upload-time = "2025-12-17T18:25:41.153Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/27/2c/daca29684cbe9fd4bc711f8246da3c10adca1ccc4d24436b17572eb2590e/roman_numerals_py-4.1.0-py3-none-any.whl", hash = "sha256:553114c1167141c1283a51743759723ecd05604a1b6b507225e91dc1a6df0780", size = 4547, upload-time = "2025-12-17T18:25:40.136Z" },
-]
-
-[[package]]
 name = "rpds-py"
 version = "0.30.0"
 source = { registry = "https://pypi.org/simple" }
@@ -2447,7 +2435,7 @@ wheels = [
 
 [[package]]
 name = "sphinx"
-version = "8.2.3"
+version = "9.1.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "alabaster" },
@@ -2459,7 +2447,7 @@ dependencies = [
     { name = "packaging" },
     { name = "pygments" },
     { name = "requests" },
-    { name = "roman-numerals-py" },
+    { name = "roman-numerals" },
     { name = "snowballstemmer" },
     { name = "sphinxcontrib-applehelp" },
     { name = "sphinxcontrib-devhelp" },
@@ -2468,9 +2456,9 @@ dependencies = [
     { name = "sphinxcontrib-qthelp" },
     { name = "sphinxcontrib-serializinghtml" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/38/ad/4360e50ed56cb483667b8e6dadf2d3fda62359593faabbe749a27c4eaca6/sphinx-8.2.3.tar.gz", hash = "sha256:398ad29dee7f63a75888314e9424d40f52ce5a6a87ae88e7071e80af296ec348", size = 8321876, upload-time = "2025-03-02T22:31:59.658Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/cd/bd/f08eb0f4eed5c83f1ba2a3bd18f7745a2b1525fad70660a1c00224ec468a/sphinx-9.1.0.tar.gz", hash = "sha256:7741722357dd75f8190766926071fed3bdc211c74dd2d7d4df5404da95930ddb", size = 8718324, upload-time = "2025-12-31T15:09:27.646Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/31/53/136e9eca6e0b9dc0e1962e2c908fbea2e5ac000c2a2fbd9a35797958c48b/sphinx-8.2.3-py3-none-any.whl", hash = "sha256:4405915165f13521d875a8c29c8970800a0141c14cc5416a38feca4ea5d9b9c3", size = 3589741, upload-time = "2025-03-02T22:31:56.836Z" },
+    { url = "https://files.pythonhosted.org/packages/73/f7/b1884cb3188ab181fc81fa00c266699dab600f927a964df02ec3d5d1916a/sphinx-9.1.0-py3-none-any.whl", hash = "sha256:c84fdd4e782504495fe4f2c0b3413d6c2bf388589bb352d439b2a3bb99991978", size = 3921742, upload-time = "2025-12-31T15:09:25.561Z" },
 ]
 
 [[package]]
@@ -2574,16 +2562,16 @@ wheels = [
 
 [[package]]
 name = "sphinx-rtd-theme"
-version = "3.0.2"
+version = "3.1.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "docutils" },
     { name = "sphinx" },
     { name = "sphinxcontrib-jquery" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/91/44/c97faec644d29a5ceddd3020ae2edffa69e7d00054a8c7a6021e82f20335/sphinx_rtd_theme-3.0.2.tar.gz", hash = "sha256:b7457bc25dda723b20b086a670b9953c859eab60a2a03ee8eb2bb23e176e5f85", size = 7620463, upload-time = "2024-11-13T11:06:04.545Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/84/68/a1bfbf38c0f7bccc9b10bbf76b94606f64acb1552ae394f0b8285bfaea25/sphinx_rtd_theme-3.1.0.tar.gz", hash = "sha256:b44276f2c276e909239a4f6c955aa667aaafeb78597923b1c60babc76db78e4c", size = 7620915, upload-time = "2026-01-12T16:03:31.17Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/85/77/46e3bac77b82b4df5bb5b61f2de98637724f246b4966cfc34bc5895d852a/sphinx_rtd_theme-3.0.2-py2.py3-none-any.whl", hash = "sha256:422ccc750c3a3a311de4ae327e82affdaf59eb695ba4936538552f3b00f4ee13", size = 7655561, upload-time = "2024-11-13T11:06:02.094Z" },
+    { url = "https://files.pythonhosted.org/packages/87/c7/b5c8015d823bfda1a346adb2c634a2101d50bb75d421eb6dcb31acd25ebc/sphinx_rtd_theme-3.1.0-py2.py3-none-any.whl", hash = "sha256:1785824ae8e6632060490f67cf3a72d404a85d2d9fc26bce3619944de5682b89", size = 7655617, upload-time = "2026-01-12T16:03:28.101Z" },
 ]
 
 [[package]]
@@ -2635,14 +2623,14 @@ wheels = [
 
 [[package]]
 name = "sphinxcontrib-globalsubs"
-version = "0.1.2"
+version = "1.0.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "sphinx" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/c9/37/9eb5bff579edc7877ae66c91ef629de2947198b864c16c65f83b9ea1fa5d/sphinxcontrib_globalsubs-0.1.2.tar.gz", hash = "sha256:627823712c3db94d26d2b518e9fd7cd3d901f6ba54b3ab5bddabc7642b2a43b8", size = 3996, upload-time = "2024-09-12T15:44:10.482Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/05/b1/7a609ebcf47dbf494b6c84c03d5255755780686001ff0f6a7895c6a954c9/sphinxcontrib_globalsubs-1.0.0.tar.gz", hash = "sha256:1699b6c8ddf6075faa2a11f8ce8df645e0eb381b9711e24c3094654718d86962", size = 4082, upload-time = "2025-12-02T19:38:02.194Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/c9/45/2110b35ce5f03625765216fdf5a6ebb9c3e50c042bdb0fede18bd249b554/sphinxcontrib_globalsubs-0.1.2-py3-none-any.whl", hash = "sha256:3ac123f259710cfebc6b1c07dddee50d65c44944fd70a642b37efde55ff574c3", size = 4319, upload-time = "2024-09-12T15:44:08.988Z" },
+    { url = "https://files.pythonhosted.org/packages/ff/8d/8014418f8eff375cc06a8507f480906425a340559062d6f5438df5858af4/sphinxcontrib_globalsubs-1.0.0-py3-none-any.whl", hash = "sha256:a6cb446760af082665d9b76accc4ac5eb806726db1c63467f691b907f3f0870c", size = 4419, upload-time = "2025-12-02T19:38:00.726Z" },
 ]
 
 [[package]]
