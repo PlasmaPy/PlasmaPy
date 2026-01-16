@@ -124,7 +124,7 @@ class SingleParticleCollisionFrequencies:
     For values of :math:`x ≪ 1` (the 'slow' or 'thermal' limit) or
     :math:`x ≫ 1` (the 'fast' or 'beam' limit), :math:`ψ` asymptotes to
     zero or one respectively. For simplified expressions in these
-    limits, please refer to page 31 of :cite:t:`nrlformulary`.
+    limits, please refer to page 31 of :cite:t:`nrlformulary:2019`.
 
     Examples
     --------
@@ -295,7 +295,7 @@ class SingleParticleCollisionFrequencies:
         `~scipy.integrate.quad`.
 
         For more information refer to page 31 of
-        :cite:t:`nrlformulary`.
+        :cite:t:`nrlformulary:2019`.
         """
         vectorized_integral = np.vectorize(self._phi_explicit)
 
@@ -890,7 +890,7 @@ def fundamental_electron_collision_freq(
 
     * :math:`1/τ_e` from equation (2.5e) on page 215 of
       :cite:t:`braginskii:1965`
-    * :math:`ν_e` from page 33 of :cite:t:`nrlformulary`
+    * :math:`ν_e` from page 33 of :cite:t:`nrlformulary:2019`
 
     Examples
     --------
@@ -1056,7 +1056,7 @@ def fundamental_ion_collision_freq(
 
     * :math:`1/τ_i` from equation (2.5i) on page 215 of
       :cite:t:`braginskii:1965`
-    * :math:`ν_i` from page 33 of :cite:t:`nrlformulary`
+    * :math:`ν_i` from page 33 of :cite:t:`nrlformulary:2019`
 
     Examples
     --------

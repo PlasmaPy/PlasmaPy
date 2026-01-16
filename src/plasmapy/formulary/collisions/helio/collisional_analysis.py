@@ -165,7 +165,7 @@ def temp_ratio(  # noqa: C901
     force :cite:p:`baumjohann:1997`. It is assumed that there is no
     relative drift between the ion species and that it is a mixed ion
     collision, and the Coulomb logarithm for a mixed ion collision is
-    given by :cite:t:`nrlformulary`.
+    given by :cite:t:`nrlformulary:2019`.
 
     The density, velocity and temperature of the primary ion can be
     radially scaled, as seen below. The values for the scaling can be
