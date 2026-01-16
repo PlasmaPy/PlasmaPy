@@ -777,8 +777,7 @@ def collision_frequency(
             * reduced_mass
             / m_e
         )
-        # !!! may also need to correct Coulomb logarithm to be
-        # electron-electron version !!!
+        # ⚠️ May also need to correct Coulomb logarithm to be electron-electron version
     else:
         # ion-ion collision
         # if a velocity was passed, we use that instead of the reduced
