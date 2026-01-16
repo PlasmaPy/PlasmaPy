@@ -27,7 +27,8 @@ class SingleParticleCollisionFrequencies:
     r"""
     Compute collision frequencies between particles.
 
-    Test particles are labeled `a` and field particles are labeled `b`.
+    Test particles are labeled :math:`a` and field particles are
+    labeled :math:`b`.
 
     Parameters
     ----------
