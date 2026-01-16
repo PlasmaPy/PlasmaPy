@@ -24,7 +24,7 @@ from plasmapy.formulary.collisions.misc import Bethe_stopping_lite
 from plasmapy.particles import Particle, particle_input
 from plasmapy.particles.atomic import stopping_power
 from plasmapy.particles.particle_collections import ParticleListLike
-from plasmapy.plasma.grids import AbstractGrid
+from plasmapy.plasma.grids import AbstractGrid, CartesianGrid
 from plasmapy.plasma.plasma_base import BasePlasma
 from plasmapy.simulation.particle_integrators import (
     AbstractIntegrator,
@@ -70,7 +70,7 @@ class ParticleTracker:
 
     Parameters
     ----------
-    grids : An instance of `~plasmapy.plasma.grids.AbstractGrid`
+    grids : An instance of `~plasmapy.plasma.grids.CartesianGrid`
         A Grid object or list of grid objects containing the required quantities.
         The list of required quantities varies depending on other keywords.
 
@@ -197,7 +197,7 @@ class ParticleTracker:
 
     def __init__(
         self,
-        grids: AbstractGrid | Iterable[AbstractGrid],
+        grids: CartesianGrid | Iterable[CartesianGrid],
         termination_condition: AbstractTerminationCondition | None = None,
         save_routine: AbstractSaveRoutine | None = None,
         particle_integrator: type[AbstractIntegrator] | None = None,
@@ -337,7 +337,7 @@ class ParticleTracker:
         Take the user provided argument for grids and convert it into the proper type.
         """
 
-        if isinstance(grids, AbstractGrid):
+        if isinstance(grids, CartesianGrid):
             return [
                 grids,
             ]
@@ -665,6 +665,7 @@ class ParticleTracker:
                 "Please provide an array of length ngrids for the materials and densities."
             )
 
+        # TODO: does this method still exist?
         if not self._is_quantity_defined_on_one_grid("T_i"):
             warnings.warn(
                 "The ion temperature is not defined on any of the provided grids! "
@@ -756,6 +757,7 @@ class ParticleTracker:
         #  Each quantity is initialized as a zeros array with its respective units
         # Arrays are ``num_particles`` sized so they don't need to be recreated
         # when the number of tracked particles changes
+        # TODO: Is there a way to make this dictionary unit-agnostic?
         self._total_grid_values = {
             field_name: np.zeros(self.num_particles)
             * AbstractGrid.recognized_quantities()[field_name].unit
@@ -905,7 +907,7 @@ class ParticleTracker:
                 f"Expected mask of size {self.x.shape[0]}, got {len(particles_to_stop_mask)}"
             )
 
-        self._v[particles_to_stop_mask] = np.nan
+        self._tracked_particle_mask[particles_to_stop_mask] = False
 
         # Reset the cache to update the particle masks
         self._reset_cache()
@@ -922,8 +924,7 @@ class ParticleTracker:
                 f"Expected mask of size {self.x.shape[0]}, got {len(particles_to_remove_mask)}"
             )
 
-        self._x[particles_to_remove_mask] = np.nan
-        self._v[particles_to_remove_mask] = np.nan
+        self._tracked_particle_mask[particles_to_remove_mask] = False
 
         # Reset the cache to update the particle masks
         self._reset_cache()
@@ -1034,6 +1035,8 @@ class ParticleTracker:
                         0.0 * AbstractGrid.recognized_quantities()[field_name].unit,
                     )
                 )
+
+        # TODO: Implement a compact way to apply these units
         self._E[:, 0] = self._total_grid_values["E_x"].to(u.V / u.m).value
         self._E[:, 1] = self._total_grid_values["E_y"].to(u.V / u.m).value
         self._E[:, 2] = self._total_grid_values["E_z"].to(u.V / u.m).value
@@ -1067,17 +1070,19 @@ class ParticleTracker:
         Update the positions and velocities of the simulated particles using the
         integrator provided at instantiation.
         """
+        tracked_mask = self._tracked_particle_mask
+
         x_results, v_results = self._integrator.push(
-            self.x[self._tracked_particle_mask],
-            self.v[self._tracked_particle_mask],
-            self._B[self._tracked_particle_mask],
-            self._E[self._tracked_particle_mask],
+            self.x[tracked_mask],
+            self.v[tracked_mask],
+            self._B[tracked_mask],
+            self._E[tracked_mask],
             self.q,
             self.m,
             self.dt,
         )
 
-        self._x[self._tracked_particle_mask], self._v[self._tracked_particle_mask] = (
+        self._x[tracked_mask], self._v[tracked_mask] = (
             x_results,
             v_results,
         )
@@ -1193,7 +1198,7 @@ class ParticleTracker:
         # Ensure there are no particles on multiple grids
         self._multi_grid_check()
 
-        mean_square_scatter_rate = np.zeros(shape=self.nparticles_tracked)
+        mean_square_scatter_rate = np.zeros(shape=self.num_particles_tracked)
 
         for i, _grid in enumerate(self.grids):
             particles_on_grid = self.particles_on_grid[self._tracked_particle_mask, i]
@@ -1213,7 +1218,7 @@ class ParticleTracker:
             )
 
         mean_square_scatter_rate = np.reshape(
-            mean_square_scatter_rate, newshape=(self.nparticles_tracked, 1)
+            mean_square_scatter_rate, newshape=(self.num_particles_tracked, 1)
         )
 
         # The (polar) angle resulting from scattering
@@ -1221,7 +1226,7 @@ class ParticleTracker:
             scale=np.sqrt(
                 mean_square_scatter_rate * self.dt[self._tracked_particle_mask]
             ),
-            size=(self.nparticles_tracked, 1),
+            size=(self.num_particles_tracked, 1),
         )
 
         theta = np.nan_to_num(theta, 0)
@@ -1229,7 +1234,7 @@ class ParticleTracker:
         # Generate a vector that lies somewhere in the plane perpendicular to the velocity
         k = np.cross(
             self._v[self._tracked_particle_mask],
-            self._RNG.uniform(low=-1, high=1, size=(self.nparticles_tracked, 3)),
+            self._RNG.uniform(low=-1, high=1, size=(self.num_particles_tracked, 3)),
         )
         # Normalize
         k_norm = k / np.linalg.norm(k, axis=-1, keepdims=True)
@@ -1293,6 +1298,7 @@ class ParticleTracker:
             np.bool_
         )
 
+    # TODO: Update these names to match our new masks
     def _reset_cache(self):
         """
         Reset the cached properties.
@@ -1358,12 +1364,8 @@ class ParticleTracker:
         return 0.5 * self.m * np.square(np.linalg.norm(self.v, axis=-1, keepdims=True))
 
     @cached_property
-    def _tracked_particle_mask(self) -> NDArray[np.bool_]:
-        """
-        Calculates a boolean mask corresponding to particles that have not been stopped or removed.
-        """
-        # See Class docstring for definition of `stopped` and `removed`
-        return ~np.logical_or(np.isnan(self.x[:, 0]), np.isnan(self.v[:, 0]))
+    def _tracked_particle_mask(self):
+        return np.full(self.x.shape[:-1], fill_value=True)
 
     @cached_property
     def num_particles_tracked(self) -> int:
@@ -1375,10 +1377,13 @@ class ParticleTracker:
     @cached_property
     def _stopped_particle_mask(self) -> NDArray[np.bool_]:
         """
-        Calculates a boolean mask corresponding to particles that have not been stopped or removed.
+        Calculates a boolean mask corresponding to particles that have been stopped.
         """
-        # See Class docstring for definition of `stopped` and `removed`
-        return np.logical_and(~np.isnan(self.x[:, 0]), np.isnan(self.v[:, 0]))
+
+        # Calculated by taking the difference/intersection of untracked and removed particles
+        return np.logical_and(
+            ~self._tracked_particle_mask, ~self._removed_particle_mask
+        )
 
     @cached_property
     def num_particles_stopped(self) -> int:
@@ -1390,10 +1395,10 @@ class ParticleTracker:
     @cached_property
     def _removed_particle_mask(self) -> NDArray[np.bool_]:
         """
-        Calculates a boolean mask corresponding to particles that have not been stopped or removed.
+        Calculates a boolean mask corresponding to particles that have been removed.
         """
-        # See Class docstring for definition of `stopped` and `removed`
-        return np.logical_and(np.isnan(self.x[:, 0]), np.isnan(self.v[:, 0]))
+        # See Class docstring for definition of `removed`
+        return np.isnan(self.x[:, 0])
 
     @cached_property
     def num_particles_removed(self) -> int:
