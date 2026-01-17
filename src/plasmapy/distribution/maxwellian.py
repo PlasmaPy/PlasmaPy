@@ -4,4 +4,7 @@ __all__ = ["MaxwellianDistribution"]
 
 
 class MaxwellianDistribution:
-    ...
+    """Maxwell-Botzmann distribution function."""
+
+    def __init__(self):
+        ...
