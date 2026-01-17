@@ -3,5 +3,5 @@
 from plasmapy.distribution import MaxwellianDistribution
 
 
-def test_instantiation():
+def test_instantiation() -> None:
     MaxwellianDistribution()
