@@ -26,7 +26,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     if: >-
       github.event_name == 'workflow_dispatch' ||
-      (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'run upstream tests')) ||
+      (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'build upstream docs')) ||
       (github.event_name == 'schedule' && github.repository == 'PlasmaPy/PlasmaPy' && github.ref == 'refs/heads/main')
 
     strategy:
