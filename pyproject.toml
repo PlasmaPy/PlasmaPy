@@ -509,7 +509,7 @@ addopts = [
   "--durations=5",
   "--durations-min=0.5", # in seconds
   "--tb=short",
-  "-n=auto",
+  "--numprocesses=auto",
   "--dist=loadfile",
   "--keep-duplicates",
   "--ignore=src/plasmapy/_dev",
