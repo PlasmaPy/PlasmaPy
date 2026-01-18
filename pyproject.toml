@@ -512,6 +512,7 @@ addopts = [
   "-n=auto",
   "--dist=loadfile",
   "--keep-duplicates",
+  "--ignore=src/plasmapy/_dev",
 ]
 doctest_optionflags = [
   "NORMALIZE_WHITESPACE",
