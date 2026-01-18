@@ -506,8 +506,8 @@ ignore = [
 [tool.pytest] # https://docs.pytest.org/en/stable/reference/reference.html#ini-options-ref
 addopts = [
   "--pyargs",
-  "--durations=4",
-  "--durations-min=0.2", # in seconds; here min ≡ minimum
+  "--durations=5",
+  "--durations-min=0.5", # in seconds
   "--tb=short",
   "-n=auto",
   "--dist=loadfile",
