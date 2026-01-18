@@ -210,6 +210,7 @@ def validate_lockfile(session: nox.Session) -> None:
 
 # Define pytest flags that are only used in some cases. Add flags that
 # are always used to tool.pytest.addopts in pyproject.toml.
+# are always used in tool.pytest.addopts in pyproject.toml instead of
 
 WITH_DOCTESTS: tuple[str, ...] = ("--doctest-modules", "--doctest-continue-on-failure")
 
