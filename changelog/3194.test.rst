@@ -1,0 +1,1 @@
+Updated the pytest configuration in :file:`pyproject.toml` and :file:`noxfile.py`.
