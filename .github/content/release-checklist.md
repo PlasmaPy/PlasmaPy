@@ -28,7 +28,11 @@ This issue is created from the [release checklist] for releasing a new version o
 
   - Occasionally, certain hooks may need to be manually downgraded after running `pre-commit autoupdate` because of problems with the latest versions of these hooks. Look for comments in [`.pre-commit-config.yaml`] for guidance. 🪝
 
+- [ ] Address issues labeled as [needed for release](https://github.com/PlasmaPy/PlasmaPy/issues?q=state%3Aopen%20label%3A%22needed%20for%20release%22).
+
 - [ ] Run the [upstream tests] and fix failures, as appropriate. These checks run tests and build documentation against unreleased versions of core dependencies. [![upstream tests](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/ci-upstream.yml/badge.svg)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/ci-upstream.yml)
+
+- [ ] Fix any remaining deprecation warnings, including any ignored under `tool.pytest.filterwarnings` in [`pyproject.toml`].
 
 ### Perform the release
 
