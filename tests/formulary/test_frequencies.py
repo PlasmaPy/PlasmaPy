@@ -35,6 +35,7 @@ B_nanarr = np.array([0.001, np.nan]) * u.T
         (wlh_, lower_hybrid_frequency),
         (wuh_, upper_hybrid_frequency),
     ],
+    ids=["oc_", "wc_", "wlh_", "wuh_"],
 )
 def test_aliases(alias, parent) -> None:
     """Test all aliases defined in frequencies.py"""

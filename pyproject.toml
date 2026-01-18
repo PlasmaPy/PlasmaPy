@@ -503,11 +503,17 @@ ignore = [
   "src/plasmapy/_version.py",
 ]
 
-[tool.pytest]
-testpaths = [ '.' ]
-xfail_strict = true
-markers = [
-  "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+[tool.pytest] # https://docs.pytest.org/en/stable/reference/reference.html#ini-options-ref
+addopts = [
+  "--pyargs",
+  "--durations=5",
+  "--durations-min=0.4",
+  "--tb=short",
+  "--numprocesses=auto",
+  "--dist=loadfile",
+  "--keep-duplicates",
+  "--ignore=src/plasmapy/_dev",
+  "--ignore=src/plasmapy/version.py",
 ]
 doctest_optionflags = [
   "NORMALIZE_WHITESPACE",
@@ -515,8 +521,12 @@ doctest_optionflags = [
   "NUMBER",
   "IGNORE_EXCEPTION_DETAIL",
 ]
+empty_parameter_set_mark = "fail_at_collect"
 filterwarnings = [
-  # treat warnings as errors, except as specified below
+  # To prevent the number of warnings issue during tests from ballooning,
+  # treat warnings as errors unless otherwise specified. Please raise a
+  # GitHub issue when ignoring a FutureWarning or DeprecationWarning,
+  # and label it with "needed for release".
   "error",
 
   # ubiquitous warning in particle tracker (see issue #2514)
@@ -528,35 +538,16 @@ filterwarnings = [
   # for numpy.reshape calls, newshape kwarg is deprecated; use shape instead or pass positionally
   "once:.*MultiIndex.*:FutureWarning",
 
-  # the following warnings have occurred on GitHub but are likely unimportant
+  # warnings that have occurred sporadically but probably aren't important
   "once:unclosed:ResourceWarning",
   "once::pytest.PytestUnraisableExceptionWarning",
   "once:XDG_CONFIG_HOME:astropy.utils.exceptions.AstropyUserWarning",
 ]
-norecursedirs = [
-  '*egg-info*',
-  '.*cache*',
-  '.*env',
-  '.[tn]ox',
-  '.cov*',
-  '.git*',
-  '.hypothesis',
-  '.idea',
-  '.jupyter',
-  '.vscode',
-  '__pycache__',
-  '_dev',
-  'binder',
-  'build',
-  'changelog',
-  'dist',
-  'docs',
-  'licenses',
-  'node_modules',
-  'tools',
-  'venv',
-  '.venv',
+markers = [
+  "slow: marks tests as slow (deselect with '-m \"not slow\"')",
 ]
+strict = true
+testpaths = [ 'tests', 'src/plasmapy', 'tools' ]
 
 [tool.coverage.report]
 exclude_lines = [

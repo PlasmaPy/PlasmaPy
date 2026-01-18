@@ -101,7 +101,7 @@ repos:
     exclude: CITATION.cff|docs/notebooks/dispersion/stix_dispersion.ipynb
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.14.11
+  rev: v0.14.13
   hooks:
   - id: ruff-check
     name: ruff-check (see https://docs.astral.sh/ruff/rules)
@@ -128,7 +128,7 @@ repos:
   hooks:
   - id: validate-pyproject
     name: validate pyproject.toml
-    additional_dependencies: ['validate-pyproject-schema-store[all]']
+    additional_dependencies: ['validate-pyproject-schema-store[all]>=2026']
 
 - repo: https://github.com/tox-dev/pyproject-fmt
   rev: v2.11.1
@@ -137,7 +137,7 @@ repos:
     name: format pyproject.toml
 
 - repo: https://github.com/astral-sh/uv-pre-commit
-  rev: 0.9.24
+  rev: 0.9.26
   hooks:
     # running uv lock requires network access or a warm cache, so it
     # cannot be run via pre-commit.ci, even with the `--offline`,
