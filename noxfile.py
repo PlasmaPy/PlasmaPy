@@ -366,6 +366,9 @@ def docs(session: nox.Session) -> None:
     if RUNNING_ON_CI:
         session.log(DOC_TROUBLESHOOTING_MESSAGE)
 
+    # Can we use pixi or conda to install graphviz and pandoc if they
+    # are not installed?
+
     session.run_install("dot", "-V", external=True)
     session.run_install("pandoc", "--version", external=True)
 
