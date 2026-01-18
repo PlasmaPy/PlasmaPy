@@ -507,7 +507,7 @@ ignore = [
 addopts = [
   "--pyargs",
   "--durations=5",
-  "--durations-min=0.5", # in seconds
+  "--durations-min=0.4",
   "--tb=short",
   "--numprocesses=auto",
   "--dist=loadfile",
@@ -523,7 +523,10 @@ doctest_optionflags = [
 ]
 empty_parameter_set_mark = "fail_at_collect"
 filterwarnings = [
-  # treat warnings as errors, except as specified below
+  # To prevent the number of warnings issue during tests from ballooning,
+  # treat warnings as errors unless otherwise specified. Please raise a
+  # GitHub issue when ignoring a FutureWarning or DeprecationWarning,
+  # and label it with "needed for release".
   "error",
 
   # ubiquitous warning in particle tracker (see issue #2514)
@@ -535,7 +538,7 @@ filterwarnings = [
   # for numpy.reshape calls, newshape kwarg is deprecated; use shape instead or pass positionally
   "once:.*MultiIndex.*:FutureWarning",
 
-  # the following warnings have occurred on GitHub but are likely unimportant
+  # warnings that have occurred sporadically but probably aren't important
   "once:unclosed:ResourceWarning",
   "once::pytest.PytestUnraisableExceptionWarning",
   "once:XDG_CONFIG_HOME:astropy.utils.exceptions.AstropyUserWarning",
@@ -545,7 +548,6 @@ markers = [
 ]
 strict = true
 testpaths = [ 'tests', 'src/plasmapy', 'tools' ]
-
 
 [tool.coverage.report]
 exclude_lines = [
