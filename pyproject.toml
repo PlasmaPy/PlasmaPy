@@ -503,11 +503,7 @@ ignore = [
   "src/plasmapy/_version.py",
 ]
 
-[tool.pytest]
-testpaths = [ '.' ]
-strict_xfail = true
-markers = [
-  "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+[tool.pytest] # https://docs.pytest.org/en/stable/reference/reference.html#ini-options-ref
 addopts = [
   "--pyargs",
   "--durations=4",
@@ -546,6 +542,7 @@ markers = [
   "slow: marks tests as slow (deselect with '-m \"not slow\"')",
 ]
 testpaths = [ 'tests', 'src/plasmapy', 'tools' ]
+strict = true
 
 [tool.coverage.report]
 exclude_lines = [
