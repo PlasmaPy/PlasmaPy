@@ -53,17 +53,20 @@ minpython = min(supported_python_versions)
 
 root_dir = pathlib.Path(__file__).parent
 
+current_python = f"{sys.version_info.major}.{sys.version_info.minor}"
+
+# Define what sessions get run when running `nox` without a session
+
+nox.options.sessions = [f"tests-{current_python}(all)"]
+
 # The documentation should be build always using the same version of
 # Python, which should be the latest version of Python supported by Read
 # the Docs. Because Read the Docs takes some time to support new
 # releases of Python, docpython should stay independent of maxpython.
-#
 # Changing docpython also requires updating .readthedocs.yml and the
 # GitHub workflows for building the documentation.
 
 docpython = "3.14"
-
-current_python = f"{sys.version_info.major}.{sys.version_info.minor}"
 
 nox.options.default_venv_backend = "uv"
 
@@ -71,9 +74,6 @@ uv_sync = ("uv", "sync", "--no-progress", "--frozen")
 
 running_on_ci: bool = os.getenv("CI") is not None
 running_on_rtd: bool = os.environ.get("READTHEDOCS") == "True"
-
-# Define what sessions get run when running `nox` without a session
-nox.options.sessions = [f"tests-{current_python}(all)"]
 
 
 def _create_lockfile_pr_message(uv_output: str, session: nox.Session) -> None:
