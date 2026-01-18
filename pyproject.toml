@@ -515,6 +515,7 @@ doctest_optionflags = [
   "NUMBER",
   "IGNORE_EXCEPTION_DETAIL",
 ]
+empty_parameter_set_mark = "fail_at_collect"
 filterwarnings = [
   # treat warnings as errors, except as specified below
   "error",
@@ -533,29 +534,6 @@ filterwarnings = [
   "once::pytest.PytestUnraisableExceptionWarning",
   "once:XDG_CONFIG_HOME:astropy.utils.exceptions.AstropyUserWarning",
 ]
-norecursedirs = [
-  '*egg-info*',
-  '.*cache*',
-  '.*env',
-  '.[tn]ox',
-  '.cov*',
-  '.git*',
-  '.hypothesis',
-  '.idea',
-  '.jupyter',
-  '.vscode',
-  '__pycache__',
-  '_dev',
-  'binder',
-  'build',
-  'changelog',
-  'dist',
-  'docs',
-  'licenses',
-  'node_modules',
-  'tools',
-  'venv',
-  '.venv',
 ]
 
 [tool.coverage.report]
