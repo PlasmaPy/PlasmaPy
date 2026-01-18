@@ -542,8 +542,9 @@ filterwarnings = [
 markers = [
   "slow: marks tests as slow (deselect with '-m \"not slow\"')",
 ]
-testpaths = [ 'tests', 'src/plasmapy', 'tools' ]
 strict = true
+testpaths = [ 'tests', 'src/plasmapy', 'tools' ]
+
 
 [tool.coverage.report]
 exclude_lines = [
