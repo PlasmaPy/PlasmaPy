@@ -420,6 +420,7 @@ def test_inertial_length() -> None:
         (rc_, gyroradius),
         (rhoc_, gyroradius),
     ],
+    ids=["cwp_", "lambdaD_", "rc_", "rhoc "],
 )
 def test_aliases(alias, parent) -> None:
     """Test all aliases defined in lengths.py"""
