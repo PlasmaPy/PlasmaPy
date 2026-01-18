@@ -208,15 +208,8 @@ def validate_lockfile(session: nox.Session) -> None:
         session.error(errmsg)
 
 
-pytest_command: list[str] = [
-    "pytest",
-    "--pyargs",
-    "--durations=6",
-    "--durations-min=0.2",  # in seconds, as min ≡ minimum
-    "--tb=short",
-    "-n=auto",
-    "--dist=loadfile",
-]
+# Define pytest flags that are only used in some cases. Add flags that
+# are always used to tool.pytest.addopts in pyproject.toml.
 
 with_doctests: tuple[str, ...] = ("--doctest-modules", "--doctest-continue-on-failure")
 
@@ -285,7 +278,7 @@ def tests(session: nox.Session, test_specifier: nox._parametrize.Param) -> None:
                 env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
             )
 
-    session.run(*pytest_command, *options, *session.posargs)
+    session.run("pytest", *options, *session.posargs)
 
 
 @nox_uv.session(python=maxpython, uv_groups=["test"])
@@ -323,7 +316,7 @@ def test_upstream(session: nox.Session, package: str) -> None:
         )
         session.run("uv", "pip", "show", package)
 
-    session.run(*pytest_command, *session.posargs)
+    session.run("pytest", *session.posargs)
 
 
 if running_on_rtd:

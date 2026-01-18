@@ -508,6 +508,14 @@ testpaths = [ '.' ]
 strict_xfail = true
 markers = [
   "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+addopts = [
+  "--pyargs",
+  "--durations=4",
+  "--durations-min=0.2", # in seconds; here min ≡ minimum
+  "--tb=short",
+  "-n=auto",
+  "--dist=loadfile",
+  "--keep-duplicates",
 ]
 doctest_optionflags = [
   "NORMALIZE_WHITESPACE",
@@ -534,6 +542,8 @@ filterwarnings = [
   "once::pytest.PytestUnraisableExceptionWarning",
   "once:XDG_CONFIG_HOME:astropy.utils.exceptions.AstropyUserWarning",
 ]
+markers = [
+  "slow: marks tests as slow (deselect with '-m \"not slow\"')",
 ]
 
 [tool.coverage.report]
