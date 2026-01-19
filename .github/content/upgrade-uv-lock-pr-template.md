@@ -3,7 +3,7 @@
 **If all checks pass ✅, please merge this pull request.** If any checks fail due to a breaking change in a dependency 🚨, please address the problems before merging.
 
 > [!IMPORTANT]
-> When it is necessary to put an upper limit on a dependency in [`pyproject.toml`][`pyproject.toml`], please [create an issue] to remove this upper limit before the next release.
+> When it is necessary to put an upper limit on a dependency in [`pyproject.toml`], please [create an issue] to remove this upper limit before the next release.
 
 ## Description
 
