@@ -1,0 +1,57 @@
+on:
+  workflow_call:
+    inputs:
+      nox_sesssion:
+        required: true
+        type: string
+      runs-on:
+        description: "The operating system"
+        default: 'ubuntu-latest'
+        type: string
+      python-version:
+        description: "The version of Python (e.g., '3.13')"
+        default: '3.13'
+        type: string
+    secrets:
+      CODECOV_TOKEN:
+        description: ""
+        required: false
+
+jobs:
+  run-nox-session:
+    runs-on: ${{ inputs.runs-on }}
+    steps:
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Install packages needed for documentation builds
+        if: startsWith(inputs.nox_session, 'docs')
+        uses: ts-graphviz/setup-graphviz@v2
+        run: |
+          sudo apt update
+          sudo apt-get install -y pandoc
+
+      - name: Install uv
+        with:
+          python-version: ${{ inputs.python-version }}
+          enable-cache: true
+          cache-suffix: ${{ inputs.nox_session }}-${{ inputs.python-version }}-${{ runner.os }}
+
+      - name: Run the check
+        run: uv run --python ${{ inputs.python-version }} --with nox --frozen nox -s '${{ inputs.nox_session }}'
+
+      - name: Print changes from last commit
+        run: |
+          git show
+
+      - name: Upload coverage reports to Codecov
+        if: ${{ contains(inputs.nox_session, 'cov') }}
+        uses: codecov/codecov-action@v5
+        with:
+          file: ./coverage.xml
+          fail_ci_if_error: false
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
