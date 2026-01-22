@@ -1,0 +1,54 @@
+name: Run Nox session
+description: A reusable workflow to run a session defined in noxfile.py
+inputs:
+  job-name:
+    description: The name of the job to be displayed.
+    required: true
+  nox-session:
+    description: The Nox session to run.  Run `nox --list` to see available sessions.
+    required: true
+  python-version:
+    description: The version of Python to use
+    required: false
+    default: "3.14"
+  GH_TOKEN:
+    description: GitHub token
+    required: false
+  CODECOV_TOKEN:
+    description: Codecov token
+    required: false
+
+runs:
+  using: composite
+  steps:
+    - name: Use micromamba to install graphviz and pandoc from conda-forge for doc builds
+      if: ${{ contains(inputs.nox-session, 'docs') }}
+      uses: mamba-org/setup-micromamba@v2
+      with:
+        create-args: graphviz pandoc -c conda-forge
+        init-shell: bash
+        environment-name: micromamba-env
+        cache-environment: true
+        post-cleanup: all
+
+    - name: Install uv
+      uses: astral-sh/setup-uv@v7
+      with:
+        python-version: ${{ inputs.python-version }}
+        enable-cache: true
+        cache-suffix: ${{ inputs.nox-session }}-${{ inputs.python-version }}-${{ inputs.os }}
+
+    - name: Run Nox session ${{ inputs.nox-session }}
+      shell: bash
+      run: uv run noxfile.py -s '${{ inputs.nox-session }}'
+      env:
+        GH_TOKEN: ${{ secrets.GH_TOKEN }}
+
+    - name: Upload coverage reports to Codecov
+      if: ${{ contains(inputs.nox-session, 'cov') }}
+      uses: codecov/codecov-action@v5
+      with:
+        files: ./coverage.xml
+        fail_ci_if_error: true
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
