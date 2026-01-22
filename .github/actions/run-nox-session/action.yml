@@ -42,6 +42,7 @@ runs:
     run: uv run noxfile.py -s "${INPUTS_NOX_SESSION}"
     env:
       GITHUB_TOKEN: ${{ inputs.github-token }}
+      # Use intermediate variable to address zizmor's template-injection audit rule
       INPUTS_NOX_SESSION: ${{ inputs.nox-session }}
 
   - name: Upload coverage reports to Codecov
