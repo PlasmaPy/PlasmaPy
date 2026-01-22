@@ -11,11 +11,9 @@ on:
       os:
         required: true
         type: string
-        default: ubuntu-latest
       python-version:
-        required: false
+        required: true
         type: string
-        default: '3.14'
 
 permissions: {}  # disables all GitHub permissions for the workflow
 
@@ -29,10 +27,6 @@ jobs:
     timeout-minutes: 15
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v6
-      with:
-        persist-credentials: false
 
     - name: Use micromamba to install graphviz and pandoc from conda-forge for doc builds
       if: ${{ contains(inputs.nox_session, 'docs') }}

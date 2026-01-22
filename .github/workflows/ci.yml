@@ -83,6 +83,11 @@ jobs:
 
     steps:
 
+    - name: Checkout code
+      uses: actions/checkout@v6
+      with:
+        persist-credentials: false
+
     - name: Run Nox session ${{ matrix.nox-session }}
       uses: ./.github/workflows/run-nox-session.yml
       with:

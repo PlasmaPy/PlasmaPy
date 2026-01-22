@@ -62,18 +62,10 @@ jobs:
 
     steps:
 
-    - name: Checkout code
-      uses: actions/checkout@v6
+    - name: Run Nox session ${{ matrix.nox-session }}
+      uses: ./.github/workflows/run-nox-session.yml
       with:
-        persist-credentials: false
-
-    - name: Install uv
-      uses: astral-sh/setup-uv@v7
-      with:
-        python-version: ${{ matrix.python }}
-        enable-cache: true  # zizmor: ignore[cache-poisoning]
-        cache-suffix: ${{ matrix.nox_session }}-${{ matrix.python }}-${{ runner.os }}
-
-    - name: Run Nox session ${{ matrix.nox_session }}
-      shell: bash -el {0}
-      run: uvx nox -s '${{ matrix.nox_session }}'
+        name: ${{ matrix.name }}
+        nox-session: ${{ matrix.nox-session }}
+        os: ${{ matrix.os }}
+        python-version: ${{ matrix.python-version }}
