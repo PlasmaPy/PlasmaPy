@@ -8,14 +8,14 @@ inputs:
     description: The Nox session to run.  Run `nox --list` to see available sessions.
     required: true
   python-version:
-    description: The version of Python to use
+    description: Python version to be installed and used by uv.
     required: false
     default: '3.14'
   github-token:
-    description: Token if needed to authenticate on behalf of GitHub Actions
+    description: Token to authenticate on behalf of GitHub Actions, if needed.
     required: false
   codecov-token:
-    description: Token if needed to upload test coverage reports to Codecov
+    description: Token to upload test coverage reports to Codecov, if needed.
     required: false
 
 runs:
@@ -39,7 +39,7 @@ runs:
 
   - name: Run Nox session ${{ inputs.nox-session }}
     shell: bash -el {0}
-    run: uv run noxfile.py -s '${INPUTS_NOX_SESSION}'
+    run: uv run noxfile.py -s "${INPUTS_NOX_SESSION}"
     env:
       GITHUB_TOKEN: ${{ inputs.github-token }}
       INPUTS_NOX_SESSION: ${{ inputs.nox-session }}
