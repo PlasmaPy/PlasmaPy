@@ -1,0 +1,1 @@
+Added a reusable composite GitHub action that workflows can use to run Nox sessions.
