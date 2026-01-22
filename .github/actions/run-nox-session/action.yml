@@ -40,9 +40,10 @@ runs:
 
   - name: Run Nox session ${{ inputs.nox-session }}
     shell: bash
-    run: uv run noxfile.py -s '${{ inputs.nox-session }}'
+    run: uv run noxfile.py -s '${INPUTS_NOX_SESSION}'
     env:
       GITHUB_TOKEN: ${{ inputs.github-token }}
+      INPUTS_NOX_SESSION: ${{ inputs.nox-session }}
 
   - name: Upload coverage reports to Codecov
     if: ${{ contains(inputs.nox-session, 'cov') }}
