@@ -53,12 +53,12 @@ jobs:
           os: ubuntu-latest
 
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v5
-        with:
-          persist-credentials: false
+    - name: Check out repository
+      uses: actions/checkout@v5
+      with:
+        persist-credentials: false
 
-      - uses: ./.github/actions/run-nox-session
-        with:
-          nox-session: ${{ matrix.nox-session }}
-          python-version: ${{ matrix.python-version }}
+    - uses: ./.github/actions/run-nox-session
+      with:
+        nox-session: ${{ matrix.nox-session }}
+        python-version: ${{ matrix.python-version }}

@@ -61,8 +61,8 @@ jobs:
           os: ubuntu-latest
 
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v5
+    - name: Check out repository
+      uses: actions/checkout@v5
       with:
         persist-credentials: false
 
