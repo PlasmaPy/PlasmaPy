@@ -22,6 +22,8 @@ runs:
   using: composite
   steps:
   - name: Use micromamba to install graphviz and pandoc from conda-forge for doc builds
+    # Could this installation step be added to documentation build sessions
+    # in noxfile.py, so that it's not necessary to have a workflow step?
     if: ${{ contains(inputs.nox-session, 'docs') }}
     uses: mamba-org/setup-micromamba@v2
     with:
@@ -38,12 +40,16 @@ runs:
       cache-suffix: ${{ inputs.nox-session }}-${{ inputs.python-version }}-${{ inputs.os }}
 
   - name: Run Nox session ${{ inputs.nox-session }}
+    # The next bash command is needed so that the mamba environment
+    # in the bash shell is properly activated.
     shell: bash -el {0}
-    run: uv run noxfile.py -s "${INPUTS_NOX_SESSION}"
+    # Use `uv run` instead of `uvx nox` so that the inline script metadata
+    # in noxfile.py can be used to install needed dependencies such as nox-uv.
+    run: uv run noxfile.py -s "${NOX_SESSION}"
     env:
       GITHUB_TOKEN: ${{ inputs.github-token }}
       # Use intermediate variable to address zizmor's template-injection audit rule
-      INPUTS_NOX_SESSION: ${{ inputs.nox-session }}
+      NOX_SESSION: ${{ inputs.nox-session }}
 
   - name: Upload coverage reports to Codecov
     if: ${{ contains(inputs.nox-session, 'cov') }}
