@@ -12,10 +12,10 @@ inputs:
     required: false
     default: '3.14'
   github-token:
-    description: Token to authenticate on behalf of GitHub Actions, if needed
+    description: Token if needed to authenticate on behalf of GitHub Actions
     required: false
   codecov-token:
-    description: Token to upload test coverage reports to Codecov, if needed
+    description: Token if needed to upload test coverage reports to Codecov
     required: false
 
 runs:
