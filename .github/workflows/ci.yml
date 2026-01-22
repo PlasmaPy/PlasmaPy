@@ -24,9 +24,6 @@ on:
 
 permissions: {}  # disables all GitHub permissions for the workflow
 
-env:
-  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
 jobs:
   tests:
     name: ${{ matrix.name }}
