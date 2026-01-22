@@ -1,19 +1,27 @@
+# This file defines a composite GitHub action that can be invoked by
+# workflows to run Nox sessions using uv.
+#
+# Run `nox --list` locally to see all available Nox sessions as defined
+# by noxfile.py.
+#
+# Docs: https://docs.github.com/en/actions/tutorials/create-actions/create-a-composite-action
+
 name: Run Nox session
-description: A composite workflow to run a session defined in noxfile.py.
+description: Composite workflow for using uv to run a Nox session.
 
 inputs:
   nox-session:
-    description: The Nox session to run.  Run `nox --list` to see available sessions.
+    description: The name of the session, as defined by noxfile.py.
     required: true
   python-version:
     description: Python version to be installed and used by uv.
     required: false
     default: '3.14'
   github-token:
-    description: Token to authenticate on behalf of GitHub Actions.
-    required: true
+    description: Token to authenticate on behalf of GitHub Actions. Needed when running tests and building documentation.
+    required: false
   codecov-token:
-    description: Token needed for uploading test coverage reports to Codecov.
+    description: Token needed only when uploading test coverage reports to Codecov.
     required: false
 
 runs:
