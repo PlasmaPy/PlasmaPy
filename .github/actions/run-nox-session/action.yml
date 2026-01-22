@@ -28,7 +28,9 @@ runs:
     uses: mamba-org/setup-micromamba@v2
     with:
       create-args: graphviz pandoc -c conda-forge
-      init-shell: bash
+      # Add commands to activate the micromamba environment to shell
+      # configuration files.
+      init-shell: bash powershell
       environment-name: micromamba-env
       cache-environment: true
 
@@ -40,14 +42,14 @@ runs:
       cache-suffix: ${{ inputs.nox-session }}-${{ inputs.python-version }}-${{ inputs.os }}
 
   - name: Run Nox session ${{ inputs.nox-session }}
-    # The next bash command is needed so that the mamba environment
+    # The next bash command is needed so that the environment created
     # in the bash shell is properly activated.
     shell: bash -el {0}
     # Use `uv run` instead of `uvx nox` so that the inline script metadata
     # in noxfile.py can be used to install needed dependencies such as nox-uv.
     run: uv run noxfile.py -s "${NOX_SESSION}"
     env:
-      GITHUB_TOKEN: ${{ inputs.github-token }}
+      GH_TOKEN: ${{ inputs.github-token }}
       # Use intermediate variable to address zizmor's template-injection audit rule
       NOX_SESSION: ${{ inputs.nox-session }}
 
