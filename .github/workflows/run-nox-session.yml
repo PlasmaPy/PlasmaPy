@@ -1,0 +1,67 @@
+name: Run Nox session
+on:
+  workflow_call:
+    inputs:
+      name:
+        required: true
+        type: string
+      nox-session:
+        required: true
+        type: string
+      os:
+        required: true
+        type: string
+        default: "ubuntu-latest"
+      python-version:
+        required: false
+        type: string
+        default: "3.14"
+
+permissions: {}  # disables all GitHub permissions for the workflow
+
+env:
+  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+jobs:
+  run-nox-session:
+    name: ${{ inputs.name }}
+    runs-on: ${{ inputs.os }}
+    timeout-minutes: 15
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v6
+      with:
+        persist-credentials: false
+
+    - name: Use micromamba to install graphviz and pandoc from conda-forge for doc builds
+      if: ${{ contains(inputs.nox_session, 'docs') }}
+      uses: mamba-org/setup-micromamba@v2
+      with:
+        create-args: graphviz pandoc -c conda-forge
+        init-shell: bash
+        environment-name: micromamba-env
+        cache-environment: true
+        post-cleanup: all
+
+    - name: Install uv
+      uses: astral-sh/setup-uv@v7
+      with:
+        python-version: ${{ inputs.python }}
+        enable-cache: true  # zizmor: ignore[cache-poisoning]
+        cache-suffix: ${{ inputs.nox-session }}-${{ inputs.python-version }}-${{ inputs.os }}
+
+    - name: Run Nox session ${{ inputs.nox-session }}
+      # The
+      shell: bash -el {0}
+      run: uv run noxfile.py -s '${{ inputs.nox-session }}'
+
+    - name: Upload coverage reports to Codecov
+      if: ${{ contains(inputs.nox-session, 'cov') }}
+      uses: codecov/codecov-action@v5
+      with:
+        files: ./coverage.xml
+        fail_ci_if_error: false
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
