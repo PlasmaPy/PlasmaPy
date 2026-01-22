@@ -32,58 +32,56 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        # try using run-name instead?
+
         - name: Tests, Python 3.14, skip slow tests, doctests, Ubuntu
           # Doctests are run only for most recent Python (see noxfile.py)
-          os: ubuntu-latest
-          python-version: '3.14'
           nox-session: tests-3.14(skipslow)
+          python-version: '3.14'
+          os: ubuntu-latest
 
         - name: Tests, Python 3.13, with code coverage, macOS
-          os: macos-latest
-          python-version: '3.13'
           nox-session: tests-3.13(cov)
+          python-version: '3.13'
+          os: macos-latest
 
         - name: Tests, Python 3.12, lowest direct dependencies, skip slow tests, Windows
-          os: windows-latest
-          python-version: '3.12'
           nox-session: tests-3.12(lowest-direct-skipslow)
+          python-version: '3.12'
+          os: windows-latest
 
         - name: Documentation, Python 3.14, Ubuntu
-          os: ubuntu-latest
-          python-version: '3.14'
           nox-session: docs
+          python-version: '3.14'
+          os: ubuntu-latest
 
         - name: Static type checking with mypy, Python 3.14, Ubuntu
-          os: ubuntu-latest
-          python-version: '3.14'
           nox-session: mypy
+          python-version: '3.14'
+          os: ubuntu-latest
 
         - name: Packaging, Python 3.14, Windows
-          os: windows-latest
-          python-version: '3.14'
           nox-session: build
+          python-version: '3.14'
+          os: windows-latest
 
         - name: Check workflow security with zizmor
-          os: ubuntu-latest
-          python-version: '3.14'
           nox-session: zizmor
+          python-version: '3.14'
+          os: ubuntu-latest
 
         - name: Check consistency of pinned & project requirements
-          os: ubuntu-latest
-          python-version: '3.14'
           nox-session: validate_lockfile
+          python-version: '3.14'
+          os: ubuntu-latest
 
     steps:
 
-    - name: Checkout code
-      uses: actions/checkout@v5
+      - uses: actions/checkout@v5
       with:
         persist-credentials: false
 
     - uses: ./.github/actions/run-nox-session
       with:
-        job-name: ${{ matrix.name }}
         nox-session: ${{ matrix.nox-session }}
         python-version: ${{ matrix.python-version }}
         github-token: ${{ secrets.GITHUB_TOKEN }}
