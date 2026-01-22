@@ -16,8 +16,8 @@ jobs:
       uses: actions/checkout@v6
       with:
         persist-credentials: false
-        sparse-checkout:
-          .github/scripts/authors_in_cff.py
+        sparse-checkout: |
+          .github
           CITATION.cff
 
     - name: Install uv
