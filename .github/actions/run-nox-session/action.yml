@@ -38,7 +38,7 @@ runs:
       cache-suffix: ${{ inputs.nox-session }}-${{ inputs.python-version }}-${{ inputs.os }}
 
   - name: Run Nox session ${{ inputs.nox-session }}
-    shell: bash
+    shell: bash -el {0}
     run: uv run noxfile.py -s '${INPUTS_NOX_SESSION}'
     env:
       GITHUB_TOKEN: ${{ inputs.github-token }}
