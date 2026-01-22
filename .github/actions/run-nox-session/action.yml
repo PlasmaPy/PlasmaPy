@@ -1,9 +1,7 @@
 name: Run Nox session
-description: A reusable workflow to run a session defined in noxfile.py
+description: A composite workflow to run a session defined in noxfile.py.
+
 inputs:
-  job-name:
-    description: The name of the job to be displayed.
-    required: true
   nox-session:
     description: The Nox session to run.  Run `nox --list` to see available sessions.
     required: true
@@ -12,10 +10,10 @@ inputs:
     required: false
     default: '3.14'
   github-token:
-    description: Token to authenticate on behalf of GitHub Actions, if needed.
+    description: Token to authenticate on behalf of GitHub Actions, often needed when running tests.
     required: false
   codecov-token:
-    description: Token to upload test coverage reports to Codecov, if needed.
+    description: Token needed to upload test coverage reports to Codecov.
     required: false
 
 runs:
