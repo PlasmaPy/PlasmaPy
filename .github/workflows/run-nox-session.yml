@@ -3,17 +3,24 @@ on:
   workflow_call:
     inputs:
       name:
+        description: Name to appear in list of workflows
         required: true
         type: string
       nox-session:
+        description: Name of the session in noxfile.py to run
         required: true
         type: string
       os:
+        description: Operating system to run the job on
         required: true
         type: string
       python-version:
+        description: Version of Python to use
         required: true
         type: string
+    secrets:
+      GH_TOKEN:
+        required: false
 
 permissions: {}  # disables all GitHub permissions for the workflow
 
