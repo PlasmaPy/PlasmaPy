@@ -11,11 +11,11 @@ inputs:
     description: The version of Python to use
     required: false
     default: '3.14'
-  GH_TOKEN:
-    description: GitHub token
+  github-token:
+    description: Token to authenticate on behalf of GitHub Actions, if needed
     required: false
-  CODECOV_TOKEN:
-    description: Codecov token
+  codecov-token:
+    description: Token to upload test coverage reports to Codecov, if needed
     required: false
 
 runs:
@@ -42,7 +42,7 @@ runs:
     shell: bash
     run: uv run noxfile.py -s '${{ inputs.nox-session }}'
     env:
-      GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      GITHUB_TOKEN: ${{ inputs.github-token }}
 
   - name: Upload coverage reports to Codecov
     if: ${{ contains(inputs.nox-session, 'cov') }}
@@ -51,4 +51,4 @@ runs:
       files: ./coverage.xml
       fail_ci_if_error: true
     env:
-      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      CODECOV_TOKEN: ${{ inputs.CODECOV_TOKEN }}

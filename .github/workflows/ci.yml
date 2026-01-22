@@ -89,5 +89,5 @@ jobs:
         job-name: ${{ matrix.name }}
         nox-session: ${{ matrix.nox-session }}
         python-version: ${{ matrix.python-version }}
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        codecov-token: ${{ secrets.CODECOV_TOKEN }}
