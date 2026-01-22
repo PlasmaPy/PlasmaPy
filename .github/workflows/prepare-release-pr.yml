@@ -54,7 +54,9 @@ jobs:
 
     - name: Build the changelog with towncrier
       run: |
-        uvx nox -s "changelog(final)" -- $VERSION
+        # Use `uv run noxfile.py` instead of `uvx nox` to make use of inline
+        # script metadata.
+        uv run noxfile.py -s "changelog(final)" -- $VERSION
       env:
         VERSION: ${{ github.event.inputs.version }}
 
