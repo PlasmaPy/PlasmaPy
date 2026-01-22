@@ -1,1 +1,2 @@
-Added a reusable composite GitHub action that workflows can use to run Nox sessions.
+Added a reusable composite GitHub action for local workflows to run |Nox| sessions with |uv|.
+
