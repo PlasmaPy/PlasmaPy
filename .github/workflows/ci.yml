@@ -89,7 +89,7 @@ jobs:
         persist-credentials: false
 
     - name: Run Nox session ${{ matrix.nox-session }}
-      uses: ./.github/workflows/run-nox-session.yml
+      uses: .github/workflows/run-nox-session.yml
       with:
         name: ${{ matrix.name }}
         nox-session: ${{ matrix.nox-session }}
