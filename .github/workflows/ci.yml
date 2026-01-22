@@ -28,20 +28,15 @@ env:
   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
-
   tests:
     name: ${{ matrix.name }}
-    runs-on: ${{ matrix.os }}
-    timeout-minutes: 30
 
     strategy:
       fail-fast: false
-
       matrix:
         include:
-
         - name: Tests, Python 3.14, skip slow tests, doctests, Ubuntu
-          # Doctests are run only for most recent Python (see noxfile.py)
+            # Doctests are run only for most recent Python (see noxfile.py)
           os: ubuntu-latest
           python-version: '3.14'
           nox-session: tests-3.14(skipslow)
@@ -81,15 +76,12 @@ jobs:
           python-version: '3.14'
           nox-session: validate_lockfile
 
-    steps:
-
-    - name: Run Nox session ${{ matrix.nox-session }}
-      uses: ./.github/workflows/run-nox-session.yml
-      with:
-        name: ${{ matrix.name }}
-        nox-session: ${{ matrix.nox-session }}
-        os: ${{ matrix.os }}
-        python-version: ${{ matrix.python-version }}
-      env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+    uses: ./.github/workflows/run-nox-session.yml
+    with:
+      name: ${{ matrix.name }}
+      nox-session: ${{ matrix.nox-session }}
+      os: ${{ matrix.os }}
+      python-version: ${{ matrix.python-version }}
+    secrets:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
