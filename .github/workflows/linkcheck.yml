@@ -39,6 +39,6 @@ jobs:
         persist-credentials: false
     - uses: ./.github/actions/run-nox-session
       with:
-        nox-session: ${{ matrix.nox-session }}
-        python-version: ${{ matrix.python-version }}
+        nox-session: linkcheck
+        python-version: '3.14'
         github-token: ${{ secrets.GITHUB_TOKEN }}
