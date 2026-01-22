@@ -21,6 +21,8 @@ on:
     secrets:
       GH_TOKEN:
         required: false
+      CODECOV_TOKEN:
+        required: false
 
 permissions: {}  # disables all GitHub permissions for the workflow
 
