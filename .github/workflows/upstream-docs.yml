@@ -16,9 +16,6 @@ on:
 
 permissions: {}
 
-env:
-  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
 jobs:
 
   weekly:
@@ -36,31 +33,32 @@ jobs:
         include:
 
         - name: Documentation, Python 3.14, sphinx-dev, Ubuntu
+          nox-session: docs_upstream(sphinx)
+          python-version: '3.14'
           os: ubuntu-latest
-          python: '3.14'
-          nox_session: docs_upstream(sphinx)
 
         - name: Documentation, Python 3.14, sphinx_rtd_theme-dev, Ubuntu
+          nox-session: docs_upstream(sphinx_rtd_theme)
+          python-version: '3.14'
           os: ubuntu-latest
-          python: '3.14'
-          nox_session: docs_upstream(sphinx_rtd_theme)
 
         - name: Documentation, Python 3.14, nbsphinx-dev, Ubuntu
+          nox-session: docs_upstream(nbsphinx)
+          python-version: '3.14'
           os: ubuntu-latest
-          python: '3.14'
-          nox_session: docs_upstream(nbsphinx)
 
         - name: Documentation, Python 3.14, plasmapy_sphinx-dev, Ubuntu
+          nox-session: docs_upstream(plasmapy_sphinx)
+          python-version: '3.14'
           os: ubuntu-latest
-          python: '3.14'
-          nox_session: docs_upstream(plasmapy_sphinx)
 
     steps:
 
-    - name: Run Nox session ${{ matrix.nox-session }}
-      uses: ./.github/workflows/run-nox-session.yml
+      - uses: actions/checkout@v5
       with:
-        name: ${{ matrix.name }}
+        persist-credentials: false
+
+      - uses: ./.github/actions/run-nox-session
+        with:
         nox-session: ${{ matrix.nox-session }}
-        os: ${{ matrix.os }}
         python-version: ${{ matrix.python-version }}
