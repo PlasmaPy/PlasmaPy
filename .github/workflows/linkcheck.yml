@@ -41,3 +41,4 @@ jobs:
       with:
         nox-session: ${{ matrix.nox-session }}
         python-version: ${{ matrix.python-version }}
+        github-token: ${{ secrets.GITHUB_TOKEN }}

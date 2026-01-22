@@ -10,10 +10,10 @@ inputs:
     required: false
     default: '3.14'
   github-token:
-    description: Token to authenticate on behalf of GitHub Actions, often needed when running tests.
-    required: false
+    description: Token to authenticate on behalf of GitHub Actions.
+    required: true
   codecov-token:
-    description: Token needed to upload test coverage reports to Codecov.
+    description: Token needed for uploading test coverage reports to Codecov.
     required: false
 
 runs:
