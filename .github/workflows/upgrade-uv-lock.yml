@@ -24,7 +24,7 @@ jobs:
         enable-cache: true
 
     - name: Run Nox session to upgrade uv.lock
-      run: uvx nox -s lock
+      run: uv run noxfile.py -s lock
 
     # When a pull request is created by a GitHub Action, normally the
     # checks will not be run. While the simplest workaround would have
