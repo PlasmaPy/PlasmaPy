@@ -83,11 +83,6 @@ jobs:
 
     steps:
 
-    - name: Checkout code
-      uses: actions/checkout@v6
-      with:
-        persist-credentials: false
-
     - name: Run Nox session ${{ matrix.nox-session }}
       uses: ./.github/workflows/run-nox-session.yml
       with:
@@ -95,6 +90,6 @@ jobs:
         nox-session: ${{ matrix.nox-session }}
         os: ${{ matrix.os }}
         python-version: ${{ matrix.python-version }}
-      secrets:
+      env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

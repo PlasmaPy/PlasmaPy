@@ -26,8 +26,6 @@ on:
 
 permissions: {}  # disables all GitHub permissions for the workflow
 
-env:
-  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
   run-nox-session:
@@ -37,7 +35,12 @@ jobs:
 
     steps:
 
-    - name: Use micromamba to install graphviz and pandoc from conda-forge for doc builds
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Use micromamba to install graphviz and pandoc from conda-forge for doc builds
       if: ${{ contains(inputs.nox_session, 'docs') }}
       uses: mamba-org/setup-micromamba@v2
       with:
@@ -51,13 +54,14 @@ jobs:
       uses: astral-sh/setup-uv@v7
       with:
         python-version: ${{ inputs.python }}
-        enable-cache: true  # zizmor: ignore[cache-poisoning]
+        enable-cache: true    # zizmor: ignore[cache-poisoning]
         cache-suffix: ${{ inputs.nox-session }}-${{ inputs.python-version }}-${{ inputs.os }}
 
     - name: Run Nox session ${{ inputs.nox-session }}
-      # The
       shell: bash -el {0}
       run: uv run noxfile.py -s '${{ inputs.nox-session }}'
+      env:
+        GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
     - name: Upload coverage reports to Codecov
       if: ${{ contains(inputs.nox-session, 'cov') }}
