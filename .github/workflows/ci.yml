@@ -78,6 +78,12 @@ jobs:
           nox-session: validate_lockfile
 
     steps:
+
+    - name: Checkout code
+      uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+
     - uses: ./.github/actions/run-nox-session
       with:
         job-name: ${{ matrix.name }}
