@@ -11,11 +11,11 @@ on:
       os:
         required: true
         type: string
-        default: "ubuntu-latest"
+        default: ubuntu-latest
       python-version:
         required: false
         type: string
-        default: "3.14"
+        default: '3.14'
 
 permissions: {}  # disables all GitHub permissions for the workflow
 
@@ -64,4 +64,3 @@ jobs:
         fail_ci_if_error: false
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-
