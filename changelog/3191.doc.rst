@@ -1,0 +1,1 @@
+Updated submodule headings in `plasmapy.formulary.collisions`.

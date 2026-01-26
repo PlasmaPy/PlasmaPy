@@ -14,9 +14,11 @@
 
 [![CI](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/ci.yml/badge.svg)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/ci.yml)
 [![comprehensive tests](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/ci-comprehensive.yml/badge.svg)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/ci-comprehensive.yml)
+[![upstream tests](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/upstream-tests.yml/badge.svg)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/upstream-tests.yml)
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/PlasmaPy/PlasmaPy/main.svg)](https://results.pre-commit.ci/latest/github/PlasmaPy/PlasmaPy/main)
 [![codecov](https://codecov.io/gh/PlasmaPy/PlasmaPy/branch/main/graph/badge.svg)](https://codecov.io/gh/PlasmaPy/PlasmaPy)
 [![Read the Docs Status](https://readthedocs.org/projects/plasmapy/badge/?version=latest)](http://plasmapy.readthedocs.io/en/latest/?badge=latest)
+[![upstream docs](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/upstream-docs.yml/badge.svg)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/upstream-docs.yml)
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1436011.svg)](https://doi.org/10.5281/zenodo.1436011)
 [![astropy](http://img.shields.io/badge/powered%20by-Astropy-orange.svg?style=flat&logo=astropy)](http://www.astropy.org/)

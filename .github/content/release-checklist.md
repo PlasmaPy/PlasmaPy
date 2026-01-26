@@ -17,6 +17,8 @@ This issue is created from the [release checklist] for releasing a new version o
   and update [`.mailmap`] if there are any duplicate contributors in the
   output ([gitmailmap documentation]). 📫
 
+- [ ] Build the [upstream docs] and fix failures, as appropriate. These checks build the documentation against unreleased versions of core dependencies. [![upstream docs](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/upstream-docs.yml/badge.svg)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/upstream-docs.yml)
+
 ### Quality assurance checks (high priority)
 
 - [ ] [Upgrade `uv.lock`], and fix new test failures. 🔒
@@ -28,7 +30,11 @@ This issue is created from the [release checklist] for releasing a new version o
 
   - Occasionally, certain hooks may need to be manually downgraded after running `pre-commit autoupdate` because of problems with the latest versions of these hooks. Look for comments in [`.pre-commit-config.yaml`] for guidance. 🪝
 
-- [ ] Run the [upstream tests] and fix failures, as appropriate. These checks run tests and build documentation against unreleased versions of core dependencies. [![upstream tests](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/ci-upstream.yml/badge.svg)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/ci-upstream.yml)
+- [ ] Address issues labeled as [needed for release](https://github.com/PlasmaPy/PlasmaPy/issues?q=state%3Aopen%20label%3A%22needed%20for%20release%22).
+
+- [ ] Run the [upstream tests] and fix failures, as appropriate. These checks run tests against unreleased versions of core dependencies. [![upstream tests](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/upstream-tests.yml/badge.svg)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/upstream-tests.yml)
+
+- [ ] Fix any remaining deprecation warnings, including any ignored under `tool.pytest.filterwarnings` in [`pyproject.toml`].
 
 ### Perform the release
 

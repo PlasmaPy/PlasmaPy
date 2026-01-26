@@ -45,35 +45,35 @@ import nox_uv
 # The minimum version of Python should be incremented immediately
 # following the first release after October of each year.
 
-supported_python_versions: tuple[str, ...] = ("3.12", "3.13", "3.14")
-supported_operating_systems: tuple[str, ...] = ("linux", "macos", "windows")
+SUPPORTED_PYTHON_VERSIONS: tuple[str, ...] = ("3.12", "3.13", "3.14")
+SUPPORTED_OPERATING_SYSTEMS: tuple[str, ...] = ("linux", "macos", "windows")
 
-maxpython = max(supported_python_versions)
-minpython = min(supported_python_versions)
+MAXPYTHON = max(SUPPORTED_PYTHON_VERSIONS)
+MINPYTHON = min(SUPPORTED_PYTHON_VERSIONS)
 
-root_dir = pathlib.Path(__file__).parent
+ROOT_DIR = pathlib.Path(__file__).parent
+
+CURRENT_PYTHON = f"{sys.version_info.major}.{sys.version_info.minor}"
+
+# Define what sessions get run when running `nox` without a session
+
+nox.options.sessions = [f"tests-{CURRENT_PYTHON}(all)"]
 
 # The documentation should be build always using the same version of
 # Python, which should be the latest version of Python supported by Read
 # the Docs. Because Read the Docs takes some time to support new
-# releases of Python, docpython should stay independent of maxpython.
-#
-# Changing docpython also requires updating .readthedocs.yml and the
+# releases of Python, DOCPYTHON should stay independent of MAXPYTHON.
+# Changing DOCPYTHON also requires updating .readthedocs.yml and the
 # GitHub workflows for building the documentation.
 
-docpython = "3.14"
-
-current_python = f"{sys.version_info.major}.{sys.version_info.minor}"
+DOCPYTHON = "3.14"
 
 nox.options.default_venv_backend = "uv"
 
-uv_sync = ("uv", "sync", "--no-progress", "--frozen")
+UV_SYNC = ("uv", "sync", "--no-progress", "--frozen")
 
-running_on_ci: bool = os.getenv("CI") is not None
-running_on_rtd: bool = os.environ.get("READTHEDOCS") == "True"
-
-# Define what sessions get run when running `nox` without a session
-nox.options.sessions = [f"tests-{current_python}(all)"]
+RUNNING_ON_CI: bool = os.getenv("CI") is not None
+RUNNING_ON_RTD: bool = os.getenv("READTHEDOCS") is not None
 
 
 def _create_lockfile_pr_message(uv_output: str, session: nox.Session) -> None:
@@ -96,9 +96,9 @@ def _create_lockfile_pr_message(uv_output: str, session: nox.Session) -> None:
     """
 
     pr_template = pathlib.Path(
-        root_dir / "./.github/content/upgrade-uv-lock-pr-template.md"
+        ROOT_DIR / "./.github/content/upgrade-uv-lock-pr-template.md"
     )
-    pr_message = pathlib.Path(root_dir / "./.github/content/upgrade-uv-lock-pr-body.md")
+    pr_message = pathlib.Path(ROOT_DIR / "./.github/content/upgrade-uv-lock-pr-body.md")
 
     shutil.copy(pr_template, pr_message)
 
@@ -161,7 +161,7 @@ def lock(session: nox.Session) -> None:
     )
     try:
         # Use session.run() with silent=True to return the command output
-        uv_output: str | bool = session.run(*uv_lock, silent=running_on_ci)
+        uv_output: str | bool = session.run(*uv_lock, silent=RUNNING_ON_CI)
     except nox.command.CommandFailed:
         session.warn("⚠️ uv.lock is invalid, likely due to a git merge conflict.")
         session.log(
@@ -171,9 +171,9 @@ def lock(session: nox.Session) -> None:
             "🪧 If this next attempt is unsuccessful, delete uv.lock and try again."
         )
         session.run("git", "checkout", "--theirs", "--", "uv.lock", external=True)
-        uv_output: str | bool = session.run(*uv_lock, silent=running_on_ci)
+        uv_output: str | bool = session.run(*uv_lock, silent=RUNNING_ON_CI)
 
-    if running_on_ci:
+    if RUNNING_ON_CI:
         session.log(uv_output)
         _create_lockfile_pr_message(uv_output=uv_output, session=session)
 
@@ -187,7 +187,7 @@ def validate_lockfile(session: nox.Session) -> None:
     prek. Because pre-commit.ci blocks network access, this check is
     instead done in CI via a GitHub workflow that calls this session.
     """
-    if running_on_ci:
+    if RUNNING_ON_CI:
         errmsg = (
             "The Python environments in file 'uv.lock' are inconsistent "
             "with the requirements defined in 'pyproject.toml'. "
@@ -208,19 +208,13 @@ def validate_lockfile(session: nox.Session) -> None:
         session.error(errmsg)
 
 
-pytest_command: list[str] = [
-    "pytest",
-    "--pyargs",
-    "--durations=6",
-    "--durations-min=0.2",  # in seconds, as min ≡ minimum
-    "--tb=short",
-    "-n=auto",
-    "--dist=loadfile",
-]
+# Define pytest flags that are only sometimes used. Define flags that
+# are always used in tool.pytest.addopts in pyproject.toml instead of
+# noxfile.py, since that allows users to run `pytest` and get
 
-with_doctests: tuple[str, ...] = ("--doctest-modules", "--doctest-continue-on-failure")
+WITH_DOCTESTS: tuple[str, ...] = ("--doctest-modules", "--doctest-continue-on-failure")
 
-with_coverage: tuple[str, ...] = (
+WITH_COVERAGE: tuple[str, ...] = (
     "--cov=plasmapy",
     "--cov-report=xml",
     "--cov-config=pyproject.toml",
@@ -229,11 +223,11 @@ with_coverage: tuple[str, ...] = (
     "xml:coverage.xml",
 )
 
-report_warnings_rather_than_treat_them_as_errors = ("-W", "once")
+REPORT_WARNINGS_ONCE = ("-W", "once")
 
-skipslow: tuple[str, ...] = ("-m", "not slow")
+SKIPSLOW: tuple[str, ...] = ("-m", "not slow")
 
-test_specifiers: list = [
+test_specifiers: list[nox._parametrize.Param] = [
     nox.param("run all tests", id="all"),
     nox.param("skip slow tests", id="skipslow"),
     nox.param("with code coverage", id="cov"),
@@ -242,7 +236,7 @@ test_specifiers: list = [
 ]
 
 
-@nox.session(python=supported_python_versions)
+@nox.session(python=SUPPORTED_PYTHON_VERSIONS)
 @nox.parametrize("test_specifier", test_specifiers)
 def tests(session: nox.Session, test_specifier: nox._parametrize.Param) -> None:
     """Run tests with pytest."""
@@ -250,19 +244,21 @@ def tests(session: nox.Session, test_specifier: nox._parametrize.Param) -> None:
     options: list[str] = []
 
     if test_specifier in {"skip slow tests", "lowest-direct-skipslow"}:
-        options += skipslow
+        options += SKIPSLOW
 
     if test_specifier == "with code coverage":
-        options += with_coverage
+        options += WITH_COVERAGE
 
+    # There may be some warnings that got fixed later with the oldest
+    # allowed versions of dependencies
     if test_specifier in {"lowest-direct", "lowest-direct-skipslow"}:
-        options += report_warnings_rather_than_treat_them_as_errors
+        options += REPORT_WARNINGS_ONCE
 
     # Doctests are only run with the most recent versions of Python and
     # other dependencies because there may be subtle differences in the
     # output between different versions of Python, NumPy, and Astropy.
-    if session.python == maxpython and test_specifier not in {"lowest-direct", "cov"}:
-        options += with_doctests
+    if session.python == MAXPYTHON and test_specifier not in {"lowest-direct", "cov"}:
+        options += WITH_DOCTESTS
 
     if gh_token := os.getenv("GH_TOKEN"):
         session.env["GH_TOKEN"] = gh_token
@@ -279,16 +275,16 @@ def tests(session: nox.Session, test_specifier: nox._parametrize.Param) -> None:
             # If we separate out the lowest-direct tests, then we can use
             # @nox_uv.session for tests too.
             session.run_install(
-                *uv_sync,
+                *UV_SYNC,
                 "--group=test",
                 f"--python={session.virtualenv.location}",
                 env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
             )
 
-    session.run(*pytest_command, *options, *session.posargs)
+    session.run("pytest", *options, *session.posargs)
 
 
-@nox_uv.session(python=maxpython, uv_groups=["test"])
+@nox_uv.session(python=MAXPYTHON, uv_groups=["test"])
 @nox.parametrize(
     ["package"],
     [
@@ -323,17 +319,17 @@ def test_upstream(session: nox.Session, package: str) -> None:
         )
         session.run("uv", "pip", "show", package)
 
-    session.run(*pytest_command, *session.posargs)
+    session.run("pytest", *session.posargs)
 
 
-if running_on_rtd:
+if RUNNING_ON_RTD:
     rtd_output_path = pathlib.Path(os.environ.get("READTHEDOCS_OUTPUT")) / "html"
     rtd_output_path.mkdir(parents=True, exist_ok=True)
     doc_build_dir = str(rtd_output_path)
 else:
     doc_build_dir = "docs/_build/html"
 
-sphinx_base_command: list[str] = [
+SPHINX_BASE_COMMAND: list[str] = [
     "sphinx-build",
     "docs/",
     doc_build_dir,
@@ -342,13 +338,13 @@ sphinx_base_command: list[str] = [
     "--keep-going",
 ]
 
-if not running_on_rtd:
-    sphinx_base_command.extend(["--fail-on-warning"])
+if not RUNNING_ON_RTD:
+    SPHINX_BASE_COMMAND.extend(["--fail-on-warning"])
 
-build_html: tuple[str, ...] = ("--builder", "html")
-check_hyperlinks: tuple[str, ...] = ("--builder", "linkcheck")
+BUILD_HTML: tuple[str, ...] = ("--builder", "html")
+CHECK_HYPERLINKS: tuple[str, ...] = ("--builder", "linkcheck")
 
-doc_troubleshooting_message = """
+DOC_TROUBLESHOOTING_MESSAGE = """
 
 📘 Tips for troubleshooting common documentation build failures are in
 PlasmaPy's documentation guide at:
@@ -357,7 +353,7 @@ PlasmaPy's documentation guide at:
 """
 
 
-@nox_uv.session(python=docpython, uv_groups=["docs"])
+@nox_uv.session(python=DOCPYTHON, uv_groups=["docs"])
 def docs(session: nox.Session) -> None:
     """
     Build documentation with Sphinx.
@@ -367,13 +363,16 @@ def docs(session: nox.Session) -> None:
     Configuration file: docs/conf.py
     """
 
-    if running_on_ci:
-        session.log(doc_troubleshooting_message)
+    if RUNNING_ON_CI:
+        session.log(DOC_TROUBLESHOOTING_MESSAGE)
+
+    # Can we use pixi or conda to install graphviz and pandoc if they
+    # are not installed?
 
     session.run_install("dot", "-V", external=True)
     session.run_install("pandoc", "--version", external=True)
 
-    session.run(*sphinx_base_command, *build_html, *session.posargs)
+    session.run(*SPHINX_BASE_COMMAND, *BUILD_HTML, *session.posargs)
 
     landing_page = pathlib.Path(doc_build_dir) / "index.html"
     if landing_page.exists():
@@ -382,11 +381,11 @@ def docs(session: nox.Session) -> None:
         session.error(f"Documentation preview landing page not found: {landing_page}")
 
 
-@nox_uv.session(python=docpython, uv_groups=["docs"])
+@nox_uv.session(python=DOCPYTHON, uv_groups=["docs"])
 def htmlzip(session: nox.Session) -> None:
     """Bundle documentation build into a zip file on Read the Docs."""
 
-    if not running_on_rtd:
+    if not RUNNING_ON_RTD:
         session.error("This session must be run on Read the Docs.")
 
     html_build_dir = pathlib.Path(doc_build_dir)
@@ -428,7 +427,7 @@ def htmlzip(session: nox.Session) -> None:
     session.log(f"The htmlzip was placed in: {READTHEDOCS_OUTPUT / 'htmlzip'}")
 
 
-@nox_uv.session(python=docpython, uv_groups=["docs"])
+@nox_uv.session(python=DOCPYTHON, uv_groups=["docs"])
 @nox.parametrize(
     ["site", "repository"],
     [
@@ -448,7 +447,7 @@ def docs_upstream(session: nox.Session, site: str, repository: str) -> None:
     session.install(f"git+https://{site}.com/{repository}")
     package = repository.split("/")[-1]
     session.run_install("uv", "pip", "show", package)
-    session.run(*sphinx_base_command, *build_html, *session.posargs)
+    session.run(*SPHINX_BASE_COMMAND, *BUILD_HTML, *session.posargs)
 
 
 LINKCHECK_TROUBLESHOOTING = """
@@ -466,14 +465,14 @@ These variables are in the form of Python regular expressions:
 """
 
 
-@nox_uv.session(python=docpython, uv_groups="docs")
+@nox_uv.session(python=DOCPYTHON, uv_groups="docs")
 def linkcheck(session: nox.Session) -> None:
     """Check hyperlinks in documentation."""
 
-    if running_on_ci:
+    if RUNNING_ON_CI:
         session.log(LINKCHECK_TROUBLESHOOTING)
 
-    session.run(*sphinx_base_command, *check_hyperlinks, *session.posargs)
+    session.run(*SPHINX_BASE_COMMAND, *CHECK_HYPERLINKS, *session.posargs)
 
 
 MYPY_TROUBLESHOOTING = """
@@ -492,14 +491,14 @@ mypy error code. Please use sparingly!
 """
 
 
-@nox_uv.session(python=maxpython, uv_groups=["type_check"])
+@nox_uv.session(python=MAXPYTHON, uv_groups=["type_check"])
 def mypy(session: nox.Session) -> None:
     """
     Perform static type checking.
 
     Configuration file: mypy.ini
     """
-    if running_on_ci:
+    if RUNNING_ON_CI:
         session.log(MYPY_TROUBLESHOOTING)
 
     session.run(
@@ -592,16 +591,16 @@ def changelog(session: nox.Session, final: str) -> None:
         session.run(*towncrier, "--draft", "--keep")
         return
 
-    original_file = pathlib.Path(root_dir / "CHANGELOG.rst")
+    original_file = pathlib.Path(ROOT_DIR / "CHANGELOG.rst")
     original_file.unlink()
 
     session.run(*towncrier, "--yes")
 
-    destination = pathlib.Path(root_dir / f"docs/changelog/{version}.rst")
+    destination = pathlib.Path(ROOT_DIR / f"docs/changelog/{version}.rst")
     shutil.copy(original_file, destination)
 
 
-@nox_uv.session(python=minpython, uv_groups=["test"])
+@nox_uv.session(python=MINPYTHON, uv_groups=["test"])
 @nox.parametrize(
     "options",
     [
@@ -623,8 +622,8 @@ def autotyping(session: nox.Session, options: tuple[str, ...]) -> None:
         nox -s 'autotyping(safe)' -- noxfile.py
     """
     session.install("autotyping", "typing_extensions")
-    DEFAULT_PATHS = ("src", "tests", "tools", "*.py", ".github", "docs/*.py")
-    paths = session.posargs or DEFAULT_PATHS
+    default_paths = ("src", "tests", "tools", "*.py", ".github", "docs/*.py")
+    paths = session.posargs or default_paths
     session.run("python", "-m", "autotyping", *options, *paths, *session.posargs)
 
 
@@ -640,7 +639,7 @@ def manifest(session: nox.Session) -> None:
     """
     # check-manifest would be suitable as a pre-commit hook, except that
     # it requires ∼10 seconds to build the package, which would triple
-    # the time needed to run pre-commit
+    # the time needed to run pre-commit.
     session.install("check-manifest")
     session.run("check-manifest", *session.posargs)
 
@@ -661,7 +660,7 @@ def lint(session: nox.Session) -> None:
     )
 
 
-zizmor_troubleshooting_message = """
+ZIZMOR_TROUBLESHOOTING_MESSAGE = """
 
 🪧 Run this check locally with `nox -s zizmor` to find potential
 security vulnerabilities in GitHub workflows and perform safe fixes.
@@ -691,7 +690,7 @@ def zizmor(session: nox.Session) -> None:
 
     Configuration file: .github/zizmor.yml
     """
-    session.log(zizmor_troubleshooting_message)
+    session.log(ZIZMOR_TROUBLESHOOTING_MESSAGE)
 
     args = ["--no-progress", "--color=auto", *session.posargs]
     if not session.posargs:

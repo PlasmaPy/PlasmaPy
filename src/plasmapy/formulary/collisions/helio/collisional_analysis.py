@@ -1,6 +1,4 @@
-"""
-Module containing the Collisional Analysis formulation.
-"""
+"""Functionality related to collisional analysis of a plasma in transit."""
 
 __all__ = ["temp_ratio"]
 

@@ -9,7 +9,8 @@ Continuous integration (CI) workflows include:
 
 - [`ci.yml`](./ci.yml) — perform CI checks during pull requests (PRs)
 - [`ci-comprehensive.yml`](./ci-comprehensive.yml) — run comprehensive tests
-- [`ci-upstream.yml`](./ci-upstream.yml) — test against bleeding edge versions of upstream dependencies
+- [`upstream-tests.yml`](upstream-tests.yml) — test against unreleased versions of upstream dependencies
+- [`upstream-docs.yml`](upstream-docs.yml) — build documentation against unreleased versions of upstream dependencies
 - [`check-author-included.yml`](./check-author-included.yml) — verify
   that the author of a PR is included in the top-level
   [`CITATION.cff`](../../CITATION.cff) metadata file
