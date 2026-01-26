@@ -11,7 +11,7 @@ resolution-markers = [
 ]
 
 [options]
-exclude-newer = "2026-01-22T23:55:08.197194343Z"
+exclude-newer = "2026-01-23T10:46:53.507851229Z"
 exclude-newer-span = "P3D"
 
 [[package]]
@@ -663,14 +663,14 @@ wheels = [
 
 [[package]]
 name = "hypothesis"
-version = "6.150.2"
+version = "6.150.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "sortedcontainers" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/d2/19/a4eee0c98e2ec678854272f79646f34943f8fbbc42689cc355b530c5bc96/hypothesis-6.150.2.tar.gz", hash = "sha256:deb043c41c53eaf0955f4a08739c2a34c3d8040ee3d9a2da0aa5470122979f75", size = 475250, upload-time = "2026-01-13T17:09:22.146Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/86/eb/1b0359b52d2136a7f4b8112e60148ef8b5ba480d450f409ed63e18d4c8d2/hypothesis-6.150.3.tar.gz", hash = "sha256:32c88d4b7df3a8483e69877561b520320bf7779b0709c11869e392025e9279d4", size = 475542, upload-time = "2026-01-23T07:53:09.716Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/b3/5e/21caad4acf45db7caf730cca1bc61422283e4c4e841efbc862d17ab81a21/hypothesis-6.150.2-py3-none-any.whl", hash = "sha256:648d6a2be435889e713ba3d335b0fb5e7a250f569b56e6867887c1e7a0d1f02f", size = 542712, upload-time = "2026-01-13T17:09:19.945Z" },
+    { url = "https://files.pythonhosted.org/packages/69/6b/c94ca780814aa4e73b52a8d5e9092f0b83f4732a9ecb3d1f8333c93ac131/hypothesis-6.150.3-py3-none-any.whl", hash = "sha256:5577c0f8eff5ac54a8aff1ce32e30c5454167c29360fdabf1bfea0539b1689f9", size = 542960, upload-time = "2026-01-23T07:53:07.309Z" },
 ]
 
 [[package]]
