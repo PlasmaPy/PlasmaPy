@@ -466,9 +466,6 @@ These variables are in the form of Python regular expressions:
 
 
 @nox_uv.session(python=DOCPYTHON, uv_groups=["docs"])
-
-
-
 def linkcheck(session: nox.Session) -> None:
     """Check hyperlinks in documentation."""
 
