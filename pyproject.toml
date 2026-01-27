@@ -106,7 +106,7 @@ docs = [
   "nbsphinx>=0.9.8",
   "numpydoc>=1.10",
   "pillow>=12.1",
-  "plasmapy-sphinx>=2026.1.0",
+  "plasmapy-sphinx>=2026.1",
   "pygments==2.19.2",
   "sphinx>=9.1",
   "sphinx-changelog>=1.6",
