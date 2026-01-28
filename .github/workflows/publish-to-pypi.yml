@@ -19,20 +19,16 @@ jobs:
       with:
         persist-credentials: false
 
-    - name: Set up Python
-      uses: actions/setup-python@v6
+    - name: Install uv
+      uses: astral-sh/setup-uv@v7
       with:
-        python-version: 3.13
-
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install build
+        python-version: 3.14
+        enable-cache: false
 
     - name: Build package
-      run: python -m build
+      run: uv run noxfile.py -s build
 
-    - name: Upload package to PyPI
+    - name: Upload package to Python Package Index
       uses: pypa/gh-action-pypi-publish@v1.13.0
       with:
         # TODO: set up trusted publishing https://docs.pypi.org/trusted-publishers/
