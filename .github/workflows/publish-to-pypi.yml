@@ -23,7 +23,7 @@ jobs:
       uses: astral-sh/setup-uv@v7
       with:
         python-version: 3.14
-        enable-cache: false
+        enable-cache: false  # protect against cache poisoning when publishing a package
 
     - name: Build package
       run: uv run noxfile.py -s build
