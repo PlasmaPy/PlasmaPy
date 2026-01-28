@@ -523,11 +523,9 @@ def try_import(session: nox.Session) -> None:
 @nox.session
 def build(session: nox.Session) -> None:
     """Build & verify the source distribution and wheel."""
-    session.install("twine", "build")
-    build_command = ("python", "-m", "build")
-    session.run(*build_command, "--sdist")
-    session.run(*build_command, "--wheel")
-    session.run("twine", "check", "dist/*", *session.posargs)
+    session.install("uv_build")
+    session.run("uv", "build", *session.posargs)
+    session.run("twine", "check", "dist/*")
 
 
 AUTOTYPING_SAFE: tuple[str, ...] = (
