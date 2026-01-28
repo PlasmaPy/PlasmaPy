@@ -1,0 +1,1 @@
+Adopted ``uv build`` as the build frontend and ``uv_build`` as the build backend.

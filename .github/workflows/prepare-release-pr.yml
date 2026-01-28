@@ -6,7 +6,7 @@ on:
       version:
         description: Version
         required: true
-        default: 2025.8.0
+        default: 2026.2.0
       doi:
         description: Reserved DOI from Zenodo
         required: true
@@ -54,7 +54,7 @@ jobs:
 
     - name: Build the changelog with towncrier
       run: |
-        uvx nox -s "changelog(final)" -- $VERSION
+        uv run noxfile.py -s "changelog(final)" -- $VERSION
       env:
         VERSION: ${{ github.event.inputs.version }}
 

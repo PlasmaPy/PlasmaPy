@@ -32,4 +32,4 @@ rules:
     - create-release-issue.yml:31:46
   use-trusted-publishing:
     ignore:
-    - publish-to-pypi.yml:36:7
+    - publish-to-pypi.yml:32:7
