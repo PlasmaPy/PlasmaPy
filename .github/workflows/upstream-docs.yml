@@ -16,9 +16,6 @@ on:
 
 permissions: {}
 
-env:
-  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
 jobs:
 
   weekly:
@@ -36,57 +33,33 @@ jobs:
         include:
 
         - name: Documentation, Python 3.14, sphinx-dev, Ubuntu
+          nox-session: docs_upstream(sphinx)
+          python-version: '3.14'
           os: ubuntu-latest
-          python: '3.14'
-          nox_session: docs_upstream(sphinx)
 
         - name: Documentation, Python 3.14, sphinx_rtd_theme-dev, Ubuntu
+          nox-session: docs_upstream(sphinx_rtd_theme)
+          python-version: '3.14'
           os: ubuntu-latest
-          python: '3.14'
-          nox_session: docs_upstream(sphinx_rtd_theme)
 
         - name: Documentation, Python 3.14, nbsphinx-dev, Ubuntu
+          nox-session: docs_upstream(nbsphinx)
+          python-version: '3.14'
           os: ubuntu-latest
-          python: '3.14'
-          nox_session: docs_upstream(nbsphinx)
 
         - name: Documentation, Python 3.14, plasmapy_sphinx-dev, Ubuntu
+          nox-session: docs_upstream(plasmapy_sphinx)
+          python-version: '3.14'
           os: ubuntu-latest
-          python: '3.14'
-          nox_session: docs_upstream(plasmapy_sphinx)
 
     steps:
-
-    - name: Checkout code
-      uses: actions/checkout@v6
+    - name: Check out repository
+      uses: actions/checkout@v5
       with:
         persist-credentials: false
 
-    - name: Install graphviz and pandoc
-      uses: mamba-org/setup-micromamba@v2
+    - uses: ./.github/actions/run-nox-session
       with:
-        create-args: graphviz pandoc -c conda-forge
-        init-shell: bash
-        environment-name: micromamba-env
-        cache-environment: true
-        post-cleanup: all
-
-    - name: Install uv
-      uses: astral-sh/setup-uv@v7
-      with:
-        python-version: ${{ matrix.python }}
-        enable-cache: true  # zizmor: ignore[cache-poisoning]
-        cache-suffix: ${{ matrix.nox_session }}-${{ matrix.python }}-${{ runner.os }}
-
-    - name: Run Nox session ${{ matrix.nox_session }}
-      shell: bash -el {0}
-      run: uvx nox -s '${{ matrix.nox_session }}'
-
-    - name: Upload coverage reports to Codecov
-      if: ${{ contains(matrix.nox_session, 'cov') }}
-      uses: codecov/codecov-action@v5
-      with:
-        files: ./coverage.xml
-        fail_ci_if_error: false
-      env:
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        nox-session: ${{ matrix.nox-session }}
+        python-version: ${{ matrix.python-version }}
+        github-token: ${{ secrets.GITHUB_TOKEN }}
