@@ -30,7 +30,7 @@ runs:
   - name: Use micromamba to install graphviz and pandoc from conda-forge for doc builds
     # Could this installation step be added to documentation build sessions
     # in noxfile.py, so that it's not necessary to have a workflow step?
-    if: ${{ contains(inputs.nox-session, 'docs') }}
+    if: ${{ contains(inputs.nox-session, 'docs') || contains(inputs.nox-session, 'linkcheck') }}
     uses: mamba-org/setup-micromamba@v2
     with:
       create-args: graphviz pandoc -c conda-forge
