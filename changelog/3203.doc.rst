@@ -1,0 +1,1 @@
+Switched the documentation builds from using the ``sphinx-collapse`` extension to using ``sphinx_toolbox.collapse``.
