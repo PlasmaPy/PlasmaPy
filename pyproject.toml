@@ -90,7 +90,7 @@ dev = [
   { include-group = "type_check" },
 ]
 test = [
-  "hypothesis>=6.150",
+  "hypothesis>=6.151.2",
   "pytest>=9.0.2",
   "pytest-cov>=7",
   "pytest-filter-subpackage>=0.2",
@@ -99,30 +99,29 @@ test = [
   "pytest-xdist>=3.8",
 ]
 docs = [
-  "docutils>=0.21.2",
+  "docutils>=0.22.4",
   "ipykernel>=7.1",
   "ipywidgets>=8.1.8",
   "jinja2>=3.1.6",
   "nbsphinx>=0.9.8",
   "numpydoc>=1.10",
-  "pillow>=12",
-  "plasmapy-sphinx>=2025.5.1",
+  "pillow>=12.1",
+  "plasmapy-sphinx>=2026.1",
   "pygments==2.19.2",
-  "sphinx>=8.2.3,<8.3",
+  "sphinx>=9.1",
   "sphinx-changelog>=1.6",
   "sphinx-codeautolink==0.17.5",
   "sphinx-copybutton>=0.5.2",
   "sphinx-gallery>=0.20",
   "sphinx-issues>=5.0.1",
   "sphinx-notfound-page>=1.1",
-  "sphinx-reredirects>=1",
-  "sphinx-rtd-theme>=3.0.2",
+  "sphinx-reredirects>=1.1",
+  "sphinx-rtd-theme>=3.1",
   "sphinx-tabs>=3.4",
-  "sphinx-toolbox>=4.1.2",
+  "sphinx-toolbox>=4",
   "sphinxcontrib-bibtex>=2.6.5",
-  # sphinxcontrib-globalsubs>=1 needs sphinx>=9
-  "sphinxcontrib-globalsubs==0.1.2",
-  "sphinxemoji>=0.3.1",
+  "sphinxcontrib-globalsubs>=1",
+  "sphinxemoji>=0.3.2",
   "towncrier>=24.8",
   "unidecode>=1.4",
 ]
@@ -133,7 +132,7 @@ nox = [
 lint = [
   "pre-commit>=4.5.1",
   # Include ruff to make it available for IDEs in virtual environments
-  "ruff>=0.14.11",
+  "ruff>=0.14.14",
 ]
 type_check = [
   "mypy>=1.19.1",
@@ -159,7 +158,7 @@ write_to = "src/plasmapy/_version.py"
 [tool.uv]
 # Use a dependency cooldown so that security vulnerabilities in upstream
 # packages can be identified and yanked before we start using them.
-exclude-newer = "3 days"
+exclude-newer = "12 hours"
 # Prefer pre-built distributions when using lowest-direct resolution strategy or when using nightly wheels
 no-build-package = [ "numpy", "matplotlib", "scipy", "astropy", "h5py", "pandas", "wrapt" ]
 

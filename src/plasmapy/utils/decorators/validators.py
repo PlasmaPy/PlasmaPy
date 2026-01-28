@@ -20,7 +20,7 @@ class ValidateQuantities(CheckUnits, CheckValues):
     """
     A decorator class to 'validate' -- control and convert -- the units and values
     of input and return arguments to a function or method.  Arguments are expected to
-    be astropy :class:`~astropy.units.quantity.Quantity` objects.
+    be astropy :class:`~astropy.units.Quantity` objects.
 
     Parameters
     ----------
@@ -390,7 +390,7 @@ def validate_quantities(func=None, validations_on_return=None, **validations):
     """
     A decorator to 'validate' — control and convert — the units and values
     of input and return arguments to a function or method.  Arguments are expected to
-    be astropy :class:`~astropy.units.quantity.Quantity` objects.
+    be astropy :class:`~astropy.units.Quantity` objects.
 
     Parameters
     ----------
