@@ -8,12 +8,12 @@ from plasmapy.particles.exceptions import InvalidParticleError
 
 
 @pytest.fixture(params=sorted(particle_zoo.everything))
-def particle(request):  # noqa: D103
+def particle(request):
     return Particle(request.param)
 
 
 @pytest.fixture
-def opposite(particle):  # noqa: D103
+def opposite(particle):
     try:
         opposite_particle = ~particle
     except Exception as exc:
@@ -38,5 +38,5 @@ def opposite(particle):  # noqa: D103
         ]
     )
 )
-def particle_antiparticle_pair(request):  # noqa: D103
+def particle_antiparticle_pair(request):
     return [Particle(p) for p in request.param]
