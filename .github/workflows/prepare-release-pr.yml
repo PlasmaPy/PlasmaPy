@@ -37,7 +37,7 @@ jobs:
       env:
         DOI: ${{ github.event.inputs.doi }}
 
-    - name: Checkout code
+    - name: Check out repository
       uses: actions/checkout@v6
       with:
         persist-credentials: false
@@ -54,6 +54,8 @@ jobs:
 
     - name: Build the changelog with towncrier
       run: |
+        # Use `uv run noxfile.py` instead of `uvx nox` to make use of inline
+        # script metadata.
         uv run noxfile.py -s "changelog(final)" -- $VERSION
       env:
         VERSION: ${{ github.event.inputs.version }}

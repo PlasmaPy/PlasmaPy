@@ -1,0 +1,69 @@
+# This file defines a composite GitHub action that can be invoked by
+# workflows to run Nox sessions using uv.
+#
+# Run `nox --list` locally to see all available Nox sessions as defined
+# by noxfile.py.
+#
+# Docs: https://docs.github.com/en/actions/tutorials/create-actions/create-a-composite-action
+
+name: Run Nox session
+description: Composite workflow for using uv to run a Nox session.
+
+inputs:
+  nox-session:
+    description: The name of the session, as defined by noxfile.py.
+    required: true
+  python-version:
+    description: Python version to be installed and used by uv.
+    required: false
+    default: '3.14'
+  github-token:
+    description: Token to authenticate on behalf of GitHub Actions. Needed when running tests and building documentation.
+    required: false
+  codecov-token:
+    description: Token needed only when uploading test coverage reports to Codecov.
+    required: false
+
+runs:
+  using: composite
+  steps:
+  - name: Use micromamba to install graphviz and pandoc from conda-forge for doc builds
+    # Could this installation step be added to documentation build sessions
+    # in noxfile.py, so that it's not necessary to have a workflow step?
+    if: ${{ contains(inputs.nox-session, 'docs') || contains(inputs.nox-session, 'linkcheck') }}
+    uses: mamba-org/setup-micromamba@v2
+    with:
+      create-args: graphviz pandoc -c conda-forge
+      # Add commands to activate the micromamba environment to shell
+      # configuration files.
+      init-shell: bash powershell
+      environment-name: micromamba-env
+      cache-environment: true
+
+  - name: Install uv
+    uses: astral-sh/setup-uv@v7
+    with:
+      python-version: ${{ inputs.python-version }}
+      enable-cache: true
+      cache-suffix: ${{ inputs.nox-session }}-${{ inputs.python-version }}-${{ inputs.os }}
+
+  - name: Run Nox session ${{ inputs.nox-session }}
+    # The next bash command is needed so that the environment created
+    # in the bash shell is properly activated.
+    shell: bash -el {0}
+    # Use `uv run` instead of `uvx nox` so that the inline script metadata
+    # in noxfile.py can be used to install needed dependencies such as nox-uv.
+    run: uv run noxfile.py -s "${NOX_SESSION}"
+    env:
+      GH_TOKEN: ${{ inputs.github-token }}
+      # Use intermediate variable to address zizmor's template-injection audit rule
+      NOX_SESSION: ${{ inputs.nox-session }}
+
+  - name: Upload coverage reports to Codecov
+    if: ${{ contains(inputs.nox-session, 'cov') }}
+    uses: codecov/codecov-action@v5
+    with:
+      files: ./coverage.xml
+      fail_ci_if_error: true
+    env:
+      CODECOV_TOKEN: ${{ inputs.CODECOV_TOKEN }}

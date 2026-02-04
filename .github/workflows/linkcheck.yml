@@ -33,26 +33,12 @@ jobs:
       (github.event_name == 'schedule' && github.repository == 'PlasmaPy/PlasmaPy' && github.ref == 'refs/heads/main')
 
     steps:
-
-    - name: Checkout code
-      uses: actions/checkout@v6
+    - name: Check out repository
+      uses: actions/checkout@v5
       with:
         persist-credentials: false
-
-    - name: Install graphviz and pandoc for doc builds
-      uses: mamba-org/setup-micromamba@v2
-      if: ${{ contains(matrix.nox_session, 'docs') }}
+    - uses: ./.github/actions/run-nox-session
       with:
-        create-args: graphviz pandoc -c conda-forge
-        init-shell: bash powershell
-        cache-environment: true
-        post-cleanup: all
-
-    - name: Install uv
-      uses: astral-sh/setup-uv@v7
-      with:
-        python-version: 3.13
-
-    - name: Check hyperlinks in documentation
-      shell: bash -el {0}
-      run: uvx nox -s linkcheck
+        nox-session: linkcheck
+        python-version: '3.14'
+        github-token: ${{ secrets.GITHUB_TOKEN }}
