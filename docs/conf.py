@@ -103,7 +103,7 @@ extensions = [
     "sphinx_issues",
     "sphinx_reredirects",
     "sphinx_tabs.tabs",
-    "sphinx_collapse",
+    "sphinx_toolbox.collapse",
     "sphinxcontrib.bibtex",
     "sphinxemoji.sphinxemoji",
     "sphinxcontrib.globalsubs",

@@ -522,12 +522,25 @@ def try_import(session: nox.Session) -> None:
 
 @nox.session
 def build(session: nox.Session) -> None:
-    """Build & verify the source distribution and wheel."""
-    session.install("twine", "build")
-    build_command = ("python", "-m", "build")
-    session.run(*build_command, "--sdist")
-    session.run(*build_command, "--wheel")
-    session.run("twine", "check", "dist/*", *session.posargs)
+    """
+    Build the source distribution (sdist) and wheel.
+
+    The sdist and wheel are deposited into the dist/ directory.
+    """
+    session.install("uv_build")
+    session.run("uv", "build", *session.posargs)
+    session.notify("check_build")
+
+
+@nox.session
+def check_build(session: nox.Session) -> None:
+    """
+    Validate the source distribution and wheel.
+
+    This session requires that `nox -s build` has already been run.
+    """
+    session.install("twine")
+    session.run("twine", "check", "dist/*")
 
 
 AUTOTYPING_SAFE: tuple[str, ...] = (
