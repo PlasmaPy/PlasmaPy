@@ -10,13 +10,17 @@ on:
     - cron: '0 15 1 1,4,7,10 *'
   workflow_dispatch:
 
+permissions: {}
+
 jobs:
   check:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       - name: Check PHEP 3 Compliance
-        uses: heliophysicsPy/pyhc-actions/phep3-compliance@v1
+        uses: heliophysicsPy/pyhc-actions/phep3-compliance@v1  # zizmor: ignore[unpinned-uses]
         with:
           ignore-errors-for: xarray
