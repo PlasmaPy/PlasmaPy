@@ -6,8 +6,8 @@ on:
   pull_request:
     branches: [main]
   schedule:
-    # Run quarterly: Jan 1, Apr 1, Jul 1, Oct 1 at 3pm UTC (8am Mountain Time) 
-    - cron: '0 15 1 1,4,7,10 *'
+    # Run quarterly: Jan 1, Apr 1, Jul 1, Oct 1 at 3pm UTC (8am Mountain Time)
+  - cron: 0 15 1 1,4,7,10 *
   workflow_dispatch:
 
 permissions: {}
@@ -16,9 +16,9 @@ jobs:
   check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
+    - uses: actions/checkout@v4
+      with:
+        persist-credentials: false
 
-      - name: Check PyHC Environment Compatibility
-        uses: heliophysicsPy/pyhc-actions/pyhc-env-compat@v1  # zizmor: ignore[unpinned-uses]
+    - name: Check PyHC Environment Compatibility
+      uses: heliophysicsPy/pyhc-actions/pyhc-env-compat@v1    # zizmor: ignore[unpinned-uses]
