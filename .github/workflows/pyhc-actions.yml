@@ -1,4 +1,4 @@
-name: PHEP 3 Compliance
+name: PyHC Actions
 
 on:
   push:
@@ -13,7 +13,8 @@ on:
 permissions: {}
 
 jobs:
-  check:
+  phep3-compliance:
+    name: PHEP 3 Compliance
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -24,3 +25,14 @@ jobs:
       uses: heliophysicsPy/pyhc-actions/phep3-compliance@v1    # zizmor: ignore[unpinned-uses]
       with:
         ignore-errors-for: xarray
+
+  pyhc-env-compat:
+    name: PyHC Environment Compatibility
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        persist-credentials: false
+
+    - name: Check PyHC Environment Compatibility
+      uses: heliophysicsPy/pyhc-actions/pyhc-env-compat@v1    # zizmor: ignore[unpinned-uses]
