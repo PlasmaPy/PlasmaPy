@@ -34,103 +34,78 @@ jobs:
         include:
 
         - name: Tests, Python 3.14, doctests, macOS
+          nox-session: tests-3.14(all)
+          python-version: '3.14'
           os: macos-latest
-          python: '3.14'
-          nox_session: tests-3.14(all)
 
         - name: Tests, Python 3.13, Windows
+          nox-session: tests-3.13(all)
+          python-version: '3.13'
           os: windows-latest
-          python: '3.13'
-          nox_session: tests-3.13(all)
 
         - name: Tests, Python 3.12, Ubuntu
+          nox-session: tests-3.12(all)
+          python-version: '3.12'
           os: ubuntu-latest
-          python: '3.12'
-          nox_session: tests-3.12(all)
 
         - name: Tests, Python 3.14, lowest direct dependencies, Windows
+          nox-session: tests-3.14(lowest-direct)
+          python-version: '3.14'
           os: windows-latest
-          python: '3.14'
-          nox_session: tests-3.14(lowest-direct)
 
         - name: Tests, Python 3.13, lowest direct dependencies, macOS
+          nox-session: tests-3.13(lowest-direct)
+          python-version: '3.13'
           os: macos-latest
-          python: '3.13'
-          nox_session: tests-3.13(lowest-direct)
 
         - name: Tests, Python 3.12, lowest direct dependencies, Ubuntu
+          nox-session: tests-3.12(lowest-direct)
+          python-version: '3.12'
           os: ubuntu-latest
-          python: '3.12'
-          nox_session: tests-3.12(lowest-direct)
 
         - name: Packaging, Python 3.13, Ubuntu
+          nox-session: build
+          python-version: '3.13'
           os: ubuntu-latest
-          python: '3.13'
-          nox_session: build
 
         - name: Packaging, Python 3.12, macOS
+          nox-session: build
+          python-version: '3.12'
           os: macos-latest
-          python: '3.12'
-          nox_session: build
 
         - name: Import PlasmaPy, Python 3.14, macOS
+          nox-session: import
+          python-version: '3.14'
           os: macos-latest
-          python: '3.14'
-          nox_session: import
 
         - name: Import PlasmaPy, Python 3.12, Windows
+          nox-session: import
+          python-version: '3.12'
           os: windows-latest
-          python: '3.12'
-          nox_session: import
 
         - name: Check MANIFEST.in
+          nox-session: manifest
+          python-version: '3.14'
           os: ubuntu-latest
-          python: '3.14'
-          nox_session: manifest
 
         - name: Lint
+          nox-session: lint
+          python-version: '3.14'
           os: ubuntu-latest
-          python: '3.14'
-          nox_session: lint
 
         - name: Documentation, Python 3.14, Windows
+          nox-session: docs
+          python-version: '3.14'
           os: windows-latest
-          python: '3.14'
-          nox_session: docs
 
     steps:
-
-    - name: Checkout code
-      uses: actions/checkout@v6
+    - name: Check out repository
+      uses: actions/checkout@v5
       with:
         persist-credentials: false
 
-    - name: Install graphviz and pandoc for doc builds
-      if: ${{ contains(matrix.nox_session, 'docs') }}
-      uses: mamba-org/setup-micromamba@v2
+    - uses: ./.github/actions/run-nox-session
       with:
-        create-args: graphviz pandoc -c conda-forge
-        init-shell: bash
-        environment-name: micromamba-env
-        cache-environment: true
-        post-cleanup: all
-
-    - name: Install uv
-      uses: astral-sh/setup-uv@v7
-      with:
-        python-version: ${{ matrix.python }}
-        enable-cache: true  # zizmor: ignore[cache-poisoning]
-        cache-suffix: ${{ matrix.nox_session }}-${{ matrix.python }}-${{ runner.os }}
-
-    - name: Run Nox session ${{ matrix.nox_session }}
-      shell: bash -el {0}
-      run: uvx nox -s '${{ matrix.nox_session }}'
-
-    - name: Upload coverage reports to Codecov
-      if: ${{ contains(matrix.nox_session, 'cov') }}
-      uses: codecov/codecov-action@v5
-      with:
-        files: ./coverage.xml
-        fail_ci_if_error: false
-      env:
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        nox-session: ${{ matrix.nox-session }}
+        python-version: ${{ matrix.python-version }}
+        github-token: ${{ secrets.GITHUB_TOKEN }}
