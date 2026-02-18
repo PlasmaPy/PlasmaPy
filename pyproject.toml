@@ -350,7 +350,7 @@ lint.per-file-ignores."docs/notebooks/plasma/grids_nonuniform.ipynb" = [ "NPY002
 
 lint.per-file-ignores."setup.py" = [ "D100" ]
 lint.per-file-ignores."src/plasmapy/analysis/fit_functions.py" = [ "D301" ]
-lint.per-file-ignores."src/plasmapy/analysis/swept_langmuir/__init__.py" = [ "E402" ]
+lint.per-file-ignores."src/plasmapy/analysis/swept_langmuir/**" = [ "E402" ]
 lint.per-file-ignores."src/plasmapy/formulary/braginskii.py" = [ "C901", "RET503", "RET504" ]
 lint.per-file-ignores."src/plasmapy/plasma/sources/*.py" = [ "D102" ]
 lint.per-file-ignores."src/plasmapy/utils/_pytest_helpers/pytest_helpers.py" = [ "BLE001", "PLR", "SLF001" ]
