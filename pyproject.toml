@@ -20,13 +20,11 @@ keywords = [
   "solar physics",
   "space plasmas",
 ]
-
 license-files = [ "LICENSE.md" ]
 # SPEC 0 recommends that projects drop support for Python versions 3
 # years after their initial release. See:
 # https://scientific-python.org/specs/spec-0000
 requires-python = ">=3.12"
-
 # Add classifiers from https://pypi.org/classifiers
 classifiers = [
   "Intended Audience :: Education",
@@ -40,19 +38,14 @@ classifiers = [
   "Topic :: Scientific/Engineering :: Astronomy",
   "Topic :: Scientific/Engineering :: Physics",
 ]
-
 dynamic = [ "version" ]
-
 # SPEC 0 recommends that support for core packages should be dropped 2
 # years after their initial release.
-
 # Upper limits on package versions should be temporary because they can
 # make it harder to resolve environments when PlasmaPy is installed
 # alongside other packages, such as in the heliopythoniverse.
-
 # When updating dependencies, run `nox -s lock` to upgrade the
 # pinned environments in `uv.lock`.
-
 dependencies = [
   "astropy>=6.1.3",
   "h5py>=3.11",
@@ -74,7 +67,6 @@ urls.Documentation = "https://docs.plasmapy.org/"
 urls.Issues = "https://github.com/PlasmaPy/plasmapy/issues/"
 urls.Source = "https://github.com/PlasmaPy/plasmapy"
 urls.website = "https://www.plasmapy.org"
-
 # Remove references to plasma calculator after mid-2026
 scripts.plasma-calculator = "plasmapy.utils.calculator:main"
 
@@ -126,14 +118,14 @@ docs = [
   "towncrier>=24.8",
   "unidecode>=1.4",
 ]
-nox = [
-  "nox>=2025.11.12",
-  "nox-uv>=0.7",
-]
 lint = [
   "pre-commit>=4.5.1",
   # Include ruff to make it available for IDEs in virtual environments
   "ruff>=0.14.11",
+]
+nox = [
+  "nox>=2025.11.12",
+  "nox-uv>=0.7",
 ]
 type_check = [
   "mypy>=1.19.1",
@@ -143,25 +135,21 @@ type_check = [
 
 [tool.setuptools]
 include-package-data = true
-
-[tool.setuptools.package-data]
-"plasmapy.particles.data" = [ "*" ]
-"plasmapy.tests" = [ "coveragerc" ]
-
-[tool.setuptools.packages.find]
-where = [ "src" ]
-exclude = [ "docs/automodapi", "src/plasmapy/_dev" ]
-namespaces = false
+package-data."plasmapy.particles.data" = [ "*" ]
+package-data."plasmapy.tests" = [ "coveragerc" ]
+packages.find.where = [ "src" ]
+packages.find.exclude = [ "docs/automodapi", "src/plasmapy/_dev" ]
+packages.find.namespaces = false
 
 [tool.setuptools_scm]
 write_to = "src/plasmapy/_version.py"
 
 [tool.uv]
+# Prefer pre-built distributions when using lowest-direct resolution strategy or when using nightly wheels
+no-build-package = [ "astropy", "h5py", "matplotlib", "numpy", "pandas", "scipy", "wrapt" ]
 # Use a dependency cooldown so that security vulnerabilities in upstream
 # packages can be identified and yanked before we start using them.
 exclude-newer = "3 days"
-# Prefer pre-built distributions when using lowest-direct resolution strategy or when using nightly wheels
-no-build-package = [ "numpy", "matplotlib", "scipy", "astropy", "h5py", "pandas", "wrapt" ]
 
 [tool.ruff]
 target-version = "py312"
@@ -173,7 +161,6 @@ extend-exclude = [
   "__pycache__",
   "_dev",
 ]
-
 show-fixes = true
 output-format = "grouped"
 format.line-ending = "lf"
@@ -191,7 +178,7 @@ lint.extend-select = [
   "C90",    # mccabe
   "COM818", # trailing-comma-on-bare-tuple
   "D",      # pydocstyle
-  #  "DOC", # pydoclint (enable this rule set when it is no longer in preview)
+  # "DOC", # pydoclint (enable this rule set when it is no longer in preview)
   "DTZ",    # flake8-datetimez
   "EM",     # flake8-errmsg
   "EXE",    # flake8-executable
@@ -321,9 +308,8 @@ lint.ignore = [
 ]
 lint.per-file-ignores."**/*.ipynb" = [ "T201", "T203" ]
 lint.per-file-ignores.".github/scripts/*.py" = [ "D103", "INP001" ]
-lint.per-file-ignores."__init__.py" = [ "D104", "E402", "F401", "F402", "F403" ] # ignore import errors
+lint.per-file-ignores."__init__.py" = [ "D104", "E402", "F401", "F402", "F403" ]  # ignore import errors
 lint.per-file-ignores."docs/conf.py" = [ "D100", "D103", "E402", "EXE001", "EXE005", "F401" ]
-
 # Most ruff rule violations in the following files should eventually be fixed
 lint.per-file-ignores."docs/notebooks/analysis/fit_functions.ipynb" = [ "NPY002" ]
 lint.per-file-ignores."docs/notebooks/analysis/nullpoint.ipynb" = [ "D103" ]
@@ -347,7 +333,6 @@ lint.per-file-ignores."docs/notebooks/formulary/ExB_drift.ipynb" = [ "B008", "D1
 lint.per-file-ignores."docs/notebooks/langmuir_samples/_generate_noisy.ipynb" = [ "NPY002", "PTH123" ]
 lint.per-file-ignores."docs/notebooks/plasma/grids_cartesian.ipynb" = [ "NPY002", "PLW2901" ]
 lint.per-file-ignores."docs/notebooks/plasma/grids_nonuniform.ipynb" = [ "NPY002" ]
-
 lint.per-file-ignores."setup.py" = [ "D100" ]
 lint.per-file-ignores."src/plasmapy/analysis/fit_functions.py" = [ "D301" ]
 lint.per-file-ignores."src/plasmapy/analysis/swept_langmuir/__init__.py" = [ "E402" ]
@@ -503,7 +488,7 @@ ignore = [
   "src/plasmapy/_version.py",
 ]
 
-[tool.pytest] # https://docs.pytest.org/en/stable/reference/reference.html#ini-options-ref
+[tool.pytest]  # https://docs.pytest.org/en/stable/reference/reference.html#ini-options-ref
 addopts = [
   "--pyargs",
   "--durations=5",
@@ -528,16 +513,12 @@ filterwarnings = [
   # GitHub issue when ignoring a FutureWarning or DeprecationWarning,
   # and label it with "needed for release".
   "error",
-
   # ubiquitous warning in particle tracker (see issue #2514)
   "ignore:.*Quantities should go to zero at edges of grid.*:RuntimeWarning",
-
   # occasional warning from downloader tests
   "once:.*API rate limit exceeded.*:UserWarning",
-
   # for numpy.reshape calls, newshape kwarg is deprecated; use shape instead or pass positionally
   "once:.*MultiIndex.*:FutureWarning",
-
   # warnings that have occurred sporadically but probably aren't important
   "once:unclosed:ResourceWarning",
   "once::pytest.PytestUnraisableExceptionWarning",
@@ -547,26 +528,24 @@ markers = [
   "slow: marks tests as slow (deselect with '-m \"not slow\"')",
 ]
 strict = true
-testpaths = [ 'tests', 'src/plasmapy', 'tools' ]
+testpaths = [ "tests", "src/plasmapy", "tools" ]
 
-[tool.coverage.report]
-exclude_lines = [
+[tool.coverage]
+run.branch = true
+run.omit = [
+  "*/plasmapy/*version.py",
+  "*/plasmapy/_dev/*",
+  "*/plasmapy/tests/*",
+]
+run.source = [ "src" ]
+report.exclude_lines = [
+  "@abstractmethod",
+  "coverage: ignore",
   "if TYPE_CHECKING",
   "if typing.TYPE_CHECKING",
-  "coverage: ignore",
   "ImportError",
   "ModuleNotFoundError",
   "raise NotImplementedError",
-  "@abstractmethod",
-]
-
-[tool.coverage.run]
-branch = true
-source = [ "src" ]
-omit = [
-  "*/plasmapy/tests/*",
-  "*/plasmapy/*version.py",
-  "*/plasmapy/_dev/*",
 ]
 
 [tool.towncrier]
@@ -578,46 +557,16 @@ title_format = "{name} v{version} ({project_date})"
 # Despite the name mismatch, we use `issue_format` for linking to PRs
 issue_format = ":pr:`{issue}`"
 wrap = true
-
-[[tool.towncrier.type]]
-directory = "feature"
-name = "New Features"
-showcontent = true
-
-[[tool.towncrier.type]]
-directory = "doc"
-name = "Documentation Improvements"
-showcontent = true
-
-[[tool.towncrier.type]]
-directory = "breaking"
-name = "Backwards Incompatible Changes"
-showcontent = true
-
-[[tool.towncrier.type]]
-directory = "removal"
-name = "Deprecations and Planned Removals"
-showcontent = true
-
-[[tool.towncrier.type]]
-directory = "bugfix"
-name = "Bug Fixes"
-showcontent = true
-
-[[tool.towncrier.type]]
-directory = "internal"
-name = "Internal Changes and Refactorings"
-showcontent = true
-
-[[tool.towncrier.type]]
-directory = "test"
-name = "Updates to Software Testing"
-showcontent = true
-
-[[tool.towncrier.type]]
-directory = "trivial"
-name = "Additional Changes"
-showcontent = true
+type = [
+  { directory = "feature", name = "New Features", showcontent = true },
+  { directory = "doc", name = "Documentation Improvements", showcontent = true },
+  { directory = "breaking", name = "Backwards Incompatible Changes", showcontent = true },
+  { directory = "removal", name = "Deprecations and Planned Removals", showcontent = true },
+  { directory = "bugfix", name = "Bug Fixes", showcontent = true },
+  { directory = "internal", name = "Internal Changes and Refactorings", showcontent = true },
+  { directory = "test", name = "Updates to Software Testing", showcontent = true },
+  { directory = "trivial", name = "Additional Changes", showcontent = true },
+]
 
 [tool.build_docs]
 source-dir = "docs"
@@ -625,10 +574,9 @@ build-dir = "docs/_build"
 all_files = "1"
 
 [tool.changelog-bot]
-[tool.changelog-bot.towncrier_changelog]
-enabled = true
-verify_pr_number = true
-changelog_skip_label = "no changelog entry needed"
-changelog_noop_label = "skip changelog checks"
-whatsnew_label = "needs changelog entry"
-whatsnew_pattern = '''changelog\/\d+\.[a-zA-Z]+(\.\d+)?\.rst'''
+towncrier_changelog.enabled = true
+towncrier_changelog.verify_pr_number = true
+towncrier_changelog.changelog_skip_label = "no changelog entry needed"
+towncrier_changelog.changelog_noop_label = "skip changelog checks"
+towncrier_changelog.whatsnew_label = "needs changelog entry"
+towncrier_changelog.whatsnew_pattern = "changelog\\/\\d+\\.[a-zA-Z]+(\\.\\d+)?\\.rst"

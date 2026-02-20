@@ -1245,8 +1245,8 @@ def stopping_power(
         # If it has been indicated that the user wants the interpolator, construct
         # an anonymous function to handle units and sanitize IO
         if return_interpolator:
-            return (
-                lambda x: np.exp(cs(np.log(x.to(u.MeV).value))) * u.MeV * u.cm**2 / u.g
+            return lambda x: (
+                np.exp(cs(np.log(x.to(u.MeV).value))) * u.MeV * u.cm**2 / u.g
             )
 
         return (
