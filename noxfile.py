@@ -659,14 +659,10 @@ def manifest(session: nox.Session) -> None:
 
 @nox.session
 def lint(session: nox.Session) -> None:
-    """
-    Run all pre-commit hooks on all files with prek.
-
-    Configuration file: .pre-commit-config.yaml
-    """
-    session.install("prek")
+    """Run all pre-commit hooks defined in .pre-commit-config.yaml."""
+    session.install("pre-commit")
     session.run(
-        "prek",
+        "pre-commit",
         "run",
         "--all-files",
         *session.posargs,
