@@ -4,15 +4,15 @@ import astropy.units as u
 import numpy as np
 
 from plasmapy.formulary.speeds import ion_sound_speed
-from plasmapy.particles import Particle
+from plasmapy.particles.particle_class import Particle
 
 
-def _raw_ion_sound_speed():
+def _raw_ion_sound_speed() -> None:
     """Get undecorated ion_sound_speed to avoid particle-input decorators."""
     return inspect.unwrap(ion_sound_speed)
 
 
-def test_ion_sound_speed_uses_Z_when_provided_unwrapped():
+def test_ion_sound_speed_uses_Z_when_provided_unwrapped() -> None:
     """
     Regression test for the LOGIC bug: Z was ignored in the formula.
     We bypass decorators so Z isn't interpreted as particle charge override.
@@ -43,7 +43,7 @@ def test_ion_sound_speed_uses_Z_when_provided_unwrapped():
     assert np.isclose(got_ratio, expected_ratio, rtol=1e-12, atol=0)
 
 
-def test_ion_sound_speed_Z_default_equals_charge_number_unwrapped():
+def test_ion_sound_speed_Z_default_equals_charge_number_unwrapped() -> None:
     """
     Z=None should default to ion.charge_number (docstring behavior).
     """
