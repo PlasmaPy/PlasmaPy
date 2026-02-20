@@ -1,15 +1,9 @@
- # Check that hyperlinks in the documentation are up-to-date.
+# Check that hyperlinks in the documentation are up-to-date.
 #
 # To check hyperlinks on a pull request, add the label entitled
-# 'perform linkcheck in CI'. After installing uv, the checks can be run
-# locally with
-#
-#    uvx nox -s linkcheck
-#
-# The workflow is defined in noxfile.py.
+# 'perform linkcheck in CI'. The workflow is defined in noxfile.py.
 
-
-name: Check hyperlinks
+name: Docs
 
 on:
   schedule:
@@ -25,7 +19,7 @@ permissions: {}
 jobs:
 
   linkcheck:
-    name: Documentation linkcheck
+    name: Check hyperlinks (allowed failure)
     runs-on: ubuntu-latest
     if: >-
       github.event_name == 'workflow_dispatch' ||
@@ -45,6 +39,7 @@ jobs:
         create-args: graphviz pandoc -c conda-forge
         init-shell: bash powershell
         cache-environment: true
+        environment-name: micromamba-env
         post-cleanup: all
 
     - name: Install uv
