@@ -10,6 +10,7 @@ rules:
         codecov/codecov-action: ref-pin
         conda-incubator/setup-miniconda: ref-pin
         mamba-org/setup-micromamba: ref-pin
+        heliophysicsPy/pyhc-actions/*: ref-pin
         pypa/*: ref-pin
         scientific-python/*: ref-pin
         ts-graphviz/setup-graphviz: ref-pin
@@ -32,4 +33,4 @@ rules:
     - create-release-issue.yml:31:46
   use-trusted-publishing:
     ignore:
-    - publish-to-pypi.yml:36:7
+    - publish-to-pypi.yml:32:7

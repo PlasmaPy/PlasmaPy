@@ -1,0 +1,38 @@
+name: PyHC Actions
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    # Run quarterly: Jan 1, Apr 1, Jul 1, Oct 1 at 3pm UTC (8am Mountain Time)
+  - cron: 0 15 1 1,4,7,10 *
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  phep3-compliance:
+    name: PHEP 3 Compliance
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v6
+      with:
+        persist-credentials: false
+
+    - name: Check PHEP 3 Compliance
+      uses: heliophysicsPy/pyhc-actions/phep3-compliance@v1
+      with:
+        ignore-errors-for: xarray  # astropy.units interoperability; needed through April 2026
+
+  pyhc-env-compat:
+    name: PyHC Environment Compatibility
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        persist-credentials: false
+
+    - name: Check PyHC Environment Compatibility
+      uses: heliophysicsPy/pyhc-actions/pyhc-env-compat@v1

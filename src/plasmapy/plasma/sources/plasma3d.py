@@ -187,7 +187,7 @@ class Plasma3D(GenericPlasma):
         # for each MagnetoStatic argument
         prod = itertools.product(*[list(range(n)) for n in self.domain_shape])
         for mstat in mstats:
-            # loop over 3D-index (ix,iy,iz)
+            # loop over 3D-index (ix,iy,is)
             for point_index in prod:
                 # get coordinate
                 p = self.grid[(slice(None), *point_index)]  # function as [:, *index]
