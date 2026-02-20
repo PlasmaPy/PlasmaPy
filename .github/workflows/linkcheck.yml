@@ -41,7 +41,6 @@ jobs:
 
     - name: Install graphviz and pandoc for doc builds
       uses: mamba-org/setup-micromamba@v2
-      if: ${{ contains(matrix.nox_session, 'docs') }}
       with:
         create-args: graphviz pandoc -c conda-forge
         init-shell: bash powershell
