@@ -1280,21 +1280,20 @@ Building documentation
 .. tip::
 
    Because a documentation preview is generated automatically by |Read
-   the Docs| for every pull request, it is not necessary to build the
-   documentation locally on your own computer. New contributors can
-   safely skip this section.
+   the Docs| for every pull request, it is generally unnecessary to
+   build the documentation on your own computer. Most contributors can
+   skip this section.
 
-There are two methods for building the documentation: make_ and |Nox|.
+There are two methods for building the documentation: |Nox| (recommend)
+and make_.
+
+* Running ``nox -s docs`` will install an isolated virtual environment
+  with ``uv`` that will be used to build the documentation at
+  :file:`docs/_build/html/`.
 
 * Using make_ will build the documentation based off of what is in the
   current directory structure. make_ is quicker for local builds than
   |Nox| but requires you to install and set up all dependencies.
-
-* Using |Nox| does not require setting up all dependencies ahead of
-  time, but is more computationally intensive since it creates a virtual
-  environment and builds the package before building the documentation.
-  Consequently, PlasmaPy uses |Nox| for building the documentation on
-  continuous integration testing platforms.
 
 .. _doc-build-prereqs:
 
