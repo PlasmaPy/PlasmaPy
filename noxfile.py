@@ -445,7 +445,7 @@ def docs_upstream(session: nox.Session, site: str, repository: str) -> None:
     so that they can be fixed or updated earlier rather than later.
     """
     session.install(f"git+https://{site}.com/{repository}")
-    package = repository.split("/")[-1]
+    package = repository.rsplit("/", maxsplit=1)[-1]
     session.run_install("uv", "pip", "show", package)
     session.run(*SPHINX_BASE_COMMAND, *BUILD_HTML, *session.posargs)
 
