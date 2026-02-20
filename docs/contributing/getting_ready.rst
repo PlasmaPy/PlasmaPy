@@ -204,9 +204,10 @@ To create a virtual environment, run:
    uv venv
 
 The output will provide a command to `activate the virtual environment`_.
-This command is most often :bash:`source .venv/bin/activate` on
-Linux, macOS, or WSL; and ``.venv\Scripts\activate`` when using
-Windows PowerShell (which may need to be run as an administrator).
+The command is typically :bash:`source .venv/bin/activate` on Linux,
+macOS, and WSL (for POSIX compliant shells like ``zsh``, ``bash``, and
+``sh``); and ``.venv\Scripts\activate`` for Windows PowerShell (which
+might need to be run as an administrator).
 
 To sync the virtual environment with the development environment, run:
 
@@ -214,7 +215,8 @@ To sync the virtual environment with the development environment, run:
 
    uv sync
 
-And with that, you're all set up to contribute to PlasmaPy!
+And with that, you're all set up to contribute to PlasmaPy! ✨️
+
 
 .. tip::
 
@@ -229,7 +231,7 @@ And with that, you're all set up to contribute to PlasmaPy!
    The ``-e`` indicates that the installation is editable.
 
 .. _Add a new SSH key to your GitHub account: https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account
-.. _activate the virtual environment: https://docs.astral.sh/uv/pip/environments/#activating-a-virtual-environment
+.. _activate the virtual environment: https://docs.astral.sh/uv/pip/environments/#using-a-virtual-environment
 .. _clone: https://github.com/git-guides/git-clone
 .. _creating an environment: https://www.anaconda.com/docs/tools/anaconda-navigator/tutorials/manage-environments#creating-a-new-environment
 .. _download Python: https://www.python.org/downloads
