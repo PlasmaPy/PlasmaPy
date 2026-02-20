@@ -198,7 +198,7 @@ def plasma_frequency_lite(
     The particle plasma frequency is
 
     .. math::
-        ω_p = \sqrt{\frac{n |q|}{ε_0 m}}
+        ω_p = \sqrt{\frac{n q^2}{ε_0 m}}
 
     where :math:`n` is the number density, :math:`q` is the particle
     charge, and :math:`m` is the particle mass.
@@ -216,7 +216,7 @@ def plasma_frequency_lite(
     >>> plasma_frequency_lite(n=1e19, mass=mass, Z=1, to_hz=True)
     np.float64(662608904.6...)
     """
-    omega_p = Z * e_si_unitless * np.sqrt(n / (eps0_si_unitless * mass))
+    omega_p = np.abs(Z) * e_si_unitless * np.sqrt(n / (eps0_si_unitless * mass))
 
     return omega_p / (2.0 * np.pi) if to_hz else omega_p
 
