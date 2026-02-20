@@ -568,11 +568,9 @@ Trivial/Internal Changes
   → ``ParticleZoo``, ``ParticleZoo`` → ``particle_zoo``, and
   ``Particles`` → ``particles``). (`#1440
   <https://github.com/plasmapy/plasmapy/pull/1440>`__)
-- Applied automated refactorings from `Sourcery
-  <https://sourcery.ai/>`__ to `plasmapy.utils`. (`#1463
+- Applied automated refactorings from Sourcery to `plasmapy.utils`. (`#1463
   <https://github.com/plasmapy/plasmapy/pull/1463>`__)
-- Applied automated refactorings from `Sourcery
-  <https://sourcery.ai/>`__ to `plasmapy.plasma`. (`#1464
+- Applied automated refactorings from Sourcery to `plasmapy.plasma`. (`#1464
   <https://github.com/plasmapy/plasmapy/pull/1464>`__)
 - Bumped the minimum version of `h5py` to ``3.0.0``. (`#1465
   <https://github.com/plasmapy/plasmapy/pull/1465>`__)

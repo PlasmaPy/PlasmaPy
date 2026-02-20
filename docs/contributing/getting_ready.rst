@@ -229,7 +229,7 @@ And with that, you're all set up to contribute to PlasmaPy!
    The ``-e`` indicates that the installation is editable.
 
 .. _Add a new SSH key to your GitHub account: https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account
-.. _activate the virtual environment: https://docs.astral.sh/uv/pip/environments/#activating-a-virtual-environment
+.. _activate the virtual environment: https://docs.astral.sh/uv/pip/environments/#using-a-virtual-environment
 .. _clone: https://github.com/git-guides/git-clone
 .. _creating an environment: https://www.anaconda.com/docs/tools/anaconda-navigator/tutorials/manage-environments#creating-a-new-environment
 .. _download Python: https://www.python.org/downloads
