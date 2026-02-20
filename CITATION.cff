@@ -753,3 +753,9 @@ authors:
   family-names: Robert
   orcid: https://orcid.org/0000-0001-8629-7068
   alias: neutrinoceros
+
+- given-names: Shawn
+  family-names: Polson
+  affiliation: Laboratory for Atmospheric and Space Physics
+  orcid: https://orcid.org/0000-0003-0619-5745
+  alias: sapols
