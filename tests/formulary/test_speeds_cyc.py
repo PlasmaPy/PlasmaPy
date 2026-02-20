@@ -1,4 +1,6 @@
 import inspect
+from collections.abc import Callable
+from typing import cast
 
 import astropy.units as u
 import numpy as np
@@ -7,9 +9,9 @@ from plasmapy.formulary.speeds import ion_sound_speed
 from plasmapy.particles.particle_class import Particle
 
 
-def _raw_ion_sound_speed() -> None:
+def _raw_ion_sound_speed() -> Callable[..., u.Quantity]:
     """Get undecorated ion_sound_speed to avoid particle-input decorators."""
-    return inspect.unwrap(ion_sound_speed)
+    return cast("Callable[..., u.Quantity]", inspect.unwrap(ion_sound_speed))
 
 
 def test_ion_sound_speed_uses_Z_when_provided_unwrapped() -> None:
