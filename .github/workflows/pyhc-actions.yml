@@ -17,14 +17,14 @@ jobs:
     name: PHEP 3 Compliance
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
       with:
         persist-credentials: false
 
     - name: Check PHEP 3 Compliance
-      uses: heliophysicsPy/pyhc-actions/phep3-compliance@v1    # zizmor: ignore[unpinned-uses]
+      uses: heliophysicsPy/pyhc-actions/phep3-compliance@v1
       with:
-        ignore-errors-for: xarray
+        ignore-errors-for: xarray  # astropy.units interoperability; needed through April 2026
 
   pyhc-env-compat:
     name: PyHC Environment Compatibility
@@ -35,4 +35,4 @@ jobs:
         persist-credentials: false
 
     - name: Check PyHC Environment Compatibility
-      uses: heliophysicsPy/pyhc-actions/pyhc-env-compat@v1    # zizmor: ignore[unpinned-uses]
+      uses: heliophysicsPy/pyhc-actions/pyhc-env-compat@v1
