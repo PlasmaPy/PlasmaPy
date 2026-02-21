@@ -105,7 +105,9 @@ class TestPlasmaFrequency:
         ("args", "kwargs", "expected", "rtol"),
         [
             ((1 * u.cm**-3, "e-"), {}, 5.64e4, 1e-2),
+            ((1 * u.cm ** -3, "e+"), {}, 5.64e4, 1e-2),
             ((1 * u.cm**-3, "N+"), {}, 3.53e2, 1e-1),
+            ((1 * u.cm ** -3, "N-"), {}, 3.53e2, 1e-1),
             ((1e17 * u.cm**-3, "H-1"), {"Z": 0.8}, 333045427357.53955, 1e-6),
             (
                 (5e19 * u.m**-3, "p"),
@@ -153,6 +155,7 @@ class TestPlasmaFrequencyLite:
             {"n": 1e12 * u.cm**-3, "particle": "e-"},
             {"n": 1e12 * u.cm**-3, "particle": "e-", "to_hz": True},
             {"n": 1e11 * u.cm**-3, "particle": "He", "Z": 0.8},
+            {"n": 1e11 * u.cm ** -3, "particle": "He", "Z": -0.8},
         ],
     )
     def test_normal_vs_lite_values(self, inputs) -> None:
@@ -166,7 +169,7 @@ class TestPlasmaFrequencyLite:
         inputs_unitless = {
             "n": inputs["n"].to(u.m**-3).value,
             "mass": particle.mass.value,
-            "Z": np.abs(particle.charge_number),
+            "Z": particle.charge_number,
         }
 
         if "to_hz" in inputs:
