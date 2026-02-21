@@ -330,7 +330,7 @@ def plasma_frequency(
         plasma_frequency_lite(
             n=n.value,
             mass=particle.mass.value,
-            Z=np.abs(particle.charge_number),
+            Z=particle.charge_number,
         )
         * u.rad
         / u.s
