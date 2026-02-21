@@ -140,7 +140,7 @@ I_ = intensity
 def em_wavelength(angular_frequency: u.Quantity[u.rad / u.s]) -> u.Quantity[u.m]:
     r"""
     Calculate the wavelength of a laser :math:`\lambda` given the
-    the angular frequency :math:`\omega`.
+    angular frequency :math:`\omega`.
 
     The wavelength of an electromagnetic wave :math:`\lambda`
     is calculated using:
