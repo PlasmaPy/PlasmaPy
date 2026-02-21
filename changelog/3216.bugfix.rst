@@ -1,1 +1,0 @@
-Fix typo in plasma frequency docstring formula and use absolute value of Z in plasma_frequency_lite to ensure physically consistent results.

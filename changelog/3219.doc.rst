@@ -1,1 +1,0 @@
-Fix a typo in plasmapy.formulary.laser.em_wavelength.
