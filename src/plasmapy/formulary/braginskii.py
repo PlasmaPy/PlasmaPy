@@ -473,7 +473,7 @@ class ClassicalTransport:
 
         Returns
         -------
-        `~astropy.units.quantity.Quantity`
+        `~astropy.units.Quantity`
 
         Notes
         -----
@@ -511,7 +511,7 @@ class ClassicalTransport:
 
         Returns
         -------
-        `~astropy.units.quantity.Quantity`
+        `~astropy.units.Quantity`
 
         Notes
         -----
@@ -543,7 +543,7 @@ class ClassicalTransport:
 
         Returns
         -------
-        `~astropy.units.quantity.Quantity`
+        `~astropy.units.Quantity`
 
         See Also
         --------
@@ -596,7 +596,7 @@ class ClassicalTransport:
 
         Returns
         -------
-        `~astropy.units.quantity.Quantity`
+        `~astropy.units.Quantity`
 
         See Also
         --------
@@ -651,7 +651,7 @@ class ClassicalTransport:
 
         Returns
         -------
-        `~astropy.units.quantity.Quantity`
+        `~astropy.units.Quantity`
 
         See Also
         --------
@@ -698,7 +698,7 @@ class ClassicalTransport:
 
         Returns
         -------
-        `~astropy.units.quantity.Quantity`
+        `~astropy.units.Quantity`
 
         See Also
         --------
@@ -813,7 +813,7 @@ def resistivity(
 
     Returns
     -------
-    `~astropy.units.quantity.Quantity`
+    `~astropy.units.Quantity`
 
     Notes
     -----
@@ -925,7 +925,7 @@ def ion_thermal_conductivity(
 
     Returns
     -------
-    `~astropy.units.quantity.Quantity`
+    `~astropy.units.Quantity`
 
     See Also
     --------
@@ -995,7 +995,7 @@ def electron_thermal_conductivity(
 
     Returns
     -------
-    `~astropy.units.quantity.Quantity`
+    `~astropy.units.Quantity`
 
     See Also
     --------
@@ -1066,7 +1066,7 @@ def ion_viscosity(
 
     Returns
     -------
-    `~astropy.units.quantity.Quantity`
+    `~astropy.units.Quantity`
 
     See Also
     --------
@@ -1122,7 +1122,7 @@ def electron_viscosity(
 
     Returns
     -------
-    `~astropy.units.quantity.Quantity`
+    `~astropy.units.Quantity`
 
     See Also
     --------

@@ -146,13 +146,13 @@ def Hall_parameter(
 
     Parameters
     ----------
-    n : `~astropy.units.quantity.Quantity`
+    n : `~astropy.units.Quantity`
         The number density associated with ``particle``.
 
-    T : `~astropy.units.quantity.Quantity`
+    T : `~astropy.units.Quantity`
         The temperature of associated with ``particle``.
 
-    B : `~astropy.units.quantity.Quantity`
+    B : `~astropy.units.Quantity`
         The magnetic field.
 
     ion : `~plasmapy.particles.particle_class.Particle`
@@ -169,7 +169,7 @@ def Hall_parameter(
         Preset value for the Coulomb logarithm. Used mostly for testing
         purposes.
 
-    V : `~astropy.units.quantity.Quantity`
+    V : `~astropy.units.Quantity`
         The relative velocity between ``particle`` and ``ion``. If not
         provided, then the ``particle`` thermal velocity is assumed
         (`~plasmapy.formulary.speeds.thermal_speed`).
@@ -187,7 +187,7 @@ def Hall_parameter(
 
     Returns
     -------
-    `~astropy.units.quantity.Quantity`
+    `~astropy.units.Quantity`
         Hall parameter for ``particle``.
 
     See Also
