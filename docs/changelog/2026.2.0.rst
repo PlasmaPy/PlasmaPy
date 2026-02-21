@@ -25,7 +25,11 @@ Documentation Improvements
 - Updated submodule headings in `plasmapy.formulary.collisions`. (:pr:`3191`)
 - Switched the documentation builds from using the ``sphinx-collapse``
   extension to using ``sphinx_toolbox.collapse``. (:pr:`3203`)
-
+- Fixed a typo in a formula in the
+  `~plasmapy.formulary.frequencies.plasma_frequency` docstring. (:pr:`3216`)
+- Fixed a typo in :file:`two_fluid_dispersion.ipynb`. (:pr:`3218`)
+- Fixed a typo in the docstring of `~plasmapy.formulary.laser.em_wavelength`.
+  (:pr:`3219`)
 
 Backwards Incompatible Changes
 ------------------------------
@@ -48,6 +52,11 @@ Bug Fixes
 - Fixed bug in tests for `~plasmapy.diagnostics.thomson` with NumPy 2.4 where
   `numpy.random.uniform` returned
   an array that needed to be cast as a float. (:pr:`3186`)
+- Corrected `~plasmapy.formulary.frequencies.plasma_frequency_lite` to
+  take the absolute value of the charge number ``Z``. Because the
+  absolute value of ``Z`` had not previously been taken, the plasma
+  frequency was able to be negative. This bug did not occur in
+  `~plasmapy.formulary.frequencies.plasma_frequency`. (:pr:`3216`)
 
 
 Internal Changes and Refactorings
