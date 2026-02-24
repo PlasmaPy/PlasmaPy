@@ -55,13 +55,13 @@ This issue is created from the [release checklist] for releasing a new version o
 
 - [ ] [Create a release on GitHub]. 🚀
 
-  - [ ] Choose the newly created tag (e.g., `v2026.1.0`), and use it as the title. (The release will be performed from the tag, so it is not necessary to select the branch.) 🏷️
+  - [ ] Choose the newly created tag (e.g., `v2026.5.0`), and use it as the title. (The release will be performed from the tag, so it is not necessary to select the branch.) 🏷️
 
   - [ ] Set the tag for the previous release, and select the option to automatically generate release notes. 📜
 
   - [ ] Select the option to create a discussion for the release under the _General_ category. 📣
 
-  - [ ] For official releases, choose _Set as the latest release_. For beta releases or release candidates (e.g., `v2026.1.0rc1`), specify it as a pre-release. 🆕
+  - [ ] For official releases, choose _Set as the latest release_. For beta releases or release candidates (e.g., `v2026.5.0rc1`), specify it as a pre-release. 🆕
 
   - [ ] Click on <kbd>Publish release</kbd>, which will create the GitHub release and trigger the GitHub workflow to [publish to PyPI]. [![publish](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/publish-to-pypi.yml/badge.svg)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/publish-to-pypi.yml)
 
@@ -124,6 +124,9 @@ Within a day, an automated PR will be made to PlasmaPy's [conda-forge feedstock]
 - [ ] Update the [release checklist], if necessary. 📋
 - [ ] [Create an issue for the next release] after checklist updates are merged, and then [pin the issue]. ⏳
 - [ ] Close this issue and celebrate. 🎆
+
+> [!NOTE]
+> The release on PyPI may be [yanked](https://docs.pypi.org/project-management/yanking/) if the release is broken or there is a serious security vulnerability.  In most cases, a bugfix release is preferred.
 
 [citation page]: https://docs.plasmapy.org/en/stable/about/citation.html
 [comprehensive tests]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/ci-comprehensive.yml
