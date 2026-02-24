@@ -77,7 +77,7 @@ This issue is created from the [release checklist] for releasing a new version o
 
 - [ ] Update the author list with new authors from the automatically generated release notes and [`CITATION.cff`]. 👥
 
-- [ ] Update the bibliography. 📖
+- [ ] Update the references, skipping alphabetization because Zenodo's interface makes this difficult. 📖
 
 > [!NOTE]
 > Metadata on a Zenodo record can be updated after it is published. If you notice someone missing from the Zenodo author list after the above checkbox has been checked off or if this issue has been closed, or if you notice an error in the metadata, please comment below and tag `@namurphy`.
