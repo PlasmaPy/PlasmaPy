@@ -58,7 +58,7 @@ def rotation_angle_degrees(R: NDArray[np.floating]) -> float:
     cos_theta = np.clip(cos_theta, -1.0, 1.0)
 
     theta = np.arccos(cos_theta)
-    return np.degrees(theta)
+    return float(np.degrees(theta))
 
 
 def test_rot_a_to_b_antiparallel_should_be_180_degrees() -> None:
