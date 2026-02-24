@@ -2,6 +2,7 @@
 
 import numpy as np
 import pytest
+from numpy.typing import NDArray
 
 from plasmapy.formulary import mathematics
 from plasmapy.formulary.mathematics import rot_a_to_b
@@ -45,7 +46,7 @@ def test_rot_a_to_b_raises(a, b, _raises) -> None:
         mathematics.rot_a_to_b(a, b)
 
 
-def rotation_angle_degrees(R):
+def rotation_angle_degrees(R: NDArray[np.floating]) -> float:
     """
     Compute rotation angle from a 3x3 rotation matrix.
 
@@ -60,7 +61,7 @@ def rotation_angle_degrees(R):
     return np.degrees(theta)
 
 
-def test_rot_a_to_b_antiparallel_should_be_180_degrees():
+def test_rot_a_to_b_antiparallel_should_be_180_degrees() -> None:
     a = np.array([1.0, 2.0, 3.0], dtype=np.float32)
     b = -a
 
