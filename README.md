@@ -130,10 +130,8 @@ For more details, please see PlasmaPy's documentation page on [authors and credi
 [example gallery]: https://docs.plasmapy.org/en/stable/examples.html
 [github discussions]: https://github.com/PlasmaPy/PlasmaPy/discussions
 [github repository]: https://github.com/PlasmaPy/PlasmaPy
-[gitter]: https://gitter.im/PlasmaPy/Lobby
 [good first issues]: https://github.com/PlasmaPy/PlasmaPy/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22
 [mailing list]: https://groups.google.com/forum/#!forum/plasmapy
-[matrix]: https://app.element.io/#/room/#plasmapy:openastronomy.org
 [meetings]: https://www.plasmapy.org/meetings/weekly
 [nasa]: https://www.nasa.gov/
 [national science foundation]: https://nsf.gov
