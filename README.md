@@ -25,28 +25,21 @@
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
 [![SPEC 0 — Minimum Supported Dependencies](https://img.shields.io/badge/SPEC-0-green?labelColor=%23004811&color=%235CA038)](https://scientific-python.org/specs/spec-0000/)
 
-[PlasmaPy] is an open source, community-developed [Python] package for
-plasma research and education. PlasmaPy intends to be for plasma science
-what [Astropy] is for astronomy — a collection of functionality commonly
-needed by plasma scientists and researchers globally, running within and
-leveraging the open source scientific Python ecosystem. The goals of
-PlasmaPy are more thoroughly described in [this video]. Many of our
-recent presentations are available from the
-[PlasmaPy Community on Zenodo].
+[PlasmaPy] is an open source, community-developed [Python] package for plasma research and education.
+PlasmaPy intends to be for plasma science what [Astropy] is for astronomy — a collection of functionality commonly needed by plasma scientists and researchers globally, running within and leveraging the open source scientific Python ecosystem.
+The goals of PlasmaPy are more thoroughly described in [this video].
+Many of our recent presentations and proposals are available from the [PlasmaPy Community on Zenodo].
 
 ## Documentation
 
-Please check out our online [**documentation**] to learn more about
-PlasmaPy's capabilities.
+Please check out our online [**documentation**] to learn more about PlasmaPy's capabilities.
 
-If you would like an idea of what PlasmaPy can do, go to our
-[example gallery] of Jupyter notebooks. To learn more about how to
-contribute, check out PlasmaPy's [contributor guide].
+If you would like an idea of what PlasmaPy can do, go to our [example gallery] of Jupyter notebooks.
+To learn more about how to contribute, check out PlasmaPy's [contributor guide].
 
 ## Installing PlasmaPy
 
-PlasmaPy's online documentation has detailed instructions on how to
-[**install PlasmaPy**].
+PlasmaPy's online documentation has detailed instructions on how to [**install PlasmaPy**].
 
 To install PlasmaPy on macOS or Linux, open a terminal and run:
 
@@ -54,9 +47,8 @@ To install PlasmaPy on macOS or Linux, open a terminal and run:
 python -m pip install plasmapy
 ```
 
-On some systems, it might be necessary to specify the Python version
-number, for example by using `python3` or `python3.14` instead of
-`python`.
+> [!NOTE]
+> On some systems, it might be necessary to specify the Python version number, for example by using `python3` or `python3.14` instead of `python`.
 
 To install PlasmaPy in Windows via PowerShell, run:
 
@@ -64,90 +56,65 @@ To install PlasmaPy in Windows via PowerShell, run:
 py -3.14 -m pip install plasmapy
 ```
 
-The `3.14` may be replaced by any version of Python that is installed
-and supported by PlasmaPy.
+The `3.14` may be replaced by any version of Python that is installed and supported by PlasmaPy.
 
 ## Citing PlasmaPy
 
-If you use PlasmaPy for research resulting in a publication, please
-[cite PlasmaPy]. It really helps support the project! Citing software
-used in research provides credit to its authors, promotes open science &
-scientific reproducibility, and helps open source projects demonstrate
-to funding agencies that continued development should be supported.
+If you use PlasmaPy for research resulting in a publication, please [cite PlasmaPy]. It really helps support the project!
+Citing software used in research provides credit to its authors, promotes open science & scientific reproducibility, and helps open source projects demonstrate to funding agencies that continued development should be supported.
 
-Please check out the [PlasmaPy community on Zenodo] for prior releases
-of PlasmaPy and other resources.
+Please check out the [PlasmaPy community on Zenodo] for prior releases of PlasmaPy and other resources.
 
 ## Requesting features
 
-Please [submit a feature request] in our [GitHub repository] if you have
-an idea for new or improved functionality. PlasmaPy is community-driven,
-and feature requests really help guide the future of the project.
+Please [submit a feature request] in our [GitHub repository] if you have an idea for new or improved functionality.
+PlasmaPy is community-driven, and feature requests really help guide the future of the project.
 
 ## Submitting bug reports
 
-Please [submit a bug report] on PlasmaPy's GitHub repository if you
-notice any problems. We really appreciate it!
+Please [submit a bug report] on PlasmaPy's GitHub repository if you notice any problems.
+We really appreciate it!
 
 ## Contributing
 
-If you are interested in contributing, please check out our
-[contributor guide] and [code of conduct]. There are a number of
-[good first issues] in our GitHub repository. New contributors are very
-welcome!
+If you are interested in contributing, please check out our [contributor guide] and [code of conduct].
+There are a number of [good first issues] in our GitHub repository.
+New contributors are very welcome!
 
 ## Events
 
-PlasmaPy has several [meetings] that are on our [calendar]. Events are
-usually held on PlasmaPy's [Zoom] room. The most up-to-date information
-about these meetings is on the [meetings] page of PlasmaPy's website.
+PlasmaPy [meetings] that are listed on our [calendar].
+The most up-to-date information about these meetings is on the [meetings] page of PlasmaPy's website.
 
 ### Community meetings
 
-PlasmaPy's [community meetings] are a place to talk about code
-development, event planning, and other community happenings. If you
-have an idea for a new feature or would like to become involved in the
-PlasmaPy project, community meetings are a great place to start.
+PlasmaPy's [community meetings] are a place to talk about code development, event planning, and other community happenings.
+If you have an idea for a new feature or would like to become involved in the PlasmaPy project, community meetings are a great place to start.
 
 ## Community
 
-## Contact information
+### Contact information
 
-Please feel free to reach out to us at [team@plasmapy.org] or stop by
-one of our [community meetings] with any ideas, questions, and/or puns
-about computational magnetohydrodynamics.
+Please use these links to [submit a feature request], [submit a bug report], or [privately report a security vulnerability] on PlasmaPy's GitHub repository.
 
-Please use these links to [submit a feature request],
-[submit a bug report], or [privately report a security vulnerability]
-on PlasmaPy's GitHub repository.
+Please feel free to reach out to us at [team@plasmapy.org] or stop by one of our [community meetings] with any ideas, questions, and/or puns about computational magnetohydrodynamics.
 
 ### GitHub discussions
 
-We're trying out [GitHub discussions] as a place to suggest ideas, bring
-up discussion topics, and ask questions.
-
-### Matrix chat
-
-If you have any questions, the quickest way to get a response is to ask
-on our [Matrix]/[Gitter] channel. Both of these are the same chat
-channel; Gitter uses a bridge to link the two.
+Use our [GitHub discussions] to bring up discussion topics and ask questions.
 
 ### Mailing list
 
-Subscribe to PlasmaPy's low-volume [mailing list] to receive occasional
-newsletters and announcements.
+Subscribe to PlasmaPy's low-volume [mailing list] to receive occasional newsletters and announcements.
 
 ## License
 
-PlasmaPy is permissively licensed under a [3-clause BSD license] with
-added [protections against software patents].
+PlasmaPy is permissively licensed under a [3-clause BSD license] with added [protections against software patents].
 
 ## Acknowledgments
 
-Development of PlasmaPy has been supported in part by the
-[National Science Foundation], [NASA], [Department of Energy], and the
-[Smithsonian Institution]. For more details, please see PlasmaPy's
-documentation page on [authors and credits].
+Development of PlasmaPy has been supported in part by the [National Science Foundation], [NASA], [Department of Energy], and the [Smithsonian Institution].
+For more details, please see PlasmaPy's documentation page on [authors and credits].
 
 [**documentation**]: https://docs.plasmapy.org
 [**install plasmapy**]: https://docs.plasmapy.org/en/stable/install.html
@@ -163,10 +130,8 @@ documentation page on [authors and credits].
 [example gallery]: https://docs.plasmapy.org/en/stable/examples.html
 [github discussions]: https://github.com/PlasmaPy/PlasmaPy/discussions
 [github repository]: https://github.com/PlasmaPy/PlasmaPy
-[gitter]: https://gitter.im/PlasmaPy/Lobby
 [good first issues]: https://github.com/PlasmaPy/PlasmaPy/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22
 [mailing list]: https://groups.google.com/forum/#!forum/plasmapy
-[matrix]: https://app.element.io/#/room/#plasmapy:openastronomy.org
 [meetings]: https://www.plasmapy.org/meetings/weekly
 [nasa]: https://www.nasa.gov/
 [national science foundation]: https://nsf.gov
@@ -180,4 +145,3 @@ documentation page on [authors and credits].
 [submit a feature request]: https://github.com/PlasmaPy/PlasmaPy/issues/new?assignees=&labels=Feature+request&template=feature_request.yml
 [team@plasmapy.org]: mailto:team@plasmapy.org
 [this video]: https://youtu.be/E8RwQF5wcXM
-[zoom]: https://zoom.us/j/91633383503?pwd=QWNkdHpWeFhrYW1vQy91ODNTVG5Ndz09
