@@ -62,10 +62,16 @@ This issue is created from the [release checklist] for releasing a new version o
 ### Upload release to Zenodo
 
 - [ ] Download a `.tar.gz` file of the tagged release from the [list of tagged versions] on GitHub, and upload it to [Zenodo]. 📤
-  - [ ] Update the version number and release date in the record. 📅
-  - [ ] Update the author list with new authors from the automatically generated release notes or [`CITATION.cff`]. 👥
-  - [ ] Update the bibliography. 📖
-  - [ ] Publish the record. 🏛️
+- [ ] Update the version number and release date in the record. 📅
+- [ ] Publish the record. 🏛️
+- [ ] Update the author list with new authors from the automatically generated release notes and [`CITATION.cff`]. 👥
+- [ ] Update the bibliography. 📖
+
+> [!NOTE]
+> Metadata on a Zenodo record can be updated after it is published. If
+> you notice someone missing from the Zenodo author list after the above
+> checkbox has been checked off, or if you notice an error in the
+> metadata, please comment below and tag `@namurphy`.
 
 > [!TIP]
 > To compare two files across different tags, use commands like:
