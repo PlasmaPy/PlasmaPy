@@ -4,8 +4,8 @@ PlasmaPy v2026.2.0 (2026-02-20)
 Documentation Improvements
 --------------------------
 
-- The ``mamba-org/setup-micromamba`` action is now used to install graphviz
-  and pandoc during documentation build workflows on GitHub. Because this
+- The ``mamba-org/setup-micromamba`` GitHub action is now used to install ``graphviz``
+  and ``pandoc`` during documentation build workflows. Because this
   action caches installed packages between runs, this change speeds up
   documentation builds on GitHub by ∼1–2 minutes. (:pr:`3140`)
 - Updated the acknowledgements page to include a new NASA award supporting
@@ -25,7 +25,11 @@ Documentation Improvements
 - Updated submodule headings in `plasmapy.formulary.collisions`. (:pr:`3191`)
 - Switched the documentation builds from using the ``sphinx-collapse``
   extension to using ``sphinx_toolbox.collapse``. (:pr:`3203`)
-
+- Fixed a typo in a formula in the
+  `~plasmapy.formulary.frequencies.plasma_frequency` docstring. (:pr:`3216`)
+- Fixed a typo in :file:`two_fluid_dispersion.ipynb`. (:pr:`3218`)
+- Fixed a typo in the docstring of `~plasmapy.formulary.laser.em_wavelength`.
+  (:pr:`3219`)
 
 Backwards Incompatible Changes
 ------------------------------
@@ -48,6 +52,11 @@ Bug Fixes
 - Fixed bug in tests for `~plasmapy.diagnostics.thomson` with NumPy 2.4 where
   `numpy.random.uniform` returned
   an array that needed to be cast as a float. (:pr:`3186`)
+- Corrected `~plasmapy.formulary.frequencies.plasma_frequency_lite` to
+  take the absolute value of the charge number ``Z``. Because the
+  absolute value of ``Z`` had not previously been taken, the plasma
+  frequency was able to be negative. This bug did not occur in
+  `~plasmapy.formulary.frequencies.plasma_frequency`. (:pr:`3216`)
 
 
 Internal Changes and Refactorings
@@ -80,24 +89,19 @@ Updates to Software Testing
 
 - Switched the pytest configuration in :file:`pyproject.toml` to use the
   modern TOML configuration (available for ``pytest>=9``) rather than the
-  legacy
-  INI compatibility mode. (:pr:`3147`)
+  legacy INI compatibility mode. (:pr:`3147`)
 - Began using ``nox-uv`` in :file:`noxfile.py` to simplify installation of
   developer dependency groups. (:pr:`3157`)
 - Removed several tests that were checking that passing a wrong type into
   certain functions raised a `TypeError`. These tests had been issuing a
   deprecation warning from Astropy related to multiplication of a unit and
-  `str`
-  instance. (:pr:`3187`)
+  `str` instance. (:pr:`3187`)
 - Updated the pytest configuration in :file:`pyproject.toml` and
   :file:`noxfile.py`. (:pr:`3194`)
 - Separated the continuous integration checks for running tests and building
   documentation against unreleased versions of upstream dependencies into
   separate GitHub workflows. (:pr:`3195`)
-
-
-Additional Changes
-------------------
-
-- Added CI workflows to check PHEP 3 compliance and PyHC Environment
-  compatibility. (:pr:`3211`)
+- Added continuous integration workflows to check `PHEP 3
+  <https://github.com/heliophysicsPy/standards/blob/e3a1391834726f615620603b2847708e3ef5cf3a/pheps/phep-0003.md>`__
+  compliance and compatibility with the Python in Heliophysics Community
+  environment. (:pr:`3211`)

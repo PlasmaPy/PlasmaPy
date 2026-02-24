@@ -1,10 +1,10 @@
 title: PlasmaPy
 type: software
-version: 2025.10.0
+version: 2026.2.0
 identifiers:
 - type: doi
-  value: 10.5281/zenodo.17438685
-date-released: '2025-10-25'
+  value: 10.5281/zenodo.18706665
+date-released: '2026-02-20'
 message: >-
   Please cite the specific version of PlasmaPy used
   during a research project.
@@ -759,3 +759,9 @@ authors:
   affiliation: Laboratory for Atmospheric and Space Physics
   orcid: https://orcid.org/0000-0003-0619-5745
   alias: sapols
+
+- given-names: Yaocheng
+  family-names: Chen
+  affiliation: Korea Astronomy and Space Science Institute
+  orcid: https://orcid.org/0000-0002-8967-4911
+  alias: yaochengchen
