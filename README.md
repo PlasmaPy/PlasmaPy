@@ -93,15 +93,15 @@ If you have an idea for a new feature or would like to become involved in the Pl
 
 ## Community
 
-## Contact information
-
-Please feel free to reach out to us at [team@plasmapy.org] or stop by one of our [community meetings] with any ideas, questions, and/or puns about computational magnetohydrodynamics.
+### Contact information
 
 Please use these links to [submit a feature request], [submit a bug report], or [privately report a security vulnerability] on PlasmaPy's GitHub repository.
 
+Please feel free to reach out to us at [team@plasmapy.org] or stop by one of our [community meetings] with any ideas, questions, and/or puns about computational magnetohydrodynamics.
+
 ### GitHub discussions
 
-We're trying out [GitHub discussions] as a place to suggest ideas, bring up discussion topics, and ask questions.
+Use our [GitHub discussions] to bring up discussion topics and ask questions.
 
 ### Mailing list
 
