@@ -126,7 +126,7 @@ Within a day, an automated PR will be made to PlasmaPy's [conda-forge feedstock]
 - [ ] Close this issue and celebrate. 🎆
 
 > [!NOTE]
-> The release on PyPI may be [yanked](https://docs.pypi.org/project-management/yanking/) if the release is broken or there is a serious security vulnerability.  In most cases, a bugfix release is preferred.
+> The release on PyPI may be [yanked](https://docs.pypi.org/project-management/yanking/) if the release is broken or there is a serious security vulnerability. In most cases, a bugfix release is preferred.
 
 [citation page]: https://docs.plasmapy.org/en/stable/about/citation.html
 [comprehensive tests]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/ci-comprehensive.yml
