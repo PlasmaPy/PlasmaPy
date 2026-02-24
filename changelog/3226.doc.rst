@@ -1,0 +1,1 @@
+Fx typos in thomson.py and mathematics.py

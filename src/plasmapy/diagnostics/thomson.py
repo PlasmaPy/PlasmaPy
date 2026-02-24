@@ -119,7 +119,7 @@ def spectral_density_lite(
         Defaults to a stationary plasma ``[0, 0, 0]`` m/s.
 
     ion_vel : (Ni, 3) `~numpy.ndarray`
-        Velocity vectors for each electron population in the rest frame
+        Velocity vectors for each ion population in the rest frame
         (in  m/s). If set, overrides ``ion_vdir`` and ``ion_speed``.
         Defaults to zero drift for all specified ion species.
 
