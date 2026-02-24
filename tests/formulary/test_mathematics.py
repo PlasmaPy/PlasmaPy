@@ -4,6 +4,7 @@ import numpy as np
 import pytest
 
 from plasmapy.formulary import mathematics
+from plasmapy.formulary.mathematics import rot_a_to_b
 
 # TODO: Move the Fermi integral tests over to this file?
 
@@ -42,3 +43,29 @@ def test_rot_a_to_b(a, b, correct) -> None:
 def test_rot_a_to_b_raises(a, b, _raises) -> None:
     with pytest.raises(_raises):
         mathematics.rot_a_to_b(a, b)
+
+
+def rotation_angle_degrees(R):
+    """
+    Compute rotation angle from a 3x3 rotation matrix.
+
+    angle = arccos((trace(R) - 1) / 2)
+    """
+    trace = np.trace(R)
+    cos_theta = (trace - 1.0) / 2.0
+
+    cos_theta = np.clip(cos_theta, -1.0, 1.0)
+
+    theta = np.arccos(cos_theta)
+    return np.degrees(theta)
+
+
+def test_rot_a_to_b_antiparallel_should_be_180_degrees():
+    a = np.array([1.0, 2.0, 3.0], dtype=np.float32)
+    b = -a
+
+    R = rot_a_to_b(a, b)
+
+    angle = rotation_angle_degrees(R)
+
+    assert angle > 179.9, f"Rotation angle too small: {angle} degrees"
