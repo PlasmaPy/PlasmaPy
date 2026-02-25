@@ -1,0 +1,1 @@
+Fixed a bug in `gyroradius` where providing `lorentzfactor` with `relativistic=False` could raise a NumPy ambiguous truth-value error when inputs were broadcast.
