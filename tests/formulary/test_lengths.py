@@ -425,3 +425,29 @@ def test_inertial_length() -> None:
 def test_aliases(alias, parent) -> None:
     """Test all aliases defined in lengths.py"""
     assert alias is parent
+
+
+def test_gyroradius_lorentzfactor_relativistic_false_broadcast_regression() -> None:
+    """
+    Regression test for a bug where lorentzfactor is broadcast to an array, and
+    then checked using `not np.isnan(lorentzfactor)`, which raises NumPy's
+    'truth value of an array is ambiguous' ValueError.
+
+    Expected behavior (after fix): when relativistic=False and lorentzfactor is
+    provided (even if it broadcasts), gyroradius should raise a clear ValueError
+    with PlasmaPy's own message.
+    """
+
+    with pytest.raises(
+        ValueError,
+        match="Lorentz factor is provided but relativistic is set to false",
+    ):
+        gyroradius(
+            1 * u.T,
+            particle=[
+                "e-",
+                "e-",
+            ],  # forces broadcasting -> lorentzfactor becomes an array
+            lorentzfactor=2.0,
+            relativistic=False,
+        )
