@@ -252,6 +252,21 @@ def gyroradius(
     if T is None:
         T = np.nan * u.K
 
+    # Validate that at least one of Vperp, T, or lorentzfactor is provided.
+    # When none are specified, all remain at NaN defaults and no meaningful
+    # velocity can be determined, so raise a clear error rather than letting
+    # a cryptic NumPy/Astropy exception propagate from deep in the call stack.
+    _vperp_is_default = np.all(np.isnan(Vperp))
+    _T_is_default = np.all(np.isnan(T))
+    _lorentzfactor_is_default = np.isscalar(lorentzfactor) and np.isnan(lorentzfactor)
+    if _vperp_is_default and _T_is_default and _lorentzfactor_is_default:
+        raise ValueError(
+            "gyroradius() requires at least one of the keyword arguments "
+            "'Vperp', 'T', or 'lorentzfactor' to be provided. "
+            "Please supply a perpendicular velocity (Vperp), a particle "
+            "temperature (T), or a Lorentz factor (lorentzfactor)."
+        )
+
     # Determine output shape and broadcast inputs accordingly
     target_shape = np.broadcast(T, Vperp, lorentzfactor, particle).shape  # type: ignore[arg-type]
     lorentzfactor_in = lorentzfactor
