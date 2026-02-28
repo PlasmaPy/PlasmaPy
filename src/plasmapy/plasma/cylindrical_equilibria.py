@@ -24,6 +24,18 @@ class ForceFreeFluxRope:
     is a cylindrically symmetric force-free equilibrium which is often used
     to approximate the magnetic structure of interplanetary coronal mass
     ejections (ICMEs).
+
+    Examples
+    --------
+    >>> import astropy.units as u
+    >>> from plasmapy.plasma import ForceFreeFluxRope
+    >>> flux_rope = ForceFreeFluxRope(B0=2 * u.T, alpha=1 / u.m)
+    >>> flux_rope.B_z(r=0 * u.m)
+    <Quantity 2. T>
+    >>> flux_rope.B_theta(r=0 * u.m)
+    <Quantity 0. T>
+    >>> flux_rope.B_magnitude(r=0 * u.m)
+    <Quantity 2. T>
     """
 
     def __init__(self, B0, alpha: float) -> None:
