@@ -376,9 +376,10 @@ def ion_sound_speed(
         klD2 = (k * lambda_D) ** 2
 
     try:
-        V_S_squared = (
-            gamma_e * ion.charge_number * k_B * T_e + gamma_i * k_B * T_i
-        ) / (ion.mass * (1 + klD2))
+        Z_eff = Z if Z is not None else ion.charge_number
+        V_S_squared = (gamma_e * Z_eff * k_B * T_e + gamma_i * k_B * T_i) / (
+            ion.mass * (1 + klD2)
+        )
         V_S = np.sqrt(V_S_squared).to(u.m / u.s)
     except ValueError as ex:
         raise ValueError("Unable to find ion sound speed.") from ex
