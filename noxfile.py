@@ -30,26 +30,48 @@ to be installed.
 Nox documentation: https://nox.thea.codes
 """
 
+import datetime
 import os
 import pathlib
 import re
 import shutil
 import sys
+import tomllib
 
 import nox
 import nox_uv
 
+def _get_python_versions_to_test() ->tuple[str, ...]:
+    """
+    Return a string containing the Python
+
+
+    Notes
+    -----
+    This function assumes Python versions of the form "3.x" or "3.x.*",
+    """
+    # The canonical minimum Python version is defined in `pyproject.toml`.
+    pyproject = pathlib.Path("./pyproject.toml")
+    data = tomllib.loads(pyproject.read_text(encoding="utf-8"))
+    minimum_minor_version = int(data["project"]["requires-python"].split(".")[1])
+
+    # A version of Python is released each October, but wait until
+    # the following year to enable tests on the unreleased version of PlasmaPy
+    maximum_minor_version = datetime.datetime.today().year - 2011
+
+    minor_versions = range(minimum_minor_version, maximum_minor_version + 1)
+    return tuple(f"3.{minor}" for minor in minor_versions)
+
 # SPEC 0 indicates that scientific Python packages should support
 # versions of Python that have been released in the last 3 years, or
 # equivalently the most three recently released versions of Python.
-# The minimum version of Python should be incremented immediately
-# following the first release after October of each year.
+# The minimum version of Python should be incremented soon after the
+# first release after October of each year.
 
-SUPPORTED_PYTHON_VERSIONS: tuple[str, ...] = ("3.12", "3.13", "3.14")
-SUPPORTED_OPERATING_SYSTEMS: tuple[str, ...] = ("linux", "macos", "windows")
+PYTHON_VERSIONS_TO_TEST: tuple[str, ...] = _get_python_versions_to_test()
 
-MAXPYTHON = max(SUPPORTED_PYTHON_VERSIONS)
-MINPYTHON = min(SUPPORTED_PYTHON_VERSIONS)
+NEWEST_PYTHON_RELEASE = max(PYTHON_VERSIONS_TO_TEST)
+OLDEST_PYTHON_RELEASE = min(PYTHON_VERSIONS_TO_TEST)
 
 ROOT_DIR = pathlib.Path(__file__).parent
 
@@ -62,7 +84,7 @@ nox.options.sessions = [f"tests-{CURRENT_PYTHON}(all)"]
 # The documentation should be build always using the same version of
 # Python, which should be the latest version of Python supported by Read
 # the Docs. Because Read the Docs takes some time to support new
-# releases of Python, DOCPYTHON should stay independent of MAXPYTHON.
+# releases of Python, DOCPYTHON should stay independent of NEWEST_PYTHON_RELEASE.
 # Changing DOCPYTHON also requires updating .readthedocs.yml and the
 # GitHub workflows for building the documentation.
 
@@ -236,7 +258,7 @@ test_specifiers: list[nox._parametrize.Param] = [
 ]
 
 
-@nox.session(python=SUPPORTED_PYTHON_VERSIONS)
+@nox.session(python=PYTHON_VERSIONS_TO_TEST)
 @nox.parametrize("test_specifier", test_specifiers)
 def tests(session: nox.Session, test_specifier: nox._parametrize.Param) -> None:
     """Run tests with pytest."""
@@ -257,7 +279,7 @@ def tests(session: nox.Session, test_specifier: nox._parametrize.Param) -> None:
     # Doctests are only run with the most recent versions of Python and
     # other dependencies because there may be subtle differences in the
     # output between different versions of Python, NumPy, and Astropy.
-    if session.python == MAXPYTHON and test_specifier not in {"lowest-direct", "cov"}:
+    if session.python == NEWEST_PYTHON_RELEASE and test_specifier not in {"lowest-direct", "cov"}:
         options += WITH_DOCTESTS
 
     if gh_token := os.getenv("GH_TOKEN"):
@@ -284,7 +306,7 @@ def tests(session: nox.Session, test_specifier: nox._parametrize.Param) -> None:
     session.run("pytest", *options, *session.posargs)
 
 
-@nox_uv.session(python=MAXPYTHON, uv_groups=["test"])
+@nox_uv.session(python=NEWEST_PYTHON_RELEASE, uv_groups=["test"])
 @nox.parametrize(
     ["package"],
     [
@@ -491,7 +513,7 @@ mypy error code. Please use sparingly!
 """
 
 
-@nox_uv.session(python=MAXPYTHON, uv_groups=["type_check"])
+@nox_uv.session(python=NEWEST_PYTHON_RELEASE, uv_groups=["type_check"])
 def mypy(session: nox.Session) -> None:
     """
     Perform static type checking.
@@ -613,7 +635,7 @@ def changelog(session: nox.Session, final: str) -> None:
     shutil.copy(original_file, destination)
 
 
-@nox_uv.session(python=MINPYTHON, uv_groups=["test"])
+@nox_uv.session(python=OLDEST_PYTHON_RELEASE, uv_groups=["test"])
 @nox.parametrize(
     "options",
     [
