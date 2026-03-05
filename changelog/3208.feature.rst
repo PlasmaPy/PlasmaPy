@@ -1,0 +1,5 @@
+Added ``gyrokinetic_dispersion_`` module implementing a normalized gyrokinetic dispersion relation solver for a magnetized Maxwellian plasma.
+The module provides :
+`~gyrokinetic_dispersion_.gyrokinetic_dispersion_residual` to evaluate the complex dispersion residual,
+`~gyrokinetic_dispersion_.solve_gyrokinetic_dispersion` to solve for a single wavenumber, and
+`~gyrokinetic_dispersion_.solve_gyrokinetic_dispersion_spectrum` to solve over a grid of wavenumbers using solution continuation.
