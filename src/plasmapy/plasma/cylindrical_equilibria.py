@@ -1,5 +1,6 @@
 """Classes for representing cylindrical equilibria."""
 
+import astropy.units as u
 import numpy as np
 import scipy.special
 
@@ -38,7 +39,7 @@ class ForceFreeFluxRope:
     <Quantity 2. T>
     """
 
-    def __init__(self, B0, alpha: float) -> None:
+    def __init__(self, B0: u.Quantity[u.T], alpha: u.Quantity[1 / u.m]) -> None:
         self.B0 = B0
         self.alpha = alpha
 
