@@ -258,7 +258,7 @@ def gyroradius(
     # a cryptic NumPy/Astropy exception propagate from deep in the call stack.
     _vperp_is_default = np.all(np.isnan(Vperp))
     _T_is_default = np.all(np.isnan(T))
-    _lorentzfactor_is_default = np.isscalar(lorentzfactor) and np.isnan(lorentzfactor)
+    _lorentzfactor_is_default = np.all(np.isnan(lorentzfactor))
     if _vperp_is_default and _T_is_default and _lorentzfactor_is_default:
         raise ValueError(
             "gyroradius() requires at least one of the keyword arguments "
