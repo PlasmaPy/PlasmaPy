@@ -95,7 +95,7 @@ lambdaD_ = Debye_length
 
 
 @validate_quantities(
-    Vperp={"can_be_nan": True},  # none_shall_pass
+    Vperp={"can_be_nan": True, "none_shall_pass": True},
     T={
         "can_be_nan": True,
         "equivalencies": u.temperature_energy(),
@@ -108,9 +108,9 @@ def gyroradius(
     B: u.Quantity[u.T],
     particle: ParticleLike,
     *,
-    Vperp: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
-    T: u.Quantity[u.K] = None,
-    lorentzfactor=np.nan,
+    Vperp: u.Quantity[u.m / u.s] | None = None,
+    T: u.Quantity[u.K] | None = None,
+    lorentzfactor: float | None = None,
     relativistic: bool = True,
     mass_numb: int | None = None,
     Z: float | None = None,
@@ -249,23 +249,24 @@ def gyroradius(
     <Quantity 0.30428378 pc>
     """
 
-    if T is None:
-        T = np.nan * u.K
-
-    # Validate that at least one of Vperp, T, or lorentzfactor is provided.
-    # When none are specified, all remain at NaN defaults and no meaningful
-    # velocity can be determined, so raise a clear error rather than letting
-    # a cryptic NumPy/Astropy exception propagate from deep in the call stack.
-    _vperp_is_default = np.all(np.isnan(Vperp))
-    _T_is_default = np.all(np.isnan(T))
-    _lorentzfactor_is_default = np.all(np.isnan(lorentzfactor))
-    if _vperp_is_default and _T_is_default and _lorentzfactor_is_default:
+    # Raise a clear error when no velocity argument is provided at all.
+    # Using None as the default (rather than NaN) lets us distinguish
+    # "argument not given" from "argument explicitly given as NaN".
+    if Vperp is None and T is None and lorentzfactor is None:
         raise ValueError(
             "gyroradius() requires at least one of the keyword arguments "
             "'Vperp', 'T', or 'lorentzfactor' to be provided. "
             "Please supply a perpendicular velocity (Vperp), a particle "
             "temperature (T), or a Lorentz factor (lorentzfactor)."
         )
+
+    # Set defaults for unspecified parameters
+    if Vperp is None:
+        Vperp = np.nan * u.m / u.s
+    if T is None:
+        T = np.nan * u.K
+    if lorentzfactor is None:
+        lorentzfactor = np.nan
 
     # Determine output shape and broadcast inputs accordingly
     target_shape = np.broadcast(T, Vperp, lorentzfactor, particle).shape  # type: ignore[arg-type]
