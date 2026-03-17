@@ -2,10 +2,13 @@
 Gyrokinetic (Maxwellian) dispersion relation solver in normalized variables.
 
 Implements a normalized gyrokinetic dispersion relation in terms of:
-    omega_bar = omega / (k_parallel v_A),
-    k_perp_rho_i,
-    beta_i,
-    tau = T_i/T_e,
+
+.. math:
+    \omega_bar = \omega / (k_∥ v_A),
+    k_⟂_ρ_i,
+    \beta_i,
+    \tau = T_i/T_e,
+
 with an optional ion/electron mass ratio.
 
 This module provides:
