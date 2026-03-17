@@ -1,10 +1,10 @@
-"""
+r"""
 Gyrokinetic (Maxwellian) dispersion relation solver in normalized variables.
 
 Implements a normalized gyrokinetic dispersion relation in terms of:
 
 .. math:
-    \\omega_bar = \\omega / (k_∥ v_A),
+    \omega_bar = \omega / (k_∥ v_A),
     k_⟂_ρ_i,
     \beta_i,
     \tau = T_i/T_e,
