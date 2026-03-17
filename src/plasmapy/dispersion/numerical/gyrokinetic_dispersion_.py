@@ -4,7 +4,7 @@ Gyrokinetic (Maxwellian) dispersion relation solver in normalized variables.
 Implements a normalized gyrokinetic dispersion relation in terms of:
 
 .. math:
-    \omega_bar = \omega / (k_∥ v_A),
+    \\omega_bar = \\omega / (k_∥ v_A),
     k_⟂_ρ_i,
     \beta_i,
     \tau = T_i/T_e,
@@ -26,13 +26,13 @@ __all__ = [
 ]
 
 import numpy as np
-from scipy.special import ive, wofz
 from scipy.optimize import root
+from scipy.special import ive, wofz
 
 
-
-
-def gyrokinetic_dispersion_residual( omega, k_perp_rho_i, beta_i, tau, mass_ratio=1836.15267343):
+def gyrokinetic_dispersion_residual(
+    omega, k_perp_rho_i, beta_i, tau, mass_ratio=1836.15267343
+):
     r"""
     Return the complex residual of the normalized gyrokinetic dispersion relation.
 
@@ -58,7 +58,7 @@ def gyrokinetic_dispersion_residual( omega, k_perp_rho_i, beta_i, tau, mass_rati
     complex
         Complex residual. Roots correspond to solutions of the dispersion relation.
     """
-    
+
     # Sanity checks
     if beta_i <= 0:
         raise ValueError("beta_i must be > 0.")
@@ -106,9 +106,15 @@ def gyrokinetic_dispersion_residual( omega, k_perp_rho_i, beta_i, tau, mass_rati
     return lhs - rhs
 
 
-
-
-def solve_gyrokinetic_dispersion( k_perp_rho_i, beta_i, tau, omega_guess=1.0+0.0j, mass_ratio=1836.15267343, tol=1e-12, methods=("hybr", "lm")):
+def solve_gyrokinetic_dispersion(
+    k_perp_rho_i,
+    beta_i,
+    tau,
+    omega_guess=1.0 + 0.0j,
+    mass_ratio=1836.15267343,
+    tol=1e-12,
+    methods=("hybr", "lm"),
+):
     """
     Solve the normalized gyrokinetic dispersion relation for a single k_perp_rho_i.
 
@@ -119,8 +125,10 @@ def solve_gyrokinetic_dispersion( k_perp_rho_i, beta_i, tau, omega_guess=1.0+0.0
     """
 
     def residual_wrapped(w):
-        omega = w[0] + 1j*w[1]
-        res = gyrokinetic_dispersion_residual( omega, k_perp_rho_i, beta_i, tau, mass_ratio=mass_ratio)
+        omega = w[0] + 1j * w[1]
+        res = gyrokinetic_dispersion_residual(
+            omega, k_perp_rho_i, beta_i, tau, mass_ratio=mass_ratio
+        )
         return np.array([res.real, res.imag], dtype=float)
 
     x0 = np.array([omega_guess.real, omega_guess.imag])
@@ -133,19 +141,24 @@ def solve_gyrokinetic_dispersion( k_perp_rho_i, beta_i, tau, omega_guess=1.0+0.0
     return np.nan + 1j * np.nan
 
 
-
-
-def solve_gyrokinetic_dispersion_spectrum( k_perp_rho_i, beta_i, tau, initial_guess=1.0+0.0j, mass_ratio=1836.15267343, tol=1e-12):
+def solve_gyrokinetic_dispersion_spectrum(
+    k_perp_rho_i,
+    beta_i,
+    tau,
+    initial_guess=1.0 + 0.0j,
+    mass_ratio=1836.15267343,
+    tol=1e-12,
+):
     """
     Solve omega_bar(k_perp_rho_i) over an iterable of k values using continuation.
 
     The previous solution is used as the next initial guess when finite.
     """
     omega_out = []
-    guess     = initial_guess
+    guess = initial_guess
 
     for ik in k_perp_rho_i:
-        omega = solve_gyrokinetic_dispersion( ik, beta_i, tau, guess, mass_ratio, tol)
+        omega = solve_gyrokinetic_dispersion(ik, beta_i, tau, guess, mass_ratio, tol)
         omega_out.append(omega)
 
         if np.isfinite(omega.real) and np.isfinite(omega.imag):
