@@ -30,9 +30,19 @@ from scipy.optimize import root
 from scipy.special import ive, wofz
 
 
+<<<<<<< HEAD
 def gyrokinetic_dispersion_residual(
     omega, k_perp_rho_i, beta_i, tau, mass_ratio=1836.15267343
 ):
+=======
+
+def gyrokinetic_dispersion_residual(
+        omega: complex,
+        k_perp_rho_i: float,
+        beta_i: float,
+        tau: float,
+        mass_ratio: float = 1836.15267343) -> complex:
+>>>>>>> 1eb2a33c (static functions)
     r"""
     Return the complex residual of the normalized gyrokinetic dispersion relation.
 
@@ -106,6 +116,7 @@ def gyrokinetic_dispersion_residual(
     return lhs - rhs
 
 
+<<<<<<< HEAD
 def solve_gyrokinetic_dispersion(
     k_perp_rho_i,
     beta_i,
@@ -115,6 +126,17 @@ def solve_gyrokinetic_dispersion(
     tol=1e-12,
     methods=("hybr", "lm"),
 ):
+=======
+
+def solve_gyrokinetic_dispersion(
+        k_perp_rho_i: float,
+        beta_i: float,
+        tau: float,
+        omega_guess: complex = 1.0+0.0j,
+        mass_ratio: float = 1836.15267343,
+        tol: float = 1e-12,
+        methods: tuple = ("hybr", "lm")) -> complex:
+>>>>>>> 1eb2a33c (static functions)
     """
     Solve the normalized gyrokinetic dispersion relation for a single k_perp_rho_i.
 
@@ -141,6 +163,7 @@ def solve_gyrokinetic_dispersion(
     return np.nan + 1j * np.nan
 
 
+<<<<<<< HEAD
 def solve_gyrokinetic_dispersion_spectrum(
     k_perp_rho_i,
     beta_i,
@@ -149,6 +172,17 @@ def solve_gyrokinetic_dispersion_spectrum(
     mass_ratio=1836.15267343,
     tol=1e-12,
 ):
+=======
+
+
+def solve_gyrokinetic_dispersion_spectrum(
+        k_perp_rho_i: np.ndarray,
+        beta_i: float,
+        tau: float,
+        initial_guess: complex = 1.0+0.0j,
+        mass_ratio: float = 1836.15267343,
+        tol: float = 1e-12) -> np.ndarray:
+>>>>>>> 1eb2a33c (static functions)
     """
     Solve omega_bar(k_perp_rho_i) over an iterable of k values using continuation.
 
