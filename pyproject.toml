@@ -75,6 +75,7 @@ scripts.plasma-calculator = "plasmapy.utils.calculator:main"
 # Because dependency groups are excluded from built distributions of
 # packages, SPEC 0 does not apply.
 dev = [
+  { include-group = "autotyping" },
   { include-group = "changelog" },
   { include-group = "docs" },
   { include-group = "lint" },
@@ -118,6 +119,10 @@ docs = [
   "sphinxemoji>=0.3.1",
   "unidecode>=1.4",
   { include-group = "changelog" },
+]
+autotyping = [
+  "autotyping>=24.9",
+  "typing-extensions>=4.15",
 ]
 changelog = [
   "towncrier>=24.8",
