@@ -1,1 +1,1 @@
-Created the ``zizmor`` dependency group.
+Added dependency groups for multiple Nox sessions.
