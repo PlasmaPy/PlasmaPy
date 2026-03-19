@@ -685,10 +685,10 @@ or add the appropriate configuration settings to: .github/zizmor.yml
 """
 
 
-@nox.session
+@nox_uv.session(python=MAXPYTHON, uv_only_groups=["zizmor"], uv_no_install_project=True)
 def zizmor(session: nox.Session) -> None:
     """
-    Find common security issues in GitHub Actions.
+    Find common security issues in GitHub workflows.
 
     Because some of the zizmor audit rules require a GitHub token,
     running this check locally may produce different results than
@@ -699,18 +699,19 @@ def zizmor(session: nox.Session) -> None:
 
     Configuration file: .github/zizmor.yml
     """
-    session.log(ZIZMOR_TROUBLESHOOTING_MESSAGE)
+    if RUNNING_ON_CI:
+        session.log(ZIZMOR_TROUBLESHOOTING_MESSAGE)
 
-    args = ["--no-progress", "--color=auto", *session.posargs]
-    if not session.posargs:
-        args.append("--fix=safe")
+    options = [
+        "--show-audit-urls=always",
+    ]
 
-    session.install("zizmor==1.22.0")
-    session.run(
-        "zizmor",
-        ".github",
-        *args,
-    )
+    if not RUNNING_ON_CI:
+        options.append("--quiet")
+
+    options.extend(session.posargs if session.posargs else ["--fix=safe"])
+
+    session.run("zizmor", ".github", *options)
 
 
 if __name__ == "__main__":
