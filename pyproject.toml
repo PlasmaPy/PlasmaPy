@@ -132,6 +132,9 @@ type_check = [
   "pip>=25.3",
   { include-group = "test" },
 ]
+zizmor = [
+    "zizmor==1.22.0",
+]
 
 [tool.setuptools]
 include-package-data = true
