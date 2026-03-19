@@ -706,10 +706,10 @@ def zizmor(session: nox.Session) -> None:
         "--show-audit-urls=always",
     ]
 
-    if not RUNNING_ON_CI:
+    if not RUNNING_ON_CI and not session.posargs:
         options.append("--quiet")
 
-    options.extend(session.posargs if session.posargs else ["--fix=safe"])
+    options.extend(session.posargs or ["--fix=safe"])
 
     session.run("zizmor", ".github", *options)
 
