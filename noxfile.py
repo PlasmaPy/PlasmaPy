@@ -544,7 +544,7 @@ def check_build(session: nox.Session) -> None:
     session.run("twine", "check", "dist/*")
 
 
-@nox.session
+@nox_uv.session(python=MAXPYTHON, uv_only_groups=["changelog"])
 @nox.parametrize("final", [nox.param(False, id="draft"), nox.param(True, id="final")])
 def changelog(session: nox.Session, final: str) -> None:
     """
@@ -582,8 +582,6 @@ def changelog(session: nox.Session, final: str) -> None:
             "YYYY is he year, M is the one or two digit month, "
             "and PATCH is a non-negative integer."
         )
-
-    session.install(".", "towncrier")
 
     towncrier = ["towncrier", "build", "--version", version]
 

@@ -75,6 +75,7 @@ scripts.plasma-calculator = "plasmapy.utils.calculator:main"
 # Because dependency groups are excluded from built distributions of
 # packages, SPEC 0 does not apply.
 dev = [
+  { include-group = "changelog" },
   { include-group = "docs" },
   { include-group = "lint" },
   { include-group = "nox" },
@@ -115,8 +116,11 @@ docs = [
   # sphinxcontrib-globalsubs>=1 needs sphinx>=9
   "sphinxcontrib-globalsubs==0.1.2",
   "sphinxemoji>=0.3.1",
-  "towncrier>=24.8",
   "unidecode>=1.4",
+  { include-group = "changelog" },
+]
+changelog = [
+  "towncrier>=24.8",
 ]
 lint = [
   "pre-commit>=4.5.1",
