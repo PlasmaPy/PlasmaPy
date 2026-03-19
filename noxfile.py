@@ -30,12 +30,12 @@ to be installed.
 Nox documentation: https://nox.thea.codes
 """
 
+import datetime
 import os
 import pathlib
 import re
 import shutil
 import sys
-import datetime
 
 import nox
 import nox_uv
@@ -560,10 +560,10 @@ def changelog(session: nox.Session, final: str) -> None:
     When executing this session, provide the version of the release, as
     in this example:
 
-       nox -s 'changelog(final)' -- 2026.2.0
+       nox -s 'changelog(final)' -- 2026.5.0
     """
 
-    now = datetime.datetime.now(datetime.timezone.utc)
+    now = datetime.datetime.now(datetime.UTC)
 
     if len(session.posargs) != 1:
         raise TypeError(
@@ -614,7 +614,9 @@ AUTOTYPING_RISKY: tuple[str, ...] = (
 )
 
 
-@nox_uv.session(python=MINPYTHON, uv_only_groups=["autotyping"], uv_no_install_project=True)
+@nox_uv.session(
+    python=MINPYTHON, uv_only_groups=["autotyping"], uv_no_install_project=True
+)
 @nox.parametrize(
     "options",
     [
