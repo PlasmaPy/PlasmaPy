@@ -705,7 +705,7 @@ def zizmor(session: nox.Session) -> None:
     if not session.posargs:
         args.append("--fix=safe")
 
-    session.install("zizmor")
+    session.install("zizmor==1.22.0")
     session.run(
         "zizmor",
         ".github",
