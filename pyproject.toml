@@ -83,6 +83,7 @@ dev = [
   { include-group = "nox" },
   { include-group = "test" },
   { include-group = "type_check" },
+  { include-group = "zizmor" },
 ]
 test = [
   "hypothesis>=6.150",
