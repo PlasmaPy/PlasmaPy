@@ -543,22 +543,6 @@ def check_build(session: nox.Session) -> None:
     session.run("twine", "check", "dist/*")
 
 
-AUTOTYPING_SAFE: tuple[str, ...] = (
-    "--none-return",
-    "--scalar-return",
-    "--annotate-magics",
-)
-AUTOTYPING_RISKY: tuple[str, ...] = (
-    *AUTOTYPING_SAFE,
-    "--bool-param",
-    "--int-param",
-    "--float-param",
-    "--str-param",
-    "--bytes-param",
-    "--annotate-imprecise-magics",
-)
-
-
 @nox.session
 @nox.parametrize("final", [nox.param(False, id="draft"), nox.param(True, id="final")])
 def changelog(session: nox.Session, final: str) -> None:
@@ -611,6 +595,22 @@ def changelog(session: nox.Session, final: str) -> None:
 
     destination = pathlib.Path(ROOT_DIR / f"docs/changelog/{version}.rst")
     shutil.copy(original_file, destination)
+
+
+AUTOTYPING_SAFE: tuple[str, ...] = (
+    "--none-return",
+    "--scalar-return",
+    "--annotate-magics",
+)
+AUTOTYPING_RISKY: tuple[str, ...] = (
+    *AUTOTYPING_SAFE,
+    "--bool-param",
+    "--int-param",
+    "--float-param",
+    "--str-param",
+    "--bytes-param",
+    "--annotate-imprecise-magics",
+)
 
 
 @nox_uv.session(python=MINPYTHON, uv_groups=["test"])
