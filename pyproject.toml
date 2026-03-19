@@ -79,6 +79,7 @@ dev = [
   { include-group = "changelog" },
   { include-group = "docs" },
   { include-group = "lint" },
+  { include-group = "manifest" },
   { include-group = "nox" },
   { include-group = "test" },
   { include-group = "type_check" },
@@ -131,6 +132,9 @@ lint = [
   "pre-commit>=4.5.1",
   # Include ruff to make it available for IDEs in virtual environments
   "ruff>=0.14.11",
+]
+manifest = [
+  "check-manifest>=0.51",
 ]
 nox = [
   "nox>=2025.11.12",
