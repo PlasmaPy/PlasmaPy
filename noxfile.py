@@ -35,6 +35,7 @@ import pathlib
 import re
 import shutil
 import sys
+import datetime
 
 import nox
 import nox_uv
@@ -562,10 +563,12 @@ def changelog(session: nox.Session, final: str) -> None:
        nox -s 'changelog(final)' -- 2026.2.0
     """
 
+    now = datetime.datetime.now()
+
     if len(session.posargs) != 1:
         raise TypeError(
             "Please provide the version of PlasmaPy to be released "
-            "(i.e., `nox -s changelog -- 2025.10.0`)"
+            f"(i.e., `nox -s changelog -- {now.year}.{now.month}.0`)."
         )
 
     version = session.posargs[0]
