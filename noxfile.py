@@ -563,7 +563,7 @@ def changelog(session: nox.Session, final: str) -> None:
        nox -s 'changelog(final)' -- 2026.2.0
     """
 
-    now = datetime.datetime.now()
+    now = datetime.datetime.now(datetime.timezone.utc)
 
     if len(session.posargs) != 1:
         raise TypeError(
