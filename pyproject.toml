@@ -133,7 +133,7 @@ type_check = [
   { include-group = "test" },
 ]
 zizmor = [
-    "zizmor==1.22.0",
+  "zizmor==1.22",
 ]
 
 [tool.setuptools]
