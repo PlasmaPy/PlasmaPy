@@ -19,7 +19,7 @@ defaults:
     shell: bash
 
 env:
-  CHANGELOG_INSTRUCTIONS: "::error title=Changelog entry needed::Please add one or more changelog entries at `changelog/${{ github.event.pull_request.number }}.TYPE.rst`, where `TYPE` is one of `feature`, `doc`, `test`, `internal`, `bugfix`, `breaking`, `removal`, or `misc`.\n\nTrivial changes like typo fixes do not need a changelog entry.\n\nFor details, see: https://docs.plasmapy.org/en/latest/contributing/changelog_guide.html#adding-a-changelog-entry"
+  CHANGELOG_INSTRUCTIONS: "::error title=Changelog entry needed::Please add a changelog entry of the form `changelog/${{ github.event.pull_request.number }}.TYPE.rst`, where `TYPE` can be `feature`, `doc`, `test`, `internal`, `bugfix`, `breaking`, `removal`, or `misc`.\n\nTrivial changes like typo fixes do not need a changelog entry.\n\nFor details, see: https://docs.plasmapy.org/en/latest/contributing/changelog_guide.html#adding-a-changelog-entry"
 
 
 jobs:
@@ -117,10 +117,11 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         BOT_USERNAME: changelog-bot
 
-    - name: List changelog entries
+    - name: List all changelog entries
+      if: always()
       run: ls changelog --ignore=README.rst
 
-    - name: ⚠️ Troubleshooting information
+    - name: Troubleshooting information ⚠️
       if: ${{ failure() }}
       run: |
         echo -e $CHANGELOG_INSTRUCTIONS
