@@ -72,7 +72,7 @@ def _get_physical_type_dict(
 
     for obj in iterable:
         if isinstance(obj, Number) and numbers_become_quantities:
-            obj = u.Quantity(obj, u.dimensionless_unscaled)  # noqa: PLW2901
+            obj = u.Quantity(obj, u.dimensionless_unscaled)  # noqa: PLW2901  # ty:ignore[invalid-argument-type]
 
         if only_quantities and not isinstance(obj, u.Quantity):
             if strict:
@@ -80,7 +80,7 @@ def _get_physical_type_dict(
             continue
 
         try:
-            physical_type = u.get_physical_type(obj)
+            physical_type = u.get_physical_type(obj)  # ty:ignore[invalid-argument-type]
         except (TypeError, ValueError) as exc:
             if strict:
                 raise TypeError(f"{obj} does not have a physical type.") from exc
