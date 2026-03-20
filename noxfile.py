@@ -162,8 +162,8 @@ def lock(session: nox.Session) -> None:
     )
     try:
         # Use session.run() with silent=True to return the command output
-        uv_output: str | bool = session.run(*uv_lock, silent=RUNNING_ON_CI)
-    except nox.command.CommandFailed:
+        uv_output: str | bool = session.run(*uv_lock, silent=RUNNING_ON_CI)  # ty:ignore[invalid-assignment]
+    except nox.command.CommandFailed:  # ty:ignore[possibly-missing-attribute]
         session.warn("⚠️ uv.lock is invalid, likely due to a git merge conflict.")
         session.log(
             "📥 Checking out uv.lock from the branch being merged into this one."
@@ -172,11 +172,11 @@ def lock(session: nox.Session) -> None:
             "🪧 If this next attempt is unsuccessful, delete uv.lock and try again."
         )
         session.run("git", "checkout", "--theirs", "--", "uv.lock", external=True)
-        uv_output: str | bool = session.run(*uv_lock, silent=RUNNING_ON_CI)
+        uv_output: str | bool = session.run(*uv_lock, silent=RUNNING_ON_CI)  # ty:ignore[invalid-assignment]
 
     if RUNNING_ON_CI:
         session.log(uv_output)
-        _create_lockfile_pr_message(uv_output=uv_output, session=session)
+        _create_lockfile_pr_message(uv_output=uv_output, session=session)  # ty:ignore[invalid-argument-type]
 
 
 @nox.session
@@ -205,7 +205,7 @@ def validate_lockfile(session: nox.Session) -> None:
 
     try:
         session.run("uv", "lock", "--no-progress")
-    except nox.command.CommandFailed:
+    except nox.command.CommandFailed:  # ty:ignore[possibly-missing-attribute]
         session.error(errmsg)
 
 
@@ -324,7 +324,7 @@ def test_upstream(session: nox.Session, package: str) -> None:
 
 
 if RUNNING_ON_RTD:
-    rtd_output_path = pathlib.Path(os.environ.get("READTHEDOCS_OUTPUT")) / "html"
+    rtd_output_path = pathlib.Path(os.environ.get("READTHEDOCS_OUTPUT")) / "html"  # ty:ignore[invalid-argument-type]
     rtd_output_path.mkdir(parents=True, exist_ok=True)
     doc_build_dir = str(rtd_output_path)
 else:
@@ -492,6 +492,7 @@ TY_TROUBLESHOOTING = (
     "ty error code. Please use sparingly!"
     "\n"
 )
+
 
 @nox_uv.session(python=MAXPYTHON, uv_groups=["type_check"])
 def ty(session: nox.Session) -> None:
