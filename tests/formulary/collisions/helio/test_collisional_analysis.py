@@ -2,7 +2,7 @@
 
 import astropy.units as u
 import pytest
-from astropy.constants.si import c
+from astropy.constants.si import c  # ty:ignore[unresolved-import]
 
 from plasmapy.formulary.collisions.helio import temp_ratio
 from plasmapy.particles import Particle
