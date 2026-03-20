@@ -101,7 +101,7 @@ class AbstractSaveRoutine(ABC):
 
         path = (
             self.output_directory
-            / f"{self.output_basename}_iter{self.tracker.iteration_number}.h5"
+            / f"{self.output_basename}_iter{self.tracker.iteration_number}.h5"  # ty:ignore[unsupported-operator]
         )
 
         with h5py.File(path, "w") as output_file:
