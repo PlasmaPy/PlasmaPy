@@ -180,14 +180,14 @@ class BaseFFTests(ABC):
             params = self._test_params
         elif params == "default+":
             params = self._test_params
-            params = list(params)
+            params = list(params)  # ty:ignore[invalid-argument-type]
             params.append(5)
 
         if param_errors == "default":
             param_errors = self._test_param_errors
         elif param_errors == "default+":
             param_errors = self._test_param_errors
-            param_errors = list(param_errors)
+            param_errors = list(param_errors)  # ty:ignore[invalid-argument-type]
             param_errors.append(5)
 
         with with_condition:
@@ -199,12 +199,12 @@ class BaseFFTests(ABC):
             if params is None:
                 assert ff_obj.params is None
             else:
-                assert ff_obj.params == ff_obj.FitParamTuple(*params)
+                assert ff_obj.params == ff_obj.FitParamTuple(*params)  # ty:ignore[not-iterable]
 
             if param_errors is None:
                 assert ff_obj.param_errors is None
             else:
-                assert ff_obj.param_errors == ff_obj.FitParamTuple(*param_errors)
+                assert ff_obj.param_errors == ff_obj.FitParamTuple(*param_errors)  # ty:ignore[not-iterable]
 
     def test_param_namedtuple(self) -> None:
         """
@@ -285,15 +285,15 @@ class BaseFFTests(ABC):
 
         params = self._test_params
         if replace_a_param is not None:
-            params = list(params)
+            params = list(params)  # ty:ignore[invalid-argument-type]
             params[0] = replace_a_param
 
         with with_condition:
-            y = ff_obj.func(x, *params)
+            y = ff_obj.func(x, *params)  # ty:ignore[not-iterable]
 
             if isinstance(x, list):
                 x = np.array(x)
-            y_expected = self.func(x, *params)
+            y_expected = self.func(x, *params)  # ty:ignore[not-iterable]
 
             assert np.allclose(y, y_expected)
 
@@ -331,7 +331,7 @@ class BaseFFTests(ABC):
             assert np.allclose(y_err, y_err_expected)
 
             if y is not None:
-                assert np.allclose(y, self.func(x, *params))
+                assert np.allclose(y, self.func(x, *params))  # ty:ignore[not-iterable]
 
     @pytest.mark.parametrize(
         ("x", "kwargs", "with_condition"),
@@ -365,7 +365,7 @@ class BaseFFTests(ABC):
 
             if isinstance(x, list):
                 x = np.array(x)
-            y_expected = self.func(x, *params)
+            y_expected = self.func(x, *params)  # ty:ignore[not-iterable]
 
             assert np.allclose(y, y_expected)
 
@@ -381,7 +381,7 @@ class BaseFFTests(ABC):
         ff_obj = self.ff_class()
 
         xdata = np.linspace(-10, 10)
-        ydata = self.func(xdata, *self._test_params)
+        ydata = self.func(xdata, *self._test_params)  # ty:ignore[not-iterable]
 
         assert ff_obj.params is None
         assert ff_obj.param_errors is None
@@ -413,7 +413,7 @@ class TestFFExponential(BaseFFTests):
     _test__str__ = "f(x) = a exp(alpha x)"
 
     @staticmethod
-    def func(x, a, alpha):
+    def func(x, a, alpha):  # ty:ignore[invalid-method-override]
         return a * np.exp(alpha * x)
 
     def func_err(self, x, params, param_errors, x_err=None):
@@ -453,7 +453,7 @@ class TestFFExponentialPlusLinear(BaseFFTests):
     _test__str__ = "f(x) = a exp(alpha x) + m x + b"
 
     @staticmethod
-    def func(x: float, a: float, alpha: float, m: float, b: float) -> float:
+    def func(x: float, a: float, alpha: float, m: float, b: float) -> float:  # ty:ignore[invalid-method-override]
         return a * np.exp(alpha * x) + m * x + b
 
     def func_err(self, x, params, param_errors, x_err=None):
@@ -499,7 +499,7 @@ class TestFFExponentialPlusOffset(BaseFFTests):
     _test__str__ = "f(x) = a exp(alpha x) + b"
 
     @staticmethod
-    def func(x: float, a: float, alpha: float, b: float) -> float:
+    def func(x: float, a: float, alpha: float, b: float) -> float:  # ty:ignore[invalid-method-override]
         return a * np.exp(alpha * x) + b
 
     def func_err(self, x, params, param_errors, x_err=None):
@@ -546,7 +546,7 @@ class TestFFLinear(BaseFFTests):
     _test__str__ = "f(x) = m x + b"
 
     @staticmethod
-    def func(x, m, b):
+    def func(x, m, b):  # ty:ignore[invalid-method-override]
         return m * x + b
 
     def func_err(self, x, params, param_errors, x_err=None):
@@ -579,7 +579,7 @@ class TestFFLinear(BaseFFTests):
     )
     def test_root_solve(
         self, params, param_errors, root, root_err, conditional
-    ) -> None:
+    ) -> None:  # ty:ignore[invalid-method-override]
         with conditional:
             ff_obj = self.ff_class(params=params, param_errors=param_errors)
             results = ff_obj.root_solve()
