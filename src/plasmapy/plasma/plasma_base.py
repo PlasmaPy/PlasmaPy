@@ -34,7 +34,7 @@ class BasePlasma(ABC):
     def __init_subclass__(cls, **kwargs) -> None:
         super().__init_subclass__(**kwargs)
         if hasattr(cls, "is_datasource_for"):
-            cls._registry[cls] = cls.is_datasource_for
+            cls._registry[cls] = cls.is_datasource_for  # ty:ignore[invalid-assignment]
 
     # This class is supposed to declare abstract methods (@abstractmethod or
     # @abstractproperty as appropriate) that are common in most plasmas
