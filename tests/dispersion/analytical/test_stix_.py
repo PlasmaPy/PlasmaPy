@@ -3,7 +3,7 @@
 import astropy.units as u
 import numpy as np
 import pytest
-from astropy.constants.si import c
+from astropy.constants.si import c  # ty:ignore[unresolved-import]
 
 from plasmapy.dispersion.analytical.stix_ import stix
 from plasmapy.formulary import gyrofrequency, plasma_frequency
