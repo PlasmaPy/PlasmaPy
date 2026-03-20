@@ -493,15 +493,15 @@ def spectral_density(  # noqa: C901, PLR0912, PLR0915
     if isinstance(ions, ParticleList):
         pass
     elif isinstance(ions, str):
-        ions = ParticleList([Particle(ions)])
+        ions = ParticleList([Particle(ions)])  # ty:ignore[invalid-assignment]
     # If a list is provided, ensure all values are Particles, then convert
     # to a ParticleList
     elif isinstance(ions, list):
         for ii, ion in enumerate(ions):
             if isinstance(ion, Particle):
                 continue
-            ions[ii] = Particle(ion)
-        ions = ParticleList(ions)
+            ions[ii] = Particle(ion)  # ty:ignore[invalid-assignment]
+        ions = ParticleList(ions)  # ty:ignore[invalid-assignment]
     else:
         raise TypeError(
             "The type of object provided to the ``ions`` keyword "
@@ -509,11 +509,11 @@ def spectral_density(  # noqa: C901, PLR0912, PLR0915
         )
 
     # Validate ions
-    if len(ions) == 0:
+    if len(ions) == 0:  # ty:ignore[invalid-argument-type]
         raise ValueError("At least one ion species needs to be defined.")
 
     try:
-        if sum(ion.charge_number <= 0 for ion in ions):
+        if sum(ion.charge_number <= 0 for ion in ions):  # ty:ignore[not-iterable]
             raise ValueError("All ions must be positively charged.")
     # Catch error if charge information is missing
     except ChargeError as ex:
@@ -527,13 +527,13 @@ def spectral_density(  # noqa: C901, PLR0912, PLR0915
 
     # Make sure the sizes of ions, ifract, ion_vel, and T_i all match
     if (
-        (len(ions) != ifract.size)
+        (len(ions) != ifract.size)  # ty:ignore[invalid-argument-type]
         or (ion_vel.shape[0] != ifract.size)
         or (T_i.size != ifract.size)
     ):
         raise ValueError(
             f"Inconsistent number of ion species in ifract ({ifract}), "
-            f"ions ({len(ions)}), T_i ({T_i.size}), "
+            f"ions ({len(ions)}), T_i ({T_i.size}), "  # ty:ignore[invalid-argument-type]
             f"and/or ion_vel ({ion_vel.shape[0]})."
         )
 
@@ -688,13 +688,13 @@ def _spectral_density_model(wavelengths, settings=None, **params):
     """
 
     # LOAD FROM SETTINGS
-    probe_vec = settings["probe_vec"]
-    scatter_vec = settings["scatter_vec"]
-    electron_vdir = settings["electron_vdir"]
-    ion_vdir = settings["ion_vdir"]
-    probe_wavelength = settings["probe_wavelength"]
-    instr_func_arr = settings["instr_func_arr"]
-    notch = settings["notch"]
+    probe_vec = settings["probe_vec"]  # ty:ignore[not-subscriptable]
+    scatter_vec = settings["scatter_vec"]  # ty:ignore[not-subscriptable]
+    electron_vdir = settings["electron_vdir"]  # ty:ignore[not-subscriptable]
+    ion_vdir = settings["ion_vdir"]  # ty:ignore[not-subscriptable]
+    probe_wavelength = settings["probe_wavelength"]  # ty:ignore[not-subscriptable]
+    instr_func_arr = settings["instr_func_arr"]  # ty:ignore[not-subscriptable]
+    notch = settings["notch"]  # ty:ignore[not-subscriptable]
 
     # LOAD FROM PARAMS
     n = params["n"]
