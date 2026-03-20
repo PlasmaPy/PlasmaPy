@@ -56,11 +56,9 @@ data_about_elements: dict[str, str | int | u.Quantity[u.u]] = json.loads(
 
 
 atomic_numbers_to_symbols: dict[int, str] = {
-    elemdict["atomic number"]: symb
-    for (symb, elemdict) in data_about_elements.items()
+    elemdict["atomic number"]: symb for (symb, elemdict) in data_about_elements.items()
 }
 
 element_names_to_symbols: dict[str, int] = {
-    elemdict["element name"]: symb
-    for (symb, elemdict) in data_about_elements.items()
+    elemdict["element name"]: symb for (symb, elemdict) in data_about_elements.items()
 }
