@@ -14,8 +14,13 @@ concurrency:
   group: changelog-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 
+defaults:
+  run:
+    shell: bash
+
 env:
-  CHANGELOG_INSTRUCTIONS: "::error title=Changelog entry needed::Please add a changelog entry at `changelog/NUMBER.TYPE.rst`, where `NUMBER` is the pull request number and `TYPE` is one of `feature`, `doc`, `test`, `internal`, `bugfix`, `breaking`, `removal`, or `misc`. Trivial changes such as typo fixes do not need a changelog entry. For details, see: https://docs.plasmapy.org/en/latest/contributing/changelog_guide.html#adding-a-changelog-entry"
+  CHANGELOG_INSTRUCTIONS: "::error title=Changelog entry needed::Please add one or more changelog entries at `changelog/${{ github.event.pull_request.number }}.TYPE.rst`, where `TYPE` is one of `feature`, `doc`, `test`, `internal`, `bugfix`, `breaking`, `removal`, or `misc`. Trivial changes like typo fixes do not need a changelog entry. For details, see: https://docs.plasmapy.org/en/latest/contributing/changelog_guide.html#adding-a-changelog-entry"
+
 
 jobs:
 
@@ -112,9 +117,10 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         BOT_USERNAME: changelog-bot
 
-    - name: Print troubleshooting information
+    - name: Changelog entry needed
       if: ${{ failure() }}
-      run: |
-        echo -e $CHANGELOG_INSTRUCTIONS
-        ls changelog
+      run: echo -e $CHANGELOG_INSTRUCTIONS
 
+    - name: List changelog entries
+      if: ${{ failure() }}
+      run: ls changelog --ignore=README.rst
