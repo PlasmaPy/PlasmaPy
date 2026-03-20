@@ -117,10 +117,9 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         BOT_USERNAME: changelog-bot
 
-    - name: Changelog entry needed
+    - name: List changelog entries
+      run: ls changelog --ignore=README.rst
+
+    - name: Troubleshooting information
       if: ${{ failure() }}
       run: echo -e $CHANGELOG_INSTRUCTIONS
-
-    - name: List changelog entries
-      if: ${{ failure() }}
-      run: ls changelog --ignore=README.rst
