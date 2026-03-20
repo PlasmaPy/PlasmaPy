@@ -14,7 +14,7 @@ resolution-markers = [
 ]
 
 [options]
-exclude-newer = "2026-03-17T18:32:25.201569907Z"
+exclude-newer = "2026-03-17T18:45:41.692689487Z"
 exclude-newer-span = "P3D"
 
 [[package]]
@@ -1792,15 +1792,6 @@ wheels = [
 ]
 
 [[package]]
-name = "pip"
-version = "26.0.1"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/48/83/0d7d4e9efe3344b8e2fe25d93be44f64b65364d3c8d7bc6dc90198d5422e/pip-26.0.1.tar.gz", hash = "sha256:c4037d8a277c89b320abe636d59f91e6d0922d08a05b60e85e53b296613346d8", size = 1812747, upload-time = "2026-02-05T02:20:18.702Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/de/f0/c81e05b613866b76d2d1066490adf1a3dbc4ee9d9c839961c3fc8a6997af/pip-26.0.1-py3-none-any.whl", hash = "sha256:bdb1b08f4274833d62c1aa29e20907365a2ceb950410df15fc9521bad440122b", size = 1787723, upload-time = "2026-02-05T02:20:16.416Z" },
-]
-
-[[package]]
 name = "plasmapy"
 source = { editable = "." }
 dependencies = [
@@ -1840,7 +1831,6 @@ dev = [
     { name = "nox-uv" },
     { name = "numpydoc" },
     { name = "pillow" },
-    { name = "pip" },
     { name = "plasmapy-sphinx" },
     { name = "pre-commit" },
     { name = "pygments" },
@@ -1919,15 +1909,39 @@ test = [
     { name = "pytest-xdist" },
 ]
 type-check = [
+    { name = "docutils" },
     { name = "hypothesis" },
-    { name = "pip" },
+    { name = "ipykernel" },
+    { name = "ipywidgets" },
+    { name = "jinja2" },
+    { name = "nbsphinx" },
+    { name = "numpydoc" },
+    { name = "pillow" },
+    { name = "plasmapy-sphinx" },
+    { name = "pygments" },
     { name = "pytest" },
     { name = "pytest-cov" },
     { name = "pytest-filter-subpackage" },
     { name = "pytest-regressions" },
     { name = "pytest-rerunfailures" },
     { name = "pytest-xdist" },
+    { name = "sphinx" },
+    { name = "sphinx-changelog" },
+    { name = "sphinx-codeautolink" },
+    { name = "sphinx-copybutton" },
+    { name = "sphinx-gallery" },
+    { name = "sphinx-issues" },
+    { name = "sphinx-notfound-page" },
+    { name = "sphinx-reredirects" },
+    { name = "sphinx-rtd-theme" },
+    { name = "sphinx-tabs" },
+    { name = "sphinx-toolbox" },
+    { name = "sphinxcontrib-bibtex" },
+    { name = "sphinxcontrib-globalsubs" },
+    { name = "sphinxemoji" },
+    { name = "towncrier" },
     { name = "ty" },
+    { name = "unidecode" },
 ]
 zizmor = [
     { name = "zizmor" },
@@ -1969,7 +1983,6 @@ dev = [
     { name = "nox-uv", specifier = ">=0.7" },
     { name = "numpydoc", specifier = ">=1.10" },
     { name = "pillow", specifier = ">=12" },
-    { name = "pip", specifier = ">=25.3" },
     { name = "plasmapy-sphinx", specifier = ">=2025.5.1" },
     { name = "pre-commit", specifier = ">=4.5.1" },
     { name = "pygments", specifier = "==2.19.2" },
@@ -2046,15 +2059,39 @@ test = [
     { name = "pytest-xdist", specifier = ">=3.8" },
 ]
 type-check = [
+    { name = "docutils", specifier = ">=0.21.2" },
     { name = "hypothesis", specifier = ">=6.150" },
-    { name = "pip", specifier = ">=25.3" },
+    { name = "ipykernel", specifier = ">=7.1" },
+    { name = "ipywidgets", specifier = ">=8.1.8" },
+    { name = "jinja2", specifier = ">=3.1.6" },
+    { name = "nbsphinx", specifier = ">=0.9.8" },
+    { name = "numpydoc", specifier = ">=1.10" },
+    { name = "pillow", specifier = ">=12" },
+    { name = "plasmapy-sphinx", specifier = ">=2025.5.1" },
+    { name = "pygments", specifier = "==2.19.2" },
     { name = "pytest", specifier = ">=9.0.2" },
     { name = "pytest-cov", specifier = ">=7" },
     { name = "pytest-filter-subpackage", specifier = ">=0.2" },
     { name = "pytest-regressions", specifier = ">=2.9.1" },
     { name = "pytest-rerunfailures", specifier = ">=16.1" },
     { name = "pytest-xdist", specifier = ">=3.8" },
+    { name = "sphinx", specifier = ">=8.2.3,<8.3" },
+    { name = "sphinx-changelog", specifier = ">=1.6" },
+    { name = "sphinx-codeautolink", specifier = "==0.17.5" },
+    { name = "sphinx-copybutton", specifier = ">=0.5.2" },
+    { name = "sphinx-gallery", specifier = ">=0.20" },
+    { name = "sphinx-issues", specifier = ">=5.0.1" },
+    { name = "sphinx-notfound-page", specifier = ">=1.1" },
+    { name = "sphinx-reredirects", specifier = ">=1" },
+    { name = "sphinx-rtd-theme", specifier = ">=3.0.2" },
+    { name = "sphinx-tabs", specifier = ">=3.4" },
+    { name = "sphinx-toolbox", specifier = ">=4.1.2" },
+    { name = "sphinxcontrib-bibtex", specifier = ">=2.6.5" },
+    { name = "sphinxcontrib-globalsubs", specifier = "==0.1.2" },
+    { name = "sphinxemoji", specifier = ">=0.3.1" },
+    { name = "towncrier", specifier = ">=24.8" },
     { name = "ty", specifier = ">=0.0.23" },
+    { name = "unidecode", specifier = ">=1.4" },
 ]
 zizmor = [{ name = "zizmor", specifier = "==1.22" }]
 

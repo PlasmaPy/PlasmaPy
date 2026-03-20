@@ -142,8 +142,8 @@ nox = [
   "nox-uv>=0.7",
 ]
 type_check = [
-  "pip>=25.3",
   "ty>=0.0.23",
+  { include-group = "docs" },
   { include-group = "test" },
 ]
 zizmor = [
