@@ -142,8 +142,8 @@ nox = [
   "nox-uv>=0.7",
 ]
 type_check = [
-  "ty>=0.0.23",
   "pip>=25.3",
+  "ty>=0.0.23",
   { include-group = "test" },
 ]
 zizmor = [
@@ -584,6 +584,14 @@ type = [
   { directory = "trivial", name = "Additional Changes", showcontent = true },
 ]
 
+[tool.ty]
+analysis.allowed-unresolved-imports = [ "astropy.constants.*" ]
+environment.python-platform = "all"
+# Because astropy.units.Quantity[u.kg] is not recognized
+rules.invalid-type-form = "ignore"
+# Because astropy.constants.m_p, etc. are not recognized
+rules.unresolved-attribute = "ignore"
+
 [tool.build_docs]
 source-dir = "docs"
 build-dir = "docs/_build"
@@ -596,12 +604,3 @@ towncrier_changelog.changelog_skip_label = "no changelog entry needed"
 towncrier_changelog.changelog_noop_label = "skip changelog checks"
 towncrier_changelog.whatsnew_label = "needs changelog entry"
 towncrier_changelog.whatsnew_pattern = "changelog\\/\\d+\\.[a-zA-Z]+(\\.\\d+)?\\.rst"
-
-[tool.ty.rules]
-# Because astropy.units.Quantity[u.kg] is not recognized
-invalid-type-form = "ignore"
-# Because astropy.constants.m_p, etc. are not recognized
-unresolved-attribute = "ignore"
-
-[tool.ty.analysis]
-allowed-unresolved-imports = ["astropy.constants.*"]
