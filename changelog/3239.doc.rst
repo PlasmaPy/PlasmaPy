@@ -1,0 +1,1 @@
+Corrected the changelog entry for :pr:`3202`.
