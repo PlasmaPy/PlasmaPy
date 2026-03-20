@@ -599,6 +599,6 @@ towncrier_changelog.whatsnew_pattern = "changelog\\/\\d+\\.[a-zA-Z]+(\\.\\d+)?\\
 
 [tool.ty.rules]
 # Because astropy.units.Quantity[u.kg] is not recognized
-invalid-type-form = "warn"
+invalid-type-form = "ignore"
 # Because astropy.constants.m_p, etc. are not recognized
-unresolved-attribute = "warn"
+unresolved-attribute = "ignore"
