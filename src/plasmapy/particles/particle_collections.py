@@ -242,10 +242,10 @@ class ParticleList(collections.UserList):
         """
         values = [getattr(particle, attr, default) for particle in self.data]
         if unit:
-            values = u.Quantity(values)
+            values = u.Quantity(values)  # ty:ignore[invalid-argument-type]
         return values
 
-    def append(self, particle: ParticleLike) -> None:
+    def append(self, particle: ParticleLike) -> None:  # ty:ignore[invalid-method-override]
         """Append a particle to the end of the |ParticleList|."""
         if isinstance(particle, u.Quantity):
             particle = _turn_quantity_into_custom_particle(particle)
@@ -280,7 +280,7 @@ class ParticleList(collections.UserList):
         """
         return self._data
 
-    def extend(self, iterable: Iterable[ParticleLike]) -> None:
+    def extend(self, iterable: Iterable[ParticleLike]) -> None:  # ty:ignore[invalid-method-override]
         """
         Extend the sequence by appending |particle-like| elements from
         ``iterable``.
@@ -306,7 +306,7 @@ class ParticleList(collections.UserList):
         """
         return self._get_particle_attribute("half_life", unit=u.s, default=np.nan * u.s)
 
-    def insert(self, index, particle: ParticleLike) -> None:
+    def insert(self, index, particle: ParticleLike) -> None:  # ty:ignore[invalid-method-override]
         """Insert a particle before an index."""
         if isinstance(particle, u.Quantity):
             particle = _turn_quantity_into_custom_particle(particle)

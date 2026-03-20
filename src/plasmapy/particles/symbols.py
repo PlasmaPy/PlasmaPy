@@ -89,7 +89,7 @@ def atomic_symbol(element: Particle) -> str:
     >>> atomic_symbol("P"), atomic_symbol("p")  # Phosphorus, proton
     ('P', 'H')
     """
-    return element.element
+    return element.element  # ty:ignore[invalid-return-type]
 
 
 @particle_input
@@ -146,7 +146,7 @@ def isotope_symbol(isotope: Particle, mass_numb: int | None = None) -> str:
     >>> isotope_symbol("alpha")
     'He-4'
     """
-    return isotope.isotope
+    return isotope.isotope  # ty:ignore[invalid-return-type]
 
 
 @particle_input(require="element", any_of=("charged", "uncharged"))
@@ -212,7 +212,7 @@ def ionic_symbol(
     'H-1 0+'
     """
 
-    return particle.ionic_symbol
+    return particle.ionic_symbol  # ty:ignore[invalid-return-type]
 
 
 @particle_input

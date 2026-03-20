@@ -50,7 +50,7 @@ def element_obj_hook(obj):
 
 
 data_about_elements: dict[str, str | int | u.Quantity[u.u]] = json.loads(
-    pkgutil.get_data("plasmapy", "particles/data/elements.json"),
+    pkgutil.get_data("plasmapy", "particles/data/elements.json"),  # ty:ignore[invalid-argument-type]
     object_hook=element_obj_hook,
 )
 

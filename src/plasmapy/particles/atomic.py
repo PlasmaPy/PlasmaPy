@@ -341,7 +341,7 @@ def charge_number(particle: ParticleLike) -> int:
     >>> charge_number("N-14++")
     2
     """
-    return particle.charge_number
+    return particle.charge_number  # ty:ignore[invalid-return-type]
 
 
 @particle_input(any_of={"charged", "uncharged"})
@@ -917,7 +917,7 @@ def periodic_table_period(argument: ParticleLike) -> int:
             "integer representing its atomic number."
         )
     symbol = atomic_symbol(argument)
-    return _elements.data_about_elements[symbol]["period"]
+    return _elements.data_about_elements[symbol]["period"]  # ty:ignore[invalid-argument-type, not-subscriptable]
 
 
 def periodic_table_group(argument: ParticleLike) -> int:
@@ -965,7 +965,7 @@ def periodic_table_group(argument: ParticleLike) -> int:
             "symbol, or an integer representing its atomic number."
         )
     symbol = atomic_symbol(argument)
-    return _elements.data_about_elements[symbol]["group"]
+    return _elements.data_about_elements[symbol]["group"]  # ty:ignore[invalid-argument-type, not-subscriptable]
 
 
 def periodic_table_block(argument: ParticleLike) -> str:
@@ -1016,7 +1016,7 @@ def periodic_table_block(argument: ParticleLike) -> str:
             "symbol, or an integer representing its atomic number."
         )
     symbol = atomic_symbol(argument)
-    return _elements.data_about_elements[symbol]["block"]
+    return _elements.data_about_elements[symbol]["block"]  # ty:ignore[invalid-argument-type, not-subscriptable]
 
 
 def periodic_table_category(argument: str | int) -> str:
@@ -1062,7 +1062,7 @@ def periodic_table_category(argument: str | int) -> str:
             "symbol, or an integer representing its atomic number."
         )
     symbol = atomic_symbol(argument)
-    return _elements.data_about_elements[symbol]["category"]
+    return _elements.data_about_elements[symbol]["category"]  # ty:ignore[invalid-argument-type, not-subscriptable]
 
 
 @particle_input(any_of={"element", "isotope", "ion"})
@@ -1101,7 +1101,7 @@ def ionic_levels(
     >>> ionic_levels("Fe-56", min_charge=13, max_charge=15)
     ParticleList(['Fe-56 13+', 'Fe-56 14+', 'Fe-56 15+'])
     """
-    base_particle = Particle(particle.isotope or particle.element)
+    base_particle = Particle(particle.isotope or particle.element)  # ty:ignore[invalid-argument-type]
 
     if max_charge is None:
         max_charge = particle.atomic_number
@@ -1252,4 +1252,4 @@ def stopping_power(
         return (
             energies,
             np.exp(cs(np.log(energies.to("MeV").value))) * u.MeV * u.cm**2 / u.g,
-        )
+        )  # ty:ignore[invalid-return-type]
