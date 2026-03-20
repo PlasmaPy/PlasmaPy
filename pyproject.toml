@@ -596,3 +596,6 @@ towncrier_changelog.changelog_skip_label = "no changelog entry needed"
 towncrier_changelog.changelog_noop_label = "skip changelog checks"
 towncrier_changelog.whatsnew_label = "needs changelog entry"
 towncrier_changelog.whatsnew_pattern = "changelog\\/\\d+\\.[a-zA-Z]+(\\.\\d+)?\\.rst"
+
+[tool.ty.rules]
+invalid-type-form = "ignore"
