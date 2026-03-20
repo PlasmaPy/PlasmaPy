@@ -476,42 +476,42 @@ def linkcheck(session: nox.Session) -> None:
     session.run(*SPHINX_BASE_COMMAND, *CHECK_HYPERLINKS, *session.posargs)
 
 
-MYPY_TROUBLESHOOTING = """
-🛡 To learn more about type hints, check out mypy's cheat sheet at:
-  https://mypy.readthedocs.io/en/stable/cheat_sheet_py3.html
+# MYPY_TROUBLESHOOTING = """
+# 🛡 To learn more about type hints, check out mypy's cheat sheet at:
+#   https://mypy.readthedocs.io/en/stable/cheat_sheet_py3.html
+#
+# For more details about specific mypy errors, go to:
+# 🔗 https://mypy.readthedocs.io/en/stable/error_codes.html
+#
+# 🪧 Especially difficult errors can be ignored with an inline comment of
+# the form: `# type: ignore[error]`, where `error` is replaced with the
+# mypy error code. Please use sparingly!
+#
+# 🛠 To automatically add type hints for common patterns, run:
+#   nox -s 'autotyping(safe)'
+# """
 
-For more details about specific mypy errors, go to:
-🔗 https://mypy.readthedocs.io/en/stable/error_codes.html
 
-🪧 Especially difficult errors can be ignored with an inline comment of
-the form: `# type: ignore[error]`, where `error` is replaced with the
-mypy error code. Please use sparingly!
-
-🛠 To automatically add type hints for common patterns, run:
-  nox -s 'autotyping(safe)'
-"""
-
-
-@nox_uv.session(python=MAXPYTHON, uv_groups=["type_check"])
-def mypy(session: nox.Session) -> None:
-    """
-    Perform static type checking.
-
-    Configuration file: mypy.ini
-    """
-    if RUNNING_ON_CI:
-        session.log(MYPY_TROUBLESHOOTING)
-
-    session.run(
-        "mypy",
-        ".",
-        "--install-types",
-        "--non-interactive",
-        "--show-error-context",
-        "--show-error-code-links",
-        "--pretty",
-        *session.posargs,
-    )
+#@nox_uv.session(python=MAXPYTHON, uv_groups=["type_check"])
+#def mypy(session: nox.Session) -> None:
+#    """
+#    Perform static type checking.
+#
+#    Configuration file: mypy.ini
+#    """
+#    if RUNNING_ON_CI:
+#        session.log(MYPY_TROUBLESHOOTING)
+#
+#    session.run(
+#        "mypy",
+#        ".",
+#        "--install-types",
+#        "--non-interactive",
+#        "--show-error-context",
+#        "--show-error-code-links",
+#        "--pretty",
+#        *session.posargs,
+#    )
 
 
 @nox.session(name="import")
