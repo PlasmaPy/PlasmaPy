@@ -729,7 +729,7 @@ class AbstractGrid(ABC):
         for event in ("start", "stop"):
             # Convert tuple to list
             if isinstance(event_values[event], tuple):
-                event_values[event] = list(event_values[event])  # ty:ignore[invalid-argument-type]
+                event_values[event] = list(event_values[event])  # ty:ignore[invalid-argument-type, invalid-assignment]
 
             if isinstance(event_values[event], list):
                 if len(event_values[event]) == 1:  # ty:ignore[invalid-argument-type]
@@ -748,7 +748,7 @@ class AbstractGrid(ABC):
                 event_values[event] = (
                     [event_values[event]] * 3
                     if event_values[event].size == 1
-                    else list(event_values[event])  # ty:ignore[invalid-argument-type]
+                    else list(event_values[event])  # ty:ignore[invalid-argument-type, invalid-assignment]
                 )
             else:
                 raise TypeError(
@@ -759,13 +759,13 @@ class AbstractGrid(ABC):
 
         # Convert tuple to list
         if isinstance(event_values["num"], tuple):
-            event_values["num"] = list(event_values["num"])
+            event_values["num"] = list(event_values["num"])  # ty:ignore[invalid-assignment]
 
         if isinstance(event_values["num"], list):
             if len(event_values["num"]) == 1:
                 event_values["num"] = event_values["num"] * 3
         elif isinstance(event_values["num"], int):
-            event_values["num"] = [event_values["num"]] * 3
+            event_values["num"] = [event_values["num"]] * 3  # ty:ignore[invalid-assignment]
         else:
             raise TypeError(
                 f"The argument `num` must be an int or list of "

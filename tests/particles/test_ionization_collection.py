@@ -580,7 +580,7 @@ class TestIonizationStateCollectionAttributes:
     def test_setting_incomplete_abundances(self) -> None:
         new_abundances = {"H": 1, "He": 0.1, "Fe": 1e-5, "Au": 1e-8}  # missing lithium
         with pytest.raises(ParticleError):
-            self.instance.abundances = new_abundances
+            self.instance.abundances = new_abundances  # ty:ignore[invalid-assignment]
 
     def test_setting_abundances(self) -> None:
         new_abundances = {"H": 1, "He": 0.1, "Li": 1e-4, "Fe": 1e-5, "Au": 1e-8}
@@ -590,7 +590,7 @@ class TestIonizationStateCollectionAttributes:
         }
 
         try:
-            self.instance.abundances = new_abundances
+            self.instance.abundances = new_abundances  # ty:ignore[invalid-assignment]
         except Exception:  # noqa: BLE001
             pytest(f"Could not set abundances to {new_abundances}.")  # ty:ignore[call-non-callable]
         else:

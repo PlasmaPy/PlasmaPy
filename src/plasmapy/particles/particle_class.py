@@ -2366,10 +2366,10 @@ class CustomParticle(AbstractPhysicalParticle):
         new_kwargs = {"symbol": symbol, "Z": Z}
 
         if u.physical.mass in physical_type_dict:
-            new_kwargs["mass"] = physical_type_dict[u.physical.mass]
+            new_kwargs["mass"] = physical_type_dict[u.physical.mass]  # ty:ignore[invalid-assignment]
 
         if u.physical.electrical_charge in physical_type_dict:
-            new_kwargs["charge"] = physical_type_dict[u.physical.electrical_charge]
+            new_kwargs["charge"] = physical_type_dict[u.physical.electrical_charge]  # ty:ignore[invalid-assignment]
 
         return CustomParticle(**new_kwargs)  # ty:ignore[invalid-argument-type, invalid-return-type]
 

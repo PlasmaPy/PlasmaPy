@@ -37,8 +37,8 @@ import re
 import shutil
 import sys
 
-import nox
-import nox_uv
+import nox  # ty:ignore[unresolved-import]
+import nox_uv  # ty:ignore[unresolved-import]
 
 # SPEC 0 indicates that scientific Python packages should support
 # versions of Python that have been released in the last 3 years, or
@@ -162,8 +162,8 @@ def lock(session: nox.Session) -> None:
     )
     try:
         # Use session.run() with silent=True to return the command output
-        uv_output: str | bool = session.run(*uv_lock, silent=RUNNING_ON_CI)  # ty:ignore[invalid-assignment]
-    except nox.command.CommandFailed:  # ty:ignore[possibly-missing-attribute]
+        uv_output: str | bool = session.run(*uv_lock, silent=RUNNING_ON_CI)
+    except nox.command.CommandFailed:
         session.warn("⚠️ uv.lock is invalid, likely due to a git merge conflict.")
         session.log(
             "📥 Checking out uv.lock from the branch being merged into this one."
@@ -172,11 +172,11 @@ def lock(session: nox.Session) -> None:
             "🪧 If this next attempt is unsuccessful, delete uv.lock and try again."
         )
         session.run("git", "checkout", "--theirs", "--", "uv.lock", external=True)
-        uv_output: str | bool = session.run(*uv_lock, silent=RUNNING_ON_CI)  # ty:ignore[invalid-assignment]
+        uv_output: str | bool = session.run(*uv_lock, silent=RUNNING_ON_CI)
 
     if RUNNING_ON_CI:
         session.log(uv_output)
-        _create_lockfile_pr_message(uv_output=uv_output, session=session)  # ty:ignore[invalid-argument-type]
+        _create_lockfile_pr_message(uv_output=uv_output, session=session)
 
 
 @nox.session
@@ -205,7 +205,7 @@ def validate_lockfile(session: nox.Session) -> None:
 
     try:
         session.run("uv", "lock", "--no-progress")
-    except nox.command.CommandFailed:  # ty:ignore[possibly-missing-attribute]
+    except nox.command.CommandFailed:
         session.error(errmsg)
 
 
@@ -488,7 +488,7 @@ TY_TROUBLESHOOTING = (
     "nox -s 'autotyping(safe)'"
     "\n\n"
     "🪧 Particularly tricky errors can be ignored with an inline comment of "
-    "the form: `# ty: ignore[error]`, where `error` is replaced with the "
+    "the form: `# ty:ignore[error]`, where `error` is replaced with the "
     "ty error code. Please use sparingly!"
     "\n"
 )
@@ -499,7 +499,7 @@ def ty(session: nox.Session) -> None:
     """Perform static type checking with ty."""
     if RUNNING_ON_CI:
         session.log(TY_TROUBLESHOOTING)
-    session.run("ty", "check")
+    session.run("ty", "check", *session.posargs)
 
 
 @nox.session(name="import")

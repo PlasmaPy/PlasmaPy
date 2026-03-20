@@ -305,7 +305,7 @@ def test_decorator_categories(
         return argument  # ty:ignore[invalid-return-type]
 
     if exception:
-        with pytest.raises(exception):
+        with pytest.raises(exception):  # ty:ignore[invalid-argument-type]
             decorated_function(particle)
             pytest.fail(
                 f"{call_string(decorated_function, [], categorization)} "

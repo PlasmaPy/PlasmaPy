@@ -564,7 +564,7 @@ class TestCheckUnits:
                     "input": (None, "arg", {**check, "none_shall_pass": True}),
                     "output": (None, None, None, None),
                 },
-            ]
+            ]  # ty:ignore[invalid-argument-type]
         )
 
         # add cases for 'pass_equivalent_units' checks
@@ -596,7 +596,7 @@ class TestCheckUnits:
                     ),
                     "output": (5.0 * u.km, None, None, None),
                 },
-            ]
+            ]  # ty:ignore[invalid-argument-type]
         )
 
         # setup wrapped function
@@ -913,8 +913,8 @@ class TestCheckValues:
                 arg_checks = checks[arg_name]  # ty:ignore[invalid-argument-type]
 
                 for key in default_checks:
-                    if key in case["output"][arg_name]:  # ty:ignore[not-subscriptable, unsupported-operator]
-                        val = case["output"][arg_name][key]  # ty:ignore[not-subscriptable]
+                    if key in case["output"][arg_name]:  # ty:ignore[not-subscriptable, unsupported-operator, invalid-argument-type]
+                        val = case["output"][arg_name][key]  # ty:ignore[not-subscriptable, invalid-argument-type]
                     else:
                         val = default_checks[key]
 

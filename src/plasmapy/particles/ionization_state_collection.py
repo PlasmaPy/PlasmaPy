@@ -756,7 +756,7 @@ class IonizationStateCollection:  # noqa: PLW1641
                 new_abundances_input = {
                     atom: 10**log_abundance for atom, log_abundance in value.items()
                 }
-                self.abundances = new_abundances_input
+                self.abundances = new_abundances_input  # ty:ignore[invalid-assignment]
             except ParticleError:
                 raise ParticleError("Invalid log_abundances.") from None
 
