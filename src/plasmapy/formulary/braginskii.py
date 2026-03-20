@@ -131,7 +131,7 @@ import warnings
 
 import astropy.units as u
 import numpy as np
-from astropy.constants.si import e, k_B, m_e
+from astropy.constants.si import e, k_B, m_e  # ty:ignore[unresolved-import]
 
 from plasmapy import particles
 from plasmapy.formulary.collisions import (
@@ -1179,7 +1179,7 @@ def _nondim_thermal_conductivity(
     elif model == "braginskii":
         kappa_hat = _nondim_tc_i_braginskii(hall, field_orientation)
     elif model == "ji-held":
-        kappa_hat = _nondim_tc_i_ji_held(hall, Z, mu, theta, field_orientation)
+        kappa_hat = _nondim_tc_i_ji_held(hall, Z, mu, theta, field_orientation)  # ty:ignore[invalid-argument-type]
     elif model in {"spitzer-harm", "spitzer"}:
         raise NotImplementedError(
             "Ion thermal conductivity is not implemented in the Spitzer model."
@@ -1218,7 +1218,7 @@ def _nondim_viscosity(
     elif model == "braginskii":
         eta_hat = _nondim_visc_i_braginskii(hall)
     elif model == "ji-held":
-        eta_hat = _nondim_visc_i_ji_held(hall, Z, mu, theta)
+        eta_hat = _nondim_visc_i_ji_held(hall, Z, mu, theta)  # ty:ignore[invalid-argument-type]
     elif model in {"spitzer-harm", "spitzer"}:
         raise NotImplementedError(
             "Ion viscosity is not implemented in the Spitzer model."

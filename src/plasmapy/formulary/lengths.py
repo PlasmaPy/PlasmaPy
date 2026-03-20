@@ -7,7 +7,7 @@ import warnings
 
 import astropy.units as u
 import numpy as np
-from astropy.constants.si import c, e, eps0, k_B
+from astropy.constants.si import c, e, eps0, k_B  # ty:ignore[unresolved-import]
 
 from plasmapy.formulary import frequencies, speeds
 from plasmapy.formulary.relativity import RelativisticBody
@@ -253,7 +253,7 @@ def gyroradius(
         T = np.nan * u.K
 
     # Determine output shape and broadcast inputs accordingly
-    target_shape = np.broadcast(T, Vperp, lorentzfactor, particle).shape
+    target_shape = np.broadcast(T, Vperp, lorentzfactor, particle).shape  # ty:ignore[invalid-argument-type]
     lorentzfactor_in = lorentzfactor
     lorentzfactor = np.array(np.broadcast_to(lorentzfactor, target_shape))
     Vperp = np.array(np.broadcast_to(Vperp, target_shape, subok=True), subok=True)

@@ -13,7 +13,7 @@ __aliases__ = ["Ef_", "lambdaDB_", "lambdaDB_th_"]
 
 import astropy.units as u
 import numpy as np
-from astropy.constants.si import c, e, eps0, h, hbar, k_B, m_e
+from astropy.constants.si import c, e, eps0, h, hbar, k_B, m_e  # ty:ignore[unresolved-import]
 from lmfit import Parameters, minimize
 
 from plasmapy.formulary import mathematics

@@ -339,7 +339,7 @@ class RelativisticBody:
             "lorentz_factor": lorentz_factor,
         }
 
-        speed_like_input = self._get_speed_like_input(velocity_like_inputs)
+        speed_like_input = self._get_speed_like_input(velocity_like_inputs)  # ty:ignore[invalid-argument-type]
         self._store_velocity_like_argument(speed_like_input)
 
     def __repr__(self) -> str:
@@ -354,7 +354,7 @@ class RelativisticBody:
         -------
         |Particle|, |CustomParticle|, or |ParticleList|
         """
-        return self._particle
+        return self._particle  # ty:ignore[invalid-return-type]
 
     @property
     @validate_quantities

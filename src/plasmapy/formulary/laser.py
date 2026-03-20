@@ -27,7 +27,7 @@ __aliases__ = [
 
 import astropy.units as u
 import numpy as np
-from astropy.constants.si import c, e, eps0, m_e
+from astropy.constants.si import c, e, eps0, m_e  # ty:ignore[unresolved-import]
 
 from plasmapy.utils.decorators import validate_quantities
 
