@@ -30,6 +30,7 @@ to be installed.
 Nox documentation: https://nox.thea.codes
 """
 
+import datetime
 import os
 import pathlib
 import re
@@ -543,23 +544,7 @@ def check_build(session: nox.Session) -> None:
     session.run("twine", "check", "dist/*")
 
 
-AUTOTYPING_SAFE: tuple[str, ...] = (
-    "--none-return",
-    "--scalar-return",
-    "--annotate-magics",
-)
-AUTOTYPING_RISKY: tuple[str, ...] = (
-    *AUTOTYPING_SAFE,
-    "--bool-param",
-    "--int-param",
-    "--float-param",
-    "--str-param",
-    "--bytes-param",
-    "--annotate-imprecise-magics",
-)
-
-
-@nox.session
+@nox_uv.session(python=MAXPYTHON, uv_only_groups=["changelog"])
 @nox.parametrize("final", [nox.param(False, id="draft"), nox.param(True, id="final")])
 def changelog(session: nox.Session, final: str) -> None:
     """
@@ -575,13 +560,15 @@ def changelog(session: nox.Session, final: str) -> None:
     When executing this session, provide the version of the release, as
     in this example:
 
-       nox -s 'changelog(final)' -- 2026.2.0
+       nox -s 'changelog(final)' -- 2026.5.0
     """
+
+    now = datetime.datetime.now(datetime.UTC)
 
     if len(session.posargs) != 1:
         raise TypeError(
             "Please provide the version of PlasmaPy to be released "
-            "(i.e., `nox -s changelog -- 2025.10.0`)"
+            f"(i.e., `nox -s changelog -- {now.year}.{now.month}.0`)."
         )
 
     version = session.posargs[0]
@@ -595,8 +582,6 @@ def changelog(session: nox.Session, final: str) -> None:
             "YYYY is he year, M is the one or two digit month, "
             "and PATCH is a non-negative integer."
         )
-
-    session.install(".", "towncrier")
 
     towncrier = ["towncrier", "build", "--version", version]
 
@@ -613,7 +598,25 @@ def changelog(session: nox.Session, final: str) -> None:
     shutil.copy(original_file, destination)
 
 
-@nox_uv.session(python=MINPYTHON, uv_groups=["test"])
+AUTOTYPING_SAFE: tuple[str, ...] = (
+    "--none-return",
+    "--scalar-return",
+    "--annotate-magics",
+)
+AUTOTYPING_RISKY: tuple[str, ...] = (
+    *AUTOTYPING_SAFE,
+    "--bool-param",
+    "--int-param",
+    "--float-param",
+    "--str-param",
+    "--bytes-param",
+    "--annotate-imprecise-magics",
+)
+
+
+@nox_uv.session(
+    python=MINPYTHON, uv_only_groups=["autotyping"], uv_no_install_project=True
+)
 @nox.parametrize(
     "options",
     [
@@ -640,7 +643,9 @@ def autotyping(session: nox.Session, options: tuple[str, ...]) -> None:
     session.run("python", "-m", "autotyping", *options, *paths, *session.posargs)
 
 
-@nox.session
+@nox_uv.session(
+    python=MAXPYTHON, uv_only_groups=["manifest"], uv_no_install_project=True
+)
 def manifest(session: nox.Session) -> None:
     """
     Check for missing files in MANIFEST.in.
@@ -651,16 +656,15 @@ def manifest(session: nox.Session) -> None:
     `ignore` under `[tool.check-manifest]` in `pyproject.toml`.
     """
     # check-manifest would be suitable as a pre-commit hook, except that
-    # it requires ∼10 seconds to build the package, which would triple
+    # it requires ∼6 seconds to build the package, which would triple
     # the time needed to run pre-commit.
     session.install("check-manifest")
     session.run("check-manifest", *session.posargs)
 
 
-@nox.session
+@nox_uv.session(python=MAXPYTHON, uv_only_groups=["lint"], uv_no_install_project=True)
 def lint(session: nox.Session) -> None:
     """Run all pre-commit hooks defined in .pre-commit-config.yaml."""
-    session.install("pre-commit")
     session.run(
         "pre-commit",
         "run",
@@ -685,10 +689,10 @@ or add the appropriate configuration settings to: .github/zizmor.yml
 """
 
 
-@nox.session
+@nox_uv.session(python=MAXPYTHON, uv_only_groups=["zizmor"], uv_no_install_project=True)
 def zizmor(session: nox.Session) -> None:
     """
-    Find common security issues in GitHub Actions.
+    Find common security issues in GitHub workflows.
 
     Because some of the zizmor audit rules require a GitHub token,
     running this check locally may produce different results than
@@ -699,18 +703,19 @@ def zizmor(session: nox.Session) -> None:
 
     Configuration file: .github/zizmor.yml
     """
-    session.log(ZIZMOR_TROUBLESHOOTING_MESSAGE)
+    if RUNNING_ON_CI:
+        session.log(ZIZMOR_TROUBLESHOOTING_MESSAGE)
 
-    args = ["--no-progress", "--color=auto", *session.posargs]
-    if not session.posargs:
-        args.append("--fix=safe")
+    options = [
+        "--show-audit-urls=always",
+    ]
 
-    session.install("zizmor==1.22.0")
-    session.run(
-        "zizmor",
-        ".github",
-        *args,
-    )
+    if not RUNNING_ON_CI and not session.posargs:
+        options.append("--quiet")
+
+    options.extend(session.posargs or ["--fix=safe"])
+
+    session.run("zizmor", ".github", *options)
 
 
 if __name__ == "__main__":

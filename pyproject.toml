@@ -75,11 +75,15 @@ scripts.plasma-calculator = "plasmapy.utils.calculator:main"
 # Because dependency groups are excluded from built distributions of
 # packages, SPEC 0 does not apply.
 dev = [
+  { include-group = "autotyping" },
+  { include-group = "changelog" },
   { include-group = "docs" },
   { include-group = "lint" },
+  { include-group = "manifest" },
   { include-group = "nox" },
   { include-group = "test" },
   { include-group = "type_check" },
+  { include-group = "zizmor" },
 ]
 test = [
   "hypothesis>=6.150",
@@ -115,13 +119,23 @@ docs = [
   # sphinxcontrib-globalsubs>=1 needs sphinx>=9
   "sphinxcontrib-globalsubs==0.1.2",
   "sphinxemoji>=0.3.1",
-  "towncrier>=24.8",
   "unidecode>=1.4",
+  { include-group = "changelog" },
+]
+autotyping = [
+  "autotyping>=24.9",
+  "typing-extensions>=4.15",
+]
+changelog = [
+  "towncrier>=24.8",
 ]
 lint = [
   "pre-commit>=4.5.1",
   # Include ruff to make it available for IDEs in virtual environments
   "ruff>=0.14.11",
+]
+manifest = [
+  "check-manifest>=0.51",
 ]
 nox = [
   "nox>=2025.11.12",
@@ -131,6 +145,9 @@ type_check = [
   "mypy>=1.19.1",
   "pip>=25.3",
   { include-group = "test" },
+]
+zizmor = [
+  "zizmor==1.22",
 ]
 
 [tool.setuptools]
