@@ -1,1 +1,1 @@
-Added in-line comments to suppress existing static type checking errors found by ``ty``.
+Added in-line comments to suppress existing static type checking reports issued by ``ty``.
