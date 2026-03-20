@@ -602,3 +602,4 @@ towncrier_changelog.whatsnew_pattern = "changelog\\/\\d+\\.[a-zA-Z]+(\\.\\d+)?\\
 invalid-type-form = "ignore"
 # Because astropy.constants.m_p, etc. are not recognized
 unresolved-attribute = "ignore"
+allowed-unresolved-imports = ["astropy.constants.*"]
