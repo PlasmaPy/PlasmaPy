@@ -598,4 +598,7 @@ towncrier_changelog.whatsnew_label = "needs changelog entry"
 towncrier_changelog.whatsnew_pattern = "changelog\\/\\d+\\.[a-zA-Z]+(\\.\\d+)?\\.rst"
 
 [tool.ty.rules]
-invalid-type-form = "ignore"
+# Because astropy.units.Quantity[u.kg] is not recognized
+invalid-type-form = "warn"
+# Because astropy.constants.m_p, etc. are not recognized
+unresolved-attribute = "warn"
