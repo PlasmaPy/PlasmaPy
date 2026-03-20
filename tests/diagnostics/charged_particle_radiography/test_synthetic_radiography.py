@@ -350,7 +350,7 @@ def test_input_validation() -> None:
             grid,
             source,
             detector,
-            field_weighting="not a valid field weighting",  # type: ignore[arg-type]
+            field_weighting="not a valid field weighting",
             verbose=False,
         )
 

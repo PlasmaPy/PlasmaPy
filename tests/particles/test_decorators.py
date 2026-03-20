@@ -160,13 +160,13 @@ class ClassWithDecoratedMethods:
         # Because run-time logic is needed, mypy is unable to infer
         # that @particle_input is doing a type conversion here. We
         # would need a dynamic type checker to address this case.
-        return particle  # type: ignore[return-value]
+        return particle
 
     @particle_input()
     def method_decorated_with_parentheses(
         self, particle: ParticleLike
     ) -> Particle | CustomParticle | ParticleList:
-        return particle  # type: ignore[return-value]
+        return particle
 
 
 @pytest.mark.parametrize("symbol", ["muon", "He 2+"])
@@ -237,7 +237,7 @@ def test_optional_particle() -> None:
     def has_default_particle(
         particle: ParticleLike = particle,
     ) -> Particle | CustomParticle | ParticleList:
-        return particle  # type: ignore[return-value]
+        return particle
 
     assert has_default_particle() == Particle(particle)
     assert has_default_particle("Ne") == Particle("Ne")
@@ -298,11 +298,11 @@ def test_decorator_categories(
     to a |ParticleError| when the inputted particle matches the criteria.
     """
 
-    @particle_input(**categorization)  # type: ignore[arg-type]
+    @particle_input(**categorization)
     def decorated_function(
         argument: ParticleLike,
     ) -> Particle | CustomParticle | ParticleList:
-        return argument  # type: ignore[return-value]
+        return argument
 
     if exception:
         with pytest.raises(exception):
@@ -324,7 +324,7 @@ def test_optional_particle_annotation_parameter() -> None:
 
     @particle_input
     def func_optional_particle(particle: ParticleLike | None) -> Particle | None:
-        return particle  # type: ignore[return-value]
+        return particle
 
     assert func_optional_particle(None) is None, (
         "The particle keyword in the particle_input decorator is set "
@@ -342,8 +342,8 @@ def undecorated_function(
 decorator_pairs = [
     (particle_input, validate_quantities),
     (particle_input(), validate_quantities),
-    (particle_input, validate_quantities()),  # type: ignore[no-untyped-call]
-    (particle_input(), validate_quantities()),  # type: ignore[no-untyped-call]
+    (particle_input, validate_quantities()),
+    (particle_input(), validate_quantities()),
 ]
 
 
@@ -401,7 +401,7 @@ def test_annotated_classmethod() -> None:
         @classmethod
         @particle_input
         def f(cls, particle: ParticleLike) -> Particle | CustomParticle | ParticleList:
-            return particle  # type: ignore[return-value]
+            return particle
 
     has_annotated_classmethod = HasAnnotatedClassMethod()
     assert has_annotated_classmethod.f("p+") == Particle("p+")
@@ -417,7 +417,7 @@ def test_self_stacked_decorator(
     @outer_decorator
     @inner_decorator
     def f(x: Any, particle: ParticleLike) -> Particle | CustomParticle | ParticleList:
-        return particle  # type: ignore[return-value]
+        return particle
 
     result = f(1, "p+")
     assert result == "p+"
@@ -445,7 +445,7 @@ def test_class_stacked_decorator(
     assert isinstance(result.particle, Particle)
 
 
-validate_quantities_ = validate_quantities(  # type: ignore[no-untyped-call]
+validate_quantities_ = validate_quantities(
     T_e={"equivalencies": u.temperature_energy()}
 )
 
@@ -530,7 +530,7 @@ def test_particle_input_verification(
 
     @particle_input(**kwargs_to_particle_input)
     def f(particle: ParticleLike) -> Particle | CustomParticle | ParticleList:
-        return particle  # type: ignore[return-value]
+        return particle
 
     with pytest.raises(ParticleError):
         f(arg)
@@ -562,19 +562,19 @@ class ParameterNamesCase:
 
 @particle_input
 def get_element(element: ParticleLike) -> Particle | CustomParticle | ParticleList:
-    return element  # type: ignore[return-value]
+    return element
 
 
 @particle_input
 def get_isotope(isotope: ParticleLike) -> Particle | CustomParticle | ParticleList:
-    return isotope  # type: ignore[return-value]
+    return isotope
 
 
 @particle_input
 def get_ion(
     ion: ParticleLike, Z: float | None = None
 ) -> Particle | CustomParticle | ParticleList:
-    return ion  # type: ignore[return-value]
+    return ion
 
 
 cases = [
@@ -689,7 +689,7 @@ def return_particle(
     particle: ParticleLike, Z: float | None = None, mass_numb: int | None = None
 ) -> Particle | CustomParticle | ParticleList:
     """A simple function that is decorated by particle_input."""
-    return particle  # type: ignore[return-value]
+    return particle
 
 
 def test_particle_input_warning_for_integer_z_mean() -> None:
@@ -729,7 +729,7 @@ def test_particle_input_with_var_positional_arguments() -> None:
     def function_with_var_positional_arguments(
         *args: Any, particle: ParticleLike = None
     ) -> tuple[tuple[Any], Particle]:
-        return args, particle  # type: ignore[return-value]
+        return args, particle
 
     args = (5, 6, 7)
     particle = "p+"
@@ -751,7 +751,7 @@ def test_particle_input_with_pos_and_var_positional_arguments() -> None:
     def function_with_pos_and_var_positional_arguments(
         a: Any, *args: Any, particle: ParticleLike = None
     ) -> tuple[tuple[Any, ...], Particle]:
-        return args, particle  # type: ignore[return-value]
+        return args, particle
 
     a = 1
     args = (5, 6, 7)
@@ -779,11 +779,11 @@ def test_particle_categorization_of_particle_lists(
     kwargs: dict[str, ParticleListLike],
     exception: Exception,
 ) -> None:
-    @particle_input(**criteria)  # type: ignore[arg-type]
+    @particle_input(**criteria)
     def get_particle(
         particle: ParticleLike,
     ) -> Particle | ParticleList | CustomParticle:
-        return particle  # type: ignore[return-value]
+        return particle
 
-    with pytest.raises(exception):  # type: ignore[call-overload]
+    with pytest.raises(exception):
         get_particle(**kwargs)

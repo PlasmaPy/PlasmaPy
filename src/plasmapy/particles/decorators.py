@@ -243,7 +243,7 @@ class _ParticleInput:
         -------
         `dict` of `str` to `object`
         """
-        return self._data.get("annotations")  # type: ignore[return-value]
+        return self._data.get("annotations")
 
     @property
     def require(self) -> Iterable[str] | None:
@@ -486,7 +486,7 @@ class _ParticleInput:
                 meets_name_criteria = particle.is_category(**categorization)
 
             if isinstance(particle, Iterable) and not isinstance(particle, str):
-                meets_name_criteria = all(meets_name_criteria)  # type: ignore[arg-type]
+                meets_name_criteria = all(meets_name_criteria)
 
             if not meets_name_criteria:
                 raise exception(
@@ -517,7 +517,7 @@ class _ParticleInput:
         if (
             not self.allow_custom_particles
             and isinstance(particle, ParticleList)
-            and any(particle.is_category("custom", particlewise=True))  # type: ignore[arg-type]
+            and any(particle.is_category("custom", particlewise=True))
         ):
             raise InvalidParticleError(
                 f"{self.callable_.__name__} does not accept CustomParticle "
@@ -997,7 +997,7 @@ def particle_input(
         kwargs: MutableMapping[str, Any],
     ) -> Callable[..., Any]:
         bound_arguments = particle_validator.process_arguments(args, kwargs, instance)
-        return callable__(  # type: ignore[no-any-return]
+        return callable__(
             *bound_arguments.args,
             **bound_arguments.kwargs,
         )

@@ -506,7 +506,7 @@ class RelativisticBody:
         if γ < 1:
             raise ValueError("The Lorentz factor must be ≥ 1")
 
-        self.velocity = c * np.sqrt(1 - γ**-2)  # type: ignore[operator]
+        self.velocity = c * np.sqrt(1 - γ**-2)
 
     @momentum.setter
     @validate_quantities

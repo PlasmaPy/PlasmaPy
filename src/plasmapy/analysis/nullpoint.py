@@ -482,7 +482,7 @@ def _trilinear_jacobian(vspace, cell):
                 return v
             if len(v) != 1:
                 raise ValueError("Unable to get scalar from multi-element array.")
-            return v[0]  # type: ignore[index]
+            return v[0]
 
         return np.array(
             [

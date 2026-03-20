@@ -41,7 +41,7 @@ try:
     try:
         from plasmapy._dev.scm_version import version as __version__
     except ImportError:
-        from plasmapy._version import (  # type: ignore[import-not-found,no-redef,unused-ignore]
+        from plasmapy._version import (
             version as __version__,
         )
 except Exception:  # coverage: ignore  # noqa: BLE001

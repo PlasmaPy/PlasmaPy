@@ -745,7 +745,7 @@ class IonizationStateCollection:  # noqa: PLW1641
         logarithms of the relative abundances as the corresponding values.
         """
         return {
-            atom: np.log10(abundance)  # type: ignore[misc]
+            atom: np.log10(abundance)
             for atom, abundance in self.abundances.items()
         }
 
