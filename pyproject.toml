@@ -585,7 +585,7 @@ type = [
 ]
 
 [tool.ty]
-analysis.allowed-unresolved-imports = [ "astropy.constants.*" ]
+analysis.allowed-unresolved-imports = [ "astropy.constants.**" ]
 environment.python-platform = "all"
 # Because astropy.units.Quantity[u.kg] is not recognized
 rules.invalid-type-form = "ignore"
