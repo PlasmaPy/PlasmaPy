@@ -10,7 +10,7 @@ from plasmapy.particles.particle_class import Particle, ParticleLike
 
 @particle_input
 def function_decorated_with_particle_input(particle: ParticleLike) -> Particle:
-    return particle
+    return particle  # ty:ignore[invalid-return-type]
 
 
 class DecoratedClass:
@@ -22,7 +22,7 @@ class DecoratedClass:
 class UndecoratedClass:
     @particle_input
     def decorated_method(self, particle: ParticleLike) -> Particle:
-        return particle
+        return particle  # ty:ignore[invalid-return-type]
 
 
 def test_particle_input_postponed_annotations_function() -> None:
