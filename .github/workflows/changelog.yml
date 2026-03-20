@@ -15,7 +15,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  CHANGELOG_INSTRUCTIONS: "::error title=⚠️ Changelog entry needed::Please add a changelog entry at `changelog/NUMBER.TYPE.rst`, where `NUMBER` is the pull request number and `TYPE` is one of `feature`, `doc`, `test`, `internal`, `bugfix`, `breaking`, `removal`, or `misc`. Trivial changes such as typo fixes do not need a changelog entry.\n\nFor details, see: https://docs.plasmapy.org/en/latest/contributing/changelog_guide.html#adding-a-changelog-entry"
+  CHANGELOG_INSTRUCTIONS: "::error title=Changelog entry needed::Please add a changelog entry at `changelog/NUMBER.TYPE.rst`, where `NUMBER` is the pull request number and `TYPE` is one of `feature`, `doc`, `test`, `internal`, `bugfix`, `breaking`, `removal`, or `misc`. Trivial changes such as typo fixes do not need a changelog entry. For details, see: https://docs.plasmapy.org/en/latest/contributing/changelog_guide.html#adding-a-changelog-entry"
 
 jobs:
 
@@ -116,10 +116,5 @@ jobs:
       if: ${{ failure() }}
       run: |
         echo -e $CHANGELOG_INSTRUCTIONS
-        exit 1
-
-    - name: List invalid changelog entries
-      if: ${{ failure() }}
-      run: |
-        ls
+        ls changelog
 
