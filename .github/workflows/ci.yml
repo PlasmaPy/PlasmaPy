@@ -61,10 +61,10 @@ jobs:
           python: '3.14'
           nox_session: docs
 
-        - name: Static type checking, Python 3.14, Ubuntu
+        - name: Static type checking with ty, Python 3.14, Ubuntu
           os: ubuntu-latest
           python: '3.14'
-          nox_session: type_check
+          nox_session: ty
 
         - name: Packaging, Python 3.14, Windows
           os: windows-latest
