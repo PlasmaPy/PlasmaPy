@@ -142,7 +142,7 @@ nox = [
   "nox-uv>=0.7",
 ]
 type_check = [
-  "mypy>=1.19.1",
+  "ty>=0.0.23",
   "pip>=25.3",
   { include-group = "test" },
 ]
@@ -419,7 +419,6 @@ lint.allowed-confusables = [
 lint.dummy-variable-rgx = "^(Z|mass_numb|request|event|_.*)$"
 lint.flake8-annotations.allow-star-arg-any = true
 lint.flake8-annotations.ignore-fully-untyped = true
-lint.flake8-annotations.mypy-init-return = true
 lint.flake8-annotations.suppress-dummy-args = true
 lint.flake8-annotations.suppress-none-returning = true
 lint.flake8-import-conventions.aliases."astropy.constants" = "const"
