@@ -10,7 +10,7 @@ plasma frequency.
 import astropy.units as u
 import numpy as np
 import pytest
-from astropy.constants.si import m_p  # ty:ignore[unresolved-import]
+from astropy.constants.si import m_p
 
 from plasmapy.formulary.frequencies import plasma_frequency, plasma_frequency_lite, wp_
 from plasmapy.particles._factory import _physical_particle_factory

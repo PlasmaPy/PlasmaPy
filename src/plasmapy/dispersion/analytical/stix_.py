@@ -7,7 +7,7 @@ __all__ = ["stix"]
 
 import astropy.units as u
 import numpy as np
-from astropy.constants.si import c  # ty:ignore[unresolved-import]
+from astropy.constants.si import c
 
 from plasmapy.formulary.frequencies import gyrofrequency, plasma_frequency
 from plasmapy.particles import Particle, ParticleList

@@ -7,7 +7,7 @@ import warnings
 
 import astropy.units as u
 import numpy as np
-from astropy.constants.si import c, e, eps0, k_B  # ty:ignore[unresolved-import]
+from astropy.constants.si import c, e, eps0, k_B
 
 from plasmapy.formulary import frequencies, speeds
 from plasmapy.formulary.relativity import RelativisticBody

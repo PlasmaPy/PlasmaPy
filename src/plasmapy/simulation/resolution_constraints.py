@@ -13,7 +13,7 @@ __all__ = [
 
 import astropy.units as u
 import numpy as np
-from astropy.constants.si import c  # ty:ignore[unresolved-import]
+from astropy.constants.si import c
 
 from plasmapy.utils.decorators import validate_quantities
 

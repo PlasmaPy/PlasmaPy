@@ -13,7 +13,7 @@ __lite_funcs__ = ["plasma_frequency_lite"]
 
 import astropy.units as u
 import numpy as np
-from astropy.constants.si import e, eps0  # ty:ignore[unresolved-import]
+from astropy.constants.si import e, eps0
 
 from plasmapy import particles
 from plasmapy.particles.decorators import particle_input

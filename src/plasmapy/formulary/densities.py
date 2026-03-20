@@ -8,7 +8,7 @@ __aliases__ = ["rho_"]
 
 import astropy.units as u
 import numpy as np
-from astropy.constants.si import e, eps0, m_e  # ty:ignore[unresolved-import]
+from astropy.constants.si import e, eps0, m_e
 
 from plasmapy.particles.particle_class import Particle, ParticleLike
 from plasmapy.utils.decorators import validate_quantities

@@ -13,7 +13,7 @@ from functools import cached_property
 import astropy.units as u
 import numpy as np
 import scipy
-from astropy.constants.si import e, k_B, m_e  # ty:ignore[unresolved-import]
+from astropy.constants.si import e, k_B, m_e
 
 from plasmapy import particles
 from plasmapy.formulary.collisions import coulomb, lengths, misc

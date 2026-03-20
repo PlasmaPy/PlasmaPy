@@ -13,7 +13,7 @@ __aliases__ = ["Ef_", "lambdaDB_", "lambdaDB_th_"]
 
 import astropy.units as u
 import numpy as np
-from astropy.constants.si import (  # ty:ignore[unresolved-import]
+from astropy.constants.si import (
     c,
     e,
     eps0,

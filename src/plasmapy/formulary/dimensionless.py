@@ -23,7 +23,7 @@ __aliases__ = ["betaH_", "nD_", "Re_", "Rm_"]
 
 import astropy.units as u
 import numpy as np
-from astropy.constants.si import mu0  # ty:ignore[unresolved-import]
+from astropy.constants.si import mu0
 
 from plasmapy.formulary import frequencies, lengths, misc, speeds
 from plasmapy.formulary.quantum import quantum_theta

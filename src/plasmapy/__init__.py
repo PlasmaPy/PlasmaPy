@@ -45,8 +45,8 @@ try:
             version as __version__,
         )
 except Exception:  # coverage: ignore  # noqa: BLE001
-    __version__ = (
-        "0.0.0"  # package is not installed  # ty:ignore[conflicting-declarations]
+    __version__ = (  # ty:ignore[conflicting-declarations]
+        "0.0.0"  # package is not installed
     )
 
     import warnings

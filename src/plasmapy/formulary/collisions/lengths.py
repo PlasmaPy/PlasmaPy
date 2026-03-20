@@ -5,7 +5,7 @@ __all__ = ["impact_parameter_perp", "impact_parameter", "mean_free_path"]
 
 import astropy.units as u
 import numpy as np
-from astropy.constants.si import eps0, hbar  # ty:ignore[unresolved-import]
+from astropy.constants.si import eps0, hbar
 
 from plasmapy.formulary.collisions import frequencies, misc
 from plasmapy.formulary.lengths import Debye_length

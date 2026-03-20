@@ -17,7 +17,7 @@ from numbers import Real
 
 import astropy.units as u
 import numpy as np
-from astropy.constants.si import k_B  # ty:ignore[unresolved-import]
+from astropy.constants.si import k_B
 
 from plasmapy.formulary.dimensionless import beta
 from plasmapy.formulary.frequencies import gyrofrequency, plasma_frequency

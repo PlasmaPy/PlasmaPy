@@ -343,7 +343,7 @@ def test_abundances_consistency() -> None:
 
     for element in elements:
         assert np.allclose(
-            instance_log.abundances[element],
+            instance_log.abundances[element],  # ty:ignore[not-subscriptable]
             instance_nolog.abundances[element],  # ty:ignore[not-subscriptable]
         ), "abundances not consistent."
 
@@ -595,8 +595,8 @@ class TestIonizationStateCollectionAttributes:
             pytest(f"Could not set abundances to {new_abundances}.")  # ty:ignore[call-non-callable]
         else:
             check_abundances_consistency(
-                self.instance.abundances,
-                self.instance.log_abundances,  # ty:ignore[invalid-argument-type]
+                self.instance.abundances,  # ty:ignore[invalid-argument-type]
+                self.instance.log_abundances,
             )
 
         try:
@@ -605,8 +605,8 @@ class TestIonizationStateCollectionAttributes:
             pytest.fail(f"Could not set log_abundances to {log_new_abundances}.")
         else:
             check_abundances_consistency(
-                self.instance.abundances,
-                self.instance.log_abundances,  # ty:ignore[invalid-argument-type]
+                self.instance.abundances,  # ty:ignore[invalid-argument-type]
+                self.instance.log_abundances,
             )
 
     @pytest.mark.parametrize(

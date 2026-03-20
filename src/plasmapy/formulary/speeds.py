@@ -17,7 +17,7 @@ from typing import Literal
 
 import astropy.units as u
 import numpy as np
-from astropy.constants.si import k_B, mu0  # ty:ignore[unresolved-import]
+from astropy.constants.si import k_B, mu0
 
 from plasmapy.formulary import lengths
 from plasmapy.particles import electron
