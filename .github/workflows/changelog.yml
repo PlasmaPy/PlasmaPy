@@ -56,7 +56,6 @@ jobs:
               /update changelog entries/i,
               /update changelog prior to/i,
               /upgrade uv.lock/i,
-
             ];
           }
 
