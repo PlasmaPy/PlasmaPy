@@ -119,7 +119,7 @@ def _test_grid(  # noqa: C901, PLR0912
         Ey = np.where(radius < b, Ey, 0)
         Ez = np.where(radius < b, Ez, 0)
 
-        grid.add_quantities(E_x=-Ex, E_y=-Ey, E_z=-Ez, phi=potential)
+        grid.add_quantities(E_x=-Ex, E_y=-Ey, E_z=-Ez, phi=potential)  # ty:ignore[invalid-argument-type]
 
     else:
         raise ValueError(
@@ -350,7 +350,7 @@ def test_input_validation() -> None:
             grid,
             source,
             detector,
-            field_weighting="not a valid field weighting",
+            field_weighting="not a valid field weighting",  # ty:ignore[invalid-argument-type]
             verbose=False,
         )
 
