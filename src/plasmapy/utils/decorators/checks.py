@@ -657,10 +657,12 @@ class CheckUnits(CheckBase):
             # define 'units' for unit checks &
             # define 'none_shall_pass' check
             _units = self._condition_target_units(
-                _units, from_annotations=_units_are_from_anno  # ty:ignore[invalid-argument-type]
+                _units,
+                from_annotations=_units_are_from_anno,  # ty:ignore[invalid-argument-type]
             )
             _units_anno = self._condition_target_units(
-                _units_anno, from_annotations=True  # ty:ignore[invalid-argument-type]
+                _units_anno,
+                from_annotations=True,  # ty:ignore[invalid-argument-type]
             )
             if any(_u not in _units for _u in _units_anno):
                 raise ValueError(
