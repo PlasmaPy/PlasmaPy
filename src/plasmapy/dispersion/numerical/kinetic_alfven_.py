@@ -10,7 +10,7 @@ from numbers import Real
 
 import astropy.units as u
 import numpy as np
-from astropy.constants.si import c
+from astropy.constants.si import c  # ty:ignore[unresolved-import]
 
 from plasmapy.formulary import frequencies as pfp
 from plasmapy.formulary import speeds as speed
