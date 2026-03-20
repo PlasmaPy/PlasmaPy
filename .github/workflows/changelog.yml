@@ -15,7 +15,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  CHANGELOG_INSTRUCTIONS: "⚠️ Please add a changelog entry at `changelog/NUMBER.TYPE.rst`, where `NUMBER` is the pull request number and `TYPE` is one of `feature`, `trivial`, `doc`, `internal`, `bugfix`, `breaking`, or `removal`.\n\nMinor changes such as typo fixes and hyperlink updates do not need a changelog entry.\n\nFor details, see: https://docs.plasmapy.org/en/latest/contributing/changelog_guide.html#adding-a-changelog-entry"
+  CHANGELOG_INSTRUCTIONS: "::error title=⚠️ Changelog entry needed::Please add a changelog entry at `changelog/NUMBER.TYPE.rst`, where `NUMBER` is the pull request number and `TYPE` is one of `feature`, `doc`, `test`, `internal`, `bugfix`, `breaking`, `removal`, or `misc`. Trivial changes such as typo fixes do not need a changelog entry.\n\nFor details, see: https://docs.plasmapy.org/en/latest/contributing/changelog_guide.html#adding-a-changelog-entry"
 
 jobs:
 
@@ -36,16 +36,22 @@ jobs:
 
         # Written in JavaScript, using Node.js syntax.
         script: |
-          // Define regular expressions for pull requests not requiring
-          // a changelog entry.
+          // Define regular expressions for pull requests not requiring a changelog entry.
           function buildPatterns() {
             return [
               /^bump .* from .* to .*/i,
-              /autoupdate/i,
+              /fix a typo/i,
               /fix typo/i,
+              /fix typos/i,
+              /fixed a typo/i,
+              /fixed typo/i,
+              /fixed typos/i,
+              /pre-commit autoupdate/i
+              /typo fix/i,
               /update changelog entries/i,
               /update changelog prior to/i,
-              /update lockfile/i,
+              /upgrade uv.lock/i,
+
             ];
           }
 
@@ -111,3 +117,9 @@ jobs:
       run: |
         echo -e $CHANGELOG_INSTRUCTIONS
         exit 1
+
+    - name: List invalid changelog entries
+      if: ${{ failure() }}
+      run: |
+        ls
+
