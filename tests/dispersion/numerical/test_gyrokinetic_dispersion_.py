@@ -594,9 +594,12 @@ class TestTauDependence:
             tau=2.0,
             omega_guess=1.0 + 0.0j,
         )
-
-        assert np.isfinite(omega_low_tau) and np.isfinite(omega_high_tau), (
-            "Solver did not converge for tau comparison."
+        
+        assert np.isfinite(omega_low_tau), (
+            "Solver did not converge for tau=0.5."
+        )
+        assert np.isfinite(omega_high_tau), (
+            "Solver did not converge for tau=2.0."
         )
         assert omega_high_tau.real > omega_low_tau.real, (
             f"Expected higher tau to increase frequency in KREHM limit: "
