@@ -1,21 +1,25 @@
 r"""
 Gyrokinetic (Maxwellian) dispersion relation solver in normalized variables.
+
 Implements a normalized gyrokinetic dispersion relation in terms of:
 
 .. math::
 
-    \omega_bar = \omega / (k_∥ v_A),
-    k_⟂_ρ_i,
-    \beta_i,
-    \tau = T_i/T_e,
+    \bar{\omega} &= \omega / (k_{\parallel} v_A), \\
+    k_{\perp} \rho_i, \\
+    \beta_i, \\
+    \tau &= T_i / T_e,
 
 with an optional ion/electron mass ratio.
 
 This module provides:
 
-- gyrokinetic_dispersion_residual: complex residual of the dispersion relation
-- solve_gyrokinetic_dispersion: complex root solve for a single k_perp_rho_i
-- solve_gyrokinetic_dispersion_spectrum: continuation solve over a k_perp_rho_i grid
+- `gyrokinetic_dispersion_residual`: complex residual of the dispersion
+  relation
+- `solve_gyrokinetic_dispersion`: complex root solve for a single
+  ``k_perp_rho_i``
+- `solve_gyrokinetic_dispersion_spectrum`: continuation solve over a
+  ``k_perp_rho_i`` grid
 """
 
 from __future__ import annotations
