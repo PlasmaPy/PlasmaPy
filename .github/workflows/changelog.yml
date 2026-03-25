@@ -14,8 +14,13 @@ concurrency:
   group: changelog-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 
+defaults:
+  run:
+    shell: bash
+
 env:
-  CHANGELOG_INSTRUCTIONS: "⚠️ Please add a changelog entry at `changelog/NUMBER.TYPE.rst`, where `NUMBER` is the pull request number and `TYPE` is one of `feature`, `trivial`, `doc`, `internal`, `bugfix`, `breaking`, or `removal`.\n\nMinor changes such as typo fixes and hyperlink updates do not need a changelog entry.\n\nFor details, see: https://docs.plasmapy.org/en/latest/contributing/changelog_guide.html#adding-a-changelog-entry"
+  CHANGELOG_INSTRUCTIONS: "::error title=Changelog entry needed::Please add a changelog entry of the form `changelog/${{ github.event.pull_request.number }}.TYPE.rst`, where `TYPE` can be `feature`, `doc`, `test`, `internal`, `bugfix`, `breaking`, `removal`, or `misc`.\n\nTrivial changes like typo fixes do not need a changelog entry.\n\nFor details, see: https://docs.plasmapy.org/en/latest/contributing/changelog_guide.html#adding-a-changelog-entry"
+
 
 jobs:
 
@@ -36,16 +41,21 @@ jobs:
 
         # Written in JavaScript, using Node.js syntax.
         script: |
-          // Define regular expressions for pull requests not requiring
-          // a changelog entry.
+          // Define regular expressions for pull requests not requiring a changelog entry.
           function buildPatterns() {
             return [
               /^bump .* from .* to .*/i,
-              /autoupdate/i,
+              /fix a typo/i,
               /fix typo/i,
+              /fix typos/i,
+              /fixed a typo/i,
+              /fixed typo/i,
+              /fixed typos/i,
+              /pre-commit autoupdate/i,
+              /typo fix/i,
               /update changelog entries/i,
               /update changelog prior to/i,
-              /update lockfile/i,
+              /upgrade uv.lock/i,
             ];
           }
 
@@ -106,7 +116,11 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         BOT_USERNAME: changelog-bot
 
-    - name: Print troubleshooting information
+    - name: List all changelog entries
+      if: always()
+      run: ls changelog --ignore=README.rst
+
+    - name: Troubleshooting information ⚠️
       if: ${{ failure() }}
       run: |
         echo -e $CHANGELOG_INSTRUCTIONS

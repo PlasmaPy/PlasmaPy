@@ -573,6 +573,7 @@ title_format = "{name} v{version} ({project_date})"
 # Despite the name mismatch, we use `issue_format` for linking to PRs
 issue_format = ":pr:`{issue}`"
 wrap = true
+# Changes to changelog tags need to be propagated into .github/workflows/changelog.yml
 type = [
   { directory = "feature", name = "New Features", showcontent = true },
   { directory = "doc", name = "Documentation Improvements", showcontent = true },
@@ -581,7 +582,7 @@ type = [
   { directory = "bugfix", name = "Bug Fixes", showcontent = true },
   { directory = "internal", name = "Internal Changes and Refactorings", showcontent = true },
   { directory = "test", name = "Updates to Software Testing", showcontent = true },
-  { directory = "trivial", name = "Additional Changes", showcontent = true },
+  { directory = "misc", name = "Miscellaneous Changes", showcontent = true },
 ]
 
 [tool.ty]
