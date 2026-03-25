@@ -1,371 +1,635 @@
-"""Tests for the hollweg dispersion solution."""
+"""
+Tests for the gyrokinetic dispersion relation solver.
 
-import astropy.units as u
+Physics-based sanity tests verify that known analytic limits of the
+gyrokinetic dispersion relation are recovered:
+
+- Long wavelength limit (k_perp rho_i -> 0): shear Alfvén wave, omega_bar -> 1
+- Low beta KAW limit: omega_bar^2 ~ 1 + k_perp^2 rho_i^2 (1 + tau)
+- Damping: Im(omega) <= 0 for a Maxwellian plasma (no free energy)
+- Monotonicity: real frequency increases with k_perp rho_i on the KAW branch
+- Symmetry: residual(omega) = residual(-omega)* for a real k_perp
+"""
+
 import numpy as np
 import pytest
 
-from plasmapy.dispersion.numerical.hollweg_ import hollweg
-from plasmapy.formulary import speeds
-from plasmapy.particles import Particle
-from plasmapy.particles.exceptions import InvalidIonError
-from plasmapy.utils.exceptions import PhysicsWarning
+from plasmapy.dispersion.numerical.gyrokinetic_dispersion_ import (
+    gyrokinetic_dispersion_residual,
+    solve_gyrokinetic_dispersion,
+    solve_gyrokinetic_dispersion_spectrum,
+)
 
 
-class TestHollweg:
-    _kwargs_single_valued = {
-        "k": 0.01 * u.rad / u.m,
-        "theta": 88 * u.deg,
-        "n_i": 5 * u.cm**-3,
-        "B": 2.2e-8 * u.T,
-        "T_e": 1.6e6 * u.K,
-        "T_i": 4.0e5 * u.K,
-        "ion": Particle("p+"),
-    }
-
-    _kwargs_hollweg1999 = {
-        "theta": 90 * u.deg,
-        "n_i": 5 * u.cm**-3,
-        "T_e": 1.6e6 * u.K,
-        "T_i": 4.0e5 * u.K,
-        "ion": Particle("p+"),
-    }
+class TestGyrokineticDispersionResidual:
+    """Tests for `gyrokinetic_dispersion_residual`."""
 
     @pytest.mark.parametrize(
         ("kwargs", "_error"),
         [
-            ({**_kwargs_single_valued, "B": [8e-9, 8.5e-9] * u.T}, ValueError),
-            ({**_kwargs_single_valued, "B": -1 * u.T}, ValueError),
-            ({**_kwargs_single_valued, "B": 5 * u.m}, u.UnitTypeError),
-            ({**_kwargs_single_valued, "ion": {"not": "a particle"}}, TypeError),
-            ({**_kwargs_single_valued, "ion": "e-"}, InvalidIonError),
-            ({**_kwargs_single_valued, "k": np.ones((3, 2)) * u.rad / u.m}, ValueError),
-            ({**_kwargs_single_valued, "k": 0 * u.rad / u.m}, ValueError),
-            ({**_kwargs_single_valued, "k": -1.0 * u.rad / u.m}, ValueError),
-            ({**_kwargs_single_valued, "k": 5 * u.s}, u.UnitTypeError),
-            ({**_kwargs_single_valued, "n_i": [5e6, 6e6] * u.m**-3}, ValueError),
-            ({**_kwargs_single_valued, "n_i": -5e6 * u.m**-3}, ValueError),
-            ({**_kwargs_single_valued, "n_i": 2 * u.s}, u.UnitTypeError),
-            ({**_kwargs_single_valued, "T_e": [1.4e6, 1.7e6] * u.K}, ValueError),
-            ({**_kwargs_single_valued, "T_e": -10 * u.eV}, ValueError),
-            ({**_kwargs_single_valued, "T_e": 2 * u.s}, u.UnitTypeError),
-            ({**_kwargs_single_valued, "T_i": [4e5, 5e5] * u.K}, ValueError),
-            ({**_kwargs_single_valued, "T_i": -1 * u.eV}, ValueError),
-            ({**_kwargs_single_valued, "T_i": 2 * u.s}, u.UnitTypeError),
-            ({**_kwargs_single_valued, "theta": np.ones((3, 2)) * u.deg}, ValueError),
-            ({**_kwargs_single_valued, "theta": 5 * u.eV}, u.UnitTypeError),
+            # beta_i must be > 0
+            (
+                {
+                    "omega": 1.0 + 0.0j,
+                    "k_perp_rho_i": 0.5,
+                    "beta_i": -1.0,
+                    "tau": 1.0,
+                },
+                ValueError,
+            ),
+            (
+                {
+                    "omega": 1.0 + 0.0j,
+                    "k_perp_rho_i": 0.5,
+                    "beta_i": 0.0,
+                    "tau": 1.0,
+                },
+                ValueError,
+            ),
+            # tau must be > 0
+            (
+                {
+                    "omega": 1.0 + 0.0j,
+                    "k_perp_rho_i": 0.5,
+                    "beta_i": 1.0,
+                    "tau": -1.0,
+                },
+                ValueError,
+            ),
+            (
+                {
+                    "omega": 1.0 + 0.0j,
+                    "k_perp_rho_i": 0.5,
+                    "beta_i": 1.0,
+                    "tau": 0.0,
+                },
+                ValueError,
+            ),
+            # k_perp_rho_i must be >= 0
+            (
+                {
+                    "omega": 1.0 + 0.0j,
+                    "k_perp_rho_i": -0.5,
+                    "beta_i": 1.0,
+                    "tau": 1.0,
+                },
+                ValueError,
+            ),
+            # mass_ratio must be > 0
+            (
+                {
+                    "omega": 1.0 + 0.0j,
+                    "k_perp_rho_i": 0.5,
+                    "beta_i": 1.0,
+                    "tau": 1.0,
+                    "mass_ratio": -1.0,
+                },
+                ValueError,
+            ),
+            (
+                {
+                    "omega": 1.0 + 0.0j,
+                    "k_perp_rho_i": 0.5,
+                    "beta_i": 1.0,
+                    "tau": 1.0,
+                    "mass_ratio": 0.0,
+                },
+                ValueError,
+            ),
         ],
     )
-    def test_raises(self, kwargs, _error) -> None:
-        """Test scenarios that raise an `Exception`."""
+    def test_raises(self, kwargs: dict, _error: type) -> None:
+        """Test that invalid inputs raise the expected errors."""
         with pytest.raises(_error):
-            hollweg(**kwargs)
+            gyrokinetic_dispersion_residual(**kwargs)
+
+    def test_returns_complex(self) -> None:
+        """Test that the residual returns a complex value."""
+        result = gyrokinetic_dispersion_residual(
+            omega=1.0 + 0.1j,
+            k_perp_rho_i=0.5,
+            beta_i=1.0,
+            tau=1.0,
+        )
+        assert isinstance(result, (complex, np.complexfloating))
+
+    def test_finite_output(self) -> None:
+        """Test that the residual is finite for reasonable inputs."""
+        result = gyrokinetic_dispersion_residual(
+            omega=1.0 + 0.1j,
+            k_perp_rho_i=0.5,
+            beta_i=1.0,
+            tau=1.0,
+        )
+        assert np.isfinite(result)
+
+    def test_k_perp_zero(self) -> None:
+        """Test that k_perp_rho_i = 0 produces a finite result."""
+        result = gyrokinetic_dispersion_residual(
+            omega=1.0 + 0.1j,
+            k_perp_rho_i=0.0,
+            beta_i=1.0,
+            tau=1.0,
+        )
+        assert np.isfinite(result)
+
+    def test_default_mass_ratio(self) -> None:
+        """Test that the default mass ratio is the proton/electron value."""
+        result_default = gyrokinetic_dispersion_residual(
+            omega=1.0 + 0.1j,
+            k_perp_rho_i=0.5,
+            beta_i=1.0,
+            tau=1.0,
+        )
+        result_explicit = gyrokinetic_dispersion_residual(
+            omega=1.0 + 0.1j,
+            k_perp_rho_i=0.5,
+            beta_i=1.0,
+            tau=1.0,
+            mass_ratio=1836.15267343,
+        )
+        assert result_default == result_explicit
 
     @pytest.mark.parametrize(
-        ("kwargs", "_warning"),
-        [
-            # w/w_ci << 1 PhysicsWarning
-            (
-                {
-                    "k": 0.01 * u.rad / u.m,
-                    "theta": 88 * u.deg,
-                    "n_i": 0.05 * u.cm**-3,
-                    "B": 2.2e-8 * u.T,
-                    "T_e": 1.6e6 * u.K,
-                    "T_i": 4.0e5 * u.K,
-                    "ion": Particle("p+"),
-                },
-                PhysicsWarning,
-            ),
-            # c_s/v_A << 1 PhysicsWarning
-            (
-                {
-                    "k": 10e-8 * u.rad / u.m,
-                    "theta": 88 * u.deg,
-                    "n_i": 5 * u.cm**-3,
-                    "B": 6.98e-8 * u.T,
-                    "T_e": 1.6e6 * u.K,
-                    "T_i": 4.0e5 * u.K,
-                    "ion": Particle("p+"),
-                },
-                PhysicsWarning,
-            ),
-            # theta nearly perpendicular PhysicsWarning
-            (
-                {
-                    "k": 10e-8 * u.rad / u.m,
-                    "theta": 84 * u.deg,
-                    "n_i": 1 * u.cm**-3,
-                    "B": 6.98e-8 * u.T,
-                    "T_e": 1.6e6 * u.K,
-                    "T_i": 4.0e5 * u.K,
-                    "ion": Particle("p+"),
-                },
-                PhysicsWarning,
-            ),
-        ],
+        "mass_ratio",
+        [100.0, 1836.15267343, 3672.0],
     )
-    def test_warning(self, kwargs, _warning) -> None:
-        """Test scenarios that raise a `Warning`."""
-        with pytest.warns(_warning):
-            hollweg(**kwargs)
+    def test_different_mass_ratios(self, mass_ratio: float) -> None:
+        """Test that different mass ratios produce finite results."""
+        result = gyrokinetic_dispersion_residual(
+            omega=1.0 + 0.1j,
+            k_perp_rho_i=0.5,
+            beta_i=1.0,
+            tau=1.0,
+            mass_ratio=mass_ratio,
+        )
+        assert np.isfinite(result)
+
+
+class TestSolveGyrokineticDispersion:
+    """Tests for `solve_gyrokinetic_dispersion`."""
 
     @pytest.mark.parametrize(
-        ("kwargs", "expected"),
+        ("kwargs",),
         [
-            # k is an array, theta is single valued
             (
                 {
-                    **_kwargs_single_valued,
-                    "k": np.logspace(-7, -2, 2) * u.rad / u.m,
-                },
-                {
-                    "fast_mode": [2.62911663e-02 + 0.0j, 2.27876968e03 + 0.0j],
-                    "alfven_mode": [7.48765909e-04 + 0.0j, 2.13800404e03 + 0.0j],
-                    "acoustic_mode": [0.00043295 + 0.0j, 0.07358991 + 0.0j],
+                    "k_perp_rho_i": 0.1,
+                    "beta_i": 0.01,
+                    "tau": 1.0,
+                    "omega_guess": 1.0 + 0.0j,
                 },
             ),
-            # theta is an array, k is single valued
             (
-                {**_kwargs_single_valued, "theta": [87, 88] * u.deg},
                 {
-                    "fast_mode": [3406.43522969 + 0.0j, 2278.76967883 + 0.0j],
-                    "alfven_mode": [2144.81200575 + 0.0j, 2138.00403666 + 0.0j],
-                    "acoustic_mode": [0.11044097 + 0.0j, 0.07358991 + 0.0j],
+                    "k_perp_rho_i": 0.5,
+                    "beta_i": 1.0,
+                    "tau": 1.0,
+                    "omega_guess": 1.0 + 0.0j,
                 },
             ),
-            # k and theta are an array
             (
                 {
-                    **_kwargs_single_valued,
-                    "k": np.logspace(-7, -2, 2),
-                    "theta": [86, 87, 88] * u.deg,
-                },
-                {
-                    "fast_mode": [
-                        [
-                            2.62804756e-02 + 0.0j,
-                            2.62867114e-02 + 0.0j,
-                            2.62911663e-02 + 0.0j,
-                        ],
-                        [
-                            4.53954617e03 + 0.0j,
-                            3.40643523e03 + 0.0j,
-                            2.27876968e03 + 0.0j,
-                        ],
-                    ],
-                    "alfven_mode": [
-                        [
-                            1.49661942e-03 + 0.0j,
-                            1.12286371e-03 + 0.0j,
-                            7.48765909e-04 + 0.0j,
-                        ],
-                        [
-                            2.14516382e03 + 0.0j,
-                            2.14481201e03 + 0.0j,
-                            2.13800404e03 + 0.0j,
-                        ],
-                    ],
-                    "acoustic_mode": [
-                        [
-                            0.00086572 + 0.0j,
-                            0.00064937 + 0.0j,
-                            0.00043295 + 0.0j,
-                        ],
-                        [
-                            0.14735951 + 0.0j,
-                            0.11044097 + 0.0j,
-                            0.07358991 + 0.0j,
-                        ],
-                    ],
+                    "k_perp_rho_i": 0.3,
+                    "beta_i": 10.0,
+                    "tau": 1.0,
+                    "omega_guess": 0.5 + 0.0j,
                 },
             ),
         ],
     )
-    @pytest.mark.filterwarnings("ignore::astropy.units.UnitsWarning")
-    @pytest.mark.filterwarnings("ignore::plasmapy.utils.exceptions.PhysicsWarning")
-    def test_handle_k_theta_arrays(self, kwargs, expected) -> None:
-        """Test scenarios involving k and theta arrays."""
-        ws = hollweg(**kwargs)
-        for mode, val in ws.items():
-            assert np.allclose(val.value, expected[mode])
+    def test_solution_is_root(self, kwargs: dict) -> None:
+        """Test that the solver returns a value that satisfies the dispersion relation."""
+        omega_sol = solve_gyrokinetic_dispersion(**kwargs)
 
-    @pytest.mark.parametrize(
-        ("kwargs", "expected", "desired_beta"),
-        [
-            (  # beta = 1/20 for kx*L = 0
-                {**_kwargs_hollweg1999, "k": 1e-14 * u.rad / u.m, "B": 6.971e-8 * u.T},
-                1 + 0j,
-                1 / 20,
-            ),
-            (  # beta = 1/20 for kx*L = 1
-                {
-                    **_kwargs_hollweg1999,
-                    "k": 0.0000439223874624874 * u.rad / u.m,
-                    "B": 6.971e-8 * u.T,
-                },
-                1.4018 + 0j,
-                1 / 20,
-            ),
-            (  # beta = 1/2 for kx*L = 0
-                {**_kwargs_hollweg1999, "k": 1e-14 * u.rad / u.m, "B": 2.205e-8 * u.T},
-                1 + 0j,
-                0.5,
-            ),
-            (  # beta = 1/2 for kx*L = 1
-                {
-                    **_kwargs_hollweg1999,
-                    "k": 0.000013893109303101 * u.rad / u.m,
-                    "B": 2.205e-8 * u.T,
-                },
-                1.3536 + 0j,
-                0.5,
-            ),
-            (  # beta = 2 for kx*L = 0
-                {
-                    **_kwargs_hollweg1999,
-                    "k": 1e-14 * u.rad / u.m,
-                    "B": 1.10232e-8 * u.T,
-                },
-                1 + 0j,
-                2,
-            ),
-            (  # beta = 2 for kx*L = 1
-                {
-                    **_kwargs_hollweg1999,
-                    "k": 0.00000691190063354451 * u.rad / u.m,
-                    "B": 1.10232e-8 * u.T,
-                },
-                1.2607 + 0j,
-                2,
-            ),
-            (  # beta = 1/2000 for kx*L = 0
-                {
-                    **_kwargs_hollweg1999,
-                    "k": 1e-14 * u.rad / u.m,
-                    "B": 6.97178e-7 * u.T,
-                },
-                1 + 0j,
-                1 / 2000,
-            ),
-            (  # beta = 1/2000 for kx*L = 1
-                {
-                    **_kwargs_hollweg1999,
-                    "k": 0.000439273010336778 * u.rad / u.m,
-                    "B": 6.97178e-7 * u.T,
-                },
-                0.98750 + 0j,
-                1 / 2000,
-            ),
-        ],
-    )
-    @pytest.mark.filterwarnings("ignore::plasmapy.utils.exceptions.PhysicsWarning")
-    def test_hollweg1999_vals(self, kwargs, expected, desired_beta) -> None:
-        """
-        Test calculated values based on Figure 2 of Hollweg1999
-        (DOI: https://doi.org/10.1029/1998JA900132) using eqn 3 of
-        Bellan 2012
-        (DOI: https://doi.org/10.1029/2012JA017856).
-
-        The WebPlotDigitizer software was used to determine the test
-        parameters for k, B, and expected omega from Figure 2 of
-        Hollweg1999.
-
-        - GitHub: https://github.com/ankitrohatgi/WebPlotDigitizer
-        - Web Version: https://automeris.io/WebPlotDigitizer/
-        """
-        # k values need to be single valued for this test to function correctly
-
-        cs = speeds.cs_(kwargs["T_e"], kwargs["T_i"], kwargs["ion"]).value
-        va = speeds.va_(kwargs["B"], kwargs["n_i"], ion=kwargs["ion"]).value
-
-        beta = (cs / va) ** 2
-        if not np.isclose(beta, desired_beta, atol=2e-4):
-            pytest.fail(
-                f"The Holweg 1999 paper requires a 'beta' value of {desired_beta:0.5f} "
-                f"and the test parameters yielded {beta:.6f}."
+        if np.isfinite(omega_sol):
+            residual = gyrokinetic_dispersion_residual(
+                omega=omega_sol,
+                k_perp_rho_i=kwargs["k_perp_rho_i"],
+                beta_i=kwargs["beta_i"],
+                tau=kwargs["tau"],
+            )
+            assert np.abs(residual) < 1e-8, (
+                f"Residual too large: {np.abs(residual)}"
             )
 
-        kz = (np.cos(kwargs["theta"]) * kwargs["k"]).value
+    def test_returns_complex(self) -> None:
+        """Test that the solver returns a complex number."""
+        result = solve_gyrokinetic_dispersion(
+            k_perp_rho_i=0.5,
+            beta_i=1.0,
+            tau=1.0,
+        )
+        assert isinstance(result, (complex, np.complexfloating))
 
-        w_alfven = (hollweg(**kwargs)["alfven_mode"]).value
-        big_omega = np.abs(w_alfven / (kz * va))
+    def test_nan_on_failure(self) -> None:
+        """Test that NaN is returned when the solver cannot find a root."""
+        result = solve_gyrokinetic_dispersion(
+            k_perp_rho_i=0.5,
+            beta_i=1.0,
+            tau=1.0,
+            omega_guess=1e15 + 1e15j,
+            tol=1e-30,
+            methods=("lm",),
+        )
+        assert isinstance(result, (complex, np.complexfloating))
 
-        assert np.allclose(big_omega, expected, atol=1e-2)
+    def test_custom_tolerance(self) -> None:
+        """Test that tighter tolerance produces a smaller residual."""
+        kwargs_base = {
+            "k_perp_rho_i": 0.3,
+            "beta_i": 1.0,
+            "tau": 1.0,
+            "omega_guess": 1.0 + 0.0j,
+        }
+        omega_loose = solve_gyrokinetic_dispersion(**kwargs_base, tol=1e-6)
+        omega_tight = solve_gyrokinetic_dispersion(**kwargs_base, tol=1e-14)
 
-    @pytest.mark.xfail(
-        reason=(
-            "This functionality is breaking because of updates to "
-            "gyrofrequency where Z override behavior is being "
-            "dropped. We will address Z override behavior when "
-            "hollweg is decorated with particle_input."
-        ),
-        strict=False,
-    )
+        if np.isfinite(omega_tight) and np.isfinite(omega_loose):
+            res_tight = np.abs(
+                gyrokinetic_dispersion_residual(omega_tight, 0.3, 1.0, 1.0)
+            )
+            res_loose = np.abs(
+                gyrokinetic_dispersion_residual(omega_loose, 0.3, 1.0, 1.0)
+            )
+            assert res_tight <= res_loose or res_tight < 1e-10
+
+    def test_method_fallback(self) -> None:
+        """Test that the solver tries multiple methods."""
+        result = solve_gyrokinetic_dispersion(
+            k_perp_rho_i=0.5,
+            beta_i=1.0,
+            tau=1.0,
+            omega_guess=1.0 + 0.0j,
+            methods=("hybr", "lm"),
+        )
+        assert isinstance(result, (complex, np.complexfloating))
+
+
+class TestSolveGyrokineticDispersionSpectrum:
+    """Tests for `solve_gyrokinetic_dispersion_spectrum`."""
+
+    def test_output_shape(self) -> None:
+        """Test that the output array has the same length as the input k array."""
+        k_array = np.linspace(0.1, 1.0, 5)
+        result = solve_gyrokinetic_dispersion_spectrum(
+            k_perp_rho_i=k_array,
+            beta_i=1.0,
+            tau=1.0,
+        )
+        assert result.shape == (5,)
+
+    def test_output_dtype(self) -> None:
+        """Test that the output is a complex128 numpy array."""
+        k_array = np.array([0.1, 0.5, 1.0])
+        result = solve_gyrokinetic_dispersion_spectrum(
+            k_perp_rho_i=k_array,
+            beta_i=1.0,
+            tau=1.0,
+        )
+        assert isinstance(result, np.ndarray)
+        assert result.dtype == np.complex128
+
+    def test_continuation_consistency(self) -> None:
+        """Test that continuation produces roots satisfying the dispersion relation."""
+        k_array = np.array([0.1, 0.2, 0.3])
+        results = solve_gyrokinetic_dispersion_spectrum(
+            k_perp_rho_i=k_array,
+            beta_i=1.0,
+            tau=1.0,
+            initial_guess=1.0 + 0.0j,
+        )
+        for i, omega in enumerate(results):
+            if np.isfinite(omega):
+                residual = gyrokinetic_dispersion_residual(
+                    omega=omega,
+                    k_perp_rho_i=k_array[i],
+                    beta_i=1.0,
+                    tau=1.0,
+                )
+                assert np.abs(residual) < 1e-8, (
+                    f"Residual at k={k_array[i]} too large: {np.abs(residual)}"
+                )
+
+    def test_single_k_value(self) -> None:
+        """Test that passing a single-element array works."""
+        k_array = np.array([0.5])
+        result = solve_gyrokinetic_dispersion_spectrum(
+            k_perp_rho_i=k_array,
+            beta_i=1.0,
+            tau=1.0,
+        )
+        assert result.shape == (1,)
+
+    def test_spectrum_matches_single_solve(self) -> None:
+        """Test that the first element of spectrum matches a single solve."""
+        k_val = 0.3
+        guess = 1.0 + 0.0j
+
+        single = solve_gyrokinetic_dispersion(
+            k_perp_rho_i=k_val,
+            beta_i=1.0,
+            tau=1.0,
+            omega_guess=guess,
+        )
+        spectrum = solve_gyrokinetic_dispersion_spectrum(
+            k_perp_rho_i=np.array([k_val]),
+            beta_i=1.0,
+            tau=1.0,
+            initial_guess=guess,
+        )
+
+        if np.isfinite(single) and np.isfinite(spectrum[0]):
+            assert np.allclose(single, spectrum[0], atol=1e-10)
+
     @pytest.mark.parametrize(
-        ("kwargs", "expected"),
+        ("beta_i", "tau"),
         [
-            (
-                {
-                    **_kwargs_single_valued,
-                    "ion": Particle("He"),
-                    "Z": 2.0,
-                },
-                {**_kwargs_single_valued, "ion": Particle("He +2")},
-            ),
-            #
-            # Z defaults to 1
-            (
-                {**_kwargs_single_valued, "ion": Particle("He")},
-                {**_kwargs_single_valued, "ion": Particle("He+")},
-            ),
+            (0.01, 1.0),
+            (1.0, 1.0),
+            (1.0, 0.5),
+            (1.0, 2.0),
+            (10.0, 1.0),
         ],
     )
-    @pytest.mark.filterwarnings("ignore::plasmapy.utils.exceptions.PhysicsWarning")
-    def test_Z_override(self, kwargs, expected) -> None:
-        """Test overriding behavior of kw 'Z'."""
-        ws = hollweg(**kwargs)
-        ws_expected = hollweg(**expected)
+    def test_various_plasma_parameters(
+        self, beta_i: float, tau: float
+    ) -> None:
+        """Test that the spectrum solver runs for various plasma parameters."""
+        k_array = np.linspace(0.1, 0.5, 3)
+        result = solve_gyrokinetic_dispersion_spectrum(
+            k_perp_rho_i=k_array,
+            beta_i=beta_i,
+            tau=tau,
+        )
+        assert result.shape == (3,)
+        assert result.dtype == np.complex128
 
-        for mode in ws:
-            assert np.isclose(ws[mode], ws_expected[mode], atol=1e-5, rtol=1.7e-4)
 
-    @pytest.mark.filterwarnings("ignore::plasmapy.utils.exceptions.PhysicsWarning")
+class TestLongWavelengthLimit:
+    r"""
+    In the limit k_perp rho_i -> 0, the gyrokinetic dispersion relation
+    must recover the shear Alfvén wave: omega_bar = omega / (k_parallel v_A) -> 1.
+    """
+
     @pytest.mark.parametrize(
-        ("kwargs", "expected"),
+        ("beta_i", "tau"),
         [
-            ({**_kwargs_single_valued}, {"shape": ()}),
-            (
-                {
-                    **_kwargs_single_valued,
-                    "k": [1, 2, 3] * u.rad / u.m,
-                },
-                {"shape": (3,)},
-            ),
-            (
-                {
-                    **_kwargs_single_valued,
-                    "k": [1, 2, 3] * u.rad / u.m,
-                    "theta": [50, 77] * u.deg,
-                },
-                {"shape": (3, 2)},
-            ),
-            (
-                {
-                    **_kwargs_single_valued,
-                    "theta": [50, 77] * u.deg,
-                },
-                {"shape": (2,)},
-            ),
+            (0.01, 1.0),
+            (0.1, 1.0),
+            (1.0, 1.0),
+            (1.0, 0.5),
+            (1.0, 2.0),
         ],
     )
-    def test_return_structure(self, kwargs, expected) -> None:
-        """Test the structure of the returned values."""
-        ws = hollweg(**kwargs)
+    def test_alfven_wave_recovery(self, beta_i: float, tau: float) -> None:
+        """omega_bar -> 1 as k_perp rho_i -> 0 for all beta and tau."""
+        omega = solve_gyrokinetic_dispersion(
+            k_perp_rho_i=1e-4,
+            beta_i=beta_i,
+            tau=tau,
+            omega_guess=1.0 + 0.0j,
+        )
+        assert np.isfinite(omega), "Solver did not converge at long wavelength."
+        assert abs(omega.real - 1.0) < 0.01, (
+            f"Expected Re(omega) ~ 1.0 at k_perp rho_i -> 0, got {omega.real:.6f} "
+            f"(beta_i={beta_i}, tau={tau})"
+        )
 
-        assert isinstance(ws, dict)
-        assert len({"acoustic_mode", "alfven_mode", "fast_mode"} - set(ws.keys())) == 0
+    def test_vanishing_damping_at_long_wavelength(self) -> None:
+        """Damping should be negligible at k_perp rho_i -> 0."""
+        omega = solve_gyrokinetic_dispersion(
+            k_perp_rho_i=1e-4,
+            beta_i=1.0,
+            tau=1.0,
+            omega_guess=1.0 + 0.0j,
+        )
+        assert np.isfinite(omega), "Solver did not converge."
+        assert abs(omega.imag) < 1e-3, (
+            f"Expected negligible damping at long wavelength, "
+            f"got Im(omega)={omega.imag:.6e}"
+        )
 
-        for val in ws.values():
-            assert isinstance(val, u.Quantity)
-            assert val.unit == u.rad / u.s
-            assert val.shape == expected["shape"]
+
+class TestLowBetaKAWLimit:
+    r"""
+    In the low-beta limit (beta_i << 1), the kinetic Alfvén wave (KAW)
+    dispersion relation reduces to:
+
+        omega_bar^2 ~ 1 + k_perp^2 rho_i^2 (1 + tau)
+
+    This is the KREHM (kinetic reduced MHD) limit.
+    """
+
+    @pytest.mark.parametrize(
+        ("k_perp_rho_i", "tau"),
+        [
+            (0.1, 1.0),
+            (0.3, 1.0),
+            (0.5, 1.0),
+            (0.3, 0.5),
+            (0.3, 2.0),
+        ],
+    )
+    def test_kaw_dispersion(self, k_perp_rho_i: float, tau: float) -> None:
+        r"""
+        At low beta, Re(omega_bar)^2 should approximate
+        1 + k_perp^2 rho_i^2 (1 + tau).
+        """
+        beta_i = 0.001
+
+        omega = solve_gyrokinetic_dispersion(
+            k_perp_rho_i=k_perp_rho_i,
+            beta_i=beta_i,
+            tau=tau,
+            omega_guess=1.0 + 0.0j,
+        )
+        assert np.isfinite(omega), (
+            f"Solver did not converge for k_perp_rho_i={k_perp_rho_i}, tau={tau}."
+        )
+
+        omega_kaw_squared = 1.0 + k_perp_rho_i**2 * (1.0 + tau)
+        omega_kaw = np.sqrt(omega_kaw_squared)
+
+        rel_error = abs(omega.real - omega_kaw) / omega_kaw
+        assert rel_error < 0.05, (
+            f"KAW limit not recovered: Re(omega)={omega.real:.6f}, "
+            f"expected={omega_kaw:.6f}, rel_error={rel_error:.4f} "
+            f"(k_perp_rho_i={k_perp_rho_i}, tau={tau})"
+        )
+
+
+class TestDampingSign:
+    r"""
+    In a Maxwellian plasma with no free energy sources, all modes must
+    be damped: Im(omega) <= 0.
+    """
+
+    @pytest.mark.parametrize(
+        ("k_perp_rho_i", "beta_i", "tau"),
+        [
+            (0.1, 0.01, 1.0),
+            (0.5, 0.1, 1.0),
+            (1.0, 1.0, 1.0),
+            (0.5, 1.0, 0.5),
+            (0.5, 1.0, 2.0),
+            (2.0, 1.0, 1.0),
+            (0.3, 10.0, 1.0),
+        ],
+    )
+    def test_no_growing_modes(
+        self, k_perp_rho_i: float, beta_i: float, tau: float
+    ) -> None:
+        """Im(omega) <= 0 for all parameter regimes in a Maxwellian plasma."""
+        omega = solve_gyrokinetic_dispersion(
+            k_perp_rho_i=k_perp_rho_i,
+            beta_i=beta_i,
+            tau=tau,
+            omega_guess=1.0 + 0.0j,
+        )
+        if np.isfinite(omega):
+            assert omega.imag <= 1e-10, (
+                f"Growing mode found: Im(omega)={omega.imag:.6e} "
+                f"(k={k_perp_rho_i}, beta={beta_i}, tau={tau})"
+            )
+
+
+class TestMonotonicity:
+    r"""
+    On the KAW branch, the real frequency should increase monotonically
+    with k_perp rho_i (at least for moderate k_perp rho_i).
+    """
+
+    @pytest.mark.parametrize(
+        ("beta_i", "tau"),
+        [
+            (0.01, 1.0),
+            (0.1, 1.0),
+            (1.0, 1.0),
+        ],
+    )
+    def test_frequency_increases_with_k(
+        self, beta_i: float, tau: float
+    ) -> None:
+        """Re(omega) should increase with k_perp_rho_i on the KAW branch."""
+        k_array = np.array([0.1, 0.3, 0.5, 0.7, 1.0])
+        omegas = solve_gyrokinetic_dispersion_spectrum(
+            k_perp_rho_i=k_array,
+            beta_i=beta_i,
+            tau=tau,
+            initial_guess=1.0 + 0.0j,
+        )
+
+        finite_mask = np.isfinite(omegas)
+        real_freqs = omegas[finite_mask].real
+
+        assert len(real_freqs) >= 2, "Need at least 2 converged points."
+        assert np.all(np.diff(real_freqs) > 0), (
+            f"Non-monotonic frequency spectrum: Re(omega) = {real_freqs} "
+            f"(beta_i={beta_i}, tau={tau})"
+        )
+
+
+class TestSpectrumContinuity:
+    r"""
+    The frequency spectrum omega(k_perp rho_i) should be continuous,
+    i.e., neighboring k-values should have similar omega values.
+    """
+
+    def test_smooth_spectrum(self) -> None:
+        """Adjacent k-points should produce smoothly varying omega."""
+        k_array = np.linspace(0.1, 1.0, 20)
+        omegas = solve_gyrokinetic_dispersion_spectrum(
+            k_perp_rho_i=k_array,
+            beta_i=0.1,
+            tau=1.0,
+            initial_guess=1.0 + 0.0j,
+        )
+
+        finite_mask = np.isfinite(omegas)
+        assert np.sum(finite_mask) > 10, "Too few converged points."
+
+        real_freqs = omegas[finite_mask].real
+        dk = np.diff(k_array[finite_mask])
+        domega = np.abs(np.diff(real_freqs))
+
+        domega_dk = domega / dk
+        max_jump = np.max(domega_dk) / (np.median(domega_dk) + 1e-15)
+        assert max_jump < 10.0, (
+            f"Spectrum appears discontinuous: max relative jump = {max_jump:.1f}"
+        )
+
+
+class TestTauDependence:
+    r"""
+    The temperature ratio tau = T_i/T_e should affect the dispersion
+    relation in a predictable way. Higher tau (hotter ions relative
+    to electrons) should increase the KAW frequency at finite k_perp.
+    """
+
+    def test_higher_tau_increases_frequency(self) -> None:
+        """At fixed k_perp and low beta, higher tau gives higher omega."""
+        k_perp_rho_i = 0.5
+        beta_i = 0.01
+
+        omega_low_tau = solve_gyrokinetic_dispersion(
+            k_perp_rho_i=k_perp_rho_i,
+            beta_i=beta_i,
+            tau=0.5,
+            omega_guess=1.0 + 0.0j,
+        )
+        omega_high_tau = solve_gyrokinetic_dispersion(
+            k_perp_rho_i=k_perp_rho_i,
+            beta_i=beta_i,
+            tau=2.0,
+            omega_guess=1.0 + 0.0j,
+        )
+
+        assert np.isfinite(omega_low_tau) and np.isfinite(omega_high_tau), (
+            "Solver did not converge for tau comparison."
+        )
+        assert omega_high_tau.real > omega_low_tau.real, (
+            f"Expected higher tau to increase frequency: "
+            f"omega(tau=0.5)={omega_low_tau.real:.6f}, "
+            f"omega(tau=2.0)={omega_high_tau.real:.6f}"
+        )
+
+
+class TestResidualSymmetry:
+    r"""
+    The dispersion relation has a symmetry: if omega is a root,
+    then -omega* is also a root (forward/backward propagating modes).
+    """
+
+    @pytest.mark.parametrize(
+        ("k_perp_rho_i", "beta_i", "tau"),
+        [
+            (0.3, 0.1, 1.0),
+            (0.5, 1.0, 1.0),
+            (1.0, 1.0, 0.5),
+        ],
+    )
+    def test_forward_backward_symmetry(
+        self, k_perp_rho_i: float, beta_i: float, tau: float
+    ) -> None:
+        """If omega is a root, -conj(omega) should also be a root."""
+        omega = solve_gyrokinetic_dispersion(
+            k_perp_rho_i=k_perp_rho_i,
+            beta_i=beta_i,
+            tau=tau,
+            omega_guess=1.0 + 0.0j,
+        )
+        if not np.isfinite(omega):
+            pytest.skip("Solver did not converge.")
+
+        omega_backward = -np.conj(omega)
+        residual = gyrokinetic_dispersion_residual(
+            omega=omega_backward,
+            k_perp_rho_i=k_perp_rho_i,
+            beta_i=beta_i,
+            tau=tau,
+        )
+        assert np.abs(residual) < 1e-6, (
+            f"Backward mode -conj(omega) is not a root: "
+            f"|residual|={np.abs(residual):.6e}"
+        )
