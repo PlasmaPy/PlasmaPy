@@ -107,7 +107,7 @@ def gyrokinetic_dispersion_residual(
     lhs = (alpha_i * A / omega**2 - A * B + B**2) * (2 * A / beta_i - 2 * A * D + C**2)
     rhs = (A * E + B * C) ** 2
 
-    return lhs - rhs
+    return complex(lhs - rhs)
 
 
 def solve_gyrokinetic_dispersion(
@@ -117,7 +117,7 @@ def solve_gyrokinetic_dispersion(
     omega_guess: complex = 1.0 + 0.0j,
     mass_ratio: float = 1836.15267343,
     tol: float = 1e-12,
-    methods: tuple = ("hybr", "lm"),
+    methods: tuple[str, ...] = ("hybr", "lm"),
 ) -> complex:
     """
     Solve the normalized gyrokinetic dispersion relation for a single k_perp_rho_i.
@@ -128,7 +128,7 @@ def solve_gyrokinetic_dispersion(
     Returns NaN+1j*NaN if no method succeeds.
     """
 
-    def residual_wrapped(w):
+    def residual_wrapped(w: np.ndarray) -> np.ndarray:
         omega = w[0] + 1j * w[1]
         res = gyrokinetic_dispersion_residual(
             omega, k_perp_rho_i, beta_i, tau, mass_ratio=mass_ratio
@@ -140,7 +140,7 @@ def solve_gyrokinetic_dispersion(
     for method in methods:
         sol = root(residual_wrapped, x0, method=method, tol=tol)
         if sol.success and np.all(np.isfinite(sol.x)):
-            return sol.x[0] + 1j * sol.x[1]
+             return complex(sol.x[0] + 1j * sol.x[1])
 
     return np.nan + 1j * np.nan
 
