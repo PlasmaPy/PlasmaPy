@@ -1,3 +1,10 @@
+# /// script
+# requires-python = ">=3.14"
+# dependencies = [
+#     "pandas>=3.0.1",
+#     "requests>=2.32.5",
+# ]
+# ///
 """Utility script for pulling ionization energy data from NIST and exporting it to a JSON file.
 
 This script retrieves ionization energy data for elements from the NIST website,
