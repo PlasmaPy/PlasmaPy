@@ -11,9 +11,10 @@ gyrokinetic dispersion relation are recovered:
 - Symmetry: residual(omega) = residual(-omega)* for a real k_perp
 """
 
+from __future__ import annotations
+from typing import Any
 import numpy as np
 import pytest
-
 from plasmapy.dispersion.numerical.gyrokinetic_dispersion_ import (
     gyrokinetic_dispersion_residual,
     solve_gyrokinetic_dispersion,
@@ -98,7 +99,7 @@ class TestGyrokineticDispersionResidual:
             ),
         ],
     )
-    def test_raises(self, kwargs: dict, _error: type) -> None:
+    def test_raises(self, kwargs: dict[str, Any], _error: type) -> None:
         """Test that invalid inputs raise the expected errors."""
         with pytest.raises(_error):
             gyrokinetic_dispersion_residual(**kwargs)
@@ -198,7 +199,7 @@ class TestSolveGyrokineticDispersion:
             ),
         ],
     )
-    def test_solution_is_root(self, kwargs: dict) -> None:
+    def test_solution_is_root(self, kwargs: dict[str, Any]) -> None:
         """Test that the solver returns a value that satisfies the dispersion relation."""
         omega_sol = solve_gyrokinetic_dispersion(**kwargs)
 
@@ -236,14 +237,20 @@ class TestSolveGyrokineticDispersion:
 
     def test_custom_tolerance(self) -> None:
         """Test that tighter tolerance produces a smaller residual."""
-        kwargs_base = {
-            "k_perp_rho_i": 0.3,
-            "beta_i": 1.0,
-            "tau": 1.0,
-            "omega_guess": 1.0 + 0.0j,
-        }
-        omega_loose = solve_gyrokinetic_dispersion(**kwargs_base, tol=1e-6)
-        omega_tight = solve_gyrokinetic_dispersion(**kwargs_base, tol=1e-14)
+        omega_loose = solve_gyrokinetic_dispersion(
+            k_perp_rho_i=0.3,
+            beta_i=1.0,
+            tau=1.0,
+            omega_guess=1.0 + 0.0j,
+            tol=1e-6,
+        )
+        omega_tight = solve_gyrokinetic_dispersion(
+            k_perp_rho_i=0.3,
+            beta_i=1.0,
+            tau=1.0,
+            omega_guess=1.0 + 0.0j,
+            tol=1e-14,
+        )
 
         if np.isfinite(omega_tight) and np.isfinite(omega_loose):
             res_tight = np.abs(
