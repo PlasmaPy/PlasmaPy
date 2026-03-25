@@ -369,5 +369,3 @@ class TestHollweg:
             assert isinstance(val, u.Quantity)
             assert val.unit == u.rad / u.s
             assert val.shape == expected["shape"]
-
-
