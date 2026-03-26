@@ -5,10 +5,11 @@ Physics-based sanity tests verify that known analytic limits of the
 gyrokinetic dispersion relation are recovered:
 
 - Long wavelength limit (k_perp rho_i -> 0): shear Alfvén wave, omega_bar -> 1
-- Low beta KAW limit: omega_bar^2 ~ 1 + k_perp^2 rho_i^2 (1 + tau)
+- Low beta KAW limit: omega_bar^2 -> 1 + k_perp^2 rho_i^2 (1 + tau)
 - Damping: Im(omega) <= 0 for a Maxwellian plasma (no free energy)
 - Monotonicity: real frequency increases with k_perp rho_i on the KAW branch
 - Symmetry: residual(omega) = residual(-omega)* for a real k_perp
+
 """
 
 from __future__ import annotations
