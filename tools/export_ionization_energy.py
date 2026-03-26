@@ -5,7 +5,7 @@
 #     "requests>=2.32.5",
 # ]
 # ///
-"""Utility script for pulling ionization energy data from NIST and exporting it to a JSON file.
+"""Pull ionization energy data from NIST and export it to a JSON file.
 
 This script retrieves ionization energy data for elements from the NIST website,
 formats it, and saves it as a JSON file for inclusion in the PlasmaPy package.
@@ -25,6 +25,7 @@ import requests
 elements = [
     "H",
     "D",
+    "T",
     "He",
     "Li",
     "Be",
@@ -177,7 +178,6 @@ for element in elements:
         "biblio": "on",
     }
 
-    # Send GET request
     response = requests.get(base_url, params=params, timeout=10)
 
     try:
@@ -255,9 +255,21 @@ for element in elements:
     except requests.exceptions.RequestException:
         logging.exception("Failed to retrieve data for %s", element)
 
-    # Delay of .5 seconds to avoid hitting rate limits or putting too much load on NIST
-    time.sleep(0.5)
+    # Delay to avoid hitting rate limits or putting too much load on NIST
+    time.sleep(0.1)
 
 # Export the data to a JSON file
-with Path.open(Path(__file__).parent / "ionization_energy.json", "w") as f:
+
+outfile = (
+    Path(__file__).parent.parent
+    / "src"
+    / "plasmapy"
+    / "particles"
+    / "data"
+    / "ionization_energy.json"
+)
+
+
+# with Path.open(Path(__file__).parent / "ionization_energy.json", "w") as f:
+with outfile.open("w") as f:
     json.dump(ionization_data, f, indent=2)
