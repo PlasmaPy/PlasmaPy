@@ -28,7 +28,6 @@ elements_and_isotopes = [
     "H",
     "D",
     "T",
-    "He-3",
     "He",
     "Li",
     "Be",
@@ -257,7 +256,7 @@ for element_or_isotope in elements_and_isotopes:
         logging.exception("Failed to retrieve data for %s", element_or_isotope)
 
     # Delay to avoid hitting rate limits or putting too much load on NIST
-    time.sleep(0.2)
+    time.sleep(0.05)
 
 # Export the data to a JSON file
 
