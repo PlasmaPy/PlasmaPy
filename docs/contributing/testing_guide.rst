@@ -191,7 +191,7 @@ Type hint annotations
 ---------------------
 
 PlasmaPy has begun using |mypy| to perform |static type checking| on
-|type hint annotations|. Adding a :py:`-> None` return annotation lets
+|type annotations|. Adding a :py:`-> None` return annotation lets
 |mypy| verify that tests do not have :py:`return` statements.
 
 .. code-block:: python
@@ -345,7 +345,7 @@ positional arguments (``a`` and ``b``) and one optional keyword argument
 
 .. hint::
 
-   This function uses |type hint annotations| to indicate that ``a`` and
+   This function uses |type annotations| to indicate that ``a`` and
    ``b`` can be either a `float` or `str`, :py:`reverse_order` should be
    a `bool`, and :py:`add` should return a `float` or `str`.
 
@@ -388,7 +388,7 @@ and unpacking_ them inside of the test function.
 
 .. hint::
 
-   This function uses |type hint annotations| to indicate that ``args``
+   This function uses |type annotations| to indicate that ``args``
    should be a `list` containing `str` objects, ``kwargs`` should be a
    `dict` containing `str` objects that map to `bool` objects,
    ``expected`` should be a `str`, and that there should be no
@@ -633,7 +633,7 @@ and usually invoke |Nox| sessions defined in |noxfile.py|_.
   prevent an official release of PlasmaPy from being made.
 
 * The **CI / Static type checking with mypy** check performs
-  |static type checking| of |type hint annotations| with |mypy|.
+  |static type checking| of |type annotations| with |mypy|.  !!!!!!!
 
 .. note::
 

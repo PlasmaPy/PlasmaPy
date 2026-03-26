@@ -892,7 +892,7 @@ The type specification should not include information about the
 
   .. tip::
 
-     Use `typing.Literal` in |type hint annotations| when a parameter
+     Use `typing.Literal` in |type annotations| when a parameter
      should only be provided with specific values (e.g.,
      :py:`x: Literal{1, 2, 3, 4}`).
 
