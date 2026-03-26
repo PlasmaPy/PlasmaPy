@@ -35,7 +35,7 @@ Documentation Improvements
 --------------------------
 
 - Updated the |coding guide| with information on |static type checking|
-  with |mypy|. (:pr:`2454`)
+  with mypy. (:pr:`2454`)
 - Updated the section in the |coding guide| about requirements and
   dependencies. (:pr:`2720`)
 - Updated docstrings in `plasmapy.dispersion`. (:pr:`2735`)
