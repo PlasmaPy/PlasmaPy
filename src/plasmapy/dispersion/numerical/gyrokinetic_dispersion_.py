@@ -57,7 +57,7 @@ def gyrokinetic_dispersion_residual(
         Ion plasma beta.
 
     tau : float
-        Ion-to-electron temperature ratio T_i/T_e.
+        Ion-to-electron temperature ratio :math:`T_i/T_e`.
 
     mass_ratio : float, optional
         Ion-to-electron mass ratio (m_i/m_e). Default is 1836.15267343.
