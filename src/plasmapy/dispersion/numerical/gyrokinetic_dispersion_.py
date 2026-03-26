@@ -33,7 +33,7 @@ def gyrokinetic_dispersion_residual(
     tau: float,
     mass_ratio: float = 1836.15267343,
 ) -> complex:
-        r"""
+    r"""
     Return the complex residual of the normalized gyrokinetic dispersion
     relation.
 
