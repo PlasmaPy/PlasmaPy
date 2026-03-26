@@ -5,11 +5,14 @@
 #     "requests>=2.32.5",
 # ]
 # ///
-"""Pull ionization energy data from NIST and export it to a JSON file.
+"""
+Retrieve ionization energy data from NIST and export it to a JSON file.
 
-This script retrieves ionization energy data for elements from the NIST website,
-formats it, and saves it as a JSON file for inclusion in the PlasmaPy package.
-This script is provided for reference and is not intended to be part of the PlasmaPy package.
+This script retrieves ionization energy data for elements and certain
+isotopes from the NIST website, formats it, and saves it as a JSON file
+for use in PlasmaPy.
+
+This script is excluded from built distributions of PlasmaPy.
 """
 
 import json
@@ -21,11 +24,11 @@ from pathlib import Path
 import pandas as pd
 import requests
 
-# Updated list of element symbols including Deuterium
-elements = [
+elements_and_isotopes = [
     "H",
     "D",
     "T",
+    "He-3",
     "He",
     "Li",
     "Be",
@@ -158,9 +161,9 @@ def add_to_dict(row) -> None:
 
 
 # Iterate through each element
-for element in elements:
+for element_or_isotope in elements_and_isotopes:
     params = {
-        "spectra": element,
+        "spectra": element_or_isotope,
         "submit": "Retrieve Data",
         "units": 1,
         "format": 2,
@@ -249,12 +252,12 @@ for element in elements:
         data.apply(add_to_dict, axis=1)
 
     except KeyError:
-        logging.exception("Failed to parse data for %s", element)
+        logging.exception("Failed to parse data for %s", element_or_isotope)
     except requests.exceptions.RequestException:
-        logging.exception("Failed to retrieve data for %s", element)
+        logging.exception("Failed to retrieve data for %s", element_or_isotope)
 
     # Delay to avoid hitting rate limits or putting too much load on NIST
-    time.sleep(0.1)
+    time.sleep(0.2)
 
 # Export the data to a JSON file
 
