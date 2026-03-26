@@ -187,12 +187,12 @@ message to help us find the cause of a particular test failure.
 
    Use `f-strings`_ to improve error message readability.
 
-Type hint annotations
----------------------
+Type annotations
+----------------
 
-PlasmaPy has begun using |mypy| to perform |static type checking| on
+PlasmaPy uses |ty| to perform |static type checking| on
 |type annotations|. Adding a :py:`-> None` return annotation lets
-|mypy| verify that tests do not have :py:`return` statements.
+|ty| verify that tests do not have :py:`return` statements.
 
 .. code-block:: python
 
@@ -632,8 +632,8 @@ and usually invoke |Nox| sessions defined in |noxfile.py|_.
 * The **CI / Packaging** check verifies that no errors arise that would
   prevent an official release of PlasmaPy from being made.
 
-* The **CI / Static type checking with mypy** check performs
-  |static type checking| of |type annotations| with |mypy|.  !!!!!!!
+* The **CI / Static type checking with ty** check performs
+  |static type checking| of |type annotations| with |ty|.  !!!!!!!
 
 .. note::
 
@@ -738,11 +738,11 @@ where ``<session>`` is replaced with the name of the Nox session. The
 quotes are only needed if ``<session>`` contains special characters like
 parentheses.
 
-For example, static type checking with |mypy| can be run locally with
+For example, static type checking with |ty| can be run locally with
 
 .. code-block:: bash
 
-   nox -s mypy
+   nox -s ty
 
 Commands using Nox must be run in the top-level directory of the
 PlasmaPy repository, which is the directory containing
