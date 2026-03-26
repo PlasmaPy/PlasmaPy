@@ -124,7 +124,7 @@ def solve_gyrokinetic_dispersion(
     methods: tuple[str, ...] = ("hybr", "lm"),
 ) -> complex:
     """
-    Solve the normalized gyrokinetic dispersion relation for a single k_perp_rho_i.
+    Solve the normalized gyrokinetic dispersion relation for a single ``k_perp_rho_i``.
 
     Solves a 2D real system (Re(residual)=0, Im(residual)=0) using scipy.optimize.root
     with optional fallback across methods.
