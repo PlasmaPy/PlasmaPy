@@ -48,7 +48,7 @@ def gyrokinetic_dispersion_residual(
     Parameters
     ----------
     omega : complex
-        Normalized frequency omega_bar = omega / (k_parallel v_A).
+        Normalized frequency :math:`\bar{\omega} = \omega / (k_\parallel v_A)`.
 
     k_perp_rho_i : float
         Perpendicular wavenumber normalized to the ion Larmor radius.
