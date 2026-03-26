@@ -1,25 +1,16 @@
 r"""
 Gyrokinetic (Maxwellian) dispersion relation solver in normalized variables.
 
-Implements a normalized gyrokinetic dispersion relation in terms of:
+Implements a normalized gyrokinetic dispersion relation in terms of
+:math:`\bar{\omega} = \omega / (k_{\parallel} v_A)`,
+:math:`k_{\perp} \rho_i`, :math:`\beta_i`, and
+:math:`\tau = T_i / T_e`, with an optional ion/electron mass ratio.
 
-.. math::
+This module provides the following functions:
 
-    \bar{\omega} &= \omega / (k_{\parallel} v_A), \\
-    k_{\perp} \rho_i, \\
-    \beta_i, \\
-    \tau &= T_i / T_e,
-
-with an optional ion/electron mass ratio.
-
-This module provides:
-
-- `gyrokinetic_dispersion_residual`: complex residual of the dispersion
-  relation
-- `solve_gyrokinetic_dispersion`: complex root solve for a single
-  ``k_perp_rho_i``
-- `solve_gyrokinetic_dispersion_spectrum`: continuation solve over a
-  ``k_perp_rho_i`` grid
+- `gyrokinetic_dispersion_residual`
+- `solve_gyrokinetic_dispersion`
+- `solve_gyrokinetic_dispersion_spectrum`
 """
 
 from __future__ import annotations
@@ -42,13 +33,15 @@ def gyrokinetic_dispersion_residual(
     tau: float,
     mass_ratio: float = 1836.15267343,
 ) -> complex:
-    r"""
-    Return the complex residual of the normalized gyrokinetic dispersion relation.
+        r"""
+    Return the complex residual of the normalized gyrokinetic dispersion
+    relation.
 
     Parameters
     ----------
     omega : complex
-        Normalized frequency :math:`\bar{\omega} = \omega / (k_\parallel v_A)`.
+        Normalized frequency
+        :math:`\bar{\omega} = \omega / (k_{\parallel} v_A)`.
 
     k_perp_rho_i : float
         Perpendicular wavenumber normalized to the ion Larmor radius.
@@ -57,15 +50,17 @@ def gyrokinetic_dispersion_residual(
         Ion plasma beta.
 
     tau : float
-        Ion-to-electron temperature ratio :math:`T_i/T_e`.
+        Ion-to-electron temperature ratio :math:`T_i / T_e`.
 
     mass_ratio : float, optional
-        Ion-to-electron mass ratio (:math:`m_i/m_e`). Default is `1836.15267343`.
+        Ion-to-electron mass ratio :math:`m_i / m_e`.
+        The default value is the proton-to-electron mass ratio.
 
     Returns
     -------
     complex
-        Complex residual. Roots correspond to solutions of the dispersion relation.
+        Complex residual. Roots correspond to solutions of the
+        dispersion relation.
     """
     # Sanity checks
     if beta_i <= 0:
