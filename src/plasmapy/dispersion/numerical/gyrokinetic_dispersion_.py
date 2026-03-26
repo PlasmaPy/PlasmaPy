@@ -157,9 +157,9 @@ def solve_gyrokinetic_dispersion_spectrum(
     mass_ratio: float = 1836.15267343,
     tol: float = 1e-12,
 ) -> np.ndarray:
-    """
-    Solve :math:`\bar{\omega}(k_\perp_\rho_i)` over an iterable of :math:`k` values using continuation.
-
+    r"""
+    Solve :math:`\bar{\omega}(k_{\perp} \rho_i)` over an iterable of :math:`k` values using continuation.
+    
     The previous solution is used as the next initial guess when finite.
     """
     omega_out = []
