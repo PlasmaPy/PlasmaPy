@@ -126,7 +126,7 @@ def solve_gyrokinetic_dispersion(
     """
     Solve the normalized gyrokinetic dispersion relation for a single ``k_perp_rho_i``.
 
-    Solves a 2D real system (Re(residual)=0, Im(residual)=0) using scipy.optimize.root
+    Solves a 2D real system (Re(residual)=0, Im(residual)=0) using `scipy.optimize.root`
     with optional fallback across methods.
 
     Returns NaN+1j*NaN if no method succeeds.
