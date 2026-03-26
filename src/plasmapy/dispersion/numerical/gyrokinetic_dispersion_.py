@@ -60,7 +60,7 @@ def gyrokinetic_dispersion_residual(
         Ion-to-electron temperature ratio :math:`T_i/T_e`.
 
     mass_ratio : float, optional
-        Ion-to-electron mass ratio (m_i/m_e). Default is 1836.15267343.
+        Ion-to-electron mass ratio (:math:`m_i/m_e`). Default is `1836.15267343`.
 
     Returns
     -------
