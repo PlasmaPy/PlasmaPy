@@ -241,10 +241,8 @@ for element in elements:
         # Remove rows where Ionization Energy (eV) is NaN
         data = data.dropna(subset=["Ionization Energy (eV)"])
 
-        # Convert Ionization Energy (eV) to float
         data["Ionization Energy (eV)"] = data["Ionization Energy (eV)"].astype(float)
 
-        # Rename Ionization Energy (eV) to ionization energy
         data = data.rename(columns={"Ionization Energy (eV)": "ionization_energy"})
 
         # Add the data if ionization energy data is available; each ion is a separate record
@@ -270,6 +268,5 @@ outfile = (
 )
 
 
-# with Path.open(Path(__file__).parent / "ionization_energy.json", "w") as f:
 with outfile.open("w") as f:
     json.dump(ionization_data, f, indent=2)
