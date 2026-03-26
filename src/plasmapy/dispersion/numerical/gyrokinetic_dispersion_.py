@@ -138,7 +138,7 @@ def solve_gyrokinetic_dispersion(
     for method in methods:
         sol = root(residual_wrapped, x0, method=method, tol=tol)
         if sol.success and np.all(np.isfinite(sol.x)):
-             return complex(sol.x[0] + 1j * sol.x[1])
+            return complex(sol.x[0] + 1j * sol.x[1])
 
     return np.nan + 1j * np.nan
 
@@ -152,8 +152,9 @@ def solve_gyrokinetic_dispersion_spectrum(
     tol: float = 1e-12,
 ) -> np.ndarray:
     r"""
-    Solve :math:`\bar{\omega}(k_{\perp} \rho_i)` over an iterable of :math:`k` values using continuation.
-    
+    Solve :math:`\bar{\omega}(k_{\perp} \rho_i)` over an iterable of
+    :math:`k` values using continuation.
+
     The previous solution is used as the next initial guess when finite.
     """
     omega_out = []
