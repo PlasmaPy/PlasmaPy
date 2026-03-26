@@ -6,11 +6,10 @@ Implements a normalized gyrokinetic dispersion relation in terms of
 :math:`k_{\perp} \rho_i`, :math:`\beta_i`, and
 :math:`\tau = T_i / T_e`, with an optional ion/electron mass ratio.
 
-This module provides the following functions:
-
-- `gyrokinetic_dispersion_residual`
-- `solve_gyrokinetic_dispersion`
-- `solve_gyrokinetic_dispersion_spectrum`
+The three functions are
+`gyrokinetic_dispersion_residual`,
+`solve_gyrokinetic_dispersion`, and
+`solve_gyrokinetic_dispersion_spectrum`.
 """
 
 from __future__ import annotations
