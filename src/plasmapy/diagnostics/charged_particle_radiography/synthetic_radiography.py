@@ -434,7 +434,7 @@ class Tracker(ParticleTracker):
         elif len(extent) == 2:
             radius = None
             width = extent[0].si.value
-            height = extent[1].si.value
+            height = extent[1].si.value  # ty:ignore[index-out-of-bounds]
         else:
             raise ValueError(
                 "extent must be a tuple of 1 or 2 elements, but "
@@ -499,8 +499,8 @@ class Tracker(ParticleTracker):
         x = self._coast_to_plane(location, mesh_hdir, mesh_vdir)
 
         # Particle positions in 2D on the mesh plane
-        xloc = np.dot(x - location, mesh_hdir)
-        yloc = np.dot(x - location, mesh_vdir)
+        xloc = np.dot(x - location, mesh_hdir)  # ty:ignore[invalid-argument-type]
+        yloc = np.dot(x - location, mesh_vdir)  # ty:ignore[invalid-argument-type]
 
         # Create an array in which True indicates that a particle has hit
         # a wire and False indicates that it has not
@@ -508,13 +508,13 @@ class Tracker(ParticleTracker):
 
         # Mark particles that overlap vertical or horizontal position with
         # a wire
-        h_centers = np.linspace(-width / 2, width / 2, num=nwires[0])
+        h_centers = np.linspace(-width / 2, width / 2, num=nwires[0])  # ty:ignore[not-subscriptable, unsupported-operator]
         for c in h_centers:
-            hit |= np.isclose(xloc, c, atol=wire_radius)
+            hit |= np.isclose(xloc, c, atol=wire_radius)  # ty:ignore[no-matching-overload]
 
-        v_centers = np.linspace(-height / 2, height / 2, num=nwires[1])
+        v_centers = np.linspace(-height / 2, height / 2, num=nwires[1])  # ty:ignore[not-subscriptable, unsupported-operator]
         for c in v_centers:
-            hit |= np.isclose(yloc, c, atol=wire_radius)
+            hit |= np.isclose(yloc, c, atol=wire_radius)  # ty:ignore[no-matching-overload]
 
         # Put back any particles that are outside the mesh boundaries
         # First handle the case where the mesh is rectangular
@@ -540,7 +540,7 @@ class Tracker(ParticleTracker):
 
             # In the case of a circular mesh, also create a round wire along
             # the outside edge
-            hit[np.isclose(loc_rad, radius, atol=wire_radius)] = True
+            hit[np.isclose(loc_rad, radius, atol=wire_radius)] = True  # ty:ignore[no-matching-overload]
 
         # Identify the particles that have hit something, then remove them from
         # all of the arrays
@@ -551,7 +551,7 @@ class Tracker(ParticleTracker):
         if self.num_particles - nremoved <= 0:
             raise ValueError(
                 "The specified mesh is blocking all of the particles. "
-                f"The wire diameter ({2 * wire_radius}) may be too large."
+                f"The wire diameter ({2 * wire_radius}) may be too large."  # ty:ignore[unsupported-operator]
             )
 
         self._stop_particles(~keep_these_particles)

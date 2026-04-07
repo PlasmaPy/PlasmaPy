@@ -76,7 +76,7 @@ def test_http_request(
     if expected is None:
         downloader_validated._http_request(url)
     else:
-        with pytest.raises(expected):
+        with pytest.raises(expected):  # ty:ignore[invalid-argument-type]
             downloader_validated._http_request(url)
 
 
@@ -155,7 +155,7 @@ def test_get_file(
     filepath = dl._filepath(filename)
 
     if expected is not None:
-        with pytest.raises(expected):
+        with pytest.raises(expected):  # ty:ignore[invalid-argument-type]
             dl.get_file(filename)
     else:
         # Download data (or check that it already exists)

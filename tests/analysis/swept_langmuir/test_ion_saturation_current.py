@@ -271,7 +271,7 @@ class TestFindIonSaturationCurrent:
         assert isinstance(extras, ISatExtras)
         assert isinstance(extras.fitted_func, type(expected[1].fitted_func))
         assert np.allclose(extras.fitted_func.params, expected[1].fitted_func.params)
-        assert np.isclose(extras.rsq, 1.0)
+        assert np.isclose(extras.rsq, 1.0)  # ty:ignore[no-matching-overload]
         assert extras.fitted_indices == expected[1].fitted_indices
 
     @pytest.mark.filterwarnings("ignore::RuntimeWarning")
@@ -294,5 +294,5 @@ class TestFindIonSaturationCurrent:
 
         assert np.isclose(isat.params.m, 3.81079e-6, rtol=1e-3, atol=0)
         assert np.isclose(isat.params.b, 0.000110422, rtol=2e-3, atol=0)
-        assert np.isclose(extras.rsq, 0.982, rtol=0, atol=0.002)
+        assert np.isclose(extras.rsq, 0.982, rtol=0, atol=0.002)  # ty:ignore[no-matching-overload]
         assert np.isclose(np.min(isat(voltage)), -0.00014275, rtol=2e-3, atol=0)

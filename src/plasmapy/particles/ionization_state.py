@@ -107,7 +107,7 @@ class IonicLevel:
     @property
     def ionic_symbol(self) -> str:
         """The symbol of the ion."""
-        return self.ion.ionic_symbol
+        return self.ion.ionic_symbol  # ty:ignore[invalid-return-type]
 
     @property
     def charge_number(self) -> int:
@@ -277,7 +277,7 @@ class IonizationState:
 
             ionic_fractions = np.zeros(self._number_of_particles)
             ionic_fractions[particle.charge_number] = 1.0
-            particle = Particle(particle.isotope or particle.element)
+            particle = Particle(particle.isotope or particle.element)  # ty:ignore[invalid-argument-type]
         self._particle = particle
 
         try:
@@ -362,7 +362,7 @@ class IonizationState:
             else:
                 raise ChargeError("No charge number provided.")
 
-        return result
+        return result  # ty:ignore[invalid-return-type]
 
     def __setitem__(self, key, value) -> None:
         raise NotImplementedError(
@@ -434,7 +434,7 @@ class IonizationState:
                 np.all(np.isnan(self.ionic_fractions))
                 and np.all(np.isnan(other.ionic_fractions)),
             ]
-        )
+        )  # ty:ignore[no-matching-overload]
 
         return np.all(
             [same_element, same_isotope, same_T_e, same_n_elem, same_fractions]
@@ -658,7 +658,7 @@ class IonizationState:
     @property
     def element(self) -> str:
         """The atomic symbol of the element."""
-        return self._particle.element
+        return self._particle.element  # ty:ignore[invalid-return-type]
 
     @property
     def isotope(self) -> str | None:
@@ -847,7 +847,7 @@ class IonizationState:
             abundances=abundances,
             use_rms_charge=use_rms_charge,
             use_rms_mass=use_rms_mass,
-        )
+        )  # ty:ignore[invalid-return-type]
 
     def summarize(
         self, minimum_ionic_fraction: float = 0.01

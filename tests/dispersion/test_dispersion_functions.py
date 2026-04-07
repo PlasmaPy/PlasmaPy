@@ -138,7 +138,7 @@ class TestPlasmaDispersionFunction:
         assert np.allclose(
             Z_of_w_array,
             Z_power_series,
-            atol=1e-15 * (1 + 1j),  # type: ignore[arg-type]
+            atol=1e-15 * (1 + 1j),
             rtol=1e-15,
         ), (
             "The values returned by plasma_dispersion_func are inconsistent "

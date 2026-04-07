@@ -86,13 +86,13 @@ class AbstractGrid(ABC):
 
         # If three inputs are given, assume it's a user-provided grid
         if len(seeds) == 3:
-            self._load_grid(seeds[0], seeds[1], seeds[2])
+            self._load_grid(seeds[0], seeds[1], seeds[2])  # ty:ignore[invalid-argument-type]
 
         # If two inputs are given, assume they are start and stop arrays
         # to create a new grid
         # kwargs are passed to np.linspace in _make_grid()
         elif len(seeds) == 2:
-            self._make_grid(seeds[0], seeds[1], num=num, **kwargs)
+            self._make_grid(seeds[0], seeds[1], num=num, **kwargs)  # ty:ignore[invalid-argument-type]
 
         else:
             raise TypeError(
@@ -132,7 +132,7 @@ class AbstractGrid(ABC):
     ]
 
     # Create a dict of recognized quantities for fast access by key
-    _recognized_quantities: ClassVar[list[RecognizedQuantity]] = {}
+    _recognized_quantities: ClassVar[list[RecognizedQuantity]] = {}  # ty:ignore[invalid-assignment]
     for _rq in _recognized_quantities_list:
         _recognized_quantities[_rq.key] = _rq
 
@@ -729,14 +729,14 @@ class AbstractGrid(ABC):
         for event in ("start", "stop"):
             # Convert tuple to list
             if isinstance(event_values[event], tuple):
-                event_values[event] = list(event_values[event])
+                event_values[event] = list(event_values[event])  # ty:ignore[invalid-argument-type, invalid-assignment]
 
             if isinstance(event_values[event], list):
-                if len(event_values[event]) == 1:
+                if len(event_values[event]) == 1:  # ty:ignore[invalid-argument-type]
                     event_values[event] = event_values[event] * 3
 
                 # Make sure it's a list of quantities
-                if not all(isinstance(v, u.Quantity) for v in event_values[event]):
+                if not all(isinstance(v, u.Quantity) for v in event_values[event]):  # ty:ignore[not-iterable]
                     raise TypeError(
                         f"The argument `{event}` must be an "
                         "`astropy.units.Quantity` or a list of same, "
@@ -748,7 +748,7 @@ class AbstractGrid(ABC):
                 event_values[event] = (
                     [event_values[event]] * 3
                     if event_values[event].size == 1
-                    else list(event_values[event])
+                    else list(event_values[event])  # ty:ignore[invalid-argument-type, invalid-assignment]
                 )
             else:
                 raise TypeError(
@@ -759,13 +759,13 @@ class AbstractGrid(ABC):
 
         # Convert tuple to list
         if isinstance(event_values["num"], tuple):
-            event_values["num"] = list(event_values["num"])
+            event_values["num"] = list(event_values["num"])  # ty:ignore[invalid-assignment]
 
         if isinstance(event_values["num"], list):
             if len(event_values["num"]) == 1:
                 event_values["num"] = event_values["num"] * 3
         elif isinstance(event_values["num"], int):
-            event_values["num"] = [event_values["num"]] * 3
+            event_values["num"] = [event_values["num"]] * 3  # ty:ignore[invalid-assignment]
         else:
             raise TypeError(
                 f"The argument `num` must be an int or list of "
@@ -775,38 +775,38 @@ class AbstractGrid(ABC):
         # Check to make sure all lists now contain three values
         # (throws exception if user supplies a list of two, say)
         for event, event_value in event_values.items():
-            if len(event_value) != 3:
+            if len(event_value) != 3:  # ty:ignore[invalid-argument-type]
                 raise TypeError(
                     f"{event} must be either a single value or a "
                     "list of three values, but "
-                    f"({len(event_value)} values were given)."
+                    f"({len(event_value)} values were given)."  # ty:ignore[invalid-argument-type]
                 )
 
         # Take variables back out of dict
         start = event_values["start"]
         stop = event_values["stop"]
-        num = event_values["num"]
+        num = event_values["num"]  # ty:ignore[invalid-assignment]
 
         # Extract units from input arrays (if they are there), then
         # remove the units from those arrays
         units = []
         for i in range(3):
             # Determine unit for dimension
-            unit = start[i].unit
+            unit = start[i].unit  # ty:ignore[not-subscriptable]
             units.append(unit)
 
             # Attempt to convert stop unit to start unit
             try:
-                stop[i] = stop[i].to(unit)
+                stop[i] = stop[i].to(unit)  # ty:ignore[invalid-assignment, not-subscriptable]
 
             except u.UnitConversionError as ex:
                 raise ValueError(
-                    f"Units of {stop[i]} and {unit} are not compatible"
+                    f"Units of {stop[i]} and {unit} are not compatible"  # ty:ignore[not-subscriptable]
                 ) from ex
 
             # strip units
-            stop[i] = stop[i].value
-            start[i] = start[i].value
+            stop[i] = stop[i].value  # ty:ignore[invalid-assignment, not-subscriptable]
+            start[i] = start[i].value  # ty:ignore[invalid-assignment, not-subscriptable]
 
         # Create coordinate mesh
         pts0, pts1, pts2 = self._make_mesh(start, stop, num, **kwargs)
@@ -824,9 +824,9 @@ class AbstractGrid(ABC):
         so it can be re-implemented to make non-uniformly spaced meshes.
         """
         # Construct the axis arrays
-        ax0 = np.linspace(start[0], stop[0], num=num[0], **kwargs)
-        ax1 = np.linspace(start[1], stop[1], num=num[1], **kwargs)
-        ax2 = np.linspace(start[2], stop[2], num=num[2], **kwargs)
+        ax0 = np.linspace(start[0], stop[0], num=num[0], **kwargs)  # ty:ignore[not-subscriptable]
+        ax1 = np.linspace(start[1], stop[1], num=num[1], **kwargs)  # ty:ignore[not-subscriptable]
+        ax2 = np.linspace(start[2], stop[2], num=num[2], **kwargs)  # ty:ignore[not-subscriptable]
 
         # Construct the coordinate arrays
         pts0, pts1, pts2 = np.meshgrid(ax0, ax1, ax2, indexing="ij")
@@ -1025,7 +1025,7 @@ class AbstractGrid(ABC):
             persistent = False
 
         # Update _interp_args variable
-        self._interp_args = args
+        self._interp_args = args  # ty:ignore[invalid-attribute-access]
 
         # If not persistent, clear the cached properties so they are re-created
         # when called below
@@ -1136,7 +1136,7 @@ class CartesianGrid(AbstractGrid):
         if isinstance(width, u.Quantity):
             width = [
                 width,
-            ] * 3
+            ] * 3  # ty:ignore[invalid-assignment]
 
         mask = np.ones(self.shape)
         for i, pts in enumerate([self.pts0, self.pts1, self.pts2]):
@@ -1440,15 +1440,15 @@ class NonUniformCartesianGrid(AbstractGrid):
         """
         # Construct the axis arrays
         ax0 = np.sort(
-            np.random.uniform(low=start[0], high=stop[0], size=num[0])  # noqa: NPY002
+            np.random.uniform(low=start[0], high=stop[0], size=num[0])  # noqa: NPY002  # ty:ignore[not-subscriptable]
         )
 
         ax1 = np.sort(
-            np.random.uniform(low=start[1], high=stop[1], size=num[1])  # noqa: NPY002
+            np.random.uniform(low=start[1], high=stop[1], size=num[1])  # noqa: NPY002  # ty:ignore[not-subscriptable]
         )
 
         ax2 = np.sort(
-            np.random.uniform(low=start[2], high=stop[2], size=num[2])  # noqa: NPY002
+            np.random.uniform(low=start[2], high=stop[2], size=num[2])  # noqa: NPY002  # ty:ignore[not-subscriptable]
         )
 
         # Construct the coordinate arrays

@@ -141,7 +141,7 @@ class Characteristic:
             current_unique = np.append(
                 current_unique, np.mean(self.current[self.bias == bias].to(u.A).value)
             )
-        current_unique *= u.A
+        current_unique *= u.A  # ty:ignore[unsupported-operator]
 
         if not inplace:
             return Characteristic(bias_unique, current_unique)

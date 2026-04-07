@@ -142,8 +142,8 @@ nox = [
   "nox-uv>=0.7",
 ]
 type_check = [
-  "mypy>=1.19.1",
-  "pip>=25.3",
+  "ty>=0.0.23",
+  { include-group = "docs" },
   { include-group = "test" },
 ]
 zizmor = [
@@ -419,7 +419,6 @@ lint.allowed-confusables = [
 lint.dummy-variable-rgx = "^(Z|mass_numb|request|event|_.*)$"
 lint.flake8-annotations.allow-star-arg-any = true
 lint.flake8-annotations.ignore-fully-untyped = true
-lint.flake8-annotations.mypy-init-return = true
 lint.flake8-annotations.suppress-dummy-args = true
 lint.flake8-annotations.suppress-none-returning = true
 lint.flake8-import-conventions.aliases."astropy.constants" = "const"
@@ -504,6 +503,14 @@ ignore = [
   "Untitled*",
   "src/plasmapy/_version.py",
 ]
+
+[tool.ty]
+analysis.allowed-unresolved-imports = [ "astropy.constants.**" ]
+environment.python-platform = "all"
+# Because astropy.units.Quantity[u.kg] is not recognized
+rules.invalid-type-form = "ignore"
+# Because astropy.constants.m_p, etc. are not recognized
+rules.unresolved-attribute = "ignore"
 
 [tool.pytest]  # https://docs.pytest.org/en/stable/reference/reference.html#ini-options-ref
 addopts = [

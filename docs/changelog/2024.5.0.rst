@@ -137,7 +137,7 @@ Internal Changes and Refactorings
   corresponding documentation.  (:pr:`2650`)
 - Added :file:`noxfile.py` as a configuration file for |Nox|. This
   file initially contains environments for building documentation,
-  checking hyperlinks, and performing static type checking with |mypy|
+  checking hyperlinks, and performing static type checking with mypy
   (:pr:`2654`)
 - Began using |Nox| for some testing environments in |GitHub Actions|,
   including for the documentation build and static type

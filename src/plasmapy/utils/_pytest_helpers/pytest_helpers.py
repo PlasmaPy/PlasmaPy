@@ -296,7 +296,7 @@ def run_test(  # noqa: C901
             raise UnexpectedExceptionFail(
                 f"The command {call_str} did not raise "
                 f"{_name_with_article(expected_exception)} as expected, "
-                f"but instead raised {_name_with_article(unexpected_exception)}."
+                f"but instead raised {_name_with_article(unexpected_exception)}."  # ty:ignore[invalid-argument-type]
             ) from exc_unexpected_exception
         else:
             raise MissingExceptionFail(
@@ -320,7 +320,7 @@ def run_test(  # noqa: C901
     except Exception as exception_no_warning:
         raise UnexpectedExceptionFail(
             f"The command {call_str} unexpectedly raised "
-            f"{_name_with_article(exception_no_warning.__reduce__()[0])} "
+            f"{_name_with_article(exception_no_warning.__reduce__()[0])} "  # ty:ignore[invalid-argument-type]
             f"instead of returning the expected value of "
             f"{_object_name(expected['result'])}."
         ) from exception_no_warning
@@ -754,11 +754,11 @@ def assert_can_handle_nparray(  # noqa: C901
             input_data_2d = np.ones((2, 2)) * np.nan
             input_data_1d = np.ones(4) * np.nan
         input_data_3d *= magnitude
-        input_data_3d *= unit
+        input_data_3d *= unit  # ty:ignore[unsupported-operator]
         input_data_2d *= magnitude
-        input_data_2d *= unit
+        input_data_2d *= unit  # ty:ignore[unsupported-operator]
         input_data_1d *= magnitude
-        input_data_1d *= unit
+        input_data_1d *= unit  # ty:ignore[unsupported-operator]
         input_data_0d = input_data_1d[3]
         return input_data_0d, input_data_1d, input_data_2d, input_data_3d
 

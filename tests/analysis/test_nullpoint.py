@@ -249,7 +249,7 @@ def test_null_point_find1() -> None:
         "precision": [0.1, 0.1, 0.1],
         "func": vspace_func_1,
     }
-    npoints = uniform_null_point_find(**nullpoint_args)
+    npoints = uniform_null_point_find(**nullpoint_args)  # ty:ignore[invalid-argument-type]
     loc = npoints[0].loc.reshape(1, 3)
     assert len(npoints) == 1
     assert np.isclose(loc, [5.5, 5.5, 5.5], atol=_EQUALITY_ATOL).all()
@@ -283,7 +283,7 @@ def test_null_point_find3() -> None:
         "v_arr": np.array([[[-0.5, 0.5], [-0.5, 0.5]], [[-0.5, 0.5], [-0.5, 0.5]]]),
         "w_arr": np.array([[[-0.5, -0.5], [-0.5, -0.5]], [[0.5, 0.5], [0.5, 0.5]]]),
     }
-    npoints3 = null_point_find(**nullpoint3_args)
+    npoints3 = null_point_find(**nullpoint3_args)  # ty:ignore[invalid-argument-type]
     loc3 = npoints3[0].loc.reshape(1, 3)
     assert len(npoints3) == 1
     assert np.isclose(loc3, [5.5, 5.5, 5.5], atol=_EQUALITY_ATOL).all()
@@ -300,7 +300,7 @@ def test_null_point_find4() -> None:
         "precision": [0.07, 0.003, 0.07],
         "func": vspace_func_3,
     }
-    npoints4 = uniform_null_point_find(**nullpoint4_args)
+    npoints4 = uniform_null_point_find(**nullpoint4_args)  # ty:ignore[invalid-argument-type]
     first_loc4 = npoints4[0].loc.reshape(1, 3)
     second_loc4 = npoints4[1].loc.reshape(1, 3)
     assert len(npoints4) == 2
@@ -323,7 +323,7 @@ def test_null_point_find5() -> None:
         "precision": [0.01, 0.01, 0.01],
         "func": vspace_func_4,
     }
-    npoints5 = uniform_null_point_find(**nullpoint5_args)
+    npoints5 = uniform_null_point_find(**nullpoint5_args)  # ty:ignore[invalid-argument-type]
     for p in npoints5:
         if np.allclose(p.loc, np.array([5.5, 5.5, 5.5]), _EQUALITY_ATOL):
             assert (
@@ -356,7 +356,7 @@ def test_null_point_find6() -> None:
         "precision": [0.08, 0.08, 0.08],
         "func": vspace_func_5,
     }
-    npoints6 = uniform_null_point_find(**nullpoint6_args)
+    npoints6 = uniform_null_point_find(**nullpoint6_args)  # ty:ignore[invalid-argument-type]
     assert len(npoints6) == 0
 
 
@@ -371,7 +371,7 @@ def test_null_point_find7() -> None:
         "precision": [1, 1, 1],
         "func": vspace_func_6,
     }
-    npoints7 = uniform_null_point_find(**nullpoint7_args)
+    npoints7 = uniform_null_point_find(**nullpoint7_args)  # ty:ignore[invalid-argument-type]
     assert len(npoints7) == 0
 
 
@@ -386,7 +386,7 @@ def test_null_point_find8() -> None:
         "precision": [0.3, 0.3, 0.3],
         "func": vspace_func_7,
     }
-    npoints8 = uniform_null_point_find(**nullpoint8_args)
+    npoints8 = uniform_null_point_find(**nullpoint8_args)  # ty:ignore[invalid-argument-type]
     assert len(npoints8) == 2
     loc1 = npoints8[0].loc.reshape(1, 3)
     loc2 = npoints8[1].loc.reshape(1, 3)
@@ -478,7 +478,7 @@ def test_null_point_find9() -> None:
         "func": lambda x, y, z: [x, y, z],
     }
     with pytest.raises(NonZeroDivergence):
-        uniform_null_point_find(**nullpoint9_args)
+        uniform_null_point_find(**nullpoint9_args)  # ty:ignore[invalid-argument-type]
 
 
 # Tests that capture the degenerate nulls/2D nulls
@@ -495,7 +495,7 @@ def test_null_point_find10() -> None:
         "precision": [0.01, 0.01, 0.01],
         "func": lambda x, y, z: [y * z, -x * z, x * y],
     }
-    npoints = uniform_null_point_find(**nullpoint10_args)
+    npoints = uniform_null_point_find(**nullpoint10_args)  # ty:ignore[invalid-argument-type]
     for p in npoints:
         if np.allclose(p.loc, np.array([0, 0, 0]), _EQUALITY_ATOL):
             assert p.classification == "Proper radial null"
@@ -521,7 +521,7 @@ def test_null_point_find11() -> None:
         "precision": [0.01, 0.01, 0.01],
         "func": lambda x, y, z: [1.01 * y * z, -x * z, x * y],
     }
-    npoints = uniform_null_point_find(**nullpoint10_args)
+    npoints = uniform_null_point_find(**nullpoint10_args)  # ty:ignore[invalid-argument-type]
     for p in npoints:
         if np.allclose(p.loc, np.array([0, 0, 0]), _EQUALITY_ATOL):
             assert p.classification == "Proper radial null"

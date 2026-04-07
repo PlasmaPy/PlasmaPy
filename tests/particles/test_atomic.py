@@ -248,19 +248,19 @@ def test_functions_and_values(tested_function, args, kwargs, expected_output) ->
 class TestInvalidPeriodicElement:
     def test_periodic_table_period(self) -> None:
         with pytest.raises(TypeError):
-            periodic_table_period(("Ne", "Na"))
+            periodic_table_period(("Ne", "Na"))  # ty:ignore[invalid-argument-type]
 
     def test_periodic_table_block(self) -> None:
         with pytest.raises(TypeError):
-            periodic_table_block(("N", "C", "F"))
+            periodic_table_block(("N", "C", "F"))  # ty:ignore[invalid-argument-type]
 
     def test_periodic_table_category(self) -> None:
         with pytest.raises(TypeError):
-            periodic_table_category(["Rb", "He", "Li"])
+            periodic_table_category(["Rb", "He", "Li"])  # ty:ignore[invalid-argument-type]
 
     def test_periodic_table_group(self) -> None:
         with pytest.raises(TypeError):
-            periodic_table_group(("B", "Ti", "Ge"))
+            periodic_table_group(("B", "Ti", "Ge"))  # ty:ignore[invalid-argument-type]
 
 
 # Next we have tests that do not fall nicely into equality comparisons.
