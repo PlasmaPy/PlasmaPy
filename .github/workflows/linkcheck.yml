@@ -34,7 +34,7 @@ jobs:
         persist-credentials: false
 
     - name: Install graphviz and pandoc for doc builds
-      uses: mamba-org/setup-micromamba@v2
+      uses: mamba-org/setup-micromamba@v3
       with:
         create-args: graphviz pandoc -c conda-forge
         init-shell: bash powershell
