@@ -447,10 +447,10 @@ may be written as:
 .. note::
 
    Type hint annotations are by default not enforced at runtime, and
-   instead are used to _indicate_ variable types. 
-   
-   There are some situations where type annotations do play a role 
-   at runtime, such as in functions decorated by |particle_input| 
+   instead are used to _indicate_ variable types.
+
+   There are some situations where type annotations do play a role
+   at runtime, such as in functions decorated by |particle_input|
    and/or |validate_quantities|.
 
 Automatically adding type annotations
@@ -521,7 +521,7 @@ We will get the following error:
 
 .. tip::
 
-   To learn more about any error found by |ty|, look it up on the 
+   To learn more about any error found by |ty|, look it up on the
    `ty rules`_ page (e.g., `invalid-return-type`_).
 
 Ignoring ty errors
@@ -543,13 +543,13 @@ an error.
 
 .. important::
 
-   Type annotations are much easier to add while writing code, so 
+   Type annotations are much easier to add while writing code, so
    please use :py:`# ty:ignore` comments sparingly!
 
 Quantity type annotations
 -------------------------
 
-When a function accepts a |Quantity|, the annotation should 
+When a function accepts a |Quantity|, the annotation should
 include the corresponding unit in brackets. When the function is
 |decorated| with |validate_quantities|, then the |Quantity| provided to
 and/or returned by the function will be converted to that unit.

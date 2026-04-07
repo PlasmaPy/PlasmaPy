@@ -504,6 +504,14 @@ ignore = [
   "src/plasmapy/_version.py",
 ]
 
+[tool.ty]
+analysis.allowed-unresolved-imports = [ "astropy.constants.**" ]
+environment.python-platform = "all"
+# Because astropy.units.Quantity[u.kg] is not recognized
+rules.invalid-type-form = "ignore"
+# Because astropy.constants.m_p, etc. are not recognized
+rules.unresolved-attribute = "ignore"
+
 [tool.pytest]  # https://docs.pytest.org/en/stable/reference/reference.html#ini-options-ref
 addopts = [
   "--pyargs",
@@ -584,14 +592,6 @@ type = [
   { directory = "test", name = "Updates to Software Testing", showcontent = true },
   { directory = "misc", name = "Miscellaneous Changes", showcontent = true },
 ]
-
-[tool.ty]
-analysis.allowed-unresolved-imports = [ "astropy.constants.**" ]
-environment.python-platform = "all"
-# Because astropy.units.Quantity[u.kg] is not recognized
-rules.invalid-type-form = "ignore"
-# Because astropy.constants.m_p, etc. are not recognized
-rules.unresolved-attribute = "ignore"
 
 [tool.build_docs]
 source-dir = "docs"
