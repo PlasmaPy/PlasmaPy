@@ -133,7 +133,7 @@ def Hall_parameter(
 
         β_{s} = \frac{Ω_{c s}}{ν_{s s^{\prime}}}
 
-    where :math:`Ω_{c s}` is the gyrofrequncy for plasma species
+    where :math:`Ω_{c s}` is the gyrofrequency for plasma species
     :math:`s` (``particle``) and :math:`ν_{s s^{\prime}}` is the
     collision frequency between plasma species :math:`s` (``particle``)
     and species :math:`s^{\prime}` (``ion``).
@@ -150,17 +150,17 @@ def Hall_parameter(
         The number density associated with ``particle``.
 
     T : `~astropy.units.quantity.Quantity`
-        The temperature of associated with ``particle``.
+        The temperature associated with ``particle``.
 
     B : `~astropy.units.quantity.Quantity`
         The magnetic field.
 
     ion : `~plasmapy.particles.particle_class.Particle`
-        The type of ion ``particle`` is colliding with.
+        The type of ion that the ``particle`` is colliding with.
 
     particle : `~plasmapy.particles.particle_class.Particle`
-        The particle species for which the Hall parameter is calculated
-        for. Representation of the particle species (e.g., ``'p+'`` for
+        The particle species for which the Hall parameter is calculated.
+        Representation of the particle species (e.g., ``'p+'`` for
         protons, ``'D+'`` for deuterium, or ``'He-4 +1'`` for singly
         ionized helium-4). If no charge state information is provided,
         then the particles are assumed to be singly charged.
