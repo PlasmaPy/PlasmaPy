@@ -107,7 +107,7 @@ jobs:
 
     - name: Install graphviz and pandoc for doc builds
       if: ${{ contains(matrix.nox_session, 'docs') }}
-      uses: mamba-org/setup-micromamba@v2
+      uses: mamba-org/setup-micromamba@v3
       with:
         create-args: graphviz pandoc -c conda-forge
         init-shell: bash
@@ -128,7 +128,7 @@ jobs:
 
     - name: Upload coverage reports to Codecov
       if: ${{ contains(matrix.nox_session, 'cov') }}
-      uses: codecov/codecov-action@v5
+      uses: codecov/codecov-action@v6
       with:
         files: ./coverage.xml
         fail_ci_if_error: false
