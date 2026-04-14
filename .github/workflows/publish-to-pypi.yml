@@ -29,7 +29,7 @@ jobs:
       run: uv run noxfile.py -s build
 
     - name: Upload package to Python Package Index
-      uses: pypa/gh-action-pypi-publish@v1.13.0
+      uses: pypa/gh-action-pypi-publish@v1.14.0
       with:
         # TODO: set up trusted publishing https://docs.pypi.org/trusted-publishers/
         user: __token__
