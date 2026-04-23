@@ -136,6 +136,7 @@ class TestGyroradius:
                 {"particle": "e-", "lorentzfactor": 2.0, "relativistic": False},
                 ValueError,
             ),
+            ((1 * u.T, "p+"), {}, ValueError),
         ],
     )
     def test_raises(self, args, kwargs, _error) -> None:
