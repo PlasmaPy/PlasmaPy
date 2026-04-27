@@ -52,6 +52,10 @@ Glossary
       charge. The charge number of an ion or neutral particle is usually
       denoted as ``Z``.
 
+   collective behavior
+      In |plasma| science, collective behavior refers to particles being
+      able to interact with each other from a distance.
+
    fit-function
    fit-functions
       Any instance of a subclass of
