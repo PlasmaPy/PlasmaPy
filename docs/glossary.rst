@@ -71,6 +71,11 @@ Glossary
 
       For more details, visit the `Wikipedia page <https://en.wikipedia.org/wiki/Force-free_magnetic_field>`_.
 
+   gas
+      A compressible fluid containing particles that interact with each
+      other through binary collisions and do not exhibit
+      |collective behavior|.
+
    integration test
       An **integration test** verifies that multiple software
       components work together as intended.
