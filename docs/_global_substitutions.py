@@ -100,6 +100,7 @@ doc_subs: dict[str, str] = {
     "particle-like": r":term:`particle-like`\ ",
     "particle-list-like": r":term:`particle-list-like`\ ",
     "plasma": r":term:`plasma`\ ",
+    "quasineutral": r":term:`quasineutral`\ ",
     "src/plasmapy": r":file:`src/plasmapy`\ ",
     "testing guide": r":ref:`testing guide`\ ",
     "tests": r":file:`tests`\ ",

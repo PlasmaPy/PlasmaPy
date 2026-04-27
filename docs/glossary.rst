@@ -72,6 +72,21 @@ Glossary
       For more details, visit the `Wikipedia page <https://en.wikipedia.org/wiki/Force-free_magnetic_field>`_.
 
    gas
+      A compressible fluid that
+
+      Unlike plasma, the
+
+      In astronomy and popular culture,
+
+      In astronomy and popular culture, the term "gas" is often used to
+      refer to
+
+      The term "gas" is used in astronomy and popular culture
+
+      In astronomy, the terms "gas" is frequently used to refer to
+
+      In fields like astronomy and films like Star Trek VI, the terms "gas" and "ionized gas" is used to refer to
+
       A compressible fluid containing particles that interact with each
       other through binary collisions and do not exhibit
       |collective behavior|.
@@ -199,7 +214,7 @@ Glossary
       A fluid that exhibits |collective behavior| due to particles
       that exerting forces on each other from a distance.
 
-      The term "plasma" most often refers to a quasineutral fluid
+      The term "plasma" most often refers to a |quasineutral| fluid
       containing an appreciable fraction of ions and electrons, often
       alongside charged dust particles, neutral atoms, and/or neutral
       molecules.
@@ -219,6 +234,10 @@ Glossary
 
       A plasma is a fluid in which the particles engage in collective
       behavior.
+
+   quasineutral
+      A fluid containing an appreciable fraction of charged particles is
+      quasineutral when the macroscopic charge density is roughly zero.
 
    real number
       Any numeric type that represents a real number. This could include
