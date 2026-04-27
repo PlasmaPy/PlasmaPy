@@ -164,6 +164,10 @@ Glossary
 
       For more complete details, refer to |ParticleListLike|.
 
+   plasma
+      A plasma is a fluid in which the particles engage in collective
+      behavior.
+
    real number
       Any numeric type that represents a real number. This could include
       a `float`, `int`, a dimensionless |Quantity|, or any of the
