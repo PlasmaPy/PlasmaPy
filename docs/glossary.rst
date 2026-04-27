@@ -198,6 +198,25 @@ Glossary
 
       A fluid that exhibits |collective behavior| due to particles
       that exerting forces on each other from a distance.
+
+      The term "plasma" most often refers to a quasineutral fluid
+      containing an appreciable fraction of ions and electrons, often
+      alongside charged dust particles, neutral atoms, and/or neutral
+      molecules.
+
+      While often referred to as a "gas" or "ionized gas" in astronomy
+      literature and popular culture, plasma is a distinct state of
+      matter
+
+      While often referred to as a "gas" or "ionized gas", plasma is a
+      state of matter that is distinct from gas.
+
+      The term "plasma" usually refers to a fluid containing charged
+      particles and neutral particles.
+
+      Plasma is a state of matter that contains particles that interact
+      with each other from a distance.
+
       A plasma is a fluid in which the particles engage in collective
       behavior.
 
