@@ -165,6 +165,39 @@ Glossary
       For more complete details, refer to |ParticleListLike|.
 
    plasma
+      A fluid containing enough particles exerting long-range forces on
+      each other for the fluid to exhibit |collective behavior|.
+
+      A fluid containing particles the exert long-range forces on each
+      other resulting in |collective behavior|.
+
+      A fluid that exhibits |collective behavior| due to particles
+      exerting long-range forces on each other.
+
+      A fluid that exhibits |collective behavior| resulting from
+      particles exerting long-range forces on each other.
+
+      A fluid that exhibits |collective behavior|.
+
+      A fluid that contains enough particles able to exert a force on
+      each other from a distance for the fluid to engage in
+      |collective behavior|.
+
+      A fluid in which an appreciable fraction of the particles exert
+      long-range forces on each other.
+
+      A fluid in which an appreciable fraction of the particles exert
+      long-range forces on each other such that the fluid exhibits
+      |collective behavior|.
+
+      A fluid that contains an appreciable fraction of particles that
+      can exert forces on each other from a distance.
+
+      A fluid that contains an appreciable fraction of particles that
+      exert forces on each other outside of binary collisions.
+
+      A fluid that exhibits |collective behavior| due to particles
+      that exerting forces on each other from a distance.
       A plasma is a fluid in which the particles engage in collective
       behavior.
 
