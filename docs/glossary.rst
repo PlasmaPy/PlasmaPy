@@ -196,3 +196,8 @@ Glossary
 
 .. _`keyword arguments`: https://docs.python.org/3/glossary.html#term-argument
 .. _`positional arguments`: https://docs.python.org/3/glossary.html#term-argument
+
+.. The definitions of "plasma", "gas", and "collective behavior" in this
+   file are made available under either PlasmaPy's license or the
+   CC0 1.0 Universal license, which is available on the World Wide Web
+   at: https://creativecommons.org/publicdomain/zero/1.0
