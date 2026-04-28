@@ -221,21 +221,21 @@ Glossary
       .. Above are brainstorms for the first sentence(s). Below is
          content for the rest of the definition.
 
-      While often referred to as a "gas" or "ionized gas" in astronomy
-      literature and popular culture, plasma is a distinct state of
-      matter
+      The term "plasma" typically refers to a |quasineutral| fluid
+      containing an appreciable fraction of ions and electrons.
 
-      While often referred to as a "gas" or "ionized gas", plasma is a
-      state of matter that is distinct from gas.
+      The term "plasma" typically refers to a |quasineutral| fluid
+      containing charged particles and neutral particles that exhibits
+      |collective behavior|. The charged particles typically include
+      ions and electrons, and might include charged dust particulates.
+      The neutral particles include atoms and molecules.
 
-      The term "plasma" usually refers to a fluid containing charged
-      particles and neutral particles.
+      The term "plasma" is also used when describing a non-neutral
+      plasma, electron-positron plasma, or quark-gluon plasma.
 
-      Plasma is a state of matter that contains particles that interact
-      with each other from a distance.
-
-      A plasma is a fluid in which the particles engage in collective
-      behavior.
+      While plasma is often referred to as "gas" or "ionized gas" in
+      astronomy literature and films like _Star Trek VI_, plasma is a
+      state of matter that is distinct from the gas state of matter.
 
    quasineutral
       A fluid containing an appreciable fraction of charged particles is
