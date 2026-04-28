@@ -52,12 +52,15 @@ Glossary
       charge. The charge number of an ion or neutral particle is usually
       denoted as ``Z``.
 
+   collective behavior
+      In |plasma| science, collective behavior refers to particles being
+      able to interact with each other from a distance.
+
    fit-function
    fit-functions
       Any instance of a subclass of
       `~plasmapy.analysis.fit_functions.AbstractFitFunction`.  Also see
       module `~plasmapy.analysis.fit_functions`.
-
 
    force-free
       In plasma physics, a **force-free magnetic field** is a magnetic
@@ -67,6 +70,24 @@ Glossary
       approximated in the Sun's corona.
 
       For more details, visit the `Wikipedia page <https://en.wikipedia.org/wiki/Force-free_magnetic_field>`_.
+
+   gas
+      A compressible fluid consisting of particles that interact with
+      each other predominantly through short-range binary collisions.
+
+      Gas and plasma are distinct states of matter with fundamentally
+      different properties. The overwhelming majority of particles in a
+      gas are neutral and thus do not exert long-range forces on each
+      other. While a real gas may contain trace amounts of charged
+      particles, their effects are negligible. In contrast, a plasma
+      contains enough charged particles able to exert long-range forces
+      on each other to result in |collective behavior|.
+
+      .. caution::
+
+         The term "gas" is frequently used to encompass fluids in either
+         of the gas or plasma states of matter, in particular in the
+         astronomical community.
 
    integration test
       An **integration test** verifies that multiple software
@@ -156,6 +177,68 @@ Glossary
 
       For more complete details, refer to |ParticleListLike|.
 
+   plasma
+
+      .. Start with the broadest definition to include positron-electron
+         plasmas, quark-gluon plasmas, strongly coupled plasmas, and
+
+      A fluid containing enough particles exerting long-range forces on
+      each other for the fluid to exhibit |collective behavior|.
+
+      A fluid containing particles the exert long-range forces on each
+      other resulting in |collective behavior|.
+
+      A fluid that exhibits |collective behavior| due to particles
+      exerting long-range forces on each other.
+
+      A fluid that exhibits |collective behavior| resulting from
+      particles exerting long-range forces on each other.
+
+      A fluid that exhibits |collective behavior|.
+
+      A fluid that contains enough particles able to exert a force on
+      each other from a distance for the fluid to engage in
+      |collective behavior|.
+
+      A fluid in which an appreciable fraction of the particles exert
+      long-range forces on each other.
+
+      A fluid in which an appreciable fraction of the particles exert
+      long-range forces on each other such that the fluid exhibits
+      |collective behavior|.
+
+      A fluid that contains an appreciable fraction of particles that
+      can exert forces on each other from a distance.
+
+      A fluid that contains an appreciable fraction of particles that
+      exert forces on each other outside of binary collisions.
+
+      A fluid that exhibits |collective behavior| due to particles
+      that exerting forces on each other from a distance.
+
+      .. Above are brainstorms for the first sentence(s). Below is
+         content for the rest of the definition.
+
+      The term "plasma" typically refers to a |quasineutral| fluid
+      containing an appreciable fraction of ions and electrons.
+
+      The term "plasma" typically refers to a |quasineutral| fluid
+      containing charged particles and neutral particles that exhibits
+      |collective behavior|. The charged particles typically include
+      ions and electrons, and might include charged dust particulates.
+      The neutral particles include atoms and molecules.
+
+      The term "plasma" is also used when describing a non-neutral
+      plasma, electron-positron plasma, or quark-gluon plasma.
+
+      While plasma is often referred to as "gas" or "ionized gas" in
+      astronomy literature and films like _Star Trek VI_, plasma is a
+      state of matter that is distinct from the gas state of matter.
+
+   quasineutral
+      A fluid containing an appreciable fraction of charged particles is
+      quasineutral when the macroscopic charge density is roughly zero.
+
    real number
       Any numeric type that represents a real number. This could include
       a `float`, `int`, a dimensionless |Quantity|, or any of the
@@ -196,3 +279,8 @@ Glossary
 
 .. _`keyword arguments`: https://docs.python.org/3/glossary.html#term-argument
 .. _`positional arguments`: https://docs.python.org/3/glossary.html#term-argument
+
+.. The definitions of "plasma", "gas", and "collective behavior" in this
+   file are made available under either PlasmaPy's license or the
+   CC0 1.0 Universal license, which is available on the World Wide Web
+   at: https://creativecommons.org/publicdomain/zero/1.0
