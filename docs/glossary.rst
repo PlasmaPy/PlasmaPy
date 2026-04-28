@@ -72,24 +72,22 @@ Glossary
       For more details, visit the `Wikipedia page <https://en.wikipedia.org/wiki/Force-free_magnetic_field>`_.
 
    gas
-      A compressible fluid that
+      A compressible fluid consisting of particles that interact with
+      each other predominantly through short-range binary collisions.
 
-      Unlike plasma, the
+      Gas and plasma are distinct states of matter with fundamentally
+      different properties. The overwhelming majority of particles in a
+      gas are neutral and thus do not exert long-range forces on each
+      other. While a real gas may contain trace amounts of charged
+      particles, their effects are negligible. In contrast, a plasma
+      contains enough charged particles able to exert long-range forces
+      on each other to result in |collective behavior|.
 
-      In astronomy and popular culture,
+      .. caution::
 
-      In astronomy and popular culture, the term "gas" is often used to
-      refer to
-
-      The term "gas" is used in astronomy and popular culture
-
-      In astronomy, the terms "gas" is frequently used to refer to
-
-      In fields like astronomy and films like Star Trek VI, the terms "gas" and "ionized gas" is used to refer to
-
-      A compressible fluid containing particles that interact with each
-      other through binary collisions and do not exhibit
-      |collective behavior|.
+         The term "gas" is frequently used to encompass fluids in either
+         of the gas or plasma states of matter, in particular in the
+         astronomical community.
 
    integration test
       An **integration test** verifies that multiple software
