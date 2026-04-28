@@ -180,6 +180,10 @@ Glossary
       For more complete details, refer to |ParticleListLike|.
 
    plasma
+
+      .. Start with the broadest definition to include positron-electron
+         plasmas, quark-gluon plasmas, strongly coupled plasmas, and
+
       A fluid containing enough particles exerting long-range forces on
       each other for the fluid to exhibit |collective behavior|.
 
@@ -214,10 +218,8 @@ Glossary
       A fluid that exhibits |collective behavior| due to particles
       that exerting forces on each other from a distance.
 
-      The term "plasma" most often refers to a |quasineutral| fluid
-      containing an appreciable fraction of ions and electrons, often
-      alongside charged dust particles, neutral atoms, and/or neutral
-      molecules.
+      .. Above are brainstorms for the first sentence(s). Below is
+         content for the rest of the definition.
 
       While often referred to as a "gas" or "ionized gas" in astronomy
       literature and popular culture, plasma is a distinct state of
