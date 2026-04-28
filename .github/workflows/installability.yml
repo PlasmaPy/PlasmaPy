@@ -81,7 +81,7 @@ jobs:
         python-version: ['3.12', '3.13', '3.14']
 
     steps:
-    - uses: conda-incubator/setup-miniconda@v3
+    - uses: conda-incubator/setup-miniconda@v3.3.0
       with:
         python-version: ${{ matrix.python-version }}
         channels: conda-forge
