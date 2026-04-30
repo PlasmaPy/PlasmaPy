@@ -178,46 +178,67 @@ Glossary
       For more complete details, refer to |ParticleListLike|.
 
    plasma
+      A (usually |quasineutral|) fluid that contains enough charged
+      particles (usually ions and electrons) for the fluid to exhibit
+      |collective behavior|. A plasma can also contain neutral atoms,
+      neutral molecules, and (usually charged) dust particles.
 
-      .. Start with the broadest definition to include positron-electron
-         plasmas, quark-gluon plasmas, strongly coupled plasmas, and
+      *Plasma* usually refers to a |quasineutral| fluid that contains
+      ions and free electrons, often along with neutral atoms, neutral
+      molecules, and/or charged dust grains.
 
-      A fluid containing enough particles exerting long-range forces on
-      each other for the fluid to exhibit |collective behavior|.
 
-      A fluid containing particles the exert long-range forces on each
-      other resulting in |collective behavior|.
+, and that may also
+      contain neutral atoms and molecules,
 
-      A fluid that exhibits |collective behavior| due to particles
-      exerting long-range forces on each other.
+      While neutral gas particles interact via
 
-      A fluid that exhibits |collective behavior| resulting from
-      particles exerting long-range forces on each other.
 
-      A fluid that exhibits |collective behavior|.
+      *Plasma* usually refers to a fluid contain
 
-      A fluid that contains enough particles able to exert a force on
-      each other from a distance for the fluid to engage in
+      A fluid that contains a large enough fraction of charged particles
+      (usually ions and electrons) for fluid behavior to depend on the
+      forces
+
+      A fluid that contains a large enough fraction of charged particles
+      to cause the dynamics of the fluid
+
+
+to exhibit
       |collective behavior|.
 
-      A fluid in which an appreciable fraction of the particles exert
-      long-range forces on each other.
+      *Plasma* usually refers to
 
-      A fluid in which an appreciable fraction of the particles exert
-      long-range forces on each other such that the fluid exhibits
-      |collective behavior|.
+      A fluid that contains a significant fraction of charged particles
+      so that fluid behavior depends on
 
-      A fluid that contains an appreciable fraction of particles that
-      can exert forces on each other from a distance.
+A fluid that contains an appreciable fraction of charged particles
 
-      A fluid that contains an appreciable fraction of particles that
-      exert forces on each other outside of binary collisions.
 
-      A fluid that exhibits |collective behavior| due to particles
-      that exerting forces on each other from a distance.
+      A fluid that contains an appreciable fraction of charged particles
+      and exhibits |collective behavior|.
 
-      .. Above are brainstorms for the first sentence(s). Below is
-         content for the rest of the definition.
+
+      A fluid that contains an appreciable fraction of charged particles.
+
+      A fluid that contains a large enough fraction of charged particles
+      to exhibit |collective behavior|.
+
+      *Plasma* most often refers to a |quasineutral| fluid that contains
+
+      A fluid that contains a large enough fraction of charged particles
+      for its behavior to be influenced by long-range forces
+
+      A fluid that contains enough electrically charged particles for
+      its behavior to be influenced by long-range forces exert
+      long-range forces exerted by charged particles on each other.
+
+      The term *plasma* is most often used to refer to a |quasineutral|
+      fluid that contains an appreciable fraction of electrons and
+      positively charged ions
+
+      The term *plasma* typically refers to a plasma containing unbound
+      electrons and positively charged
 
       The term "plasma" typically refers to a |quasineutral| fluid
       containing an appreciable fraction of ions and electrons.
@@ -234,6 +255,123 @@ Glossary
       While plasma is often referred to as "gas" or "ionized gas" in
       astronomy literature and films like _Star Trek VI_, plasma is a
       state of matter that is distinct from the gas state of matter.
+
+
+      .. A fluid that contains an appreciable fraction of charged particles
+      and exhibits
+
+      .. A fluid that contains enough charged particles for the fluid to
+      exhibit |collective behavior|.
+
+      .. A fluid that contains an appreciable fraction of particles that
+      exert long-range forces on each other.
+
+      .. A fluid that contains enough charged particles for the fluid to
+      exhibit |collective behavior|.
+
+      .. A |quasineutral| fluid that contains enough charged particles for
+      the fluid to exhibit |collective behavior| :cite:p:`chen:2016`.
+
+      .. A :term:`quasineutral` fluid containing charged and neutral
+
+      .. The term *plasma* most frequently refers to a fluid that contains
+
+      .. A fluid that contains enough particles that exert long-range
+      forces fraction of particles that
+
+      .. A fluid that exhibits |collective behavior| resulting from
+      particles that exert long-range forces on each other.
+
+      .. A fluid that contains enough particles that exert long-range
+      forces on each other to result in |collective behavior|.
+
+      .. A fluid whose behavior is influenced to an appreciable degree by
+      particles exerting long-range forces on each other
+
+      .. A fluid containing enough particles that exert long-range forces
+      on each other to result in |collective behavior|.
+
+      .. A fluid that contains enough particles that exert long-range
+      forces on each other to influence fluid behavior.
+
+      .. More specifically, a plasma is a fluid containing
+
+      .. A fluid that contains enough charged particles
+
+      .. A fluid containing an appreciable fraction of particles that exert
+      long-range forces on
+
+      .. A fluid whose behavior is influenced by particles exerting
+      long-range forces on each other.
+
+      .. containing enough charged particles exerting long-range
+      forces on each other
+
+      .. A fluid whose behavior is appreciably influenced by long-range forces exerted by particles exerting long-range forces on each other.
+
+      .. A fluid that contains enough particles exerting long-range forces on each other
+
+      .. A fluid that contains enough particles that exert long-range
+      forces on each other to influence the fluid's macroscopic
+
+      .. A fluid whose macroscopic behavior is influenced by charegd
+
+      .. A fluid containing an appreciable fraction of particles that exert
+      long-range forces on each other
+
+      .. A fluid that contains appreciable fraction of particles exert
+      long-range forces on each other
+
+      .. whose macroscopic behavior is influenced by long-range
+      forces exerted by particles
+
+      .. A fluid that contains charged particles where
+
+      .. A fluid whose macroscopic behavior is influenced by long-range
+      forces exerted by particles on other particles.
+
+      .. A fluid that contains enough particles exerting long-range forces
+      on each other fo the fluid to exhibit |collective behavior|.
+
+      .. Start with the broadest definition to include positron-electron
+         plasmas, quark-gluon plasmas, strongly coupled plasmas, and
+
+      .. A fluid containing enough particles exerting long-range forces on
+      each other for the fluid to exhibit |collective behavior|.
+
+      .. A fluid containing particles the exert long-range forces on each
+      other resulting in |collective behavior|.
+
+      .. A fluid that exhibits |collective behavior| due to particles
+      exerting long-range forces on each other.
+
+      .. A fluid that exhibits |collective behavior| resulting from
+      particles exerting long-range forces on each other.
+
+      .. A fluid that exhibits |collective behavior|.
+
+      .. A fluid that contains enough particles able to exert a force on
+      each other from a distance for the fluid to engage in
+      |collective behavior|.
+
+      .. A fluid in which an appreciable fraction of the particles exert
+      long-range forces on each other.
+
+      .. A fluid in which an appreciable fraction of the particles exert
+      long-range forces on each other such that the fluid exhibits
+      |collective behavior|.
+
+      .. A fluid that contains an appreciable fraction of particles that
+      can exert forces on each other from a distance.
+
+      .. A fluid that contains an appreciable fraction of particles that
+      exert forces on each other outside of binary collisions.
+
+      .. A fluid that exhibits |collective behavior| due to particles
+      that exerting forces on each other from a distance.
+
+      .. Above are brainstorms for the first sentence(s). Below is
+         content for the rest of the definition.
 
    quasineutral
       A fluid containing an appreciable fraction of charged particles is
