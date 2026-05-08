@@ -181,12 +181,14 @@ def rot_a_to_b(a: np.ndarray, b: np.ndarray) -> np.ndarray:
         )
     b = b / np.linalg.norm(b)
 
+    c = np.dot(a, b)
+
     # Manually handle the case where a and b point in opposite directions
-    if np.dot(a, b) == -1:
+    # Use isclose because float rounding means c may be -0.99999994 instead of -1.
+    if np.isclose(c, -1.0, rtol=0.0, atol=1e-6):
         return -np.identity(3)
 
     axb = np.cross(a, b)
-    c = np.dot(a, b)
     vskew = np.array(
         [[0, -axb[2], axb[1]], [axb[2], 0, -axb[0]], [-axb[1], axb[0], 0]]
     ).T  # Transpose to get right orientation
