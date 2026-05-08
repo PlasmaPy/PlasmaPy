@@ -4,6 +4,7 @@ __all__ = ["check_sweep", "merge_voltage_clusters", "sort_sweep_arrays"]
 
 import numbers
 import warnings
+from collections.abc import Sequence
 from typing import Literal
 
 import astropy.units as u
@@ -565,3 +566,95 @@ def merge_voltage_clusters(  # noqa: C901, PLR0912
         )
 
     return new_voltage, new_current
+
+
+def _condition_voltage_window(  # noqa: C901, PLR0912
+    voltage, voltage_window
+) -> slice:
+    """
+    Condition ``voltage_window`` and return resulting `slice` object to
+    index ``voltage``.
+
+    Parameters
+    ----------
+    voltage : `numpy.ndarray`
+        1-D numpy array of monotonically increasing probe biases
+        (should be in volts).
+
+    voltage_window : `list[float | None]` | `None`, default: `None`
+        A two-element list ``[v_min, v_max]`` that specifies the voltage
+        range in which the peak slope will be looked for.  Specifying
+        `None` for either the first or second element will result in a
+        window using the lower or upper bound of ``voltage``
+        respectively.  If set to `None` (default), then the whole
+        ``voltage`` window will be used.
+
+    Returns
+    -------
+    voltage_window : `slice`
+         A `slice` object representing the window originally defined
+         by the input ``voltage_window``.
+
+    """
+    if isinstance(voltage_window, np.ndarray):
+        voltage_window = voltage_window.tolist()
+
+    if voltage_window is None:
+        voltage_window = [None, None]
+    elif not isinstance(voltage_window, Sequence) or isinstance(voltage_window, str):
+        raise TypeError(
+            f"Expected a 2-element list of floats or None for 'voltage_window', "
+            f"but got type {type(voltage_window)}."
+        )
+    elif len(voltage_window) != 2:
+        raise ValueError(
+            f"Expected a 2-element list of floats or None for 'voltage_window', "
+            f"but got type {len(voltage_window)} elements."
+        )
+    elif not all(
+        isinstance(element, numbers.Real) or element is None
+        for element in voltage_window
+    ):
+        raise TypeError("Not all elements of 'voltage_window' are floats or None.")
+    elif None not in voltage_window:
+        voltage_window = np.sort(voltage_window).tolist()
+
+    # determine data window
+    if voltage_window[0] is not None and voltage_window[0] >= voltage[-1]:
+        raise ValueError(
+            f"The min value for the voltage window ({voltage_window[0]}) "
+            f"is larger than the max value of the langmuir trace "
+            f"({voltage[-1]})."
+        )
+
+    if voltage_window[1] is not None and voltage_window[1] <= voltage[0]:
+        raise ValueError(
+            f"The max value for the voltage window ({voltage_window[1]}) "
+            f"is smaller than the min value of the langmuir trace "
+            f"({voltage[0]})."
+        )
+
+    if all(isinstance(element, numbers.Real) for element in voltage_window):
+        voltage_window = np.sort(voltage_window).tolist()
+
+    first_index = (
+        None
+        if voltage_window[0] is None
+        else int(np.where(voltage >= voltage_window[0])[0][0])
+    )
+    if first_index == 0:
+        first_index = None
+
+    last_index = (
+        None
+        if voltage_window[1] is None
+        else int(np.where(voltage <= voltage_window[1])[0][-1])
+    )
+    if last_index is None:
+        pass
+    elif last_index == voltage.size - 1:
+        last_index = None
+    else:
+        last_index += 1
+
+    return slice(first_index, last_index, 1)
