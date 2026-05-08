@@ -264,7 +264,7 @@ def gyroradius(
     isfinite_lorentzfactor = np.isfinite(lorentzfactor)
 
     # Check if lorentzfactor is given despite relativistic being false
-    if not relativistic and not np.isnan(lorentzfactor):
+    if (not relativistic) and np.any(np.isfinite(lorentzfactor_in)):
         raise ValueError("Lorentz factor is provided but relativistic is set to false")
 
     # Check if V and T are both given at the same time at any position
