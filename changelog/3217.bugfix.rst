@@ -1,0 +1,1 @@
+Fixed a bug in plasmapy.formulary.speeds.ion_sound_speed where the optional Z parameter (average ionization) was ignored in the sound speed calculation, causing incorrect results for plasmas with non-integer or effective charge states.
