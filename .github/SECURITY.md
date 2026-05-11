@@ -32,9 +32,12 @@ The configurations for most of these tools are located in [`pyproject.toml`],
 but some have a dedicated configuration file
 (for `zizmor`, this would be at [`.github/zizmor.yml`])
 
-[nox]: https://nox.thea.codes
-[privately report a security vulnerability]: https://github.com/plasmapy/plasmapy/security/advisories/new
-[rule sets]: https://docs.astral.sh/ruff/rules
+## Managing access to resources
+
+Contributors should be assigned the lowest privileges needed to do their work meaningfully.
+However, all project assets should be accessible by at least two maintainers.
+Permissions should be reviewed annually to maintain minimal permissions.
+
 [`.github/workflows/`]: https://github.com/PlasmaPy/PlasmaPy/tree/main/.github/workflows
 [`.github/zizmor.yml`]: https://github.com/PlasmaPy/PlasmaPy/blob/main/.github/zizmor.yml
 [`.pre-commit-config.yaml`]: https://github.com/PlasmaPy/PlasmaPy/blob/main/.pre-commit-config.yaml
