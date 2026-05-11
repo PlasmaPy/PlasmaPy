@@ -44,3 +44,7 @@ but some have a dedicated configuration file
 [`pyproject.toml`]: https://github.com/PlasmaPy/PlasmaPy/blob/main/pyproject.toml
 [`ruff`]: https://docs.astral.sh/ruff
 [`zizmor`]: https://github.com/woodruffw/zizmor
+[nox]: https://nox.thea.codes
+[privately report a security vulnerability]: https://github.com/plasmapy/plasmapy/security/advisories/new
+[rule sets]: https://docs.astral.sh/ruff/rules
+[SPEC 6]: https://scientific-python.org/specs/spec-0006
