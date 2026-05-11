@@ -38,6 +38,10 @@ but some have a dedicated configuration file
 However, all project assets should be accessible by at least two maintainers.
 Permissions should be reviewed annually to maintain minimal permissions.
 
+[nox]: https://nox.thea.codes
+[privately report a security vulnerability]: https://github.com/plasmapy/plasmapy/security/advisories/new
+[rule sets]: https://docs.astral.sh/ruff/rules
+[spec 6]: https://scientific-python.org/specs/spec-0006
 [`.github/workflows/`]: https://github.com/PlasmaPy/PlasmaPy/tree/main/.github/workflows
 [`.github/zizmor.yml`]: https://github.com/PlasmaPy/PlasmaPy/blob/main/.github/zizmor.yml
 [`.pre-commit-config.yaml`]: https://github.com/PlasmaPy/PlasmaPy/blob/main/.pre-commit-config.yaml
@@ -47,7 +51,3 @@ Permissions should be reviewed annually to maintain minimal permissions.
 [`pyproject.toml`]: https://github.com/PlasmaPy/PlasmaPy/blob/main/pyproject.toml
 [`ruff`]: https://docs.astral.sh/ruff
 [`zizmor`]: https://github.com/woodruffw/zizmor
-[nox]: https://nox.thea.codes
-[privately report a security vulnerability]: https://github.com/plasmapy/plasmapy/security/advisories/new
-[rule sets]: https://docs.astral.sh/ruff/rules
-[SPEC 6]: https://scientific-python.org/specs/spec-0006
