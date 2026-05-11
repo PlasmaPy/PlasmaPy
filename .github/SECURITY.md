@@ -34,7 +34,7 @@ but some have a dedicated configuration file
 
 ## Managing access to resources
 
-Contributors should be assigned the lowest privileges needed to do their work meaningfully.
+[SPEC 6] recommends that developers be assigned the lowest privileges needed to do their work meaningfully.
 However, all project assets should be accessible by at least two maintainers.
 Permissions should be reviewed annually to maintain minimal permissions.
 
