@@ -52,12 +52,15 @@ Glossary
       charge. The charge number of an ion or neutral particle is usually
       denoted as ``Z``.
 
+   collective behavior
+      In |plasma| science, collective behavior refers to particles being
+      able to interact with each other from a distance.
+
    fit-function
    fit-functions
       Any instance of a subclass of
       `~plasmapy.analysis.fit_functions.AbstractFitFunction`.  Also see
       module `~plasmapy.analysis.fit_functions`.
-
 
    force-free
       In plasma physics, a **force-free magnetic field** is a magnetic
@@ -67,6 +70,25 @@ Glossary
       approximated in the Sun's corona.
 
       For more details, visit the `Wikipedia page <https://en.wikipedia.org/wiki/Force-free_magnetic_field>`_.
+
+   gas
+      A compressible fluid consisting of widely-separated particles that
+      interact with each other predominantly through short-range binary
+      collisions.
+
+      The overwhelming majority of particles in a gas are neutral and do
+      not exert long-range forces on each other. While a real gas may
+      contain trace ions and free electrons, these charged particles
+      have a negligible impact on gas dynamics and therefore do not
+      engage in |collective behavior|.
+
+      .. caution::
+
+         In astronomy, the term *gas* is commonly used to refer to
+         any astrophysical fluid, regardless of whether the fluid is in
+         the gas or plasma state of matter. The term *ionized gas* is
+         used as a synonym for plasma, even though plasma and gas are
+         distinct states of matter.
 
    integration test
       An **integration test** verifies that multiple software
@@ -156,6 +178,37 @@ Glossary
 
       For more complete details, refer to |ParticleListLike|.
 
+   plasma
+      A fluid containing enough mobile charged particles for its
+      behavior to be influenced by the long-range forces between charged
+      particles. Because each charged particle exerts forces on many
+      other charged particles, plasma exhibits |collective behavior|.
+      Plasma is usually |quasineutral|.
+
+      Nearly all plasma contains ions and unbound electrons. *Partially
+      ionized plasma* contains neutral atoms and/or neutral molecules in
+      addition to the charged particles. Dusty plasma contains charged
+      dust particles. An electron-positron plasma contains positrons
+      instead of ions as the positively charged particles.
+
+      More generally, *plasma* can refer to any fluid containing
+      particles that exhibits |collective behavior|, such as
+      *quark-gluon plasma*.
+
+      .. note::
+
+         Gas and plasma are distinct states of matter that behave in
+         qualitatively different ways. Plasma exhibits collective
+         behavior; gas does not. Referring to a plasma as "gas" or
+         "ionized gas" is inaccurate and potentially misleading.
+
+   quasineutral
+      A plasma is *quasineutral* when the net charge density is
+      approximately zero due to Debye screening.
+
+      Plasma that is not quasineutral is referred to as a non-neutral
+      plasma.
+
    real number
       Any numeric type that represents a real number. This could include
       a `float`, `int`, a dimensionless |Quantity|, or any of the
@@ -196,3 +249,8 @@ Glossary
 
 .. _`keyword arguments`: https://docs.python.org/3/glossary.html#term-argument
 .. _`positional arguments`: https://docs.python.org/3/glossary.html#term-argument
+
+.. The definitions of "plasma", "gas", and "collective behavior" in this
+   file are made available under either PlasmaPy's license or the
+   CC0 1.0 Universal license, which is available on the World Wide Web
+   at: https://creativecommons.org/publicdomain/zero/1.0
