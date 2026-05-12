@@ -82,17 +82,13 @@ Glossary
       have a negligible impact on gas dynamics and therefore do not
       engage in |collective behavior|.
 
-      .. note::
+      .. caution::
 
          In astronomy, the term *gas* is commonly used to refer to
          any astrophysical fluid, regardless of whether the fluid is in
-         the gas or plasma state of matter.
-
-      .. important::
-
-         Gas and plasma are distinct states of matter that behave in
-         qualitatively different ways. Plasma is not gas. Referring to
-         plasma as gas is inaccurate and misleading.
+         the gas or plasma state of matter. The term *ionized gas* is
+         used as a synonym for plasma, even though plasma and gas are
+         distinct states of matter.
 
    integration test
       An **integration test** verifies that multiple software
@@ -183,27 +179,35 @@ Glossary
       For more complete details, refer to |ParticleListLike|.
 
    plasma
-      A (usually |quasineutral|) fluid that contains enough charged
-      particles (usually ions and electrons) for the fluid to exhibit
-      |collective behavior|. A plasma can also contain neutral atoms,
-      neutral molecules, and (usually charged) dust particles.
+      A fluid containing enough mobile charged particles for its
+      behavior to be influenced by the long-range forces between charged
+      particles. Because each charged particle exerts forces on many
+      other charged particles, plasma exhibits |collective behavior|.
+      Plasma is usually |quasineutral|.
 
-      While neutral gas particles interact with each other predominantly
-      through short-range collisions, charged particles in a plasma
-      interact with each other via long-range electromagnetic forces.
+      Nearly all plasma contains ions and unbound electrons. *Partially
+      ionized plasma* contains neutral atoms and/or neutral molecules in
+      addition to the charged particles. Dusty plasma contains charged
+      dust particles. An electron-positron plasma contains positrons
+      instead of ions as the positively charged particles.
 
-      *Plasma* sometimes refers more generally to any fluid containing
-      particles that exert long-range attractive or repulsive forces on
-      each other and thus result in collective behavior (e.g.,
-      *quark-gluon plasma*).
+      More generally, *plasma* can refer to any fluid containing
+      particles that exhibits |collective behavior|, such as
+      *quark-gluon plasma*.
 
-      .. A fluid in which an appreciable fraction of the particles exert
-      long-range forces on each other such that the fluid exhibits
-      |collective behavior|.
+      .. note::
+
+         Gas and plasma are distinct states of matter that behave in
+         qualitatively different ways. Plasma exhibits collective
+         behavior; gas does not. Referring to a plasma as "gas" or
+         "ionized gas" is inaccurate and potentially misleading.
 
    quasineutral
       A plasma is *quasineutral* when the net charge density is
       approximately zero due to Debye screening.
+
+      Plasma that is not quasineutral is referred to as a non-neutral
+      plasma.
 
    real number
       Any numeric type that represents a real number. This could include
