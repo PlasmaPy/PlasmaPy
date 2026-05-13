@@ -161,6 +161,13 @@ packages.find.namespaces = false
 [tool.setuptools_scm]
 write_to = "src/plasmapy/_version.py"
 
+[tool.pixi]
+feature.tools.dependencies.graphviz = ">=9.0"
+feature.tools.dependencies.pandoc = ">=3.1"
+environments.tools = [ "tools" ]
+project.channels = [ "conda-forge" ]
+project.platforms = [ "linux-64", "macos-64", "win-64" ]
+
 [tool.uv]
 # Prefer pre-built distributions when using lowest-direct resolution strategy or when using nightly wheels
 no-build-package = [ "astropy", "h5py", "matplotlib", "numpy", "pandas", "scipy", "wrapt" ]
