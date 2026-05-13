@@ -136,19 +136,18 @@ Internal Changes and Refactorings
   and verify :file:`MANIFEST.in` with ``check-manifest``, respectively.
   (:pr:`2695`)
 - Added a |Nox| session that invokes ``autotyping`` to automatically
-  add |type annotations|, using either the ``--safe`` or
+  add type annotations, using either the ``--safe`` or
   ``--aggressive`` options. (:pr:`2696`)
 - Added ``typos`` as a |pre-commit| hook to perform spellchecking. (:pr:`2700`)
 - Added a condition to check if the GitHub API can be reached to be used by the
   `~plasmapy.utils.data.downloader.Downloader` object. (:pr:`2710`)
-- Applied |type annotations| using ``autotyping``, and made other updates
-  to type
-  hint annotations and docstrings. (:pr:`2728`)
-- Added |type annotations| to `plasmapy.utils.roman`. (:pr:`2733`)
-- Added |type annotations| to ``plasmapy.utils._units_helpers``.
+- Applied type annotations using ``autotyping``, and made other updates
+  to type annotations and docstrings. (:pr:`2728`)
+- Added type annotations to `plasmapy.utils.roman`. (:pr:`2733`)
+- Added type annotations to ``plasmapy.utils._units_helpers``.
   (:pr:`2734`)
 - Added a |Nox| session for building the changelog. (:pr:`2744`)
-- Added an experimental |Nox| session for adding |type annotations| using
+- Added an experimental |Nox| session for adding type annotations using
   `MonkeyType <https://github.com/Instagram/MonkeyType>`__.
   This session creates a database of variable types from running pytest, and
   then applies the observed types to a particular module. (:pr:`2747`)

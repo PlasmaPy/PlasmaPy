@@ -25,8 +25,7 @@ Features
   measured Thomson scattering spectra. Changed the
   `~plasmapy.diagnostics.thomson.spectral_density_model` function to
   allow ``notch`` to be applied during fitting. (:pr:`2058`)
-- Changed unit annotations to |Quantity| type hint
-  annotations. (:pr:`2421`)
+- Changed unit annotations to |Quantity| type annotations. (:pr:`2421`)
 - Enabled |particle_input| to decorate functions which have variadic
   positional arguments followed by keyword arguments. (:pr:`2428`; see
   also :issue:`2150`)
@@ -86,7 +85,7 @@ Trivial/Internal Changes
 - Dropped the |pre-commit| hook for ``isort`` and enabled all
   ``isort`` rules in |ruff|. (:pr:`2453`)
 - Added a :file:`py.typed` marker file to indicate that PlasmaPy
-  contains type hint annotations as per :pep:`561`. (:pr:`2473`)
+  contains type annotations as per :pep:`561`. (:pr:`2473`)
 - Changed ``_nearest_neighbor_interpolator`` method in
   `~plasmapy.plasma.grids` to interpolate quantities array instead of
   producing an intermediate index.  (:pr:`2475`)

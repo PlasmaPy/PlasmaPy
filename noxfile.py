@@ -614,12 +614,12 @@ AUTOTYPING_RISKY: tuple[str, ...] = (
 )
 def autotyping(session: nox.Session, options: tuple[str, ...]) -> None:
     """
-    Automatically add type hints with autotyping.
+    Automatically add type annotations with autotyping.
 
-    The `safe` option generates very few incorrect type hints, and can
-    be used in CI. The `aggressive` option may add type hints that are
-    incorrect, so please perform a careful code review when using this
-    option.
+    The `safe` option generates very few incorrect type annotations, and
+    can be used in CI. The `aggressive` option may add type annotations
+    that are incorrect, so please perform a careful code review when
+    using this option.
 
     To check specific files, pass them after a `--`, such as:
 

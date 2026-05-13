@@ -618,7 +618,7 @@ r"""
 An `object` is |particle-list-like| if it can be identified as a
 |ParticleList| or cast into one.
 
-When used as a type hint annotation, |ParticleListLike| indicates that
+When used as a type annotation, |ParticleListLike| indicates that
 the corresponding argument should represent a sequence of physical
 particles. Each item in a |ParticleListLike| object must be
 |particle-like|.
@@ -637,7 +637,7 @@ See Also
 
 Examples
 --------
-Using |ParticleListLike| as a type hint annotation indicates that an
+Using |ParticleListLike| as a type annotation indicates that an
 argument or variable should represent a sequence of |ParticleLike|
 objects.
 

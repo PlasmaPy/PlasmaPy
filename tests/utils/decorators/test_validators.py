@@ -636,7 +636,7 @@ class TestValidateClassAttributes:
 
 def test_validate_quantities_argument_type_annotation() -> None:
     """
-    Test that |validate_quantities| works with type hint annotations of
+    Test that |validate_quantities| works with type annotations of
     the form ``u.Quantity[u.m]`` on a function argument.
     """
 
@@ -654,7 +654,7 @@ def test_validate_quantities_argument_type_annotation() -> None:
 
 def test_validate_quantities_return_type_annotation() -> None:
     """
-    Test that |validate_quantities| works with type hint annotations of
+    Test that |validate_quantities| works with type annotations of
     the form ``u.Quantity[u.m]`` as a return argument.
     """
 

@@ -431,7 +431,7 @@ maintainability by clarifying the types that a function accepts and
 returns. Type annotations also help Jupyter notebooks and IDEs provide
 better tooltips and autocompletions.
 
-Type hint annotations specify the expected types of arguments and return
+Type annotations specify the expected types of arguments and return
 values. A function that accepts a `float` or `str` and returns a `str`
 may be written as:
 
@@ -446,7 +446,9 @@ may be written as:
 
 .. note::
 
-   Type hint annotations are by default not enforced at runtime, and
+   Python itself does not enforce type annotations at runtime
+
+   Type annotations are not enforced at runtime, and
    instead are used to _indicate_ variable types.
 
    There are some situations where type annotations do play a role

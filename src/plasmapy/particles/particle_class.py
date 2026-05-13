@@ -2728,7 +2728,7 @@ An `object` is particle-like if it can be identified as an instance of
 `~plasmapy.particles.particle_class.Particle` or
 `~plasmapy.particles.particle_class.CustomParticle`, or cast into one.
 
-When used as a type hint annotation, `ParticleLike` indicates that an
+When used as a type annotation, `ParticleLike` indicates that an
 argument should represent a physical particle. Particle-like objects
 can include strings, integers, or instances of the
 `~plasmapy.particles.particle_class.Particle` or
@@ -2821,7 +2821,7 @@ See Also
 
 Examples
 --------
-Using |ParticleLike| as a type hint annotation indicates that an
+Using |ParticleLike| as a type annotation indicates that an
 argument or variable should represent a physical particle.
 
 >>> from plasmapy.particles import ParticleLike, Particle
