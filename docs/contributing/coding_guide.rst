@@ -446,14 +446,9 @@ may be written as:
 
 .. note::
 
-   Python itself does not enforce type annotations at runtime
-
-   Type annotations are not enforced at runtime, and
-   instead are used to _indicate_ variable types.
-
-   There are some situations where type annotations do play a role
-   at runtime, such as in functions decorated by |particle_input|
-   and/or |validate_quantities|.
+   Type annotations are not enforced at runtime by default, but are
+   often used or enforced by decorators like |particle_input| and
+   |validate_quantities|.
 
 Automatically adding type annotations
 -------------------------------------
