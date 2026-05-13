@@ -440,9 +440,9 @@ may be written as:
    def f(x: float | str) -> str:
        return str(x)
 
-.. tip:
+.. tip::
 
-   The :py:`|` operator is used to represent unions between types.
+   The :py:`|` operator represents unions between types.
 
 .. note::
 
