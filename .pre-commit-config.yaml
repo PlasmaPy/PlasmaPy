@@ -150,7 +150,7 @@ repos:
     # cannot be run via pre-commit.ci, even with the `--offline`,
     # `--no-index`, and/or `--check` flags
   - id: uv-lock
-    name: uv-lock (skipped in CI; use `nox -s requirements` for problems)
+    name: uv-lock (skipped in CI; use `nox -s lock` for problems)
 
 - repo: https://github.com/hukkin/mdformat
   rev: 1.0.0
