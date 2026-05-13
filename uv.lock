@@ -17,8 +17,11 @@ resolution-markers = [
 ]
 
 [options]
-exclude-newer = "2026-05-10T19:31:17.966449829Z"
+exclude-newer = "2026-05-10T20:24:43.879788175Z"
 exclude-newer-span = "P3D"
+
+[options.exclude-newer-package]
+plasmapy-sphinx = false
 
 [[package]]
 name = "alabaster"

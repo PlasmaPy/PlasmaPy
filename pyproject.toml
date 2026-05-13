@@ -167,6 +167,7 @@ no-build-package = [ "astropy", "h5py", "matplotlib", "numpy", "pandas", "scipy"
 # Use a dependency cooldown so that security vulnerabilities in upstream
 # packages can be identified and yanked before we start using them.
 exclude-newer = "3 days"
+exclude-newer-package = { plasmapy-sphinx = false }
 
 [tool.ruff]
 target-version = "py312"
