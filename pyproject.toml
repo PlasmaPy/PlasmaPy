@@ -138,11 +138,11 @@ manifest = [
   "check-manifest>=0.51",
 ]
 nox = [
-  "nox>=2025.11.12",
+  "nox>=2026.4.10",
   "nox-uv>=0.7",
 ]
 type_check = [
-  "ty>=0.0.23",
+  "ty>=0.0.35",
   { include-group = "docs" },
   { include-group = "test" },
 ]
