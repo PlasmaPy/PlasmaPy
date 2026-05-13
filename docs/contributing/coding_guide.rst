@@ -1076,6 +1076,7 @@ The overall process of performing a release is:
 .. _example notebook on particles: ../notebooks/getting_started/particles.ipynb
 .. _example notebook on units: ../notebooks/getting_started/units.ipynb
 .. _extract function refactoring pattern: https://refactoring.guru/extract-method
+.. _invalid-return-type: https://docs.astral.sh/ty/reference/rules/#invalid-return-type
 .. _mint a release:
 .. _MonkeyType: https://monkeytype.readthedocs.io
 .. _NEP 29: https://numpy.org/neps/nep-0029-deprecation_policy.html
@@ -1097,8 +1098,7 @@ The overall process of performing a release is:
 .. _`astropy.units`: https://docs.astropy.org/en/stable/units/index.html
 .. |astropy.units| replace:: `astropy.units`
 
-.. _`invalid-return-type`: https://docs.astral.sh/ty/reference/rules/#invalid-return-type
-.. |invalid-return-type| replace:: `invalid-return-type`
+
 
 .. _`noxfile.py`: https://github.com/PlasmaPy/PlasmaPy/blob/main/noxfile.py
 .. |noxfile.py| replace:: :file:`noxfile.py`
