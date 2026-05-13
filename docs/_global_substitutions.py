@@ -165,6 +165,7 @@ links_to_become_subs: dict[str, str] = {
     "Sphinx": "https://www.sphinx-doc.org",
     "static type checking": "https://realpython.com/videos/python-type-checking-overview",
     "towncrier": "https://github.com/twisted/towncrier",
+    "ty": "https://docs.astral.sh/ty",
     "type annotations": "https://typing.python.org/en/latest/spec/annotations.html",
     "xarray": "https://docs.xarray.dev",
     "Zenodo": "https://zenodo.org",
