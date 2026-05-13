@@ -334,7 +334,7 @@ def test__code_repr_of_ndarray(array_inputs, max_items, expected) -> None:
         )
 
 
-quantity_case = namedtuple("QuantityTestCases", ("quantity", "expected"))
+quantity_case = namedtuple("QuantityTestCases", ("quantity", "expected"))  # ty:ignore[mismatched-type-name]
 
 
 @pytest.mark.parametrize(

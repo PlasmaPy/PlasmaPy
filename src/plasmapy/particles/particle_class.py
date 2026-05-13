@@ -841,7 +841,7 @@ class Particle(AbstractPhysicalParticle):
 
             # Find the maximum charge for the element
             for key in _ionization_energy.data_about_ionization_energy:
-                if key.startswith(element_key + " "):  # ty:ignore[unsupported-operator]
+                if key.startswith(element_key + " "):
                     charge = int(key.split()[-1].replace("+", ""))
                     max_charge = max(charge, max_charge)
 
@@ -2038,7 +2038,7 @@ class Particle(AbstractPhysicalParticle):
         elif base_particle is not None:
             return base_particle.electron_binding_energy
 
-        return self._attributes["electron binding energy"]  # ty:ignore[invalid-return-type]
+        return self._attributes["electron binding energy"]
 
 
 class DimensionlessParticle(AbstractParticle):
@@ -2371,7 +2371,7 @@ class CustomParticle(AbstractPhysicalParticle):
         if u.physical.electrical_charge in physical_type_dict:
             new_kwargs["charge"] = physical_type_dict[u.physical.electrical_charge]  # ty:ignore[invalid-assignment]
 
-        return CustomParticle(**new_kwargs)  # ty:ignore[invalid-argument-type, invalid-return-type]
+        return CustomParticle(**new_kwargs)  # ty:ignore[invalid-return-type]
 
     def __repr__(self) -> str:
         """

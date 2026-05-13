@@ -314,7 +314,7 @@ def run_test(  # noqa: C901
     except pytest.raises.Exception as missing_warning:
         raise MissingWarningFail(
             f"The command {call_str} should issue "
-            f"{_name_with_article(expected['warning'])}, but instead returned "
+            f"{_name_with_article(expected['warning'])}, but instead returned "  # ty:ignore[invalid-argument-type]
             f"{_object_name(result)}."
         ) from missing_warning
     except Exception as exception_no_warning:

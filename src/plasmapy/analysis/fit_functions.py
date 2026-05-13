@@ -23,7 +23,7 @@ from scipy.stats import linregress
 from plasmapy.utils.decorators import modify_docstring
 
 #: Named tuple for :meth:`AbstractFitFunction.root_solve`.
-_RootResults = namedtuple("RootResults", ("root", "err"))
+_RootResults = namedtuple("RootResults", ("root", "err"))  # ty:ignore[mismatched-type-name]
 
 
 class AbstractFitFunction(ABC):

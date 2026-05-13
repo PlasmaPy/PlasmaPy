@@ -110,7 +110,7 @@ class AbstractGrid(ABC):
     # A named tuple describing a key recognized by PlasmaPy to correspond to
     # a particular physical quantity
     RecognizedQuantity = namedtuple(
-        "RecognizedQuantities", ["key", "description", "unit"]
+        "RecognizedQuantities", ["key", "description", "unit"]  # ty:ignore[mismatched-type-name]
     )
 
     # These standard keys are used to refer to certain

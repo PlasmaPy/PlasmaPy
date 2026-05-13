@@ -185,7 +185,7 @@ def stix(  # noqa: C901, PLR0912, PLR0915
         raise ValueError(
             "Particle(s) passed to 'ions' must be a positively charged"
             " ion. The following particle(s) is(are) not allowed "
-            f"{[ion for ion, fail in zip(ions, failed, strict=False) if not fail]}"  # ty:ignore[invalid-argument-type]
+            f"{[ion for ion, fail in zip(ions, failed, strict=False) if not fail]}"  # ty:ignore[invalid-argument-type, not-iterable]
         )
 
     # Validate n_i argument

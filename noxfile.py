@@ -162,8 +162,8 @@ def lock(session: nox.Session) -> None:
     )
     try:
         # Use session.run() with silent=True to return the command output
-        uv_output: str | bool = session.run(*uv_lock, silent=RUNNING_ON_CI)  # ty:ignore[invalid-assignment]
-    except nox.command.CommandFailed:  # ty:ignore[possibly-missing-submodule]
+        uv_output: str | bool = session.run(*uv_lock, silent=RUNNING_ON_CI)
+    except nox.command.CommandFailed:
         session.warn("⚠️ uv.lock is invalid, likely due to a git merge conflict.")
         session.log(
             "📥 Checking out uv.lock from the branch being merged into this one."
@@ -172,7 +172,7 @@ def lock(session: nox.Session) -> None:
             "🪧 If this next attempt is unsuccessful, delete uv.lock and try again."
         )
         session.run("git", "checkout", "--theirs", "--", "uv.lock", external=True)
-        uv_output: str | bool = session.run(*uv_lock, silent=RUNNING_ON_CI)  # ty:ignore[invalid-assignment]
+        uv_output: str | bool = session.run(*uv_lock, silent=RUNNING_ON_CI)
 
     if RUNNING_ON_CI:
         session.log(uv_output)
@@ -205,7 +205,7 @@ def validate_lockfile(session: nox.Session) -> None:
 
     try:
         session.run("uv", "lock", "--no-progress")
-    except nox.command.CommandFailed:  # ty:ignore[possibly-missing-submodule]
+    except nox.command.CommandFailed:
         session.error(errmsg)
 
 

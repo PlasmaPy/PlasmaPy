@@ -220,7 +220,7 @@ class TestIonizationStateCollection:
             input_keys = sorted(input_keys, key=sort_key)
 
             for element, input_key in zip(elements_actual, input_keys, strict=False):
-                expected = tests[test_name]["inputs"][input_key]  # ty:ignore[not-subscriptable]
+                expected = tests[test_name]["inputs"][input_key]  # ty:ignore[not-subscriptable, invalid-argument-type]
 
                 if isinstance(expected, u.Quantity):
                     expected = np.array(expected.value / np.sum(expected.value))
