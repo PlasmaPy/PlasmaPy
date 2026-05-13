@@ -161,6 +161,7 @@ repos:
     # avoid messing up GitHub formatting of files in .github/content
     exclude: licenses/.*|LICENSE.md|PATENT.md
     additional_dependencies:
+    - mdformat-beautysh
     - mdformat-footnote
     - mdformat-gfm
     - mdformat-gfm-alerts
