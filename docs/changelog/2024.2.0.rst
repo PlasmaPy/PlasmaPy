@@ -50,7 +50,7 @@ Improved Documentation
 
 - Switched from ``sphinx_toolbox.collapse`` to ``sphinx_collapse`` for
   including collapsible content in our documentation. (:pr:`2387`)
-- Added a discussion of |type hint annotations| in the |testing guide|
+- Added a discussion of |type annotations| in the |testing guide|
   within the |contributor guide|. (:pr:`2440`)
 
 
@@ -73,14 +73,14 @@ Trivial/Internal Changes
 - Added a tox environment for running mypy. (:pr:`2431`)
 - Added mypy to the suite of continuous integration
   checks. (:pr:`2432`)
-- Used ``autotyping`` to implement |type hint annotations| for special
+- Used ``autotyping`` to implement |type annotations| for special
   methods like ``__init__`` and ``__str__``, and changed
   :py:`-> typing.NoReturn` annotations to :py:`-> None`. (:pr:`2437`)
 - Used ``autotyping`` to add :py:`-> None` return annotations to
   functions and methods with no :py:`return` statement. (:pr:`2439`)
-- Added a stub file containing |type hint annotations| for
+- Added a stub file containing |type annotations| for
   ``@wrapt.decorator``. (:pr:`2442`)
-- Improved |type hint annotations| for
+- Improved |type annotations| for
   `plasmapy.particles.decorators`, which includes |particle_input|,
   and the corresponding tests. (:pr:`2443`)
 - Dropped the |pre-commit| hook for ``isort`` and enabled all
