@@ -428,8 +428,8 @@ Type annotations
 PlasmaPy uses |type annotations| and |ty| to perform
 |static type checking|. Type annotations improve readability and
 maintainability by clarifying the types that a function accepts and
-returns. Type annotations also help Jupyter notebooks and IDEs provide better
-tooltips and autocompletions.
+returns. Type annotations also help Jupyter notebooks and IDEs provide
+better tooltips and autocompletions.
 
 Type hint annotations specify the expected types of arguments and return
 values. A function that accepts a `float` or `str` and returns a `str`
