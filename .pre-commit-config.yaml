@@ -128,7 +128,14 @@ repos:
   hooks:
   - id: validate-pyproject
     name: validate pyproject.toml
-    additional_dependencies: ['validate-pyproject-schema-store[all]>=2026']
+    # This hook may fail when we start using a new configuration option
+    # for a tool that has not yet been added to any of the schemas
+    # being compared against. If this becomes a recurring problem, we
+    # can drop this from pre-commit, and consider adding it as a Nox
+    # session run separately as part of the comprehensive tests on
+    # GitHub.
+    additional_dependencies:
+    - validate-pyproject[all,store]
 
 - repo: https://github.com/tox-dev/pyproject-fmt
   rev: v2.21.1
