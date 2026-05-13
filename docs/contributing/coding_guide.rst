@@ -1069,7 +1069,7 @@ The overall process of performing a release is:
 
 .. _ASCII: https://en.wikipedia.org/wiki/ASCII
 .. _autotyping: https://github.com/JelleZijlstra/autotyping
-.. _cognitive complexity: https://getdx.com/blog/cognitive-complexity/
+.. _cognitive complexity: https://getdx.com/blog/cognitive-complexity
 .. _create a release issue: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/create-release-issue.yml
 .. _Cython: https://cython.org
 .. _equivalencies: https://docs.astropy.org/en/stable/units/equivalencies.html
@@ -1089,9 +1089,10 @@ The overall process of performing a release is:
 .. _security policy: https://github.com/PlasmaPy/PlasmaPy/blob/main/.github/SECURITY.md
 .. _TOML: https://toml.io/en/v1.0.0
 .. _type hints cheat sheet: https://mypy.readthedocs.io/en/stable/cheat_sheet_py3.html
+.. _ty rules: https://docs.astral.sh/ty/rules
 .. _upgrade the lockfile: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/upgrade-uv-lock.yml
 .. _voila: https://voila.readthedocs.io
-.. _writing your pyproject.toml file: https://packaging.python.org/en/latest/guides/writing-pyproject-toml/
+.. _writing your pyproject.toml file: https://packaging.python.org/en/latest/guides/writing-pyproject-toml
 
 .. _`astropy.units`: https://docs.astropy.org/en/stable/units/index.html
 .. |astropy.units| replace:: `astropy.units`
