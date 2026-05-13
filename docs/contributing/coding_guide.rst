@@ -1089,7 +1089,7 @@ The overall process of performing a release is:
 .. _security policy: https://github.com/PlasmaPy/PlasmaPy/blob/main/.github/SECURITY.md
 .. _TOML: https://toml.io/en/v1.0.0
 .. _type hints cheat sheet: https://mypy.readthedocs.io/en/stable/cheat_sheet_py3.html
-.. _ty rules: https://docs.astral.sh/ty/rules
+.. _ty rules: https://docs.astral.sh/ty/reference/rules
 .. _upgrade the lockfile: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/upgrade-uv-lock.yml
 .. _voila: https://voila.readthedocs.io
 .. _writing your pyproject.toml file: https://packaging.python.org/en/latest/guides/writing-pyproject-toml
@@ -1097,11 +1097,14 @@ The overall process of performing a release is:
 .. _`astropy.units`: https://docs.astropy.org/en/stable/units/index.html
 .. |astropy.units| replace:: `astropy.units`
 
-.. _`uv.lock`: https://github.com/PlasmaPy/PlasmaPy/blob/main/uv.lock
-.. |uv.lock| replace:: :file:`uv.lock`
+.. _`invalid-return-type`: https://docs.astral.sh/ty/reference/rules/#invalid-return-type
+.. |invalid-return-type| replace:: `invalid-return-type`
 
 .. _`noxfile.py`: https://github.com/PlasmaPy/PlasmaPy/blob/main/noxfile.py
 .. |noxfile.py| replace:: :file:`noxfile.py`
 
 .. _`pyproject.toml`: https://github.com/PlasmaPy/PlasmaPy/blob/main/pyproject.toml
 .. |pyproject.toml| replace:: :file:`pyproject.toml`
+
+.. _`uv.lock`: https://github.com/PlasmaPy/PlasmaPy/blob/main/uv.lock
+.. |uv.lock| replace:: :file:`uv.lock`
