@@ -423,7 +423,7 @@ frustration.
   message should never be condescending or blame the user.
 
 Type annotations
-=====================
+================
 
 PlasmaPy uses |type annotations| and |ty| to perform
 |static type checking|. Type annotations improve readability and
