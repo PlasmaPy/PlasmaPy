@@ -37,8 +37,8 @@ import re
 import shutil
 import sys
 
-import nox
-import nox_uv
+import nox  # ty:ignore[unresolved-import]
+import nox_uv  # ty:ignore[unresolved-import]
 
 # SPEC 0 indicates that scientific Python packages should support
 # versions of Python that have been released in the last 3 years, or
@@ -176,7 +176,7 @@ def lock(session: nox.Session) -> None:
 
     if RUNNING_ON_CI:
         session.log(uv_output)
-        _create_lockfile_pr_message(uv_output=uv_output, session=session)
+        _create_lockfile_pr_message(uv_output=uv_output, session=session)  # ty:ignore[invalid-argument-type]
 
 
 @nox.session
@@ -324,7 +324,7 @@ def test_upstream(session: nox.Session, package: str) -> None:
 
 
 if RUNNING_ON_RTD:
-    rtd_output_path = pathlib.Path(os.environ.get("READTHEDOCS_OUTPUT")) / "html"
+    rtd_output_path = pathlib.Path(os.environ.get("READTHEDOCS_OUTPUT")) / "html"  # ty:ignore[invalid-argument-type]
     rtd_output_path.mkdir(parents=True, exist_ok=True)
     doc_build_dir = str(rtd_output_path)
 else:
@@ -476,42 +476,30 @@ def linkcheck(session: nox.Session) -> None:
     session.run(*SPHINX_BASE_COMMAND, *CHECK_HYPERLINKS, *session.posargs)
 
 
-MYPY_TROUBLESHOOTING = """
-🛡 To learn more about type hints, check out mypy's cheat sheet at:
-  https://mypy.readthedocs.io/en/stable/cheat_sheet_py3.html
-
-For more details about specific mypy errors, go to:
-🔗 https://mypy.readthedocs.io/en/stable/error_codes.html
-
-🪧 Especially difficult errors can be ignored with an inline comment of
-the form: `# type: ignore[error]`, where `error` is replaced with the
-mypy error code. Please use sparingly!
-
-🛠 To automatically add type hints for common patterns, run:
-  nox -s 'autotyping(safe)'
-"""
+TY_TROUBLESHOOTING = (
+    "\n\n"
+    "For more details about specific static type checking errors, go to: "
+    "🔗 https://docs.astral.sh/ty/reference/rules"
+    "\n\n"
+    "🛡 For an introduction to type annotations, check out: "
+    "https://mypy.readthedocs.io/en/stable/cheat_sheet_py3.html"
+    "\n\n"
+    "🛠 Automatically add type annotations for common patterns with: "
+    "nox -s 'autotyping(safe)'"
+    "\n\n"
+    "🪧 Particularly tricky errors can be ignored with an inline comment of "
+    "the form: `# ty:ignore[error]`, where `error` is replaced with the "
+    "ty error code. Please use sparingly!"
+    "\n"
+)
 
 
 @nox_uv.session(python=MAXPYTHON, uv_groups=["type_check"])
-def mypy(session: nox.Session) -> None:
-    """
-    Perform static type checking.
-
-    Configuration file: mypy.ini
-    """
+def ty(session: nox.Session) -> None:
+    """Perform static type checking with ty."""
     if RUNNING_ON_CI:
-        session.log(MYPY_TROUBLESHOOTING)
-
-    session.run(
-        "mypy",
-        ".",
-        "--install-types",
-        "--non-interactive",
-        "--show-error-context",
-        "--show-error-code-links",
-        "--pretty",
-        *session.posargs,
-    )
+        session.log(TY_TROUBLESHOOTING)
+    session.run("ty", "check", *session.posargs)
 
 
 @nox.session(name="import")
@@ -626,12 +614,12 @@ AUTOTYPING_RISKY: tuple[str, ...] = (
 )
 def autotyping(session: nox.Session, options: tuple[str, ...]) -> None:
     """
-    Automatically add type hints with autotyping.
+    Automatically add type annotations with autotyping.
 
-    The `safe` option generates very few incorrect type hints, and can
-    be used in CI. The `aggressive` option may add type hints that are
-    incorrect, so please perform a careful code review when using this
-    option.
+    The `safe` option generates very few incorrect type annotations, and
+    can be used in CI. The `aggressive` option may add type annotations
+    that are incorrect, so please perform a careful code review when
+    using this option.
 
     To check specific files, pass them after a `--`, such as:
 

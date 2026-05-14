@@ -280,7 +280,7 @@ def normalized_vector_potential(
     """
 
     a0 = (e * wavelength * np.sqrt(intensity / (2 * eps0 * c**5))) / (m_e * np.pi)
-    return a0.to(u.dimensionless_unscaled).value  # type: ignore[no-any-return]
+    return a0.to(u.dimensionless_unscaled).value
 
 
 a0_ = normalized_vector_potential

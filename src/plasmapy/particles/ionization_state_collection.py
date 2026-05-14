@@ -173,7 +173,7 @@ class IonizationStateCollection:  # noqa: PLW1641
             self.tol = tol
             self.ionic_fractions = inputs
             if set_abundances:
-                self.abundances = abundances
+                self.abundances = abundances  # ty:ignore[invalid-assignment]
                 self.log_abundances = log_abundances
             self.kappa = kappa
         except (ValueError, TypeError) as exc:
@@ -275,7 +275,7 @@ class IonizationStateCollection:  # noqa: PLW1641
             # then set the abundance if there is enough (but not too
             # much) information to do so.
 
-            abundance_is_undefined = np.isnan(self.abundances[particle])
+            abundance_is_undefined = np.isnan(self.abundances[particle])  # ty:ignore[not-subscriptable]
             isnan_of_abundance_values = np.isnan(list(self.abundances.values()))
             all_abundances_are_nan = np.all(isnan_of_abundance_values)
             n_is_defined = not np.isnan(self.n0)
@@ -378,7 +378,7 @@ class IonizationStateCollection:  # noqa: PLW1641
                         np.all(np.isnan(this)) and np.all(np.isnan(that)),
                         u.quantity.allclose(this, that, rtol=min_tol),
                     ]
-                )
+                )  # ty:ignore[no-matching-overload]
 
                 if not this_equals_that:
                     return False
@@ -672,7 +672,7 @@ class IonizationStateCollection:  # noqa: PLW1641
         isotopes composing the collection.
         """
         return {
-            elem: self.n0 * self.abundances[elem] * self.ionic_fractions[elem]
+            elem: self.n0 * self.abundances[elem] * self.ionic_fractions[elem]  # ty:ignore[not-subscriptable]
             for elem in self.base_particles
         }
 
@@ -745,9 +745,8 @@ class IonizationStateCollection:  # noqa: PLW1641
         logarithms of the relative abundances as the corresponding values.
         """
         return {
-            atom: np.log10(abundance)  # type: ignore[misc]
-            for atom, abundance in self.abundances.items()
-        }
+            atom: np.log10(abundance) for atom, abundance in self.abundances.items()
+        }  # ty:ignore[invalid-return-type]
 
     @log_abundances.setter
     def log_abundances(self, value: dict[str, float] | None):
@@ -757,7 +756,7 @@ class IonizationStateCollection:  # noqa: PLW1641
                 new_abundances_input = {
                     atom: 10**log_abundance for atom, log_abundance in value.items()
                 }
-                self.abundances = new_abundances_input
+                self.abundances = new_abundances_input  # ty:ignore[invalid-assignment]
             except ParticleError:
                 raise ParticleError("Invalid log_abundances.") from None
 
@@ -899,7 +898,7 @@ class IonizationStateCollection:  # noqa: PLW1641
             ionic_levels = ionization_state.to_list()[min_charge:]
             all_particles.extend(ionic_levels)
 
-            base_particle_abundance = self.abundances[base_particle]
+            base_particle_abundance = self.abundances[base_particle]  # ty:ignore[not-subscriptable]
 
             if np.isnan(base_particle_abundance):
                 if len(self) == 1:
@@ -917,7 +916,7 @@ class IonizationStateCollection:  # noqa: PLW1641
             use_rms_charge=use_rms_charge,
             use_rms_mass=use_rms_mass,
             abundances=all_abundances,
-        )
+        )  # ty:ignore[invalid-return-type]
 
     def summarize(
         self, minimum_ionic_fraction: float = 0.01

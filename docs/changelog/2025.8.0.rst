@@ -156,7 +156,7 @@ Internal Changes and Refactorings
   versions of several dependencies following |SPEC 0|. (:pr:`2880`)
 - Updated the release checklist following the ``v2024.10.0`` release.
   (:pr:`2886`)
-- Used `typing.Self` for type hint annotations for |Particle| and
+- Used `typing.Self` for type annotations for |Particle| and
   |CustomParticle|. (:pr:`2887`)
 - Modified tests for `~plasmapy.diagnostics.thomson.spectral_density` to cover
   the case of multiple electron species. (:pr:`2906`)

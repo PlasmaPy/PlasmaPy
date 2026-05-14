@@ -480,9 +480,9 @@ def _trilinear_jacobian(vspace, cell):
             """
             if not hasattr(v, "__len__"):
                 return v
-            if len(v) != 1:
+            if len(v) != 1:  # ty:ignore[invalid-argument-type]
                 raise ValueError("Unable to get scalar from multi-element array.")
-            return v[0]  # type: ignore[index]
+            return v[0]  # ty:ignore[not-subscriptable]
 
         return np.array(
             [

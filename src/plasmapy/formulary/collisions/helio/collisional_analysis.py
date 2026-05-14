@@ -25,7 +25,7 @@ def temp_ratio(  # noqa: C901
     v_1: u.Quantity[u.km / u.s],
     T_1: u.Quantity[u.K],
     T_2: u.Quantity[u.K],
-    ions: ParticleLike = ("p+", "He-4++"),
+    ions: ParticleLike = ("p+", "He-4++"),  # ty:ignore[invalid-parameter-default]
     n_step: int = 100,
     density_scale: float = -1.8,
     velocity_scale: float = -0.2,
@@ -199,14 +199,14 @@ def temp_ratio(  # noqa: C901
 
     # Validate ions argument
     if not isinstance(ions, list | tuple | ParticleList):
-        ions = [ions]
-    ions = ParticleList(ions)
+        ions = [ions]  # ty:ignore[invalid-assignment]
+    ions = ParticleList(ions)  # ty:ignore[invalid-argument-type, invalid-assignment]
 
     # Validate number of ions
-    if len(ions) != 2:
+    if len(ions) != 2:  # ty:ignore[invalid-argument-type]
         raise ValueError(
             "Argument 'ions' can only take two (2) input values. "
-            f"Instead received {len(ions)} input values."
+            f"Instead received {len(ions)} input values."  # ty:ignore[invalid-argument-type]
         )
 
     if not ions.is_category("ion"):

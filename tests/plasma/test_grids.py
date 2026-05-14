@@ -406,7 +406,7 @@ def test_AbstractGrid_require_quantities(
             required, replace_with_zeros=replace_with_zeros
         )
 
-        assert all(k in abstract_grid_uniform.quantities for k in required)
+        assert all(k in abstract_grid_uniform.quantities for k in required)  # ty:ignore[not-iterable]
 
 
 def test_AbstractGrid_indexing(abstract_grid_uniform) -> None:

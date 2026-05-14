@@ -590,7 +590,7 @@ equivalent_particles_table: list[list[ParticleLike]] = [
     ["tau", "tau-"],
     [Particle("Fe 5+"), Particle("Fe 4+").ionize()],
     [Particle("He-4 0+"), Particle("alpha").recombine(2)],
-]
+]  # ty:ignore[invalid-assignment]
 
 
 @pytest.mark.parametrize("equivalent_particles", equivalent_particles_table)

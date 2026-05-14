@@ -491,7 +491,7 @@ def validate_quantities(func=None, validations_on_return=None, **validations):
             def bar(self, mass: u.g, vel: u.cm / u.s) -> u.g * u.cm / u.s:
                 return mass * vel
 
-    Define units using type hint annotations::
+    Define units using type annotations::
 
         @validate_quantities
         def foo(x: u.Quantity[u.m], time: u.Quantity[u.s]) -> u.Quantity[u.m / u.s]:

@@ -379,11 +379,11 @@ class TestFindFloatingPotential:
 
         assert isinstance(extras, VFExtras)
         assert np.isclose(vf, -b / m)
-        assert np.isclose(extras.vf_err, 0.0)
-        assert np.isclose(extras.rsq, 1.0)
+        assert np.isclose(extras.vf_err, 0.0)  # ty:ignore[no-matching-overload]
+        assert np.isclose(extras.rsq, 1.0)  # ty:ignore[no-matching-overload]
         assert isinstance(extras.fitted_func, ffuncs.Linear)
-        assert np.allclose(extras.fitted_func.params, (m, b))
-        assert np.allclose(extras.fitted_func.param_errors, (0.0, 0.0), atol=2e-8)
+        assert np.allclose(extras.fitted_func.params, (m, b))  # ty:ignore[invalid-argument-type]
+        assert np.allclose(extras.fitted_func.param_errors, (0.0, 0.0), atol=2e-8)  # ty:ignore[invalid-argument-type]
 
     @pytest.mark.parametrize(
         ("a", "alpha", "b"),
@@ -403,8 +403,8 @@ class TestFindFloatingPotential:
 
         assert isinstance(extras, VFExtras)
         assert np.isclose(vf, np.log(-b / a) / alpha)
-        assert np.isclose(extras.vf_err, 0.0, 1e-7)
-        assert np.isclose(extras.rsq, 1.0)
+        assert np.isclose(extras.vf_err, 0.0, 1e-7)  # ty:ignore[no-matching-overload]
+        assert np.isclose(extras.rsq, 1.0)  # ty:ignore[no-matching-overload]
         assert isinstance(extras.fitted_func, ffuncs.ExponentialPlusOffset)
-        assert np.allclose(extras.fitted_func.params, (a, alpha, b))
-        assert np.allclose(extras.fitted_func.param_errors, (0.0, 0.0, 0.0), atol=2e-8)
+        assert np.allclose(extras.fitted_func.params, (a, alpha, b))  # ty:ignore[invalid-argument-type]
+        assert np.allclose(extras.fitted_func.param_errors, (0.0, 0.0, 0.0), atol=2e-8)  # ty:ignore[invalid-argument-type]
