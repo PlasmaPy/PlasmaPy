@@ -3,6 +3,7 @@
 # dependencies = [
 #     "pandas>=3.0.1",
 #     "requests>=2.32.5",
+#     "plasmapy>=2026.2",
 # ]
 # ///
 """
@@ -23,6 +24,8 @@ from pathlib import Path
 
 import pandas as pd
 import requests
+
+from plasmapy.particles import atomic_number
 
 elements_and_isotopes = [
     "H",
@@ -251,7 +254,9 @@ for element_or_isotope in elements_and_isotopes:
         data.apply(add_to_dict, axis=1)
 
     except KeyError:
-        logging.exception("Failed to parse data for %s", element_or_isotope)
+        atomic_numb = atomic_number(element_or_isotope)
+        logger = logging.warning if atomic_numb >= 111 else logging.error
+        logger(f"Failed to parse data for {element_or_isotope} ({atomic_numb})")
     except requests.exceptions.RequestException:
         logging.exception("Failed to retrieve data for %s", element_or_isotope)
 
