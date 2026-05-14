@@ -29,10 +29,10 @@ _version.py
 .basedpyright
 
 # Cython files
-*.[ao]
-*.[ch]
-*.cpp
-*.dll
+# *.[ao]
+# *.[ch]
+# *.cpp
+# *.dll
 
 # VS Code (while a template exists, we would need a long-term VS Code
 # user to maintain appropriate settings)
