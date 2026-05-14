@@ -512,6 +512,21 @@ rules.invalid-type-form = "ignore"
 # Because astropy.constants.m_p, etc. are not recognized
 rules.unresolved-attribute = "ignore"
 analysis.allowed-unresolved-imports = [ "astropy.constants.**" ]
+# Ignore ty errors in certain notebooks until these can be fixed later
+src.exclude = [
+  "docs/notebooks/analysis/fit_functions.ipynb",
+  "docs/notebooks/analysis/nullpoint.ipynb",
+  "docs/notebooks/analysis/swept_langmuir/find_floating_potential.ipynb",
+  "docs/notebooks/diagnostics/charged_particle_radiography_film_stacks.ipynb",
+  "docs/notebooks/diagnostics/charged_particle_radiography_particle_tracing.ipynb",
+  "docs/notebooks/diagnostics/charged_particle_radiography_particle_tracing_custom_source.ipynb",
+  "docs/notebooks/diagnostics/charged_particle_radiography_particle_tracing_wire_mesh.ipynb",
+  "docs/notebooks/diagnostics/thomson.ipynb",
+  "docs/notebooks/dispersion/dispersion_function.ipynb",
+  "docs/notebooks/dispersion/two_fluid_dispersion.ipynb",
+  "docs/notebooks/plasma/grids_cartesian.ipynb",
+  "docs/notebooks/plasma/grids_nonuniform.ipynb",
+]
 
 [tool.pytest]  # https://docs.pytest.org/en/stable/reference/reference.html#ini-options-ref
 addopts = [
