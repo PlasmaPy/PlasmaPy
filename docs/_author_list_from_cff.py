@@ -185,7 +185,7 @@ def generate_rst_file(
         The path to the output :file:`.rst` file.
     """
     cff_data = parse_cff(cff_file)
-    authors_rst = generate_rst_author_list(cff_data["authors"])
+    authors_rst = generate_rst_author_list(cff_data["authors"])  # ty:ignore[invalid-argument-type]
 
     if verbose:
         print(authors_rst)  # noqa: T201

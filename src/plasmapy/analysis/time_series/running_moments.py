@@ -14,7 +14,7 @@ from collections import namedtuple
 
 import numpy as np
 
-_run_moment_tuple = namedtuple("Running_Moment", ["run_moment", "time"])
+_run_moment_tuple = namedtuple("Running_Moment", ["run_moment", "time"])  # ty:ignore[mismatched-type-name]
 
 
 def running_mean(signal, radius: int):

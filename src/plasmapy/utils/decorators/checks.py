@@ -467,7 +467,7 @@ class CheckUnits(CheckBase):
 
     def __init__(
         self,
-        checks_on_return: u.Unit | list[u.Unit] | dict[str, Any] = None,
+        checks_on_return: u.Unit | list[u.Unit] | dict[str, Any] = None,  # ty:ignore[invalid-parameter-default]
         **checks: u.Unit | list[u.Unit] | dict[str, Any],
     ) -> None:
         super().__init__(checks_on_return=checks_on_return, **checks)
@@ -657,10 +657,12 @@ class CheckUnits(CheckBase):
             # define 'units' for unit checks &
             # define 'none_shall_pass' check
             _units = self._condition_target_units(
-                _units, from_annotations=_units_are_from_anno
+                _units,  # ty:ignore[invalid-argument-type]
+                from_annotations=_units_are_from_anno,
             )
             _units_anno = self._condition_target_units(
-                _units_anno, from_annotations=True
+                _units_anno,  # ty:ignore[invalid-argument-type]
+                from_annotations=True,
             )
             if any(_u not in _units for _u in _units_anno):
                 raise ValueError(
@@ -697,7 +699,7 @@ class CheckUnits(CheckBase):
             #
             # initialize equivalencies
             try:
-                _equivs = param_checks["equivalencies"]
+                _equivs = param_checks["equivalencies"]  # ty:ignore[not-subscriptable]
             except (KeyError, TypeError):
                 _equivs = self.__check_defaults["equivalencies"]
 

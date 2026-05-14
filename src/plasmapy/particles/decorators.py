@@ -243,7 +243,7 @@ class _ParticleInput:
         -------
         `dict` of `str` to `object`
         """
-        return self._data.get("annotations")  # type: ignore[return-value]
+        return self._data.get("annotations")  # ty:ignore[invalid-return-type]
 
     @property
     def require(self) -> Iterable[str] | None:
@@ -362,7 +362,7 @@ class _ParticleInput:
 
         if isinstance(uncharged, Iterable):
             uncharged = any(uncharged)
-            lacks_charge_info = any(lacks_charge_info)
+            lacks_charge_info = any(lacks_charge_info)  # ty:ignore[invalid-argument-type]
 
         if must_be_charged and (uncharged or must_have_charge_info):
             raise ChargeError(f"{self.callable_} can only accept charged particles.")
@@ -486,7 +486,7 @@ class _ParticleInput:
                 meets_name_criteria = particle.is_category(**categorization)
 
             if isinstance(particle, Iterable) and not isinstance(particle, str):
-                meets_name_criteria = all(meets_name_criteria)  # type: ignore[arg-type]
+                meets_name_criteria = all(meets_name_criteria)  # ty:ignore[invalid-argument-type]
 
             if not meets_name_criteria:
                 raise exception(
@@ -517,7 +517,7 @@ class _ParticleInput:
         if (
             not self.allow_custom_particles
             and isinstance(particle, ParticleList)
-            and any(particle.is_category("custom", particlewise=True))  # type: ignore[arg-type]
+            and any(particle.is_category("custom", particlewise=True))  # ty:ignore[invalid-argument-type]
         ):
             raise InvalidParticleError(
                 f"{self.callable_.__name__} does not accept CustomParticle "
@@ -599,7 +599,7 @@ class _ParticleInput:
         if annotation in _basic_particle_input_annotations and argument is None:
             raise TypeError(f"{parameter} may not be None.")
 
-        particle = _physical_particle_factory(argument, Z=Z, mass_numb=mass_numb)
+        particle = _physical_particle_factory(argument, Z=Z, mass_numb=mass_numb)  # ty:ignore[invalid-argument-type]
 
         self.verify_charge_categorization(particle)
         self.verify_particle_categorization(particle)
@@ -997,9 +997,9 @@ def particle_input(
         kwargs: MutableMapping[str, Any],
     ) -> Callable[..., Any]:
         bound_arguments = particle_validator.process_arguments(args, kwargs, instance)
-        return callable__(  # type: ignore[no-any-return]
+        return callable__(
             *bound_arguments.args,
             **bound_arguments.kwargs,
         )
 
-    return wrapper(callable_, instance=None, args=(), kwargs={})
+    return wrapper(callable_, instance=None, args=(), kwargs={})  # ty:ignore[no-matching-overload]

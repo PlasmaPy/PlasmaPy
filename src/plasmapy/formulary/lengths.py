@@ -253,7 +253,7 @@ def gyroradius(
         T = np.nan * u.K
 
     # Determine output shape and broadcast inputs accordingly
-    target_shape = np.broadcast(T, Vperp, lorentzfactor, particle).shape  # type: ignore[arg-type]
+    target_shape = np.broadcast(T, Vperp, lorentzfactor, particle).shape  # ty:ignore[invalid-argument-type]
     lorentzfactor_in = lorentzfactor
     lorentzfactor = np.array(np.broadcast_to(lorentzfactor, target_shape))
     Vperp = np.array(np.broadcast_to(Vperp, target_shape, subok=True), subok=True)

@@ -138,12 +138,12 @@ manifest = [
   "check-manifest>=0.51",
 ]
 nox = [
-  "nox>=2025.11.12",
+  "nox>=2026.4.10",
   "nox-uv>=0.7",
 ]
 type_check = [
-  "mypy>=1.19.1",
-  "pip>=25.3",
+  "ty>=0.0.35",
+  { include-group = "docs" },
   { include-group = "test" },
 ]
 zizmor = [
@@ -167,6 +167,7 @@ no-build-package = [ "astropy", "h5py", "matplotlib", "numpy", "pandas", "scipy"
 # Use a dependency cooldown so that security vulnerabilities in upstream
 # packages can be identified and yanked before we start using them.
 exclude-newer = "3 days"
+exclude-newer-package = { plasmapy-sphinx = false }
 
 [tool.ruff]
 target-version = "py312"
@@ -419,13 +420,12 @@ lint.allowed-confusables = [
 lint.dummy-variable-rgx = "^(Z|mass_numb|request|event|_.*)$"
 lint.flake8-annotations.allow-star-arg-any = true
 lint.flake8-annotations.ignore-fully-untyped = true
-lint.flake8-annotations.mypy-init-return = true
 lint.flake8-annotations.suppress-dummy-args = true
 lint.flake8-annotations.suppress-none-returning = true
 lint.flake8-import-conventions.aliases."astropy.constants" = "const"
 lint.flake8-import-conventions.aliases."astropy.units" = "u"
-lint.flake8-import-conventions.aliases."matplotlib" = "mpl"
 lint.flake8-import-conventions.aliases."matplotlib.pyplot" = "plt"
+lint.flake8-import-conventions.aliases.matplotlib = "mpl"
 lint.flake8-import-conventions.aliases.numpy = "np"
 lint.flake8-import-conventions.aliases.pandas = "pd"
 lint.flake8-import-conventions.banned-from = [
@@ -503,6 +503,29 @@ ignore = [
   "docs/*build/**",
   "Untitled*",
   "src/plasmapy/_version.py",
+]
+
+[tool.ty]
+environment.python-platform = "all"
+# Because astropy.units.Quantity[u.kg] is not recognized
+rules.invalid-type-form = "ignore"
+# Because astropy.constants.m_p, etc. are not recognized
+rules.unresolved-attribute = "ignore"
+analysis.allowed-unresolved-imports = [ "astropy.constants.**" ]
+# Ignore ty errors in certain notebooks until these can be fixed later
+src.exclude = [
+  "docs/notebooks/analysis/fit_functions.ipynb",
+  "docs/notebooks/analysis/nullpoint.ipynb",
+  "docs/notebooks/analysis/swept_langmuir/find_floating_potential.ipynb",
+  "docs/notebooks/diagnostics/charged_particle_radiography_film_stacks.ipynb",
+  "docs/notebooks/diagnostics/charged_particle_radiography_particle_tracing.ipynb",
+  "docs/notebooks/diagnostics/charged_particle_radiography_particle_tracing_custom_source.ipynb",
+  "docs/notebooks/diagnostics/charged_particle_radiography_particle_tracing_wire_mesh.ipynb",
+  "docs/notebooks/diagnostics/thomson.ipynb",
+  "docs/notebooks/dispersion/dispersion_function.ipynb",
+  "docs/notebooks/dispersion/two_fluid_dispersion.ipynb",
+  "docs/notebooks/plasma/grids_cartesian.ipynb",
+  "docs/notebooks/plasma/grids_nonuniform.ipynb",
 ]
 
 [tool.pytest]  # https://docs.pytest.org/en/stable/reference/reference.html#ini-options-ref
