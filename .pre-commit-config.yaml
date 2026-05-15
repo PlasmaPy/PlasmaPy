@@ -176,25 +176,27 @@ repos:
     additional_dependencies: [cffconvert]
     pass_filenames: false
 
-- repo: local
-  hooks:
   - id: bibtex-tidy
     name: bibtex-tidy
     entry: bibtex-tidy --modify
     language: node
-    additional_dependencies: ['bibtex-tidy@1.14.0']
+    additional_dependencies: [bibtex-tidy@1.14.0]
     files: docs/bibliography.bib
     args:
-      - --modify
-      - --omit=abstract,month
-      - --curly
-      - --numeric
-      - --space=3
-      - --no-align
-      - --sort=key
-      - --duplicates=key,doi
-      - --drop-all-caps
-      - --no-escape
-      - --sort-fields
-      - --remove-empty-fields
-      - --wrap=88
+    - --modify
+    - --omit=abstract,month
+    - --curly
+    - --numeric
+    - --space=2
+    - --no-align
+    - --no-blank-lines
+    - --sort
+    - --duplicates
+    - --no-strip-comments
+    - --no-trailing-commas
+    - --encode-urls
+    - --drop-all-caps
+    - --no-escape
+    - --sort-fields
+    - --remove-empty-fields
+    - --wrap=100
