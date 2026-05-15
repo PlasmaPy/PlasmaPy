@@ -193,11 +193,11 @@ repos:
     - --sort
     - --duplicates
     - --no-strip-comments
-    - --no-trailing-commas
+    - --trailing-commas
     - --encode-urls
     - --drop-all-caps
     - --no-escape
     - --sort-fields
     - --remove-empty-fields
-    - --wrap=1000
+    - --no-wrap
     - --tidy-comments
