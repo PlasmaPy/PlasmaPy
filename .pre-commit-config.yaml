@@ -175,10 +175,9 @@ repos:
     language: python
     additional_dependencies: [cffconvert]
     pass_filenames: false
-
   - id: bibtex-tidy
-    name: bibtex-tidy
-    entry: bibtex-tidy --modify
+    name: autoformat bibliography file
+    entry: bibtex-tidy
     language: node
     additional_dependencies: [bibtex-tidy@1.14.0]
     files: docs/bibliography.bib
@@ -187,7 +186,6 @@ repos:
     - --omit=abstract,month
     - --curly
     - --numeric
-    - --space=2
     - --no-align
     - --no-blank-lines
     - --sort
@@ -200,3 +198,4 @@ repos:
     - --sort-fields
     - --remove-empty-fields
     - --wrap=100
+    - --tidy-comments
