@@ -72,6 +72,9 @@ Classical transport models
 
 In this section, we present a broad overview of classical transport models
 implemented within this module.
+This section summarizes the classical transport models implemented in
+this module.
+
 
 Braginskii :cite:p:`braginskii:1965`
 ------------------------------------
