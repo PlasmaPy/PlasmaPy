@@ -41,6 +41,9 @@ When strong gradients or turbulence are present, transport is
 significantly increased over classical values. Classical transport
 often serves as a lower bound on losses/transport in a plasma.
 
+The plasma physics of classical transport theory has been reviewed by
+:cite:t:`balescu:1988` and :cite:t:`helander:2002`.
+
 Transport Variables
 ===================
 
