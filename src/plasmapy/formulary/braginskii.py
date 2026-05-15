@@ -70,14 +70,20 @@ the hood.
 Classical transport models
 ==========================
 
-In this section, we present a broad overview of classical transport models
-implemented within this module.
 This section summarizes the classical transport models implemented in
 this module.
 
+Braginskii
+----------
 
-Braginskii :cite:p:`braginskii:1965`
-------------------------------------
+The :cite:t:`braginskii:1965` coefficients are found from expansion of
+the kinetic equation in :wikipedia:`Laguerre polynomials`, truncated at
+the second term in their series expansion (\ :math:`k = 2`\ ). This
+theory allows for arbitrary Hall parameters and include results for
+:math:`Z ∈ \{1, 2, 3, 4, ∞\}`, where :math:`Z→∞` corresponds to a
+Lorentz gas completely stripped of electrons and the stationary ion
+approximation. Inaccuracies in this model were later corrected by
+:cite:t:`epperlein:1986` and :cite:t:`ji:2013`.
 
 The original Braginskii treatment as presented in the highly cited review
 paper from 1965. Coefficients are found from expansion of the kinetic
