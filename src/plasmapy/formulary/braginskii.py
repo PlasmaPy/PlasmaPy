@@ -13,22 +13,23 @@ Introduction
 ============
 
 Classical transport theory is derived by using kinetic theory to close
-the plasma two-fluid (electron and ion fluid) equations in the
+the plasma two-fluid (electrons and ions) equations in the
 collisional limit. The first complete model in this form was done by
 :cite:t:`braginskii:1965`.
 
 As described in the next section, this module uses fitting functions
 from the literature
-:cite:p:`braginskii:1965,spitzer:1953,spitzer:1962,epperlein:1986,ji:2013`
-to calculate the transport coefficients, which are the resistivity,
+:cite:p:`spitzer:1953, spitzer:1962, braginskii:1965, epperlein:1986, ji:2013`
+to calculate classical transport coefficients: the resistivity,
 thermoelectric conductivity, thermal conductivity, and viscosity.
 
-Keep in mind the following assumptions under which the transport equations
-are derived:
+The transport coefficients are derived with the following assumptions.
 
-1. The plasma is fully ionized, only consisting of ions and electrons.
+1. The plasma is fully ionized and consists only of ions and electrons.
    Neutral atoms are neglected.
-2. Turbulent transport does not dominate.
+
+2. Turbulent transport is not significant.
+
 3. The velocity distribution is close to Maxwellian. This implies:
 
     a) Collisional mean free path ≪ gradient scale length along field.
@@ -36,10 +37,9 @@ are derived:
 
 4. The plasma is highly collisional: collisional frequency ≫ gyrofrequency.
 
-When classical transport is not valid, e.g. due to the presence of strong
-gradients or turbulent transport, the transport is significantly increased
-by these other effects. Thus classical transport often serves as a lower
-bound on the losses / transport encountered in a plasma.
+When strong gradients or turbulence are present, transport is
+significantly increased over classical values. Classical transport
+often serves as a lower bound on losses/transport in a plasma.
 
 Transport Variables
 ===================
