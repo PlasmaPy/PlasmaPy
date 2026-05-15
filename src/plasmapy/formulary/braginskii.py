@@ -125,6 +125,18 @@ collisions, leave :math:`μ = 0`\ . To consider them, specify ``mu`` and
 ``theta``.
 """
 
+# Ji & Held (2013) was followed up with by an erratum, along with another
+# paper that relaxed some artificial assumptions, that might not be
+# accounted for in the current implementation. For details, see
+# https://github.com/PlasmaPy/PlasmaPy/issues/3277
+
+# Additional classical transport models that might warrant being
+# implemented include:
+#
+# - Sadler et al. (2021): https://github.com/PlasmaPy/PlasmaPy/issues/3278
+# - Davies et al. (2021): https://doi.org/10.1063/5.0023445
+# - Simakov (2022): https://doi.org/10.1063/5.0080151
+
 __all__ = [
     "ClassicalTransport",
     "resistivity",
