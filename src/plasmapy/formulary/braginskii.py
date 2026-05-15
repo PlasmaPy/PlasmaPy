@@ -110,17 +110,19 @@ in order to correct inaccuracies in the :cite:t:`braginskii:1965` model.
    The Epperlein-Haines model has not yet been implemented (see
    :issue:`311`).
 
-Ji-Held :cite:p:`ji:2013`
--------------------------
+Ji-Held
+-------
 
-This is a modern treatment of the classical transport problem that has been
-carried out with laudable care. It allows for arbitrary hall parameter and
-arbitrary :math:`Z` for all coefficients. Similar to the Epperlein-Haines model,
-it corrects some known inaccuracies in the original Braginskii results,
-notably the asymptotic behavior of alpha-cross and beta_perp as Hall →
-+infinity. It also studies effects of electron collisions in the ion
+:cite:t:`ji:2013` provide a modern careful treatment of the classical
+transport problem, allowing for arbitrary Hall parameter and arbitrary
+:math:`Z` for all coefficients. Similar to the :cite:t:`epperlein:1986`
+model, Ji & Held correct some known inaccuracies in the
+:cite:t:`braginskii:1965` results, including the asymptotic behavior of
+:math:`α_∧` and :math:`β_⟂` as the Hall parameter goes to infinity.
+This paper also studies effects of electron collisions in the ion
 terms, which all other treatments have not. To neglect electron-electron
-collisions, leave :math:`μ = 0`\ . To consider them, specify mu and theta.
+collisions, leave :math:`μ = 0`\ . To consider them, specify ``mu`` and
+``theta``.
 """
 
 __all__ = [
