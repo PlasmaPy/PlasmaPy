@@ -202,7 +202,7 @@ class ClassicalTransport:
         included.  Different theories support different values of
         ``Z``. For the original Braginskii model, ``Z`` can be any of
         [1, 2, 3, 4, infinity]. The Ji-Held model supports arbitrary
-        ``Z``. Average ionization states ``Z_mean`` can be input using
+        ``Z``. Average ionization states ``Z`` can be input using
         this input and the Ji-Held model, although doing so may neglect
         effects caused by multiple ion populations.
 
