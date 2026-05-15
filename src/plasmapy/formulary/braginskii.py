@@ -343,7 +343,7 @@ class ClassicalTransport:
         m_i: u.Quantity[u.kg] = None,
         Z=None,
         B: u.Quantity[u.T] = 0.0 * u.T,
-        model: str = "Braginskii",
+        model: str = "braginskii",
         field_orientation: str = "parallel",
         coulomb_log_ei=None,
         V_ei=None,
