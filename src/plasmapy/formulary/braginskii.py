@@ -54,23 +54,18 @@ the following links to documentation of methods of |ClassicalTransport|.
 * `~plasmapy.formulary.braginskii.ClassicalTransport.ion_viscosity`
 * `~plasmapy.formulary.braginskii.ClassicalTransport.electron_viscosity`
 
-Using the module
-================
+Using this module
+=================
 
-Given that many of the transport variables share a lot of the same computation
-and many are often needed to be calculated simultaneously, this module provides
-a |ClassicalTransport| class that can be initialized once with all of the
-variables necessary for calculation. It then provides all of the functionality
-as methods (please refer to its documentation).
+Given that many of the transport variables share some calculations
+and often many coefficients need to be calculated simultaneously, this
+module provides the |ClassicalTransport| class that can be initialized
+once with all the necessary variables. |ClassicalTransport| then
+provides all the transport coefficients as attributes.
 
-If you only wish to calculate a single transport variable (or if just don't
-like object-oriented interfaces), we have also provided wrapper functions in
-the main module namespace that use |ClassicalTransport| under the hood (see below,
-in the Functions section).
-
-.. warning::
-
-    The API for this package is not yet stable.
+If you only wish to calculate a single transport coefficient, this
+module provides wrapper functions that use |ClassicalTransport| under
+the hood.
 
 Classical transport models
 ==========================
