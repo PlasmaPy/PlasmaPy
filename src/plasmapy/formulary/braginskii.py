@@ -98,18 +98,17 @@ the resistivity for a strong perpendicular magnetic field. They provided
 results for :math:`Z ∈ \{1, 2, 4, 16, ∞\}`, where :math:`Z → ∞`
 corresponds to a Lorentz gas with stationary ions.
 
-These coefficients were obtained from a numerical solution of the
-Fokker-Planck equation. They give one of the earliest and most accurate
-(in the Fokker-Planck sense) results for electron transport in simple
-plasma. They principally apply in the unmagnetized / parallel field
-case, although for resistivity Spitzer also calculated a famous result
-for a strong perpendicular magnetic field. Results are for Z = 1, 2, 4,
-16, and infinity (Lorentz gas / stationary ion approximation).
+Epperlein-Haines
+----------------
 
-Epperlein-Haines :cite:p:`epperlein:1986`
------------------------------------------
+:cite:t:`epperlein:1986` provides transport coefficients in a magnetized
+plasma through direct numerical solution of the Fokker-Planck equation
+in order to correct inaccuracies in the :cite:t:`braginskii:1965` model.
 
-Not yet implemented.
+.. note::
+
+   The Epperlein-Haines model has not yet been implemented (see
+   :issue:`311`).
 
 Ji-Held :cite:p:`ji:2013`
 -------------------------
