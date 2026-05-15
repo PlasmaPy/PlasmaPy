@@ -85,15 +85,18 @@ Lorentz gas completely stripped of electrons and the stationary ion
 approximation. Inaccuracies in this model were later corrected by
 :cite:t:`epperlein:1986` and :cite:t:`ji:2013`.
 
-The original Braginskii treatment as presented in the highly cited review
-paper from 1965. Coefficients are found from expansion of the kinetic
-equation in Laguerre polynomials, truncated at the second term in their
-series expansion (\ :math:`k = 2`\ ). This theory allows for arbitrary Hall parameter
-and include results for Z = 1, 2, 3, 4, and infinity (the case of Lorentz
-gas completely stripped of electrons, and the stationary ion approximation).
+Spitzer-Härm
+------------
 
-Spitzer-Harm :cite:p:`spitzer:1953,spitzer:1962`
-------------------------------------------------
+:cite:t:`spitzer:1953` and :cite:t:`spitzer:1962` find transport
+coefficients by numerically solving the
+:wikipedia:`Fokker-Planck equation`. These papers provide one of the
+earliest and most accurate Fokker-Planck results for electron transport
+in a simple plasma. These coefficients primarily apply in the
+unmagnetized and parallel magnetic field cases, while also calculating
+the resistivity for a strong perpendicular magnetic field. They provided
+results for :math:`Z ∈ \{1, 2, 4, 16, ∞\}`, where :math:`Z → ∞`
+corresponds to a Lorentz gas with stationary ions.
 
 These coefficients were obtained from a numerical solution of the
 Fokker-Planck equation. They give one of the earliest and most accurate
