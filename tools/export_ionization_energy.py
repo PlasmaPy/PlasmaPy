@@ -1,8 +1,19 @@
-"""Utility script for pulling ionization energy data from NIST and exporting it to a JSON file.
+# /// script
+# requires-python = ">=3.14"
+# dependencies = [
+#     "pandas>=3.0.1",
+#     "requests>=2.32.5",
+#     "plasmapy>=2026.2",
+# ]
+# ///
+"""
+Retrieve ionization energy data from NIST and export it to a JSON file.
 
-This script retrieves ionization energy data for elements from the NIST website,
-formats it, and saves it as a JSON file for inclusion in the PlasmaPy package.
-This script is provided for reference and is not intended to be part of the PlasmaPy package.
+This script retrieves ionization energy data for elements and certain
+isotopes from the NIST website, formats it, and saves it as a JSON file
+for use in PlasmaPy.
+
+This script is excluded from built distributions of PlasmaPy.
 """
 
 import json
@@ -14,10 +25,12 @@ from pathlib import Path
 import pandas as pd
 import requests
 
-# Updated list of element symbols including Deuterium
-elements = [
+from plasmapy.particles import atomic_number
+
+elements_and_isotopes = [
     "H",
     "D",
+    "T",
     "He",
     "Li",
     "Be",
@@ -150,9 +163,9 @@ def add_to_dict(row) -> None:
 
 
 # Iterate through each element
-for element in elements:
+for element_or_isotope in elements_and_isotopes:
     params = {
-        "spectra": element,
+        "spectra": element_or_isotope,
         "submit": "Retrieve Data",
         "units": 1,
         "format": 2,
@@ -170,7 +183,6 @@ for element in elements:
         "biblio": "on",
     }
 
-    # Send GET request
     response = requests.get(base_url, params=params, timeout=10)
 
     try:
@@ -234,23 +246,34 @@ for element in elements:
         # Remove rows where Ionization Energy (eV) is NaN
         data = data.dropna(subset=["Ionization Energy (eV)"])
 
-        # Convert Ionization Energy (eV) to float
         data["Ionization Energy (eV)"] = data["Ionization Energy (eV)"].astype(float)
 
-        # Rename Ionization Energy (eV) to ionization energy
         data = data.rename(columns={"Ionization Energy (eV)": "ionization_energy"})
 
         # Add the data if ionization energy data is available; each ion is a separate record
         data.apply(add_to_dict, axis=1)
 
     except KeyError:
-        logging.exception("Failed to parse data for %s", element)
+        atomic_numb = atomic_number(element_or_isotope)
+        logger = logging.warning if atomic_numb >= 111 else logging.error
+        logger(f"Failed to parse data for {element_or_isotope} ({atomic_numb})")
     except requests.exceptions.RequestException:
-        logging.exception("Failed to retrieve data for %s", element)
+        logging.exception("Failed to retrieve data for %s", element_or_isotope)
 
-    # Delay of .5 seconds to avoid hitting rate limits or putting too much load on NIST
-    time.sleep(0.5)
+    # Delay to avoid hitting rate limits or putting too much load on NIST
+    time.sleep(0.05)
 
 # Export the data to a JSON file
-with Path.open(Path(__file__).parent / "ionization_energy.json", "w") as f:
+
+outfile = (
+    Path(__file__).parent.parent
+    / "src"
+    / "plasmapy"
+    / "particles"
+    / "data"
+    / "ionization_energy.json"
+)
+
+
+with outfile.open("w") as f:
     json.dump(ionization_data, f, indent=2)
