@@ -23,8 +23,7 @@ jobs:
 
     - name: Check PHEP 3 Compliance
       uses: heliophysicsPy/pyhc-actions/phep3-compliance@v1
-      with:
-        ignore-errors-for: xarray  # astropy.units interoperability; needed through April 2026
+      # Use `ignore-errors-for` to allow exceptions to PHEP 3 policy
 
   pyhc-env-compat:
     name: PyHC Environment Compatibility
