@@ -2,11 +2,6 @@
 
 The [`.github/workflows`](.) directory contains [YAML] files that describe the [GitHub Actions] workflows used for during PlasmaPy development, including for continuous integration (CI) checks on pull requests (PRs).
 
-> [!NOTE]
-> Many of the workflows use the [Nox] task automation tool to run sessions defined in [`noxfile.py`](../../noxfile.py). Nox lets us run workflows locally using the same Python environment used in CI.
->
-> To see the workflows that are available, run `nox -l`. To locally execute a session named `tests-3.14(skipslow)`, run `nox -s "tests-3.14(skipslow)"`.
-
 ## Workflows
 
 ### CI
@@ -38,6 +33,8 @@ The [`.github/workflows`](.) directory contains [YAML] files that describe the [
 
 - [`comment-on-pr.yml`](./comment-on-pr.yml) — comment on PRs with information on how to contribute
 - [`labeler.yml`](./labeler.yml) — add labels to PRs
+- [`stale.yml`](./stale.yml) — close issues and PRs that have been inactive for a very long time
+- [`unlabel-pr-after-merge.yml`](./unlabel-pr-after-merge.yml) — remove certain labels from PRs after merging
 
 [github actions]: https://docs.github.com/en/actions
 [nox]: https://nox.thea.codes
