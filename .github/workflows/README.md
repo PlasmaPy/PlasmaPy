@@ -37,5 +37,4 @@ The [`.github/workflows`](.) directory contains [YAML] files that describe the [
 - [`unlabel-pr-after-merge.yml`](./unlabel-pr-after-merge.yml) — remove certain labels from PRs after merging
 
 [github actions]: https://docs.github.com/en/actions
-[nox]: https://nox.thea.codes
 [yaml]: https://en.wikipedia.org/wiki/YAML
