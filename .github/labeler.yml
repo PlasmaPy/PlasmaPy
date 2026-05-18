@@ -195,8 +195,6 @@ release:
     - any-glob-to-any-file: [
       '.github/workflows/ci-comprehensive.yml',
       'pyproject.toml',
-      'uv.lock',
-      'noxfile.py',
     ]
 
 'static type checking':
