@@ -1,8 +1,10 @@
-# Define continuous integration (CI) checks to be performed during
-# pull requests, such as running tests and building documentation.
+# Define continuous integration checks for all pull requests.
 #
-# The checks are defined in noxfile.py. After installing uv, the checks
-# can be run locally with
+# These checks include running tests for different versions of Python,
+# building the documentation, and performing static type checking.
+#
+# The checks are defined in `noxfile.py`. After installing uv, the
+# checks can be run locally in the top-level directory with
 #
 #    uvx nox -s '<nox_session>'
 #
@@ -22,7 +24,7 @@ on:
   pull_request:
   workflow_dispatch:
 
-permissions: {}  # disables all GitHub permissions for the workflow
+permissions: {}  # disable all GitHub permissions for the workflow
 
 env:
   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
