@@ -24,12 +24,21 @@ jobs:
           if (!pull.data.merged) return;
 
           const labelsToRemove = [
+            'effort: high',
+            'effort: low',
+            'effort: medium',
+            'effort: minimal',
+            'effort: very high',
             'good first issue',
             'help wanted',
             'needed for release',
             'needs changelog entry',
             'no changelog entry needed',
             'perform linkcheck in CI',
+            'priority: high',
+            'priority: low',
+            'priority: medium',
+            'priority: very high',
             'prototype 🏗️',
             'run comprehensive tests',
             'run upstream tests',
