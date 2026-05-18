@@ -30,9 +30,22 @@ jobs:
             'needs changelog entry',
             'no changelog entry needed',
             'perform linkcheck in CI',
+            'prototype 🏗️',
             'run comprehensive tests',
             'run upstream tests',
             'skip changelog checks',
+            'Stale',
+            'status: assigned',
+            'status: dormant',
+            'status: in progress',
+            'status: nearing completion',
+            'status: needs discussion',
+            'status: not planned',
+            'status: on hold',
+            'status: ready for review',
+            'status: ready to merge',
+            'test failure is unrelated',
+            'wish list 🌠',
           ];
 
           const { data: currentLabels } = await github.rest.issues.listLabelsOnIssue({ owner, repo, issue_number: number });
