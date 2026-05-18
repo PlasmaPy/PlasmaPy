@@ -1,4 +1,9 @@
-name: Close stale issues and PRs
+# Close pull requests that have been dormant for a year and issues that
+# have been dormant for five years.
+#
+# Documentation: https://github.com/actions/stale
+
+name: Close dormant issues and PRs
 
 on:
   schedule:

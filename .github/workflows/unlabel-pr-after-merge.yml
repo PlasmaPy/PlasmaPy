@@ -1,4 +1,4 @@
-# Remove labels from issues and pull request
+# Remove labels after a pull request has been merged.
 
 name: Close PR
 
@@ -53,7 +53,6 @@ jobs:
             'status: on hold',
             'status: ready for review',
             'status: ready to merge',
-            'test failure is unrelated',
             'wish list 🌠',
           ];
 
