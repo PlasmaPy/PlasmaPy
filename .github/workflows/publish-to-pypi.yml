@@ -1,3 +1,8 @@
+# Publish a release made on GitHub to the Python Package Index (PyPI).
+#
+# This workflow is triggered automatically after a release is performed
+# on GitHub.
+
 name: Publish to PyPI
 
 on:
