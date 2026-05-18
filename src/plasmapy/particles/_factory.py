@@ -117,7 +117,7 @@ _particle_constructors: tuple[
     CustomParticle._from_quantities,  # noqa: SLF001
     ParticleList,
     _make_custom_particle_with_real_charge_number,
-)
+)  # ty:ignore[invalid-assignment]
 
 _particle_types: tuple[type, ...] = (Particle, CustomParticle, ParticleList)
 
@@ -195,14 +195,14 @@ def _physical_particle_factory(
             kwargs.pop(parameter)
 
     if len(args) == 1 and not kwargs and isinstance(args[0], _particle_types):
-        return args[0]  # type: ignore[return-value]
+        return args[0]  # ty:ignore[invalid-return-type]
 
     if not args and not kwargs:
         raise TypeError("Particle information has not been provided.")
 
     for constructor in _particle_constructors:
         with contextlib.suppress(ChargeError, InvalidParticleError, TypeError):
-            return constructor(*args, **kwargs)  # type: ignore[return-value]
+            return constructor(*args, **kwargs)  # ty:ignore[invalid-return-type]
 
     if args and not isinstance(args[0], str | Integral | u.Quantity):
         raise TypeError(
@@ -210,4 +210,4 @@ def _physical_particle_factory(
             f"valid particle type."
         )
 
-    raise InvalidParticleError(_generate_particle_factory_error_message(args, kwargs))
+    raise InvalidParticleError(_generate_particle_factory_error_message(args, kwargs))  # ty:ignore[invalid-argument-type]

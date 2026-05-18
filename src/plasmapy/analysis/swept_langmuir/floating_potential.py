@@ -192,7 +192,7 @@ def find_floating_potential(  # noqa: C901, PLR0912, PLR0915
     }
     try:
         min_point_factor = _settings[fit_type]["min_point_factor"]
-        fit_func = _settings[fit_type]["func"]()
+        fit_func = _settings[fit_type]["func"]()  # ty:ignore[call-non-callable]
         rtn_extras["fitted_func"] = fit_func
     except KeyError as ex:
         raise ValueError(
@@ -217,7 +217,7 @@ def find_floating_potential(  # noqa: C901, PLR0912, PLR0915
 
     # condition min_points
     if min_points is None:
-        min_points = int(np.max([5, np.around(min_point_factor * voltage.size)]))
+        min_points = int(np.max([5, np.around(min_point_factor * voltage.size)]))  # ty:ignore[unsupported-operator]
     elif not isinstance(min_points, float | np.floating | int | np.integer):
         raise TypeError(
             f"Argument 'min_points' is wrong type '{type(min_points)}', expecting "
@@ -285,7 +285,7 @@ def find_floating_potential(  # noqa: C901, PLR0912, PLR0915
                 PlasmaPyWarning,
             )
 
-            return np.nan, VFExtras(**rtn_extras)
+            return np.nan, VFExtras(**rtn_extras)  # ty:ignore[invalid-return-type]
 
     # Construct crossing-island (pad if needed)
     if np.isinf(min_points):

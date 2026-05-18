@@ -136,7 +136,7 @@ class Test__characteristic_errors:
         ab_sub = a - b
 
         errStr = "Subtraction of characteristic objects is not behaving as it should."
-        assert (a.current - b.current == ab_sub.current).all(), errStr
+        assert (a.current - b.current == ab_sub.current).all(), errStr  # ty:ignore[unsupported-operator]
 
 
 @pytest.fixture
