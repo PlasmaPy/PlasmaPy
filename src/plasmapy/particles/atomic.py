@@ -1157,6 +1157,33 @@ def _get_NIST_category_name(incident_particle: ParticleLike) -> str:
         )
 
 
+def _read_NIST_stopping_data(incident_particle, material):
+    """
+    Retrieve data from the NIST database on the provided material.
+
+    The relevant database is determined by the provided incident particle.
+    """
+
+    group_name = _get_NIST_category_name(incident_particle)
+    # TODO: figure out a better way of handling the Downloader() here (i.e. singleton?)
+    nist_data_path = Downloader().get_file("NIST_STAR.hdf5")
+
+    # Validate particle input. Currently, the only supported particles are protons and electrons.
+    with h5py.File(nist_data_path, "r") as nist_data:
+        group_data = nist_data[group_name]
+        if material not in group_data:
+            raise ValueError(
+                f"Please pass a valid material string! Material {material} not found in {group_name}."
+            )
+
+        # Energies are not included in the material data. They must be loaded from a separate data set.
+        # To differentiate from "energies" which refers to the user provided energies, we use "baseline_energies"
+        baseline_energies_data = np.copy(group_data["energy"])
+        material_data = np.copy(group_data[material])
+
+    return baseline_energies_data, material_data
+
+
 @particle_input
 @validate_quantities(energies=u.MeV)
 def stopping_power(
@@ -1212,38 +1239,25 @@ def stopping_power(
     Valid materials can be found on the NIST STAR website. The default energies
     are taken from the data points in the STAR database.
     """
-    group_name = _get_NIST_category_name(incident_particle)
-    # TODO: figure out a better way of handling the Downloader() here
-    nist_data_path = Downloader().get_file("NIST_STAR.hdf5")
+    baseline_energies_data, material_data = _read_NIST_stopping_data(
+        incident_particle, material
+    )
 
-    # Validate particle input. Currently, the only supported particles are protons and electrons.
-    with h5py.File(nist_data_path, "r") as nist_data:
-        group_data = nist_data[group_name]
-        if material not in group_data:
-            raise ValueError(
-                f"Please pass a valid material string! Material {material} not found in {group_name}."
-            )
+    if component == "total":
+        relevant_stopping_data = (
+            material_data["electronic_stopping_power"]
+            + material_data["nuclear_stopping_power"]
+        )
+    elif component == "electronic":
+        relevant_stopping_data = material_data["electronic_stopping_power"]
+    elif component == "nuclear":
+        relevant_stopping_data = material_data["nuclear_stopping_power"]
+    else:
+        raise ValueError(
+            f"Please specify one of: total, electronic, or nuclear for component! (Got {component}.)"
+        )
 
-        # Energies are not included in the material data. They must be loaded from a separate data set.
-        # To differentiate from "energies" which refers to the user provided energies, we use "baseline_energies"
-        baseline_energies_data = np.copy(group_data["energy"])
-        material_data = group_data[material]
-
-        if component == "total":
-            relevant_stopping_data = (
-                material_data["electronic_stopping_power"]
-                + material_data["nuclear_stopping_power"]
-            )
-        elif component == "electronic":
-            relevant_stopping_data = material_data["electronic_stopping_power"]
-        elif component == "nuclear":
-            relevant_stopping_data = material_data["nuclear_stopping_power"]
-        else:
-            raise ValueError(
-                f"Please specify one of: total, electronic, or nuclear for component! (Got {component}.)"
-            )
-
-        relevant_stopping_data = np.copy(relevant_stopping_data)
+    relevant_stopping_data = np.copy(relevant_stopping_data)
 
     if energies is None and not return_interpolator:
         return (
@@ -1324,34 +1338,19 @@ def stopping_range(
     Valid materials can be found on the NIST STAR website. The default energies
     are taken from the data points in the STAR database.
     """
-    group_name = _get_NIST_category_name(incident_particle)
-    nist_data_path = Downloader().get_file("NIST_STAR.hdf5")
+    baseline_energies_data, material_data = _read_NIST_stopping_data(
+        incident_particle, material
+    )
 
-    # Validate particle input. Currently, the only supported particles are protons and electrons.
-    with h5py.File(nist_data_path, "r") as nist_data:
-        group_data = nist_data[group_name]
-
-        if material not in group_data:
-            raise ValueError(
-                f"Please pass a valid material string! Material {material} not found in {group_name}."
-            )
-
-        # Energies are not included in the material data. They must be loaded from a separate data set.
-        # To differentiate from "energies" which refers to the user provided energies, we use "baseline_energies"
-        baseline_energies_data = np.copy(group_data["energy"])
-        material_data = group_data[material]
-
-        if range_type == "CSDA":
-            range_data = material_data["csda_range"]
-        elif range_type == "projected":
-            # TODO: Update our dataset so we don't have to use this trick
-            range_data = material_data["csda_range"] * material_data["detour_factor"]
-        else:
-            raise ValueError(
-                f"Please specify one of: CSDA or projected for `range_type`! (Got {range_type}.)"
-            )
-
-        range_data = np.copy(range_data)
+    if range_type == "CSDA":
+        range_data = material_data["csda_range"]
+    elif range_type == "projected":
+        # TODO: Update our dataset so we don't have to use this trick
+        range_data = material_data["csda_range"] * material_data["detour_factor"]
+    else:
+        raise ValueError(
+            f"Please specify one of: CSDA or projected for `range_type`! (Got {range_type}.)"
+        )
 
     if energies is None and not return_interpolator:
         return (
