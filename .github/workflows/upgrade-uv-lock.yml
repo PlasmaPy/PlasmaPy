@@ -1,3 +1,8 @@
+# Create a pull request to upgrade the lockfile that defines the Python
+# environments used in most continuous integration checks.
+#
+# For more details, see: .github/content/upgrade-uv-lock-pr-body.md
+
 name: Upgrade uv.lock
 
 on:
