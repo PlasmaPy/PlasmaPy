@@ -45,7 +45,8 @@ def _grab_charge(ion: ParticleLike, z_mean=None):
     B={"can_be_negative": False},
 )
 def Bohm_diffusion(
-    T_e: u.Quantity[u.K], B: u.Quantity[u.T],
+    T_e: u.Quantity[u.K],
+    B: u.Quantity[u.T],
 ) -> u.Quantity[u.m**2 / u.s]:
     r"""
     Return the Bohm diffusion coefficient.
