@@ -21,7 +21,7 @@ In information security, the [principle of least privilege] states that contribu
 
 - Every project asset should be accessible by at least ∼2–3 active team members to prevent loss of access.
 - Members of the PlasmaPy GitHub organization should only be given permissions that they need.
-- Permissions for the GitHub organziation should be reviewed annually.
+- Permissions for the GitHub organization should be reviewed annually.
 
 Further recommendations are described in [SPEC 6].
 
