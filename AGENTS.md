@@ -2,16 +2,19 @@
 
 This file provides context, rules, and guidelines for AI coding assistants working on this repository.
 
+## Project overview
+
+- `plasmapy` is a Python package that contains software tools for plasma science.
+- Source code is located in `src/`.
+
 ## Development environment
 
-- This project uses `uv` to manage the development environment.
-- The development environment can be created with `uv venv` and synced with `uv sync`.
-- If there is a merge conflict in `uv.lock`, first try running `uv lock`. If that doesn't work, run `uvx nox --session lock`.
+- Set up the development environment with `uv venv` followed by `uv sync`.
+- If there is a merge conflict in `uv.lock`, run `uv lock`. If that doesn't work, run `uvx nox --session lock`.
 
 ## Contribution guidelines
 
-- Every commit made by an AI coding assistant should indicate that it was made by an AI coding assistant, such as by starting each commit message with the name of the AI coding assistant in square brackets (e.g., `[Gemini]`, `[ChatGPT]`, or `[CoPilot]`).
-- Do not fix issues labeled with "good first issue" because they are reserved to provide human contributors with a chance to learn how to manually make a contribution.
+- Start every commit message with the name of the coding agent in square brackets (e.g., `[Gemini]`, `[Claude]` or `[Copilot]`).
 
 ## Contributor guide
 
@@ -23,19 +26,18 @@ This file provides context, rules, and guidelines for AI coding assistants worki
 
 ## Style
 
-- Follow the PEP 8 style guide.
-- Lint files with `pre-commit`, which uses `ruff`.
-- Follow the style conventions in `.editorconfig`.
+- Lint files with `uvx pre-commit`.
+- Use SI units.
 
 ## Documentation
 
 - The documentation is written in reStructuredText, built with Sphinx, and hosted on Read the Docs.
-- The documentation can be built with `nox --session docs`.
-- Use the numpydoc style for docstrings.
+- The documentation is built with `uvx nox --session docs`.
+- Use numpydoc style docstrings.
 
 ## Changelog
 
-- Except for trivial changes, each pull request should have a changelog entry in the `changelog/` directory using the guidelines in `changelog/README.md`.
+- When changes are not trivial, include a changelog entry in the `changelog/` directory using the guidelines in `changelog/README.md`.
 
 ## Testing instructions
 
