@@ -2,7 +2,8 @@
 #
 # The verification is skipped if either of the `no changelog entry needed`
 # or `skip changelog checks` labels have been applied. These labels are
-# automatically applied to certain automated or minor pull requests.
+# automatically applied to certain automated or minor pull requests
+# using the configuration in .github/labeler.yml.
 
 name: Changelog
 

@@ -1,3 +1,8 @@
+# Create a pull request to upgrade the lockfile that defines the Python
+# environments used in most continuous integration checks.
+#
+# For more details, see: .github/content/upgrade-uv-lock-pr-body.md
+
 name: Upgrade uv.lock
 
 on:
@@ -24,7 +29,7 @@ jobs:
         enable-cache: true
 
     - name: Run Nox session to upgrade uv.lock
-      run: uvx nox -s lock
+      run: uvx nox --session lock
 
     # When a pull request is created by a GitHub Action, normally the
     # checks will not be run. While the simplest workaround would have
