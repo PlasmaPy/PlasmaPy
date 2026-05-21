@@ -8,7 +8,6 @@ graft src
 graft tests
 graft tools
 graft type_stubs
-graft .gemini/settings.json
 
 include *.ini *.toml *.yaml *.yml
 include *.md
@@ -17,6 +16,7 @@ include *.pyi
 include *.rst
 include *.txt
 include .editorconfig
+include .gemini/settings.json
 include .git-blame-ignore-revs
 include .jupyter/*.py
 include binder/requirements.txt
