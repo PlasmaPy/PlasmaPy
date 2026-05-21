@@ -1,3 +1,5 @@
+# Verify that the author of a pull request is included in CITATION.cff.
+
 name: Check metadata
 
 on:

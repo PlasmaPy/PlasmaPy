@@ -167,11 +167,37 @@ repos:
     - mdformat-gfm-alerts
     - mdformat-ruff
 
+- repo: https://github.com/citation-file-format/cffconvert
+  rev: 054bda51dbe278b3e86f27c890e3f3ac877d616c
+  hooks:
+  - id: validate-cff
+    name: validate CITATION.cff
+
 - repo: local
   hooks:
-  - id: cff
-    name: validate CITATION.cff
-    entry: cffconvert --validate
-    language: python
-    additional_dependencies: [cffconvert]
-    pass_filenames: false
+  - id: bibtex-tidy
+    # The official pre-commit hook for bibtex-tidy did not install its
+    # Node.js requirement, so this is a workaround.
+    name: autoformat bibliography file
+    entry: bibtex-tidy
+    language: node
+    additional_dependencies: [bibtex-tidy@1.14.0]
+    files: docs/bibliography.bib
+    args: # https://github.com/FlamingTempura/bibtex-tidy#cli
+    - --modify
+    - --omit=abstract,month,address,adsurl,adsnote
+    - --curly
+    - --numeric
+    - --no-align
+    - --blank-lines
+    - --sort
+    - --duplicates
+    - --no-strip-comments
+    - --trailing-commas
+    - --encode-urls
+    - --drop-all-caps
+    - --no-escape
+    - --sort-fields
+    - --remove-empty-fields
+    - --no-wrap
+    - --tidy-comments

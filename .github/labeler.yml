@@ -23,7 +23,6 @@ CI:
       '.pre-commit-config.yaml',
       '.readthedocs.yml',
       'codecov.yaml',
-      'mypy.ini',
     ]
 
 'contributor guide':
@@ -71,7 +70,6 @@ docs:
       'docs/**/*.py',
       'docs/**/make.bat',
       'docs/**/Makefile',
-      'docs/**/plasmapy_sphinx/**',
       'docs/**/robots.txt',
     ]
 
@@ -88,7 +86,6 @@ linters:
     - any-glob-to-any-file: [
       '.editorconfig',
       '.pre-commit*.yaml',
-      '.sourcery.yaml',
       '_typos.toml',
     ]
 
@@ -198,14 +195,11 @@ release:
     - any-glob-to-any-file: [
       '.github/workflows/ci-comprehensive.yml',
       'pyproject.toml',
-      'uv.lock',
-      'noxfile.py',
     ]
 
 'static type checking':
   - changed-files:
     - any-glob-to-any-file: [
-      '**/*mypy*',
       '**/py.typed',
       '**/type_stubs/**',
     ]
@@ -219,7 +213,7 @@ testing:
       '**/test*.py',
       '**/tests/**',
       '*codecov.y*ml',
-      '.github/workflows/ci.yml',
+      '.github/workflows/ci*.yml',
     ]
 
 tools:

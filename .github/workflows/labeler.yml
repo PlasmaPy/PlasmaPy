@@ -1,6 +1,11 @@
+# Add labels to pull requests.
+#
+# Labeler rules are defined in: .github/labeler.yaml
+#
+# Documentation: https://github.com/actions/labeler#pull-request-labeler
+
 name: Pull Request Labeler
 
-# See https://github.com/actions/labeler#permissions
 on:
 - pull_request_target  # zizmor: ignore[dangerous-triggers]
 
