@@ -45,7 +45,7 @@ def _grab_charge(ion: ParticleLike, z_mean=None):
     B={"can_be_negative": False},
 )
 def Bohm_diffusion(
-    T_e: u.Quantity[u.K], B: u.Quantity[u.T]
+    T_e: u.Quantity[u.K], B: u.Quantity[u.T],
 ) -> u.Quantity[u.m**2 / u.s]:
     r"""
     Return the Bohm diffusion coefficient.
@@ -61,8 +61,8 @@ def Bohm_diffusion(
 
         D_B = \frac{1}{16} \frac{k_B T}{e B}
 
-    where :math:`k_B` is the Boltzmann constant
-    and :math:`e` is the fundamental charge.
+    where :math:`k_B` is the Boltzmann constant and :math:`e` is the
+    fundamental charge.
 
     **Aliases:** `DB_`
 
@@ -104,7 +104,6 @@ def Bohm_diffusion(
     -------
     D_B : `~astropy.units.Quantity`
         The Bohm diffusion coefficient in meters squared per second.
-
     """
     return k_B * T_e / (16 * e * B)
 
