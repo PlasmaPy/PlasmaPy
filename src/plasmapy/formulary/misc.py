@@ -59,10 +59,10 @@ def Bohm_diffusion(
 
     .. math::
 
-        D_B = \frac{1}{16} \frac{k_B T}{e B}
+        D_B = \frac{1}{16} \frac{k_B T_e}{e B}
 
-    where :math:`k_B` is the Boltzmann constant and :math:`e` is the
-    fundamental charge.
+    where :math:`k_B` is the Boltzmann constant, :math:`T_e` is the
+    electron temperature, and :math:`e` is the fundamental charge.
 
     **Aliases:** `DB_`
 
