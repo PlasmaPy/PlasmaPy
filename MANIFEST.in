@@ -8,6 +8,7 @@ graft src
 graft tests
 graft tools
 graft type_stubs
+graft .gemini/settings.json
 
 include *.ini *.toml *.yaml *.yml
 include *.md
