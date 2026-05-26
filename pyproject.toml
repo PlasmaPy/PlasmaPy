@@ -530,7 +530,7 @@ src.exclude = [
   "docs/notebooks/plasma/grids_nonuniform.ipynb",
 ]
 
-[tool.pytest]  # https://docs.pytest.org/en/stable/reference/reference.html#ini-options-ref
+[tool.pytest]  # https://docs.pytest.org/en/stable/reference/customize.html#pyproject-toml
 addopts = [
   "--pyargs",
   "--durations=5",
