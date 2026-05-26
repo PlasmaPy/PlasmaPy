@@ -186,13 +186,7 @@ format.docstring-code-format = true
 lint.extend-select = [
   "A",      # flake8-builtins
   "ANN002", # missing-type-args
-  "ANN003", # missing-type-kwargs
-  "ANN201", # missing-return-type-undocumented-public-function
-  "ANN202", # missing-return-type-undocumented-public-method
-  "ANN204", # missing-return-type-special-method
-  "ANN205", # missing-return-type-static-method
-  "ANN206", # missing-return-type-class-method
-  "ANN401", # any-type
+  "ANN", # flake8-annotations
   "ARG",    # flake8-unused-arguments
   "ASYNC",  # flake8-async
   "B",      # flake8-bugbear
@@ -289,6 +283,7 @@ lint.extend-select = [
 # The ruff rules to include or ignore for notebooks are defined
 # separately in .pre-commit-config.yaml in the hook for nbqa-ruff
 lint.ignore = [
+  "ANN001",   # missing-type-function-argument
   "B028",    # no-explicit-stacklevel
   "D105",    # undocumented-magic-method (enable later?)
   "D200",    # fits-on-one-line (incompatible with multiline short summaries)
