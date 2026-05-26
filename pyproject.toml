@@ -183,145 +183,146 @@ show-fixes = true
 output-format = "grouped"
 format.line-ending = "lf"
 format.docstring-code-format = true
+# Using an IDE like PyCharm with a ruff plugin will make rule names appear as inlay hints
 lint.extend-select = [
-  "A",      # flake8-builtins
-  "ANN",    # flake8-annotations
-  "ANN002", # missing-type-args
-  "ARG",    # flake8-unused-arguments
-  "ASYNC",  # flake8-async
-  "B",      # flake8-bugbear
-  "BLE",    # flake8-blind-except
-  "C4",     # flake8-comprehensions
-  "C90",    # mccabe
-  "COM818", # trailing-comma-on-bare-tuple
-  "D",      # pydocstyle
-  # "DOC", # pydoclint (enable this rule set when it is no longer in preview)
-  "DTZ",    # flake8-datetimez
-  "EM",     # flake8-errmsg
-  "EXE",    # flake8-executable
-  "FA102",  # flake8-required-type-annotation
+  "A",
+  "ANN",
+  "ANN002",
+  "ARG",
+  "ASYNC",
+  "B",
+  "BLE",
+  "C4",
+  "C90",
+  "COM818",
+  "D",
+  # "DOC", # enable pydoclint rule set when it is no longer in preview
+  "DTZ",
+  "EM",
+  "EXE",
+  "FA102",
   "FBT",
-  "FIX",    # flake8-fixme
-  "FLY",    # flynt
-  "FURB",   # refurb
-  "G",      # flake8-logging-format
-  "I",      # isort
-  "ICN",    # flake8-import-conventions
-  "INP",    # flake8-no-pep420
-  "INT",    # flake8-gettext
-  "ISC",    # flake8-implicit-str-concat
-  "N",      # pep8-naming
-  "NPY",    # numpy-deprecated-type-alias
-  "PD",     # pandas-vet
-  "PERF",   # perflint
-  "PGH",    # pygrep-hooks
-  "PIE",    # flake8-pie
-  "PLC",    # pylint convention
-  "PLE",    # pylint errors
-  "PLR",    # pylint refactorings
-  "PLW",    # pylint warnings
-  "PT",     # flake8-pytest-style
-  "PTH",    # flake8-use-pathlib
-  "PYI",    # flake8-pyi
-  "Q",      # flake8-quotes
-  "RET",    # flake8-return
-  "RSE",    # flake8-raise
-  "RUF001", # ambiguous-unicode-character-string
-  "RUF002", # ambiguous-unicode-character-docstring
-  "RUF003", # ambiguous-unicode-character-comment
-  "RUF005", # collection-literal-concatenation
-  "RUF006", # asyncio-dangling-task
-  "RUF007", # pairwise-over-zipped
-  "RUF008", # mutable-dataclass-default
-  "RUF009", # function-call-in-dataclass-default-argument
-  "RUF010", # explicit-f-string-type-conversion
-  "RUF012", # mutable-class-default
-  "RUF013", # implicit-optional
-  "RUF015", # unnecessary-iterable-allocation-for-first-element
-  "RUF016", # invalid-index-type
-  "RUF017", # quadratic-list-summation
-  "RUF018", # assignment-in-assert
-  "RUF019", # unnecessary-key-check
-  "RUF020", # never-union
-  "RUF021", # parenthesize-chained-operators
-  "RUF023", # unsorted-dunder-slots
-  "RUF024", # mutable-fromkeys-value
-  "RUF026", # default-factory-kwarg
-  "RUF028", # invalid-formatter-suppression-comment
-  "RUF030", # assert-with-print-message
-  "RUF032", # decimal-from-float-literal
-  "RUF033", # post-init-default
-  "RUF034", # useless-if-else
-  "RUF040", # invalid-assert-message-literal-argument
-  "RUF041", # unnecessary-nested-literal
-  "RUF043", # pytest-raises-ambiguous-pattern
-  "RUF046", # unnecessary-cast-to-int
-  "RUF048", # map-int-version-parsing
-  "RUF049", # dataclass-enum
-  "RUF051", # if-key-in-dict-del
-  "RUF053", # class-with-mixed-type-vars
-  "RUF057", # unnecessary-round
-  "RUF058", # starmap-zip
-  "RUF059", # unused-unpacked-variable
-  "RUF100", # unused-noqa
-  "RUF101", # redirected-noqa
-  "RUF200", # invalid-pyproject-toml
-  "S",      # flake8-bandit
-  "SIM",    # flake8-simplify
-  "SLF",    # flake8-self
-  "SLOT",   # flake8-slots
-  "T",      # flake8-print
-  "T100",   # debugger
-  "TC",     # flake8-type-checking
-  "TD",     # flake8-todos
-  "TID",    # flake8-tidy-imports
-  "TRY",    # tryceratops
-  "UP",     # pyupgrade
-  "W",      # pycodestyle warnings
-  "YTT",    # flake8-2020
+  "FIX",
+  "FLY",
+  "FURB",
+  "G",
+  "I",
+  "ICN",
+  "INP",
+  "INT",
+  "ISC",
+  "N",
+  "NPY",
+  "PD",
+  "PERF",
+  "PGH",
+  "PIE",
+  "PLC",
+  "PLE",
+  "PLR",
+  "PLW",
+  "PT",
+  "PTH",
+  "PYI",
+  "Q",
+  "RET",
+  "RSE",
+  "RUF001",
+  "RUF002",
+  "RUF003",
+  "RUF005",
+  "RUF006",
+  "RUF007",
+  "RUF008",
+  "RUF009",
+  "RUF010",
+  "RUF012",
+  "RUF013",
+  "RUF015",
+  "RUF016",
+  "RUF017",
+  "RUF018",
+  "RUF019",
+  "RUF020",
+  "RUF021",
+  "RUF023",
+  "RUF024",
+  "RUF026",
+  "RUF028",
+  "RUF030",
+  "RUF032",
+  "RUF033",
+  "RUF034",
+  "RUF040",
+  "RUF041",
+  "RUF043",
+  "RUF046",
+  "RUF048",
+  "RUF049",
+  "RUF051",
+  "RUF053",
+  "RUF057",
+  "RUF058",
+  "RUF059",
+  "RUF100",
+  "RUF101",
+  "RUF200",
+  "S",
+  "SIM",
+  "SLF",
+  "SLOT",
+  "T",
+  "T100",
+  "TC",
+  "TD",
+  "TID",
+  "TRY",
+  "UP",
+  "W",
+  "YTT",
 ]
 # The ruff rules to include or ignore for notebooks are defined
 # separately in .pre-commit-config.yaml in the hook for nbqa-ruff
 lint.ignore = [
-  "ANN001",  # missing-type-function-argument
-  "B028",    # no-explicit-stacklevel
-  "D105",    # undocumented-magic-method (enable later?)
-  "D200",    # fits-on-one-line (incompatible with multiline short summaries)
-  "D202",    # no-blank-line-after-function
-  "D205",    # blank-line-after-summary (incompatible with multiline short summaries)
-  "D206",    # indent-with-spaces (formatter conflict)
-  "D401",    # non-imperative-mood (enable later?)
-  "E501",    # line-too-long
-  "EM101",   # raw-string-in-exception (enable later in focused PR)
-  "EM102",   # f-string-in-exception (enable later in focused PR)
-  "FIX002",  # line-contains-todo
-  "ISC001",  # single-line-implicit-string-concatenation (formatter conflict)
-  "N802",    # invalid-function-name
-  "N803",    # invalid-argument-name
-  "N806",    # non-lowercase-variable-in-function
-  "N816",    # mixed-case-variable-in-global-scope
-  "PLC2401", # non-ascii-name (flags variables used as mathematical symbols)
-  "PLC2403", # non-ascii-import-name
-  "PLE0605", # invalid-all-format (flags `__all__ += __lite_funcs`, etc.)
-  "PLR0913", # too-many-arguments
-  "PLR2004", # magic-value-comparison
-  "PT007",   # pytest-parametrize-values-wrong-type
-  "PT011",   # pytest-raises-too-broad
-  "PT012",   # pytest-raises-multiple-statements (enable later?)
-  "PT019",   # pytest-fixture-param-without-value (enable later?)
-  "PYI024",  # collections-named-tuple (enable later)
-  "RET501",  # unnecessary-return-none
-  "RET502",  # implicit-return-value
-  "RET505",  # superfluous-else-return (enable later?)
-  "RET506",  # superfluous-else-raise (enable later?)
-  "SIM300",  # yoda-conditions
-  "TD002",   # missing-todo-author
-  "TD003",   # missing-todo-link
-  "TRY003",  # raise-vanilla-args
-  "TRY301",  # raise-within-try
-  "UP025",   # unicode-kind-prefix
-  "W191",    # tab-indentation (formatter conflict)
-  "W291",    # trailing-whitespace (handled by formatter)
+  "ANN001",
+  "B028",
+  "D105",    # enable later?
+  "D200",    # incompatible with multiline short summaries
+  "D202",
+  "D205",    # incompatible with multiline short summaries
+  "D206",    # formatter conflict
+  "D401",    # enable later?
+  "E501",
+  "EM101",   # enable later in focused PR
+  "EM102",   # enable later in focused PR
+  "FIX002",
+  "ISC001",  # formatter conflict
+  "N802",
+  "N803",
+  "N806",
+  "N816",
+  "PLC2401", # flags variables used as mathematical symbols
+  "PLC2403",
+  "PLE0605", # flags `__all__ += __lite_funcs`, etc.
+  "PLR0913",
+  "PLR2004",
+  "PT007",
+  "PT011",
+  "PT012",   # enable later?
+  "PT019",   # enable later?
+  "PYI024",  # enable later
+  "RET501",
+  "RET502",
+  "RET505",  # enable later?
+  "RET506",  # enable later?
+  "SIM300",
+  "TD002",
+  "TD003",
+  "TRY003",
+  "TRY301",
+  "UP025",
+  "W191",    # formatter conflict)
+  "W291",    # handled by formatter
 ]
 lint.per-file-ignores."**/*.ipynb" = [ "T201", "T203" ]
 lint.per-file-ignores.".github/scripts/*.py" = [ "D103", "INP001" ]
