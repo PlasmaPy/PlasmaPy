@@ -282,7 +282,7 @@ def run_test(  # noqa: C901
         except expected_exception as exc_result:
             resulting_exception = exc_result.__reduce__()[0]
             if resulting_exception.__name__ == expected_exception.__name__:
-                return None
+                return
             else:
                 raise UnexpectedExceptionFail(
                     f"The command {call_str} did not specifically raise "
@@ -332,7 +332,7 @@ def run_test(  # noqa: C901
                     f"{_object_name(result)} instead of the expected "
                     f"value of {_object_name(expected['result'])}.",
                 )
-            return None
+            return
 
         if not isinstance(result, u.Quantity | const.Constant | const.EMConstant):
             raise u.UnitsError(
@@ -350,7 +350,7 @@ def run_test(  # noqa: C901
                 f"{_object_name(expected['result'])}.",
             )
 
-        return None
+        return
 
     if isinstance(expected["result"], u.Quantity | const.Constant | const.EMConstant):
         if result.unit != expected["result"].unit:
@@ -362,10 +362,10 @@ def run_test(  # noqa: C901
             )
 
         if np.allclose(result.value, expected["result"].value):
-            return None
+            return
 
     if expected["result"] is None:
-        return None
+        return
 
     if type(result) != type(expected["result"]):  # noqa: E721
         raise TypeMismatchFail(
@@ -379,7 +379,7 @@ def run_test(  # noqa: C901
 
     try:
         if result == expected["result"]:
-            return None
+            return
     except Exception as exc_equality:
         raise TypeError(
             f"The equality of {_object_name(result)} and "
@@ -395,7 +395,7 @@ def run_test(  # noqa: C901
     with contextlib.suppress(Exception):
         all_close = np.allclose(expected["result"], result, rtol=rtol, atol=atol)
         if all_close and not different_length:
-            return None
+            return
 
     errmsg = (
         f"The command {call_str} returned "

@@ -192,14 +192,14 @@ class Downloader:
             # If the _timestamp key hasn't been set yet, the blob file has
             # never been updated before
             if time.time() - self._blob_dict["_timestamp"] < 300:
-                return None  # coverage : ignore
+                return  # coverage : ignore
 
         # If this instance of Downloader has already updated from the API once,
         # don't do it again. Almost certainly nothing has changed!
         # Not tested, since CI never waits >5 min with the same Downloader
         # instantiated.
         if self._updated_blob_file_from_repo:  # coverage: ignore
-            return None
+            return
 
         reply = self._http_request(self._API_BASE_URL)
 
@@ -218,7 +218,7 @@ class Downloader:
                 stacklevel=2,
             )
             self._validate = False
-            return None
+            return
 
         for item in info:
             try:

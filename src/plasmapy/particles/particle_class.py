@@ -19,7 +19,7 @@ import json
 import warnings
 from abc import ABC, abstractmethod
 from collections import defaultdict, namedtuple
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from numbers import Integral, Real
 from typing import TYPE_CHECKING
 
@@ -169,7 +169,7 @@ class AbstractParticle(ABC):
             "plasmapy_particle": {
                 "type": type(self).__name__,
                 "module": self.__module__,
-                "date_created": datetime.now(timezone.utc).strftime(  # noqa: UP017
+                "date_created": datetime.now(UTC).strftime(
                     "%Y-%m-%d %H:%M:%S UTC",
                 ),
                 "__init__": {"args": (), "kwargs": {}},

@@ -76,7 +76,7 @@ def sum_of_args_and_kwargs(arg1, arg2, *, kw1, kw2):
 
 def return_none() -> None:
     """A sample function for testing purposes that returns `None`."""
-    return None
+    return
 
 
 class SampleClass1:

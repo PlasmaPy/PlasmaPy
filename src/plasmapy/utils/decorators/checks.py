@@ -345,7 +345,7 @@ class CheckValues(CheckBase):
             elif ckey == "none_shall_pass":
                 if arg is None and arg_checks[ckey]:
                     break
-                elif arg is None:  # noqa: RET508
+                if arg is None:
                     raise ValueError(f"{valueerror_msg} Nones.")
 
 
@@ -635,7 +635,7 @@ class CheckUnits(CheckBase):
             if _units is _units_anno is param_checks is None:
                 # no checks specified and no unit annotations defined
                 continue
-            elif _units is _units_anno is None:  # noqa: RET507
+            if _units is _units_anno is None:
                 # checks specified, but NO unit checks
                 msg = "No astropy.units specified for "
                 if param.name == "checks_on_return":
@@ -688,7 +688,7 @@ class CheckUnits(CheckBase):
             if not _units and not _units_anno and param_checks is None:
                 # annotations did not specify units
                 continue
-            elif not _units and not _units_anno:  # noqa: RET507
+            if not _units and not _units_anno:
                 # checks specified, but NO unit checks
                 msg = "No astropy.units specified for "
                 if param.name == "checks_on_return":

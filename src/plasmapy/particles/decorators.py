@@ -464,7 +464,7 @@ class _ParticleInput:
             and not np.isnan(particle.charge)
             and particle.mass.value > 0
         ):
-            return None
+            return
 
         name_categorization_exception: list[
             tuple[str, dict[str, str | Iterable[str] | None], type]
