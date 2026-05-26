@@ -68,9 +68,9 @@ def _process_input(wrapped_function: Callable):  # noqa: ANN202
 @_process_input
 def run_test(  # noqa: C901
     func,
-    args: Any = (),
+    args: Any = (),  # noqa: ANN401
     kwargs: dict | None = None,
-    expected_outcome: Any = None,
+    expected_outcome: Any = None,  # noqa: ANN401
     rtol: float = 0.0,
     atol: float = 0.0,
 ):

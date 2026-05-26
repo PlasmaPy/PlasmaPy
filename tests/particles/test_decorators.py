@@ -27,9 +27,9 @@ from plasmapy.utils.exceptions import PlasmaPyDeprecationWarning
 
 @particle_input
 def function_decorated_with_particle_input(
-    a: Any,
+    a: Any,  # noqa: ANN401
     particle: ParticleLike,
-    b: Any = None,
+    b: Any = None,  # noqa: ANN401
     Z: float | None = None,
     mass_numb: int | None = None,
 ) -> Particle | CustomParticle | ParticleList:
@@ -51,9 +51,9 @@ def function_decorated_with_particle_input(
 
 @particle_input()
 def function_decorated_with_call_of_particle_input(
-    a: Any,
+    a: Any,  # noqa: ANN401
     particle: ParticleLike,
-    b: Any = None,
+    b: Any = None,  # noqa: ANN401
     Z: float | None = None,
     mass_numb: int | None = None,
 ) -> Particle | CustomParticle | ParticleList:
@@ -416,7 +416,7 @@ def test_self_stacked_decorator(
 
     @outer_decorator
     @inner_decorator
-    def f(x: Any, particle: ParticleLike) -> Particle | CustomParticle | ParticleList:
+    def f(x: Any, particle: ParticleLike) -> Particle | CustomParticle | ParticleList:  # noqa: ANN401
         return particle  # ty:ignore[invalid-return-type]
 
     result = f(1, "p+")
@@ -455,7 +455,7 @@ def test_annotated_init() -> None:
 
     class HasAnnotatedInit:
         @particle_input(require="element")
-        def __init__(self, particle: ParticleLike, ionic_fractions: Any = None) -> None:
+        def __init__(self, particle: ParticleLike, ionic_fractions: Any = None) -> None:  # noqa: ANN401
             self.particle = particle
 
     x = HasAnnotatedInit("H-1", ionic_fractions=32)
@@ -524,7 +524,7 @@ kwargs_to_decorator_and_args = [
     ("kwargs_to_particle_input", "arg"), kwargs_to_decorator_and_args
 )
 def test_particle_input_verification(
-    kwargs_to_particle_input: dict[str, Any], arg: Any
+    kwargs_to_particle_input: dict[str, Any], arg: Any  # noqa: ANN401
 ) -> None:
     """Test the allow_custom_particles keyword argument to particle_input."""
 
@@ -750,7 +750,7 @@ def test_particle_input_with_pos_and_var_positional_arguments() -> None:
 
     @particle_input
     def function_with_pos_and_var_positional_arguments(
-        a: Any,
+        a: Any,  # noqa: ANN401
         *args: Any,
         particle: ParticleLike = None,  # ty:ignore[invalid-parameter-default]
     ) -> tuple[tuple[Any, ...], Particle]:

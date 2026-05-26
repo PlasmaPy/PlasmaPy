@@ -89,7 +89,7 @@ def _code_repr_of_arg(arg, max_items=np.inf) -> str:
 
 
 def _code_repr_of_args_and_kwargs(
-    args: Any = None, kwargs: dict | None = None, max_items=np.inf
+    args: Any = None, kwargs: dict | None = None, max_items=np.inf  # noqa: ANN401
 ) -> str:
     """
     Take positional and keyword arguments, and format them into a
@@ -137,7 +137,7 @@ def _name_with_article(ex: Exception) -> str:
     return f"{indefinite_article} {name}"
 
 
-def _object_name(obj: Any, showmodule: bool = False) -> str:  # noqa: FBT001, FBT002
+def _object_name(obj: Any, showmodule: bool = False) -> str:  # noqa: ANN401, FBT001, FBT002
     """
     Return the name of an `object`.
 
@@ -188,7 +188,7 @@ def _string_together_warnings_for_printing(  # noqa: ANN202
 
 def call_string(
     f: Callable,
-    args: Any = None,
+    args: Any = None,  # noqa: ANN401
     kwargs: dict[str, Any] | None = None,
     max_items: int = 12,
 ) -> str:
@@ -250,7 +250,7 @@ def call_string(
 def attribute_call_string(
     cls,
     attr: str,
-    args_to_cls: tuple | Any | None = None,
+    args_to_cls: tuple | Any | None = None,  # noqa: ANN401
     kwargs_to_cls: dict[str, Any] | None = None,
     max_items: int = 12,
 ) -> str:
@@ -325,9 +325,9 @@ def method_call_string(
     cls,
     method: str,
     *,
-    args_to_cls: Any | None = None,
+    args_to_cls: Any | None = None,  # noqa: ANN401
     kwargs_to_cls: dict[str, Any] | None = None,
-    args_to_method: Any | None = None,
+    args_to_method: Any | None = None,  # noqa: ANN401
     kwargs_to_method: dict[str, Any] | None = None,
     max_items: int = 12,
 ) -> str:

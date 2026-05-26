@@ -45,7 +45,7 @@ def return_quantity(*args, should_warn: bool = False):  # noqa: ANN002, ANN202
     return 5 * u.m / u.s
 
 
-def return_arg(arg: Any, should_warn: bool = False) -> Any:  # noqa: FBT001, FBT002
+def return_arg(arg: Any, should_warn: bool = False) -> Any:  # noqa: ANN401, FBT001, FBT002
     if should_warn:
         warnings.warn("", UserWarning)
     return arg

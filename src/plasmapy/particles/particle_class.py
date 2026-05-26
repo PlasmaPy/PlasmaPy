@@ -2112,7 +2112,7 @@ class DimensionlessParticle(AbstractParticle):
         return f"DimensionlessParticle(mass={self.mass}, charge={self.charge})"
 
     @staticmethod
-    def _validate_parameter(obj: Any, can_be_negative: bool = True) -> np.float64:  # noqa: FBT001, FBT002
+    def _validate_parameter(obj: Any, can_be_negative: bool = True) -> np.float64:  # noqa: ANN401, FBT001, FBT002
         """Verify that the argument corresponds to a valid real number."""
 
         # TODO: Replace with validator? Use an equivalency between

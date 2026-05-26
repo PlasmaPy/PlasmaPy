@@ -192,6 +192,7 @@ lint.extend-select = [
   "ANN204", # missing-return-type-special-method
   "ANN205", # missing-return-type-static-method
   "ANN206", # missing-return-type-class-method
+  "ANN401", # any-type
   "ARG",    # flake8-unused-arguments
   "ASYNC",  # flake8-async
   "B",      # flake8-bugbear

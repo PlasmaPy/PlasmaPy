@@ -59,7 +59,7 @@ _particle_input_annotations = (
 )
 
 
-def _make_into_set_or_none(obj: Any) -> Iterable[str] | None:
+def _make_into_set_or_none(obj: Any) -> Iterable[str] | None:  # noqa: ANN401
     """
     Return `None` if ``obj`` is `None`, and otherwise convert ``obj``
     into a `set`.
@@ -77,7 +77,7 @@ def _bind_arguments(
     callable_: Callable[..., Any],
     args: Iterable[Any],
     kwargs: MutableMapping[str, Any],
-    instance: Any = None,
+    instance: Any = None,  # noqa: ANN401
 ) -> inspect.BoundArguments:
     """
     Bind the arguments provided by ``args`` and ``kwargs`` to
@@ -527,10 +527,10 @@ class _ParticleInput:
     def process_argument(
         self,
         parameter: str,
-        argument: Any,
+        argument: Any,  # noqa: ANN401
         Z: float | None,
         mass_numb: int | None,
-    ) -> Any:
+    ) -> Any:  # noqa: ANN401
         """
         Process an argument that has an appropriate annotation.
 
@@ -645,7 +645,7 @@ class _ParticleInput:
         self,
         args: Iterable[Any],
         kwargs: MutableMapping[str, Any],
-        instance: Any = None,
+        instance: Any = None,  # noqa: ANN401
     ) -> BoundArguments:
         """
         Process the arguments passed to the callable_ callable.
@@ -992,7 +992,7 @@ def particle_input(
     @wrapt.decorator
     def wrapper(
         callable__: Callable[..., Any],
-        instance: Any,
+        instance: Any,  # noqa: ANN401
         args: Iterable[Any],
         kwargs: MutableMapping[str, Any],
     ) -> Callable[..., Any]:

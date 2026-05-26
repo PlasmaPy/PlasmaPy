@@ -1118,7 +1118,7 @@ def ionic_levels(
     )
 
 
-def _is_electron(arg: Any) -> bool:
+def _is_electron(arg: Any) -> bool:  # noqa: ANN401
     """
     Return `True` if the argument corresponds to an electron, and
     `False` otherwise.
