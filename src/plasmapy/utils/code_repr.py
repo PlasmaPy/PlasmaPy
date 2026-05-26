@@ -89,7 +89,9 @@ def _code_repr_of_arg(arg, max_items=np.inf) -> str:
 
 
 def _code_repr_of_args_and_kwargs(
-    args: Any = None, kwargs: dict | None = None, max_items=np.inf  # noqa: ANN401
+    args: Any = None,  # noqa: ANN401
+    kwargs: dict | None = None,
+    max_items=np.inf,  # noqa: ANN401, RUF100
 ) -> str:
     """
     Take positional and keyword arguments, and format them into a

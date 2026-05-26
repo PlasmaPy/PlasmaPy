@@ -1782,7 +1782,9 @@ class Particle(AbstractPhysicalParticle):
         return self.is_category("ion")
 
     def ionize(
-        self, n: int | Literal[np.inf] = 1, inplace: bool = False  # noqa: FBT001, FBT002
+        self,
+        n: int | Literal[np.inf] = 1,
+        inplace: bool = False,  # noqa: FBT001, FBT002
     ) -> Self | None:
         """
         Create a new |Particle| instance corresponding to the current

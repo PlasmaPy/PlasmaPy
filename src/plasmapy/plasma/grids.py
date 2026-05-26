@@ -926,7 +926,10 @@ class AbstractGrid(ABC):
 
     @abstractmethod
     def nearest_neighbor_interpolator(
-        self, pos: np.ndarray | u.Quantity, *args, persistent: bool = False  # noqa: ANN002
+        self,
+        pos: np.ndarray | u.Quantity,
+        *args,  # noqa: ANN002
+        persistent: bool = False,  # noqa: ANN002, RUF100
     ):
         r"""
         Interpolate values on the grid using a nearest-neighbor scheme with
@@ -1168,7 +1171,10 @@ class CartesianGrid(AbstractGrid):
 
     @modify_docstring(prepend=AbstractGrid.nearest_neighbor_interpolator.__doc__)
     def nearest_neighbor_interpolator(  # noqa: ANN201
-        self, pos: np.ndarray | u.Quantity, *args, persistent: bool = False  # noqa: ANN002
+        self,
+        pos: np.ndarray | u.Quantity,
+        *args,  # noqa: ANN002
+        persistent: bool = False,  # noqa: ANN002, RUF100
     ):
         r""" """  # noqa: D419
 
@@ -1207,7 +1213,10 @@ class CartesianGrid(AbstractGrid):
         return output[0] if len(output) == 1 else tuple(output)
 
     def volume_averaged_interpolator(  # noqa: ANN201
-        self, pos: np.ndarray | u.Quantity, *args, persistent: bool = False  # noqa: ANN002
+        self,
+        pos: np.ndarray | u.Quantity,
+        *args,  # noqa: ANN002
+        persistent: bool = False,  # noqa: ANN002, RUF100
     ):
         r"""
         Interpolate values on the grid using a volume-averaged scheme with
@@ -1471,7 +1480,10 @@ class NonUniformCartesianGrid(AbstractGrid):
 
     @modify_docstring(prepend=AbstractGrid.nearest_neighbor_interpolator.__doc__)
     def nearest_neighbor_interpolator(  # noqa: ANN201
-        self, pos: np.ndarray | u.Quantity, *args, persistent: bool = False  # noqa: ANN002
+        self,
+        pos: np.ndarray | u.Quantity,
+        *args,  # noqa: ANN002
+        persistent: bool = False,  # noqa: ANN002, RUF100
     ):
         r""" """  # noqa: D419
         # Shared setup

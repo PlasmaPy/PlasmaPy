@@ -185,8 +185,8 @@ format.line-ending = "lf"
 format.docstring-code-format = true
 lint.extend-select = [
   "A",      # flake8-builtins
+  "ANN",    # flake8-annotations
   "ANN002", # missing-type-args
-  "ANN", # flake8-annotations
   "ARG",    # flake8-unused-arguments
   "ASYNC",  # flake8-async
   "B",      # flake8-bugbear
@@ -283,7 +283,7 @@ lint.extend-select = [
 # The ruff rules to include or ignore for notebooks are defined
 # separately in .pre-commit-config.yaml in the hook for nbqa-ruff
 lint.ignore = [
-  "ANN001",   # missing-type-function-argument
+  "ANN001",  # missing-type-function-argument
   "B028",    # no-explicit-stacklevel
   "D105",    # undocumented-magic-method (enable later?)
   "D200",    # fits-on-one-line (incompatible with multiline short summaries)
@@ -347,7 +347,7 @@ lint.per-file-ignores."docs/notebooks/dispersion/dispersion_function.ipynb" = [ 
 lint.per-file-ignores."docs/notebooks/dispersion/stix_dispersion.ipynb" = [ "FBT003" ]
 lint.per-file-ignores."docs/notebooks/formulary/cold_plasma_tensor_elements.ipynb" = [ "FBT003" ]
 lint.per-file-ignores."docs/notebooks/formulary/ExB_drift.ipynb" = [ "B008", "D103" ]
-lint.per-file-ignores."docs/notebooks/langmuir_samples/_generate_noisy.ipynb" = [ "NPY002", "PTH123" ]
+lint.per-file-ignores."docs/notebooks/langmuir_samples/_generate_noisy.ipynb" = [ "ANN202", "NPY002", "PTH123" ]
 lint.per-file-ignores."docs/notebooks/plasma/grids_cartesian.ipynb" = [ "NPY002", "PLW2901" ]
 lint.per-file-ignores."docs/notebooks/plasma/grids_nonuniform.ipynb" = [ "NPY002" ]
 lint.per-file-ignores."setup.py" = [ "D100" ]

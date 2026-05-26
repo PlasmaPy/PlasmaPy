@@ -524,7 +524,8 @@ kwargs_to_decorator_and_args = [
     ("kwargs_to_particle_input", "arg"), kwargs_to_decorator_and_args
 )
 def test_particle_input_verification(
-    kwargs_to_particle_input: dict[str, Any], arg: Any  # noqa: ANN401
+    kwargs_to_particle_input: dict[str, Any],
+    arg: Any,  # noqa: ANN401
 ) -> None:
     """Test the allow_custom_particles keyword argument to particle_input."""
 

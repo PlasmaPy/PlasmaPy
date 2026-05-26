@@ -139,7 +139,10 @@ class Stack:
         return np.sum(thickness) * u.m
 
     def deposition_curves(  # noqa: ANN201
-        self, energies: u.Quantity[u.J], dx=1 * u.um, return_only_active: bool = True  # noqa: FBT001, FBT002
+        self,
+        energies: u.Quantity[u.J],
+        dx=1 * u.um,
+        return_only_active: bool = True,  # noqa: FBT001, FBT002
     ):
         """
         Calculate the deposition of an ensemble of particles over a range of

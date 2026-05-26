@@ -75,7 +75,13 @@ def test_angular_freq_to_hz_preserves_signature() -> None:
 
     @angular_freq_to_hz
     def test_func(  # noqa: ANN202
-        pos_only, /, arg, *args, required_kwarg, optional_kwarg: int = 2, **kwargs  # noqa: ANN002, ANN003
+        pos_only,
+        /,
+        arg,
+        *args,  # noqa: ANN002
+        required_kwarg,
+        optional_kwarg: int = 2,
+        **kwargs,  # noqa: ANN002, ANN003, RUF100
     ):
         return 2 * u.rad / u.s
 

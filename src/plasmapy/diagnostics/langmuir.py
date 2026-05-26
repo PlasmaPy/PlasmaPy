@@ -1022,7 +1022,10 @@ def get_electron_temperature(  # noqa: ANN201
 
 
 def extrapolate_electron_current(  # noqa: ANN201
-    probe_characteristic, fit, bimaxwellian: bool = False, visualize: bool = False  # noqa: FBT001, FBT002
+    probe_characteristic,
+    fit,
+    bimaxwellian: bool = False,  # noqa: FBT001, FBT002
+    visualize: bool = False,  # noqa: FBT001, FBT002
 ):
     r"""Extrapolate the electron current from the Maxwellian electron
     temperature obtained in the exponential growth region.
