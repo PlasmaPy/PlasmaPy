@@ -288,9 +288,8 @@ lint.extend-select = [
   "YTT",
 ]
 lint.ignore = [
-  "ANN001",
-  "COM819",
   "ANN001",  # add ignore comments near tops of files?
+  "COM812", # formatter conflict
   "COM819",  # prefer trailing commas
   "D200",    # incompatible with multiline short summaries
   "D205",    # incompatible with multiline short summaries
@@ -301,10 +300,6 @@ lint.ignore = [
   "EM102",   # enable later in focused PR
   "FIX002",
   "ISC001",  # formatter conflict
-  "N802",
-  "N803",
-  "N806",
-  "N816",
   "N802",  # flags capitalization used to match physics notation
   "N803",  # flags capitalization used to match physics notation
   "N806",  # flags capitalization used to match physics notation
@@ -312,17 +307,12 @@ lint.ignore = [
   "PLC2401", # flags variables used as mathematical symbols
   "PLC2403", # flags variables used as mathematical symbols
   "PLE0605", # flags `__all__ += __lite_funcs`, etc.
-  "PLR0913",
-  "PLR2004",
-  "PT007",
-  "PT011",
   "PLR0913",  # too many situations where lots of arguments are justified
   "PLR2004",  # would need case-by-case evaluations
   "PT011",  # effort to address outweighs potential benefits
   "PT012",   # enable later?
   "PT019",   # enable later?
   "PYI024",  # enable later
-  "RET501",
   "RET502",
   "RET505",  # enable later?
   "RET506",  # enable later?
