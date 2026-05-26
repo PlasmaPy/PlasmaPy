@@ -113,7 +113,7 @@ nD_ = Debye_number
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
 )
 @particle_input
-def Hall_parameter(
+def Hall_parameter(  # noqa: ANN201
     n: u.Quantity[u.m**-3],
     T: u.Quantity[u.K],
     B: u.Quantity[u.T],

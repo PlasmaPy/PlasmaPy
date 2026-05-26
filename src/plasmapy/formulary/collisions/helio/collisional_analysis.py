@@ -16,7 +16,7 @@ from plasmapy.utils.decorators import validate_quantities
     T_1={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     T_2={"can_be_negative": False, "equivalencies": u.temperature_energy()},
 )
-def temp_ratio(  # noqa: C901
+def temp_ratio(  # noqa: ANN201, C901
     *,
     r_0: u.Quantity[u.au],
     r_n: u.Quantity[u.au],

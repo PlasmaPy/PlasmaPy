@@ -1052,7 +1052,7 @@ class CheckUnits(CheckBase):
         return new_list
 
 
-def check_units(
+def check_units(  # noqa: ANN201
     func=None,
     checks_on_return: dict[str, Any] | None = None,
     **checks: dict[str, Any],
@@ -1177,7 +1177,7 @@ def check_units(
     return CheckUnits(**checks)(func) if func is not None else CheckUnits(**checks)
 
 
-def check_values(
+def check_values(  # noqa: ANN201
     func=None,
     checks_on_return: dict[str, bool] | None = None,
     **checks: dict[str, bool],
@@ -1257,7 +1257,7 @@ def check_values(
     return CheckValues(**checks) if func is None else CheckValues(**checks)(func)
 
 
-def check_relativistic(func=None, betafrac: float = 0.05):
+def check_relativistic(func=None, betafrac: float = 0.05):  # noqa: ANN201
     """
     Warns or raises an exception when the output of the decorated
     function is greater than ``betafrac`` times the speed of light.

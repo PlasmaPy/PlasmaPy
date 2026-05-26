@@ -1167,7 +1167,7 @@ class CartesianGrid(AbstractGrid):
             self.ds[quantity].data = self.ds[quantity].data * mask * edge_mask
 
     @modify_docstring(prepend=AbstractGrid.nearest_neighbor_interpolator.__doc__)
-    def nearest_neighbor_interpolator(
+    def nearest_neighbor_interpolator(  # noqa: ANN201
         self, pos: np.ndarray | u.Quantity, *args, persistent: bool = False
     ):
         r""" """  # noqa: D419
@@ -1206,7 +1206,7 @@ class CartesianGrid(AbstractGrid):
         ]
         return output[0] if len(output) == 1 else tuple(output)
 
-    def volume_averaged_interpolator(
+    def volume_averaged_interpolator(  # noqa: ANN201
         self, pos: np.ndarray | u.Quantity, *args, persistent: bool = False
     ):
         r"""
@@ -1470,7 +1470,7 @@ class NonUniformCartesianGrid(AbstractGrid):
         )
 
     @modify_docstring(prepend=AbstractGrid.nearest_neighbor_interpolator.__doc__)
-    def nearest_neighbor_interpolator(
+    def nearest_neighbor_interpolator(  # noqa: ANN201
         self, pos: np.ndarray | u.Quantity, *args, persistent: bool = False
     ):
         r""" """  # noqa: D419

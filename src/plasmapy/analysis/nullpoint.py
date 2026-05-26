@@ -1458,7 +1458,7 @@ def _vspace_iterator(vspace, maxiter: int = 500, err: float = 1e-10):
     return nullpoints
 
 
-def null_point_find(
+def null_point_find(  # noqa: ANN201
     x_arr=None,
     y_arr=None,
     z_arr=None,
@@ -1543,7 +1543,7 @@ def null_point_find(
     return _vspace_iterator(vspace, maxiter, err)
 
 
-def uniform_null_point_find(
+def uniform_null_point_find(  # noqa: ANN201
     x_range,
     y_range,
     z_range,

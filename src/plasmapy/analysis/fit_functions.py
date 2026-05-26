@@ -510,7 +510,7 @@ class Linear(AbstractFitFunction):
         return m * x + b
 
     @modify_docstring(append=AbstractFitFunction.func_err.__original_doc__)
-    def func_err(self, x, x_err=None, rety: bool = False):  # noqa: FBT001, FBT002
+    def func_err(self, x, x_err=None, rety: bool = False):  # noqa: ANN201, FBT001, FBT002
         """
         Calculate dependent variable uncertainties :math:`\\delta y` for
         dependent variables :math:`y=f(x)`.
@@ -665,7 +665,7 @@ class Exponential(AbstractFitFunction):
         """LaTeX friendly representation of the fit function."""
         return r"a \, \exp(\alpha x)"
 
-    def func(self, x: float, a: float, alpha: float):  # ty:ignore[invalid-method-override]
+    def func(self, x: float, a: float, alpha: float):  # ty:ignore[invalid-method-override]  # noqa: ANN201
         """
         The fit function, a exponential function.
 
@@ -698,7 +698,7 @@ class Exponential(AbstractFitFunction):
         return a * np.exp(alpha * x)
 
     @modify_docstring(append=AbstractFitFunction.func_err.__original_doc__)
-    def func_err(self, x, x_err=None, rety: bool = False):  # noqa: FBT001, FBT002
+    def func_err(self, x, x_err=None, rety: bool = False):  # noqa: ANN201, FBT001, FBT002
         """
         Calculate dependent variable uncertainties :math:`\\delta y` for
         dependent variables :math:`y=f(x)`.
@@ -823,7 +823,7 @@ class ExponentialPlusLinear(AbstractFitFunction):
         )
         self._linear.param_errors = (self.param_errors.m, self.param_errors.b)
 
-    def func(self, x: float, a: float, alpha: float, m: float, b: float):  # ty:ignore[invalid-method-override]
+    def func(self, x: float, a: float, alpha: float, m: float, b: float):  # ty:ignore[invalid-method-override]  # noqa: ANN201
         """
         The fit function, an exponential with a linear offset.
 
@@ -862,7 +862,7 @@ class ExponentialPlusLinear(AbstractFitFunction):
         return exp_term + lin_term
 
     @modify_docstring(append=AbstractFitFunction.func_err.__original_doc__)
-    def func_err(self, x, x_err=None, rety: bool = False):  # noqa: FBT001, FBT002
+    def func_err(self, x, x_err=None, rety: bool = False):  # noqa: ANN201, FBT001, FBT002
         """
         Calculate dependent variable uncertainties :math:`\\delta y` for
         dependent variables :math:`y=f(x)`.
@@ -961,7 +961,7 @@ class ExponentialPlusOffset(AbstractFitFunction):
             self.param_errors.b,
         )
 
-    def func(self, x: float, a: float, alpha: float, b: float):  # ty:ignore[invalid-method-override]
+    def func(self, x: float, a: float, alpha: float, b: float):  # ty:ignore[invalid-method-override]  # noqa: ANN201
         """
         The fit function, an exponential with a constant offset.
 
@@ -995,7 +995,7 @@ class ExponentialPlusOffset(AbstractFitFunction):
         return self._explin.func(x, a, alpha, 0.0, b)
 
     @modify_docstring(append=AbstractFitFunction.func_err.__original_doc__)
-    def func_err(self, x, x_err=None, rety: bool = False):  # noqa: FBT001, FBT002
+    def func_err(self, x, x_err=None, rety: bool = False):  # noqa: ANN201, FBT001, FBT002
         """
         Calculate dependent variable uncertainties :math:`\\delta y` for
         dependent variables :math:`y=f(x)`.

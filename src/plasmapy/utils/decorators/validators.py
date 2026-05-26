@@ -584,7 +584,7 @@ def get_attributes_not_provided(
     return attributes_not_provided
 
 
-def validate_class_attributes(
+def validate_class_attributes(  # noqa: ANN201
     expected_attributes: list[str] | None = None,
     both_or_either_attributes: list[Iterable[str]] | None = None,
     mutually_exclusive_attributes: list[Iterable[str]] | None = None,

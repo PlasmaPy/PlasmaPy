@@ -138,7 +138,7 @@ class Stack:
         thickness = np.array([layer.thickness.to(u.m).value for layer in self._layers])
         return np.sum(thickness) * u.m
 
-    def deposition_curves(
+    def deposition_curves(  # noqa: ANN201
         self, energies: u.Quantity[u.J], dx=1 * u.um, return_only_active: bool = True  # noqa: FBT001, FBT002
     ):
         """
@@ -218,7 +218,7 @@ class Stack:
 
         return deposited_energy
 
-    def energy_bands(
+    def energy_bands(  # noqa: ANN201
         self,
         energy_range: u.Quantity[u.J],
         dE: u.Quantity[u.J],

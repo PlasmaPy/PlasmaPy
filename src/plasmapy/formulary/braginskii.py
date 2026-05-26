@@ -849,7 +849,7 @@ def resistivity(
 
 
 @validate_quantities
-def thermoelectric_conductivity(
+def thermoelectric_conductivity(  # noqa: ANN201
     T_e,
     n_e,
     T_i,
