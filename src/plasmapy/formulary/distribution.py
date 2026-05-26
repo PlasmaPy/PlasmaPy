@@ -25,7 +25,7 @@ from plasmapy.utils._units_definitions import (
 )
 
 
-def _v_drift_conversion(v_drift: float | u.Quantity[u.m / u.s]):
+def _v_drift_conversion(v_drift: float | u.Quantity[u.m / u.s]):  # noqa: ANN202
     # Helper method to assign equivalent value in SPEED_UNITS and/or remove units
     if isinstance(v_drift, u.Quantity):
         v_drift = v_drift.to_value(SPEED_UNITS)

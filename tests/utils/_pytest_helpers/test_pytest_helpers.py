@@ -39,7 +39,7 @@ def adams_number(*args, **kwargs) -> int:
     return 42
 
 
-def return_quantity(*args, should_warn: bool = False):
+def return_quantity(*args, should_warn: bool = False):  # noqa: ANN202
     if should_warn:
         warnings.warn("", UserWarning)
     return 5 * u.m / u.s
@@ -177,7 +177,7 @@ def test_run_test_atol_failure() -> None:
         pytest.fail("No exception raised for atol test.")
 
 
-def func(x, raise_exception: bool = False, issue_warning: bool = False):  # noqa: FBT001, FBT002
+def func(x, raise_exception: bool = False, issue_warning: bool = False):  # noqa: ANN202, FBT001, FBT002
     if raise_exception:
         raise ValueError("")
     elif issue_warning:

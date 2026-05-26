@@ -29,7 +29,7 @@ def _code_repr_of_ndarray(array: np.ndarray, max_items=np.inf) -> str:
         s = s.replace("inf", "np.inf")
         return s.replace("nan", "np.nan")
 
-    def replace_excess_items_with_ellipsis(s: str, max_items: int):
+    def replace_excess_items_with_ellipsis(s: str, max_items: int):  # noqa: ANN202
         substrings_between_commas = s.split(",")
         to_comma_before_ellipsis = ",".join(substrings_between_commas[:max_items])
         closing_brackets = "]" * substrings_between_commas[-1].count("]")
@@ -147,7 +147,7 @@ def _object_name(obj: Any, showmodule: bool = False) -> str:  # noqa: FBT001, FB
     in `astropy.units`.
     """
 
-    def substitute_module_shortcuts(module_name: str):
+    def substitute_module_shortcuts(module_name: str):  # noqa: ANN202
         """Substitute common import shortcuts within module names."""
         replacements = {
             "numpy": "np",
@@ -170,7 +170,7 @@ def _object_name(obj: Any, showmodule: bool = False) -> str:  # noqa: FBT001, FB
     return obj_name
 
 
-def _string_together_warnings_for_printing(
+def _string_together_warnings_for_printing(  # noqa: ANN202
     warning_types: list[Warning], warning_messages: list[str]
 ):
     """

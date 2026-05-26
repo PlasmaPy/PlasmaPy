@@ -473,7 +473,7 @@ def _trilinear_jacobian(vspace, cell):
         dBzdy = cz + ez * xInput + gz * zInput + hz * xInput * yInput
         dBzdz = dz + fz * xInput + gz * yInput + hz * xInput * yInput
 
-        def get_scalar(v: float | np.ndarray):
+        def get_scalar(v: float | np.ndarray):  # noqa: ANN202
             """
             If a `float`, return the argument. If a `numpy.ndarray` with
             a single element, return that element.
@@ -1139,7 +1139,7 @@ def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0915
     if len(BxByEndpoints) != 2 or len(BxBzEndpoints) != 2 or len(ByBzEndpoints) != 2:
         return False
 
-    def endpoint_sign_check(curve_endpoints, curve_name: str):
+    def endpoint_sign_check(curve_endpoints, curve_name: str):  # noqa: ANN202
         if curve_name == "x":
             index = 0
         elif curve_name == "y":
@@ -1415,7 +1415,7 @@ def _classify_null_point(vspace, cell, loc):
     return null_point_type
 
 
-def _vspace_iterator(vspace, maxiter: int = 500, err: float = 1e-10):
+def _vspace_iterator(vspace, maxiter: int = 500, err: float = 1e-10):  # noqa: ANN202
     r"""
     Returns an array of null point objects, representing the null points
     of the given vector space.

@@ -127,7 +127,7 @@ def dealias_particle_aliases(alias: str | int) -> str:
     return alias  # ty:ignore[invalid-return-type]
 
 
-def invalid_particle_errmsg(
+def invalid_particle_errmsg(  # noqa: ANN202
     argument,
     mass_numb: int | None = None,
     Z: int | None = None,
@@ -149,7 +149,7 @@ def invalid_particle_errmsg(
     return errmsg
 
 
-def extract_charge(arg: str):  # noqa: C901
+def extract_charge(arg: str):  # noqa: ANN202, C901
     """
     Receive a `str` representing an element, isotope, or ion.
     Return a `tuple` containing a `str` that should represent an
@@ -223,7 +223,7 @@ def extract_charge(arg: str):  # noqa: C901
     return isotope_info, Z_from_arg
 
 
-def parse_and_check_atomic_input(  # noqa: C901, PLR0912, PLR0915
+def parse_and_check_atomic_input(  # noqa: ANN202, C901, PLR0912, PLR0915
     argument: str | int,
     mass_numb: int | None = None,
     Z: int | None = None,
@@ -272,7 +272,7 @@ def parse_and_check_atomic_input(  # noqa: C901, PLR0912, PLR0915
         correct type.
     """
 
-    def atomic_number_to_symbol(atomic_numb: int):
+    def atomic_number_to_symbol(atomic_numb: int):  # noqa: ANN202
         """
         Return the atomic symbol associated with an integer representing
         an atomic number, or raises an
@@ -284,7 +284,7 @@ def parse_and_check_atomic_input(  # noqa: C901, PLR0912, PLR0915
         else:
             raise InvalidParticleError(f"{atomic_numb} is not a valid atomic number.")
 
-    def extract_mass_number(isotope_info: str):
+    def extract_mass_number(isotope_info: str):  # noqa: ANN202
         """
         Receives a string representing an element or isotope. Return a
         tuple containing a string that should represent an element, and
@@ -358,7 +358,7 @@ def parse_and_check_atomic_input(  # noqa: C901, PLR0912, PLR0915
 
         return isotope
 
-    def reconstruct_ion_symbol(
+    def reconstruct_ion_symbol(  # noqa: ANN202
         element: str, isotope: int | None = None, Z: int | None = None
     ):
         """
@@ -476,7 +476,7 @@ def parse_and_check_atomic_input(  # noqa: C901, PLR0912, PLR0915
     }
 
 
-def parse_and_check_molecule_input(argument: str, Z: int | None = None):
+def parse_and_check_molecule_input(argument: str, Z: int | None = None):  # noqa: ANN202
     """
     Separate the constitutive elements and charge of a molecule symbol.
 

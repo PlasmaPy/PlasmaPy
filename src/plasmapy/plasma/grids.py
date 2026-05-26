@@ -28,7 +28,7 @@ from scipy.special import erf
 from plasmapy.utils.decorators.helpers import modify_docstring
 
 
-def _detect_is_uniform_grid(pts0, pts1, pts2, tol: float = 1e-6):
+def _detect_is_uniform_grid(pts0, pts1, pts2, tol: float = 1e-6):  # noqa: ANN202
     r"""
     Determine whether a grid is uniform (uniformly spaced) by computing the
     variance of the grid gradients.
@@ -399,7 +399,7 @@ class AbstractGrid(ABC):
         """
         return self._si_factors
 
-    def _get_ax(self, *, axis: int, si: bool = False):
+    def _get_ax(self, *, axis: int, si: bool = False):  # noqa: ANN202
         """
         Helper function for retrieving axis values.
 
@@ -433,7 +433,7 @@ class AbstractGrid(ABC):
         vals = self.ds.coords[ax_name].to_numpy()
         return vals * self.si_scale_factors[axis] if si else vals * self.units[axis]
 
-    def _get_dax(self, *, axis: int, si: bool = False):
+    def _get_dax(self, *, axis: int, si: bool = False):  # noqa: ANN202
         """
         Helper function for calculating grid spacing.
 
@@ -819,7 +819,7 @@ class AbstractGrid(ABC):
             pts2 * units[2],
         )
 
-    def _make_mesh(self, start, stop, num: int, **kwargs):
+    def _make_mesh(self, start, stop, num: int, **kwargs):  # noqa: ANN202
         r"""
         Creates mesh as part of _make_grid(). Separated into its own function
         so it can be re-implemented to make non-uniformly spaced meshes.
@@ -1434,7 +1434,7 @@ class NonUniformCartesianGrid(AbstractGrid):
 
         return Tmin < Tmax
 
-    def _make_mesh(self, start, stop, num: int, **kwargs):
+    def _make_mesh(self, start, stop, num: int, **kwargs):  # noqa: ANN202
         r"""
         Creates mesh as part of ``_make_grid()``. Separated into its own
         function so it can be re-implemented to make non-uniform grids.

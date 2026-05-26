@@ -25,7 +25,7 @@ from plasmapy.particles.symbols import particle_symbol
 from plasmapy.utils.decorators import validate_quantities
 
 
-def _atomic_number_and_mass_number(p: ParticleLike):
+def _atomic_number_and_mass_number(p: ParticleLike):  # noqa: ANN202
     return p.atomic_number, p.mass_number if p.isotope else 0
 
 

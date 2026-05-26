@@ -19,7 +19,7 @@ from plasmapy.plasma.grids import CartesianGrid
 rng = np.random.default_rng()
 
 
-def _test_grid(  # noqa: C901, PLR0912
+def _test_grid(  # noqa: ANN202, C901, PLR0912
     name: str,
     L: u.Quantity[u.m] = 1 * u.mm,
     num: int = 100,

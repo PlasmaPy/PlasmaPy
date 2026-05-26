@@ -137,7 +137,7 @@ class AbstractMHDWave(ABC):
         return np.meshgrid(theta, k)
 
     @validate_quantities
-    def _validate_angular_frequency(self, omega: u.Quantity[u.rad / u.s]):
+    def _validate_angular_frequency(self, omega: u.Quantity[u.rad / u.s]):  # noqa: ANN202
         """Validate and return angular frequency."""
         omega_gyrofrequency_max = np.max(omega / self._gyrofrequency)
         omega_plasma_frequency_max = np.max(omega / self._plasma_frequency)
