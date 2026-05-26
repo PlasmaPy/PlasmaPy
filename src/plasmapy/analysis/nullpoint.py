@@ -1343,7 +1343,8 @@ def _locate_null_point(vspace, cell, n, err):
             ):
                 return x0
     warnings.warn(
-        "Various starting points did not locate possible null point.", stacklevel=2,
+        "Various starting points did not locate possible null point.",
+        stacklevel=2,
     )
     # Generate new starting points localized into 8 small cells?
     return None
