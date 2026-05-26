@@ -92,7 +92,6 @@ maintenance:
       - 'CODEOWNERS'
       - 'licenses/**'
 
-
 notebooks:
   - changed-files:
     - any-glob-to-any-file:
@@ -181,21 +180,12 @@ release:
       - '.github/workflows/*pypi*'
       - '.github/workflows/*release*'
 
-
 requirements:
   - changed-files:
     - any-glob-to-any-file:
       - '**/*req*.txt'
       - '**/pylock.toml'
       - '**/uv.lock'
-
-
-'run comprehensive tests':
-  - changed-files:
-    - any-glob-to-any-file:
-      - '.github/workflows/ci-comprehensive.yml'
-      - 'pyproject.toml'
-
 
 security:
   - changed-files:
