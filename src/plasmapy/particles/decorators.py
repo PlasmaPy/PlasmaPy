@@ -126,6 +126,7 @@ def _bind_arguments(
             f"The 'z_mean' parameter {name_clause}has been deprecated "
             "and will be removed in a subsequent release. Define the "
             "(mean) charge number with 'Z' instead.",
+            stacklevel=2,
             category=PlasmaPyDeprecationWarning,
         )
 

@@ -215,6 +215,7 @@ class Downloader:
                 "URL did not return the expected JSON file: "
                 f"{self._API_BASE_URL}. "
                 f"Response content: {reply.content.decode('utf-8')}. Exception: {err}",
+                stacklevel=2,
             )
             self._validate = False
             return None
@@ -232,6 +233,7 @@ class Downloader:
                     f"URL {self._API_BASE_URL} returned JSON file, "
                     "missing expected keys 'sha' and 'download_url`."
                     f" JSON contents: {info}. Exception: {err}",
+                    stacklevel=2,
                 )
                 filename = None
                 repo_sha = None
@@ -426,6 +428,7 @@ class Downloader:
             warnings.warn(
                 f"Could not retrieve file {filename} with validation: "
                 "trying again without validation.",
+                stacklevel=2,
             )
             return self._get_file_without_validation(filename)
 

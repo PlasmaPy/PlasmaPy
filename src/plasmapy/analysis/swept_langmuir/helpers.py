@@ -533,6 +533,7 @@ def merge_voltage_clusters(  # noqa: C901, PLR0912
             "you want to re-bin the arrays to a different voltage_step_size, "
             "then use something like numpy.interp.  No merging performed.",
             PlasmaPyWarning,
+            stacklevel=2,
         )
 
         return voltage.copy(), current.copy()
@@ -554,6 +555,7 @@ def merge_voltage_clusters(  # noqa: C901, PLR0912
             f"greater than the smallest voltage step ({np.min(voltage_diff)}).  "
             f"No merging performed.",
             PlasmaPyWarning,
+            stacklevel=2,
         )
 
         return voltage.copy(), current.copy()

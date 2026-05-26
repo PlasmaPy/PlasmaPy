@@ -370,6 +370,7 @@ def ion_sound_speed(
             "ion_sound_speed. To prevent this, values must "
             "be specified for both n_e and k.",
             PhysicsWarning,
+            stacklevel=2,
         )
     elif n_e is not None and k is not None:
         lambda_D = lengths.Debye_length(T_e, n_e)

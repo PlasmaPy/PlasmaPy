@@ -601,6 +601,7 @@ class ParticleTracker:
                         "envelope function to force the quantities at the edge to go to "
                         "zero.",
                         RuntimeWarning,
+                        stacklevel=2,
                     )
 
     def _setup_for_interpolator(self) -> None:
@@ -1029,6 +1030,7 @@ class ParticleTracker:
                     warnings.warn(
                         "The Bethe model is only valid for high energy particles. Consider using"
                         "NIST stopping if you require accurate stopping powers at lower energies.",
+                        stacklevel=2,
                         category=PhysicsWarning,
                     )
 
@@ -1085,6 +1087,7 @@ class ParticleTracker:
                 warnings.warn(
                     f"Particles have reached {beta_max}% of the speed of light. Consider using a relativistic integrator for more accurate results.",
                     RelativityWarning,
+                    stacklevel=2,
                 )
 
                 self._raised_relativity_warning = True

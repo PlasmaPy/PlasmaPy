@@ -40,6 +40,7 @@ def _langmuir_futurewarning() -> None:
         "the plasmapy.analysis.swept_langmuir subpackage and phased out over "
         "2021.  The plasmapy.analysis package was released in v0.5.0.",
         FutureWarning,
+        stacklevel=2,
     )
 
 

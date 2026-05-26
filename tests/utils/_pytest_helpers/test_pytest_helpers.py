@@ -31,7 +31,7 @@ def raise_exception(*args, **kwargs):
 
 
 def issue_warning(*args, **kwargs) -> int:  # noqa: ANN002, ANN003
-    warnings.warn(f"\n{args}\n{kwargs}", PlasmaPyWarning)
+    warnings.warn(f"\n{args}\n{kwargs}", PlasmaPyWarning, stacklevel=2)
     return 42
 
 
@@ -41,13 +41,13 @@ def adams_number(*args, **kwargs) -> int:  # noqa: ANN002, ANN003
 
 def return_quantity(*args, should_warn: bool = False):  # noqa: ANN002, ANN202
     if should_warn:
-        warnings.warn("", UserWarning)
+        warnings.warn("", UserWarning, stacklevel=2)
     return 5 * u.m / u.s
 
 
 def return_arg(arg: Any, should_warn: bool = False) -> Any:  # noqa: ANN401, FBT001, FBT002
     if should_warn:
-        warnings.warn("", UserWarning)
+        warnings.warn("", UserWarning, stacklevel=2)
     return arg
 
 
@@ -182,7 +182,7 @@ def func(x, raise_exception: bool = False, issue_warning: bool = False):  # noqa
     if raise_exception:
         raise ValueError("")
     elif issue_warning:
-        warnings.warn("", UserWarning)
+        warnings.warn("", UserWarning, stacklevel=2)
     return x
 
 

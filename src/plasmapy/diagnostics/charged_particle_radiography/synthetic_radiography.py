@@ -784,6 +784,7 @@ class Tracker(ParticleTracker):
                 "initialized are heading away from the grid. Check the "
                 " orientation of the provided velocity vectors.",
                 RuntimeWarning,
+                stacklevel=2,
             )
 
     # *************************************************************************
@@ -911,6 +912,7 @@ class Tracker(ParticleTracker):
                 "provided may be too high to successfully radiograph "
                 "with this particle energy.",
                 RuntimeWarning,
+                stacklevel=2,
             )
 
     def run(self) -> None:
@@ -976,6 +978,7 @@ class Tracker(ParticleTracker):
                 "decreasing the max_theta to increase this "
                 "number.",
                 RuntimeWarning,
+                stacklevel=2,
             )
 
         # Remove particles that will never reach the detector
@@ -1274,6 +1277,7 @@ def synthetic_radiograph(obj, size=None, bins=None, ignore_grid: bool = False): 
             "on this synthetic radiograph. Consider increasing "
             "the size to include more.",
             RuntimeWarning,
+            stacklevel=2,
         )
 
     return h * u.m, v * u.m, intensity

@@ -268,7 +268,7 @@ def kinetic_alfven(  # noqa: ANN201, C901, PLR0912
                 f"≫ max(ω/kz) ({omega_kz_max:.1E} m/s) "
                 f"≫ v_Ti ({v_Ti:.1E} m/s)"
             )
-            warnings.warn(errmsg, PhysicsWarning)
+            warnings.warn(errmsg, PhysicsWarning, stacklevel=2)
 
         # Minimum value for ω/kz test
         if omega_kz_min / v_Te > 0.1 or v_Ti / omega_kz_min > 0.1:
@@ -280,7 +280,7 @@ def kinetic_alfven(  # noqa: ANN201, C901, PLR0912
                 f"≫ min(ω/kz) ({omega_kz_min:.1E} m/s) "
                 f"≫ v_Ti ({v_Ti:.1E} m/s)"
             )
-            warnings.warn(errmsg, PhysicsWarning)
+            warnings.warn(errmsg, PhysicsWarning, stacklevel=2)
 
         # Dispersion relation is only valid in the regime ω << ω_ci
         if w_max / omega_ci > 0.1:
@@ -289,6 +289,6 @@ def kinetic_alfven(  # noqa: ANN201, C901, PLR0912
                 "high-frequency wave, which violates the low frequency "
                 f"assumption: max(ω) ({w_max:.1E} rad/s) ≪ ω_ci ({omega_ci:.1E} rad/s))"
             )
-            warnings.warn(errmsg, PhysicsWarning)
+            warnings.warn(errmsg, PhysicsWarning, stacklevel=2)
 
     return omega

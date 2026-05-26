@@ -400,6 +400,7 @@ class ClassicalTransport:
                 f"Coulomb logarithm is {coulomb_log_ei},"
                 f" you might have strong coupling effects",
                 CouplingWarning,
+                stacklevel=2,
             )
 
         if coulomb_log_ii is not None:
@@ -424,6 +425,7 @@ class ClassicalTransport:
                 f"Coulomb logarithm is {coulomb_log_ii},"
                 f" you might have strong coupling effects",
                 CouplingWarning,
+                stacklevel=2,
             )
 
         # calculate Hall parameters if not forced in input

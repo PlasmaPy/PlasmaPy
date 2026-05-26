@@ -996,6 +996,7 @@ def spectral_density_model(  # noqa: C901, PLR0912, PLR0915
             "Instead regions with no data should be removed from "
             "both the data and wavelength arrays using "
             "`numpy.delete`.",
+            stacklevel=2,
         )
 
     if "notch" not in settings:

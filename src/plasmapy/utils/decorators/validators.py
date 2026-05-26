@@ -363,6 +363,7 @@ class ValidateQuantities(CheckUnits, CheckValues):
                         f"(e.g. 5. * astropy.units.cm) "
                         f"(see http://docs.astropy.org/en/stable/units/)",
                     ),
+                    stacklevel=2,
                 )
 
         # check units

@@ -279,6 +279,7 @@ class CheckValues(CheckBase):
                     f"Expected to value check parameters {params_str} but they "
                     f"are missing from the call to {self.f.__name__}",
                 ),
+                stacklevel=2,
             )
 
         return out_checks
@@ -760,6 +761,7 @@ class CheckUnits(CheckBase):
                     f"Expected to unit check parameters {params_str} but they "
                     f"are missing from the call to {self.f.__name__}",
                 ),
+                stacklevel=2,
             )
 
         return out_checks
@@ -1414,4 +1416,5 @@ def _check_relativistic(
             f"{round(beta * 100, 3)}% of the speed of "
             f"light. Relativistic effects may be important.",
             RelativityWarning,
+            stacklevel=2,
         )

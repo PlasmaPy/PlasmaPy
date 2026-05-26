@@ -137,6 +137,7 @@ class PlasmaBlob(GenericPlasma):
             warnings.warn(
                 f"Coupling parameter is {couple}, you might have strong coupling effects",
                 CouplingWarning,
+                stacklevel=2,
             )
 
         return couple

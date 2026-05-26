@@ -1133,6 +1133,7 @@ def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0915
         warnings.warn(
             "Multiple null points suspected. Trilinear method may not work as intended.",
             MultipleNullPointWarning,
+            stacklevel=2,
         )
         return False
 
@@ -1316,6 +1317,7 @@ def _locate_null_point(vspace, cell, n, err):
                 warnings.warn(
                     "Multiple null points suspected. Trilinear method may not work as intended.",
                     MultipleNullPointWarning,
+                    stacklevel=2,
                 )
                 if (
                     np.isclose(locx, 0, atol=_EQUALITY_ATOL)
@@ -1334,14 +1336,16 @@ def _locate_null_point(vspace, cell, n, err):
             if np.abs((norm - prev_norm) / (prev_norm + 1e-10)) < err and in_bound(x0):
                 return x0
         if in_bound(x0):
-            warnings.warn("Max Iterations Reached without Convergence")
+            warnings.warn("Max Iterations Reached without Convergence", stacklevel=2)
             if (
                 np.isclose(locx, 0, atol=_EQUALITY_ATOL)
                 and np.isclose(locy, 0, atol=_EQUALITY_ATOL)
                 and np.isclose(locz, 0, atol=_EQUALITY_ATOL)
             ):
                 return x0
-    warnings.warn("Various starting points did not locate possible null point.")
+    warnings.warn(
+        "Various starting points did not locate possible null point.", stacklevel=2,
+    )
     # Generate new starting points localized into 8 small cells?
     return None
 

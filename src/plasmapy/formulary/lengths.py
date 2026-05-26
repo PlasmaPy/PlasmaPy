@@ -278,6 +278,7 @@ def gyroradius(
         warnings.warn(
             "lorentzfactor is given along with Vperp or T, will lead "
             "to inaccurate predictions unless they correspond",
+            stacklevel=2,
         )
 
     # Check if V and T are both missing at any position but lorentzfactor is not scalar

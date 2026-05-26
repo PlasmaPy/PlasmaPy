@@ -53,7 +53,7 @@ def return_np_array(args) -> np.array:
 def issue_warning() -> None:
     """A sample function that issues a `SampleWarning`."""
 
-    warnings.warn("warning message", SampleWarning)
+    warnings.warn("warning message", SampleWarning, stacklevel=2)
 
 
 def issue_warning_return_42() -> int:
@@ -62,7 +62,7 @@ def issue_warning_return_42() -> int:
     and returns ``42``.
     """
 
-    warnings.warn("warning message", SampleWarning)
+    warnings.warn("warning message", SampleWarning, stacklevel=2)
     return 42
 
 
@@ -116,7 +116,7 @@ class SampleClass1:
     def issue_warning(self) -> None:
         """A sample method that issues a `SampleWarning`."""
 
-        warnings.warn("warning message", SampleWarning)
+        warnings.warn("warning message", SampleWarning, stacklevel=2)
 
 
 class SampleClass2:

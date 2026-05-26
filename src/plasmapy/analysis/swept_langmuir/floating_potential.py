@@ -287,6 +287,7 @@ def find_floating_potential(  # noqa: C901, PLR0912, PLR0915
                 f"{n_islands} crossing-islands.  Try adjusting keyword 'threshold' "
                 f"and/or smooth the current.",
                 PlasmaPyWarning,
+                stacklevel=2,
             )
 
             return np.nan, VFExtras(**rtn_extras)  # ty:ignore[invalid-return-type]
@@ -329,6 +330,7 @@ def find_floating_potential(  # noqa: C901, PLR0912, PLR0915
                 f"The number of elements in the current array ({istop - istart + 1}) "
                 f"is less than 'min_points' ({min_points}).",
                 PlasmaPyWarning,
+                stacklevel=2,
             )
 
     # Perform Linear Regression Fit

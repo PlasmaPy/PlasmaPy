@@ -503,6 +503,7 @@ def Coulomb_logarithm(  # noqa: ANN201
             f"due to strong coupling effects, in particular because "
             f"{method = } assumes weak coupling.",
             CouplingWarning,
+            stacklevel=2,
         )
     elif min_ln_Lambda < 4:
         warnings.warn(
@@ -510,6 +511,7 @@ def Coulomb_logarithm(  # noqa: ANN201
             f"min(ln Λ) = {min_ln_Lambda:.4f}. Coulomb logarithms of ≲ 4 may "
             f"have increased uncertainty due to strong coupling effects.",
             CouplingWarning,
+            stacklevel=2,
         )
 
     return ln_Lambda

@@ -312,6 +312,7 @@ class IonizationState:
                     "Collisional ionization equilibration has not yet "
                     "been implemented in IonizationState; cannot set "
                     "ionic fractions.",
+                    stacklevel=2,
                 )
 
     def __str__(self) -> str:

@@ -423,6 +423,7 @@ def parse_and_check_atomic_input(  # noqa: ANN202, C901, PLR0912, PLR0915
                 "Redundant mass number information for particle "
                 f"'{argument}' with mass_numb = {mass_numb}.",
                 ParticleWarning,
+                stacklevel=2,
             )
 
     if mass_numb_from_arg is not None:
@@ -438,6 +439,7 @@ def parse_and_check_atomic_input(  # noqa: ANN202, C901, PLR0912, PLR0915
             warnings.warn(
                 f"Redundant charge information for particle '{argument}' with Z = {Z}.",
                 ParticleWarning,
+                stacklevel=2,
             )
 
     if Z_from_arg is not None:
@@ -456,6 +458,7 @@ def parse_and_check_atomic_input(  # noqa: ANN202, C901, PLR0912, PLR0915
                 f"of Z = {Z}, which is unlikely to occur in "
                 f"nature.",
                 ParticleWarning,
+                stacklevel=2,
             )
 
     isotope = reconstruct_isotope_symbol(element, mass_numb)  # ty:ignore[invalid-argument-type]
@@ -538,6 +541,7 @@ def parse_and_check_molecule_input(argument: str, Z: int | None = None):  # noqa
             warnings.warn(
                 f"Redundant charge information for particle '{argument}' with Z = {Z}.",
                 ParticleWarning,
+                stacklevel=2,
             )
 
     if z_from_arg is not None:

@@ -327,6 +327,7 @@ def two_fluid(  # noqa: ANN201
                 f"{wkc_max:.3f}), which violates the low-frequency (ω/kc << 1) "
                 f"assumption of the dispersion relation.",
                 PhysicsWarning,
+                stacklevel=2,
             )
 
     return omega

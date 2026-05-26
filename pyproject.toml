@@ -291,7 +291,6 @@ lint.extend-select = [
 # separately in .pre-commit-config.yaml in the hook for nbqa-ruff
 lint.ignore = [
   "ANN001",
-  "B028",
   "COM819",
   "D105",    # enable later?
   "D200",    # incompatible with multiline short summaries

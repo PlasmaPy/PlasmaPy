@@ -148,6 +148,7 @@ class AbstractMHDWave(ABC):
                 f"and ω/ω_c == {omega_plasma_frequency_max:.3f}), which violates the low-frequency "
                 f"assumption of the dispersion relation (ω/ω_c ≪ 1 and ω/ω_p ≪ 1).",
                 PhysicsWarning,
+                stacklevel=2,
             )
         return np.squeeze(omega)
 

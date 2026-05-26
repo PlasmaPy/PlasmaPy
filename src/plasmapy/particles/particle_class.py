@@ -1598,6 +1598,7 @@ class Particle(AbstractPhysicalParticle):
                 f"No isotopes of {self.element} have an isotopic abundance. "
                 f"The isotopic abundance of {self.isotope} is being returned as 0.0",
                 ParticleWarning,
+                stacklevel=2,
             )
 
         return abundance  # ty:ignore[invalid-return-type]
@@ -1681,6 +1682,7 @@ class Particle(AbstractPhysicalParticle):
                 f"The half-life for {self.symbol} is not known precisely; "
                 "returning string with estimated value.",
                 MissingParticleDataWarning,
+                stacklevel=2,
             )
 
         if self._attributes["half-life"] is None:

@@ -205,6 +205,7 @@ class AbstractGrid(ABC):
                         f"{rq} is not specified for the provided grid."
                         "This quantity will be assumed to be zero.",
                         RuntimeWarning,
+                        stacklevel=2,
                     )
 
                 unit = self.recognized_quantities()[rq].unit
