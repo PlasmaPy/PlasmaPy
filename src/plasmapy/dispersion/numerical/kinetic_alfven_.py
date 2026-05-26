@@ -173,14 +173,13 @@ def kinetic_alfven(  # noqa: ANN201, C901, PLR0912
     >>> kinetic_alfven(**inputs)
     {np.float64(30.0): <Quantity [0.00075242, 0.00752616] rad / s>}
     """
-
     # Validate arguments
     for arg_name in ("B", "n_i", "T_e", "T_i"):
         val = locals()[arg_name].squeeze()
         if val.shape != ():
             raise ValueError(
                 f"Argument '{arg_name}' must be a single value and not "
-                f"an array of shape '{val.shape}'."
+                f"an array of shape '{val.shape}'.",
             )
         locals()[arg_name] = val
 
@@ -188,7 +187,7 @@ def kinetic_alfven(  # noqa: ANN201, C901, PLR0912
         if not isinstance(arg_name, Real):
             raise TypeError(
                 f"Expected int or float for argument '{arg_name}', "
-                f"instead got type {type(arg_name)}."
+                f"instead got type {type(arg_name)}.",
             )
 
     # Validate argument k
@@ -196,7 +195,7 @@ def kinetic_alfven(  # noqa: ANN201, C901, PLR0912
     if k.ndim not in {0, 1}:
         raise ValueError(
             "Argument 'k' needs to be a single valued or 1D array "
-            f"astropy Quantity, instead got array of shape {k.shape}."
+            f"astropy Quantity, instead got array of shape {k.shape}.",
         )
     elif np.isscalar(k):
         k = np.array([k])
@@ -208,7 +207,7 @@ def kinetic_alfven(  # noqa: ANN201, C901, PLR0912
     if theta.ndim not in {0, 1}:
         raise ValueError(
             "Argument 'theta' needs to be a single valued or 1D array "
-            f"astropy Quantity, instead got array of shape {theta.shape}."
+            f"astropy Quantity, instead got array of shape {theta.shape}.",
         )
     elif np.isscalar(theta):
         theta = np.array([theta])
@@ -268,7 +267,7 @@ def kinetic_alfven(  # noqa: ANN201, C901, PLR0912
                 f"≫ max(ω/kz) ({omega_kz_max:.1E} m/s) "
                 f"≫ v_Ti ({v_Ti:.1E} m/s)"
             )
-            warnings.warn(errmsg, PhysicsWarning)
+            warnings.warn(errmsg, PhysicsWarning, stacklevel=2)
 
         # Minimum value for ω/kz test
         if omega_kz_min / v_Te > 0.1 or v_Ti / omega_kz_min > 0.1:
@@ -280,7 +279,7 @@ def kinetic_alfven(  # noqa: ANN201, C901, PLR0912
                 f"≫ min(ω/kz) ({omega_kz_min:.1E} m/s) "
                 f"≫ v_Ti ({v_Ti:.1E} m/s)"
             )
-            warnings.warn(errmsg, PhysicsWarning)
+            warnings.warn(errmsg, PhysicsWarning, stacklevel=2)
 
         # Dispersion relation is only valid in the regime ω << ω_ci
         if w_max / omega_ci > 0.1:
@@ -289,6 +288,6 @@ def kinetic_alfven(  # noqa: ANN201, C901, PLR0912
                 "high-frequency wave, which violates the low frequency "
                 f"assumption: max(ω) ({w_max:.1E} rad/s) ≪ ω_ci ({omega_ci:.1E} rad/s))"
             )
-            warnings.warn(errmsg, PhysicsWarning)
+            warnings.warn(errmsg, PhysicsWarning, stacklevel=2)
 
     return omega

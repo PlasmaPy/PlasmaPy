@@ -53,13 +53,13 @@ class AbstractMHDWave(ABC):
             if val.shape != ():
                 raise ValueError(
                     f"Argument '{arg_name}' must be a single value and not an array of "
-                    f"shape {val.shape}."
+                    f"shape {val.shape}.",
                 )
             locals()[arg_name] = val
 
         if not isinstance(gamma, Real):
             raise TypeError(
-                f"Expected int or float for argument 'gamma', but got {type(gamma)}."
+                f"Expected int or float for argument 'gamma', but got {type(gamma)}.",
             )
 
         if density.unit.physical_type == u.physical.mass_density:
@@ -112,7 +112,8 @@ class AbstractMHDWave(ABC):
     @staticmethod
     @validate_quantities
     def _validate_k_theta(
-        k: u.Quantity[u.rad / u.m], theta: u.Quantity[u.rad]
+        k: u.Quantity[u.rad / u.m],
+        theta: u.Quantity[u.rad],
     ) -> list[u.Quantity]:
         """Validate and return wavenumber and angle."""
         # validate argument k
@@ -120,7 +121,7 @@ class AbstractMHDWave(ABC):
         if k.ndim not in {0, 1}:
             raise ValueError(
                 f"Argument 'k' needs to be a single-valued or 1D array astropy Quantity,"
-                f" got array of shape {k.shape}."
+                f" got array of shape {k.shape}.",
             )
         if np.any(k <= 0):
             raise ValueError("Argument 'k' cannot be a or have negative values.")
@@ -130,7 +131,7 @@ class AbstractMHDWave(ABC):
         if theta.ndim not in {0, 1}:
             raise ValueError(
                 f"Argument 'theta' needs to be a single-valued or 1D array astropy "
-                f"Quantity, got array of shape {k.shape}."
+                f"Quantity, got array of shape {k.shape}.",
             )
 
         # return theta and k as coordinate arrays
@@ -147,6 +148,7 @@ class AbstractMHDWave(ABC):
                 f"and ω/ω_c == {omega_plasma_frequency_max:.3f}), which violates the low-frequency "
                 f"assumption of the dispersion relation (ω/ω_c ≪ 1 and ω/ω_p ≪ 1).",
                 PhysicsWarning,
+                stacklevel=2,
             )
         return np.squeeze(omega)
 
@@ -200,7 +202,9 @@ class AbstractMHDWave(ABC):
     @check_relativistic
     @validate_quantities
     def group_velocity(
-        self, k: u.Quantity[u.rad / u.m], theta: u.Quantity[u.rad]
+        self,
+        k: u.Quantity[u.rad / u.m],
+        theta: u.Quantity[u.rad],
     ) -> u.Quantity[u.m / u.s]:
         r"""
         Calculate the group velocities of magnetohydrodynamic waves.
@@ -264,7 +268,9 @@ class AbstractMHDWave(ABC):
     @check_relativistic
     @validate_quantities
     def phase_velocity(
-        self, k: u.Quantity[u.rad / u.m], theta: u.Quantity[u.rad]
+        self,
+        k: u.Quantity[u.rad / u.m],
+        theta: u.Quantity[u.rad],
     ) -> u.Quantity[u.m / u.s]:
         r"""
         Calculate the phase velocities of magnetohydrodynamic waves.
@@ -697,10 +703,10 @@ class FastMagnetosonicWave(AbstractMHDWave):
                     * (
                         self._magnetosonic_speed**2
                         - 2 * self._Alfven_speed * self._sound_speed * np.cos(theta)
-                    )
+                    ),
                 )
             )
-            / 2
+            / 2,
         )
         return super()._validate_angular_frequency(omega)
 
@@ -775,7 +781,7 @@ class FastMagnetosonicWave(AbstractMHDWave):
                 / (
                     phase_velocity
                     * (2 * phase_velocity**2 - self._magnetosonic_speed**2)
-                )
+                ),
             ),
         ]
 
@@ -940,10 +946,10 @@ class SlowMagnetosonicWave(AbstractMHDWave):
                     * (
                         self._magnetosonic_speed**2
                         - 2 * self._Alfven_speed * self._sound_speed * np.cos(theta)
-                    )
+                    ),
                 )
             )
-            / 2
+            / 2,
         )
         return super()._validate_angular_frequency(omega)
 
@@ -1019,7 +1025,7 @@ class SlowMagnetosonicWave(AbstractMHDWave):
                 phase_velocity * (2 * phase_velocity**2 - self._magnetosonic_speed**2),
                 out=group_velocity,
                 where=phase_velocity != 0,
-            )
+            ),
         )
 
         return [
@@ -1099,7 +1105,8 @@ def mhd_waves(*args, **kwargs):
         `astropy.units.Quantity` (i.e. an array).
     """
     MHD_Waves = namedtuple(
-        "MHD_Waves", ["alfven_wave", "fast_magnetosonic_wave", "slow_magnetosonic_wave"]
+        "MHD_Waves",
+        ["alfven_wave", "fast_magnetosonic_wave", "slow_magnetosonic_wave"],
     )
     return MHD_Waves(
         alfven_wave=AlfvenWave(*args, **kwargs),

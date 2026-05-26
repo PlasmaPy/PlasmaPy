@@ -95,9 +95,8 @@ def _create_lockfile_pr_message(uv_output: str, session: nox.Session) -> None:
     uv_output : str
         The multi-line output of ``session.run(..., silent=True)``.
     """
-
     pr_template = pathlib.Path(
-        ROOT_DIR / "./.github/content/upgrade-uv-lock-pr-template.md"
+        ROOT_DIR / "./.github/content/upgrade-uv-lock-pr-template.md",
     )
     pr_message = pathlib.Path(ROOT_DIR / "./.github/content/upgrade-uv-lock-pr-body.md")
 
@@ -152,7 +151,6 @@ def lock(session: nox.Session) -> None:
     request message for the GitHub workflow that uses this session
     (:file:`.github/workflows/upgrade-uv-lock.yml`).
     """
-
     uv_lock = (
         "uv",
         "lock",
@@ -166,10 +164,10 @@ def lock(session: nox.Session) -> None:
     except nox.command.CommandFailed:
         session.warn("⚠️ uv.lock is invalid, likely due to a git merge conflict.")
         session.log(
-            "📥 Checking out uv.lock from the branch being merged into this one."
+            "📥 Checking out uv.lock from the branch being merged into this one.",
         )
         session.log(
-            "🪧 If this next attempt is unsuccessful, delete uv.lock and try again."
+            "🪧 If this next attempt is unsuccessful, delete uv.lock and try again.",
         )
         session.run("git", "checkout", "--theirs", "--", "uv.lock", external=True)
         uv_output: str | bool = session.run(*uv_lock, silent=RUNNING_ON_CI)
@@ -241,7 +239,6 @@ test_specifiers: list[nox._parametrize.Param] = [
 @nox.parametrize("test_specifier", test_specifiers)
 def tests(session: nox.Session, test_specifier: nox._parametrize.Param) -> None:
     """Run tests with pytest."""
-
     options: list[str] = []
 
     if test_specifier in {"skip slow tests", "lowest-direct-skipslow"}:
@@ -363,7 +360,6 @@ def docs(session: nox.Session) -> None:
 
     Configuration file: docs/conf.py
     """
-
     if RUNNING_ON_CI:
         session.log(DOC_TROUBLESHOOTING_MESSAGE)
 
@@ -385,7 +381,6 @@ def docs(session: nox.Session) -> None:
 @nox_uv.session(python=DOCPYTHON, uv_groups=["docs"])
 def htmlzip(session: nox.Session) -> None:
     """Bundle documentation build into a zip file on Read the Docs."""
-
     if not RUNNING_ON_RTD:
         session.error("This session must be run on Read the Docs.")
 
@@ -395,7 +390,7 @@ def htmlzip(session: nox.Session) -> None:
     if not html_landing_page.exists():
         session.error(
             f"No documentation build found at: {html_landing_page}\n"
-            f"It appears the documentation has not been built."
+            f"It appears the documentation has not been built.",
         )
 
     command = [
@@ -469,7 +464,6 @@ These variables are in the form of Python regular expressions:
 @nox_uv.session(python=DOCPYTHON, uv_groups=["docs"])
 def linkcheck(session: nox.Session) -> None:
     """Check hyperlinks in documentation."""
-
     if RUNNING_ON_CI:
         session.log(LINKCHECK_TROUBLESHOOTING)
 
@@ -550,13 +544,12 @@ def changelog(session: nox.Session, final: str) -> None:
 
        nox -s 'changelog(final)' -- 2026.5.0
     """
-
     now = datetime.datetime.now(datetime.UTC)
 
     if len(session.posargs) != 1:
         raise TypeError(
             "Please provide the version of PlasmaPy to be released "
-            f"(i.e., `nox -s changelog -- {now.year}.{now.month}.0`)."
+            f"(i.e., `nox -s changelog -- {now.year}.{now.month}.0`).",
         )
 
     version = session.posargs[0]
@@ -568,7 +561,7 @@ def changelog(session: nox.Session, final: str) -> None:
         raise ValueError(
             "Please provide a version of the form YYYY.M.PATCH, where "
             "YYYY is he year, M is the one or two digit month, "
-            "and PATCH is a non-negative integer."
+            "and PATCH is a non-negative integer.",
         )
 
     towncrier = ["towncrier", "build", "--version", version]
@@ -603,7 +596,9 @@ AUTOTYPING_RISKY: tuple[str, ...] = (
 
 
 @nox_uv.session(
-    python=MINPYTHON, uv_only_groups=["autotyping"], uv_no_install_project=True
+    python=MINPYTHON,
+    uv_only_groups=["autotyping"],
+    uv_no_install_project=True,
 )
 @nox.parametrize(
     "options",
@@ -632,7 +627,9 @@ def autotyping(session: nox.Session, options: tuple[str, ...]) -> None:
 
 
 @nox_uv.session(
-    python=MAXPYTHON, uv_only_groups=["manifest"], uv_no_install_project=True
+    python=MAXPYTHON,
+    uv_only_groups=["manifest"],
+    uv_no_install_project=True,
 )
 def manifest(session: nox.Session) -> None:
     """

@@ -104,7 +104,6 @@ class BasicRegistrationFactory:
         Arguments args and kwargs are passed through to the validation
         function and to the constructor for the final type.
         """
-
         # Any preprocessing and massaging of inputs can happen here
 
         return self._check_registered_widget(*args, **kwargs)
@@ -119,7 +118,7 @@ class BasicRegistrationFactory:
         if n_matches == 0:
             if self.default_widget_type is None:
                 raise NoMatchError(
-                    "No types match specified arguments and no default is set."
+                    "No types match specified arguments and no default is set.",
                 )
             else:
                 candidate_widget_types = [self.default_widget_type]
@@ -129,7 +128,7 @@ class BasicRegistrationFactory:
             raise MultipleMatchError(
                 f"Too many candidate types identified ({n_matches}). "
                 "Specify enough keywords to guarantee unique type "
-                "identification."
+                "identification.",
             )
 
         # Only one is found
@@ -164,7 +163,7 @@ class BasicRegistrationFactory:
         elif validation_function is not None:
             if not callable(validation_function):
                 raise AttributeError(
-                    "Keyword argument 'validation_function' must be callable."
+                    "Keyword argument 'validation_function' must be callable.",
                 )
 
             self.registry[WidgetType] = validation_function
@@ -179,7 +178,7 @@ class BasicRegistrationFactory:
                     )
                     if is_not_classmethod:
                         raise ValidationFunctionError(
-                            f"{WidgetType.__name__}.{vfunc_str} must be a classmethod."
+                            f"{WidgetType.__name__}.{vfunc_str} must be a classmethod.",
                         )
 
                     self.registry[WidgetType] = vfunc
@@ -188,7 +187,7 @@ class BasicRegistrationFactory:
             if not found:
                 raise ValidationFunctionError(
                     "No proper validation function for class "
-                    f"{WidgetType.__name__} found."
+                    f"{WidgetType.__name__} found.",
                 )
 
     def unregister(self, WidgetType) -> None:

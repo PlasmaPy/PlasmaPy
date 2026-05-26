@@ -35,10 +35,16 @@ function_case = namedtuple("function_case", ("func", "args", "kwargs", "expected
     ("func", "args", "kwargs", "expected"),
     [
         function_case(
-            func=generic_function, args=(), kwargs={}, expected="generic_function()"
+            func=generic_function,
+            args=(),
+            kwargs={},
+            expected="generic_function()",
         ),
         function_case(
-            func=generic_function, args=(1), kwargs={}, expected="generic_function(1)"
+            func=generic_function,
+            args=(1),
+            kwargs={},
+            expected="generic_function(1)",
         ),
         function_case(
             func=generic_function,
@@ -192,7 +198,11 @@ method_case = namedtuple(
     ],
 )
 def test_method_call_string(
-    args_to_cls, kwargs_to_cls, args_to_method, kwargs_to_method, expected
+    args_to_cls,
+    kwargs_to_cls,
+    args_to_method,
+    kwargs_to_method,
+    expected,
 ) -> None:
     """Test that `method_call_string` returns the expected results."""
     actual = method_call_string(
@@ -267,7 +277,9 @@ ndarray_case = namedtuple("ndarray_case", ("array_inputs", "max_items", "expecte
     [
         ndarray_case(array_inputs=[0], max_items=np.inf, expected="np.array([0])"),
         ndarray_case(
-            array_inputs=[0.0, 1.0], max_items=np.inf, expected="np.array([0., 1.])"
+            array_inputs=[0.0, 1.0],
+            max_items=np.inf,
+            expected="np.array([0., 1.])",
         ),
         ndarray_case(
             array_inputs=[0.0, 1.142],
@@ -280,10 +292,14 @@ ndarray_case = namedtuple("ndarray_case", ("array_inputs", "max_items", "expecte
             expected="np.array([[0, 1, 2], [3, 4, 5]])",
         ),
         ndarray_case(
-            array_inputs=[np.inf], max_items=np.inf, expected="np.array([np.inf])"
+            array_inputs=[np.inf],
+            max_items=np.inf,
+            expected="np.array([np.inf])",
         ),
         ndarray_case(
-            array_inputs=[np.nan], max_items=np.inf, expected="np.array([np.nan])"
+            array_inputs=[np.nan],
+            max_items=np.inf,
+            expected="np.array([np.nan])",
         ),
         ndarray_case(
             array_inputs=[np.nan, np.inf, -np.inf],
@@ -293,7 +309,9 @@ ndarray_case = namedtuple("ndarray_case", ("array_inputs", "max_items", "expecte
         ndarray_case(array_inputs=[1], max_items=1, expected="np.array([1])"),
         ndarray_case(array_inputs=[1, 2], max_items=1, expected="np.array([1, ...])"),
         ndarray_case(
-            array_inputs=[1, 2, 3, 4], max_items=2, expected="np.array([1, 2, ...])"
+            array_inputs=[1, 2, 3, 4],
+            max_items=2,
+            expected="np.array([1, 2, ...])",
         ),
         ndarray_case(
             array_inputs=[[1, 2, 3], [4, 5, 6]],
@@ -344,7 +362,8 @@ quantity_case = namedtuple("QuantityTestCases", ("quantity", "expected"))  # ty:
         quantity_case(quantity=5.4 / u.m, expected="5.4/u.m"),
         quantity_case(quantity=5.5 * u.m**-2, expected="5.5*u.m**-2"),
         quantity_case(
-            quantity=u.Quantity(5.0), expected="5.0*u.dimensionless_unscaled"
+            quantity=u.Quantity(5.0),
+            expected="5.0*u.dimensionless_unscaled",
         ),
         quantity_case(
             quantity=np.array([3.5, 4.2]) * u.m**-2.5,

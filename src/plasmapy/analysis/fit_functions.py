@@ -51,7 +51,6 @@ class AbstractFitFunction(ABC):
             parameters.  Equal in size to :attr:`param_names`.
 
         """
-
         self._FitParamTuple = namedtuple("FitParamTuple", self._param_names)  # ty:ignore[invalid-argument-type]
 
         if params is None:
@@ -101,11 +100,11 @@ class AbstractFitFunction(ABC):
 
         return self.func(x, *self.params)  # ty:ignore[not-iterable]
 
-    def __repr__(self) -> str:
+    def __repr__(self) -> str:  # noqa: D105
         return f"{self.__str__()} {self.__class__}"
 
     @abstractmethod
-    def __str__(self) -> str: ...
+    def __str__(self) -> str: ...  # noqa: D105
 
     @abstractmethod
     def func(self, x, *args):
@@ -242,7 +241,7 @@ class AbstractFitFunction(ABC):
         else:
             raise ValueError(
                 f"Got {val} for 'val', expecting tuple of ints and "
-                f"floats of length {len(self.param_names)}."
+                f"floats of length {len(self.param_names)}.",
             )
 
     @property
@@ -264,7 +263,7 @@ class AbstractFitFunction(ABC):
         else:
             raise ValueError(
                 f"Got {val} for 'val', expecting tuple of ints and "
-                f"floats of length {len(self.param_names)}."
+                f"floats of length {len(self.param_names)}.",
             )
 
     @property
@@ -288,7 +287,7 @@ class AbstractFitFunction(ABC):
                 pass
             elif x_err.shape != x.shape:
                 raise ValueError(
-                    f"x_err shape {x_err.shape} must be equal the shape of x {x.shape}."
+                    f"x_err shape {x_err.shape} must be equal the shape of x {x.shape}.",
                 )
         return x, x_err
 
@@ -301,7 +300,7 @@ class AbstractFitFunction(ABC):
         for arg in args:
             if not isinstance(arg, numbers.Real):
                 raise TypeError(
-                    f"Expected int or float for parameter argument, got {type(arg)}."
+                    f"Expected int or float for parameter argument, got {type(arg)}.",
                 )
 
     @staticmethod
@@ -321,7 +320,7 @@ class AbstractFitFunction(ABC):
                 or np.issubdtype(x.dtype, np.floating)
             ):
                 raise TypeError(
-                    "Argument x needs to be an array_like object of integers or floats."
+                    "Argument x needs to be an array_like object of integers or floats.",
                 )
 
             x = x.squeeze()
@@ -467,7 +466,7 @@ class Linear(AbstractFitFunction):
 
     _param_names = ("m", "b")
 
-    def __str__(self) -> str:
+    def __str__(self) -> str:  # noqa: D105
         return "f(x) = m x + b"
 
     @property
@@ -586,6 +585,7 @@ class Linear(AbstractFitFunction):
             warnings.warn(
                 "Slope of Linear fit function is zero so no finite root exists. ",
                 RuntimeWarning,
+                stacklevel=2,
             )
             return _RootResults(np.nan, np.nan)
 
@@ -657,7 +657,7 @@ class Exponential(AbstractFitFunction):
 
     _param_names = ("a", "alpha")
 
-    def __str__(self) -> str:
+    def __str__(self) -> str:  # noqa: D105
         return "f(x) = a exp(alpha x)"
 
     @property
@@ -754,7 +754,6 @@ class Exponential(AbstractFitFunction):
             The uncertainty in the calculated root for the given fit
             :attr:`params` and :attr:`param_errors`.
         """
-
         return _RootResults(np.nan, np.nan)
 
 
@@ -796,7 +795,7 @@ class ExponentialPlusLinear(AbstractFitFunction):
         self._linear = Linear()
         super().__init__(params=params, param_errors=param_errors)
 
-    def __str__(self) -> str:
+    def __str__(self) -> str:  # noqa: D105
         exp_str = self._exponential.__str__().replace("f(x) = ", "")
         lin_str = self._linear.__str__().replace("f(x) = ", "")
         return f"f(x) = {exp_str} + {lin_str}"
@@ -933,7 +932,7 @@ class ExponentialPlusOffset(AbstractFitFunction):
         self._explin = ExponentialPlusLinear()
         super().__init__(params=params, param_errors=param_errors)
 
-    def __str__(self) -> str:
+    def __str__(self) -> str:  # noqa: D105
         return "f(x) = a exp(alpha x) + b"
 
     @property

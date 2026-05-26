@@ -219,7 +219,6 @@ def run_test(  # noqa: C901
             run_test(inputs)
 
     """
-
     if kwargs is None:
         kwargs = {}
 
@@ -228,7 +227,7 @@ def run_test(  # noqa: C901
 
     if not callable(func):
         raise InvalidTestError(
-            f"The argument func = {func} to run_test must be callable."
+            f"The argument func = {func} to run_test must be callable.",
         )
 
     # By including the function call that is run during a test in error
@@ -283,26 +282,26 @@ def run_test(  # noqa: C901
         except expected_exception as exc_result:
             resulting_exception = exc_result.__reduce__()[0]
             if resulting_exception.__name__ == expected_exception.__name__:
-                return None
+                return
             else:
                 raise UnexpectedExceptionFail(
                     f"The command {call_str} did not specifically raise "
                     f"{_name_with_article(expected_exception)} as expected, but "
                     f"instead raised {_name_with_article(resulting_exception)} "
-                    f"which is a subclass of the expected exception."
+                    f"which is a subclass of the expected exception.",
                 ) from exc_result
         except Exception as exc_unexpected_exception:
             unexpected_exception = exc_unexpected_exception.__reduce__()[0]
             raise UnexpectedExceptionFail(
                 f"The command {call_str} did not raise "
                 f"{_name_with_article(expected_exception)} as expected, "
-                f"but instead raised {_name_with_article(unexpected_exception)}."  # ty:ignore[invalid-argument-type]
+                f"but instead raised {_name_with_article(unexpected_exception)}.",  # ty:ignore[invalid-argument-type]
             ) from exc_unexpected_exception
         else:
             raise MissingExceptionFail(
                 f"The command {call_str} did not raise "
                 f"{_name_with_article(expected_exception)} as expected, but instead "
-                f"returned {_object_name(result)}."
+                f"returned {_object_name(result)}.",
             )
 
     try:
@@ -315,14 +314,14 @@ def run_test(  # noqa: C901
         raise MissingWarningFail(
             f"The command {call_str} should issue "
             f"{_name_with_article(expected['warning'])}, but instead returned "  # ty:ignore[invalid-argument-type]
-            f"{_object_name(result)}."
+            f"{_object_name(result)}.",
         ) from missing_warning
     except Exception as exception_no_warning:
         raise UnexpectedExceptionFail(
             f"The command {call_str} unexpectedly raised "
             f"{_name_with_article(exception_no_warning.__reduce__()[0])} "  # ty:ignore[invalid-argument-type]
             f"instead of returning the expected value of "
-            f"{_object_name(expected['result'])}."
+            f"{_object_name(expected['result'])}.",
         ) from exception_no_warning
 
     if isinstance(expected["result"], u.UnitBase):
@@ -331,16 +330,16 @@ def run_test(  # noqa: C901
                 raise u.UnitsError(
                     f"The command {call_str} returned "
                     f"{_object_name(result)} instead of the expected "
-                    f"value of {_object_name(expected['result'])}."
+                    f"value of {_object_name(expected['result'])}.",
                 )
-            return None
+            return
 
         if not isinstance(result, u.Quantity | const.Constant | const.EMConstant):
             raise u.UnitsError(
                 f"The command {call_str} returned "
                 f"{_object_name(result)} instead of a quantity or "
                 f"constant with units of "
-                f"{_object_name(expected['result'])}."
+                f"{_object_name(expected['result'])}.",
             )
 
         if result.unit != expected["result"]:
@@ -348,10 +347,10 @@ def run_test(  # noqa: C901
                 f"The command {call_str} returned "
                 f"{_object_name(result)}, which has units of "
                 f"{result.unit} instead of the expected units of "
-                f"{_object_name(expected['result'])}."
+                f"{_object_name(expected['result'])}.",
             )
 
-        return None
+        return
 
     if isinstance(expected["result"], u.Quantity | const.Constant | const.EMConstant):
         if result.unit != expected["result"].unit:
@@ -359,14 +358,14 @@ def run_test(  # noqa: C901
                 f"The command {call_str} returned "
                 f"{_object_name(result)} which has different units "
                 f"than the expected result of "
-                f"{_object_name(expected['result'])}."
+                f"{_object_name(expected['result'])}.",
             )
 
         if np.allclose(result.value, expected["result"].value):
-            return None
+            return
 
     if expected["result"] is None:
-        return None
+        return
 
     if type(result) != type(expected["result"]):  # noqa: E721
         raise TypeMismatchFail(
@@ -375,17 +374,17 @@ def run_test(  # noqa: C901
             f"{_object_name(type(result))}, "
             f"instead of the expected value of "
             f"{_object_name(expected['result'])} which has type "
-            f"{_object_name(type(expected['result']))}."
+            f"{_object_name(type(expected['result']))}.",
         )
 
     try:
         if result == expected["result"]:
-            return None
+            return
     except Exception as exc_equality:
         raise TypeError(
             f"The equality of {_object_name(result)} and "
             f"{_object_name(expected['result'])} "
-            f"cannot be evaluated."
+            f"cannot be evaluated.",
         ) from exc_equality
 
     try:
@@ -396,7 +395,7 @@ def run_test(  # noqa: C901
     with contextlib.suppress(Exception):
         all_close = np.allclose(expected["result"], result, rtol=rtol, atol=atol)
         if all_close and not different_length:
-            return None
+            return
 
     errmsg = (
         f"The command {call_str} returned "
@@ -506,14 +505,13 @@ def run_test_equivalent_calls(  # noqa: C901
     >>> run_test_equivalent_calls(f, -1, 1.0, require_same_type=False)
 
     """
-
     if len(test_inputs) == 1:
         test_inputs = test_inputs[0]
 
     if not isinstance(test_inputs, tuple | list):
         raise InvalidTestError(
             f"The argument to run_test_equivalent_calls must be a tuple "
-            f"or list.  The provided inputs are: {test_inputs}"
+            f"or list.  The provided inputs are: {test_inputs}",
         )
 
     if callable(test_inputs[0]):
@@ -551,7 +549,9 @@ def run_test_equivalent_calls(  # noqa: C901
 
         try:
             test_case["call string"] = call_string(
-                test_case["function"], test_case["args"], test_case["kwargs"]
+                test_case["function"],
+                test_case["args"],
+                test_case["kwargs"],
             )
         except Exception:
             test_case["call string"] = (
@@ -564,7 +564,7 @@ def run_test_equivalent_calls(  # noqa: C901
 
     if len(test_cases) < 2:
         raise InvalidTestError(
-            "At least two tests are needed for run_test_equivalent_calls"
+            "At least two tests are needed for run_test_equivalent_calls",
         )
 
     # Check to make sure that each function is callable, each set of
@@ -597,7 +597,7 @@ def run_test_equivalent_calls(  # noqa: C901
             test_case["type"] = type(test_case["result"])
         except Exception as exc:
             raise UnexpectedExceptionFail(
-                f"Unable to evaluate {test_case['call string']}."
+                f"Unable to evaluate {test_case['call string']}.",
             ) from exc
 
     # Make sure that all of the results evaluate as equal to the first
@@ -610,7 +610,7 @@ def run_test_equivalent_calls(  # noqa: C901
         equals_first_result = [result == results[0] for result in results]
     except Exception as exc:
         raise UnexpectedExceptionFail(
-            "Unable to determine equality properties of results."
+            "Unable to determine equality properties of results.",
         ) from exc
 
     equals_first_type = [result_type == types[0] for result_type in types]
@@ -679,7 +679,6 @@ def assert_can_handle_nparray(  # noqa: C901
     >>> assert_can_handle_nparray(gyrofrequency, kwargs={"signed": True})
     >>> assert_can_handle_nparray(gyrofrequency, kwargs={"signed": False})
     """
-
     if insert_some_nans is None:
         insert_some_nans = []
 
@@ -690,7 +689,11 @@ def assert_can_handle_nparray(  # noqa: C901
         kwargs = {}
 
     def _prepare_input(  # noqa: ANN202, C901
-        param_name: str, param_default, insert_some_nans, insert_all_nans, kwargs
+        param_name: str,
+        param_default,
+        insert_some_nans,
+        insert_all_nans,
+        kwargs,
     ):
         """
         Parse parameter names and set up values to input for 0d, 1d, and 2d array tests.

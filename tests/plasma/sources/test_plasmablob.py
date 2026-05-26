@@ -110,14 +110,20 @@ def test_Plasma3D_derived_vars() -> None:
 def test_Plasma3D_add_magnetostatics() -> None:
     r"""Function to test add_magnetostatic function"""
     dipole = magnetostatics.MagneticDipole(
-        np.array([0, 0, 1]) * u.A * u.m * u.m, np.array([0, 0, 0]) * u.m
+        np.array([0, 0, 1]) * u.A * u.m * u.m,
+        np.array([0, 0, 0]) * u.m,
     )
     cw = magnetostatics.CircularWire(
-        np.array([0, 0, 1]), np.array([0, 0, 0]) * u.m, 1 * u.m, 1 * u.A
+        np.array([0, 0, 1]),
+        np.array([0, 0, 0]) * u.m,
+        1 * u.m,
+        1 * u.A,
     )
     gw_cw = cw.to_GeneralWire()
     iw = magnetostatics.InfiniteStraightWire(
-        np.array([0, 1, 0]), np.array([0, 0, 0]) * u.m, 1 * u.A
+        np.array([0, 1, 0]),
+        np.array([0, 0, 0]) * u.m,
+        1 * u.A,
     )
     plasma = plasma3d.Plasma3D(
         domain_x=np.linspace(-2, 2, 30) * u.m,
@@ -139,7 +145,6 @@ class Test_PlasmaBlobRegimes:
         The input values in this case have no special significance
         and are just to get the desired output.
         """
-
         T_e = 25 * 15e3 * u.K
         n_e = 1e26 * u.cm**-3
         Z = 2.0 * u.dimensionless_unscaled
@@ -164,7 +169,6 @@ class Test_PlasmaBlobRegimes:
         The input values in this case have no special significance
         and are just to get the desired output.
         """
-
         T_e = 5 * 15e3 * u.K
         n_e = 1e26 * u.cm**-3
         Z = 3.0 * u.dimensionless_unscaled
@@ -190,13 +194,13 @@ class Test_PlasmaBlobRegimes:
         The input values in this case have no special significance
         and are just to get the desired output.
         """
-
         T_e = 15 * 11e3 * u.K
         n_e = 1e15 * u.cm**-3
         Z = 2.5 * u.dimensionless_unscaled
         particle = "p+"
         with pytest.warns(  # noqa: PT031
-            CouplingWarning, match="you might have strong coupling effects"
+            CouplingWarning,
+            match="you might have strong coupling effects",
         ):
             blob = plasmablob.PlasmaBlob(T_e=T_e, n_e=n_e, Z=Z, particle=particle)
 
@@ -216,7 +220,6 @@ class Test_PlasmaBlobRegimes:
         The input values in this case have no special significance
         and are just to get the desired output.
         """
-
         T_e = 10 * 11e3 * u.K
         n_e = 1e20 * u.cm**-3
         Z = 2.5 * u.dimensionless_unscaled
@@ -244,7 +247,6 @@ class Test_PlasmaBlobRegimes:
         The input values in this case have no special significance
         and are just to get the desired output.
         """
-
         T_e = 6 * 15e3 * u.K
         n_e = 1e26 * u.cm**-3
         Z = 3.0 * u.dimensionless_unscaled
@@ -270,7 +272,6 @@ class Test_PlasmaBlobRegimes:
         The input values in this case have no special significance
         and are just to get the desired output.
         """
-
         T_e = 5 * 15e3 * u.K
         n_e = 1e25 * u.cm**-3
         Z = 2.0 * u.dimensionless_unscaled
@@ -298,7 +299,10 @@ class Test_PlasmaBlob:
         cls.Z = 2.5 * u.dimensionless_unscaled
         cls.particle = "p+"
         cls.blob = plasmablob.PlasmaBlob(
-            T_e=cls.T_e, n_e=cls.n_e, Z=cls.Z, particle=cls.particle
+            T_e=cls.T_e,
+            n_e=cls.n_e,
+            Z=cls.Z,
+            particle=cls.particle,
         )
         cls.couplingVal = 10.468374460435724
         cls.thetaVal = 0.6032979246923964
@@ -309,7 +313,10 @@ class Test_PlasmaBlob:
         """
         with pytest.raises(InvalidParticleError):
             plasmablob.PlasmaBlob(
-                T_e=self.T_e, n_e=self.n_e, Z=self.Z, particle="cupcakes"
+                T_e=self.T_e,
+                n_e=self.n_e,
+                Z=self.Z,
+                particle="cupcakes",
             )
 
     def test_electron_temperature(self) -> None:
@@ -334,7 +341,7 @@ class Test_PlasmaBlob:
 
     def test_ionization(self) -> None:
         """Testing if we get the same ionization we put in"""
-        testTrue = self.Z == self.blob.ionization
+        testTrue = self.blob.ionization == self.Z
         errStr = (
             f"Input ionization {self.Z} should be equal to "
             f"ionization of class "

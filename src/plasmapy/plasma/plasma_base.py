@@ -31,7 +31,7 @@ class BasePlasma(ABC):
     # GenericPlasma subclass registry
     _registry: ClassVar[dict[type, Callable]] = {}
 
-    def __init_subclass__(cls, **kwargs) -> None:  # noqa: ANN003
+    def __init_subclass__(cls, **kwargs) -> None:  # noqa: ANN003, D105
         super().__init_subclass__(**kwargs)
         if hasattr(cls, "is_datasource_for"):
             cls._registry[cls] = cls.is_datasource_for  # ty:ignore[invalid-assignment]

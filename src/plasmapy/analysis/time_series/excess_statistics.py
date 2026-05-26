@@ -83,7 +83,7 @@ class ExcessStatistics:
 
             else:
                 self._total_time_above_threshold.append(
-                    time_step * len(indices_above_threshold)
+                    time_step * len(indices_above_threshold),
                 )
 
                 distances_to_next_index = (
@@ -150,7 +150,6 @@ class ExcessStatistics:
            [0.75, 1.25],
            [0.  , 0.  ]]))
         """
-
         if not isinstance(bins, numbers.Integral):
             raise TypeError("bins must be an integer")
 
@@ -160,7 +159,9 @@ class ExcessStatistics:
         for i, threshold in enumerate(self.events_per_threshold.keys()):
             if len(self.events_per_threshold[threshold]) >= 1:
                 hist[i, :], bin_edges = np.histogram(
-                    self.events_per_threshold[threshold], bins=bins, density=True
+                    self.events_per_threshold[threshold],
+                    bins=bins,
+                    density=True,
                 )
                 bin_centers[i, :] = (bin_edges[1:] + bin_edges[:-1]) / 2
         return hist, bin_centers
@@ -175,7 +176,6 @@ class ExcessStatistics:
         total_time_above_threshold: 1D |array_like|
             Total time above threshold for each value in ``thresholds``.
         """
-
         return self._total_time_above_threshold
 
     @property
@@ -188,7 +188,6 @@ class ExcessStatistics:
         number_of_crossings: 1D |array_like|
             Total number of upwards crossings for each value in ``thresholds``.
         """
-
         return self._number_of_crossings
 
     @property
@@ -201,7 +200,6 @@ class ExcessStatistics:
         average_times: 1D |array_like|
             Average time above each value in ``thresholds``.
         """
-
         return self._average_times
 
     @property
@@ -214,5 +212,4 @@ class ExcessStatistics:
         rms_times: 1D |array_like|
             Root-mean-square values of time above each value in ``thresholds``.
         """
-
         return self._rms_times

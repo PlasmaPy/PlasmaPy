@@ -187,16 +187,15 @@ format.docstring-code-format = true
 lint.extend-select = [
   "A",
   "ANN",
-  "ANN002",
   "ARG",
   "ASYNC",
   "B",
   "BLE",
   "C4",
   "C90",
-  "COM818",
+  "COM",
   "D",
-  # "DOC", # enable pydoclint rule set when it is no longer in preview
+  # enable DOC rule set when it is no longer in preview
   "DTZ",
   "EM",
   "EXE",
@@ -253,6 +252,7 @@ lint.extend-select = [
   "RUF032",
   "RUF033",
   "RUF034",
+  "RUF037",
   "RUF040",
   "RUF041",
   "RUF043",
@@ -264,15 +264,21 @@ lint.extend-select = [
   "RUF057",
   "RUF058",
   "RUF059",
+  "RUF060",
+  "RUF061",
+  "RUF064",
   "RUF100",
   "RUF101",
+  "RUF102",
+  "RUF103",
+  "RUF104",
   "RUF200",
   "S",
   "SIM",
   "SLF",
   "SLOT",
-  "T",
-  "T100",
+  "T10",
+  "T20",
   "TC",
   "TD",
   "TID",
@@ -281,48 +287,45 @@ lint.extend-select = [
   "W",
   "YTT",
 ]
-# The ruff rules to include or ignore for notebooks are defined
-# separately in .pre-commit-config.yaml in the hook for nbqa-ruff
 lint.ignore = [
-  "ANN001",
-  "B028",
-  "D105",    # enable later?
+  "ANN001",  # add file-wide ignore comments?
+  "COM812",  # handled by ruff format
+  "COM819",  # adding trailing commas leads to simpler diffs
   "D200",    # incompatible with multiline short summaries
-  "D202",
+  "D203",    # handled by ruff format
   "D205",    # incompatible with multiline short summaries
-  "D206",    # formatter conflict
+  "D206",    # handled by ruff format
+  "D300",    # handled by ruff format
   "D401",    # enable later?
-  "E501",
+  "E111",    # handled by ruff format
+  "E114",    # handled by ruff format
+  "E117",    # handled by ruff format
+  "E501",    # handled by ruff format
   "EM101",   # enable later in focused PR
   "EM102",   # enable later in focused PR
-  "FIX002",
-  "ISC001",  # formatter conflict
-  "N802",
-  "N803",
-  "N806",
-  "N816",
+  "N802",    # inconsistent with capitalization from physics notation
+  "N803",    # inconsistent with capitalization from physics notation
+  "N806",    # inconsistent with capitalization from physics notation
+  "N816",    # inconsistent with capitalization from physics notation
   "PLC2401", # flags variables used as mathematical symbols
-  "PLC2403",
-  "PLE0605", # flags `__all__ += __lite_funcs`, etc.
-  "PLR0913",
-  "PLR2004",
-  "PT007",
-  "PT011",
+  "PLC2403", # flags variables used as mathematical symbols
+  "PLE0605", # flags `__all__ += __lite_funcs`
+  "PLR0913", # too many situations where lots of arguments are justified
+  "PLR2004", # would need case-by-case evaluations
+  "PT011",   # would require using match keyword argument
   "PT012",   # enable later?
   "PT019",   # enable later?
-  "PYI024",  # enable later
-  "RET501",
-  "RET502",
+  "PYI024",  # enable later?
+  "Q001",    # handled by ruff format
+  "Q002",    # handled by ruff format
+  "Q003",    # handled by ruff format
+  "Q004",    # handled by ruff format
   "RET505",  # enable later?
   "RET506",  # enable later?
-  "SIM300",
-  "TD002",
-  "TD003",
-  "TRY003",
-  "TRY301",
-  "UP025",
-  "W191",    # formatter conflict)
-  "W291",    # handled by formatter
+  "TD002",   # enable later?
+  "TD003",   # enable later?
+  "TRY003",  # enable later?
+  "W191",    # handled by ruff format
 ]
 lint.per-file-ignores."**/*.ipynb" = [ "T201", "T203" ]
 lint.per-file-ignores.".github/scripts/*.py" = [ "D103", "INP001" ]
@@ -371,6 +374,7 @@ lint.per-file-ignores."tests/**/test_*.py" = [
   "DOC501",
   "INP001",
   "N801",
+  "N802",
   "PLC2701",
   "PLR6301",
   "RUF012",
@@ -529,7 +533,7 @@ src.exclude = [
   "docs/notebooks/plasma/grids_nonuniform.ipynb",
 ]
 
-[tool.pytest]  # https://docs.pytest.org/en/stable/reference/reference.html#ini-options-ref
+[tool.pytest]  # https://docs.pytest.org/en/stable/reference/customize.html#pyproject-toml
 addopts = [
   "--pyargs",
   "--durations=5",

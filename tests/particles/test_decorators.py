@@ -44,7 +44,7 @@ def function_decorated_with_particle_input(
     """
     if not isinstance(particle, Particle):
         raise TypeError(
-            f"The argument `particle` should be a Particle. Instead, {particle = }."
+            f"The argument `particle` should be a Particle. Instead, {particle = }.",
         )
     return particle
 
@@ -68,7 +68,7 @@ def function_decorated_with_call_of_particle_input(
     """
     if not isinstance(particle, Particle):
         raise TypeError(
-            f"The argument `particle` should be a Particle. Instead, {particle=}."
+            f"The argument `particle` should be a Particle. Instead, {particle=}.",
         )
     return particle
 
@@ -133,10 +133,13 @@ particle_input_error_table = [
 
 
 @pytest.mark.parametrize(
-    ("func", "kwargs", "expected_error"), particle_input_error_table
+    ("func", "kwargs", "expected_error"),
+    particle_input_error_table,
 )
 def test_particle_input_errors(
-    func: Callable[..., Any], kwargs: dict[str, Any], expected_error: type
+    func: Callable[..., Any],
+    kwargs: dict[str, Any],
+    expected_error: type,
 ) -> None:
     """
     Test that functions decorated with `@particle_input` raise the
@@ -155,7 +158,8 @@ class ClassWithDecoratedMethods:
 
     @particle_input
     def method_decorated_with_no_parentheses(
-        self, particle: ParticleLike
+        self,
+        particle: ParticleLike,
     ) -> Particle | CustomParticle | ParticleList:
         # Because run-time logic is needed, mypy is unable to infer
         # that @particle_input is doing a type conversion here. We
@@ -164,7 +168,8 @@ class ClassWithDecoratedMethods:
 
     @particle_input()
     def method_decorated_with_parentheses(
-        self, particle: ParticleLike
+        self,
+        particle: ParticleLike,
     ) -> Particle | CustomParticle | ParticleList:
         return particle  # ty:ignore[invalid-return-type]
 
@@ -284,7 +289,8 @@ categorization_particle_exception = [
 
 
 @pytest.mark.parametrize(
-    ("categorization", "particle", "exception"), categorization_particle_exception
+    ("categorization", "particle", "exception"),
+    categorization_particle_exception,
 )
 def test_decorator_categories(
     categorization: dict[str, str | Iterable[str]],
@@ -309,7 +315,7 @@ def test_decorator_categories(
             decorated_function(particle)
             pytest.fail(
                 f"{call_string(decorated_function, [], categorization)} "
-                f"did not raise {exception}"
+                f"did not raise {exception}",
             )
     else:
         decorated_function(particle)
@@ -334,7 +340,8 @@ def test_optional_particle_annotation_parameter() -> None:
 
 
 def undecorated_function(
-    particle: ParticleLike, distance: u.Quantity[u.m]
+    particle: ParticleLike,
+    distance: u.Quantity[u.m],
 ) -> tuple[ParticleLike, u.Quantity[u.m]]:
     return particle, distance
 
@@ -349,7 +356,8 @@ decorator_pairs = [
 
 @pytest.mark.parametrize(("decorator1", "decorator2"), decorator_pairs)
 def test_stacking_decorators(
-    decorator1: Callable[..., Any], decorator2: Callable[..., Any]
+    decorator1: Callable[..., Any],
+    decorator2: Callable[..., Any],
 ) -> None:
     """
     Test that particle_input and validate_quantities can be stacked in
@@ -371,7 +379,8 @@ def test_stacking_decorators(
 
 @pytest.mark.parametrize(("decorator1", "decorator2"), decorator_pairs)
 def test_preserving_signature_with_stacked_decorators(
-    decorator1: Callable[..., Any], decorator2: Callable[..., Any]
+    decorator1: Callable[..., Any],
+    decorator2: Callable[..., Any],
 ) -> None:
     """
     Test that |particle_input| & |validate_quantities| preserve the
@@ -410,7 +419,8 @@ def test_annotated_classmethod() -> None:
 @pytest.mark.parametrize("outer_decorator", [particle_input, particle_input()])
 @pytest.mark.parametrize("inner_decorator", [particle_input, particle_input()])
 def test_self_stacked_decorator(
-    outer_decorator: Callable[..., Any], inner_decorator: Callable[..., Any]
+    outer_decorator: Callable[..., Any],
+    inner_decorator: Callable[..., Any],
 ) -> None:
     """Test that particle_input can be stacked with itself."""
 
@@ -427,7 +437,8 @@ def test_self_stacked_decorator(
 @pytest.mark.parametrize("outer_decorator", [particle_input, particle_input()])
 @pytest.mark.parametrize("inner_decorator", [particle_input, particle_input()])
 def test_class_stacked_decorator(
-    outer_decorator: Callable[..., Any], inner_decorator: Callable[..., Any]
+    outer_decorator: Callable[..., Any],
+    inner_decorator: Callable[..., Any],
 ) -> None:
     """
     Test that particle_input can be stacked with itself for an
@@ -446,7 +457,7 @@ def test_class_stacked_decorator(
 
 
 validate_quantities_ = validate_quantities(
-    T_e={"equivalencies": u.temperature_energy()}
+    T_e={"equivalencies": u.temperature_energy()},
 )
 
 
@@ -472,7 +483,7 @@ def test_annotated_init() -> None:
             particle_input,
             marks=pytest.mark.xfail(
                 reason="For instance methods, particle_input must currently "
-                "be the outer decorator. See #2035."
+                "be the outer decorator. See #2035.",
             ),
         ),
         pytest.param(
@@ -480,7 +491,7 @@ def test_annotated_init() -> None:
             particle_input(),
             marks=pytest.mark.xfail(
                 reason="For instance methods, particle_input must currently "
-                "be the outer decorator. See #2035."
+                "be the outer decorator. See #2035.",
             ),
         ),
     ],
@@ -521,7 +532,8 @@ kwargs_to_decorator_and_args = [
 
 
 @pytest.mark.parametrize(
-    ("kwargs_to_particle_input", "arg"), kwargs_to_decorator_and_args
+    ("kwargs_to_particle_input", "arg"),
+    kwargs_to_decorator_and_args,
 )
 def test_particle_input_verification(
     kwargs_to_particle_input: dict[str, Any],
@@ -573,7 +585,8 @@ def get_isotope(isotope: ParticleLike) -> Particle | CustomParticle | ParticleLi
 
 @particle_input
 def get_ion(
-    ion: ParticleLike, Z: float | None = None
+    ion: ParticleLike,
+    Z: float | None = None,
 ) -> Particle | CustomParticle | ParticleList:
     return ion  # ty:ignore[invalid-return-type]
 
@@ -613,7 +626,8 @@ class TestParticleInputParameterNames:
     """
 
     def test_individual_particles_not_in_category(
-        self, case: ParameterNamesCase
+        self,
+        case: ParameterNamesCase,
     ) -> None:
         """
         Test that the appropriate exception is raised when the function
@@ -646,7 +660,8 @@ class TestParticleInputParameterNames:
     # assertions to the following test using is_category.
 
     def test_individual_particles_all_in_category(
-        self, case: ParameterNamesCase
+        self,
+        case: ParameterNamesCase,
     ) -> None:
         """
         Test that no exception is raised when the function is provided
@@ -687,7 +702,9 @@ def test_particle_list_input(particle: ParticleListLike) -> None:
 
 @particle_input
 def return_particle(
-    particle: ParticleLike, Z: float | None = None, mass_numb: int | None = None
+    particle: ParticleLike,
+    Z: float | None = None,
+    mass_numb: int | None = None,
 ) -> Particle | CustomParticle | ParticleList:
     """A simple function that is decorated by particle_input."""
     return particle  # ty:ignore[invalid-return-type]

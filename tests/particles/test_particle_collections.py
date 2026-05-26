@@ -45,7 +45,7 @@ def various_particles():
             CustomParticle(charge=11 * u.C),
             5 * u.kg,
             5 * u.C,
-        ]
+        ],
     )
 
 
@@ -178,7 +178,8 @@ def test_particle_list_instantiate_with_invalid_particles() -> None:
 
 @pytest.mark.parametrize("invalid_particle", invalid_particles)
 def test_particle_list_append_invalid_particle(
-    various_particles, invalid_particle
+    various_particles,
+    invalid_particle,
 ) -> None:
     """
     Test that objects that are not particle-like cannot be appended to
@@ -199,7 +200,8 @@ def test_particle_list_extend_with_invalid_particles(various_particles) -> None:
 
 @pytest.mark.parametrize("invalid_particle", invalid_particles)
 def test_particle_list_insert_invalid_particle(
-    various_particles, invalid_particle
+    various_particles,
+    invalid_particle,
 ) -> None:
     """
     Test that objects that are not particle-like cannot be inserted into
@@ -335,55 +337,55 @@ def test_particle_multiplication(method, particle) -> None:
 @pytest.mark.parametrize(
     ("particles", "args", "kwargs", "expected"),
     [
-        [
+        [  # noqa: PT007
             ["electron", "proton", "neutron"],
             ["lepton"],
             {"particlewise": True},
             [True, False, False],
         ],
-        [
+        [  # noqa: PT007
             ["electron", "proton", "neutron"],
             [],
             {"require": "lepton", "particlewise": True},
             [True, False, False],
         ],
-        [
+        [  # noqa: PT007
             ["electron", "proton", "neutron"],
             [],
             {"exclude": "lepton", "particlewise": True},
             [False, True, True],
         ],
-        [
+        [  # noqa: PT007
             ["electron", "proton", "neutron"],
             [],
             {"any_of": {"lepton", "charged"}, "particlewise": True},
             [True, True, False],
         ],
-        [
+        [  # noqa: PT007
             ["electron", "proton", "neutron"],
             ["lepton"],
             {},
             False,
         ],
-        [
+        [  # noqa: PT007
             ["electron", "proton", "neutron"],
             [],
             {"require": "lepton"},
             False,
         ],
-        [
+        [  # noqa: PT007
             ["electron", "proton", "neutron"],
             [],
             {"exclude": "lepton"},
             False,
         ],
-        [
+        [  # noqa: PT007
             ["electron", "proton", "neutron"],
             [],
             {"any_of": {"lepton", "charged"}},
             False,
         ],
-        [
+        [  # noqa: PT007
             ["electron", "proton", "tau neutrino"],
             [],
             {"any_of": {"lepton", "charged"}},
@@ -437,10 +439,10 @@ def test_root_mean_square_particle(use_rms_charge, use_rms_mass) -> None:
     Test that ``ParticleList.average_particle`` returns the mean or root
     mean square of the charge and mass, as appropriate.
     """
-
     particle_list = ParticleList(["p+", "e-"])
     average_particle = particle_list.average_particle(
-        use_rms_charge=use_rms_charge, use_rms_mass=use_rms_mass
+        use_rms_charge=use_rms_charge,
+        use_rms_mass=use_rms_mass,
     )
 
     expected_average_charge = (1 if use_rms_charge else 0) * proton.charge
@@ -531,7 +533,7 @@ def test_particle_list_with_no_arguments() -> None:
 
 @pytest.mark.parametrize(
     ("quantities", "expected"),
-    (
+    (  # noqa: PT007
         ((1, 2) * u.kg, (CustomParticle(mass=1 * u.kg), CustomParticle(mass=2 * u.kg))),
         (
             (3, 4) * u.C,

@@ -42,7 +42,10 @@ class Test_Maxwellian_1D:
         when there is no drift applied.
         """
         max_index = Maxwellian_1D(
-            self.v_vect, T=self.T_e, particle=self.particle, v_drift=0 * u.m / u.s
+            self.v_vect,
+            T=self.T_e,
+            particle=self.particle,
+            v_drift=0 * u.m / u.s,
         ).argmax()
         assert np.isclose(self.v_vect[max_index].value, 0.0)
 
@@ -52,7 +55,10 @@ class Test_Maxwellian_1D:
         when there is drift applied.
         """
         max_index = Maxwellian_1D(
-            self.v_vect, T=self.T_e, particle=self.particle, v_drift=self.v_drift
+            self.v_vect,
+            T=self.T_e,
+            particle=self.particle,
+            v_drift=self.v_drift,
         ).argmax()
         assert np.isclose(self.v_vect[max_index].value, self.v_drift.value)
 
@@ -97,7 +103,10 @@ class Test_Maxwellian_1D:
         Tests distribution function with units, but not passing vTh.
         """
         distFunc = Maxwellian_1D(
-            v=self.v, T=self.T_e, particle=self.particle, units="units"
+            v=self.v,
+            T=self.T_e,
+            particle=self.particle,
+            units="units",
         )
         errStr = (
             f"Distribution function should be {self.distFuncTrue} and not {distFunc}."
@@ -111,7 +120,11 @@ class Test_Maxwellian_1D:
         Tests distribution function with units and passing vTh.
         """
         distFunc = Maxwellian_1D(
-            v=self.v, T=self.T_e, vTh=self.vTh, particle=self.particle, units="units"
+            v=self.v,
+            T=self.T_e,
+            vTh=self.vTh,
+            particle=self.particle,
+            units="units",
         )
         errStr = (
             f"Distribution function should be {self.distFuncTrue} and not {distFunc}."
@@ -128,7 +141,10 @@ class Test_Maxwellian_1D:
         T_e = self.T_e.to(u.K, equivalencies=u.temperature_energy())
         T_e = T_e.si.value
         distFunc = Maxwellian_1D(
-            v=self.v.si.value, T=T_e, particle=self.particle, units="unitless"
+            v=self.v.si.value,
+            T=T_e,
+            particle=self.particle,
+            units="unitless",
         )
         errStr = (
             f"Distribution function should be {self.distFuncTrue} and not {distFunc}."
@@ -233,7 +249,10 @@ class Test_Maxwellian_speed_1D:
         Tests distribution function with units, but not passing vTh.
         """
         distFunc = Maxwellian_speed_1D(
-            v=self.v, T=self.T, particle=self.particle, units="units"
+            v=self.v,
+            T=self.T,
+            particle=self.particle,
+            units="units",
         )
         errStr = (
             f"Distribution function should be {self.distFuncTrue} and not {distFunc}."
@@ -247,7 +266,11 @@ class Test_Maxwellian_speed_1D:
         Tests distribution function with units and passing vTh.
         """
         distFunc = Maxwellian_speed_1D(
-            v=self.v, T=self.T, vTh=self.vTh, particle=self.particle, units="units"
+            v=self.v,
+            T=self.T,
+            vTh=self.vTh,
+            particle=self.particle,
+            units="units",
         )
         errStr = (
             f"Distribution function should be {self.distFuncTrue} and not {distFunc}."
@@ -264,7 +287,10 @@ class Test_Maxwellian_speed_1D:
         T = self.T.to(u.K, equivalencies=u.temperature_energy())
         T = T.si.value
         distFunc = Maxwellian_speed_1D(
-            v=self.v.si.value, T=T, particle=self.particle, units="unitless"
+            v=self.v.si.value,
+            T=T,
+            particle=self.particle,
+            units="unitless",
         )
         errStr = (
             f"Distribution function should be {self.distFuncTrue} and not {distFunc}."
@@ -322,7 +348,10 @@ class Test_Maxwellian_speed_1D:
         )
         errStr = f"Distribution function should be 0.0 and not {distFunc}."
         assert np.isclose(
-            distFunc.value, self.distFuncDrift.value, rtol=1e-5, atol=0.0
+            distFunc.value,
+            self.distFuncDrift.value,
+            rtol=1e-5,
+            atol=0.0,
         ), errStr
 
     def test_no_units(self) -> None:
@@ -385,7 +414,11 @@ class Test_Maxwellian_velocity_2D:
         Tests distribution function with units, but not passing vTh.
         """
         distFunc = Maxwellian_velocity_2D(
-            vx=self.vx, vy=self.vy, T=self.T, particle=self.particle, units="units"
+            vx=self.vx,
+            vy=self.vy,
+            T=self.T,
+            particle=self.particle,
+            units="units",
         )
         errStr = (
             f"Distribution function should be {self.distFuncTrue} and not {distFunc}."
@@ -537,7 +570,10 @@ class Test_Maxwellian_speed_2D:
         Tests distribution function with units, but not passing vTh.
         """
         distFunc = Maxwellian_speed_2D(
-            v=self.v, T=self.T, particle=self.particle, units="units"
+            v=self.v,
+            T=self.T,
+            particle=self.particle,
+            units="units",
         )
         errStr = (
             f"Distribution function should be {self.distFuncTrue} and not {distFunc}."
@@ -551,7 +587,11 @@ class Test_Maxwellian_speed_2D:
         Tests distribution function with units and passing vTh.
         """
         distFunc = Maxwellian_speed_2D(
-            v=self.v, T=self.T, vTh=self.vTh, particle=self.particle, units="units"
+            v=self.v,
+            T=self.T,
+            vTh=self.vTh,
+            particle=self.particle,
+            units="units",
         )
         errStr = (
             f"Distribution function should be {self.distFuncTrue} and not {distFunc}."
@@ -568,7 +608,10 @@ class Test_Maxwellian_speed_2D:
         T = self.T.to(u.K, equivalencies=u.temperature_energy())
         T = T.si.value
         distFunc = Maxwellian_speed_2D(
-            v=self.v.si.value, T=T, particle=self.particle, units="unitless"
+            v=self.v.si.value,
+            T=T,
+            particle=self.particle,
+            units="unitless",
         )
         errStr = (
             f"Distribution function should be {self.distFuncTrue} and not {distFunc}."
@@ -663,7 +706,7 @@ class Test_Maxwellian_velocity_3D:
         reason=(
             "This test is extremely slow because of the 3D integral, so "
             "it should only be run when updating distribution.py."
-        )
+        ),
     )
     def test_norm(self) -> None:
         """
@@ -862,7 +905,10 @@ class Test_Maxwellian_speed_3D:
         Tests distribution function with units, but not passing vTh.
         """
         distFunc = Maxwellian_speed_3D(
-            v=self.v, T=self.T, particle=self.particle, units="units"
+            v=self.v,
+            T=self.T,
+            particle=self.particle,
+            units="units",
         )
         errStr = (
             f"Distribution function should be {self.distFuncTrue} and not {distFunc}."
@@ -876,7 +922,11 @@ class Test_Maxwellian_speed_3D:
         Tests distribution function with units and passing vTh.
         """
         distFunc = Maxwellian_speed_3D(
-            v=self.v, T=self.T, vTh=self.vTh, particle=self.particle, units="units"
+            v=self.v,
+            T=self.T,
+            vTh=self.vTh,
+            particle=self.particle,
+            units="units",
         )
         errStr = (
             f"Distribution function should be {self.distFuncTrue} and not {distFunc}."
@@ -893,7 +943,10 @@ class Test_Maxwellian_speed_3D:
         T = self.T.to(u.K, equivalencies=u.temperature_energy())
         T = T.si.value
         distFunc = Maxwellian_speed_3D(
-            v=self.v.si.value, T=T, particle=self.particle, units="unitless"
+            v=self.v.si.value,
+            T=T,
+            particle=self.particle,
+            units="unitless",
         )
         errStr = (
             f"Distribution function should be {self.distFuncTrue} and not {distFunc}."
@@ -1026,7 +1079,7 @@ class Test_kappa_velocity_1D:
         ).argmax()
         assert np.isclose(self.v_vect[max_index].value, self.v_drift.value)
 
-    # TODO: Need to add a test to see if the kappa distribution goes to a
+    # TODO: Need to add a test to see if the kappa distribution goes to a  # noqa: FIX002
     # Maxwellian in the limit of large κ
 
     def test_norm(self) -> None:
@@ -1058,7 +1111,10 @@ class Test_kappa_velocity_1D:
         """
         std = (
             kappa_velocity_1D(
-                self.v_vect, T=self.T_e, kappa=self.kappa, particle=self.particle
+                self.v_vect,
+                T=self.T_e,
+                kappa=self.kappa,
+                particle=self.particle,
             )
             * self.v_vect**2
             * self.dv
@@ -1271,7 +1327,7 @@ class Test_kappa_velocity_3D:
         reason=(
             "This test is extremely slow because of the 3D integral, so "
             "it should only be run when updating distribution.py."
-        )
+        ),
     )
     def test_norm(self) -> None:
         """

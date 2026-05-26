@@ -443,7 +443,12 @@ def Coulomb_logarithm(  # noqa: ANN201
     """
     # fetching impact min and max impact parameters
     bmin, bmax = lengths.impact_parameter(
-        T=T, n_e=n_e, species=species, z_mean=z_mean, V=V, method=method
+        T=T,
+        n_e=n_e,
+        species=species,
+        z_mean=z_mean,
+        V=V,
+        method=method,
     )
 
     if method in {
@@ -477,7 +482,7 @@ def Coulomb_logarithm(  # noqa: ANN201
             '"ls_full_interp", "ls_clamp_mininterp", "hls_min_interp", '
             '"hls_max_interp", "hls_full_interp", and their aliases. '
             "Please refer to the documentation of this function for "
-            "more information."
+            "more information.",
         )
 
     ln_Lambda = ln_Lambda.to(u.dimensionless_unscaled).value
@@ -498,6 +503,7 @@ def Coulomb_logarithm(  # noqa: ANN201
             f"due to strong coupling effects, in particular because "
             f"{method = } assumes weak coupling.",
             CouplingWarning,
+            stacklevel=2,
         )
     elif min_ln_Lambda < 4:
         warnings.warn(
@@ -505,6 +511,7 @@ def Coulomb_logarithm(  # noqa: ANN201
             f"min(ln Λ) = {min_ln_Lambda:.4f}. Coulomb logarithms of ≲ 4 may "
             f"have increased uncertainty due to strong coupling effects.",
             CouplingWarning,
+            stacklevel=2,
         )
 
     return ln_Lambda

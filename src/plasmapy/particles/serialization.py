@@ -68,7 +68,7 @@ class ParticleJSONDecoder(json.JSONDecoder):
 
         except KeyError as ex:
             raise InvalidElementError(
-                "json file does not define a valid plasmapy particle"
+                "json file does not define a valid plasmapy particle",
             ) from ex
         else:
             return particle_types[partype](*args, **kwargs)

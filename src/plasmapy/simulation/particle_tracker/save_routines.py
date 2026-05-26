@@ -42,7 +42,9 @@ class AbstractSaveRoutine(ABC):
     """
 
     def __init__(
-        self, output_directory: Path | None = None, output_basename: str = "output"
+        self,
+        output_directory: Path | None = None,
+        output_basename: str = "output",
     ) -> None:
         self.output_directory = output_directory
         self.output_basename = output_basename
@@ -90,7 +92,6 @@ class AbstractSaveRoutine(ABC):
         If an output directory is specified then the state will also be saved
         to the disk.
         """
-
         self._save_to_memory()
 
         if self.output_directory is not None:
@@ -98,7 +99,6 @@ class AbstractSaveRoutine(ABC):
 
     def _save_to_disk(self) -> None:
         """Save a hdf5 file containing simulation positions and velocities."""
-
         path = (
             self.output_directory
             / f"{self.output_basename}_iter{self.tracker.iteration_number}.h5"  # ty:ignore[unsupported-operator]
@@ -112,10 +112,9 @@ class AbstractSaveRoutine(ABC):
                     case "dataset":
                         output_file.create_dataset(key, data=self._results[key])
 
-    # TODO: Find a better name for this method
+    # TODO: Find a better name for this method  # noqa: FIX002
     def _save_to_memory(self) -> None:
         """Update the results dictionary with the current state of the simulation."""
-
         for quantity in self._quantities:
             quantity_history = self._results.get(quantity, [])
             current_quantity = np.copy(getattr(self._particle_tracker, quantity, 0))
@@ -146,7 +145,6 @@ class AbstractSaveRoutine(ABC):
             - How the simulation data is saved (i.e. to disk or memory)
 
         """
-
         # Update the result dictionary
         if self.save_now:
             self.save()
@@ -181,7 +179,9 @@ class SaveOnceOnCompletion(AbstractSaveRoutine):
     """
 
     def __init__(
-        self, output_directory: Path | None = None, output_basename: str = "output"
+        self,
+        output_directory: Path | None = None,
+        output_basename: str = "output",
     ) -> None:
         super().__init__(output_directory, output_basename)
 
@@ -219,7 +219,6 @@ class IntervalSaveRoutine(AbstractSaveRoutine):
     @property
     def save_now(self) -> bool:
         """Save at every interval given in instantiation."""
-
         return bool(self.tracker.time - self.time_of_last_save >= self.save_interval)
 
     def save(self) -> None:
