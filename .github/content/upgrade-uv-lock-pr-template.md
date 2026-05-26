@@ -12,7 +12,7 @@ This pull request upgrades [`uv.lock`]: the cross-platform lockfile that specifi
 This upgrade was performed by running `nox --session lock` in the top-level directory of the repository, using the `lock` session defined in [`noxfile.py`]. This [Nox] session uses [`uv lock --upgrade`] to upgrade `uv.lock` with a [dependency cooldown]. [![upgrade uv.lock](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/upgrade-uv-lock.yml/badge.svg)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/upgrade-uv-lock.yml)
 
 > [!NOTE]
-> Because the [ty] static type checker rule set is continuing to evolve, this workflow adds `# ty: ignore` comments when necessary.
+> Because the [ty] static type checker rule set is still growing, this workflow adds `# ty: ignore` comments when new errors arise.
 
 ## Motivation
 
