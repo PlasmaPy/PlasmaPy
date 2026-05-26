@@ -90,7 +90,7 @@ def return_none() -> None:
 class SampleClass1:
     """A sample class to be used for testing purposes."""
 
-    def __init__(self, *args, **kwargs) -> None:
+    def __init__(self, *args, **kwargs) -> None:  # noqa: ANN002
         pass
 
     @classmethod

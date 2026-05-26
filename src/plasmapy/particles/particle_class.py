@@ -236,7 +236,7 @@ class AbstractPhysicalParticle(AbstractParticle):
 
     def is_category(
         self,
-        *category_tuple,
+        *category_tuple,  # noqa: ANN002
         require: str | Iterable[str] | None = None,
         any_of: str | Iterable[str] | None = None,
         exclude: str | Iterable[str] | None = None,
@@ -2322,7 +2322,7 @@ class CustomParticle(AbstractPhysicalParticle):
     @classmethod
     def _from_quantities(
         cls,
-        *quantities,
+        *quantities,  # noqa: ANN002
         symbol: str | None = None,
         Z: float | None = None,
     ) -> Self:

@@ -418,7 +418,7 @@ def run_test(  # noqa: C901
 
 
 def run_test_equivalent_calls(  # noqa: C901
-    *test_inputs,
+    *test_inputs,  # noqa: ANN002
     require_same_type: bool = True,
 ):
     """

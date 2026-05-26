@@ -293,7 +293,7 @@ class AbstractFitFunction(ABC):
         return x, x_err
 
     @staticmethod
-    def _check_params(*args) -> None:
+    def _check_params(*args) -> None:  # noqa: ANN002
         """
         Check fitting parameters so that they are an expected type for the
         class functionality.

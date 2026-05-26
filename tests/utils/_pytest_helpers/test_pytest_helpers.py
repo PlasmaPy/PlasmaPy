@@ -30,16 +30,16 @@ def raise_exception(*args, **kwargs):
     )
 
 
-def issue_warning(*args, **kwargs) -> int:
+def issue_warning(*args, **kwargs) -> int:  # noqa: ANN002
     warnings.warn(f"\n{args}\n{kwargs}", PlasmaPyWarning)
     return 42
 
 
-def adams_number(*args, **kwargs) -> int:
+def adams_number(*args, **kwargs) -> int:  # noqa: ANN002
     return 42
 
 
-def return_quantity(*args, should_warn: bool = False):  # noqa: ANN202
+def return_quantity(*args, should_warn: bool = False):  # noqa: ANN002, ANN202
     if should_warn:
         warnings.warn("", UserWarning)
     return 5 * u.m / u.s

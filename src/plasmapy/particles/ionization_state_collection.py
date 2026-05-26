@@ -190,7 +190,7 @@ class IonizationStateCollection:  # noqa: PLW1641
     def __repr__(self) -> str:
         return self.__str__()
 
-    def __getitem__(self, *values) -> IonizationState | IonicLevel:
+    def __getitem__(self, *values) -> IonizationState | IonicLevel:  # noqa: ANN002
         errmsg = f"Invalid indexing for IonizationStateCollection instance: {values[0]}"
 
         one_input = not isinstance(values[0], tuple)

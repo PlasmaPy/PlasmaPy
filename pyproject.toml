@@ -185,6 +185,7 @@ format.line-ending = "lf"
 format.docstring-code-format = true
 lint.extend-select = [
   "A",      # flake8-builtins
+  "ANN002", # missing-type-args
   "ANN201", # missing-return-type-undocumented-public-function
   "ANN202", # missing-return-type-undocumented-public-method
   "ANN204", # missing-return-type-special-method

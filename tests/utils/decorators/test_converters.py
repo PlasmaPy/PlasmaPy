@@ -35,7 +35,7 @@ def test_to_hz_complicated_signature() -> None:
     """
 
     @angular_freq_to_hz
-    def func2(a, /, b, *args, c, d: int = 2, **kwargs):  # noqa: ANN202
+    def func2(a, /, b, *args, c, d: int = 2, **kwargs):  # noqa: ANN002, ANN202
         return 2 * np.pi * u.rad / u.s
 
     result_rad_per_s = func2(1, 2, 3, 4, c=5, d=6, e=7)
@@ -75,7 +75,7 @@ def test_angular_freq_to_hz_preserves_signature() -> None:
 
     @angular_freq_to_hz
     def test_func(  # noqa: ANN202
-        pos_only, /, arg, *args, required_kwarg, optional_kwarg: int = 2, **kwargs
+        pos_only, /, arg, *args, required_kwarg, optional_kwarg: int = 2, **kwargs  # noqa: ANN002
     ):
         return 2 * u.rad / u.s
 
@@ -83,7 +83,7 @@ def test_angular_freq_to_hz_preserves_signature() -> None:
         pos_only,
         /,
         arg,
-        *args,
+        *args,  # noqa: ANN002
         required_kwarg,
         optional_kwarg: int = 2,
         to_hz: bool = False,
