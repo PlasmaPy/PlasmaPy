@@ -313,17 +313,13 @@ lint.ignore = [
   "PT012",   # enable later?
   "PT019",   # enable later?
   "PYI024",  # enable later
-  "RET502",
-  "RET505",  # enable later?
-  "RET506",  # enable later?
+  "RET501",
+  "RET505",  # enable later
+  "RET506",  # enable later
   "SIM300",
   "TD002",
   "TD003",
   "TRY003",
-  "TRY301",
-  "UP025",
-  "W191",    # formatter conflict
-  "W291",    # handled by formatter
 ]
 lint.per-file-ignores."**/*.ipynb" = [ "T201", "T203" ]
 lint.per-file-ignores.".github/scripts/*.py" = [ "D103", "INP001" ]
@@ -372,6 +368,7 @@ lint.per-file-ignores."tests/**/test_*.py" = [
   "DOC501",
   "INP001",
   "N801",
+  "N802",
   "PLC2701",
   "PLR6301",
   "RUF012",
