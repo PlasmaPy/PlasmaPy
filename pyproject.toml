@@ -288,35 +288,50 @@ lint.extend-select = [
   "YTT",
 ]
 lint.ignore = [
-  "ANN001",  # enable, but add file-wide ignore comments
-  "COM812",  # formatter conflict
-  "COM819",  # prefer trailing commas
+  # Rules handled by ruff format
+  "COM812",
+  "D206",
+  "D300",
+  "E111",
+  "E114",
+  "E117",
+  "E501",
+  "D203",
+  "Q001",
+  "Q002",
+  "Q003",
+  "Q004",
+  "W191",
+  # Rules inconsistent with capitalization associated with physics notation
+  "N802",
+  "N803",
+  "N806",
+  "N816",
+  # Rules that should not be enabled
+  "COM819",  # adding trailing commas leads to simpler diffs
   "D200",    # incompatible with multiline short summaries
   "D205",    # incompatible with multiline short summaries
-  "D206",    # formatter conflict
-  "D401",    # enable later?
-  "E501",    # formatter conflict
-  "EM101",   # enable later in focused PR
-  "EM102",   # enable later in focused PR
-  "ISC001",  # formatter conflict
-  "N802",    # flags capitalization used to match physics notation
-  "N803",    # flags capitalization used to match physics notation
-  "N806",    # flags capitalization used to match physics notation
-  "N816",    # flags capitalization used to match physics notation
+  "PLE0605", # flags `__all__ += __lite_funcs`, etc.
   "PLC2401", # flags variables used as mathematical symbols
   "PLC2403", # flags variables used as mathematical symbols
-  "PLE0605", # flags `__all__ += __lite_funcs`, etc.
   "PLR0913", # too many situations where lots of arguments are justified
+  # Rules that would take significant effort to address
+  "ANN001",  # add file-wide ignore comments?
+  "D401",
   "PLR2004", # would need case-by-case evaluations
-  "PT011",   # effort to address outweighs potential benefits
-  "PT012",   # enable later?
-  "PT019",   # enable later?
-  "PYI024",  # enable later?
-  "RET505",  # enable later?
-  "RET506",  # enable later?
+  "PT011",  # would require using match keyword argument
+  # Rules that would be helpful to enable
+  "EM101",   # enable later in focused PR
+  "EM102",   # enable later in focused PR
+  "PT012",
+  "PT019",
+  "PYI024",
+  "RET505",
+  "RET506",
   "TD002",
   "TD003",
-  "TRY003",  # enable later?
+  "TRY003",
+
 ]
 lint.per-file-ignores."**/*.ipynb" = [ "T201", "T203" ]
 lint.per-file-ignores.".github/scripts/*.py" = [ "D103", "INP001" ]
