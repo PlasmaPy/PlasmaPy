@@ -312,7 +312,6 @@ lint.ignore = [
   "PT012",   # enable later?
   "PT019",   # enable later?
   "PYI024",  # enable later
-  "RET501",
   "RET505",  # enable later
   "RET506",  # enable later
   "TD002",
