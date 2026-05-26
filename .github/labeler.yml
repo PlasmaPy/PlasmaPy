@@ -8,11 +8,13 @@
 
 'breaking change':
   - changed-files:
-    - any-glob-to-any-file: 'changelog/*breaking*.rst'
+    - any-glob-to-any-file:
+      - 'changelog/*breaking*.rst'
 
 bugfix:
   - changed-files:
-    - any-glob-to-any-file: 'changelog/*bugfix*.rst'
+    - any-glob-to-any-file:
+      - 'changelog/*bugfix*.rst'
 
 CI:
   - changed-files:
@@ -64,11 +66,13 @@ docs:
 
 feature:
   - changed-files:
-    - any-glob-to-any-file: 'changelog/*feature*.rst'
+    - any-glob-to-any-file:
+      - 'changelog/*feature*.rst'
 
 'GitHub Actions':
   - changed-files:
-    - any-glob-to-any-file: '.github/**'
+    - any-glob-to-any-file:
+      - '.github/**'
 
 linters:
   - changed-files:
