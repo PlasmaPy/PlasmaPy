@@ -314,7 +314,6 @@ lint.ignore = [
   "RET502",  # implicit-return-value
   "RET505",  # superfluous-else-return (enable later?)
   "RET506",  # superfluous-else-raise (enable later?)
-  "S101",    # asserts
   "SIM300",  # yoda-conditions
   "TD002",   # missing-todo-author
   "TD003",   # missing-todo-link
@@ -374,6 +373,7 @@ lint.per-file-ignores."tests/**/test_*.py" = [
   "PLC2701",
   "PLR6301",
   "RUF012",
+  "S101",
   "SLF001",
 ]
 lint.per-file-ignores."tests/formulary/collisions/test_coulomb.py" = [ "PT031" ]
