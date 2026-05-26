@@ -201,6 +201,7 @@ lint.extend-select = [
   "EM",     # flake8-errmsg
   "EXE",    # flake8-executable
   "FA102",  # flake8-required-type-annotation
+  "FBT002", # flake8-boolean-trap
   "FBT003", # flake8-boolean-trap
   "FIX",    # flake8-fixme
   "FLY",    # flynt

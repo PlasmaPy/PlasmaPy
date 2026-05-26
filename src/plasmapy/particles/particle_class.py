@@ -1782,7 +1782,7 @@ class Particle(AbstractPhysicalParticle):
         return self.is_category("ion")
 
     def ionize(
-        self, n: int | Literal[np.inf] = 1, inplace: bool = False
+        self, n: int | Literal[np.inf] = 1, inplace: bool = False  # noqa: FBT002
     ) -> Self | None:
         """
         Create a new |Particle| instance corresponding to the current
@@ -1874,7 +1874,7 @@ class Particle(AbstractPhysicalParticle):
         else:
             return Particle(base_particle, Z=new_charge_number)  # ty:ignore[invalid-return-type]
 
-    def recombine(self, n: int = 1, inplace: bool = False) -> Self | None:
+    def recombine(self, n: int = 1, inplace: bool = False) -> Self | None:  # noqa: FBT002
         """
         Create a new |Particle| instance corresponding to the current
         |Particle| after undergoing recombination ``n`` times.
@@ -2112,7 +2112,7 @@ class DimensionlessParticle(AbstractParticle):
         return f"DimensionlessParticle(mass={self.mass}, charge={self.charge})"
 
     @staticmethod
-    def _validate_parameter(obj: Any, can_be_negative: bool = True) -> np.float64:
+    def _validate_parameter(obj: Any, can_be_negative: bool = True) -> np.float64:  # noqa: FBT002
         """Verify that the argument corresponds to a valid real number."""
 
         # TODO: Replace with validator? Use an equivalency between

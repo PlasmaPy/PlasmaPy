@@ -219,7 +219,7 @@ class Tracker(ParticleTracker):
         output_directory: Path | None = None,
         output_basename: str = "output",
         fraction_exited_threshold: float = 0.999,
-        verbose: bool = True,
+        verbose: bool = True,  # noqa: FBT002
     ) -> None:
         # The synthetic radiography class handles logging, so we can disable logging for the particle tracker
         # The particle tracker class ensures that the provided grid argument has the proper type and
@@ -1124,7 +1124,7 @@ class Tracker(ParticleTracker):
 # *************************************************************************
 
 
-def synthetic_radiograph(obj, size=None, bins=None, ignore_grid: bool = False):  # noqa: C901, PLR0912
+def synthetic_radiograph(obj, size=None, bins=None, ignore_grid: bool = False):  # noqa: C901, FBT002, PLR0912
     r"""
     Calculate a "synthetic radiograph" (particle count histogram in the
     image plane).

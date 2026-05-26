@@ -591,7 +591,7 @@ def known_isotopes(argument: ParticleLike | None = None) -> ParticleList:
 
 
 def common_isotopes(
-    argument: ParticleLike | None = None, most_common_only: bool = False
+    argument: ParticleLike | None = None, most_common_only: bool = False  # noqa: FBT002
 ) -> ParticleList:
     """
     Return a list of isotopes of an element with an isotopic abundances
@@ -712,7 +712,7 @@ def common_isotopes(
 
 
 def stable_isotopes(
-    argument: ParticleLike | None = None, unstable: bool = False
+    argument: ParticleLike | None = None, unstable: bool = False  # noqa: FBT002
 ) -> ParticleList:
     """
     Return a list of all stable isotopes of an element, or if no input is
@@ -1138,7 +1138,7 @@ def stopping_power(
     incident_particle: ParticleLike,
     material: str,
     energies: u.Quantity[u.MeV] | None = None,
-    return_interpolator: bool = False,
+    return_interpolator: bool = False,  # noqa: FBT002
     component: Literal["total", "electronic", "nuclear"] = "total",
 ) -> (
     tuple[u.Quantity, u.Quantity]

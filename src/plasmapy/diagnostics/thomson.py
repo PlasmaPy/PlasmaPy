@@ -638,7 +638,7 @@ def _count_populations_in_params(params: dict[str, Any], prefix: str) -> int:
 
 
 def _params_to_array(
-    params: dict[str, Any], prefix: str, vector: bool = False
+    params: dict[str, Any], prefix: str, vector: bool = False  # noqa: FBT002
 ) -> np.ndarray:
     """
     Constructs an array from the values contained in the dictionary

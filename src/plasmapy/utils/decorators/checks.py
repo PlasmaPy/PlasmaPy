@@ -900,7 +900,7 @@ class CheckUnits(CheckBase):
     @staticmethod
     def _condition_target_units(
         targets: list[str | u.Unit | u.Quantity],
-        from_annotations: bool = False,
+        from_annotations: bool = False,  # noqa: FBT002
     ) -> list:
         """
         From a `list` of target objects that have or represent units,
