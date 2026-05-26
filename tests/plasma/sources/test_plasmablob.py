@@ -341,7 +341,7 @@ class Test_PlasmaBlob:
 
     def test_ionization(self) -> None:
         """Testing if we get the same ionization we put in"""
-        testTrue = self.Z == self.blob.ionization
+        testTrue = self.blob.ionization == self.Z
         errStr = (
             f"Input ionization {self.Z} should be equal to "
             f"ionization of class "

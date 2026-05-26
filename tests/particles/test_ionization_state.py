@@ -175,7 +175,7 @@ def test_equal_to_within_tolerance(tolerance: float, output) -> None:
         ionic_fractions=[0.6, 0.400_000_001],
         tol=1e-8,
     )
-    assert (H == H_acceptable_error) == output
+    assert (H_acceptable_error == H) == output
 
 
 def test_equality_no_more_exception(test_ionization_state, He_ionization_state) -> None:

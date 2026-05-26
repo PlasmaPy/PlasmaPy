@@ -1031,7 +1031,7 @@ def test__nondim_tc_e_spitzer(Z) -> None:
     elif Z == 16:
         kappa_check = _nondim_tc_e_ji_held(0, Z, "par")
         rtol = 2e-2
-    elif Z == np.inf:
+    elif np.inf == Z:
         kappa_check = _nondim_tc_e_ji_held(0, 1e6, "par")
         rtol = 2e-2
     assert np.isclose(kappa, kappa_check, rtol=rtol)

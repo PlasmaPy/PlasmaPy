@@ -1322,7 +1322,7 @@ def _check_Z(allowed_Z, Z):
     # next, search the allowed_Z for a match to the current Z
     Z_idx = np.nan
     for idx, allowed_Z_val in enumerate(allowed_Z):
-        if Z == allowed_Z_val:
+        if allowed_Z_val == Z:
             Z_idx = idx
     # at this point we have looped through allowed_Z and either found a match
     # or not. If we haven't found a match and arbitrary Z aren't allowed, break

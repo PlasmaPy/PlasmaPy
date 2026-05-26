@@ -425,7 +425,7 @@ def parse_and_check_atomic_input(  # noqa: ANN202, C901, PLR0912, PLR0915
         mass_numb = mass_numb_from_arg
 
     if Z is not None and Z_from_arg is not None:
-        if Z != Z_from_arg:
+        if Z_from_arg != Z:
             raise InvalidParticleError(
                 "The charge number extracted from the particle string "
                 f"'{argument}' is inconsistent with the keyword Z = {Z}.",
@@ -441,7 +441,7 @@ def parse_and_check_atomic_input(  # noqa: ANN202, C901, PLR0912, PLR0915
         Z = Z_from_arg
 
     if isinstance(Z, Integral):
-        if Z > _elements.data_about_elements[element]["atomic number"]:  # ty:ignore[invalid-argument-type, not-subscriptable]
+        if _elements.data_about_elements[element]["atomic number"] < Z:  # ty:ignore[invalid-argument-type, not-subscriptable]
             raise InvalidParticleError(
                 f"The charge number Z = {Z} cannot exceed the atomic number "
                 f"of {element}, which is "
@@ -527,7 +527,7 @@ def parse_and_check_molecule_input(argument: str, Z: int | None = None):  # noqa
             elements_dict[element] = int(amount)
 
     if Z is not None and z_from_arg is not None:
-        if Z != z_from_arg:
+        if z_from_arg != Z:
             raise InvalidParticleError(
                 "The charge number extracted from the particle string "
                 f"{argument!r} is inconsistent with the keyword Z = {Z}.",

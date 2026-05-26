@@ -106,7 +106,7 @@ def deBroglie_wavelength(
     """
     V = np.abs(V)
 
-    if np.any(V >= c):
+    if np.any(c <= V):
         raise RelativityError(
             "Velocity input in deBroglie_wavelength cannot "
             "be greater than or equal to the speed of "
@@ -120,7 +120,7 @@ def deBroglie_wavelength(
             particle.mass * V[indices] * Lorentz_factor(V[indices])
         )
 
-    elif V == 0 * u.m / u.s:
+    elif 0 * u.m / u.s == V:
         lambda_dBr = np.inf * u.m
     else:
         lambda_dBr = h / (Lorentz_factor(V) * particle.mass * V)

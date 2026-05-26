@@ -95,7 +95,7 @@ def _make_custom_particle_with_real_charge_number(
         # Add tests if this function becomes part of public API
         raise InvalidParticleError("Cannot create CustomParticle.")
 
-    if Z is not None and Z > base_particle.atomic_number:
+    if Z is not None and base_particle.atomic_number < Z:
         raise ChargeError("The charge number cannot exceed the atomic number.")
 
     mass = base_particle.mass - m_e * Z

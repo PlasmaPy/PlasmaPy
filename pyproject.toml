@@ -316,7 +316,6 @@ lint.ignore = [
   "RET501",
   "RET505",  # enable later
   "RET506",  # enable later
-  "SIM300",
   "TD002",
   "TD003",
   "TRY003",

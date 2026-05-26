@@ -732,7 +732,7 @@ class TestParticleTrajectory:
         From https://journals.aps.org/pre/abstract/10.1103/PhysRevE.72.026603
 
         """
-        if E >= const.c.si * B:
+        if const.c.si * B <= E:
             raise ValueError("Currently this function only works for E<cB")
 
         # Just after Eq. 41
