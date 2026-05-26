@@ -175,7 +175,7 @@ class ParticleTracker:
         dt=None,
         dt_range=None,
         field_weighting: str = "volume averaged",
-        verbose: bool = True,
+        verbose: bool = True,  # noqa: FBT001, FBT002
     ) -> None:
         # Verbose flag controls whether or not output is printed to stdout
         self.verbose = verbose

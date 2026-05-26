@@ -33,7 +33,7 @@ _m_e = const.m_e
 
 @validate_quantities(T={"equivalencies": u.temperature_energy()})
 @particle_input
-def _process_inputs(T: u.Quantity[u.K], species: (Particle, Particle), V):
+def _process_inputs(T: u.Quantity[u.K], species: (Particle, Particle), V):  # noqa: ANN202
     """
     Helper function for processing inputs to functionality contained
     in `plasmapy.formulary.collisions`.

@@ -283,7 +283,7 @@ class SingleParticleCollisionFrequencies:
         """
         return np.sqrt(t) * np.exp(-t)
 
-    def _phi_explicit(self, x: float):
+    def _phi_explicit(self, x: float):  # noqa: ANN202
         """The non-vectorized method for evaluating the integral for phi."""
         integral, _ = scipy.integrate.quad(self._phi_integrand, 0, x)
         return integral

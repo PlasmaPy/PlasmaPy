@@ -17,7 +17,7 @@ from plasmapy.utils.exceptions import RelativityError
 
 
 @validate_quantities(V={"can_be_negative": True})
-def Lorentz_factor(V: u.Quantity[u.m / u.s]):
+def Lorentz_factor(V: u.Quantity[u.m / u.s]):  # noqa: ANN201
     r"""
     Return the Lorentz factor.
 

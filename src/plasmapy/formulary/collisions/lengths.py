@@ -106,7 +106,7 @@ def impact_parameter_perp(
     n_e={"can_be_negative": False},
     V={"none_shall_pass": True},
 )
-def impact_parameter(  # noqa: C901
+def impact_parameter(  # noqa: ANN201, C901
     T: u.Quantity[u.K],
     n_e: u.Quantity[u.m**-3],
     species,

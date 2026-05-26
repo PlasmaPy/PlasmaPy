@@ -25,7 +25,7 @@ from plasmapy.particles.symbols import particle_symbol
 from plasmapy.utils.decorators import validate_quantities
 
 
-def _atomic_number_and_mass_number(p: ParticleLike):
+def _atomic_number_and_mass_number(p: ParticleLike):  # noqa: ANN202
     return p.atomic_number, p.mass_number if p.isotope else 0
 
 
@@ -190,7 +190,7 @@ class IonizationStateCollection:  # noqa: PLW1641
     def __repr__(self) -> str:
         return self.__str__()
 
-    def __getitem__(self, *values) -> IonizationState | IonicLevel:
+    def __getitem__(self, *values) -> IonizationState | IonicLevel:  # noqa: ANN002
         errmsg = f"Invalid indexing for IonizationStateCollection instance: {values[0]}"
 
         one_input = not isinstance(values[0], tuple)

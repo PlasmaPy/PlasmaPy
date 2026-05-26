@@ -641,7 +641,7 @@ def test_validate_quantities_argument_type_annotation() -> None:
     """
 
     @validate_quantities
-    def f(x: u.Quantity[u.m]):
+    def f(x: u.Quantity[u.m]):  # noqa: ANN202
         return x
 
     argument = 100 * u.cm

@@ -28,7 +28,7 @@ c_si_unitless = c.value
     T_i={"can_be_negative": False, "equivalencies": u.temperature_energy()},
 )
 @particle_input
-def hollweg(  # noqa: C901, PLR0912, PLR0915
+def hollweg(  # noqa: ANN201, C901, PLR0912, PLR0915
     B: u.Quantity[u.T],
     ion: ParticleLike,
     k: u.Quantity[u.rad / u.m],

@@ -16,7 +16,7 @@ from plasmapy.utils.decorators import validate_quantities
     T_1={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     T_2={"can_be_negative": False, "equivalencies": u.temperature_energy()},
 )
-def temp_ratio(  # noqa: C901
+def temp_ratio(  # noqa: ANN201, C901
     *,
     r_0: u.Quantity[u.au],
     r_n: u.Quantity[u.au],
@@ -233,7 +233,7 @@ def temp_ratio(  # noqa: C901
             )
 
     # Define differential equation function
-    def df_eq(
+    def df_eq(  # noqa: ANN202
         r_0,
         r_n,
         n_1_0,
@@ -262,7 +262,7 @@ def temp_ratio(  # noqa: C901
         B = 1 / (u.cm * u.K) ** 1.5
 
         # Define Coulomb log for mixed ion collisions, see docstring
-        def lambda_ba(
+        def lambda_ba(  # noqa: ANN202
             theta: float,
             T_1,
             n_1,

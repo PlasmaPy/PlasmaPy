@@ -188,5 +188,5 @@ test_is_roman_numeral_table: list[tuple[str, bool]] = [
 
 
 @pytest.mark.parametrize(("argument", "expected"), test_is_roman_numeral_table)
-def test_is_roman_numeral(argument: str, expected: bool) -> None:
+def test_is_roman_numeral(argument: str, expected: bool) -> None:  # noqa: FBT001
     run_test(func=roman.is_roman_numeral, args=argument, expected_outcome=expected)

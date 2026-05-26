@@ -29,7 +29,7 @@ def _code_repr_of_ndarray(array: np.ndarray, max_items=np.inf) -> str:
         s = s.replace("inf", "np.inf")
         return s.replace("nan", "np.nan")
 
-    def replace_excess_items_with_ellipsis(s: str, max_items: int):
+    def replace_excess_items_with_ellipsis(s: str, max_items: int):  # noqa: ANN202
         substrings_between_commas = s.split(",")
         to_comma_before_ellipsis = ",".join(substrings_between_commas[:max_items])
         closing_brackets = "]" * substrings_between_commas[-1].count("]")
@@ -89,7 +89,9 @@ def _code_repr_of_arg(arg, max_items=np.inf) -> str:
 
 
 def _code_repr_of_args_and_kwargs(
-    args: Any = None, kwargs: dict | None = None, max_items=np.inf
+    args: Any = None,  # noqa: ANN401
+    kwargs: dict | None = None,
+    max_items=np.inf,  # noqa: ANN401, RUF100
 ) -> str:
     """
     Take positional and keyword arguments, and format them into a
@@ -137,7 +139,7 @@ def _name_with_article(ex: Exception) -> str:
     return f"{indefinite_article} {name}"
 
 
-def _object_name(obj: Any, showmodule: bool = False) -> str:
+def _object_name(obj: Any, showmodule: bool = False) -> str:  # noqa: ANN401, FBT001, FBT002
     """
     Return the name of an `object`.
 
@@ -147,7 +149,7 @@ def _object_name(obj: Any, showmodule: bool = False) -> str:
     in `astropy.units`.
     """
 
-    def substitute_module_shortcuts(module_name: str):
+    def substitute_module_shortcuts(module_name: str):  # noqa: ANN202
         """Substitute common import shortcuts within module names."""
         replacements = {
             "numpy": "np",
@@ -170,7 +172,7 @@ def _object_name(obj: Any, showmodule: bool = False) -> str:
     return obj_name
 
 
-def _string_together_warnings_for_printing(
+def _string_together_warnings_for_printing(  # noqa: ANN202
     warning_types: list[Warning], warning_messages: list[str]
 ):
     """
@@ -188,7 +190,7 @@ def _string_together_warnings_for_printing(
 
 def call_string(
     f: Callable,
-    args: Any = None,
+    args: Any = None,  # noqa: ANN401
     kwargs: dict[str, Any] | None = None,
     max_items: int = 12,
 ) -> str:
@@ -250,7 +252,7 @@ def call_string(
 def attribute_call_string(
     cls,
     attr: str,
-    args_to_cls: tuple | Any | None = None,
+    args_to_cls: tuple | Any | None = None,  # noqa: ANN401
     kwargs_to_cls: dict[str, Any] | None = None,
     max_items: int = 12,
 ) -> str:
@@ -325,9 +327,9 @@ def method_call_string(
     cls,
     method: str,
     *,
-    args_to_cls: Any | None = None,
+    args_to_cls: Any | None = None,  # noqa: ANN401
     kwargs_to_cls: dict[str, Any] | None = None,
-    args_to_method: Any | None = None,
+    args_to_method: Any | None = None,  # noqa: ANN401
     kwargs_to_method: dict[str, Any] | None = None,
     max_items: int = 12,
 ) -> str:

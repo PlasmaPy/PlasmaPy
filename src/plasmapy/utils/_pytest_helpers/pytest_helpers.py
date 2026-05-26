@@ -32,7 +32,7 @@ from plasmapy.utils.code_repr import _name_with_article, _object_name, call_stri
 from plasmapy.utils.exceptions import PlasmaPyWarning
 
 
-def _process_input(wrapped_function: Callable):
+def _process_input(wrapped_function: Callable):  # noqa: ANN202
     """
     Allow `run_test` to take a single positional argument that is a
     `list` or `tuple` in lieu of using multiple positional/keyword
@@ -41,7 +41,7 @@ def _process_input(wrapped_function: Callable):
     result/outcome is the last item.
     """
 
-    def decorator(wrapped_function: Callable):
+    def decorator(wrapped_function: Callable):  # noqa: ANN202
         wrapped_signature = inspect.signature(wrapped_function)
 
         @functools.wraps(wrapped_function)
@@ -68,9 +68,9 @@ def _process_input(wrapped_function: Callable):
 @_process_input
 def run_test(  # noqa: C901
     func,
-    args: Any = (),
+    args: Any = (),  # noqa: ANN401
     kwargs: dict | None = None,
-    expected_outcome: Any = None,
+    expected_outcome: Any = None,  # noqa: ANN401
     rtol: float = 0.0,
     atol: float = 0.0,
 ):
@@ -418,7 +418,7 @@ def run_test(  # noqa: C901
 
 
 def run_test_equivalent_calls(  # noqa: C901
-    *test_inputs,
+    *test_inputs,  # noqa: ANN002
     require_same_type: bool = True,
 ):
     """
@@ -689,7 +689,7 @@ def assert_can_handle_nparray(  # noqa: C901
     if kwargs is None:
         kwargs = {}
 
-    def _prepare_input(  # noqa: C901
+    def _prepare_input(  # noqa: ANN202, C901
         param_name: str, param_default, insert_some_nans, insert_all_nans, kwargs
     ):
         """

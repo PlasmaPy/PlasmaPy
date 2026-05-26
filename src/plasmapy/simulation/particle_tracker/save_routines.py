@@ -199,7 +199,7 @@ class SaveOnceOnCompletion(AbstractSaveRoutine):
 class IntervalSaveRoutine(AbstractSaveRoutine):
     """Abstract class describing a save routine that saves every given interval."""
 
-    def __init__(self, interval: u.Quantity, **kwargs) -> None:
+    def __init__(self, interval: u.Quantity, **kwargs) -> None:  # noqa: ANN003
         super().__init__(**kwargs)
 
         self._quantities = {

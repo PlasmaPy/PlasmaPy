@@ -125,7 +125,7 @@ class Characteristic:
         self.current = self.current[_sort]
         self.bias = self.bias[_sort]
 
-    def get_unique_bias(self, inplace: bool = False):
+    def get_unique_bias(self, inplace: bool = False):  # noqa: ANN201, FBT001, FBT002
         r"""Remove any duplicate bias values through averaging."""
 
         if len(self.bias) != len(self.current):
@@ -169,7 +169,7 @@ class Characteristic:
         if len(np.unique(self.bias)) != len(self.bias):
             raise ValueError("Bias array contains duplicate values.")
 
-    def get_padded_limit(self, padding, log: bool = False):
+    def get_padded_limit(self, padding, log: bool = False):  # noqa: ANN201, FBT001, FBT002
         r"""Return the limits of the current range for plotting, taking into
         account padding. Matplotlib lacks this functionality.
 
@@ -210,14 +210,14 @@ class Characteristic:
 @validate_quantities(
     probe_area={"can_be_negative": False, "can_be_inf": False, "can_be_nan": False}
 )
-def swept_probe_analysis(  # noqa: PLR0915
+def swept_probe_analysis(  # noqa: ANN201, PLR0915
     probe_characteristic,
     probe_area: u.Quantity[u.m**2],
     gas_argument,
-    bimaxwellian: bool = False,
-    visualize: bool = False,
-    plot_electron_fit: bool = False,
-    plot_EEDF: bool = False,
+    bimaxwellian: bool = False,  # noqa: FBT001, FBT002
+    visualize: bool = False,  # noqa: FBT001, FBT002
+    plot_electron_fit: bool = False,  # noqa: FBT001, FBT002
+    plot_EEDF: bool = False,  # noqa: FBT001, FBT002
 ):
     r"""Attempt to perform a basic swept probe analysis based on the provided
     characteristic and probe data. Suitable for single cylindrical probes in
@@ -448,7 +448,7 @@ def swept_probe_analysis(  # noqa: PLR0915
     return results
 
 
-def get_plasma_potential(probe_characteristic, return_arg: bool = False):
+def get_plasma_potential(probe_characteristic, return_arg: bool = False):  # noqa: ANN201, FBT001, FBT002
     r"""Implement the simplest but crudest method for obtaining an estimate of
     the plasma potential from the probe characteristic.
 
@@ -501,7 +501,7 @@ def get_plasma_potential(probe_characteristic, return_arg: bool = False):
     return probe_characteristic.bias[arg_V_P]
 
 
-def get_floating_potential(probe_characteristic, return_arg: bool = False):
+def get_floating_potential(probe_characteristic, return_arg: bool = False):  # noqa: ANN201, FBT001, FBT002
     r"""Implement the simplest but crudest method for obtaining an estimate of
     the floating potential from the probe characteristic.
 
@@ -844,12 +844,12 @@ def extract_ion_section(probe_characteristic):
     return probe_characteristic[probe_characteristic.bias < V_F]
 
 
-def get_electron_temperature(
+def get_electron_temperature(  # noqa: ANN201
     exponential_section,
-    bimaxwellian: bool = False,
-    visualize: bool = False,
-    return_fit: bool = False,
-    return_hot_fraction: bool = False,
+    bimaxwellian: bool = False,  # noqa: FBT001, FBT002
+    visualize: bool = False,  # noqa: FBT001, FBT002
+    return_fit: bool = False,  # noqa: FBT001, FBT002
+    return_hot_fraction: bool = False,  # noqa: FBT001, FBT002
 ):
     r"""Obtain the Maxwellian or bi-Maxwellian electron temperature using the
     exponential fit method.
@@ -1021,8 +1021,11 @@ def get_electron_temperature(
     return k
 
 
-def extrapolate_electron_current(
-    probe_characteristic, fit, bimaxwellian: bool = False, visualize: bool = False
+def extrapolate_electron_current(  # noqa: ANN201
+    probe_characteristic,
+    fit,
+    bimaxwellian: bool = False,  # noqa: FBT001, FBT002
+    visualize: bool = False,  # noqa: FBT001, FBT002
 ):
     r"""Extrapolate the electron current from the Maxwellian electron
     temperature obtained in the exponential growth region.
@@ -1151,12 +1154,12 @@ def reduce_bimaxwellian_temperature(
 @validate_quantities(
     probe_area={"can_be_negative": False, "can_be_inf": False, "can_be_nan": False}
 )
-def get_ion_density_OML(
+def get_ion_density_OML(  # noqa: ANN201
     probe_characteristic: Characteristic,
     probe_area: u.Quantity[u.m**2],
     gas,
-    visualize: bool = False,
-    return_fit: bool = False,
+    visualize: bool = False,  # noqa: FBT001, FBT002
+    return_fit: bool = False,  # noqa: FBT001, FBT002
 ):
     r"""Implement the Orbital Motion Limit (OML) method of obtaining an
     estimate of the ion density.
@@ -1246,7 +1249,7 @@ def get_ion_density_OML(
     return (n_i_OML.to(u.m**-3), fit) if return_fit else n_i_OML.to(u.m**-3)
 
 
-def extrapolate_ion_current_OML(probe_characteristic, fit, visualize: bool = False):
+def extrapolate_ion_current_OML(probe_characteristic, fit, visualize: bool = False):  # noqa: ANN201, FBT001, FBT002
     r"""Extrapolate the ion current from the ion density obtained with the
     OML method.
 
@@ -1309,7 +1312,7 @@ def extrapolate_ion_current_OML(probe_characteristic, fit, visualize: bool = Fal
     return ion_characteristic
 
 
-def get_EEDF(probe_characteristic, visualize: bool = False):
+def get_EEDF(probe_characteristic, visualize: bool = False):  # noqa: ANN201, FBT001, FBT002
     r"""Implement the Druyvesteyn method of obtaining the normalized
     Electron Energy Distribution Function (EEDF).
 

@@ -55,7 +55,7 @@ class HDF5Reader(GenericPlasma):
         Any keyword accepted by `~plasmapy.plasma.plasma_base.GenericPlasma`.
     """
 
-    def __init__(self, hdf5, **kwargs) -> None:
+    def __init__(self, hdf5, **kwargs) -> None:  # noqa: ANN003
         super().__init__(**kwargs)
 
         if not Path(hdf5).is_file():

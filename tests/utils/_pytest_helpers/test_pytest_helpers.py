@@ -30,22 +30,22 @@ def raise_exception(*args, **kwargs):
     )
 
 
-def issue_warning(*args, **kwargs) -> int:
+def issue_warning(*args, **kwargs) -> int:  # noqa: ANN002, ANN003
     warnings.warn(f"\n{args}\n{kwargs}", PlasmaPyWarning)
     return 42
 
 
-def adams_number(*args, **kwargs) -> int:
+def adams_number(*args, **kwargs) -> int:  # noqa: ANN002, ANN003
     return 42
 
 
-def return_quantity(*args, should_warn: bool = False):
+def return_quantity(*args, should_warn: bool = False):  # noqa: ANN002, ANN202
     if should_warn:
         warnings.warn("", UserWarning)
     return 5 * u.m / u.s
 
 
-def return_arg(arg: Any, should_warn: bool = False) -> Any:
+def return_arg(arg: Any, should_warn: bool = False) -> Any:  # noqa: ANN401, FBT001, FBT002
     if should_warn:
         warnings.warn("", UserWarning)
     return arg
@@ -177,7 +177,7 @@ def test_run_test_atol_failure() -> None:
         pytest.fail("No exception raised for atol test.")
 
 
-def func(x, raise_exception: bool = False, issue_warning: bool = False):
+def func(x, raise_exception: bool = False, issue_warning: bool = False):  # noqa: ANN202, FBT001, FBT002
     if raise_exception:
         raise ValueError("")
     elif issue_warning:

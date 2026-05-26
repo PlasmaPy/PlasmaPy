@@ -285,7 +285,7 @@ class ValidateQuantities(CheckUnits, CheckValues):
 
         return validations
 
-    def _validate_quantity(  # noqa: C901
+    def _validate_quantity(  # noqa: ANN202, C901
         self,
         arg,
         arg_name: str,
@@ -542,7 +542,7 @@ def validate_quantities(func=None, validations_on_return=None, **validations):
     return ValidateQuantities(**validations)
 
 
-def get_attributes_not_provided(
+def get_attributes_not_provided(  # noqa: ANN202
     self,
     expected_attributes: list[str] | None = None,
     both_or_either_attributes: list[Iterable[str]] | None = None,
@@ -584,7 +584,7 @@ def get_attributes_not_provided(
     return attributes_not_provided
 
 
-def validate_class_attributes(
+def validate_class_attributes(  # noqa: ANN201
     expected_attributes: list[str] | None = None,
     both_or_either_attributes: list[Iterable[str]] | None = None,
     mutually_exclusive_attributes: list[Iterable[str]] | None = None,

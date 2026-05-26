@@ -383,7 +383,12 @@ req_q = [
     ("required", "replace_with_zeros", "error", "warning", "match"), req_q
 )
 def test_AbstractGrid_require_quantities(
-    abstract_grid_uniform, required: bool, replace_with_zeros, error, warning, match
+    abstract_grid_uniform,
+    required: bool,  # noqa: FBT001
+    replace_with_zeros,
+    error,
+    warning,
+    match,  # noqa: FBT001, RUF100
 ) -> None:
     """
     Tests the AbstractGrid require_quantities method

@@ -849,7 +849,7 @@ def resistivity(
 
 
 @validate_quantities
-def thermoelectric_conductivity(
+def thermoelectric_conductivity(  # noqa: ANN201
     T_e,
     n_e,
     T_i,
@@ -1154,7 +1154,7 @@ def electron_viscosity(
     return ct.electron_viscosity
 
 
-def _nondim_thermal_conductivity(
+def _nondim_thermal_conductivity(  # noqa: ANN202
     hall, Z, particle, model, field_orientation, mu=None, theta: float | None = None
 ):
     """
@@ -1191,7 +1191,7 @@ def _nondim_thermal_conductivity(
     return kappa_hat
 
 
-def _nondim_viscosity(
+def _nondim_viscosity(  # noqa: ANN202
     hall,
     Z,
     particle,
@@ -2062,7 +2062,7 @@ def _nondim_visc_e_ji_held(hall, Z):
     return np.array((eta_0, eta_1, eta_2, eta_3, eta_4))
 
 
-def _nondim_tc_i_ji_held(hall, Z, mu, theta: float, field_orientation, K: int = 3):
+def _nondim_tc_i_ji_held(hall, Z, mu, theta: float, field_orientation, K: int = 3):  # noqa: ANN202
     """
     Dimensionless ion thermal conductivity — Ji-Held.
 
@@ -2143,7 +2143,7 @@ def _nondim_tc_i_ji_held(hall, Z, mu, theta: float, field_orientation, K: int = 
         )
 
 
-def _nondim_visc_i_ji_held(hall, Z, mu, theta: float, K: int = 3):
+def _nondim_visc_i_ji_held(hall, Z, mu, theta: float, K: int = 3):  # noqa: ANN202
     """
     Dimensionless ion viscosity — Ji-Held.
 

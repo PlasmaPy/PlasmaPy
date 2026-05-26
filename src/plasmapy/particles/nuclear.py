@@ -107,7 +107,7 @@ def mass_energy(particle: Particle, mass_numb: int | None = None) -> u.Quantity[
     return particle.mass_energy
 
 
-def nuclear_reaction_energy(*args, **kwargs) -> u.Quantity[u.J]:  # noqa: C901, PLR0915
+def nuclear_reaction_energy(*args, **kwargs) -> u.Quantity[u.J]:  # noqa: ANN002, ANN003, C901, PLR0915
     """
     Return the released energy from a nuclear reaction.
 

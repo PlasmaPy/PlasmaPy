@@ -26,7 +26,7 @@ from plasmapy.utils.exceptions import PhysicsWarning
     T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     T_i={"can_be_negative": False, "equivalencies": u.temperature_energy()},
 )
-def two_fluid(
+def two_fluid(  # noqa: ANN201
     B: u.Quantity[u.T],
     ion: ParticleLike,
     k: u.Quantity[u.rad / u.m],

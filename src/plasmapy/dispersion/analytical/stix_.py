@@ -21,7 +21,7 @@ c_si_unitless = c.value
     n_i={"can_be_negative": False},
     w={"can_be_negative": False, "can_be_zero": False},
 )
-def stix(  # noqa: C901, PLR0912, PLR0915
+def stix(  # noqa: ANN201, C901, PLR0912, PLR0915
     B: u.Quantity[u.T],
     w: u.Quantity[u.rad / u.s],
     ions: Particle,

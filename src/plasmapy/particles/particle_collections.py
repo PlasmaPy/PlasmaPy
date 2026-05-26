@@ -317,7 +317,7 @@ class ParticleList(collections.UserList):
     @overload
     def is_category(
         self,
-        *category_tuple,
+        *category_tuple,  # noqa: ANN002
         require: str | Iterable[str] | None = None,
         any_of: str | Iterable[str] | None = None,
         exclude: str | Iterable[str] | None = None,
@@ -327,7 +327,7 @@ class ParticleList(collections.UserList):
     @overload
     def is_category(
         self,
-        *category_tuple,
+        *category_tuple,  # noqa: ANN002
         require: str | Iterable[str] | None = None,
         any_of: str | Iterable[str] | None = None,
         exclude: str | Iterable[str] | None = None,
@@ -438,7 +438,7 @@ class ParticleList(collections.UserList):
             default=np.nan * u.J,
         )
 
-    def sort(self, key: Callable | None = None, reverse: bool = False):
+    def sort(self, key: Callable | None = None, reverse: bool = False):  # noqa: FBT001, FBT002
         """
         Sort the |ParticleList| in-place.
 

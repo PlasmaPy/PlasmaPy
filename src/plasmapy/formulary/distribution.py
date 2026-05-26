@@ -25,7 +25,7 @@ from plasmapy.utils._units_definitions import (
 )
 
 
-def _v_drift_conversion(v_drift: float | u.Quantity[u.m / u.s]):
+def _v_drift_conversion(v_drift: float | u.Quantity[u.m / u.s]):  # noqa: ANN202
     # Helper method to assign equivalent value in SPEED_UNITS and/or remove units
     if isinstance(v_drift, u.Quantity):
         v_drift = v_drift.to_value(SPEED_UNITS)
@@ -33,7 +33,7 @@ def _v_drift_conversion(v_drift: float | u.Quantity[u.m / u.s]):
 
 
 @particle_input
-def Maxwellian_1D(
+def Maxwellian_1D(  # noqa: ANN201
     v,
     T,
     particle: ParticleLike = "e-",
@@ -159,7 +159,7 @@ def Maxwellian_1D(
 
 
 @particle_input
-def Maxwellian_velocity_2D(
+def Maxwellian_velocity_2D(  # noqa: ANN201
     vx,
     vy,
     T,
@@ -309,7 +309,7 @@ def Maxwellian_velocity_2D(
 
 
 @particle_input
-def Maxwellian_velocity_3D(
+def Maxwellian_velocity_3D(  # noqa: ANN201
     vx,
     vy,
     vz,
@@ -475,7 +475,7 @@ def Maxwellian_velocity_3D(
 
 
 @particle_input
-def Maxwellian_speed_1D(
+def Maxwellian_speed_1D(  # noqa: ANN201
     v,
     T,
     particle: ParticleLike = "e-",
@@ -601,7 +601,7 @@ def Maxwellian_speed_1D(
 
 
 @particle_input
-def Maxwellian_speed_2D(
+def Maxwellian_speed_2D(  # noqa: ANN201
     v,
     T,
     particle: ParticleLike = "e-",
@@ -735,7 +735,7 @@ def Maxwellian_speed_2D(
 
 
 @particle_input
-def Maxwellian_speed_3D(
+def Maxwellian_speed_3D(  # noqa: ANN201
     v,
     T,
     particle: ParticleLike = "e-",
@@ -869,7 +869,7 @@ def Maxwellian_speed_3D(
 
 
 @particle_input
-def kappa_velocity_1D(
+def kappa_velocity_1D(  # noqa: ANN201
     v,
     T,
     kappa,
@@ -1024,7 +1024,7 @@ def kappa_velocity_1D(
 
 
 @particle_input
-def kappa_velocity_3D(
+def kappa_velocity_3D(  # noqa: ANN201
     vx,
     vy,
     vz,

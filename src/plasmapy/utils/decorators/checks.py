@@ -44,7 +44,7 @@ class CheckBase:
         specified checks on the input arguments of the wrapped function
     """
 
-    def __init__(self, checks_on_return=None, **checks) -> None:
+    def __init__(self, checks_on_return=None, **checks) -> None:  # noqa: ANN003
         self._checks = checks
         if checks_on_return is not None:
             self._checks["checks_on_return"] = checks_on_return
@@ -900,7 +900,7 @@ class CheckUnits(CheckBase):
     @staticmethod
     def _condition_target_units(
         targets: list[str | u.Unit | u.Quantity],
-        from_annotations: bool = False,
+        from_annotations: bool = False,  # noqa: FBT001, FBT002
     ) -> list:
         """
         From a `list` of target objects that have or represent units,
@@ -1052,7 +1052,7 @@ class CheckUnits(CheckBase):
         return new_list
 
 
-def check_units(
+def check_units(  # noqa: ANN201
     func=None,
     checks_on_return: dict[str, Any] | None = None,
     **checks: dict[str, Any],
@@ -1177,7 +1177,7 @@ def check_units(
     return CheckUnits(**checks)(func) if func is not None else CheckUnits(**checks)
 
 
-def check_values(
+def check_values(  # noqa: ANN201
     func=None,
     checks_on_return: dict[str, bool] | None = None,
     **checks: dict[str, bool],
@@ -1257,7 +1257,7 @@ def check_values(
     return CheckValues(**checks) if func is None else CheckValues(**checks)(func)
 
 
-def check_relativistic(func=None, betafrac: float = 0.05):
+def check_relativistic(func=None, betafrac: float = 0.05):  # noqa: ANN201
     """
     Warns or raises an exception when the output of the decorated
     function is greater than ``betafrac`` times the speed of light.

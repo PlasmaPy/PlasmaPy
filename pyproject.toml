@@ -185,9 +185,8 @@ format.line-ending = "lf"
 format.docstring-code-format = true
 lint.extend-select = [
   "A",      # flake8-builtins
-  "ANN204", # missing-return-type-special-method
-  "ANN205", # missing-return-type-static-method
-  "ANN206", # missing-return-type-class-method
+  "ANN",    # flake8-annotations
+  "ANN002", # missing-type-args
   "ARG",    # flake8-unused-arguments
   "ASYNC",  # flake8-async
   "B",      # flake8-bugbear
@@ -201,7 +200,7 @@ lint.extend-select = [
   "EM",     # flake8-errmsg
   "EXE",    # flake8-executable
   "FA102",  # flake8-required-type-annotation
-  "FBT003", # flake8-boolean-trap
+  "FBT",
   "FIX",    # flake8-fixme
   "FLY",    # flynt
   "FURB",   # refurb
@@ -284,6 +283,7 @@ lint.extend-select = [
 # The ruff rules to include or ignore for notebooks are defined
 # separately in .pre-commit-config.yaml in the hook for nbqa-ruff
 lint.ignore = [
+  "ANN001",  # missing-type-function-argument
   "B028",    # no-explicit-stacklevel
   "D105",    # undocumented-magic-method (enable later?)
   "D200",    # fits-on-one-line (incompatible with multiline short summaries)
@@ -314,7 +314,6 @@ lint.ignore = [
   "RET502",  # implicit-return-value
   "RET505",  # superfluous-else-return (enable later?)
   "RET506",  # superfluous-else-raise (enable later?)
-  "S101",    # asserts
   "SIM300",  # yoda-conditions
   "TD002",   # missing-todo-author
   "TD003",   # missing-todo-link
@@ -348,7 +347,7 @@ lint.per-file-ignores."docs/notebooks/dispersion/dispersion_function.ipynb" = [ 
 lint.per-file-ignores."docs/notebooks/dispersion/stix_dispersion.ipynb" = [ "FBT003" ]
 lint.per-file-ignores."docs/notebooks/formulary/cold_plasma_tensor_elements.ipynb" = [ "FBT003" ]
 lint.per-file-ignores."docs/notebooks/formulary/ExB_drift.ipynb" = [ "B008", "D103" ]
-lint.per-file-ignores."docs/notebooks/langmuir_samples/_generate_noisy.ipynb" = [ "NPY002", "PTH123" ]
+lint.per-file-ignores."docs/notebooks/langmuir_samples/_generate_noisy.ipynb" = [ "ANN202", "NPY002", "PTH123" ]
 lint.per-file-ignores."docs/notebooks/plasma/grids_cartesian.ipynb" = [ "NPY002", "PLW2901" ]
 lint.per-file-ignores."docs/notebooks/plasma/grids_nonuniform.ipynb" = [ "NPY002" ]
 lint.per-file-ignores."setup.py" = [ "D100" ]
@@ -374,6 +373,7 @@ lint.per-file-ignores."tests/**/test_*.py" = [
   "PLC2701",
   "PLR6301",
   "RUF012",
+  "S101",
   "SLF001",
 ]
 lint.per-file-ignores."tests/formulary/collisions/test_coulomb.py" = [ "PT031" ]

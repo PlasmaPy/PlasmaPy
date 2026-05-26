@@ -752,7 +752,7 @@ def run_fit(  # noqa: C901
     max_iter=None,
     require_redchi: float = 1.0,
     # If false, don't perform the actual fit but instead just create the Model
-    run_fit: bool = True,
+    run_fit: bool = True,  # noqa: FBT001, FBT002
 ) -> None:
     """
     Take a Parameters object, generate some synthetic data near it,

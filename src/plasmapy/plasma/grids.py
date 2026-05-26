@@ -28,7 +28,7 @@ from scipy.special import erf
 from plasmapy.utils.decorators.helpers import modify_docstring
 
 
-def _detect_is_uniform_grid(pts0, pts1, pts2, tol: float = 1e-6):
+def _detect_is_uniform_grid(pts0, pts1, pts2, tol: float = 1e-6):  # noqa: ANN202
     r"""
     Determine whether a grid is uniform (uniformly spaced) by computing the
     variance of the grid gradients.
@@ -79,7 +79,7 @@ class AbstractGrid(ABC):
 
     """
 
-    def __init__(self, *seeds: Sequence[u.Quantity], num: int = 100, **kwargs) -> None:
+    def __init__(self, *seeds: Sequence[u.Quantity], num: int = 100, **kwargs) -> None:  # noqa: ANN003
         # Initialize some variables
         self._interpolator = None
         self._is_uniform = None
@@ -151,8 +151,8 @@ class AbstractGrid(ABC):
     def require_quantities(
         self,
         req_quantities: Iterable[str],
-        replace_with_zeros: bool = False,
-        warn_on_replace_with_zeros: bool = True,
+        replace_with_zeros: bool = False,  # noqa: FBT001, FBT002
+        warn_on_replace_with_zeros: bool = True,  # noqa: FBT001, FBT002
     ):
         r"""
         Check to make sure that a list of required quantities are present.
@@ -399,7 +399,7 @@ class AbstractGrid(ABC):
         """
         return self._si_factors
 
-    def _get_ax(self, *, axis: int, si: bool = False):
+    def _get_ax(self, *, axis: int, si: bool = False):  # noqa: ANN202
         """
         Helper function for retrieving axis values.
 
@@ -433,7 +433,7 @@ class AbstractGrid(ABC):
         vals = self.ds.coords[ax_name].to_numpy()
         return vals * self.si_scale_factors[axis] if si else vals * self.units[axis]
 
-    def _get_dax(self, *, axis: int, si: bool = False):
+    def _get_dax(self, *, axis: int, si: bool = False):  # noqa: ANN202
         """
         Helper function for calculating grid spacing.
 
@@ -693,7 +693,7 @@ class AbstractGrid(ABC):
         stop: float | u.Quantity,
         num: int = 100,
         units=None,
-        **kwargs,
+        **kwargs,  # noqa: ANN003
     ):
         r"""
         Creates a grid based on ``start``, ``stop``, and ``num`` values
@@ -819,7 +819,7 @@ class AbstractGrid(ABC):
             pts2 * units[2],
         )
 
-    def _make_mesh(self, start, stop, num: int, **kwargs):
+    def _make_mesh(self, start, stop, num: int, **kwargs):  # noqa: ANN003, ANN202
         r"""
         Creates mesh as part of _make_grid(). Separated into its own function
         so it can be re-implemented to make non-uniformly spaced meshes.
@@ -926,7 +926,10 @@ class AbstractGrid(ABC):
 
     @abstractmethod
     def nearest_neighbor_interpolator(
-        self, pos: np.ndarray | u.Quantity, *args, persistent: bool = False
+        self,
+        pos: np.ndarray | u.Quantity,
+        *args,  # noqa: ANN002
+        persistent: bool = False,  # noqa: ANN002, RUF100
     ):
         r"""
         Interpolate values on the grid using a nearest-neighbor scheme with
@@ -1167,8 +1170,11 @@ class CartesianGrid(AbstractGrid):
             self.ds[quantity].data = self.ds[quantity].data * mask * edge_mask
 
     @modify_docstring(prepend=AbstractGrid.nearest_neighbor_interpolator.__doc__)
-    def nearest_neighbor_interpolator(
-        self, pos: np.ndarray | u.Quantity, *args, persistent: bool = False
+    def nearest_neighbor_interpolator(  # noqa: ANN201
+        self,
+        pos: np.ndarray | u.Quantity,
+        *args,  # noqa: ANN002
+        persistent: bool = False,  # noqa: ANN002, RUF100
     ):
         r""" """  # noqa: D419
 
@@ -1206,8 +1212,11 @@ class CartesianGrid(AbstractGrid):
         ]
         return output[0] if len(output) == 1 else tuple(output)
 
-    def volume_averaged_interpolator(
-        self, pos: np.ndarray | u.Quantity, *args, persistent: bool = False
+    def volume_averaged_interpolator(  # noqa: ANN201
+        self,
+        pos: np.ndarray | u.Quantity,
+        *args,  # noqa: ANN002
+        persistent: bool = False,  # noqa: ANN002, RUF100
     ):
         r"""
         Interpolate values on the grid using a volume-averaged scheme with
@@ -1434,7 +1443,7 @@ class NonUniformCartesianGrid(AbstractGrid):
 
         return Tmin < Tmax
 
-    def _make_mesh(self, start, stop, num: int, **kwargs):
+    def _make_mesh(self, start, stop, num: int, **kwargs):  # noqa: ANN003, ANN202
         r"""
         Creates mesh as part of ``_make_grid()``. Separated into its own
         function so it can be re-implemented to make non-uniform grids.
@@ -1470,8 +1479,11 @@ class NonUniformCartesianGrid(AbstractGrid):
         )
 
     @modify_docstring(prepend=AbstractGrid.nearest_neighbor_interpolator.__doc__)
-    def nearest_neighbor_interpolator(
-        self, pos: np.ndarray | u.Quantity, *args, persistent: bool = False
+    def nearest_neighbor_interpolator(  # noqa: ANN201
+        self,
+        pos: np.ndarray | u.Quantity,
+        *args,  # noqa: ANN002
+        persistent: bool = False,  # noqa: ANN002, RUF100
     ):
         r""" """  # noqa: D419
         # Shared setup

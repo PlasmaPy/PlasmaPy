@@ -75,7 +75,7 @@ class Downloader:
     def __init__(
         self,
         directory: Path | None = None,
-        validate: bool = True,
+        validate: bool = True,  # noqa: FBT001, FBT002
         api_token: str | None = None,
     ) -> None:
         if directory is None:

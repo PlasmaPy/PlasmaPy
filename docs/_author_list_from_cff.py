@@ -170,7 +170,9 @@ def generate_rst_author_list(authors: list[dict[str, str]]) -> str:
 
 
 def generate_rst_file(
-    cff_file="../CITATION.cff", rst_file="about/_authors.rst", verbose=False
+    cff_file="../CITATION.cff",
+    rst_file="about/_authors.rst",
+    verbose=False,  # noqa: FBT002
 ):
     """
     Parse :file:`CITATION.cff` file and generate a reStructuredText

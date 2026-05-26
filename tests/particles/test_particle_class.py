@@ -790,7 +790,7 @@ def test_particle_half_life_string() -> None:
 @pytest.mark.parametrize(
     ("p", "is_one"), [(Particle("e-"), True), (Particle("p+"), False)]
 )
-def test_particle_is_electron(p, is_one: bool) -> None:
+def test_particle_is_electron(p, is_one: bool) -> None:  # noqa: FBT001
     assert p.is_electron == is_one
 
 

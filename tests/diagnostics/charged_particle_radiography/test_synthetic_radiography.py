@@ -19,7 +19,7 @@ from plasmapy.plasma.grids import CartesianGrid
 rng = np.random.default_rng()
 
 
-def _test_grid(  # noqa: C901, PLR0912
+def _test_grid(  # noqa: ANN202, C901, PLR0912
     name: str,
     L: u.Quantity[u.m] = 1 * u.mm,
     num: int = 100,
@@ -168,7 +168,7 @@ def test_multiple_grids() -> None:
     _hax, _vax, _values = cpr.synthetic_radiograph(sim, size=size, bins=bins)
 
 
-def run_1D_example(name: str):
+def run_1D_example(name: str):  # noqa: ANN201
     """
     Run a simulation through an example with parameters optimized to
     sum up to a lineout along x. The goal is to run a relatively fast
@@ -553,7 +553,7 @@ def test_run_options() -> None:
     assert 0 < sim.max_deflection.to(u.rad).value < np.pi / 2
 
 
-def create_tracker_obj(**kwargs) -> cpr.Tracker:
+def create_tracker_obj(**kwargs) -> cpr.Tracker:  # noqa: ANN003
     # CREATE A RADIOGRAPH OBJECT
     grid = _test_grid("electrostatic_gaussian_sphere", num=50)
     source = (0 * u.mm, -10 * u.mm, 0 * u.mm)

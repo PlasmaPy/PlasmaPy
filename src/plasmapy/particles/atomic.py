@@ -591,7 +591,8 @@ def known_isotopes(argument: ParticleLike | None = None) -> ParticleList:
 
 
 def common_isotopes(
-    argument: ParticleLike | None = None, most_common_only: bool = False
+    argument: ParticleLike | None = None,
+    most_common_only: bool = False,  # noqa: FBT001, FBT002
 ) -> ParticleList:
     """
     Return a list of isotopes of an element with an isotopic abundances
@@ -662,7 +663,8 @@ def common_isotopes(
     # TODO: Allow Particle objects representing elements to be inputs
 
     def common_isotopes_for_element(
-        argument: ParticleLike, most_common_only: bool | None
+        argument: ParticleLike,
+        most_common_only: bool | None,  # noqa: FBT001
     ) -> list[Particle]:
         isotopes = known_isotopes(argument)
 
@@ -712,7 +714,8 @@ def common_isotopes(
 
 
 def stable_isotopes(
-    argument: ParticleLike | None = None, unstable: bool = False
+    argument: ParticleLike | None = None,
+    unstable: bool = False,  # noqa: FBT001, FBT002
 ) -> ParticleList:
     """
     Return a list of all stable isotopes of an element, or if no input is
@@ -782,7 +785,8 @@ def stable_isotopes(
     # TODO: Allow Particle objects representing elements to be inputs
 
     def stable_isotopes_for_element(
-        argument: str | int, stable_only: bool | None
+        argument: str | int,
+        stable_only: bool | None,  # noqa: FBT001
     ) -> list[Particle]:
         KnownIsotopes = known_isotopes(argument)
         return [
@@ -1118,7 +1122,7 @@ def ionic_levels(
     )
 
 
-def _is_electron(arg: Any) -> bool:
+def _is_electron(arg: Any) -> bool:  # noqa: ANN401
     """
     Return `True` if the argument corresponds to an electron, and
     `False` otherwise.
@@ -1138,7 +1142,7 @@ def stopping_power(
     incident_particle: ParticleLike,
     material: str,
     energies: u.Quantity[u.MeV] | None = None,
-    return_interpolator: bool = False,
+    return_interpolator: bool = False,  # noqa: FBT001, FBT002
     component: Literal["total", "electronic", "nuclear"] = "total",
 ) -> (
     tuple[u.Quantity, u.Quantity]
