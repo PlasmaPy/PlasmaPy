@@ -533,7 +533,7 @@ def test_particle_list_with_no_arguments() -> None:
 
 @pytest.mark.parametrize(
     ("quantities", "expected"),
-    (
+    ( 
         ((1, 2) * u.kg, (CustomParticle(mass=1 * u.kg), CustomParticle(mass=2 * u.kg))),
         (
             (3, 4) * u.C,
