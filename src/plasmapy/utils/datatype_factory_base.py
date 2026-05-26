@@ -104,7 +104,6 @@ class BasicRegistrationFactory:
         Arguments args and kwargs are passed through to the validation
         function and to the constructor for the final type.
         """
-
         # Any preprocessing and massaging of inputs can happen here
 
         return self._check_registered_widget(*args, **kwargs)

@@ -292,9 +292,7 @@ lint.extend-select = [
 lint.ignore = [
   "ANN001",
   "COM819",
-  "D105",    # enable later?
   "D200",    # incompatible with multiline short summaries
-  "D202",
   "D205",    # incompatible with multiline short summaries
   "D206",    # formatter conflict
   "D401",    # enable later?

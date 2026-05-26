@@ -119,7 +119,6 @@ class Stack:
         r"""
         The number of layers in the stack.
         """
-
         return len(self._layers)
 
     @property
@@ -127,7 +126,6 @@ class Stack:
         r"""
         The number of layers in the stack marked ``active``.
         """
-
         return len([layer for layer in self._layers if layer.active])
 
     @property
@@ -173,7 +171,6 @@ class Stack:
             along the first dimension (all of the layers) for each population
             is unity.
         """
-
         energies = energies.to(u.J).value
 
         deposited_energy = np.zeros([len(self._layers), energies.size])
@@ -258,7 +255,6 @@ class Stack:
             The full-width-half-max energy range of the Bragg peak in each
             active layer of the film stack, in J.
         """
-
         energies = (
             np.arange(
                 *energy_range.to(u.J).value,

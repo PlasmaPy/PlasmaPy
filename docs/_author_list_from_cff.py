@@ -81,7 +81,6 @@ def get_author_name(author: dict[str, str]) -> str:
     str
         The author name (if available) or the author alias.
     """
-
     given_names = author.get("given-names", "")
     family_names = author.get("family-names", "")
     alias = author.get("alias", "")

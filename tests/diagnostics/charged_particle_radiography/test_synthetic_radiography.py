@@ -64,7 +64,6 @@ def _test_grid(  # noqa: ANN202, C901, PLR0912
         A CartesianGrid object containing quantity arrays representing
         the chosen example.
     """
-
     grid = CartesianGrid(-L, L, num=num)
 
     # If an array was provided to the constructor, reduce to a single
@@ -147,7 +146,6 @@ def test_multiple_grids() -> None:
     TODO: automate test by including two fields with some obvious analytical
     solution??
     """
-
     grid1 = _test_grid("constant_bz", L=3 * u.cm, num=20, B0=0.7 * u.T)
     grid2 = _test_grid("electrostatic_gaussian_sphere", L=1 * u.mm, num=20)
     grids = [grid1, grid2]
@@ -226,7 +224,6 @@ def run_mesh_example(
 
     Returns the sim object for use in additional tests
     """
-
     grid = _test_grid(problem, num=100)
     source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
     detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
@@ -273,7 +270,6 @@ def test_coordinate_systems() -> None:
     Check that specifying the same point in different coordinate systems
     ends up with identical source and detector vectors.
     """
-
     grid = _test_grid("empty")
 
     # Cartesian
@@ -302,7 +298,6 @@ def test_input_validation() -> None:
     """
     Intentionally raise a number of errors.
     """
-
     # ************************************************************************
     # During initialization
     # ************************************************************************
@@ -729,7 +724,6 @@ def test_cannot_modify_simulation_after_running(case) -> None:
     Test that a Tracker objection can not be modified after it is
     run (Tracker.run).
     """
-
     sim = create_tracker_obj(field_weighting="nearest neighbor")
     sim.run()
 
@@ -759,7 +753,6 @@ def test_gaussian_sphere_analytical_comparison() -> None:
     Still under construction (comparing the actual form of the radiograph
     is possible but tricky to implement).
     """
-
     # The Gaussian sphere problem for small deflection potentials
     # is solved in Kugland2012relation, and the equations referenced
     # below are from that paper.
@@ -1054,7 +1047,6 @@ def test_NIST_particle_stopping(
     Test to ensure that the simulated stopping range matches the SRIM output
     for various proton energies.
     """
-
     # Apply uniform units and cast to quantity array
     energies: u.Quantity = [v[0].si.value for v in energy_projected_range_list] * u.J
     projected_ranges = [v[1].si.value for v in energy_projected_range_list] * u.m

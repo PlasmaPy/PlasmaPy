@@ -173,7 +173,6 @@ def kinetic_alfven(  # noqa: ANN201, C901, PLR0912
     >>> kinetic_alfven(**inputs)
     {np.float64(30.0): <Quantity [0.00075242, 0.00752616] rad / s>}
     """
-
     # Validate arguments
     for arg_name in ("B", "n_i", "T_e", "T_i"):
         val = locals()[arg_name].squeeze()

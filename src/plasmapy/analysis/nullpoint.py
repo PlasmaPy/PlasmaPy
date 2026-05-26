@@ -673,7 +673,6 @@ def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0915
         If there is a possible lack of grid resolution, so
         that a grid cell may contain more than one null point.
     """
-
     # Critical Cell Corners
     f000 = cell
     f111 = [cell[0] + 1, cell[1] + 1, cell[2] + 1]

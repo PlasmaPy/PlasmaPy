@@ -184,7 +184,6 @@ def make_global_substitutions_table(
     Create a file containing a table of global reStructuredText substitutions
     for inclusion in :file:`docs/contributing/doc_guide.rst`.
     """
-
     headers = ("substitution", "replaces", "example")
     Row = collections.namedtuple("Row", headers)
 

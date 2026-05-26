@@ -621,7 +621,6 @@ class TestValidateClassAttributes:
         """
         Test errors raised by the validate_class_attributes decorator.
         """
-
         test_case = self.SampleCase(**test_case_constructor_keyword_arguments)
 
         has_x = "x" in test_case_constructor_keyword_arguments

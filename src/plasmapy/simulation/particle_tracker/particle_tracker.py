@@ -255,7 +255,6 @@ class ParticleTracker:
         """
         Take the user provided argument for grids and convert it into the proper type.
         """
-
         if isinstance(grids, AbstractGrid):
             return [
                 grids,
@@ -272,7 +271,6 @@ class ParticleTracker:
         save_routine,
     ) -> None:
         """Determines whether the simulation will follow a synchronized or adaptive time step."""
-
         self._require_synchronized_time = (
             termination_condition.require_synchronized_dt
             or (save_routine is not None and save_routine.require_synchronized_dt)
@@ -330,7 +328,6 @@ class ParticleTracker:
         associated with the spatial resolution of the grid object, calculates a time step using the time
         it would take the fastest particle to cross some fraction of a grid cell length. This fraction is the Courant number.
         """
-
         if not self._is_adaptive_time_step:
             raise ValueError(
                 "The setup adaptive time step method only applies to adaptive time steps!",
@@ -350,7 +347,6 @@ class ParticleTracker:
         Ensure the specified termination condition and save routine are actually
         a termination routine class and save routine, respectively.
         """
-
         if isinstance(grids, BasePlasma):
             raise TypeError(
                 "It appears you may be trying to access an older version of the ParticleTracker class."
@@ -441,7 +437,6 @@ class ParticleTracker:
         Validate inputs to the `add_stopping` method. Raises errors if the
         proper keyword arguments are not provided for a given method.
         """
-
         match method:
             case "NIST":
                 if materials is None or len(materials) != self.num_grids:
@@ -672,7 +667,6 @@ class ParticleTracker:
         None
 
         """
-
         self._enforce_particle_creation()
 
         self._setup_for_interpolator()
@@ -759,7 +753,6 @@ class ParticleTracker:
         This number is calculated by summing the number of non-zero entries in the
         entered grid array.
         """
-
         return (self.ever_entered_any_grid > 0).sum()
 
     @property
@@ -777,7 +770,6 @@ class ParticleTracker:
 
         This is represented by setting the particle's velocity to NaN.
         """
-
         if len(particles_to_stop_mask) != self.x.shape[0]:
             raise ValueError(
                 f"Expected mask of size {self.x.shape[0]}, got {len(particles_to_stop_mask)}",
@@ -794,7 +786,6 @@ class ParticleTracker:
         For the sake of keeping consistent array lengths, the position and
         velocities of the removed particles are set to NaN.
         """
-
         if len(particles_to_remove_mask) != self.x.shape[0]:
             raise ValueError(
                 f"Expected mask of size {self.x.shape[0]}, got {len(particles_to_remove_mask)}",
@@ -816,7 +807,6 @@ class ParticleTracker:
         considerations including the local grid resolution (ds) and the
         gyroperiod of the particles in the current fields.
         """
-
         # candidate time steps includes one per grid (based on the grid resolution)
         # plus additional _dt_candidates based on the field at each particle
         candidates = np.full(
@@ -973,7 +963,6 @@ class ParticleTracker:
         new energy values of the particles, and then updating the particles'
         velocity to match these energies.
         """
-
         current_speeds = np.linalg.norm(
             self.v[self._tracked_particle_mask],
             axis=-1,
@@ -1134,7 +1123,6 @@ class ParticleTracker:
         Returns a boolean mask of shape [ngrids, num_particles] corresponding to
         whether or not the particle is on the associated grid.
         """
-
         all_particles = np.array([grid.on_grid(self.x * u.m) for grid in self.grids]).T
         all_particles[~self._tracked_particle_mask] = False
 
@@ -1163,7 +1151,6 @@ class ParticleTracker:
         r"""
         Return the non-relativistic kinetic energy of the particles.
         """
-
         # TODO: how should the relativistic case be handled?
         return 0.5 * self.m * np.square(np.linalg.norm(self.v, axis=-1, keepdims=True))
 
@@ -1224,7 +1211,6 @@ class ParticleTracker:
 
     def _enforce_particle_creation(self) -> None:
         """Ensure the array position array `x` has been populated."""
-
         # Check to make sure particles have already been generated
         if not hasattr(self, "x"):
             raise ValueError(
@@ -1239,7 +1225,6 @@ class ParticleTracker:
         raises an error if the simulation has already been run.
 
         """
-
         if self._has_run:
             raise RuntimeError(
                 "Modifying the `Tracker` object after running the "

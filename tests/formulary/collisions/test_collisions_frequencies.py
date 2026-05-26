@@ -78,7 +78,6 @@ class TestSingleParticleCollisionFrequencies:
     )
     def test_units(self, attribute_to_test, expected_attribute_units) -> None:
         """Test the return units"""
-
         assert getattr(
             self.attribute_units_test_case,
             attribute_to_test,
@@ -100,7 +99,6 @@ class TestSingleParticleCollisionFrequencies:
         Test that a consistent value is computed for attributes
         regardless of argument units.
         """
-
         MKS_result = getattr(self.MKS_test_case, attribute_to_test)
         CGS_result = getattr(self.CGS_test_case, attribute_to_test)
 
@@ -114,7 +112,6 @@ class TestSingleParticleCollisionFrequencies:
 
         These formulae are taken from page 31 of the NRL Formulary.
         """
-
         v_a = (0.5 * cases.test_particle.mass * cases.v_drift**2).to(u.eV).value
         T_b = (cases.T_b * k_B).to(u.eV).value
 
@@ -383,7 +380,6 @@ class TestSingleParticleCollisionFrequencies:
         constructor_keyword_arguments,
     ) -> None:
         """Test the return values"""
-
         value_test_case = SingleParticleCollisionFrequencies(
             *constructor_arguments,
             **constructor_keyword_arguments,
@@ -455,7 +451,6 @@ class TestSingleParticleCollisionFrequencies:
         constructor_keyword_arguments,
     ) -> None:
         """Test errors raised in the __init__ function body"""
-
         with pytest.raises(expected_error):
             SingleParticleCollisionFrequencies(
                 *constructor_arguments,
@@ -485,7 +480,6 @@ class TestSingleParticleCollisionFrequencies:
     )
     def test_handle_ndarrays(self, constructor_keyword_arguments) -> None:
         """Test for ability to handle numpy array quantities"""
-
         SingleParticleCollisionFrequencies(**constructor_keyword_arguments)
 
 
@@ -501,7 +495,6 @@ class TestMaxwellianCollisionFrequencies:
         `Maxwellian_avg_##_collision_freq` family of attributes in the
         case that T_a ~ T_b.
         """
-
         # Strip the units from these quantities and ensure they are in CGS units
         n = n.to(u.cm**-3).value
         T_a = T_a.to(u.eV).value
@@ -539,7 +532,6 @@ class TestMaxwellianCollisionFrequencies:
         constructor_keyword_arguments,
     ) -> None:
         """Test errors raised in the __init__ function body"""
-
         with pytest.raises(expected_error):
             MaxwellianCollisionFrequencies(
                 *constructor_arguments,
@@ -621,7 +613,6 @@ class TestMaxwellianCollisionFrequencies:
         attribute_name: str,
     ) -> None:
         """Test errors raised in attribute bodies"""
-
         test_case = MaxwellianCollisionFrequencies(
             *constructor_arguments,
             **constructor_keyword_arguments,

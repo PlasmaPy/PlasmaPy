@@ -423,7 +423,6 @@ class IonizationStateCollection:  # noqa: PLW1641
         `~plasmapy.particles.exceptions.ParticleError`
             If the ionic fractions cannot be set.
         """
-
         # A potential problem is that using item assignment on the
         # ionic_fractions attribute could cause the original attributes
         # to be overwritten without checks being performed.  We might

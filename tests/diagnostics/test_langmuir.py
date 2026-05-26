@@ -26,7 +26,6 @@ class Test__fitting_functions:
 
     def test_fit_func_lin(self) -> None:
         r"""Test linear fitting function"""
-
         value = langmuir._fit_func_lin(self.x, self.x0, self.y0, self.c0)
         expect_value = 25
 
@@ -38,7 +37,6 @@ class Test__fitting_functions:
 
     def test_fit_func_lin_inverse(self) -> None:
         r"""Test linear fitting function with inverse slope"""
-
         value = langmuir._fit_func_lin_inverse(self.x, self.x0, self.y0, self.T0)
         expect_value = 8.33333
 
@@ -52,7 +50,6 @@ class Test__fitting_functions:
     def test_fit_func_double_lin_inverse(self) -> None:
         r"""Test double linear fitting function with inverse slope and an offset
         for use in fitting a bi-Maxwellian electron current growth region"""
-
         value = langmuir._fit_func_double_lin_inverse(
             self.x,
             self.x0,
@@ -89,7 +86,6 @@ class Test__characteristic_errors:
 
     def test_invalid_dimensions(self) -> None:
         r"""Test 2D arrays work with Characteristic class"""
-
         # `Characteristic.get_unique_bias` runs during initialization
         # which prevents an exception from being raised..
         with pytest.warns(FutureWarning):
@@ -97,19 +93,16 @@ class Test__characteristic_errors:
 
     def test_infinite_I(self) -> None:
         r"""Test error upon an infinite current value"""
-
         with pytest.raises(ValueError):
             langmuir.Characteristic(bias_arr, self.current_infarr)
 
     def test_infinite_U(self) -> None:
         r"""Test error upon an infinite bias value"""
-
         with pytest.raises(ValueError):
             langmuir.Characteristic(self.bias_infarr, current_arr)
 
     def test_unequal_arrays(self) -> None:
         r"""Test errors upon unequal array lengths"""
-
         with pytest.raises(ValueError), pytest.warns(FutureWarning):
             langmuir.Characteristic(self.bias_longarr, current_arr)
 
@@ -118,7 +111,6 @@ class Test__characteristic_errors:
 
     def test_addition(self) -> None:
         r"""Test addition of characteristic objects"""
-
         with pytest.warns(FutureWarning):
             a = langmuir.Characteristic(bias_arr, current_arr)
         with pytest.warns(FutureWarning):
@@ -131,7 +123,6 @@ class Test__characteristic_errors:
 
     def test_subtraction(self) -> None:
         r"""Test addition of characteristic objects"""
-
         with pytest.warns(FutureWarning):
             a = langmuir.Characteristic(bias_arr, current_arr)
         with pytest.warns(FutureWarning):
@@ -146,7 +137,6 @@ class Test__characteristic_errors:
 @pytest.fixture
 def characteristic():
     r"""Create a dummy characteristic with random values"""
-
     with pytest.warns(FutureWarning):
         return langmuir.Characteristic(bias_arr, current_arr)
 
@@ -154,7 +144,6 @@ def characteristic():
 @pytest.fixture
 def characteristic_simulated():
     r"""Create a simulated probe characteristic (provisional)"""
-
     T_e_sim = 1 * u.eV
     n_e_sim = 1e18 * u.m**-3
     probe_area_sim = 1 * u.cm**2
@@ -184,7 +173,6 @@ def characteristic_simulated():
 
 def shuffle_characteristic(characteristic):
     r"""Shuffle a given characteristic"""
-
     _shuffle = sorted(
         np.arange(len(characteristic.bias)),
         key=lambda k: np.random.random(),  # noqa: ARG005, NPY002
@@ -232,20 +220,17 @@ class Test__Characteristic_inherited_methods:
 
     def test_bias_and_current_length_mismatch(self) -> None:
         r"""Test error on non-1d bias and current arrays"""
-
         with pytest.raises(ValueError), pytest.warns(FutureWarning):
             DryCharacteristic(self.bias_4length_arr, self.current_5length_arr)
 
     def test_duplicate_bias_values(self) -> None:
         r"""Test error on bias array containing duplicate values"""
-
         with pytest.raises(ValueError), pytest.warns(FutureWarning):
             DryCharacteristic(self.bias_duplicates_arr, current_arr)
 
     @staticmethod
     def test_inplace_unique_bias() -> None:
         r"""Test new Characteristic instance being returned"""
-
         with pytest.warns(FutureWarning):
             char = DryCharacteristic(bias_arr, current_arr)
         with pytest.warns(FutureWarning):
@@ -256,7 +241,6 @@ class Test__Characteristic_inherited_methods:
     @staticmethod
     def test_getpadded_limit(characteristic) -> None:
         r"""Test padding limit on Characteristic instance"""
-
         char = characteristic
         limits = char.get_padded_limit(0.1)
         log_limits = char.get_padded_limit(0.1, log=True)
@@ -271,21 +255,18 @@ class Test__swept_probe_analysis:
     @staticmethod
     def test_nan_area() -> None:
         r"""Test error upon NaN area"""
-
         with pytest.raises(ValueError):
             langmuir.swept_probe_analysis(characteristic, np.nan * u.cm**2, "Ar-40 1+")
 
     @staticmethod
     def test_unit_conversion_error() -> None:
         r"""Test error upon incorrect probe area unit"""
-
         with pytest.raises(u.UnitTypeError):
             langmuir.swept_probe_analysis(characteristic, 1 * u.cm, "Ar-40 1+")
 
     @staticmethod
     def test_negative_area() -> None:
         r"""Test error upon negative probe area"""
-
         with pytest.raises(ValueError):
             langmuir.swept_probe_analysis(characteristic, -1 * u.cm**2, "Ar-40 1+")
 
@@ -293,7 +274,6 @@ class Test__swept_probe_analysis:
     @pytest.mark.parametrize("bimaxwellian", [True, False])
     def test_ordering_invariance(bimaxwellian, characteristic_simulated) -> None:
         r"""Test invariance to ordering of the bias and current values"""
-
         with pytest.warns(FutureWarning):
             sim_result = langmuir.swept_probe_analysis(
                 characteristic_simulated,
@@ -317,7 +297,6 @@ class Test__swept_probe_analysis:
 
 def test_get_floating_potential_with_return_arg(characteristic) -> None:
     r"""Test floating potential and the return argument"""
-
     with pytest.warns(FutureWarning):
         potential, arg = langmuir.get_floating_potential(
             characteristic,
@@ -328,7 +307,6 @@ def test_get_floating_potential_with_return_arg(characteristic) -> None:
 
 def test_get_ion_density_OML_without_return_fit(characteristic) -> None:
     r"""Test ion density without returning the fit value"""
-
     with pytest.warns(FutureWarning):
         density = langmuir.get_ion_density_OML(
             characteristic,
@@ -341,7 +319,6 @@ def test_get_ion_density_OML_without_return_fit(characteristic) -> None:
 
 def test_get_EEDF() -> None:
     """Test the obtained EEDF"""
-
     with pytest.warns(FutureWarning):
         char = langmuir.Characteristic(bias_arr[:17], current_arr[:17])
     with pytest.warns(FutureWarning):

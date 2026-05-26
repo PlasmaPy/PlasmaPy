@@ -111,7 +111,6 @@ def _bind_arguments(
         the corresponding arguments as values, but removing ``self`` and
         ``cls``.
     """
-
     # We should keep the warning about "z_mean" for perhaps ∼2
     # releases following the last pull request that removes a "z_mean"
     # parameter from a callable decorated with @particle_input. After
@@ -459,7 +458,6 @@ class _ParticleInput:
         Check that parameters with special names meet the expected
         categorization criteria.
         """
-
         if (
             parameter == "ion"
             and isinstance(particle, CustomParticle)
@@ -627,7 +625,6 @@ class _ParticleInput:
         integer if not `None`. Verify that ``Z`` and ``mass_numb`` are
         not included if there are multiple annotated parameters.
         """
-
         if not self.parameters_to_process:
             raise ParticleError(
                 "No parameters have an annotation that will invoke particle_input.",
@@ -676,7 +673,6 @@ class _ParticleInput:
         This method does not work when there are positional arguments
         before variadic positional arguments.  See :issue:`2150`.
         """
-
         bound_arguments = _bind_arguments(
             self.signature,
             self.callable_,
@@ -978,7 +974,6 @@ def particle_input(
     >>> mass_number("D")
     2
     """
-
     # The following pattern comes from the docs for wrapt, and requires
     # that the arguments to the decorator are keyword-only.
 

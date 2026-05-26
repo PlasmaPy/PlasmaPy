@@ -46,7 +46,6 @@ def _langmuir_futurewarning() -> None:
 
 def _fit_func_lin(x, x0, y0, c0):
     r"""Linear fitting function."""
-
     return y0 + c0 * (x - x0)
 
 
@@ -54,7 +53,6 @@ def _fit_func_lin_inverse(x, x0, y0, T0):
     r"""Linear fitting function with inverse slope parameter for use in fitting
     of the electron current growth region.
     """
-
     return y0 + (x - x0) / T0
 
 
@@ -102,33 +100,28 @@ class Characteristic:
         object.
 
         """
-
         return Characteristic(self.bias[key], self.current[key])
 
     def __sub__(self, other):
         r"""Support current subtraction."""
-
         b = copy.deepcopy(self)
         b.current -= other.current
         return b
 
     def __add__(self, other):
         r"""Support current addition."""
-
         b = copy.deepcopy(self)
         b.current += other.current
         return b
 
     def sort(self) -> None:
         r"""Sort the characteristic by ascending bias."""
-
         _sort = self.bias.argsort()
         self.current = self.current[_sort]
         self.bias = self.bias[_sort]
 
     def get_unique_bias(self, inplace: bool = False):  # noqa: ANN201, FBT001, FBT002
         r"""Remove any duplicate bias values through averaging."""
-
         if len(self.bias) != len(self.current):
             raise ValueError(
                 f"Unequal array lengths of bias "
@@ -154,7 +147,6 @@ class Characteristic:
 
     def _check_validity(self):
         r"""Check the unit and value validity of the characteristic."""
-
         if len(self.bias.shape) != 1:
             raise ValueError("Non-1D array for voltage!")
 
@@ -185,7 +177,6 @@ class Characteristic:
             Default is `False`.
 
         """
-
         ymax = np.max(self.current).to(u.A).value
 
         if log:
@@ -491,7 +482,6 @@ def get_plasma_potential(probe_characteristic, return_arg: bool = False):  # noq
     electron the saturation region.
 
     """
-
     _langmuir_futurewarning()
 
     if not isinstance(probe_characteristic, Characteristic):
@@ -543,7 +533,6 @@ def get_floating_potential(probe_characteristic, return_arg: bool = False):  # n
     Amperes as the floating potential.
 
     """
-
     _langmuir_futurewarning()
 
     if not isinstance(probe_characteristic, Characteristic):
@@ -581,7 +570,6 @@ def get_electron_saturation_current(probe_characteristic):
     is used to obtain an estimate of the plasma potential. The
     corresponding electron saturation current is returned.
     """
-
     _langmuir_futurewarning()
 
     if not isinstance(probe_characteristic, Characteristic):
@@ -618,7 +606,6 @@ def get_ion_saturation_current(probe_characteristic):
     saturate.
 
     """
-
     _langmuir_futurewarning()
 
     if not isinstance(probe_characteristic, Characteristic):
@@ -688,7 +675,6 @@ def get_ion_density_LM(
     .. math::
         I_{is} = 0.6 e A_p n_i \sqrt{\frac{T_e}{m_i}}.
     """
-
     _langmuir_futurewarning()
 
     # Calculate the acoustic (Bohm) velocity
@@ -752,7 +738,6 @@ def get_electron_density_LM(
     which should be identical to the electron density in quasineutral plasmas.
 
     """
-
     _langmuir_futurewarning()
 
     # Calculate the thermal electron velocity
@@ -791,7 +776,6 @@ def extract_exponential_section(probe_characteristic, T_e=None, ion_current=None
     by the floating and plasma potentials. Additionally, an improvement in
     accuracy can be made when the electron temperature is supplied.
     """
-
     _langmuir_futurewarning()
 
     if not isinstance(probe_characteristic, Characteristic):
@@ -846,7 +830,6 @@ def extract_ion_section(probe_characteristic):
     bounded by the floating potential on the right hand side.
 
     """
-
     _langmuir_futurewarning()
 
     if not isinstance(probe_characteristic, Characteristic):
@@ -915,7 +898,6 @@ def get_electron_temperature(  # noqa: ANN201
         \textrm{log} \left(I_e \right ) \propto \frac{1}{T_e}.
 
     """
-
     _langmuir_futurewarning()
 
     if not isinstance(exponential_section, Characteristic):
@@ -1077,7 +1059,6 @@ def extrapolate_electron_current(  # noqa: ANN201
     entire bias range.
 
     """
-
     _langmuir_futurewarning()
 
     if not isinstance(probe_characteristic, Characteristic):
@@ -1161,7 +1142,6 @@ def reduce_bimaxwellian_temperature(
         T_{e,red} = T_c \left( 1 - f_h \right) + T_h f_h
 
     """
-
     _langmuir_futurewarning()
 
     # Return the electron temperature itself if it is not bi-Maxwellian
@@ -1226,7 +1206,6 @@ def get_ion_density_OML(  # noqa: ANN201
         Phys. Rev. 28, 727-763 (Oct. 1926)
 
     """
-
     _langmuir_futurewarning()
 
     if not isinstance(probe_characteristic, Characteristic):
@@ -1302,7 +1281,6 @@ def extrapolate_ion_current_OML(probe_characteristic, fit, visualize: bool = Fal
     inversely proportional to the electron temperature.
 
     """
-
     _langmuir_futurewarning()
 
     if not isinstance(probe_characteristic, Characteristic):
@@ -1380,7 +1358,6 @@ def get_EEDF(probe_characteristic, visualize: bool = False):  # noqa: ANN201, FB
     ----------
     .. [druyvesteyn-1930] Druyvesteyn, M.J. Z. Physik (1930) 64: 781
     """
-
     _langmuir_futurewarning()
 
     if not isinstance(probe_characteristic, Characteristic):

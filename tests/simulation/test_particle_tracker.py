@@ -245,7 +245,6 @@ class TestParticleTrackerGyroradius:
 
     def test_kinetic_energy(self) -> None:
         """Test to ensure particles maintain their gyroradius over time"""
-
         initial_kinetic_energies = 0.5 * self.point_particle.mass * self.v_x**2
 
         velocities = self.save_routine.results["v"]
@@ -733,7 +732,6 @@ class TestParticleTrajectory:
         From https://journals.aps.org/pre/abstract/10.1103/PhysRevE.72.026603
 
         """
-
         if E >= const.c.si * B:
             raise ValueError("Currently this function only works for E<cB")
 
@@ -807,7 +805,6 @@ class TestParticleTrajectory:
         Fit the results of the relativistic Boris integrator using
         relativistic models developed in https://www.sciencedirect.com/science/article/pii/S163107211400148X
         """
-
         N_PERIODS_RECORDED = 5
         B_0 = 10 * u.T
         E_0 = regime * const.c * B_0
@@ -934,7 +931,6 @@ class TestParticleTrajectory:
         Fit the results of the non-relativistic Boris integrator using
         relativistic models developed in https://www.sciencedirect.com/science/article/pii/S163107211400148X
         """
-
         N_PERIODS_RECORDED = 5
         B_0 = 10 * u.T
         E_0 = regime * const.c * B_0
@@ -1040,7 +1036,6 @@ class TestParticleTrajectory:
         Fit the results of the non-relativistic Boris integrator using
         relativistic models developed in https://www.sciencedirect.com/science/article/pii/S163107211400148X
         """
-
         N_PERIODS_RECORDED = 5
         B_0 = 10 * u.T
         E_0 = regime * const.c * B_0

@@ -68,7 +68,6 @@ def Lorentz_factor(V: u.Quantity[u.m / u.s]):  # noqa: ANN201
     >>> Lorentz_factor(299792458 * u.m / u.s)
     inf
     """
-
     if not np.all((np.abs(V) <= c) | (np.isnan(V))):
         raise RelativityError(
             "The Lorentz factor cannot be calculated for "

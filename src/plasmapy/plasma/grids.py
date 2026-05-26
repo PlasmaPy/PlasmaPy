@@ -283,7 +283,6 @@ class AbstractGrid(ABC):
         A boolean value reflecting whether or not the grid points are
         uniformly spaced.
         """
-
         if self._is_uniform is None:
             raise ValueError(
                 "The `is_uniform` attribute is not accessible "
@@ -580,7 +579,6 @@ class AbstractGrid(ABC):
         **kwargs : `~astropy.units.Quantity` array, shape (n0, n1, n2)
             Quantities defined on the grid.
         """
-
         # Validate input
         if pts0.shape != pts1.shape or pts0.shape != pts2.shape:
             raise ValueError(
@@ -630,7 +628,6 @@ class AbstractGrid(ABC):
             The key will be used as the dataset key, while the array holds the
             quantity.
         """
-
         for key, quantity in kwargs.items():
             # Check key against a list of "known" keys with pre-defined
             # meanings (eg. E_x, n_e) and raise a warning if a "non-standard"
@@ -726,7 +723,6 @@ class AbstractGrid(ABC):
             Any additional arguments will be passed directly to
             `numpy.linspace`.
         """
-
         # Store variables in dict for validation
         event_values = {"stop": stop, "start": start, "num": num}
 
@@ -858,7 +854,6 @@ class AbstractGrid(ABC):
             corresponds to the three dimensions of the grid.
 
         """
-
         if hasattr(pos, "unit"):
             pos = pos.si.value
 
@@ -1007,7 +1002,6 @@ class AbstractGrid(ABC):
             A KeyError is raised if one of the args does not correspond
             to a DataArray in the DataSet.
         """
-
         # Condition pos
         if isinstance(pos, u.Quantity):
             pos = pos.to(u.m).value
@@ -1490,7 +1484,6 @@ class NonUniformCartesianGrid(AbstractGrid):
         then be called repeatedly.
 
         """
-
         return interp.NearestNDInterpolator(
             self.grid.to(u.m).value,
             self._interp_quantities,

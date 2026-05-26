@@ -248,7 +248,6 @@ def gyroradius(
     >>> gyroradius(B=10 * u.uG, particle="p+", lorentzfactor=3e6).to("pc")
     <Quantity 0.30428378 pc>
     """
-
     if T is None:
         T = np.nan * u.K
 

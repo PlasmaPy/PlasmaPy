@@ -196,7 +196,6 @@ def temp_ratio(  # noqa: ANN201, C901
     ... )
     [np.float64(2.78928645...), np.float64(1.04007...), np.float64(1.06914...)]
     """
-
     # Validate ions argument
     if not isinstance(ions, list | tuple | ParticleList):
         ions = [ions]  # ty:ignore[invalid-assignment]

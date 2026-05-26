@@ -326,7 +326,6 @@ equivalent_particle_mass_args = [
 def test_particle_mass_equivalent_args(arg1, kwargs1, arg2, kwargs2, expected) -> None:
     """Test that `particle_mass` returns equivalent results for
     equivalent positional and keyword arguments."""
-
     result1 = particle_mass(arg1, **kwargs1)
     result2 = particle_mass(arg2, **kwargs2)
 
@@ -351,7 +350,6 @@ def test_particle_mass_equivalent_args(arg1, kwargs1, arg2, kwargs2, expected) -
 def test_known_common_stable_isotopes() -> None:
     """Test that `known_isotopes`, `common_isotopes`, and
     `stable_isotopes` return the correct values for hydrogen."""
-
     known_should_be = ["H-1", "D", "T", "H-4", "H-5", "H-6", "H-7"]
     common_should_be = ["H-1", "D"]
     stable_should_be = ["He-3", "He-4"]
@@ -397,7 +395,6 @@ def test_half_life_unstable_isotopes() -> None:
 def test_half_life_u_220() -> None:
     """Test that `half_life` returns `None` and issues a warning for an
     isotope without half-life data."""
-
     isotope_without_half_life_data = "No-248"
 
     with pytest.raises(MissingParticleDataError):
@@ -442,7 +439,6 @@ def test_known_common_stable_isotopes_len() -> None:
     discovered, so a buffer is included in the test.
 
     """
-
     assert len(common_isotopes()) == 288, (
         "The length of the list returned by common_isotopes() is "
         f"{len(common_isotopes())}, which is not the expected value."

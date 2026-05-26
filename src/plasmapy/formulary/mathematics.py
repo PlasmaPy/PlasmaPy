@@ -165,7 +165,6 @@ def rot_a_to_b(a: np.ndarray, b: np.ndarray) -> np.ndarray:
            [ 0.93243873,  0.2467179 , -0.2639854 ]])
 
     """
-
     # Normalize and validate both vectors
 
     a = np.squeeze(a)

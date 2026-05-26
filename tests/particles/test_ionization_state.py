@@ -98,7 +98,6 @@ def test_ionization_state_ion_input_error() -> None:
     exception when an ion is the base particle and ionic fractions are
     specified
     """
-
     ion = "He 1+"
     unnecessary_ionic_fractions = [0.0, 0.0, 1.0]
 
@@ -254,7 +253,6 @@ def test_identifications(test_ionization_state) -> None:
     `IonizationState` instances match the expected values from the
     `Particle` instance.
     """
-
     Identifications = collections.namedtuple(
         "Identifications",
         ["element", "isotope", "atomic_number"],
@@ -407,7 +405,6 @@ def test_IonizationState_base_particles_from_ion_input(ion) -> None:
     base particle being the corresponding isotope or ion and that the
     ionic fraction of the corresponding charge level is 100%.
     """
-
     ionization_state = IonizationState(ion)
     ion_particle = Particle(ion)
 

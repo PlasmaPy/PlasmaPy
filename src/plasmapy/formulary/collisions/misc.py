@@ -267,7 +267,6 @@ def Bethe_stopping_lite(
         The stopping power of the material given the particle's energy.
 
     """
-
     beta = v / _c.si.value
 
     return np.asarray(
@@ -324,7 +323,6 @@ def Bethe_stopping(
         The stopping power of the material given the particle's energy.
 
     """
-
     return Bethe_stopping_lite(I.si.value, n.si.value, v.si.value, z) * u.J / u.m
 
 

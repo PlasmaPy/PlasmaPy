@@ -172,7 +172,6 @@ class Test_permittivity_1D_Maxwellian:
         """
         Tests permittivity_1D_Maxwellian for expected value.
         """
-
         vth = thermal_speed(kwargs["T"], kwargs["particle"], method="most_probable")
         kwargs["kWave"] = kwargs["omega"] / vth
 
@@ -211,7 +210,6 @@ class Test_permittivity_1D_Maxwellian_lite:
         Test that `permittivity_1D_Maxwellian_lite` and
         `permittivity_1D_Maxwellian` calculate the same values.
         """
-
         wp = plasma_frequency(kwargs["n"], kwargs["particle"], Z=kwargs["z_mean"])
         vth = thermal_speed(kwargs["T"], kwargs["particle"], method="most_probable")
         kwargs["kWave"] = kwargs["omega"] / vth

@@ -136,7 +136,6 @@ def test_run_test(f, args, kwargs, expected, whaterror):
         to raise an exception.
 
     """
-
     try:
         if whaterror is None:
             run_test(f, args, kwargs, expected)

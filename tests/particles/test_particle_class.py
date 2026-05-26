@@ -529,7 +529,6 @@ def test_Particle_class(arg, kwargs, expected_dict):
     expected properties.  Provide a detailed error message that lists
     all of the inconsistencies with the expected results.
     """
-
     call = call_string(Particle, arg, kwargs)
     errmsg = ""
 
@@ -732,7 +731,6 @@ def test_particle_class_mass_nuclide_mass(isotope: str, ion: str) -> None:
     isotope equals the mass of the fully ionized ion.  This method may
     also check neutrons and protons.
     """
-
     Isotope = Particle(isotope)
     Ion = Particle(ion)
 
@@ -779,7 +777,6 @@ def test_particle_half_life_string() -> None:
     the half-life of that isotope causes a `MissingParticleDataWarning`
     whilst returning a string.
     """
-
     for isotope in known_isotopes():
         half_life = data_about_isotopes[isotope.isotope].get("half-life", None)
         if isinstance(half_life, str):

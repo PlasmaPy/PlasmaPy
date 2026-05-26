@@ -1315,7 +1315,6 @@ class Particle(AbstractPhysicalParticle):
         >>> Particle("alpha").mass
         <Quantity 6.64465...e-27 kg>
         """
-
         if self._attributes["mass"] is not None:
             return self._attributes["mass"].to(u.kg)
 
@@ -1363,7 +1362,6 @@ class Particle(AbstractPhysicalParticle):
         >>> deuterium.nuclide_mass
         <Quantity 3.34358372e-27 kg>
         """
-
         if self.isotope == "H-1":
             return const.m_p
         elif self.isotope == "D":
@@ -1447,7 +1445,6 @@ class Particle(AbstractPhysicalParticle):
         >>> proton.nuclear_binding_energy
         <Quantity 0. J>
         """
-
         if self._attributes["baryon number"] == 1:
             return 0 * u.J
 
@@ -1933,7 +1930,6 @@ class Particle(AbstractPhysicalParticle):
         Particle("He-4 0+")
 
         """
-
         if not self.element:
             raise InvalidElementError(
                 f"{self.symbol} cannot undergo recombination because "
@@ -2022,7 +2018,6 @@ class Particle(AbstractPhysicalParticle):
         -----
         Relies on ionization energy data downloaded from the `NIST Atomic Spectra Database <https://physics.nist.gov/PhysRefData/ASD/ionEnergy.html>`_  on 5/7/2024.
         """
-
         # If the particle is an isotope, return the electron binding energy of the base element in the given ionization, except for hydrogen isotopes
 
         base_particle = None
@@ -2124,7 +2119,6 @@ class DimensionlessParticle(AbstractParticle):
     @staticmethod
     def _validate_parameter(obj: Any, can_be_negative: bool = True) -> np.float64:  # noqa: ANN401, FBT001, FBT002
         """Verify that the argument corresponds to a valid real number."""
-
         # TODO: Replace with validator? Use an equivalency between
         # coulombs and reals
 
@@ -2353,7 +2347,6 @@ class CustomParticle(AbstractPhysicalParticle):
         Z : real number, |keyword-only|, optional
             The |charge number|, if not provided in ``quantities``.
         """
-
         if not quantities:
             return CustomParticle(symbol=symbol, Z=Z)  # ty:ignore[invalid-return-type]
 
@@ -2612,7 +2605,6 @@ class CustomParticle(AbstractPhysicalParticle):
         and return `False` if ``other`` differs on any of these attributes,
         or another type.
         """
-
         if not isinstance(other, self.__class__):
             return NotImplemented
 

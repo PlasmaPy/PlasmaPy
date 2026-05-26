@@ -268,7 +268,6 @@ class Downloader:
         Update an entry in the blobfile, or create a new one if one doesn't
         exist.
         """
-
         if filename in self._blob_dict:
             if local_sha is not None:
                 self._blob_dict[filename]["local_sha"] = local_sha
@@ -287,7 +286,6 @@ class Downloader:
         """
         Issue an HTTP request to the specified URL, handling exceptions.
         """
-
         # Only send GitHub api authorization if querying GitHub
         # auth = self._api_auth if "github.com" in url else None
 
@@ -339,7 +337,6 @@ class Downloader:
             Path to the downloaded file
 
         """
-
         # Request the contents of the file from the download URL
         reply = self._http_request(dl_url)
 

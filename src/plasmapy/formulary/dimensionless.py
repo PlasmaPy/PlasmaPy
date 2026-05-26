@@ -100,7 +100,6 @@ def Debye_number(
     >>> Debye_number(5e6 * u.K, 5e9 * u.cm**-3)
     <Quantity 2.17658...e+08>
     """
-
     lambda_D = lengths.Debye_length(T_e, n_e)
     return (4 / 3) * np.pi * n_e * lambda_D**3
 

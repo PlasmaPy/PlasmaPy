@@ -95,7 +95,6 @@ def _create_lockfile_pr_message(uv_output: str, session: nox.Session) -> None:
     uv_output : str
         The multi-line output of ``session.run(..., silent=True)``.
     """
-
     pr_template = pathlib.Path(
         ROOT_DIR / "./.github/content/upgrade-uv-lock-pr-template.md",
     )
@@ -152,7 +151,6 @@ def lock(session: nox.Session) -> None:
     request message for the GitHub workflow that uses this session
     (:file:`.github/workflows/upgrade-uv-lock.yml`).
     """
-
     uv_lock = (
         "uv",
         "lock",
@@ -241,7 +239,6 @@ test_specifiers: list[nox._parametrize.Param] = [
 @nox.parametrize("test_specifier", test_specifiers)
 def tests(session: nox.Session, test_specifier: nox._parametrize.Param) -> None:
     """Run tests with pytest."""
-
     options: list[str] = []
 
     if test_specifier in {"skip slow tests", "lowest-direct-skipslow"}:
@@ -363,7 +360,6 @@ def docs(session: nox.Session) -> None:
 
     Configuration file: docs/conf.py
     """
-
     if RUNNING_ON_CI:
         session.log(DOC_TROUBLESHOOTING_MESSAGE)
 
@@ -385,7 +381,6 @@ def docs(session: nox.Session) -> None:
 @nox_uv.session(python=DOCPYTHON, uv_groups=["docs"])
 def htmlzip(session: nox.Session) -> None:
     """Bundle documentation build into a zip file on Read the Docs."""
-
     if not RUNNING_ON_RTD:
         session.error("This session must be run on Read the Docs.")
 
@@ -469,7 +464,6 @@ These variables are in the form of Python regular expressions:
 @nox_uv.session(python=DOCPYTHON, uv_groups=["docs"])
 def linkcheck(session: nox.Session) -> None:
     """Check hyperlinks in documentation."""
-
     if RUNNING_ON_CI:
         session.log(LINKCHECK_TROUBLESHOOTING)
 
@@ -550,7 +544,6 @@ def changelog(session: nox.Session, final: str) -> None:
 
        nox -s 'changelog(final)' -- 2026.5.0
     """
-
     now = datetime.datetime.now(datetime.UTC)
 
     if len(session.posargs) != 1:

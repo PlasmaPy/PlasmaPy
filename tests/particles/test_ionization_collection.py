@@ -335,7 +335,6 @@ class TestIonizationStateCollection:
 
 def test_abundances_consistency() -> None:
     """Test that ``abundances`` and ``log_abundances`` are consistent."""
-
     inputs = {"H": [1, 0], "He": [1, 0, 0]}
     abundances = {"H": 1.0, "He": 0.1}
     elements = abundances.keys()
@@ -702,7 +701,6 @@ class TestIonizationStateCollectionAttributes:
         Test that item assignment can be used to set number densities
         that preserve the total element number density.
         """
-
         element = "H"
         valid_ionic_fractions = [0.54, 0.46]
         original_n_elem = np.sum(self.instance.number_densities[element])
@@ -952,7 +950,6 @@ def test_comparison_to_equivalent_particle_list(
     `ParticleList.average_particle` when the ratios of different particles
     is the same between the `IonizationState` and the `ParticleList`.
     """
-
     neutrals = 3 * ["H-1 0+"] + 2 * ["He-4 0+"] if include_neutrals else []
     ions = 2 * ["p+"] + 3 * ["He-4 1+"] + 5 * ["α"]
     particles = ParticleList(neutrals + ions)

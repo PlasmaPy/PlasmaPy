@@ -188,7 +188,6 @@ class Test_impact_parameter:
         This is necessary in addition to test_handle_nparrays to ensure
         that the output arrays are extended correctly.
         """
-
         output_shape = T_shape if len(T_shape) >= len(n_e_shape) else n_e_shape
 
         n_e = self.n_e * np.ones(n_e_shape)

@@ -171,7 +171,6 @@ def nuclear_reaction_energy(*args, **kwargs) -> u.Quantity[u.J]:  # noqa: ANN002
     >>> nuclear_reaction_energy(reactants=["n"], products=["p+", "e-"])
     <Quantity 1.25343e-13 J>
     """
-
     # TODO: Allow for neutrinos, under the assumption that they have no mass.
 
     # TODO: Add check for lepton number conservation; however, we might wish
@@ -191,7 +190,6 @@ def nuclear_reaction_energy(*args, **kwargs) -> u.Quantity[u.J]:  # noqa: ANN002
         multiplier.  A string argument will be treated as a list
         containing that string as its sole item.
         """
-
         if isinstance(unformatted_particles_list, str):
             unformatted_particles_list = [unformatted_particles_list]
 

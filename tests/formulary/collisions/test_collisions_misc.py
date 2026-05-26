@@ -47,7 +47,6 @@ def test_Bethe_stopping(material, rho, I, n_e, T2) -> None:  # noqa: E741
     to those calculated by the Bethe formula beyond a material-dependent
     energy threshold.
     """
-
     energy_space = np.logspace(start=np.log10(T2.to(u.MeV).value), stop=2) * u.MeV
     particle = RelativisticBody(Particle("p+"), kinetic_energy=energy_space)
     Bethe_stopping_space = Bethe_stopping(I, n_e, particle.velocity, 1)

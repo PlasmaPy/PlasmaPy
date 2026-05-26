@@ -21,7 +21,6 @@ def test_ion_saturation_current_namedtuple() -> None:
     Test structure of the namedtuple used to return the computed ion saturation
     current data.
     """
-
     assert issubclass(ISatExtras, tuple)
     assert hasattr(ISatExtras, "_fields")
     assert ISatExtras._fields == (

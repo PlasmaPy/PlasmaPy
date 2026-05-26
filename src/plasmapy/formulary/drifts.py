@@ -115,7 +115,6 @@ def ExB_drift(E: u.Quantity[u.V / u.m], B: u.Quantity[u.T]) -> u.Quantity[u.m / 
     >>> ExB_drift(ex * u.V / u.m, 100 * ey * u.T)
     <Quantity [0.  , 0.  , 0.01] m / s>
     """
-
     # np.cross drops units right now, thus this hack: see
     # https://github.com/PlasmaPy/PlasmaPy/issues/59
     cross = np.cross(E.si.value, B.si.value) * E.unit * B.unit

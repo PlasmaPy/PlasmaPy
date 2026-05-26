@@ -217,7 +217,6 @@ def hollweg(  # noqa: ANN201, C901, PLR0912, PLR0915
      'alfven_mode': <Quantity [0.00045661+0.j, 0.00456614+0.j] rad / s>,
      'acoustic_mode': <Quantity [4.35071546e-05+0.j, 4.35070526e-04+0.j] rad / s>}
     """
-
     # validate arguments
     for arg_name in ("B", "n_i", "T_e", "T_i"):
         val = locals()[arg_name].squeeze()

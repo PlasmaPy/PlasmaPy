@@ -288,7 +288,6 @@ def test_AbstractGrid_nonuniform_attributes(
     Tests that the attributes of AbstractGrid have the correct type and
     values for the fixture abstract_grid_uniform.
     """
-
     attr = getattr(abstract_grid_nonuniform, attr)
     assert isinstance(attr, type_)
 
@@ -704,7 +703,6 @@ def nonuniform_cartesian_grid():
           that out of bounds tests work correctly.
 
     """
-
     ax0 = np.sort(rs.uniform(low=-1, high=1, size=100)) * u.cm
     ax0[0], ax0[-1] = -1 * u.cm, 1 * u.cm
     ax1 = np.linspace(-1, 1, num=5) * u.cm
@@ -1070,7 +1068,6 @@ def debug_volume_avg_interpolator() -> None:
     Plot the comparison of the nearest neighbor interpolator and volume
     averaged interpolator for `~plasmapy.plasma.grids.CartesianGrid`.
     """
-
     grid = grids.CartesianGrid(-1 * u.cm, 1 * u.cm, num=24)
 
     # add x and y positions to grid

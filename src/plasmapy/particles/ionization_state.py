@@ -785,7 +785,6 @@ class IonizationState:
         minimum_ionic_fraction
             The minimum ionic fraction to return state information for.
         """
-
         states_info = []
 
         for state in self:

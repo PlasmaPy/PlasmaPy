@@ -161,7 +161,6 @@ def spectral_density_lite(
         Computed spectral density function over the input
         ``wavelengths`` array with units of s/rad.
     """
-
     scattering_angle = np.arccos(np.dot(probe_vec, scatter_vec))
 
     # Calculate plasma parameters
@@ -456,7 +455,6 @@ def spectral_density(  # noqa: C901, PLR0912, PLR0915
     :cite:t:`schaeffer:2014` thesis.
 
     """
-
     # Validate efract
     if efract is None:
         efract = np.ones(1)
@@ -660,7 +658,6 @@ def _params_to_array(
     converted into the array-type inputs required by the spectral
     density function.
     """
-
     if vector:
         npop = _count_populations_in_params(params, f"{prefix}_x")
         output = np.zeros([npop, 3])
@@ -688,7 +685,6 @@ def _spectral_density_model(wavelengths, settings=None, **params):
 
     For descriptions of arguments, see the `thomson_model` function.
     """
-
     # LOAD FROM SETTINGS
     probe_vec = settings["probe_vec"]  # ty:ignore[not-subscriptable]
     scatter_vec = settings["scatter_vec"]  # ty:ignore[not-subscriptable]
@@ -831,7 +827,6 @@ def spectral_density_model(  # noqa: C901, PLR0912, PLR0915
     removed from both the data and wavelength arrays using
     `numpy.delete`.
     """
-
     required_settings = {
         "probe_wavelength",
         "probe_vec",

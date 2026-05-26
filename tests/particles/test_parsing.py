@@ -68,7 +68,6 @@ alias_dictionaries = [case_sensitive_aliases, case_insensitive_aliases]
 @pytest.mark.parametrize("alias_dict", alias_dictionaries)
 def test_alias_dict_properties(alias_dict) -> None:
     """Test properties of the alias dictionaries."""
-
     for key in alias_dict:
         assert isinstance(key, str), (
             f"The following key should be a string, but isn't: {key}\n\n"
@@ -359,7 +358,6 @@ atomic_warnings_table = [
 def test_parse_ParticleWarnings(arg, kwargs, num_warnings: int) -> None:
     r"""Tests that _parse_and_check_atomic_input issues a ParticleWarning
     under the required conditions."""
-
     with pytest.warns(ParticleWarning) as record:  # noqa: PT031
         parse_and_check_atomic_input(arg, **kwargs)
         if not record:

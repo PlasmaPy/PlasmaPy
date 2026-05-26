@@ -75,7 +75,6 @@ def spectral_density_args_kwargs(kwargs):
     for the spectral_density function from a dictionary of both that is
     easy to use in parametrized tests.
     """
-
     # Pull out the non-keyword arguments
     args = (
         kwargs["wavelengths"],
@@ -177,7 +176,6 @@ def single_species_collective_spectrum(single_species_collective_args):
     """
     Generates an example Thomson scattering spectrum in the collective regime
     """
-
     wavelengths = single_species_collective_args["wavelengths"]
 
     args, kwargs = spectral_density_args_kwargs(single_species_collective_args)
@@ -396,7 +394,6 @@ def multiple_species_collective_spectrum(multiple_species_collective_args):
     that also have drift velocities. Parameters are set to be in the
     collective regime where ion species are important.
     """
-
     wavelengths = multiple_species_collective_args["wavelengths"]
 
     args, kwargs = spectral_density_args_kwargs(multiple_species_collective_args)
@@ -412,7 +409,6 @@ def test_multiple_species_collective_spectrum(
     """
     Compares the generated spectrum to previously determined values
     """
-
     _alpha, wavelength, Skw = multiple_species_collective_spectrum
 
     # Compute the width and max of the spectrum, and the wavelength
@@ -473,7 +469,6 @@ def single_species_non_collective_spectrum(single_species_non_collective_args):
     Generates an example Thomson scattering spectrum in the non-collective
     regime
     """
-
     wavelengths = single_species_non_collective_args["wavelengths"]
 
     args, kwargs = spectral_density_args_kwargs(single_species_non_collective_args)
@@ -598,7 +593,6 @@ def test_spectral_density_input_errors(
     Validate errors with invalid argument and keyword arguments in
     spectral_density
     """
-
     args = single_species_collective_args
 
     # Replace any modified keys
@@ -626,7 +620,6 @@ def test_split_populations() -> None:
     Make sure that splitting a single population of ions or electrons
     into two identical halves returns the same result.
     """
-
     wavelengths = np.arange(520, 545, 0.01) * u.nm
     probe_wavelength = 532 * u.nm
     n = 5e17 * u.cm**-3
@@ -767,7 +760,6 @@ def run_fit(  # noqa: C901
     because we need the full ions list to make the spectrum. They are then
     moved to parameters later in this function.
     """
-
     if fit_kws is None:
         fit_kws = {}
 
@@ -974,7 +966,6 @@ def epw_multi_species_settings_params():
     spectral_density_model_settings_params
 
     """
-
     probe_wavelength = 532 * u.nm
     probe_vec = np.array([1, 0, 0])
     scattering_angle = np.deg2rad(63)
@@ -1019,7 +1010,6 @@ def iaw_single_species_settings_params():
     spectral_density_model_settings_params
 
     """
-
     probe_wavelength = 532 * u.nm
     probe_vec = np.array([1, 0, 0])
     scattering_angle = np.deg2rad(90)
@@ -1056,7 +1046,6 @@ def iaw_multi_species_settings_params():
     spectral_density_model_settings_params
 
     """
-
     probe_wavelength = 532 * u.nm
     probe_vec = np.array([1, 0, 0])
     scattering_angle = np.deg2rad(63)
@@ -1099,7 +1088,6 @@ def noncollective_single_species_settings_params():
     spectral_density_model_settings_params
 
     """
-
     probe_wavelength = 532 * u.nm
     probe_vec = np.array([1, 0, 0])
     scattering_angle = np.deg2rad(30)
@@ -1166,7 +1154,6 @@ def test_fit_iaw_instr_func(iaw_single_species_settings_params) -> None:
     """
     Tests fitting with an instrument function
     """
-
     wavelengths, params, settings = spectral_density_model_settings_params(
         iaw_single_species_settings_params,
     )

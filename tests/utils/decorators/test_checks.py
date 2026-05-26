@@ -124,7 +124,6 @@ class TestCheckUnits:
 
     def test_cu_method__condition_target_units(self) -> None:
         """Test method `CheckUnits._condition_target_units`."""
-
         cu = CheckUnits()
 
         targets = ["cm", u.km, u.Quantity, float]
@@ -142,7 +141,6 @@ class TestCheckUnits:
 
     def test_cu_method__normalize_equivalencies(self) -> None:
         """Test method `CheckUnits._normalize_equivalencies`."""
-
         cu = CheckUnits()
 
         assert cu._normalize_equivalencies(None) == []
@@ -453,7 +451,6 @@ class TestCheckUnits:
         This method reviews the decorator `checks` arguments and wrapped function
         annotations to build a complete checks dictionary.
         """
-
         # setup default checks
         default_checks = {
             **self.check_defaults.copy(),
@@ -502,7 +499,6 @@ class TestCheckUnits:
         on `CheckUnits`.  These methods do the actual checking of the argument units
         and should be called by `CheckUnits.__call__()`.
         """
-
         # setup default checks
         check = {**self.check_defaults, "units": [u.cm]}
         # check = self.check_defaults.copy()

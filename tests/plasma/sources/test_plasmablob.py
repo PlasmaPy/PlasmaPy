@@ -145,7 +145,6 @@ class Test_PlasmaBlobRegimes:
         The input values in this case have no special significance
         and are just to get the desired output.
         """
-
         T_e = 25 * 15e3 * u.K
         n_e = 1e26 * u.cm**-3
         Z = 2.0 * u.dimensionless_unscaled
@@ -170,7 +169,6 @@ class Test_PlasmaBlobRegimes:
         The input values in this case have no special significance
         and are just to get the desired output.
         """
-
         T_e = 5 * 15e3 * u.K
         n_e = 1e26 * u.cm**-3
         Z = 3.0 * u.dimensionless_unscaled
@@ -196,7 +194,6 @@ class Test_PlasmaBlobRegimes:
         The input values in this case have no special significance
         and are just to get the desired output.
         """
-
         T_e = 15 * 11e3 * u.K
         n_e = 1e15 * u.cm**-3
         Z = 2.5 * u.dimensionless_unscaled
@@ -223,7 +220,6 @@ class Test_PlasmaBlobRegimes:
         The input values in this case have no special significance
         and are just to get the desired output.
         """
-
         T_e = 10 * 11e3 * u.K
         n_e = 1e20 * u.cm**-3
         Z = 2.5 * u.dimensionless_unscaled
@@ -251,7 +247,6 @@ class Test_PlasmaBlobRegimes:
         The input values in this case have no special significance
         and are just to get the desired output.
         """
-
         T_e = 6 * 15e3 * u.K
         n_e = 1e26 * u.cm**-3
         Z = 3.0 * u.dimensionless_unscaled
@@ -277,7 +272,6 @@ class Test_PlasmaBlobRegimes:
         The input values in this case have no special significance
         and are just to get the desired output.
         """
-
         T_e = 5 * 15e3 * u.K
         n_e = 1e25 * u.cm**-3
         Z = 2.0 * u.dimensionless_unscaled

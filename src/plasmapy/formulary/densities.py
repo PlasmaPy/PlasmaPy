@@ -58,7 +58,6 @@ def critical_density(omega: u.Quantity[u.rad / u.s]) -> u.Quantity[u.m**-3]:
     <Quantity 7.85519457e+27 1 / m3>
 
     """
-
     n_c = m_e * eps0 * omega**2 / (e**2)
 
     return n_c.to(u.m**-3, equivalencies=u.dimensionless_angles())

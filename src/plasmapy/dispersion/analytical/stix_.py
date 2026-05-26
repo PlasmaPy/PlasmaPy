@@ -175,7 +175,6 @@ def stix(  # noqa: ANN201, C901, PLR0912, PLR0915
     <Quantity [ 6.03817661e-09-0.j, -6.03817661e-09+0.j,
         6.97262784e-09-0.j, -6.97262784e-09+0.j] rad / m>
     """
-
     # Validate ions argument
     if not isinstance(ions, list | tuple | ParticleList):
         ions = [ions]  # ty:ignore[invalid-assignment]

@@ -235,7 +235,6 @@ class Test__chemical_potential_interp:
 
 def test_quantum_aliases() -> None:
     r"""Test all aliases defined in quantum.py"""
-
     assert Ef_ is Fermi_energy
     assert lambdaDB_ is deBroglie_wavelength
     assert lambdaDB_th_ is thermal_deBroglie_wavelength
@@ -246,7 +245,6 @@ class TestQuantumTheta:
 
     def test_units(self) -> None:
         """Test the return units"""
-
         theta = quantum_theta(1 * u.eV, 1e26 * u.m**-3)
 
         assert theta.unit.is_equivalent(u.dimensionless_unscaled)
@@ -262,7 +260,6 @@ class TestQuantumTheta:
     )
     def test_value(self, T, n_e, expected_theta) -> None:
         """Compare the calculated theta with the expected value."""
-
         theta = quantum_theta(T, n_e)
 
         assert np.isclose(theta.value, expected_theta)

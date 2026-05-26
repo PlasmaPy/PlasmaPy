@@ -122,7 +122,6 @@ def test_relativistic_body(parameter, argument, attribute, expected) -> None:
     the different velocity-like arguments, that each of the resulting
     `RelativisticBody` attributes end up providing the correct value.
     """
-
     if parameter == "velocity":
         parameter = "V"
 

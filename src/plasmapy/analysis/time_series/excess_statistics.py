@@ -150,7 +150,6 @@ class ExcessStatistics:
            [0.75, 1.25],
            [0.  , 0.  ]]))
         """
-
         if not isinstance(bins, numbers.Integral):
             raise TypeError("bins must be an integer")
 
@@ -177,7 +176,6 @@ class ExcessStatistics:
         total_time_above_threshold: 1D |array_like|
             Total time above threshold for each value in ``thresholds``.
         """
-
         return self._total_time_above_threshold
 
     @property
@@ -190,7 +188,6 @@ class ExcessStatistics:
         number_of_crossings: 1D |array_like|
             Total number of upwards crossings for each value in ``thresholds``.
         """
-
         return self._number_of_crossings
 
     @property
@@ -203,7 +200,6 @@ class ExcessStatistics:
         average_times: 1D |array_like|
             Average time above each value in ``thresholds``.
         """
-
         return self._average_times
 
     @property
@@ -216,5 +212,4 @@ class ExcessStatistics:
         rms_times: 1D |array_like|
             Root-mean-square values of time above each value in ``thresholds``.
         """
-
         return self._rms_times

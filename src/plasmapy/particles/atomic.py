@@ -550,7 +550,6 @@ def known_isotopes(argument: ParticleLike | None = None) -> ParticleList:
     >>> len(known_isotopes())  # the number of known isotopes
     3352
     """
-
     # TODO: Allow Particle objects representing elements to be inputs
 
     def known_isotopes_for_element(argument_: ParticleLike) -> list[Particle]:
@@ -659,7 +658,6 @@ def common_isotopes(
     >>> common_isotopes()[0:7]
     ParticleList(['H-1', 'D', 'He-4', 'He-3', 'Li-7', 'Li-6', 'Be-9'])
     """
-
     # TODO: Allow Particle objects representing elements to be inputs
 
     def common_isotopes_for_element(
@@ -781,7 +779,6 @@ def stable_isotopes(
     >>> stable_isotopes("He", unstable=True)
     ParticleList(['He-5', 'He-6', 'He-7', 'He-8', 'He-9', 'He-10'])
     """
-
     # TODO: Allow Particle objects representing elements to be inputs
 
     def stable_isotopes_for_element(

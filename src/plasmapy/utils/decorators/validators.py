@@ -536,7 +536,6 @@ def validate_quantities(func=None, validations_on_return=None, **validations):
     .. _astropy equivalencies:
         https://docs.astropy.org/en/stable/units/equivalencies.html
     """
-
     if validations_on_return is not None:
         validations["validations_on_return"] = validations_on_return
 
@@ -558,7 +557,6 @@ def get_attributes_not_provided(  # noqa: ANN202
     Collect attributes that weren't provided during instantiation needed
     to access a method.
     """
-
     attributes_not_provided = []
 
     if expected_attributes is not None:

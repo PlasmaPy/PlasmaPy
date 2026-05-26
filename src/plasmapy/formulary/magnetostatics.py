@@ -228,7 +228,6 @@ class GeneralWire(Wire):
             \sum_{i=1}^{n}\frac{\vec{Δ l}_i ×
             \vec{r}_i}{\left| \vec{r}_i \right|^3}.
         """
-
         p1 = self.parametric_eq(self.t1)
         step = (self.t2 - self.t1) / n
         t = self.t1

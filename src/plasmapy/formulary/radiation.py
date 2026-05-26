@@ -109,7 +109,6 @@ def thermal_bremsstrahlung(
     ... )
     <Quantity 2.16932808e-10 kg / (m s2)>
     """
-
     if n_i is None:  # default is quasineutrality
         n_i = n_e / ion.charge_number
 

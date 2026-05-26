@@ -439,7 +439,6 @@ def test_root_mean_square_particle(use_rms_charge, use_rms_mass) -> None:
     Test that ``ParticleList.average_particle`` returns the mean or root
     mean square of the charge and mass, as appropriate.
     """
-
     particle_list = ParticleList(["p+", "e-"])
     average_particle = particle_list.average_particle(
         use_rms_charge=use_rms_charge,

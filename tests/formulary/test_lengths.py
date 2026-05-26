@@ -140,7 +140,6 @@ class TestGyroradius:
     )
     def test_raises(self, args, kwargs, _error) -> None:
         """Test scenarios that raise an exception."""
-
         with warnings.catch_warnings(), pytest.raises(_error):
             # we don't care about warnings for these tests
             warnings.simplefilter("ignore")
@@ -365,7 +364,6 @@ class TestGyroradius:
 
 def test_inertial_length() -> None:
     r"""Test the inertial_length function in lengths.py."""
-
     assert inertial_length(n_i, particle="p+").unit.is_equivalent(u.m)
 
     assert np.isclose(

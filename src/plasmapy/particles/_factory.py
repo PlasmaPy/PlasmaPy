@@ -27,7 +27,6 @@ def _generate_particle_factory_error_message(
     kwargs: dict[str, object],
 ) -> str:
     """Compose an error message for invalid particles."""
-
     errmsg = "Unable to create a particle from: "
 
     if args:
@@ -87,7 +86,6 @@ def _make_custom_particle_with_real_charge_number(
     >>> _make_custom_particle_with_real_charge_number("He", Z=1.5, mass_numb=4)
     CustomParticle(mass=6.64511...e-27 kg, charge=2.40326...e-19 C)
     """
-
     if not isinstance(Z, Real | u.Quantity) and Z is not None:
         raise ChargeError("The charge number must be a real number.")
 
@@ -184,7 +182,6 @@ def _physical_particle_factory(
     >>> _physical_particle_factory(["p+", "e-"])
     ParticleList(['p+', 'e-'])
     """
-
     # We need to remove Z and mass_numb from kwargs when they are `None`
     # because they are not allowed as arguments to `CustomParticle`, and
     # are not needed in kwargs if they are their default values. Note

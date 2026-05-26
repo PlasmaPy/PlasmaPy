@@ -33,7 +33,6 @@ def create_alias_dicts(particles: dict) -> (dict[str, str], dict[str, str]):
     are the corresponding standardized symbol for the particle or
     antiparticle.
     """
-
     case_sensitive_aliases = {}
     case_insensitive_aliases = {}
 
@@ -158,7 +157,6 @@ def extract_charge(arg: str):  # noqa: ANN202, C901
     an `~plasmapy.particles.exceptions.InvalidParticleError` if charge information
     is inputted incorrectly.
     """
-
     invalid_charge_errmsg = (
         f"Invalid charge information in the particle string '{arg}'."
     )
@@ -293,7 +291,6 @@ def parse_and_check_atomic_input(  # noqa: ANN202, C901, PLR0912, PLR0915
         `~plasmapy.particles.exceptions.InvalidParticleError` if the
         mass number information is inputted incorrectly.
         """
-
         if isotope_info == "D":
             element_info, mass_numb = "H", 2
         elif isotope_info == "T":
@@ -339,7 +336,6 @@ def parse_and_check_atomic_input(  # noqa: ANN202, C901, PLR0912, PLR0915
         `~plasmapy.particles.exceptions.InvalidParticleError` for isotopes that have
         not yet been discovered.
         """
-
         if mass_numb is not None:
             isotope = f"{element}-{mass_numb}"
 
@@ -369,7 +365,6 @@ def parse_and_check_atomic_input(  # noqa: ANN202, C901, PLR0912, PLR0915
         charge number.  Return a `str` representing the ion symbol,
         or `None` if no charge information is available.
         """
-
         if Z is not None:
             sign = "-" if Z < 0 else "+"
             base = element if isotope is None else isotope

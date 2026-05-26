@@ -219,7 +219,6 @@ def run_test(  # noqa: C901
             run_test(inputs)
 
     """
-
     if kwargs is None:
         kwargs = {}
 
@@ -506,7 +505,6 @@ def run_test_equivalent_calls(  # noqa: C901
     >>> run_test_equivalent_calls(f, -1, 1.0, require_same_type=False)
 
     """
-
     if len(test_inputs) == 1:
         test_inputs = test_inputs[0]
 
@@ -681,7 +679,6 @@ def assert_can_handle_nparray(  # noqa: C901
     >>> assert_can_handle_nparray(gyrofrequency, kwargs={"signed": True})
     >>> assert_can_handle_nparray(gyrofrequency, kwargs={"signed": False})
     """
-
     if insert_some_nans is None:
         insert_some_nans = []
 

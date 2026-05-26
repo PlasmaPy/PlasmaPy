@@ -427,7 +427,6 @@ class Tracker(ParticleTracker):
             between the source and the object grid.
 
         """
-
         # Raise an error if the run method has already been called.
         self._enforce_order()
 
@@ -853,7 +852,6 @@ class Tracker(ParticleTracker):
             operation. By default, only the tracked particles (i.e. those that
             are going to hit the grids) will be coasted.
         """
-
         normal = np.cross(hdir, vdir)
 
         if mask is None:
@@ -930,7 +928,6 @@ class Tracker(ParticleTracker):
         -------
         None
         """
-
         self._enforce_particle_creation()
 
         # If meshes have been added, apply them now
@@ -1093,7 +1090,6 @@ class Tracker(ParticleTracker):
                detector plane. The components are [normal, horizontal,
                vertical] relative to the detector plane coordinates.
         """
-
         if not self._has_run:
             raise RuntimeError(
                 "The simulation must be run before a results dictionary can be created.",
@@ -1190,7 +1186,6 @@ def synthetic_radiograph(obj, size=None, bins=None, ignore_grid: bool = False): 
     reaching the detector plane.
 
     """
-
     # condition `obj` input
     if isinstance(obj, Tracker):
         # results_dict raises an error if the simulation has not been run.

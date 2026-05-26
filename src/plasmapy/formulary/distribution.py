@@ -123,7 +123,6 @@ def Maxwellian_1D(  # noqa: ANN201
     >>> Maxwellian_1D(v=v, T=30000 * u.K, particle="e-", v_drift=0 * u.m / u.s)
     <Quantity 5.9163...e-07 s / m>
     """
-
     if units == "units":
         # unit checks and conversions
         # checking velocity units
@@ -434,7 +433,6 @@ def Maxwellian_velocity_3D(  # noqa: ANN201
     ... )
     <Quantity 2.0708...e-19 s3 / m3>
     """
-
     # When updating this function, temporarily uncomment the test_norm
     # method of Test_Maxwellian_velocity_3D. It is currently commented
     # out because it is really slow.
@@ -1170,7 +1168,6 @@ def kappa_velocity_3D(  # noqa: ANN201
     ... )
     <Quantity 3.7833...e-19 s3 / m3>
     """
-
     # When updating this function, temporarily uncomment the test_norm
     # method of Test_kappa_velocity_3D. It is currently commented
     # out because it is really slow.

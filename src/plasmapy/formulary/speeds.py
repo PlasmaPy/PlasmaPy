@@ -155,7 +155,6 @@ def Alfven_speed(
     >>> Alfven_speed(B=B, density=n, ion="He", Z=1.8)
     <Quantity 21664.18... m / s>
     """
-
     if density.unit.physical_type == u.physical.mass_density and ion is not None:
         raise ValueError(
             "When calculating the Alfvén speed, an ion cannot be specified "

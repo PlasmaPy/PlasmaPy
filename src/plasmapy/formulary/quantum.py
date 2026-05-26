@@ -104,7 +104,6 @@ def deBroglie_wavelength(
     >>> deBroglie_wavelength(V=0 * u.m / u.s, particle="D+")
     <Quantity inf m>
     """
-
     V = np.abs(V)
 
     if np.any(V >= c):
@@ -465,7 +464,6 @@ def chemical_potential(
     >>> chemical_potential(n_e=1e25 * u.cm**-3, T=11000 * u.K)
     <Quantity 283.43506297>
     """
-
     # deBroglie wavelength
     lambdaDB = thermal_deBroglie_wavelength(T)
     # degeneracy parameter

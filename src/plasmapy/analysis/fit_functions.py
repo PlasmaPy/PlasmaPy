@@ -51,7 +51,6 @@ class AbstractFitFunction(ABC):
             parameters.  Equal in size to :attr:`param_names`.
 
         """
-
         self._FitParamTuple = namedtuple("FitParamTuple", self._param_names)  # ty:ignore[invalid-argument-type]
 
         if params is None:
@@ -755,7 +754,6 @@ class Exponential(AbstractFitFunction):
             The uncertainty in the calculated root for the given fit
             :attr:`params` and :attr:`param_errors`.
         """
-
         return _RootResults(np.nan, np.nan)
 
 

@@ -234,7 +234,6 @@ def two_fluid(  # noqa: ANN201
     <Quantity [[0.00767..., 0.00779... ],
                [0.01534..., 0.01558...]] rad / s>
     """
-
     # validate arguments
     for arg_name in ("B", "n_i", "T_e", "T_i"):
         val = locals()[arg_name].squeeze()

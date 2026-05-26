@@ -23,7 +23,6 @@ def test_floating_potential_namedtuple() -> None:
     Test structure of the namedtuple used to return computed floating potential
     data.
     """
-
     assert issubclass(VFExtras, tuple)
     assert hasattr(VFExtras, "_fields")
     assert VFExtras._fields == (

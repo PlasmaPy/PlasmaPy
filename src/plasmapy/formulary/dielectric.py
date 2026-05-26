@@ -287,7 +287,6 @@ def permittivity_1D_Maxwellian_lite(omega, kWave, vth, wp):
     >>> permittivity_1D_Maxwellian_lite(omega, k_wave, vth=vth, wp=wp)
     np.complex128(-6.72794...e-08+5.76024...e-07j)
     """
-
     # scattering parameter alpha.
     # explicitly removing factor of sqrt(2) to be consistent with Froula
     alpha = np.sqrt(2) * wp / (kWave * vth)

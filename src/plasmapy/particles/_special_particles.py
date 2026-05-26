@@ -149,7 +149,6 @@ def create_particles_dict() -> dict[str, dict]:  # noqa: C901, PLR0912
     ``'mass'``, and ``'spin'`` as the keys and the corresponding atomic
     properties as symbols.
     """
-
     symbols_and_names = [
         ("e-", "electron"),
         ("e+", "positron"),

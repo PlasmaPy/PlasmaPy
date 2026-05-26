@@ -44,7 +44,6 @@ def test_aliases(alias, parent) -> None:
 
 def test_gyrofrequency() -> None:
     r"""Test the gyrofrequency function in frequencies.py."""
-
     assert gyrofrequency(B, "e-").unit.is_equivalent(u.rad / u.s)
 
     assert gyrofrequency(B, "e-", to_hz=True).unit.is_equivalent(u.Hz)
@@ -129,7 +128,6 @@ def test_gyrofrequency() -> None:
 
 def test_lower_hybrid_frequency() -> None:
     r"""Test the lower_hybrid_frequency function in frequencies.py."""
-
     ion = "He-4 1+"
     omega_ci = gyrofrequency(B, particle=ion)
     omega_pi = plasma_frequency(n=n_i, particle=ion)
@@ -166,7 +164,6 @@ def test_lower_hybrid_frequency() -> None:
 
 def test_upper_hybrid_frequency() -> None:
     r"""Test the upper_hybrid_frequency function in frequencies.py."""
-
     omega_uh = upper_hybrid_frequency(B, n_e=n_e)
     omega_uh_hz = upper_hybrid_frequency(B, n_e=n_e, to_hz=True)
     omega_ce = gyrofrequency(B, "e-")
@@ -201,7 +198,6 @@ def test_upper_hybrid_frequency() -> None:
 
 def test_Buchsbaum_frequency() -> None:
     r"""Test the Buchsbaum_frequency function in frequencies.py."""
-
     with pytest.raises(InvalidParticleError):
         Buchsbaum_frequency(
             1.0 * u.T,
