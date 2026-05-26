@@ -288,50 +288,44 @@ lint.extend-select = [
   "YTT",
 ]
 lint.ignore = [
-  # Rules handled by ruff format
-  "COM812",
-  "D206",
-  "D300",
-  "E111",
-  "E114",
-  "E117",
-  "E501",
-  "D203",
-  "Q001",
-  "Q002",
-  "Q003",
-  "Q004",
-  "W191",
-  # Rules inconsistent with capitalization associated with physics notation
-  "N802",
-  "N803",
-  "N806",
-  "N816",
-  # Rules that should not be enabled
+  "ANN001",  # add file-wide ignore comments?
+  "COM812",  # handled by ruff format
   "COM819",  # adding trailing commas leads to simpler diffs
   "D200",    # incompatible with multiline short summaries
+  "D203",    # handled by ruff format
   "D205",    # incompatible with multiline short summaries
-  "PLE0605", # flags `__all__ += __lite_funcs`, etc.
-  "PLC2401", # flags variables used as mathematical symbols
-  "PLC2403", # flags variables used as mathematical symbols
-  "PLR0913", # too many situations where lots of arguments are justified
-  # Rules that would take significant effort to address
-  "ANN001",  # add file-wide ignore comments?
-  "D401",
-  "PLR2004", # would need case-by-case evaluations
-  "PT011",  # would require using match keyword argument
-  # Rules that would be helpful to enable
+  "D206",    # handled by ruff format
+  "D300",    # handled by ruff format
+  "D401",    # enable later?
+  "E111",    # handled by ruff format
+  "E114",    # handled by ruff format
+  "E117",    # handled by ruff format
+  "E501",    # handled by ruff format
   "EM101",   # enable later in focused PR
   "EM102",   # enable later in focused PR
-  "PT012",
-  "PT019",
-  "PYI024",
-  "RET505",
-  "RET506",
-  "TD002",
-  "TD003",
-  "TRY003",
-
+  "N802",    # inconsistent with capitalization from physics notation
+  "N803",    # inconsistent with capitalization from physics notation
+  "N806",    # inconsistent with capitalization from physics notation
+  "N816",    # inconsistent with capitalization from physics notation
+  "PLC2401", # flags variables used as mathematical symbols
+  "PLC2403", # flags variables used as mathematical symbols
+  "PLE0605", # flags `__all__ += __lite_funcs`
+  "PLR0913", # too many situations where lots of arguments are justified
+  "PLR2004", # would need case-by-case evaluations
+  "PT011",   # would require using match keyword argument
+  "PT012",   # enable later?
+  "PT019",   # enable later?
+  "PYI024",  # enable later?
+  "Q001",    # handled by ruff format
+  "Q002",    # handled by ruff format
+  "Q003",    # handled by ruff format
+  "Q004",    # handled by ruff format
+  "RET505",  # enable later?
+  "RET506",  # enable later?
+  "TD002",   # enable later?
+  "TD003",   # enable later?
+  "TRY003",  # enable later?
+  "W191",    # handled by ruff format
 ]
 lint.per-file-ignores."**/*.ipynb" = [ "T201", "T203" ]
 lint.per-file-ignores.".github/scripts/*.py" = [ "D103", "INP001" ]
