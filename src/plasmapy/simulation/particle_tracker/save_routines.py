@@ -112,7 +112,7 @@ class AbstractSaveRoutine(ABC):
                     case "dataset":
                         output_file.create_dataset(key, data=self._results[key])
 
-    # TODO: Find a better name for this method
+    # TODO: Find a better name for this method  # noqa: FIX002
     def _save_to_memory(self) -> None:
         """Update the results dictionary with the current state of the simulation."""
         for quantity in self._quantities:

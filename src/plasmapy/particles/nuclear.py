@@ -171,9 +171,9 @@ def nuclear_reaction_energy(*args, **kwargs) -> u.Quantity[u.J]:  # noqa: ANN002
     >>> nuclear_reaction_energy(reactants=["n"], products=["p+", "e-"])
     <Quantity 1.25343e-13 J>
     """
-    # TODO: Allow for neutrinos, under the assumption that they have no mass.
+    # TODO: Allow for neutrinos, under the assumption that they have no mass.  # noqa: FIX002
 
-    # TODO: Add check for lepton number conservation; however, we might wish
+    # TODO: Add check for lepton number conservation; however, we might wish  # noqa: FIX002
     # to have violation of lepton number issuing a warning since these are
     # often omitted from nuclear reactions when calculating the energy since
     # the mass is tiny.

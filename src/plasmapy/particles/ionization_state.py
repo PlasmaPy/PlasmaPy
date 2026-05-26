@@ -246,9 +246,9 @@ class IonizationState:
     array([0., 0., 1.])
     """
 
-    # TODO: Allow this class to handle negatively charged
+    # TODO: Allow this class to handle negatively charged  # noqa: FIX002
 
-    # TODO: Add in functionality to find equilibrium ionization states.
+    # TODO: Add in functionality to find equilibrium ionization states.  # noqa: FIX002
 
     @particle_input(require="element")
     @validate_quantities(
@@ -912,7 +912,7 @@ class IonizationState:
             output += separator_line
             output += self._get_states_info(minimum_ionic_fraction)
             output += separator_line
-            # TODO: add T_i somewhere around here, probably
+            # TODO: add T_i somewhere around here, probably  # noqa: FIX002
 
         if not np.isnan(self.n_elem):
             attributes.extend(

@@ -877,7 +877,7 @@ class Test_fundamental_electron_collision_freq:
         cls.ion = "p+"
         cls.coulomb_log = 10
 
-    # TODO: array coulomb log
+    # TODO: array coulomb log  # noqa: FIX002
     @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
     @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
     def test_handle_nparrays(self, insert_some_nans, insert_all_nans) -> None:
@@ -899,7 +899,7 @@ class Test_fundamental_ion_collision_freq:
         cls.ion = "p+"
         cls.coulomb_log = 10
 
-    # TODO: array coulomb log
+    # TODO: array coulomb log  # noqa: FIX002
     @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
     @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
     def test_handle_nparrays(self, insert_some_nans, insert_all_nans) -> None:

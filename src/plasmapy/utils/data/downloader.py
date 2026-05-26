@@ -19,7 +19,7 @@ _API_CONNECTION_ESTABLISHED = False
 _IS_CI = "GH_TOKEN" in os.environ
 
 
-# TODO: use a config file variable to allow users to set a location
+# TODO: use a config file variable to allow users to set a location  # noqa: FIX002
 # for the data download folder?
 
 try:
@@ -30,7 +30,7 @@ except (
     requests.exceptions.ConnectionError,
     requests.exceptions.ReadTimeout,
 ) as e:  # coverage: ignore
-    # TODO: logging library when??
+    # TODO: logging library when??  # noqa: FIX002
     print(f"Failed to connect to GitHub API:\n{e}")  # noqa: T201
     _API_CONNECTION_ESTABLISHED = False
 

@@ -130,9 +130,9 @@ class IonizationStateCollection:  # noqa: PLW1641
     are performed to within a tolerance of ``tol``.
     """
 
-    # TODO: Improve explanation of dunder methods in docstring
+    # TODO: Improve explanation of dunder methods in docstring  # noqa: FIX002
 
-    # TODO: Add functionality to equilibrate initial ionization states
+    # TODO: Add functionality to equilibrate initial ionization states  # noqa: FIX002
 
     @validate_quantities(T_e={"equivalencies": u.temperature_energy()})
     def __init__(
@@ -304,10 +304,10 @@ class IonizationStateCollection:  # noqa: PLW1641
                 f"array that represents ionic fractions.",
             ) from exc
 
-        # TODO: Create a separate function that makes sure ionic
-        # TODO: fractions are valid to reduce code repetition.  This
-        # TODO: would probably best go as a private function in
-        # TODO: ionization_state.py.
+        # TODO: Create a separate function that makes sure ionic  # noqa: FIX002
+        # TODO: fractions are valid to reduce code repetition.  This  # noqa: FIX002
+        # TODO: would probably best go as a private function in  # noqa: FIX002
+        # TODO: ionization_state.py.  # noqa: FIX002
 
         required_nstates = atomic_number(particle) + 1
         new_nstates = len(new_fractions)

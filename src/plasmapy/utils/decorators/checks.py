@@ -1388,7 +1388,7 @@ def _check_relativistic(
     >>> _check_relativistic(1 * u.m / u.s, "function_calling_this")
 
     """
-    # TODO: Replace `funcname` with func.__name__?
+    # TODO: Replace `funcname` with func.__name__?  # noqa: FIX002
 
     errmsg = "V must be a Quantity with units of velocity in _check_relativistic"
 

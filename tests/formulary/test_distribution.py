@@ -1079,7 +1079,7 @@ class Test_kappa_velocity_1D:
         ).argmax()
         assert np.isclose(self.v_vect[max_index].value, self.v_drift.value)
 
-    # TODO: Need to add a test to see if the kappa distribution goes to a
+    # TODO: Need to add a test to see if the kappa distribution goes to a  # noqa: FIX002
     # Maxwellian in the limit of large κ
 
     def test_norm(self) -> None:

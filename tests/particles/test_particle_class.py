@@ -908,10 +908,10 @@ def test_that_object_can_be_dict_key(key):
     they may change.
 
     """
-    # TODO: I wrote this to be pretty general since I felt like
-    # TODO: procrastinating other things, so we can probably put this
-    # TODO: into utils.pytest_helpers later on.  There are likely other
-    # TODO: classes that should be able to be used as keys of dicts.
+    # TODO: I wrote this to be pretty general since I felt like  # noqa: FIX002
+    # TODO: procrastinating other things, so we can probably put this  # noqa: FIX002
+    # TODO: into utils.pytest_helpers later on.  There are likely other  # noqa: FIX002
+    # TODO: classes that should be able to be used as keys of dicts.  # noqa: FIX002
 
     value = 42
 

@@ -34,7 +34,7 @@ from plasmapy.utils.exceptions import RelativityError
 __all__ += __aliases__
 
 
-# TODO: Use @check_relativistic
+# TODO: Use @check_relativistic  # noqa: FIX002
 @validate_quantities(
     V={"can_be_negative": True},
     validations_on_return={"can_be_negative": False},

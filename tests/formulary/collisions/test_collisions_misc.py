@@ -31,7 +31,7 @@ check_database_connection = pytest.mark.skipif(
         "T2",
     ),
     [
-        # TODO: Add more materials
+        # TODO: Add more materials  # noqa: FIX002
         (
             "ALUMINUM",
             2.7 * u.g / u.cm**3,
@@ -129,7 +129,7 @@ class Test_Spitzer_resistivity:
         errStr = f"Spitzer resistivity should be {self.True_zmean} and not {methodVal}."
         assert testTrue, errStr
 
-    # TODO: vector z_mean
+    # TODO: vector z_mean  # noqa: FIX002
     @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
     @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
     def test_handle_nparrays(self, insert_some_nans, insert_all_nans) -> None:
@@ -213,7 +213,7 @@ class Test_mobility:
         errStr = f"Mobility should be {self.True_zmean} and not {methodVal}."
         assert testTrue, errStr
 
-    # TODO: vector z_mean
+    # TODO: vector z_mean  # noqa: FIX002
     @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
     @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
     def test_handle_nparrays(self, insert_some_nans, insert_all_nans) -> None:

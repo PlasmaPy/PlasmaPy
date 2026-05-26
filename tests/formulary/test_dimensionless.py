@@ -97,7 +97,7 @@ def test_Mag_Reynolds() -> None:
 
 def test_Debye_number() -> None:
     r"""Test the Debye_number function in dimensionless.py."""
-    # TODO: parametrize tests
+    # TODO: parametrize tests  # noqa: FIX002
 
     assert Debye_number(T_e, n_e).unit.is_equivalent(u.dimensionless_unscaled)
 
@@ -140,7 +140,7 @@ def test_Debye_number() -> None:
 )
 def test_Hall_parameter() -> None:
     r"""Test Hall_parameter in dimensionless.py"""
-    # TODO: parametrize tests
+    # TODO: parametrize tests  # noqa: FIX002
 
     ion = Particle("He-4 +1")
     particle = Particle("e-")

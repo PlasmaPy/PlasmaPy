@@ -55,7 +55,7 @@ def _process_inputs(T: u.Quantity[u.K], species: (Particle, Particle), V):  # no
     return T, masses, charges, reduced_mass_, V
 
 
-# TODO: Remove redundant mass parameter
+# TODO: Remove redundant mass parameter  # noqa: FIX002
 def _replace_nan_velocity_with_thermal_velocity(
     V,
     T,

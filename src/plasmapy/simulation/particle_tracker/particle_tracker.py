@@ -502,7 +502,7 @@ class ParticleTracker:
             where A is the atomic number of the atoms in the material.
 
         """
-        # TODO: Add a reference somewhere to the valid material strings?
+        # TODO: Add a reference somewhere to the valid material strings?  # noqa: FIX002
 
         # Check inputs for user error and raise respective exceptions/warnings if
         # necessary.
@@ -836,14 +836,14 @@ class ParticleTracker:
             Bmag = np.linalg.norm(self._B, axis=-1)
             mask = Bmag != 0
             gyroperiod = np.full(Bmag.shape, fill_value=np.inf)
-            # TODO: Replace with formulary gyrofrequency lite function once available
+            # TODO: Replace with formulary gyrofrequency lite function once available  # noqa: FIX002
             gyroperiod[mask] = 2 * np.pi * self.m / (np.abs(self.q) * Bmag[mask])
 
             # Subdivide the gyroperiod into a provided number of steps
             # Use the result as the candidate associated with gyration in B field
             candidates[:, self.num_grids] = gyroperiod / self._steps_per_gyroperiod
 
-        # TODO: introduce a minimum time step based on electric fields too!
+        # TODO: introduce a minimum time step based on electric fields too!  # noqa: FIX002
 
         # Enforce limits on dt
         candidates = np.clip(candidates, self.dt_range[0], self.dt_range[1])
@@ -1026,7 +1026,7 @@ class ParticleTracker:
         dE = -np.multiply(energy_loss_per_length, dx)
 
         # Update the velocities of the particles using the new energy values
-        # TODO: again, figure out how to differentiate relativistic and classical cases
+        # TODO: again, figure out how to differentiate relativistic and classical cases  # noqa: FIX002
         E = self._particle_kinetic_energy[self._tracked_particle_mask] + dE
 
         particles_to_be_stopped_mask = np.full(
@@ -1151,7 +1151,7 @@ class ParticleTracker:
         r"""
         Return the non-relativistic kinetic energy of the particles.
         """
-        # TODO: how should the relativistic case be handled?
+        # TODO: how should the relativistic case be handled?  # noqa: FIX002
         return 0.5 * self.m * np.square(np.linalg.norm(self.v, axis=-1, keepdims=True))
 
     @cached_property

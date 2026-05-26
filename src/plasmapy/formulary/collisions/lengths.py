@@ -92,7 +92,7 @@ def impact_parameter_perp(
     # Note: This formulation corresponds to collisions that result in a
     #       deflection of 90°s, which is valid when classical effects
     #       dominate.
-    # TODO: need to incorporate an average ionization parameter
+    # TODO: need to incorporate an average ionization parameter  # noqa: FIX002
 
     T, _masses, charges, reduced_mass, V = misc._process_inputs(  # noqa: SLF001
         T=T,

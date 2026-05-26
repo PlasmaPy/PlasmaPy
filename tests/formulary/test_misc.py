@@ -43,7 +43,7 @@ def test_aliases(alias, parent) -> None:
 def test_thermal_pressure() -> None:
     assert thermal_pressure(T_e, n_i).unit.is_equivalent(u.Pa)
 
-    # TODO: may be array issues with arg "mass"
+    # TODO: may be array issues with arg "mass"  # noqa: FIX002
     assert_can_handle_nparray(thermal_pressure)
 
 

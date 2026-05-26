@@ -41,7 +41,7 @@ m_p_si_unitless = const.m_p.si.value
 m_e_si_unitless = const.m_e.si.value
 
 
-# TODO: interface for inputting a multi-species configuration could be
+# TODO: interface for inputting a multi-species configuration could be  # noqa: FIX002
 #     simplified using the plasmapy.classes.plasma_base class if that class
 #     included ion and electron drift velocities and information about the ion
 #     atomic species.
@@ -997,7 +997,7 @@ def spectral_density_model(  # noqa: C901, PLR0912, PLR0915
     if "notch" not in settings:
         settings["notch"] = None
 
-    # TODO: raise an exception if the number of any of the ion or electron
+    # TODO: raise an exception if the number of any of the ion or electron  # noqa: FIX002
     #       quantities isn't consistent with the number of that species defined
     #       by ifract or efract.
 

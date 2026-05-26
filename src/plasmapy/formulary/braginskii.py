@@ -366,7 +366,7 @@ class ClassicalTransport:
             self.m_i = m_i
         self.Z = _grab_charge(ion, Z) * u.dimensionless_unscaled
         if self.Z < 0:
-            raise ValueError("Z is not allowed to be negative!")  # TODO: remove?
+            raise ValueError("Z is not allowed to be negative!")  # TODO: remove?  # noqa: FIX002
 
         # decide on the particle string for the electrons
         self.e_particle = "e-"
@@ -390,7 +390,7 @@ class ClassicalTransport:
             )
 
         if self.coulomb_log_ei < 1:
-            # TODO: discuss whether this is not too strict
+            # TODO: discuss whether this is not too strict  # noqa: FIX002
             raise PhysicsError(
                 f"Coulomb logarithm is {coulomb_log_ei} (below 1),"
                 "this is probably not physical!",
@@ -415,7 +415,7 @@ class ClassicalTransport:
             )
 
         if self.coulomb_log_ii < 1:
-            # TODO: discuss whether this is not too strict
+            # TODO: discuss whether this is not too strict  # noqa: FIX002
             raise PhysicsError(
                 f"Coulomb logarithm is {coulomb_log_ii} (below 1),"
                 "this is probably not physical!",

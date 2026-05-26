@@ -200,7 +200,7 @@ def test_func(inputs) -> None:
     run_test(inputs)
 
 
-# TODO: organize this in a namedtuple to improve readability?
+# TODO: organize this in a namedtuple to improve readability?  # noqa: FIX002
 
 run_test_equivalent_calls_table = [
     # cases like inputs = (func, (args, kwargs), (args, kwargs), (args, kwargs))

@@ -171,7 +171,7 @@ def relativistic_energy(
     >>> relativistic_energy(1 * u.mg, 1.4e8 * u.m / u.s)
     <Quantity 1.01638929e+11 J>
     """
-    # TODO: Remove references to the parameters ``m`` and ``v`` in the
+    # TODO: Remove references to the parameters ``m`` and ``v`` in the  # noqa: FIX002
     # docstring and below no sooner than 2024.
 
     if m is not None or v is not None:

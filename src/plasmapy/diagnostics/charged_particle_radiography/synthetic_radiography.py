@@ -724,7 +724,7 @@ class Tracker(ParticleTracker):
         # Adjust num_particles to reflex what the distribution function returned.
         # Some distributions will modify the number of particles to meet the
         # necessary criteria of the distribution.
-        num_particles = theta.shape[0]  # TODO: make sure this works
+        num_particles = theta.shape[0]  # TODO: make sure this works  # noqa: FIX002
 
         # Construct the velocity distribution around the z-axis
         v = np.zeros([num_particles, 3])

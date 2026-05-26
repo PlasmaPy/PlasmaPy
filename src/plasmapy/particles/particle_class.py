@@ -598,7 +598,7 @@ class Particle(AbstractPhysicalParticle):
         mass_numb: int | None = None,
         Z: int | None = None,
     ) -> None:
-        # TODO: Remove the following block during or after the 0.9.0 release
+        # TODO: Remove the following block during or after the 0.9.0 release  # noqa: FIX002
 
         if _:
             raise TypeError(
@@ -945,7 +945,7 @@ class Particle(AbstractPhysicalParticle):
         # each of the defaultdicts, this makes sure that
         # self._attributes and other._attributes have the same keys.
 
-        # TODO: create function in utils to account for equality between
+        # TODO: create function in utils to account for equality between  # noqa: FIX002
         # defaultdicts, and implement it here
 
         for attribute in self._attributes:
@@ -2119,7 +2119,7 @@ class DimensionlessParticle(AbstractParticle):
     @staticmethod
     def _validate_parameter(obj: Any, can_be_negative: bool = True) -> np.float64:  # noqa: ANN401, FBT001, FBT002
         """Verify that the argument corresponds to a valid real number."""
-        # TODO: Replace with validator? Use an equivalency between
+        # TODO: Replace with validator? Use an equivalency between  # noqa: FIX002
         # coulombs and reals
 
         if obj is None or np.isnan(obj):
@@ -2302,7 +2302,7 @@ class CustomParticle(AbstractPhysicalParticle):
         *,
         Z: float | None = None,
     ) -> None:
-        # TODO: py3.10 replace ifology with structural pattern matching
+        # TODO: py3.10 replace ifology with structural pattern matching  # noqa: FIX002
 
         if Z is not None and charge is not None:
             raise InvalidParticleError(

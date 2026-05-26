@@ -195,7 +195,7 @@ lint.extend-select = [
   "C90",
   "COM",
   "D",
-  # "DOC", # enable pydoclint rule set when it is no longer in preview
+  # enable DOC rule set when it is no longer in preview
   "DTZ",
   "EM",
   "EXE",
@@ -298,7 +298,6 @@ lint.ignore = [
   "E501",  # formatter conflict
   "EM101",   # enable later in focused PR
   "EM102",   # enable later in focused PR
-  "FIX002",
   "ISC001",  # formatter conflict
   "N802",  # flags capitalization used to match physics notation
   "N803",  # flags capitalization used to match physics notation

@@ -185,7 +185,7 @@ def standard_atomic_weight(element: ParticleLike) -> u.Quantity[u.kg]:
     >>> standard_atomic_weight("lead")
     <Quantity 3.440636e-25 kg>
     """
-    # TODO: Put in ReST links into above docstring
+    # TODO: Put in ReST links into above docstring  # noqa: FIX002
     return element.standard_atomic_weight
 
 
@@ -550,7 +550,7 @@ def known_isotopes(argument: ParticleLike | None = None) -> ParticleList:
     >>> len(known_isotopes())  # the number of known isotopes
     3352
     """
-    # TODO: Allow Particle objects representing elements to be inputs
+    # TODO: Allow Particle objects representing elements to be inputs  # noqa: FIX002
 
     def known_isotopes_for_element(argument_: ParticleLike) -> list[Particle]:
         element = atomic_symbol(argument_)
@@ -658,7 +658,7 @@ def common_isotopes(
     >>> common_isotopes()[0:7]
     ParticleList(['H-1', 'D', 'He-4', 'He-3', 'Li-7', 'Li-6', 'Be-9'])
     """
-    # TODO: Allow Particle objects representing elements to be inputs
+    # TODO: Allow Particle objects representing elements to be inputs  # noqa: FIX002
 
     def common_isotopes_for_element(
         argument: ParticleLike,
@@ -779,7 +779,7 @@ def stable_isotopes(
     >>> stable_isotopes("He", unstable=True)
     ParticleList(['He-5', 'He-6', 'He-7', 'He-8', 'He-9', 'He-10'])
     """
-    # TODO: Allow Particle objects representing elements to be inputs
+    # TODO: Allow Particle objects representing elements to be inputs  # noqa: FIX002
 
     def stable_isotopes_for_element(
         argument: str | int,
@@ -910,7 +910,7 @@ def periodic_table_period(argument: ParticleLike) -> int:
     >>> periodic_table_period("nitrogen")
     2
     """
-    # TODO: Implement @particle_input
+    # TODO: Implement @particle_input  # noqa: FIX002
     if not isinstance(argument, str | Integral):
         raise TypeError(
             "The argument to periodic_table_period must be either a "
@@ -958,7 +958,7 @@ def periodic_table_group(argument: ParticleLike) -> int:
     >>> periodic_table_group("barium")
     2
     """
-    # TODO: Implement @particle_input
+    # TODO: Implement @particle_input  # noqa: FIX002
     if not isinstance(argument, str | Integral):
         raise TypeError(
             "The argument to periodic_table_group must be "
@@ -1009,7 +1009,7 @@ def periodic_table_block(argument: ParticleLike) -> str:
     >>> periodic_table_block("francium")
     's'
     """
-    # TODO: Implement @particle_input
+    # TODO: Implement @particle_input  # noqa: FIX002
     if not isinstance(argument, str | Integral):
         raise TypeError(
             "The argument to periodic_table_block must be "
@@ -1055,7 +1055,7 @@ def periodic_table_category(argument: str | int) -> str:
     >>> periodic_table_category("rhodium")
     'transition metal'
     """
-    # TODO: Implement @particle_input
+    # TODO: Implement @particle_input  # noqa: FIX002
     if not isinstance(argument, str | Integral):
         raise TypeError(
             "The argument to periodic_table_category must be "
@@ -1124,7 +1124,7 @@ def _is_electron(arg: Any) -> bool:  # noqa: ANN401
     Return `True` if the argument corresponds to an electron, and
     `False` otherwise.
     """
-    # TODO: Remove _is_electron from all parts of code.
+    # TODO: Remove _is_electron from all parts of code.  # noqa: FIX002
 
     return (
         arg in {"e", "e-"} or arg.lower() == "electron"
@@ -1188,7 +1188,7 @@ def stopping_power(
     Valid materials can be found on the NIST STAR website. The default energies
     are taken from the data points in the STAR database.
     """
-    # TODO: figure out a better way of handling the Downloader() here
+    # TODO: figure out a better way of handling the Downloader() here  # noqa: FIX002
     nist_data_path = Downloader().get_file("NIST_STAR.hdf5")
 
     # Validate particle input. Currently, the only supported particles are protons and electrons.
