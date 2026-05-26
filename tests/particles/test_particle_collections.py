@@ -337,55 +337,55 @@ def test_particle_multiplication(method, particle) -> None:
 @pytest.mark.parametrize(
     ("particles", "args", "kwargs", "expected"),
     [
-        [
+        [  # noqa: PT007
             ["electron", "proton", "neutron"],
             ["lepton"],
             {"particlewise": True},
             [True, False, False],
         ],
-        [
+        [  # noqa: PT007
             ["electron", "proton", "neutron"],
             [],
             {"require": "lepton", "particlewise": True},
             [True, False, False],
         ],
-        [
+        [  # noqa: PT007
             ["electron", "proton", "neutron"],
             [],
             {"exclude": "lepton", "particlewise": True},
             [False, True, True],
         ],
-        [
+        [  # noqa: PT007
             ["electron", "proton", "neutron"],
             [],
             {"any_of": {"lepton", "charged"}, "particlewise": True},
             [True, True, False],
         ],
-        [
+        [  # noqa: PT007
             ["electron", "proton", "neutron"],
             ["lepton"],
             {},
             False,
         ],
-        [
+        [  # noqa: PT007
             ["electron", "proton", "neutron"],
             [],
             {"require": "lepton"},
             False,
         ],
-        [
+        [  # noqa: PT007
             ["electron", "proton", "neutron"],
             [],
             {"exclude": "lepton"},
             False,
         ],
-        [
+        [  # noqa: PT007
             ["electron", "proton", "neutron"],
             [],
             {"any_of": {"lepton", "charged"}},
             False,
         ],
-        [
+        [  # noqa: PT007
             ["electron", "proton", "tau neutrino"],
             [],
             {"any_of": {"lepton", "charged"}},
@@ -533,7 +533,7 @@ def test_particle_list_with_no_arguments() -> None:
 
 @pytest.mark.parametrize(
     ("quantities", "expected"),
-    ( 
+    (  # noqa: PT007
         ((1, 2) * u.kg, (CustomParticle(mass=1 * u.kg), CustomParticle(mass=2 * u.kg))),
         (
             (3, 4) * u.C,
