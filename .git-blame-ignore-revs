@@ -2,6 +2,9 @@
 # from the blame view; see
 # https://docs.github.com/en/repositories/working-with-files/using-files/viewing-a-file#ignore-commits-in-the-blame-view
 
+# Enable additional ruff rules and update `.git-blame-ignore-revs` (#3295)
+dfbe28e665b2c071b3169e8b576208190c9d0beb
+
 # Update ruff rules including for annotations (#3292)
 d046ed10b96d3bdc95d10cd4efdcfcbe38785ac2
 
