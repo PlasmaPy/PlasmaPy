@@ -186,6 +186,7 @@ format.docstring-code-format = true
 lint.extend-select = [
   "A",      # flake8-builtins
   "ANN201", # missing-return-type-undocumented-public-function
+  "ANN202", # missing-return-type-undocumented-public-method
   "ANN204", # missing-return-type-special-method
   "ANN205", # missing-return-type-static-method
   "ANN206", # missing-return-type-class-method
