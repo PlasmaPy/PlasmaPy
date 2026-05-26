@@ -224,7 +224,7 @@ def hollweg(  # noqa: ANN201, C901, PLR0912, PLR0915
         if val.shape != ():
             raise ValueError(
                 f"Argument '{arg_name}' must be single valued and not "
-                f"an array of shape {val.shape}."
+                f"an array of shape {val.shape}.",
             )
         locals()[arg_name] = val
 
@@ -233,7 +233,7 @@ def hollweg(  # noqa: ANN201, C901, PLR0912, PLR0915
         if not isinstance(locals()[arg_name], Real):
             raise TypeError(
                 f"Expected int or float for argument '{arg_name}', but "
-                f"got {type(locals()[arg_name])}."
+                f"got {type(locals()[arg_name])}.",
             )
 
     # validate argument k
@@ -241,7 +241,7 @@ def hollweg(  # noqa: ANN201, C901, PLR0912, PLR0915
     if k.ndim not in {0, 1}:
         raise ValueError(
             f"Argument 'k' needs to be single valued or a 1D array "
-            f"astropy Quantity, got array of shape {k.shape}."
+            f"astropy Quantity, got array of shape {k.shape}.",
         )
     if np.any(k <= 0):
         raise ValueError("Argument 'k' cannot be negative or have negative values.")
@@ -251,7 +251,7 @@ def hollweg(  # noqa: ANN201, C901, PLR0912, PLR0915
     if theta.ndim not in {0, 1}:
         raise ValueError(
             f"Argument 'theta' needs to be a single valued or 1D array astropy "
-            f"Quantity, got array of shape {theta.shape}."
+            f"Quantity, got array of shape {theta.shape}.",
         )
 
     # Single k value case

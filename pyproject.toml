@@ -187,14 +187,13 @@ format.docstring-code-format = true
 lint.extend-select = [
   "A",
   "ANN",
-  "ANN002",
   "ARG",
   "ASYNC",
   "B",
   "BLE",
   "C4",
   "C90",
-  "COM818",
+  "COM",
   "D",
   # "DOC", # enable pydoclint rule set when it is no longer in preview
   "DTZ",
@@ -278,8 +277,8 @@ lint.extend-select = [
   "SIM",
   "SLF",
   "SLOT",
-  "T",
   "T10",
+  "T20",
   "TC",
   "TD",
   "TID",
@@ -293,6 +292,7 @@ lint.extend-select = [
 lint.ignore = [
   "ANN001",
   "B028",
+  "COM819",
   "D105",    # enable later?
   "D200",    # incompatible with multiline short summaries
   "D202",

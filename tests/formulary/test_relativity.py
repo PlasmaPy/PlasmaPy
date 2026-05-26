@@ -51,7 +51,8 @@ def test_Lorentz_factor_exceptions(speed, exception) -> None:
 
 
 @pytest.mark.parametrize(
-    ("speed", "warning"), [(2.2, u.UnitsWarning), (np.nan, u.UnitsWarning)]
+    ("speed", "warning"),
+    [(2.2, u.UnitsWarning), (np.nan, u.UnitsWarning)],
 )
 def test_Lorentz_factor_warnings(speed, warning) -> None:
     with pytest.warns(warning):
@@ -136,7 +137,10 @@ def test_relativistic_body(parameter, argument, attribute, expected) -> None:
 @pytest.mark.parametrize(("attr_to_set", "set_value"), proton_at_half_c_inputs)
 @pytest.mark.parametrize(("attr_to_test", "expected"), proton_at_half_c_inputs)
 def test_relativistic_body_setters(
-    attr_to_set, set_value, attr_to_test, expected
+    attr_to_set,
+    set_value,
+    attr_to_test,
+    expected,
 ) -> None:
     """Test setting RelativisticBody attributes."""
     relativistic_body = RelativisticBody(proton, v_over_c=0.1)
@@ -267,7 +271,8 @@ def test_relativistic_body_for_custom_particle() -> None:
     custom_particle = CustomParticle(mass=mass)
     velocity = 0 * u.m / u.s
     relativistic_custom_particle = RelativisticBody(
-        particle=custom_particle, V=velocity
+        particle=custom_particle,
+        V=velocity,
     )
     assert u.isclose(relativistic_custom_particle.lorentz_factor, 1, rtol=1e-9)
 
@@ -290,7 +295,8 @@ def test_relativistic_body_with_multiple_velocities() -> None:
     velocities = np.array([0, 0.5]) * c
     relativistic_particles = RelativisticBody("p+", V=velocities)
     np.testing.assert_allclose(
-        relativistic_particles.lorentz_factor, [1, 1.1547005383792517]
+        relativistic_particles.lorentz_factor,
+        [1, 1.1547005383792517],
     )
 
 

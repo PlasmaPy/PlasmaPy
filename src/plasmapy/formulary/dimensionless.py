@@ -39,7 +39,8 @@ __all__ += __aliases__
     n_e={"can_be_negative": False},
 )
 def Debye_number(
-    T_e: u.Quantity[u.K], n_e: u.Quantity[u.m**-3]
+    T_e: u.Quantity[u.K],
+    n_e: u.Quantity[u.m**-3],
 ) -> u.Quantity[u.dimensionless_unscaled]:
     r"""Return the number of electrons within a sphere with a radius
     of the Debye length.
@@ -222,7 +223,12 @@ def Hall_parameter(  # noqa: ANN201
     gyro_frequency = gyro_frequency / u.radian
     if particle == "e-":
         coll_rate = fundamental_electron_collision_freq(
-            T, n, ion, coulomb_log, V, coulomb_log_method=coulomb_log_method
+            T,
+            n,
+            ion,
+            coulomb_log,
+            V,
+            coulomb_log_method=coulomb_log_method,
         )
     else:
         coll_rate = fundamental_ion_collision_freq(T, n, ion, coulomb_log, V)
@@ -238,7 +244,9 @@ betaH_ = Hall_parameter
     n={"can_be_negative": False},
 )
 def beta(
-    T: u.Quantity[u.K], n: u.Quantity[u.m**-3], B: u.Quantity[u.T]
+    T: u.Quantity[u.K],
+    n: u.Quantity[u.m**-3],
+    B: u.Quantity[u.T],
 ) -> u.Quantity[u.dimensionless_unscaled]:
     r"""
     Compute the ratio of thermal pressure to magnetic pressure.
@@ -369,7 +377,9 @@ Re_ = Reynolds_number
 
 @validate_quantities(U={"can_be_negative": True})
 def Mag_Reynolds(
-    U: u.Quantity[u.m / u.s], L: u.Quantity[u.m], sigma: u.Quantity[u.S / u.m]
+    U: u.Quantity[u.m / u.s],
+    L: u.Quantity[u.m],
+    sigma: u.Quantity[u.S / u.m],
 ) -> u.Quantity[u.dimensionless_unscaled]:
     r"""
     Compute the magnetic Reynolds number.

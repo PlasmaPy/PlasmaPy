@@ -85,12 +85,12 @@ def bind_lite_func(lite_func, attrs: dict[str, Callable] | None = None):  # noqa
         attrs = {}
     elif not isinstance(attrs, dict):
         raise TypeError(
-            f"Argument 'attrs' is a type '{type(attrs)}', expected a dictionary."
+            f"Argument 'attrs' is a type '{type(attrs)}', expected a dictionary.",
         )
     elif "lite" in attrs:
         raise ValueError(
             "Argument 'attr' can NOT define key 'lite', this is reserved for"
-            " the 'lite_func' argument."
+            " the 'lite_func' argument.",
         )
 
     if inspect.isbuiltin(lite_func) or not inspect.isfunction(lite_func):
@@ -109,7 +109,7 @@ def bind_lite_func(lite_func, attrs: dict[str, Callable] | None = None):  # noqa
             if not inspect.isfunction(attr):
                 raise ValueError(
                     f"Can not bind obj '{attr}' to function '{wrapper.__name__}'."
-                    f"  Only functions are allowed to be bound. Skipping."
+                    f"  Only functions are allowed to be bound. Skipping.",
                 )
 
             # build origin name

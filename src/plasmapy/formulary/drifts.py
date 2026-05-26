@@ -128,7 +128,9 @@ veb_ = ExB_drift
 
 @validate_quantities
 def force_drift(
-    F: u.Quantity[u.N], B: u.Quantity[u.T], q: u.Quantity[u.C]
+    F: u.Quantity[u.N],
+    B: u.Quantity[u.T],
+    q: u.Quantity[u.C],
 ) -> u.Quantity[u.m / u.s]:
     r"""
     Calculate the general force drift for a particle in a magnetic field.

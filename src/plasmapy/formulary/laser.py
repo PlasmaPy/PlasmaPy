@@ -171,7 +171,8 @@ def em_wavelength(angular_frequency: u.Quantity[u.rad / u.s]) -> u.Quantity[u.m]
     <Quantity 8e-07 m>
     """
     return (2 * np.pi * c / angular_frequency).to(
-        u.m, equivalencies=u.dimensionless_angles()
+        u.m,
+        equivalencies=u.dimensionless_angles(),
     )
 
 
@@ -214,7 +215,8 @@ def em_angular_frequency(wavelength: u.Quantity[u.m]) -> u.Quantity[u.rad / u.s]
     <Quantity 2.35456446e+15 rad / s>
     """
     return ((c / wavelength) * 2 * np.pi).to(
-        u.rad / u.s, equivalencies=u.dimensionless_angles()
+        u.rad / u.s,
+        equivalencies=u.dimensionless_angles(),
     )
 
 

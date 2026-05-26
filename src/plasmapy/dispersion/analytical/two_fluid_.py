@@ -241,7 +241,7 @@ def two_fluid(  # noqa: ANN201
         if val.shape != ():
             raise ValueError(
                 f"Argument '{arg_name}' must a single value and not an array of "
-                f"shape {val.shape}."
+                f"shape {val.shape}.",
             )
         locals()[arg_name] = val
 
@@ -250,7 +250,7 @@ def two_fluid(  # noqa: ANN201
         if not isinstance(locals()[arg_name], Real):
             raise TypeError(
                 f"Expected int or float for argument '{arg_name}', but got "
-                f"{type(locals()[arg_name])}."
+                f"{type(locals()[arg_name])}.",
             )
 
     # validate argument k
@@ -258,7 +258,7 @@ def two_fluid(  # noqa: ANN201
     if k.ndim not in {0, 1}:
         raise ValueError(
             f"Argument 'k' needs to be a single valued or 1D array astropy Quantity,"
-            f" got array of shape {k.shape}."
+            f" got array of shape {k.shape}.",
         )
     if np.any(k <= 0):
         raise ValueError("Argument 'k' cannot be a or have negative values.")
@@ -268,7 +268,7 @@ def two_fluid(  # noqa: ANN201
     if theta.ndim not in {0, 1}:
         raise ValueError(
             f"Argument 'theta' needs to be a single valued or 1D array astropy "
-            f"Quantity, got array of shape {k.shape}."
+            f"Quantity, got array of shape {k.shape}.",
         )
 
     # Calc needed plasma parameters
@@ -314,7 +314,7 @@ def two_fluid(  # noqa: ANN201
     for ind, wave_mode in enumerate(("fast_mode", "alfven_mode", "acoustic_mode")):
         # The solution corresponding to equation 38
         ω = omega_ci * np.emath.sqrt(
-            R * np.cos(1 / 3 * np.emath.arccos(S) - 2 * np.pi / 3 * ind) + T
+            R * np.cos(1 / 3 * np.emath.arccos(S) - 2 * np.pi / 3 * ind) + T,
         )
         omega[wave_mode] = ω.squeeze()
 

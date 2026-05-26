@@ -132,14 +132,15 @@ class Characteristic:
             raise ValueError(
                 f"Unequal array lengths of bias "
                 f"({len(self.bias)}) and current "
-                f"({len(self.current)})."
+                f"({len(self.current)}).",
             )
 
         bias_unique = np.unique(self.bias)
         current_unique = []
         for bias in bias_unique:
             current_unique = np.append(
-                current_unique, np.mean(self.current[self.bias == bias].to(u.A).value)
+                current_unique,
+                np.mean(self.current[self.bias == bias].to(u.A).value),
             )
         current_unique *= u.A  # ty:ignore[unsupported-operator]
 
@@ -163,7 +164,7 @@ class Characteristic:
             raise ValueError(
                 f"Unequal array lengths of bias "
                 f"({len(self.bias)}) and current "
-                f"({len(self.current)})."
+                f"({len(self.current)}).",
             )
 
         if len(np.unique(self.bias)) != len(self.bias):
@@ -208,7 +209,7 @@ class Characteristic:
 
 
 @validate_quantities(
-    probe_area={"can_be_negative": False, "can_be_inf": False, "can_be_nan": False}
+    probe_area={"can_be_negative": False, "can_be_inf": False, "can_be_nan": False},
 )
 def swept_probe_analysis(  # noqa: ANN201, PLR0915
     probe_characteristic,
@@ -306,7 +307,7 @@ def swept_probe_analysis(  # noqa: ANN201, PLR0915
         raise TypeError(
             "For 'probe_characteristic' expected type "
             f"{Characteristic.__module__}.{Characteristic.__qualname__} "
-            f"and got {type(probe_characteristic)}."
+            f"and got {type(probe_characteristic)}.",
         )
 
     # Obtain the plasma and floating potentials
@@ -321,23 +322,31 @@ def swept_probe_analysis(  # noqa: ANN201, PLR0915
     # electron temperature. This can then be used to obtain the ion current
     # and subsequently a better electron current fit.
     n_i_OML, fit = get_ion_density_OML(
-        probe_characteristic, probe_area, gas, return_fit=True
+        probe_characteristic,
+        probe_area,
+        gas,
+        return_fit=True,
     )
 
     ion_current = extrapolate_ion_current_OML(probe_characteristic, fit)
 
     # First electron temperature iteration
     exponential_section = extract_exponential_section(
-        probe_characteristic, ion_current=ion_current
+        probe_characteristic,
+        ion_current=ion_current,
     )
     T_e, hot_fraction = get_electron_temperature(
-        exponential_section, bimaxwellian=bimaxwellian, return_hot_fraction=True
+        exponential_section,
+        bimaxwellian=bimaxwellian,
+        return_hot_fraction=True,
     )
 
     # Second electron temperature iteration, using an electron temperature-
     # adjusted exponential section
     exponential_section = extract_exponential_section(
-        probe_characteristic, T_e=T_e, ion_current=ion_current
+        probe_characteristic,
+        T_e=T_e,
+        ion_current=ion_current,
     )
     T_e, hot_fraction, fit = get_electron_temperature(
         exponential_section,
@@ -351,16 +360,23 @@ def swept_probe_analysis(  # noqa: ANN201, PLR0915
     # electron current. This has no use in the analysis except for
     # visualization.
     electron_current = extrapolate_electron_current(
-        probe_characteristic, fit, bimaxwellian=bimaxwellian
+        probe_characteristic,
+        fit,
+        bimaxwellian=bimaxwellian,
     )
 
     # Using a good estimate of electron temperature, obtain the ion and
     # electron densities from the saturation currents.
     n_i = get_ion_density_LM(
-        I_is, reduce_bimaxwellian_temperature(T_e, hot_fraction), probe_area, gas.mass
+        I_is,
+        reduce_bimaxwellian_temperature(T_e, hot_fraction),
+        probe_area,
+        gas.mass,
     )
     n_e = get_electron_density_LM(
-        I_es, reduce_bimaxwellian_temperature(T_e, hot_fraction), probe_area
+        I_es,
+        reduce_bimaxwellian_temperature(T_e, hot_fraction),
+        probe_area,
     )
 
     if visualize:
@@ -481,7 +497,7 @@ def get_plasma_potential(probe_characteristic, return_arg: bool = False):  # noq
         raise TypeError(
             "For 'probe_characteristic' expected type "
             f"{Characteristic.__module__}.{Characteristic.__qualname__} "
-            f"and got {type(probe_characteristic)}."
+            f"and got {type(probe_characteristic)}.",
         )
 
     # Sort the characteristic prior to differentiation
@@ -533,7 +549,7 @@ def get_floating_potential(probe_characteristic, return_arg: bool = False):  # n
         raise TypeError(
             "For 'probe_characteristic' expected type "
             f"{Characteristic.__module__}.{Characteristic.__qualname__} "
-            f"and got {type(probe_characteristic)}"
+            f"and got {type(probe_characteristic)}",
         )
 
     arg_V_F = np.argmin(np.abs(probe_characteristic.current))
@@ -571,7 +587,7 @@ def get_electron_saturation_current(probe_characteristic):
         raise TypeError(
             "For 'probe_characteristic' expected type "
             f"{Characteristic.__module__}.{Characteristic.__qualname__} "
-            f"and got {type(probe_characteristic)}."
+            f"and got {type(probe_characteristic)}.",
         )
 
     _, arg_V_P = get_plasma_potential(probe_characteristic, return_arg=True)
@@ -608,7 +624,7 @@ def get_ion_saturation_current(probe_characteristic):
         raise TypeError(
             "For 'probe_characteristic' expected type "
             f"{Characteristic.__module__}.{Characteristic.__qualname__} "
-            f"and got {type(probe_characteristic)}."
+            f"and got {type(probe_characteristic)}.",
         )
 
     return np.min(probe_characteristic.current)
@@ -781,7 +797,7 @@ def extract_exponential_section(probe_characteristic, T_e=None, ion_current=None
         raise TypeError(
             "For 'probe_characteristic' expected type "
             f"{Characteristic.__module__}.{Characteristic.__qualname__} "
-            f"and got {type(probe_characteristic)}."
+            f"and got {type(probe_characteristic)}.",
         )
 
     V_F = get_floating_potential(probe_characteristic)
@@ -836,7 +852,7 @@ def extract_ion_section(probe_characteristic):
         raise TypeError(
             "For 'probe_characteristic' expected type "
             f"{Characteristic.__module__}.{Characteristic.__qualname__} "
-            f"and got {type(probe_characteristic)}."
+            f"and got {type(probe_characteristic)}.",
         )
 
     V_F = get_floating_potential(probe_characteristic)
@@ -905,7 +921,7 @@ def get_electron_temperature(  # noqa: ANN201
         raise TypeError(
             "For 'probe_characteristic' expected type "
             f"{Characteristic.__module__}.{Characteristic.__qualname__} "
-            f"and got {type(exponential_section)}."
+            f"and got {type(exponential_section)}.",
         )
 
     # Remove values in the section with a current equal to or smaller than
@@ -958,11 +974,13 @@ def get_electron_temperature(  # noqa: ANN201
         # difference between these currents equates to the density difference.
 
         k1 = _fit_func_lin_inverse(
-            np.max(exponential_section.bias.to(u.V).value), *[x0, y0, T0]
+            np.max(exponential_section.bias.to(u.V).value),
+            *[x0, y0, T0],
         )
 
         k2 = _fit_func_lin_inverse(
-            np.max(exponential_section.bias.to(u.V).value), *[x0, y0, T0 + Delta_T]
+            np.max(exponential_section.bias.to(u.V).value),
+            *[x0, y0, T0 + Delta_T],
         )
 
         # Compute the total hot (energetic) fraction
@@ -1065,7 +1083,7 @@ def extrapolate_electron_current(  # noqa: ANN201
         raise TypeError(
             "For 'probe_characteristic' expected type "
             f"{Characteristic.__module__}.{Characteristic.__qualname__} "
-            f"and got {type(probe_characteristic)}."
+            f"and got {type(probe_characteristic)}.",
         )
 
     fit_func = _fit_func_double_lin_inverse if bimaxwellian else _fit_func_lin_inverse
@@ -1077,7 +1095,8 @@ def extrapolate_electron_current(  # noqa: ANN201
     electron_current[electron_current > np.max(probe_characteristic.current)] = np.nan
 
     electron_characteristic = Characteristic(
-        probe_characteristic.bias, electron_current
+        probe_characteristic.bias,
+        electron_current,
     )
 
     if visualize:
@@ -1110,7 +1129,8 @@ def extrapolate_electron_current(  # noqa: ANN201
     validations_on_return={"equivalencies": u.temperature_energy()},
 )
 def reduce_bimaxwellian_temperature(
-    T_e: u.Quantity[u.eV], hot_fraction: float
+    T_e: u.Quantity[u.eV],
+    hot_fraction: float,
 ) -> u.Quantity[u.eV]:
     r"""Reduce a bi-Maxwellian (dual) temperature to a single mean temperature
     for a given fraction.
@@ -1152,7 +1172,7 @@ def reduce_bimaxwellian_temperature(
 
 
 @validate_quantities(
-    probe_area={"can_be_negative": False, "can_be_inf": False, "can_be_nan": False}
+    probe_area={"can_be_negative": False, "can_be_inf": False, "can_be_nan": False},
 )
 def get_ion_density_OML(  # noqa: ANN201
     probe_characteristic: Characteristic,
@@ -1212,13 +1232,15 @@ def get_ion_density_OML(  # noqa: ANN201
         raise TypeError(
             "For 'probe_characteristic' expected type "
             f"{Characteristic.__module__}.{Characteristic.__qualname__} "
-            f"and got {type(probe_characteristic)}."
+            f"and got {type(probe_characteristic)}.",
         )
 
     ion_section = extract_ion_section(probe_characteristic)
 
     fit = np.polyfit(
-        ion_section.bias.to(u.V).value, ion_section.current.to(u.mA).value ** 2, 1
+        ion_section.bias.to(u.V).value,
+        ion_section.current.to(u.mA).value ** 2,
+        1,
     )
 
     poly = np.poly1d(fit)
@@ -1228,7 +1250,7 @@ def get_ion_density_OML(  # noqa: ANN201
     ion = Particle(argument=gas)
 
     n_i_OML = np.sqrt(
-        -slope * u.mA**2 / u.V * np.pi**2 * ion.mass / (probe_area**2 * const.e**3 * 2)
+        -slope * u.mA**2 / u.V * np.pi**2 * ion.mass / (probe_area**2 * const.e**3 * 2),
     )
 
     if visualize:
@@ -1241,7 +1263,9 @@ def get_ion_density_OML(  # noqa: ANN201
                 marker=".",
             )
             plt.plot(
-                ion_section.bias.to(u.V), poly(ion_section.bias.to(u.V).value), c="g"
+                ion_section.bias.to(u.V),
+                poly(ion_section.bias.to(u.V).value),
+                c="g",
             )
             plt.title("OML fit")
             plt.tight_layout()
@@ -1284,14 +1308,14 @@ def extrapolate_ion_current_OML(probe_characteristic, fit, visualize: bool = Fal
         raise TypeError(
             "For 'probe_characteristic' expected type "
             f"{Characteristic.__module__}.{Characteristic.__qualname__} "
-            f"and got {type(probe_characteristic)}."
+            f"and got {type(probe_characteristic)}.",
         )
 
     slope = fit[0] * u.mA**2 / u.V
     offset = fit[1] * u.mA**2
 
     ion_current = -np.sqrt(
-        np.clip(slope * probe_characteristic.bias + offset, 0.0, None)
+        np.clip(slope * probe_characteristic.bias + offset, 0.0, None),
     )
 
     ion_characteristic = Characteristic(probe_characteristic.bias, ion_current)
@@ -1306,7 +1330,9 @@ def extrapolate_ion_current_OML(probe_characteristic, fit, visualize: bool = Fal
                 c="k",
             )
             plt.plot(
-                probe_characteristic.bias, ion_characteristic.current.to(u.mA), c="y"
+                probe_characteristic.bias,
+                ion_characteristic.current.to(u.mA),
+                c="y",
             )
 
     return ion_characteristic
@@ -1360,7 +1386,7 @@ def get_EEDF(probe_characteristic, visualize: bool = False):  # noqa: ANN201, FB
         raise TypeError(
             "For 'probe_characteristic' expected type "
             f"{Characteristic.__module__}.{Characteristic.__qualname__} "
-            f"and got {type(probe_characteristic)}."
+            f"and got {type(probe_characteristic)}.",
         )
 
     probe_characteristic.sort()

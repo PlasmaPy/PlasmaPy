@@ -163,7 +163,8 @@ def test_to_roman(integer: int, roman_numeral: str) -> None:
 
 
 @pytest.mark.parametrize(
-    ("function", "argument", "expected_exception"), exceptions_table
+    ("function", "argument", "expected_exception"),
+    exceptions_table,
 )
 def test_to_roman_exceptions(
     function: Callable[[Any], Any],

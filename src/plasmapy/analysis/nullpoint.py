@@ -66,7 +66,7 @@ class NonZeroDivergence(NullPointError):  # noqa: N818
 
     def __init__(self) -> None:
         super().__init__(
-            "The divergence constraint does not hold for the provided magnetic field."
+            "The divergence constraint does not hold for the provided magnetic field.",
         )
 
 
@@ -133,7 +133,7 @@ class NullPoint(Point):  # noqa: PLW1641
         d = np.sqrt(
             (self.loc[0] - point.loc[0]) ** 2
             + (self.loc[1] - point.loc[1]) ** 2
-            + (self.loc[2] - point.loc[2]) ** 2
+            + (self.loc[2] - point.loc[2]) ** 2,
         )
         return np.isclose(d, 0, atol=_EQUALITY_ATOL)
 
@@ -307,7 +307,7 @@ def _trilinear_coeff_cal(vspace, cell):
             [1, x1, y0, z1, x1 * y0, x1 * z1, y0 * z1, x1 * y0 * z1],
             [1, x0, y1, z1, x0 * y1, x0 * z1, y1 * z1, x0 * y1 * z1],
             [1, x1, y1, z1, x1 * y1, x1 * z1, y1 * z1, x1 * y1 * z1],
-        ]
+        ],
     )
     sx = np.array(
         [
@@ -319,7 +319,7 @@ def _trilinear_coeff_cal(vspace, cell):
             [u[f101[0]][f101[1]][f101[2]]],
             [u[f011[0]][f011[1]][f011[2]]],
             [u[f111[0]][f111[1]][f111[2]]],
-        ]
+        ],
     )
     sy = np.array(
         [
@@ -331,7 +331,7 @@ def _trilinear_coeff_cal(vspace, cell):
             [v[f101[0]][f101[1]][f101[2]]],
             [v[f011[0]][f011[1]][f011[2]]],
             [v[f111[0]][f111[1]][f111[2]]],
-        ]
+        ],
     )
     sz = np.array(
         [
@@ -343,7 +343,7 @@ def _trilinear_coeff_cal(vspace, cell):
             [w[f101[0]][f101[1]][f101[2]]],
             [w[f011[0]][f011[1]][f011[2]]],
             [w[f111[0]][f111[1]][f111[2]]],
-        ]
+        ],
     )
 
     ax, bx, cx, dx, ex, fx, gx, hx = np.linalg.solve(A, sx).reshape(1, 8)[0]
@@ -355,7 +355,7 @@ def _trilinear_coeff_cal(vspace, cell):
             [ax, bx, cx, dx, ex, fx, gx, hx],
             [ay, by, cy, dy, ey, fy, gy, hy],
             [az, bz, cz, dz, ez, fz, gz, hz],
-        ]
+        ],
     )
 
 
@@ -495,7 +495,7 @@ def _trilinear_jacobian(vspace, cell):
                 get_scalar(dBzdx),
                 get_scalar(dBzdy),
                 get_scalar(dBzdz),
-            ]
+            ],
         ).reshape(3, 3)
 
     return jacobian_func
@@ -689,7 +689,7 @@ def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0915
             vspace[0][0][f000[0]][f000[1]][f000[2]],
             vspace[0][1][f000[0]][f000[1]][f000[2]],
             vspace[0][2][f000[0]][f000[1]][f000[2]],
-        ]
+        ],
     )
 
     # Arrays holding the endpoints
@@ -729,7 +729,7 @@ def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0915
             (root[0], yConst1, root[1])
             for root in root_list
             if not is_root_in_list((root[0], yConst1, root[1]), BxByEndpoints)
-        ]
+        ],
     )
 
     # Bx=Bz=0 Curve Endpoint
@@ -749,7 +749,7 @@ def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0915
             (root[0], yConst1, root[1])
             for root in root_list
             if not is_root_in_list((root[0], yConst1, root[1]), BxBzEndpoints)
-        ]
+        ],
     )
 
     # By=Bz=0 Curve Endpoint
@@ -769,7 +769,7 @@ def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0915
             (root[0], yConst1, root[1])
             for root in root_list
             if not is_root_in_list((root[0], yConst1, root[1]), ByBzEndpoints)
-        ]
+        ],
     )
 
     # Back Surface
@@ -793,7 +793,7 @@ def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0915
             (root[0], yConst2, root[1])
             for root in root_list
             if not is_root_in_list((root[0], yConst2, root[1]), BxByEndpoints)
-        ]
+        ],
     )
 
     # Bx=Bz=0 Curve Endpoint
@@ -813,7 +813,7 @@ def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0915
             (root[0], yConst2, root[1])
             for root in root_list
             if not is_root_in_list((root[0], yConst2, root[1]), BxBzEndpoints)
-        ]
+        ],
     )
 
     # By=Bz=0 Curve Endpoint
@@ -833,7 +833,7 @@ def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0915
             (root[0], yConst2, root[1])
             for root in root_list
             if not is_root_in_list((root[0], yConst2, root[1]), ByBzEndpoints)
-        ]
+        ],
     )
 
     # Right Surface
@@ -855,7 +855,7 @@ def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0915
             (xConst1, root[0], root[1])
             for root in root_list
             if not is_root_in_list((xConst1, root[0], root[1]), BxByEndpoints)
-        ]
+        ],
     )
 
     # Bx=BZ=0 Curve Endpoint
@@ -875,7 +875,7 @@ def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0915
             (xConst1, root[0], root[1])
             for root in root_list
             if not is_root_in_list((xConst1, root[0], root[1]), BxBzEndpoints)
-        ]
+        ],
     )
 
     # By=Bz=0 Curve Endpoint
@@ -895,7 +895,7 @@ def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0915
             (xConst1, root[0], root[1])
             for root in root_list
             if not is_root_in_list((xConst1, root[0], root[1]), ByBzEndpoints)
-        ]
+        ],
     )
 
     # Left Surface
@@ -917,7 +917,7 @@ def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0915
             (xConst2, root[0], root[1])
             for root in root_list
             if not is_root_in_list((xConst2, root[0], root[1]), BxByEndpoints)
-        ]
+        ],
     )
 
     # Bx=BZ=0 Curve Endpoint
@@ -937,7 +937,7 @@ def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0915
             (xConst2, root[0], root[1])
             for root in root_list
             if not is_root_in_list((xConst2, root[0], root[1]), BxBzEndpoints)
-        ]
+        ],
     )
 
     # By=Bz=0 Curve Endpoint
@@ -957,7 +957,7 @@ def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0915
             (xConst2, root[0], root[1])
             for root in root_list
             if not is_root_in_list((xConst2, root[0], root[1]), ByBzEndpoints)
-        ]
+        ],
     )
 
     # Up Surface
@@ -979,7 +979,7 @@ def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0915
             (root[0], root[1], zConst1)
             for root in root_list
             if not is_root_in_list((root[0], root[1], zConst1), BxByEndpoints)
-        ]
+        ],
     )
 
     # Bx=Bz=0 Curve Endpoint
@@ -999,7 +999,7 @@ def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0915
             (root[0], root[1], zConst1)
             for root in root_list
             if not is_root_in_list((root[0], root[1], zConst1), BxBzEndpoints)
-        ]
+        ],
     )
 
     # By=Bz=0 Curve Endpoint
@@ -1019,7 +1019,7 @@ def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0915
             (root[0], root[1], zConst1)
             for root in root_list
             if not is_root_in_list((root[0], root[1], zConst1), ByBzEndpoints)
-        ]
+        ],
     )
 
     # Down Surface
@@ -1041,7 +1041,7 @@ def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0915
             (root[0], root[1], zConst2)
             for root in root_list
             if not is_root_in_list((root[0], root[1], zConst2), BxByEndpoints)
-        ]
+        ],
     )
 
     # Bx=Bz=0 Curve Endpoint
@@ -1061,7 +1061,7 @@ def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0915
             (root[0], root[1], zConst2)
             for root in root_list
             if not is_root_in_list((root[0], root[1], zConst2), BxBzEndpoints)
-        ]
+        ],
     )
 
     # By=Bz=0 Curve Endpoint
@@ -1081,7 +1081,7 @@ def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0915
             (root[0], root[1], zConst2)
             for root in root_list
             if not is_root_in_list((root[0], root[1], zConst2), ByBzEndpoints)
-        ]
+        ],
     )
 
     xbound = vspace[0][0][f111[0]][f111[1]][f111[2]]
@@ -1148,13 +1148,19 @@ def _trilinear_analysis(vspace, cell):  # noqa: C901, PLR0915
             index = 2
 
         first_endpoint = tlApprox(
-            curve_endpoints[0][0], curve_endpoints[0][1], curve_endpoints[0][2]
+            curve_endpoints[0][0],
+            curve_endpoints[0][1],
+            curve_endpoints[0][2],
         )[index]
         second_endpoint = tlApprox(
-            curve_endpoints[1][0], curve_endpoints[1][1], curve_endpoints[1][2]
+            curve_endpoints[1][0],
+            curve_endpoints[1][1],
+            curve_endpoints[1][2],
         )[index]
         if np.isclose(first_endpoint, 0, atol=_EQUALITY_ATOL) or np.isclose(
-            second_endpoint, 0, atol=_EQUALITY_ATOL
+            second_endpoint,
+            0,
+            atol=_EQUALITY_ATOL,
         ):
             return True
         return np.sign(first_endpoint) * np.sign(second_endpoint) <= 0
@@ -1240,14 +1246,14 @@ def _locate_null_point(vspace, cell, n, err):
             vspace[0][0][f000[0]][f000[1]][f000[2]],
             vspace[0][1][f000[0]][f000[1]][f000[2]],
             vspace[0][2][f000[0]][f000[1]][f000[2]],
-        ]
+        ],
     )
     pos_111 = np.array(
         [
             vspace[0][0][f111[0]][f111[1]][f111[2]],
             vspace[0][1][f111[0]][f111[1]][f111[2]],
             vspace[0][2][f111[0]][f111[1]][f111[2]],
-        ]
+        ],
     )
 
     def in_bound(pos):
@@ -1288,7 +1294,7 @@ def _locate_null_point(vspace, cell, n, err):
             vspace[0][0][f000[0]][f000[1]][f000[2]] + deltax / 2.0,
             vspace[0][1][f000[0]][f000[1]][f000[2]] + deltay / 2.0,
             vspace[0][2][f000[0]][f000[1]][f000[2]] + deltaz / 2.0,
-        ]
+        ],
     )
     # Newton Iteration
     for x0 in starting_pos:
@@ -1303,7 +1309,9 @@ def _locate_null_point(vspace, cell, n, err):
             prev_norm = np.linalg.norm(x0)
             # Too many null points if the determinant of the Jacobian is zero
             if np.isclose(
-                np.linalg.det(jcb(x0[0], x0[1], x0[2])), 0, atol=_EQUALITY_ATOL
+                np.linalg.det(jcb(x0[0], x0[1], x0[2])),
+                0,
+                atol=_EQUALITY_ATOL,
             ):
                 warnings.warn(
                     "Multiple null points suspected. Trilinear method may not work as intended.",
@@ -1319,7 +1327,8 @@ def _locate_null_point(vspace, cell, n, err):
                     break
             # Adjust position
             x0 = np.subtract(  # noqa: PLW2901
-                x0, np.matmul(np.linalg.inv(jcb(x0[0], x0[1], x0[2])), Bx0)
+                x0,
+                np.matmul(np.linalg.inv(jcb(x0[0], x0[1], x0[2])), Bx0),
             )
             norm = np.linalg.norm(x0)
             if np.abs((norm - prev_norm) / (prev_norm + 1e-10)) < err and in_bound(x0):
@@ -1447,7 +1456,8 @@ def _vspace_iterator(vspace, maxiter: int = 500, err: float = 1e-10):  # noqa: A
         for j in range(len(vspace[0][0][0]) - 1):
             for k in range(len(vspace[0][0][0][0]) - 1):
                 if _reduction(vspace, [i, j, k]) and _trilinear_analysis(
-                    vspace, [i, j, k]
+                    vspace,
+                    [i, j, k],
                 ):
                     loc = _locate_null_point(vspace, [i, j, k], maxiter, err)
                     if loc is not None:

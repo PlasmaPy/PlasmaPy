@@ -92,7 +92,10 @@ class TestPlasmaDispersionFunction:
             ).conjugate() + 2j * np.sqrt(π) * np.exp(-(w.conjugate() ** 2))
 
             assert u.isclose(
-                Z_of_wconj, should_equal_Z_of_wconj, rtol=1e-13, equal_nan=True
+                Z_of_wconj,
+                should_equal_Z_of_wconj,
+                rtol=1e-13,
+                equal_nan=True,
             ), (
                 "The symmetry property of the plasma dispersion function that "
                 "Z(w*) = Z(w)* + 2j * sqrt(pi) * exp[-(w*)**2] for Im(w) > 0 "
@@ -122,7 +125,7 @@ class TestPlasmaDispersionFunction:
         except Exception as exc:
             raise ValueError(
                 "plasma_dispersion_func is unable to accept an "
-                f"ndarray argument with values:\n{w_array}"
+                f"ndarray argument with values:\n{w_array}",
             ) from exc
 
         # The following power series expansion is given by equation (B.3)
@@ -187,7 +190,7 @@ class TestPlasmaDispersionFunction:
             plasma_dispersion_func(w)
             pytest.fail(
                 f"plasma_dispersion_func({w}) did not raise "
-                f"{expected_error.__name__} as expected."
+                f"{expected_error.__name__} as expected.",
             )
 
 
@@ -258,5 +261,5 @@ class TestPlasmaDispersionFunctionDeriv:
             plasma_dispersion_func_deriv(w)
             pytest.fail(
                 f"plasma_dispersion_func_deriv({w}) did not raise "
-                f"{expected_error.__name__} as expected."
+                f"{expected_error.__name__} as expected.",
             )

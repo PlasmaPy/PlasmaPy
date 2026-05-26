@@ -357,7 +357,9 @@ class TestGyroradius:
         vperp = thermal_speed(T, particle=particle, method="most_probable", ndim=3)
 
         assert gyroradius(B, particle=particle, T=T) == gyroradius(
-            B, particle=particle, Vperp=vperp
+            B,
+            particle=particle,
+            Vperp=vperp,
         )
 
 
@@ -367,12 +369,15 @@ def test_inertial_length() -> None:
     assert inertial_length(n_i, particle="p+").unit.is_equivalent(u.m)
 
     assert np.isclose(
-        inertial_length(mu * u.cm**-3, particle="p+").cgs.value, 2.28e7, rtol=0.01
+        inertial_length(mu * u.cm**-3, particle="p+").cgs.value,
+        2.28e7,
+        rtol=0.01,
     )
 
     inertial_length_electron_plus = inertial_length(5.351 * u.m**-3, particle="e+")
     assert inertial_length_electron_plus == inertial_length(
-        5.351 * u.m**-3, particle="e-"
+        5.351 * u.m**-3,
+        particle="e-",
     )
 
     assert inertial_length(n_i, particle="p+") == inertial_length(n_i, particle="p+")

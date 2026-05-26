@@ -145,7 +145,7 @@ class SampleClass2:
                 method_arg2,
                 method_kwarg1,
                 method_kwarg2,
-            ]
+            ],
         )
 
     @property

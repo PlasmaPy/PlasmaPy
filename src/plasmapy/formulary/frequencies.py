@@ -37,7 +37,7 @@ eps0_si_unitless = eps0.value
     validations_on_return={
         "units": [u.rad / u.s, u.Hz],
         "equivalencies": [(u.cy / u.s, u.Hz)],
-    }
+    },
 )
 @angular_freq_to_hz
 def gyrofrequency(
@@ -350,7 +350,9 @@ wp_ = plasma_frequency
 )
 @angular_freq_to_hz
 def lower_hybrid_frequency(
-    B: u.Quantity[u.T], n_i: u.Quantity[u.m**-3], ion: ParticleLike
+    B: u.Quantity[u.T],
+    n_i: u.Quantity[u.m**-3],
+    ion: ParticleLike,
 ) -> u.Quantity[u.rad / u.s]:
     r"""
     Return the lower hybrid frequency.
@@ -450,7 +452,8 @@ wlh_ = lower_hybrid_frequency
 )
 @angular_freq_to_hz
 def upper_hybrid_frequency(
-    B: u.Quantity[u.T], n_e: u.Quantity[u.m**-3]
+    B: u.Quantity[u.T],
+    n_e: u.Quantity[u.m**-3],
 ) -> u.Quantity[u.rad / u.s]:
     r"""
     Return the upper hybrid frequency.
@@ -528,7 +531,7 @@ wuh_ = upper_hybrid_frequency
     validations_on_return={
         "units": [u.rad / u.s, u.Hz],
         "equivalencies": [(u.cy / u.s, u.Hz)],
-    }
+    },
 )
 @angular_freq_to_hz
 def Buchsbaum_frequency(
@@ -630,5 +633,5 @@ def Buchsbaum_frequency(
 
     return np.sqrt(
         (omega_p1_squared * omega_c2_squared + omega_p2_squared * omega_c1_squared)
-        / (omega_p1_squared + omega_p2_squared)
+        / (omega_p1_squared + omega_p2_squared),
     )

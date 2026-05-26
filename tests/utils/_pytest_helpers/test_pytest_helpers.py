@@ -26,7 +26,7 @@ def raise_exception(*args, **kwargs):
     raise PlasmaPyError(
         f"This exception was raised by raise_exception with:\n\n"
         f"  args = {args}\n"
-        f"kwargs = {kwargs}\n"
+        f"kwargs = {kwargs}\n",
     )
 
 
@@ -96,7 +96,8 @@ f_args_kwargs_expected_whaterror = [
 
 
 @pytest.mark.parametrize(
-    ("f", "args", "kwargs", "expected", "whaterror"), f_args_kwargs_expected_whaterror
+    ("f", "args", "kwargs", "expected", "whaterror"),
+    f_args_kwargs_expected_whaterror,
 )
 @pytest.mark.filterwarnings("ignore:.*:plasmapy.utils.exceptions.PlasmaPyWarning")
 def test_run_test(f, args, kwargs, expected, whaterror):
@@ -146,14 +147,14 @@ def test_run_test(f, args, kwargs, expected, whaterror):
                     f"run_test did not raise an exception for "
                     f"{call_string(f, args, kwargs, color=None)} "  # ty:ignore[unknown-argument]
                     f"with expected = {expected!r} and "
-                    f"whaterror = {whaterror!r}."
+                    f"whaterror = {whaterror!r}.",
                 )
     except Exception as spectacular_exception:
         raise Exception(
             f"An unexpected exception was raised while running "
             f"{call_string(f, args, kwargs, color=None)} with "  # ty:ignore[unknown-argument]
             f"expected = {expected!r} and "
-            f"whaterror = {whaterror!r}."
+            f"whaterror = {whaterror!r}.",
         ) from spectacular_exception
 
 
@@ -251,7 +252,7 @@ def test_run_test_equivalent_calls(inputs, error):
         except Exception as exc:
             raise Exception(
                 f"Unexpected exception for run_tests_equivalent_calls with "
-                f"the following inputs =\n\n  {inputs}"
+                f"the following inputs =\n\n  {inputs}",
             ) from exc
     elif issubclass(error, Exception):
         with pytest.raises(error):

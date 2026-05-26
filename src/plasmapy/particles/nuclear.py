@@ -13,7 +13,8 @@ from plasmapy.particles.particle_class import Particle
 
 @particle_input(any_of={"isotope", "baryon"})
 def nuclear_binding_energy(
-    particle: Particle, mass_numb: int | None = None
+    particle: Particle,
+    mass_numb: int | None = None,
 ) -> u.Quantity[u.J]:
     """
     Return the nuclear binding energy associated with an isotope.
@@ -197,7 +198,7 @@ def nuclear_reaction_energy(*args, **kwargs) -> u.Quantity[u.J]:  # noqa: ANN002
         if not isinstance(unformatted_particles_list, list | tuple):
             raise TypeError(
                 "The input to process_particles_list should be a "
-                "string, list, or tuple."
+                "string, list, or tuple.",
             )
 
         particles = []
@@ -225,7 +226,7 @@ def nuclear_reaction_energy(*args, **kwargs) -> u.Quantity[u.J]:  # noqa: ANN002
             except ParticleError:
                 raise ParticleError(
                     f"{original_item} is not a valid reactant or "
-                    "product in a nuclear reaction."
+                    "product in a nuclear reaction.",
                 ) from None
 
         return particles
@@ -284,7 +285,7 @@ def nuclear_reaction_energy(*args, **kwargs) -> u.Quantity[u.J]:  # noqa: ANN002
         elif "->" not in reaction:
             raise ParticleError(
                 f"The reaction '{reaction}' is missing a '->'"
-                " or '-->' between the reactants and products."
+                " or '-->' between the reactants and products.",
             )
 
         try:
@@ -307,12 +308,12 @@ def nuclear_reaction_energy(*args, **kwargs) -> u.Quantity[u.J]:  # noqa: ANN002
 
     if total_baryon_number(reactants) != total_baryon_number(products):
         raise ParticleError(
-            f"The baryon number is not conserved for {reactants = } and {products = }."
+            f"The baryon number is not conserved for {reactants = } and {products = }.",
         )
 
     if total_charge(reactants) != total_charge(products):
         raise ParticleError(
-            f"Total charge is not conserved for {reactants = } and {products = }."
+            f"Total charge is not conserved for {reactants = } and {products = }.",
         )
 
     return add_mass_energy(reactants) - add_mass_energy(products)

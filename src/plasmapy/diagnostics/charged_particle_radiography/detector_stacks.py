@@ -80,7 +80,7 @@ class Layer:
                 raise ValueError(
                     "mass_density keyword is required if "
                     "stopping power is not provided in units "
-                    "convertible to J/m"
+                    "convertible to J/m",
                 )
 
             # Ensure the mass density has the right units
@@ -88,14 +88,14 @@ class Layer:
                 mass_density = mass_density.to(u.kg / u.m**3)
             except u.UnitConversionError as e:
                 raise ValueError(
-                    "mass_density keyword must have units convertible to kg/m^3."
+                    "mass_density keyword must have units convertible to kg/m^3.",
                 ) from e
 
             self.linear_stopping_power = (stopping_power * mass_density).to(u.J / u.m)
 
         else:
             raise ValueError(
-                f"Units of stopping_power keyword not recognized:{stopping_power.unit}"
+                f"Units of stopping_power keyword not recognized:{stopping_power.unit}",
             )
 
 
@@ -268,7 +268,8 @@ class Stack:
         )
 
         deposited = self.deposition_curves(
-            energies, return_only_active=return_only_active
+            energies,
+            return_only_active=return_only_active,
         )
 
         energy_bands = np.zeros([deposited.shape[0], 2]) * u.J

@@ -640,7 +640,8 @@ test_Particle_error_table = [
 
 
 @pytest.mark.parametrize(
-    ("args", "kwargs", "attribute", "exception"), test_Particle_error_table
+    ("args", "kwargs", "attribute", "exception"),
+    test_Particle_error_table,
 )
 def test_Particle_errors(args, kwargs, attribute, exception) -> None:
     """
@@ -652,7 +653,7 @@ def test_Particle_errors(args, kwargs, attribute, exception) -> None:
         pytest.fail(
             f"The following command: "
             f"\n\n  {call_string(Particle, args, kwargs)}{attribute}\n\n"
-            f"did not raise a {exception.__name__} as expected"
+            f"did not raise a {exception.__name__} as expected",
         )
 
 
@@ -665,7 +666,8 @@ test_Particle_warning_table = [
 
 
 @pytest.mark.parametrize(
-    ("arg", "kwargs", "attribute", "warning"), test_Particle_warning_table
+    ("arg", "kwargs", "attribute", "warning"),
+    test_Particle_warning_table,
 )
 def test_Particle_warnings(arg, kwargs, attribute, warning) -> None:
     """
@@ -678,7 +680,7 @@ def test_Particle_warnings(arg, kwargs, attribute, warning) -> None:
             pytest.fail(
                 f"The following command: "
                 f"\n\n >>> {call_string(Particle, arg, kwargs)}{attribute}\n\n"
-                f"did not issue a {warning.__name__} as expected"
+                f"did not issue a {warning.__name__} as expected",
             )
 
 
@@ -788,7 +790,8 @@ def test_particle_half_life_string() -> None:
 
 
 @pytest.mark.parametrize(
-    ("p", "is_one"), [(Particle("e-"), True), (Particle("p+"), False)]
+    ("p", "is_one"),
+    [(Particle("e-"), True), (Particle("p+"), False)],
 )
 def test_particle_is_electron(p, is_one: bool) -> None:  # noqa: FBT001
     assert p.is_electron == is_one
@@ -958,7 +961,8 @@ customized_particle_tests = [
 
 
 @pytest.mark.parametrize(
-    ("cls", "kwargs", "attr", "expected"), customized_particle_tests
+    ("cls", "kwargs", "attr", "expected"),
+    customized_particle_tests,
 )
 @pytest.mark.filterwarnings("ignore::UserWarning")
 def test_custom_particles(cls, kwargs, attr, expected) -> None:
@@ -968,7 +972,7 @@ def test_custom_particles(cls, kwargs, attr, expected) -> None:
     if not u.isclose(value, expected, equal_nan=True):
         pytest.fail(
             f"{call_string(cls, kwargs=kwargs)}.{attr} should return a value "
-            f"of {expected}, but instead returned a value of {value}."
+            f"of {expected}, but instead returned a value of {value}.",
         )
 
 
@@ -1093,7 +1097,8 @@ customized_particle_repr_table = [
 
 
 @pytest.mark.parametrize(
-    ("cls", "kwargs", "expected_repr"), customized_particle_repr_table
+    ("cls", "kwargs", "expected_repr"),
+    customized_particle_repr_table,
 )
 def test_customized_particle_repr(cls, kwargs, expected_repr) -> None:
     """Test the string representations of dimensionless and custom particles."""
@@ -1106,7 +1111,7 @@ def test_customized_particle_repr(cls, kwargs, expected_repr) -> None:
             f"with kwargs = {kwargs}.\n\n"
             f"expected_repr = {expected_repr}"
             f"from_str: {from_str}"
-            f"from_repr: {from_repr}"
+            f"from_repr: {from_repr}",
         )
 
 
@@ -1228,7 +1233,10 @@ custom_particles_from_json_tests = [
     custom_particles_from_json_tests,
 )
 def test_custom_particles_from_json_string(
-    cls, kwargs, json_string: str, expected_exception
+    cls,
+    kwargs,
+    json_string: str,
+    expected_exception,
 ) -> None:
     """Test the attributes of dimensionless and custom particles generated from
     JSON representation"""
@@ -1238,13 +1246,13 @@ def test_custom_particles_from_json_string(
         assert u.isclose(instance.mass, instance_from_json.mass, equal_nan=True), (
             pytest.fail(
                 f"Expected a mass value of {instance.mass}\n"
-                f"Received a mass value of {instance_from_json.mass}"
+                f"Received a mass value of {instance_from_json.mass}",
             )
         )
         assert u.isclose(instance.charge, instance_from_json.charge, equal_nan=True), (
             pytest.fail(
                 f"Expected a charge value of {instance.charge}\n"
-                f"Received a charge value of {instance_from_json.charge}"
+                f"Received a charge value of {instance_from_json.charge}",
             )
         )
     else:
@@ -1252,7 +1260,7 @@ def test_custom_particles_from_json_string(
             instance_from_json = json_loads_particle(json_string)
             pytest.fail(
                 f"{cls.__name__} with ({json_string})"
-                f" did not raise: {expected_exception.__name__}."
+                f" did not raise: {expected_exception.__name__}.",
             )
 
 
@@ -1261,7 +1269,10 @@ def test_custom_particles_from_json_string(
     custom_particles_from_json_tests,
 )
 def test_custom_particles_from_json_file(
-    cls, kwargs, json_string: str, expected_exception
+    cls,
+    kwargs,
+    json_string: str,
+    expected_exception,
 ) -> None:
     """Test the attributes of dimensionless and custom particles generated from
     JSON representation"""
@@ -1272,13 +1283,13 @@ def test_custom_particles_from_json_file(
         assert u.isclose(instance.mass, instance_from_json.mass, equal_nan=True), (
             pytest.fail(
                 f"Expected a mass value of {instance.mass}\n"
-                f"Received a mass value of {instance_from_json.mass}"
+                f"Received a mass value of {instance_from_json.mass}",
             )
         )
         assert u.isclose(instance.charge, instance_from_json.charge, equal_nan=True), (
             pytest.fail(
                 f"Expected a charge value of {instance.charge}\n"
-                f"Received a charge value of {instance_from_json.charge}"
+                f"Received a charge value of {instance_from_json.charge}",
             )
         )
     else:
@@ -1287,7 +1298,7 @@ def test_custom_particles_from_json_file(
             instance_from_json = json_load_particle(test_file_object)
             pytest.fail(
                 f"{cls.__name__} with ({json_string})"
-                f" did not raise: {expected_exception.__name__}."
+                f" did not raise: {expected_exception.__name__}.",
             )
 
 
@@ -1328,10 +1339,14 @@ particles_from_json_tests = [
 
 
 @pytest.mark.parametrize(
-    ("cls", "kwargs", "json_string", "expected_exception"), particles_from_json_tests
+    ("cls", "kwargs", "json_string", "expected_exception"),
+    particles_from_json_tests,
 )
 def test_particles_from_json_string(
-    cls, kwargs, json_string: str, expected_exception
+    cls,
+    kwargs,
+    json_string: str,
+    expected_exception,
 ) -> None:
     """Test the attributes of Particle objects created from JSON representation."""
     if expected_exception is None:
@@ -1340,22 +1355,26 @@ def test_particles_from_json_string(
         expected_particle = instance.symbol
         actual_particle = instance_from_json.symbol
         assert expected_particle == actual_particle, pytest.fail(
-            f"Expected {expected_particle}\nGot {actual_particle}"
+            f"Expected {expected_particle}\nGot {actual_particle}",
         )
     else:
         with pytest.raises(expected_exception):
             instance_from_json = json_loads_particle(json_string)
             pytest.fail(
                 f"{cls.__name__} with ({json_string})"
-                f" did not raise: {expected_exception.__name__}."
+                f" did not raise: {expected_exception.__name__}.",
             )
 
 
 @pytest.mark.parametrize(
-    ("cls", "kwargs", "json_string", "expected_exception"), particles_from_json_tests
+    ("cls", "kwargs", "json_string", "expected_exception"),
+    particles_from_json_tests,
 )
 def test_particles_from_json_file(
-    cls, kwargs, json_string: str, expected_exception
+    cls,
+    kwargs,
+    json_string: str,
+    expected_exception,
 ) -> None:
     """Test the attributes of Particle objects created from JSON representation."""
     if expected_exception is None:
@@ -1366,7 +1385,7 @@ def test_particles_from_json_file(
         expected_particle = instance.symbol
         actual_particle = instance_from_json.symbol
         assert expected_particle == actual_particle, pytest.fail(
-            f"Expected {expected_particle}\nGot {actual_particle}"
+            f"Expected {expected_particle}\nGot {actual_particle}",
         )
     else:
         with pytest.raises(expected_exception):
@@ -1374,7 +1393,7 @@ def test_particles_from_json_file(
             instance_from_json = json_load_particle(test_file_object)
             pytest.fail(
                 f"{cls.__name__} with ({json_string})"
-                f" did not raise: {expected_exception.__name__}."
+                f" did not raise: {expected_exception.__name__}.",
             )
 
 
@@ -1427,13 +1446,13 @@ def test_particle_to_json_string(cls, kwargs, expected_repr) -> None:
         f"Problem with JSON representation of {cls.__name__} "
         f"with kwargs = {kwargs}.\n\n"
         f"expected type = {expected_repr['type']}\n\n"
-        f"got type: {test_dict['type']}"
+        f"got type: {test_dict['type']}",
     )
     assert expected_repr["__init__"] == test_dict["__init__"], pytest.fail(
         f"Problem with JSON representation of {cls.__name__} "
         f"with kwargs = {kwargs}.\n\n"
         f"expected_repr = {expected_repr['__init__']}.\n\n"
-        f"json_repr: {test_dict['__init__']}"
+        f"json_repr: {test_dict['__init__']}",
     )
 
 
@@ -1451,13 +1470,13 @@ def test_particle_to_json_file(cls, kwargs, expected_repr) -> None:
         f"Problem with JSON representation of {cls.__name__} "
         f"with kwargs = {kwargs}.\n\n"
         f"expected type = {expected_repr['type']}\n\n"
-        f"got type: {test_dict['type']}"
+        f"got type: {test_dict['type']}",
     )
     assert expected_repr["__init__"] == test_dict["__init__"], pytest.fail(
         f"Problem with JSON representation of {cls.__name__} "
         f"with kwargs = {kwargs}.\n\n"
         f"expected_repr = {expected_repr['__init__']}.\n\n"
-        f"json_repr: {test_dict['__init__']}"
+        f"json_repr: {test_dict['__init__']}",
     )
 
 
@@ -1574,7 +1593,8 @@ def test_molecule_other() -> None:
 
     with pytest.warns(ParticleWarning):
         assert CustomParticle(2 * 126.90447 * u.u, e.si, "I2 1+") == molecule(
-            "I2 1+", Z=1
+            "I2 1+",
+            Z=1,
         )
 
 
@@ -1647,11 +1667,14 @@ def test_deuterium_ionization_energy() -> None:
     ],
 )
 def test_particle_ionization_energy(
-    particle_symbol, expected_ionization_energy
+    particle_symbol,
+    expected_ionization_energy,
 ) -> None:
     particle = Particle(particle_symbol)
     assert u.isclose(
-        particle.ionization_energy, expected_ionization_energy, rtol=1e-4
+        particle.ionization_energy,
+        expected_ionization_energy,
+        rtol=1e-4,
     ), f"Expected {expected_ionization_energy}, got {particle.ionization_energy}"
 
 

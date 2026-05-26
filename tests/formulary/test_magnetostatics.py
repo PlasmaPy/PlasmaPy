@@ -37,7 +37,8 @@ class Test_MagneticDipole:
         assert B2.unit == u.T
 
     @pytest.mark.skipif(
-        astropy.__version__ < "5.3.0", reason="change in unit representation"
+        astropy.__version__ < "5.3.0",
+        reason="change in unit representation",
     )
     def test_repr(self) -> None:
         """Test __repr__ function"""
@@ -48,7 +49,10 @@ class Test_MagneticDipole:
 class Test_GeneralWire:
     def setup_method(self) -> None:
         self.cw = CircularWire(
-            np.array([0, 0, 1]), np.array([0, 0, 0]) * u.m, 1 * u.m, 1 * u.A
+            np.array([0, 0, 1]),
+            np.array([0, 0, 0]) * u.m,
+            1 * u.m,
+            1 * u.A,
         )
         p1 = np.array([0.0, 0.0, 0.0]) * u.m
         p2 = np.array([0.0, 0.0, 1.0]) * u.m

@@ -21,7 +21,8 @@ class Test_diamagnetic_drift:
 
         result = drifts.diamagnetic_drift(dp, B, self.n, self.q)
         assert_quantity_allclose(
-            np.linalg.norm(result), T / self.q / np.linalg.norm(B) / u.m
+            np.linalg.norm(result),
+            T / self.q / np.linalg.norm(B) / u.m,
         )
 
     def test_diamagnetic_drift_1d_arrays(self) -> None:
@@ -46,7 +47,8 @@ class Test_diamagnetic_drift:
 
         result = drifts.diamagnetic_drift(2 * dp, 3 * B, self.n, self.q)
         assert_quantity_allclose(
-            result, (2 / 3) * u.Quantity([[[0, 0, 1]]], unit=u.m / u.s)
+            result,
+            (2 / 3) * u.Quantity([[[0, 0, 1]]], unit=u.m / u.s),
         )
 
     def test_nonsensical_units(self) -> None:
@@ -92,7 +94,8 @@ class Test_ExB_drift:
 
         result = drifts.ExB_drift(2 * E, 3 * B)
         assert_quantity_allclose(
-            result, (2 / 3) * u.Quantity([[[0, 0, 1]]], unit=u.m / u.s)
+            result,
+            (2 / 3) * u.Quantity([[[0, 0, 1]]], unit=u.m / u.s),
         )
 
     def test_alias(self) -> None:
@@ -125,7 +128,8 @@ class Test_force_drift:
 
         result = drifts.force_drift(2 * F, 3 * B, q)
         assert_quantity_allclose(
-            result, (2 / 3) * u.Quantity([[[0, 0, 1]]], unit=u.m / u.s)
+            result,
+            (2 / 3) * u.Quantity([[[0, 0, 1]]], unit=u.m / u.s),
         )
 
     def test_nonsensical_units(self) -> None:

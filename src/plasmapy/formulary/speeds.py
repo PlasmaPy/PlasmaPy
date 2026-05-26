@@ -160,13 +160,13 @@ def Alfven_speed(
         raise ValueError(
             "When calculating the Alfvén speed, an ion cannot be specified "
             "when the 'density' parameter is provided an argument with a "
-            "physical type of mass density."
+            "physical type of mass density.",
         )
 
     if density.unit.physical_type == u.physical.number_density and ion is None:
         raise ValueError(
             "When calculating the Alfvén speed, the ion must be specified "
-            "when 'density' has a physical type of number density."
+            "when 'density' has a physical type of number density.",
         )
 
     if density.unit.physical_type == u.physical.mass_density:
@@ -354,12 +354,12 @@ def ion_sound_speed(
         if not isinstance(gamma, Real):
             raise TypeError(
                 f"The adiabatic index gamma for {species} must be a positive "
-                f"number greater than one."
+                f"number greater than one.",
             )
         if gamma < 1:
             raise PhysicsError(
                 f"The adiabatic index for {species} must be a positive "
-                f"number greater than one."
+                f"number greater than one.",
             )
 
     # Assume non-dispersive limit if values for n_e (or k) are not specified
@@ -467,7 +467,7 @@ def thermal_speed_coefficients(method: str, ndim: int) -> float:
         coeff = _coefficients[(ndim, method)]
     except KeyError as ex:
         raise ValueError(
-            f"Value for (ndim, method) pair not valid, got '({ndim}, {method})'."
+            f"Value for (ndim, method) pair not valid, got '({ndim}, {method})'.",
         ) from ex
 
     return coeff
@@ -734,7 +734,7 @@ vth_ = thermal_speed
 
 @check_relativistic
 @validate_quantities(
-    T={"can_be_negative": False, "equivalencies": u.temperature_energy()}
+    T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
 )
 @particle_input
 def kappa_thermal_speed(
@@ -833,7 +833,7 @@ def kappa_thermal_speed(
     if kappa <= 3 / 2:
         raise ValueError(
             f"Must have kappa > 3/2, instead of {kappa}, for "
-            "kappa distribution function to be valid."
+            "kappa distribution function to be valid.",
         )
     # different methods, as per https://en.wikipedia.org/wiki/Thermal_velocity
     vth = thermal_speed(T=T, particle=particle, method=method)

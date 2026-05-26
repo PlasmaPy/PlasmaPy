@@ -45,7 +45,11 @@ class TestFindFloatingPotential:
 
     _null_result = {
         **VFExtras(
-            vf_err=np.nan, rsq=None, fitted_func=None, islands=None, fitted_indices=None
+            vf_err=np.nan,
+            rsq=None,
+            fitted_func=None,
+            islands=None,
+            fitted_indices=None,
         )._asdict(),
         "vf": np.nan,
     }

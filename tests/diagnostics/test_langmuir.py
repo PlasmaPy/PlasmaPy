@@ -54,7 +54,11 @@ class Test__fitting_functions:
         for use in fitting a bi-Maxwellian electron current growth region"""
 
         value = langmuir._fit_func_double_lin_inverse(
-            self.x, self.x0, self.y0, self.T0, self.Delta_T
+            self.x,
+            self.x0,
+            self.y0,
+            self.T0,
+            self.Delta_T,
         )
         expect_value = 8
 
@@ -316,7 +320,8 @@ def test_get_floating_potential_with_return_arg(characteristic) -> None:
 
     with pytest.warns(FutureWarning):
         potential, arg = langmuir.get_floating_potential(
-            characteristic, return_arg=True
+            characteristic,
+            return_arg=True,
         )
     assert np.allclose((potential.to(u.V).value, arg), (0.12203823, 5))
 
@@ -326,7 +331,10 @@ def test_get_ion_density_OML_without_return_fit(characteristic) -> None:
 
     with pytest.warns(FutureWarning):
         density = langmuir.get_ion_density_OML(
-            characteristic, 5000000 * u.m**2, "p+", return_fit=False
+            characteristic,
+            5000000 * u.m**2,
+            "p+",
+            return_fit=False,
         )
     assert np.isclose(density.value, 385344135.12064785)
 

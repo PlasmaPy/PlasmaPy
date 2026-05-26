@@ -206,13 +206,13 @@ def temp_ratio(  # noqa: ANN201, C901
     if len(ions) != 2:  # ty:ignore[invalid-argument-type]
         raise ValueError(
             "Argument 'ions' can only take two (2) input values. "
-            f"Instead received {len(ions)} input values."  # ty:ignore[invalid-argument-type]
+            f"Instead received {len(ions)} input values.",  # ty:ignore[invalid-argument-type]
         )
 
     if not ions.is_category("ion"):
         raise ValueError(
             f"Particle(s) in 'ions' must be ions, received {ions=} "
-            "instead. Please renter the 'ions' input parameter."
+            "instead. Please renter the 'ions' input parameter.",
         )
 
     # Validate n_step argument
@@ -220,7 +220,7 @@ def temp_ratio(  # noqa: ANN201, C901
         raise TypeError(
             "Argument 'n_step' is of incorrect type, type of "
             f"{type(n_step)} received instead. While 'n_step' must be "
-            "of type int."
+            "of type int.",
         )
 
     # Validate scaling arguments
@@ -229,7 +229,7 @@ def temp_ratio(  # noqa: ANN201, C901
             raise TypeError(
                 "Scaling argument is of incorrect type, type of "
                 f"{type(arg)} received instead. Scaling argument "
-                "should be of type float or int."
+                "should be of type float or int.",
             )
 
     # Define differential equation function
@@ -343,7 +343,7 @@ def temp_ratio(  # noqa: ANN201, C901
                     density_scale,
                     velocity_scale,
                     temperature_scale,
-                )
+                ),
             )
             if verbose:
                 logging.info(f"\r {(i / len(variables[0])) * 100:.2f} %")  # noqa: G004
@@ -354,5 +354,5 @@ def temp_ratio(  # noqa: ANN201, C901
         raise ValueError(
             "Argument(s) are of unequal lengths, the following "
             "arguments should be of equal length: 'r_0', 'r_n', "
-            "'n_1', 'n_2', 'v_1', 'T_1' and 'T_2'."
+            "'n_1', 'n_2', 'v_1', 'T_1' and 'T_2'.",
         ) from e

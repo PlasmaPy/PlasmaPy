@@ -48,10 +48,10 @@ class TestSingleParticleCollisionFrequencies:
         )
 
     MKS_test_case = SingleParticleCollisionFrequencies(
-        **MKS_unit_conversion_test_constructor_arguments
+        **MKS_unit_conversion_test_constructor_arguments,
     )
     CGS_test_case = SingleParticleCollisionFrequencies(
-        **CGS_unit_conversion_test_constructor_arguments
+        **CGS_unit_conversion_test_constructor_arguments,
     )
 
     return_values_to_test = [
@@ -80,7 +80,8 @@ class TestSingleParticleCollisionFrequencies:
         """Test the return units"""
 
         assert getattr(
-            self.attribute_units_test_case, attribute_to_test
+            self.attribute_units_test_case,
+            attribute_to_test,
         ).unit.is_equivalent(expected_attribute_units)
 
     @pytest.mark.parametrize(
@@ -126,7 +127,7 @@ class TestSingleParticleCollisionFrequencies:
                         5.8e-6 * T_b ** (-1.5),
                         5.8e-6 * T_b ** (-0.5) * v_a ** (-1),
                         2.9e-6 * T_b ** (-0.5) * v_a ** (-1),
-                    ]
+                    ],
                 )
             elif limit_type == "fast":
                 limit_values.extend(
@@ -134,7 +135,7 @@ class TestSingleParticleCollisionFrequencies:
                         7.7e-6 * v_a ** (-1.5),
                         7.7e-6 * v_a ** (-1.5),
                         3.9e-6 * T_b * v_a ** (-2.5),
-                    ]
+                    ],
                 )
         elif interaction_type == "e|i":
             mu = (cases.field_particle.mass / m_p).value
@@ -145,7 +146,7 @@ class TestSingleParticleCollisionFrequencies:
                         0.23 * mu**1.5 * T_b**-1.5,
                         2.5e-4 * mu**0.5 * T_b**-0.5 * v_a**-1,
                         1.2e-4 * mu**0.5 * T_b**-0.5 * v_a**-1,
-                    ]
+                    ],
                 )
             elif limit_type == "fast":
                 limit_values.extend(
@@ -153,7 +154,7 @@ class TestSingleParticleCollisionFrequencies:
                         3.9e-6 * v_a**-1.5,
                         7.7e-6 * v_a**-1.5,
                         2.1e-9 * mu**-1 * T_b * v_a**-2.5,
-                    ]
+                    ],
                 )
         elif interaction_type == "i|e":
             mu = (cases.test_particle.mass / m_p).value
@@ -164,7 +165,7 @@ class TestSingleParticleCollisionFrequencies:
                         1.6e-9 * mu**-1 * T_b ** (-1.5),
                         3.2e-9 * mu**-1 * T_b ** (-0.5) * v_a**-1,
                         1.6e-9 * mu**-1 * T_b ** (-0.5) * v_a**-1,
-                    ]
+                    ],
                 )
             elif limit_type == "fast":
                 limit_values.extend(
@@ -172,7 +173,7 @@ class TestSingleParticleCollisionFrequencies:
                         1.7e-4 * mu**0.5 * v_a**-1.5,
                         1.8e-7 * mu**-0.5 * v_a**-1.5,
                         1.7e-4 * mu**0.5 * T_b * v_a**-2.5,
-                    ]
+                    ],
                 )
 
         elif interaction_type == "i|i":
@@ -189,7 +190,7 @@ class TestSingleParticleCollisionFrequencies:
                         * T_b**-1.5,
                         1.4e-7 * mu_prime**0.5 * mu**-1 * T_b**-0.5 * v_a**-1,
                         6.8e-8 * mu_prime**0.5 * mu**-1 * T_b**-0.5 * v_a**-1,
-                    ]
+                    ],
                 )
             elif limit_type == "fast":
                 limit_values.extend(
@@ -197,13 +198,13 @@ class TestSingleParticleCollisionFrequencies:
                         9e-8 * (1 / mu + 1 / mu_prime) * mu**0.5 * v_a**-1.5,
                         1.8 * 10**-7 * mu**-0.5 * v_a**-1.5,
                         9e-8 * mu**0.5 * mu_prime**-1 * T_b * v_a**-2.5,
-                    ]
+                    ],
                 )
         # The expected energy loss collision frequency should always equal this
         limit_values.append(
             2 * cases.momentum_loss.value
             - cases.transverse_diffusion.value
-            - cases.parallel_diffusion.value
+            - cases.parallel_diffusion.value,
         )
 
         return limit_values
@@ -384,7 +385,8 @@ class TestSingleParticleCollisionFrequencies:
         """Test the return values"""
 
         value_test_case = SingleParticleCollisionFrequencies(
-            *constructor_arguments, **constructor_keyword_arguments
+            *constructor_arguments,
+            **constructor_keyword_arguments,
         )
 
         coulomb_density_constant = (
@@ -393,7 +395,9 @@ class TestSingleParticleCollisionFrequencies:
         )
 
         expected_limit_values = self.get_limit_value(
-            interaction_type, limit_type, value_test_case
+            interaction_type,
+            limit_type,
+            value_test_case,
         )
 
         if interaction_type == "e|e":
@@ -409,7 +413,9 @@ class TestSingleParticleCollisionFrequencies:
             ) ** 2
 
         for attribute_name, expected_limit_value in zip(
-            self.return_values_to_test, expected_limit_values, strict=False
+            self.return_values_to_test,
+            expected_limit_values,
+            strict=False,
         ):
             calculated_limit_value = getattr(value_test_case, attribute_name).value
             # Energy loss limit value is already in units of
@@ -420,7 +426,10 @@ class TestSingleParticleCollisionFrequencies:
                 )
 
             assert np.allclose(
-                calculated_limit_value, expected_limit_value, rtol=0.05, atol=0
+                calculated_limit_value,
+                expected_limit_value,
+                rtol=0.05,
+                atol=0,
             )
 
     @pytest.mark.parametrize(
@@ -440,13 +449,17 @@ class TestSingleParticleCollisionFrequencies:
         ],
     )
     def test_init_errors(
-        self, expected_error, constructor_arguments, constructor_keyword_arguments
+        self,
+        expected_error,
+        constructor_arguments,
+        constructor_keyword_arguments,
     ) -> None:
         """Test errors raised in the __init__ function body"""
 
         with pytest.raises(expected_error):
             SingleParticleCollisionFrequencies(
-                *constructor_arguments, **constructor_keyword_arguments
+                *constructor_arguments,
+                **constructor_keyword_arguments,
             )
 
     @pytest.mark.parametrize(
@@ -520,13 +533,17 @@ class TestMaxwellianCollisionFrequencies:
         ],
     )
     def test_init_errors(
-        self, expected_error, constructor_arguments, constructor_keyword_arguments
+        self,
+        expected_error,
+        constructor_arguments,
+        constructor_keyword_arguments,
     ) -> None:
         """Test errors raised in the __init__ function body"""
 
         with pytest.raises(expected_error):
             MaxwellianCollisionFrequencies(
-                *constructor_arguments, **constructor_keyword_arguments
+                *constructor_arguments,
+                **constructor_keyword_arguments,
             )
 
     @pytest.mark.parametrize(
@@ -606,7 +623,8 @@ class TestMaxwellianCollisionFrequencies:
         """Test errors raised in attribute bodies"""
 
         test_case = MaxwellianCollisionFrequencies(
-            *constructor_arguments, **constructor_keyword_arguments
+            *constructor_arguments,
+            **constructor_keyword_arguments,
         )
 
         with pytest.raises(expected_error):
@@ -645,10 +663,12 @@ class TestMaxwellianCollisionFrequencies:
     )
     @pytest.mark.filterwarnings("ignore::plasmapy.utils.exceptions.RelativityWarning")
     def test_fundamental_frequency_values(
-        self, frequency_to_test, constructor_keyword_arguments
+        self,
+        frequency_to_test,
+        constructor_keyword_arguments,
     ) -> None:
         value_test_case = MaxwellianCollisionFrequencies(
-            **constructor_keyword_arguments
+            **constructor_keyword_arguments,
         )
 
         calculated_value = getattr(value_test_case, frequency_to_test)
@@ -696,10 +716,13 @@ class TestMaxwellianCollisionFrequencies:
     )
     @pytest.mark.filterwarnings("ignore::plasmapy.utils.exceptions.RelativityWarning")
     def test_correctness_collision_freq_values(
-        self, frequency_to_test, constructor_keyword_arguments, expected_value
+        self,
+        frequency_to_test,
+        constructor_keyword_arguments,
+        expected_value,
     ) -> None:
         value_test_case = MaxwellianCollisionFrequencies(
-            **constructor_keyword_arguments
+            **constructor_keyword_arguments,
         )
 
         calculated_value = getattr(value_test_case, frequency_to_test)
@@ -782,7 +805,10 @@ class Test_collision_frequency:
     def test_handle_nparrays(self, insert_some_nans, insert_all_nans, kwargs) -> None:
         """Test for ability to handle numpy array quantities"""
         assert_can_handle_nparray(
-            collision_frequency, insert_some_nans, insert_all_nans, kwargs
+            collision_frequency,
+            insert_some_nans,
+            insert_all_nans,
+            kwargs,
         )
 
     def test_electrons(self) -> None:
@@ -799,7 +825,10 @@ class Test_collision_frequency:
                 method="classical",
             )
         testTrue = np.isclose(
-            self.True_electrons, methodVal.si.value, rtol=1e-1, atol=0.0
+            self.True_electrons,
+            methodVal.si.value,
+            rtol=1e-1,
+            atol=0.0,
         )
         errStr = (
             f"Collision frequency should be {self.True_electrons} and not {methodVal}."
@@ -820,7 +849,10 @@ class Test_collision_frequency:
                 method="classical",
             )
         testTrue = np.isclose(
-            self.True_protons, methodVal.si.value, rtol=1e-1, atol=0.0
+            self.True_protons,
+            methodVal.si.value,
+            rtol=1e-1,
+            atol=0.0,
         )
         errStr = (
             f"Collision frequency should be {self.True_protons} and not {methodVal}."
@@ -860,7 +892,10 @@ class Test_fundamental_electron_collision_freq:
     def test_handle_nparrays(self, insert_some_nans, insert_all_nans) -> None:
         """Test for ability to handle numpy array quantities"""
         assert_can_handle_nparray(
-            fundamental_electron_collision_freq, insert_some_nans, insert_all_nans, {}
+            fundamental_electron_collision_freq,
+            insert_some_nans,
+            insert_all_nans,
+            {},
         )
 
 
@@ -879,5 +914,8 @@ class Test_fundamental_ion_collision_freq:
     def test_handle_nparrays(self, insert_some_nans, insert_all_nans) -> None:
         """Test for ability to handle numpy array quantities"""
         assert_can_handle_nparray(
-            fundamental_ion_collision_freq, insert_some_nans, insert_all_nans, {}
+            fundamental_ion_collision_freq,
+            insert_some_nans,
+            insert_all_nans,
+            {},
         )

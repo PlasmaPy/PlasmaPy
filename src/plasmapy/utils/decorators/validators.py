@@ -143,13 +143,15 @@ class ValidateQuantities(CheckUnits, CheckValues):
     """
 
     def __init__(
-        self, validations_on_return=None, **validations: dict[str, Any]
+        self,
+        validations_on_return=None,
+        **validations: dict[str, Any],
     ) -> None:
         if "checks_on_return" in validations:
             raise TypeError(
                 "keyword argument 'checks_on_return' is not allowed, "
                 "use 'validations_on_return' to set validations "
-                "on the return variable"
+                "on the return variable",
             )
 
         self._validations = validations
@@ -196,7 +198,9 @@ class ValidateQuantities(CheckUnits, CheckValues):
 
                 # validate argument & update for conversion
                 arg = self._validate_quantity(
-                    bound_args.arguments[arg_name], arg_name, validations[arg_name]
+                    bound_args.arguments[arg_name],
+                    arg_name,
+                    validations[arg_name],
                 )
                 bound_args.arguments[arg_name] = arg
 
@@ -216,7 +220,8 @@ class ValidateQuantities(CheckUnits, CheckValues):
         return wrapper
 
     def _get_validations(
-        self, bound_args: inspect.BoundArguments
+        self,
+        bound_args: inspect.BoundArguments,
     ) -> dict[str, dict[str, Any]]:
         """
         Review :attr:`validations` and function bound arguments to build a complete
@@ -262,7 +267,7 @@ class ValidateQuantities(CheckUnits, CheckValues):
                         f"Validation 'none_shall_pass' for argument '{arg_name}' is "
                         f"inconsistent between function annotations "
                         f"({validations[arg_name]['none_shall_pass']}) and decorator "
-                        f"argument ({_none_shall_pass})."
+                        f"argument ({_none_shall_pass}).",
                     )
                 validations[arg_name]["none_shall_pass"] = _none_shall_pass
             except (KeyError, TypeError):
@@ -356,8 +361,8 @@ class ValidateQuantities(CheckUnits, CheckValues):
                         f"{arg_validations['units'][0]}. To silence this warning, "
                         f"explicitly pass in an astropy Quantity "
                         f"(e.g. 5. * astropy.units.cm) "
-                        f"(see http://docs.astropy.org/en/stable/units/)"
-                    )
+                        f"(see http://docs.astropy.org/en/stable/units/)",
+                    ),
                 )
 
         # check units
@@ -568,7 +573,7 @@ def get_attributes_not_provided(  # noqa: ANN202
             )
             if number_of_attributes_provided == 0:
                 attributes_not_provided.append(
-                    f"at least one of {' or '.join(attribute_tuple)}"
+                    f"at least one of {' or '.join(attribute_tuple)}",
                 )
 
     if mutually_exclusive_attributes is not None:
@@ -578,7 +583,7 @@ def get_attributes_not_provided(  # noqa: ANN202
             )
             if number_of_attributes_provided != 1:
                 attributes_not_provided.append(
-                    f"exactly one of {' or '.join(attribute_tuple)}"
+                    f"exactly one of {' or '.join(attribute_tuple)}",
                 )
 
     return attributes_not_provided
@@ -606,7 +611,7 @@ def validate_class_attributes(  # noqa: ANN201
             if len(arguments_not_provided) > 0:
                 raise ValueError(
                     f"{attribute.__name__} expected the following "
-                    f"additional arguments: {', '.join(arguments_not_provided)}"
+                    f"additional arguments: {', '.join(arguments_not_provided)}",
                 )
 
             return attribute(self, *args, **kwargs)

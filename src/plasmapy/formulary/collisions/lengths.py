@@ -16,7 +16,7 @@ from plasmapy.utils.decorators import validate_quantities
 
 
 @validate_quantities(
-    T={"can_be_negative": False, "equivalencies": u.temperature_energy()}
+    T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
 )
 @particle_input
 def impact_parameter_perp(
@@ -95,7 +95,9 @@ def impact_parameter_perp(
     # TODO: need to incorporate an average ionization parameter
 
     T, _masses, charges, reduced_mass, V = misc._process_inputs(  # noqa: SLF001
-        T=T, species=species, V=V
+        T=T,
+        species=species,
+        V=V,
     )
 
     return charges[0] * charges[1] / (4 * np.pi * eps0 * reduced_mass * V**2)
@@ -224,7 +226,9 @@ def impact_parameter(  # noqa: ANN201, C901
     (<Quantity 2.534...e-10 m>, <Quantity 2.182...e-05 m>)
     """
     T, _masses, _charges, reduced_mass, V = misc._process_inputs(  # noqa: SLF001
-        T=T, species=species, V=V
+        T=T,
+        species=species,
+        V=V,
     )
     # catching error where mean charge state is not given for non-classical
     # methods that require the ion density
@@ -238,7 +242,7 @@ def impact_parameter(  # noqa: ANN201, C901
     } and np.isnan(z_mean):
         raise ValueError(
             'Must provide a z_mean for "ls_full_interp", '
-            '"hls_max_interp", and "hls_full_interp" methods.'
+            '"hls_max_interp", and "hls_full_interp" methods.',
         )
     # Debye length
     lambdaDe = Debye_length(T, n_e)
@@ -432,7 +436,12 @@ def mean_free_path(
     """
     # collisional frequency
     freq = frequencies.collision_frequency(
-        T=T, n=n_e, species=species, z_mean=z_mean, V=V, method=method
+        T=T,
+        n=n_e,
+        species=species,
+        z_mean=z_mean,
+        V=V,
+        method=method,
     )
     # boiler plate to fetch velocity
     # this has been moved to after collision_frequency to avoid use of
@@ -440,6 +449,8 @@ def mean_free_path(
     # Should be fine since collision_frequency has its own _process_inputs
     # check, and we are only using this here to get the velocity.
     T, _masses, _charges, _reduced_mass, V = misc._process_inputs(  # noqa: SLF001
-        T=T, species=species, V=V
+        T=T,
+        species=species,
+        V=V,
     )
     return V / freq

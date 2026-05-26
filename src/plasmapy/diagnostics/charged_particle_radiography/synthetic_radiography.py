@@ -76,10 +76,13 @@ def _coerce_to_cartesian_si(pos):
 
 class _SyntheticRadiographySaveRoutine(SaveOnceOnCompletion):
     def __init__(
-        self, output_directory: Path | None = None, output_basename: str = "output"
+        self,
+        output_directory: Path | None = None,
+        output_basename: str = "output",
     ) -> None:
         super().__init__(
-            output_directory=output_directory, output_basename=output_basename
+            output_directory=output_directory,
+            output_basename=output_basename,
         )
 
         self._quantities = {
@@ -212,7 +215,8 @@ class Tracker(ParticleTracker):
         dt=None,
         dt_range=None,
         field_weighting: Literal[
-            "volume averaged", "nearest neighbor"
+            "volume averaged",
+            "nearest neighbor",
         ] = "volume averaged",
         detector_hdir=None,
         detector_vdir=None,
@@ -231,7 +235,7 @@ class Tracker(ParticleTracker):
         )
 
         termination_condition = AllParticlesOffGridTerminationCondition(
-            fraction_exited_threshold=fraction_exited_threshold
+            fraction_exited_threshold=fraction_exited_threshold,
         )
 
         super().__init__(
@@ -278,7 +282,7 @@ class Tracker(ParticleTracker):
         if not any(test):
             raise ValueError(
                 "The vector between the source and the detector "
-                "does not intersect the grid provided!"
+                "does not intersect the grid provided!",
             )
 
         # Determine the angle above which particles will not hit the grid
@@ -338,7 +342,7 @@ class Tracker(ParticleTracker):
                         theta[ind, i] = np.arccos(
                             np.dot(vec, self.src_det)
                             / np.linalg.norm(vec)
-                            / np.linalg.norm(self.src_det)
+                            / np.linalg.norm(self.src_det),
                         )
                         ind += 1
 
@@ -357,7 +361,13 @@ class Tracker(ParticleTracker):
     # *************************************************************************
 
     def add_wire_mesh(
-        self, location, extent, nwires, wire_diameter, mesh_hdir=None, mesh_vdir=None
+        self,
+        location,
+        extent,
+        nwires,
+        wire_diameter,
+        mesh_hdir=None,
+        mesh_vdir=None,
     ):
         """
         Add a wire mesh grid between the particle source and the object grid
@@ -438,7 +448,7 @@ class Tracker(ParticleTracker):
         else:
             raise ValueError(
                 "extent must be a tuple of 1 or 2 elements, but "
-                f"{len(extent)} elements were provided."
+                f"{len(extent)} elements were provided.",
             )
 
         if not isinstance(nwires, tuple):
@@ -466,7 +476,7 @@ class Tracker(ParticleTracker):
         if np.linalg.norm(location - self.source) > np.linalg.norm(self.source):
             raise ValueError(
                 f"The specified mesh location, {location},"
-                "is not between the source and the origin."
+                "is not between the source and the origin.",
             )
 
         mesh_entry = {
@@ -551,7 +561,7 @@ class Tracker(ParticleTracker):
         if self.num_particles - nremoved <= 0:
             raise ValueError(
                 "The specified mesh is blocking all of the particles. "
-                f"The wire diameter ({2 * wire_radius}) may be too large."  # ty:ignore[unsupported-operator]
+                f"The wire diameter ({2 * wire_radius}) may be too large.",  # ty:ignore[unsupported-operator]
             )
 
         self._stop_particles(~keep_these_particles)
@@ -705,7 +715,9 @@ class Tracker(ParticleTracker):
 
         if distribution == "monte-carlo":
             theta, phi = self._angles_monte_carlo(
-                num_particles, max_theta, random_seed=random_seed
+                num_particles,
+                max_theta,
+                random_seed=random_seed,
             )
         elif distribution == "uniform":
             theta, phi = self._angles_uniform(num_particles, max_theta)
@@ -762,7 +774,7 @@ class Tracker(ParticleTracker):
 
         # But also calculate geometry-dependent variables
         self.theta = np.arccos(
-            np.inner(self.v, self.src_n) / np.linalg.norm(self.v, axis=-1)
+            np.inner(self.v, self.src_n) / np.linalg.norm(self.v, axis=-1),
         )
 
         n_wrong_way = np.sum(np.where(self.theta > np.pi / 2, 1, 0))
@@ -849,7 +861,8 @@ class Tracker(ParticleTracker):
         # Calculate the time required to evolve each particle into the
         # plane
         t = np.inner(center[np.newaxis, :] - self.x[mask], normal) / np.inner(
-            self.v[mask], normal
+            self.v[mask],
+            normal,
         )
 
         # Calculate particle positions in the plane
@@ -980,13 +993,13 @@ class Tracker(ParticleTracker):
 
         self._log(
             "Fraction of tracked particles that entered the grid: "
-            f"{self.fract_entered * 100:.1f}%"
+            f"{self.fract_entered * 100:.1f}%",
         )
 
         self._log(
             "Fraction of tracked particles deflected away from the "
             "detector plane: "
-            f"{self.fract_deflected * 100}%"
+            f"{self.fract_deflected * 100}%",
         )
 
     @property
@@ -1080,7 +1093,7 @@ class Tracker(ParticleTracker):
 
         if not self._has_run:
             raise RuntimeError(
-                "The simulation must be run before a results dictionary can be created."
+                "The simulation must be run before a results dictionary can be created.",
             )
 
         # Determine locations of points in the detector plane using unit
@@ -1196,7 +1209,7 @@ def synthetic_radiograph(obj, size=None, bins=None, ignore_grid: bool = False): 
     else:
         raise TypeError(
             f"Expected type `Path`, `dict` or {Tracker} for argument `obj`, but "
-            f"got type {type(obj)}."
+            f"got type {type(obj)}.",
         )
 
     if bins is None:
@@ -1224,13 +1237,13 @@ def synthetic_radiograph(obj, size=None, bins=None, ignore_grid: bool = False): 
     elif not isinstance(size, u.Quantity):
         raise TypeError(
             "Argument `size` must be an astropy.units.Quantity object with "
-            "units convertible to meters."
+            "units convertible to meters.",
         )
     elif not size.unit.is_equivalent(u.m):
         raise ValueError("Argument `size` must have units convertible to meters.")
     elif size.shape != (2, 2):
         raise ValueError(
-            f"Argument `size` must have shape (2, 2), but got {size.shape}."
+            f"Argument `size` must have shape (2, 2), but got {size.shape}.",
         )
 
     # Exclude NaN positions (deleted particles) and velocities
@@ -1241,7 +1254,10 @@ def synthetic_radiograph(obj, size=None, bins=None, ignore_grid: bool = False): 
 
     # Generate the histogram
     intensity, h, v = np.histogram2d(
-        sanitized_xloc, sanitized_yloc, range=size.to(u.m).value, bins=bins
+        sanitized_xloc,
+        sanitized_yloc,
+        range=size.to(u.m).value,
+        bins=bins,
     )
 
     # h, v are the bin edges: compute the centers to produce arrays

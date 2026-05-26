@@ -211,7 +211,7 @@ def make_global_substitutions_table(
                 f"   * - {row.substitution}",
                 f"     - {row.replaces}",
                 f"     - {row.example}",
-            ]
+            ],
         )
 
     content = "\n".join(lines)

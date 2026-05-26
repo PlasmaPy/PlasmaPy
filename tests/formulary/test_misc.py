@@ -91,13 +91,15 @@ def test_magnetic_energy_density() -> None:
     assert magnetic_energy_density(B).value == magnetic_pressure(B).value
 
     assert_quantity_allclose(
-        magnetic_energy_density(2 * B), 4 * magnetic_energy_density(B)
+        magnetic_energy_density(2 * B),
+        4 * magnetic_energy_density(B),
     )
 
     assert_quantity_allclose(magnetic_energy_density(B).value, 397887.35772973835)
 
     assert_quantity_allclose(
-        magnetic_energy_density(B), magnetic_energy_density(B.to(u.G))
+        magnetic_energy_density(B),
+        magnetic_energy_density(B.to(u.G)),
     )
 
     assert isinstance(magnetic_energy_density(B_arr), u.Quantity)

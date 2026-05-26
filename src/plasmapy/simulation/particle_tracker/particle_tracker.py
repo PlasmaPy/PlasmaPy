@@ -213,21 +213,24 @@ class ParticleTracker:
 
         # Validate inputs to the run function
         self._validate_constructor_inputs(
-            grids, termination_condition, save_routine, field_weighting
+            grids,
+            termination_condition,
+            save_routine,
+            field_weighting,
         )
 
         self._set_time_step_attributes(dt, termination_condition, save_routine)
 
         if dt_range is not None and not self._is_adaptive_time_step:
             raise ValueError(
-                "Specifying a time step range is only possible for an adaptive time step."
+                "Specifying a time step range is only possible for an adaptive time step.",
             )
 
         # Raise a ValueError if a synchronized dt is required by termination condition or save routine but one is
         # not given. This is only the case if an array with differing entries is specified for dt
         if self._require_synchronized_time and not self._is_synchronized_time_step:
             raise ValueError(
-                "Please specify a synchronized time step to use the simulation with this configuration!"
+                "Please specify a synchronized time step to use the simulation with this configuration!",
             )
 
         # self.grid_arr is the grid positions in si units. This is created here
@@ -263,7 +266,10 @@ class ParticleTracker:
             return None
 
     def _set_time_step_attributes(
-        self, dt, termination_condition, save_routine
+        self,
+        dt,
+        termination_condition,
+        save_routine,
     ) -> None:
         """Determines whether the simulation will follow a synchronized or adaptive time step."""
 
@@ -277,7 +283,7 @@ class ParticleTracker:
                 # If an array is specified for the time step, a synchronized time step is implied if all
                 # the entries are equal
                 self._is_synchronized_time_step = bool(
-                    np.all(dt.value[0] == dt.value[:])
+                    np.all(dt.value[0] == dt.value[:]),
                 )
             else:
                 self._is_synchronized_time_step = True
@@ -327,14 +333,18 @@ class ParticleTracker:
 
         if not self._is_adaptive_time_step:
             raise ValueError(
-                "The setup adaptive time step method only applies to adaptive time steps!"
+                "The setup adaptive time step method only applies to adaptive time steps!",
             )
 
         self._steps_per_gyroperiod = time_steps_per_gyroperiod
         self._Courant_parameter = Courant_parameter
 
     def _validate_constructor_inputs(
-        self, grids, termination_condition, save_routine, field_weighting: str
+        self,
+        grids,
+        termination_condition,
+        save_routine,
+        field_weighting: str,
     ) -> None:
         """
         Ensure the specified termination condition and save routine are actually
@@ -345,7 +355,7 @@ class ParticleTracker:
             raise TypeError(
                 "It appears you may be trying to access an older version of the ParticleTracker class."
                 "This class has been deprecated."
-                "Please revert to PlasmaPy version 2023.5.1 to use this version of ParticleTracker."
+                "Please revert to PlasmaPy version 2023.5.1 to use this version of ParticleTracker.",
             )
         # The constructor did not recognize the provided grid object
         elif self.grids is None:
@@ -413,7 +423,7 @@ class ParticleTracker:
             raise ValueError(
                 "Provided x and v arrays have inconsistent numbers "
                 " of particles "
-                f"({x.shape[0]} and {v.shape[0]} respectively)."
+                f"({x.shape[0]} and {v.shape[0]} respectively).",
             )
         else:
             self.num_particles: int = x.shape[0]
@@ -436,27 +446,27 @@ class ParticleTracker:
             case "NIST":
                 if materials is None or len(materials) != self.num_grids:
                     raise ValueError(
-                        "Please provide an array of length ngrids for the materials."
+                        "Please provide an array of length ngrids for the materials.",
                     )
 
                 for i, grid in enumerate(self.grids):
                     if materials[i] is not None and "rho" not in grid.quantities:
                         raise ValueError(
                             f"Material {materials[i]} was provided for stopping on grid {i},"
-                            " but quantity ``rho`` is not defined on that grid."
+                            " but quantity ``rho`` is not defined on that grid.",
                         )
 
             case "Bethe":
                 if I is None or len(I) != self.num_grids:
                     raise ValueError(
-                        "Please provide an array of length ngrids for the mean excitation energy."
+                        "Please provide an array of length ngrids for the mean excitation energy.",
                     )
 
                 for i, grid in enumerate(self.grids):
                     if I[i] is not None and "n_e" not in grid.quantities:
                         raise ValueError(
                             f"I={I[i]} was provided for stopping on grid {i},"
-                            " but quantity ``n_e`` is not defined on that grid."
+                            " but quantity ``n_e`` is not defined on that grid.",
                         )
 
         return True
@@ -523,7 +533,10 @@ class ParticleTracker:
                 def wrapped_Bethe_stopping(I_grid):
                     def inner_Bethe_stopping(v, n_e):
                         return Bethe_stopping_lite(
-                            I_grid, n_e, v, self._particle.charge_number
+                            I_grid,
+                            n_e,
+                            v,
+                            self._particle.charge_number,
                         )
 
                     return inner_Bethe_stopping
@@ -537,7 +550,7 @@ class ParticleTracker:
 
             case _:
                 raise ValueError(
-                    f"Please provide one of 'NIST' or 'Bethe' for the method keyword. (Got: {method})"
+                    f"Please provide one of 'NIST' or 'Bethe' for the method keyword. (Got: {method})",
                 )
 
         self._do_stopping = True
@@ -554,7 +567,7 @@ class ParticleTracker:
                 if not np.isfinite(grid[q].value).all():
                     raise ValueError(
                         f"Input arrays must be finite: {q} contains "
-                        "either NaN or infinite values."
+                        "either NaN or infinite values.",
                     )
 
                 # Check that the max values on the edges of the arrays are
@@ -575,8 +588,8 @@ class ParticleTracker:
                                 arr[:, :, 0],
                                 arr[:, :, -1],
                             )
-                        ]
-                    )
+                        ],
+                    ),
                 )
 
                 if edge_max > 1e-3 * np.max(arr):
@@ -598,7 +611,7 @@ class ParticleTracker:
         """
         # Assemble an array of the resolutions of all of the grids
         self._grid_resolutions = np.array(
-            [grid.grid_resolution.to(u.m).value for grid in self.grids]
+            [grid.grid_resolution.to(u.m).value for grid in self.grids],
         )
 
         # Determine which quantities should be interpolated from each grid
@@ -676,12 +689,12 @@ class ParticleTracker:
         )
 
         self.on_grid: NDArray[np.bool_] = np.zeros(
-            [self.num_particles, self.num_grids]
+            [self.num_particles, self.num_grids],
         ).astype(np.bool_)
 
         # non-zero if particle EVER entered ANY grid
         self.ever_entered_any_grid: NDArray[np.bool_] = np.zeros(
-            [self.num_particles]
+            [self.num_particles],
         ).astype(np.bool_)
 
         # Initialize a "progress bar" (really more of a meter)
@@ -702,7 +715,8 @@ class ParticleTracker:
         while not (is_finished or self.num_particles_tracked == 0):
             is_finished = self.termination_condition.is_finished
             progress = min(
-                self.termination_condition.progress, self.termination_condition.total
+                self.termination_condition.progress,
+                self.termination_condition.total,
             )
 
             pbar.n = progress
@@ -765,7 +779,7 @@ class ParticleTracker:
 
         if len(particles_to_stop_mask) != self.x.shape[0]:
             raise ValueError(
-                f"Expected mask of size {self.x.shape[0]}, got {len(particles_to_stop_mask)}"
+                f"Expected mask of size {self.x.shape[0]}, got {len(particles_to_stop_mask)}",
             )
 
         self.v[particles_to_stop_mask] = np.nan
@@ -782,7 +796,7 @@ class ParticleTracker:
 
         if len(particles_to_remove_mask) != self.x.shape[0]:
             raise ValueError(
-                f"Expected mask of size {self.x.shape[0]}, got {len(particles_to_remove_mask)}"
+                f"Expected mask of size {self.x.shape[0]}, got {len(particles_to_remove_mask)}",
             )
 
         self.x[particles_to_remove_mask] = np.nan
@@ -805,7 +819,8 @@ class ParticleTracker:
         # candidate time steps includes one per grid (based on the grid resolution)
         # plus additional _dt_candidates based on the field at each particle
         candidates = np.full(
-            (self.num_particles, self.num_grids + 1), fill_value=np.inf
+            (self.num_particles, self.num_grids + 1),
+            fill_value=np.inf,
         )
 
         # Compute the time step indicated by the grid resolution
@@ -818,7 +833,9 @@ class ParticleTracker:
         # give it the grid step of the highest resolution grid
         for i, _grid in enumerate(self.grids):
             candidates[:, i] = np.where(
-                self.particles_on_grid[:, i] > 0, _gridstep[i], _min_gridstep
+                self.particles_on_grid[:, i] > 0,
+                _gridstep[i],
+                _min_gridstep,
             )
 
         # If not, compute a number of possible time steps
@@ -957,10 +974,13 @@ class ParticleTracker:
         """
 
         current_speeds = np.linalg.norm(
-            self.v[self._tracked_particle_mask], axis=-1, keepdims=True
+            self.v[self._tracked_particle_mask],
+            axis=-1,
+            keepdims=True,
         )
         velocity_unit_vectors = np.multiply(
-            1 / current_speeds, self.v[self._tracked_particle_mask]
+            1 / current_speeds,
+            self.v[self._tracked_particle_mask],
         )
         dx = np.multiply(current_speeds, self.dt)  # ty:ignore[no-matching-overload]
 
@@ -981,7 +1001,8 @@ class ParticleTracker:
                 energy_loss_per_length = np.multiply(
                     stopping_power,
                     self._total_grid_values["rho"].si.value[
-                        self._tracked_particle_mask, np.newaxis
+                        self._tracked_particle_mask,
+                        np.newaxis,
                     ],
                 )
             case "Bethe":
@@ -990,7 +1011,8 @@ class ParticleTracker:
                         interpolation_result = cs(
                             current_speeds,
                             self._total_grid_values["n_e"].si.value[
-                                self._tracked_particle_mask, np.newaxis
+                                self._tracked_particle_mask,
+                                np.newaxis,
                             ],
                         )
 
@@ -1017,7 +1039,8 @@ class ParticleTracker:
         E = self._particle_kinetic_energy[self._tracked_particle_mask] + dE
 
         particles_to_be_stopped_mask = np.full(
-            shape=self._tracked_particle_mask.shape, fill_value=False
+            shape=self._tracked_particle_mask.shape,
+            fill_value=False,
         )
         tracked_particles_to_be_stopped_mask = (
             E < 0
@@ -1031,7 +1054,8 @@ class ParticleTracker:
         E = np.where(E < 0, 0, E)
         new_speeds = np.sqrt(2 * E / self.m)
         self.v[self._tracked_particle_mask] = np.multiply(
-            new_speeds, velocity_unit_vectors
+            new_speeds,
+            velocity_unit_vectors,
         )
 
         # Stop particles, which resets the cache
@@ -1072,7 +1096,7 @@ class ParticleTracker:
         # Update this array, which will have zero elements at the end
         # only for particles that never entered any grid
         self.ever_entered_any_grid += np.sum(self.particles_on_grid, axis=-1).astype(
-            np.bool_
+            np.bool_,
         )
 
     def _reset_cache(self) -> None:
@@ -1128,7 +1152,7 @@ class ParticleTracker:
         This quantity is used for determining the grid crossing maximum time step.
         """
         return float(
-            np.max(np.linalg.norm(self.v[self._tracked_particle_mask], axis=-1))
+            np.max(np.linalg.norm(self.v[self._tracked_particle_mask], axis=-1)),
         )
 
     @cached_property
@@ -1202,7 +1226,7 @@ class ParticleTracker:
         if not hasattr(self, "x"):
             raise ValueError(
                 "Either the create_particles or load_particles method must be "
-                "called before running the particle tracing algorithm."
+                "called before running the particle tracing algorithm.",
             )
 
     def _enforce_order(self) -> None:
@@ -1217,5 +1241,5 @@ class ParticleTracker:
             raise RuntimeError(
                 "Modifying the `Tracker` object after running the "
                 "simulation is not supported. Create a new `Tracker` "
-                "object for a new simulation."
+                "object for a new simulation.",
             )

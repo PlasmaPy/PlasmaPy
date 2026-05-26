@@ -16,7 +16,8 @@ from plasmapy.utils.data.downloader import _API_CONNECTION_ESTABLISHED
 from plasmapy.utils.exceptions import CouplingWarning, PhysicsWarning
 
 check_database_connection = pytest.mark.skipif(
-    not _API_CONNECTION_ESTABLISHED, reason="failed to connect to data repository"
+    not _API_CONNECTION_ESTABLISHED,
+    reason="failed to connect to data repository",
 )
 
 
@@ -37,7 +38,7 @@ check_database_connection = pytest.mark.skipif(
             166 * u.eV,
             7.8 * 10**23 * u.cm**-3,
             1.0 * u.MeV,
-        )
+        ),
     ],
 )
 def test_Bethe_stopping(material, rho, I, n_e, T2) -> None:  # noqa: E741
@@ -51,7 +52,10 @@ def test_Bethe_stopping(material, rho, I, n_e, T2) -> None:  # noqa: E741
     particle = RelativisticBody(Particle("p+"), kinetic_energy=energy_space)
     Bethe_stopping_space = Bethe_stopping(I, n_e, particle.velocity, 1)
     _, NIST_stopping_space_density = stopping_power(
-        Particle("p+"), material, energy_space, component="electronic"
+        Particle("p+"),
+        material,
+        energy_space,
+        component="electronic",
     )
     NIST_stopping_space = NIST_stopping_space_density * rho
 
@@ -132,7 +136,10 @@ class Test_Spitzer_resistivity:
     def test_handle_nparrays(self, insert_some_nans, insert_all_nans) -> None:
         """Test for ability to handle numpy array quantities"""
         assert_can_handle_nparray(
-            Spitzer_resistivity, insert_some_nans, insert_all_nans, {}
+            Spitzer_resistivity,
+            insert_some_nans,
+            insert_all_nans,
+            {},
         )
 
 

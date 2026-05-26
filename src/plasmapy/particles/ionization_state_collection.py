@@ -148,21 +148,21 @@ class IonizationStateCollection:  # noqa: PLW1641
     ) -> None:
         set_abundances = True
         if isinstance(inputs, dict) and np.all(
-            [isinstance(fracs, u.Quantity) for fracs in inputs.values()]
+            [isinstance(fracs, u.Quantity) for fracs in inputs.values()],
         ):
             right_units = np.all(
-                [fracs[0].si.unit == u.m**-3 for fracs in inputs.values()]
+                [fracs[0].si.unit == u.m**-3 for fracs in inputs.values()],
             )
             if not right_units:
                 raise ParticleError(
-                    "Units must be inverse volume for number densities."
+                    "Units must be inverse volume for number densities.",
                 )
             abundances_provided = abundances is not None or log_abundances is not None
 
             if abundances_provided:
                 raise ParticleError(
                     "Abundances cannot be provided if inputs "
-                    "provides number density information."
+                    "provides number density information.",
                 )
             set_abundances = False
 
@@ -178,7 +178,7 @@ class IonizationStateCollection:  # noqa: PLW1641
             self.kappa = kappa
         except (ValueError, TypeError) as exc:
             raise ParticleError(
-                "Unable to create IonizationStateCollection object."
+                "Unable to create IonizationStateCollection object.",
             ) from exc
 
     def __len__(self) -> int:
@@ -238,13 +238,13 @@ class IonizationStateCollection:  # noqa: PLW1641
             self.ionic_fractions[key]
         except (ParticleError, TypeError):
             raise KeyError(
-                f"{errmsg} because {key!r} is an invalid particle."
+                f"{errmsg} because {key!r} is an invalid particle.",
             ) from None
         except KeyError:
             raise KeyError(
                 f"{errmsg} because {key!r} is not one of the base "
                 f"particles whose ionization state is being kept track "
-                f"of."
+                f"of.",
             ) from None
 
         if isinstance(value, u.Quantity) and value.unit != u.dimensionless_unscaled:
@@ -253,7 +253,7 @@ class IonizationStateCollection:  # noqa: PLW1641
             except u.UnitConversionError:
                 raise ValueError(
                     f"{errmsg} because the units of value do not "
-                    f"correspond to a number density."
+                    f"correspond to a number density.",
                 ) from None
 
             old_n_elem = np.sum(self.number_densities[particle])
@@ -266,7 +266,7 @@ class IonizationStateCollection:  # noqa: PLW1641
                 raise ValueError(
                     f"{errmsg} because the old element number density "
                     f"of {old_n_elem} is not approximately equal to "
-                    f"the new element number density of {new_n_elem}."
+                    f"the new element number density of {new_n_elem}.",
                 )
 
             value = (new_number_densities / new_n_elem).to(u.dimensionless_unscaled)
@@ -293,7 +293,7 @@ class IonizationStateCollection:  # noqa: PLW1641
                         f"scaling factor is undefined, the abundance "
                         f"of {particle} is undefined, and some of the "
                         f"abundances of other elements/isotopes is "
-                        f"defined."
+                        f"defined.",
                     )
 
         try:
@@ -301,7 +301,7 @@ class IonizationStateCollection:  # noqa: PLW1641
         except TypeError as exc:
             raise TypeError(
                 f"{errmsg} because value cannot be converted into an "
-                f"array that represents ionic fractions."
+                f"array that represents ionic fractions.",
             ) from exc
 
         # TODO: Create a separate function that makes sure ionic
@@ -315,19 +315,19 @@ class IonizationStateCollection:  # noqa: PLW1641
             raise ValueError(
                 f"{errmsg} because value must have {required_nstates} "
                 f"ionization levels but instead corresponds to "
-                f"{new_nstates} levels."
+                f"{new_nstates} levels.",
             )
 
         all_nans = np.all(np.isnan(new_fractions))
         if not all_nans and (new_fractions.min() < 0 or new_fractions.max() > 1):
             raise ValueError(
-                f"{errmsg} because the new ionic fractions are not all between 0 and 1."
+                f"{errmsg} because the new ionic fractions are not all between 0 and 1.",
             )
 
         normalized = np.isclose(np.sum(new_fractions), 1, rtol=self.tol)
         if not normalized and not all_nans:
             raise ValueError(
-                f"{errmsg} because the ionic fractions are not normalized to one."
+                f"{errmsg} because the ionic fractions are not normalized to one.",
             )
 
         self._ionic_fractions[particle][:] = new_fractions.copy()
@@ -358,7 +358,7 @@ class IonizationStateCollection:  # noqa: PLW1641
                     np.isnan(this) and np.isnan(that),
                     np.isinf(this) and np.isinf(that),
                     u.quantity.allclose(this, that, rtol=min_tol),
-                ]
+                ],
             )
 
             if not this_equals_that:
@@ -377,7 +377,7 @@ class IonizationStateCollection:  # noqa: PLW1641
                         this is that,
                         np.all(np.isnan(this)) and np.all(np.isnan(that)),
                         u.quantity.allclose(this, that, rtol=min_tol),
-                    ]
+                    ],
                 )  # ty:ignore[no-matching-overload]
 
                 if not this_equals_that:
@@ -438,7 +438,7 @@ class IonizationStateCollection:  # noqa: PLW1641
             if not isinstance(inputs, dict):
                 raise TypeError(
                     "Can only reset ionic_fractions with a dict if "
-                    "ionic_fractions has been set already."
+                    "ionic_fractions has been set already.",
                 )
             old_particles = set(self.base_particles)
             new_particles = {particle_symbol(key) for key in inputs}
@@ -449,7 +449,7 @@ class IonizationStateCollection:  # noqa: PLW1641
                     "the new base particles are a superset of the "
                     "prior base particles.  To change ionic fractions "
                     "for one base particle, use item assignment on the "
-                    "IonizationStateCollection instance instead."
+                    "IonizationStateCollection instance instead.",
                 )
 
         if isinstance(inputs, dict):
@@ -461,7 +461,7 @@ class IonizationStateCollection:  # noqa: PLW1641
                 raise TypeError(
                     "Ionic fraction information may only be inputted "
                     "as a Quantity object if all ionic fractions are "
-                    "Quantity arrays with units of inverse volume."
+                    "Quantity arrays with units of inverse volume.",
                 )
 
             try:
@@ -469,7 +469,7 @@ class IonizationStateCollection:  # noqa: PLW1641
             except (InvalidParticleError, TypeError) as exc:
                 raise ParticleError(
                     "Unable to create IonizationStateCollection instance "
-                    "because not all particles are valid."
+                    "because not all particles are valid.",
                 ) from exc
 
             # The particles whose ionization states are to be recorded
@@ -478,13 +478,13 @@ class IonizationStateCollection:  # noqa: PLW1641
             for particle in particles:  # noqa: PLC0206
                 is_element = particles[particle].is_category("element")
                 has_charge_info = particles[particle].is_category(
-                    any_of=["charged", "uncharged"]
+                    any_of=["charged", "uncharged"],
                 )
 
                 if not is_element or has_charge_info:
                     raise ParticleError(
                         f"{particle} is not an element or isotope without "
-                        f"charge information."
+                        f"charge information.",
                     )
 
             # We are sorting the elements/isotopes by atomic number and
@@ -498,7 +498,8 @@ class IonizationStateCollection:  # noqa: PLW1641
                 )
 
             sorted_keys = sorted(
-                original_keys, key=_sort_entries_by_atomic_and_mass_numbers
+                original_keys,
+                key=_sort_entries_by_atomic_and_mass_numbers,
             )
 
             _elements_and_isotopes = []
@@ -513,7 +514,7 @@ class IonizationStateCollection:  # noqa: PLW1641
                 _particle_instances.append(particles[particle])
                 if new_key in _elements_and_isotopes:
                     raise ParticleError(
-                        "Repeated particles in IonizationStateCollection."
+                        "Repeated particles in IonizationStateCollection.",
                     )
 
                 nstates_input = len(inputs[particle])
@@ -521,7 +522,7 @@ class IonizationStateCollection:  # noqa: PLW1641
                 if nstates != nstates_input:
                     raise ParticleError(
                         f"The ionic fractions array for {particle} must "
-                        f"have a length of {nstates}."
+                        f"have a length of {nstates}.",
                     )
 
                 _elements_and_isotopes.append(new_key)
@@ -530,7 +531,7 @@ class IonizationStateCollection:  # noqa: PLW1641
                         number_densities = inputs[particle].to(u.m**-3)
                         n_elem = np.sum(number_densities)
                         new_ionic_fractions[new_key] = np.array(
-                            number_densities / n_elem
+                            number_densities / n_elem,
                         )
                         n_elems[particle] = n_elem
                     except u.UnitConversionError as exc:
@@ -543,11 +544,12 @@ class IonizationStateCollection:  # noqa: PLW1641
                 else:
                     try:
                         new_ionic_fractions[particles[particle].symbol] = np.array(
-                            inputs[particle], dtype=float
+                            inputs[particle],
+                            dtype=float,
                         )
                     except ValueError as exc:
                         raise ParticleError(
-                            f"Inappropriate ionic fractions for {particle}."
+                            f"Inappropriate ionic fractions for {particle}.",
                         ) from exc
 
             for particle in _elements_and_isotopes:
@@ -555,11 +557,11 @@ class IonizationStateCollection:  # noqa: PLW1641
                 if not np.all(np.isnan(fractions)):
                     if np.min(fractions) < 0 or np.max(fractions) > 1:
                         raise ParticleError(
-                            f"Ionic fractions for {particle} are not between 0 and 1."
+                            f"Ionic fractions for {particle} are not between 0 and 1.",
                         )
                     if not np.isclose(np.sum(fractions), 1, atol=self.tol, rtol=0):
                         raise ParticleError(
-                            f"Ionic fractions for {particle} are not normalized to 1."
+                            f"Ionic fractions for {particle} are not normalized to 1.",
                         )
 
             # When the inputs provide the densities, the abundances must
@@ -591,7 +593,7 @@ class IonizationStateCollection:  # noqa: PLW1641
                 _particle_instances = [Particle(particle) for particle in inputs]
             except (InvalidParticleError, TypeError) as exc:
                 raise ParticleError(
-                    "Invalid inputs to IonizationStateCollection."
+                    "Invalid inputs to IonizationStateCollection.",
                 ) from exc
 
             _particle_instances.sort(key=_atomic_number_and_mass_number)
@@ -601,7 +603,9 @@ class IonizationStateCollection:  # noqa: PLW1641
             ]
             new_ionic_fractions = {
                 particle.symbol: np.full(
-                    particle.atomic_number + 1, fill_value=np.nan, dtype=float
+                    particle.atomic_number + 1,
+                    fill_value=np.nan,
+                    dtype=float,
                 )
                 for particle in _particle_instances
             }
@@ -616,7 +620,7 @@ class IonizationStateCollection:  # noqa: PLW1641
                 and _particle_instances[i].isotope
             ):
                 raise ParticleError(
-                    "Cannot have an element and isotopes of that element."
+                    "Cannot have an element and isotopes of that element.",
                 )
 
         self._particle_instances = _particle_instances
@@ -694,7 +698,7 @@ class IonizationStateCollection:  # noqa: PLW1641
             raise TypeError(
                 "The abundances attribute must be a dict with "
                 "elements or isotopes as keys and real numbers "
-                "representing relative abundances as values."
+                "representing relative abundances as values.",
             )
         else:
             old_keys = abundances_dict.keys()
@@ -705,7 +709,7 @@ class IonizationStateCollection:  # noqa: PLW1641
             except ParticleError as ex:
                 raise ParticleError(
                     f"The key {old_key!r} in the abundances "
-                    f"dictionary is not a valid element or isotope."
+                    f"dictionary is not a valid element or isotope.",
                 ) from ex
 
             new_elements = new_keys_dict.keys()
@@ -716,7 +720,7 @@ class IonizationStateCollection:  # noqa: PLW1641
             if old_elements_set - new_elements_set:
                 raise ParticleError(
                     f"The abundances of the following particles are "
-                    f"missing: {old_elements_set - new_elements_set}"
+                    f"missing: {old_elements_set - new_elements_set}",
                 )
 
             new_abundances_dict = {}
@@ -729,7 +733,7 @@ class IonizationStateCollection:  # noqa: PLW1641
                     raise TypeError(
                         f"The abundance for {element} was provided as"
                         f"{inputted_abundance}, which cannot be "
-                        f"converted to a real number."
+                        f"converted to a real number.",
                     ) from None
 
                 if inputted_abundance < 0:
@@ -771,11 +775,12 @@ class IonizationStateCollection:  # noqa: PLW1641
         """Set the electron temperature."""
         try:
             temperature = electron_temperature.to(
-                u.K, equivalencies=u.temperature_energy()
+                u.K,
+                equivalencies=u.temperature_energy(),
             )
         except (AttributeError, u.UnitsError):
             raise ParticleError(
-                f"{electron_temperature} is not a valid temperature."
+                f"{electron_temperature} is not a valid temperature.",
             ) from None
         if temperature < 0 * u.K:
             raise ParticleError("The electron temperature cannot be negative.")
@@ -905,7 +910,7 @@ class IonizationStateCollection:  # noqa: PLW1641
                     base_particle_abundance = 1
                 else:
                     raise ParticleError(
-                        "Unable to provide an average particle without abundances."
+                        "Unable to provide an average particle without abundances.",
                     )
 
             ionic_fractions = ionization_state.ionic_fractions[min_charge:]
@@ -919,7 +924,8 @@ class IonizationStateCollection:  # noqa: PLW1641
         )  # ty:ignore[invalid-return-type]
 
     def summarize(
-        self, minimum_ionic_fraction: float = 0.01
+        self,
+        minimum_ionic_fraction: float = 0.01,
     ) -> None:  # coverage: ignore
         """
         Print quicklook information.
@@ -958,7 +964,7 @@ class IonizationStateCollection:  # noqa: PLW1641
         separator_line = 64 * "-"
 
         output = [
-            f"IonizationStateCollection instance for: {', '.join(self.base_particles)}"
+            f"IonizationStateCollection instance for: {', '.join(self.base_particles)}",
         ]
 
         # Get the ionic symbol with the corresponding ionic fraction and

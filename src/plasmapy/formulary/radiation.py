@@ -124,7 +124,7 @@ def thermal_bremsstrahlung(
     if np.min(ω) < np.max(ω_pe):
         raise PhysicsError(
             "Lowest frequency must be larger than the electron "
-            f"plasma frequency {ω_pe:.1e}, but min(ω) = {np.min(ω):.1e}"
+            f"plasma frequency {ω_pe:.1e}, but min(ω) = {np.min(ω):.1e}",
         )
 
     # Check that the parameters given fall within the Rayleigh-Jeans limit
@@ -136,7 +136,7 @@ def thermal_bremsstrahlung(
         raise PhysicsError(
             "Rayleigh-Jeans limit not satisfied: "
             f"ℏω/kT_e = {rj_const.value:.2e} > 0.1. "
-            "Try lower ω or higher T_e."
+            "Try lower ω or higher T_e.",
         )
 
     # Calculate the bremsstrahlung power spectral density in several steps

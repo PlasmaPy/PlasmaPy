@@ -100,7 +100,7 @@ def check_sweep(  # noqa: C901, PLR0912
     ):
         raise ValueError(
             f"Expected 1D numpy array of floats or integers for voltage, but"
-            f" got an array with dtype '{voltage.dtype}'."
+            f" got an array with dtype '{voltage.dtype}'.",
         )
     elif voltage.ndim != 1:
         raise ValueError(
@@ -131,7 +131,7 @@ def check_sweep(  # noqa: C901, PLR0912
     ):
         raise ValueError(
             f"Expected 1D numpy array of floats or integers for current, but"
-            f" got an array with dtype '{current.dtype}'."
+            f" got an array with dtype '{current.dtype}'.",
         )
     elif current.ndim != 1:
         raise ValueError(
@@ -141,18 +141,18 @@ def check_sweep(  # noqa: C901, PLR0912
     elif current.min() > 0.0 or current.max() < 0:
         raise ValueError(
             "Invalid swept Langmuir trace, the current never crosses zero "
-            "'current = 0'."
+            "'current = 0'.",
         )
     elif current[0] > 0.0 or current[-1] < 0.0:
         raise ValueError(
             "The current array needs to start from a negative ion-saturation "
-            "current to a positive electron-saturation current."
+            "current to a positive electron-saturation current.",
         )
 
     if voltage.size != current.size:
         raise ValueError(
             f"Incompatible arrays, 'voltage' size {voltage.size} must be the same"
-            f" as the 'current' size {current.size}."
+            f" as the 'current' size {current.size}.",
         )
 
     if isinstance(current, u.Quantity) and strip_units:
@@ -200,16 +200,19 @@ def sort_sweep_arrays(
     if not isinstance(voltage_order, str):
         raise TypeError(
             "Expected 'voltage_order' to be a string equal to 'ascending' "
-            f"or 'descending', but got type {type(voltage_order)}."
+            f"or 'descending', but got type {type(voltage_order)}.",
         )
     elif voltage_order not in ["ascending", "descending"]:
         raise ValueError(
             "Expected 'voltage_order' to be a string equal to 'ascending' "
-            f"or 'descending', but got '{voltage_order}'."
+            f"or 'descending', but got '{voltage_order}'.",
         )
 
     voltage, current = check_sweep(
-        voltage, current, strip_units=True, allow_unsorted=True
+        voltage,
+        current,
+        strip_units=True,
+        allow_unsorted=True,
     )
 
     # determine order
@@ -271,7 +274,8 @@ def _is_voltage_regularly_spaced(
 
 
 def _merge_voltage_clusters__zero_diff_neighbors(
-    voltage: np.ndarray, current: np.ndarray
+    voltage: np.ndarray,
+    current: np.ndarray,
 ) -> tuple[np.ndarray, np.ndarray]:
     """
     Take the ``voltage`` and ``current`` arrays associated with a swept
@@ -367,7 +371,7 @@ def _merge_voltage_clusters__within_dv(  # noqa: C901
         nbins = int(np.rint(v_range / voltage_step_size))
         if not np.isclose(nbins - (v_range / voltage_step_size), 0):
             nbins = int(
-                np.floor((sub_voltage[-1] - sub_voltage[0]) / voltage_step_size)
+                np.floor((sub_voltage[-1] - sub_voltage[0]) / voltage_step_size),
             )
 
         if nbins == 0:
@@ -467,11 +471,12 @@ def merge_voltage_clusters(  # noqa: C901, PLR0912
     """
     # condition voltage_step_size
     if voltage_step_size is not None and not isinstance(
-        voltage_step_size, numbers.Real
+        voltage_step_size,
+        numbers.Real,
     ):
         raise TypeError(
             "Expected 'voltage_step_size' to be a float or None, got type "
-            f"{type(voltage_step_size)}."
+            f"{type(voltage_step_size)}.",
         )
     elif isinstance(voltage_step_size, numbers.Integral):
         voltage_step_size = float(voltage_step_size)
@@ -489,7 +494,7 @@ def merge_voltage_clusters(  # noqa: C901, PLR0912
             raise ValueError(
                 "The voltage array contains NaN values.  If you want NaN "
                 "values to be automatically filtered, then set argument "
-                "filter_nan=True."
+                "filter_nan=True.",
             ) from err
 
         # filter (voltage) NaN values and check sweep again
@@ -512,7 +517,7 @@ def merge_voltage_clusters(  # noqa: C901, PLR0912
         raise ValueError(
             "The current array contains NaN values.  If you want NaN "
             "values to be automatically filtered, then set argument "
-            "filter_nan=True."
+            "filter_nan=True.",
         )
 
     # check if grid is regularly spaced
@@ -535,7 +540,7 @@ def merge_voltage_clusters(  # noqa: C901, PLR0912
     # condition voltage_step_size ... Round 2
     if voltage_step_size is None:
         voltage_step_size = 0.95 * np.abs(
-            np.average(voltage_diff[np.logical_not(mask_zero_diff)])
+            np.average(voltage_diff[np.logical_not(mask_zero_diff)]),
         )
     elif voltage_step_size == 0:
         voltage_step_size = 0.0
@@ -556,12 +561,15 @@ def merge_voltage_clusters(  # noqa: C901, PLR0912
     # now merge clusters
     if voltage_step_size == 0:
         new_voltage, new_current = _merge_voltage_clusters__zero_diff_neighbors(
-            voltage, current
+            voltage,
+            current,
         )
 
     else:
         new_voltage, new_current = _merge_voltage_clusters__within_dv(
-            voltage, current, voltage_step_size
+            voltage,
+            current,
+            voltage_step_size,
         )
 
     return new_voltage, new_current

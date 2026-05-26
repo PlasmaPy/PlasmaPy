@@ -8,7 +8,8 @@ import pytest
 from plasmapy.utils.data.downloader import _API_CONNECTION_ESTABLISHED, Downloader
 
 check_database_connection = pytest.mark.skipif(
-    not _API_CONNECTION_ESTABLISHED, reason="failed to connect to data repository"
+    not _API_CONNECTION_ESTABLISHED,
+    reason="failed to connect to data repository",
 )
 
 
@@ -38,7 +39,8 @@ def downloader_validated(tmpdir_factory) -> Downloader:
 @pytest.mark.slow
 @check_database_connection
 @pytest.mark.skipif(
-    not in_ci(), reason="Tests only use authenticated API calls when run in CI."
+    not in_ci(),
+    reason="Tests only use authenticated API calls when run in CI.",
 )
 def test_api_token(downloader_validated: Downloader) -> None:
     """
@@ -68,7 +70,9 @@ test_urls = [
 @pytest.mark.slow
 @pytest.mark.parametrize(("url", "expected"), test_urls)
 def test_http_request(
-    downloader_validated: Downloader, url: str, expected: None | Exception
+    downloader_validated: Downloader,
+    url: str,
+    expected: None | Exception,
 ) -> None:
     """
     Test exceptions from http downloader
@@ -137,12 +141,16 @@ test_files = [
 
 @pytest.mark.slow
 @pytest.mark.parametrize(
-    "downloader", ["downloader_validated", "downloader_unvalidated"]
+    "downloader",
+    ["downloader_validated", "downloader_unvalidated"],
 )
 @pytest.mark.parametrize(("filename", "expected"), test_files)
 @check_database_connection
 def test_get_file(
-    filename: str, expected: Exception | None, downloader: Downloader, request
+    filename: str,
+    expected: Exception | None,
+    downloader: Downloader,
+    request,
 ) -> None:
     """Test the get_file function."""
 
@@ -167,7 +175,8 @@ def test_get_file(
 
 @pytest.mark.slow
 @pytest.mark.parametrize(
-    "downloader", ["downloader_validated", "downloader_unvalidated"]
+    "downloader",
+    ["downloader_validated", "downloader_unvalidated"],
 )
 @check_database_connection
 def test_get_local_only_file(downloader: Downloader, request) -> None:
@@ -223,7 +232,7 @@ def test_get_file_NIST_PSTAR_datafile(downloader_validated) -> None:
 
 @pytest.mark.skip(
     "This test fails intermittently, but should be un-skipped when "
-    "updating the downloader."
+    "updating the downloader.",
 )
 @pytest.mark.slow
 @check_database_connection

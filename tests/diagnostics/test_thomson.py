@@ -118,13 +118,13 @@ def args_to_lite_args(kwargs):  # noqa: C901
         kwargs["T_e"] = np.array(
             [
                 kwargs["T_e"],
-            ]
+            ],
         )
     if kwargs["T_i"].size == 1:
         kwargs["T_i"] = np.array(
             [
                 kwargs["T_i"],
-            ]
+            ],
         )
 
     if not isinstance(kwargs["ions"], list):
@@ -537,7 +537,7 @@ def test_single_species_non_collective_spectrum(
                 "T_e": np.array(
                     [
                         5,
-                    ]
+                    ],
                 )
                 * u.eV,
             },
@@ -557,7 +557,7 @@ def test_single_species_non_collective_spectrum(
             {
                 "ions": [
                     "p+",
-                ]
+                ],
             },
             None,
             None,
@@ -567,7 +567,7 @@ def test_single_species_non_collective_spectrum(
             {
                 "ions": [
                     Particle("p+"),
-                ]
+                ],
             },
             None,
             None,
@@ -589,7 +589,10 @@ def test_single_species_non_collective_spectrum(
     ],
 )
 def test_spectral_density_input_errors(
-    kwargs, error, msg, single_species_collective_args
+    kwargs,
+    error,
+    msg,
+    single_species_collective_args,
 ) -> None:
     """
     Validate errors with invalid argument and keyword arguments in
@@ -688,7 +691,9 @@ def test_thomson_with_instrument_function(single_species_collective_args) -> Non
     args, kwargs = spectral_density_args_kwargs(single_species_collective_args)
 
     _alpha, Skw_with = thomson.spectral_density(
-        *args, **kwargs, instr_func=example_instr_func
+        *args,
+        **kwargs,
+        instr_func=example_instr_func,
     )
 
     _alpha, Skw_without = thomson.spectral_density(*args, **kwargs)
@@ -834,7 +839,9 @@ def run_fit(  # noqa: C901
     data = Skw
 
     data *= 1 + np.random.normal(  # noqa: NPY002
-        loc=0, scale=noise_amp, size=wavelengths.size
+        loc=0,
+        scale=noise_amp,
+        size=wavelengths.size,
     )
     data *= 1 / np.nanmax(data)
 
@@ -844,8 +851,10 @@ def run_fit(  # noqa: C901
         if params[p].vary:
             params[p].value = float(
                 np.random.uniform(  # noqa: NPY002
-                    low=params[p].min, high=params[p].max, size=1
-                )[0]
+                    low=params[p].min,
+                    high=params[p].max,
+                    size=1,
+                )[0],
             )
 
     # Make the model, then perform the fit
@@ -938,7 +947,11 @@ def epw_single_species_settings_params():
     kwargs["ions"] = ["H+"]
 
     kwargs["n"] = Parameter(
-        "n", value=2e17 * 1e6, vary=True, min=8e16 * 1e6, max=6e17 * 1e6
+        "n",
+        value=2e17 * 1e6,
+        vary=True,
+        min=8e16 * 1e6,
+        max=6e17 * 1e6,
     )
     kwargs["T_e_0"] = Parameter("T_e_0", value=10, vary=True, min=5, max=20)
     kwargs["T_i_0"] = Parameter("T_i_0", value=20, vary=False, min=5, max=70)
@@ -976,7 +989,11 @@ def epw_multi_species_settings_params():
     kwargs["ions"] = ["H+"]
 
     kwargs["n"] = Parameter(
-        "n", value=2e17 * 1e6, vary=True, min=8e16 * 1e6, max=6e17 * 1e6
+        "n",
+        value=2e17 * 1e6,
+        vary=True,
+        min=8e16 * 1e6,
+        max=6e17 * 1e6,
     )
     kwargs["T_e_0"] = Parameter("T_e_0", value=10, vary=True, min=5, max=20)
     kwargs["T_e_1"] = Parameter("T_e_1", value=35, vary=True, min=5, max=20)
@@ -1096,7 +1113,11 @@ def noncollective_single_species_settings_params():
         "ion_vdir": np.array([[1, 0, 0]]),
         "electron_vdir": np.array([[1, 0, 0]]),
         "n": Parameter(
-            "n", value=2e17 * 1e6, vary=True, min=8e16 * 1e6, max=6e17 * 1e6
+            "n",
+            value=2e17 * 1e6,
+            vary=True,
+            min=8e16 * 1e6,
+            max=6e17 * 1e6,
         ),
         "T_e_0": Parameter("T_e_0", value=10, vary=True, min=5, max=20),
         "T_i_0": Parameter("T_i_0", value=120, vary=False, min=5, max=70),
@@ -1115,7 +1136,7 @@ def noncollective_single_species_settings_params():
 @pytest.mark.slow
 def test_fit_epw_single_species(epw_single_species_settings_params) -> None:
     wavelengths, params, settings = spectral_density_model_settings_params(
-        epw_single_species_settings_params
+        epw_single_species_settings_params,
     )
 
     run_fit(wavelengths, params, settings)
@@ -1124,7 +1145,7 @@ def test_fit_epw_single_species(epw_single_species_settings_params) -> None:
 @pytest.mark.slow
 def test_fit_epw_multi_species(epw_multi_species_settings_params) -> None:
     wavelengths, params, settings = spectral_density_model_settings_params(
-        epw_multi_species_settings_params
+        epw_multi_species_settings_params,
     )
 
     run_fit(wavelengths, params, settings)
@@ -1133,7 +1154,7 @@ def test_fit_epw_multi_species(epw_multi_species_settings_params) -> None:
 @pytest.mark.slow
 def test_fit_iaw_single_species(iaw_single_species_settings_params) -> None:
     wavelengths, params, settings = spectral_density_model_settings_params(
-        iaw_single_species_settings_params
+        iaw_single_species_settings_params,
     )
 
     run_fit(wavelengths, params, settings)
@@ -1147,7 +1168,7 @@ def test_fit_iaw_instr_func(iaw_single_species_settings_params) -> None:
     """
 
     wavelengths, params, settings = spectral_density_model_settings_params(
-        iaw_single_species_settings_params
+        iaw_single_species_settings_params,
     )
 
     settings["instr_func"] = example_instr_func
@@ -1161,7 +1182,7 @@ def test_fit_ion_mu_and_z(iaw_single_species_settings_params) -> None:
     Tests fitting with ion parameters explicitly set and allowed to vary
     """
     wavelengths, params, settings = spectral_density_model_settings_params(
-        iaw_single_species_settings_params
+        iaw_single_species_settings_params,
     )
 
     for i, ion in enumerate(settings["ions"]):
@@ -1177,7 +1198,7 @@ def test_fit_ion_mu_and_z(iaw_single_species_settings_params) -> None:
 @pytest.mark.slow
 def test_fit_iaw_multi_species(iaw_multi_species_settings_params) -> None:
     wavelengths, params, settings = spectral_density_model_settings_params(
-        iaw_multi_species_settings_params
+        iaw_multi_species_settings_params,
     )
 
     run_fit(wavelengths, params, settings)
@@ -1188,7 +1209,7 @@ def test_fit_noncollective_single_species(
     noncollective_single_species_settings_params,
 ) -> None:
     wavelengths, params, settings = spectral_density_model_settings_params(
-        noncollective_single_species_settings_params
+        noncollective_single_species_settings_params,
     )
 
     run_fit(wavelengths, params, settings)
@@ -1206,7 +1227,7 @@ def test_fit_with_instr_func(epw_single_species_settings_params) -> None:
 
     """
     wavelengths, params, settings = spectral_density_model_settings_params(
-        epw_single_species_settings_params
+        epw_single_species_settings_params,
     )
 
     settings["instr_func"] = example_instr_func
@@ -1229,14 +1250,15 @@ def test_fit_with_instr_func(epw_single_species_settings_params) -> None:
 
 @pytest.mark.parametrize("instr_func", invalid_instr_func_list)
 def test_fit_with_invalid_instr_func(
-    instr_func, iaw_single_species_settings_params
+    instr_func,
+    iaw_single_species_settings_params,
 ) -> None:
     """
     Verifies that an exception is raised if the provided instrument function
     is invalid.
     """
     wavelengths, params, settings = spectral_density_model_settings_params(
-        iaw_single_species_settings_params
+        iaw_single_species_settings_params,
     )
 
     settings["instr_func"] = instr_func
@@ -1273,7 +1295,9 @@ def test_fit_with_minimal_parameters() -> None:
     data = Skw.value
 
     data *= 1 + np.random.normal(  # noqa: NPY002
-        loc=0, scale=0.1, size=wavelengths.size
+        loc=0,
+        scale=0.1,
+        size=wavelengths.size,
     )
     data *= 1 / np.nanmax(data)
 
@@ -1370,7 +1394,10 @@ def test_fit_with_minimal_parameters() -> None:
     ],
 )
 def test_model_input_validation(
-    control, error, msg, iaw_multi_species_settings_params
+    control,
+    error,
+    msg,
+    iaw_multi_species_settings_params,
 ) -> None:
     kwargs = iaw_multi_species_settings_params
     # We'll need to switch from print() to using logging library

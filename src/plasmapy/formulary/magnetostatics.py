@@ -264,7 +264,10 @@ class FiniteStraightWire(Wire):
 
     @validate_quantities
     def __init__(
-        self, p1: u.Quantity[u.m], p2: u.Quantity[u.m], current: u.Quantity[u.A]
+        self,
+        p1: u.Quantity[u.m],
+        p2: u.Quantity[u.m],
+        current: u.Quantity[u.A],
     ) -> None:
         self.p1 = p1.value
         self.p2 = p2.value
@@ -407,7 +410,10 @@ class InfiniteStraightWire(Wire):
 
     @validate_quantities
     def __init__(
-        self, direction, p0: u.Quantity[u.m], current: u.Quantity[u.A]
+        self,
+        direction,
+        p0: u.Quantity[u.m],
+        current: u.Quantity[u.A],
     ) -> None:
         self.direction = direction / np.linalg.norm(direction)
         self.p0 = p0.value

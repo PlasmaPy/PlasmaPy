@@ -210,7 +210,12 @@ def mobility(
     <Quantity 1921.2784... m2 / (V s)>
     """
     freq = frequencies.collision_frequency(
-        T=T, n=n_e, species=species, z_mean=z_mean, V=V, method=method
+        T=T,
+        n=n_e,
+        species=species,
+        z_mean=z_mean,
+        V=V,
+        method=method,
     )
     # we do this after collision_frequency since collision_frequency
     # already has a _process_inputs check and we are doing this just
@@ -275,7 +280,7 @@ def Bethe_stopping_lite(
         * (
             np.log(2 * _m_e.si.value * _c.si.value**2 * beta**2 / (I * (1 - beta**2)))
             - beta**2
-        )
+        ),
     )
 
 
@@ -447,7 +452,12 @@ def Spitzer_resistivity(
     """
     # collisional frequency
     freq = frequencies.collision_frequency(
-        T=T, n=n, species=species, z_mean=z_mean, V=V, method=method
+        T=T,
+        n=n,
+        species=species,
+        z_mean=z_mean,
+        V=V,
+        method=method,
     )
     # fetching additional parameters
     T, _masses, charges, reduced_mass_, V = _process_inputs(T=T, species=species, V=V)

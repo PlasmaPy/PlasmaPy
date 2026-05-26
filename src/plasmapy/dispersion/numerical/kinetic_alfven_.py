@@ -180,7 +180,7 @@ def kinetic_alfven(  # noqa: ANN201, C901, PLR0912
         if val.shape != ():
             raise ValueError(
                 f"Argument '{arg_name}' must be a single value and not "
-                f"an array of shape '{val.shape}'."
+                f"an array of shape '{val.shape}'.",
             )
         locals()[arg_name] = val
 
@@ -188,7 +188,7 @@ def kinetic_alfven(  # noqa: ANN201, C901, PLR0912
         if not isinstance(arg_name, Real):
             raise TypeError(
                 f"Expected int or float for argument '{arg_name}', "
-                f"instead got type {type(arg_name)}."
+                f"instead got type {type(arg_name)}.",
             )
 
     # Validate argument k
@@ -196,7 +196,7 @@ def kinetic_alfven(  # noqa: ANN201, C901, PLR0912
     if k.ndim not in {0, 1}:
         raise ValueError(
             "Argument 'k' needs to be a single valued or 1D array "
-            f"astropy Quantity, instead got array of shape {k.shape}."
+            f"astropy Quantity, instead got array of shape {k.shape}.",
         )
     elif np.isscalar(k):
         k = np.array([k])
@@ -208,7 +208,7 @@ def kinetic_alfven(  # noqa: ANN201, C901, PLR0912
     if theta.ndim not in {0, 1}:
         raise ValueError(
             "Argument 'theta' needs to be a single valued or 1D array "
-            f"astropy Quantity, instead got array of shape {theta.shape}."
+            f"astropy Quantity, instead got array of shape {theta.shape}.",
         )
     elif np.isscalar(theta):
         theta = np.array([theta])

@@ -45,7 +45,7 @@ def various_particles():
             CustomParticle(charge=11 * u.C),
             5 * u.kg,
             5 * u.C,
-        ]
+        ],
     )
 
 
@@ -178,7 +178,8 @@ def test_particle_list_instantiate_with_invalid_particles() -> None:
 
 @pytest.mark.parametrize("invalid_particle", invalid_particles)
 def test_particle_list_append_invalid_particle(
-    various_particles, invalid_particle
+    various_particles,
+    invalid_particle,
 ) -> None:
     """
     Test that objects that are not particle-like cannot be appended to
@@ -199,7 +200,8 @@ def test_particle_list_extend_with_invalid_particles(various_particles) -> None:
 
 @pytest.mark.parametrize("invalid_particle", invalid_particles)
 def test_particle_list_insert_invalid_particle(
-    various_particles, invalid_particle
+    various_particles,
+    invalid_particle,
 ) -> None:
     """
     Test that objects that are not particle-like cannot be inserted into
@@ -440,7 +442,8 @@ def test_root_mean_square_particle(use_rms_charge, use_rms_mass) -> None:
 
     particle_list = ParticleList(["p+", "e-"])
     average_particle = particle_list.average_particle(
-        use_rms_charge=use_rms_charge, use_rms_mass=use_rms_mass
+        use_rms_charge=use_rms_charge,
+        use_rms_mass=use_rms_mass,
     )
 
     expected_average_charge = (1 if use_rms_charge else 0) * proton.charge

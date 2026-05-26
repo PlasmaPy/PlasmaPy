@@ -123,7 +123,7 @@ def _test_grid(  # noqa: ANN202, C901, PLR0912
 
     else:
         raise ValueError(
-            f"No example corresponding to the provided name ({name}) exists."
+            f"No example corresponding to the provided name ({name}) exists.",
         )
 
     # If any of the following quantities are missing, add them as empty arrays
@@ -156,7 +156,11 @@ def test_multiple_grids() -> None:
     detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
 
     sim = cpr.Tracker(
-        grids, source, detector, field_weighting="nearest neighbor", verbose=True
+        grids,
+        source,
+        detector,
+        field_weighting="nearest neighbor",
+        verbose=True,
     )
 
     sim.create_particles(1e2, 15 * u.MeV, max_theta=8 * u.deg, random_seed=42)
@@ -183,10 +187,15 @@ def run_1D_example(name: str):  # noqa: ANN201
 
     # Expect warnings because these fields aren't well-behaved at the edges
     with pytest.warns(
-        RuntimeWarning, match="Quantities should go to zero at edges of grid"
+        RuntimeWarning,
+        match="Quantities should go to zero at edges of grid",
     ):
         sim = cpr.Tracker(
-            grid, source, detector, verbose=False, field_weighting="nearest neighbor"
+            grid,
+            source,
+            detector,
+            verbose=False,
+            field_weighting="nearest neighbor",
         )
     sim.create_particles(1e4, 3 * u.MeV, max_theta=0.1 * u.deg, random_seed=42)
 
@@ -337,7 +346,10 @@ def test_input_validation() -> None:
     # ************************************************************************
     sim = cpr.Tracker(grid, source, detector, verbose=False)
     sim.create_particles(
-        1e3, 15 * u.MeV, max_theta=0.99 * np.pi / 2 * u.rad, random_seed=42
+        1e3,
+        15 * u.MeV,
+        max_theta=0.99 * np.pi / 2 * u.rad,
+        random_seed=42,
     )
 
     # ************************************************************************
@@ -358,7 +370,11 @@ def test_input_validation() -> None:
     # During runtime
     # ************************************************************************
     sim = cpr.Tracker(
-        grid, source, detector, verbose=False, field_weighting="nearest neighbor"
+        grid,
+        source,
+        detector,
+        verbose=False,
+        field_weighting="nearest neighbor",
     )
     sim.create_particles(1e3, 15 * u.MeV)
 
@@ -370,7 +386,8 @@ def test_input_validation() -> None:
     size = np.array([[-1, 1], [-1, 1]]) * 1 * u.mm
 
     with pytest.warns(
-        RuntimeWarning, match="of the particles are shown on this synthetic radiograph."
+        RuntimeWarning,
+        match="of the particles are shown on this synthetic radiograph.",
     ):
         _hax, _vax, _values = cpr.synthetic_radiograph(sim, size=size)
 
@@ -389,7 +406,12 @@ def test_init() -> None:
     hdir = np.array([1, 0, 0])
     vdir = np.array([0, 0, 1])
     sim = cpr.Tracker(
-        grid, source, detector, verbose=False, detector_hdir=hdir, detector_vdir=vdir
+        grid,
+        source,
+        detector,
+        verbose=False,
+        detector_hdir=hdir,
+        detector_vdir=vdir,
     )
 
     # Test special case hdir == [0,0,1]
@@ -424,7 +446,11 @@ def test_create_particles() -> None:
     )
 
     sim.create_particles(
-        1e3, 15 * u.MeV, max_theta=0.1 * u.rad, distribution="uniform", random_seed=42
+        1e3,
+        15 * u.MeV,
+        max_theta=0.1 * u.rad,
+        distribution="uniform",
+        random_seed=42,
     )
 
     # Test specifying particle
@@ -434,7 +460,11 @@ def test_create_particles() -> None:
     src_vdir = np.array([0.1, 1, 0])
     src_vdir /= np.linalg.norm(src_vdir)
     sim.create_particles(
-        1e3, 15 * u.MeV, particle="p+", random_seed=42, source_vdir=src_vdir
+        1e3,
+        15 * u.MeV,
+        particle="p+",
+        random_seed=42,
+        source_vdir=src_vdir,
     )
     # Assert particle velocities are actually in that direction
     vdir = np.mean(sim.v, axis=0)
@@ -451,10 +481,18 @@ def test_load_particles() -> None:
     detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
 
     sim = cpr.Tracker(
-        grid, source, detector, field_weighting="nearest neighbor", verbose=False
+        grid,
+        source,
+        detector,
+        field_weighting="nearest neighbor",
+        verbose=False,
     )
     sim.create_particles(
-        1e3, 15 * u.MeV, max_theta=0.1 * u.rad, distribution="uniform", random_seed=42
+        1e3,
+        15 * u.MeV,
+        max_theta=0.1 * u.rad,
+        distribution="uniform",
+        random_seed=42,
     )
 
     # Test adding unequal numbers of particles
@@ -501,7 +539,11 @@ def test_run_options() -> None:
         sim.run()
 
     sim = cpr.Tracker(
-        grid, source, detector, verbose=True, field_weighting="nearest neighbor"
+        grid,
+        source,
+        detector,
+        verbose=True,
+        field_weighting="nearest neighbor",
     )
     sim.create_particles(1e4, 3 * u.MeV, max_theta=10 * u.deg, random_seed=42)
 
@@ -745,10 +787,15 @@ def test_gaussian_sphere_analytical_comparison() -> None:
     detector = (0 * u.mm, L * u.mm, 0 * u.mm)
 
     with pytest.warns(
-        RuntimeWarning, match="Quantities should go to zero at edges of grid to avoid "
+        RuntimeWarning,
+        match="Quantities should go to zero at edges of grid to avoid ",
     ):
         sim = cpr.Tracker(
-            grid, source, detector, verbose=False, field_weighting="nearest neighbor"
+            grid,
+            source,
+            detector,
+            verbose=False,
+            field_weighting="nearest neighbor",
         )
 
     sim.create_particles(1e3, W * u.eV, max_theta=12 * u.deg, random_seed=42)
@@ -1015,12 +1062,14 @@ def test_NIST_particle_stopping(
     # Calculate the relativistic speed of the particles as a function of their
     # kinetic energy
     speeds = const.c * np.sqrt(
-        1 - (const.m_p * const.c**2 / (energies + const.m_p * const.c**2)) ** 2
+        1 - (const.m_p * const.c**2 / (energies + const.m_p * const.c**2)) ** 2,
     )
 
     width = np.max(projected_ranges) * 1.1
     stopping_grid = CartesianGrid(
-        [-0.2, 0.0, -0.2] * u.cm, [0.2, width.to(u.cm).value, 0.2] * u.cm, num=100
+        [-0.2, 0.0, -0.2] * u.cm,
+        [0.2, width.to(u.cm).value, 0.2] * u.cm,
+        num=100,
     )
 
     rho = np.ones(stopping_grid.shape) * density

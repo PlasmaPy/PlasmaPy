@@ -54,11 +54,13 @@ def test_gyrofrequency() -> None:
     assert np.isclose(gyrofrequency(2.4 * u.T, "e-").value, 422116821083.3284)
 
     assert np.isclose(
-        gyrofrequency(1 * u.T, "e-", to_hz=True).value, 27992490076.528206
+        gyrofrequency(1 * u.T, "e-", to_hz=True).value,
+        27992490076.528206,
     )
 
     assert np.isclose(
-        gyrofrequency(2.4 * u.T, "e-", signed=True).value, -422116821083.3284
+        gyrofrequency(2.4 * u.T, "e-", signed=True).value,
+        -422116821083.3284,
     )
 
     assert np.isclose(gyrofrequency(1 * u.G, "e-").cgs.value, 1.76e7, rtol=1e-3)
@@ -88,7 +90,9 @@ def test_gyrofrequency() -> None:
     assert np.isclose(gyrofrequency(2.4 * u.T, particle="p+").value, 229892006.00369796)
 
     assert np.isclose(
-        gyrofrequency(1 * u.G, particle="p+").cgs.value, 9.58e3, rtol=2e-3
+        gyrofrequency(1 * u.G, particle="p+").cgs.value,
+        9.58e3,
+        rtol=2e-3,
     )
 
     assert gyrofrequency(-5 * u.T, "p") == gyrofrequency(5 * u.T, "p")
@@ -153,7 +157,9 @@ def test_lower_hybrid_frequency() -> None:
 
     with pytest.warns(u.UnitsWarning):
         assert lower_hybrid_frequency(1.3, 1e19, "p+") == lower_hybrid_frequency(
-            1.3 * u.T, 1e19 * u.m**-3, "p+"
+            1.3 * u.T,
+            1e19 * u.m**-3,
+            "p+",
         )
     assert_can_handle_nparray(lower_hybrid_frequency)
 
@@ -180,12 +186,14 @@ def test_upper_hybrid_frequency() -> None:
 
     with pytest.warns(u.UnitsWarning):
         assert upper_hybrid_frequency(1.2, 1.3) == upper_hybrid_frequency(
-            1.2 * u.T, 1.3 * u.m**-3
+            1.2 * u.T,
+            1.3 * u.m**-3,
         )
 
     with pytest.warns(u.UnitsWarning):
         assert upper_hybrid_frequency(1.4 * u.T, 1.3) == upper_hybrid_frequency(
-            1.4, 1.3 * u.m**-3
+            1.4,
+            1.3 * u.m**-3,
         )
 
     assert_can_handle_nparray(upper_hybrid_frequency)

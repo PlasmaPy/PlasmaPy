@@ -65,7 +65,8 @@ def critical_density(omega: u.Quantity[u.rad / u.s]) -> u.Quantity[u.m**-3]:
 
 
 @validate_quantities(
-    density={"can_be_negative": False}, validations_on_return={"can_be_negative": False}
+    density={"can_be_negative": False},
+    validations_on_return={"can_be_negative": False},
 )
 def mass_density(
     density: (u.m**-3, u.kg / (u.m**3)),
@@ -154,12 +155,12 @@ def mass_density(
         except TypeError as e:
             raise TypeError(
                 f"If passing a number density, you must pass a plasmapy Particle "
-                f"(not type {type(particle)}) to calculate the mass density!"
+                f"(not type {type(particle)}) to calculate the mass density!",
             ) from e
 
     if not isinstance(z_ratio, float | np.floating | int | np.integer):
         raise TypeError(
-            f"Expected type int or float for keyword z_ratio, got type {type(z_ratio)}."
+            f"Expected type int or float for keyword z_ratio, got type {type(z_ratio)}.",
         )
 
     return abs(z_ratio) * density * particle.mass

@@ -110,14 +110,20 @@ def test_Plasma3D_derived_vars() -> None:
 def test_Plasma3D_add_magnetostatics() -> None:
     r"""Function to test add_magnetostatic function"""
     dipole = magnetostatics.MagneticDipole(
-        np.array([0, 0, 1]) * u.A * u.m * u.m, np.array([0, 0, 0]) * u.m
+        np.array([0, 0, 1]) * u.A * u.m * u.m,
+        np.array([0, 0, 0]) * u.m,
     )
     cw = magnetostatics.CircularWire(
-        np.array([0, 0, 1]), np.array([0, 0, 0]) * u.m, 1 * u.m, 1 * u.A
+        np.array([0, 0, 1]),
+        np.array([0, 0, 0]) * u.m,
+        1 * u.m,
+        1 * u.A,
     )
     gw_cw = cw.to_GeneralWire()
     iw = magnetostatics.InfiniteStraightWire(
-        np.array([0, 1, 0]), np.array([0, 0, 0]) * u.m, 1 * u.A
+        np.array([0, 1, 0]),
+        np.array([0, 0, 0]) * u.m,
+        1 * u.A,
     )
     plasma = plasma3d.Plasma3D(
         domain_x=np.linspace(-2, 2, 30) * u.m,
@@ -196,7 +202,8 @@ class Test_PlasmaBlobRegimes:
         Z = 2.5 * u.dimensionless_unscaled
         particle = "p+"
         with pytest.warns(  # noqa: PT031
-            CouplingWarning, match="you might have strong coupling effects"
+            CouplingWarning,
+            match="you might have strong coupling effects",
         ):
             blob = plasmablob.PlasmaBlob(T_e=T_e, n_e=n_e, Z=Z, particle=particle)
 
@@ -298,7 +305,10 @@ class Test_PlasmaBlob:
         cls.Z = 2.5 * u.dimensionless_unscaled
         cls.particle = "p+"
         cls.blob = plasmablob.PlasmaBlob(
-            T_e=cls.T_e, n_e=cls.n_e, Z=cls.Z, particle=cls.particle
+            T_e=cls.T_e,
+            n_e=cls.n_e,
+            Z=cls.Z,
+            particle=cls.particle,
         )
         cls.couplingVal = 10.468374460435724
         cls.thetaVal = 0.6032979246923964
@@ -309,7 +319,10 @@ class Test_PlasmaBlob:
         """
         with pytest.raises(InvalidParticleError):
             plasmablob.PlasmaBlob(
-                T_e=self.T_e, n_e=self.n_e, Z=self.Z, particle="cupcakes"
+                T_e=self.T_e,
+                n_e=self.n_e,
+                Z=self.Z,
+                particle="cupcakes",
             )
 
     def test_electron_temperature(self) -> None:

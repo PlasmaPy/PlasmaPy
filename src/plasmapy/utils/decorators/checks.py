@@ -179,7 +179,9 @@ class CheckValues(CheckBase):
 
                 # check argument
                 self._check_value(
-                    bound_args.arguments[arg_name], arg_name, checks[arg_name]
+                    bound_args.arguments[arg_name],
+                    arg_name,
+                    checks[arg_name],
                 )
 
             # call function
@@ -188,7 +190,9 @@ class CheckValues(CheckBase):
             # check function return
             if "checks_on_return" in checks:
                 self._check_value(
-                    _return, "checks_on_return", checks["checks_on_return"]
+                    _return,
+                    "checks_on_return",
+                    checks["checks_on_return"],
                 )
 
             return _return
@@ -196,7 +200,8 @@ class CheckValues(CheckBase):
         return wrapper
 
     def _get_value_checks(
-        self, bound_args: inspect.BoundArguments
+        self,
+        bound_args: inspect.BoundArguments,
     ) -> dict[str, dict[str, bool]]:
         """
         Review :attr:`checks` and function bound arguments to build a
@@ -256,7 +261,8 @@ class CheckValues(CheckBase):
             for v_name, v_default in self.__check_defaults.items():
                 try:
                     out_checks[param.name][v_name] = param_in_checks.get(
-                        v_name, v_default
+                        v_name,
+                        v_default,
                     )
                 except AttributeError:
                     # for the case that checks are defined for an argument,
@@ -271,8 +277,8 @@ class CheckValues(CheckBase):
             warnings.warn(
                 PlasmaPyWarning(
                     f"Expected to value check parameters {params_str} but they "
-                    f"are missing from the call to {self.f.__name__}"
-                )
+                    f"are missing from the call to {self.f.__name__}",
+                ),
             )
 
         return out_checks
@@ -507,7 +513,9 @@ class CheckUnits(CheckBase):
 
                 # check argument
                 self._check_unit(
-                    bound_args.arguments[arg_name], arg_name, checks[arg_name]
+                    bound_args.arguments[arg_name],
+                    arg_name,
+                    checks[arg_name],
                 )
 
             # call function
@@ -516,7 +524,9 @@ class CheckUnits(CheckBase):
             # check output
             if "checks_on_return" in checks:
                 self._check_unit(
-                    _return, "checks_on_return", checks["checks_on_return"]
+                    _return,
+                    "checks_on_return",
+                    checks["checks_on_return"],
                 )
 
             return _return
@@ -524,7 +534,8 @@ class CheckUnits(CheckBase):
         return wrapper
 
     def _get_unit_checks(  # noqa: C901, PLR0912, PLR0915
-        self, bound_args: inspect.BoundArguments
+        self,
+        bound_args: inspect.BoundArguments,
     ) -> dict[str, dict[str, Any]]:
         """
         Review :attr:`checks` and function bound arguments to build a complete 'checks'
@@ -671,7 +682,7 @@ class CheckUnits(CheckBase):
                     f"specified by decorator arguments ({_units}).  Use either "
                     f"decorator arguments or function annotations to defined unit "
                     f"types, or make sure annotation specifications match decorator "
-                    f"argument specifications."
+                    f"argument specifications.",
                 )
             if not _units and not _units_anno and param_checks is None:
                 # annotations did not specify units
@@ -747,8 +758,8 @@ class CheckUnits(CheckBase):
             warnings.warn(
                 PlasmaPyWarning(
                     f"Expected to unit check parameters {params_str} but they "
-                    f"are missing from the call to {self.f.__name__}"
-                )
+                    f"are missing from the call to {self.f.__name__}",
+                ),
             )
 
         return out_checks
@@ -784,7 +795,10 @@ class CheckUnits(CheckBase):
             raise err
 
     def _check_unit_core(  # noqa: C901, PLR0912, PLR0915
-        self, arg, arg_name: str, arg_checks: dict[str, Any]
+        self,
+        arg,
+        arg_name: str,
+        arg_checks: dict[str, Any],
     ) -> tuple[
         u.Quantity | None,
         u.Unit | None,
@@ -854,7 +868,7 @@ class CheckUnits(CheckBase):
         for unit in arg_checks["units"]:
             try:
                 in_acceptable_units.append(
-                    arg.unit.is_equivalent(unit, equivalencies=equiv)
+                    arg.unit.is_equivalent(unit, equivalencies=equiv),
                 )
             except AttributeError:
                 if hasattr(arg, "unit"):
@@ -1392,7 +1406,7 @@ def _check_relativistic(
     elif beta >= 1:
         raise RelativityError(
             f"{funcname} is yielding a velocity that is {round(beta, 3)} "
-            f"times the speed of light."
+            f"times the speed of light.",
         )
     elif beta >= betafrac:
         warnings.warn(

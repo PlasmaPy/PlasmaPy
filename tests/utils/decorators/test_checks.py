@@ -171,7 +171,7 @@ class TestCheckUnits:
 
         # 3 element equivalency
         norme = cu._normalize_equivalencies(
-            [(u.K, u.deg_C, lambda x: x - 273.15, lambda x: x + 273.15)]
+            [(u.K, u.deg_C, lambda x: x - 273.15, lambda x: x + 273.15)],
         )
         assert len(norme) == 1
         assert isinstance(norme[0], tuple)
@@ -564,7 +564,7 @@ class TestCheckUnits:
                     "input": (None, "arg", {**check, "none_shall_pass": True}),
                     "output": (None, None, None, None),
                 },
-            ]  # ty:ignore[invalid-argument-type]
+            ],  # ty:ignore[invalid-argument-type]
         )
 
         # add cases for 'pass_equivalent_units' checks
@@ -596,7 +596,7 @@ class TestCheckUnits:
                     ),
                     "output": (5.0 * u.km, None, None, None),
                 },
-            ]  # ty:ignore[invalid-argument-type]
+            ],  # ty:ignore[invalid-argument-type]
         )
 
         # setup wrapped function
@@ -706,7 +706,9 @@ class TestCheckUnits:
         """
         # create mock function (mock_foo) from function to mock (self.foo_no_anno)
         mock_foo = mock.Mock(
-            side_effect=self.foo_no_anno, name="mock_foo", autospec=True
+            side_effect=self.foo_no_anno,
+            name="mock_foo",
+            autospec=True,
         )
         mock_foo.__name__ = "mock_foo"
         mock_foo.__signature__ = inspect.signature(self.foo_no_anno)
@@ -764,7 +766,7 @@ class TestCheckUnits:
 
                 assert mock_cu_class.call_args[0] == ()
                 assert sorted(mock_cu_class.call_args[1].keys()) == sorted(
-                    case["setup"]["checks"].keys()
+                    case["setup"]["checks"].keys(),
                 )
 
                 for arg_name, checks in case["setup"]["checks"].items():
@@ -970,7 +972,7 @@ class TestCheckValues:
                     ],
                     "arg_name": "arg",
                     "checks": {**default_checks, "can_be_negative": True},
-                }
+                },
             },
             # tests for check 'can_be_complex'
             {
@@ -998,7 +1000,7 @@ class TestCheckValues:
                     ],
                     "arg_name": "checks_on_return",
                     "checks": {**default_checks, "can_be_complex": True},
-                }
+                },
             },
             # tests for check 'can_be_inf'
             {
@@ -1024,7 +1026,7 @@ class TestCheckValues:
                     ],
                     "arg_name": "arg",
                     "checks": {**default_checks, "can_be_inf": True},
-                }
+                },
             },
             # tests for check 'can_be_nan'
             {
@@ -1050,7 +1052,7 @@ class TestCheckValues:
                     ],
                     "arg_name": "arg",
                     "checks": {**default_checks, "can_be_nan": True},
-                }
+                },
             },
             # tests for check 'none_shall_pass'
             {
@@ -1066,7 +1068,7 @@ class TestCheckValues:
                     "args": [None],
                     "arg_name": "arg",
                     "checks": {**default_checks, "none_shall_pass": True},
-                }
+                },
             },
             # tests for check 'can_be_zero'
             {
@@ -1082,7 +1084,7 @@ class TestCheckValues:
                     "args": [0, 0 * u.cm, np.arange(0, 3), np.arange(0, 3) * u.kg],
                     "arg_name": "arg",
                     "checks": {**default_checks, "can_be_zero": True},
-                }
+                },
             },
         ]
 
@@ -1176,7 +1178,8 @@ class TestCheckValues:
                 self.y = y
 
             @CheckValues(
-                x={"can_be_negative": True}, checks_on_return={"can_be_negative": False}
+                x={"can_be_negative": True},
+                checks_on_return={"can_be_negative": False},
             )
             def bar(self, x):
                 return x + self.y
@@ -1268,7 +1271,7 @@ class TestCheckValues:
 
                 assert mock_cv_class.call_args[0] == ()
                 assert sorted(mock_cv_class.call_args[1].keys()) == sorted(
-                    case["setup"]["checks"].keys()  # ty:ignore[not-subscriptable]
+                    case["setup"]["checks"].keys(),  # ty:ignore[not-subscriptable]
                 )
 
                 for arg_name, checks in case["setup"]["checks"].items():  # ty:ignore[not-subscriptable]

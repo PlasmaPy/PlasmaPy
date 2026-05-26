@@ -183,7 +183,11 @@ def find_floating_potential(  # noqa: C901, PLR0912, PLR0915
          ``fit_type="exponential"``.
     """
     rtn_extras = VFExtras(
-        vf_err=np.nan, rsq=None, fitted_func=None, islands=None, fitted_indices=None
+        vf_err=np.nan,
+        rsq=None,
+        fitted_func=None,
+        islands=None,
+        fitted_indices=None,
     )._asdict()
 
     _settings = {
@@ -197,7 +201,7 @@ def find_floating_potential(  # noqa: C901, PLR0912, PLR0915
     except KeyError as ex:
         raise ValueError(
             f"Requested fit '{fit_type}' is not a valid option.  Valid options "
-            f"are {list(_settings.keys())}."
+            f"are {list(_settings.keys())}.",
         ) from ex
 
     # check voltage and current arrays
@@ -207,12 +211,12 @@ def find_floating_potential(  # noqa: C901, PLR0912, PLR0915
     if not isinstance(threshold, numbers.Integral):
         raise TypeError(
             f"Keyword 'threshold' is of type {type(threshold)}, expected an int "
-            f"int >= 1."
+            f"int >= 1.",
         )
     elif threshold < 1:
         raise ValueError(
             f"Keyword 'threshold' has value ({threshold}) less than 1, "
-            f"value must be an int >= 1."
+            f"value must be an int >= 1.",
         )
 
     # condition min_points
@@ -221,7 +225,7 @@ def find_floating_potential(  # noqa: C901, PLR0912, PLR0915
     elif not isinstance(min_points, float | np.floating | int | np.integer):
         raise TypeError(
             f"Argument 'min_points' is wrong type '{type(min_points)}', expecting "
-            f"an int or float."
+            f"an int or float.",
         )
     elif np.isinf(min_points):
         # this signals to use all points
@@ -246,7 +250,7 @@ def find_floating_potential(  # noqa: C901, PLR0912, PLR0915
 
     # collect all candidates
     cp_candidates = np.concatenate(
-        (cp_exact, cp_low2high, cp_low2high - 1, cp_high2low, cp_high2low + 1)
+        (cp_exact, cp_low2high, cp_low2high - 1, cp_high2low, cp_high2low + 1),
     )
     cp_candidates = np.unique(cp_candidates)  # sorted and unique
 
@@ -260,10 +264,10 @@ def find_floating_potential(  # noqa: C901, PLR0912, PLR0915
     else:
         # There are multiple crossing points
         isl_start = np.concatenate(
-            ([cp_candidates[0]], cp_candidates[threshold_indices + 1])
+            ([cp_candidates[0]], cp_candidates[threshold_indices + 1]),
         )
         isl_stop = np.concatenate(
-            (cp_candidates[threshold_indices] + 1, [cp_candidates[-1] + 1])
+            (cp_candidates[threshold_indices] + 1, [cp_candidates[-1] + 1]),
         )
         rtn_extras["islands"] = [
             slice(start, stop) for start, stop in zip(isl_start, isl_stop, strict=False)
@@ -273,7 +277,7 @@ def find_floating_potential(  # noqa: C901, PLR0912, PLR0915
         isl_window = (
             np.abs(
                 np.r_[rtn_extras["islands"][-1]][-1]
-                - np.r_[rtn_extras["islands"][0]][0]
+                - np.r_[rtn_extras["islands"][0]][0],
             )
             + 1
         )

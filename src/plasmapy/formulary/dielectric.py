@@ -37,7 +37,8 @@ StixTensorElements = namedtuple("StixTensorElements", ["sum", "difference", "pla
 
 
 RotatingTensorElements = namedtuple(
-    "RotatingTensorElements", ["left", "right", "plasma"]
+    "RotatingTensorElements",
+    ["left", "right", "plasma"],
 )
 """Output type for `~plasmapy.formulary.dielectric.cold_plasma_permittivity_LRP`."""
 
@@ -297,7 +298,8 @@ def permittivity_1D_Maxwellian_lite(omega, kWave, vth, wp):
 
 @bind_lite_func(permittivity_1D_Maxwellian_lite)
 @validate_quantities(
-    kWave={"none_shall_pass": True}, validations_on_return={"can_be_complex": True}
+    kWave={"none_shall_pass": True},
+    validations_on_return={"can_be_complex": True},
 )
 def permittivity_1D_Maxwellian(
     omega: u.Quantity[u.rad / u.s],

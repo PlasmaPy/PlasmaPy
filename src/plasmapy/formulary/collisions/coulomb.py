@@ -443,7 +443,12 @@ def Coulomb_logarithm(  # noqa: ANN201
     """
     # fetching impact min and max impact parameters
     bmin, bmax = lengths.impact_parameter(
-        T=T, n_e=n_e, species=species, z_mean=z_mean, V=V, method=method
+        T=T,
+        n_e=n_e,
+        species=species,
+        z_mean=z_mean,
+        V=V,
+        method=method,
     )
 
     if method in {
@@ -477,7 +482,7 @@ def Coulomb_logarithm(  # noqa: ANN201
             '"ls_full_interp", "ls_clamp_mininterp", "hls_min_interp", '
             '"hls_max_interp", "hls_full_interp", and their aliases. '
             "Please refer to the documentation of this function for "
-            "more information."
+            "more information.",
         )
 
     ln_Lambda = ln_Lambda.to(u.dimensionless_unscaled).value

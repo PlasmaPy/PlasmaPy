@@ -443,7 +443,7 @@ def is_stable(particle: ParticleLike, mass_numb: int | None = None) -> bool:
     """
     if particle.element and not particle.isotope:
         raise InvalidIsotopeError(
-            "The input to is_stable must be either an isotope or a special particle."
+            "The input to is_stable must be either an isotope or a special particle.",
         )
     return particle.is_category("stable")
 
@@ -568,7 +568,7 @@ def known_isotopes(argument: ParticleLike | None = None) -> ParticleList:
         return [
             mass_number
             for (isotope, mass_number) in sorted(
-                zip(mass_numbers, isotopes, strict=False)
+                zip(mass_numbers, isotopes, strict=False),
             )
         ]
 
@@ -578,7 +578,7 @@ def known_isotopes(argument: ParticleLike | None = None) -> ParticleList:
             isotopes_list = known_isotopes_for_element(element)
         except InvalidElementError as ex:
             raise InvalidElementError(
-                f"known_isotopes is unable to get isotopes from an input of: {argument}"
+                f"known_isotopes is unable to get isotopes from an input of: {argument}",
             ) from ex
         except InvalidParticleError as ex:
             raise InvalidParticleError("Invalid particle in known_isotopes.") from ex
@@ -682,7 +682,7 @@ def common_isotopes(
         sorted_isotopes = [
             iso_comp
             for (isotope, iso_comp) in sorted(
-                zip(isotopic_abundances, common_isotopes_, strict=False)
+                zip(isotopic_abundances, common_isotopes_, strict=False),
             )
         ]
 
@@ -702,7 +702,7 @@ def common_isotopes(
         except InvalidElementError as ex:
             raise InvalidElementError(
                 "common_isotopes is unable to get isotopes "
-                f"from an input of: {argument}"
+                f"from an input of: {argument}",
             ) from ex
 
     elif argument is None:
@@ -804,7 +804,7 @@ def stable_isotopes(
         except InvalidElementError as ex:
             raise InvalidElementError(
                 "stable_isotopes is unable to get isotopes "
-                f"from an input of: {argument}"
+                f"from an input of: {argument}",
             ) from ex
     elif argument is None:
         isotopes_list = []
@@ -918,7 +918,7 @@ def periodic_table_period(argument: ParticleLike) -> int:
         raise TypeError(
             "The argument to periodic_table_period must be either a "
             "string representing the element or its symbol, or an "
-            "integer representing its atomic number."
+            "integer representing its atomic number.",
         )
     symbol = atomic_symbol(argument)
     return _elements.data_about_elements[symbol]["period"]  # ty:ignore[invalid-argument-type, not-subscriptable]
@@ -966,7 +966,7 @@ def periodic_table_group(argument: ParticleLike) -> int:
         raise TypeError(
             "The argument to periodic_table_group must be "
             "either a string representing the element or its "
-            "symbol, or an integer representing its atomic number."
+            "symbol, or an integer representing its atomic number.",
         )
     symbol = atomic_symbol(argument)
     return _elements.data_about_elements[symbol]["group"]  # ty:ignore[invalid-argument-type, not-subscriptable]
@@ -1017,7 +1017,7 @@ def periodic_table_block(argument: ParticleLike) -> str:
         raise TypeError(
             "The argument to periodic_table_block must be "
             "either a string representing the element or its "
-            "symbol, or an integer representing its atomic number."
+            "symbol, or an integer representing its atomic number.",
         )
     symbol = atomic_symbol(argument)
     return _elements.data_about_elements[symbol]["block"]  # ty:ignore[invalid-argument-type, not-subscriptable]
@@ -1063,7 +1063,7 @@ def periodic_table_category(argument: str | int) -> str:
         raise TypeError(
             "The argument to periodic_table_category must be "
             "either a string representing the element or its "
-            "symbol, or an integer representing its atomic number."
+            "symbol, or an integer representing its atomic number.",
         )
     symbol = atomic_symbol(argument)
     return _elements.data_about_elements[symbol]["category"]  # ty:ignore[invalid-argument-type, not-subscriptable]
@@ -1114,11 +1114,11 @@ def ionic_levels(
         raise ChargeError(
             f"Need min_charge ({min_charge}) "
             f"≤ max_charge ({max_charge}) "
-            f"≤ atomic number ({base_particle.atomic_number})."
+            f"≤ atomic number ({base_particle.atomic_number}).",
         )
 
     return ParticleList(
-        [Particle(base_particle, Z=Z) for Z in range(min_charge, max_charge + 1)]
+        [Particle(base_particle, Z=Z) for Z in range(min_charge, max_charge + 1)],
     )
 
 
@@ -1200,20 +1200,20 @@ def stopping_power(
             group_name = "helium_ions"
         elif incident_particle == Particle("e-"):
             raise NotImplementedError(
-                "Stopping calculations for electrons have not been implemented yet!"
+                "Stopping calculations for electrons have not been implemented yet!",
             )
         elif incident_particle in {Particle("H+"), Particle("p+")}:
             group_name = "protons"
         else:
             raise ValueError(
-                "Please pass a valid particle type for stopping power calculations."
+                "Please pass a valid particle type for stopping power calculations.",
             )
 
         group_data = nist_data[group_name]
 
         if material not in group_data:
             raise ValueError(
-                f"Please pass a valid material string! Material {material} not found in {group_name}."
+                f"Please pass a valid material string! Material {material} not found in {group_name}.",
             )
 
         # Energies are not included in the material data. They must be loaded from a separate data set.
@@ -1232,7 +1232,7 @@ def stopping_power(
             relevant_stopping_data = material_data["nuclear_stopping_power"]
         else:
             raise ValueError(
-                f"Please specify one of: total, electronic, or nuclear for component! (Got {component}.)"
+                f"Please specify one of: total, electronic, or nuclear for component! (Got {component}.)",
             )
 
         if energies is None and not return_interpolator:
@@ -1243,7 +1243,8 @@ def stopping_power(
 
         # Interpolate NIST data to the user-provided energy values. Uses log-log scale fed into a cubic spline.
         cs = CubicSpline(
-            x=np.log(baseline_energies_data), y=np.log(relevant_stopping_data)
+            x=np.log(baseline_energies_data),
+            y=np.log(relevant_stopping_data),
         )
 
         # If it has been indicated that the user wants the interpolator, construct

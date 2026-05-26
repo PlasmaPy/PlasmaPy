@@ -335,7 +335,8 @@ class _ParticleInput:
         return self._data["parameters_to_process"]
 
     def verify_charge_categorization(
-        self, particle: Particle | CustomParticle | ParticleList
+        self,
+        particle: Particle | CustomParticle | ParticleList,
     ) -> None:
         """
         Raise an exception if the particle does not meet charge
@@ -354,7 +355,8 @@ class _ParticleInput:
         if isinstance(particle, ParticleList):
             uncharged = particle.is_category("uncharged", particlewise=True)
             lacks_charge_info = particle.is_category(
-                exclude={"charged", "uncharged"}, particlewise=True
+                exclude={"charged", "uncharged"},
+                particlewise=True,
             )
         else:
             uncharged = particle.is_category("uncharged")
@@ -370,7 +372,7 @@ class _ParticleInput:
         if must_have_charge_info and lacks_charge_info:
             raise ChargeError(
                 f"{self.callable_} can only accept particles which have "
-                f"explicit charge information."
+                f"explicit charge information.",
             )
 
     @staticmethod
@@ -409,7 +411,8 @@ class _ParticleInput:
         return category_errmsg
 
     def verify_particle_categorization(
-        self, particle: Particle | CustomParticle | ParticleList
+        self,
+        particle: Particle | CustomParticle | ParticleList,
     ) -> None:
         """
         Verify that the particle meets the categorization criteria.
@@ -447,7 +450,9 @@ class _ParticleInput:
             raise ParticleError(errmsg)
 
     def verify_particle_name_criteria(
-        self, parameter: str, particle: Particle | CustomParticle | ParticleList
+        self,
+        parameter: str,
+        particle: Particle | CustomParticle | ParticleList,
     ) -> None:
         """
         Check that parameters with special names meet the expected
@@ -480,7 +485,8 @@ class _ParticleInput:
 
             if isinstance(particle, ParticleList):
                 meets_name_criteria = particle.is_category(
-                    **categorization, particlewise=True
+                    **categorization,
+                    particlewise=True,
                 )
             else:
                 meets_name_criteria = particle.is_category(**categorization)
@@ -492,11 +498,12 @@ class _ParticleInput:
                 raise exception(
                     f"The argument {parameter} = {particle!r} to "
                     f"{self.callable_.__name__} does not correspond to a "
-                    f"valid {parameter}."
+                    f"valid {parameter}.",
                 )
 
     def verify_allowed_types(
-        self, particle: Particle | CustomParticle | ParticleList
+        self,
+        particle: Particle | CustomParticle | ParticleList,
     ) -> None:
         """
         Verify that the particle object contains only the allowed types
@@ -505,13 +512,13 @@ class _ParticleInput:
         if not self.allow_custom_particles and isinstance(particle, CustomParticle):
             raise InvalidParticleError(
                 f"{self.callable_.__name__} does not accept CustomParticle "
-                f"or CustomParticle-like inputs."
+                f"or CustomParticle-like inputs.",
             )
 
         if not self.allow_particle_lists and isinstance(particle, ParticleList):
             raise InvalidParticleError(
                 f"{self.callable_.__name__} does not accept ParticleList "
-                "or particle-list-like inputs."
+                "or particle-list-like inputs.",
             )
 
         if (
@@ -521,7 +528,7 @@ class _ParticleInput:
         ):
             raise InvalidParticleError(
                 f"{self.callable_.__name__} does not accept CustomParticle "
-                f"or CustomParticle-like inputs."
+                f"or CustomParticle-like inputs.",
             )
 
     def process_argument(
@@ -622,7 +629,7 @@ class _ParticleInput:
 
         if not self.parameters_to_process:
             raise ParticleError(
-                "No parameters have an annotation that will invoke particle_input."
+                "No parameters have an annotation that will invoke particle_input.",
             )
 
         Z_or_mass_numb = Z is not None or mass_numb is not None
@@ -638,7 +645,7 @@ class _ParticleInput:
             raise ParticleError(
                 "The arguments Z and mass_numb are not allowed when more "
                 "than one argument or keyword is annotated with ParticleLike "
-                "in callables decorated with @particle_input."
+                "in callables decorated with @particle_input.",
             )
 
     def process_arguments(
@@ -670,7 +677,11 @@ class _ParticleInput:
         """
 
         bound_arguments = _bind_arguments(
-            self.signature, self.callable_, args, kwargs, instance
+            self.signature,
+            self.callable_,
+            args,
+            kwargs,
+            instance,
         )
 
         Z = bound_arguments.arguments.pop("Z", None)

@@ -245,7 +245,10 @@ def create_particles_dict() -> dict[str, dict]:  # noqa: C901, PLR0912
             "mass": const.m_p,
             "charge number": 1,
             "periodic table": _elements.PeriodicTable(
-                group=1, period=1, block="s", category="nonmetal"
+                group=1,
+                period=1,
+                block="s",
+                category="nonmetal",
             ),
         },
         "p-": {"mass": const.m_p, "charge number": -1},

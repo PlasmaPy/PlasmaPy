@@ -132,7 +132,7 @@ def _name_with_article(ex: Exception) -> str:
         [
             name[0] in "aeiouAEIOU",
             name[:3].lower() not in starts_with_vowel_but_uses_a,
-        ]
+        ],
     )
 
     indefinite_article = "an" if use_an else "a"
@@ -173,7 +173,8 @@ def _object_name(obj: Any, showmodule: bool = False) -> str:  # noqa: ANN401, FB
 
 
 def _string_together_warnings_for_printing(  # noqa: ANN202
-    warning_types: list[Warning], warning_messages: list[str]
+    warning_types: list[Warning],
+    warning_messages: list[str],
 ):
     """
     Take a list of warning types with a list of corresponding warning
@@ -416,6 +417,7 @@ def method_call_string(
     """
     class_call_string = f"{call_string(cls, args_to_cls, kwargs_to_cls, max_items)}"
     args_to_method_and_kwargs = _code_repr_of_args_and_kwargs(
-        args_to_method, kwargs_to_method
+        args_to_method,
+        kwargs_to_method,
     )
     return f"{class_call_string}.{method}({args_to_method_and_kwargs})"

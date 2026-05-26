@@ -207,7 +207,7 @@ def _physical_particle_factory(
     if args and not isinstance(args[0], str | Integral | u.Quantity):
         raise TypeError(
             f"{args[0]!r} is of type {type(args[0]).__name__}, which is not a "
-            f"valid particle type."
+            f"valid particle type.",
         )
 
     raise InvalidParticleError(_generate_particle_factory_error_message(args, kwargs))  # ty:ignore[invalid-argument-type]

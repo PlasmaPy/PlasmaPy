@@ -117,14 +117,14 @@ class TestTwoFluid:
         if not np.isclose(beta, 0.4, atol=1e-4):
             pytest.fail(
                 f"The Bellan 2012 paper requires a 'beta' value of 0.4 and the test "
-                f"parameters yielded {beta:.6f}."
+                f"parameters yielded {beta:.6f}.",
             )
 
         Lambda = (kwargs["k"] * va / wci).value ** 2
         if not np.isclose(Lambda, 0.4, atol=1e-4):
             pytest.fail(
                 f"The Bellan 2012 paper requires a 'Lambda' value of 0.4 and the test "
-                f"parameters yielded {Lambda:.6f}."
+                f"parameters yielded {Lambda:.6f}.",
             )
 
         ws = two_fluid(**kwargs)

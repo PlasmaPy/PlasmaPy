@@ -42,7 +42,9 @@ class AbstractSaveRoutine(ABC):
     """
 
     def __init__(
-        self, output_directory: Path | None = None, output_basename: str = "output"
+        self,
+        output_directory: Path | None = None,
+        output_basename: str = "output",
     ) -> None:
         self.output_directory = output_directory
         self.output_basename = output_basename
@@ -181,7 +183,9 @@ class SaveOnceOnCompletion(AbstractSaveRoutine):
     """
 
     def __init__(
-        self, output_directory: Path | None = None, output_basename: str = "output"
+        self,
+        output_directory: Path | None = None,
+        output_basename: str = "output",
     ) -> None:
         super().__init__(output_directory, output_basename)
 

@@ -133,7 +133,7 @@ class BaseFFTests(ABC):
             pytest.fail(
                 f"{self.ff_class} class attribute '_param_names' needs to "
                 f" be defined as a tuple of strings representing the names of "
-                f"the fit parameters."
+                f"the fit parameters.",
             )
 
     @pytest.mark.parametrize(
@@ -156,7 +156,7 @@ class BaseFFTests(ABC):
         if exp_value == NotImplemented:
             pytest.fail(
                 f"The expected value for abstract method {name} is not "
-                f"implemented/defined in the test class attribute {value_ref_name}."
+                f"implemented/defined in the test class attribute {value_ref_name}.",
             )
 
         assert value == exp_value
@@ -578,7 +578,12 @@ class TestFFLinear(BaseFFTests):
         ],
     )
     def test_root_solve(
-        self, params, param_errors, root, root_err, conditional
+        self,
+        params,
+        param_errors,
+        root,
+        root_err,
+        conditional,
     ) -> None:  # ty:ignore[invalid-method-override]
         with conditional:
             ff_obj = self.ff_class(params=params, param_errors=param_errors)

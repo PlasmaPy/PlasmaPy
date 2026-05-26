@@ -49,7 +49,7 @@ def _turn_quantity_into_custom_particle(
     raise InvalidParticleError(
         f"Cannot convert {quantity} into a CustomParticle for "
         f"inclusion in a ParticleList because it does not have"
-        f"a physical type of mass or electrical charge."
+        f"a physical type of mass or electrical charge.",
     )
 
 
@@ -161,7 +161,7 @@ class ParticleList(collections.UserList):
             raise TypeError(
                 "ParticleList does not accept strings, but does accept "
                 "lists and tuples containing strings. Did you mean to "
-                f"do `ParticleList([{particles!r}])` instead?"
+                f"do `ParticleList([{particles!r}])` instead?",
             )
 
         new_particles = []
@@ -172,7 +172,7 @@ class ParticleList(collections.UserList):
                 new_particles.append(obj)
             elif isinstance(obj, DimensionlessParticle):
                 raise TypeError(
-                    "ParticleList instances cannot include dimensionless particles."
+                    "ParticleList instances cannot include dimensionless particles.",
                 )
             elif isinstance(obj, u.Quantity):
                 new_particle = _turn_quantity_into_custom_particle(obj)
@@ -183,7 +183,7 @@ class ParticleList(collections.UserList):
                 except (TypeError, InvalidParticleError) as exc:
                     raise InvalidParticleError(
                         f"The object {obj} supplied to ParticleList is not a "
-                        f"particle-like object."
+                        f"particle-like object.",
                     ) from exc
 
         return new_particles
@@ -203,7 +203,7 @@ class ParticleList(collections.UserList):
             return ParticleList([other])
         except (InvalidParticleError, TypeError) as ex:
             raise InvalidParticleError(
-                f"Cannot cast {other} into a ParticleList"
+                f"Cannot cast {other} into a ParticleList",
             ) from ex
 
     def __add__(self, other):
@@ -211,7 +211,7 @@ class ParticleList(collections.UserList):
             other_as_particle_list = self._cast_other_as_particle_list(other)
         except (TypeError, InvalidParticleError) as exc:
             raise InvalidParticleError(
-                f"Cannot add {other!r} to a ParticleList."
+                f"Cannot add {other!r} to a ParticleList.",
             ) from exc
         return ParticleList(self.data + other_as_particle_list.data)
 
@@ -227,7 +227,8 @@ class ParticleList(collections.UserList):
 
         other_as_particle_list = self._cast_other_as_particle_list(other)
         return nuclear_reaction_energy(
-            reactants=self.symbols, products=other_as_particle_list.symbols
+            reactants=self.symbols,
+            products=other_as_particle_list.symbols,
         )
 
     def __str__(self) -> str:

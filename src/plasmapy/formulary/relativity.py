@@ -72,7 +72,7 @@ def Lorentz_factor(V: u.Quantity[u.m / u.s]):  # noqa: ANN201
     if not np.all((np.abs(V) <= c) | (np.isnan(V))):
         raise RelativityError(
             "The Lorentz factor cannot be calculated for "
-            "speeds faster than the speed of light."
+            "speeds faster than the speed of light.",
         )
 
     if V.size > 1:
@@ -179,7 +179,7 @@ def relativistic_energy(
         raise TypeError(
             "The parameters 'm' and 'v' to relativistic_energy have "
             " been removed. Use 'particle' instead of 'm' and 'V' "
-            "instead of 'v'."
+            "instead of 'v'.",
         )
 
     γ = Lorentz_factor(V)
@@ -287,13 +287,14 @@ class RelativisticBody:
             raise ValueError(
                 "RelativisticBody can accept no more than one of the following "
                 "arguments: V, v_over_c, momentum, total_energy, kinetic_energy, "
-                "and lorentz_factor."
+                "and lorentz_factor.",
             )
 
         return not_none_arguments or {"velocity": np.nan * u.m / u.s}
 
     def _store_velocity_like_argument(
-        self, speed_like_input: dict[str, u.Quantity | float]
+        self,
+        speed_like_input: dict[str, u.Quantity | float],
     ) -> None:
         """
         Take the velocity-like argument and store it via the setter for
@@ -500,7 +501,7 @@ class RelativisticBody:
                 γ = γ.to(u.dimensionless_unscaled).value
             except u.UnitConversionError as exc:
                 raise u.UnitConversionError(
-                    "The Lorentz factor must be dimensionless."
+                    "The Lorentz factor must be dimensionless.",
                 ) from exc
 
         if γ < 1:

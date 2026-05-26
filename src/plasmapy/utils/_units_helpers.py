@@ -89,7 +89,7 @@ def _get_physical_type_dict(
                 raise ValueError(
                     f"{obj} has a physical type of {physical_type}, but "
                     "only the following physical types are allowed: "
-                    f"{allowed_physical_types}."
+                    f"{allowed_physical_types}.",
                 )
             if physical_type in physical_types:
                 raise ValueError(f"Duplicate physical type: {physical_type}")

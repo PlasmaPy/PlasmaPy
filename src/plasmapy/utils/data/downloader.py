@@ -214,7 +214,7 @@ class Downloader:
             warnings.warn(
                 "URL did not return the expected JSON file: "
                 f"{self._API_BASE_URL}. "
-                f"Response content: {reply.content.decode('utf-8')}. Exception: {err}"
+                f"Response content: {reply.content.decode('utf-8')}. Exception: {err}",
             )
             self._validate = False
             return None
@@ -231,7 +231,7 @@ class Downloader:
                 warnings.warn(
                     f"URL {self._API_BASE_URL} returned JSON file, "
                     "missing expected keys 'sha' and 'download_url`."
-                    f" JSON contents: {info}. Exception: {err}"
+                    f" JSON contents: {info}. Exception: {err}",
                 )
                 filename = None
                 repo_sha = None
@@ -239,7 +239,9 @@ class Downloader:
 
             if filename is not None:
                 self._update_blob_entry(
-                    filename, repo_sha=repo_sha, download_url=download_url
+                    filename,
+                    repo_sha=repo_sha,
+                    download_url=download_url,
                 )
 
         # Save the current epoch time in the blob file as a record of when
@@ -302,7 +304,7 @@ class Downloader:
         # severing the network connectivity in pytest
         except requests.ConnectionError as err:  # coverage: ignore
             raise requests.ConnectionError(
-                f"Unable to connect to data repository {self._API_BASE_URL}"
+                f"Unable to connect to data repository {self._API_BASE_URL}",
             ) from err
 
         # Extract the 'message' value if it is there
@@ -378,7 +380,7 @@ class Downloader:
         raise ValueError(
             "Resource could not be found locally or "
             "retrieved from the PlasmaPy-data repository: "
-            f"{filename}."
+            f"{filename}.",
         )
 
     def _get_file_with_validation(self, filename: str) -> Path:
@@ -423,7 +425,7 @@ class Downloader:
             self._validate = False
             warnings.warn(
                 f"Could not retrieve file {filename} with validation: "
-                "trying again without validation."
+                "trying again without validation.",
             )
             return self._get_file_without_validation(filename)
 

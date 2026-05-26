@@ -97,7 +97,7 @@ def _create_lockfile_pr_message(uv_output: str, session: nox.Session) -> None:
     """
 
     pr_template = pathlib.Path(
-        ROOT_DIR / "./.github/content/upgrade-uv-lock-pr-template.md"
+        ROOT_DIR / "./.github/content/upgrade-uv-lock-pr-template.md",
     )
     pr_message = pathlib.Path(ROOT_DIR / "./.github/content/upgrade-uv-lock-pr-body.md")
 
@@ -166,10 +166,10 @@ def lock(session: nox.Session) -> None:
     except nox.command.CommandFailed:
         session.warn("⚠️ uv.lock is invalid, likely due to a git merge conflict.")
         session.log(
-            "📥 Checking out uv.lock from the branch being merged into this one."
+            "📥 Checking out uv.lock from the branch being merged into this one.",
         )
         session.log(
-            "🪧 If this next attempt is unsuccessful, delete uv.lock and try again."
+            "🪧 If this next attempt is unsuccessful, delete uv.lock and try again.",
         )
         session.run("git", "checkout", "--theirs", "--", "uv.lock", external=True)
         uv_output: str | bool = session.run(*uv_lock, silent=RUNNING_ON_CI)
@@ -395,7 +395,7 @@ def htmlzip(session: nox.Session) -> None:
     if not html_landing_page.exists():
         session.error(
             f"No documentation build found at: {html_landing_page}\n"
-            f"It appears the documentation has not been built."
+            f"It appears the documentation has not been built.",
         )
 
     command = [
@@ -556,7 +556,7 @@ def changelog(session: nox.Session, final: str) -> None:
     if len(session.posargs) != 1:
         raise TypeError(
             "Please provide the version of PlasmaPy to be released "
-            f"(i.e., `nox -s changelog -- {now.year}.{now.month}.0`)."
+            f"(i.e., `nox -s changelog -- {now.year}.{now.month}.0`).",
         )
 
     version = session.posargs[0]
@@ -568,7 +568,7 @@ def changelog(session: nox.Session, final: str) -> None:
         raise ValueError(
             "Please provide a version of the form YYYY.M.PATCH, where "
             "YYYY is he year, M is the one or two digit month, "
-            "and PATCH is a non-negative integer."
+            "and PATCH is a non-negative integer.",
         )
 
     towncrier = ["towncrier", "build", "--version", version]
@@ -603,7 +603,9 @@ AUTOTYPING_RISKY: tuple[str, ...] = (
 
 
 @nox_uv.session(
-    python=MINPYTHON, uv_only_groups=["autotyping"], uv_no_install_project=True
+    python=MINPYTHON,
+    uv_only_groups=["autotyping"],
+    uv_no_install_project=True,
 )
 @nox.parametrize(
     "options",
@@ -632,7 +634,9 @@ def autotyping(session: nox.Session, options: tuple[str, ...]) -> None:
 
 
 @nox_uv.session(
-    python=MAXPYTHON, uv_only_groups=["manifest"], uv_no_install_project=True
+    python=MAXPYTHON,
+    uv_only_groups=["manifest"],
+    uv_no_install_project=True,
 )
 def manifest(session: nox.Session) -> None:
     """

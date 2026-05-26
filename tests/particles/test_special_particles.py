@@ -70,5 +70,5 @@ def test_Particles_required_keys(particle):
 
     if missing_keys:
         raise KeyError(
-            f"_Particles[{particle!r}] is missing the following keys: {missing_keys}"
+            f"_Particles[{particle!r}] is missing the following keys: {missing_keys}",
         )

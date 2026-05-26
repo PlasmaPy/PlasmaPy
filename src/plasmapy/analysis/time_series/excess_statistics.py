@@ -83,7 +83,7 @@ class ExcessStatistics:
 
             else:
                 self._total_time_above_threshold.append(
-                    time_step * len(indices_above_threshold)
+                    time_step * len(indices_above_threshold),
                 )
 
                 distances_to_next_index = (
@@ -160,7 +160,9 @@ class ExcessStatistics:
         for i, threshold in enumerate(self.events_per_threshold.keys()):
             if len(self.events_per_threshold[threshold]) >= 1:
                 hist[i, :], bin_edges = np.histogram(
-                    self.events_per_threshold[threshold], bins=bins, density=True
+                    self.events_per_threshold[threshold],
+                    bins=bins,
+                    density=True,
                 )
                 bin_centers[i, :] = (bin_edges[1:] + bin_edges[:-1]) / 2
         return hist, bin_centers

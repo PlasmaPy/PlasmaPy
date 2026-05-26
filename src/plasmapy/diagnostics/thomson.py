@@ -266,7 +266,7 @@ def spectral_density_lite(
             notch = np.array(
                 [
                     notch,
-                ]
+                ],
             )
 
         for notch_i in notch:
@@ -505,7 +505,7 @@ def spectral_density(  # noqa: C901, PLR0912, PLR0915
     else:
         raise TypeError(
             "The type of object provided to the ``ions`` keyword "
-            f"is not supported: {type(ions)}"
+            f"is not supported: {type(ions)}",
         )
 
     # Validate ions
@@ -534,7 +534,7 @@ def spectral_density(  # noqa: C901, PLR0912, PLR0915
         raise ValueError(
             f"Inconsistent number of ion species in ifract ({ifract}), "
             f"ions ({len(ions)}), T_i ({T_i.size}), "  # ty:ignore[invalid-argument-type]
-            f"and/or ion_vel ({ion_vel.shape[0]})."
+            f"and/or ion_vel ({ion_vel.shape[0]}).",
         )
 
     # Condition T_e
@@ -547,7 +547,7 @@ def spectral_density(  # noqa: C901, PLR0912, PLR0915
     if (electron_vel.shape[0] != efract.size) or (T_e.size != efract.size):
         raise ValueError(
             f"Inconsistent number of electron populations in efract ({efract.size}), "
-            f"T_e ({T_e.size}), or electron velocity ({electron_vel.shape[0]})."
+            f"T_e ({T_e.size}), or electron velocity ({electron_vel.shape[0]}).",
         )
 
     probe_vec = probe_vec / np.linalg.norm(probe_vec)
@@ -565,7 +565,7 @@ def spectral_density(  # noqa: C901, PLR0912, PLR0915
             raise ValueError(
                 "instr_func must be a function that returns a "
                 "np.ndarray, but the provided function returns "
-                f" a {type(instr_func_arr)}"
+                f" a {type(instr_func_arr)}",
             )
 
         if wavelengths.shape != instr_func_arr.shape:
@@ -573,7 +573,7 @@ def spectral_density(  # noqa: C901, PLR0912, PLR0915
                 "The shape of the array returned from the "
                 f"instr_func ({instr_func_arr.shape}) "
                 "does not match the shape of the wavelengths "
-                f"array ({wavelengths.shape})."
+                f"array ({wavelengths.shape}).",
             )
 
         instr_func_arr /= np.sum(instr_func_arr)
@@ -593,7 +593,7 @@ def spectral_density(  # noqa: C901, PLR0912, PLR0915
             if notch_i[0] > notch_i[1]:
                 raise ValueError(
                     "The first element of the notch cannot be greater than "
-                    "the second element."
+                    "the second element.",
                 )
     else:
         notch_unitless = None
@@ -748,7 +748,9 @@ def _spectral_density_model(wavelengths, settings=None, **params):
 
 
 def spectral_density_model(  # noqa: C901, PLR0912, PLR0915
-    wavelengths, settings, params
+    wavelengths,
+    settings,
+    params,
 ):
     r"""
     Returns a `lmfit.model.Model` function for Thomson spectral density
@@ -839,14 +841,14 @@ def spectral_density_model(  # noqa: C901, PLR0912, PLR0915
     if missing_settings := required_settings - set(settings):
         raise ValueError(
             f"The following required settings were not provided in the "
-            f"'settings' argument: {missing_settings}"
+            f"'settings' argument: {missing_settings}",
         )
 
     required_params = {"n"}
     if missing_params := required_params - set(params):
         raise ValueError(
             f"The following required parameters were not provided in the "
-            f"'params': {missing_params}"
+            f"'params': {missing_params}",
         )
 
     # Add background if not provided
@@ -884,13 +886,15 @@ def spectral_density_model(  # noqa: C901, PLR0912, PLR0915
     # Required settings and parameters per population
     # **********************
     for p, nums in zip(
-        ["T_e", "T_i", "ion_mu", "ion_z"], [num_e, num_i, num_i, num_i], strict=False
+        ["T_e", "T_i", "ion_mu", "ion_z"],
+        [num_e, num_i, num_i, num_i],
+        strict=False,
     ):
         for num in range(nums):
             key = f"{p}_{num!s}"
             if key not in params:
                 raise ValueError(
-                    f"{p} was not provided in kwarg 'parameters', but is required."
+                    f"{p} was not provided in kwarg 'parameters', but is required.",
                 )
 
     # **************
@@ -929,7 +933,7 @@ def spectral_density_model(  # noqa: C901, PLR0912, PLR0915
             raise ValueError(
                 "Key 'electron_vdir' must be defined in kwarg 'settings' if "
                 "any electron population has a non-zero speed (i.e. any "
-                "params['electron_speed_<#>'] is non-zero)."
+                "params['electron_speed_<#>'] is non-zero).",
             )
     norm = np.linalg.norm(settings["electron_vdir"], axis=-1)
     settings["electron_vdir"] = settings["electron_vdir"] / norm[:, np.newaxis]
@@ -954,7 +958,7 @@ def spectral_density_model(  # noqa: C901, PLR0912, PLR0915
             raise ValueError(
                 "Key 'ion_vdir' must be defined in kwarg 'settings' if "
                 "any ion population has a non-zero speed (i.e. any "
-                "params['ion_speed_<#>'] is non-zero)."
+                "params['ion_speed_<#>'] is non-zero).",
             )
     norm = np.linalg.norm(settings["ion_vdir"], axis=-1)
     settings["ion_vdir"] = settings["ion_vdir"] / norm[:, np.newaxis]
@@ -972,7 +976,7 @@ def spectral_density_model(  # noqa: C901, PLR0912, PLR0915
             raise ValueError(
                 "instr_func must be a function that returns a "
                 "np.ndarray, but the provided function returns "
-                f" a {type(instr_func_arr)}"
+                f" a {type(instr_func_arr)}",
             )
 
         if wavelengths.shape != instr_func_arr.shape:
@@ -980,7 +984,7 @@ def spectral_density_model(  # noqa: C901, PLR0912, PLR0915
                 "The shape of the array returned from the "
                 f"instr_func ({instr_func_arr.shape}) "
                 "does not match the shape of the wavelengths "
-                f"array ({wavelengths.shape})."
+                f"array ({wavelengths.shape}).",
             )
 
         instr_func_arr *= 1 / np.sum(instr_func_arr)
@@ -991,7 +995,7 @@ def spectral_density_model(  # noqa: C901, PLR0912, PLR0915
             "should not include any `numpy.nan` values. "
             "Instead regions with no data should be removed from "
             "both the data and wavelength arrays using "
-            "`numpy.delete`."
+            "`numpy.delete`.",
         )
 
     if "notch" not in settings:

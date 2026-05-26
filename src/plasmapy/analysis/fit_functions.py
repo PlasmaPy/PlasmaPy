@@ -242,7 +242,7 @@ class AbstractFitFunction(ABC):
         else:
             raise ValueError(
                 f"Got {val} for 'val', expecting tuple of ints and "
-                f"floats of length {len(self.param_names)}."
+                f"floats of length {len(self.param_names)}.",
             )
 
     @property
@@ -264,7 +264,7 @@ class AbstractFitFunction(ABC):
         else:
             raise ValueError(
                 f"Got {val} for 'val', expecting tuple of ints and "
-                f"floats of length {len(self.param_names)}."
+                f"floats of length {len(self.param_names)}.",
             )
 
     @property
@@ -288,7 +288,7 @@ class AbstractFitFunction(ABC):
                 pass
             elif x_err.shape != x.shape:
                 raise ValueError(
-                    f"x_err shape {x_err.shape} must be equal the shape of x {x.shape}."
+                    f"x_err shape {x_err.shape} must be equal the shape of x {x.shape}.",
                 )
         return x, x_err
 
@@ -301,7 +301,7 @@ class AbstractFitFunction(ABC):
         for arg in args:
             if not isinstance(arg, numbers.Real):
                 raise TypeError(
-                    f"Expected int or float for parameter argument, got {type(arg)}."
+                    f"Expected int or float for parameter argument, got {type(arg)}.",
                 )
 
     @staticmethod
@@ -321,7 +321,7 @@ class AbstractFitFunction(ABC):
                 or np.issubdtype(x.dtype, np.floating)
             ):
                 raise TypeError(
-                    "Argument x needs to be an array_like object of integers or floats."
+                    "Argument x needs to be an array_like object of integers or floats.",
                 )
 
             x = x.squeeze()

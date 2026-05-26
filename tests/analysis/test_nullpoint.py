@@ -72,7 +72,7 @@ def test_trilinear_coeff_cal() -> None:
                 [-22, 3, 0, 1, 0, 0, 0, 0],
                 [-5.96833648, 0.08695652, 1, 0, 0, 0, 0],
             ],
-        )
+        ),
     ]
 
     @pytest.mark.parametrize(("kwargs", "expected"), test_trilinear_coeff_cal_values)
@@ -133,7 +133,9 @@ def test_trilinear_approx() -> None:
     approx = tlApprox(mid[0], mid[1], mid[2])
     approx = approx.reshape(1, 3)
     assert np.allclose(
-        approx, [-5.39130435, -21.5652174, 23.68667299], atol=_EQUALITY_ATOL
+        approx,
+        [-5.39130435, -21.5652174, 23.68667299],
+        atol=_EQUALITY_ATOL,
     )
 
 
@@ -197,7 +199,7 @@ class Test_bilinear_root:
         (
             {"a1": 1, "b1": 3, "c1": 5, "d1": 1, "a2": 2, "b2": 4, "c2": 6, "d2": 8},
             [0.358257569496, -0.387210334997, -0.558257569496, 0.15191621735],
-        )
+        ),
     ]
 
     @pytest.mark.parametrize(("kwargs", "expected"), test_bilinear_root_values)
@@ -227,14 +229,16 @@ class Test_locate_null_point:
         (
             {"vspace": vspace, "cell": [0, 0, 0], "n": 500, "err": _EQUALITY_ATOL},
             np.array([5.5, 5.5, 5.5]),
-        )
+        ),
     ]
 
     @pytest.mark.parametrize(("kwargs", "expected"), test_locate_null_point_values)
     def test_locate_null_point_vals(self, kwargs, expected) -> None:
         r"""Test expected values."""
         assert np.isclose(
-            _locate_null_point(**kwargs).reshape(1, 3), expected, atol=_EQUALITY_ATOL
+            _locate_null_point(**kwargs).reshape(1, 3),
+            expected,
+            atol=_EQUALITY_ATOL,
         ).all()
 
 
@@ -310,7 +314,7 @@ def test_null_point_find4() -> None:
 
 @pytest.mark.slow
 @pytest.mark.filterwarnings(
-    "ignore::plasmapy.analysis.nullpoint.MultipleNullPointWarning"
+    "ignore::plasmapy.analysis.nullpoint.MultipleNullPointWarning",
 )
 @pytest.mark.filterwarnings("ignore::UserWarning")
 def test_null_point_find5() -> None:
@@ -344,7 +348,7 @@ def test_null_point_find5() -> None:
 
 @pytest.mark.slow
 @pytest.mark.filterwarnings(
-    "ignore::plasmapy.analysis.nullpoint.MultipleNullPointWarning"
+    "ignore::plasmapy.analysis.nullpoint.MultipleNullPointWarning",
 )
 def test_null_point_find6() -> None:
     r"""Test `~plasmapy.analysis.nullpoint.null_point_find`."""
@@ -396,7 +400,7 @@ def test_null_point_find8() -> None:
 
 @pytest.mark.slow
 @pytest.mark.filterwarnings(
-    "ignore::plasmapy.analysis.nullpoint.MultipleNullPointWarning"
+    "ignore::plasmapy.analysis.nullpoint.MultipleNullPointWarning",
 )
 class Test_classify_null_point:
     r"""Test `~plasmapy.analysis.nullpoint._classify_null_point`."""
@@ -484,7 +488,7 @@ def test_null_point_find9() -> None:
 # Tests that capture the degenerate nulls/2D nulls
 @pytest.mark.slow
 @pytest.mark.filterwarnings(
-    "ignore::plasmapy.analysis.nullpoint.MultipleNullPointWarning"
+    "ignore::plasmapy.analysis.nullpoint.MultipleNullPointWarning",
 )
 @pytest.mark.filterwarnings("ignore::UserWarning")
 def test_null_point_find10() -> None:
@@ -510,7 +514,7 @@ def test_null_point_find10() -> None:
 
 @pytest.mark.slow
 @pytest.mark.filterwarnings(
-    "ignore::plasmapy.analysis.nullpoint.MultipleNullPointWarning"
+    "ignore::plasmapy.analysis.nullpoint.MultipleNullPointWarning",
 )
 @pytest.mark.filterwarnings("ignore::UserWarning")
 def test_null_point_find11() -> None:

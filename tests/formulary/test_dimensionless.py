@@ -138,7 +138,7 @@ def test_Debye_number() -> None:
 
 
 @pytest.mark.filterwarnings(
-    "ignore:.*strong coupling effects.*:plasmapy.utils.exceptions.CouplingWarning"
+    "ignore:.*strong coupling effects.*:plasmapy.utils.exceptions.CouplingWarning",
 )
 def test_Hall_parameter() -> None:
     r"""Test Hall_parameter in dimensionless.py"""
@@ -149,7 +149,7 @@ def test_Hall_parameter() -> None:
     particle = Particle("e-")
 
     assert Hall_parameter(n, T, B, ion, particle).unit.is_equivalent(
-        u.dimensionless_unscaled
+        u.dimensionless_unscaled,
     )
 
     assert np.isclose(Hall_parameter(n, T, B, ion, particle).value, 70461.38821149625)
