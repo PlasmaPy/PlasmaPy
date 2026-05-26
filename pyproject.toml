@@ -287,16 +287,16 @@ lint.extend-select = [
   "W",
   "YTT",
 ]
-# The ruff rules to include or ignore for notebooks are defined
-# separately in .pre-commit-config.yaml in the hook for nbqa-ruff
 lint.ignore = [
   "ANN001",
   "COM819",
+  "ANN001",  # add ignore comments near tops of files?
+  "COM819",  # prefer trailing commas
   "D200",    # incompatible with multiline short summaries
   "D205",    # incompatible with multiline short summaries
   "D206",    # formatter conflict
   "D401",    # enable later?
-  "E501",
+  "E501",  # formatter conflict
   "EM101",   # enable later in focused PR
   "EM102",   # enable later in focused PR
   "FIX002",
@@ -305,13 +305,20 @@ lint.ignore = [
   "N803",
   "N806",
   "N816",
+  "N802",  # flags capitalization used to match physics notation
+  "N803",  # flags capitalization used to match physics notation
+  "N806",  # flags capitalization used to match physics notation
+  "N816",  # flags capitalization used to match physics notation
   "PLC2401", # flags variables used as mathematical symbols
-  "PLC2403",
+  "PLC2403", # flags variables used as mathematical symbols
   "PLE0605", # flags `__all__ += __lite_funcs`, etc.
   "PLR0913",
   "PLR2004",
   "PT007",
   "PT011",
+  "PLR0913",  # too many situations where lots of arguments are justified
+  "PLR2004",  # would need case-by-case evaluations
+  "PT011",  # effort to address outweighs potential benefits
   "PT012",   # enable later?
   "PT019",   # enable later?
   "PYI024",  # enable later
@@ -325,7 +332,7 @@ lint.ignore = [
   "TRY003",
   "TRY301",
   "UP025",
-  "W191",    # formatter conflict)
+  "W191",    # formatter conflict
   "W291",    # handled by formatter
 ]
 lint.per-file-ignores."**/*.ipynb" = [ "T201", "T203" ]
