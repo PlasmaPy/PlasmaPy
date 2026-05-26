@@ -214,9 +214,9 @@ class IonizationStateCollection:  # noqa: PLW1641
                 )
 
             if not isinstance(int_charge, Integral):
-                raise TypeError(f"{int_charge} is not a valid charge for {particle}.")
+                raise TypeError(f"{int_charge} is not a valid charge for {particle}.")  # noqa: TRY301
             elif not 0 <= int_charge <= atomic_number(particle):
-                raise ChargeError(f"{int_charge} is not a valid charge for {particle}.")
+                raise ChargeError(f"{int_charge} is not a valid charge for {particle}.")  # noqa: TRY301
 
         except (ChargeError, KeyError, TypeError) as exc:
             raise IndexError(errmsg) from exc

@@ -485,10 +485,10 @@ class IonizationState:
 
         try:
             if np.min(fractions) < 0:
-                raise ParticleError("Cannot have negative ionic fractions.")
+                raise ParticleError("Cannot have negative ionic fractions.")  # noqa: TRY301
 
             if len(fractions) != self.atomic_number + 1:
-                raise ParticleError(
+                raise ParticleError(  # noqa: TRY301
                     f"The length of ionic_fractions must be {self.atomic_number + 1}.",
                 )
 
@@ -503,10 +503,10 @@ class IonizationState:
 
                 if not all_nans:
                     if np.any(fractions < 0) or np.any(fractions > 1):
-                        raise ParticleError("Ionic fractions must be between 0 and 1.")
+                        raise ParticleError("Ionic fractions must be between 0 and 1.")  # noqa: TRY301
 
                     if not np.isclose(sum_of_fractions, 1, rtol=0, atol=self.tol):
-                        raise ParticleError("Ionic fractions must sum to one.")
+                        raise ParticleError("Ionic fractions must sum to one.")  # noqa: TRY301
 
                 self._ionic_fractions = fractions
 

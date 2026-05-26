@@ -217,7 +217,7 @@ def nuclear_reaction_energy(*args, **kwargs) -> u.Quantity[u.J]:  # noqa: ANN002
                     raise ParticleError(errmsg) from exc
 
                 if particle.element and not particle.isotope:
-                    raise ParticleError(errmsg)
+                    raise ParticleError(errmsg)  # noqa: TRY301
 
                 particles += [particle] * multiplier
 
