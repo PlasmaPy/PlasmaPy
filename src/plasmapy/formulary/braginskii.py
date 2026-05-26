@@ -366,7 +366,9 @@ class ClassicalTransport:
             self.m_i = m_i
         self.Z = _grab_charge(ion, Z) * u.dimensionless_unscaled
         if self.Z < 0:
-            raise ValueError("Z is not allowed to be negative!")  # TODO: remove?  # noqa: FIX002
+            raise ValueError(
+                "Z is not allowed to be negative!"
+            )  # TODO: remove?  # noqa: FIX002
 
         # decide on the particle string for the electrons
         self.e_particle = "e-"
