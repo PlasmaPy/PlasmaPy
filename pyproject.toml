@@ -288,7 +288,7 @@ lint.extend-select = [
   "YTT",
 ]
 lint.ignore = [
-  "ANN001",  # add ignore comments near tops of files?
+  "ANN001",  # enable, but add file-wide ignore comments
   "COM812", # formatter conflict
   "COM819",  # prefer trailing commas
   "D200",    # incompatible with multiline short summaries
@@ -311,12 +311,12 @@ lint.ignore = [
   "PT011",  # effort to address outweighs potential benefits
   "PT012",   # enable later?
   "PT019",   # enable later?
-  "PYI024",  # enable later
-  "RET505",  # enable later
-  "RET506",  # enable later
+  "PYI024",  # enable later?
+  "RET505",  # enable later?
+  "RET506",  # enable later?
   "TD002",
   "TD003",
-  "TRY003",
+  "TRY003",  # enable later?
 ]
 lint.per-file-ignores."**/*.ipynb" = [ "T201", "T203" ]
 lint.per-file-ignores.".github/scripts/*.py" = [ "D103", "INP001" ]
