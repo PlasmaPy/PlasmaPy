@@ -43,7 +43,7 @@ eps0_si_unitless = eps0.value
 def gyrofrequency(
     B: u.Quantity[u.T],
     particle: ParticleLike,
-    signed: bool = False,  # noqa: FBT002
+    signed: bool = False,  # noqa: FBT001, FBT002
     Z: float | None = None,
     mass_numb: int | None = None,
 ) -> u.Quantity[u.rad / u.s]:
@@ -159,7 +159,7 @@ def plasma_frequency_lite(
     n: float,
     mass: float,
     Z: float,
-    to_hz: bool = False,  # noqa: FBT002
+    to_hz: bool = False,  # noqa: FBT001, FBT002
 ) -> float:
     r"""
     The :term:`lite-function` for

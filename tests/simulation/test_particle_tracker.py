@@ -684,7 +684,7 @@ class TestParticleTrajectory:
         B,
         q=const.e.si,
         m=const.m_p.si,
-        is_relativistic: bool = True,  # noqa: FBT002
+        is_relativistic: bool = True,  # noqa: FBT001, FBT002
     ):
         """
         Calculates the relativistically-correct ExB drift trajectory for a

@@ -45,7 +45,7 @@ class TestAbstractFitFunction:
             ("root_solve", False),
         ],
     )
-    def test_methods(self, name: str, isproperty: bool) -> None:
+    def test_methods(self, name: str, isproperty: bool) -> None:  # noqa: FBT001
         """Test for required methods and properties."""
         assert hasattr(self.ff_class, name)
 
@@ -122,7 +122,7 @@ class BaseFFTests(ABC):
             ("root_solve", False),
         ],
     )
-    def test_methods(self, name: str, isproperty: bool) -> None:
+    def test_methods(self, name: str, isproperty: bool) -> None:  # noqa: FBT001
         """Test attribute/method/property existence."""
         assert hasattr(self.ff_class, name)
 

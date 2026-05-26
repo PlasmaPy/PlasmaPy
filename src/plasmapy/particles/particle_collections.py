@@ -438,7 +438,7 @@ class ParticleList(collections.UserList):
             default=np.nan * u.J,
         )
 
-    def sort(self, key: Callable | None = None, reverse: bool = False):  # noqa: FBT002
+    def sort(self, key: Callable | None = None, reverse: bool = False):  # noqa: FBT001, FBT002
         """
         Sort the |ParticleList| in-place.
 

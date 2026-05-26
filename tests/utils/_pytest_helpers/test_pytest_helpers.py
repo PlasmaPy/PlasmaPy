@@ -45,7 +45,7 @@ def return_quantity(*args, should_warn: bool = False):
     return 5 * u.m / u.s
 
 
-def return_arg(arg: Any, should_warn: bool = False) -> Any:  # noqa: FBT002
+def return_arg(arg: Any, should_warn: bool = False) -> Any:  # noqa: FBT001, FBT002
     if should_warn:
         warnings.warn("", UserWarning)
     return arg
@@ -177,7 +177,7 @@ def test_run_test_atol_failure() -> None:
         pytest.fail("No exception raised for atol test.")
 
 
-def func(x, raise_exception: bool = False, issue_warning: bool = False):  # noqa: FBT002
+def func(x, raise_exception: bool = False, issue_warning: bool = False):  # noqa: FBT001, FBT002
     if raise_exception:
         raise ValueError("")
     elif issue_warning:

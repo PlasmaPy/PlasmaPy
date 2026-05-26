@@ -15,8 +15,8 @@ from plasmapy.utils.exceptions import PlasmaPyWarning
 def check_sweep(  # noqa: C901, PLR0912
     voltage: np.ndarray,
     current: np.ndarray,
-    strip_units: bool = True,  # noqa: FBT002
-    allow_unsorted: bool = False,  # noqa: FBT002
+    strip_units: bool = True,  # noqa: FBT001, FBT002
+    allow_unsorted: bool = False,  # noqa: FBT001, FBT002
 ) -> tuple[np.ndarray, np.ndarray]:
     """
     Check that the voltage and current arrays are properly formatted
@@ -406,7 +406,7 @@ def merge_voltage_clusters(  # noqa: C901, PLR0912
     voltage: np.ndarray,
     current: np.ndarray,
     voltage_step_size: float | None = None,
-    filter_nan: bool = False,  # noqa: FBT002
+    filter_nan: bool = False,  # noqa: FBT001, FBT002
 ) -> tuple[np.ndarray, np.ndarray]:
     r"""
     Search the ``voltage`` array for closely spaced voltage clusters

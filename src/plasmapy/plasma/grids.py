@@ -151,8 +151,8 @@ class AbstractGrid(ABC):
     def require_quantities(
         self,
         req_quantities: Iterable[str],
-        replace_with_zeros: bool = False,  # noqa: FBT002
-        warn_on_replace_with_zeros: bool = True,  # noqa: FBT002
+        replace_with_zeros: bool = False,  # noqa: FBT001, FBT002
+        warn_on_replace_with_zeros: bool = True,  # noqa: FBT001, FBT002
     ):
         r"""
         Check to make sure that a list of required quantities are present.

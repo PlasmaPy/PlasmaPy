@@ -137,7 +137,7 @@ def _name_with_article(ex: Exception) -> str:
     return f"{indefinite_article} {name}"
 
 
-def _object_name(obj: Any, showmodule: bool = False) -> str:  # noqa: FBT002
+def _object_name(obj: Any, showmodule: bool = False) -> str:  # noqa: FBT001, FBT002
     """
     Return the name of an `object`.
 
