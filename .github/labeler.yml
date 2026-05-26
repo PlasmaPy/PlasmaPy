@@ -187,6 +187,11 @@ requirements:
       - '**/pylock.toml'
       - '**/uv.lock'
 
+'run comprehensive tests':
+  - changed-files:
+    - any-glob-to-any-file:
+      - '.github/workflows/*comprehensive*.yml'
+
 security:
   - changed-files:
     - any-glob-to-any-file:
