@@ -31,7 +31,7 @@ class BasePlasma(ABC):
     # GenericPlasma subclass registry
     _registry: ClassVar[dict[type, Callable]] = {}
 
-    def __init_subclass__(cls, **kwargs) -> None:
+    def __init_subclass__(cls, **kwargs) -> None:  # noqa: ANN003
         super().__init_subclass__(**kwargs)
         if hasattr(cls, "is_datasource_for"):
             cls._registry[cls] = cls.is_datasource_for  # ty:ignore[invalid-assignment]
@@ -78,7 +78,7 @@ class GenericPlasma(BasePlasma):
     methods declared in the `~plasmapy.plasma.plasma_base.BasePlasma`.
     """
 
-    def __init__(self, **kwargs) -> None:
+    def __init__(self, **kwargs) -> None:  # noqa: ANN003
         pass
 
     # The definitions for the abstract methods declared in `BasePlasma`

@@ -138,7 +138,7 @@ def test_call_string(func, args, kwargs, expected) -> None:
 
 
 class SampleClass:
-    def method(self, *args, **kwargs) -> None:  # noqa: ANN002
+    def method(self, *args, **kwargs) -> None:  # noqa: ANN002, ANN003
         pass
 
     @property

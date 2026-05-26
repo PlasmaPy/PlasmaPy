@@ -41,7 +41,7 @@ from plasmapy.utils.datatype_factory_base import (
 
 
 class BaseWidget:
-    def __init__(self, *args, **kwargs) -> None:  # noqa: ANN002
+    def __init__(self, *args, **kwargs) -> None:  # noqa: ANN002, ANN003
         pass
 
 

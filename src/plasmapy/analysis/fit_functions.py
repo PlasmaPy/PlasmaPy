@@ -401,7 +401,7 @@ class AbstractFitFunction(ABC):
         """
         return self._rsq
 
-    def curve_fit(self, xdata, ydata, **kwargs) -> None:
+    def curve_fit(self, xdata, ydata, **kwargs) -> None:  # noqa: ANN003
         """
         Use a non-linear least squares method to fit the fit function to
         (``xdata``, ``ydata``), using `scipy.optimize.curve_fit`.  This will set
@@ -598,7 +598,7 @@ class Linear(AbstractFitFunction):
 
         return _RootResults(root, err)
 
-    def curve_fit(self, xdata, ydata, **kwargs) -> None:
+    def curve_fit(self, xdata, ydata, **kwargs) -> None:  # noqa: ANN003
         """
         Calculate a linear least-squares regression of (``xdata``, ``ydata``)
         using `scipy.stats.linregress`.  This will set the attributes

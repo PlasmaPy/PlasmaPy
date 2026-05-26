@@ -44,7 +44,7 @@ class CheckBase:
         specified checks on the input arguments of the wrapped function
     """
 
-    def __init__(self, checks_on_return=None, **checks) -> None:
+    def __init__(self, checks_on_return=None, **checks) -> None:  # noqa: ANN003
         self._checks = checks
         if checks_on_return is not None:
             self._checks["checks_on_return"] = checks_on_return

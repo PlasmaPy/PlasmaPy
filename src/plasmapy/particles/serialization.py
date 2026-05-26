@@ -35,7 +35,7 @@ class ParticleJSONDecoder(json.JSONDecoder):
         Any keyword accepted by `~json.JSONDecoder`.
     """
 
-    def __init__(self, *, object_hook=None, **kwargs) -> None:
+    def __init__(self, *, object_hook=None, **kwargs) -> None:  # noqa: ANN003
         if object_hook is None:
             object_hook = self.particle_hook
         json.JSONDecoder.__init__(self, object_hook=object_hook, **kwargs)

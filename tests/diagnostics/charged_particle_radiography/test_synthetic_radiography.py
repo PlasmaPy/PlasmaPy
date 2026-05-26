@@ -553,7 +553,7 @@ def test_run_options() -> None:
     assert 0 < sim.max_deflection.to(u.rad).value < np.pi / 2
 
 
-def create_tracker_obj(**kwargs) -> cpr.Tracker:
+def create_tracker_obj(**kwargs) -> cpr.Tracker:  # noqa: ANN003
     # CREATE A RADIOGRAPH OBJECT
     grid = _test_grid("electrostatic_gaussian_sphere", num=50)
     source = (0 * u.mm, -10 * u.mm, 0 * u.mm)

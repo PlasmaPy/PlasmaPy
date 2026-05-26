@@ -79,7 +79,7 @@ class AbstractGrid(ABC):
 
     """
 
-    def __init__(self, *seeds: Sequence[u.Quantity], num: int = 100, **kwargs) -> None:
+    def __init__(self, *seeds: Sequence[u.Quantity], num: int = 100, **kwargs) -> None:  # noqa: ANN003
         # Initialize some variables
         self._interpolator = None
         self._is_uniform = None
@@ -693,7 +693,7 @@ class AbstractGrid(ABC):
         stop: float | u.Quantity,
         num: int = 100,
         units=None,
-        **kwargs,
+        **kwargs,  # noqa: ANN003
     ):
         r"""
         Creates a grid based on ``start``, ``stop``, and ``num`` values
@@ -819,7 +819,7 @@ class AbstractGrid(ABC):
             pts2 * units[2],
         )
 
-    def _make_mesh(self, start, stop, num: int, **kwargs):  # noqa: ANN202
+    def _make_mesh(self, start, stop, num: int, **kwargs):  # noqa: ANN003, ANN202
         r"""
         Creates mesh as part of _make_grid(). Separated into its own function
         so it can be re-implemented to make non-uniformly spaced meshes.
@@ -1434,7 +1434,7 @@ class NonUniformCartesianGrid(AbstractGrid):
 
         return Tmin < Tmax
 
-    def _make_mesh(self, start, stop, num: int, **kwargs):  # noqa: ANN202
+    def _make_mesh(self, start, stop, num: int, **kwargs):  # noqa: ANN003, ANN202
         r"""
         Creates mesh as part of ``_make_grid()``. Separated into its own
         function so it can be re-implemented to make non-uniform grids.

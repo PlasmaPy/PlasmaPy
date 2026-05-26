@@ -78,7 +78,7 @@ class TestCheckUnits:
         return x.value + y.value
 
     @staticmethod
-    def foo_stars(x: u.Quantity, *args, y=3 * u.cm, **kwargs):  # noqa: ANN002, ANN205
+    def foo_stars(x: u.Quantity, *args, y=3 * u.cm, **kwargs):  # noqa: ANN002, ANN003, ANN205
         return x.value + y.value
 
     @staticmethod
@@ -791,7 +791,7 @@ class TestCheckValues:
         return x + y
 
     @staticmethod
-    def foo_stars(x, *args, y: Any = 3, **kwargs) -> Any:  # noqa: ANN002
+    def foo_stars(x, *args, y: Any = 3, **kwargs) -> Any:  # noqa: ANN002, ANN003
         return x + y
 
     def test_inheritance(self) -> None:
