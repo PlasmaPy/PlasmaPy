@@ -279,7 +279,7 @@ lint.extend-select = [
   "SLF",
   "SLOT",
   "T",
-  "T100",
+  "T10",
   "TC",
   "TD",
   "TID",
