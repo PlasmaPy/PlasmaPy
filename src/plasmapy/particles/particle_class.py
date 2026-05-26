@@ -380,19 +380,19 @@ class AbstractPhysicalParticle(AbstractParticle):
 
         return require <= self.categories
 
-    def __add__(self, other: str | Self | ParticleList) -> ParticleList:
+    def __add__(self, other: str | Self | ParticleList) -> ParticleList:  # noqa: D105
         return self._as_particle_list + other
 
-    def __radd__(self, other: str) -> ParticleList:
+    def __radd__(self, other: str) -> ParticleList:  # noqa: D105
         return other + self._as_particle_list
 
-    def __mul__(self, other: int) -> ParticleList:
+    def __mul__(self, other: int) -> ParticleList:  # noqa: D105
         return self._as_particle_list.__mul__(other)
 
-    def __rmul__(self, other: int) -> ParticleList:
+    def __rmul__(self, other: int) -> ParticleList:  # noqa: D105
         return self._as_particle_list.__mul__(other)
 
-    def __gt__(self, other: ParticleList) -> u.Quantity:
+    def __gt__(self, other: ParticleList) -> u.Quantity:  # noqa: D105
         return self._as_particle_list.__gt__(other)
 
 

@@ -181,16 +181,16 @@ class IonizationStateCollection:  # noqa: PLW1641
                 "Unable to create IonizationStateCollection object.",
             ) from exc
 
-    def __len__(self) -> int:
+    def __len__(self) -> int:  # noqa: D105
         return len(self._base_particles)
 
-    def __str__(self) -> str:
+    def __str__(self) -> str:  # noqa: D105
         return f"<IonizationStateCollection for: {', '.join(self.base_particles)}>"
 
-    def __repr__(self) -> str:
+    def __repr__(self) -> str:  # noqa: D105
         return self.__str__()
 
-    def __getitem__(self, *values) -> IonizationState | IonicLevel:  # noqa: ANN002
+    def __getitem__(self, *values) -> IonizationState | IonicLevel:  # noqa: ANN002, D105
         errmsg = f"Invalid indexing for IonizationStateCollection instance: {values[0]}"
 
         one_input = not isinstance(values[0], tuple)
@@ -227,7 +227,7 @@ class IonizationStateCollection:  # noqa: PLW1641
                 number_density=self.number_densities[particle][int_charge],
             )
 
-    def __setitem__(self, key, value) -> None:  # noqa: C901, PLR0912
+    def __setitem__(self, key, value) -> None:  # noqa: C901, D105, PLR0912
         errmsg = (
             f"Cannot set item for this IonizationStateCollection instance for "
             f"key = {key!r} and value = {value!r}"
@@ -332,10 +332,10 @@ class IonizationStateCollection:  # noqa: PLW1641
 
         self._ionic_fractions[particle][:] = new_fractions.copy()
 
-    def __iter__(self) -> Iterator:
+    def __iter__(self) -> Iterator:  # noqa: D105
         yield from [self[key] for key in self.ionic_fractions]
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other) -> bool:  # noqa: D105
         if not isinstance(other, IonizationStateCollection):
             return False
 

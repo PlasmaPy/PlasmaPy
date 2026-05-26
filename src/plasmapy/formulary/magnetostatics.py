@@ -60,7 +60,7 @@ class MagneticDipole(MagnetoStatics):
         self.p0 = p0.value
         self._p0_u = p0.unit
 
-    def __repr__(self) -> str:
+    def __repr__(self) -> str:  # noqa: D105
         name = self.__class__.__name__
         moment = self.moment
         p0 = self.p0
@@ -159,7 +159,7 @@ class GeneralWire(Wire):
         self.current = current.value
         self._current_u = current.unit
 
-    def __repr__(self) -> str:
+    def __repr__(self) -> str:  # noqa: D105
         name = self.__class__.__name__
         parametric_eq = self.parametric_eq.__name__
         t1 = self.t1
@@ -278,7 +278,7 @@ class FiniteStraightWire(Wire):
         self.current = current.value
         self._current_u = current.unit
 
-    def __repr__(self) -> str:
+    def __repr__(self) -> str:  # noqa: D105
         name = self.__class__.__name__
         p1 = self.p1
         p2 = self.p2
@@ -421,7 +421,7 @@ class InfiniteStraightWire(Wire):
         self.current = current.value
         self._current_u = current.unit
 
-    def __repr__(self) -> str:
+    def __repr__(self) -> str:  # noqa: D105
         name = self.__class__.__name__
         direction = self.direction
         p0 = self.p0
@@ -501,7 +501,7 @@ class CircularWire(Wire):
         Electric current.
     """
 
-    def __repr__(self) -> str:
+    def __repr__(self) -> str:  # noqa: D105
         name = self.__class__.__name__
         normal = self.normal
         center = self.center

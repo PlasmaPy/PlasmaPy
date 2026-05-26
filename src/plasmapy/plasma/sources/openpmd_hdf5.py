@@ -68,13 +68,13 @@ class HDF5Reader(GenericPlasma):
 
         self.subname = next(iter(self.h5["data"]))
 
-    def __enter__(self):
+    def __enter__(self):  # noqa: D105
         return self.h5
 
     def close(self) -> None:
         self.h5.close()
 
-    def __exit__(
+    def __exit__(  # noqa: D105
         self,
         exc_type: type[BaseException] | None,
         exc_value: BaseException | None,

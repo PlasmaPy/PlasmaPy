@@ -206,7 +206,7 @@ class ParticleList(collections.UserList):
                 f"Cannot cast {other} into a ParticleList",
             ) from ex
 
-    def __add__(self, other):
+    def __add__(self, other):  # noqa: D105
         try:
             other_as_particle_list = self._cast_other_as_particle_list(other)
         except (TypeError, InvalidParticleError) as exc:
@@ -215,14 +215,14 @@ class ParticleList(collections.UserList):
             ) from exc
         return ParticleList(self.data + other_as_particle_list.data)
 
-    def __radd__(self, other):
+    def __radd__(self, other):  # noqa: D105
         other_as_particle_list = self._cast_other_as_particle_list(other)
         return other_as_particle_list.__add__(self)
 
-    def __repr__(self) -> str:
+    def __repr__(self) -> str:  # noqa: D105
         return f"ParticleList({self.symbols!r})"
 
-    def __gt__(self, other):
+    def __gt__(self, other):  # noqa: D105
         from plasmapy.particles.nuclear import nuclear_reaction_energy  # noqa: PLC0415
 
         other_as_particle_list = self._cast_other_as_particle_list(other)
@@ -231,7 +231,7 @@ class ParticleList(collections.UserList):
             products=other_as_particle_list.symbols,
         )
 
-    def __str__(self) -> str:
+    def __str__(self) -> str:  # noqa: D105
         return self.__repr__()
 
     def _get_particle_attribute(self, attr, unit=None, default=None):

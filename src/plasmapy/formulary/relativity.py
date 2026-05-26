@@ -343,7 +343,7 @@ class RelativisticBody:
         speed_like_input = self._get_speed_like_input(velocity_like_inputs)  # ty:ignore[invalid-argument-type]
         self._store_velocity_like_argument(speed_like_input)
 
-    def __repr__(self) -> str:
+    def __repr__(self) -> str:  # noqa: D105
         return f"RelativisticBody({self.particle}, {self.velocity})"
 
     @property
@@ -514,7 +514,7 @@ class RelativisticBody:
     def momentum(self, p: u.Quantity[u.kg * u.m / u.s]) -> None:
         self._momentum = p.to(u.kg * u.m / u.s)
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other) -> bool:  # noqa: D105
         _attributes_to_compare = (
             "particle",
             "kinetic_energy",
@@ -533,5 +533,5 @@ class RelativisticBody:
                 return False
         return True
 
-    def __hash__(self) -> int:
+    def __hash__(self) -> int:  # noqa: D105
         return hash(repr(self))

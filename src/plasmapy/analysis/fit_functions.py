@@ -101,11 +101,11 @@ class AbstractFitFunction(ABC):
 
         return self.func(x, *self.params)  # ty:ignore[not-iterable]
 
-    def __repr__(self) -> str:
+    def __repr__(self) -> str:  # noqa: D105
         return f"{self.__str__()} {self.__class__}"
 
     @abstractmethod
-    def __str__(self) -> str: ...
+    def __str__(self) -> str: ...  # noqa: D105
 
     @abstractmethod
     def func(self, x, *args):
@@ -467,7 +467,7 @@ class Linear(AbstractFitFunction):
 
     _param_names = ("m", "b")
 
-    def __str__(self) -> str:
+    def __str__(self) -> str:  # noqa: D105
         return "f(x) = m x + b"
 
     @property
@@ -658,7 +658,7 @@ class Exponential(AbstractFitFunction):
 
     _param_names = ("a", "alpha")
 
-    def __str__(self) -> str:
+    def __str__(self) -> str:  # noqa: D105
         return "f(x) = a exp(alpha x)"
 
     @property
@@ -797,7 +797,7 @@ class ExponentialPlusLinear(AbstractFitFunction):
         self._linear = Linear()
         super().__init__(params=params, param_errors=param_errors)
 
-    def __str__(self) -> str:
+    def __str__(self) -> str:  # noqa: D105
         exp_str = self._exponential.__str__().replace("f(x) = ", "")
         lin_str = self._linear.__str__().replace("f(x) = ", "")
         return f"f(x) = {exp_str} + {lin_str}"
@@ -934,7 +934,7 @@ class ExponentialPlusOffset(AbstractFitFunction):
         self._explin = ExponentialPlusLinear()
         super().__init__(params=params, param_errors=param_errors)
 
-    def __str__(self) -> str:
+    def __str__(self) -> str:  # noqa: D105
         return "f(x) = a exp(alpha x) + b"
 
     @property

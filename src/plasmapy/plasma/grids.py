@@ -216,7 +216,7 @@ class AbstractGrid(ABC):
     # Fundamental properties of the grid
     # *************************************************************************
 
-    def __repr__(self) -> str:
+    def __repr__(self) -> str:  # noqa: D105
         line_sep = "-----------------------------\n"
         shape = list(self.shape)
         coords = list(self.ds.coords.keys())

@@ -61,7 +61,7 @@ class IonicLevel:
     0.31
     """
 
-    def __eq__(self, other):
+    def __eq__(self, other):  # noqa: D105
         if not isinstance(other, IonicLevel):
             return False
 
@@ -100,12 +100,12 @@ class IonicLevel:
         except (ValueError, TypeError) as exc:
             raise ParticleError("Unable to create IonicLevel object") from exc
 
-    def __repr__(self) -> str:
+    def __repr__(self) -> str:  # noqa: D105
         return (
             f"IonicLevel({self.ionic_symbol!r}, ionic_fraction={self.ionic_fraction})"
         )
 
-    def __hash__(self) -> int:
+    def __hash__(self) -> int:  # noqa: D105
         return hash(repr(self))
 
     @property
@@ -315,10 +315,10 @@ class IonizationState:
                     stacklevel=2,
                 )
 
-    def __str__(self) -> str:
+    def __str__(self) -> str:  # noqa: D105
         return f"<IonizationState instance for {self.base_particle}>"
 
-    def __repr__(self) -> str:
+    def __repr__(self) -> str:  # noqa: D105
         return self.__str__()
 
     def __getitem__(self, value) -> list[IonicLevel]:
@@ -369,7 +369,7 @@ class IonizationState:
 
         return result  # ty:ignore[invalid-return-type]
 
-    def __setitem__(self, key, value) -> None:
+    def __setitem__(self, key, value) -> None:  # noqa: D105
         raise NotImplementedError(
             "Item assignment of an IonizationState instance is not "
             "allowed because the ionic fractions for different "
@@ -377,7 +377,7 @@ class IonizationState:
             "normalization constraint.",
         )
 
-    def __iter__(self) -> Iterator:
+    def __iter__(self) -> Iterator:  # noqa: D105
         yield from [self[i] for i in range(self.atomic_number + 1)]
 
     def __eq__(self, other):
@@ -701,7 +701,7 @@ class IonizationState:
         """The atomic number of the element."""
         return self._particle.atomic_number
 
-    def __len__(self) -> int:
+    def __len__(self) -> int:  # noqa: D105
         return self._number_of_particles
 
     @property
@@ -935,5 +935,5 @@ class IonizationState:
         for line in output:
             print(line)  # noqa: T201
 
-    def __hash__(self) -> int:
+    def __hash__(self) -> int:  # noqa: D105
         return hash(repr(self))
