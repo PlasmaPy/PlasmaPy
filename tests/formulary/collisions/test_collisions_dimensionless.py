@@ -81,7 +81,7 @@ class Test_coupling_parameter:
         errStr = f"Coupling parameter should be {self.True_zmean} and not {methodVal}."
         assert testTrue, errStr
 
-    # TODO: vector z_mean
+    # TODO: vector z_mean  # noqa: FIX002
     @pytest.mark.slow
     @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
     @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
@@ -95,7 +95,10 @@ class Test_coupling_parameter:
     def test_handle_nparrays(self, insert_some_nans, insert_all_nans, kwargs) -> None:
         """Test for ability to handle numpy array quantities"""
         assert_can_handle_nparray(
-            coupling_parameter, insert_some_nans, insert_all_nans, kwargs
+            coupling_parameter,
+            insert_some_nans,
+            insert_all_nans,
+            kwargs,
         )
 
     def test_quantum(self) -> None:
@@ -103,7 +106,10 @@ class Test_coupling_parameter:
         Testing quantum method for coupling parameter.
         """
         methodVal = coupling_parameter(
-            self.T, self.n_e, self.particles, method="quantum"
+            self.T,
+            self.n_e,
+            self.particles,
+            method="quantum",
         )
         testTrue = np.isclose(self.True_quantum, methodVal, rtol=1e-1, atol=0.0)
         errStr = (
@@ -135,7 +141,10 @@ class Test_Knudsen_number:
 
         with pytest.warns(CouplingWarning):
             resultRev = Knudsen_number(
-                self.length, self.T, self.n_e, self.particles[::-1]
+                self.length,
+                self.T,
+                self.n_e,
+                self.particles[::-1],
             )
         assert result == resultRev
 

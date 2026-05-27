@@ -1,3 +1,8 @@
+# Create a pull request to upgrade the lockfile that defines the Python
+# environments used in most continuous integration checks.
+#
+# For more details, see: .github/content/upgrade-uv-lock-pr-body.md
+
 name: Upgrade uv.lock
 
 on:
@@ -24,7 +29,15 @@ jobs:
         enable-cache: true
 
     - name: Run Nox session to upgrade uv.lock
-      run: uvx nox -s lock
+      run: uvx nox --session lock
+
+    - name: Add ignore flags for ty (continue on failure)
+      run: uvx nox --session ty -- --add-ignore
+      continue-on-error: true
+
+    - name: Run pre-commit (continue on failure)
+      run: uvx pre-commit run --all-files
+      continue-on-error: true
 
     # When a pull request is created by a GitHub Action, normally the
     # checks will not be run. While the simplest workaround would have
@@ -44,11 +57,10 @@ jobs:
       uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
       with:
         title: Upgrade uv.lock
-        add-paths: uv.lock
-        commit-message: Upgrade uv.lock with 'nox -s lock'
+        commit-message: Upgrade uv.lock with 'nox --session lock'
         # The PR body message is generated dynamically via `nox -s lock` in CI
         body-path: .github/content/upgrade-uv-lock-pr-body.md
-        labels: no changelog entry needed, requirements
+        labels: no changelog entry needed, requirements, run comprehensive tests
         branch: upgrade-uv-lock
         base: main
         delete-branch: true

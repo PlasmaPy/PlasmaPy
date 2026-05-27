@@ -59,8 +59,6 @@ repos:
     # Labels with spaces must be put in quotes in `labeler.yml`.
     # pretty-format-yaml removes those quotes and breaks the action.
     exclude: .github/labeler.yml
-  - id: pretty-format-ini
-    args: [--autofix]
 
 - repo: https://github.com/python-jsonschema/check-jsonschema
   rev: 0.37.2
@@ -94,14 +92,14 @@ repos:
 - repo: https://github.com/adhtruong/mirrors-typos
   # use mirrors-typos because `pre-commit autoupdate` drops the version
   # of the primary typos repo from v1.x.y to v1
-  rev: v1.46.0
+  rev: v1.46.3
   hooks:
   - id: typos
     name: typos (add false positives to _typos.toml)
     exclude: CITATION.cff|docs/notebooks/dispersion/stix_dispersion.ipynb
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.15.12
+  rev: v0.15.14
   hooks:
   - id: ruff-check
     name: ruff-check (see https://docs.astral.sh/ruff/rules)
@@ -128,22 +126,29 @@ repos:
   hooks:
   - id: validate-pyproject
     name: validate pyproject.toml
-    additional_dependencies: ['validate-pyproject-schema-store[all]>=2026']
+    # This hook may fail when we start using a new configuration option
+    # for a tool that has not yet been added to any of the schemas
+    # being compared against. If this becomes a recurring problem, we
+    # can drop this from pre-commit, and consider adding it as a Nox
+    # session run separately as part of the comprehensive tests on
+    # GitHub.
+    additional_dependencies:
+    - validate-pyproject[all,store]
 
 - repo: https://github.com/tox-dev/pyproject-fmt
-  rev: v2.21.1
+  rev: v2.21.2
   hooks:
   - id: pyproject-fmt
     name: format pyproject.toml
 
 - repo: https://github.com/astral-sh/uv-pre-commit
-  rev: 0.11.8
+  rev: 0.11.16
   hooks:
     # running uv lock requires network access or a warm cache, so it
     # cannot be run via pre-commit.ci, even with the `--offline`,
     # `--no-index`, and/or `--check` flags
   - id: uv-lock
-    name: uv-lock (skipped in CI; use `nox -s requirements` for problems)
+    name: uv-lock (skipped in CI; use `nox -s lock` for problems)
 
 - repo: https://github.com/hukkin/mdformat
   rev: 1.0.0
@@ -154,16 +159,43 @@ repos:
     # avoid messing up GitHub formatting of files in .github/content
     exclude: licenses/.*|LICENSE.md|PATENT.md
     additional_dependencies:
+    - mdformat-beautysh
     - mdformat-footnote
     - mdformat-gfm
     - mdformat-gfm-alerts
     - mdformat-ruff
 
+- repo: https://github.com/citation-file-format/cffconvert
+  rev: 054bda51dbe278b3e86f27c890e3f3ac877d616c
+  hooks:
+  - id: validate-cff
+    name: validate CITATION.cff
+
 - repo: local
   hooks:
-  - id: cff
-    name: validate CITATION.cff
-    entry: cffconvert --validate
-    language: python
-    additional_dependencies: [cffconvert]
-    pass_filenames: false
+  - id: bibtex-tidy
+    # The official pre-commit hook for bibtex-tidy did not install its
+    # Node.js requirement, so this is a workaround.
+    name: autoformat bibliography file
+    entry: bibtex-tidy
+    language: node
+    additional_dependencies: [bibtex-tidy@1.14.0]
+    files: docs/bibliography.bib
+    args: # https://github.com/FlamingTempura/bibtex-tidy#cli
+    - --modify
+    - --omit=abstract,month,address,adsurl,adsnote
+    - --curly
+    - --numeric
+    - --no-align
+    - --blank-lines
+    - --sort
+    - --duplicates
+    - --no-strip-comments
+    - --trailing-commas
+    - --encode-urls
+    - --drop-all-caps
+    - --no-escape
+    - --sort-fields
+    - --remove-empty-fields
+    - --no-wrap
+    - --tidy-comments

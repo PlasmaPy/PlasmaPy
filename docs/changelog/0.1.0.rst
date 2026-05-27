@@ -79,8 +79,7 @@ New Features
 * Created a repository for `PlasmaPy Enhancement Proposals
   <https://github.com/PlasmaPy/PlasmaPy-PLEPs>`_.
 
-* Began using `type hint annotations
-  <https://docs.python.org/3/library/typing.html>`_.
+* Began using type annotations.
 
 * Set up architecture to incorporate `Cython <https://cython.org/>`_ into
   performance-critical sections of code.

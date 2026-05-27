@@ -591,5 +591,5 @@ if os.environ.get("READTHEDOCS", "") == "True":
 
 
 def setup(app: Sphinx) -> None:
-    app.add_config_value("revision", "", rebuild=True)
+    app.add_config_value("revision", "", rebuild=True)  # ty:ignore[invalid-argument-type]
     app.add_css_file("css/overrides.css", priority=600)

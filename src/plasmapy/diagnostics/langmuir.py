@@ -40,12 +40,12 @@ def _langmuir_futurewarning() -> None:
         "the plasmapy.analysis.swept_langmuir subpackage and phased out over "
         "2021.  The plasmapy.analysis package was released in v0.5.0.",
         FutureWarning,
+        stacklevel=2,
     )
 
 
 def _fit_func_lin(x, x0, y0, c0):
     r"""Linear fitting function."""
-
     return y0 + c0 * (x - x0)
 
 
@@ -53,7 +53,6 @@ def _fit_func_lin_inverse(x, x0, y0, T0):
     r"""Linear fitting function with inverse slope parameter for use in fitting
     of the electron current growth region.
     """
-
     return y0 + (x - x0) / T0
 
 
@@ -101,47 +100,43 @@ class Characteristic:
         object.
 
         """
-
         return Characteristic(self.bias[key], self.current[key])
 
     def __sub__(self, other):
         r"""Support current subtraction."""
-
         b = copy.deepcopy(self)
         b.current -= other.current
         return b
 
     def __add__(self, other):
         r"""Support current addition."""
-
         b = copy.deepcopy(self)
         b.current += other.current
         return b
 
     def sort(self) -> None:
         r"""Sort the characteristic by ascending bias."""
-
         _sort = self.bias.argsort()
         self.current = self.current[_sort]
         self.bias = self.bias[_sort]
 
-    def get_unique_bias(self, inplace: bool = False):
+    def get_unique_bias(self, inplace: bool = False):  # noqa: ANN201, FBT001, FBT002
         r"""Remove any duplicate bias values through averaging."""
-
         if len(self.bias) != len(self.current):
             raise ValueError(
                 f"Unequal array lengths of bias "
                 f"({len(self.bias)}) and current "
-                f"({len(self.current)})."
+                f"({len(self.current)}).",
             )
 
         bias_unique = np.unique(self.bias)
         current_unique = []
         for bias in bias_unique:
             current_unique = np.append(
-                current_unique, np.mean(self.current[self.bias == bias].to(u.A).value)
+                current_unique,
+                np.mean(self.current[self.bias == bias].to(u.A).value),
             )
-        current_unique *= u.A
+        current_unique *= u.A  # ty:ignore[unsupported-operator]
 
         if not inplace:
             return Characteristic(bias_unique, current_unique)
@@ -152,7 +147,6 @@ class Characteristic:
 
     def _check_validity(self):
         r"""Check the unit and value validity of the characteristic."""
-
         if len(self.bias.shape) != 1:
             raise ValueError("Non-1D array for voltage!")
 
@@ -163,13 +157,13 @@ class Characteristic:
             raise ValueError(
                 f"Unequal array lengths of bias "
                 f"({len(self.bias)}) and current "
-                f"({len(self.current)})."
+                f"({len(self.current)}).",
             )
 
         if len(np.unique(self.bias)) != len(self.bias):
             raise ValueError("Bias array contains duplicate values.")
 
-    def get_padded_limit(self, padding, log: bool = False):
+    def get_padded_limit(self, padding, log: bool = False):  # noqa: ANN201, FBT001, FBT002
         r"""Return the limits of the current range for plotting, taking into
         account padding. Matplotlib lacks this functionality.
 
@@ -183,7 +177,6 @@ class Characteristic:
             Default is `False`.
 
         """
-
         ymax = np.max(self.current).to(u.A).value
 
         if log:
@@ -208,16 +201,16 @@ class Characteristic:
 
 
 @validate_quantities(
-    probe_area={"can_be_negative": False, "can_be_inf": False, "can_be_nan": False}
+    probe_area={"can_be_negative": False, "can_be_inf": False, "can_be_nan": False},
 )
-def swept_probe_analysis(  # noqa: PLR0915
+def swept_probe_analysis(  # noqa: ANN201, PLR0915
     probe_characteristic,
     probe_area: u.Quantity[u.m**2],
     gas_argument,
-    bimaxwellian: bool = False,
-    visualize: bool = False,
-    plot_electron_fit: bool = False,
-    plot_EEDF: bool = False,
+    bimaxwellian: bool = False,  # noqa: FBT001, FBT002
+    visualize: bool = False,  # noqa: FBT001, FBT002
+    plot_electron_fit: bool = False,  # noqa: FBT001, FBT002
+    plot_EEDF: bool = False,  # noqa: FBT001, FBT002
 ):
     r"""Attempt to perform a basic swept probe analysis based on the provided
     characteristic and probe data. Suitable for single cylindrical probes in
@@ -306,7 +299,7 @@ def swept_probe_analysis(  # noqa: PLR0915
         raise TypeError(
             "For 'probe_characteristic' expected type "
             f"{Characteristic.__module__}.{Characteristic.__qualname__} "
-            f"and got {type(probe_characteristic)}."
+            f"and got {type(probe_characteristic)}.",
         )
 
     # Obtain the plasma and floating potentials
@@ -321,23 +314,31 @@ def swept_probe_analysis(  # noqa: PLR0915
     # electron temperature. This can then be used to obtain the ion current
     # and subsequently a better electron current fit.
     n_i_OML, fit = get_ion_density_OML(
-        probe_characteristic, probe_area, gas, return_fit=True
+        probe_characteristic,
+        probe_area,
+        gas,
+        return_fit=True,
     )
 
     ion_current = extrapolate_ion_current_OML(probe_characteristic, fit)
 
     # First electron temperature iteration
     exponential_section = extract_exponential_section(
-        probe_characteristic, ion_current=ion_current
+        probe_characteristic,
+        ion_current=ion_current,
     )
     T_e, hot_fraction = get_electron_temperature(
-        exponential_section, bimaxwellian=bimaxwellian, return_hot_fraction=True
+        exponential_section,
+        bimaxwellian=bimaxwellian,
+        return_hot_fraction=True,
     )
 
     # Second electron temperature iteration, using an electron temperature-
     # adjusted exponential section
     exponential_section = extract_exponential_section(
-        probe_characteristic, T_e=T_e, ion_current=ion_current
+        probe_characteristic,
+        T_e=T_e,
+        ion_current=ion_current,
     )
     T_e, hot_fraction, fit = get_electron_temperature(
         exponential_section,
@@ -351,16 +352,23 @@ def swept_probe_analysis(  # noqa: PLR0915
     # electron current. This has no use in the analysis except for
     # visualization.
     electron_current = extrapolate_electron_current(
-        probe_characteristic, fit, bimaxwellian=bimaxwellian
+        probe_characteristic,
+        fit,
+        bimaxwellian=bimaxwellian,
     )
 
     # Using a good estimate of electron temperature, obtain the ion and
     # electron densities from the saturation currents.
     n_i = get_ion_density_LM(
-        I_is, reduce_bimaxwellian_temperature(T_e, hot_fraction), probe_area, gas.mass
+        I_is,
+        reduce_bimaxwellian_temperature(T_e, hot_fraction),
+        probe_area,
+        gas.mass,
     )
     n_e = get_electron_density_LM(
-        I_es, reduce_bimaxwellian_temperature(T_e, hot_fraction), probe_area
+        I_es,
+        reduce_bimaxwellian_temperature(T_e, hot_fraction),
+        probe_area,
     )
 
     if visualize:
@@ -448,7 +456,7 @@ def swept_probe_analysis(  # noqa: PLR0915
     return results
 
 
-def get_plasma_potential(probe_characteristic, return_arg: bool = False):
+def get_plasma_potential(probe_characteristic, return_arg: bool = False):  # noqa: ANN201, FBT001, FBT002
     r"""Implement the simplest but crudest method for obtaining an estimate of
     the plasma potential from the probe characteristic.
 
@@ -474,14 +482,13 @@ def get_plasma_potential(probe_characteristic, return_arg: bool = False):
     electron the saturation region.
 
     """
-
     _langmuir_futurewarning()
 
     if not isinstance(probe_characteristic, Characteristic):
         raise TypeError(
             "For 'probe_characteristic' expected type "
             f"{Characteristic.__module__}.{Characteristic.__qualname__} "
-            f"and got {type(probe_characteristic)}."
+            f"and got {type(probe_characteristic)}.",
         )
 
     # Sort the characteristic prior to differentiation
@@ -501,7 +508,7 @@ def get_plasma_potential(probe_characteristic, return_arg: bool = False):
     return probe_characteristic.bias[arg_V_P]
 
 
-def get_floating_potential(probe_characteristic, return_arg: bool = False):
+def get_floating_potential(probe_characteristic, return_arg: bool = False):  # noqa: ANN201, FBT001, FBT002
     r"""Implement the simplest but crudest method for obtaining an estimate of
     the floating potential from the probe characteristic.
 
@@ -526,14 +533,13 @@ def get_floating_potential(probe_characteristic, return_arg: bool = False):
     Amperes as the floating potential.
 
     """
-
     _langmuir_futurewarning()
 
     if not isinstance(probe_characteristic, Characteristic):
         raise TypeError(
             "For 'probe_characteristic' expected type "
             f"{Characteristic.__module__}.{Characteristic.__qualname__} "
-            f"and got {type(probe_characteristic)}"
+            f"and got {type(probe_characteristic)}",
         )
 
     arg_V_F = np.argmin(np.abs(probe_characteristic.current))
@@ -564,14 +570,13 @@ def get_electron_saturation_current(probe_characteristic):
     is used to obtain an estimate of the plasma potential. The
     corresponding electron saturation current is returned.
     """
-
     _langmuir_futurewarning()
 
     if not isinstance(probe_characteristic, Characteristic):
         raise TypeError(
             "For 'probe_characteristic' expected type "
             f"{Characteristic.__module__}.{Characteristic.__qualname__} "
-            f"and got {type(probe_characteristic)}."
+            f"and got {type(probe_characteristic)}.",
         )
 
     _, arg_V_P = get_plasma_potential(probe_characteristic, return_arg=True)
@@ -601,14 +606,13 @@ def get_ion_saturation_current(probe_characteristic):
     saturate.
 
     """
-
     _langmuir_futurewarning()
 
     if not isinstance(probe_characteristic, Characteristic):
         raise TypeError(
             "For 'probe_characteristic' expected type "
             f"{Characteristic.__module__}.{Characteristic.__qualname__} "
-            f"and got {type(probe_characteristic)}."
+            f"and got {type(probe_characteristic)}.",
         )
 
     return np.min(probe_characteristic.current)
@@ -671,7 +675,6 @@ def get_ion_density_LM(
     .. math::
         I_{is} = 0.6 e A_p n_i \sqrt{\frac{T_e}{m_i}}.
     """
-
     _langmuir_futurewarning()
 
     # Calculate the acoustic (Bohm) velocity
@@ -735,7 +738,6 @@ def get_electron_density_LM(
     which should be identical to the electron density in quasineutral plasmas.
 
     """
-
     _langmuir_futurewarning()
 
     # Calculate the thermal electron velocity
@@ -774,14 +776,13 @@ def extract_exponential_section(probe_characteristic, T_e=None, ion_current=None
     by the floating and plasma potentials. Additionally, an improvement in
     accuracy can be made when the electron temperature is supplied.
     """
-
     _langmuir_futurewarning()
 
     if not isinstance(probe_characteristic, Characteristic):
         raise TypeError(
             "For 'probe_characteristic' expected type "
             f"{Characteristic.__module__}.{Characteristic.__qualname__} "
-            f"and got {type(probe_characteristic)}."
+            f"and got {type(probe_characteristic)}.",
         )
 
     V_F = get_floating_potential(probe_characteristic)
@@ -829,14 +830,13 @@ def extract_ion_section(probe_characteristic):
     bounded by the floating potential on the right hand side.
 
     """
-
     _langmuir_futurewarning()
 
     if not isinstance(probe_characteristic, Characteristic):
         raise TypeError(
             "For 'probe_characteristic' expected type "
             f"{Characteristic.__module__}.{Characteristic.__qualname__} "
-            f"and got {type(probe_characteristic)}."
+            f"and got {type(probe_characteristic)}.",
         )
 
     V_F = get_floating_potential(probe_characteristic)
@@ -844,12 +844,12 @@ def extract_ion_section(probe_characteristic):
     return probe_characteristic[probe_characteristic.bias < V_F]
 
 
-def get_electron_temperature(
+def get_electron_temperature(  # noqa: ANN201
     exponential_section,
-    bimaxwellian: bool = False,
-    visualize: bool = False,
-    return_fit: bool = False,
-    return_hot_fraction: bool = False,
+    bimaxwellian: bool = False,  # noqa: FBT001, FBT002
+    visualize: bool = False,  # noqa: FBT001, FBT002
+    return_fit: bool = False,  # noqa: FBT001, FBT002
+    return_hot_fraction: bool = False,  # noqa: FBT001, FBT002
 ):
     r"""Obtain the Maxwellian or bi-Maxwellian electron temperature using the
     exponential fit method.
@@ -898,14 +898,13 @@ def get_electron_temperature(
         \textrm{log} \left(I_e \right ) \propto \frac{1}{T_e}.
 
     """
-
     _langmuir_futurewarning()
 
     if not isinstance(exponential_section, Characteristic):
         raise TypeError(
             "For 'probe_characteristic' expected type "
             f"{Characteristic.__module__}.{Characteristic.__qualname__} "
-            f"and got {type(exponential_section)}."
+            f"and got {type(exponential_section)}.",
         )
 
     # Remove values in the section with a current equal to or smaller than
@@ -958,11 +957,13 @@ def get_electron_temperature(
         # difference between these currents equates to the density difference.
 
         k1 = _fit_func_lin_inverse(
-            np.max(exponential_section.bias.to(u.V).value), *[x0, y0, T0]
+            np.max(exponential_section.bias.to(u.V).value),
+            *[x0, y0, T0],
         )
 
         k2 = _fit_func_lin_inverse(
-            np.max(exponential_section.bias.to(u.V).value), *[x0, y0, T0 + Delta_T]
+            np.max(exponential_section.bias.to(u.V).value),
+            *[x0, y0, T0 + Delta_T],
         )
 
         # Compute the total hot (energetic) fraction
@@ -1021,8 +1022,11 @@ def get_electron_temperature(
     return k
 
 
-def extrapolate_electron_current(
-    probe_characteristic, fit, bimaxwellian: bool = False, visualize: bool = False
+def extrapolate_electron_current(  # noqa: ANN201
+    probe_characteristic,
+    fit,
+    bimaxwellian: bool = False,  # noqa: FBT001, FBT002
+    visualize: bool = False,  # noqa: FBT001, FBT002
 ):
     r"""Extrapolate the electron current from the Maxwellian electron
     temperature obtained in the exponential growth region.
@@ -1055,14 +1059,13 @@ def extrapolate_electron_current(
     entire bias range.
 
     """
-
     _langmuir_futurewarning()
 
     if not isinstance(probe_characteristic, Characteristic):
         raise TypeError(
             "For 'probe_characteristic' expected type "
             f"{Characteristic.__module__}.{Characteristic.__qualname__} "
-            f"and got {type(probe_characteristic)}."
+            f"and got {type(probe_characteristic)}.",
         )
 
     fit_func = _fit_func_double_lin_inverse if bimaxwellian else _fit_func_lin_inverse
@@ -1074,7 +1077,8 @@ def extrapolate_electron_current(
     electron_current[electron_current > np.max(probe_characteristic.current)] = np.nan
 
     electron_characteristic = Characteristic(
-        probe_characteristic.bias, electron_current
+        probe_characteristic.bias,
+        electron_current,
     )
 
     if visualize:
@@ -1107,7 +1111,8 @@ def extrapolate_electron_current(
     validations_on_return={"equivalencies": u.temperature_energy()},
 )
 def reduce_bimaxwellian_temperature(
-    T_e: u.Quantity[u.eV], hot_fraction: float
+    T_e: u.Quantity[u.eV],
+    hot_fraction: float,
 ) -> u.Quantity[u.eV]:
     r"""Reduce a bi-Maxwellian (dual) temperature to a single mean temperature
     for a given fraction.
@@ -1137,7 +1142,6 @@ def reduce_bimaxwellian_temperature(
         T_{e,red} = T_c \left( 1 - f_h \right) + T_h f_h
 
     """
-
     _langmuir_futurewarning()
 
     # Return the electron temperature itself if it is not bi-Maxwellian
@@ -1149,14 +1153,14 @@ def reduce_bimaxwellian_temperature(
 
 
 @validate_quantities(
-    probe_area={"can_be_negative": False, "can_be_inf": False, "can_be_nan": False}
+    probe_area={"can_be_negative": False, "can_be_inf": False, "can_be_nan": False},
 )
-def get_ion_density_OML(
+def get_ion_density_OML(  # noqa: ANN201
     probe_characteristic: Characteristic,
     probe_area: u.Quantity[u.m**2],
     gas,
-    visualize: bool = False,
-    return_fit: bool = False,
+    visualize: bool = False,  # noqa: FBT001, FBT002
+    return_fit: bool = False,  # noqa: FBT001, FBT002
 ):
     r"""Implement the Orbital Motion Limit (OML) method of obtaining an
     estimate of the ion density.
@@ -1202,20 +1206,21 @@ def get_ion_density_OML(
         Phys. Rev. 28, 727-763 (Oct. 1926)
 
     """
-
     _langmuir_futurewarning()
 
     if not isinstance(probe_characteristic, Characteristic):
         raise TypeError(
             "For 'probe_characteristic' expected type "
             f"{Characteristic.__module__}.{Characteristic.__qualname__} "
-            f"and got {type(probe_characteristic)}."
+            f"and got {type(probe_characteristic)}.",
         )
 
     ion_section = extract_ion_section(probe_characteristic)
 
     fit = np.polyfit(
-        ion_section.bias.to(u.V).value, ion_section.current.to(u.mA).value ** 2, 1
+        ion_section.bias.to(u.V).value,
+        ion_section.current.to(u.mA).value ** 2,
+        1,
     )
 
     poly = np.poly1d(fit)
@@ -1225,7 +1230,7 @@ def get_ion_density_OML(
     ion = Particle(argument=gas)
 
     n_i_OML = np.sqrt(
-        -slope * u.mA**2 / u.V * np.pi**2 * ion.mass / (probe_area**2 * const.e**3 * 2)
+        -slope * u.mA**2 / u.V * np.pi**2 * ion.mass / (probe_area**2 * const.e**3 * 2),
     )
 
     if visualize:
@@ -1238,7 +1243,9 @@ def get_ion_density_OML(
                 marker=".",
             )
             plt.plot(
-                ion_section.bias.to(u.V), poly(ion_section.bias.to(u.V).value), c="g"
+                ion_section.bias.to(u.V),
+                poly(ion_section.bias.to(u.V).value),
+                c="g",
             )
             plt.title("OML fit")
             plt.tight_layout()
@@ -1246,7 +1253,7 @@ def get_ion_density_OML(
     return (n_i_OML.to(u.m**-3), fit) if return_fit else n_i_OML.to(u.m**-3)
 
 
-def extrapolate_ion_current_OML(probe_characteristic, fit, visualize: bool = False):
+def extrapolate_ion_current_OML(probe_characteristic, fit, visualize: bool = False):  # noqa: ANN201, FBT001, FBT002
     r"""Extrapolate the ion current from the ion density obtained with the
     OML method.
 
@@ -1274,21 +1281,20 @@ def extrapolate_ion_current_OML(probe_characteristic, fit, visualize: bool = Fal
     inversely proportional to the electron temperature.
 
     """
-
     _langmuir_futurewarning()
 
     if not isinstance(probe_characteristic, Characteristic):
         raise TypeError(
             "For 'probe_characteristic' expected type "
             f"{Characteristic.__module__}.{Characteristic.__qualname__} "
-            f"and got {type(probe_characteristic)}."
+            f"and got {type(probe_characteristic)}.",
         )
 
     slope = fit[0] * u.mA**2 / u.V
     offset = fit[1] * u.mA**2
 
     ion_current = -np.sqrt(
-        np.clip(slope * probe_characteristic.bias + offset, 0.0, None)
+        np.clip(slope * probe_characteristic.bias + offset, 0.0, None),
     )
 
     ion_characteristic = Characteristic(probe_characteristic.bias, ion_current)
@@ -1303,13 +1309,15 @@ def extrapolate_ion_current_OML(probe_characteristic, fit, visualize: bool = Fal
                 c="k",
             )
             plt.plot(
-                probe_characteristic.bias, ion_characteristic.current.to(u.mA), c="y"
+                probe_characteristic.bias,
+                ion_characteristic.current.to(u.mA),
+                c="y",
             )
 
     return ion_characteristic
 
 
-def get_EEDF(probe_characteristic, visualize: bool = False):
+def get_EEDF(probe_characteristic, visualize: bool = False):  # noqa: ANN201, FBT001, FBT002
     r"""Implement the Druyvesteyn method of obtaining the normalized
     Electron Energy Distribution Function (EEDF).
 
@@ -1350,14 +1358,13 @@ def get_EEDF(probe_characteristic, visualize: bool = False):
     ----------
     .. [druyvesteyn-1930] Druyvesteyn, M.J. Z. Physik (1930) 64: 781
     """
-
     _langmuir_futurewarning()
 
     if not isinstance(probe_characteristic, Characteristic):
         raise TypeError(
             "For 'probe_characteristic' expected type "
             f"{Characteristic.__module__}.{Characteristic.__qualname__} "
-            f"and got {type(probe_characteristic)}."
+            f"and got {type(probe_characteristic)}.",
         )
 
     probe_characteristic.sort()

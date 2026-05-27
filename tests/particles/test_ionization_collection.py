@@ -20,7 +20,8 @@ from plasmapy.particles.exceptions import InvalidIsotopeError, ParticleError
 
 
 def check_abundances_consistency(
-    abundances: dict[str, float], log_abundances: dict[str, float]
+    abundances: dict[str, float],
+    log_abundances: dict[str, float],
 ) -> None:
     """
     Test that a set of abundances is consistent with a set of the base
@@ -58,7 +59,7 @@ tests = {
         "inputs": {
             "H": np.array([10, 90]) * u.m**-3,
             "He": np.array([1, 9, 0]) * u.m**-3,
-        }
+        },
     },
     "just H": {"inputs": {"H": [0.1, 0.9]}},
     "H acceptable error": {"inputs": {"H": [1.0, 1e-6]}, "tol": 1e-5},
@@ -90,13 +91,13 @@ tests = {
     },
     "ordered elements -> inputs": {"inputs": ["O", "C", "H", "Fe", "Ar"]},
     "mixed and unordered elements and isotopes": {
-        "inputs": ("Og", "O", "H", "Fe-56", "He", "Li-7", "Li-6")
+        "inputs": ("Og", "O", "H", "Fe-56", "He", "Li-7", "Li-6"),
     },
     "number densities -> inputs": {
         "inputs": {
             "H": np.array([2, 3]) * u.m**-3,
             "He": np.array([5, 7, 11]) * u.m**-3,
-        }
+        },
     },
     "number densities and n are both inputs": {
         "inputs": {"H": [0.1, 0.3] * u.cm**-3},
@@ -119,7 +120,7 @@ class TestIonizationStateCollection:
             self.instances[test_name] = IonizationStateCollection(**tests[test_name])
         except Exception:  # noqa: BLE001
             pytest.fail(
-                f"Cannot create IonizationStateCollection instance for test='{test_name}'"
+                f"Cannot create IonizationStateCollection instance for test='{test_name}'",
             )
 
     @pytest.mark.parametrize("test_name", test_names)
@@ -181,7 +182,7 @@ class TestIonizationStateCollection:
                 f"The elements whose IonizationStateCollection are being kept "
                 f"track of ({elements}) are not a subset of the "
                 f"elements whose abundances are being kept track of "
-                f"({elements_from_abundances}) for test {test_name}."
+                f"({elements_from_abundances}) for test {test_name}.",
             )
 
     @pytest.mark.parametrize("test_name", test_names)
@@ -220,7 +221,7 @@ class TestIonizationStateCollection:
             input_keys = sorted(input_keys, key=sort_key)
 
             for element, input_key in zip(elements_actual, input_keys, strict=False):
-                expected = tests[test_name]["inputs"][input_key]
+                expected = tests[test_name]["inputs"][input_key]  # ty:ignore[not-subscriptable, invalid-argument-type]
 
                 if isinstance(expected, u.Quantity):
                     expected = np.array(expected.value / np.sum(expected.value))
@@ -237,10 +238,10 @@ class TestIonizationStateCollection:
 
                 if not isinstance(actual, np.ndarray) or isinstance(actual, u.Quantity):
                     raise ParticleError(
-                        f"\n\nNot a numpy.ndarray: ({test_name}, {element})"
+                        f"\n\nNot a numpy.ndarray: ({test_name}, {element})",
                     )
         else:
-            elements_expected = {particle_symbol(element) for element in inputs}
+            elements_expected = {particle_symbol(element) for element in inputs}  # ty:ignore[not-iterable]
 
             assert set(self.instances[test_name].base_particles) == elements_expected
 
@@ -259,7 +260,7 @@ class TestIonizationStateCollection:
                 expected = instance.ionic_fractions[key]
             except Exception:  # noqa: BLE001
                 pytest.fail(
-                    f"Unable to get ionic_fractions for '{key}' in test='{test_name}'."
+                    f"Unable to get ionic_fractions for '{key}' in test='{test_name}'.",
                 )
 
             try:
@@ -276,14 +277,14 @@ class TestIonizationStateCollection:
                 raise TypeError(
                     f"For test='{test_name}' and key='{key}', cannot "
                     f"compare expected ionic fractions of {expected} "
-                    f"with the resulting ionic fractions of {actual}."
+                    f"with the resulting ionic fractions of {actual}.",
                 ) from None
 
             if not test_passed:
                 pytest.fail(
                     f"For test='{test_name}' and key='{key}', the expected "
                     f"ionic fractions of {expected} are not all equal "
-                    f"to the resulting ionic fractions of {actual}."
+                    f"to the resulting ionic fractions of {actual}.",
                 )
 
     @pytest.mark.parametrize("test_name", test_names)
@@ -315,7 +316,10 @@ class TestIonizationStateCollection:
         not_normalized_elements = []
         for element in instance.base_particles:
             is_not_normalized = not np.isclose(
-                np.sum(instance.ionic_fractions[element]), 1, atol=1e-19, rtol=0
+                np.sum(instance.ionic_fractions[element]),
+                1,
+                atol=1e-19,
+                rtol=0,
             )
 
             if is_not_normalized:
@@ -325,13 +329,12 @@ class TestIonizationStateCollection:
             pytest.fail(
                 f"In test = '{test_name}', ionic fractions for the "
                 f"following particles were not normalized: "
-                f"{', '.join(not_normalized_elements)}."
+                f"{', '.join(not_normalized_elements)}.",
             )
 
 
 def test_abundances_consistency() -> None:
     """Test that ``abundances`` and ``log_abundances`` are consistent."""
-
     inputs = {"H": [1, 0], "He": [1, 0, 0]}
     abundances = {"H": 1.0, "He": 0.1}
     elements = abundances.keys()
@@ -343,12 +346,14 @@ def test_abundances_consistency() -> None:
 
     for element in elements:
         assert np.allclose(
-            instance_log.abundances[element], instance_nolog.abundances[element]
+            instance_log.abundances[element],  # ty:ignore[not-subscriptable]
+            instance_nolog.abundances[element],  # ty:ignore[not-subscriptable]
         ), "abundances not consistent."
 
     for element in elements:
         assert np.allclose(
-            instance_log.log_abundances[element], instance_nolog.log_abundances[element]
+            instance_log.log_abundances[element],
+            instance_nolog.log_abundances[element],
         ), "log_abundances not consistent."
 
 
@@ -360,7 +365,7 @@ class TestIonizationStateCollectionItemAssignment:
     @classmethod
     def setup_class(cls) -> None:
         cls.states = IonizationStateCollection(
-            {"H": [0.9, 0.1], "He": [0.5, 0.4999, 1e-4]}
+            {"H": [0.9, 0.1], "He": [0.5, 0.4999, 1e-4]},
         )
 
     @pytest.mark.parametrize(
@@ -378,7 +383,7 @@ class TestIonizationStateCollectionItemAssignment:
             self.states[element] = new_states
         except Exception:  # noqa: BLE001
             pytest.fail(
-                "Unable to change ionic fractions for an IonizationStateCollection instance."
+                "Unable to change ionic fractions for an IonizationStateCollection instance.",
             )
         resulting_states = self.states[element].ionic_fractions
 
@@ -386,8 +391,8 @@ class TestIonizationStateCollectionItemAssignment:
             [
                 np.allclose(resulting_states, new_states),
                 np.all(np.isnan(resulting_states)) and np.all(np.isnan(new_states)),
-            ]
-        )
+            ],
+        )  # ty:ignore[no-matching-overload]
 
     @pytest.mark.parametrize(
         ("base_particle", "new_states", "expected_exception"),
@@ -401,7 +406,10 @@ class TestIonizationStateCollectionItemAssignment:
         ],
     )
     def test_setitem_errors(
-        self, base_particle, new_states, expected_exception
+        self,
+        base_particle,
+        new_states,
+        expected_exception,
     ) -> None:
         with pytest.raises(expected_exception):
             self.states[base_particle] = new_states
@@ -424,12 +432,15 @@ class TestIonizationStateCollectionDensities:
 
         cls.expected_electron_density = 2.26025 * u.m**-3
         cls.states = IonizationStateCollection(
-            cls.initial_ionfracs, abundances=cls.abundances, n0=cls.n
+            cls.initial_ionfracs,
+            abundances=cls.abundances,
+            n0=cls.n,
         )
 
     def test_electron_density(self) -> None:
         assert np.isclose(
-            self.states.n_e.value, self.expected_electron_density.value
+            self.states.n_e.value,
+            self.expected_electron_density.value,
         ), (
             "Mismatch in electron density calculation:\n"
             f"Calculated = {self.states.n_e}\n"
@@ -470,7 +481,8 @@ class TestIonizationStateCollectionAttributes:
         )
 
     @pytest.mark.parametrize(
-        "uninitialized_attribute", ["number_densities", "ionic_fractions"]
+        "uninitialized_attribute",
+        ["number_densities", "ionic_fractions"],
     )
     def test_attribute_defaults_to_dict_of_nans(self, uninitialized_attribute) -> None:
         command = f"self.instance.{uninitialized_attribute}"
@@ -487,7 +499,8 @@ class TestIonizationStateCollectionAttributes:
             )
 
     @pytest.mark.parametrize(
-        "uninitialized_attribute", ["abundances", "log_abundances"]
+        "uninitialized_attribute",
+        ["abundances", "log_abundances"],
     )
     def test_abundances_default_to_nans(self, uninitialized_attribute) -> None:
         command = f"self.instance.{uninitialized_attribute}"
@@ -522,7 +535,10 @@ class TestIonizationStateCollectionAttributes:
         ],
     )
     def test_attribute_exceptions(
-        self, attribute, invalid_value, expected_exception
+        self,
+        attribute,
+        invalid_value,
+        expected_exception,
     ) -> None:
         command = f"self.instance.{attribute} = {invalid_value}"
         errmsg = f"No {expected_exception} was raised for command\n\n: {command}"
@@ -566,7 +582,10 @@ class TestIonizationStateCollectionAttributes:
         ],
     )
     def test_setting_invalid_ionfracs(
-        self, key, invalid_fracs, expected_exception
+        self,
+        key,
+        invalid_fracs,
+        expected_exception,
     ) -> None:
         errmsg = (
             f"No {expected_exception} is raised when trying to assign "
@@ -579,7 +598,7 @@ class TestIonizationStateCollectionAttributes:
     def test_setting_incomplete_abundances(self) -> None:
         new_abundances = {"H": 1, "He": 0.1, "Fe": 1e-5, "Au": 1e-8}  # missing lithium
         with pytest.raises(ParticleError):
-            self.instance.abundances = new_abundances
+            self.instance.abundances = new_abundances  # ty:ignore[invalid-assignment]
 
     def test_setting_abundances(self) -> None:
         new_abundances = {"H": 1, "He": 0.1, "Li": 1e-4, "Fe": 1e-5, "Au": 1e-8}
@@ -589,12 +608,13 @@ class TestIonizationStateCollectionAttributes:
         }
 
         try:
-            self.instance.abundances = new_abundances
+            self.instance.abundances = new_abundances  # ty:ignore[invalid-assignment]
         except Exception:  # noqa: BLE001
-            pytest(f"Could not set abundances to {new_abundances}.")
+            pytest(f"Could not set abundances to {new_abundances}.")  # ty:ignore[call-non-callable]
         else:
             check_abundances_consistency(
-                self.instance.abundances, self.instance.log_abundances
+                self.instance.abundances,  # ty:ignore[invalid-argument-type]
+                self.instance.log_abundances,
             )
 
         try:
@@ -603,7 +623,8 @@ class TestIonizationStateCollectionAttributes:
             pytest.fail(f"Could not set log_abundances to {log_new_abundances}.")
         else:
             check_abundances_consistency(
-                self.instance.abundances, self.instance.log_abundances
+                self.instance.abundances,  # ty:ignore[invalid-argument-type]
+                self.instance.log_abundances,
             )
 
     @pytest.mark.parametrize(
@@ -634,7 +655,10 @@ class TestIonizationStateCollectionAttributes:
             inputs = instance.number_densities[index]
 
         expected = IonizationState(
-            index, inputs, T_e=instance.T_e, kappa=instance.kappa
+            index,
+            inputs,
+            T_e=instance.T_e,
+            kappa=instance.kappa,
         )
 
         assert isinstance(result, IonizationState)
@@ -657,7 +681,7 @@ class TestIonizationStateCollectionAttributes:
             [
                 np.isclose(result.ionic_fraction, expected_ionic_fraction),
                 np.isnan(result.ionic_fraction) and np.isnan(expected_ionic_fraction),
-            ]
+            ],
         )
 
         assert result.ionic_symbol == particle_symbol(particle, Z=charge_number)
@@ -677,7 +701,6 @@ class TestIonizationStateCollectionAttributes:
         Test that item assignment can be used to set number densities
         that preserve the total element number density.
         """
-
         element = "H"
         valid_ionic_fractions = [0.54, 0.46]
         original_n_elem = np.sum(self.instance.number_densities[element])
@@ -689,13 +712,15 @@ class TestIonizationStateCollectionAttributes:
             pytest.fail("Unable to set valid number densities using item assignment.")
 
         assert u.quantity.allclose(
-            self.instance.ionic_fractions[element], valid_ionic_fractions
+            self.instance.ionic_fractions[element],
+            valid_ionic_fractions,
         ), (
             "Item assignment of valid number densities did not yield correct ionic fractions."
         )
 
         assert u.quantity.allclose(
-            self.instance.number_densities[element], valid_number_densities
+            self.instance.number_densities[element],
+            valid_number_densities,
         ), (
             "Item assignment of valid number densities did not yield correct number densities."
         )
@@ -713,14 +738,14 @@ class TestIonizationStateCollectionAttributes:
 
     def test_elemental_abundances_not_quantities(self) -> None:
         for element in self.instance.base_particles:
-            assert not isinstance(self.instance.abundances[element], u.Quantity)
+            assert not isinstance(self.instance.abundances[element], u.Quantity)  # ty:ignore[not-subscriptable]
 
     @pytest.mark.parametrize("element", ["H", "He", "Fe"])
     def test_ionic_fractions_not_quantities(self, element) -> None:
         ionic_fractions = self.instance.ionic_fractions[element]
         if isinstance(ionic_fractions, u.Quantity):
             pytest.fail(
-                f"The ionic fractions of {element} are a Quantity but should not be."
+                f"The ionic fractions of {element} are a Quantity but should not be.",
             )
 
     def test_that_iron_ionic_fractions_are_still_undefined(self) -> None:
@@ -739,7 +764,7 @@ class TestIonizationStateCollectionAttributes:
 
     def test_base_particles_equal_ionic_fraction_particles(self) -> None:
         assert self.instance.base_particles == list(
-            self.instance.ionic_fractions.keys()
+            self.instance.ionic_fractions.keys(),
         )
 
 
@@ -803,7 +828,8 @@ class TestIonizationStateCollectionDensityEqualities:
     @pytest.mark.parametrize(
         ("this", "that"),
         itertools.product(
-            ["ndens1", "ndens2", "no_ndens3", "no_ndens4", "no_ndens5"], repeat=2
+            ["ndens1", "ndens2", "no_ndens3", "no_ndens4", "no_ndens5"],
+            repeat=2,
         ),
     )
     def test_equality(self, this, that) -> None:
@@ -884,7 +910,7 @@ def test_average_ion_consistency(
     """
     ionization_state = IonizationState(base_particle, ionic_fractions)
     ionization_state_collection = IonizationStateCollection(
-        {base_particle: ionic_fractions}
+        {base_particle: ionic_fractions},
     )
 
     options = {
@@ -900,11 +926,14 @@ def test_average_ion_consistency(
 
     quantity_from_ion_state = getattr(average_ion_from_ionization_state, physical_type)
     quantity_from_ion_collection = getattr(
-        average_ion_from_ionization_state_collection, physical_type
+        average_ion_from_ionization_state_collection,
+        physical_type,
     )
 
     assert_quantity_allclose(
-        quantity_from_ion_state, quantity_from_ion_collection, rtol=1e-10
+        quantity_from_ion_state,
+        quantity_from_ion_collection,
+        rtol=1e-10,
     )
 
 
@@ -921,7 +950,6 @@ def test_comparison_to_equivalent_particle_list(
     `ParticleList.average_particle` when the ratios of different particles
     is the same between the `IonizationState` and the `ParticleList`.
     """
-
     neutrals = 3 * ["H-1 0+"] + 2 * ["He-4 0+"] if include_neutrals else []
     ions = 2 * ["p+"] + 3 * ["He-4 1+"] + 5 * ["α"]
     particles = ParticleList(neutrals + ions)
@@ -933,7 +961,8 @@ def test_comparison_to_equivalent_particle_list(
 
     abundances = {"H-1": 1, "He-4": 2}
     ionization_state_collection = IonizationStateCollection(
-        ionic_fractions, abundances=abundances
+        ionic_fractions,
+        abundances=abundances,
     )
 
     kwarg = {f"use_rms_{physical_property}": True}
@@ -941,7 +970,8 @@ def test_comparison_to_equivalent_particle_list(
     expected_average_quantity = getattr(expected_average_particle, physical_property)
 
     actual_average_particle = ionization_state_collection.average_ion(
-        include_neutrals=include_neutrals, **kwarg
+        include_neutrals=include_neutrals,
+        **kwarg,
     )
     actual_average_quantity = getattr(actual_average_particle, physical_property)
 
