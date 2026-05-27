@@ -64,7 +64,10 @@ class Test_ColdPlasmaPermittivity:
         assert np.isclose(P, P_analytical)
 
         L, R, P = rotating_tuple_result = cold_plasma_permittivity_LRP(
-            B, species, n, omega
+            B,
+            species,
+            n,
+            omega,
         )
         assert rotating_tuple_result.left is L
         assert rotating_tuple_result.right is R
@@ -108,7 +111,10 @@ class Test_ColdPlasmaPermittivity:
         omega_RF = 2 * np.pi * 50e6 * (u.rad / u.s)
 
         S, D, P = cold_plasma_permittivity_SDP(
-            B=B0, species=["e", "D+"], n=[ns, ns], omega=omega_RF
+            B=B0,
+            species=["e", "D+"],
+            n=[ns, ns],
+            omega=omega_RF,
         )
         assert S.shape == D.shape == P.shape == (50,)
 
@@ -166,7 +172,6 @@ class Test_permittivity_1D_Maxwellian:
         """
         Tests permittivity_1D_Maxwellian for expected value.
         """
-
         vth = thermal_speed(kwargs["T"], kwargs["particle"], method="most_probable")
         kwargs["kWave"] = kwargs["omega"] / vth
 
@@ -197,14 +202,14 @@ class Test_permittivity_1D_Maxwellian_lite:
     """Test class for `permittivity_1D_Maxwellian_lite`."""
 
     @pytest.mark.parametrize(
-        ("kwargs", "expected"), Test_permittivity_1D_Maxwellian.cases
+        ("kwargs", "expected"),
+        Test_permittivity_1D_Maxwellian.cases,
     )
     def test_normal_vs_lite_values(self, kwargs, expected) -> None:  # noqa: ARG002
         """
         Test that `permittivity_1D_Maxwellian_lite` and
         `permittivity_1D_Maxwellian` calculate the same values.
         """
-
         wp = plasma_frequency(kwargs["n"], kwargs["particle"], Z=kwargs["z_mean"])
         vth = thermal_speed(kwargs["T"], kwargs["particle"], method="most_probable")
         kwargs["kWave"] = kwargs["omega"] / vth

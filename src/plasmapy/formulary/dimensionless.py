@@ -39,7 +39,8 @@ __all__ += __aliases__
     n_e={"can_be_negative": False},
 )
 def Debye_number(
-    T_e: u.Quantity[u.K], n_e: u.Quantity[u.m**-3]
+    T_e: u.Quantity[u.K],
+    n_e: u.Quantity[u.m**-3],
 ) -> u.Quantity[u.dimensionless_unscaled]:
     r"""Return the number of electrons within a sphere with a radius
     of the Debye length.
@@ -99,7 +100,6 @@ def Debye_number(
     >>> Debye_number(5e6 * u.K, 5e9 * u.cm**-3)
     <Quantity 2.17658...e+08>
     """
-
     lambda_D = lengths.Debye_length(T_e, n_e)
     return (4 / 3) * np.pi * n_e * lambda_D**3
 
@@ -113,7 +113,7 @@ nD_ = Debye_number
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
 )
 @particle_input
-def Hall_parameter(
+def Hall_parameter(  # noqa: ANN201
     n: u.Quantity[u.m**-3],
     T: u.Quantity[u.K],
     B: u.Quantity[u.T],
@@ -222,7 +222,12 @@ def Hall_parameter(
     gyro_frequency = gyro_frequency / u.radian
     if particle == "e-":
         coll_rate = fundamental_electron_collision_freq(
-            T, n, ion, coulomb_log, V, coulomb_log_method=coulomb_log_method
+            T,
+            n,
+            ion,
+            coulomb_log,
+            V,
+            coulomb_log_method=coulomb_log_method,
         )
     else:
         coll_rate = fundamental_ion_collision_freq(T, n, ion, coulomb_log, V)
@@ -238,7 +243,9 @@ betaH_ = Hall_parameter
     n={"can_be_negative": False},
 )
 def beta(
-    T: u.Quantity[u.K], n: u.Quantity[u.m**-3], B: u.Quantity[u.T]
+    T: u.Quantity[u.K],
+    n: u.Quantity[u.m**-3],
+    B: u.Quantity[u.T],
 ) -> u.Quantity[u.dimensionless_unscaled]:
     r"""
     Compute the ratio of thermal pressure to magnetic pressure.
@@ -369,7 +376,9 @@ Re_ = Reynolds_number
 
 @validate_quantities(U={"can_be_negative": True})
 def Mag_Reynolds(
-    U: u.Quantity[u.m / u.s], L: u.Quantity[u.m], sigma: u.Quantity[u.S / u.m]
+    U: u.Quantity[u.m / u.s],
+    L: u.Quantity[u.m],
+    sigma: u.Quantity[u.S / u.m],
 ) -> u.Quantity[u.dimensionless_unscaled]:
     r"""
     Compute the magnetic Reynolds number.

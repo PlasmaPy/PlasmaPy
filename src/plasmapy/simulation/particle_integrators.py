@@ -236,14 +236,14 @@ class RelativisticBorisIntegrator(AbstractIntegrator):
                Simulation", 2004, p. 58-63
         """
         γ = 1 / np.sqrt(
-            1 - (np.linalg.norm(v, axis=1, keepdims=True) / _c.si.value) ** 2
+            1 - (np.linalg.norm(v, axis=1, keepdims=True) / _c.si.value) ** 2,
         )
         uvel = v * γ
 
         uvel_minus = uvel + q * E * dt / (2 * m)
 
         γ1 = np.sqrt(
-            1 + (np.linalg.norm(uvel_minus, axis=1, keepdims=True) / _c.si.value) ** 2
+            1 + (np.linalg.norm(uvel_minus, axis=1, keepdims=True) / _c.si.value) ** 2,
         )
 
         t = q * B * dt / (2 * γ1 * m)
@@ -256,7 +256,7 @@ class RelativisticBorisIntegrator(AbstractIntegrator):
         # You can show that this expression is equivalent to calculating
         # v_new  then calculating γnew using the usual formula
         γ2 = np.sqrt(
-            1 + (np.linalg.norm(uvel_new, axis=1, keepdims=True) / _c.si.value) ** 2
+            1 + (np.linalg.norm(uvel_new, axis=1, keepdims=True) / _c.si.value) ** 2,
         )
 
         v = uvel_new / γ2

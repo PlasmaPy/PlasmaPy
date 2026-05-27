@@ -57,6 +57,7 @@ except Exception:  # coverage: ignore  # noqa: BLE001
             f"it was set to {__version__} instead. The installation may "
             "be broken."
         ),
+        stacklevel=1,
         category=ImportWarning,
     )
 

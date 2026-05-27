@@ -49,7 +49,7 @@ def _turn_quantity_into_custom_particle(
     raise InvalidParticleError(
         f"Cannot convert {quantity} into a CustomParticle for "
         f"inclusion in a ParticleList because it does not have"
-        f"a physical type of mass or electrical charge."
+        f"a physical type of mass or electrical charge.",
     )
 
 
@@ -161,7 +161,7 @@ class ParticleList(collections.UserList):
             raise TypeError(
                 "ParticleList does not accept strings, but does accept "
                 "lists and tuples containing strings. Did you mean to "
-                f"do `ParticleList([{particles!r}])` instead?"
+                f"do `ParticleList([{particles!r}])` instead?",
             )
 
         new_particles = []
@@ -172,7 +172,7 @@ class ParticleList(collections.UserList):
                 new_particles.append(obj)
             elif isinstance(obj, DimensionlessParticle):
                 raise TypeError(
-                    "ParticleList instances cannot include dimensionless particles."
+                    "ParticleList instances cannot include dimensionless particles.",
                 )
             elif isinstance(obj, u.Quantity):
                 new_particle = _turn_quantity_into_custom_particle(obj)
@@ -183,7 +183,7 @@ class ParticleList(collections.UserList):
                 except (TypeError, InvalidParticleError) as exc:
                     raise InvalidParticleError(
                         f"The object {obj} supplied to ParticleList is not a "
-                        f"particle-like object."
+                        f"particle-like object.",
                     ) from exc
 
         return new_particles
@@ -203,34 +203,35 @@ class ParticleList(collections.UserList):
             return ParticleList([other])
         except (InvalidParticleError, TypeError) as ex:
             raise InvalidParticleError(
-                f"Cannot cast {other} into a ParticleList"
+                f"Cannot cast {other} into a ParticleList",
             ) from ex
 
-    def __add__(self, other):
+    def __add__(self, other):  # noqa: D105
         try:
             other_as_particle_list = self._cast_other_as_particle_list(other)
         except (TypeError, InvalidParticleError) as exc:
             raise InvalidParticleError(
-                f"Cannot add {other!r} to a ParticleList."
+                f"Cannot add {other!r} to a ParticleList.",
             ) from exc
         return ParticleList(self.data + other_as_particle_list.data)
 
-    def __radd__(self, other):
+    def __radd__(self, other):  # noqa: D105
         other_as_particle_list = self._cast_other_as_particle_list(other)
         return other_as_particle_list.__add__(self)
 
-    def __repr__(self) -> str:
+    def __repr__(self) -> str:  # noqa: D105
         return f"ParticleList({self.symbols!r})"
 
-    def __gt__(self, other):
+    def __gt__(self, other):  # noqa: D105
         from plasmapy.particles.nuclear import nuclear_reaction_energy  # noqa: PLC0415
 
         other_as_particle_list = self._cast_other_as_particle_list(other)
         return nuclear_reaction_energy(
-            reactants=self.symbols, products=other_as_particle_list.symbols
+            reactants=self.symbols,
+            products=other_as_particle_list.symbols,
         )
 
-    def __str__(self) -> str:
+    def __str__(self) -> str:  # noqa: D105
         return self.__repr__()
 
     def _get_particle_attribute(self, attr, unit=None, default=None):
@@ -317,7 +318,7 @@ class ParticleList(collections.UserList):
     @overload
     def is_category(
         self,
-        *category_tuple,
+        *category_tuple,  # noqa: ANN002
         require: str | Iterable[str] | None = None,
         any_of: str | Iterable[str] | None = None,
         exclude: str | Iterable[str] | None = None,
@@ -327,7 +328,7 @@ class ParticleList(collections.UserList):
     @overload
     def is_category(
         self,
-        *category_tuple,
+        *category_tuple,  # noqa: ANN002
         require: str | Iterable[str] | None = None,
         any_of: str | Iterable[str] | None = None,
         exclude: str | Iterable[str] | None = None,
@@ -438,7 +439,7 @@ class ParticleList(collections.UserList):
             default=np.nan * u.J,
         )
 
-    def sort(self, key: Callable | None = None, reverse: bool = False):
+    def sort(self, key: Callable | None = None, reverse: bool = False):  # noqa: FBT001, FBT002
         """
         Sort the |ParticleList| in-place.
 

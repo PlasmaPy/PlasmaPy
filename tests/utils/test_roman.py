@@ -163,7 +163,8 @@ def test_to_roman(integer: int, roman_numeral: str) -> None:
 
 
 @pytest.mark.parametrize(
-    ("function", "argument", "expected_exception"), exceptions_table
+    ("function", "argument", "expected_exception"),
+    exceptions_table,
 )
 def test_to_roman_exceptions(
     function: Callable[[Any], Any],
@@ -188,5 +189,5 @@ test_is_roman_numeral_table: list[tuple[str, bool]] = [
 
 
 @pytest.mark.parametrize(("argument", "expected"), test_is_roman_numeral_table)
-def test_is_roman_numeral(argument: str, expected: bool) -> None:
+def test_is_roman_numeral(argument: str, expected: bool) -> None:  # noqa: FBT001
     run_test(func=roman.is_roman_numeral, args=argument, expected_outcome=expected)
