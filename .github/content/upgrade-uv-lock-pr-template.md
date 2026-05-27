@@ -16,7 +16,7 @@ This upgrade was performed by running `nox --session lock` in the top-level dire
 
 ## Motivation
 
- Locking requirements lets us prevent spontaneous test failures due to breaking changes in upstream dependencies. This PR lets us quarantine breaking changes in newly released dependencies before they start being used in CI for other pull requests.
+Locking requirements lets us prevent spontaneous test failures due to breaking changes in upstream dependencies. This PR lets us quarantine breaking changes in newly released dependencies before they start being used in CI for other pull requests.
 
 ## Updated dependencies
 
@@ -24,7 +24,6 @@ This upgrade was performed by running `nox --session lock` in the top-level dire
 [dependency cooldown]: https://blog.yossarian.net/2025/11/21/We-should-all-be-using-dependency-cooldowns
 [nox]: https://nox.thea.codes/en/stable
 [ty]: https://docs.astral.sh/ty
-[uv]: https://docs.astral.sh/uv
 [`noxfile.py`]: https://github.com/PlasmaPy/PlasmaPy/blob/main/noxfile.py
 [`pyproject.toml`]: https://github.com/PlasmaPy/PlasmaPy/blob/main/pyproject.toml
 [`uv lock --upgrade`]: https://docs.astral.sh/uv/reference/cli/#uv-lock
