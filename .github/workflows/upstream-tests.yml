@@ -76,4 +76,4 @@ jobs:
 
     - name: Run Nox session ${{ matrix.nox_session }}
       shell: bash -el {0}
-      run: uvx nox -s '${{ matrix.nox_session }}'
+      run: uvx nox --session '${{ matrix.nox_session }}'

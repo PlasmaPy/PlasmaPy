@@ -69,7 +69,7 @@ def test_binding(lite_func, attrs) -> None:
     else:
         pytest.fail(
             "Parametrization was not setup correctly!  The value for 'attrs' must"
-            "be None or a dictionary."
+            "be None or a dictionary.",
         )
 
     for name, func in attrs.items():
@@ -98,7 +98,7 @@ def test_lite_func_dunder(lite_func, attrs) -> None:
     else:
         pytest.fail(
             "Parametrization was not setup correctly!  The value for 'attrs' must"
-            "be None or a dictionary."
+            "be None or a dictionary.",
         )
 
     for name, func in attrs.items():

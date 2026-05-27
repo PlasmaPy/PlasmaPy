@@ -196,13 +196,13 @@ for element_or_isotope in elements_and_isotopes:
         # If there's a column named Ionization Energy (eV) (b), rename it to Ionization Energy (eV)
         if "Ionization Energy (eV) (b)" in data.columns:
             data = data.rename(
-                columns={"Ionization Energy (eV) (b)": "Ionization Energy (eV)"}
+                columns={"Ionization Energy (eV) (b)": "Ionization Energy (eV)"},
             )
 
         # If there's a column named Ionization Energy (b) (eV), rename it to Ionization Energy (eV)
         if "Ionization Energy (b) (eV)" in data.columns:
             data = data.rename(
-                columns={"Ionization Energy (b) (eV)": "Ionization Energy (eV)"}
+                columns={"Ionization Energy (b) (eV)": "Ionization Energy (eV)"},
             )
 
         # Drop all columns except for Sp. Name, Ion Charge, and Ionization Energy
@@ -214,10 +214,12 @@ for element_or_isotope in elements_and_isotopes:
         data["Ion Charge"] = data["Ion Charge"].str.replace('"', "")
         data["Ion Charge"] = data["Ion Charge"].str.replace("=", "")
         data["Ionization Energy (eV)"] = data["Ionization Energy (eV)"].str.replace(
-            '"', ""
+            '"',
+            "",
         )
         data["Ionization Energy (eV)"] = data["Ionization Energy (eV)"].str.replace(
-            "=", ""
+            "=",
+            "",
         )
 
         # In the name column, split the string by spaces and take the first element
@@ -240,7 +242,8 @@ for element_or_isotope in elements_and_isotopes:
 
         # Try to convert Ionization Energy (eV) to float, and remove rows where it fails
         data["Ionization Energy (eV)"] = pd.to_numeric(
-            data["Ionization Energy (eV)"], errors="coerce"
+            data["Ionization Energy (eV)"],
+            errors="coerce",
         )
 
         # Remove rows where Ionization Energy (eV) is NaN

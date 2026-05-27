@@ -25,6 +25,9 @@ requirements/*
 # Version file
 _version.py
 
+# Personal overrides for AI coding assistants
+AGENTS.override.md
+
 # basedpyright (baseline files should be cached in CI if we adopt this tool)
 .basedpyright
 

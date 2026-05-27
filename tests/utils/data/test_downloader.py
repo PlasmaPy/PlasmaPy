@@ -8,7 +8,8 @@ import pytest
 from plasmapy.utils.data.downloader import _API_CONNECTION_ESTABLISHED, Downloader
 
 check_database_connection = pytest.mark.skipif(
-    not _API_CONNECTION_ESTABLISHED, reason="failed to connect to data repository"
+    not _API_CONNECTION_ESTABLISHED,
+    reason="failed to connect to data repository",
 )
 
 
@@ -38,7 +39,8 @@ def downloader_validated(tmpdir_factory) -> Downloader:
 @pytest.mark.slow
 @check_database_connection
 @pytest.mark.skipif(
-    not in_ci(), reason="Tests only use authenticated API calls when run in CI."
+    not in_ci(),
+    reason="Tests only use authenticated API calls when run in CI.",
 )
 def test_api_token(downloader_validated: Downloader) -> None:
     """
@@ -68,7 +70,9 @@ test_urls = [
 @pytest.mark.slow
 @pytest.mark.parametrize(("url", "expected"), test_urls)
 def test_http_request(
-    downloader_validated: Downloader, url: str, expected: None | Exception
+    downloader_validated: Downloader,
+    url: str,
+    expected: None | Exception,
 ) -> None:
     """
     Test exceptions from http downloader
@@ -137,15 +141,18 @@ test_files = [
 
 @pytest.mark.slow
 @pytest.mark.parametrize(
-    "downloader", ["downloader_validated", "downloader_unvalidated"]
+    "downloader",
+    ["downloader_validated", "downloader_unvalidated"],
 )
 @pytest.mark.parametrize(("filename", "expected"), test_files)
 @check_database_connection
 def test_get_file(
-    filename: str, expected: Exception | None, downloader: Downloader, request
+    filename: str,
+    expected: Exception | None,
+    downloader: Downloader,
+    request,
 ) -> None:
     """Test the get_file function."""
-
     # Get the downloader fixture based on the string name provided
     dl = request.getfixturevalue(downloader)
 
@@ -167,14 +174,14 @@ def test_get_file(
 
 @pytest.mark.slow
 @pytest.mark.parametrize(
-    "downloader", ["downloader_validated", "downloader_unvalidated"]
+    "downloader",
+    ["downloader_validated", "downloader_unvalidated"],
 )
 @check_database_connection
 def test_get_local_only_file(downloader: Downloader, request) -> None:
     """
     Test various file retrieval modes
     """
-
     # Get the downloader fixture based on the string name provided
     dl = request.getfixturevalue(downloader)
 
@@ -210,7 +217,6 @@ def test_get_local_only_file(downloader: Downloader, request) -> None:
 @check_database_connection
 def test_get_file_NIST_PSTAR_datafile(downloader_validated) -> None:
     """Test getting a particular file and checking for known contents"""
-
     # Silence warnings from files not found on the repository
     warnings.filterwarnings("ignore", category=UserWarning)
 
@@ -223,7 +229,7 @@ def test_get_file_NIST_PSTAR_datafile(downloader_validated) -> None:
 
 @pytest.mark.skip(
     "This test fails intermittently, but should be un-skipped when "
-    "updating the downloader."
+    "updating the downloader.",
 )
 @pytest.mark.slow
 @check_database_connection
@@ -253,7 +259,6 @@ def test_creating_another_downloader(downloader_validated) -> None:
     Test creating a second downloader in the same directory.
     This will test reading in the existing blob file.
     """
-
     dl2 = Downloader(directory=downloader_validated._download_directory)
 
     filename = "NIST_PSTAR_aluminum.txt"
@@ -268,7 +273,6 @@ def test_ensure_update_blob_dict_runs(downloader_validated: Downloader) -> None:
     """
     Ensure the _update_blob_dict method gets run if it hasn't already.
     """
-
     # Only run this test if the downloader fixture hasn't already updated
     # form the repo (so tests remain limited to 1 api call)
     # It seems that sometimes this can happen, in which case this test

@@ -128,12 +128,16 @@ class PlasmaBlob(GenericPlasma):
         kinetic energy.
         """
         couple = coupling_parameter(
-            self.T_e, self.n_e, (self.particle, self.particle), self.Z
+            self.T_e,
+            self.n_e,
+            (self.particle, self.particle),
+            self.Z,
         )
         if couple < 0.01:
             warnings.warn(
                 f"Coupling parameter is {couple}, you might have strong coupling effects",
                 CouplingWarning,
+                stacklevel=2,
             )
 
         return couple
@@ -146,5 +150,5 @@ class PlasmaBlob(GenericPlasma):
         return quantum_theta(self.T_e, self.n_e)
 
     @classmethod
-    def is_datasource_for(cls, **kwargs) -> bool:
+    def is_datasource_for(cls, **kwargs) -> bool:  # noqa: ANN003
         return "T_e" in kwargs and "n_e" in kwargs

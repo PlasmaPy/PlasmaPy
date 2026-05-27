@@ -34,9 +34,10 @@ from plasmapy.utils.exceptions import RelativityError
 __all__ += __aliases__
 
 
-# TODO: Use @check_relativistic
+# TODO: Use @check_relativistic  # noqa: FIX002
 @validate_quantities(
-    V={"can_be_negative": True}, validations_on_return={"can_be_negative": False}
+    V={"can_be_negative": True},
+    validations_on_return={"can_be_negative": False},
 )
 @particle_input
 def deBroglie_wavelength(
@@ -103,14 +104,13 @@ def deBroglie_wavelength(
     >>> deBroglie_wavelength(V=0 * u.m / u.s, particle="D+")
     <Quantity inf m>
     """
-
     V = np.abs(V)
 
-    if np.any(V >= c):
+    if np.any(c <= V):
         raise RelativityError(
             "Velocity input in deBroglie_wavelength cannot "
             "be greater than or equal to the speed of "
-            "light."
+            "light.",
         )
 
     if V.size > 1:
@@ -120,7 +120,7 @@ def deBroglie_wavelength(
             particle.mass * V[indices] * Lorentz_factor(V[indices])
         )
 
-    elif V == 0 * u.m / u.s:
+    elif 0 * u.m / u.s == V:
         lambda_dBr = np.inf * u.m
     else:
         lambda_dBr = h / (Lorentz_factor(V) * particle.mass * V)
@@ -191,7 +191,8 @@ lambdaDB_th_ = thermal_deBroglie_wavelength
 
 
 @validate_quantities(
-    n_e={"can_be_negative": False}, validations_on_return={"can_be_negative": False}
+    n_e={"can_be_negative": False},
+    validations_on_return={"can_be_negative": False},
 )
 def Fermi_energy(n_e: u.Quantity[u.m**-3]) -> u.Quantity[u.J]:
     r"""
@@ -257,7 +258,8 @@ Ef_ = Fermi_energy
 
 
 @validate_quantities(
-    n_e={"can_be_negative": False}, validations_on_return={"can_be_negative": False}
+    n_e={"can_be_negative": False},
+    validations_on_return={"can_be_negative": False},
 )
 def Thomas_Fermi_length(n_e: u.Quantity[u.m**-3]) -> u.Quantity[u.m]:
     r"""
@@ -326,7 +328,8 @@ def Thomas_Fermi_length(n_e: u.Quantity[u.m**-3]) -> u.Quantity[u.m]:
 
 
 @validate_quantities(
-    n={"can_be_negative": False}, validations_on_return={"can_be_negative": False}
+    n={"can_be_negative": False},
+    validations_on_return={"can_be_negative": False},
 )
 def Wigner_Seitz_radius(n: u.Quantity[u.m**-3]) -> u.Quantity[u.m]:
     r"""
@@ -393,7 +396,8 @@ def Wigner_Seitz_radius(n: u.Quantity[u.m**-3]) -> u.Quantity[u.m]:
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
 )
 def chemical_potential(
-    n_e: u.Quantity[u.m**-3], T: u.Quantity[u.K]
+    n_e: u.Quantity[u.m**-3],
+    T: u.Quantity[u.K],
 ) -> u.Quantity[u.dimensionless_unscaled]:
     r"""
     Calculate the ideal chemical potential.
@@ -460,7 +464,6 @@ def chemical_potential(
     >>> chemical_potential(n_e=1e25 * u.cm**-3, T=11000 * u.K)
     <Quantity 283.43506297>
     """
-
     # deBroglie wavelength
     lambdaDB = thermal_deBroglie_wavelength(T)
     # degeneracy parameter
@@ -573,7 +576,8 @@ def _chemical_potential_interp(n_e, T):
     n_e={"can_be_negative": False},
 )
 def quantum_theta(
-    T: u.Quantity[u.K], n_e: u.Quantity[u.m**-3]
+    T: u.Quantity[u.K],
+    n_e: u.Quantity[u.m**-3],
 ) -> u.Quantity[u.dimensionless_unscaled]:
     r"""
     Compare Fermi energy to thermal kinetic energy to check if quantum

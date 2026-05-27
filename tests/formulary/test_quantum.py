@@ -43,15 +43,18 @@ def test_deBroglie_wavelength() -> None:
     assert dbwavelength_arr.unit == u.m
 
     assert deBroglie_wavelength(-5e5 * u.m / u.s, "p") == deBroglie_wavelength(
-        5e5 * u.m / u.s, "p"
+        5e5 * u.m / u.s,
+        "p",
     )
 
     assert deBroglie_wavelength(-5e5 * u.m / u.s, "e+") == deBroglie_wavelength(
-        5e5 * u.m / u.s, "e"
+        5e5 * u.m / u.s,
+        "e",
     )
 
     assert deBroglie_wavelength(1 * u.m / u.s, 5 * u.kg) == deBroglie_wavelength(
-        100 * u.cm / u.s, 5000 * u.g
+        100 * u.cm / u.s,
+        5000 * u.g,
     )
 
 
@@ -169,7 +172,10 @@ class TestChemicalPotential:
 
         error_message = f"Chemical potential value should be {expected_value} and not {calculated_value.value}."
         assert np.isclose(
-            calculated_value.value, expected_value, rtol=1e-16, atol=0.0
+            calculated_value.value,
+            expected_value,
+            rtol=1e-16,
+            atol=0.0,
         ), error_message
         assert calculated_value.unit == u.dimensionless_unscaled
 
@@ -188,7 +194,10 @@ class TestChemicalPotential:
             f"should not be equal to {expected_failure_value}."
         )
         assert not u.isclose(
-            calculated_value.value, expected_failure_value, rtol=1e-16, atol=0.0
+            calculated_value.value,
+            expected_failure_value,
+            rtol=1e-16,
+            atol=0.0,
         ), error_message
 
 
@@ -226,7 +235,6 @@ class Test__chemical_potential_interp:
 
 def test_quantum_aliases() -> None:
     r"""Test all aliases defined in quantum.py"""
-
     assert Ef_ is Fermi_energy
     assert lambdaDB_ is deBroglie_wavelength
     assert lambdaDB_th_ is thermal_deBroglie_wavelength
@@ -237,7 +245,6 @@ class TestQuantumTheta:
 
     def test_units(self) -> None:
         """Test the return units"""
-
         theta = quantum_theta(1 * u.eV, 1e26 * u.m**-3)
 
         assert theta.unit.is_equivalent(u.dimensionless_unscaled)
@@ -253,7 +260,6 @@ class TestQuantumTheta:
     )
     def test_value(self, T, n_e, expected_theta) -> None:
         """Compare the calculated theta with the expected value."""
-
         theta = quantum_theta(T, n_e)
 
         assert np.isclose(theta.value, expected_theta)

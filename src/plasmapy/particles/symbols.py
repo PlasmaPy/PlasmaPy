@@ -211,7 +211,6 @@ def ionic_symbol(
     >>> ionic_symbol("H-1", Z=0)
     'H-1 0+'
     """
-
     return particle.ionic_symbol  # ty:ignore[invalid-return-type]
 
 

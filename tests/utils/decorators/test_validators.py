@@ -127,7 +127,7 @@ class TestValidateQuantities:
                     "validations": {"validations_on_return": {"units": [u.cm, None]}},
                 },
                 "output": {
-                    "validations_on_return": {"units": [u.cm], "none_shall_pass": True}
+                    "validations_on_return": {"units": [u.cm], "none_shall_pass": True},
                 },
             },
             {
@@ -137,7 +137,7 @@ class TestValidateQuantities:
                     "args": (5,),
                     "kwargs": {},
                     "validations": {
-                        "x": {"units": [u.cm, None], "none_shall_pass": False}
+                        "x": {"units": [u.cm, None], "none_shall_pass": False},
                     },
                 },
                 "raises": ValueError,
@@ -196,10 +196,14 @@ class TestValidateQuantities:
         # method calls `_get_unit_checks` and `_get_value_checks`
         with (
             mock.patch.object(
-                CheckUnits, "_get_unit_checks", return_value={}
+                CheckUnits,
+                "_get_unit_checks",
+                return_value={},
             ) as mock_cu_get,
             mock.patch.object(
-                CheckValues, "_get_value_checks", return_value={}
+                CheckValues,
+                "_get_value_checks",
+                return_value={},
             ) as mock_cv_get,
         ):
             vq = ValidateQuantities(x=u.cm)  # ty:ignore[invalid-argument-type]
@@ -328,7 +332,9 @@ class TestValidateQuantities:
                 return_value=(5 * u.cm, u.cm, None, None),
             ) as mock_cu_checks,
             mock.patch.object(
-                CheckValues, "_check_value", return_value=None
+                CheckValues,
+                "_check_value",
+                return_value=None,
             ) as mock_cv_checks,
         ):
             args = case["input"][:2]
@@ -436,7 +442,7 @@ class TestValidateQuantities:
         default_validations = self.check_defaults.copy()
         default_validations["units"] = [default_validations.pop("units")]
         default_validations["equivalencies"] = [
-            default_validations.pop("equivalencies")
+            default_validations.pop("equivalencies"),
         ]
         validations = {
             "x": {**default_validations, "units": [u.cm]},
@@ -444,10 +450,14 @@ class TestValidateQuantities:
         }
         with (
             mock.patch.object(
-                ValidateQuantities, "_get_validations", return_value=validations
+                ValidateQuantities,
+                "_get_validations",
+                return_value=validations,
             ) as mock_vq_get,
             mock.patch.object(
-                ValidateQuantities, "_validate_quantity", return_value=5 * u.cm
+                ValidateQuantities,
+                "_validate_quantity",
+                return_value=5 * u.cm,
             ) as mock_vq_validate,
         ):
             wfoo = ValidateQuantities(**validations)(self.foo)
@@ -546,7 +556,7 @@ class TestValidateQuantities:
 
                 assert mock_vq_class.call_args[0] == ()
                 assert sorted(mock_vq_class.call_args[1].keys()) == sorted(
-                    case["setup"]["validations"].keys()
+                    case["setup"]["validations"].keys(),
                 )
 
                 for arg_name, validations in case["setup"]["validations"].items():
@@ -585,7 +595,8 @@ class TestValidateClassAttributes:
 
         @property
         @validate_class_attributes(
-            expected_attributes=["x"], both_or_either_attributes=[("y", "z")]
+            expected_attributes=["x"],
+            both_or_either_attributes=[("y", "z")],
         )
         def require_x_and_either_y_or_z(self) -> int:
             return 0
@@ -610,7 +621,6 @@ class TestValidateClassAttributes:
         """
         Test errors raised by the validate_class_attributes decorator.
         """
-
         test_case = self.SampleCase(**test_case_constructor_keyword_arguments)
 
         has_x = "x" in test_case_constructor_keyword_arguments
@@ -641,7 +651,7 @@ def test_validate_quantities_argument_type_annotation() -> None:
     """
 
     @validate_quantities
-    def f(x: u.Quantity[u.m]):
+    def f(x: u.Quantity[u.m]):  # noqa: ANN202
         return x
 
     argument = 100 * u.cm

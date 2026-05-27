@@ -101,7 +101,11 @@ def test_ExcessStatistics(signal, thresholds, time_step, pdf, bins, expected) ->
     [([1, 2], 1, -1, 32, ValueError), ([1, 2], 1, 1, 1.5, TypeError)],
 )
 def test_ExcessStatistics_exception(
-    signal, thresholds, time_step, bins, exception
+    signal,
+    thresholds,
+    time_step,
+    bins,
+    exception,
 ) -> None:
     """Test whether exception is risen"""
     with pytest.raises(exception):

@@ -1,3 +1,5 @@
+# Verify that PlasmaPy can be installed from official channels.
+
 name: Installability
 
 on:
