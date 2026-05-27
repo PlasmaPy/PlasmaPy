@@ -17,7 +17,7 @@ from plasmapy.utils.exceptions import RelativityError
 
 
 @validate_quantities(V={"can_be_negative": True})
-def Lorentz_factor(V: u.Quantity[u.m / u.s]):
+def Lorentz_factor(V: u.Quantity[u.m / u.s]):  # noqa: ANN201
     r"""
     Return the Lorentz factor.
 
@@ -68,11 +68,10 @@ def Lorentz_factor(V: u.Quantity[u.m / u.s]):
     >>> Lorentz_factor(299792458 * u.m / u.s)
     inf
     """
-
     if not np.all((np.abs(V) <= c) | (np.isnan(V))):
         raise RelativityError(
             "The Lorentz factor cannot be calculated for "
-            "speeds faster than the speed of light."
+            "speeds faster than the speed of light.",
         )
 
     if V.size > 1:
@@ -172,14 +171,14 @@ def relativistic_energy(
     >>> relativistic_energy(1 * u.mg, 1.4e8 * u.m / u.s)
     <Quantity 1.01638929e+11 J>
     """
-    # TODO: Remove references to the parameters ``m`` and ``v`` in the
+    # TODO: Remove references to the parameters ``m`` and ``v`` in the  # noqa: FIX002
     # docstring and below no sooner than 2024.
 
     if m is not None or v is not None:
         raise TypeError(
             "The parameters 'm' and 'v' to relativistic_energy have "
             " been removed. Use 'particle' instead of 'm' and 'V' "
-            "instead of 'v'."
+            "instead of 'v'.",
         )
 
     γ = Lorentz_factor(V)
@@ -287,13 +286,14 @@ class RelativisticBody:
             raise ValueError(
                 "RelativisticBody can accept no more than one of the following "
                 "arguments: V, v_over_c, momentum, total_energy, kinetic_energy, "
-                "and lorentz_factor."
+                "and lorentz_factor.",
             )
 
         return not_none_arguments or {"velocity": np.nan * u.m / u.s}
 
     def _store_velocity_like_argument(
-        self, speed_like_input: dict[str, u.Quantity | float]
+        self,
+        speed_like_input: dict[str, u.Quantity | float],
     ) -> None:
         """
         Take the velocity-like argument and store it via the setter for
@@ -342,7 +342,7 @@ class RelativisticBody:
         speed_like_input = self._get_speed_like_input(velocity_like_inputs)  # ty:ignore[invalid-argument-type]
         self._store_velocity_like_argument(speed_like_input)
 
-    def __repr__(self) -> str:
+    def __repr__(self) -> str:  # noqa: D105
         return f"RelativisticBody({self.particle}, {self.velocity})"
 
     @property
@@ -500,7 +500,7 @@ class RelativisticBody:
                 γ = γ.to(u.dimensionless_unscaled).value
             except u.UnitConversionError as exc:
                 raise u.UnitConversionError(
-                    "The Lorentz factor must be dimensionless."
+                    "The Lorentz factor must be dimensionless.",
                 ) from exc
 
         if γ < 1:
@@ -513,7 +513,7 @@ class RelativisticBody:
     def momentum(self, p: u.Quantity[u.kg * u.m / u.s]) -> None:
         self._momentum = p.to(u.kg * u.m / u.s)
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other) -> bool:  # noqa: D105
         _attributes_to_compare = (
             "particle",
             "kinetic_energy",
@@ -532,5 +532,5 @@ class RelativisticBody:
                 return False
         return True
 
-    def __hash__(self) -> int:
+    def __hash__(self) -> int:  # noqa: D105
         return hash(repr(self))

@@ -67,5 +67,4 @@ def CFL_limit_electromagnetic_yee(dx: u.Quantity[u.m]) -> u.Quantity[u.s]:
     >>> CFL_limit_electromagnetic_yee(np.array([5, 10, 15]) * u.nm)
     <Quantity 1.42956...e-17 s>
     """
-
     return 1 / (c * np.sqrt(np.sum(1 / (dx**2))))

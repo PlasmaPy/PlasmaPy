@@ -59,7 +59,7 @@ _particle_input_annotations = (
 )
 
 
-def _make_into_set_or_none(obj: Any) -> Iterable[str] | None:
+def _make_into_set_or_none(obj: Any) -> Iterable[str] | None:  # noqa: ANN401
     """
     Return `None` if ``obj`` is `None`, and otherwise convert ``obj``
     into a `set`.
@@ -77,7 +77,7 @@ def _bind_arguments(
     callable_: Callable[..., Any],
     args: Iterable[Any],
     kwargs: MutableMapping[str, Any],
-    instance: Any = None,
+    instance: Any = None,  # noqa: ANN401
 ) -> inspect.BoundArguments:
     """
     Bind the arguments provided by ``args`` and ``kwargs`` to
@@ -111,7 +111,6 @@ def _bind_arguments(
         the corresponding arguments as values, but removing ``self`` and
         ``cls``.
     """
-
     # We should keep the warning about "z_mean" for perhaps ∼2
     # releases following the last pull request that removes a "z_mean"
     # parameter from a callable decorated with @particle_input. After
@@ -126,6 +125,7 @@ def _bind_arguments(
             f"The 'z_mean' parameter {name_clause}has been deprecated "
             "and will be removed in a subsequent release. Define the "
             "(mean) charge number with 'Z' instead.",
+            stacklevel=2,
             category=PlasmaPyDeprecationWarning,
         )
 
@@ -335,7 +335,8 @@ class _ParticleInput:
         return self._data["parameters_to_process"]
 
     def verify_charge_categorization(
-        self, particle: Particle | CustomParticle | ParticleList
+        self,
+        particle: Particle | CustomParticle | ParticleList,
     ) -> None:
         """
         Raise an exception if the particle does not meet charge
@@ -354,7 +355,8 @@ class _ParticleInput:
         if isinstance(particle, ParticleList):
             uncharged = particle.is_category("uncharged", particlewise=True)
             lacks_charge_info = particle.is_category(
-                exclude={"charged", "uncharged"}, particlewise=True
+                exclude={"charged", "uncharged"},
+                particlewise=True,
             )
         else:
             uncharged = particle.is_category("uncharged")
@@ -370,7 +372,7 @@ class _ParticleInput:
         if must_have_charge_info and lacks_charge_info:
             raise ChargeError(
                 f"{self.callable_} can only accept particles which have "
-                f"explicit charge information."
+                f"explicit charge information.",
             )
 
     @staticmethod
@@ -409,7 +411,8 @@ class _ParticleInput:
         return category_errmsg
 
     def verify_particle_categorization(
-        self, particle: Particle | CustomParticle | ParticleList
+        self,
+        particle: Particle | CustomParticle | ParticleList,
     ) -> None:
         """
         Verify that the particle meets the categorization criteria.
@@ -447,20 +450,21 @@ class _ParticleInput:
             raise ParticleError(errmsg)
 
     def verify_particle_name_criteria(
-        self, parameter: str, particle: Particle | CustomParticle | ParticleList
+        self,
+        parameter: str,
+        particle: Particle | CustomParticle | ParticleList,
     ) -> None:
         """
         Check that parameters with special names meet the expected
         categorization criteria.
         """
-
         if (
             parameter == "ion"
             and isinstance(particle, CustomParticle)
             and not np.isnan(particle.charge)
             and particle.mass.value > 0
         ):
-            return None
+            return
 
         name_categorization_exception: list[
             tuple[str, dict[str, str | Iterable[str] | None], type]
@@ -480,7 +484,8 @@ class _ParticleInput:
 
             if isinstance(particle, ParticleList):
                 meets_name_criteria = particle.is_category(
-                    **categorization, particlewise=True
+                    **categorization,
+                    particlewise=True,
                 )
             else:
                 meets_name_criteria = particle.is_category(**categorization)
@@ -492,11 +497,12 @@ class _ParticleInput:
                 raise exception(
                     f"The argument {parameter} = {particle!r} to "
                     f"{self.callable_.__name__} does not correspond to a "
-                    f"valid {parameter}."
+                    f"valid {parameter}.",
                 )
 
     def verify_allowed_types(
-        self, particle: Particle | CustomParticle | ParticleList
+        self,
+        particle: Particle | CustomParticle | ParticleList,
     ) -> None:
         """
         Verify that the particle object contains only the allowed types
@@ -505,13 +511,13 @@ class _ParticleInput:
         if not self.allow_custom_particles and isinstance(particle, CustomParticle):
             raise InvalidParticleError(
                 f"{self.callable_.__name__} does not accept CustomParticle "
-                f"or CustomParticle-like inputs."
+                f"or CustomParticle-like inputs.",
             )
 
         if not self.allow_particle_lists and isinstance(particle, ParticleList):
             raise InvalidParticleError(
                 f"{self.callable_.__name__} does not accept ParticleList "
-                "or particle-list-like inputs."
+                "or particle-list-like inputs.",
             )
 
         if (
@@ -521,16 +527,16 @@ class _ParticleInput:
         ):
             raise InvalidParticleError(
                 f"{self.callable_.__name__} does not accept CustomParticle "
-                f"or CustomParticle-like inputs."
+                f"or CustomParticle-like inputs.",
             )
 
     def process_argument(
         self,
         parameter: str,
-        argument: Any,
+        argument: Any,  # noqa: ANN401
         Z: float | None,
         mass_numb: int | None,
-    ) -> Any:
+    ) -> Any:  # noqa: ANN401
         """
         Process an argument that has an appropriate annotation.
 
@@ -619,10 +625,9 @@ class _ParticleInput:
         integer if not `None`. Verify that ``Z`` and ``mass_numb`` are
         not included if there are multiple annotated parameters.
         """
-
         if not self.parameters_to_process:
             raise ParticleError(
-                "No parameters have an annotation that will invoke particle_input."
+                "No parameters have an annotation that will invoke particle_input.",
             )
 
         Z_or_mass_numb = Z is not None or mass_numb is not None
@@ -638,14 +643,14 @@ class _ParticleInput:
             raise ParticleError(
                 "The arguments Z and mass_numb are not allowed when more "
                 "than one argument or keyword is annotated with ParticleLike "
-                "in callables decorated with @particle_input."
+                "in callables decorated with @particle_input.",
             )
 
     def process_arguments(
         self,
         args: Iterable[Any],
         kwargs: MutableMapping[str, Any],
-        instance: Any = None,
+        instance: Any = None,  # noqa: ANN401
     ) -> BoundArguments:
         """
         Process the arguments passed to the callable_ callable.
@@ -668,9 +673,12 @@ class _ParticleInput:
         This method does not work when there are positional arguments
         before variadic positional arguments.  See :issue:`2150`.
         """
-
         bound_arguments = _bind_arguments(
-            self.signature, self.callable_, args, kwargs, instance
+            self.signature,
+            self.callable_,
+            args,
+            kwargs,
+            instance,
         )
 
         Z = bound_arguments.arguments.pop("Z", None)
@@ -966,7 +974,6 @@ def particle_input(
     >>> mass_number("D")
     2
     """
-
     # The following pattern comes from the docs for wrapt, and requires
     # that the arguments to the decorator are keyword-only.
 
@@ -992,7 +999,7 @@ def particle_input(
     @wrapt.decorator
     def wrapper(
         callable__: Callable[..., Any],
-        instance: Any,
+        instance: Any,  # noqa: ANN401
         args: Iterable[Any],
         kwargs: MutableMapping[str, Any],
     ) -> Callable[..., Any]:

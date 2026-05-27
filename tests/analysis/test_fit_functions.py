@@ -45,7 +45,7 @@ class TestAbstractFitFunction:
             ("root_solve", False),
         ],
     )
-    def test_methods(self, name: str, isproperty: bool) -> None:
+    def test_methods(self, name: str, isproperty: bool) -> None:  # noqa: FBT001
         """Test for required methods and properties."""
         assert hasattr(self.ff_class, name)
 
@@ -122,7 +122,7 @@ class BaseFFTests(ABC):
             ("root_solve", False),
         ],
     )
-    def test_methods(self, name: str, isproperty: bool) -> None:
+    def test_methods(self, name: str, isproperty: bool) -> None:  # noqa: FBT001
         """Test attribute/method/property existence."""
         assert hasattr(self.ff_class, name)
 
@@ -133,7 +133,7 @@ class BaseFFTests(ABC):
             pytest.fail(
                 f"{self.ff_class} class attribute '_param_names' needs to "
                 f" be defined as a tuple of strings representing the names of "
-                f"the fit parameters."
+                f"the fit parameters.",
             )
 
     @pytest.mark.parametrize(
@@ -156,7 +156,7 @@ class BaseFFTests(ABC):
         if exp_value == NotImplemented:
             pytest.fail(
                 f"The expected value for abstract method {name} is not "
-                f"implemented/defined in the test class attribute {value_ref_name}."
+                f"implemented/defined in the test class attribute {value_ref_name}.",
             )
 
         assert value == exp_value
@@ -578,7 +578,12 @@ class TestFFLinear(BaseFFTests):
         ],
     )
     def test_root_solve(
-        self, params, param_errors, root, root_err, conditional
+        self,
+        params,
+        param_errors,
+        root,
+        root_err,
+        conditional,
     ) -> None:  # ty:ignore[invalid-method-override]
         with conditional:
             ff_obj = self.ff_class(params=params, param_errors=param_errors)

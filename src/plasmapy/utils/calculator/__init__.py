@@ -16,5 +16,5 @@ def main() -> NoReturn:  # coverage: ignore
     raise RuntimeError(
         "The plasma calculator has been extracted from PlasmaPy into a "
         "standalone package. For more details, see: "
-        "https://github.com/PlasmaPy/plasmapy-calculator"
+        "https://github.com/PlasmaPy/plasmapy-calculator",
     )

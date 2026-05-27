@@ -68,12 +68,12 @@ def plasma_dispersion_func(
     except u.UnitTypeError as wrong_units:
         raise u.UnitsError(
             "The argument to plasma_dispersion_func "
-            "must be dimensionless if it is a Quantity."
+            "must be dimensionless if it is a Quantity.",
         ) from wrong_units
     except TypeError as wrong_type:
         raise TypeError(
             "The argument to plasma_dispersion_func should be a real or "
-            "complex number or array, or a dimensionless Quantity."
+            "complex number or array, or a dimensionless Quantity.",
         ) from wrong_type
 
 
@@ -125,11 +125,11 @@ def plasma_dispersion_func_deriv(
     except u.UnitsError as wrong_units:
         raise u.UnitsError(
             "The argument to plasma_dispersion_func_deriv "
-            "must be dimensionless if it is a Quantity."
+            "must be dimensionless if it is a Quantity.",
         ) from wrong_units
     except TypeError as wrong_type:
         raise TypeError(
             "The argument to plasma_dispersion_func_deriv "
             "must be one of the following types: complex, float, "
-            "int, ndarray, or a dimensionless Quantity."
+            "int, ndarray, or a dimensionless Quantity.",
         ) from wrong_type

@@ -182,7 +182,7 @@ def find_ion_saturation_current(
     except KeyError as ex:
         raise ValueError(
             f"Requested fit '{fit_type}' is not a valid option.  Valid options "
-            f"are {list(_settings.keys())}."
+            f"are {list(_settings.keys())}.",
         ) from ex
 
     # check voltage and current arrays
@@ -194,14 +194,14 @@ def find_ion_saturation_current(
     elif voltage_bound is not None and current_bound is not None:
         raise ValueError(
             "Both keywords 'current_bound' and 'voltage_bound' are specified, "
-            "use only one."
+            "use only one.",
         )
 
     if current_bound is not None:
         if not isinstance(current_bound, numbers.Real):
             raise TypeError(
                 f"Keyword 'current_bound' is of type {type(current_bound)}, "
-                f"expected an int or float."
+                f"expected an int or float.",
             )
 
         current_min = current.min()
@@ -213,14 +213,14 @@ def find_ion_saturation_current(
     else:
         raise TypeError(
             f"Keyword 'voltage_bound' is of type {type(voltage_bound)}, "
-            f"expected an int or float."
+            f"expected an int or float.",
         )
 
     if mask.size == 0:
         raise ValueError(
             f"The specified bounding keywords, 'voltage_bound' "
             f"({voltage_bound}) and 'current_bound' ({current_bound}), "
-            f"resulted in a fit window containing no points."
+            f"resulted in a fit window containing no points.",
         )
 
     mask = slice(0, mask[-1] + 1)

@@ -21,7 +21,6 @@ def test_ion_saturation_current_namedtuple() -> None:
     Test structure of the namedtuple used to return the computed ion saturation
     current data.
     """
-
     assert issubclass(ISatExtras, tuple)
     assert hasattr(ISatExtras, "_fields")
     assert ISatExtras._fields == (
@@ -49,10 +48,10 @@ class TestFindIonSaturationCurrent:
         {
             "current_linear": analytical_funcs["linear"](analytical_data["voltage"]),
             "current_exp_offset": analytical_funcs["exp_offset"](
-                analytical_data["voltage"]
+                analytical_data["voltage"],
             ),
             "current_exp_linear": analytical_funcs["exp_linear"](
-                analytical_data["voltage"]
+                analytical_data["voltage"],
             ),
         },
     )
@@ -188,7 +187,7 @@ class TestFindIonSaturationCurrent:
                 },
                 (
                     ffuncs.Linear(
-                        params=(0.0, analytical_funcs["exp_offset"].params.b)
+                        params=(0.0, analytical_funcs["exp_offset"].params.b),
                     ),
                     ISatExtras(
                         fitted_func=analytical_funcs["exp_offset"],
@@ -206,7 +205,7 @@ class TestFindIonSaturationCurrent:
                 },
                 (
                     ffuncs.Linear(
-                        params=(0.0, analytical_funcs["exp_offset"].params.b)
+                        params=(0.0, analytical_funcs["exp_offset"].params.b),
                     ),
                     ISatExtras(
                         fitted_func=analytical_funcs["exp_offset"],
@@ -227,7 +226,7 @@ class TestFindIonSaturationCurrent:
                         params=(
                             analytical_funcs["exp_linear"].params.m,
                             analytical_funcs["exp_linear"].params.b,
-                        )
+                        ),
                     ),
                     ISatExtras(
                         fitted_func=analytical_funcs["exp_linear"],
@@ -248,7 +247,7 @@ class TestFindIonSaturationCurrent:
                         params=(
                             analytical_funcs["exp_linear"].params.m,
                             analytical_funcs["exp_linear"].params.b,
-                        )
+                        ),
                     ),
                     ISatExtras(
                         fitted_func=analytical_funcs["exp_linear"],
@@ -289,7 +288,10 @@ class TestFindIonSaturationCurrent:
         current = current[isort]
 
         isat, extras = find_ion_saturation_current(
-            voltage, current, fit_type="exp_plus_linear", current_bound=3.6
+            voltage,
+            current,
+            fit_type="exp_plus_linear",
+            current_bound=3.6,
         )
 
         assert np.isclose(isat.params.m, 3.81079e-6, rtol=1e-3, atol=0)
