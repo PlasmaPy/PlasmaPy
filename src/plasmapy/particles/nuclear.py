@@ -13,7 +13,8 @@ from plasmapy.particles.particle_class import Particle
 
 @particle_input(any_of={"isotope", "baryon"})
 def nuclear_binding_energy(
-    particle: Particle, mass_numb: int | None = None
+    particle: Particle,
+    mass_numb: int | None = None,
 ) -> u.Quantity[u.J]:
     """
     Return the nuclear binding energy associated with an isotope.
@@ -107,7 +108,7 @@ def mass_energy(particle: Particle, mass_numb: int | None = None) -> u.Quantity[
     return particle.mass_energy
 
 
-def nuclear_reaction_energy(*args, **kwargs) -> u.Quantity[u.J]:  # noqa: C901, PLR0915
+def nuclear_reaction_energy(*args, **kwargs) -> u.Quantity[u.J]:  # noqa: ANN002, ANN003, C901, PLR0915
     """
     Return the released energy from a nuclear reaction.
 
@@ -170,10 +171,9 @@ def nuclear_reaction_energy(*args, **kwargs) -> u.Quantity[u.J]:  # noqa: C901, 
     >>> nuclear_reaction_energy(reactants=["n"], products=["p+", "e-"])
     <Quantity 1.25343e-13 J>
     """
+    # TODO: Allow for neutrinos, under the assumption that they have no mass.  # noqa: FIX002
 
-    # TODO: Allow for neutrinos, under the assumption that they have no mass.
-
-    # TODO: Add check for lepton number conservation; however, we might wish
+    # TODO: Add check for lepton number conservation; however, we might wish  # noqa: FIX002
     # to have violation of lepton number issuing a warning since these are
     # often omitted from nuclear reactions when calculating the energy since
     # the mass is tiny.
@@ -190,14 +190,13 @@ def nuclear_reaction_energy(*args, **kwargs) -> u.Quantity[u.J]:  # noqa: C901, 
         multiplier.  A string argument will be treated as a list
         containing that string as its sole item.
         """
-
         if isinstance(unformatted_particles_list, str):
             unformatted_particles_list = [unformatted_particles_list]
 
         if not isinstance(unformatted_particles_list, list | tuple):
             raise TypeError(
                 "The input to process_particles_list should be a "
-                "string, list, or tuple."
+                "string, list, or tuple.",
             )
 
         particles = []
@@ -218,14 +217,14 @@ def nuclear_reaction_energy(*args, **kwargs) -> u.Quantity[u.J]:  # noqa: C901, 
                     raise ParticleError(errmsg) from exc
 
                 if particle.element and not particle.isotope:
-                    raise ParticleError(errmsg)
+                    raise ParticleError(errmsg)  # noqa: TRY301
 
                 particles += [particle] * multiplier
 
             except ParticleError:
                 raise ParticleError(
                     f"{original_item} is not a valid reactant or "
-                    "product in a nuclear reaction."
+                    "product in a nuclear reaction.",
                 ) from None
 
         return particles
@@ -284,7 +283,7 @@ def nuclear_reaction_energy(*args, **kwargs) -> u.Quantity[u.J]:  # noqa: C901, 
         elif "->" not in reaction:
             raise ParticleError(
                 f"The reaction '{reaction}' is missing a '->'"
-                " or '-->' between the reactants and products."
+                " or '-->' between the reactants and products.",
             )
 
         try:
@@ -307,12 +306,12 @@ def nuclear_reaction_energy(*args, **kwargs) -> u.Quantity[u.J]:  # noqa: C901, 
 
     if total_baryon_number(reactants) != total_baryon_number(products):
         raise ParticleError(
-            f"The baryon number is not conserved for {reactants = } and {products = }."
+            f"The baryon number is not conserved for {reactants = } and {products = }.",
         )
 
     if total_charge(reactants) != total_charge(products):
         raise ParticleError(
-            f"Total charge is not conserved for {reactants = } and {products = }."
+            f"Total charge is not conserved for {reactants = } and {products = }.",
         )
 
     return add_mass_energy(reactants) - add_mass_energy(products)

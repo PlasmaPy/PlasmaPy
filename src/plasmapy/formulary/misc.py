@@ -18,7 +18,7 @@ from plasmapy.utils.decorators import validate_quantities
 __all__ += __aliases__
 
 
-def _grab_charge(ion: ParticleLike, z_mean=None):
+def _grab_charge(ion: ParticleLike, z_mean=None):  # noqa: ANN202
     """
     Merge two possible inputs for particle charge.
 

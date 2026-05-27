@@ -27,11 +27,14 @@ ionic_fraction_table = [
 
 
 @pytest.mark.parametrize(
-    ("ion", "ionic_fraction", "number_density"), ionic_fraction_table
+    ("ion", "ionic_fraction", "number_density"),
+    ionic_fraction_table,
 )
 def test_ionic_level_attributes(ion, ionic_fraction, number_density) -> None:
     instance = IonicLevel(
-        ion=ion, ionic_fraction=ionic_fraction, number_density=number_density
+        ion=ion,
+        ionic_fraction=ionic_fraction,
+        number_density=number_density,
     )
 
     # Prepare to check for the default values when they are not set
@@ -95,7 +98,6 @@ def test_ionization_state_ion_input_error() -> None:
     exception when an ion is the base particle and ionic fractions are
     specified
     """
-
     ion = "He 1+"
     unnecessary_ionic_fractions = [0.0, 0.0, 1.0]
 
@@ -169,9 +171,11 @@ def test_equal_to_within_tolerance(tolerance: float, output) -> None:
     """
     H = IonizationState(particle="H", ionic_fractions=[0.6, 0.4], tol=tolerance)
     H_acceptable_error = IonizationState(
-        particle="H", ionic_fractions=[0.6, 0.400_000_001], tol=1e-8
+        particle="H",
+        ionic_fractions=[0.6, 0.400_000_001],
+        tol=1e-8,
     )
-    assert (H == H_acceptable_error) == output
+    assert (H_acceptable_error == H) == output
 
 
 def test_equality_no_more_exception(test_ionization_state, He_ionization_state) -> None:
@@ -205,7 +209,7 @@ def test_iteration(test_ionization_state) -> None:
         errors.append(
             f"The resulting charge numbers are {charge_numbers}, "
             f"which are not equal to the expected charge numbers, "
-            f"which are {expected_charges}."
+            f"which are {expected_charges}.",
         )
 
     np.testing.assert_allclose(sum(test_ionization_state.ionic_fractions), 1)
@@ -216,7 +220,7 @@ def test_iteration(test_ionization_state) -> None:
         errors.append(
             f"The resulting ionic symbols are {ionic_symbols}, "
             f"which are not equal to the expected ionic symbols of "
-            f"{expected_symbols}."
+            f"{expected_symbols}.",
         )
 
     if errors:
@@ -249,9 +253,9 @@ def test_identifications(test_ionization_state) -> None:
     `IonizationState` instances match the expected values from the
     `Particle` instance.
     """
-
     Identifications = collections.namedtuple(
-        "Identifications", ["element", "isotope", "atomic_number"]
+        "Identifications",
+        ["element", "isotope", "atomic_number"],
     )
 
     expected_identifications = Identifications(
@@ -265,7 +269,9 @@ def test_identifications(test_ionization_state) -> None:
     expected_atomic_number = test_ionization_state._particle.atomic_number
 
     resulting_identifications = Identifications(
-        expected_element, expected_isotope, expected_atomic_number
+        expected_element,
+        expected_isotope,
+        expected_atomic_number,
     )
 
     assert resulting_identifications == expected_identifications, (
@@ -325,7 +331,7 @@ def test_getitem(test_ionization_state) -> None:
                 f"The following keys for {test_ionization_state} did not "
                 f"produce identical outputs as required: {keys}. "
                 f"The set containing string representations of"
-                f"the values is:\n\n{set_of_str_values}"
+                f"the values is:\n\n{set_of_str_values}",
             )
 
     if errors:
@@ -399,7 +405,6 @@ def test_IonizationState_base_particles_from_ion_input(ion) -> None:
     base particle being the corresponding isotope or ion and that the
     ionic fraction of the corresponding charge level is 100%.
     """
-
     ionization_state = IonizationState(ion)
     ion_particle = Particle(ion)
 
@@ -407,7 +412,7 @@ def test_IonizationState_base_particles_from_ion_input(ion) -> None:
     if expected_base_particle != ionization_state.base_particle:
         pytest.fail(
             f"The expected base particle was {expected_base_particle}, "
-            f"but the returned base particle was {ionization_state.base_particle}. "
+            f"but the returned base particle was {ionization_state.base_particle}. ",
         )
 
 
@@ -473,7 +478,7 @@ def test_IonizationState_ion_temperatures(instance) -> None:
 
 
 @pytest.mark.xfail(
-    reason="IonizationState currently does not store IonicLevels, but generates them on the fly!"
+    reason="IonizationState currently does not store IonicLevels, but generates them on the fly!",
 )
 def test_IonizationState_ion_temperature_persistence(instance) -> None:
     instance[0].T_i += 1 * u.K
@@ -572,7 +577,7 @@ class Test_IonizationStateNumberDensitiesSetter:
             self.instance = IonizationState(self.element)
         except Exception:  # noqa: BLE001
             pytest.fail(
-                "Unable to instantiate IonizationState with no ionic fractions."
+                "Unable to instantiate IonizationState with no ionic fractions.",
             )
 
     def test_setting_number_densities(self) -> None:
@@ -581,11 +586,12 @@ class Test_IonizationStateNumberDensitiesSetter:
         except Exception:  # noqa: BLE001
             pytest.fail(
                 f"Unable to set number densities of {self.element} to "
-                f"{self.valid_number_densities}."
+                f"{self.valid_number_densities}.",
             )
 
         assert u.quantity.allclose(
-            self.instance.number_densities, self.valid_number_densities
+            self.instance.number_densities,
+            self.valid_number_densities,
         ), (
             f"The number densities of {self.element} were set to "
             f"{self.instance.number_densities} instead of the expected "
@@ -594,7 +600,8 @@ class Test_IonizationStateNumberDensitiesSetter:
 
     def test_ionic_fractions(self) -> None:
         assert np.allclose(
-            self.instance.ionic_fractions, self.expected_ionic_fractions
+            self.instance.ionic_fractions,
+            self.expected_ionic_fractions,
         ), (
             "The IonizationState.ionic_fractions attribute was not set "
             "correctly after the number densities were set."
@@ -685,7 +692,7 @@ def test_weighted_rms_ion(base_particle, ionic_fractions, physical_property) -> 
     ions = ionic_levels(base_particle)
     physical_quantity = getattr(ions, physical_property)
     expected_rms_quantity = np.sqrt(
-        np.average(physical_quantity**2, weights=ionic_fractions)
+        np.average(physical_quantity**2, weights=ionic_fractions),
     )
     kwargs = {f"use_rms_{physical_property}": True}
     rms_ion = ionization_state.average_ion(**kwargs)
@@ -704,7 +711,7 @@ def test_exclude_neutrals_from_average_ion() -> None:
     expected_average_ion = ionization_state_without_neutrals.average_ion()
     ionization_state_with_neutrals = IonizationState(base_particle, [0.50, 0.1, 0.4])
     actual_average_ion = ionization_state_with_neutrals.average_ion(
-        include_neutrals=False
+        include_neutrals=False,
     )
     assert actual_average_ion == expected_average_ion
 

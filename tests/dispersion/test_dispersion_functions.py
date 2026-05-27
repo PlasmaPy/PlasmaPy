@@ -45,7 +45,6 @@ class TestPlasmaDispersionFunction:
     def test_plasma_dispersion_func(self, w, expected) -> None:
         r"""Test plasma_dispersion_func against tabulated results and
         known symmetry properties."""
-
         # Many of the tabulated results originally came from the book
         # entitled "The Plasma Dispersion Function: The Hilbert Transform
         # of the Gaussian" by B. D. Fried and S. D. Conte (1961).
@@ -62,7 +61,6 @@ class TestPlasmaDispersionFunction:
     @pytest.mark.filterwarnings("ignore::RuntimeWarning")
     def test_plasma_dispersion_func_symmetry(self, w) -> None:
         r"""Test plasma_dispersion_func against its symmetry properties"""
-
         # The two symmetry properties of the plasma dispersion function
         # are taken from the bottom of page 30 of "NRL Plasma Formulary"
         # by A.S. Richardson (2019)
@@ -92,7 +90,10 @@ class TestPlasmaDispersionFunction:
             ).conjugate() + 2j * np.sqrt(π) * np.exp(-(w.conjugate() ** 2))
 
             assert u.isclose(
-                Z_of_wconj, should_equal_Z_of_wconj, rtol=1e-13, equal_nan=True
+                Z_of_wconj,
+                should_equal_Z_of_wconj,
+                rtol=1e-13,
+                equal_nan=True,
             ), (
                 "The symmetry property of the plasma dispersion function that "
                 "Z(w*) = Z(w)* + 2j * sqrt(pi) * exp[-(w*)**2] for Im(w) > 0 "
@@ -106,7 +107,6 @@ class TestPlasmaDispersionFunction:
     def test_plasma_dispersion_func_power_series_expansion(self):
         """Test plasma_dispersion_func against a power series expansion of
         the plasma dispersion function."""
-
         w_array = np.array(
             [
                 [0.1356 + 0.114j, -0.204 - 0.0012j],
@@ -122,7 +122,7 @@ class TestPlasmaDispersionFunction:
         except Exception as exc:
             raise ValueError(
                 "plasma_dispersion_func is unable to accept an "
-                f"ndarray argument with values:\n{w_array}"
+                f"ndarray argument with values:\n{w_array}",
             ) from exc
 
         # The following power series expansion is given by equation (B.3)
@@ -153,7 +153,6 @@ class TestPlasmaDispersionFunction:
 
     def test_plasma_dispersion_func_roots(self) -> None:
         """Test roots of the plasma dispersion function."""
-
         # The first five roots of the plasma dispersion function are given
         # on page 402 of Swanson (2003), with some roundoff or truncation
         # error in the final decimal point.  These roots were found to
@@ -182,12 +181,11 @@ class TestPlasmaDispersionFunction:
     @pytest.mark.filterwarnings("ignore::RuntimeWarning")
     def test_plasma_dispersion_func_errors(self, w, expected_error) -> None:
         """Test errors that should be raised by plasma_dispersion_func."""
-
         with pytest.raises(expected_error, match=r".*plasma_dispersion_func.*"):
             plasma_dispersion_func(w)
             pytest.fail(
                 f"plasma_dispersion_func({w}) did not raise "
-                f"{expected_error.__name__} as expected."
+                f"{expected_error.__name__} as expected.",
             )
 
 
@@ -212,7 +210,6 @@ class TestPlasmaDispersionFunctionDeriv:
     @pytest.mark.parametrize(("w", "expected"), plasma_disp_deriv_table)
     def test_plasma_dispersion_func_deriv(self, w, expected) -> None:
         r"""Test plasma_dispersion_func_deriv against tabulated results"""
-
         # The tabulated results are taken from Fried & Conte (1961)
 
         Z_deriv = plasma_dispersion_func_deriv(w)
@@ -229,7 +226,6 @@ class TestPlasmaDispersionFunctionDeriv:
     @pytest.mark.filterwarnings("ignore::RuntimeWarning")
     def test_plasma_dispersion_func_deriv_characterization(self, w) -> None:
         r"""Test plasma_dispersion_func_deriv against an exact relationship."""
-
         # The exact analytical relationship comes from the bottom of
         # page 3 of Fried & Conte (1961).
 
@@ -253,10 +249,9 @@ class TestPlasmaDispersionFunctionDeriv:
     @pytest.mark.filterwarnings("ignore::RuntimeWarning")
     def test_plasma_dispersion_deriv_errors(self, w, expected_error) -> None:
         """Test errors that should be raised by plasma_dispersion_func_deriv."""
-
         with pytest.raises(expected_error, match=r".*plasma_dispersion_func_deriv.*"):
             plasma_dispersion_func_deriv(w)
             pytest.fail(
                 f"plasma_dispersion_func_deriv({w}) did not raise "
-                f"{expected_error.__name__} as expected."
+                f"{expected_error.__name__} as expected.",
             )

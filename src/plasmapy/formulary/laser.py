@@ -75,7 +75,6 @@ def electric_field_amplitude(
     >>> electric_field_amplitude(1e-3 * u.watt / u.m**2)  # Electric Field Amplitude
     <Quantity 0.8680211 V / m>
     """
-
     E = np.sqrt((2 * intensity) / (c * eps0))
     return E.to(u.V / u.m)
 
@@ -126,7 +125,6 @@ def intensity(
     >>> intensity(0.8680211 * u.V / u.m)
     <Quantity 0.001 W / m2>
     """
-
     return (1 / 2) * c * eps0 * electric_field_amplitude**2
 
 
@@ -171,7 +169,8 @@ def em_wavelength(angular_frequency: u.Quantity[u.rad / u.s]) -> u.Quantity[u.m]
     <Quantity 8e-07 m>
     """
     return (2 * np.pi * c / angular_frequency).to(
-        u.m, equivalencies=u.dimensionless_angles()
+        u.m,
+        equivalencies=u.dimensionless_angles(),
     )
 
 
@@ -214,7 +213,8 @@ def em_angular_frequency(wavelength: u.Quantity[u.m]) -> u.Quantity[u.rad / u.s]
     <Quantity 2.35456446e+15 rad / s>
     """
     return ((c / wavelength) * 2 * np.pi).to(
-        u.rad / u.s, equivalencies=u.dimensionless_angles()
+        u.rad / u.s,
+        equivalencies=u.dimensionless_angles(),
     )
 
 
@@ -278,7 +278,6 @@ def normalized_vector_potential(
     >>> normalized_vector_potential(1e18 * u.watt / u.cm**2, 1 * u.um)
     np.float64(0.8549297...)
     """
-
     a0 = (e * wavelength * np.sqrt(intensity / (2 * eps0 * c**5))) / (m_e * np.pi)
     return a0.to(u.dimensionless_unscaled).value
 
@@ -331,7 +330,6 @@ def Gaussian_power(
     >>> Gaussian_power(1e18 * u.watt / u.cm**2, 1 * u.um)  # Total beam power
     <Quantity 1.57079633e+10 W>
     """
-
     return (1 / 2) * intensity * np.pi * beam_waist_radius**2
 
 
@@ -480,5 +478,4 @@ def Gaussian_Rayleigh_length(
     >>> Gaussian_Rayleigh_length(800 * u.nm, 1 * u.um)
     <Quantity 3.927e-06 m>
     """
-
     return (np.pi * beam_waist_radius**2) / wavelength

@@ -203,7 +203,10 @@ tests_for_exceptions = {
     ids=list(tests_for_exceptions.keys()),
 )
 def test_named_tests_for_exceptions(
-    tested_object, args, kwargs, expected_exception
+    tested_object,
+    args,
+    kwargs,
+    expected_exception,
 ) -> None:
     """
     Test that appropriate exceptions are raised for inappropriate inputs
@@ -1013,13 +1016,15 @@ atomic_ParticleError_badargs = [
 particle_error_tests = [
     (function, [bad_argument], {}, pytest.raises(InvalidParticleError))
     for function, bad_argument in itertools.product(
-        atomic_ParticleErrors_funcs_table, atomic_ParticleError_badargs
+        atomic_ParticleErrors_funcs_table,
+        atomic_ParticleError_badargs,
     )
 ]
 type_error_tests = [
     (function, [bad_argument], {}, pytest.raises(TypeError))
     for function, bad_argument in itertools.product(
-        atomic_TypeError_funcs_table, atomic_TypeError_badargs
+        atomic_TypeError_funcs_table,
+        atomic_TypeError_badargs,
     )
 ]
 
@@ -1041,6 +1046,8 @@ def test_unnamed_tests_exceptions(tested_object, args, kwargs, expected) -> None
 
     if hasattr(expected, "expected_warning"):
         for expected_warning, recorded_warning in zip(
-            exc_info.expected_warning, exc_info.list, strict=False
+            exc_info.expected_warning,
+            exc_info.list,
+            strict=False,
         ):
             assert expected_warning == recorded_warning.category

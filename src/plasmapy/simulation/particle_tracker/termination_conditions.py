@@ -92,13 +92,11 @@ class TimeElapsedTerminationCondition(AbstractTerminationCondition):
     @property
     def units_string(self) -> str:
         """The units for the time elapsed condition have the units of seconds."""
-
         return "seconds"
 
     @property
     def is_finished(self) -> bool:
         """Conclude the simulation if all particles have been tracked over the specified termination time."""
-
         return bool(float(self.tracker.time) >= self.termination_time)
 
     @property
@@ -185,7 +183,6 @@ class AllParticlesOffGridTerminationCondition(AbstractTerminationCondition):
     @property
     def units_string(self) -> str:
         """The termination condition tracks particles."""
-
         return "Particles"
 
     @property
@@ -193,7 +190,6 @@ class AllParticlesOffGridTerminationCondition(AbstractTerminationCondition):
         r"""
         Check to see if the proportion of particles that have entered and exited the grid meet thresholds.
         """
-
         # Of the particles that have entered the grid, how many are currently
         # on the grid?
         # if/else avoids dividing by zero

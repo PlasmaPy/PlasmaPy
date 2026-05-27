@@ -17,7 +17,8 @@ from plasmapy.diagnostics.charged_particle_radiography.detector_stacks import (
 from plasmapy.utils.data.downloader import _API_CONNECTION_ESTABLISHED, Downloader
 
 check_database_connection = pytest.mark.skipif(
-    not _API_CONNECTION_ESTABLISHED, reason="failed to connect to data repository"
+    not _API_CONNECTION_ESTABLISHED,
+    reason="failed to connect to data repository",
 )
 
 
@@ -51,7 +52,11 @@ def hdv2_stack(downloader):
     HDV2 = [
         Layer(12 * u.um, eaxis, tissue_equivalent, name="2-HDV2-active"),
         Layer(
-            97 * u.um, eaxis, tissue_equivalent, name="2-HDV2-substrate", active=False
+            97 * u.um,
+            eaxis,
+            tissue_equivalent,
+            name="2-HDV2-substrate",
+            active=False,
         ),
     ]
 
@@ -143,7 +148,10 @@ def test_film_stack_energy_bands_active(hdv2_stack) -> None:
 def test_film_stack_energy_bands_inum_active(hdv2_stack) -> None:
     # Test including inum_active layers
     ebands = hdv2_stack.energy_bands(
-        [0.1, 60] * u.MeV, 0.1 * u.MeV, dx=1 * u.um, return_only_active=False
+        [0.1, 60] * u.MeV,
+        0.1 * u.MeV,
+        dx=1 * u.um,
+        return_only_active=False,
     )
     # Expected first 5 energy bands
     expected = np.array([[0.1, 4.2], [3.5, 3.8], [3.9, 5.1], [4.6, 4.9], [4.9, 6]])

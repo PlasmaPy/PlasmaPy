@@ -23,7 +23,6 @@ class TestCriticalDensity:
 
     def test_units(self, n_c) -> None:
         """Test the return units"""
-
         assert n_c.unit.is_equivalent(u.m**-3)
 
     def test_value(self, n_c) -> None:
@@ -34,7 +33,6 @@ class TestCriticalDensity:
         defined as the value at which the electron plasma frequency equals
         the frequency of the radiation.
         """
-
         assert np.isclose(n_c.value, self.n_i.value)
 
 
