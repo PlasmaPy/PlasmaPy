@@ -140,7 +140,8 @@ class TestMHDWave:
         for mode in range(3):
             waves[mode].phase_velocity(k, theta)
             group_velocity_k, group_velocity_theta = waves[mode].group_velocity(
-                k, theta
+                k,
+                theta,
             )
 
             phase_velocity = waves[mode].phase_velocity(k, theta)

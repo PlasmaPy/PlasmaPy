@@ -28,7 +28,7 @@ c_si_unitless = c.value
     T_i={"can_be_negative": False, "equivalencies": u.temperature_energy()},
 )
 @particle_input
-def hollweg(  # noqa: C901, PLR0912, PLR0915
+def hollweg(  # noqa: ANN201, C901, PLR0912, PLR0915
     B: u.Quantity[u.T],
     ion: ParticleLike,
     k: u.Quantity[u.rad / u.m],
@@ -217,14 +217,13 @@ def hollweg(  # noqa: C901, PLR0912, PLR0915
      'alfven_mode': <Quantity [0.00045661+0.j, 0.00456614+0.j] rad / s>,
      'acoustic_mode': <Quantity [4.35071546e-05+0.j, 4.35070526e-04+0.j] rad / s>}
     """
-
     # validate arguments
     for arg_name in ("B", "n_i", "T_e", "T_i"):
         val = locals()[arg_name].squeeze()
         if val.shape != ():
             raise ValueError(
                 f"Argument '{arg_name}' must be single valued and not "
-                f"an array of shape {val.shape}."
+                f"an array of shape {val.shape}.",
             )
         locals()[arg_name] = val
 
@@ -233,7 +232,7 @@ def hollweg(  # noqa: C901, PLR0912, PLR0915
         if not isinstance(locals()[arg_name], Real):
             raise TypeError(
                 f"Expected int or float for argument '{arg_name}', but "
-                f"got {type(locals()[arg_name])}."
+                f"got {type(locals()[arg_name])}.",
             )
 
     # validate argument k
@@ -241,7 +240,7 @@ def hollweg(  # noqa: C901, PLR0912, PLR0915
     if k.ndim not in {0, 1}:
         raise ValueError(
             f"Argument 'k' needs to be single valued or a 1D array "
-            f"astropy Quantity, got array of shape {k.shape}."
+            f"astropy Quantity, got array of shape {k.shape}.",
         )
     if np.any(k <= 0):
         raise ValueError("Argument 'k' cannot be negative or have negative values.")
@@ -251,7 +250,7 @@ def hollweg(  # noqa: C901, PLR0912, PLR0915
     if theta.ndim not in {0, 1}:
         raise ValueError(
             f"Argument 'theta' needs to be a single valued or 1D array astropy "
-            f"Quantity, got array of shape {theta.shape}."
+            f"Quantity, got array of shape {theta.shape}.",
         )
 
     # Single k value case
@@ -316,7 +315,7 @@ def hollweg(  # noqa: C901, PLR0912, PLR0915
             f"However, c_s / V_A = {cs_vA:.2f}, which may affect the validity "
             "of the solution."
         )
-        warnings.warn(errmsg, PhysicsWarning)
+        warnings.warn(errmsg, PhysicsWarning, stacklevel=2)
 
     # Warn about theta not nearly perpendicular
     theta_diff_max = np.amax(np.abs(thetav - np.pi / 2))
@@ -328,7 +327,7 @@ def hollweg(  # noqa: C901, PLR0912, PLR0915
             f"However, a |θ - π/2| value of {theta_diff_max:.2f} was "
             f"calculated, which may affect the validity of the solution."
         )
-        warnings.warn(errmsg, PhysicsWarning)
+        warnings.warn(errmsg, PhysicsWarning, stacklevel=2)
 
     # dispersion relation is only valid in the regime ω ≪ ω_ci
     w_max = np.max(roots)
@@ -340,7 +339,7 @@ def hollweg(  # noqa: C901, PLR0912, PLR0915
             f"the solution is {w_wci_max:.2f}, which may affect the "
             "validity of the solution."
         )
-        warnings.warn(errmsg, PhysicsWarning)
+        warnings.warn(errmsg, PhysicsWarning, stacklevel=2)
 
     return {
         "fast_mode": roots[2, :].squeeze() * u.rad / u.s,

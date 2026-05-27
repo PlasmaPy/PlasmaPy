@@ -26,7 +26,9 @@ class Test_impact_parameter_perp:
         Test for known value.
         """
         methodVal = lengths.impact_parameter_perp(
-            self.T, self.particles, V=np.nan * u.m / u.s
+            self.T,
+            self.particles,
+            V=np.nan * u.m / u.s,
         )
         testTrue = np.isclose(self.True1, methodVal.si.value, rtol=1e-1, atol=0.0)
         errStr = (
@@ -43,7 +45,9 @@ class Test_impact_parameter_perp:
         """
         fail1 = self.True1 + 1e-15
         methodVal = lengths.impact_parameter_perp(
-            self.T, self.particles, V=np.nan * u.m / u.s
+            self.T,
+            self.particles,
+            V=np.nan * u.m / u.s,
         )
         testTrue = not np.isclose(methodVal.si.value, fail1, rtol=1e-16, atol=0.0)
         errStr = (
@@ -57,7 +61,10 @@ class Test_impact_parameter_perp:
     def test_handle_nparrays(self, insert_some_nans, insert_all_nans) -> None:
         """Test for ability to handle numpy array quantities"""
         assert_can_handle_nparray(
-            lengths.impact_parameter_perp, insert_some_nans, insert_all_nans, {}
+            lengths.impact_parameter_perp,
+            insert_some_nans,
+            insert_all_nans,
+            {},
         )
 
     assert np.isclose(
@@ -154,7 +161,10 @@ class Test_impact_parameter:
     def test_handle_nparrays(self, insert_some_nans, insert_all_nans, kwargs) -> None:
         """Test for ability to handle numpy array quantities"""
         assert_can_handle_nparray(
-            lengths.impact_parameter, insert_some_nans, insert_all_nans, kwargs
+            lengths.impact_parameter,
+            insert_some_nans,
+            insert_all_nans,
+            kwargs,
         )
 
     @pytest.mark.parametrize(
@@ -178,7 +188,6 @@ class Test_impact_parameter:
         This is necessary in addition to test_handle_nparrays to ensure
         that the output arrays are extended correctly.
         """
-
         output_shape = T_shape if len(T_shape) >= len(n_e_shape) else n_e_shape
 
         n_e = self.n_e * np.ones(n_e_shape)
@@ -253,5 +262,8 @@ class Test_mean_free_path:
     def test_handle_nparrays(self, insert_some_nans, insert_all_nans) -> None:
         """Test for ability to handle numpy array quantities"""
         assert_can_handle_nparray(
-            lengths.mean_free_path, insert_some_nans, insert_all_nans, {}
+            lengths.mean_free_path,
+            insert_some_nans,
+            insert_all_nans,
+            {},
         )

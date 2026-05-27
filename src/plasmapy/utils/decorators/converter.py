@@ -88,7 +88,7 @@ def angular_freq_to_hz(fn):
     if "to_hz" in sig.parameters:
         raise ValueError(
             f"Wrapped function '{fn.__name__}' can not use keyword 'to_hz'."
-            f" Keyword reserved for decorator functionality."
+            f" Keyword reserved for decorator functionality.",
         )
 
     # make new signature for fn
@@ -102,15 +102,19 @@ def angular_freq_to_hz(fn):
 
     new_params.append(
         inspect.Parameter(
-            "to_hz", inspect.Parameter.KEYWORD_ONLY, default=False, annotation=bool
-        )
+            "to_hz",
+            inspect.Parameter.KEYWORD_ONLY,
+            default=False,
+            annotation=bool,
+        ),
     )
 
     if var_keyword_param:
         new_params.append(var_keyword_param)
 
     new_sig = inspect.Signature(
-        parameters=new_params, return_annotation=sig.return_annotation
+        parameters=new_params,
+        return_annotation=sig.return_annotation,
     )
     fn.__signature__ = new_sig
 

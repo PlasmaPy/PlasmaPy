@@ -282,7 +282,7 @@ class TestHollweg:
         if not np.isclose(beta, desired_beta, atol=2e-4):
             pytest.fail(
                 f"The Holweg 1999 paper requires a 'beta' value of {desired_beta:0.5f} "
-                f"and the test parameters yielded {beta:.6f}."
+                f"and the test parameters yielded {beta:.6f}.",
             )
 
         kz = (np.cos(kwargs["theta"]) * kwargs["k"]).value

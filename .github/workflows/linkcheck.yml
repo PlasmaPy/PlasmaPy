@@ -34,7 +34,7 @@ jobs:
         persist-credentials: false
 
     - name: Install graphviz and pandoc for doc builds
-      uses: mamba-org/setup-micromamba@v2
+      uses: mamba-org/setup-micromamba@v3
       with:
         create-args: graphviz pandoc -c conda-forge
         init-shell: bash powershell
@@ -43,7 +43,7 @@ jobs:
         post-cleanup: all
 
     - name: Install uv
-      uses: astral-sh/setup-uv@v7
+      uses: astral-sh/setup-uv@v8.1.0
       with:
         python-version: 3.14
 
