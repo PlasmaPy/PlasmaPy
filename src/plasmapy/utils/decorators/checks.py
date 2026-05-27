@@ -740,7 +740,7 @@ class CheckUnits(CheckBase):
                 else:
                     _equivs = self._normalize_equivalencies(_equivs)
 
-            out_checks[param.name]["equivalencies"] = _equivs
+            out_checks[param.name]["equivalencies"] = _equivs  # ty:ignore[invalid-assignment]
 
             # -- Determine if equivalent units pass --
             try:
@@ -751,7 +751,7 @@ class CheckUnits(CheckBase):
             except (AttributeError, TypeError):
                 peu = self.__check_defaults["pass_equivalent_units"]
 
-            out_checks[param.name]["pass_equivalent_units"] = peu
+            out_checks[param.name]["pass_equivalent_units"] = peu  # ty:ignore[invalid-assignment]
 
         # Does `self.checks` indicate arguments not used by f?
         if missing_params := list(set(self.checks.keys()) - set(out_checks.keys())):

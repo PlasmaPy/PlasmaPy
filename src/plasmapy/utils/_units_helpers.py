@@ -95,4 +95,4 @@ def _get_physical_type_dict(
                 raise ValueError(f"Duplicate physical type: {physical_type}")
             physical_types[physical_type] = obj
 
-    return physical_types
+    return physical_types  # ty:ignore[invalid-return-type]
