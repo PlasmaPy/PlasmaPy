@@ -1,4 +1,9 @@
-name: Close stale issues and PRs
+# Close pull requests that have been dormant for a year and issues that
+# have been dormant for five years.
+#
+# Documentation: https://github.com/actions/stale
+
+name: Close dormant issues and PRs
 
 on:
   schedule:
@@ -6,25 +11,23 @@ on:
   workflow_dispatch:
 
 permissions:
+  actions: write
   issues: write
   pull-requests: write
 
 jobs:
-
   stale:
     runs-on: ubuntu-latest
-
     steps:
-
-    - uses: actions/stale@v10
+    - uses: actions/stale@v10.2.0
       with:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
         stale-issue-message: This issue will be closed in 90 days due to five years of inactivity unless the stale label or comment is removed.
-        close-issue-message: This issue was closed because it has had no activity for five years.
+        close-issue-message: This issue was closed because it has had no activity for five years, but may be re-opened.
         stale-pr-message: This pull request will be closed in 60 days due to a year of inactivity unless the stale label or comment is removed.
-        close-pr-message: This pull request was closed because it has had no activity for the past year.
+        close-pr-message: This pull request was closed because it has had no activity for the past year, but may be re-opened.
         days-before-issue-stale: 1826
         days-before-issue-close: 90
         days-before-pr-stale: 366
         days-before-pr-close: 60
-        exempt-issue-labels: 'bug,bug: needs more info,epic,priority: high,priority: very high,revisit in 2024,revisit in 2025,revisit in 2026,revisit in 2027'
+        exempt-issue-labels: 'bug,bug: needs more info,epic,priority: high,priority: very high,revisit in 2028,revisit in 2029,revisit in 2030,revisit in 2031,revisit in 2032,revisit in 2033,revisit in 2034,revisit in 2035,revisit in 2036'

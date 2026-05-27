@@ -20,7 +20,7 @@ def deprecated(*args, warning_type=PlasmaPyDeprecationWarning, **kwargs):
 # override deprecated's signature
 asig = inspect.signature(astropy_deprecated)
 new_default = asig.parameters["warning_type"].replace(
-    default=PlasmaPyDeprecationWarning
+    default=PlasmaPyDeprecationWarning,
 )
 new_sig = dict(asig.parameters)
 new_sig["warning_type"] = new_default

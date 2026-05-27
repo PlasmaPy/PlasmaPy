@@ -62,7 +62,7 @@ class Layer:
         energy_axis: u.Quantity[u.J],
         stopping_power: u.Quantity[u.J / u.m, u.J * u.m**2 / u.kg],
         mass_density: u.Quantity[u.kg / u.m**3] | None = None,
-        active: bool = True,
+        active: bool = True,  # noqa: FBT001, FBT002
         name: str = "",
     ) -> None:
         self.thickness = thickness
@@ -80,7 +80,7 @@ class Layer:
                 raise ValueError(
                     "mass_density keyword is required if "
                     "stopping power is not provided in units "
-                    "convertible to J/m"
+                    "convertible to J/m",
                 )
 
             # Ensure the mass density has the right units
@@ -88,14 +88,14 @@ class Layer:
                 mass_density = mass_density.to(u.kg / u.m**3)
             except u.UnitConversionError as e:
                 raise ValueError(
-                    "mass_density keyword must have units convertible to kg/m^3."
+                    "mass_density keyword must have units convertible to kg/m^3.",
                 ) from e
 
             self.linear_stopping_power = (stopping_power * mass_density).to(u.J / u.m)
 
         else:
             raise ValueError(
-                f"Units of stopping_power keyword not recognized:{stopping_power.unit}"
+                f"Units of stopping_power keyword not recognized:{stopping_power.unit}",
             )
 
 
@@ -119,7 +119,6 @@ class Stack:
         r"""
         The number of layers in the stack.
         """
-
         return len(self._layers)
 
     @property
@@ -127,7 +126,6 @@ class Stack:
         r"""
         The number of layers in the stack marked ``active``.
         """
-
         return len([layer for layer in self._layers if layer.active])
 
     @property
@@ -138,8 +136,11 @@ class Stack:
         thickness = np.array([layer.thickness.to(u.m).value for layer in self._layers])
         return np.sum(thickness) * u.m
 
-    def deposition_curves(
-        self, energies: u.Quantity[u.J], dx=1 * u.um, return_only_active: bool = True
+    def deposition_curves(  # noqa: ANN201
+        self,
+        energies: u.Quantity[u.J],
+        dx=1 * u.um,
+        return_only_active: bool = True,  # noqa: FBT001, FBT002
     ):
         """
         Calculate the deposition of an ensemble of particles over a range of
@@ -170,7 +171,6 @@ class Stack:
             along the first dimension (all of the layers) for each population
             is unity.
         """
-
         energies = energies.to(u.J).value
 
         deposited_energy = np.zeros([len(self._layers), energies.size])
@@ -218,12 +218,12 @@ class Stack:
 
         return deposited_energy
 
-    def energy_bands(
+    def energy_bands(  # noqa: ANN201
         self,
         energy_range: u.Quantity[u.J],
         dE: u.Quantity[u.J],
         dx=1e-6 * u.m,  # noqa: ARG002
-        return_only_active: bool = True,
+        return_only_active: bool = True,  # noqa: FBT001, FBT002
     ):
         """
         Calculate the energy bands in each of the active layers of a film
@@ -255,17 +255,17 @@ class Stack:
             The full-width-half-max energy range of the Bragg peak in each
             active layer of the film stack, in J.
         """
-
         energies = (
             np.arange(
                 *energy_range.to(u.J).value,
                 dE.to(u.J).value,
-            )
+            )  # ty:ignore[no-matching-overload]
             * u.J
         )
 
         deposited = self.deposition_curves(
-            energies, return_only_active=return_only_active
+            energies,
+            return_only_active=return_only_active,
         )
 
         energy_bands = np.zeros([deposited.shape[0], 2]) * u.J

@@ -33,7 +33,6 @@ def create_alias_dicts(particles: dict) -> (dict[str, str], dict[str, str]):
     are the corresponding standardized symbol for the particle or
     antiparticle.
     """
-
     case_sensitive_aliases = {}
     case_insensitive_aliases = {}
 
@@ -107,7 +106,7 @@ def create_alias_dicts(particles: dict) -> (dict[str, str], dict[str, str]):
 
 
 case_sensitive_aliases, case_insensitive_aliases = create_alias_dicts(
-    _special_particles.data_about_special_particles
+    _special_particles.data_about_special_particles,
 )
 
 
@@ -124,10 +123,10 @@ def dealias_particle_aliases(alias: str | int) -> str:
     elif isinstance(alias, str) and alias.lower() in case_insensitive_aliases:
         return case_insensitive_aliases[alias.lower()]
 
-    return alias
+    return alias  # ty:ignore[invalid-return-type]
 
 
-def invalid_particle_errmsg(
+def invalid_particle_errmsg(  # noqa: ANN202
     argument,
     mass_numb: int | None = None,
     Z: int | None = None,
@@ -149,7 +148,7 @@ def invalid_particle_errmsg(
     return errmsg
 
 
-def extract_charge(arg: str):  # noqa: C901
+def extract_charge(arg: str):  # noqa: ANN202, C901
     """
     Receive a `str` representing an element, isotope, or ion.
     Return a `tuple` containing a `str` that should represent an
@@ -158,7 +157,6 @@ def extract_charge(arg: str):  # noqa: C901
     an `~plasmapy.particles.exceptions.InvalidParticleError` if charge information
     is inputted incorrectly.
     """
-
     invalid_charge_errmsg = (
         f"Invalid charge information in the particle string '{arg}'."
     )
@@ -181,7 +179,7 @@ def extract_charge(arg: str):  # noqa: C901
         raise InvalidParticleError(invalid_charge_errmsg) from None
     elif charge_info is not None:  # Cases like 'H 1-' and 'Fe-56 1+'
         sign_indicator_only_on_one_end = charge_info.endswith(
-            ("-", "+")
+            ("-", "+"),
         ) ^ charge_info.startswith(("-", "+"))
 
         just_one_sign_indicator = (
@@ -223,7 +221,7 @@ def extract_charge(arg: str):  # noqa: C901
     return isotope_info, Z_from_arg
 
 
-def parse_and_check_atomic_input(  # noqa: C901, PLR0912, PLR0915
+def parse_and_check_atomic_input(  # noqa: ANN202, C901, PLR0912, PLR0915
     argument: str | int,
     mass_numb: int | None = None,
     Z: int | None = None,
@@ -272,7 +270,7 @@ def parse_and_check_atomic_input(  # noqa: C901, PLR0912, PLR0915
         correct type.
     """
 
-    def atomic_number_to_symbol(atomic_numb: int):
+    def atomic_number_to_symbol(atomic_numb: int):  # noqa: ANN202
         """
         Return the atomic symbol associated with an integer representing
         an atomic number, or raises an
@@ -284,7 +282,7 @@ def parse_and_check_atomic_input(  # noqa: C901, PLR0912, PLR0915
         else:
             raise InvalidParticleError(f"{atomic_numb} is not a valid atomic number.")
 
-    def extract_mass_number(isotope_info: str):
+    def extract_mass_number(isotope_info: str):  # noqa: ANN202
         """
         Receives a string representing an element or isotope. Return a
         tuple containing a string that should represent an element, and
@@ -293,7 +291,6 @@ def parse_and_check_atomic_input(  # noqa: C901, PLR0912, PLR0915
         `~plasmapy.particles.exceptions.InvalidParticleError` if the
         mass number information is inputted incorrectly.
         """
-
         if isotope_info == "D":
             element_info, mass_numb = "H", 2
         elif isotope_info == "T":
@@ -311,7 +308,7 @@ def parse_and_check_atomic_input(  # noqa: C901, PLR0912, PLR0915
                 mass_numb = int(mass_numb_str)
             except ValueError:
                 raise InvalidParticleError(
-                    f"Invalid mass number in isotope string '{isotope_info}'."
+                    f"Invalid mass number in isotope string '{isotope_info}'.",
                 ) from None
 
         return element_info, mass_numb
@@ -327,9 +324,9 @@ def parse_and_check_atomic_input(  # noqa: C901, PLR0912, PLR0915
             element = element_info
         else:
             raise InvalidParticleError(
-                f"The string '{element_info}' does not correspond to a valid element."
+                f"The string '{element_info}' does not correspond to a valid element.",
             )
-        return element
+        return element  # ty:ignore[invalid-return-type]
 
     def reconstruct_isotope_symbol(element: str, mass_numb: int) -> str:
         """
@@ -339,7 +336,6 @@ def parse_and_check_atomic_input(  # noqa: C901, PLR0912, PLR0915
         `~plasmapy.particles.exceptions.InvalidParticleError` for isotopes that have
         not yet been discovered.
         """
-
         if mass_numb is not None:
             isotope = f"{element}-{mass_numb}"
 
@@ -350,7 +346,7 @@ def parse_and_check_atomic_input(  # noqa: C901, PLR0912, PLR0915
 
             if isotope not in _isotopes.data_about_isotopes:
                 raise InvalidParticleError(
-                    f"The string '{isotope}' does not correspond to a valid isotope."
+                    f"The string '{isotope}' does not correspond to a valid isotope.",
                 )
 
         else:
@@ -358,8 +354,10 @@ def parse_and_check_atomic_input(  # noqa: C901, PLR0912, PLR0915
 
         return isotope
 
-    def reconstruct_ion_symbol(
-        element: str, isotope: int | None = None, Z: int | None = None
+    def reconstruct_ion_symbol(  # noqa: ANN202
+        element: str,
+        isotope: int | None = None,
+        Z: int | None = None,
     ):
         """
         Receive a `str` representing an atomic symbol and/or a
@@ -367,7 +365,6 @@ def parse_and_check_atomic_input(  # noqa: C901, PLR0912, PLR0915
         charge number.  Return a `str` representing the ion symbol,
         or `None` if no charge information is available.
         """
-
         if Z is not None:
             sign = "-" if Z < 0 else "+"
             base = element if isotope is None else isotope
@@ -392,7 +389,7 @@ def parse_and_check_atomic_input(  # noqa: C901, PLR0912, PLR0915
         if (mass_numb is not None) or (Z is not None):
             raise InvalidParticleError(
                 f"The keywords mass_numb and Z should not be specified "
-                f"for particle '{argument}', which is a special particle."
+                f"for particle '{argument}', which is a special particle.",
             )
         else:
             raise InvalidElementError(f"{argument} is not a valid element.")
@@ -401,7 +398,7 @@ def parse_and_check_atomic_input(  # noqa: C901, PLR0912, PLR0915
         arg = int(arg)
 
     if isinstance(arg, Integral):
-        element = atomic_number_to_symbol(arg)
+        element = atomic_number_to_symbol(arg)  # ty:ignore[invalid-argument-type]
         Z_from_arg = None
         mass_numb_from_arg = None
     elif isinstance(arg, str):
@@ -414,39 +411,41 @@ def parse_and_check_atomic_input(  # noqa: C901, PLR0912, PLR0915
             raise InvalidParticleError(
                 "The mass number extracted from the particle string "
                 f"'{argument}' is inconsistent with the keyword mass_numb = "
-                f"{mass_numb}."
+                f"{mass_numb}.",
             )
         else:
             warnings.warn(
                 "Redundant mass number information for particle "
                 f"'{argument}' with mass_numb = {mass_numb}.",
                 ParticleWarning,
+                stacklevel=2,
             )
 
     if mass_numb_from_arg is not None:
         mass_numb = mass_numb_from_arg
 
     if Z is not None and Z_from_arg is not None:
-        if Z != Z_from_arg:
+        if Z_from_arg != Z:
             raise InvalidParticleError(
                 "The charge number extracted from the particle string "
-                f"'{argument}' is inconsistent with the keyword Z = {Z}."
+                f"'{argument}' is inconsistent with the keyword Z = {Z}.",
             )
         else:
             warnings.warn(
                 f"Redundant charge information for particle '{argument}' with Z = {Z}.",
                 ParticleWarning,
+                stacklevel=2,
             )
 
     if Z_from_arg is not None:
         Z = Z_from_arg
 
     if isinstance(Z, Integral):
-        if Z > _elements.data_about_elements[element]["atomic number"]:
+        if _elements.data_about_elements[element]["atomic number"] < Z:  # ty:ignore[invalid-argument-type, not-subscriptable]
             raise InvalidParticleError(
                 f"The charge number Z = {Z} cannot exceed the atomic number "
                 f"of {element}, which is "
-                f"{_elements.data_about_elements[element]['atomic number']}."
+                f"{_elements.data_about_elements[element]['atomic number']}.",  # ty:ignore[invalid-argument-type, not-subscriptable]
             )
         elif Z <= -3:
             warnings.warn(
@@ -454,10 +453,11 @@ def parse_and_check_atomic_input(  # noqa: C901, PLR0912, PLR0915
                 f"of Z = {Z}, which is unlikely to occur in "
                 f"nature.",
                 ParticleWarning,
+                stacklevel=2,
             )
 
-    isotope = reconstruct_isotope_symbol(element, mass_numb)
-    ion = reconstruct_ion_symbol(element, isotope, Z)
+    isotope = reconstruct_isotope_symbol(element, mass_numb)  # ty:ignore[invalid-argument-type]
+    ion = reconstruct_ion_symbol(element, isotope, Z)  # ty:ignore[invalid-argument-type]
 
     if ion:
         symbol = ion
@@ -476,7 +476,7 @@ def parse_and_check_atomic_input(  # noqa: C901, PLR0912, PLR0915
     }
 
 
-def parse_and_check_molecule_input(argument: str, Z: int | None = None):
+def parse_and_check_molecule_input(argument: str, Z: int | None = None):  # noqa: ANN202
     """
     Separate the constitutive elements and charge of a molecule symbol.
 
@@ -515,7 +515,7 @@ def parse_and_check_molecule_input(argument: str, Z: int | None = None):
     molecule_info, z_from_arg = extract_charge(argument)
     if not re.fullmatch(r"(?:[A-Z][a-z]?\d*)+", molecule_info):
         raise InvalidParticleError(
-            f"{molecule_info} is not recognized as a molecule symbol."
+            f"{molecule_info} is not recognized as a molecule symbol.",
         )
 
     elements_dict = {}
@@ -527,15 +527,16 @@ def parse_and_check_molecule_input(argument: str, Z: int | None = None):
             elements_dict[element] = int(amount)
 
     if Z is not None and z_from_arg is not None:
-        if Z != z_from_arg:
+        if z_from_arg != Z:
             raise InvalidParticleError(
                 "The charge number extracted from the particle string "
-                f"{argument!r} is inconsistent with the keyword Z = {Z}."
+                f"{argument!r} is inconsistent with the keyword Z = {Z}.",
             )
         else:
             warnings.warn(
                 f"Redundant charge information for particle '{argument}' with Z = {Z}.",
                 ParticleWarning,
+                stacklevel=2,
             )
 
     if z_from_arg is not None:

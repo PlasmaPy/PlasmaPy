@@ -1,2 +1,0 @@
-Began using ``nox-uv`` in :file:`noxfile.py` to simplify installation of
-developer dependency groups.

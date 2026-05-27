@@ -248,12 +248,11 @@ def gyroradius(
     >>> gyroradius(B=10 * u.uG, particle="p+", lorentzfactor=3e6).to("pc")
     <Quantity 0.30428378 pc>
     """
-
     if T is None:
         T = np.nan * u.K
 
     # Determine output shape and broadcast inputs accordingly
-    target_shape = np.broadcast(T, Vperp, lorentzfactor, particle).shape  # type: ignore[arg-type]
+    target_shape = np.broadcast(T, Vperp, lorentzfactor, particle).shape  # ty:ignore[invalid-argument-type]
     lorentzfactor_in = lorentzfactor
     lorentzfactor = np.array(np.broadcast_to(lorentzfactor, target_shape))
     Vperp = np.array(np.broadcast_to(Vperp, target_shape, subok=True), subok=True)
@@ -270,21 +269,22 @@ def gyroradius(
     # Check if V and T are both given at the same time at any position
     if np.any(isfinite_Vperp & isfinite_T):
         raise ValueError(
-            "Must give Vperp or T, but not both, as arguments to gyroradius"
+            "Must give Vperp or T, but not both, as arguments to gyroradius",
         )
 
     # Check if V or T and lorentzfactor are both given at the same time at any position
     if np.any(isfinite_lorentzfactor & (isfinite_Vperp | isfinite_T)):
         warnings.warn(
             "lorentzfactor is given along with Vperp or T, will lead "
-            "to inaccurate predictions unless they correspond"
+            "to inaccurate predictions unless they correspond",
+            stacklevel=2,
         )
 
     # Check if V and T are both missing at any position but lorentzfactor is not scalar
     if np.any(~isfinite_Vperp & ~isfinite_T) and not np.isscalar(lorentzfactor_in):
         raise ValueError(
             "Inferring velocity(s) from more than one Lorentz "
-            "factor is not currently supported"
+            "factor is not currently supported",
         )
 
     # In the positions where Vperp is missing but T is given, calculate the thermal speed
@@ -295,14 +295,16 @@ def gyroradius(
     # In the positions where Vperp is still missing, calculate Vperp from lorentzfactor
     if np.any(~isfinite_Vperp):
         Vperp[~isfinite_Vperp] = RelativisticBody(
-            particle, lorentz_factor=lorentzfactor_in
+            particle,
+            lorentz_factor=lorentzfactor_in,
         ).velocity
 
     # Calculate the final lorentzfactor
     if relativistic:
         # Fill in missing entries of lorentzfactor by calculating it using Vperp
         lorentzfactor[~isfinite_lorentzfactor] = RelativisticBody(
-            particle, V=Vperp
+            particle,
+            V=Vperp,
         ).lorentz_factor[~isfinite_lorentzfactor]
     else:
         lorentzfactor = 1.0
