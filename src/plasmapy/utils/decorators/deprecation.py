@@ -3,7 +3,7 @@ Decorators to mark objects as deprecated.
 
 .. deprecated::
 
-   This module has been deprecated in favor of `warnings.deprecated`,
+   This module has been deprecated in favor of ``@warnings.deprecated``,
    and will be removed in a forthcoming release of PlasmaPy.
 """
 
@@ -23,7 +23,7 @@ def deprecated(*args, warning_type=PlasmaPyDeprecationWarning, **kwargs):
 
     .. deprecated::
 
-       The decorator has been deprecated in favor of `warnings.decorated`,
+       The decorator has been deprecated in favor of ``@warnings.decorated``,
        and will be removed in a forthcoming release of PlasmaPy.
     """
     return astropy_deprecated(*args, warning_type=warning_type, **kwargs)
