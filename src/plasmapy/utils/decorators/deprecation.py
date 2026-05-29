@@ -1,10 +1,10 @@
 """
-Decorators to mark objects that are deprecated.
+Decorators to mark objects as deprecated.
 
 .. deprecated::
 
-   This module has been deprecated and will be removed in a future
-   release of PlasmaPy.
+   This module has been deprecated in favor of `warnings.deprecated`,
+   and will be removed in a forthcoming release of PlasmaPy.
 """
 
 __all__ = ["deprecated"]
@@ -24,8 +24,7 @@ def deprecated(*args, warning_type=PlasmaPyDeprecationWarning, **kwargs):
     .. deprecated::
 
        The decorator has been deprecated in favor of `warnings.decorated`,
-       and will be removed in a future release of PlasmaPy.
-
+       and will be removed in a forthcoming release of PlasmaPy.
     """
     return astropy_deprecated(*args, warning_type=warning_type, **kwargs)
 
