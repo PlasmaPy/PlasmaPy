@@ -17,11 +17,11 @@ Please use this link to [privately report a security vulnerability].
 
 ## Managing access to resources
 
-In information security, the [principle of least privilege] states that contributors, automated workflows, and third-party integrations should provided with exactly the minimum level of access necessary to meaningfully fulfill responsibilities.
+In information security, the [principle of least privilege] states that contributors, automated workflows, and third-party integrations should provided with the minimum level of access necessary to meaningfully fulfill responsibilities.
+Members of the GitHub organization should therefore only be given permissions that they need.
+Permissions for the GitHub organization should be reviewed annually and updated accordingly.
 
-- Every project asset should be accessible by at least ∼2–3 active team members to prevent loss of access.
-- Members of the PlasmaPy GitHub organization should only be given permissions that they need.
-- Permissions for the GitHub organization should be reviewed annually.
+To prevent loss of access, every project asset should remain accessible to ∼3 active contributors.
 
 Further recommendations are described in [SPEC 6].
 
