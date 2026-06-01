@@ -1,7 +1,7 @@
 """
 Decorators to mark objects as deprecated.
 
-.. deprecated::
+.. deprecated:: 2026.6.0
 
    This module has been deprecated in favor of ``@warnings.deprecated``,
    and will be removed in a forthcoming release of PlasmaPy.
@@ -21,7 +21,7 @@ def deprecated(*args, warning_type=PlasmaPyDeprecationWarning, **kwargs):
     A wrapper of `astropy.utils.decorators.deprecated` that by default assumes
     a warning type of `~plasmapy.utils.exceptions.PlasmaPyDeprecationWarning`.
 
-    .. deprecated::
+    .. deprecated:: 2026.6.0
 
        The decorator has been deprecated in favor of ``@warnings.decorated``,
        and will be removed in a forthcoming release of PlasmaPy.
