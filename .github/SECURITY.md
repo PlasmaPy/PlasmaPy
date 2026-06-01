@@ -33,7 +33,7 @@ PlasmaPy has an extensive suite of continuous integration checks, including seve
 - [`ruff`] has several [rule sets] that find security vulnerabilities, including the [`flake8-bandit` rule set].
 
 The checks are usually either run as [`pre-commit`] hooks (defined in [`.pre-commit-config.yaml`]) or as [Nox] sessions (defined in [`noxfile.py`]) invoked during GitHub workflows (located in [`.github/workflows/`]).
-The configurations for most of these tools are located in [`pyproject.toml`], but some have a dedicated configuration file (for `zizmor`, this would be at [`.github/zizmor.yml`])
+The configurations for most of these tools are located in [`pyproject.toml`], but some have a dedicated configuration file (such as [`.github/zizmor.yml`]).
 
 [nox]: https://nox.thea.codes
 [principle of least privilege]: https://en.wikipedia.org/wiki/Principle_of_least_privilege
