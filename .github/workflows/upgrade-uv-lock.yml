@@ -56,9 +56,9 @@ jobs:
     - name: Create pull request
       uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
       with:
-        title: Upgrade uv.lock
+        title: Automatically upgrade locked Python environment used in CI checks
         commit-message: Upgrade uv.lock with 'nox --session lock'
-        # The PR body message is generated dynamically via `nox -s lock` in CI
+        # The PR body message is generated dynamically via `nox --session lock` in CI
         body-path: .github/content/upgrade-uv-lock-pr-body.md
         labels: no changelog entry needed, requirements, run comprehensive tests
         branch: upgrade-uv-lock
