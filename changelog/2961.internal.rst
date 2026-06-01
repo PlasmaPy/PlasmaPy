@@ -1,1 +1,0 @@
-Enabled :file:`noxfile.py` to be run as a script, in alignment with :pep:`723`.

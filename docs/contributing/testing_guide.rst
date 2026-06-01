@@ -27,13 +27,13 @@ install |Nox| and |uv|:
 
       .. code-block:: bash
 
-         python -m pip install nox uv
+         python -m pip install uv nox nox-uv
 
    .. group-tab:: Windows
 
-      .. code-block:: bash
+      .. code-block:: PowerShell
 
-         py -m pip install nox uv
+         py -m pip install uv nox nox-uv
 
 To run tests, navigate to a directory within your local clone of
 PlasmaPy and run:
@@ -42,8 +42,7 @@ PlasmaPy and run:
 
    nox
 
-This command will invoke `pytest` to run PlasmaPy's tests, excluding the
-tests marked as slow.
+This command will invoke `pytest` to run PlasmaPy's tests.
 
 Writing tests
 -------------
@@ -188,12 +187,12 @@ message to help us find the cause of a particular test failure.
 
    Use `f-strings`_ to improve error message readability.
 
-Type hint annotations
----------------------
+Type annotations
+----------------
 
-PlasmaPy has begun using |mypy| to perform |static type checking| on
-|type hint annotations|. Adding a :py:`-> None` return annotation lets
-|mypy| verify that tests do not have :py:`return` statements.
+PlasmaPy uses |ty| to perform |static type checking| on
+|type annotations|. Adding a :py:`-> None` return annotation lets
+|ty| verify that tests do not have :py:`return` statements.
 
 .. code-block:: python
 
@@ -346,7 +345,7 @@ positional arguments (``a`` and ``b``) and one optional keyword argument
 
 .. hint::
 
-   This function uses |type hint annotations| to indicate that ``a`` and
+   This function uses |type annotations| to indicate that ``a`` and
    ``b`` can be either a `float` or `str`, :py:`reverse_order` should be
    a `bool`, and :py:`add` should return a `float` or `str`.
 
@@ -389,7 +388,7 @@ and unpacking_ them inside of the test function.
 
 .. hint::
 
-   This function uses |type hint annotations| to indicate that ``args``
+   This function uses |type annotations| to indicate that ``args``
    should be a `list` containing `str` objects, ``kwargs`` should be a
    `dict` containing `str` objects that map to `bool` objects,
    ``expected`` should be a `str`, and that there should be no
@@ -633,8 +632,8 @@ and usually invoke |Nox| sessions defined in |noxfile.py|_.
 * The **CI / Packaging** check verifies that no errors arise that would
   prevent an official release of PlasmaPy from being made.
 
-* The **CI / Static type checking with mypy** check performs
-  |static type checking| of |type hint annotations| with |mypy|.
+* The **CI / Static type checking with ty** check performs
+  |static type checking| of |type annotations| with |ty|.  !!!!!!!
 
 .. note::
 
@@ -739,11 +738,11 @@ where ``<session>`` is replaced with the name of the Nox session. The
 quotes are only needed if ``<session>`` contains special characters like
 parentheses.
 
-For example, static type checking with |mypy| can be run locally with
+For example, static type checking with |ty| can be run locally with
 
 .. code-block:: bash
 
-   nox -s mypy
+   nox -s ty
 
 Commands using Nox must be run in the top-level directory of the
 PlasmaPy repository, which is the directory containing

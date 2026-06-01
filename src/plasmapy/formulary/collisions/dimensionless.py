@@ -1,6 +1,4 @@
-"""
-Module of dimensionless parameters related to collisions.
-"""
+"""Dimensionless numbers related to particle collisions."""
 
 __all__ = [
     "coupling_parameter",
@@ -169,8 +167,10 @@ def coupling_parameter(
     >>> coupling_parameter(T, n, species, V=1e6 * u.m / u.s)
     <Quantity 5.8033...e-05>
     """
-    T, masses, charges, reduced_mass, V = misc._process_inputs(  # noqa: SLF001
-        T=T, species=species, V=V
+    T, _masses, charges, _reduced_mass, V = misc._process_inputs(  # noqa: SLF001
+        T=T,
+        species=species,
+        V=V,
     )
 
     if np.isnan(z_mean):
@@ -207,12 +207,12 @@ def coupling_parameter(
             kinetic_energy = np.real(kinetic_energy)
         else:
             raise ValueError(
-                "Kinetic energy should not be imaginary.Something went horribly wrong."
+                "Kinetic energy should not be imaginary.Something went horribly wrong.",
             )
     else:
         raise ValueError(
             f"Keyword 'method' must be either 'classical' or "
-            f"'quantum', instead of '{method}'."
+            f"'quantum', instead of '{method}'.",
         )
 
     return coulomb_energy / kinetic_energy
@@ -338,6 +338,11 @@ def Knudsen_number(
     <Quantity 10.91773...>
     """
     path_length = lengths.mean_free_path(
-        T=T, n_e=n_e, species=species, z_mean=z_mean, V=V, method=method
+        T=T,
+        n_e=n_e,
+        species=species,
+        z_mean=z_mean,
+        V=V,
+        method=method,
     )
     return path_length / characteristic_length

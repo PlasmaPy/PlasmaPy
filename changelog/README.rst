@@ -55,6 +55,7 @@ pull request to PlasmaPy's ``main`` branch.
    * ``internal``: For refactoring of the internal mechanics of the code
      and tests in ways that do not change the application user interface.
    * ``removal``: For feature deprecation and planned removals.
+   * ``test``: For changes related to software testing.
    * ``trivial``: For minor changes that do not change the application
      programming interface.
 

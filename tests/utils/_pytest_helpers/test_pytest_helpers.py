@@ -26,28 +26,28 @@ def raise_exception(*args, **kwargs):
     raise PlasmaPyError(
         f"This exception was raised by raise_exception with:\n\n"
         f"  args = {args}\n"
-        f"kwargs = {kwargs}\n"
+        f"kwargs = {kwargs}\n",
     )
 
 
-def issue_warning(*args, **kwargs) -> int:
-    warnings.warn(f"\n{args}\n{kwargs}", PlasmaPyWarning)
+def issue_warning(*args, **kwargs) -> int:  # noqa: ANN002, ANN003
+    warnings.warn(f"\n{args}\n{kwargs}", PlasmaPyWarning, stacklevel=2)
     return 42
 
 
-def adams_number(*args, **kwargs) -> int:
+def adams_number(*args, **kwargs) -> int:  # noqa: ANN002, ANN003
     return 42
 
 
-def return_quantity(*args, should_warn: bool = False):
+def return_quantity(*args, should_warn: bool = False):  # noqa: ANN002, ANN202
     if should_warn:
-        warnings.warn("", UserWarning)
+        warnings.warn("", UserWarning, stacklevel=2)
     return 5 * u.m / u.s
 
 
-def return_arg(arg: Any, should_warn: bool = False) -> Any:
+def return_arg(arg: Any, should_warn: bool = False) -> Any:  # noqa: ANN401, FBT001, FBT002
     if should_warn:
-        warnings.warn("", UserWarning)
+        warnings.warn("", UserWarning, stacklevel=2)
     return arg
 
 
@@ -96,8 +96,10 @@ f_args_kwargs_expected_whaterror = [
 
 
 @pytest.mark.parametrize(
-    ("f", "args", "kwargs", "expected", "whaterror"), f_args_kwargs_expected_whaterror
+    ("f", "args", "kwargs", "expected", "whaterror"),
+    f_args_kwargs_expected_whaterror,
 )
+@pytest.mark.filterwarnings("ignore:.*:plasmapy.utils.exceptions.PlasmaPyWarning")
 def test_run_test(f, args, kwargs, expected, whaterror):
     """
     Test the behavior of the test helper function.
@@ -134,7 +136,6 @@ def test_run_test(f, args, kwargs, expected, whaterror):
         to raise an exception.
 
     """
-
     try:
         if whaterror is None:
             run_test(f, args, kwargs, expected)
@@ -143,16 +144,16 @@ def test_run_test(f, args, kwargs, expected, whaterror):
                 run_test(f, args, kwargs, expected)
                 pytest.fail(
                     f"run_test did not raise an exception for "
-                    f"{call_string(f, args, kwargs, color=None)} "
+                    f"{call_string(f, args, kwargs, color=None)} "  # ty:ignore[unknown-argument]
                     f"with expected = {expected!r} and "
-                    f"whaterror = {whaterror!r}."
+                    f"whaterror = {whaterror!r}.",
                 )
     except Exception as spectacular_exception:
         raise Exception(
             f"An unexpected exception was raised while running "
-            f"{call_string(f, args, kwargs, color=None)} with "
+            f"{call_string(f, args, kwargs, color=None)} with "  # ty:ignore[unknown-argument]
             f"expected = {expected!r} and "
-            f"whaterror = {whaterror!r}."
+            f"whaterror = {whaterror!r}.",
         ) from spectacular_exception
 
 
@@ -176,11 +177,11 @@ def test_run_test_atol_failure() -> None:
         pytest.fail("No exception raised for atol test.")
 
 
-def func(x, raise_exception: bool = False, issue_warning: bool = False):
+def func(x, raise_exception: bool = False, issue_warning: bool = False):  # noqa: ANN202, FBT001, FBT002
     if raise_exception:
         raise ValueError("")
     elif issue_warning:
-        warnings.warn("", UserWarning)
+        warnings.warn("", UserWarning, stacklevel=2)
     return x
 
 
@@ -199,7 +200,7 @@ def test_func(inputs) -> None:
     run_test(inputs)
 
 
-# TODO: organize this in a namedtuple to improve readability?
+# TODO: organize this in a namedtuple to improve readability?  # noqa: FIX002
 
 run_test_equivalent_calls_table = [
     # cases like inputs = (func, (args, kwargs), (args, kwargs), (args, kwargs))
@@ -250,7 +251,7 @@ def test_run_test_equivalent_calls(inputs, error):
         except Exception as exc:
             raise Exception(
                 f"Unexpected exception for run_tests_equivalent_calls with "
-                f"the following inputs =\n\n  {inputs}"
+                f"the following inputs =\n\n  {inputs}",
             ) from exc
     elif issubclass(error, Exception):
         with pytest.raises(error):

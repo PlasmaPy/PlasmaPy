@@ -23,7 +23,7 @@ from scipy.stats import linregress
 from plasmapy.utils.decorators import modify_docstring
 
 #: Named tuple for :meth:`AbstractFitFunction.root_solve`.
-_RootResults = namedtuple("RootResults", ("root", "err"))
+_RootResults = namedtuple("RootResults", ("root", "err"))  # ty:ignore[mismatched-type-name]
 
 
 class AbstractFitFunction(ABC):
@@ -51,8 +51,7 @@ class AbstractFitFunction(ABC):
             parameters.  Equal in size to :attr:`param_names`.
 
         """
-
-        self._FitParamTuple = namedtuple("FitParamTuple", self._param_names)
+        self._FitParamTuple = namedtuple("FitParamTuple", self._param_names)  # ty:ignore[invalid-argument-type]
 
         if params is None:
             self._params = None
@@ -67,7 +66,7 @@ class AbstractFitFunction(ABC):
         self._curve_fit_results = None
         self._rsq = None
 
-    def __call__(self, x, x_err=None, reterr: bool = False):  # noqa: ANN204
+    def __call__(self, x, x_err=None, reterr: bool = False):  # noqa: ANN204, FBT001, FBT002
         """
         Direct call of the fit function :math:`f(x)`.
 
@@ -99,13 +98,13 @@ class AbstractFitFunction(ABC):
 
             return y, y_err
 
-        return self.func(x, *self.params)
+        return self.func(x, *self.params)  # ty:ignore[not-iterable]
 
-    def __repr__(self) -> str:
+    def __repr__(self) -> str:  # noqa: D105
         return f"{self.__str__()} {self.__class__}"
 
     @abstractmethod
-    def __str__(self) -> str: ...
+    def __str__(self) -> str: ...  # noqa: D105
 
     @abstractmethod
     def func(self, x, *args):
@@ -169,7 +168,7 @@ class AbstractFitFunction(ABC):
                 return err
         """,
     )
-    def func_err(self, x, x_err=None, rety: bool = False):
+    def func_err(self, x, x_err=None, rety: bool = False):  # noqa: FBT001, FBT002
         """
         Parameters
         ----------
@@ -242,7 +241,7 @@ class AbstractFitFunction(ABC):
         else:
             raise ValueError(
                 f"Got {val} for 'val', expecting tuple of ints and "
-                f"floats of length {len(self.param_names)}."
+                f"floats of length {len(self.param_names)}.",
             )
 
     @property
@@ -264,7 +263,7 @@ class AbstractFitFunction(ABC):
         else:
             raise ValueError(
                 f"Got {val} for 'val', expecting tuple of ints and "
-                f"floats of length {len(self.param_names)}."
+                f"floats of length {len(self.param_names)}.",
             )
 
     @property
@@ -288,12 +287,12 @@ class AbstractFitFunction(ABC):
                 pass
             elif x_err.shape != x.shape:
                 raise ValueError(
-                    f"x_err shape {x_err.shape} must be equal the shape of x {x.shape}."
+                    f"x_err shape {x_err.shape} must be equal the shape of x {x.shape}.",
                 )
         return x, x_err
 
     @staticmethod
-    def _check_params(*args) -> None:
+    def _check_params(*args) -> None:  # noqa: ANN002
         """
         Check fitting parameters so that they are an expected type for the
         class functionality.
@@ -301,7 +300,7 @@ class AbstractFitFunction(ABC):
         for arg in args:
             if not isinstance(arg, numbers.Real):
                 raise TypeError(
-                    f"Expected int or float for parameter argument, got {type(arg)}."
+                    f"Expected int or float for parameter argument, got {type(arg)}.",
                 )
 
     @staticmethod
@@ -321,7 +320,7 @@ class AbstractFitFunction(ABC):
                 or np.issubdtype(x.dtype, np.floating)
             ):
                 raise TypeError(
-                    "Argument x needs to be an array_like object of integers or floats."
+                    "Argument x needs to be an array_like object of integers or floats.",
                 )
 
             x = x.squeeze()
@@ -401,7 +400,7 @@ class AbstractFitFunction(ABC):
         """
         return self._rsq
 
-    def curve_fit(self, xdata, ydata, **kwargs) -> None:
+    def curve_fit(self, xdata, ydata, **kwargs) -> None:  # noqa: ANN003
         """
         Use a non-linear least squares method to fit the fit function to
         (``xdata``, ``ydata``), using `scipy.optimize.curve_fit`.  This will set
@@ -443,7 +442,7 @@ class AbstractFitFunction(ABC):
 
         # calc rsq
         # rsq = 1 - (ss_res / ss_tot)
-        residuals = ydata - self.func(xdata, *self.params)
+        residuals = ydata - self.func(xdata, *self.params)  # ty:ignore[not-iterable]
         ss_res = np.sum(residuals**2)
         ss_tot = np.sum((ydata - np.mean(ydata)) ** 2)
         self._rsq = 1 - (ss_res / ss_tot)
@@ -467,7 +466,7 @@ class Linear(AbstractFitFunction):
 
     _param_names = ("m", "b")
 
-    def __str__(self) -> str:
+    def __str__(self) -> str:  # noqa: D105
         return "f(x) = m x + b"
 
     @property
@@ -475,7 +474,7 @@ class Linear(AbstractFitFunction):
         """LaTeX friendly representation of the fit function."""
         return r"m x + b"
 
-    def func(self, x, m, b):
+    def func(self, x, m, b):  # ty:ignore[invalid-method-override]
         """
         The fit function, a linear function.
 
@@ -510,7 +509,7 @@ class Linear(AbstractFitFunction):
         return m * x + b
 
     @modify_docstring(append=AbstractFitFunction.func_err.__original_doc__)
-    def func_err(self, x, x_err=None, rety: bool = False):
+    def func_err(self, x, x_err=None, rety: bool = False):  # noqa: ANN201, FBT001, FBT002
         """
         Calculate dependent variable uncertainties :math:`\\delta y` for
         dependent variables :math:`y=f(x)`.
@@ -522,8 +521,8 @@ class Linear(AbstractFitFunction):
         """
         x, x_err = self._check_func_err_params(x, x_err)
 
-        m, b = self.params
-        m_err, b_err = self.param_errors
+        m, b = self.params  # ty:ignore[not-iterable]
+        m_err, b_err = self.param_errors  # ty:ignore[not-iterable]
 
         m_term = (m_err * x) ** 2
         b_term = b_err**2
@@ -580,25 +579,26 @@ class Linear(AbstractFitFunction):
             The uncertainty in the calculated root for the given fit
             :attr:`params` and :attr:`param_errors`.
         """
-        m, b = self.params
+        m, b = self.params  # ty:ignore[not-iterable]
 
         if m == 0.0:
             warnings.warn(
                 "Slope of Linear fit function is zero so no finite root exists. ",
                 RuntimeWarning,
+                stacklevel=2,
             )
             return _RootResults(np.nan, np.nan)
 
         root = -b / m
 
-        m_err, b_err = self.param_errors
+        m_err, b_err = self.param_errors  # ty:ignore[not-iterable]
         m_term = (root * m_err / m) ** 2
         b_term = (b_err / m) ** 2
         err = np.sqrt(m_term + b_term)
 
         return _RootResults(root, err)
 
-    def curve_fit(self, xdata, ydata, **kwargs) -> None:
+    def curve_fit(self, xdata, ydata, **kwargs) -> None:  # noqa: ANN003
         """
         Calculate a linear least-squares regression of (``xdata``, ``ydata``)
         using `scipy.stats.linregress`.  This will set the attributes
@@ -657,7 +657,7 @@ class Exponential(AbstractFitFunction):
 
     _param_names = ("a", "alpha")
 
-    def __str__(self) -> str:
+    def __str__(self) -> str:  # noqa: D105
         return "f(x) = a exp(alpha x)"
 
     @property
@@ -665,7 +665,7 @@ class Exponential(AbstractFitFunction):
         """LaTeX friendly representation of the fit function."""
         return r"a \, \exp(\alpha x)"
 
-    def func(self, x: float, a: float, alpha: float):
+    def func(self, x: float, a: float, alpha: float):  # ty:ignore[invalid-method-override]  # noqa: ANN201
         """
         The fit function, a exponential function.
 
@@ -698,7 +698,7 @@ class Exponential(AbstractFitFunction):
         return a * np.exp(alpha * x)
 
     @modify_docstring(append=AbstractFitFunction.func_err.__original_doc__)
-    def func_err(self, x, x_err=None, rety: bool = False):
+    def func_err(self, x, x_err=None, rety: bool = False):  # noqa: ANN201, FBT001, FBT002
         """
         Calculate dependent variable uncertainties :math:`\\delta y` for
         dependent variables :math:`y=f(x)`.
@@ -713,8 +713,8 @@ class Exponential(AbstractFitFunction):
         """
         x, x_err = self._check_func_err_params(x, x_err)
 
-        a, alpha = self.params
-        a_err, alpha_err = self.param_errors
+        a, alpha = self.params  # ty:ignore[not-iterable]
+        a_err, alpha_err = self.param_errors  # ty:ignore[not-iterable]
         y = self.func(x, a, alpha)
 
         a_term = (a_err / a) ** 2
@@ -754,7 +754,6 @@ class Exponential(AbstractFitFunction):
             The uncertainty in the calculated root for the given fit
             :attr:`params` and :attr:`param_errors`.
         """
-
         return _RootResults(np.nan, np.nan)
 
 
@@ -796,7 +795,7 @@ class ExponentialPlusLinear(AbstractFitFunction):
         self._linear = Linear()
         super().__init__(params=params, param_errors=param_errors)
 
-    def __str__(self) -> str:
+    def __str__(self) -> str:  # noqa: D105
         exp_str = self._exponential.__str__().replace("f(x) = ", "")
         lin_str = self._linear.__str__().replace("f(x) = ", "")
         return f"f(x) = {exp_str} + {lin_str}"
@@ -823,7 +822,7 @@ class ExponentialPlusLinear(AbstractFitFunction):
         )
         self._linear.param_errors = (self.param_errors.m, self.param_errors.b)
 
-    def func(self, x: float, a: float, alpha: float, m: float, b: float):
+    def func(self, x: float, a: float, alpha: float, m: float, b: float):  # ty:ignore[invalid-method-override]  # noqa: ANN201
         """
         The fit function, an exponential with a linear offset.
 
@@ -862,7 +861,7 @@ class ExponentialPlusLinear(AbstractFitFunction):
         return exp_term + lin_term
 
     @modify_docstring(append=AbstractFitFunction.func_err.__original_doc__)
-    def func_err(self, x, x_err=None, rety: bool = False):
+    def func_err(self, x, x_err=None, rety: bool = False):  # noqa: ANN201, FBT001, FBT002
         """
         Calculate dependent variable uncertainties :math:`\\delta y` for
         dependent variables :math:`y=f(x)`.
@@ -884,7 +883,7 @@ class ExponentialPlusLinear(AbstractFitFunction):
         """
         x, x_err = self._check_func_err_params(x, x_err)
 
-        a, alpha, m, b = self.params
+        a, alpha, m, _b = self.params  # ty:ignore[not-iterable]
 
         exp_y, exp_err = self._exponential(x, x_err=x_err, reterr=True)
         lin_y, lin_err = self._linear(x, x_err=x_err, reterr=True)
@@ -933,7 +932,7 @@ class ExponentialPlusOffset(AbstractFitFunction):
         self._explin = ExponentialPlusLinear()
         super().__init__(params=params, param_errors=param_errors)
 
-    def __str__(self) -> str:
+    def __str__(self) -> str:  # noqa: D105
         return "f(x) = a exp(alpha x) + b"
 
     @property
@@ -961,7 +960,7 @@ class ExponentialPlusOffset(AbstractFitFunction):
             self.param_errors.b,
         )
 
-    def func(self, x: float, a: float, alpha: float, b: float):
+    def func(self, x: float, a: float, alpha: float, b: float):  # ty:ignore[invalid-method-override]  # noqa: ANN201
         """
         The fit function, an exponential with a constant offset.
 
@@ -995,7 +994,7 @@ class ExponentialPlusOffset(AbstractFitFunction):
         return self._explin.func(x, a, alpha, 0.0, b)
 
     @modify_docstring(append=AbstractFitFunction.func_err.__original_doc__)
-    def func_err(self, x, x_err=None, rety: bool = False):
+    def func_err(self, x, x_err=None, rety: bool = False):  # noqa: ANN201, FBT001, FBT002
         """
         Calculate dependent variable uncertainties :math:`\\delta y` for
         dependent variables :math:`y=f(x)`.
@@ -1046,8 +1045,8 @@ class ExponentialPlusOffset(AbstractFitFunction):
             The uncertainty in the calculated root for the given fit
             :attr:`params` and :attr:`param_errors`.
         """
-        a, alpha, b = self.params
-        a_err, b_err, c_err = self.param_errors
+        a, alpha, b = self.params  # ty:ignore[not-iterable]
+        a_err, b_err, c_err = self.param_errors  # ty:ignore[not-iterable]
 
         root = np.log(-b / a) / alpha
 

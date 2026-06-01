@@ -1,3 +1,8 @@
+# /// script
+# requires-python = ">=3.12"
+# dependencies = ["nox", "nox-uv", "uv"]
+# ///
+
 """
 Nox is an automation tool used by PlasmaPy to run tests, build
 documentation, and perform other checks. Nox sessions are defined in
@@ -25,15 +30,15 @@ to be installed.
 Nox documentation: https://nox.thea.codes
 """
 
+import datetime
 import os
 import pathlib
 import re
 import shutil
 import sys
-import tomllib
 
-import nox
-from packaging.requirements import Requirement
+import nox  # ty:ignore[unresolved-import]
+import nox_uv  # ty:ignore[unresolved-import]
 
 # SPEC 0 indicates that scientific Python packages should support
 # versions of Python that have been released in the last 3 years, or
@@ -41,35 +46,38 @@ from packaging.requirements import Requirement
 # The minimum version of Python should be incremented immediately
 # following the first release after October of each year.
 
-supported_python_versions: tuple[str, ...] = ("3.11", "3.12", "3.13")
-supported_operating_systems: tuple[str, ...] = ("linux", "macos", "windows")
+SUPPORTED_PYTHON_VERSIONS: tuple[str, ...] = ("3.12", "3.13", "3.14")
+SUPPORTED_OPERATING_SYSTEMS: tuple[str, ...] = ("linux", "macos", "windows")
 
-maxpython = max(supported_python_versions)
-minpython = min(supported_python_versions)
+MAXPYTHON = max(SUPPORTED_PYTHON_VERSIONS)
+MINPYTHON = min(SUPPORTED_PYTHON_VERSIONS)
 
-_HERE = pathlib.Path(__file__).parent
+ROOT_DIR = pathlib.Path(__file__).parent
+
+CURRENT_PYTHON = f"{sys.version_info.major}.{sys.version_info.minor}"
+
+# Define what sessions get run when running `nox` without a session
+
+nox.options.sessions = [f"tests-{CURRENT_PYTHON}(all)"]
 
 # The documentation should be build always using the same version of
 # Python, which should be the latest version of Python supported by Read
 # the Docs. Because Read the Docs takes some time to support new
-# releases of Python, we should not link docpython to maxpython.
+# releases of Python, DOCPYTHON should stay independent of MAXPYTHON.
+# Changing DOCPYTHON also requires updating .readthedocs.yml and the
+# GitHub workflows for building the documentation.
 
-docpython = "3.12"
+DOCPYTHON = "3.14"
 
-current_python = f"{sys.version_info.major}.{sys.version_info.minor}"
-nox.options.sessions = [f"tests-{current_python}(skipslow)"]
+nox.options.default_venv_backend = "uv"
 
-nox.options.default_venv_backend = "uv|virtualenv"
+UV_SYNC = ("uv", "sync", "--no-progress", "--frozen")
 
-uv_sync = ("uv", "sync", "--no-progress", "--frozen")
-
-running_on_ci = os.getenv("CI")
-running_on_rtd = os.environ.get("READTHEDOCS") == "True"
-
-uv_requirement = "uv >= 0.6.5"
+RUNNING_ON_CI: bool = os.getenv("CI") is not None
+RUNNING_ON_RTD: bool = os.getenv("READTHEDOCS") is not None
 
 
-def _create_requirements_pr_message(uv_output: str, session: nox.Session) -> None:
+def _create_lockfile_pr_message(uv_output: str, session: nox.Session) -> None:
     """
     Create the pull request message during requirements updates.
 
@@ -79,141 +87,133 @@ def _create_requirements_pr_message(uv_output: str, session: nox.Session) -> Non
     body of the pull request message used in the workflow for updating
     requirements.
 
+    ⚠️ This function requires that `uv.lock` existed before
+    `uv lock --upgrade` was run.
+
     Parameters
     ----------
     uv_output : str
         The multi-line output of ``session.run(..., silent=True)``.
     """
-
-    pr_template = pathlib.Path("./.github/content/update-requirements-pr-template.md")
-    pr_message = pathlib.Path("./.github/content/update-requirements-pr-body.md")
+    pr_template = pathlib.Path(
+        ROOT_DIR / "./.github/content/upgrade-uv-lock-pr-template.md",
+    )
+    pr_message = pathlib.Path(ROOT_DIR / "./.github/content/upgrade-uv-lock-pr-body.md")
 
     shutil.copy(pr_template, pr_message)
 
-    lines = [
+    preamble = [
         "",
         "| package | old version | new version |",
         "| :-----: | :---------: | :---------: |",
     ]
 
-    for package_update in uv_output.splitlines():
-        if not package_update.startswith("Updated"):
-            session.debug(f"Line not added to table: {package_update}")
+    lines = []
+    for line in uv_output.splitlines():
+        if line.startswith("Resolved") or not line:
+            continue
+
+        if not line.startswith("Updated"):
+            session.warn(f"Line not added to table: {line}")
             continue
 
         try:
             # An example line is "Updated nbsphinx v0.9.6 -> v0.9.7"
-            _, package_, old_version_, _, new_version_ = package_update.split()
+            _, package_name_, old_version_, _, new_version_ = line.strip().split()
         except ValueError:
-            session.debug(f"Line not added to table: {package_update}:")
+            session.warn(f"Line not added to table: {line}:")
             continue
 
         old_version = f"{old_version_.removeprefix('v')}"
         new_version = f"{new_version_.removeprefix('v')}"
 
-        pypi_link = f"https://pypi.org/project/{package_}/{new_version}"
-        package = f"[`{package_}`]({pypi_link})"
+        pypi_link = f"https://pypi.org/project/{package_name_}/{new_version}"
+        package_name = f"[`{package_name_}`]({pypi_link})"
 
-        lines.append(f"| {package} | `{old_version}` | `{new_version}` |")
+        lines.append(f"| {package_name} | `{old_version}` | `{new_version}` |")
 
+    table_of_package_upgrades = "\n".join(preamble + lines)
     with pr_message.open(mode="a") as file:
-        file.write("\n".join(lines))
-
-
-def _get_dependencies_from_pyproject_toml(extras: str | None = None):
-    _PYTPROJECT_TOML = (_HERE / "pyproject.toml").resolve()
-    with _PYTPROJECT_TOML.open(mode="rb") as file:
-        data = tomllib.load(file)
-        config = data["project"]
-
-    dependencies = {Requirement(item).name: item for item in config["dependencies"]}
-
-    if (
-        extras is None
-        or "optional-dependencies" not in config
-        or not isinstance(extras, str)
-        or (extras not in config["optional-dependencies"] and extras != "all")
-    ):
-        return dependencies
-
-    extras = [extras] if extras != "all" else list(config["optional-dependencies"])
-    op_deps = {}
-    for extra in extras:
-        for dep in config["optional-dependencies"][extra]:
-            name = Requirement(dep).name
-            op_deps[name] = dep
-
-    return {**dependencies, **op_deps}
+        file.write(table_of_package_upgrades)
 
 
 @nox.session
-def requirements(session: nox.Session) -> None:
+def lock(session: nox.Session) -> None:
     """
-    Regenerate the pinned requirements for running tests and building
-    documentation.
+    Upgrade Python environments used in CI, with a dependency cooldown.
 
-    This workflow updates :file:`uv.lock` to contain pinned requirements
-    for different versions of Python, different operating systems, and
-    different dependency sets (i.e., `docs` or `tests`).
+    This session upgrades uv.lock: the cross-platform lockfile that
+    defines the exact Python environments used when running tests,
+    building documentation, and performing continuous integration (CI)
+    checks.
 
-    When run in CI, this session will create a file that contains the
-    pull request message for the GitHub workflow that updates the pinned
-    requirements (:file:`.github/workflows/update-pinned-reqs.yml`).
+    When run in CI, this session generates a file that contains the pull
+    request message for the GitHub workflow that uses this session
+    (:file:`.github/workflows/upgrade-uv-lock.yml`).
     """
-    session.install(uv_requirement)
-
-    uv_lock_upgrade = ["uv", "lock", "--upgrade", "--no-progress"]
-
-    # When silent is `True`, `session.run()` returns a multi-line string
-    # with the standard output and standard error.
-
-    uv_output: str | bool = session.run(
-        *uv_lock_upgrade,
+    uv_lock = (
+        "uv",
+        "lock",
+        "--upgrade",
+        "--no-progress",
         *session.posargs,
-        silent=running_on_ci,
     )
+    try:
+        # Use session.run() with silent=True to return the command output
+        uv_output: str | bool = session.run(*uv_lock, silent=RUNNING_ON_CI)
+    except nox.command.CommandFailed:
+        session.warn("⚠️ uv.lock is invalid, likely due to a git merge conflict.")
+        session.log(
+            "📥 Checking out uv.lock from the branch being merged into this one.",
+        )
+        session.log(
+            "🪧 If this next attempt is unsuccessful, delete uv.lock and try again.",
+        )
+        session.run("git", "checkout", "--theirs", "--", "uv.lock", external=True)
+        uv_output: str | bool = session.run(*uv_lock, silent=RUNNING_ON_CI)
 
-    if running_on_ci:
+    if RUNNING_ON_CI:
         session.log(uv_output)
-        _create_requirements_pr_message(uv_output=uv_output, session=session)
+        _create_lockfile_pr_message(uv_output=uv_output, session=session)  # ty:ignore[invalid-argument-type]
 
 
 @nox.session
-def validate_requirements(session: nox.Session) -> None:
+def validate_lockfile(session: nox.Session) -> None:
     """
-    Verify that the requirements in :file:`uv.lock` are compatible
-    with the requirements in `pyproject.toml`.
+    Ensure that uv.lock is consistent with pyproject.toml.
+
+    This check is normally performed locally when running pre-commit or
+    prek. Because pre-commit.ci blocks network access, this check is
+    instead done in CI via a GitHub workflow that calls this session.
     """
-    session.install(uv_requirement)
-    session.log(
-        "🛡 If this check fails, regenerate the pinned requirements in "
-        "`uv.lock` with `nox -s requirements`."
-    )
+    if RUNNING_ON_CI:
+        errmsg = (
+            "The Python environments in file 'uv.lock' are inconsistent "
+            "with the requirements defined in 'pyproject.toml'. "
+            "After installing Nox, this problem can be fixed by running "
+            "`nox -s validate_lockfile` in the top-level directory of "
+            "your clone of PlasmaPy, and then pushing the updated "
+            "'uv.lock' to GitHub. "
+        )
+    else:
+        errmsg = (
+            "File 'uv.lock' has been updated for consistency with the "
+            "requirements defined in 'pyproject.toml'."
+        )
 
-    # Generate the cache without updating uv.lock by syncing the
-    # current environment. If there ends up being a `--dry-run` option
-    # for `uv sync`, we could probably use it here.
-
-    session.run("uv", "sync", "--frozen", "--all-extras", "--no-progress")
-
-    # Verify that uv.lock will be unchanged. Using --offline makes it
-    # so that only the information from the cache is used.
-
-    session.run("uv", "lock", "--check", "--offline", "--no-progress")
+    try:
+        session.run("uv", "lock", "--no-progress")
+    except nox.command.CommandFailed:
+        session.error(errmsg)
 
 
-pytest_command: tuple[str, ...] = (
-    "pytest",
-    "--pyargs",
-    "--durations=5",
-    "--tb=short",
-    "-n=auto",
-    "--dist=loadfile",
-)
+# Define pytest flags that are only sometimes used. Define flags that
+# are always used in tool.pytest.addopts in pyproject.toml instead of
+# noxfile.py, since that allows users to run `pytest` and get
 
-with_doctests: tuple[str, ...] = ("--doctest-modules", "--doctest-continue-on-failure")
+WITH_DOCTESTS: tuple[str, ...] = ("--doctest-modules", "--doctest-continue-on-failure")
 
-with_coverage: tuple[str, ...] = (
+WITH_COVERAGE: tuple[str, ...] = (
     "--cov=plasmapy",
     "--cov-report=xml",
     "--cov-config=pyproject.toml",
@@ -222,9 +222,11 @@ with_coverage: tuple[str, ...] = (
     "xml:coverage.xml",
 )
 
-skipslow: tuple[str, ...] = ("-m", "not slow")
+REPORT_WARNINGS_ONCE = ("-W", "once")
 
-test_specifiers: list = [
+SKIPSLOW: tuple[str, ...] = ("-m", "not slow")
+
+test_specifiers: list[nox._parametrize.Param] = [
     nox.param("run all tests", id="all"),
     nox.param("skip slow tests", id="skipslow"),
     nox.param("with code coverage", id="cov"),
@@ -233,113 +235,114 @@ test_specifiers: list = [
 ]
 
 
-@nox.session(python=supported_python_versions)
+@nox.session(python=SUPPORTED_PYTHON_VERSIONS)
 @nox.parametrize("test_specifier", test_specifiers)
 def tests(session: nox.Session, test_specifier: nox._parametrize.Param) -> None:
     """Run tests with pytest."""
-
-    session.install(uv_requirement)
-
     options: list[str] = []
 
     if test_specifier in {"skip slow tests", "lowest-direct-skipslow"}:
-        options += skipslow
+        options += SKIPSLOW
 
     if test_specifier == "with code coverage":
-        options += with_coverage
+        options += WITH_COVERAGE
+
+    # There may be some warnings that got fixed later with the oldest
+    # allowed versions of dependencies
+    if test_specifier in {"lowest-direct", "lowest-direct-skipslow"}:
+        options += REPORT_WARNINGS_ONCE
 
     # Doctests are only run with the most recent versions of Python and
     # other dependencies because there may be subtle differences in the
     # output between different versions of Python, NumPy, and Astropy.
-    if session.python == maxpython and test_specifier not in {"lowest-direct", "cov"}:
-        options += with_doctests
+    if session.python == MAXPYTHON and test_specifier not in {"lowest-direct", "cov"}:
+        options += WITH_DOCTESTS
 
     if gh_token := os.getenv("GH_TOKEN"):
         session.env["GH_TOKEN"] = gh_token
 
     match test_specifier:
         case "lowest-direct" | "lowest-direct-skipslow":
-            session.install(".[tests]", "--resolution=lowest-direct")
+            session.install(
+                ".",
+                "--resolution=lowest-direct",
+                "--group=test",
+            )
         case _:
             # From https://nox.thea.codes/en/stable/cookbook.html#using-a-lockfile
+            # If we separate out the lowest-direct tests, then we can use
+            # @nox_uv.session for tests too.
             session.run_install(
-                *uv_sync,
-                "--extra=tests",
+                *UV_SYNC,
+                "--group=test",
+                f"--python={session.virtualenv.location}",
                 env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
             )
 
-    session.run(*pytest_command, *options, *session.posargs)
+    session.run("pytest", *options, *session.posargs)
 
 
-@nox.session(python=maxpython)
+@nox_uv.session(python=MAXPYTHON, uv_groups=["test"])
 @nox.parametrize(
-    ["repository"],
+    ["package"],
     [
         nox.param("numpy", id="numpy"),
-        nox.param("https://github.com/astropy/astropy", id="astropy"),
-        nox.param("https://github.com/pydata/xarray", id="xarray"),
+        nox.param("astropy", id="astropy"),
+        nox.param("pandas", id="pandas"),
+        nox.param("xarray", id="xarray"),
         nox.param("https://github.com/lmfit/lmfit-py", id="lmfit"),
-        nox.param("https://github.com/pandas-dev/pandas", id="pandas"),
     ],
 )
-def run_tests_with_dev_version_of(session: nox.Session, repository: str) -> None:
+def test_upstream(session: nox.Session, package: str) -> None:
     """
-    Run tests against the development branch of a dependency.
+    Run tests against the development branch of an upstream dependency.
 
-    Running this session helps us catch problems resulting from breaking
-    changes in an upstream dependency before its official release.
+    Testing against unreleased versions of upstream dependencies helps
+    us catch problems before they make it into an official release.
     """
-
-    session.install(uv_requirement)
-
-    if repository == "numpy":
-        # From: https://numpy.org/doc/1.26/dev/depending_on_numpy.html
+    if package.startswith("https"):
+        session.install(f"git+{package}")
+    else:
         session.run_install(
             "uv",
             "pip",
             "install",
-            "-U",
-            "--pre",
-            "--only-binary",
-            ":all:",
-            "-i",
-            "https://pypi.anaconda.org/scientific-python-nightly-wheels/simple",
-            "numpy",
+            "--upgrade",
+            package,
+            env={
+                "UV_INDEX": "https://pypi.anaconda.org/scientific-python-nightly-wheels/simple",
+                "UV_INDEX_STRATEGY": "unsafe-best-match",
+                "UV_PRERELEASE": "allow",
+            },
         )
-    else:
-        session.install(f"git+{repository}")
+        session.run("uv", "pip", "show", package)
 
-    session.install(".[tests]")
-    session.run(*pytest_command, *session.posargs)
+    session.run("pytest", *session.posargs)
 
 
-if running_on_rtd:
-    rtd_output_path = pathlib.Path(os.environ.get("READTHEDOCS_OUTPUT")) / "html"
+if RUNNING_ON_RTD:
+    rtd_output_path = pathlib.Path(os.environ.get("READTHEDOCS_OUTPUT")) / "html"  # ty:ignore[invalid-argument-type]
     rtd_output_path.mkdir(parents=True, exist_ok=True)
     doc_build_dir = str(rtd_output_path)
 else:
     doc_build_dir = "docs/_build/html"
 
-sphinx_base_command: list[str] = [
+SPHINX_BASE_COMMAND: list[str] = [
     "sphinx-build",
     "docs/",
     doc_build_dir,
     "--nitpicky",
+    "--quiet",
     "--keep-going",
 ]
 
-if not running_on_rtd:
-    sphinx_base_command.extend(
-        [
-            "--fail-on-warning",
-            "--quiet",
-        ]
-    )
+if not RUNNING_ON_RTD:
+    SPHINX_BASE_COMMAND.extend(["--fail-on-warning"])
 
-build_html: tuple[str, ...] = ("--builder", "html")
-check_hyperlinks: tuple[str, ...] = ("--builder", "linkcheck")
+BUILD_HTML: tuple[str, ...] = ("--builder", "html")
+CHECK_HYPERLINKS: tuple[str, ...] = ("--builder", "linkcheck")
 
-doc_troubleshooting_message = """
+DOC_TROUBLESHOOTING_MESSAGE = """
 
 📘 Tips for troubleshooting common documentation build failures are in
 PlasmaPy's documentation guide at:
@@ -348,7 +351,7 @@ PlasmaPy's documentation guide at:
 """
 
 
-@nox.session(python=docpython)
+@nox_uv.session(python=DOCPYTHON, uv_groups=["docs"])
 def docs(session: nox.Session) -> None:
     """
     Build documentation with Sphinx.
@@ -357,38 +360,29 @@ def docs(session: nox.Session) -> None:
 
     Configuration file: docs/conf.py
     """
+    if RUNNING_ON_CI:
+        session.log(DOC_TROUBLESHOOTING_MESSAGE)
 
-    if running_on_ci:
-        session.log(doc_troubleshooting_message)
+    # Can we use pixi or conda to install graphviz and pandoc if they
+    # are not installed?
 
-    session.install(uv_requirement)
+    session.run_install("dot", "-V", external=True)
+    session.run_install("pandoc", "--version", external=True)
 
-    session.run_install(
-        *uv_sync,
-        "--extra=docs",
-        env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
-    )
-    session.run(*sphinx_base_command, *build_html, *session.posargs)
+    session.run(*SPHINX_BASE_COMMAND, *BUILD_HTML, *session.posargs)
 
     landing_page = pathlib.Path(doc_build_dir) / "index.html"
-
     if landing_page.exists():
         session.log(f"The documentation may be previewed at {landing_page}")
     else:
         session.error(f"Documentation preview landing page not found: {landing_page}")
 
 
-@nox.session(python=docpython, reuse_venv=True)
-def docs_bundle_htmlzip(session: nox.Session) -> None:
-    """
-    Convert html built docs to a bundle html zip file.
-    """
-
-    if not running_on_rtd:
-        session.log(
-            "Process is NOT being run on Read the Docs.  Will not html ZIP file."
-        )
-        return None
+@nox_uv.session(python=DOCPYTHON, uv_groups=["docs"])
+def htmlzip(session: nox.Session) -> None:
+    """Bundle documentation build into a zip file on Read the Docs."""
+    if not RUNNING_ON_RTD:
+        session.error("This session must be run on Read the Docs.")
 
     html_build_dir = pathlib.Path(doc_build_dir)
     html_landing_page = (html_build_dir / "index.html").resolve()
@@ -396,7 +390,7 @@ def docs_bundle_htmlzip(session: nox.Session) -> None:
     if not html_landing_page.exists():
         session.error(
             f"No documentation build found at: {html_landing_page}\n"
-            f"It appears the documentation has not been built."
+            f"It appears the documentation has not been built.",
         )
 
     command = [
@@ -417,18 +411,19 @@ def docs_bundle_htmlzip(session: nox.Session) -> None:
     READTHEDOCS_PROJECT = os.environ.get("READTHEDOCS_PROJECT")
     READTHEDOCS_LANGUAGE = os.environ.get("READTHEDOCS_LANGUAGE")
     READTHEDOCS_VERSION = os.environ.get("READTHEDOCS_VERSION")
+
+    # mimic RTD default naming convention
     zip_name = f"{READTHEDOCS_PROJECT}-{READTHEDOCS_LANGUAGE}-{READTHEDOCS_VERSION}.zip"
-    # ^ this name mimics how RTD does it by default
 
     cwd = pathlib.Path.cwd()
     session.chdir(f"{READTHEDOCS_OUTPUT / 'htmlzip'}")
-    session.run("zip", "-r", "-m", f"{zip_name}", ".")
+    session.run("zip", "-r", "-m", f"{zip_name}", ".", external=True)
     session.chdir(f"{cwd}")
 
     session.log(f"The htmlzip was placed in: {READTHEDOCS_OUTPUT / 'htmlzip'}")
 
 
-@nox.session(python=docpython)
+@nox_uv.session(python=DOCPYTHON, uv_groups=["docs"])
 @nox.parametrize(
     ["site", "repository"],
     [
@@ -438,29 +433,17 @@ def docs_bundle_htmlzip(session: nox.Session) -> None:
         nox.param("github", "plasmapy/plasmapy_sphinx", id="plasmapy_sphinx"),
     ],
 )
-def build_docs_with_dev_version_of(
-    session: nox.Session, site: str, repository: str
-) -> None:
+def docs_upstream(session: nox.Session, site: str, repository: str) -> None:
     """
-    Build documentation against the development branch of a dependency.
+    Build documentation against the development branch of an upstream dependency.
 
     The purpose of this session is to catch bugs and breaking changes
     so that they can be fixed or updated earlier rather than later.
     """
-    # Note: Individual dependencies are install in this fashion to
-    #       avoid resolution conflicts if an upper dependency limit
-    #       had been put on the target package.
-    pkg_name = repository.split("/")[-1]
-    deps = _get_dependencies_from_pyproject_toml(extras="docs")
-    deps.pop(pkg_name, None)
-
-    session.install(
-        f"git+https://{site}.com/{repository}",
-        *list(deps.values()),
-        silent=False,
-    )
-    session.install("--no-deps", ".")
-    session.run(*sphinx_base_command, *build_html, *session.posargs)
+    session.install(f"git+https://{site}.com/{repository}")
+    package = repository.rsplit("/", maxsplit=1)[-1]
+    session.run_install("uv", "pip", "show", package)
+    session.run(*SPHINX_BASE_COMMAND, *BUILD_HTML, *session.posargs)
 
 
 LINKCHECK_TROUBLESHOOTING = """
@@ -478,65 +461,39 @@ These variables are in the form of Python regular expressions:
 """
 
 
-@nox.session(python=docpython)
+@nox_uv.session(python=DOCPYTHON, uv_groups=["docs"])
 def linkcheck(session: nox.Session) -> None:
     """Check hyperlinks in documentation."""
-    if running_on_ci:
+    if RUNNING_ON_CI:
         session.log(LINKCHECK_TROUBLESHOOTING)
-    session.install(uv_requirement)
-    session.run_install(
-        *uv_sync,
-        "--extra=docs",
-        env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
-    )
-    session.run(*sphinx_base_command, *check_hyperlinks, *session.posargs)
+
+    session.run(*SPHINX_BASE_COMMAND, *CHECK_HYPERLINKS, *session.posargs)
 
 
-MYPY_TROUBLESHOOTING = """
-🛡 To learn more about type hints, check out mypy's cheat sheet at:
-  https://mypy.readthedocs.io/en/stable/cheat_sheet_py3.html
+TY_TROUBLESHOOTING = (
+    "\n\n"
+    "For more details about specific static type checking errors, go to: "
+    "🔗 https://docs.astral.sh/ty/reference/rules"
+    "\n\n"
+    "🛡 For an introduction to type annotations, check out: "
+    "https://mypy.readthedocs.io/en/stable/cheat_sheet_py3.html"
+    "\n\n"
+    "🛠 Automatically add type annotations for common patterns with: "
+    "nox -s 'autotyping(safe)'"
+    "\n\n"
+    "🪧 Particularly tricky errors can be ignored with an inline comment of "
+    "the form: `# ty:ignore[error]`, where `error` is replaced with the "
+    "ty error code. Please use sparingly!"
+    "\n"
+)
 
-For more details about specific mypy errors, go to:
-🔗 https://mypy.readthedocs.io/en/stable/error_codes.html
 
-🪧 Especially difficult errors can be ignored with an inline comment of
-the form: `# type: ignore[error]`, where `error` is replaced with the
-mypy error code. Please use sparingly!
-
-🛠 To automatically add type hints for common patterns, run:
-  nox -s 'autotyping(safe)'
-"""
-
-
-@nox.session(python=maxpython)
-def mypy(session: nox.Session) -> None:
-    """
-    Perform static type checking.
-
-    Configuration file: mypy.ini
-    """
-
-    session.install(uv_requirement)
-    session.run_install(
-        *uv_sync,
-        "--extra=tests",
-        env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
-    )
-
-    if running_on_ci:
-        session.log(MYPY_TROUBLESHOOTING)
-
-    MYPY_COMMAND: tuple[str, ...] = (
-        "mypy",
-        ".",
-        "--install-types",
-        "--non-interactive",
-        "--show-error-context",
-        "--show-error-code-links",
-        "--pretty",
-    )
-
-    session.run(*MYPY_COMMAND, *session.posargs)
+@nox_uv.session(python=MAXPYTHON, uv_groups=["type_check"])
+def ty(session: nox.Session) -> None:
+    """Perform static type checking with ty."""
+    if RUNNING_ON_CI:
+        session.log(TY_TROUBLESHOOTING)
+    session.run("ty", "check", *session.posargs)
 
 
 @nox.session(name="import")
@@ -548,12 +505,78 @@ def try_import(session: nox.Session) -> None:
 
 @nox.session
 def build(session: nox.Session) -> None:
-    """Build & verify the source distribution and wheel."""
-    session.install("twine", "build")
-    build_command = ("python", "-m", "build")
-    session.run(*build_command, "--sdist")
-    session.run(*build_command, "--wheel")
-    session.run("twine", "check", "dist/*", *session.posargs)
+    """
+    Build the source distribution (sdist) and wheel.
+
+    The sdist and wheel are deposited into the dist/ directory.
+    """
+    session.install("uv_build")
+    session.run("uv", "build", *session.posargs)
+    session.notify("check_build")
+
+
+@nox.session
+def check_build(session: nox.Session) -> None:
+    """
+    Validate the source distribution and wheel.
+
+    This session requires that `nox -s build` has already been run.
+    """
+    session.install("twine")
+    session.run("twine", "check", "dist/*")
+
+
+@nox_uv.session(python=MAXPYTHON, uv_only_groups=["changelog"])
+@nox.parametrize("final", [nox.param(False, id="draft"), nox.param(True, id="final")])
+def changelog(session: nox.Session, final: str) -> None:
+    """
+    Build the changelog with towncrier.
+
+     - 'final': build the combined changelog for the release, delete
+       the individual changelog entries in `changelog`, and replace
+       `CHANGELOG.rst`. Be sure to commit changes before running this
+       session.
+     - 'draft': print the draft changelog to standard output, without
+       writing to files
+
+    When executing this session, provide the version of the release, as
+    in this example:
+
+       nox -s 'changelog(final)' -- 2026.5.0
+    """
+    now = datetime.datetime.now(datetime.UTC)
+
+    if len(session.posargs) != 1:
+        raise TypeError(
+            "Please provide the version of PlasmaPy to be released "
+            f"(i.e., `nox -s changelog -- {now.year}.{now.month}.0`).",
+        )
+
+    version = session.posargs[0]
+    year_pattern = r"(202[4-9]|20[3-9][0-9]|2[1-9][0-9]{2}|[3-9][0-9]{3,})"
+    month_pattern = r"(1[0-2]|[1-9])"
+    patch_pattern = r"(0?[0-9]|[1-9][0-9])"
+    version_pattern = rf"^{year_pattern}\.{month_pattern}\.{patch_pattern}$"
+    if not re.match(version_pattern, version):
+        raise ValueError(
+            "Please provide a version of the form YYYY.M.PATCH, where "
+            "YYYY is he year, M is the one or two digit month, "
+            "and PATCH is a non-negative integer.",
+        )
+
+    towncrier = ["towncrier", "build", "--version", version]
+
+    if not final:
+        session.run(*towncrier, "--draft", "--keep")
+        return
+
+    original_file = pathlib.Path(ROOT_DIR / "CHANGELOG.rst")
+    original_file.unlink()
+
+    session.run(*towncrier, "--yes")
+
+    destination = pathlib.Path(ROOT_DIR / f"docs/changelog/{version}.rst")
+    shutil.copy(original_file, destination)
 
 
 AUTOTYPING_SAFE: tuple[str, ...] = (
@@ -572,77 +595,11 @@ AUTOTYPING_RISKY: tuple[str, ...] = (
 )
 
 
-@nox.session
-@nox.parametrize("draft", [nox.param(False, id="draft"), nox.param(True, id="final")])
-def changelog(session: nox.Session, final: str) -> None:
-    """
-    Build the changelog with towncrier.
-
-     - 'final': build the combined changelog for the release, and delete
-       the individual changelog entries in `changelog`.
-     - 'draft': print the draft changelog to standard output, without
-       writing to files
-
-    When executing this session, provide the version of the release, as
-    in this example:
-
-       nox -s 'changelog(final)' -- 2024.7.0
-    """
-
-    if len(session.posargs) != 1:
-        raise TypeError(
-            "Please provide the version of PlasmaPy to be released "
-            "(i.e., `nox -s changelog -- 2024.9.0`"
-        )
-
-    source_directory = pathlib.Path("./changelog")
-
-    extraneous_files = source_directory.glob("changelog/*[0-9]*.*.rst?*")
-    if final and extraneous_files:
-        session.error(
-            "Please delete the following extraneous files before "
-            "proceeding, as the presence of these files may cause "
-            f"towncrier errors: {extraneous_files}"
-        )
-
-    version = session.posargs[0]
-
-    year_pattern = r"(202[4-9]|20[3-9][0-9]|2[1-9][0-9]{2}|[3-9][0-9]{3,})"
-    month_pattern = r"(1[0-2]|[1-9])"
-    patch_pattern = r"(0?[0-9]|[1-9][0-9])"
-    version_pattern = rf"^{year_pattern}\.{month_pattern}\.{patch_pattern}$"
-
-    if not re.match(version_pattern, version):
-        raise ValueError(
-            "Please provide a version of the form YYYY.M.PATCH, where "
-            "YYYY is the year past 2024, M is the one or two digit month, "
-            "and PATCH is a non-negative integer."
-        )
-
-    session.install(".", "towncrier")
-
-    options = ("--yes",) if final else ("--draft", "--keep")
-
-    session.run(
-        "towncrier",
-        "build",
-        "--config",
-        "pyproject.toml",
-        "--dir",
-        ".",
-        "--version",
-        version,
-        *options,
-        *session.posargs,
-    )
-
-    if final:
-        original_file = pathlib.Path("./CHANGELOG.rst")
-        destination = pathlib.Path(f"./docs/changelog/{version}.rst")
-        original_file.rename(destination)
-
-
-@nox.session
+@nox_uv.session(
+    python=MINPYTHON,
+    uv_only_groups=["autotyping"],
+    uv_no_install_project=True,
+)
 @nox.parametrize(
     "options",
     [
@@ -652,68 +609,28 @@ def changelog(session: nox.Session, final: str) -> None:
 )
 def autotyping(session: nox.Session, options: tuple[str, ...]) -> None:
     """
-    Automatically add type hints with autotyping.
+    Automatically add type annotations with autotyping.
 
-    The `safe` option generates very few incorrect type hints, and can
-    be used in CI. The `aggressive` option may add type hints that are
-    incorrect, so please perform a careful code review when using this
-    option.
+    The `safe` option generates very few incorrect type annotations, and
+    can be used in CI. The `aggressive` option may add type annotations
+    that are incorrect, so please perform a careful code review when
+    using this option.
 
     To check specific files, pass them after a `--`, such as:
 
         nox -s 'autotyping(safe)' -- noxfile.py
     """
-    session.install(".[tests,docs]", "autotyping", "typing_extensions")
-    DEFAULT_PATHS = ("src", "tests", "tools", "*.py", ".github", "docs/*.py")
-    paths = session.posargs or DEFAULT_PATHS
+    session.install("autotyping", "typing_extensions")
+    default_paths = ("src", "tests", "tools", "*.py", ".github", "docs/*.py")
+    paths = session.posargs or default_paths
     session.run("python", "-m", "autotyping", *options, *paths, *session.posargs)
 
 
-@nox.session
-def monkeytype(session: nox.Session) -> None:
-    """
-    Add type hints to a module based on variable types from running pytest.
-
-    Examples
-    --------
-    nox -s monkeytype -- plasmapy.particles.atomic
-    """
-
-    if not session.posargs:
-        session.error(
-            "Please add at least one module using a command like: "
-            "`nox -s monkeytype -- plasmapy.particles.atomic`"
-        )
-
-    session.install(".[tests]")
-    session.install("MonkeyType", "pytest-monkeytype", "pre-commit")
-
-    database = pathlib.Path("./monkeytype.sqlite3")
-
-    if not database.exists():
-        session.log(f"File {database.absolute()} not found. Running MonkeyType.")
-        session.run("pytest", f"--monkeytype-output={database.absolute()}")
-    else:
-        session.log(f"File {database.absolute()} found.")
-
-    for module in session.posargs:
-        session.run("monkeytype", "apply", module)
-
-    session.run("pre-commit", "run", "ruff", "--all-files")
-    session.run("pre-commit", "run", "ruff-format", "--all-files")
-
-    session.log("Please inspect newly added type hints for correctness.")
-    session.log("Check new type hints with `nox -s mypy`.")
-
-
-@nox.session
-def cff(session: nox.Session) -> None:
-    """Validate CITATION.cff against the metadata standard."""
-    session.install("cffconvert")
-    session.run("cffconvert", "--validate", *session.posargs)
-
-
-@nox.session
+@nox_uv.session(
+    python=MAXPYTHON,
+    uv_only_groups=["manifest"],
+    uv_no_install_project=True,
+)
 def manifest(session: nox.Session) -> None:
     """
     Check for missing files in MANIFEST.in.
@@ -723,31 +640,30 @@ def manifest(session: nox.Session) -> None:
     positives can be ignored by adding file patterns and paths to
     `ignore` under `[tool.check-manifest]` in `pyproject.toml`.
     """
+    # check-manifest would be suitable as a pre-commit hook, except that
+    # it requires ∼6 seconds to build the package, which would triple
+    # the time needed to run pre-commit.
     session.install("check-manifest")
     session.run("check-manifest", *session.posargs)
 
 
-@nox.session
+@nox_uv.session(python=MAXPYTHON, uv_only_groups=["lint"], uv_no_install_project=True)
 def lint(session: nox.Session) -> None:
-    """
-    Run all pre-commit hooks on all files.
-
-    Configuration file: .pre-commit-config.yaml
-    """
-    session.install("pre-commit")
+    """Run all pre-commit hooks defined in .pre-commit-config.yaml."""
     session.run(
         "pre-commit",
         "run",
         "--all-files",
-        "--show-diff-on-failure",
         *session.posargs,
     )
 
 
-zizmor_troubleshooting_message = """
+ZIZMOR_TROUBLESHOOTING_MESSAGE = """
 
 🪧 Run this check locally with `nox -s zizmor` to find potential
-security vulnerabilities in GitHub workflows.
+security vulnerabilities in GitHub workflows and perform safe fixes.
+
+🧰 Perform safe and unsafe fixes with `nox -s zizmor -- --fix=all`.
 
 📜 Audit rules: https://woodruffw.github.io/zizmor/audits
 
@@ -758,27 +674,34 @@ or add the appropriate configuration settings to: .github/zizmor.yml
 """
 
 
-@nox.session
+@nox_uv.session(python=MAXPYTHON, uv_only_groups=["zizmor"], uv_no_install_project=True)
 def zizmor(session: nox.Session) -> None:
     """
-    Find common security issues in GitHub Actions.
+    Find common security issues in GitHub workflows.
 
     Because some of the zizmor audit rules require a GitHub token,
     running this check locally may produce different results than
     running it in CI.
 
+    If no positional arguments are provided, safe fixes will be applied.
+    To perform unsafe fixes, run `nox -s zizmor -- --fix=unsafe-only`.
+
     Configuration file: .github/zizmor.yml
     """
-    if running_on_ci:
-        session.log(zizmor_troubleshooting_message)
+    if RUNNING_ON_CI:
+        session.log(ZIZMOR_TROUBLESHOOTING_MESSAGE)
 
-    session.install("zizmor")
-    session.run("zizmor", ".github", "--no-progress", "--color=auto", *session.posargs)
+    options = [
+        "--show-audit-urls=always",
+    ]
 
+    if not RUNNING_ON_CI and not session.posargs:
+        options.append("--quiet")
 
-# /// script
-# dependencies = ["nox"]
-# ///
+    options.extend(session.posargs or ["--fix=safe"])
+
+    session.run("zizmor", ".github", *options)
+
 
 if __name__ == "__main__":
     nox.main()

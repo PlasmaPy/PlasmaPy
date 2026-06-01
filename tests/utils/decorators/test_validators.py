@@ -127,7 +127,7 @@ class TestValidateQuantities:
                     "validations": {"validations_on_return": {"units": [u.cm, None]}},
                 },
                 "output": {
-                    "validations_on_return": {"units": [u.cm], "none_shall_pass": True}
+                    "validations_on_return": {"units": [u.cm], "none_shall_pass": True},
                 },
             },
             {
@@ -137,7 +137,7 @@ class TestValidateQuantities:
                     "args": (5,),
                     "kwargs": {},
                     "validations": {
-                        "x": {"units": [u.cm, None], "none_shall_pass": False}
+                        "x": {"units": [u.cm, None], "none_shall_pass": False},
                     },
                 },
                 "raises": ValueError,
@@ -164,18 +164,18 @@ class TestValidateQuantities:
         ]  # type: List[Dict[str, Any]]
 
         for case in _cases:
-            sig = inspect.signature(case["setup"]["function"])
-            args = case["setup"]["args"]
-            kwargs = case["setup"]["kwargs"]
-            bound_args = sig.bind(*args, **kwargs)
+            sig = inspect.signature(case["setup"]["function"])  # ty:ignore[invalid-argument-type, not-subscriptable]
+            args = case["setup"]["args"]  # ty:ignore[invalid-argument-type, not-subscriptable]
+            kwargs = case["setup"]["kwargs"]  # ty:ignore[invalid-argument-type, not-subscriptable]
+            bound_args = sig.bind(*args, **kwargs)  # ty:ignore[invalid-argument-type, not-iterable]
 
-            vq = ValidateQuantities(**case["setup"]["validations"])
-            vq.f = case["setup"]["function"]
+            vq = ValidateQuantities(**case["setup"]["validations"])  # ty:ignore[invalid-argument-type, not-subscriptable]
+            vq.f = case["setup"]["function"]  # ty:ignore[invalid-argument-type, not-subscriptable]
             if "warns" in case:
-                with pytest.warns(case["warns"]):
+                with pytest.warns(case["warns"]):  # ty:ignore[invalid-argument-type]
                     validations = vq._get_validations(bound_args)
             elif "raises" in case:
-                with pytest.raises(case["raises"]):
+                with pytest.raises(case["raises"]):  # ty:ignore[invalid-argument-type]
                     vq._get_validations(bound_args)
                 continue
             else:
@@ -185,24 +185,28 @@ class TestValidateQuantities:
             assert sorted(validations.keys()) == sorted(case["output"].keys())
 
             # if validation key-value not specified then default is assumed
-            for arg_name in case["output"]:
-                arg_validations = validations[arg_name]
+            for arg_name in case["output"]:  # ty:ignore[not-iterable]
+                arg_validations = validations[arg_name]  # ty:ignore[invalid-argument-type]
 
                 for key, val in default_validations.items():
-                    if key in case["output"][arg_name]:
-                        val = case["output"][arg_name][key]  # noqa: PLW2901
+                    if key in case["output"][arg_name]:  # ty:ignore[invalid-argument-type, not-subscriptable, unsupported-operator]
+                        val = case["output"][arg_name][key]  # noqa: PLW2901  # ty:ignore[invalid-argument-type, not-subscriptable]
                     assert arg_validations[key] == val
 
         # method calls `_get_unit_checks` and `_get_value_checks`
         with (
             mock.patch.object(
-                CheckUnits, "_get_unit_checks", return_value={}
+                CheckUnits,
+                "_get_unit_checks",
+                return_value={},
             ) as mock_cu_get,
             mock.patch.object(
-                CheckValues, "_get_value_checks", return_value={}
+                CheckValues,
+                "_get_value_checks",
+                return_value={},
             ) as mock_cv_get,
         ):
-            vq = ValidateQuantities(x=u.cm)
+            vq = ValidateQuantities(x=u.cm)  # ty:ignore[invalid-argument-type]
             vq.f = self.foo
             sig = inspect.signature(self.foo)
             bound_args = sig.bind(5)
@@ -301,18 +305,18 @@ class TestValidateQuantities:
 
         # perform tests
         for _ii, case in enumerate(_cases):
-            arg, arg_name = case["input"]["args"]
-            validations = case["input"]["validations"]
+            arg, arg_name = case["input"]["args"]  # ty:ignore[not-subscriptable]
+            validations = case["input"]["validations"]  # ty:ignore[not-subscriptable]
 
             if "warns" in case:
-                with pytest.warns(case["warns"]):
-                    _result = vq._validate_quantity(arg, arg_name, validations)
+                with pytest.warns(case["warns"]):  # ty:ignore[invalid-argument-type]
+                    _result = vq._validate_quantity(arg, arg_name, validations)  # ty:ignore[invalid-argument-type]
             elif "raises" in case:
-                with pytest.raises(case["raises"]):
-                    vq._validate_quantity(arg, arg_name, validations)
+                with pytest.raises(case["raises"]):  # ty:ignore[invalid-argument-type]
+                    vq._validate_quantity(arg, arg_name, validations)  # ty:ignore[invalid-argument-type]
                 continue
             else:
-                _result = vq._validate_quantity(arg, arg_name, validations)
+                _result = vq._validate_quantity(arg, arg_name, validations)  # ty:ignore[invalid-argument-type]
 
             assert _result == case["output"]
 
@@ -328,16 +332,18 @@ class TestValidateQuantities:
                 return_value=(5 * u.cm, u.cm, None, None),
             ) as mock_cu_checks,
             mock.patch.object(
-                CheckValues, "_check_value", return_value=None
+                CheckValues,
+                "_check_value",
+                return_value=None,
             ) as mock_cv_checks,
         ):
             args = case["input"][:2]
             validations = case["input"][2]
 
-            vq = ValidateQuantities(**validations)
+            vq = ValidateQuantities(**validations)  # ty:ignore[invalid-argument-type]
             vq.f = self.foo
 
-            assert vq._validate_quantity(*args, validations) == case["output"]
+            assert vq._validate_quantity(*args, validations) == case["output"]  # ty:ignore[invalid-argument-type]
             assert mock_cu_checks.called
             assert mock_cv_checks.called
 
@@ -413,22 +419,22 @@ class TestValidateQuantities:
 
         # perform tests
         for case in _cases:
-            validations = case["setup"]["validations"]
-            func = case["setup"]["function"]
-            wfoo = ValidateQuantities(**validations)(func)
+            validations = case["setup"]["validations"]  # ty:ignore[invalid-argument-type, not-subscriptable]
+            func = case["setup"]["function"]  # ty:ignore[invalid-argument-type, not-subscriptable]
+            wfoo = ValidateQuantities(**validations)(func)  # ty:ignore[invalid-argument-type]
 
-            args = case["setup"]["args"]
-            kwargs = case["setup"]["kwargs"]
+            args = case["setup"]["args"]  # ty:ignore[invalid-argument-type, not-subscriptable]
+            kwargs = case["setup"]["kwargs"]  # ty:ignore[invalid-argument-type, not-subscriptable]
 
             if "raises" in case:
-                with pytest.raises(case["raises"]):
-                    wfoo(*args, **kwargs)
+                with pytest.raises(case["raises"]):  # ty:ignore[invalid-argument-type]
+                    wfoo(*args, **kwargs)  # ty:ignore[invalid-argument-type, not-iterable]
                 continue
 
-            _result = wfoo(*args, **kwargs)
+            _result = wfoo(*args, **kwargs)  # ty:ignore[invalid-argument-type, not-iterable]
             assert _result == case["output"]
             if "extra assert" in case:
-                assert case["extra assert"](_result)
+                assert case["extra assert"](_result)  # ty:ignore[call-non-callable]
 
         # __call__ calls methods `_get_validations` and `_validate_quantity`
         #
@@ -436,7 +442,7 @@ class TestValidateQuantities:
         default_validations = self.check_defaults.copy()
         default_validations["units"] = [default_validations.pop("units")]
         default_validations["equivalencies"] = [
-            default_validations.pop("equivalencies")
+            default_validations.pop("equivalencies"),
         ]
         validations = {
             "x": {**default_validations, "units": [u.cm]},
@@ -444,10 +450,14 @@ class TestValidateQuantities:
         }
         with (
             mock.patch.object(
-                ValidateQuantities, "_get_validations", return_value=validations
+                ValidateQuantities,
+                "_get_validations",
+                return_value=validations,
             ) as mock_vq_get,
             mock.patch.object(
-                ValidateQuantities, "_validate_quantity", return_value=5 * u.cm
+                ValidateQuantities,
+                "_validate_quantity",
+                return_value=5 * u.cm,
             ) as mock_vq_validate,
         ):
             wfoo = ValidateQuantities(**validations)(self.foo)
@@ -457,7 +467,7 @@ class TestValidateQuantities:
 
         # validation 'checks_on_return' not allowed
         with pytest.raises(TypeError):
-            ValidateQuantities(checks_on_return=u.cm)
+            ValidateQuantities(checks_on_return=u.cm)  # ty:ignore[invalid-argument-type]
 
         # test on class method
         class Foo:
@@ -526,27 +536,27 @@ class TestValidateQuantities:
                 # decorate
                 if ii == 0:
                     # functional decorator call
-                    wfoo = validate_quantities(mock_foo, **case["setup"]["validations"])
+                    wfoo = validate_quantities(mock_foo, **case["setup"]["validations"])  # ty:ignore[invalid-argument-type]
                 elif ii == 1:
                     # sugar decorator call
                     #
                     #  @validate_quantities(x=check)
                     #      def foo(x):
                     #          return x
-                    wfoo = validate_quantities(**case["setup"]["validations"])(mock_foo)
+                    wfoo = validate_quantities(**case["setup"]["validations"])(mock_foo)  # ty:ignore[invalid-argument-type]
                 else:
                     continue
 
                 args = case["setup"]["args"]
                 kwargs = case["setup"]["kwargs"]
-                assert wfoo(*args, **kwargs) == case["output"]
+                assert wfoo(*args, **kwargs) == case["output"]  # ty:ignore[invalid-argument-type]
 
                 assert mock_vq_class.called
                 assert mock_foo.called
 
                 assert mock_vq_class.call_args[0] == ()
                 assert sorted(mock_vq_class.call_args[1].keys()) == sorted(
-                    case["setup"]["validations"].keys()
+                    case["setup"]["validations"].keys(),
                 )
 
                 for arg_name, validations in case["setup"]["validations"].items():
@@ -585,7 +595,8 @@ class TestValidateClassAttributes:
 
         @property
         @validate_class_attributes(
-            expected_attributes=["x"], both_or_either_attributes=[("y", "z")]
+            expected_attributes=["x"],
+            both_or_either_attributes=[("y", "z")],
         )
         def require_x_and_either_y_or_z(self) -> int:
             return 0
@@ -610,7 +621,6 @@ class TestValidateClassAttributes:
         """
         Test errors raised by the validate_class_attributes decorator.
         """
-
         test_case = self.SampleCase(**test_case_constructor_keyword_arguments)
 
         has_x = "x" in test_case_constructor_keyword_arguments
@@ -636,12 +646,12 @@ class TestValidateClassAttributes:
 
 def test_validate_quantities_argument_type_annotation() -> None:
     """
-    Test that |validate_quantities| works with type hint annotations of
+    Test that |validate_quantities| works with type annotations of
     the form ``u.Quantity[u.m]`` on a function argument.
     """
 
     @validate_quantities
-    def f(x: u.Quantity[u.m]):
+    def f(x: u.Quantity[u.m]):  # noqa: ANN202
         return x
 
     argument = 100 * u.cm
@@ -654,7 +664,7 @@ def test_validate_quantities_argument_type_annotation() -> None:
 
 def test_validate_quantities_return_type_annotation() -> None:
     """
-    Test that |validate_quantities| works with type hint annotations of
+    Test that |validate_quantities| works with type annotations of
     the form ``u.Quantity[u.m]`` as a return argument.
     """
 

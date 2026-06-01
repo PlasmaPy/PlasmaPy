@@ -1,1 +1,0 @@
-Added a |Nox| session to perform security audits of GitHub workflows with ``zizmor`` in CI.

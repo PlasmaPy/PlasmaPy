@@ -9,7 +9,8 @@ from mpmath import polylog
 
 
 def Fermi_integral(
-    x: complex | np.ndarray, j: complex | np.ndarray
+    x: complex | np.ndarray,
+    j: complex | np.ndarray,
 ) -> complex | np.ndarray:
     r"""
     Calculate the complete Fermi-Dirac integral.
@@ -164,20 +165,19 @@ def rot_a_to_b(a: np.ndarray, b: np.ndarray) -> np.ndarray:
            [ 0.93243873,  0.2467179 , -0.2639854 ]])
 
     """
-
     # Normalize and validate both vectors
 
     a = np.squeeze(a)
     if a.shape != (3,):
         raise ValueError(
-            f"Argument 'a' must have shape (3,) but input has shape {a.shape}."
+            f"Argument 'a' must have shape (3,) but input has shape {a.shape}.",
         )
     a = a / np.linalg.norm(a)
 
     b = np.squeeze(b)
     if b.shape != (3,):
         raise ValueError(
-            f"Argument 'b' must have shape (3,) but input has shape {b.shape}."
+            f"Argument 'b' must have shape (3,) but input has shape {b.shape}.",
         )
     b = b / np.linalg.norm(b)
 
@@ -188,7 +188,7 @@ def rot_a_to_b(a: np.ndarray, b: np.ndarray) -> np.ndarray:
     axb = np.cross(a, b)
     c = np.dot(a, b)
     vskew = np.array(
-        [[0, -axb[2], axb[1]], [axb[2], 0, -axb[0]], [-axb[1], axb[0], 0]]
+        [[0, -axb[2], axb[1]], [axb[2], 0, -axb[0]], [-axb[1], axb[0], 0]],
     ).T  # Transpose to get right orientation
 
     return np.identity(3) + vskew + np.dot(vskew, vskew) / (1 + c)

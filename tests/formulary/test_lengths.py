@@ -53,7 +53,8 @@ mu = m_p.to(u.u).value
         ([0, 1] * u.eV, [1, 0] * u.cm**-3, [0, np.inf] * u.m),
     ],
 )
-@pytest.mark.filterwarnings("ignore::astropy.units.UnitsWarning")
+@pytest.mark.filterwarnings("ignore:.*no specified units.*:astropy.units.UnitsWarning")
+@pytest.mark.filterwarnings("ignore:.*divide by zero.*:RuntimeWarning")
 def test_Debye_length(T_e, n_e, expected) -> None:
     result = Debye_length(T_e=T_e, n_e=n_e)
     assert_quantity_allclose(result, expected, rtol=1e-6, equal_nan=True, verbose=True)
@@ -139,7 +140,6 @@ class TestGyroradius:
     )
     def test_raises(self, args, kwargs, _error) -> None:
         """Test scenarios that raise an exception."""
-
         with warnings.catch_warnings(), pytest.raises(_error):
             # we don't care about warnings for these tests
             warnings.simplefilter("ignore")
@@ -332,8 +332,8 @@ class TestGyroradius:
     def test_warns(self, args, kwargs, expected, _warns) -> None:
         with pytest.warns(_warns):
             rc = gyroradius(*args, **kwargs)
-            if expected is not None:
-                assert np.allclose(rc, expected)
+        if expected is not None:
+            assert np.allclose(rc, expected)
 
     def test_keeps_arguments_unchanged(self) -> None:
         Vperp1 = u.Quantity([np.nan, 1], unit=u.m / u.s)
@@ -356,22 +356,26 @@ class TestGyroradius:
         vperp = thermal_speed(T, particle=particle, method="most_probable", ndim=3)
 
         assert gyroradius(B, particle=particle, T=T) == gyroradius(
-            B, particle=particle, Vperp=vperp
+            B,
+            particle=particle,
+            Vperp=vperp,
         )
 
 
 def test_inertial_length() -> None:
     r"""Test the inertial_length function in lengths.py."""
-
     assert inertial_length(n_i, particle="p+").unit.is_equivalent(u.m)
 
     assert np.isclose(
-        inertial_length(mu * u.cm**-3, particle="p+").cgs.value, 2.28e7, rtol=0.01
+        inertial_length(mu * u.cm**-3, particle="p+").cgs.value,
+        2.28e7,
+        rtol=0.01,
     )
 
     inertial_length_electron_plus = inertial_length(5.351 * u.m**-3, particle="e+")
     assert inertial_length_electron_plus == inertial_length(
-        5.351 * u.m**-3, particle="e-"
+        5.351 * u.m**-3,
+        particle="e-",
     )
 
     assert inertial_length(n_i, particle="p+") == inertial_length(n_i, particle="p+")
@@ -390,9 +394,7 @@ def test_inertial_length() -> None:
 
     with pytest.warns(u.UnitsWarning):
         inertial_length_no_units = inertial_length(1e19, particle="p+")
-        assert inertial_length_no_units == inertial_length(
-            1e19 * u.m**-3, particle="p+"
-        )
+    assert inertial_length_no_units == inertial_length(1e19 * u.m**-3, particle="p+")
 
     assert inertial_length(n_e, "e-").unit.is_equivalent(u.m)
 
@@ -421,6 +423,7 @@ def test_inertial_length() -> None:
         (rc_, gyroradius),
         (rhoc_, gyroradius),
     ],
+    ids=["cwp_", "lambdaD_", "rc_", "rhoc "],
 )
 def test_aliases(alias, parent) -> None:
     """Test all aliases defined in lengths.py"""

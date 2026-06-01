@@ -1,8 +1,8 @@
 .. _coding guide:
 
-***************
-Coding Guide 👾
-***************
+************
+Coding Guide
+************
 
 .. contents:: Table of Contents
    :depth: 2
@@ -422,16 +422,16 @@ frustration.
 * Write error messages that are friendly, supportive, and helpful. Error
   message should never be condescending or blame the user.
 
-Type hint annotations
-=====================
+Type annotations
+================
 
-PlasmaPy uses |type hint annotations| and |mypy| to perform
-|static type checking|. Type hints improve readability and
+PlasmaPy uses |type annotations| and |ty| to perform
+|static type checking|. Type annotations improve readability and
 maintainability by clarifying the types that a function accepts and
-returns. Type hints also help Jupyter notebooks and IDEs provide better
-tooltips and perform auto-completion.
+returns. Type annotations also help Jupyter notebooks and IDEs provide
+better tooltips and autocompletions.
 
-Type hint annotations specify the expected types of arguments and return
+Type annotations specify the expected types of arguments and return
 values. A function that accepts a `float` or `str` and returns a `str`
 may be written as:
 
@@ -440,25 +440,24 @@ may be written as:
    def f(x: float | str) -> str:
        return str(x)
 
-The :py:`|` operator is used to represent unions between types. To learn
-more, check out the `type hints cheat sheet`_.
+.. tip::
+
+   The :py:`|` operator represents unions between types.
 
 .. note::
 
-   Type hint annotations are by default not enforced at runtime, and
-   instead are used to _indicate_ the types that a function or method
-   accepts and returns. However, there are some situations where type
-   hints do play a role at runtime, such as in functions decorated by
-   |particle_input| and/or |validate_quantities|.
+   Type annotations are not enforced at runtime by default, but are
+   often used or enforced by decorators like |particle_input| and
+   |validate_quantities|.
 
-Automatically adding type hint annotations
-------------------------------------------
+Automatically adding type annotations
+-------------------------------------
 
 PlasmaPy has defined multiple |Nox| sessions in |noxfile.py|_ that can
-automatically add type hints using autotyping_ and MonkeyType_.
+automatically add type annotations using autotyping_ and MonkeyType_.
 
 The ``autotyping(safe)`` session uses autotyping_ to automatically add
-type hints for common patterns, while producing very few incorrect
+type annotations for common patterns, while producing very few incorrect
 annotations:
 
 .. code-block:: shell
@@ -466,17 +465,17 @@ annotations:
    nox -s 'autotyping(safe)'
 
 The ``autotyping(aggressive)`` session uses autotyping_ to automatically
-add even more type hints than ``autotyping(safe)``. Because it is less
-reliable, the newly added type hints should be carefully reviewed:
+add even more type annotations than ``autotyping(safe)``. Because it is less
+reliable, the newly added type annotations should be carefully reviewed:
 
 .. code-block:: shell
 
    nox -s 'autotyping(aggressive)'
 
-The ``monkeytype`` session automatically adds type hint annotations to a
+The ``monkeytype`` session automatically adds type annotations to a
 module based on the types of variables that were observed when running
 `pytest`. Like ``autotyping(aggressive)``, it can add incorrect or
-incomplete type hints, so newly added type hints should be carefully
+incomplete type annotations, so newly added type annotations should be carefully
 reviewed. It is run for a single module at a time:
 
 .. code-block:: shell
@@ -491,8 +490,8 @@ reviewed. It is run for a single module at a time:
 Static type checking
 --------------------
 
-PlasmaPy uses |mypy| to perform |static type checking| to detect
-incorrect or inconsistent |type hint annotations|. Static type checking
+PlasmaPy uses |ty| to perform |static type checking| to detect
+incorrect or inconsistent |type annotations|. Static type checking
 helps us find type related errors during the development process, and
 thus improve code quality.
 
@@ -500,38 +499,36 @@ We can perform static type checking by running:
 
 .. code-block:: shell
 
-   nox -s mypy
+   nox -s typecheck
 
-The configuration for |mypy| is in |mypy.ini|_.
+The configuration for |ty| is in |pyproject.toml|_.
 
-Using |mypy| helps us identify errors and fix problems. For example,
-suppose we run |mypy| on the following function:
+Suppose we run |ty| on the following function:
 
 .. code-block:: python
 
-   def return_object(x: int | str) -> int:  # should be: -> int | str
-       return x
+   def return_int(n: int | str) -> int:  # should be: -> int | str
+       return n
 
-We will then get the following error:
+We will get the following error:
 
-.. code-block:: diff
+.. code-block::
 
-   Incompatible return value type (got "int | str", expected "int")  [return-value]
+   Return type does not match returned value: expected `int`, found `int | str` (invalid-return-type)
 
 .. tip::
 
-   To learn more about a particular |mypy| error code, search for it in
-   its documentation pages on `error codes enabled by default`_ and
-   `error codes for optional checks`_.
+   To learn more about any error found by |ty|, look it up on the
+   `ty rules`_ page (e.g., `invalid-return-type`_).
 
-Ignoring mypy errors
-~~~~~~~~~~~~~~~~~~~~
+Ignoring ty errors
+~~~~~~~~~~~~~~~~~~
 
-Static type checkers like |mypy| are unable to follow the behavior of
+Static type checkers like |ty| cannot follow the behavior of
 functions that dynamically change the types of objects, which occurs in
 functions decorated by |particle_input|. In situations like this, we can
-use a :py:`# type: ignore` comment to indicate that |mypy| should ignore
-a particular error.
+use a :py:`# ty:ignore` comment to indicate that |ty| should ignore
+an error.
 
 .. code-block:: python
 
@@ -539,23 +536,17 @@ a particular error.
 
    @particle_input
    def f(particle: ParticleLike) -> Particle | CustomParticle | ParticleList:
-       return particle  # type: ignore[return-value]
+       return particle  # ty:ignore[invalid-return-type]
 
 .. important::
 
-   Because type hints are easier to add while writing code, please use
-   :py:`# type ignore` comments sparingly!
+   Type annotations are much easier to add while writing code, so
+   please use :py:`# ty:ignore` comments sparingly!
 
-.. note::
+Quantity type annotations
+-------------------------
 
-   PlasmaPy only recently added |mypy| to its continuous integration
-   suite. If you run into |mypy| errors that frequently need to be
-   ignored, please bring them up in :issue:`2589`.
-
-Quantity type hints
--------------------
-
-When a function accepts a |Quantity|, the annotation should additionally
+When a function accepts a |Quantity|, the annotation should
 include the corresponding unit in brackets. When the function is
 |decorated| with |validate_quantities|, then the |Quantity| provided to
 and/or returned by the function will be converted to that unit.
@@ -570,8 +561,8 @@ and/or returned by the function will be converted to that unit.
    def speed(distance: u.Quantity[u.m], time: u.Quantity[u.s]) -> u.Quantity[u.m / u.s]:
        return distance / time
 
-Particle type hints
--------------------
+Particle type annotations
+-------------------------
 
 Functions that accept particles or particle collections should annotate
 the corresponding function with |ParticleLike| or |ParticleListLike|.
@@ -587,27 +578,14 @@ or |ParticleList|.
 
    @particle_input
    def get_particle(particle: ParticleLike) -> Particle | CustomParticle:
-       return particle  # type: ignore[return-value]
+       return particle  # ty:ignore[invalid-return-type]
 
-The :py:`# type: ignore[return-value]` comment for |mypy| is needed
-because |particle_input| dynamically (rather than statically) changes
+The :py:`# ty:ignore[invalid-return-type]` comment is needed because
+|particle_input| dynamically (rather than statically) changes
 the type of ``particle``.
 
 Imports
 -------
-
-* Use standard abbreviations for imported packages:
-
-  .. code-block:: python
-
-     import astropy.constants as const
-     import astropy.units as u
-     import matplotlib.pyplot as plt
-     import numpy as np
-     import pandas as pd
-
-* PlasmaPy uses |ruff| to organize import statements via a |pre-commit|
-  hook.
 
 * For most objects, import the package, subpackage, or module rather
   than the individual code object. Including more of the namespace
@@ -616,12 +594,7 @@ Imports
   :py:`loads`.
 
 * For the most frequently used PlasmaPy objects (e.g., |Particle|) and
-  |type hint annotations| (e.g., `~typing.Optional`), import the object
-  directly instead of importing the package, subpackage, or module.
-
-* Use absolute imports (e.g., :py:`from plasmapy.particles import
-  Particle`) rather than relative imports (e.g., :py:`from ..particles
-  import Particle`).
+  |type annotations|, import the object directly.
 
 * Do not use star imports (e.g., :py:`from package.subpackage import *`),
   except in very limited situations.
@@ -629,7 +602,7 @@ Imports
 Project infrastructure
 ======================
 
-* Package requirements are specified in |pyproject.toml|_.
+* PlasmaPy's dependencies are specified in |pyproject.toml|_.
 
 For general information about Python packaging, check out the
 `Python Packaging User Guide`_.
@@ -658,17 +631,16 @@ Dependencies and requirements
   - Support for core package dependencies be dropped **2 years** after
     their initial release.
 
-* The |uv.lock|_ file contains pinned requirements files
-  for use in continuous integration tests.
+* The file |uv.lock|_ defines the Python environments used in CI. This
+  lockfile is periodically updated via automated pull requests to
+  `upgrade the lockfile`_, defined in this
+  `workflow <https://github.com/PlasmaPy/PlasmaPy/blob/main/.github/workflows/upgrade-uv-lock.yml>`__.
 
-  - These files are updated periodically via pull requests created by a
-    GitHub workflow to `update pinned requirements`_, defined in this
-    `script <https://github.com/PlasmaPy/PlasmaPy/blob/main/.github/workflows/update-pinned-reqs.yml>`__.
+  - The consistency of |uv.lock|_ and |pyproject.toml|_ is verified
+    via a |pre-commit| hook.
 
-  - When updating requirements in |pyproject.toml|_, run
-    :bash:`nox -s requirements` to update the pinned requirements files.
-
-  - Validate requirements with :bash:`nox -s validate_requirements`.
+  - To upgrade the versions of dependencies used in CI, run
+    :bash:`nox -s lock`.
 
 * Even if a dependency is unlikely to be shared with packages installed
   alongside PlasmaPy, that dependency may have strict requirements that
@@ -677,22 +649,18 @@ Dependencies and requirements
   heliopythoniverse because voila_ had strict dependencies on packages
   in the Jupyter ecosystem.
 
-* Only set maximum or exact requirements (e.g., ``numpy <= 2.0.0`` or
-  ``scipy == 1.13.1``) when absolutely necessary. After setting a
-  maximum or exact requirement, create a GitHub issue to loosen that
-  requirement.
+* Only set upper limits (e.g., ``numpy<2.4.0``) or exact requirements
+  (e.g., ``numpy==2.3.0``) when absolutely necessary. When doing so,
+  create a GitHub issue to loosen that requirement.
 
   .. important::
 
-     Maximum requirements can lead to version conflicts when installed
-     alongside other packages. It is preferable to update PlasmaPy to
-     become compatible with the latest versions of its dependencies than
-     to set a maximum requirement.
+     Upper limits on dependencies can lead to version conflicts when
+     installed alongside other packages. It is preferable to update
+     PlasmaPy to become compatible with the latest versions of its
+     dependencies than to set an upper limit on a requirements.
 
-* It sometimes takes a few months for packages like Numba to become
-  compatible with the newest minor version of |Python|.
-
-* The ``tests`` and ``docs`` dependency sets are required for running
+* The ``tests`` and ``docs`` dependency groups are required for running
   tests and building documentation, but are not required for package
   installation. Consequently, we can require much newer versions of the
   packages in these dependency sets.
@@ -777,7 +745,7 @@ not noticeably impact performance during typical interactive use, but
 the performance penalty can become significant for numerically intensive
 applications.
 
-A :term:`lite-function` is an optimized version of another `plasmapy`
+A :term:`lite-function` is an optimized version of another PlasmaPy
 function that accepts numbers and |NumPy| arrays in assumed SI units.
 :term:`Lite-functions` skip all validations and instead prioritize
 performance. Most :term:`lite-functions` are defined in
@@ -918,7 +886,7 @@ adjacent fields such as astronomy and heliophysics. To get started with
 Validating quantities
 ~~~~~~~~~~~~~~~~~~~~~
 
-Use |validate_quantities| to enforce |Quantity| type hints:
+Use |validate_quantities| to enforce |Quantity| type annotations:
 
 .. code-block:: python
 
@@ -1059,6 +1027,13 @@ an angular frequency to get a length scale:
 
 .. _performing releases:
 
+Security policy
+===============
+
+PlasmaPy's `security policy`_ is located at :file:`.github/SECURITY.md`.
+The GitHub repository has a link to
+`privately report security vulnerabilities`_.
+
 Performing releases
 ===================
 
@@ -1089,41 +1064,42 @@ The overall process of performing a release is:
 
 .. _ASCII: https://en.wikipedia.org/wiki/ASCII
 .. _autotyping: https://github.com/JelleZijlstra/autotyping
-.. _cognitive complexity: https://docs.codeclimate.com/docs/cognitive-complexity
+.. _cognitive complexity: https://getdx.com/blog/cognitive-complexity
 .. _create a release issue: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/create-release-issue.yml
 .. _Cython: https://cython.org
 .. _equivalencies: https://docs.astropy.org/en/stable/units/equivalencies.html
-.. _error codes enabled by default: https://mypy.readthedocs.io/en/stable/error_code_list.html
-.. _error codes for optional checks: https://mypy.readthedocs.io/en/stable/error_code_list2.html
 .. _example notebook on particles: ../notebooks/getting_started/particles.ipynb
 .. _example notebook on units: ../notebooks/getting_started/units.ipynb
 .. _extract function refactoring pattern: https://refactoring.guru/extract-method
+.. _invalid-return-type: https://docs.astral.sh/ty/reference/rules/#invalid-return-type
 .. _mint a release:
 .. _MonkeyType: https://monkeytype.readthedocs.io
 .. _NEP 29: https://numpy.org/neps/nep-0029-deprecation_policy.html
 .. _not a number: https://en.wikipedia.org/wiki/NaN
 .. _NumPy Enhancement Proposal 29: https://numpy.org/neps/nep-0029-deprecation_policy.html
+.. _privately report security vulnerabilities: https://github.com/PlasmaPy/PlasmaPy/security/advisories/new
 .. _Python Packaging User Guide: https://packaging.python.org
 .. _pyupgrade: https://github.com/asottile/pyupgrade
 .. _release checklist: https://github.com/PlasmaPy/PlasmaPy/blob/main/.github/content/release-checklist.md
 .. _rename refactoring in PyCharm: https://www.jetbrains.com/help/pycharm/rename-refactorings.html
+.. _security policy: https://github.com/PlasmaPy/PlasmaPy/blob/main/.github/SECURITY.md
 .. _TOML: https://toml.io/en/v1.0.0
 .. _type hints cheat sheet: https://mypy.readthedocs.io/en/stable/cheat_sheet_py3.html
-.. _update pinned requirements: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/update-pinned-reqs.yml
+.. _ty rules: https://docs.astral.sh/ty/reference/rules
+.. _upgrade the lockfile: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/upgrade-uv-lock.yml
 .. _voila: https://voila.readthedocs.io
-.. _writing your pyproject.toml file: https://packaging.python.org/en/latest/guides/writing-pyproject-toml/
+.. _writing your pyproject.toml file: https://packaging.python.org/en/latest/guides/writing-pyproject-toml
 
 .. _`astropy.units`: https://docs.astropy.org/en/stable/units/index.html
 .. |astropy.units| replace:: `astropy.units`
 
-.. _`uv.lock`: https://github.com/PlasmaPy/PlasmaPy/blob/main/uv.lock
-.. |uv.lock| replace:: :file:`uv.lock`
 
-.. _`mypy.ini`: https://github.com/PlasmaPy/PlasmaPy/blob/main/mypy.ini
-.. |mypy.ini| replace:: :file:`mypy.ini`
 
 .. _`noxfile.py`: https://github.com/PlasmaPy/PlasmaPy/blob/main/noxfile.py
 .. |noxfile.py| replace:: :file:`noxfile.py`
 
 .. _`pyproject.toml`: https://github.com/PlasmaPy/PlasmaPy/blob/main/pyproject.toml
 .. |pyproject.toml| replace:: :file:`pyproject.toml`
+
+.. _`uv.lock`: https://github.com/PlasmaPy/PlasmaPy/blob/main/uv.lock
+.. |uv.lock| replace:: :file:`uv.lock`

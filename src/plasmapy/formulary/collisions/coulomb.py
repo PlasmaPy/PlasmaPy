@@ -1,15 +1,16 @@
 """
-Functionality for calculating Coulomb parameters for different
-configurations. Including a number of functions for handling Coulomb
-collisions spanning weakly coupled (low density) to strongly coupled
-(high density) regimes.
+Calculation of Coulomb logarithms and cross-sections.
 
 Coulomb collisions are collisions where the interaction force is
-conveyed via the electric field, instead of any kind of contact
-force. They usually result in relatively small deflections of particle
-trajectories. However, given that there are many charged particles in a
-plasma, one has to take into account the cumulative effects of many such
-collisions.
+conveyed via the electric field, instead of any kind of contact force.
+These collisions usually result in relatively small deflections of
+particle trajectories. However, given that there are many charged
+particles in a plasma, one has to take into account the cumulative
+effects of many such collisions.
+
+This module includes functions for handling Coulomb collisions ranging
+from weakly coupled (low density) to strongly coupled (high density)
+regimes.
 """
 
 __all__ = [
@@ -34,7 +35,7 @@ from plasmapy.utils.exceptions import CouplingWarning
     V={"none_shall_pass": True},
 )
 @particles.particle_input
-def Coulomb_logarithm(
+def Coulomb_logarithm(  # noqa: ANN201
     T: u.Quantity[u.K],
     n_e: u.Quantity[u.m**-3],
     species: (particles.Particle, particles.Particle),
@@ -442,7 +443,12 @@ def Coulomb_logarithm(
     """
     # fetching impact min and max impact parameters
     bmin, bmax = lengths.impact_parameter(
-        T=T, n_e=n_e, species=species, z_mean=z_mean, V=V, method=method
+        T=T,
+        n_e=n_e,
+        species=species,
+        z_mean=z_mean,
+        V=V,
+        method=method,
     )
 
     if method in {
@@ -476,7 +482,7 @@ def Coulomb_logarithm(
             '"ls_full_interp", "ls_clamp_mininterp", "hls_min_interp", '
             '"hls_max_interp", "hls_full_interp", and their aliases. '
             "Please refer to the documentation of this function for "
-            "more information."
+            "more information.",
         )
 
     ln_Lambda = ln_Lambda.to(u.dimensionless_unscaled).value
@@ -497,6 +503,7 @@ def Coulomb_logarithm(
             f"due to strong coupling effects, in particular because "
             f"{method = } assumes weak coupling.",
             CouplingWarning,
+            stacklevel=2,
         )
     elif min_ln_Lambda < 4:
         warnings.warn(
@@ -504,6 +511,7 @@ def Coulomb_logarithm(
             f"min(ln Λ) = {min_ln_Lambda:.4f}. Coulomb logarithms of ≲ 4 may "
             f"have increased uncertainty due to strong coupling effects.",
             CouplingWarning,
+            stacklevel=2,
         )
 
     return ln_Lambda

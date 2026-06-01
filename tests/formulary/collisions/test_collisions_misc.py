@@ -19,7 +19,8 @@ from plasmapy.utils.data.downloader import _API_CONNECTION_ESTABLISHED
 from plasmapy.utils.exceptions import CouplingWarning, PhysicsWarning
 
 check_database_connection = pytest.mark.skipif(
-    not _API_CONNECTION_ESTABLISHED, reason="failed to connect to data repository"
+    not _API_CONNECTION_ESTABLISHED,
+    reason="failed to connect to data repository",
 )
 
 
@@ -54,14 +55,14 @@ def test_tabulated_f_mol(theta, tabulated_result):
         "T2",
     ),
     [
-        # TODO: Add more materials
+        # TODO: Add more materials  # noqa: FIX002
         (
             "ALUMINUM",
             2.7 * u.g / u.cm**3,
             166 * u.eV,
             7.8 * 10**23 * u.cm**-3,
             1.0 * u.MeV,
-        )
+        ),
     ],
 )
 def test_Bethe_stopping(material, rho, I, n_e, T2) -> None:  # noqa: E741
@@ -70,12 +71,14 @@ def test_Bethe_stopping(material, rho, I, n_e, T2) -> None:  # noqa: E741
     to those calculated by the Bethe formula beyond a material-dependent
     energy threshold.
     """
-
     energy_space = np.logspace(start=np.log10(T2.to(u.MeV).value), stop=2) * u.MeV
     particle = RelativisticBody(Particle("p+"), kinetic_energy=energy_space)
     Bethe_stopping_space = Bethe_stopping(I, n_e, particle.velocity, 1)
     _, NIST_stopping_space_density = stopping_power(
-        Particle("p+"), material, energy_space, component="electronic"
+        Particle("p+"),
+        material,
+        energy_space,
+        component="electronic",
     )
     NIST_stopping_space = NIST_stopping_space_density * rho
 
@@ -150,13 +153,16 @@ class Test_Spitzer_resistivity:
         errStr = f"Spitzer resistivity should be {self.True_zmean} and not {methodVal}."
         assert testTrue, errStr
 
-    # TODO: vector z_mean
+    # TODO: vector z_mean  # noqa: FIX002
     @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
     @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
     def test_handle_nparrays(self, insert_some_nans, insert_all_nans) -> None:
         """Test for ability to handle numpy array quantities"""
         assert_can_handle_nparray(
-            Spitzer_resistivity, insert_some_nans, insert_all_nans, {}
+            Spitzer_resistivity,
+            insert_some_nans,
+            insert_all_nans,
+            {},
         )
 
 
@@ -173,7 +179,7 @@ class Test_mobility:
         cls.True_zmean = 0.32665227217687254
 
     def test_symmetry(self) -> None:
-        with pytest.warns(CouplingWarning):
+        with pytest.warns(CouplingWarning):  # noqa: PT031
             result = mobility(self.T, self.n_e, self.particles)
             resultRev = mobility(self.T, self.n_e, self.particles[::-1])
         assert result == resultRev
@@ -231,7 +237,7 @@ class Test_mobility:
         errStr = f"Mobility should be {self.True_zmean} and not {methodVal}."
         assert testTrue, errStr
 
-    # TODO: vector z_mean
+    # TODO: vector z_mean  # noqa: FIX002
     @pytest.mark.parametrize("insert_some_nans", [[], ["V"]])
     @pytest.mark.parametrize("insert_all_nans", [[], ["V"]])
     def test_handle_nparrays(self, insert_some_nans, insert_all_nans) -> None:

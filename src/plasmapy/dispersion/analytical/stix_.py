@@ -21,7 +21,7 @@ c_si_unitless = c.value
     n_i={"can_be_negative": False},
     w={"can_be_negative": False, "can_be_zero": False},
 )
-def stix(  # noqa: C901, PLR0912, PLR0915
+def stix(  # noqa: ANN201, C901, PLR0912, PLR0915
     B: u.Quantity[u.T],
     w: u.Quantity[u.rad / u.s],
     ions: Particle,
@@ -175,38 +175,37 @@ def stix(  # noqa: C901, PLR0912, PLR0915
     <Quantity [ 6.03817661e-09-0.j, -6.03817661e-09+0.j,
         6.97262784e-09-0.j, -6.97262784e-09+0.j] rad / m>
     """
-
     # Validate ions argument
     if not isinstance(ions, list | tuple | ParticleList):
-        ions = [ions]
-    ions = ParticleList(ions)
+        ions = [ions]  # ty:ignore[invalid-assignment]
+    ions = ParticleList(ions)  # ty:ignore[invalid-argument-type, invalid-assignment]
 
-    if not all(failed := [ion.is_ion and ion.charge_number > 0 for ion in ions]):
+    if not all(failed := [ion.is_ion and ion.charge_number > 0 for ion in ions]):  # ty:ignore[not-iterable]
         raise ValueError(
             "Particle(s) passed to 'ions' must be a positively charged"
             " ion. The following particle(s) is(are) not allowed "
-            f"{[ion for ion, fail in zip(ions, failed, strict=False) if not fail]}"
+            f"{[ion for ion, fail in zip(ions, failed, strict=False) if not fail]}",  # ty:ignore[invalid-argument-type, not-iterable]
         )
 
     # Validate n_i argument
     if n_i.ndim not in {0, 1}:
         raise ValueError(
             "Argument 'n_i' must be a single valued or a 1D array of "
-            f"size 1 or {len(ions)}, instead got shape of {n_i.shape}"
+            f"size 1 or {len(ions)}, instead got shape of {n_i.shape}",  # ty:ignore[invalid-argument-type]
         )
-    elif n_i.ndim == 1 and n_i.size != len(ions):
+    elif n_i.ndim == 1 and n_i.size != len(ions):  # ty:ignore[invalid-argument-type]
         raise ValueError(
             "Argument 'n_i' and 'ions' need to be the same length, got"
-            f" value of shape {len(ions)} and {len(n_i.shape)}."
+            f" value of shape {len(ions)} and {len(n_i.shape)}.",  # ty:ignore[invalid-argument-type]
         )
 
     n_i = n_i.value
     if n_i.ndim == 0:
-        n_i = np.array([n_i] * len(ions))
+        n_i = np.array([n_i] * len(ions))  # ty:ignore[invalid-argument-type]
     elif n_i.size == 1:
-        n_i = np.repeat(n_i, len(ions))
+        n_i = np.repeat(n_i, len(ions))  # ty:ignore[invalid-argument-type]
 
-    species = [*ions, Particle("e-")]
+    species = [*ions, Particle("e-")]  # ty:ignore[not-iterable]
     densities = np.zeros(n_i.size + 1)
     densities[:-1] = n_i
     densities[-1] = np.sum(n_i * ions.charge_number)
@@ -215,7 +214,7 @@ def stix(  # noqa: C901, PLR0912, PLR0915
     B = B.squeeze()
     if B.ndim != 0:
         raise ValueError(
-            f"Argument 'B' must be single valued and not an array of shape  {B.shape}."
+            f"Argument 'B' must be single valued and not an array of shape  {B.shape}.",
         )
 
     # Validate w argument and dimension
@@ -223,7 +222,7 @@ def stix(  # noqa: C901, PLR0912, PLR0915
     if w.ndim not in {0, 1}:
         raise ValueError(
             "Argument 'w' needs to be a single value or a 1D array "
-            f" astropy Quantity, got a value of shape {w.shape}."
+            f" astropy Quantity, got a value of shape {w.shape}.",
         )
     elif np.isscalar(w):
         w = np.array([w])
@@ -233,7 +232,7 @@ def stix(  # noqa: C901, PLR0912, PLR0915
     if theta.ndim not in {0, 1}:
         raise TypeError(
             "Argument 'theta' needs to be a single value or 1D array "
-            f" astropy Quantity, got array of shape {theta.shape}."
+            f" astropy Quantity, got array of shape {theta.shape}.",
         )
     elif np.isscalar(theta):
         theta = np.array([theta])

@@ -132,16 +132,6 @@ each step, try running :bash:`git status`.
    Committing a change is like preserving a snapshot of what each file
    looks like at this point in history.
 
-   .. hint::
-
-      If it has been installed, |pre-commit| will perform automated
-      checks and possibly auto-fixes. If pre-commit fails, then
-      it'll be necessary to fix any remaining problems and do the
-      :bash:`git add` and :bash:`git commit` steps once more. Try using
-      :bash:`git diff` and :bash:`git diff --cached` to view the
-      changes, and :guilabel:`↑` and :guilabel:`↓` to scroll through
-      previous commands in a terminal.
-
 #. To push the changes to GitHub, run:
 
    .. code-block:: bash
@@ -219,6 +209,40 @@ Creating a pull request
 At this stage, a reviewer will perform a code review, unless it has been
 marked as a draft pull request. Thank you for contributing!
 
+.. tip::
+
+   If a continuous integration check at the bottom of a pull request
+   fails, click on the name of the test for more details.
+
+.. hint::
+
+   Most ``pre-commit.ci`` failures can be fixed by adding a comment that
+   says ``pre-commit.ci autofix`` in the conversation tab of a pull
+   request.
+
+   To learn more about fixing common |pre-commit| failures, see
+   :ref:`pre-commit-troubleshooting`.
+
+.. important::
+
+   If this is your first contribution, please add yourself to the author
+   list in |CITATION.cff|_ (which uses |Citation File Format|) to make
+   sure that you get credit for your contribution. The entry should be
+   of the form:
+
+   .. code-block:: yaml
+
+      - given-names: <given names>
+        family-names: <family names>
+        affiliation: <affiliation>
+        orcid: https://orcid.org/<ORCID-iD>
+        alias: <GitHub username>
+
+   All fields are optional except ``alias``, which is your GitHub
+   username. We encourage contributors to `sign up for an ORCID iD`_: a
+   unique, persistent identifier used by researchers, authors, and open
+   source contributors.
+
 Pulling changes from GitHub
 ---------------------------
 
@@ -243,26 +267,6 @@ If any of the changes conflict with each other, it will be necessary to
       After the pull request has been created, it can be updated by
       using :bash:`git push` to update the corresponding branch on
       GitHub.
-
-.. important::
-
-   If this is your first contribution, please add yourself to the author
-   list in |CITATION.cff|_ (which uses |Citation File Format|) to make
-   sure that you get credit for your contribution. The entry should be
-   of the form:
-
-   .. code-block:: yaml
-
-      - given-names: <given names>
-        family-names: <family names>
-        affiliation: <affiliation>
-        orcid: https://orcid.org/<ORCID-iD>
-        alias: <GitHub username>
-
-   All fields are optional except ``alias``, which is your GitHub
-   username. We encourage contributors to `sign up for an ORCID iD`_: a
-   unique, persistent identifier used by researchers, authors, and open
-   source contributors.
 
 .. _Add a new SSH key to your GitHub account: https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account
 .. _branch: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-branches

@@ -90,7 +90,7 @@ def atomic_number(element: ParticleLike) -> int:
     >>> atomic_number("oganesson")
     118
     """
-    return element.atomic_number  # type: ignore[union-attr]
+    return element.atomic_number
 
 
 @particle_input
@@ -132,7 +132,7 @@ def mass_number(isotope: ParticleLike) -> int:
     >>> mass_number("alpha")
     4
     """
-    return isotope.mass_number  # type: ignore[union-attr]
+    return isotope.mass_number
 
 
 @particle_input(exclude={"isotope", "ion"})
@@ -188,8 +188,8 @@ def standard_atomic_weight(element: ParticleLike) -> u.Quantity[u.kg]:
     >>> standard_atomic_weight("lead")
     <Quantity 3.440636e-25 kg>
     """
-    # TODO: Put in ReST links into above docstring
-    return element.standard_atomic_weight  # type: ignore[union-attr]
+    # TODO: Put in ReST links into above docstring  # noqa: FIX002
+    return element.standard_atomic_weight
 
 
 @particle_input(exclude={"neutrino", "antineutrino"})
@@ -209,18 +209,16 @@ def particle_mass(
         particle; an integer representing an atomic number; or a
         |Particle|.
 
-    Returns
-    -------
-    `~astropy.units.Quantity`
-        The mass of the particle.
-
-    Other Parameters
-    ----------------
     mass_numb : integer, |keyword-only|, optional
         The mass number of an isotope.
 
     Z : integer, |keyword-only|, optional
         The |charge number| of an ion or neutral atom.
+
+    Returns
+    -------
+    `~astropy.units.Quantity`
+        The mass of the particle.
 
     Raises
     ------
@@ -245,7 +243,7 @@ def particle_mass(
     The masses of neutrinos are not available because primarily upper
     limits are presently known.
     """
-    return particle.mass  # type: ignore[union-attr]
+    return particle.mass
 
 
 @particle_input
@@ -259,15 +257,13 @@ def isotopic_abundance(isotope: ParticleLike, mass_numb: int | None = None) -> f
         A string representing an element or isotope, or an integer
         representing the atomic number of an element.
 
+    mass_numb : integer, |keyword-only|, optional
+        The mass number of an isotope.
+
     Returns
     -------
     `float`
         The relative isotopic abundance in the terrestrial environment.
-
-    Other Parameters
-    ----------------
-    mass_numb : integer, |keyword-only|, optional
-        The mass number of an isotope.
 
     Raises
     ------
@@ -294,7 +290,7 @@ def isotopic_abundance(isotope: ParticleLike, mass_numb: int | None = None) -> f
     >>> isotopic_abundance("hydrogen", 1)
     0.999885
     """
-    return isotope.isotopic_abundance  # type: ignore[union-attr]
+    return isotope.isotopic_abundance
 
 
 @particle_input(any_of={"charged", "uncharged"})
@@ -348,7 +344,7 @@ def charge_number(particle: ParticleLike) -> int:
     >>> charge_number("N-14++")
     2
     """
-    return particle.charge_number  # type: ignore[union-attr, return-value]
+    return particle.charge_number  # ty:ignore[invalid-return-type]
 
 
 @particle_input(any_of={"charged", "uncharged"})
@@ -402,7 +398,7 @@ def electric_charge(particle: ParticleLike) -> u.Quantity[u.C]:
     >>> electric_charge("H-")
     <Quantity -1.60217662e-19 C>
     """
-    return particle.charge  # type: ignore[union-attr]
+    return particle.charge
 
 
 @particle_input
@@ -417,15 +413,13 @@ def is_stable(particle: ParticleLike, mass_numb: int | None = None) -> bool:
         A string representing an isotope or particle, or an integer
         representing an atomic number.
 
+    mass_numb : integer, |keyword-only|, optional
+        The mass number of an isotope.
+
     Returns
     -------
     `bool`
         `True` if the isotope is stable, `False` if it is unstable.
-
-    Other Parameters
-    ----------------
-    mass_numb : integer, |keyword-only|, optional
-        The mass number of an isotope.
 
     Raises
     ------
@@ -450,11 +444,11 @@ def is_stable(particle: ParticleLike, mass_numb: int | None = None) -> bool:
     >>> is_stable("tau+")
     False
     """
-    if particle.element and not particle.isotope:  # type: ignore[union-attr]
+    if particle.element and not particle.isotope:
         raise InvalidIsotopeError(
-            "The input to is_stable must be either an isotope or a special particle."
+            "The input to is_stable must be either an isotope or a special particle.",
         )
-    return particle.is_category("stable")  # type: ignore[union-attr]
+    return particle.is_category("stable")
 
 
 @particle_input(any_of={"stable", "unstable", "isotope"})
@@ -470,15 +464,13 @@ def half_life(particle: ParticleLike, mass_numb: int | None = None) -> u.Quantit
         representing an atomic number, or an instance of the |Particle|
         class.
 
+    mass_numb : integer, |keyword-only|, optional
+        The mass number of an isotope.
+
     Returns
     -------
     `~astropy.units.Quantity`
         The half-life of the isotope or particle in units of seconds.
-
-    Other Parameters
-    ----------------
-    mass_numb : integer, |keyword-only|, optional
-        The mass number of an isotope.
 
     Raises
     ------
@@ -507,7 +499,7 @@ def half_life(particle: ParticleLike, mass_numb: int | None = None) -> u.Quantit
     >>> half_life("H-1")
     <Quantity inf s>
     """
-    return particle.half_life  # type: ignore[union-attr]
+    return particle.half_life
 
 
 def known_isotopes(argument: ParticleLike | None = None) -> ParticleList:
@@ -561,8 +553,7 @@ def known_isotopes(argument: ParticleLike | None = None) -> ParticleList:
     >>> len(known_isotopes())  # the number of known isotopes
     3352
     """
-
-    # TODO: Allow Particle objects representing elements to be inputs
+    # TODO: Allow Particle objects representing elements to be inputs  # noqa: FIX002
 
     def known_isotopes_for_element(argument_: ParticleLike) -> list[Particle]:
         element = atomic_symbol(argument_)
@@ -579,7 +570,7 @@ def known_isotopes(argument: ParticleLike | None = None) -> ParticleList:
         return [
             mass_number
             for (isotope, mass_number) in sorted(
-                zip(mass_numbers, isotopes, strict=False)
+                zip(mass_numbers, isotopes, strict=False),
             )
         ]
 
@@ -589,7 +580,7 @@ def known_isotopes(argument: ParticleLike | None = None) -> ParticleList:
             isotopes_list = known_isotopes_for_element(element)
         except InvalidElementError as ex:
             raise InvalidElementError(
-                f"known_isotopes is unable to get isotopes from an input of: {argument}"
+                f"known_isotopes is unable to get isotopes from an input of: {argument}",
             ) from ex
         except InvalidParticleError as ex:
             raise InvalidParticleError("Invalid particle in known_isotopes.") from ex
@@ -602,7 +593,8 @@ def known_isotopes(argument: ParticleLike | None = None) -> ParticleList:
 
 
 def common_isotopes(
-    argument: ParticleLike | None = None, most_common_only: bool = False
+    argument: ParticleLike | None = None,
+    most_common_only: bool = False,  # noqa: FBT001, FBT002
 ) -> ParticleList:
     """
     Return a list of isotopes of an element with an isotopic abundances
@@ -669,11 +661,11 @@ def common_isotopes(
     >>> common_isotopes()[0:7]
     ParticleList(['H-1', 'D', 'He-4', 'He-3', 'Li-7', 'Li-6', 'Be-9'])
     """
-
-    # TODO: Allow Particle objects representing elements to be inputs
+    # TODO: Allow Particle objects representing elements to be inputs  # noqa: FIX002
 
     def common_isotopes_for_element(
-        argument: ParticleLike, most_common_only: bool | None
+        argument: ParticleLike,
+        most_common_only: bool | None,  # noqa: FBT001
     ) -> list[Particle]:
         isotopes = known_isotopes(argument)
 
@@ -691,7 +683,7 @@ def common_isotopes(
         sorted_isotopes = [
             iso_comp
             for (isotope, iso_comp) in sorted(
-                zip(isotopic_abundances, common_isotopes_, strict=False)
+                zip(isotopic_abundances, common_isotopes_, strict=False),
             )
         ]
 
@@ -711,7 +703,7 @@ def common_isotopes(
         except InvalidElementError as ex:
             raise InvalidElementError(
                 "common_isotopes is unable to get isotopes "
-                f"from an input of: {argument}"
+                f"from an input of: {argument}",
             ) from ex
 
     elif argument is None:
@@ -723,7 +715,8 @@ def common_isotopes(
 
 
 def stable_isotopes(
-    argument: ParticleLike | None = None, unstable: bool = False
+    argument: ParticleLike | None = None,
+    unstable: bool = False,  # noqa: FBT001, FBT002
 ) -> ParticleList:
     """
     Return a list of all stable isotopes of an element, or if no input is
@@ -789,11 +782,11 @@ def stable_isotopes(
     >>> stable_isotopes("He", unstable=True)
     ParticleList(['He-5', 'He-6', 'He-7', 'He-8', 'He-9', 'He-10'])
     """
-
-    # TODO: Allow Particle objects representing elements to be inputs
+    # TODO: Allow Particle objects representing elements to be inputs  # noqa: FIX002
 
     def stable_isotopes_for_element(
-        argument: str | int, stable_only: bool | None
+        argument: str | int,
+        stable_only: bool | None,  # noqa: FBT001
     ) -> list[Particle]:
         KnownIsotopes = known_isotopes(argument)
         return [
@@ -811,7 +804,7 @@ def stable_isotopes(
         except InvalidElementError as ex:
             raise InvalidElementError(
                 "stable_isotopes is unable to get isotopes "
-                f"from an input of: {argument}"
+                f"from an input of: {argument}",
             ) from ex
     elif argument is None:
         isotopes_list = []
@@ -883,8 +876,8 @@ def reduced_mass(
     >>> reduced_mass(5.4e-27 * u.kg, 8.6e-27 * u.kg)
     <Quantity 3.31714...e-27 kg>
     """
-    return (test_particle.mass * target_particle.mass) / (  # type: ignore[union-attr]
-        test_particle.mass + target_particle.mass  # type: ignore[union-attr]
+    return (test_particle.mass * target_particle.mass) / (
+        test_particle.mass + target_particle.mass
     )
 
 
@@ -920,15 +913,15 @@ def periodic_table_period(argument: ParticleLike) -> int:
     >>> periodic_table_period("nitrogen")
     2
     """
-    # TODO: Implement @particle_input
+    # TODO: Implement @particle_input  # noqa: FIX002
     if not isinstance(argument, str | Integral):
         raise TypeError(
             "The argument to periodic_table_period must be either a "
             "string representing the element or its symbol, or an "
-            "integer representing its atomic number."
+            "integer representing its atomic number.",
         )
     symbol = atomic_symbol(argument)
-    return _elements.data_about_elements[symbol]["period"]  # type: ignore[index, return-value]
+    return _elements.data_about_elements[symbol]["period"]  # ty:ignore[invalid-argument-type, not-subscriptable]
 
 
 def periodic_table_group(argument: ParticleLike) -> int:
@@ -968,15 +961,15 @@ def periodic_table_group(argument: ParticleLike) -> int:
     >>> periodic_table_group("barium")
     2
     """
-    # TODO: Implement @particle_input
+    # TODO: Implement @particle_input  # noqa: FIX002
     if not isinstance(argument, str | Integral):
         raise TypeError(
             "The argument to periodic_table_group must be "
             "either a string representing the element or its "
-            "symbol, or an integer representing its atomic number."
+            "symbol, or an integer representing its atomic number.",
         )
     symbol = atomic_symbol(argument)
-    return _elements.data_about_elements[symbol]["group"]  # type: ignore[index, return-value]
+    return _elements.data_about_elements[symbol]["group"]  # ty:ignore[invalid-argument-type, not-subscriptable]
 
 
 def periodic_table_block(argument: ParticleLike) -> str:
@@ -1019,15 +1012,15 @@ def periodic_table_block(argument: ParticleLike) -> str:
     >>> periodic_table_block("francium")
     's'
     """
-    # TODO: Implement @particle_input
+    # TODO: Implement @particle_input  # noqa: FIX002
     if not isinstance(argument, str | Integral):
         raise TypeError(
             "The argument to periodic_table_block must be "
             "either a string representing the element or its "
-            "symbol, or an integer representing its atomic number."
+            "symbol, or an integer representing its atomic number.",
         )
     symbol = atomic_symbol(argument)
-    return _elements.data_about_elements[symbol]["block"]  # type: ignore[index]
+    return _elements.data_about_elements[symbol]["block"]  # ty:ignore[invalid-argument-type, not-subscriptable]
 
 
 def periodic_table_category(argument: str | int) -> str:
@@ -1065,15 +1058,15 @@ def periodic_table_category(argument: str | int) -> str:
     >>> periodic_table_category("rhodium")
     'transition metal'
     """
-    # TODO: Implement @particle_input
+    # TODO: Implement @particle_input  # noqa: FIX002
     if not isinstance(argument, str | Integral):
         raise TypeError(
             "The argument to periodic_table_category must be "
             "either a string representing the element or its "
-            "symbol, or an integer representing its atomic number."
+            "symbol, or an integer representing its atomic number.",
         )
     symbol = atomic_symbol(argument)
-    return _elements.data_about_elements[symbol]["category"]  # type: ignore[index]
+    return _elements.data_about_elements[symbol]["category"]  # ty:ignore[invalid-argument-type, not-subscriptable]
 
 
 @particle_input(any_of={"element", "isotope", "ion"})
@@ -1112,29 +1105,29 @@ def ionic_levels(
     >>> ionic_levels("Fe-56", min_charge=13, max_charge=15)
     ParticleList(['Fe-56 13+', 'Fe-56 14+', 'Fe-56 15+'])
     """
-    base_particle = Particle(particle.isotope or particle.element)  # type: ignore[union-attr]
+    base_particle = Particle(particle.isotope or particle.element)  # ty:ignore[invalid-argument-type]
 
     if max_charge is None:
-        max_charge = particle.atomic_number  # type: ignore[union-attr]
+        max_charge = particle.atomic_number
 
-    if not min_charge <= max_charge <= particle.atomic_number:  # type: ignore[union-attr]
+    if not min_charge <= max_charge <= particle.atomic_number:
         raise ChargeError(
             f"Need min_charge ({min_charge}) "
             f"≤ max_charge ({max_charge}) "
-            f"≤ atomic number ({base_particle.atomic_number})."
+            f"≤ atomic number ({base_particle.atomic_number}).",
         )
 
     return ParticleList(
-        [Particle(base_particle, Z=Z) for Z in range(min_charge, max_charge + 1)]
+        [Particle(base_particle, Z=Z) for Z in range(min_charge, max_charge + 1)],
     )
 
 
-def _is_electron(arg: Any) -> bool:
+def _is_electron(arg: Any) -> bool:  # noqa: ANN401
     """
     Return `True` if the argument corresponds to an electron, and
     `False` otherwise.
     """
-    # TODO: Remove _is_electron from all parts of code.
+    # TODO: Remove _is_electron from all parts of code.  # noqa: FIX002
 
     return (
         arg in {"e", "e-"} or arg.lower() == "electron"
@@ -1191,7 +1184,7 @@ def stopping_power(
     incident_particle: ParticleLike,
     material: str,
     energies: u.Quantity[u.MeV] | None = None,
-    return_interpolator: bool = False,
+    return_interpolator: bool = False,  # noqa: FBT001, FBT002
     component: Literal["total", "electronic", "nuclear"] = "total",
 ) -> (
     u.Quantity[u.MeV * u.cm**2 / u.g]

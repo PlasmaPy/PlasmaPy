@@ -45,7 +45,7 @@ class TestAbstractFitFunction:
             ("root_solve", False),
         ],
     )
-    def test_methods(self, name: str, isproperty: bool) -> None:
+    def test_methods(self, name: str, isproperty: bool) -> None:  # noqa: FBT001
         """Test for required methods and properties."""
         assert hasattr(self.ff_class, name)
 
@@ -122,7 +122,7 @@ class BaseFFTests(ABC):
             ("root_solve", False),
         ],
     )
-    def test_methods(self, name: str, isproperty: bool) -> None:
+    def test_methods(self, name: str, isproperty: bool) -> None:  # noqa: FBT001
         """Test attribute/method/property existence."""
         assert hasattr(self.ff_class, name)
 
@@ -133,7 +133,7 @@ class BaseFFTests(ABC):
             pytest.fail(
                 f"{self.ff_class} class attribute '_param_names' needs to "
                 f" be defined as a tuple of strings representing the names of "
-                f"the fit parameters."
+                f"the fit parameters.",
             )
 
     @pytest.mark.parametrize(
@@ -156,7 +156,7 @@ class BaseFFTests(ABC):
         if exp_value == NotImplemented:
             pytest.fail(
                 f"The expected value for abstract method {name} is not "
-                f"implemented/defined in the test class attribute {value_ref_name}."
+                f"implemented/defined in the test class attribute {value_ref_name}.",
             )
 
         assert value == exp_value
@@ -180,14 +180,14 @@ class BaseFFTests(ABC):
             params = self._test_params
         elif params == "default+":
             params = self._test_params
-            params = list(params)
+            params = list(params)  # ty:ignore[invalid-argument-type]
             params.append(5)
 
         if param_errors == "default":
             param_errors = self._test_param_errors
         elif param_errors == "default+":
             param_errors = self._test_param_errors
-            param_errors = list(param_errors)
+            param_errors = list(param_errors)  # ty:ignore[invalid-argument-type]
             param_errors.append(5)
 
         with with_condition:
@@ -199,12 +199,12 @@ class BaseFFTests(ABC):
             if params is None:
                 assert ff_obj.params is None
             else:
-                assert ff_obj.params == ff_obj.FitParamTuple(*params)
+                assert ff_obj.params == ff_obj.FitParamTuple(*params)  # ty:ignore[not-iterable]
 
             if param_errors is None:
                 assert ff_obj.param_errors is None
             else:
-                assert ff_obj.param_errors == ff_obj.FitParamTuple(*param_errors)
+                assert ff_obj.param_errors == ff_obj.FitParamTuple(*param_errors)  # ty:ignore[not-iterable]
 
     def test_param_namedtuple(self) -> None:
         """
@@ -285,15 +285,15 @@ class BaseFFTests(ABC):
 
         params = self._test_params
         if replace_a_param is not None:
-            params = list(params)
+            params = list(params)  # ty:ignore[invalid-argument-type]
             params[0] = replace_a_param
 
         with with_condition:
-            y = ff_obj.func(x, *params)
+            y = ff_obj.func(x, *params)  # ty:ignore[not-iterable]
 
             if isinstance(x, list):
                 x = np.array(x)
-            y_expected = self.func(x, *params)
+            y_expected = self.func(x, *params)  # ty:ignore[not-iterable]
 
             assert np.allclose(y, y_expected)
 
@@ -331,7 +331,7 @@ class BaseFFTests(ABC):
             assert np.allclose(y_err, y_err_expected)
 
             if y is not None:
-                assert np.allclose(y, self.func(x, *params))
+                assert np.allclose(y, self.func(x, *params))  # ty:ignore[not-iterable]
 
     @pytest.mark.parametrize(
         ("x", "kwargs", "with_condition"),
@@ -365,7 +365,7 @@ class BaseFFTests(ABC):
 
             if isinstance(x, list):
                 x = np.array(x)
-            y_expected = self.func(x, *params)
+            y_expected = self.func(x, *params)  # ty:ignore[not-iterable]
 
             assert np.allclose(y, y_expected)
 
@@ -381,7 +381,7 @@ class BaseFFTests(ABC):
         ff_obj = self.ff_class()
 
         xdata = np.linspace(-10, 10)
-        ydata = self.func(xdata, *self._test_params)
+        ydata = self.func(xdata, *self._test_params)  # ty:ignore[not-iterable]
 
         assert ff_obj.params is None
         assert ff_obj.param_errors is None
@@ -413,7 +413,7 @@ class TestFFExponential(BaseFFTests):
     _test__str__ = "f(x) = a exp(alpha x)"
 
     @staticmethod
-    def func(x, a, alpha):
+    def func(x, a, alpha):  # ty:ignore[invalid-method-override]
         return a * np.exp(alpha * x)
 
     def func_err(self, x, params, param_errors, x_err=None):
@@ -453,11 +453,11 @@ class TestFFExponentialPlusLinear(BaseFFTests):
     _test__str__ = "f(x) = a exp(alpha x) + m x + b"
 
     @staticmethod
-    def func(x: float, a: float, alpha: float, m: float, b: float) -> float:
+    def func(x: float, a: float, alpha: float, m: float, b: float) -> float:  # ty:ignore[invalid-method-override]
         return a * np.exp(alpha * x) + m * x + b
 
     def func_err(self, x, params, param_errors, x_err=None):
-        a, alpha, m, b = params
+        a, alpha, m, _b = params
         a_err, alpha_err, m_err, b_err = param_errors
 
         exp_y = a * np.exp(alpha * x)
@@ -499,11 +499,11 @@ class TestFFExponentialPlusOffset(BaseFFTests):
     _test__str__ = "f(x) = a exp(alpha x) + b"
 
     @staticmethod
-    def func(x: float, a: float, alpha: float, b: float) -> float:
+    def func(x: float, a: float, alpha: float, b: float) -> float:  # ty:ignore[invalid-method-override]
         return a * np.exp(alpha * x) + b
 
     def func_err(self, x, params, param_errors, x_err=None):
-        a, alpha, b = params
+        a, alpha, _b = params
         a_err, alpha_err, b_err = param_errors
 
         exp_y = a * np.exp(alpha * x)
@@ -529,8 +529,8 @@ class TestFFExponentialPlusOffset(BaseFFTests):
         ff_obj.params = (3.0, 0.5, 5.0)
         with pytest.warns(RuntimeWarning, match="invalid value encountered in log"):
             root, err = ff_obj.root_solve()
-            assert np.isnan(root)
-            assert np.isnan(err)
+        assert np.isnan(root)
+        assert np.isnan(err)
 
 
 class TestFFLinear(BaseFFTests):
@@ -546,11 +546,11 @@ class TestFFLinear(BaseFFTests):
     _test__str__ = "f(x) = m x + b"
 
     @staticmethod
-    def func(x, m, b):
+    def func(x, m, b):  # ty:ignore[invalid-method-override]
         return m * x + b
 
     def func_err(self, x, params, param_errors, x_err=None):
-        m, b = params
+        m, _b = params
         m_err, b_err = param_errors
 
         m_term = (m_err * x) ** 2
@@ -578,8 +578,13 @@ class TestFFLinear(BaseFFTests):
         ],
     )
     def test_root_solve(
-        self, params, param_errors, root, root_err, conditional
-    ) -> None:
+        self,
+        params,
+        param_errors,
+        root,
+        root_err,
+        conditional,
+    ) -> None:  # ty:ignore[invalid-method-override]
         with conditional:
             ff_obj = self.ff_class(params=params, param_errors=param_errors)
             results = ff_obj.root_solve()

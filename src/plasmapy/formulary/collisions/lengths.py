@@ -1,6 +1,4 @@
-"""
-Module of length parameters related to collisions.
-"""
+"""Lengths related to particle collisions."""
 
 __all__ = ["impact_parameter_perp", "impact_parameter", "mean_free_path"]
 
@@ -18,7 +16,7 @@ from plasmapy.utils.decorators import validate_quantities
 
 
 @validate_quantities(
-    T={"can_be_negative": False, "equivalencies": u.temperature_energy()}
+    T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
 )
 @particle_input
 def impact_parameter_perp(
@@ -94,10 +92,12 @@ def impact_parameter_perp(
     # Note: This formulation corresponds to collisions that result in a
     #       deflection of 90°s, which is valid when classical effects
     #       dominate.
-    # TODO: need to incorporate an average ionization parameter
+    # TODO: need to incorporate an average ionization parameter  # noqa: FIX002
 
-    T, masses, charges, reduced_mass, V = misc._process_inputs(  # noqa: SLF001
-        T=T, species=species, V=V
+    T, _masses, charges, reduced_mass, V = misc._process_inputs(  # noqa: SLF001
+        T=T,
+        species=species,
+        V=V,
     )
 
     return charges[0] * charges[1] / (4 * np.pi * eps0 * reduced_mass * V**2)
@@ -108,7 +108,7 @@ def impact_parameter_perp(
     n_e={"can_be_negative": False},
     V={"none_shall_pass": True},
 )
-def impact_parameter(  # noqa: C901
+def impact_parameter(  # noqa: ANN201, C901
     T: u.Quantity[u.K],
     n_e: u.Quantity[u.m**-3],
     species,
@@ -225,8 +225,10 @@ def impact_parameter(  # noqa: C901
     >>> impact_parameter(T, n, species, V=1e6 * u.m / u.s)
     (<Quantity 2.534...e-10 m>, <Quantity 2.182...e-05 m>)
     """
-    T, masses, charges, reduced_mass, V = misc._process_inputs(  # noqa: SLF001
-        T=T, species=species, V=V
+    T, _masses, _charges, reduced_mass, V = misc._process_inputs(  # noqa: SLF001
+        T=T,
+        species=species,
+        V=V,
     )
     # catching error where mean charge state is not given for non-classical
     # methods that require the ion density
@@ -240,7 +242,7 @@ def impact_parameter(  # noqa: C901
     } and np.isnan(z_mean):
         raise ValueError(
             'Must provide a z_mean for "ls_full_interp", '
-            '"hls_max_interp", and "hls_full_interp" methods.'
+            '"hls_max_interp", and "hls_full_interp" methods.',
         )
     # Debye length
     lambdaDe = Debye_length(T, n_e)
@@ -434,14 +436,21 @@ def mean_free_path(
     """
     # collisional frequency
     freq = frequencies.collision_frequency(
-        T=T, n=n_e, species=species, z_mean=z_mean, V=V, method=method
+        T=T,
+        n=n_e,
+        species=species,
+        z_mean=z_mean,
+        V=V,
+        method=method,
     )
     # boiler plate to fetch velocity
     # this has been moved to after collision_frequency to avoid use of
     # reduced mass thermal velocity in electron-ion collision case.
     # Should be fine since collision_frequency has its own _process_inputs
     # check, and we are only using this here to get the velocity.
-    T, masses, charges, reduced_mass, V = misc._process_inputs(  # noqa: SLF001
-        T=T, species=species, V=V
+    T, _masses, _charges, _reduced_mass, V = misc._process_inputs(  # noqa: SLF001
+        T=T,
+        species=species,
+        V=V,
     )
     return V / freq

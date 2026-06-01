@@ -116,7 +116,12 @@ def grid_with_inf_entry():
     ],
 )
 def test_particle_tracker_constructor_errors(
-    request, grids, termination_condition, save_routine, kwargs, expected_exception
+    request,
+    grids,
+    termination_condition,
+    save_routine,
+    kwargs,
+    expected_exception,
 ) -> None:
     if isinstance(grids, str):
         grids = request.getfixturevalue(grids)
@@ -129,7 +134,8 @@ def test_particle_tracker_constructor_errors(
 
     with pytest.raises(expected_exception):
         warnings.filterwarnings(
-            "ignore", message="Quantities should go to zero at edges of grid"
+            "ignore",
+            message="Quantities should go to zero at edges of grid",
         )
         ParticleTracker(grids, termination_condition, save_routine, **kwargs)
 
@@ -152,7 +158,11 @@ def test_particle_tracker_constructor_errors(
     ],
 )
 def test_particle_tracker_construction(
-    request, grids, termination_condition, save_routine, kwargs
+    request,
+    grids,
+    termination_condition,
+    save_routine,
+    kwargs,
 ) -> None:
     termination_condition = request.getfixturevalue(termination_condition)
 
@@ -161,7 +171,8 @@ def test_particle_tracker_construction(
 
     with warnings.catch_warnings():
         warnings.filterwarnings(
-            "ignore", message="Quantities should go to zero at edges of grid"
+            "ignore",
+            message="Quantities should go to zero at edges of grid",
         )
         ParticleTracker(grids, termination_condition, save_routine, **kwargs)
 
@@ -176,7 +187,9 @@ def test_particle_tracker_load_particles_shape_error(
 
     with pytest.raises(ValueError):
         simulation.load_particles(
-            [[0, 0, 0]] * u.m, [[0, 0, 0], [0, 0, 0]] * u.m / u.s, Particle("p+")
+            [[0, 0, 0]] * u.m,
+            [[0, 0, 0], [0, 0, 0]] * u.m / u.s,
+            Particle("p+"),
         )
 
 
@@ -203,7 +216,8 @@ class TestParticleTrackerGyroradius:
     grid.add_quantities(B_z=Bz)
 
     termination_time = 5 * np.max(1 / gyrofrequency(Bz, point_particle)).to(
-        u.s, equivalencies=u.dimensionless_angles()
+        u.s,
+        equivalencies=u.dimensionless_angles(),
     )
     termination_condition = TimeElapsedTerminationCondition(termination_time)
     save_routine = IntervalSaveRoutine(termination_time / 10)
@@ -211,7 +225,8 @@ class TestParticleTrackerGyroradius:
     # Ignore non-zero boundary values of grid
     with warnings.catch_warnings():
         warnings.filterwarnings(
-            "ignore", message="Quantities should go to zero at edges of grid"
+            "ignore",
+            message="Quantities should go to zero at edges of grid",
         )
         simulation = ParticleTracker(
             grid,
@@ -234,7 +249,6 @@ class TestParticleTrackerGyroradius:
 
     def test_kinetic_energy(self) -> None:
         """Test to ensure particles maintain their gyroradius over time"""
-
         initial_kinetic_energies = 0.5 * self.point_particle.mass * self.v_x**2
 
         velocities = self.save_routine.results["v"]
@@ -248,7 +262,11 @@ class TestParticleTrackerGyroradius:
 @given(st.integers(1, 10), st.integers(1, 10), st.integers(1, 10), st.integers(1, 10))
 @settings(deadline=2e4, max_examples=10)
 def test_particle_tracker_potential_difference(
-    request, E_strength, L, mass, charge
+    request,
+    E_strength,
+    L,
+    mass,
+    charge,
 ) -> None:
     # Apply appropriate units to the random inputs
     E_strength = E_strength * u.V / u.m
@@ -271,13 +289,14 @@ def test_particle_tracker_potential_difference(
     v = [[0, 0, 0]] * u.m / u.s
 
     termination_condition = request.getfixturevalue(
-        "no_particles_on_grids_instantiated"
+        "no_particles_on_grids_instantiated",
     )
     save_routine = request.getfixturevalue("memory_interval_save_routine_instantiated")
 
     with warnings.catch_warnings():
         warnings.filterwarnings(
-            "ignore", message="Quantities should go to zero at edges of grid"
+            "ignore",
+            message="Quantities should go to zero at edges of grid",
         )
         simulation = ParticleTracker(
             grid,
@@ -300,7 +319,10 @@ def test_particle_tracker_potential_difference(
     final_simulated_energy = (0.5 * point_particle.mass * speeds[-1] ** 2).to(u.J)
 
     assert np.isclose(
-        final_expected_energy, final_simulated_energy, atol=0.5, rtol=5e-2
+        final_expected_energy,
+        final_simulated_energy,
+        atol=0.5,
+        rtol=5e-2,
     )
 
 
@@ -327,10 +349,13 @@ def test_asynchronous_time_step(no_particles_on_grids_instantiated) -> None:
 
     with warnings.catch_warnings():
         warnings.filterwarnings(
-            "ignore", message="Quantities should go to zero at edges of grid"
+            "ignore",
+            message="Quantities should go to zero at edges of grid",
         )
         simulation = ParticleTracker(
-            grid, termination_condition, field_weighting="nearest neighbor"
+            grid,
+            termination_condition,
+            field_weighting="nearest neighbor",
         )
 
     # Particles not loaded error
@@ -349,7 +374,8 @@ def test_asynchronous_time_step(no_particles_on_grids_instantiated) -> None:
 
 
 def test_asynchronous_time_step_error(
-    memory_interval_save_routine_instantiated, no_particles_on_grids_instantiated
+    memory_interval_save_routine_instantiated,
+    no_particles_on_grids_instantiated,
 ) -> None:
     E_strength = 1 * u.V / u.m
     L = 1 * u.m
@@ -367,7 +393,8 @@ def test_asynchronous_time_step_error(
 
     with pytest.raises(ValueError):
         warnings.filterwarnings(
-            "ignore", message="Quantities should go to zero at edges of grid"
+            "ignore",
+            message="Quantities should go to zero at edges of grid",
         )
         ParticleTracker(
             grid,
@@ -378,6 +405,11 @@ def test_asynchronous_time_step_error(
         )
 
 
+@pytest.mark.filterwarnings("ignore:.*divide by zero.*:RuntimeWarning")
+@pytest.mark.filterwarnings("ignore:.*should go to zero.*:RuntimeWarning")
+@pytest.mark.filterwarnings(
+    "ignore:.*invalid value encountered in multiply.*:RuntimeWarning",
+)
 def test_volume_averaged_interpolation(
     time_elapsed_termination_condition_instantiated,
 ) -> None:
@@ -401,21 +433,22 @@ def test_volume_averaged_interpolation(
 
     termination_condition = time_elapsed_termination_condition_instantiated
 
-    with warnings.catch_warnings():
-        warnings.filterwarnings(
-            "ignore", message="Quantities should go to zero at edges of grid"
-        )
-        simulation = ParticleTracker(
-            grid,
-            termination_condition,
-            field_weighting="volume averaged",
-            verbose=False,
-        )
+    simulation = ParticleTracker(
+        grid,
+        termination_condition,
+        field_weighting="volume averaged",
+        verbose=False,
+    )
     simulation.load_particles(x, v, point_particle)
 
     simulation.run()
 
 
+@pytest.mark.filterwarnings("ignore:.*divide by zero.*:RuntimeWarning")
+@pytest.mark.filterwarnings(
+    "ignore:.*invalid value encountered in multiply.*:RuntimeWarning",
+)
+@pytest.mark.filterwarnings("ignore:.*Mean of empty slice.*:RuntimeWarning")
 def test_setup_adaptive_time_step(
     time_elapsed_termination_condition_instantiated,
 ) -> None:
@@ -441,16 +474,20 @@ def test_setup_adaptive_time_step(
 
     with warnings.catch_warnings():
         warnings.filterwarnings(
-            "ignore", message="Quantities should go to zero at edges of grid"
+            "ignore",
+            message="Quantities should go to zero at edges of grid",
         )
         simulation = ParticleTracker(
-            grid, termination_condition, field_weighting="nearest neighbor"
+            grid,
+            termination_condition,
+            field_weighting="nearest neighbor",
         )
 
     simulation.load_particles(x, v, point_particle)
 
     simulation.setup_adaptive_time_step(
-        time_steps_per_gyroperiod=25, Courant_parameter=0.25
+        time_steps_per_gyroperiod=25,
+        Courant_parameter=0.25,
     )
 
     simulation.run()
@@ -477,13 +514,14 @@ def test_particle_tracker_stop_particles(request) -> None:
     v = [[0, 0, 0]] * u.m / u.s
 
     termination_condition = request.getfixturevalue(
-        "no_particles_on_grids_instantiated"
+        "no_particles_on_grids_instantiated",
     )
     save_routine = request.getfixturevalue("memory_interval_save_routine_instantiated")
 
     with warnings.catch_warnings():
         warnings.filterwarnings(
-            "ignore", message="Quantities should go to zero at edges of grid"
+            "ignore",
+            message="Quantities should go to zero at edges of grid",
         )
         simulation = ParticleTracker(
             grid,
@@ -580,7 +618,8 @@ def test_particle_tracker_add_stopping_errors(
 
     with warnings.catch_warnings():
         warnings.filterwarnings(
-            "ignore", message="Quantities should go to zero at edges of grid"
+            "ignore",
+            message="Quantities should go to zero at edges of grid",
         )
         simulation = ParticleTracker(
             grid,
@@ -596,11 +635,17 @@ def test_particle_tracker_add_stopping_errors(
         simulation.add_stopping(**kwargs)
 
     with pytest.raises(
-        ValueError, match="quantity ``rho`` is not defined on that grid"
+        ValueError,
+        match="quantity ``rho`` is not defined on that grid",
     ):
         simulation.add_stopping(method="NIST", materials=["ALUMINUM"])
 
 
+@pytest.mark.filterwarnings("ignore:.*divide by zero.*:RuntimeWarning")
+@pytest.mark.filterwarnings("ignore:.*Mean of empty slice.*:RuntimeWarning")
+@pytest.mark.filterwarnings(
+    "ignore:.*invalid value encountered in multiply.*:RuntimeWarning",
+)
 def test_particle_tracker_Bethe_warning(
     no_particles_on_grids_instantiated,
     memory_interval_save_routine_instantiated,
@@ -623,7 +668,8 @@ def test_particle_tracker_Bethe_warning(
 
     with warnings.catch_warnings():
         warnings.filterwarnings(
-            "ignore", message="Quantities should go to zero at edges of grid"
+            "ignore",
+            message="Quantities should go to zero at edges of grid",
         )
         simulation = ParticleTracker(
             grid,
@@ -636,7 +682,8 @@ def test_particle_tracker_Bethe_warning(
     simulation.load_particles(x, v, Particle("p+"))
 
     with pytest.raises(
-        ValueError, match="quantity ``n_e`` is not defined on that grid"
+        ValueError,
+        match="quantity ``n_e`` is not defined on that grid",
     ):
         simulation.add_stopping(method="Bethe", I=[1 * u.eV])
 
@@ -647,7 +694,8 @@ def test_particle_tracker_Bethe_warning(
     warnings.filterwarnings("ignore", message="should go to zero at edges of grid")
 
     with pytest.warns(
-        PhysicsWarning, match="The Bethe model is only valid for high energy particles."
+        PhysicsWarning,
+        match="The Bethe model is only valid for high energy particles.",
     ):
         simulation.run()
 
@@ -840,7 +888,7 @@ class TestParticleTrajectory:
         B,
         q=const.e.si,
         m=const.m_p.si,
-        is_relativistic: bool = True,
+        is_relativistic: bool = True,  # noqa: FBT001, FBT002
     ):
         """
         Calculates the relativistically-correct ExB drift trajectory for a
@@ -851,8 +899,7 @@ class TestParticleTrajectory:
         From https://journals.aps.org/pre/abstract/10.1103/PhysRevE.72.026603
 
         """
-
-        if E >= const.c.si * B:
+        if const.c.si * B <= E:
             raise ValueError("Currently this function only works for E<cB")
 
         # Just after Eq. 41
@@ -891,7 +938,9 @@ class TestParticleTrajectory:
 
     @staticmethod
     def construct_field(
-        grid, magnitude, direction
+        grid,
+        magnitude,
+        direction,
     ) -> tuple[u.Quantity, u.Quantity, u.Quantity]:
         # add third dimension to account for the fact that we are dealing with a vector field
         field = (
@@ -917,12 +966,12 @@ class TestParticleTrajectory:
         ],
     )
     @pytest.mark.slow
+    @pytest.mark.filterwarnings("ignore:.*divide by zero.*:RuntimeWarning")
     def test_relativistic_Boris_integrator_fitting(cls, regime, particle) -> None:
         """
         Fit the results of the relativistic Boris integrator using
         relativistic models developed in https://www.sciencedirect.com/science/article/pii/S163107211400148X
         """
-
         N_PERIODS_RECORDED = 5
         B_0 = 10 * u.T
         E_0 = regime * const.c * B_0
@@ -937,7 +986,8 @@ class TestParticleTrajectory:
 
         # Convert period in proper time to the time elapsed in the laboratory frame
         proper_period = np.abs(2 * np.pi / ν).to(
-            u.s, equivalencies=u.dimensionless_angles()
+            u.s,
+            equivalencies=u.dimensionless_angles(),
         )
         period = cls.laboratory_time_case_one(proper_period.si.value, vd, γd, ν) * u.s
 
@@ -960,14 +1010,15 @@ class TestParticleTrajectory:
         ----------
         """
         termination_condition = TimeElapsedTerminationCondition(
-            N_PERIODS_RECORDED * period
+            N_PERIODS_RECORDED * period,
         )
 
         save_routine = IntervalSaveRoutine(period / 10)
 
         with warnings.catch_warnings():
             warnings.filterwarnings(
-                "ignore", message="Quantities should go to zero at edges of grid"
+                "ignore",
+                message="Quantities should go to zero at edges of grid",
             )
             simulation = ParticleTracker(
                 grids=fields,
@@ -989,7 +1040,7 @@ class TestParticleTrajectory:
         Theory Fitting
         --------------
         """
-        relativistic_theory_x, relativistic_theory_z = cls.ExB_trajectory_case_one(
+        relativistic_theory_x, _relativistic_theory_z = cls.ExB_trajectory_case_one(
             save_routine.results["time"],
             E_0,
             B_0,
@@ -1009,7 +1060,7 @@ class TestParticleTrajectory:
         # the relativistic trajectory within the defined tolerance parameters.
         if regime >= 0.5:
             # Calculate the classical analytic trajectory with all else being equal
-            calculate_theory_x, calculate_theory_z = cls.ExB_trajectory_case_one(
+            calculate_theory_x, _calculate_theory_z = cls.ExB_trajectory_case_one(
                 save_routine.results["time"],
                 E_0,
                 B_0,
@@ -1022,10 +1073,10 @@ class TestParticleTrajectory:
             # and relativistic analytic trajectories as compared against the simulated
             # trajectory
             classical_r_squared = np.sum(
-                (save_routine.results["x"][:, 0, 0] - calculate_theory_x) ** 2
+                (save_routine.results["x"][:, 0, 0] - calculate_theory_x) ** 2,
             )
             relativistic_r_squared = np.sum(
-                (save_routine.results["x"][:, 0, 0] - relativistic_theory_x) ** 2
+                (save_routine.results["x"][:, 0, 0] - relativistic_theory_x) ** 2,
             )
 
             assert classical_r_squared.si.value / relativistic_r_squared.si.value > 100
@@ -1040,12 +1091,13 @@ class TestParticleTrajectory:
             (0.1, Particle("e-")),
         ],
     )
+    @pytest.mark.filterwarnings("ignore:.*divide by zero.*:RuntimeWarning")
+    @pytest.mark.filterwarnings("ignore::plasmapy.utils.exceptions.RelativityWarning")
     def test_classical_Boris_integrator_fitting(cls, regime, particle) -> None:
         """
         Fit the results of the non-relativistic Boris integrator using
         relativistic models developed in https://www.sciencedirect.com/science/article/pii/S163107211400148X
         """
-
         N_PERIODS_RECORDED = 5
         B_0 = 10 * u.T
         E_0 = regime * const.c * B_0
@@ -1060,7 +1112,8 @@ class TestParticleTrajectory:
 
         # Convert period in proper time to the time elapsed in the laboratory frame
         proper_period = np.abs(2 * np.pi / ν).to(
-            u.s, equivalencies=u.dimensionless_angles()
+            u.s,
+            equivalencies=u.dimensionless_angles(),
         )
         period = cls.laboratory_time_case_one(proper_period.si.value, vd, γd, ν) * u.s
 
@@ -1083,14 +1136,15 @@ class TestParticleTrajectory:
         ----------
         """
         termination_condition = TimeElapsedTerminationCondition(
-            N_PERIODS_RECORDED * period
+            N_PERIODS_RECORDED * period,
         )
 
         save_routine = IntervalSaveRoutine(period / 10)
 
         with warnings.catch_warnings():
             warnings.filterwarnings(
-                "ignore", message="Quantities should go to zero at edges of grid"
+                "ignore",
+                message="Quantities should go to zero at edges of grid",
             )
             simulation = ParticleTracker(
                 grids=fields,
@@ -1113,7 +1167,7 @@ class TestParticleTrajectory:
         Theory Fitting
         --------------
         """
-        classical_theory_x, classical_theory_z = cls.ExB_trajectory_case_one(
+        classical_theory_x, _classical_theory_z = cls.ExB_trajectory_case_one(
             save_routine.results["time"],
             E_0,
             B_0,
@@ -1143,12 +1197,12 @@ class TestParticleTrajectory:
         ],
     )
     @pytest.mark.slow
+    @pytest.mark.filterwarnings("ignore:.*divide by zero.*:RuntimeWarning")
     def test_relativity_warning(cls, regime, particle) -> None:
         """
         Fit the results of the non-relativistic Boris integrator using
         relativistic models developed in https://www.sciencedirect.com/science/article/pii/S163107211400148X
         """
-
         N_PERIODS_RECORDED = 5
         B_0 = 10 * u.T
         E_0 = regime * const.c * B_0
@@ -1163,7 +1217,8 @@ class TestParticleTrajectory:
 
         # Convert period in proper time to the time elapsed in the laboratory frame
         proper_period = np.abs(2 * np.pi / ν).to(
-            u.s, equivalencies=u.dimensionless_angles()
+            u.s,
+            equivalencies=u.dimensionless_angles(),
         )
         period = cls.laboratory_time_case_one(proper_period.si.value, vd, γd, ν) * u.s
 
@@ -1186,14 +1241,15 @@ class TestParticleTrajectory:
         ----------
         """
         termination_condition = TimeElapsedTerminationCondition(
-            N_PERIODS_RECORDED * period
+            N_PERIODS_RECORDED * period,
         )
 
         save_routine = IntervalSaveRoutine(period / 10)
 
         with warnings.catch_warnings():
             warnings.filterwarnings(
-                "ignore", message="Quantities should go to zero at edges of grid"
+                "ignore",
+                message="Quantities should go to zero at edges of grid",
             )
             simulation = ParticleTracker(
                 grids=fields,

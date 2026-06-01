@@ -1,6 +1,6 @@
 .. _examples:
 
-Example notebooks
+Example Notebooks
 =================
 
 Here we catalog all the example Jupyter notebooks that have been created

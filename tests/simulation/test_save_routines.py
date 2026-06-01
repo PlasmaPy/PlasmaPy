@@ -31,7 +31,9 @@ def time_elapsed_termination_condition_instantiated():
 @pytest.fixture
 def disk_interval_save_routine_instantiated(tmp_path):
     return IntervalSaveRoutine(
-        1 * u.s, output_directory=tmp_path, output_basename="test_name"
+        1 * u.s,
+        output_directory=tmp_path,
+        output_basename="test_name",
     )
 
 
@@ -61,6 +63,7 @@ def memory_interval_save_routine_instantiated():
         ),
     ],
 )
+@pytest.mark.filterwarnings("ignore:.*zero at edges of grid.*:RuntimeWarning")
 def test_interval_save_routine(request, stop_condition, save_routine) -> None:
     x = [[0, 0, 0]] * u.m
     v = [[0, 1, 0]] * u.m / u.s

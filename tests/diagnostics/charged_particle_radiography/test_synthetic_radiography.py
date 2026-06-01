@@ -19,7 +19,7 @@ from plasmapy.plasma.grids import CartesianGrid
 rng = np.random.default_rng()
 
 
-def _test_grid(  # noqa: C901, PLR0912
+def _test_grid(  # noqa: ANN202, C901, PLR0912
     name: str,
     L: u.Quantity[u.m] = 1 * u.mm,
     num: int = 100,
@@ -64,7 +64,6 @@ def _test_grid(  # noqa: C901, PLR0912
         A CartesianGrid object containing quantity arrays representing
         the chosen example.
     """
-
     grid = CartesianGrid(-L, L, num=num)
 
     # If an array was provided to the constructor, reduce to a single
@@ -119,11 +118,11 @@ def _test_grid(  # noqa: C901, PLR0912
         Ey = np.where(radius < b, Ey, 0)
         Ez = np.where(radius < b, Ez, 0)
 
-        grid.add_quantities(E_x=-Ex, E_y=-Ey, E_z=-Ez, phi=potential)
+        grid.add_quantities(E_x=-Ex, E_y=-Ey, E_z=-Ez, phi=potential)  # ty:ignore[invalid-argument-type]
 
     else:
         raise ValueError(
-            f"No example corresponding to the provided name ({name}) exists."
+            f"No example corresponding to the provided name ({name}) exists.",
         )
 
     # If any of the following quantities are missing, add them as empty arrays
@@ -147,35 +146,31 @@ def test_multiple_grids() -> None:
     TODO: automate test by including two fields with some obvious analytical
     solution??
     """
-
-    grid1 = _test_grid("constant_bz", L=3 * u.cm, num=50, B0=0.7 * u.T)
-    grid2 = _test_grid("electrostatic_gaussian_sphere", L=1 * u.mm, num=50)
+    grid1 = _test_grid("constant_bz", L=3 * u.cm, num=20, B0=0.7 * u.T)
+    grid2 = _test_grid("electrostatic_gaussian_sphere", L=1 * u.mm, num=20)
     grids = [grid1, grid2]
 
     source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
     detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
 
     sim = cpr.Tracker(
-        grids, source, detector, field_weighting="nearest neighbor", verbose=True
+        grids,
+        source,
+        detector,
+        field_weighting="nearest neighbor",
+        verbose=True,
     )
 
-    sim.create_particles(1e5, 15 * u.MeV, max_theta=8 * u.deg, random_seed=42)
+    sim.create_particles(1e2, 15 * u.MeV, max_theta=8 * u.deg, random_seed=42)
 
     sim.run()
 
     size = np.array([[-1, 1], [-1, 1]]) * 5 * u.cm
     bins = [100, 100]
-    hax, vax, values = cpr.synthetic_radiograph(sim, size=size, bins=bins)
-
-    """
-    import matplotlib.pyplot as plt
-    fig, ax = plt.subplots()
-    ax.set_aspect('equal')
-    ax.pcolormesh(hax.to(u.cm).value, vax.to(u.cm).value, values.T)
-    """
+    _hax, _vax, _values = cpr.synthetic_radiograph(sim, size=size, bins=bins)
 
 
-def run_1D_example(name: str):
+def run_1D_example(name: str):  # noqa: ANN201
     """
     Run a simulation through an example with parameters optimized to
     sum up to a lineout along x. The goal is to run a relatively fast
@@ -190,10 +185,15 @@ def run_1D_example(name: str):
 
     # Expect warnings because these fields aren't well-behaved at the edges
     with pytest.warns(
-        RuntimeWarning, match="Quantities should go to zero at edges of grid"
+        RuntimeWarning,
+        match="Quantities should go to zero at edges of grid",
     ):
         sim = cpr.Tracker(
-            grid, source, detector, verbose=False, field_weighting="nearest neighbor"
+            grid,
+            source,
+            detector,
+            verbose=False,
+            field_weighting="nearest neighbor",
         )
     sim.create_particles(1e4, 3 * u.MeV, max_theta=0.1 * u.deg, random_seed=42)
 
@@ -201,7 +201,7 @@ def run_1D_example(name: str):
 
     size = np.array([[-1, 1], [-1, 1]]) * 10 * u.cm
     bins = [200, 60]
-    hax, vax, values = cpr.synthetic_radiograph(sim, size=size, bins=bins)
+    hax, _vax, values = cpr.synthetic_radiograph(sim, size=size, bins=bins)
 
     values = np.mean(values[:, 20:40], axis=1)
 
@@ -215,7 +215,7 @@ def run_mesh_example(
     wire_diameter=20 * u.um,
     mesh_hdir=None,
     mesh_vdir=None,
-    nparticles: int = 10000,
+    nparticles: int = 1000,
     problem: str = "electrostatic_gaussian_sphere",
 ) -> cpr.Tracker:
     """
@@ -224,7 +224,6 @@ def run_mesh_example(
 
     Returns the sim object for use in additional tests
     """
-
     grid = _test_grid(problem, num=100)
     source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
     detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
@@ -271,7 +270,6 @@ def test_coordinate_systems() -> None:
     Check that specifying the same point in different coordinate systems
     ends up with identical source and detector vectors.
     """
-
     grid = _test_grid("empty")
 
     # Cartesian
@@ -300,7 +298,6 @@ def test_input_validation() -> None:
     """
     Intentionally raise a number of errors.
     """
-
     # ************************************************************************
     # During initialization
     # ************************************************************************
@@ -344,7 +341,10 @@ def test_input_validation() -> None:
     # ************************************************************************
     sim = cpr.Tracker(grid, source, detector, verbose=False)
     sim.create_particles(
-        1e3, 15 * u.MeV, max_theta=0.99 * np.pi / 2 * u.rad, random_seed=42
+        1e3,
+        15 * u.MeV,
+        max_theta=0.99 * np.pi / 2 * u.rad,
+        random_seed=42,
     )
 
     # ************************************************************************
@@ -357,7 +357,7 @@ def test_input_validation() -> None:
             grid,
             source,
             detector,
-            field_weighting="not a valid field weighting",  # type: ignore[arg-type]
+            field_weighting="not a valid field weighting",  # ty:ignore[invalid-argument-type]
             verbose=False,
         )
 
@@ -365,7 +365,11 @@ def test_input_validation() -> None:
     # During runtime
     # ************************************************************************
     sim = cpr.Tracker(
-        grid, source, detector, verbose=False, field_weighting="nearest neighbor"
+        grid,
+        source,
+        detector,
+        verbose=False,
+        field_weighting="nearest neighbor",
     )
     sim.create_particles(1e3, 15 * u.MeV)
 
@@ -374,11 +378,13 @@ def test_input_validation() -> None:
 
     # Choose a very small synthetic radiograph size that misses most of the
     # particles
+    size = np.array([[-1, 1], [-1, 1]]) * 1 * u.mm
+
     with pytest.warns(
-        RuntimeWarning, match="of the particles are shown on this synthetic radiograph."
+        RuntimeWarning,
+        match="of the particles are shown on this synthetic radiograph.",
     ):
-        size = np.array([[-1, 1], [-1, 1]]) * 1 * u.mm
-        hax, vax, values = cpr.synthetic_radiograph(sim, size=size)
+        _hax, _vax, _values = cpr.synthetic_radiograph(sim, size=size)
 
 
 @pytest.mark.slow
@@ -395,7 +401,12 @@ def test_init() -> None:
     hdir = np.array([1, 0, 0])
     vdir = np.array([0, 0, 1])
     sim = cpr.Tracker(
-        grid, source, detector, verbose=False, detector_hdir=hdir, detector_vdir=vdir
+        grid,
+        source,
+        detector,
+        verbose=False,
+        detector_hdir=hdir,
+        detector_vdir=vdir,
     )
 
     # Test special case hdir == [0,0,1]
@@ -430,7 +441,11 @@ def test_create_particles() -> None:
     )
 
     sim.create_particles(
-        1e3, 15 * u.MeV, max_theta=0.1 * u.rad, distribution="uniform", random_seed=42
+        1e3,
+        15 * u.MeV,
+        max_theta=0.1 * u.rad,
+        distribution="uniform",
+        random_seed=42,
     )
 
     # Test specifying particle
@@ -440,7 +455,11 @@ def test_create_particles() -> None:
     src_vdir = np.array([0.1, 1, 0])
     src_vdir /= np.linalg.norm(src_vdir)
     sim.create_particles(
-        1e3, 15 * u.MeV, particle="p+", random_seed=42, source_vdir=src_vdir
+        1e3,
+        15 * u.MeV,
+        particle="p+",
+        random_seed=42,
+        source_vdir=src_vdir,
     )
     # Assert particle velocities are actually in that direction
     vdir = np.mean(sim.v, axis=0)
@@ -457,10 +476,18 @@ def test_load_particles() -> None:
     detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
 
     sim = cpr.Tracker(
-        grid, source, detector, field_weighting="nearest neighbor", verbose=False
+        grid,
+        source,
+        detector,
+        field_weighting="nearest neighbor",
+        verbose=False,
     )
     sim.create_particles(
-        1e3, 15 * u.MeV, max_theta=0.1 * u.rad, distribution="uniform", random_seed=42
+        1e3,
+        15 * u.MeV,
+        max_theta=0.1 * u.rad,
+        distribution="uniform",
+        random_seed=42,
     )
 
     # Test adding unequal numbers of particles
@@ -507,7 +534,11 @@ def test_run_options() -> None:
         sim.run()
 
     sim = cpr.Tracker(
-        grid, source, detector, verbose=True, field_weighting="nearest neighbor"
+        grid,
+        source,
+        detector,
+        verbose=True,
+        field_weighting="nearest neighbor",
     )
     sim.create_particles(1e4, 3 * u.MeV, max_theta=10 * u.deg, random_seed=42)
 
@@ -559,7 +590,7 @@ def test_run_options() -> None:
     assert 0 < sim.max_deflection.to(u.rad).value < np.pi / 2
 
 
-def create_tracker_obj(**kwargs) -> cpr.Tracker:
+def create_tracker_obj(**kwargs) -> cpr.Tracker:  # noqa: ANN003
     # CREATE A RADIOGRAPH OBJECT
     grid = _test_grid("electrostatic_gaussian_sphere", num=50)
     source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
@@ -617,11 +648,11 @@ class TestSyntheticRadiograph:
         with pytest.warns(RuntimeWarning):
             cpr.synthetic_radiograph(sim_results)
 
-    def test_ignore_grid(self):
+    def test_ignore_grid(self) -> None:
         """
         Verifies that the no grid option runs - no good tests for whether it is correct currently
         """
-        x, y, i = cpr.synthetic_radiograph(self.sim_results, ignore_grid=True)
+        _x, _y, _i = cpr.synthetic_radiograph(self.sim_results, ignore_grid=True)
 
     @pytest.mark.parametrize(
         ("args", "kwargs", "expected"),
@@ -693,7 +724,6 @@ def test_cannot_modify_simulation_after_running(case) -> None:
     Test that a Tracker objection can not be modified after it is
     run (Tracker.run).
     """
-
     sim = create_tracker_obj(field_weighting="nearest neighbor")
     sim.run()
 
@@ -723,7 +753,6 @@ def test_gaussian_sphere_analytical_comparison() -> None:
     Still under construction (comparing the actual form of the radiograph
     is possible but tricky to implement).
     """
-
     # The Gaussian sphere problem for small deflection potentials
     # is solved in Kugland2012relation, and the equations referenced
     # below are from that paper.
@@ -751,10 +780,15 @@ def test_gaussian_sphere_analytical_comparison() -> None:
     detector = (0 * u.mm, L * u.mm, 0 * u.mm)
 
     with pytest.warns(
-        RuntimeWarning, match="Quantities should go to zero at edges of grid to avoid "
+        RuntimeWarning,
+        match="Quantities should go to zero at edges of grid to avoid ",
     ):
         sim = cpr.Tracker(
-            grid, source, detector, verbose=False, field_weighting="nearest neighbor"
+            grid,
+            source,
+            detector,
+            verbose=False,
+            field_weighting="nearest neighbor",
         )
 
     sim.create_particles(1e3, W * u.eV, max_theta=12 * u.deg, random_seed=42)
@@ -812,51 +846,60 @@ def test_gaussian_sphere_analytical_comparison() -> None:
     assert np.isclose(max_deflection, sim.max_deflection.to(u.rad).value, atol=1e-3)
 
 
+@pytest.mark.parametrize(
+    "kwargs",
+    [
+        # Test a circular mesh
+        ({"extent": 1 * u.mm}),
+        # Test providing hdir
+        ({"mesh_hdir": np.array([0.5, 0, 0.5])}),
+        # Test providing hdir and vdir
+        ({"mesh_hdir": np.array([0.5, 0, 0.5]), "mesh_vdir": np.array([0, 0.1, 1])}),
+    ],
+)
 @pytest.mark.slow
-def test_add_wire_mesh() -> None:
-    # ************************************************************
-    # Test various input configurations
-    # ************************************************************
+def test_add_wire_mesh_inputs(kwargs) -> None:
+    run_mesh_example(**kwargs)
 
-    # Test a circular mesh
-    run_mesh_example(extent=1 * u.mm)
 
-    # Test providing hdir
-    run_mesh_example(mesh_hdir=np.array([0.5, 0, 0.5]))
+@pytest.mark.parametrize(
+    ("kwargs", "exception"),
+    [
+        # Test invalid extent (too many elements)
+        ({"extent": (1 * u.mm, 2 * u.mm, 3 * u.mm)}, ValueError),
+        # Test wire mesh completely blocks all particles (in this case because
+        # the wire diameter is absurdly large)
+        ({"wire_diameter": 5 * u.mm}, ValueError),
+        # Test if wire mesh is not between the source and object
+        ({"location": np.array([0, 3, 0]) * u.mm}, ValueError),
+    ],
+)
+@pytest.mark.slow
+def test_add_wire_mesh_invalid_inputs(kwargs, exception) -> None:
+    with pytest.raises(exception):
+        run_mesh_example(**kwargs)
 
-    # Test providing hdir and vdir
-    run_mesh_example(mesh_hdir=np.array([0.5, 0, 0.5]), mesh_vdir=np.array([0, 0.1, 1]))
 
-    # ************************************************************
-    # Test invalid inputs
-    # ************************************************************
+@pytest.mark.slow
+def test_add_wire_mesh_accuracy() -> None:
+    """
+    Test that a mesh is imaged correctly in the detector plane.
 
-    # Test invalid extent (too many elements)
-    with pytest.raises(ValueError):
-        run_mesh_example(extent=(1 * u.mm, 2 * u.mm, 3 * u.mm))
-
-    # Test wire mesh completely blocks all particles (in this case because
-    # the wire diameter is absurdly large)
-    with pytest.raises(ValueError):
-        run_mesh_example(wire_diameter=5 * u.mm)
-
-    # Test if wire mesh is not between the source and object
-    with pytest.raises(ValueError):
-        run_mesh_example(location=np.array([0, 3, 0]) * u.mm)
-
-    # ************************************************************
-    # Test that mesh is the right size in the detector plane, and that
-    # the wire spacing images correctly.
-    # This is actually a good overall test of the whole proton radiography
-    # particle tracing algorithm.
-    # ************************************************************
+    Test that mesh is the right size in the detector plane, and that
+    the wire spacing images correctly.
+    This is actually a good overall test of the whole proton radiography
+    particle tracing algorithm.
+    """
     loc = np.array([0, -2, 0]) * u.mm
     extent = (1 * u.mm, 1 * u.mm)
     wire_diameter = 30 * u.um
     nwires = 9
+
+    # A large number of particles is needed to get a good image
+    # of the mesh, so this is a slow test
     sim = run_mesh_example(
         problem="empty",
-        nparticles=100000,
+        nparticles=10000,
         location=loc,
         extent=extent,
         wire_diameter=wire_diameter,
@@ -876,7 +919,7 @@ def test_add_wire_mesh() -> None:
     # Expect a warning because many particles are off the radiograph
     # (Chose max_theta so corners are covered)
     with pytest.warns(RuntimeWarning):
-        h, v, i = cpr.synthetic_radiograph(sim, size=size, bins=bins)
+        h, _v, i = cpr.synthetic_radiograph(sim, size=size, bins=bins)
 
     # Sum up the vertical direction
     line = np.sum(i, axis=1)
@@ -924,42 +967,6 @@ def test_add_wire_mesh() -> None:
     assert np.isclose(measured_spacing, true_spacing, 0.5)
 
 
-@pytest.mark.slow
-@pytest.mark.filterwarnings("ignore::RuntimeWarning")
-def test_multiple_grids2() -> None:
-    """
-    Test that a case with two grids runs.
-    TODO: automate test by including two fields with some obvious analytical
-    solution??
-    """
-
-    grid1 = _test_grid("constant_bz", L=3 * u.cm, num=50, B0=0.7 * u.T)
-    grid2 = _test_grid("electrostatic_gaussian_sphere", L=1 * u.mm, num=50)
-    grids = [grid1, grid2]
-
-    source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
-    detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
-
-    sim = cpr.Tracker(
-        grids, source, detector, field_weighting="nearest neighbor", verbose=True
-    )
-
-    sim.create_particles(1e5, 15 * u.MeV, max_theta=8 * u.deg, random_seed=42)
-
-    sim.run()
-
-    size = np.array([[-1, 1], [-1, 1]]) * 5 * u.cm
-    bins = [100, 100]
-    hax, vax, values = cpr.synthetic_radiograph(sim, size=size, bins=bins)
-
-    """
-    import matplotlib.pyplot as plt
-    fig, ax = plt.subplots()
-    ax.set_aspect('equal')
-    ax.pcolormesh(hax.to(u.cm).value, vax.to(u.cm).value, values.T)
-    """
-
-
 def test_radiography_disk_save_routine(tmp_path) -> None:
     grid = _test_grid("electrostatic_gaussian_sphere", L=1 * u.mm, num=50)
 
@@ -983,10 +990,10 @@ def test_radiography_disk_save_routine(tmp_path) -> None:
     assert path.is_file()
 
     # Make synthetic radiograph from sim object
-    h, v, i1 = cpr.synthetic_radiograph(sim)
+    _h, _v, i1 = cpr.synthetic_radiograph(sim)
 
     # Load from tmppath and make synthetic radiograph
-    h, v, i2 = cpr.synthetic_radiograph(path)
+    _h, _v, i2 = cpr.synthetic_radiograph(path)
 
     # The two synthetic radiographs should be identical
     assert np.allclose(i1, i2)
@@ -1040,7 +1047,6 @@ def test_NIST_particle_stopping(
     Test to ensure that the simulated stopping range matches the SRIM output
     for various proton energies.
     """
-
     # Apply uniform units and cast to quantity array
     energies: u.Quantity = [v[0].si.value for v in energy_projected_range_list] * u.J
     projected_ranges = [v[1].si.value for v in energy_projected_range_list] * u.m
@@ -1048,12 +1054,14 @@ def test_NIST_particle_stopping(
     # Calculate the relativistic speed of the particles as a function of their
     # kinetic energy
     speeds = const.c * np.sqrt(
-        1 - (const.m_p * const.c**2 / (energies + const.m_p * const.c**2)) ** 2
+        1 - (const.m_p * const.c**2 / (energies + const.m_p * const.c**2)) ** 2,
     )
 
     width = np.max(projected_ranges) * 1.1
     stopping_grid = CartesianGrid(
-        [-0.2, 0.0, -0.2] * u.cm, [0.2, width.to(u.cm).value, 0.2] * u.cm, num=100
+        [-0.2, 0.0, -0.2] * u.cm,
+        [0.2, width.to(u.cm).value, 0.2] * u.cm,
+        num=100,
     )
 
     rho = np.ones(stopping_grid.shape) * density

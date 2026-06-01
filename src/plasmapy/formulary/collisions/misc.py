@@ -1,6 +1,4 @@
-"""
-Module of miscellaneous parameters related to collisions.
-"""
+"""Miscellaneous parameters related to particle collisions."""
 
 __all__ = [
     "mobility",
@@ -182,7 +180,7 @@ _f_mol_spline = make_interp_spline(_ϑ_tabulated, _f_mol_tabulated)
 
 @validate_quantities(T={"equivalencies": u.temperature_energy()})
 @particle_input
-def _process_inputs(T: u.Quantity[u.K], species: (Particle, Particle), V):
+def _process_inputs(T: u.Quantity[u.K], species: (Particle, Particle), V):  # noqa: ANN202
     """
     Helper function for processing inputs to functionality contained
     in `plasmapy.formulary.collisions`.
@@ -204,7 +202,7 @@ def _process_inputs(T: u.Quantity[u.K], species: (Particle, Particle), V):
     return T, masses, charges, reduced_mass_, V
 
 
-# TODO: Remove redundant mass parameter
+# TODO: Remove redundant mass parameter  # noqa: FIX002
 def _replace_nan_velocity_with_thermal_velocity(
     V,
     T,
@@ -359,12 +357,17 @@ def mobility(
     <Quantity 1921.2784... m2 / (V s)>
     """
     freq = frequencies.collision_frequency(
-        T=T, n=n_e, species=species, z_mean=z_mean, V=V, method=method
+        T=T,
+        n=n_e,
+        species=species,
+        z_mean=z_mean,
+        V=V,
+        method=method,
     )
     # we do this after collision_frequency since collision_frequency
     # already has a _process_inputs check and we are doing this just
     # to recover the charges, mass, etc.
-    T, masses, charges, reduced_mass_, V = _process_inputs(T=T, species=species, V=V)
+    T, _masses, charges, reduced_mass_, V = _process_inputs(T=T, species=species, V=V)
     z_val = (charges[0] + charges[1]) / 2 if np.isnan(z_mean) else z_mean * _e
     return z_val / (reduced_mass_ * freq)
 
@@ -411,7 +414,6 @@ def Bethe_stopping_lite(
         The stopping power of the material given the particle's energy.
 
     """
-
     beta = v / _c.si.value
 
     return -np.asarray(
@@ -424,7 +426,7 @@ def Bethe_stopping_lite(
         * (
             np.log(2 * _m_e.si.value * _c.si.value**2 * beta**2 / (I * (1 - beta**2)))
             - beta**2
-        )
+        ),
     )
 
 
@@ -468,7 +470,6 @@ def Bethe_stopping(
         The stopping power of the material given the particle's energy.
 
     """
-
     return Bethe_stopping_lite(I.si.value, n.si.value, v.si.value, z) * u.J / u.m
 
 
@@ -1004,10 +1005,15 @@ def Spitzer_resistivity(
     """
     # collisional frequency
     freq = frequencies.collision_frequency(
-        T=T, n=n, species=species, z_mean=z_mean, V=V, method=method
+        T=T,
+        n=n,
+        species=species,
+        z_mean=z_mean,
+        V=V,
+        method=method,
     )
     # fetching additional parameters
-    T, masses, charges, reduced_mass_, V = _process_inputs(T=T, species=species, V=V)
+    T, _masses, charges, reduced_mass_, V = _process_inputs(T=T, species=species, V=V)
     return (
         freq * reduced_mass_ / (n * charges[0] * charges[1])
         if np.isnan(z_mean)

@@ -1,3 +1,8 @@
+# /// script
+# requires-python = ">=3.13"
+# dependencies = [ "ruamel.yaml" ]
+# ///
+
 """Functionality to update citation information prior to making a release."""
 
 import argparse
@@ -59,7 +64,8 @@ def update_citation_files(args) -> None:
         ),
     ):
         citation_rst_text = re.compile(source_regex).sub(
-            target_value, citation_rst_text
+            target_value,
+            citation_rst_text,
         )
     with citation_rst_file.open("w") as f:
         f.write(citation_rst_text)

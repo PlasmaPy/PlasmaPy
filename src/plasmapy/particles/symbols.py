@@ -89,7 +89,7 @@ def atomic_symbol(element: Particle) -> str:
     >>> atomic_symbol("P"), atomic_symbol("p")  # Phosphorus, proton
     ('P', 'H')
     """
-    return element.element
+    return element.element  # ty:ignore[invalid-return-type]
 
 
 @particle_input
@@ -103,17 +103,15 @@ def isotope_symbol(isotope: Particle, mass_numb: int | None = None) -> str:
         A `str` representing an element, isotope, or ion or an
         `int` representing an atomic number
 
+    mass_numb : integer, |keyword-only|, optional
+        The mass number of an isotope.
+
     Returns
     -------
     `str`
         The isotopic symbol. The result will generally be returned as
         something like ``'He-4'`` or ``'Au-197'``.  This function will
         return ``'D'`` for deuterium and ``'T'`` for tritium.
-
-    Other Parameters
-    ----------------
-    mass_numb : integer, |keyword-only|, optional
-        The mass number of an isotope.
 
     Raises
     ------
@@ -148,7 +146,7 @@ def isotope_symbol(isotope: Particle, mass_numb: int | None = None) -> str:
     >>> isotope_symbol("alpha")
     'He-4'
     """
-    return isotope.isotope
+    return isotope.isotope  # ty:ignore[invalid-return-type]
 
 
 @particle_input(require="element", any_of=("charged", "uncharged"))
@@ -167,19 +165,17 @@ def ionic_symbol(
         A `str` representing an element, isotope, or ion; or an
         `int` representing an atomic number.
 
-    Returns
-    -------
-    `str`
-        The ionic symbol. The result will generally be returned as
-        something like ``'He-4 2+'``, ``'D 1+'``, or ``'p+'``.
-
-    Other Parameters
-    ----------------
     mass_numb : integer, |keyword-only|, optional
         The mass number of an isotope.
 
     Z : integer, |keyword-only|, optional
         The |charge number| of an ion or neutral atom.
+
+    Returns
+    -------
+    `str`
+        The ionic symbol. The result will generally be returned as
+        something like ``'He-4 2+'``, ``'D 1+'``, or ``'p+'``.
 
     Raises
     ------
@@ -215,8 +211,7 @@ def ionic_symbol(
     >>> ionic_symbol("H-1", Z=0)
     'H-1 0+'
     """
-
-    return particle.ionic_symbol
+    return particle.ionic_symbol  # ty:ignore[invalid-return-type]
 
 
 @particle_input
@@ -235,6 +230,12 @@ def particle_symbol(
         A `str` representing a particle, element, isotope, or ion or an
         `int` representing an atomic number
 
+    mass_numb : integer, |keyword-only|, optional
+        The mass number of an isotope.
+
+    Z : integer, |keyword-only|, optional
+        The |charge number| of an ion or neutral atom.
+
     Returns
     -------
     `str`
@@ -242,14 +243,6 @@ def particle_symbol(
         information when available. The result will generally be
         returned as something like ``'e-'``, ``'Fe'``, ``'He-4 2+'``,
         ``'D'``, ``'n'``, ``'mu-'``, or ``'p+'``.
-
-    Other Parameters
-    ----------------
-    mass_numb : integer, |keyword-only|, optional
-        The mass number of an isotope.
-
-    Z : integer, |keyword-only|, optional
-        The |charge number| of an ion or neutral atom.
 
     Raises
     ------

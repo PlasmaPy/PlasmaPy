@@ -1,4 +1,4 @@
-"""Functions related to ionization states and the properties thereof."""
+"""Calculation of ionization equilibria."""
 
 __all__ = ["ionization_balance", "Saha", "Z_bal_"]
 __aliases__ = ["Z_bal_"]
@@ -11,7 +11,7 @@ from plasmapy.utils.decorators import validate_quantities
 
 
 @validate_quantities(
-    T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()}
+    T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
 )
 def ionization_balance(
     n: u.Quantity[u.m**-3],
@@ -95,10 +95,14 @@ Z_bal_ = ionization_balance
 
 
 @validate_quantities(
-    T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()}
+    T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
 )
 def Saha(
-    g_j, g_k, n_e: u.Quantity[u.m**-3], E_jk: u.Quantity[u.J], T_e: u.Quantity[u.K]
+    g_j,
+    g_k,
+    n_e: u.Quantity[u.m**-3],
+    E_jk: u.Quantity[u.J],
+    T_e: u.Quantity[u.K],
 ) -> u.Quantity[u.dimensionless_unscaled]:
     r"""
     Return the ratio of populations of two ionization states.

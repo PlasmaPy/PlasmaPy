@@ -108,7 +108,7 @@ Improved Documentation
 - Updated the |coding guide| by discussing when to use aliases and
   applied the ``:py:`` role so that in-line code gets formatted the
   same as Python code blocks. (:pr:`2324`)
-- Updated the docstrings and type hint annotations in
+- Updated the docstrings and type annotations in
   `plasmapy.formulary.lengths`. (:pr:`2356`)
 - Refactored :file:`docs/conf.py` to improve organization. (:pr:`2363`)
 - Updated the narrative documentation on particle objects to include

@@ -16,6 +16,7 @@ include *.pyi
 include *.rst
 include *.txt
 include .editorconfig
+include .gemini/settings.json
 include .git-blame-ignore-revs
 include .jupyter/*.py
 include binder/requirements.txt

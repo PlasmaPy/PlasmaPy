@@ -5,7 +5,7 @@ __all__ = ["ParticleList", "ParticleListLike"]
 import collections
 import contextlib
 from collections.abc import Callable, Iterable, Sequence
-from typing import Literal, TypeAlias, Union, overload
+from typing import Literal, TypeAlias, overload
 
 import astropy.units as u
 import numpy as np
@@ -49,7 +49,7 @@ def _turn_quantity_into_custom_particle(
     raise InvalidParticleError(
         f"Cannot convert {quantity} into a CustomParticle for "
         f"inclusion in a ParticleList because it does not have"
-        f"a physical type of mass or electrical charge."
+        f"a physical type of mass or electrical charge.",
     )
 
 
@@ -161,7 +161,7 @@ class ParticleList(collections.UserList):
             raise TypeError(
                 "ParticleList does not accept strings, but does accept "
                 "lists and tuples containing strings. Did you mean to "
-                f"do `ParticleList([{particles!r}])` instead?"
+                f"do `ParticleList([{particles!r}])` instead?",
             )
 
         new_particles = []
@@ -172,7 +172,7 @@ class ParticleList(collections.UserList):
                 new_particles.append(obj)
             elif isinstance(obj, DimensionlessParticle):
                 raise TypeError(
-                    "ParticleList instances cannot include dimensionless particles."
+                    "ParticleList instances cannot include dimensionless particles.",
                 )
             elif isinstance(obj, u.Quantity):
                 new_particle = _turn_quantity_into_custom_particle(obj)
@@ -183,7 +183,7 @@ class ParticleList(collections.UserList):
                 except (TypeError, InvalidParticleError) as exc:
                     raise InvalidParticleError(
                         f"The object {obj} supplied to ParticleList is not a "
-                        f"particle-like object."
+                        f"particle-like object.",
                     ) from exc
 
         return new_particles
@@ -203,34 +203,35 @@ class ParticleList(collections.UserList):
             return ParticleList([other])
         except (InvalidParticleError, TypeError) as ex:
             raise InvalidParticleError(
-                f"Cannot cast {other} into a ParticleList"
+                f"Cannot cast {other} into a ParticleList",
             ) from ex
 
-    def __add__(self, other):
+    def __add__(self, other):  # noqa: D105
         try:
             other_as_particle_list = self._cast_other_as_particle_list(other)
         except (TypeError, InvalidParticleError) as exc:
             raise InvalidParticleError(
-                f"Cannot add {other!r} to a ParticleList."
+                f"Cannot add {other!r} to a ParticleList.",
             ) from exc
         return ParticleList(self.data + other_as_particle_list.data)
 
-    def __radd__(self, other):
+    def __radd__(self, other):  # noqa: D105
         other_as_particle_list = self._cast_other_as_particle_list(other)
         return other_as_particle_list.__add__(self)
 
-    def __repr__(self) -> str:
+    def __repr__(self) -> str:  # noqa: D105
         return f"ParticleList({self.symbols!r})"
 
-    def __gt__(self, other):
-        from plasmapy.particles.nuclear import nuclear_reaction_energy
+    def __gt__(self, other):  # noqa: D105
+        from plasmapy.particles.nuclear import nuclear_reaction_energy  # noqa: PLC0415
 
         other_as_particle_list = self._cast_other_as_particle_list(other)
         return nuclear_reaction_energy(
-            reactants=self.symbols, products=other_as_particle_list.symbols
+            reactants=self.symbols,
+            products=other_as_particle_list.symbols,
         )
 
-    def __str__(self) -> str:
+    def __str__(self) -> str:  # noqa: D105
         return self.__repr__()
 
     def _get_particle_attribute(self, attr, unit=None, default=None):
@@ -242,10 +243,10 @@ class ParticleList(collections.UserList):
         """
         values = [getattr(particle, attr, default) for particle in self.data]
         if unit:
-            values = u.Quantity(values)
+            values = u.Quantity(values)  # ty:ignore[invalid-argument-type]
         return values
 
-    def append(self, particle: ParticleLike) -> None:
+    def append(self, particle: ParticleLike) -> None:  # ty:ignore[invalid-method-override]
         """Append a particle to the end of the |ParticleList|."""
         if isinstance(particle, u.Quantity):
             particle = _turn_quantity_into_custom_particle(particle)
@@ -280,7 +281,7 @@ class ParticleList(collections.UserList):
         """
         return self._data
 
-    def extend(self, iterable: Iterable[ParticleLike]) -> None:
+    def extend(self, iterable: Iterable[ParticleLike]) -> None:  # ty:ignore[invalid-method-override]
         """
         Extend the sequence by appending |particle-like| elements from
         ``iterable``.
@@ -306,7 +307,7 @@ class ParticleList(collections.UserList):
         """
         return self._get_particle_attribute("half_life", unit=u.s, default=np.nan * u.s)
 
-    def insert(self, index, particle: ParticleLike) -> None:
+    def insert(self, index, particle: ParticleLike) -> None:  # ty:ignore[invalid-method-override]
         """Insert a particle before an index."""
         if isinstance(particle, u.Quantity):
             particle = _turn_quantity_into_custom_particle(particle)
@@ -317,7 +318,7 @@ class ParticleList(collections.UserList):
     @overload
     def is_category(
         self,
-        *category_tuple,
+        *category_tuple,  # noqa: ANN002
         require: str | Iterable[str] | None = None,
         any_of: str | Iterable[str] | None = None,
         exclude: str | Iterable[str] | None = None,
@@ -327,7 +328,7 @@ class ParticleList(collections.UserList):
     @overload
     def is_category(
         self,
-        *category_tuple,
+        *category_tuple,  # noqa: ANN002
         require: str | Iterable[str] | None = None,
         any_of: str | Iterable[str] | None = None,
         exclude: str | Iterable[str] | None = None,
@@ -438,7 +439,7 @@ class ParticleList(collections.UserList):
             default=np.nan * u.J,
         )
 
-    def sort(self, key: Callable | None = None, reverse: bool = False):
+    def sort(self, key: Callable | None = None, reverse: bool = False):  # noqa: FBT001, FBT002
         """
         Sort the |ParticleList| in-place.
 
@@ -613,13 +614,12 @@ Raises
 
 ParticleList.reverse.__doc__ = """Reverse the |ParticleList| in place."""
 
-ParticleListLike: TypeAlias = Union[ParticleList, Sequence[ParticleLike]]  # noqa: UP007
-
-ParticleListLike.__doc__ = r"""
+ParticleListLike: TypeAlias = ParticleList | Sequence[ParticleLike]  # noqa: UP040
+r"""
 An `object` is |particle-list-like| if it can be identified as a
 |ParticleList| or cast into one.
 
-When used as a type hint annotation, |ParticleListLike| indicates that
+When used as a type annotation, |ParticleListLike| indicates that
 the corresponding argument should represent a sequence of physical
 particles. Each item in a |ParticleListLike| object must be
 |particle-like|.
@@ -638,7 +638,7 @@ See Also
 
 Examples
 --------
-Using |ParticleListLike| as a type hint annotation indicates that an
+Using |ParticleListLike| as a type annotation indicates that an
 argument or variable should represent a sequence of |ParticleLike|
 objects.
 

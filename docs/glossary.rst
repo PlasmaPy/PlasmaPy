@@ -95,7 +95,7 @@ Glossary
 
    lite-function
    lite-functions
-      An optimized version of an existing `plasmapy` function intended
+      An optimized version of an existing PlasmaPy function intended
       for applications where computational efficiency is most important.
       While most `~plasmapy.formulary` functions accept |Quantity|
       objects created using `astropy.units`, lite-functions accept

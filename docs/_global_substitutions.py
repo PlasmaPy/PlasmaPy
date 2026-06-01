@@ -90,15 +90,14 @@ doc_subs: dict[str, str] = {
     "lite-function": r":term:`lite-function`\ ",
     "lite-functions": r":term:`lite-functions`\ ",
     "many ways to contribute": r":ref:`many ways`\ ",
-    "maxpython": "3.13",
-    "minpython": "3.11",
+    "maxpython": "3.14",
+    "minpython": "3.12",
     "open a terminal": r":ref:`open a terminal <opening-a-terminal>`\ ",
     "Open a terminal": r":ref:`Open a terminal <opening-a-terminal>`\ ",
     "parameter": r":term:`parameter`\ ",
     "parameters": r":term:`parameters <parameter>`\ ",
     "particle-like": r":term:`particle-like`\ ",
     "particle-list-like": r":term:`particle-list-like`\ ",
-    "plasma-calculator": r":ref:`plasmapy-calculator`\ ",
     "src/plasmapy": r":file:`src/plasmapy`\ ",
     "testing guide": r":ref:`testing guide`\ ",
     "tests": r":file:`tests`\ ",
@@ -131,19 +130,21 @@ links_to_become_subs: dict[str, str] = {
     "GitHub Actions": "https://docs.github.com/en/actions",
     "GitHub": "https://github.com",
     "h5py": "https://www.h5py.org",
+    "install uv": "https://docs.astral.sh/uv/getting-started/installation",
+    "installing uv": "https://docs.astral.sh/uv/getting-started/installation",
     "intersphinx": "https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html",
     "Jupyter": "https://jupyter.org",
     "lmfit": "https://lmfit.github.io/lmfit-py",
     "matplotlib": "https://matplotlib.org",
     "Matrix chat room": "https://app.element.io/#/room/#plasmapy:openastronomy.org",
     "mpmath": "https://mpmath.org/doc/current",
-    "mypy": "https://mypy.readthedocs.io",
     "nbsphinx": "https://nbsphinx.readthedocs.io",
     "Nox": "https://nox.thea.codes",
     "NumPy": "https://numpy.org",
     "pandas": "https://pandas.pydata.org",
     "pip": "https://pip.pypa.io",
     "Plasma Hack Week": "https://hack.plasmapy.org",
+    "plasmapy-calculator": "https://github.com/PlasmaPy/plasmapy-calculator",
     "PlasmaPy": "https://www.plasmapy.org",
     "PlasmaPy's data repository": "https://github.com/PlasmaPy/PlasmaPy-data",
     "PlasmaPy's documentation": "https://docs.plasmapy.org/en/stable",
@@ -156,15 +157,16 @@ links_to_become_subs: dict[str, str] = {
     "pytest": "https://docs.pytest.org",
     "Python": "https://www.python.org",
     "Python's documentation": "https://docs.python.org/3",
-    "Read the Docs": "https://about.readthedocs.com/",
+    "Read the Docs": "https://about.readthedocs.com",
     "reStructuredText": "https://docutils.sourceforge.io/rst.html",
     "ruff": "https://docs.astral.sh/ruff",
     "SciPy": "https://scipy.org",
     "SPEC 0": "https://scientific-python.org/specs/spec-0000",
     "Sphinx": "https://www.sphinx-doc.org",
-    "static type checking": "https://realpython.com/lessons/python-type-checking-overview",
+    "static type checking": "https://realpython.com/videos/python-type-checking-overview",
     "towncrier": "https://github.com/twisted/towncrier",
-    "type hint annotations": "https://peps.python.org/pep-0484",
+    "ty": "https://docs.astral.sh/ty",
+    "type annotations": "https://typing.python.org/en/latest/spec/annotations.html",
     "xarray": "https://docs.xarray.dev",
     "Zenodo": "https://zenodo.org",
     "uv": "https://github.com/astral-sh/uv",
@@ -182,7 +184,6 @@ def make_global_substitutions_table(
     Create a file containing a table of global reStructuredText substitutions
     for inclusion in :file:`docs/contributing/doc_guide.rst`.
     """
-
     headers = ("substitution", "replaces", "example")
     Row = collections.namedtuple("Row", headers)
 
@@ -209,7 +210,7 @@ def make_global_substitutions_table(
                 f"   * - {row.substitution}",
                 f"     - {row.replaces}",
                 f"     - {row.example}",
-            ]
+            ],
         )
 
     content = "\n".join(lines)

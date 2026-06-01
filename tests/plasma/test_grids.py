@@ -3,6 +3,7 @@ Tests for grids.py
 """
 
 import astropy.units as u
+import matplotlib.pyplot as plt
 import numpy as np
 import pytest
 from astropy.tests.helper import assert_quantity_allclose
@@ -176,7 +177,7 @@ def test_AbstractGrid_creation(args, kwargs, shape, error) -> None:
 @pytest.mark.filterwarnings("ignore::UserWarning")
 @pytest.mark.filterwarnings("ignore::RuntimeWarning")
 @pytest.mark.filterwarnings(
-    "ignore:.*MultiIndex.*:DeprecationWarning"
+    "ignore:.*MultiIndex.*:DeprecationWarning",
 )  # see issue 2319
 def test_print_summary(abstract_grid_uniform, abstract_grid_nonuniform) -> None:
     """
@@ -274,7 +275,7 @@ abstract_attrs = [
 @pytest.mark.parametrize(("attr", "type_", "type_in_iter", "value"), abstract_attrs)
 @pytest.mark.filterwarnings("ignore::RuntimeWarning")
 @pytest.mark.filterwarnings(
-    "ignore:.*MultiIndex.*:DeprecationWarning"
+    "ignore:.*MultiIndex.*:DeprecationWarning",
 )  # see issue 2319
 def test_AbstractGrid_nonuniform_attributes(
     attr,
@@ -287,7 +288,6 @@ def test_AbstractGrid_nonuniform_attributes(
     Tests that the attributes of AbstractGrid have the correct type and
     values for the fixture abstract_grid_uniform.
     """
-
     attr = getattr(abstract_grid_nonuniform, attr)
     assert isinstance(attr, type_)
 
@@ -335,7 +335,12 @@ def test_unit_attribute_error_case() -> None:
 
 @pytest.mark.parametrize(("key", "value", "error", "warning", "match"), quantities)
 def test_AbstractGrid_add_quantities(
-    abstract_grid_uniform, key, value, error, warning, match
+    abstract_grid_uniform,
+    key,
+    value,
+    error,
+    warning,
+    match,
 ) -> None:
     """
     Tests the add_quantities method of AbstractGrid
@@ -379,10 +384,16 @@ req_q = [
 
 
 @pytest.mark.parametrize(
-    ("required", "replace_with_zeros", "error", "warning", "match"), req_q
+    ("required", "replace_with_zeros", "error", "warning", "match"),
+    req_q,
 )
 def test_AbstractGrid_require_quantities(
-    abstract_grid_uniform, required: bool, replace_with_zeros, error, warning, match
+    abstract_grid_uniform,
+    required: bool,  # noqa: FBT001
+    replace_with_zeros,
+    error,
+    warning,
+    match,  # noqa: FBT001, RUF100
 ) -> None:
     """
     Tests the AbstractGrid require_quantities method
@@ -391,21 +402,24 @@ def test_AbstractGrid_require_quantities(
     if error is not None:
         with pytest.raises(error):
             abstract_grid_uniform.require_quantities(
-                required, replace_with_zeros=replace_with_zeros
+                required,
+                replace_with_zeros=replace_with_zeros,
             )
     # If a warning is expected, make sure it occurs
     elif warning is not None:
         with pytest.warns(warning, match=match):
             abstract_grid_uniform.require_quantities(
-                required, replace_with_zeros=replace_with_zeros
+                required,
+                replace_with_zeros=replace_with_zeros,
             )
     # Ensure the quantities do exist
     else:
         abstract_grid_uniform.require_quantities(
-            required, replace_with_zeros=replace_with_zeros
+            required,
+            replace_with_zeros=replace_with_zeros,
         )
 
-        assert all(k in abstract_grid_uniform.quantities for k in required)
+        assert all(k in abstract_grid_uniform.quantities for k in required)  # ty:ignore[not-iterable]
 
 
 def test_AbstractGrid_indexing(abstract_grid_uniform) -> None:
@@ -435,10 +449,14 @@ on_grid = [
 @pytest.mark.parametrize(("fixture", "pos", "result"), on_grid)
 @pytest.mark.filterwarnings("ignore::RuntimeWarning")
 @pytest.mark.filterwarnings(
-    "ignore:.*MultiIndex.*:DeprecationWarning"
+    "ignore:.*MultiIndex.*:DeprecationWarning",
 )  # see issue 2319
 def test_AbstractGrid_on_grid(
-    abstract_grid_uniform, abstract_grid_nonuniform, fixture, pos, result
+    abstract_grid_uniform,
+    abstract_grid_nonuniform,
+    fixture,
+    pos,
+    result,
 ) -> None:
     # Select one of the grid fixtures
     grid = abstract_grid_uniform if fixture == "uniform" else abstract_grid_nonuniform
@@ -462,10 +480,15 @@ vector_intersect = [
 @pytest.mark.parametrize(("fixture", "p1", "p2", "result"), vector_intersect)
 @pytest.mark.filterwarnings("ignore::RuntimeWarning")
 @pytest.mark.filterwarnings(
-    "ignore:.*MultiIndex.*:DeprecationWarning"
+    "ignore:.*MultiIndex.*:DeprecationWarning",
 )  # see issue 2319
 def test_AbstractGrid_vector_intersects(
-    abstract_grid_uniform, abstract_grid_nonuniform, fixture, p1, p2, result
+    abstract_grid_uniform,
+    abstract_grid_nonuniform,
+    fixture,
+    p1,
+    p2,
+    result,
 ) -> None:
     # Select one of the grid fixtures
     grid = abstract_grid_uniform if fixture == "uniform" else abstract_grid_nonuniform
@@ -513,7 +536,7 @@ def uniform_cartesian_grid():
         0.1 * u.cm,
     ],
 )
-def test_soften_edges(uniform_cartesian_grid, width):
+def test_soften_edges(uniform_cartesian_grid, width) -> None:
     grid = uniform_cartesian_grid
 
     # Find the approximate center of the grid
@@ -549,7 +572,8 @@ create_args_uniform_cartesian = [
 
 
 @pytest.mark.parametrize(
-    ("args", "kwargs", "shape", "error"), create_args_uniform_cartesian
+    ("args", "kwargs", "shape", "error"),
+    create_args_uniform_cartesian,
 )
 def test_CartesianGrid_creation(args, kwargs, shape, error) -> None:
     # If no exception is expected, create the grid and check its shape
@@ -577,7 +601,10 @@ def test_CartesianGrid_creation(args, kwargs, shape, error) -> None:
     ],
 )
 def test_uniform_cartesian_NN_interp(
-    pos, quantities, expected, uniform_cartesian_grid
+    pos,
+    quantities,
+    expected,
+    uniform_cartesian_grid,
 ) -> None:
     """
     Test that the uniform Cartesian NN interpolator returns the correct values
@@ -588,7 +615,10 @@ def test_uniform_cartesian_NN_interp(
 
     # Should be correct to within dx/2, so 0.6 leaves some room
     assert np.allclose(
-        pout, expected, atol=0.6 * uniform_cartesian_grid.dax0, equal_nan=True
+        pout,
+        expected,
+        atol=0.6 * uniform_cartesian_grid.dax0,
+        equal_nan=True,
     )
 
 
@@ -599,7 +629,10 @@ def test_uniform_cartesian_NN_interp(
     ],
 )
 def test_uniform_cartesian_NN_interp_errors(
-    pos, quantities, error, uniform_cartesian_grid
+    pos,
+    quantities,
+    error,
+    uniform_cartesian_grid,
 ) -> None:
     """
     Test that the uniform cartesian NN interpolator returns the expected
@@ -621,7 +654,10 @@ def test_uniform_cartesian_NN_interp_persistence(uniform_cartesian_grid) -> None
 
     # Test with one set of quantities
     pout = uniform_cartesian_grid.nearest_neighbor_interpolator(
-        pos, "x", "y", persistent=True
+        pos,
+        "x",
+        "y",
+        persistent=True,
     )
 
     # Transpose of pos is required because pout is ordered first by quantity
@@ -633,7 +669,10 @@ def test_uniform_cartesian_NN_interp_persistence(uniform_cartesian_grid) -> None
     # persistent==False for the first iteration to create the new
     # persistent arrays.
     pout = uniform_cartesian_grid.nearest_neighbor_interpolator(
-        pos, "x", "z", persistent=True
+        pos,
+        "x",
+        "z",
+        persistent=True,
     )
 
     assert np.allclose(pout, pos[:, [0, 2]].T, atol=0.6 * uniform_cartesian_grid.dax0)
@@ -664,7 +703,6 @@ def nonuniform_cartesian_grid():
           that out of bounds tests work correctly.
 
     """
-
     ax0 = np.sort(rs.uniform(low=-1, high=1, size=100)) * u.cm
     ax0[0], ax0[-1] = -1 * u.cm, 1 * u.cm
     ax1 = np.linspace(-1, 1, num=5) * u.cm
@@ -699,7 +737,8 @@ create_args_nonuniform_cartesian = [
 
 
 @pytest.mark.parametrize(
-    ("args", "kwargs", "shape", "error"), create_args_nonuniform_cartesian
+    ("args", "kwargs", "shape", "error"),
+    create_args_nonuniform_cartesian,
 )
 def test_NonUniformCartesianGrid_creation(args, kwargs, shape, error) -> None:
     # If no exception is expected, create the grid and check its shape
@@ -728,10 +767,13 @@ def test_NonUniformCartesianGrid_creation(args, kwargs, shape, error) -> None:
     ],
 )
 @pytest.mark.filterwarnings(
-    "ignore:.*MultiIndex.*:DeprecationWarning"
+    "ignore:.*MultiIndex.*:DeprecationWarning",
 )  # see issue 2319
 def test_nonuniform_cartesian_NN_interp(
-    pos, quantities, expected, nonuniform_cartesian_grid
+    pos,
+    quantities,
+    expected,
+    nonuniform_cartesian_grid,
 ) -> None:
     """
     Test that the uniform Cartesian NN interpolator returns the correct values
@@ -747,7 +789,7 @@ def test_nonuniform_cartesian_NN_interp(
 
 
 @pytest.mark.filterwarnings(
-    "ignore:.*MultiIndex.*:DeprecationWarning"
+    "ignore:.*MultiIndex.*:DeprecationWarning",
 )  # see issue 2319
 @pytest.mark.slow
 def test_nonuniform_cartesian_nearest_neighbor_interpolator() -> None:
@@ -790,7 +832,7 @@ def test_nonuniform_cartesian_nearest_neighbor_interpolator() -> None:
                     [-0.253, -0.1, 0.88],
                     [0.125, 0.11, -0.6],
                     [0.45, -0.16, 0.2],
-                ]
+                ],
             )
             * u.cm,
             ("x",),
@@ -803,7 +845,7 @@ def test_nonuniform_cartesian_nearest_neighbor_interpolator() -> None:
                     [-0.253, -0.1, 0.88],
                     [0.125, 0.11, -0.6],
                     [0.45, -0.16, 0.2],
-                ]
+                ],
             )
             * u.cm,
             ("x", "y"),
@@ -815,7 +857,10 @@ def test_nonuniform_cartesian_nearest_neighbor_interpolator() -> None:
     ],
 )
 def test_volume_averaged_interpolator_at_several_positions(
-    pos, what, expected, uniform_cartesian_grid
+    pos,
+    what,
+    expected,
+    uniform_cartesian_grid,
 ) -> None:
     pout = uniform_cartesian_grid.volume_averaged_interpolator(pos, *what)
     if len(what) == 1:
@@ -845,7 +890,7 @@ def test_volume_averaged_interpolator_missing_key(uniform_cartesian_grid) -> Non
         (np.array([0.0, 0.0, 21.0]) * u.cm, None),
         (
             np.array(
-                [[0.0, 0.0, 0.0], [-1.2, 0.0, 0.0], [0.9, 0.5, -0.2], [0.3, -2.0, 5.0]]
+                [[0.0, 0.0, 0.0], [-1.2, 0.0, 0.0], [0.9, 0.5, -0.2], [0.3, -2.0, 5.0]],
             )
             * u.cm,
             np.array([False, True, False, True]),
@@ -853,7 +898,9 @@ def test_volume_averaged_interpolator_missing_key(uniform_cartesian_grid) -> Non
     ],
 )
 def test_volume_averaged_interpolator_handle_out_of_bounds(
-    pos, nan_mask, uniform_cartesian_grid
+    pos,
+    nan_mask,
+    uniform_cartesian_grid,
 ) -> None:
     # Contains out-of-bounds values (must handle NaNs correctly)
     pout = uniform_cartesian_grid.volume_averaged_interpolator(pos, "x")
@@ -867,16 +914,25 @@ def test_volume_averaged_interpolator_handle_out_of_bounds(
 def test_volume_averaged_interpolator_persistence(uniform_cartesian_grid) -> None:
     # Try running with persistence
     pos = np.array([[0.1, -0.3, 0], [0.1, -0.3, 0]]) * u.cm
-    p1, p2 = uniform_cartesian_grid.volume_averaged_interpolator(
-        pos, "x", "y", persistent=True
+    _p1, _p2 = uniform_cartesian_grid.volume_averaged_interpolator(
+        pos,
+        "x",
+        "y",
+        persistent=True,
     )
-    p1, p2 = uniform_cartesian_grid.volume_averaged_interpolator(
-        pos, "x", "y", persistent=True
+
+    _p1, _p2 = uniform_cartesian_grid.volume_averaged_interpolator(
+        pos,
+        "x",
+        "y",
+        persistent=True,
     )
     # Try changing the arg list, make sure it catches this and auto-reverts
     # to non-persistent interpolation in that case
-    p1, p2 = uniform_cartesian_grid.volume_averaged_interpolator(
-        pos, "x", persistent=True
+    p1, _p2 = uniform_cartesian_grid.volume_averaged_interpolator(
+        pos,
+        "x",
+        persistent=True,
     )
     assert p1.size == 1
 
@@ -901,7 +957,9 @@ def test_volume_averaged_interpolator_known_solutions() -> None:
     pts = grid.volume_averaged_interpolator(pos, "B_z", persistent=True)
 
     assert np.allclose(
-        pts.value, np.array([np.nan, 0, 0.5, 1, 1.5, 2, 2.5, 3, np.nan]), equal_nan=True
+        pts.value,
+        np.array([np.nan, 0, 0.5, 1, 1.5, 2, 2.5, 3, np.nan]),
+        equal_nan=True,
     )
 
 
@@ -940,7 +998,7 @@ def test_volume_averaged_interpolator_compare_NN_3D(uniform_cartesian_grid) -> N
                 np.linspace(-0.9, 0.9, num=npts),
                 np.linspace(-0.9, 0.9, num=npts),
                 np.linspace(-0.9, 0.9, num=npts),
-            ]
+            ],
         )
         * u.cm
     )
@@ -963,12 +1021,12 @@ def test_volume_averaged_interpolator_compare_NN_3D(uniform_cartesian_grid) -> N
 
 
 @pytest.mark.filterwarnings(
-    "ignore:.*MultiIndex.*:DeprecationWarning"
+    "ignore:.*MultiIndex.*:DeprecationWarning",
 )  # see issue 2319
 def test_NonUniformCartesianGrid() -> None:
     grid = grids.NonUniformCartesianGrid(-1 * u.cm, 1 * u.cm, num=10)
 
-    pts0, pts1, pts2 = grid.grids
+    pts0, _pts1, _pts2 = grid.grids
 
     grid.add_quantities(x=pts0)
     # We'll need to switch from print() to using logging library
@@ -1010,8 +1068,6 @@ def debug_volume_avg_interpolator() -> None:
     Plot the comparison of the nearest neighbor interpolator and volume
     averaged interpolator for `~plasmapy.plasma.grids.CartesianGrid`.
     """
-    import matplotlib.pyplot as plt
-
     grid = grids.CartesianGrid(-1 * u.cm, 1 * u.cm, num=24)
 
     # add x and y positions to grid

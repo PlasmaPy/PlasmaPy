@@ -892,7 +892,7 @@ The type specification should not include information about the
 
   .. tip::
 
-     Use `typing.Literal` in |type hint annotations| when a parameter
+     Use `typing.Literal` in |type annotations| when a parameter
      should only be provided with specific values (e.g.,
      :py:`x: Literal{1, 2, 3, 4}`).
 
@@ -1066,8 +1066,6 @@ extensions:
 * |IPython.sphinxext.ipython_console_highlighting|_.
 * |sphinx_changelog|_ for rendering |towncrier| changelogs.
 * |sphinx-tabs|_ for creating tabbed content.
-* |sphinx-hoverxref|_ for showing floating windows on cross references
-  of the documentation.
 * |sphinx-notfound-page|_ to add a :wikipedia:`404 <HTTP_404>` page for
   the documentation.
 * |sphinx-issues|_ to add roles for linking to GitHub (:rst:role:`commit`,
@@ -1282,21 +1280,20 @@ Building documentation
 .. tip::
 
    Because a documentation preview is generated automatically by |Read
-   the Docs| for every pull request, it is not necessary to build the
-   documentation locally on your own computer. New contributors can
-   safely skip this section.
+   the Docs| for every pull request, it is generally unnecessary to
+   build the documentation on your own computer. Most contributors can
+   skip this section.
 
-There are two methods for building the documentation: make_ and |Nox|.
+There are two methods for building the documentation: |Nox| (recommend)
+and make_.
+
+* Running ``nox -s docs`` will install an isolated virtual environment
+  with ``uv`` that will be used to build the documentation at
+  :file:`docs/_build/html/`.
 
 * Using make_ will build the documentation based off of what is in the
   current directory structure. make_ is quicker for local builds than
   |Nox| but requires you to install and set up all dependencies.
-
-* Using |Nox| does not require setting up all dependencies ahead of
-  time, but is more computationally intensive since it creates a virtual
-  environment and builds the package before building the documentation.
-  Consequently, PlasmaPy uses |Nox| for building the documentation on
-  continuous integration testing platforms.
 
 .. _doc-build-prereqs:
 
@@ -1548,7 +1545,7 @@ PlasmaPy's documentation build.
 To figure out if a new release caused the error, search |PyPI| for
 recently released packages, including `packages related to Sphinx`_ and
 any that came up in the error message. You can also check if the same
-documentation build failure happened in the `weekly tests`_ on the
+documentation build failure happened in the `comprehensive tests`_ on the
 ``main`` branch. After identifying the package that caused the error, a
 pull request can be submitted that sets a temporary maximum allowed
 version of the package that can be revisited later.
@@ -1596,7 +1593,7 @@ example Jupyter notebooks, the tables of contents are in
 .. _BibTeX: https://www.bibtex.org
 .. _BibTeX format: https://www.bibtex.com/g/bibtex-format
 .. _configuration options: https://www.sphinx-doc.org/en/master/usage/configuration.html
-.. _CSS: https://www.w3schools.com:443/css
+.. _CSS: http://www.w3schools.com/css/
 .. _define substitutions: https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#substitution-definitions
 .. _doctests: https://docs.pytest.org/en/6.2.x/doctest.html
 .. _full list of emoji codes: https://sphinxemojicodes.readthedocs.io/en/stable/#supported-codes
@@ -1625,10 +1622,10 @@ example Jupyter notebooks, the tables of contents are in
 .. _sphinx-codeautolink: https://sphinx-codeautolink.readthedocs.io
 .. _Sphinx's glossary: https://www.sphinx-doc.org/en/master/glossary.html
 .. _Sphinx's templating page: https://www.sphinx-doc.org/en/master/development/templating.html
-.. _style overrides: https://docs.readthedocs.io/en/stable/guides/adding-custom-css.html
+.. _style overrides: https://docs.readthedocs.com/platform/stable/guides/adding-custom-css.html
 .. _toctree: https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#table-of-contents
 .. _warns: https://numpydoc.readthedocs.io/en/latest/format.html#warns
-.. _weekly tests: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/weekly.yml
+.. _comprehensive tests: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/ci-comprehensive.yml
 .. _Wikipedia: https://www.wikipedia.org
 
 .. ----------------------
@@ -1697,9 +1694,6 @@ example Jupyter notebooks, the tables of contents are in
 
 .. _`sphinx-reredirects`: https://documatt.gitlab.io/sphinx-reredirects
 .. |sphinx-reredirects| replace:: `sphinx-reredirects`
-
-.. _`sphinx-hoverxref`: https://sphinx-hoverxref.readthedocs.io
-.. |sphinx-hoverxref| replace:: `sphinx-hoverxref`
 
 .. _`sphinx-issues`: https://github.com/sloria/sphinx-issues
 .. |sphinx-issues| replace:: `sphinx-issues`

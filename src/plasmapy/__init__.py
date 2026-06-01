@@ -41,11 +41,13 @@ try:
     try:
         from plasmapy._dev.scm_version import version as __version__
     except ImportError:
-        from plasmapy._version import (  # type: ignore[import-not-found,no-redef,unused-ignore]
+        from plasmapy._version import (
             version as __version__,
         )
 except Exception:  # coverage: ignore  # noqa: BLE001
-    __version__ = "0.0.0"  # package is not installed
+    __version__ = (  # ty:ignore[conflicting-declarations]
+        "0.0.0"  # package is not installed
+    )
 
     import warnings
 
@@ -55,6 +57,7 @@ except Exception:  # coverage: ignore  # noqa: BLE001
             f"it was set to {__version__} instead. The installation may "
             "be broken."
         ),
+        stacklevel=1,
         category=ImportWarning,
     )
 
@@ -80,8 +83,8 @@ def online_help(query: str) -> None:  # coverage: ignore
     query : str
         The search query.
     """
-    import webbrowser
-    from urllib.parse import urlencode
+    import webbrowser  # noqa: PLC0415
+    from urllib.parse import urlencode  # noqa: PLC0415
 
     url = (
         "http://docs.plasmapy.org/en/stable/search.html?"

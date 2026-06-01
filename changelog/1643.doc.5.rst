@@ -1,2 +1,0 @@
-Incorporated `sphinx` extensions `plasmapy_sphinx.ext.autodoc` and
-`plasmapy_sphinx.ext.directives`.

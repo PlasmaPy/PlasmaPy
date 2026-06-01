@@ -1,7 +1,4 @@
-"""
-Functions for calculating quantities associated with electromagnetic
-radiation.
-"""
+"""Quantities associated with electromagnetic radiation."""
 
 __all__ = [
     "thermal_bremsstrahlung",
@@ -112,7 +109,6 @@ def thermal_bremsstrahlung(
     ... )
     <Quantity 2.16932808e-10 kg / (m s2)>
     """
-
     if n_i is None:  # default is quasineutrality
         n_i = n_e / ion.charge_number
 
@@ -127,7 +123,7 @@ def thermal_bremsstrahlung(
     if np.min(ω) < np.max(ω_pe):
         raise PhysicsError(
             "Lowest frequency must be larger than the electron "
-            f"plasma frequency {ω_pe:.1e}, but min(ω) = {np.min(ω):.1e}"
+            f"plasma frequency {ω_pe:.1e}, but min(ω) = {np.min(ω):.1e}",
         )
 
     # Check that the parameters given fall within the Rayleigh-Jeans limit
@@ -139,7 +135,7 @@ def thermal_bremsstrahlung(
         raise PhysicsError(
             "Rayleigh-Jeans limit not satisfied: "
             f"ℏω/kT_e = {rj_const.value:.2e} > 0.1. "
-            "Try lower ω or higher T_e."
+            "Try lower ω or higher T_e.",
         )
 
     # Calculate the bremsstrahlung power spectral density in several steps
