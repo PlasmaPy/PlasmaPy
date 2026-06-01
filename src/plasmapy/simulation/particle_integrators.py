@@ -152,8 +152,8 @@ class BorisIntegrator(AbstractIntegrator):
 
         Notes
         -----
-        The Boris algorithm :cite:p:`boris:1970` is the standard energy
-        conserving algorithm for particle movement in plasma physics. See
+        The Boris algorithm :cite:p:`boris:1970` is the standard volume preserving 
+        algorithm for particle movement in plasma physics. See
         :cite:t:`birdsall:2004` for more details, and this `page on the
         Boris method <https://www.particleincell.com/2011/vxb-rotation>`__
         for a nice overview.
@@ -166,7 +166,9 @@ class BorisIntegrator(AbstractIntegrator):
         3. Add the second half of the impulse from the electric field.
 
         This ends up causing the magnetic field action to be properly "centered" in
-        time, and the algorithm, being a symplectic integrator, conserves energy.
+        time, and the algorithm, being a volume preserving ensures that error in energy
+        remains bounded. See this paper <https://pubs.aip.org/aip/pop/article/20/8/084503/317652/Why-is-Boris-algorithm-so-good>
+        for more detail. 
         """
         hqmdt = 0.5 * dt * q / m
         vminus = v + hqmdt * E
