@@ -39,7 +39,6 @@ def test_tabulated_f_mol(theta, tabulated_result):
     Bethe provides the values of Eq. 26 for relevant `ϑ` in Table II. The
     accuracy of these values are tested against an evaluation of Eq. 26.
     """
-
     f_mol_calculated = [_f_mol_n(theta * u.dimensionless_unscaled, n) for n in range(3)]
 
     assert np.isclose(tabulated_result, f_mol_calculated, rtol=0.01).all()
