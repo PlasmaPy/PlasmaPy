@@ -23,12 +23,12 @@ from scipy.special import factorial, jv
 
 from plasmapy.formulary.collisions import frequencies
 from plasmapy.formulary.speeds import thermal_speed
-from plasmapy.particles.atomic import reduced_mass, transmitted_energy_from_thickness
+from plasmapy.particles.atomic import reduced_mass
 from plasmapy.particles.atomic import (
     stopping_power as NIST_stopping_power,  # noqa: N812
 )
 from plasmapy.particles.atomic import (
-    stopping_range as NIST_stopping_range,  # noqa: N812
+    transmitted_energy as NIST_transmitted_energy,  # noqa: N812
 )
 from plasmapy.particles.decorators import particle_input
 from plasmapy.particles.particle_class import Particle
@@ -80,7 +80,7 @@ _ϑ_tabulated = [
     10.0,
 ]
 
-# TODO: Validate the values here by comparing with actual integration
+# TODO: Validate the values here by comparing with actual integration  # noqa: FIX002
 _f_mol_tabulated = [
     [
         +2.0000,
@@ -175,7 +175,7 @@ _f_mol_tabulated = [
     [1e-3 * 1e-40, 1e-3 * 0.2084, 1e-3 * 0.0237],
 ]
 
-_f_mol_spline = make_interp_spline(_ϑ_tabulated, _f_mol_tabulated)
+_f_mol_spline = make_interp_spline(_ϑ_tabulated, np.array(_f_mol_tabulated))
 
 
 @validate_quantities(T={"equivalencies": u.temperature_energy()})
@@ -477,7 +477,12 @@ def Highland_scattering(
     m: u.Quantity[u.kg],
     v: u.Quantity[u.m / u.s],
     L: u.Quantity[u.m],
-    L_rad: u.Quantity[u.kg / u.m**2],
+    L_rad: u.Quantity[u.m],
+) -> (
+    Callable[
+        [u.Quantity[u.dimensionless_unscaled]], u.Quantity[u.dimensionless_unscaled]
+    ]
+    | u.Quantity[u.dimensionless_unscaled]
 ):
     r"""Calculate the rms scattering angle using the Highland formula.
 
@@ -559,12 +564,14 @@ def _preprocess_stopping_arguments(
         else:
             raise ValueError("Please provide one of ")
 
-    # TODO: Add error handling to handle the case we can't find the material
+    # TODO: Add error handling to handle the case we can't find the material  # noqa: FIX002
     #  the user is looking for.
     return NIST_stopping_power(beam, NIST_material, return_interpolator=True)
 
 
-def _beta_and_p(beam: Particle, T: u.Quantity[u.MeV]):
+def _beta_and_p(
+    beam: Particle, T: u.Quantity[u.MeV]
+) -> tuple[float, u.Quantity[u.kg * u.m / u.s]]:
     beta = np.sqrt(1 - 1 / (T / (beam.mass * const.c**2) + 1) ** 2)
     p = beam.mass * beta * const.c / np.sqrt(1 - beta**2)
 
@@ -584,7 +591,7 @@ def _x_a_squared(beam, T, c_1, c_2):
     return x_0_squared * (1.13 + 3.76 * alpha_squared)
 
 
-def _x_a_bar_integrand(beam, T: u.MeV, target, stopping_power, c_1, c_2):
+def _x_a_bar_integrand(beam, T: u.MeV, target, stopping_power, c_1, c_2):  # noqa: ANN202
     """
     Eq 20, for a single value of `i`.
     That is, the provided `target` must be of a pure element.
@@ -592,7 +599,7 @@ def _x_a_bar_integrand(beam, T: u.MeV, target, stopping_power, c_1, c_2):
     beta, p = _beta_and_p(beam, T)
     x_a_squared = _x_a_squared(beam, T, c_1, c_2)
     # Eq. 22, Fano's correction
-    # TODO: Do we need this if it's for "scattering by atomic electrons"?
+    # TODO: Do we need this if it's for "scattering by atomic electrons"?  # noqa: FIX002
     D = (
         np.log(1130 / (target.atomic_number ** (4 / 3) * (1 / beta**2 - 1)))
         + 5
@@ -609,15 +616,58 @@ def _calculate_characteristic_angles(
     incident_energy,
     target,
     Rho,
+    f_i,
     t,
     NIST_material,
     stopping_power,
     use_constant_energy_approximation,
-    c_1,
-    c_2,
-    c_3,
 ):
-    # TODO: Update this function to work with user-provided range data
+    """
+    Calculate the characteristic angles x_a and x_c.
+    """
+    # In the case that we are dealing with a compound target, iterate over the constituent atoms
+    c_1 = u.Quantity(
+        [
+            (
+                const.e.esu**2
+                / (const.hbar * const.c)
+                * beam.atomic_number
+                * element.atomic_number
+            )
+            ** 2
+            for element in target
+        ]
+    )
+    c_2 = u.Quantity(
+        [
+            (
+                1
+                / 0.885
+                * (const.e.esu**2 / (const.hbar * const.c))
+                * (const.m_e * const.c**2)
+                * element.atomic_number ** (1 / 3)
+            )
+            ** 2
+            for element in target
+        ]
+    )
+    c_3 = u.Quantity(
+        [
+            (
+                4
+                * np.pi
+                * const.N_A
+                * const.e.esu**4
+                * beam.atomic_number**2
+                * element.atomic_number**2
+                * f
+                / (element.mass * const.N_A)
+            ).cgs
+            for (element, f) in zip(target, f_i, strict=True)
+        ]
+    )
+
+    # TODO: Update this function to work with user-provided range data  # noqa: FIX002
     if use_constant_energy_approximation:
         beta, p = _beta_and_p(beam, incident_energy)
         # Eq. 3
@@ -633,14 +683,11 @@ def _calculate_characteristic_angles(
 
     # The bounds of the integrals are functions of the incident and
     # transmitted kinetic energies
-    _energy, beam_areal_range = NIST_stopping_range(
-        beam, NIST_material, incident_energy
-    )
-    _thickness, transmitted_energy = transmitted_energy_from_thickness(
-        beam, NIST_material, thickness=(beam_areal_range - t * Rho)
+    transmitted_energy = NIST_transmitted_energy(
+        beam, incident_energy, NIST_material, t * Rho
     )
 
-    def x_c_integrand(T: u.Quantity[u.MeV]):
+    def x_c_integrand(T: u.Quantity[u.MeV]):  # noqa: ANN202
         """Eq. 18."""
         beta, p = _beta_and_p(beam, T)
 
@@ -663,12 +710,11 @@ def _calculate_characteristic_angles(
                 c_3_i
                 / x_c_squared
                 * quad(
-                    lambda T,
-                    target_i=target_i,
-                    c_1_i=c_1_i,
-                    c_2_i=c_2_i: _x_a_bar_integrand(
-                        beam, T * u.MeV, target_i, stopping_power, c_1_i, c_2_i
-                    ).cgs.value,
+                    lambda T, target_i=target_i, c_1_i=c_1_i, c_2_i=c_2_i: (
+                        _x_a_bar_integrand(
+                            beam, T * u.MeV, target_i, stopping_power, c_1_i, c_2_i
+                        ).cgs.value
+                    ),
                     incident_energy.to(u.MeV).value,
                     transmitted_energy.to(u.MeV).value,
                 )[0]
@@ -685,20 +731,19 @@ def _calculate_characteristic_angles(
     ln_x_a_bar_squared *= cgs_integrand_units * u.MeV
     x_a_squared = np.exp(ln_x_a_bar_squared.cgs)
 
-    return x_c_squared, x_a_squared
+    return transmitted_energy, x_c_squared, x_a_squared
 
 
-def _f_n_mol_integrand(
+def _f_n_mol_integrand(  # noqa: ANN202
     u: float,
     ϑ: float,
     n: int,
 ):
     """Eq. 26 of Bethe."""
-    # TODO: Move this into the body of `Bethe_Ferrari_Moliere_scattering`
     return u * jv(0, ϑ * u) * np.exp(-(u**2) / 4) * (u**2 / 4 * np.log(u**2 / 4)) ** n
 
 
-def _f_mol_n(
+def _f_mol_n(  # noqa: ANN202
     ϑ: u.Quantity[u.dimensionless_unscaled],
     n: int,
 ):
@@ -712,9 +757,10 @@ def Moliere_scattering_B_residual(B, b):
     return B - np.log(B) - b
 
 
-def _wrapped_Moliere_angular_distribution(x_c_squared, B, use_f_mol_interpolator):
+def _wrapped_Moliere_angular_distribution(theta_prime_unit, B, use_f_mol_interpolator):
     def Moliere_angular_distribution(theta):
-        theta_prime = (theta / np.sqrt(x_c_squared * B)).cgs
+        # Eq. 24
+        theta_prime = (theta / theta_prime_unit).cgs
         B_coefficients = np.asarray([1 / B**i for i in range(3)]).T
 
         if use_f_mol_interpolator:
@@ -722,8 +768,7 @@ def _wrapped_Moliere_angular_distribution(x_c_squared, B, use_f_mol_interpolator
         else:
             f_n = np.asarray([_f_mol_n(theta_prime, i) for i in range(3)])
 
-        result = np.sum(B_coefficients * f_n, axis=-1)
-        return theta_prime * result
+        return np.sum(B_coefficients * f_n, axis=-1)
 
     return Moliere_angular_distribution
 
@@ -738,13 +783,20 @@ def Moliere_scattering(
     Rho: u.Quantity[u.g / u.cm**3],
     t: u.Quantity[u.m],
     f_i: npt.NDArray[np.float64] | None = None,
+    *,
     # Miscellaneous parameters
-    use_constant_energy_approximation: bool = False,
+    use_constant_energy_approximation=False,
     NIST_material: str | None = None,
     stopping_power: Callable[[u.Quantity[u.MeV]], u.Quantity[u.MeV / u.g]]
     | None = None,
     use_f_mol_interpolator: bool = True,
     return_rms: bool = False,
+) -> (
+    Callable[
+        [u.Quantity[u.dimensionless_unscaled]],
+        u.Quantity[u.dimensionless_unscaled],
+    ]
+    | u.Quantity[u.dimensionless_unscaled]
 ):
     """Calculate the angular scattering distribution for the provided particle species.
 
@@ -793,61 +845,23 @@ def Moliere_scattering(
         distribution function. Defaults to `False`.
 
     """
-    # In the case that we are dealing with a compound target, iterate over the constituent atoms
-    c_1 = u.Quantity(
-        [
-            (
-                const.e.esu**2
-                / (const.hbar * const.c)
-                * beam.atomic_number
-                * element.atomic_number
-            )
-            ** 2
-            for element in target
-        ]
-    )
-    c_2 = u.Quantity(
-        [
-            (
-                1
-                / 0.885
-                * (const.e.esu**2 / (const.hbar * const.c))
-                * (const.m_e * const.c**2)
-                * element.atomic_number ** (1 / 3)
-            )
-            ** 2
-            for element in target
-        ]
-    )
-    c_3 = u.Quantity(
-        [
-            (
-                4
-                * np.pi
-                * const.N_A
-                * const.e.esu**4
-                * beam.atomic_number**2
-                * element.atomic_number**2
-                * f
-                / (element.mass * const.N_A)
-            ).cgs
-            for (element, f) in zip(target, f_i, strict=True)
-        ]
-    )
-    x_c_squared, x_a_squared = _calculate_characteristic_angles(
+    # Treat mono-atomic targets as a target with 100% of one element
+    if not f_i:
+        f_i = np.asarray([1])
+
+    T_final, x_c_squared, x_a_squared = _calculate_characteristic_angles(
         beam,
         incident_energy,
         target,
         Rho,
+        f_i,
         t,
         NIST_material,
         stopping_power,
         use_constant_energy_approximation,
-        c_1,
-        c_2,
-        c_3,
     )
 
+    # Eq. 11
     b = np.log(x_c_squared / (1.167 * x_a_squared))
 
     # The transcendental equation associated with `B` yields two solutions for
@@ -855,30 +869,42 @@ def Moliere_scattering(
     # our initial guess satisfying b > 1.
     B = fsolve(Moliere_scattering_B_residual, x0=b, args=(b,))
 
+    # Denominator of Eq. 24 of Bethe. Characterizes the width of the Gaussian approximation
+    theta_prime_unit = np.sqrt(x_c_squared * B)
+
+    # Eq. 13
+    theta_M_squared = x_c_squared * B / 2
+
     angular_distribution = _wrapped_Moliere_angular_distribution(
-        x_c_squared, B, use_f_mol_interpolator
+        theta_prime_unit, B, use_f_mol_interpolator
     )
 
-    if not return_rms:
-        return angular_distribution
-    else:
-        # Algebraic manipulation of Eq. 30
-        theta_prime_unit = np.sqrt(x_c_squared * B)
+    # TODO: Verify this by integration  # noqa: FIX002
+    normalization_factor = 4 * np.pi * theta_M_squared
 
-        # Calculate the value of theta associated with theta_prime = 5
+    if not return_rms:
+        return (
+            T_final.to(u.MeV),
+            x_a_squared,
+            x_c_squared,
+            b,
+            B,
+            np.sqrt(theta_M_squared),
+            theta_prime_unit,
+            lambda x: angular_distribution(x) / normalization_factor,
+        )
+    else:
+        # Calculate the value of theta associated with theta_prime = 2
         # At this value, the value of the distributions have dropped to nearly 0
-        upper_bound = 5 * theta_prime_unit
-        total_scattering_probability = quad(angular_distribution, 0, upper_bound)[0]
+        upper_bound = 2 * theta_prime_unit
 
         mean_squared = quad(
-            lambda theta: theta**2
-            * angular_distribution(theta)
-            / total_scattering_probability,
-            0,
+            lambda theta: theta**2 * angular_distribution(theta) / normalization_factor,
+            0,  # TODO: We might have to update this to the bounds for the "experimental" distribution  # noqa: FIX002
             upper_bound,
         )[0]
 
-        return np.sqrt(mean_squared)
+        return theta_prime_unit, np.sqrt(mean_squared)
 
 
 @validate_quantities(
