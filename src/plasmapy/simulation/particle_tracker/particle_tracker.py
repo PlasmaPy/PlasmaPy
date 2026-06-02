@@ -283,7 +283,7 @@ class ParticleTracker:
             list[Callable[[u.Quantity[u.m / u.s], u.Quantity[u.m**-3]],]] | None
         ) = None
 
-    # TODO: Should these properties return quantities with units?
+    # TODO: Should these properties return quantities with units?  # noqa: FIX002
     @cached_property
     def x(self) -> np.ndarray | None:
         """An array of points representing the positions of the particles in meters.
@@ -291,7 +291,6 @@ class ParticleTracker:
         Has shape (``num_particles``, 3). When a particle has been removed from the simulation,
         its position will be set to ``NaN``.
         """
-
         return self._x
 
     @cached_property
@@ -302,7 +301,6 @@ class ParticleTracker:
         be set to ``NaN``, and its position will no longer be evolved by the
         simulation.
         """
-
         return self._v
 
     @cached_property
@@ -311,27 +309,23 @@ class ParticleTracker:
 
         The array has shape (``num_particles``, 1).
         """
-
         return np.linalg.norm(self.v, axis=-1, keepdims=True)
 
-    # TODO: Is it at all frequent that users will want to evolve multiple species?
+    # TODO: Is it at all frequent that users will want to evolve multiple species?  # noqa: FIX002
     #  or will this language only be confusing
     @cached_property
     def q(self) -> np.ndarray | float | None:
         """The charge(s) on a single particle of the specie(s) expressed in Coulombs."""
-
         return self._q
 
     @cached_property
     def m(self) -> np.ndarray | float | None:
         """The mass(es) of a single particle of the specie(s) expressed in kilograms."""
-
         return self._m
 
     @cached_property
     def num_particles(self) -> int | None:
         """The number of particles that have been loaded into the simulation."""
-
         return self._num_particles
 
     @staticmethod
@@ -664,21 +658,22 @@ class ParticleTracker:
             A `~plasmapy.particles.particle_collections.ParticleListLike` representation of the target material(s).
             The atomic mass of each particle must be specified (i.e. ``Al-27``).
         """
-
         # For scattering calculations, a multidimensional interpolator must be
         # constructed to obtain the mean-square scattering rate as a function of
         # velocity and number density.
         if len({len(self.grids), len(target), target_rho.shape[0]}) != 1:
             raise ValueError(
-                "Please provide an array of length ngrids for the materials and densities."
+                "Please provide an array of length ngrids for the materials and densities.",
+                stacklevel=2,
             )
 
-        # TODO: does this method still exist?
+        # TODO: does this method still exist?  # noqa: FIX002
         if not self._is_quantity_defined_on_one_grid("T_i"):
             warnings.warn(
                 "The ion temperature is not defined on any of the provided grids! "
                 "Particle scattering will not be calculated.",
                 RuntimeWarning,
+                stacklevel=2,
             )
 
             # Don't set `_do_scattering`. The push loop does not have to do scattering
@@ -766,7 +761,7 @@ class ParticleTracker:
         #  Each quantity is initialized as a zeros array with its respective units
         # Arrays are ``num_particles`` sized so they don't need to be recreated
         # when the number of tracked particles changes
-        # TODO: Is there a way to make this dictionary unit-agnostic?
+        # TODO: Is there a way to make this dictionary unit-agnostic?  # noqa: FIX002
         self._total_grid_values = {
             field_name: np.zeros(self.num_particles)
             * AbstractGrid.recognized_quantities()[field_name].unit
@@ -1044,7 +1039,7 @@ class ParticleTracker:
                     )
                 )
 
-        # TODO: Implement a compact way to apply these units
+        # TODO: Implement a compact way to apply these units  # noqa: FIX002
         self._E[:, 0] = self._total_grid_values["E_x"].to(u.V / u.m).value
         self._E[:, 1] = self._total_grid_values["E_y"].to(u.V / u.m).value
         self._E[:, 2] = self._total_grid_values["E_z"].to(u.V / u.m).value
@@ -1201,7 +1196,7 @@ class ParticleTracker:
 
         # Eliminate negative energies before calculating new speeds
         E = np.where(E < 0, 0, E)
-        
+
         new_speeds = np.sqrt(2 * E / self.m)
         self.v[self._tracked_particle_mask] = np.multiply(
             new_speeds,
@@ -1227,7 +1222,7 @@ class ParticleTracker:
             if particles_on_grid.sum() == 0:
                 continue
 
-            # TODO: figure out additivity rule for scattering
+            # TODO: figure out additivity rule for scattering  # noqa: FIX002
             mean_square_scatter_rate[particles_on_grid] += self._scattering_routine(
                 speed=speeds[particles_on_grid],
                 beam_particle=self._particle,
@@ -1318,7 +1313,7 @@ class ParticleTracker:
             np.bool_,
         )
 
-    # TODO: Update these names to match our new masks
+    # TODO: Update these names to match our new masks  # noqa: FIX002
     def _reset_cache(self) -> None:
         """
         Reset the cached properties.
@@ -1379,7 +1374,6 @@ class ParticleTracker:
         r"""
         Return the non-relativistic kinetic energy of the particles.
         """
-        
         # TODO: how should the relativistic case be handled?  # noqa: FIX002
         return 0.5 * self.m * np.square(np.linalg.norm(self.v, axis=-1, keepdims=True))
 
@@ -1399,7 +1393,6 @@ class ParticleTracker:
         """
         Calculates a boolean mask corresponding to particles that have been stopped.
         """
-
         # Calculated by taking the difference/intersection of untracked and removed particles
         return np.logical_and(
             ~self._tracked_particle_mask, ~self._removed_particle_mask

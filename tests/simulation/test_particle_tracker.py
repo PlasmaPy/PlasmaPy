@@ -789,7 +789,7 @@ def test_particle_tracker_ranges_straggling(
     tracker for a variety of materials and energies.
 
     """
-    # TODO: add implementation-specific details to this docstring
+    # TODO: add implementation-specific details to this docstring  # noqa: FIX002
 
     beam_particle = Particle("p+")
 
@@ -821,7 +821,7 @@ def test_particle_tracker_ranges_straggling(
 
     # The speed value should be copied into the y-component along the second
     # axis
-    # TODO: figure out a cleaner way of doing this
+    # TODO: figure out a cleaner way of doing this  # noqa: FIX002
     for i, speed in enumerate(initial_speed):
         v0[i, :, 1] = speed.si.value
 
