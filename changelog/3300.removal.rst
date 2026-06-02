@@ -1,0 +1,4 @@
+Deprecated the internal ``@plasmapy.utils.decorators.deprecation.deprecated``
+decorator in favor of `warnings.deprecated`, which was added to the standard
+library in Python 3.13. The internal ``@deprecated`` decorator will be removed
+in a future release.

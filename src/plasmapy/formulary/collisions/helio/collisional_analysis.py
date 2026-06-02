@@ -162,7 +162,7 @@ def temp_ratio(  # noqa: ANN201, C901
 
     The thermalization is from Coulomb collisions, which assumes
     "soft", small-angle deflections mediated by the electrostatic
-    force :cite:p:`baumjohann:1997`. It is assumed that there is no
+    force :cite:p:`baumjohann:2022`. It is assumed that there is no
     relative drift between the ion species and that it is a mixed ion
     collision, and the Coulomb logarithm for a mixed ion collision is
     given by :cite:t:`nrlformulary:2019`.

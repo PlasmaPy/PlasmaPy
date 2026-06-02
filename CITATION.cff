@@ -172,6 +172,12 @@ authors:
 
 - alias: CBrown345
 
+- given-names: Yaocheng
+  family-names: Chen
+  affiliation: Korea Astronomy and Space Science Institute
+  orcid: https://orcid.org/0000-0002-8967-4911
+  alias: yaochengchen
+
 - given-names: Sarthak
   family-names: Choudhary
   alias: martha889
@@ -193,6 +199,11 @@ authors:
 - given-names: Apoorv
   family-names: Choubey
   alias: apooravc
+
+- given-names: Clément
+  family-names: Robert
+  orcid: https://orcid.org/0000-0001-8629-7068
+  alias: neutrinoceros
 
 - given-names: Sebastian
   family-names: Colom
@@ -546,6 +557,12 @@ authors:
 - given-names: Jakub
   family-names: Polak
 
+- given-names: Shawn
+  family-names: Polson
+  affiliation: Laboratory for Atmospheric and Space Physics
+  orcid: https://orcid.org/0000-0003-0619-5745
+  alias: sapols
+
 - given-names: Ramiz
   family-names: Qudsi
   affiliation: Boston University
@@ -748,20 +765,3 @@ authors:
 - given-names: Carol
   family-names: Zhang
   alias: carolyz
-
-- given-names: Clément
-  family-names: Robert
-  orcid: https://orcid.org/0000-0001-8629-7068
-  alias: neutrinoceros
-
-- given-names: Shawn
-  family-names: Polson
-  affiliation: Laboratory for Atmospheric and Space Physics
-  orcid: https://orcid.org/0000-0003-0619-5745
-  alias: sapols
-
-- given-names: Yaocheng
-  family-names: Chen
-  affiliation: Korea Astronomy and Space Science Institute
-  orcid: https://orcid.org/0000-0002-8967-4911
-  alias: yaochengchen
