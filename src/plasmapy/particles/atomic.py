@@ -1157,9 +1157,8 @@ def _read_NIST_stopping_data(incident_particle, material):
 
     The relevant database is determined by the provided incident particle.
     """
-
     group_name = _get_NIST_category_name(incident_particle)
-    # TODO: figure out a better way of handling the Downloader() here (i.e. singleton?)
+    # TODO: figure out a better way of handling the Downloader() here (i.e. singleton?)  # noqa: FIX002
     nist_data_path = Downloader().get_file("NIST_STAR.hdf5")
 
     # Validate particle input. Currently, the only supported particles are protons and electrons.
@@ -1263,7 +1262,7 @@ def stopping_power(
     )
 
     @validate_quantities(x=u.MeV)
-    def cubic_spline(x: u.Quantity[u.MeV]):
+    def cubic_spline(x: u.Quantity[u.MeV]) -> u.Quantity[u.MeV * u.cm**2 / u.g]:
         """Handle units and sanitize IO for logarithmic spline."""
         return np.exp(log_cs(np.log(x.to(u.MeV).value))) * u.MeV * u.cm**2 / u.g
 
@@ -1281,7 +1280,8 @@ def areal_range_from_energy(
     incident_particle: ParticleLike,
     material: str,
     energies: u.Quantity[u.J] | None = None,
-    return_interpolator: bool = False,
+    *,
+    return_interpolator=False,
     range_type: Literal["CSDA", "projected"] = "projected",
 ) -> (
     u.Quantity[u.g / u.cm**2] | Callable[[u.Quantity[u.MeV]], u.Quantity[u.g / u.cm**2]]
@@ -1329,7 +1329,6 @@ def areal_range_from_energy(
 
     Stopping ranges are interpolated using `~scipy.interpolate.CubicSpline`.
     """
-
     if energies is None and not return_interpolator:
         raise ValueError(
             "Please provide an array of `energies` or set the `return_interpolator` flag to `True`."
@@ -1342,7 +1341,7 @@ def areal_range_from_energy(
     if range_type == "CSDA":
         range_data = material_data["csda_range"]
     elif range_type == "projected":
-        # TODO: Update our dataset so we don't have to use this trick
+        # TODO: Update our dataset so we don't have to use this trick  # noqa: FIX002
         range_data = material_data["csda_range"] * material_data["detour_factor"]
     else:
         raise ValueError(
@@ -1353,9 +1352,8 @@ def areal_range_from_energy(
     log_cs = CubicSpline(x=np.log(baseline_energies_data), y=np.log(range_data))
 
     @validate_quantities(x=u.MeV)
-    def cubic_spline(x: u.Quantity[u.MeV]):
+    def cubic_spline(x: u.Quantity[u.MeV]) -> u.Quantity[u.g / u.cm**2]:
         """Handle units and sanitize IO for logarithmic spline."""
-
         return np.exp(log_cs(np.log(x.to(u.MeV).value))) * u.g / u.cm**2
 
     # If the user wants the interpolator, return it
@@ -1372,7 +1370,8 @@ def energy_from_areal_range(
     incident_particle: ParticleLike,
     material: str,
     areal_range: u.Quantity[u.g / u.cm**2] | None = None,
-    return_interpolator: bool = False,
+    *,
+    return_interpolator=False,
     range_type: Literal["CSDA", "projected"] = "projected",
 ) -> (
     u.Quantity[u.g / u.cm**2] | Callable[[u.Quantity[u.MeV]], u.Quantity[u.g / u.cm**2]]
@@ -1420,7 +1419,6 @@ def energy_from_areal_range(
 
     Kinetic energies are interpolated using `~scipy.interpolate.CubicSpline`.
     """
-
     if areal_range is None and not return_interpolator:
         raise ValueError(
             "Please provide an array of `areal_range` or set the `return_interpolator` flag to `True`."
@@ -1433,7 +1431,7 @@ def energy_from_areal_range(
     if range_type == "CSDA":
         baseline_range_data = material_data["csda_range"]
     elif range_type == "projected":
-        # TODO: Update our dataset so we don't have to use this trick
+        # TODO: Update our dataset so we don't have to use this trick  # noqa: FIX002
         baseline_range_data = (
             material_data["csda_range"] * material_data["detour_factor"]
         )
@@ -1446,9 +1444,8 @@ def energy_from_areal_range(
     log_cs = CubicSpline(x=np.log(baseline_range_data), y=np.log(kinetic_energies_data))
 
     @validate_quantities
-    def cubic_spline(x: u.Quantity[u.g / u.cm**2]):
+    def cubic_spline(x: u.Quantity[u.g / u.cm**2]) -> u.Quantity[u.MeV]:
         """Handle units and sanitize IO for logarithmic spline."""
-
         return np.exp(log_cs(np.log(x.to(u.g / u.cm**2).value))) * u.MeV
 
     # If the user wants the interpolator, return it
@@ -1480,9 +1477,10 @@ def transmitted_energy(
         The material the particle is being stopped in. See notes for
         details on supported materials.
 
-    areal_thickness : ``u.Quantity[u.kg / u.cm**2]``, default: See ``return_interpolator``
-        The areal thickness of the material. Calculated by taking the product
-        of length and density of the material.
+    areal_thickness : ``u.Quantity[u.kg / u.cm**2]``
+        The areal thickness of the material in units convertible to kilograms
+        per square centimeter. Calculated by taking the product of length and
+        density of the material.
 
     Returns
     -------
@@ -1495,12 +1493,11 @@ def transmitted_energy(
     Standards and Technology's Stopping-Power and Range Tables :cite:p:`niststar:2005`.
     Valid materials can be found on the NIST STAR website.
     """
-
-    # What is the minimum kinetic energy required to pass through the target?
-    minimum_kinetic_energy = energy_from_areal_range(
-        incident_particle, material, areal_range=areal_thickness
+    incident_particle_areal_range = areal_range_from_energy(
+        incident_particle,
+        material,
+        incident_kinetic_energy,
     )
+    residual_areal_range = incident_particle_areal_range - areal_thickness
 
-    # The difference between the incident kinetic energy and the minimum
-    # ranged energy is the transmitted energy
-    return incident_kinetic_energy - minimum_kinetic_energy
+    return energy_from_areal_range(incident_particle, material, residual_areal_range)
