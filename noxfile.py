@@ -708,7 +708,15 @@ def update_ionization_energies(session: nox.Session) -> None:
     """Update ionization energies from NIST."""
     session.log("This script is expected to raise exceptions, and will continue after.")
     session.run("uv", "run", "tools/export_ionization_energy.py")
-
+    session.run(
+        "uvx",
+        "pre-commit",
+        "run",
+        "end-of-file-fixer",
+        "--files",
+        "src/plasmapy/particles/data/ionization_energy.json",
+        success_codes=[0, 1],
+    )
 
 if __name__ == "__main__":
     nox.main()
