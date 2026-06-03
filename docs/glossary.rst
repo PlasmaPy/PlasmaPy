@@ -179,28 +179,34 @@ Glossary
       For more complete details, refer to |ParticleListLike|.
 
    plasma
-      A fluid containing enough mobile charged particles for its
-      behavior to be influenced by the long-range forces between charged
-      particles. Because each charged particle exerts forces on many
-      other charged particles, plasma exhibits |collective behavior|.
-      Plasma is usually |quasineutral|.
+      A fluid containing an appreciable fraction of mobile charged
+      particles. Plasma is usually |quasineutral|. In contrast to
+      :term:`gas`, plasma exhibits |collective behavior| resulting from
+      each charged particle influencing and being influenced by many
+      other charged particles.
 
-      Nearly all plasma contains ions and unbound electrons. *Partially
-      ionized plasma* contains neutral atoms and/or neutral molecules in
-      addition to the charged particles. Dusty plasma contains charged
-      dust particles. An electron-positron plasma contains positrons
-      instead of ions as the positively charged particles.
+      Plasma typically contains ions and unbound electrons as the mobile
+      charged particles, and may also contain other particles. A plasma
+      containing neutrally charged atoms and/or molecules is referred to
+      as a *partially ionized plasma*. A *dusty plasma* contains charged
+      particulates with sizes ranging from roughly 1 nm to 10 μm. An
+      *electron-positron* plasma contains positrons (rather than ions)
+      as the positively charged particles. A plasma that is not
+      |quasineutral| is referred to as a *non-neutral plasma*.
 
       More generally, *plasma* can refer to any fluid containing
       particles that exhibits |collective behavior|, such as
       *quark-gluon plasma*.
 
-      .. note::
+      .. important::
 
-         Gas and plasma are distinct states of matter that behave in
-         qualitatively different ways. Plasma exhibits collective
-         behavior; gas does not. Referring to a plasma as "gas" or
-         "ionized gas" is inaccurate and potentially misleading.
+         Gas and plasma are distinct states of matter with qualitatively
+         different behavior. In a gas, particles interact with each
+         other via short-range binary collisions. In a plasma, charged
+         particles exert long-range forces on many other charged
+         particles, resulting in collective phenomena that do not occur
+         in a gas. Referring to a plasma as "gas" or "ionized gas"
+         provides us with a misleading mental model.
 
    quasineutral
       A plasma is *quasineutral* when the net charge density is
