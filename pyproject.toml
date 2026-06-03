@@ -151,12 +151,12 @@ zizmor = [
 ]
 
 [tool.setuptools]
-include-package-data = true
-package-data."plasmapy.particles.data" = [ "*" ]
-package-data."plasmapy.tests" = [ "coveragerc" ]
 packages.find.where = [ "src" ]
 packages.find.exclude = [ "docs/automodapi", "src/plasmapy/_dev" ]
 packages.find.namespaces = false
+include-package-data = true
+package-data."plasmapy.particles.data" = [ "*" ]
+package-data."plasmapy.tests" = [ "coveragerc" ]
 
 [tool.setuptools_scm]
 write_to = "src/plasmapy/_version.py"
@@ -461,7 +461,6 @@ lint.mccabe.max-complexity = 10
 lint.pydocstyle.convention = "numpy"
 
 [tool.codespell]
-skip = "*.png,*cache*,*egg*,.git,.hypothesis,.idea,.nox,.tox,_build,*charged_particle*.ipynb,venv"
 # Add false positives found by codespell to ignore-words-list
 ignore-words-list = """
 aas,
@@ -496,27 +495,22 @@ tru,
 ue,
 ue,
 windo"""
+skip = "*.png,*cache*,*egg*,.git,.hypothesis,.idea,.nox,.tox,_build,*charged_particle*.ipynb,venv"
 
 [tool.check-manifest]
 ignore = [
   "#*",
   "*#",
+  "*~",
   "*checkpoint*",
   "*TEMP*",
-  "*~",
   ".mailmap",
   "docs/*build/**",
-  "Untitled*",
   "src/plasmapy/_version.py",
+  "Untitled*",
 ]
 
 [tool.ty]
-environment.python-platform = "all"
-# Because astropy.units.Quantity[u.kg] is not recognized
-rules.invalid-type-form = "ignore"
-# Because astropy.constants.m_p, etc. are not recognized
-rules.unresolved-attribute = "ignore"
-analysis.allowed-unresolved-imports = [ "astropy.constants.**" ]
 # Ignore ty errors in certain notebooks until these can be fixed later
 src.exclude = [
   "docs/notebooks/analysis/fit_functions.ipynb",
@@ -532,6 +526,12 @@ src.exclude = [
   "docs/notebooks/plasma/grids_cartesian.ipynb",
   "docs/notebooks/plasma/grids_nonuniform.ipynb",
 ]
+environment.python-platform = "all"
+# Because astropy.units.Quantity[u.kg] is not recognized
+rules.invalid-type-form = "ignore"
+# Because astropy.constants.m_p, etc. are not recognized
+rules.unresolved-attribute = "ignore"
+analysis.allowed-unresolved-imports = [ "astropy.constants.**" ]
 
 [tool.pytest]  # https://docs.pytest.org/en/stable/reference/customize.html#pyproject-toml
 addopts = [
@@ -573,7 +573,7 @@ markers = [
   "slow: marks tests as slow (deselect with '-m \"not slow\"')",
 ]
 strict = true
-testpaths = [ "tests", "src/plasmapy", "tools" ]
+testpaths = [ "tests", "src/plasmapy" ]
 
 [tool.coverage]
 run.branch = true
@@ -594,10 +594,10 @@ report.exclude_lines = [
 ]
 
 [tool.towncrier]
-package = "plasmapy"
 name = "PlasmaPy"
-filename = "CHANGELOG.rst"
+package = "plasmapy"
 directory = "changelog"
+filename = "CHANGELOG.rst"
 title_format = "{name} v{version} ({project_date})"
 # Despite the name mismatch, we use `issue_format` for linking to PRs
 issue_format = ":pr:`{issue}`"
