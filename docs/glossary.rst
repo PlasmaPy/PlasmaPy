@@ -87,8 +87,8 @@ Glossary
          In astronomy, the term *gas* is commonly used to refer to
          any astrophysical fluid, regardless of whether the fluid is in
          the gas or plasma state of matter. The term *ionized gas* is
-         used as a synonym for plasma, even though plasma and gas are
-         distinct states of matter.
+         often used as a synonym for plasma despite that plasma and gas
+         are distinct states of matter.
 
    integration test
       An **integration test** verifies that multiple software
