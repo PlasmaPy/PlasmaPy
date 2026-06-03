@@ -25,7 +25,7 @@ jobs:
     name: PHEP 3 Compliance
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v6.0.2
       with:
         persist-credentials: false
 
@@ -37,7 +37,7 @@ jobs:
     name: PyHC Environment Compatibility
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v6.0.2
       with:
         persist-credentials: false
 
