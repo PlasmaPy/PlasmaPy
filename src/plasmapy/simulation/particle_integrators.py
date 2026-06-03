@@ -166,7 +166,7 @@ class BorisIntegrator(AbstractIntegrator):
         3. Add the second half of the impulse from the electric field.
 
         This ends up causing the magnetic field action to be properly "centered" in
-        time, and the algorithm, being a volume preserving ensures that error in energy
+        time, and the algorithm being volume preserving ensures that error in energy
         remains bounded. See this paper <https://pubs.aip.org/aip/pop/article/20/8/084503/317652/Why-is-Boris-algorithm-so-good>
         for more detail.
         """
