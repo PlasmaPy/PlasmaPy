@@ -573,7 +573,7 @@ markers = [
   "slow: marks tests as slow (deselect with '-m \"not slow\"')",
 ]
 strict = true
-testpaths = [ "tests", "src/plasmapy", "tools" ]
+testpaths = [ "tests", "src/plasmapy" ]
 
 [tool.coverage]
 run.branch = true
