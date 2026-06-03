@@ -1,3 +1,13 @@
+# Create a pull request that prepares the repository for a release.
+#
+# This workflow updates the package metadata, builds the changelog, and
+# deletes old changelog files. The pull request resulting from manually
+# triggering this workflow should be the last pull request merged before
+# performing the release on GitHub.
+#
+# Before running this workflow, reserve a DOI from Zenodo for the
+# forthcoming release.
+
 name: Prepare a release
 
 on:

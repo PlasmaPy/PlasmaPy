@@ -130,7 +130,9 @@ class Test_classical_transport:
                 * u.m
             )
             testTrue = np.isclose(
-                ct2.resistivity.value, alpha_spitzer_perp_NRL.value, rtol=2e-2
+                ct2.resistivity.value,
+                alpha_spitzer_perp_NRL.value,
+                rtol=2e-2,
             )
             errStr = (
                 f"Resistivity should be close to "
@@ -284,10 +286,17 @@ class Test_classical_transport:
         """If no coulomb logs are input, they should be calculated"""
         with pytest.warns(RelativityWarning):
             ct2 = ClassicalTransport(
-                T_e=self.T_e, n_e=self.n_e, T_i=self.T_i, n_i=self.n_i, ion=self.ion
+                T_e=self.T_e,
+                n_e=self.n_e,
+                T_i=self.T_i,
+                n_i=self.n_i,
+                ion=self.ion,
             )
             cl_ii = Coulomb_logarithm(
-                self.T_i, self.n_e, [self.ion, self.ion], self.V_ii
+                self.T_i,
+                self.n_e,
+                [self.ion, self.ion],
+                self.V_ii,
             )
             cl_ei = Coulomb_logarithm(self.T_e, self.n_e, ["e", self.ion], self.V_ei)
             testTrue = cl_ii == ct2.coulomb_log_ii
@@ -307,10 +316,20 @@ class Test_classical_transport:
         """If no hall parameters are input, they should be calculated"""
         with pytest.warns(RelativityWarning):
             ct2 = ClassicalTransport(
-                T_e=self.T_e, n_e=self.n_e, T_i=self.T_i, n_i=self.n_i, ion=self.ion
+                T_e=self.T_e,
+                n_e=self.n_e,
+                T_i=self.T_i,
+                n_i=self.n_i,
+                ion=self.ion,
             )
             hall_i = Hall_parameter(
-                ct2.n_i, ct2.T_i, ct2.B, ct2.ion, ct2.ion, ct2.coulomb_log_ii, ct2.V_ii
+                ct2.n_i,
+                ct2.T_i,
+                ct2.B,
+                ct2.ion,
+                ct2.ion,
+                ct2.coulomb_log_ii,
+                ct2.V_ii,
             )
             hall_e = Hall_parameter(
                 ct2.n_e,
@@ -362,7 +381,9 @@ class Test_classical_transport:
                 hall_e=0,
             )
             testTrue = np.isclose(
-                ct2.resistivity, 2.8184954e-8 * u.Ohm * u.m, atol=1e-6 * u.Ohm * u.m
+                ct2.resistivity,
+                2.8184954e-8 * u.Ohm * u.m,
+                atol=1e-6 * u.Ohm * u.m,
             )
             errStr = (
                 f"Resistivity should be close to "
@@ -381,7 +402,11 @@ class Test_classical_transport:
         ],
     )
     def test_number_of_returns(
-        self, model, attr_name: str, field_orientation, expected
+        self,
+        model,
+        attr_name: str,
+        field_orientation,
+        expected,
     ) -> None:
         with pytest.warns(RelativityWarning):
             ct2 = ClassicalTransport(
@@ -446,7 +471,9 @@ class Test_classical_transport:
                 model=model,
             )
             testTrue = np.isclose(
-                ct2.thermoelectric_conductivity, expected, atol=1e-6 * u.s / u.s
+                ct2.thermoelectric_conductivity,
+                expected,
+                atol=1e-6 * u.s / u.s,
             )
             errStr = (
                 f"Thermoelectric conductivity in {model} model "
@@ -479,7 +506,9 @@ class Test_classical_transport:
                 model=model,
             )
             testTrue = np.allclose(
-                ct2.electron_viscosity, expected, atol=1e-6 * u.Pa * u.s
+                ct2.electron_viscosity,
+                expected,
+                atol=1e-6 * u.Pa * u.s,
             )
             errStr = (
                 f"Electron viscosity in {model} model should be close to "
@@ -565,7 +594,9 @@ class Test_classical_transport:
                 model=model,
             )
             testTrue = np.allclose(
-                ct2.ion_thermal_conductivity, expected, atol=1e-6 * u.W / (u.K * u.m)
+                ct2.ion_thermal_conductivity,
+                expected,
+                atol=1e-6 * u.W / (u.K * u.m),
             )
             errStr = (
                 f"Ion thermal conductivity in {model} model "
@@ -683,7 +714,8 @@ class Test_classical_transport:
                 theta=self.theta,
             )
             assert_quantity_allclose(
-                wrapped, self.ct_wrapper.electron_thermal_conductivity
+                wrapped,
+                self.ct_wrapper.electron_thermal_conductivity,
             )
 
     def test_ion_viscosity_wrapper(self) -> None:
@@ -729,7 +761,11 @@ class Test_classical_transport:
 def test_nondim_thermal_conductivity_unrecognized_model(particle) -> None:
     with pytest.raises(ValueError):
         _nondim_thermal_conductivity(
-            1, 1, particle, "standard model is best model", "parallel"
+            1,
+            1,
+            particle,
+            "standard model is best model",
+            "parallel",
         )
 
 
@@ -995,7 +1031,7 @@ def test__nondim_tc_e_spitzer(Z) -> None:
     elif Z == 16:
         kappa_check = _nondim_tc_e_ji_held(0, Z, "par")
         rtol = 2e-2
-    elif Z == np.inf:
+    elif np.inf == Z:
         kappa_check = _nondim_tc_e_ji_held(0, 1e6, "par")
         rtol = 2e-2
     assert np.isclose(kappa, kappa_check, rtol=rtol)
@@ -1246,7 +1282,12 @@ def test__nondim_visc_e_ji_held(hall, Z, index, expected) -> None:
     ],
 )
 def test__nondim_tc_i_ji_held(
-    hall, Z, mu, theta: float, field_orientation, expected
+    hall,
+    Z,
+    mu,
+    theta: float,
+    field_orientation,
+    expected,
 ) -> None:
     """Test _nondim_tc_i_ji_held function"""
     kappa_hat = _nondim_tc_i_ji_held(hall, Z, mu, theta, field_orientation)

@@ -19,7 +19,7 @@ def opposite(particle):  # noqa: D103
     except Exception as exc:
         raise InvalidParticleError(
             f"The unary ~ (invert) operator is unable to find the "
-            f"antiparticle of {particle}."
+            f"antiparticle of {particle}.",
         ) from exc
     return opposite_particle
 
@@ -35,8 +35,8 @@ def opposite(particle):  # noqa: D103
             ("nu_e", "anti_nu_e"),
             ("nu_mu", "anti_nu_mu"),
             ("nu_tau", "anti_nu_tau"),
-        ]
-    )
+        ],
+    ),
 )
 def particle_antiparticle_pair(request):  # noqa: D103
     return [Particle(p) for p in request.param]

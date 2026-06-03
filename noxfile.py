@@ -37,8 +37,8 @@ import re
 import shutil
 import sys
 
-import nox
-import nox_uv
+import nox  # ty:ignore[unresolved-import]
+import nox_uv  # ty:ignore[unresolved-import]
 
 # SPEC 0 indicates that scientific Python packages should support
 # versions of Python that have been released in the last 3 years, or
@@ -95,9 +95,8 @@ def _create_lockfile_pr_message(uv_output: str, session: nox.Session) -> None:
     uv_output : str
         The multi-line output of ``session.run(..., silent=True)``.
     """
-
     pr_template = pathlib.Path(
-        ROOT_DIR / "./.github/content/upgrade-uv-lock-pr-template.md"
+        ROOT_DIR / "./.github/content/upgrade-uv-lock-pr-template.md",
     )
     pr_message = pathlib.Path(ROOT_DIR / "./.github/content/upgrade-uv-lock-pr-body.md")
 
@@ -152,7 +151,6 @@ def lock(session: nox.Session) -> None:
     request message for the GitHub workflow that uses this session
     (:file:`.github/workflows/upgrade-uv-lock.yml`).
     """
-
     uv_lock = (
         "uv",
         "lock",
@@ -166,17 +164,17 @@ def lock(session: nox.Session) -> None:
     except nox.command.CommandFailed:
         session.warn("⚠️ uv.lock is invalid, likely due to a git merge conflict.")
         session.log(
-            "📥 Checking out uv.lock from the branch being merged into this one."
+            "📥 Checking out uv.lock from the branch being merged into this one.",
         )
         session.log(
-            "🪧 If this next attempt is unsuccessful, delete uv.lock and try again."
+            "🪧 If this next attempt is unsuccessful, delete uv.lock and try again.",
         )
         session.run("git", "checkout", "--theirs", "--", "uv.lock", external=True)
         uv_output: str | bool = session.run(*uv_lock, silent=RUNNING_ON_CI)
 
     if RUNNING_ON_CI:
         session.log(uv_output)
-        _create_lockfile_pr_message(uv_output=uv_output, session=session)
+        _create_lockfile_pr_message(uv_output=uv_output, session=session)  # ty:ignore[invalid-argument-type]
 
 
 @nox.session
@@ -241,7 +239,6 @@ test_specifiers: list[nox._parametrize.Param] = [
 @nox.parametrize("test_specifier", test_specifiers)
 def tests(session: nox.Session, test_specifier: nox._parametrize.Param) -> None:
     """Run tests with pytest."""
-
     options: list[str] = []
 
     if test_specifier in {"skip slow tests", "lowest-direct-skipslow"}:
@@ -324,7 +321,7 @@ def test_upstream(session: nox.Session, package: str) -> None:
 
 
 if RUNNING_ON_RTD:
-    rtd_output_path = pathlib.Path(os.environ.get("READTHEDOCS_OUTPUT")) / "html"
+    rtd_output_path = pathlib.Path(os.environ.get("READTHEDOCS_OUTPUT")) / "html"  # ty:ignore[invalid-argument-type]
     rtd_output_path.mkdir(parents=True, exist_ok=True)
     doc_build_dir = str(rtd_output_path)
 else:
@@ -363,7 +360,6 @@ def docs(session: nox.Session) -> None:
 
     Configuration file: docs/conf.py
     """
-
     if RUNNING_ON_CI:
         session.log(DOC_TROUBLESHOOTING_MESSAGE)
 
@@ -385,7 +381,6 @@ def docs(session: nox.Session) -> None:
 @nox_uv.session(python=DOCPYTHON, uv_groups=["docs"])
 def htmlzip(session: nox.Session) -> None:
     """Bundle documentation build into a zip file on Read the Docs."""
-
     if not RUNNING_ON_RTD:
         session.error("This session must be run on Read the Docs.")
 
@@ -395,7 +390,7 @@ def htmlzip(session: nox.Session) -> None:
     if not html_landing_page.exists():
         session.error(
             f"No documentation build found at: {html_landing_page}\n"
-            f"It appears the documentation has not been built."
+            f"It appears the documentation has not been built.",
         )
 
     command = [
@@ -469,49 +464,36 @@ These variables are in the form of Python regular expressions:
 @nox_uv.session(python=DOCPYTHON, uv_groups=["docs"])
 def linkcheck(session: nox.Session) -> None:
     """Check hyperlinks in documentation."""
-
     if RUNNING_ON_CI:
         session.log(LINKCHECK_TROUBLESHOOTING)
 
     session.run(*SPHINX_BASE_COMMAND, *CHECK_HYPERLINKS, *session.posargs)
 
 
-MYPY_TROUBLESHOOTING = """
-🛡 To learn more about type hints, check out mypy's cheat sheet at:
-  https://mypy.readthedocs.io/en/stable/cheat_sheet_py3.html
-
-For more details about specific mypy errors, go to:
-🔗 https://mypy.readthedocs.io/en/stable/error_codes.html
-
-🪧 Especially difficult errors can be ignored with an inline comment of
-the form: `# type: ignore[error]`, where `error` is replaced with the
-mypy error code. Please use sparingly!
-
-🛠 To automatically add type hints for common patterns, run:
-  nox -s 'autotyping(safe)'
-"""
+TY_TROUBLESHOOTING = (
+    "\n\n"
+    "For more details about specific static type checking errors, go to: "
+    "🔗 https://docs.astral.sh/ty/reference/rules"
+    "\n\n"
+    "🛡 For an introduction to type annotations, check out: "
+    "https://mypy.readthedocs.io/en/stable/cheat_sheet_py3.html"
+    "\n\n"
+    "🛠 Automatically add type annotations for common patterns with: "
+    "nox -s 'autotyping(safe)'"
+    "\n\n"
+    "🪧 Particularly tricky errors can be ignored with an inline comment of "
+    "the form: `# ty:ignore[error]`, where `error` is replaced with the "
+    "ty error code. Please use sparingly!"
+    "\n"
+)
 
 
 @nox_uv.session(python=MAXPYTHON, uv_groups=["type_check"])
-def mypy(session: nox.Session) -> None:
-    """
-    Perform static type checking.
-
-    Configuration file: mypy.ini
-    """
+def ty(session: nox.Session) -> None:
+    """Perform static type checking with ty."""
     if RUNNING_ON_CI:
-        session.log(MYPY_TROUBLESHOOTING)
-
-    session.run(
-        "mypy",
-        ".",
-        "--install-types",
-        "--non-interactive",
-        "--show-error-context",
-        "--show-error-code-links",
-        "--pretty",
-        *session.posargs,
-    )
+        session.log(TY_TROUBLESHOOTING)
+    session.run("ty", "check", *session.posargs)
 
 
 @nox.session(name="import")
@@ -562,13 +544,12 @@ def changelog(session: nox.Session, final: str) -> None:
 
        nox -s 'changelog(final)' -- 2026.5.0
     """
-
     now = datetime.datetime.now(datetime.UTC)
 
     if len(session.posargs) != 1:
         raise TypeError(
             "Please provide the version of PlasmaPy to be released "
-            f"(i.e., `nox -s changelog -- {now.year}.{now.month}.0`)."
+            f"(i.e., `nox -s changelog -- {now.year}.{now.month}.0`).",
         )
 
     version = session.posargs[0]
@@ -580,7 +561,7 @@ def changelog(session: nox.Session, final: str) -> None:
         raise ValueError(
             "Please provide a version of the form YYYY.M.PATCH, where "
             "YYYY is he year, M is the one or two digit month, "
-            "and PATCH is a non-negative integer."
+            "and PATCH is a non-negative integer.",
         )
 
     towncrier = ["towncrier", "build", "--version", version]
@@ -615,7 +596,9 @@ AUTOTYPING_RISKY: tuple[str, ...] = (
 
 
 @nox_uv.session(
-    python=MINPYTHON, uv_only_groups=["autotyping"], uv_no_install_project=True
+    python=MINPYTHON,
+    uv_only_groups=["autotyping"],
+    uv_no_install_project=True,
 )
 @nox.parametrize(
     "options",
@@ -626,12 +609,12 @@ AUTOTYPING_RISKY: tuple[str, ...] = (
 )
 def autotyping(session: nox.Session, options: tuple[str, ...]) -> None:
     """
-    Automatically add type hints with autotyping.
+    Automatically add type annotations with autotyping.
 
-    The `safe` option generates very few incorrect type hints, and can
-    be used in CI. The `aggressive` option may add type hints that are
-    incorrect, so please perform a careful code review when using this
-    option.
+    The `safe` option generates very few incorrect type annotations, and
+    can be used in CI. The `aggressive` option may add type annotations
+    that are incorrect, so please perform a careful code review when
+    using this option.
 
     To check specific files, pass them after a `--`, such as:
 
@@ -644,7 +627,9 @@ def autotyping(session: nox.Session, options: tuple[str, ...]) -> None:
 
 
 @nox_uv.session(
-    python=MAXPYTHON, uv_only_groups=["manifest"], uv_no_install_project=True
+    python=MAXPYTHON,
+    uv_only_groups=["manifest"],
+    uv_no_install_project=True,
 )
 def manifest(session: nox.Session) -> None:
     """

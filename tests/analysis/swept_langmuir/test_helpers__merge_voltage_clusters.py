@@ -169,7 +169,11 @@ from plasmapy.utils.exceptions import PlasmaPyWarning
     ],
 )
 def test_merge_voltage_clusters(
-    voltage, current, kwargs, with_context, expected
+    voltage,
+    current,
+    kwargs,
+    with_context,
+    expected,
 ) -> None:
     with (
         with_context,

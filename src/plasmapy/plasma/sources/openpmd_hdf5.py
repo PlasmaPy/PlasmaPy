@@ -24,7 +24,6 @@ _UNITS = (u.meter, u.kilogram, u.second, u.ampere, u.Kelvin, u.mol, u.candela)
 
 def _fetch_units(openPMD_dims):
     """Converts a collection of OpenPMD dimensions to astropy.units."""
-
     units = u.dimensionless_unscaled
     for factor, unit in zip(openPMD_dims, _UNITS, strict=False):
         units *= unit**factor
@@ -34,7 +33,6 @@ def _fetch_units(openPMD_dims):
 
 def _valid_version(openPMD_version, outdated=_OUTDATED_VERSION, newer=_NEWER_VERSION):
     """Checks if the passed version is supported or not."""
-
     parsed_version = Version(openPMD_version)
     outdated_version = Version(outdated)
     newer_version = Version(newer)
@@ -55,7 +53,7 @@ class HDF5Reader(GenericPlasma):
         Any keyword accepted by `~plasmapy.plasma.plasma_base.GenericPlasma`.
     """
 
-    def __init__(self, hdf5, **kwargs) -> None:
+    def __init__(self, hdf5, **kwargs) -> None:  # noqa: ANN003
         super().__init__(**kwargs)
 
         if not Path(hdf5).is_file():
@@ -68,13 +66,13 @@ class HDF5Reader(GenericPlasma):
 
         self.subname = next(iter(self.h5["data"]))
 
-    def __enter__(self):
+    def __enter__(self):  # noqa: D105
         return self.h5
 
     def close(self) -> None:
         self.h5.close()
 
-    def __exit__(
+    def __exit__(  # noqa: D105
         self,
         exc_type: type[BaseException] | None,
         exc_value: BaseException | None,
@@ -94,11 +92,11 @@ class HDF5Reader(GenericPlasma):
                     f"lower than v{_NEWER_VERSION}. You can "
                     f"however convert your HDF5 to a supported "
                     f"version. For more information; see "
-                    f"https://github.com/openPMD/openPMD-updater"
+                    f"https://github.com/openPMD/openPMD-updater",
                 )
         except KeyError as ex:
             raise DataStandardError(
-                "Input HDF5 file does not go on with standards defined by OpenPMD"
+                "Input HDF5 file does not go on with standards defined by OpenPMD",
             ) from ex
 
     @property
@@ -176,7 +174,7 @@ class HDF5Reader(GenericPlasma):
         hdf5 = kwargs.get("hdf5")
         openPMD = kwargs.get("openPMD")
 
-        if not Path(hdf5).is_file():
+        if not Path(hdf5).is_file():  # ty:ignore[invalid-argument-type]
             raise FileNotFoundError(f"Could not find file: '{hdf5}'")
 
         if "openPMD" not in kwargs:

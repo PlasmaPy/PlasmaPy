@@ -141,7 +141,6 @@ links_to_become_subs: dict[str, str] = {
     "matplotlib": "https://matplotlib.org",
     "Matrix chat room": "https://app.element.io/#/room/#plasmapy:openastronomy.org",
     "mpmath": "https://mpmath.org/doc/current",
-    "mypy": "https://mypy.readthedocs.io",
     "nbsphinx": "https://nbsphinx.readthedocs.io",
     "Nox": "https://nox.thea.codes",
     "NumPy": "https://numpy.org",
@@ -169,7 +168,8 @@ links_to_become_subs: dict[str, str] = {
     "Sphinx": "https://www.sphinx-doc.org",
     "static type checking": "https://realpython.com/videos/python-type-checking-overview",
     "towncrier": "https://github.com/twisted/towncrier",
-    "type hint annotations": "https://peps.python.org/pep-0484",
+    "ty": "https://docs.astral.sh/ty",
+    "type annotations": "https://typing.python.org/en/latest/spec/annotations.html",
     "xarray": "https://docs.xarray.dev",
     "Zenodo": "https://zenodo.org",
     "uv": "https://github.com/astral-sh/uv",
@@ -187,7 +187,6 @@ def make_global_substitutions_table(
     Create a file containing a table of global reStructuredText substitutions
     for inclusion in :file:`docs/contributing/doc_guide.rst`.
     """
-
     headers = ("substitution", "replaces", "example")
     Row = collections.namedtuple("Row", headers)
 
@@ -214,7 +213,7 @@ def make_global_substitutions_table(
                 f"   * - {row.substitution}",
                 f"     - {row.replaces}",
                 f"     - {row.example}",
-            ]
+            ],
         )
 
     content = "\n".join(lines)
