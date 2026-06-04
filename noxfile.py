@@ -718,5 +718,6 @@ def update_ionization_energies(session: nox.Session) -> None:
         success_codes=[0, 1],
     )
 
+
 if __name__ == "__main__":
     nox.main()
