@@ -1,0 +1,1 @@
+Fixed float precision issue in rot_a_to_b where anti-parallel vectors were not correctly detected.
