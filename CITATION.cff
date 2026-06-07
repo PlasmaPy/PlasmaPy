@@ -166,7 +166,19 @@ authors:
 
 - given-names: Miguel
   family-names: Cárdenas
+  affiliation: University of Medellin
+  orcid: https://orcid.org/0009-0002-9899-544X
   alias: miguelcsx
+
+- given-names: Valentina
+  family-names: Miranda
+  affiliation: University of Medellin
+  alias: vmiranda4
+
+- given-names: Jaime H.
+  family-names: Hoyos
+  affiliation: University of Medellin
+  alias: jhhoyos
 
 - given-names: Carlos
   family-names: Cartagena-Sanchez
