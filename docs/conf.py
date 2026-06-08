@@ -208,7 +208,12 @@ nitpick_ignore_regex = [
     # undocumented astropy objects
     # - astropy has no index for u.dimensionless_unscaled, which we
     #   referenced in our type annotations
-    ("py:class", "dimensionless"),
+    (python_role, "dimensionless"),
+    # Warnings from update to Sphinx 9 which we should probably address
+    # Issue: https://github.com/PlasmaPy/PlasmaPy/issues/3312
+    (python_role, "not found.* typing.Annotated.*astropy.units.quantity.Quantity"),
+    (python_role, "not found.* numpy._typing.DTypeLike"),
+    (python_role, "not found.* dict.*str"),
 ]
 
 # The Sphinx configuration variables rst_prolog and rst_epilog contain
