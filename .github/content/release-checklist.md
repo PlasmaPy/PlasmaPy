@@ -3,6 +3,7 @@ This issue is created from the [release checklist] for releasing a new version o
 ### Planning the release
 
 - [x] [Create an issue for the release]. 📝
+
 - [ ] Update [milestones] for issues & pull requests (PRs). 🛣️
 
 ### Quality assurance checks (low priority)
@@ -43,7 +44,9 @@ This issue is created from the [release checklist] for releasing a new version o
 - [ ] Run the GitHub workflow to [prepare a release], specifying the version (i.e., `2026.1.0`) and copying the reserved DOI from Zenodo. This workflow will create a PR that builds the changelog and updates package metadata. 🤖 [![prepare release PR](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/prepare-release-pr.yml/badge.svg)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/prepare-release-pr.yml)
 
   - [ ] Revise changelog entries to make sure that they are understandable, necessary, and correctly categorized. 📜
+
   - [ ] Make sure that all tests are passing in the PR. ✅
+
   - [ ] Merge the PR. 📦
 
 - [ ] Run the [tests]. [![tests](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/ci.yml/badge.svg)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/ci.yml)
@@ -52,20 +55,32 @@ This issue is created from the [release checklist] for releasing a new version o
 
 - [ ] [Create a release on GitHub]. 🚀
 
-  - [ ] Choose the newly created tag (e.g., `v2026.1.0`), and use it as the title. (The release will be performed from the tag, so it is not necessary to select the branch.) 🏷️
+  - [ ] Choose the newly created tag (e.g., `v2026.5.0`), and use it as the title. (The release will be performed from the tag, so it is not necessary to select the branch.) 🏷️
+
   - [ ] Set the tag for the previous release, and select the option to automatically generate release notes. 📜
+
   - [ ] Select the option to create a discussion for the release under the _General_ category. 📣
-  - [ ] For official releases, choose _Set as the latest release_. For beta releases or release candidates (e.g., `v2026.1.0rc1`), specify it as a pre-release. 🆕
+
+  - [ ] For official releases, choose _Set as the latest release_. For beta releases or release candidates (e.g., `v2026.5.0rc1`), specify it as a pre-release. 🆕
+
   - [ ] Click on <kbd>Publish release</kbd>, which will create the GitHub release and trigger the GitHub workflow to [publish to PyPI]. [![publish](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/publish-to-pypi.yml/badge.svg)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/publish-to-pypi.yml)
+
   - [ ] Check the [release history] on PyPI to make sure that the release was successful. [![PyPI version](https://img.shields.io/pypi/v/plasmapy?style=flat&logo=pypi)](https://pypi.org/project/plasmapy/) [![PyPI version](https://img.shields.io/pypi/pyversions/plasmapy?style=flat&logo=python)](https://img.shields.io/pypi/pyversions/plasmapy?style=plastic)
 
 ### Upload release to Zenodo
 
 - [ ] Download a `.tar.gz` file of the tagged release from the [list of tagged versions] on GitHub, and upload it to [Zenodo]. 📤
-  - [ ] Update the version number and release date in the record. 📅
-  - [ ] Update the author list with new authors from the automatically generated release notes or [`CITATION.cff`]. 👥
-  - [ ] Update the bibliography. 📖
-  - [ ] Publish the record. 🏛️
+
+- [ ] Update the version number and release date in the record. 📅
+
+- [ ] Publish the record. 🏛️
+
+- [ ] Update the author list with new authors from the automatically generated release notes and [`CITATION.cff`]. 👥
+
+- [ ] Update the references, skipping alphabetization because Zenodo's interface makes this difficult. 📖
+
+> [!NOTE]
+> Metadata on a Zenodo record can be updated after it is published. If you notice someone missing from the Zenodo author list after the above checkbox has been checked off or if this issue has been closed, or if you notice an error in the metadata, please comment below and tag `@namurphy`.
 
 > [!TIP]
 > To compare two files across different tags, use commands like:
@@ -85,20 +100,20 @@ This issue is created from the [release checklist] for releasing a new version o
 
 - [ ] Verify that the [citation page] is up-to-date and the DOI link points to the most recent release. 🧾
 
+> [!TIP]
+> If the documentation build fails, fix any problems with the RTD build and create a new [`stable`] branch from the release. The [stable documentation build] will point to the `stable` branch on GitHub if it exists. Otherwise, it will point to the most recent release on GitHub. An alternative would be to fix the problem on `main` and perform a patch release. Because the release process has changed since we needed a `stable` branch, please update the [release checklist] accordingly.
+
 ## Availability on conda-forge
 
-Within a day, an automated PR will be made to PlasmaPy's [conda-forge feedstock], which will require updates if any requirements have changed.
+Within a day, an automated PR will be made to PlasmaPy's [conda-forge feedstock], which will require manual updates if any requirements have changed.
 
-- [ ] Update [`recipe/meta.yaml`] to match [`pyproject.toml`] in the release. 🔧
+- [ ] Update [`recipe/meta.yaml`] to be consistent with [`pyproject.toml`] in the release, including requirements. 🔧
 
 - [ ] Verify that `python_min` near the beginning of [`recipe/meta.yaml`] is consistent with `requires-python` [`pyproject.toml`]. 🐍
 
 - [ ] Merge the PR to the conda-forge feedstock. 🚀
 
 - [ ] Verify that the new version shows up on conda-forge. 📦 [![Conda version](https://img.shields.io/conda/v/conda-forge/plasmapy?style=flat&logo=anaconda)](https://img.shields.io/conda/v/conda-forge/plasmapy)
-
-> [!TIP]
-> If the documentation build fails, fix any problems with the RTD build and create a new [`stable`] branch from the release. The [stable documentation build] will point to the `stable` branch on GitHub if it exists. Otherwise, it will point to the most recent release on GitHub. An alternative would be to fix the problem on `main` and perform a patch release. Because the release process has changed since we needed a `stable` branch, please update the [release checklist] accordingly.
 
 ## Test releases
 
@@ -107,10 +122,11 @@ Within a day, an automated PR will be made to PlasmaPy's [conda-forge feedstock]
 ## After the release
 
 - [ ] Update the [release checklist], if necessary. 📋
+- [ ] [Create an issue for the next release] after checklist updates are merged, and then [pin the issue]. ⏳
+- [ ] Close this issue and celebrate. 🎆
 
-- [ ] [Create an issue for the next release], and then [pin the issue]. ⏳
-
-- [ ] Close the issue and celebrate. 🎆
+> [!NOTE]
+> The release on PyPI may be [yanked](https://docs.pypi.org/project-management/yanking/) if the release is broken or there is a serious security vulnerability. In most cases, a bugfix release is preferred.
 
 [citation page]: https://docs.plasmapy.org/en/stable/about/citation.html
 [comprehensive tests]: https://github.com/PlasmaPy/PlasmaPy/actions/workflows/ci-comprehensive.yml

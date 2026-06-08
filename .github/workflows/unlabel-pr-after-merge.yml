@@ -1,3 +1,5 @@
+# Remove labels after a pull request has been merged.
+
 name: Close PR
 
 on:
@@ -11,7 +13,7 @@ jobs:
     steps:
 
     - name: Remove specific labels
-      uses: actions/github-script@v8
+      uses: actions/github-script@v9
       with:
         github-token: ${{secrets.GITHUB_TOKEN}}
         script: |
@@ -22,7 +24,6 @@ jobs:
           if (!pull.data.merged) return;
 
           const labelsToRemove = [
-            'duplicate',
             'effort: high',
             'effort: low',
             'effort: medium',
@@ -39,15 +40,20 @@ jobs:
             'priority: medium',
             'priority: very high',
             'prototype 🏗️',
+            'run comprehensive tests',
+            'run upstream tests',
             'skip changelog checks',
             'Stale',
             'status: assigned',
             'status: dormant',
             'status: in progress',
             'status: nearing completion',
+            'status: needs discussion',
+            'status: not planned',
             'status: on hold',
             'status: ready for review',
-            'status: ready to merge'
+            'status: ready to merge',
+            'wish list 🌠',
           ];
 
           const { data: currentLabels } = await github.rest.issues.listLabelsOnIssue({ owner, repo, issue_number: number });

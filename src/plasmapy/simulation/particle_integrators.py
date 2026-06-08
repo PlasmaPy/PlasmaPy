@@ -152,8 +152,8 @@ class BorisIntegrator(AbstractIntegrator):
 
         Notes
         -----
-        The Boris algorithm :cite:p:`boris:1970` is the standard energy
-        conserving algorithm for particle movement in plasma physics. See
+        The Boris algorithm :cite:p:`boris:1970` is the standard volume preserving
+        algorithm for particle movement in plasma physics. See
         :cite:t:`birdsall:2004` for more details, and this `page on the
         Boris method <https://www.particleincell.com/2011/vxb-rotation>`__
         for a nice overview.
@@ -166,7 +166,9 @@ class BorisIntegrator(AbstractIntegrator):
         3. Add the second half of the impulse from the electric field.
 
         This ends up causing the magnetic field action to be properly "centered" in
-        time, and the algorithm, being a symplectic integrator, conserves energy.
+        time, and the algorithm being volume preserving ensures that error in energy
+        remains bounded. See this paper <https://pubs.aip.org/aip/pop/article/20/8/084503/317652/Why-is-Boris-algorithm-so-good>
+        for more detail.
         """
         hqmdt = 0.5 * dt * q / m
         vminus = v + hqmdt * E
@@ -236,14 +238,14 @@ class RelativisticBorisIntegrator(AbstractIntegrator):
                Simulation", 2004, p. 58-63
         """
         γ = 1 / np.sqrt(
-            1 - (np.linalg.norm(v, axis=1, keepdims=True) / _c.si.value) ** 2
+            1 - (np.linalg.norm(v, axis=1, keepdims=True) / _c.si.value) ** 2,
         )
         uvel = v * γ
 
         uvel_minus = uvel + q * E * dt / (2 * m)
 
         γ1 = np.sqrt(
-            1 + (np.linalg.norm(uvel_minus, axis=1, keepdims=True) / _c.si.value) ** 2
+            1 + (np.linalg.norm(uvel_minus, axis=1, keepdims=True) / _c.si.value) ** 2,
         )
 
         t = q * B * dt / (2 * γ1 * m)
@@ -256,7 +258,7 @@ class RelativisticBorisIntegrator(AbstractIntegrator):
         # You can show that this expression is equivalent to calculating
         # v_new  then calculating γnew using the usual formula
         γ2 = np.sqrt(
-            1 + (np.linalg.norm(uvel_new, axis=1, keepdims=True) / _c.si.value) ** 2
+            1 + (np.linalg.norm(uvel_new, axis=1, keepdims=True) / _c.si.value) ** 2,
         )
 
         v = uvel_new / γ2

@@ -75,14 +75,18 @@ scripts.plasma-calculator = "plasmapy.utils.calculator:main"
 # Because dependency groups are excluded from built distributions of
 # packages, SPEC 0 does not apply.
 dev = [
+  { include-group = "autotyping" },
+  { include-group = "changelog" },
   { include-group = "docs" },
   { include-group = "lint" },
+  { include-group = "manifest" },
   { include-group = "nox" },
   { include-group = "test" },
   { include-group = "type_check" },
+  { include-group = "zizmor" },
 ]
 test = [
-  "hypothesis>=6.151.2",
+  "hypothesis>=6.150",
   "pytest>=9.0.2",
   "pytest-cov>=7",
   "pytest-filter-subpackage>=0.2",
@@ -91,54 +95,68 @@ test = [
   "pytest-xdist>=3.8",
 ]
 docs = [
-  "docutils>=0.22.4",
+  "docutils>=0.21.2",
   "ipykernel>=7.1",
   "ipywidgets>=8.1.8",
   "jinja2>=3.1.6",
   "nbsphinx>=0.9.8",
   "numpydoc>=1.10",
-  "pillow>=12.1",
-  "plasmapy-sphinx>=2026.1",
+  "pillow>=12",
+  "plasmapy-sphinx>=2025.5.1",
   "pygments==2.19.2",
-  "sphinx>=9.1",
+  "sphinx>=8.2.3,<8.3",
   "sphinx-changelog>=1.6",
   "sphinx-codeautolink==0.17.5",
   "sphinx-copybutton>=0.5.2",
   "sphinx-gallery>=0.20",
   "sphinx-issues>=5.0.1",
   "sphinx-notfound-page>=1.1",
-  "sphinx-reredirects>=1.1",
-  "sphinx-rtd-theme>=3.1",
+  "sphinx-reredirects>=1",
+  "sphinx-rtd-theme>=3.0.2",
   "sphinx-tabs>=3.4",
-  "sphinx-toolbox>=4",
+  "sphinx-toolbox>=4.1.2",
   "sphinxcontrib-bibtex>=2.6.5",
-  "sphinxcontrib-globalsubs>=1",
-  "sphinxemoji>=0.3.2",
-  "towncrier>=24.8",
+  # sphinxcontrib-globalsubs>=1 needs sphinx>=9
+  "sphinxcontrib-globalsubs==0.1.2",
+  "sphinxemoji>=0.3.1",
   "unidecode>=1.4",
+  { include-group = "changelog" },
+]
+autotyping = [
+  "autotyping>=24.9",
+  "typing-extensions>=4.15",
+]
+changelog = [
+  "towncrier>=24.8",
 ]
 lint = [
   "pre-commit>=4.5.1",
   # Include ruff to make it available for IDEs in virtual environments
-  "ruff>=0.14.14",
+  "ruff>=0.14.11",
+]
+manifest = [
+  "check-manifest>=0.51",
 ]
 nox = [
-  "nox>=2025.11.12",
+  "nox>=2026.4.10",
   "nox-uv>=0.7",
 ]
 type_check = [
-  "mypy>=1.19.1",
-  "pip>=25.3",
+  "ty>=0.0.35",
+  { include-group = "docs" },
   { include-group = "test" },
+]
+zizmor = [
+  "zizmor==1.22",
 ]
 
 [tool.setuptools]
-include-package-data = true
-package-data."plasmapy.particles.data" = [ "*" ]
-package-data."plasmapy.tests" = [ "coveragerc" ]
 packages.find.where = [ "src" ]
 packages.find.exclude = [ "docs/automodapi", "src/plasmapy/_dev" ]
 packages.find.namespaces = false
+include-package-data = true
+package-data."plasmapy.particles.data" = [ "*" ]
+package-data."plasmapy.tests" = [ "coveragerc" ]
 
 [tool.setuptools_scm]
 write_to = "src/plasmapy/_version.py"
@@ -148,7 +166,8 @@ write_to = "src/plasmapy/_version.py"
 no-build-package = [ "astropy", "h5py", "matplotlib", "numpy", "pandas", "scipy", "wrapt" ]
 # Use a dependency cooldown so that security vulnerabilities in upstream
 # packages can be identified and yanked before we start using them.
-exclude-newer = "12 hours"
+exclude-newer = "3 days"
+exclude-newer-package = { plasmapy-sphinx = false }
 
 [tool.ruff]
 target-version = "py312"
@@ -164,146 +183,149 @@ show-fixes = true
 output-format = "grouped"
 format.line-ending = "lf"
 format.docstring-code-format = true
+# Using an IDE like PyCharm with a ruff plugin will make rule names appear as inlay hints
 lint.extend-select = [
-  "A",      # flake8-builtins
-  "ANN204", # missing-return-type-special-method
-  "ANN205", # missing-return-type-static-method
-  "ANN206", # missing-return-type-class-method
-  "ARG",    # flake8-unused-arguments
-  "ASYNC",  # flake8-async
-  "B",      # flake8-bugbear
-  "BLE",    # flake8-blind-except
-  "C4",     # flake8-comprehensions
-  "C90",    # mccabe
-  "COM818", # trailing-comma-on-bare-tuple
-  "D",      # pydocstyle
-  # "DOC", # pydoclint (enable this rule set when it is no longer in preview)
-  "DTZ",    # flake8-datetimez
-  "EM",     # flake8-errmsg
-  "EXE",    # flake8-executable
-  "FA102",  # flake8-required-type-annotation
-  "FBT003", # flake8-boolean-trap
-  "FIX",    # flake8-fixme
-  "FLY",    # flynt
-  "FURB",   # refurb
-  "G",      # flake8-logging-format
-  "I",      # isort
-  "ICN",    # flake8-import-conventions
-  "INP",    # flake8-no-pep420
-  "INT",    # flake8-gettext
-  "ISC",    # flake8-implicit-str-concat
-  "N",      # pep8-naming
-  "NPY",    # numpy-deprecated-type-alias
-  "PD",     # pandas-vet
-  "PERF",   # perflint
-  "PGH",    # pygrep-hooks
-  "PIE",    # flake8-pie
-  "PLC",    # pylint convention
-  "PLE",    # pylint errors
-  "PLR",    # pylint refactorings
-  "PLW",    # pylint warnings
-  "PT",     # flake8-pytest-style
-  "PTH",    # flake8-use-pathlib
-  "PYI",    # flake8-pyi
-  "Q",      # flake8-quotes
-  "RET",    # flake8-return
-  "RSE",    # flake8-raise
-  "RUF001", # ambiguous-unicode-character-string
-  "RUF002", # ambiguous-unicode-character-docstring
-  "RUF003", # ambiguous-unicode-character-comment
-  "RUF005", # collection-literal-concatenation
-  "RUF006", # asyncio-dangling-task
-  "RUF007", # pairwise-over-zipped
-  "RUF008", # mutable-dataclass-default
-  "RUF009", # function-call-in-dataclass-default-argument
-  "RUF010", # explicit-f-string-type-conversion
-  "RUF012", # mutable-class-default
-  "RUF013", # implicit-optional
-  "RUF015", # unnecessary-iterable-allocation-for-first-element
-  "RUF016", # invalid-index-type
-  "RUF017", # quadratic-list-summation
-  "RUF018", # assignment-in-assert
-  "RUF019", # unnecessary-key-check
-  "RUF020", # never-union
-  "RUF021", # parenthesize-chained-operators
-  "RUF023", # unsorted-dunder-slots
-  "RUF024", # mutable-fromkeys-value
-  "RUF026", # default-factory-kwarg
-  "RUF028", # invalid-formatter-suppression-comment
-  "RUF030", # assert-with-print-message
-  "RUF032", # decimal-from-float-literal
-  "RUF033", # post-init-default
-  "RUF034", # useless-if-else
-  "RUF040", # invalid-assert-message-literal-argument
-  "RUF041", # unnecessary-nested-literal
-  "RUF043", # pytest-raises-ambiguous-pattern
-  "RUF046", # unnecessary-cast-to-int
-  "RUF048", # map-int-version-parsing
-  "RUF049", # dataclass-enum
-  "RUF051", # if-key-in-dict-del
-  "RUF053", # class-with-mixed-type-vars
-  "RUF057", # unnecessary-round
-  "RUF058", # starmap-zip
-  "RUF059", # unused-unpacked-variable
-  "RUF100", # unused-noqa
-  "RUF101", # redirected-noqa
-  "RUF200", # invalid-pyproject-toml
-  "S",      # flake8-bandit
-  "SIM",    # flake8-simplify
-  "SLF",    # flake8-self
-  "SLOT",   # flake8-slots
-  "T",      # flake8-print
-  "T100",   # debugger
-  "TC",     # flake8-type-checking
-  "TD",     # flake8-todos
-  "TID",    # flake8-tidy-imports
-  "TRY",    # tryceratops
-  "UP",     # pyupgrade
-  "W",      # pycodestyle warnings
-  "YTT",    # flake8-2020
+  "A",
+  "ANN",
+  "ARG",
+  "ASYNC",
+  "B",
+  "BLE",
+  "C4",
+  "C90",
+  "COM",
+  "D",
+  # enable DOC rule set when it is no longer in preview
+  "DTZ",
+  "EM",
+  "EXE",
+  "FA102",
+  "FBT",
+  "FIX",
+  "FLY",
+  "FURB",
+  "G",
+  "I",
+  "ICN",
+  "INP",
+  "INT",
+  "ISC",
+  "N",
+  "NPY",
+  "PD",
+  "PERF",
+  "PGH",
+  "PIE",
+  "PLC",
+  "PLE",
+  "PLR",
+  "PLW",
+  "PT",
+  "PTH",
+  "PYI",
+  "Q",
+  "RET",
+  "RSE",
+  "RUF001",
+  "RUF002",
+  "RUF003",
+  "RUF005",
+  "RUF006",
+  "RUF007",
+  "RUF008",
+  "RUF009",
+  "RUF010",
+  "RUF012",
+  "RUF013",
+  "RUF015",
+  "RUF016",
+  "RUF017",
+  "RUF018",
+  "RUF019",
+  "RUF020",
+  "RUF021",
+  "RUF023",
+  "RUF024",
+  "RUF026",
+  "RUF028",
+  "RUF030",
+  "RUF032",
+  "RUF033",
+  "RUF034",
+  "RUF037",
+  "RUF040",
+  "RUF041",
+  "RUF043",
+  "RUF046",
+  "RUF048",
+  "RUF049",
+  "RUF051",
+  "RUF053",
+  "RUF057",
+  "RUF058",
+  "RUF059",
+  "RUF060",
+  "RUF061",
+  "RUF064",
+  "RUF100",
+  "RUF101",
+  "RUF102",
+  "RUF103",
+  "RUF104",
+  "RUF200",
+  "S",
+  "SIM",
+  "SLF",
+  "SLOT",
+  "T10",
+  "T20",
+  "TC",
+  "TD",
+  "TID",
+  "TRY",
+  "UP",
+  "W",
+  "YTT",
 ]
-# The ruff rules to include or ignore for notebooks are defined
-# separately in .pre-commit-config.yaml in the hook for nbqa-ruff
 lint.ignore = [
-  "B028",    # no-explicit-stacklevel
-  "D105",    # undocumented-magic-method (enable later?)
-  "D200",    # fits-on-one-line (incompatible with multiline short summaries)
-  "D202",    # no-blank-line-after-function
-  "D205",    # blank-line-after-summary (incompatible with multiline short summaries)
-  "D206",    # indent-with-spaces (formatter conflict)
-  "D401",    # non-imperative-mood (enable later?)
-  "E501",    # line-too-long
-  "EM101",   # raw-string-in-exception (enable later in focused PR)
-  "EM102",   # f-string-in-exception (enable later in focused PR)
-  "FIX002",  # line-contains-todo
-  "ISC001",  # single-line-implicit-string-concatenation (formatter conflict)
-  "N802",    # invalid-function-name
-  "N803",    # invalid-argument-name
-  "N806",    # non-lowercase-variable-in-function
-  "N816",    # mixed-case-variable-in-global-scope
-  "PLC2401", # non-ascii-name (flags variables used as mathematical symbols)
-  "PLC2403", # non-ascii-import-name
-  "PLE0605", # invalid-all-format (flags `__all__ += __lite_funcs`, etc.)
-  "PLR0913", # too-many-arguments
-  "PLR2004", # magic-value-comparison
-  "PT007",   # pytest-parametrize-values-wrong-type
-  "PT011",   # pytest-raises-too-broad
-  "PT012",   # pytest-raises-multiple-statements (enable later?)
-  "PT019",   # pytest-fixture-param-without-value (enable later?)
-  "PYI024",  # collections-named-tuple (enable later)
-  "RET501",  # unnecessary-return-none
-  "RET502",  # implicit-return-value
-  "RET505",  # superfluous-else-return (enable later?)
-  "RET506",  # superfluous-else-raise (enable later?)
-  "S101",    # asserts
-  "SIM300",  # yoda-conditions
-  "TD002",   # missing-todo-author
-  "TD003",   # missing-todo-link
-  "TRY003",  # raise-vanilla-args
-  "TRY301",  # raise-within-try
-  "UP025",   # unicode-kind-prefix
-  "W191",    # tab-indentation (formatter conflict)
-  "W291",    # trailing-whitespace (handled by formatter)
+  "ANN001",  # add file-wide ignore comments?
+  "COM812",  # handled by ruff format
+  "COM819",  # adding trailing commas leads to simpler diffs
+  "D200",    # incompatible with multiline short summaries
+  "D203",    # handled by ruff format
+  "D205",    # incompatible with multiline short summaries
+  "D206",    # handled by ruff format
+  "D300",    # handled by ruff format
+  "D401",    # enable later?
+  "E111",    # handled by ruff format
+  "E114",    # handled by ruff format
+  "E117",    # handled by ruff format
+  "E501",    # handled by ruff format
+  "EM101",   # enable later in focused PR
+  "EM102",   # enable later in focused PR
+  "N802",    # inconsistent with capitalization from physics notation
+  "N803",    # inconsistent with capitalization from physics notation
+  "N806",    # inconsistent with capitalization from physics notation
+  "N816",    # inconsistent with capitalization from physics notation
+  "PLC2401", # flags variables used as mathematical symbols
+  "PLC2403", # flags variables used as mathematical symbols
+  "PLE0605", # flags `__all__ += __lite_funcs`
+  "PLR0913", # too many situations where lots of arguments are justified
+  "PLR2004", # would need case-by-case evaluations
+  "PT011",   # would require using match keyword argument
+  "PT012",   # enable later?
+  "PT019",   # enable later?
+  "PYI024",  # enable later?
+  "Q001",    # handled by ruff format
+  "Q002",    # handled by ruff format
+  "Q003",    # handled by ruff format
+  "Q004",    # handled by ruff format
+  "RET505",  # enable later?
+  "RET506",  # enable later?
+  "TD002",   # enable later?
+  "TD003",   # enable later?
+  "TRY003",  # enable later?
+  "W191",    # handled by ruff format
 ]
 lint.per-file-ignores."**/*.ipynb" = [ "T201", "T203" ]
 lint.per-file-ignores.".github/scripts/*.py" = [ "D103", "INP001" ]
@@ -329,7 +351,7 @@ lint.per-file-ignores."docs/notebooks/dispersion/dispersion_function.ipynb" = [ 
 lint.per-file-ignores."docs/notebooks/dispersion/stix_dispersion.ipynb" = [ "FBT003" ]
 lint.per-file-ignores."docs/notebooks/formulary/cold_plasma_tensor_elements.ipynb" = [ "FBT003" ]
 lint.per-file-ignores."docs/notebooks/formulary/ExB_drift.ipynb" = [ "B008", "D103" ]
-lint.per-file-ignores."docs/notebooks/langmuir_samples/_generate_noisy.ipynb" = [ "NPY002", "PTH123" ]
+lint.per-file-ignores."docs/notebooks/langmuir_samples/_generate_noisy.ipynb" = [ "ANN202", "NPY002", "PTH123" ]
 lint.per-file-ignores."docs/notebooks/plasma/grids_cartesian.ipynb" = [ "NPY002", "PLW2901" ]
 lint.per-file-ignores."docs/notebooks/plasma/grids_nonuniform.ipynb" = [ "NPY002" ]
 lint.per-file-ignores."setup.py" = [ "D100" ]
@@ -352,9 +374,11 @@ lint.per-file-ignores."tests/**/test_*.py" = [
   "DOC501",
   "INP001",
   "N801",
+  "N802",
   "PLC2701",
   "PLR6301",
   "RUF012",
+  "S101",
   "SLF001",
 ]
 lint.per-file-ignores."tests/formulary/collisions/test_coulomb.py" = [ "PT031" ]
@@ -401,13 +425,12 @@ lint.allowed-confusables = [
 lint.dummy-variable-rgx = "^(Z|mass_numb|request|event|_.*)$"
 lint.flake8-annotations.allow-star-arg-any = true
 lint.flake8-annotations.ignore-fully-untyped = true
-lint.flake8-annotations.mypy-init-return = true
 lint.flake8-annotations.suppress-dummy-args = true
 lint.flake8-annotations.suppress-none-returning = true
 lint.flake8-import-conventions.aliases."astropy.constants" = "const"
 lint.flake8-import-conventions.aliases."astropy.units" = "u"
-lint.flake8-import-conventions.aliases."matplotlib" = "mpl"
 lint.flake8-import-conventions.aliases."matplotlib.pyplot" = "plt"
+lint.flake8-import-conventions.aliases.matplotlib = "mpl"
 lint.flake8-import-conventions.aliases.numpy = "np"
 lint.flake8-import-conventions.aliases.pandas = "pd"
 lint.flake8-import-conventions.banned-from = [
@@ -438,7 +461,6 @@ lint.mccabe.max-complexity = 10
 lint.pydocstyle.convention = "numpy"
 
 [tool.codespell]
-skip = "*.png,*cache*,*egg*,.git,.hypothesis,.idea,.nox,.tox,_build,*charged_particle*.ipynb,venv"
 # Add false positives found by codespell to ignore-words-list
 ignore-words-list = """
 aas,
@@ -473,21 +495,45 @@ tru,
 ue,
 ue,
 windo"""
+skip = "*.png,*cache*,*egg*,.git,.hypothesis,.idea,.nox,.tox,_build,*charged_particle*.ipynb,venv"
 
 [tool.check-manifest]
 ignore = [
   "#*",
   "*#",
+  "*~",
   "*checkpoint*",
   "*TEMP*",
-  "*~",
   ".mailmap",
   "docs/*build/**",
-  "Untitled*",
   "src/plasmapy/_version.py",
+  "Untitled*",
 ]
 
-[tool.pytest]  # https://docs.pytest.org/en/stable/reference/reference.html#ini-options-ref
+[tool.ty]
+# Ignore ty errors in certain notebooks until these can be fixed later
+src.exclude = [
+  "docs/notebooks/analysis/fit_functions.ipynb",
+  "docs/notebooks/analysis/nullpoint.ipynb",
+  "docs/notebooks/analysis/swept_langmuir/find_floating_potential.ipynb",
+  "docs/notebooks/diagnostics/charged_particle_radiography_film_stacks.ipynb",
+  "docs/notebooks/diagnostics/charged_particle_radiography_particle_tracing.ipynb",
+  "docs/notebooks/diagnostics/charged_particle_radiography_particle_tracing_custom_source.ipynb",
+  "docs/notebooks/diagnostics/charged_particle_radiography_particle_tracing_wire_mesh.ipynb",
+  "docs/notebooks/diagnostics/thomson.ipynb",
+  "docs/notebooks/dispersion/dispersion_function.ipynb",
+  "docs/notebooks/dispersion/two_fluid_dispersion.ipynb",
+  "docs/notebooks/plasma/grids_cartesian.ipynb",
+  "docs/notebooks/plasma/grids_nonuniform.ipynb",
+]
+environment.python-platform = "all"
+# Because astropy.units.Quantity[u.kg] is not recognized
+rules.invalid-type-form = "ignore"
+# Because astropy.constants.m_p, etc. are not recognized
+rules.unresolved-attribute = "ignore"
+analysis.allowed-unresolved-imports = [ "astropy.constants.**" ]
+
+[tool.pytest]  # https://docs.pytest.org/en/stable/reference/customize.html#pyproject-toml
 addopts = [
   "--pyargs",
   "--durations=5",
@@ -527,7 +573,7 @@ markers = [
   "slow: marks tests as slow (deselect with '-m \"not slow\"')",
 ]
 strict = true
-testpaths = [ "tests", "src/plasmapy", "tools" ]
+testpaths = [ "tests", "src/plasmapy" ]
 
 [tool.coverage]
 run.branch = true
@@ -548,14 +594,15 @@ report.exclude_lines = [
 ]
 
 [tool.towncrier]
-package = "plasmapy"
 name = "PlasmaPy"
-filename = "CHANGELOG.rst"
+package = "plasmapy"
 directory = "changelog"
+filename = "CHANGELOG.rst"
 title_format = "{name} v{version} ({project_date})"
 # Despite the name mismatch, we use `issue_format` for linking to PRs
 issue_format = ":pr:`{issue}`"
 wrap = true
+# Changes to changelog tags need to be propagated into .github/workflows/changelog.yml
 type = [
   { directory = "feature", name = "New Features", showcontent = true },
   { directory = "doc", name = "Documentation Improvements", showcontent = true },
@@ -564,7 +611,7 @@ type = [
   { directory = "bugfix", name = "Bug Fixes", showcontent = true },
   { directory = "internal", name = "Internal Changes and Refactorings", showcontent = true },
   { directory = "test", name = "Updates to Software Testing", showcontent = true },
-  { directory = "trivial", name = "Additional Changes", showcontent = true },
+  { directory = "misc", name = "Miscellaneous Changes", showcontent = true },
 ]
 
 [tool.build_docs]

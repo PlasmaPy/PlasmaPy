@@ -1,11 +1,11 @@
-# Define comprehensive continuous integration (CI) checks to be
-# performed periodically and on request.
+# Define thorough continuous integration checks that can be skipped for
+# most pull requests.
 
 name: comprehensive tests
 
 on:
   schedule:
-  - cron: 37 7 * * 1
+  - cron: 37 7 * * 5
   workflow_dispatch:
   pull_request:
     types: [labeled, opened, synchronize, reopened]
@@ -101,13 +101,13 @@ jobs:
     steps:
 
     - name: Checkout code
-      uses: actions/checkout@v6
+      uses: actions/checkout@v6.0.2
       with:
         persist-credentials: false
 
     - name: Install graphviz and pandoc for doc builds
       if: ${{ contains(matrix.nox_session, 'docs') }}
-      uses: mamba-org/setup-micromamba@v2
+      uses: mamba-org/setup-micromamba@v3
       with:
         create-args: graphviz pandoc -c conda-forge
         init-shell: bash
@@ -116,7 +116,7 @@ jobs:
         post-cleanup: all
 
     - name: Install uv
-      uses: astral-sh/setup-uv@v7
+      uses: astral-sh/setup-uv@v8.1.0
       with:
         python-version: ${{ matrix.python }}
         enable-cache: true  # zizmor: ignore[cache-poisoning]
@@ -124,11 +124,11 @@ jobs:
 
     - name: Run Nox session ${{ matrix.nox_session }}
       shell: bash -el {0}
-      run: uvx nox -s '${{ matrix.nox_session }}'
+      run: uvx nox --session '${{ matrix.nox_session }}'
 
     - name: Upload coverage reports to Codecov
       if: ${{ contains(matrix.nox_session, 'cov') }}
-      uses: codecov/codecov-action@v5
+      uses: codecov/codecov-action@v6
       with:
         files: ./coverage.xml
         fail_ci_if_error: false

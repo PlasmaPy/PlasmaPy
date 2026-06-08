@@ -60,7 +60,7 @@ class MagneticDipole(MagnetoStatics):
         self.p0 = p0.value
         self._p0_u = p0.unit
 
-    def __repr__(self) -> str:
+    def __repr__(self) -> str:  # noqa: D105
         name = self.__class__.__name__
         moment = self.moment
         p0 = self.p0
@@ -159,7 +159,7 @@ class GeneralWire(Wire):
         self.current = current.value
         self._current_u = current.unit
 
-    def __repr__(self) -> str:
+    def __repr__(self) -> str:  # noqa: D105
         name = self.__class__.__name__
         parametric_eq = self.parametric_eq.__name__
         t1 = self.t1
@@ -228,7 +228,6 @@ class GeneralWire(Wire):
             \sum_{i=1}^{n}\frac{\vec{Δ l}_i ×
             \vec{r}_i}{\left| \vec{r}_i \right|^3}.
         """
-
         p1 = self.parametric_eq(self.t1)
         step = (self.t2 - self.t1) / n
         t = self.t1
@@ -264,7 +263,10 @@ class FiniteStraightWire(Wire):
 
     @validate_quantities
     def __init__(
-        self, p1: u.Quantity[u.m], p2: u.Quantity[u.m], current: u.Quantity[u.A]
+        self,
+        p1: u.Quantity[u.m],
+        p2: u.Quantity[u.m],
+        current: u.Quantity[u.A],
     ) -> None:
         self.p1 = p1.value
         self.p2 = p2.value
@@ -275,7 +277,7 @@ class FiniteStraightWire(Wire):
         self.current = current.value
         self._current_u = current.unit
 
-    def __repr__(self) -> str:
+    def __repr__(self) -> str:  # noqa: D105
         name = self.__class__.__name__
         p1 = self.p1
         p2 = self.p2
@@ -407,7 +409,10 @@ class InfiniteStraightWire(Wire):
 
     @validate_quantities
     def __init__(
-        self, direction, p0: u.Quantity[u.m], current: u.Quantity[u.A]
+        self,
+        direction,
+        p0: u.Quantity[u.m],
+        current: u.Quantity[u.A],
     ) -> None:
         self.direction = direction / np.linalg.norm(direction)
         self.p0 = p0.value
@@ -415,7 +420,7 @@ class InfiniteStraightWire(Wire):
         self.current = current.value
         self._current_u = current.unit
 
-    def __repr__(self) -> str:
+    def __repr__(self) -> str:  # noqa: D105
         name = self.__class__.__name__
         direction = self.direction
         p0 = self.p0
@@ -471,7 +476,7 @@ class InfiniteStraightWire(Wire):
         """
         r = np.cross(self.direction, p - self.p0)
         B_unit = r / np.linalg.norm(r)
-        r = np.linalg.norm(r)  # type: ignore[assignment]
+        r = np.linalg.norm(r)
 
         return B_unit / r * const.mu0.value / 2 / np.pi * self.current * u.T
 
@@ -495,7 +500,7 @@ class CircularWire(Wire):
         Electric current.
     """
 
-    def __repr__(self) -> str:
+    def __repr__(self) -> str:  # noqa: D105
         name = self.__class__.__name__
         normal = self.normal
         center = self.center

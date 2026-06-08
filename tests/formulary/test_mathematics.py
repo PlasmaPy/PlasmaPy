@@ -5,7 +5,7 @@ import pytest
 
 from plasmapy.formulary import mathematics
 
-# TODO: Move the Fermi integral tests over to this file?
+# TODO: Move the Fermi integral tests over to this file?  # noqa: FIX002
 
 
 @pytest.mark.parametrize(

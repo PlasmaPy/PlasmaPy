@@ -1,3 +1,12 @@
+# Quality assurance checks for the Python in Heliophysics Community.
+#
+# Verify that PlasmaPy can be installed in PyHC's Python environment,
+# and check that requirements are consistent with the PyHC Python &
+# Upstream Package Support Policy (PHEP 3).
+#
+# Documentation: https://github.com/heliophysicsPy/pyhc-actions
+# PHEP 3: https://github.com/heliophysicsPy/standards/blob/main/pheps/phep-0003.md
+
 name: PyHC Actions
 
 on:
@@ -6,7 +15,6 @@ on:
   pull_request:
     branches: [main]
   schedule:
-    # Run quarterly: Jan 1, Apr 1, Jul 1, Oct 1 at 3pm UTC (8am Mountain Time)
   - cron: 0 15 1 1,4,7,10 *
   workflow_dispatch:
 
@@ -17,20 +25,19 @@ jobs:
     name: PHEP 3 Compliance
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v6.0.2
       with:
         persist-credentials: false
 
     - name: Check PHEP 3 Compliance
       uses: heliophysicsPy/pyhc-actions/phep3-compliance@v1
-      with:
-        ignore-errors-for: xarray  # astropy.units interoperability; needed through April 2026
+      # Use `ignore-errors-for` to allow exceptions to PHEP 3 policy
 
   pyhc-env-compat:
     name: PyHC Environment Compatibility
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6.0.2
       with:
         persist-credentials: false
 

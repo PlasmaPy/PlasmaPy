@@ -25,7 +25,7 @@ from plasmapy.utils._units_definitions import (
 )
 
 
-def _v_drift_conversion(v_drift: float | u.Quantity[u.m / u.s]):
+def _v_drift_conversion(v_drift: float | u.Quantity[u.m / u.s]):  # noqa: ANN202
     # Helper method to assign equivalent value in SPEED_UNITS and/or remove units
     if isinstance(v_drift, u.Quantity):
         v_drift = v_drift.to_value(SPEED_UNITS)
@@ -33,7 +33,7 @@ def _v_drift_conversion(v_drift: float | u.Quantity[u.m / u.s]):
 
 
 @particle_input
-def Maxwellian_1D(
+def Maxwellian_1D(  # noqa: ANN201
     v,
     T,
     particle: ParticleLike = "e-",
@@ -123,7 +123,6 @@ def Maxwellian_1D(
     >>> Maxwellian_1D(v=v, T=30000 * u.K, particle="e-", v_drift=0 * u.m / u.s)
     <Quantity 5.9163...e-07 s / m>
     """
-
     if units == "units":
         # unit checks and conversions
         # checking velocity units
@@ -139,7 +138,9 @@ def Maxwellian_1D(
     if np.isnan(vTh):
         # get thermal speed
         vTh = thermal_speed(
-            T << u.K, particle=particle, method="most_probable"
+            T << u.K,
+            particle=particle,
+            method="most_probable",
         ).to_value(SPEED_UNITS)
 
     # Get thermal velocity squared
@@ -159,7 +160,7 @@ def Maxwellian_1D(
 
 
 @particle_input
-def Maxwellian_velocity_2D(
+def Maxwellian_velocity_2D(  # noqa: ANN201
     vx,
     vy,
     T,
@@ -289,7 +290,9 @@ def Maxwellian_velocity_2D(
     if np.isnan(vTh):
         # get thermal speed
         vTh = thermal_speed(
-            T << u.K, particle=particle, method="most_probable"
+            T << u.K,
+            particle=particle,
+            method="most_probable",
         ).to_value(SPEED_UNITS)
 
     # accounting for thermal velocity in 2D
@@ -309,7 +312,7 @@ def Maxwellian_velocity_2D(
 
 
 @particle_input
-def Maxwellian_velocity_3D(
+def Maxwellian_velocity_3D(  # noqa: ANN201
     vx,
     vy,
     vz,
@@ -430,7 +433,6 @@ def Maxwellian_velocity_3D(
     ... )
     <Quantity 2.0708...e-19 s3 / m3>
     """
-
     # When updating this function, temporarily uncomment the test_norm
     # method of Test_Maxwellian_velocity_3D. It is currently commented
     # out because it is really slow.
@@ -455,7 +457,9 @@ def Maxwellian_velocity_3D(
     if np.isnan(vTh):
         # get thermal velocity and thermal velocity squared
         vTh = thermal_speed(
-            T << u.K, particle=particle, method="most_probable"
+            T << u.K,
+            particle=particle,
+            method="most_probable",
         ).to_value(SPEED_UNITS)
 
     # accounting for thermal velocity in 3D
@@ -475,7 +479,7 @@ def Maxwellian_velocity_3D(
 
 
 @particle_input
-def Maxwellian_speed_1D(
+def Maxwellian_speed_1D(  # noqa: ANN201
     v,
     T,
     particle: ParticleLike = "e-",
@@ -581,7 +585,9 @@ def Maxwellian_speed_1D(
     if np.isnan(vTh):
         # get thermal velocity and thermal velocity squared
         vTh = thermal_speed(
-            T << u.K, particle=particle, method="most_probable"
+            T << u.K,
+            particle=particle,
+            method="most_probable",
         ).to_value(SPEED_UNITS)
 
     # Get thermal velocity squared
@@ -601,7 +607,7 @@ def Maxwellian_speed_1D(
 
 
 @particle_input
-def Maxwellian_speed_2D(
+def Maxwellian_speed_2D(  # noqa: ANN201
     v,
     T,
     particle: ParticleLike = "e-",
@@ -714,7 +720,9 @@ def Maxwellian_speed_2D(
     if np.isnan(vTh):
         # get thermal velocity and thermal velocity squared
         vTh = thermal_speed(
-            T << u.K, particle=particle, method="most_probable"
+            T << u.K,
+            particle=particle,
+            method="most_probable",
         ).to_value(SPEED_UNITS)
 
     # getting square of thermal speed
@@ -735,7 +743,7 @@ def Maxwellian_speed_2D(
 
 
 @particle_input
-def Maxwellian_speed_3D(
+def Maxwellian_speed_3D(  # noqa: ANN201
     v,
     T,
     particle: ParticleLike = "e-",
@@ -848,7 +856,9 @@ def Maxwellian_speed_3D(
     if np.isnan(vTh):
         # get thermal velocity and thermal velocity squared
         vTh = thermal_speed(
-            T << u.K, particle=particle, method="most_probable"
+            T << u.K,
+            particle=particle,
+            method="most_probable",
         ).to_value(SPEED_UNITS)
 
     # getting square of thermal speed
@@ -869,7 +879,7 @@ def Maxwellian_speed_3D(
 
 
 @particle_input
-def kappa_velocity_1D(
+def kappa_velocity_1D(  # noqa: ANN201
     v,
     T,
     kappa,
@@ -1003,7 +1013,7 @@ def kappa_velocity_1D(
     if np.isnan(vTh):
         # get thermal velocity and thermal velocity squared
         vTh = kappa_thermal_speed(T << u.K, kappa, particle=particle).to_value(
-            SPEED_UNITS
+            SPEED_UNITS,
         )
 
     # Get thermal velocity squared and accounting for 1D instead of 3D
@@ -1024,7 +1034,7 @@ def kappa_velocity_1D(
 
 
 @particle_input
-def kappa_velocity_3D(
+def kappa_velocity_3D(  # noqa: ANN201
     vx,
     vy,
     vz,
@@ -1158,7 +1168,6 @@ def kappa_velocity_3D(
     ... )
     <Quantity 3.7833...e-19 s3 / m3>
     """
-
     # When updating this function, temporarily uncomment the test_norm
     # method of Test_kappa_velocity_3D. It is currently commented
     # out because it is really slow.
@@ -1185,7 +1194,7 @@ def kappa_velocity_3D(
     if np.isnan(vTh):
         # get thermal velocity and thermal velocity squared
         vTh = kappa_thermal_speed(T << u.K, kappa, particle=particle).to_value(
-            SPEED_UNITS
+            SPEED_UNITS,
         )
 
     # getting square of thermal velocity

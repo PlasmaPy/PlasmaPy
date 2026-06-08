@@ -427,7 +427,7 @@ Improved Documentation
   <https://github.com/plasmapy/plasmapy/pull/1482>`__)
 - Updated the instructions on how to install PlasmaPy`. (`#1482
   <https://github.com/plasmapy/plasmapy/pull/1482>`__)
-- Defined ``autodoc_typehints_format="short"`` so signature type hints
+- Defined ``autodoc_typehints_format="short"`` so signature type annotations
   are displayed in short form, i.e. without the leading module
   names. (`#1488 <https://github.com/plasmapy/plasmapy/pull/1488>`__)
 - Set minimum version of `sphinx` to ``v4.4``. (`#1488
@@ -568,11 +568,9 @@ Trivial/Internal Changes
   → ``ParticleZoo``, ``ParticleZoo`` → ``particle_zoo``, and
   ``Particles`` → ``particles``). (`#1440
   <https://github.com/plasmapy/plasmapy/pull/1440>`__)
-- Applied automated refactorings from `Sourcery
-  <https://sourcery.ai/>`__ to `plasmapy.utils`. (`#1463
+- Applied automated refactorings from Sourcery to `plasmapy.utils`. (`#1463
   <https://github.com/plasmapy/plasmapy/pull/1463>`__)
-- Applied automated refactorings from `Sourcery
-  <https://sourcery.ai/>`__ to `plasmapy.plasma`. (`#1464
+- Applied automated refactorings from Sourcery to `plasmapy.plasma`. (`#1464
   <https://github.com/plasmapy/plasmapy/pull/1464>`__)
 - Bumped the minimum version of `h5py` to ``3.0.0``. (`#1465
   <https://github.com/plasmapy/plasmapy/pull/1465>`__)
@@ -668,7 +666,7 @@ Trivial/Internal Changes
   `~plasmapy.formulary.collisions.frequencies.collision_frequency` that activated
   when the colliding particles were both electrons. (`#1570
   <https://github.com/plasmapy/plasmapy/pull/1570>`__)
-- Changed the type hints for ``z_mean`` in
+- Changed the type annotations for ``z_mean`` in
   `plasmapy.formulary.collisions` functions from
   ``astropy.units.dimensionless_unscaled`` to
   `~numbers.Real`. Consequently, ``z_mean`` will no longer be
