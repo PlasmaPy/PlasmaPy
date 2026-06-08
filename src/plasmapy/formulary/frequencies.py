@@ -240,7 +240,7 @@ def plasma_frequency(
 ) -> u.Quantity[u.rad / u.s]:
     r"""Calculate the particle plasma frequency.
 
-    This frequency is the natural rate at which electrons in plasma oscillate due to 
+    This frequency is the natural rate at which electrons in plasma oscillate due to
     electrostatic forces from ions.
 
     **Aliases:** `wp_`
