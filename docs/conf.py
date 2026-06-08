@@ -188,18 +188,8 @@ nitpick_ignore_regex = [
     (python_role, "lmfit"),
     (python_role, "mpmath"),
     (python_role, "nbsphinx"),
+    (python_role, "sphinx.*"),
     (python_role, "xarray"),
-    # plasmapy_sphinx
-    (python_role, "automod.*"),
-    (python_role, "Builder"),
-    (python_role, "docutils.*"),
-    (python_role, "Documenter"),
-    (python_role, "Node"),
-    (python_role, "level"),
-    (python_role, ".*member.*"),
-    (python_role, "OptionSpec"),
-    (python_role, "py"),
-    (python_role, "[Ss]phinx.*"),  # also for reStructuredText workarounds
     # The following patterns still need to be fixed.
     (python_role, "json.decoder.JSONDecoder"),
     (python_role, "plasmapy.analysis.swept_langmuir.find_floating_potential"),
