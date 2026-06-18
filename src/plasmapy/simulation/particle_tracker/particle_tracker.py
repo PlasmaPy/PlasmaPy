@@ -22,7 +22,10 @@ from tqdm import tqdm
 
 from plasmapy.formulary.collisions.misc import Bethe_stopping_lite
 from plasmapy.particles import Particle, particle_input
-from plasmapy.particles.atomic import stopping_power
+from plasmapy.particles.atomic import areal_range_from_energy, energy_from_areal_range
+from plasmapy.particles.atomic import (
+    stopping_power as NIST_stopping_power,  # noqa: N812
+)
 from plasmapy.particles.particle_collections import ParticleListLike
 from plasmapy.plasma.grids import AbstractGrid, CartesianGrid
 from plasmapy.plasma.plasma_base import BasePlasma
@@ -280,7 +283,12 @@ class ParticleTracker:
         # Declare type hints for stopping power attributes
         self._stopping_method: Literal["Bethe", "NIST"] | None = None
         self._stopping_power_interpolators: (
-            list[Callable[[u.Quantity[u.m / u.s], u.Quantity[u.m**-3]],]] | None
+            list[
+                Callable[
+                    [u.Quantity[u.m / u.s], u.Quantity[u.m**-3]], u.J * u.m**2 / u.kg
+                ]
+            ]
+            | None
         ) = None
 
     # TODO: Should these properties return quantities with units?  # noqa: FIX002
@@ -383,6 +391,7 @@ class ParticleTracker:
         self,
         time_steps_per_gyroperiod: int | None = 12,
         Courant_parameter: float | None = 0.5,
+        stopping_parameter: float | None = 0.01,
     ) -> None:
         """Set parameters for the adaptive time step candidates.
 
@@ -413,6 +422,7 @@ class ParticleTracker:
 
         self._steps_per_gyroperiod = time_steps_per_gyroperiod
         self._Courant_parameter = Courant_parameter
+        self._stopping_parameter = stopping_parameter
 
     def _validate_constructor_inputs(
         self,
@@ -504,7 +514,22 @@ class ParticleTracker:
         self._x = x.to(u.m).value
         self._v = v.to(u.m / u.s).value
 
-    def _validate_stopping_inputs(
+    def _get_grids_with_quantity(self, quantity: str) -> list[int]:
+        results = []
+
+        for i, grid in enumerate(self.grids):
+            if quantity not in grid.quantities:
+                continue
+
+            results.append(i)
+
+        return results
+
+    def _is_quantity_defined_on_one_grid(self, quantity: str) -> bool:
+        grid_indices = self._get_grids_with_quantity(quantity)
+        return len(grid_indices) == 1
+
+    def _validate_stopping_inputs(  # noqa: C901
         self,
         method: Literal["NIST", "Bethe"],
         materials: list[str | None] | None = None,
@@ -521,23 +546,31 @@ class ParticleTracker:
                         "Please provide an array of length ngrids for the materials.",
                     )
 
-                for i, grid in enumerate(self.grids):
-                    if materials[i] is not None and "rho" not in grid.quantities:
+                for i, (material, grid) in enumerate(
+                    zip(materials, self.grids, strict=True)
+                ):
+                    if material is None:
+                        continue
+
+                    if "rho" not in grid.quantities:
                         raise ValueError(
-                            f"Material {materials[i]} was provided for stopping on grid {i},"
+                            f"Material {material} was provided for stopping on grid {i},"
                             " but quantity ``rho`` is not defined on that grid.",
                         )
 
             case "Bethe":
-                if I is None or len(I) != self.num_grids:
+                if I is None or len(materials) != self.num_grids:
                     raise ValueError(
-                        "Please provide an array of length ngrids for the mean excitation energy.",
+                        "Please provide an array of length ngrids for the mean excitation energies.",
                     )
 
-                for i, grid in enumerate(self.grids):
-                    if I[i] is not None and "n_e" not in grid.quantities:
+                for i, (I_grid, grid) in enumerate(zip(I, self.grids, strict=True)):
+                    if I_grid is None:
+                        continue
+
+                    if "n_e" not in grid.quantities:
                         raise ValueError(
-                            f"I={I[i]} was provided for stopping on grid {i},"
+                            f"Mean excitation energy {I_grid} was provided for stopping on grid {i},"
                             " but quantity ``n_e`` is not defined on that grid.",
                         )
 
@@ -595,12 +628,35 @@ class ParticleTracker:
         # necessary.
         self._enforce_particle_creation("adding stopping")
         self._validate_stopping_inputs(method, materials, I)
+        self._stopping_power_interpolators = []
+
+        # energy_to_range_interpolator = self._range_interpolators[grid_index]
+        # range_to_energy_interpolator = self._energy_interpolators[grid_index]
 
         match method:
             case "NIST":
                 self._required_quantities += ["rho"]
                 self._stopping_power_interpolators = [
-                    stopping_power(self._particle, material, return_interpolator=True)
+                    NIST_stopping_power(
+                        self._particle, material, return_interpolator=True
+                    )
+                    if material is not None
+                    else None  # Include `None` for grids lacking excitation energy to ensure consistent grid indices
+                    for material in materials  # ty:ignore[not-iterable]
+                ]
+
+                self._range_interpolators = [
+                    areal_range_from_energy(
+                        self._particle, material, return_interpolator=True
+                    )
+                    if material is not None
+                    else None  # Include `None` for grids lacking excitation energy to ensure consistent grid indices
+                    for material in materials  # ty:ignore[not-iterable]
+                ]
+                self._energy_interpolators = [
+                    energy_from_areal_range(
+                        self._particle, material, return_interpolator=True
+                    )
                     if material is not None
                     else None  # Include `None` for grids lacking excitation energy to ensure consistent grid indices
                     for material in materials  # ty:ignore[not-iterable]
@@ -640,6 +696,11 @@ class ParticleTracker:
 
         self._do_stopping = True
         self._stopping_method = method
+        self._stopping_grid_indices = [
+            i
+            for i, _interpolator in enumerate(self._stopping_power_interpolators)
+            if _interpolator is not None
+        ]
         self._log(f"Stopping module activated using the {method} method")
 
     @particle_input(require="isotope")
@@ -941,9 +1002,10 @@ class ParticleTracker:
         gyroperiod of the particles in the current fields.
         """
         # candidate time steps includes one per grid (based on the grid resolution)
-        # plus additional _dt_candidates based on the field at each particle
+        # plus additional _dt_candidates based on the field at each particle,
+        # and another based on the energy lost to stopping
         candidates = np.full(
-            (self.num_particles, self.num_grids + 1),
+            (self.num_particles, self.num_grids + 2),
             fill_value=np.inf,
         )
 
@@ -977,6 +1039,14 @@ class ParticleTracker:
             candidates[:, self.num_grids] = gyroperiod / self._steps_per_gyroperiod
 
         # TODO: introduce a minimum time step based on electric fields too!  # noqa: FIX002
+
+        # if self._do_stopping:
+        #     tracked_particles = self._tracked_particle_mask
+        #     current_speeds = self.speeds[self._tracked_particle_mask]
+        #     # can only lose 5% per timestep
+        #     max_delta_E = self._particle_kinetic_energy[tracked_particles] * self._stopping_parameter
+        #     timestep = max_delta_E / (self._stopping_power[tracked_particles] * current_speeds)
+        #     candidates[tracked_particles, self.num_grids + 1] = timestep.flatten()
 
         # Enforce limits on dt
         candidates = np.clip(candidates, self.dt_range[0], self.dt_range[1])
@@ -1094,27 +1164,27 @@ class ParticleTracker:
         self._reset_cache()
 
     def _Bethe_energy_loss_per_length(self):
+        tracked_particles = self._tracked_particle_mask
         stopping_power = np.zeros((self.num_particles_tracked, 1))
-        current_speeds = self.speeds[self._tracked_particle_mask]
 
-        for cs in self._stopping_power_interpolators:
-            if cs is None:
-                continue
+        particles_in_stopping_grids = self.particles_on_grid[
+            self._stopping_grid_indices, tracked_particles
+        ]
 
-            interpolation_result = cs(
-                current_speeds,
-                self._total_grid_values["n_e"].si.value[
-                    self._tracked_particle_mask, np.newaxis
-                ],
+        for grid_index, grid_mask in zip(
+            self._stopping_grid_indices, particles_in_stopping_grids, strict=True
+        ):
+            interpolator = self._stopping_power_interpolators[grid_index]
+            interpolation_result = interpolator(
+                self.speeds[grid_mask],
+                self._total_grid_values["n_e"].si.value[grid_mask, np.newaxis],
             )
 
-            stopping_power += interpolation_result
-
-        energy_loss_per_length = stopping_power
+            stopping_power[grid_mask] = interpolation_result
 
         if (
             not self._raised_energy_warning
-            and np.min(energy_loss_per_length * u.J).to(u.MeV).value < 1
+            and np.min(stopping_power * u.J / u.m).to(u.MeV).value < 1
         ):
             self._raised_energy_warning = True
 
@@ -1125,26 +1195,72 @@ class ParticleTracker:
                 category=PhysicsWarning,
             )
 
-        return energy_loss_per_length
+        return stopping_power
 
     def _NIST_energy_loss_per_length(self):
-        stopping_power = np.zeros((self.num_particles_tracked, 1))
-        relevant_kinetic_energy = (
-            self._particle_kinetic_energy[self._tracked_particle_mask] * u.J
+        tracked_particles = self._tracked_particle_mask
+        current_speeds = np.linalg.norm(
+            self.v[tracked_particles],
+            axis=-1,
+            keepdims=False,
         )
+        dx = np.multiply(current_speeds, self.dt) * u.m
 
-        for cs in self._stopping_power_interpolators:
-            if cs is None:
+        particles_in_stopping_grids = self.particles_on_grid[
+            self._stopping_grid_indices, tracked_particles
+        ]
+
+        E_before = (
+            self._particle_kinetic_energy[self._tracked_particle_mask].flatten() * u.J
+        )
+        E_after = np.copy(E_before)
+        for grid_index, grid_mask in zip(
+            self._stopping_grid_indices, particles_in_stopping_grids, strict=True
+        ):
+            if grid_mask.sum() == 0:
                 continue
 
-            stopping_power += cs(relevant_kinetic_energy).si.value
+            # rho = self.grids[grid_index].ds["rho"].values[grid_mask] * self.grids[grid_index].ds["rho"].unit
+            rho = self._total_grid_values["rho"]
 
-        return np.multiply(
-            stopping_power,
-            self._total_grid_values["rho"].si.value[
-                self._tracked_particle_mask, np.newaxis
-            ],
-        )
+            energy_to_range_interpolator = self._range_interpolators[grid_index]
+            range_to_energy_interpolator = self._energy_interpolators[grid_index]
+
+            areal_range_now = energy_to_range_interpolator(
+                self._particle_kinetic_energy[grid_mask].flatten() * u.J,
+            )
+
+            areal_range_after = areal_range_now - dx * rho
+
+            raw_E_after = range_to_energy_interpolator(areal_range_after).to(u.J).value
+
+            stop_mask = np.full(self._tracked_particle_mask.shape, False)  # noqa: FBT003
+            stop_mask[(np.isnan(raw_E_after)) | (raw_E_after <= 0)] = True
+            self._stop_particles(stop_mask)
+
+            E_after[grid_mask] = raw_E_after * u.J
+
+        # TODO: Make this less hacky  # noqa: FIX002
+        return ((E_before - E_after) / dx).to(u.J / u.m).value
+
+    @property
+    def _stopping_power(self):
+        """Apply all previously created stopping power interpolators.
+        These are created for each grid where needed in add_stopping().
+        """
+        if not self._do_stopping:
+            raise ValueError("Stopping must be enabled to use this attribute!")
+
+        # Apply all previously created stopping power interpolator
+        # These are created prior to run, for each grid where they apply
+        # in add_stopping()
+        match self._stopping_method:
+            case "Bethe":
+                energy_loss_per_length = self._Bethe_energy_loss_per_length()
+            case "NIST":
+                energy_loss_per_length = self._NIST_energy_loss_per_length()
+
+        return energy_loss_per_length
 
     def _update_velocity_stopping(self) -> None:
         r"""
@@ -1153,7 +1269,8 @@ class ParticleTracker:
         new energy values of the particles, and then updating the particles'
         velocity to match these energies.
         """
-        current_velocities = self.v[self._tracked_particle_mask]
+        tracked_particles = self._tracked_particle_mask
+        current_velocities = self.v[tracked_particles]
         current_speeds = np.linalg.norm(
             current_velocities,
             axis=-1,
@@ -1165,32 +1282,35 @@ class ParticleTracker:
         )
         dx = np.multiply(current_speeds, self.dt)  # ty:ignore[no-matching-overload]
 
-        # Apply all previously created stopping power interpolators
-        # These are created prior to run, for each grid where they apply
-        # in add_stopping()
-        match self._stopping_method:
-            case "Bethe":
-                energy_loss_per_length = self._Bethe_energy_loss_per_length()
-            case "NIST":
-                energy_loss_per_length = self._NIST_energy_loss_per_length()
+        # shape (stopping grids, tracked particles)
+        particles_in_stopping_grids = self.particles_on_grid[
+            self._stopping_grid_indices, tracked_particles
+        ]
+
+        # axis=0 => stopping grids. Make sure the particle is only on one grid with stopping
+        if not np.all(np.sum(particles_in_stopping_grids, axis=0) <= 1):
+            raise ValueError("Stopping grids must not overlap!")
+
+        # TODO: How to do this??  # noqa: FIX002
+        # For every particle, what grid is it on (if any) that supports stopping
 
         # Energy loss per unit length is positive by convention, therefore we have
         # to include a minus sign here
-        dE = -np.multiply(energy_loss_per_length, dx)
+        dE = -np.multiply(self._stopping_power, dx)
 
         # Update the velocities of the particles using the new energy values
         # TODO: again, figure out how to differentiate relativistic and classical cases  # noqa: FIX002
-        E = self._particle_kinetic_energy[self._tracked_particle_mask] + dE
+        E = self._particle_kinetic_energy[tracked_particles] + dE
 
         particles_to_be_stopped_mask = np.full(
-            shape=self._tracked_particle_mask.shape,
+            shape=tracked_particles.shape,
             fill_value=False,
         )
         tracked_particles_to_be_stopped_mask = (
             E < 0
         ).flatten()  # A subset of the tracked particles!
         # Of the tracked particles, stop the ones indicated by the subset mask
-        particles_to_be_stopped_mask[self._tracked_particle_mask] = (
+        particles_to_be_stopped_mask[tracked_particles] = (
             tracked_particles_to_be_stopped_mask
         )
 
@@ -1198,7 +1318,7 @@ class ParticleTracker:
         E = np.where(E < 0, 0, E)
 
         new_speeds = np.sqrt(2 * E / self.m)
-        self.v[self._tracked_particle_mask] = np.multiply(
+        self.v[tracked_particles] = np.multiply(
             new_speeds,
             velocity_unit_vectors,
         )

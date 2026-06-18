@@ -1258,7 +1258,9 @@ def stopping_power(
 
     # Interpolate NIST data to the user-provided energy values. Uses log-log scale fed into a cubic spline.
     log_cs = CubicSpline(
-        x=np.log(baseline_energies_data), y=np.log(relevant_stopping_data)
+        x=np.log(baseline_energies_data),
+        y=np.log(relevant_stopping_data),
+        extrapolate=False,
     )
 
     @validate_quantities(x=u.MeV)
@@ -1349,7 +1351,9 @@ def areal_range_from_energy(
         )
 
     # Interpolate NIST data to the user-provided energy values. Uses log-log scale fed into a cubic spline.
-    log_cs = CubicSpline(x=np.log(baseline_energies_data), y=np.log(range_data))
+    log_cs = CubicSpline(
+        x=np.log(baseline_energies_data), y=np.log(range_data), extrapolate=False
+    )
 
     @validate_quantities(x=u.MeV)
     def cubic_spline(x: u.Quantity[u.MeV]) -> u.Quantity[u.g / u.cm**2]:
@@ -1441,7 +1445,11 @@ def energy_from_areal_range(
         )
 
     # Interpolate NIST data to the user-provided energy values. Uses log-log scale fed into a cubic spline.
-    log_cs = CubicSpline(x=np.log(baseline_range_data), y=np.log(kinetic_energies_data))
+    log_cs = CubicSpline(
+        x=np.log(baseline_range_data),
+        y=np.log(kinetic_energies_data),
+        extrapolate=False,
+    )
 
     @validate_quantities
     def cubic_spline(x: u.Quantity[u.g / u.cm**2]) -> u.Quantity[u.MeV]:

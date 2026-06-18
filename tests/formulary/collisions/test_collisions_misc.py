@@ -73,7 +73,7 @@ def test_Bethe_stopping(material, rho, I, n_e, T2) -> None:  # noqa: E741
     energy_space = np.logspace(start=np.log10(T2.to(u.MeV).value), stop=2) * u.MeV
     particle = RelativisticBody(Particle("p+"), kinetic_energy=energy_space)
     Bethe_stopping_space = Bethe_stopping(I, n_e, particle.velocity, 1)
-    _, NIST_stopping_space_density = stopping_power(
+    NIST_stopping_space_density = stopping_power(
         Particle("p+"),
         material,
         energy_space,
