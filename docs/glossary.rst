@@ -76,11 +76,10 @@ Glossary
       interact with each other predominantly through short-range binary
       collisions.
 
-      The overwhelming majority of particles in a gas are neutral and do
-      not exert long-range forces on each other. While a real gas may
-      contain trace ions and free electrons, these charged particles
-      have a negligible impact on gas dynamics and therefore do not
-      engage in |collective behavior|.
+      Nearly all particles in a gas have a neutral net electric charge,
+      and therefore do not exert the long-range electromagnetic forces
+      on each other necessary for the fluid to exhibit
+      |collective behavior| as in a |plasma|.
 
       .. caution::
 
