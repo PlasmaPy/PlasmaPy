@@ -14,7 +14,6 @@
 name: CI
 
 on:
-  pull_request:
   push:
     branches:
     - main
@@ -22,8 +21,7 @@ on:
     - v*.*.*
     tags:
     - v*
-  schedule:
-  - cron: 57 11 * * 1    # run shortly after uv.lock update
+  pull_request:
   workflow_dispatch:
 
 permissions: {}  # disable all GitHub permissions for the workflow
