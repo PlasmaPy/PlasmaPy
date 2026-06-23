@@ -2,12 +2,11 @@
 
 **If all checks pass ✅, please merge this pull request.** If any checks fail due to a breaking change in a dependency 🚨, please address the problems before merging. Thank you!
 
-[![upgrade uv.lock](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/upgrade-uv-lock.yml/badge.svg)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/upgrade-uv-lock.yml)
-
 ## Description
 
 This pull request upgrades [`uv.lock`]: the cross-platform lockfile that specifies the Python environments used when running tests, building documentation, and performing continuous integration (CI) checks.
 Locking and periodically updating the Python environment lets us quarantine breaking changes before they start causing spontaneous failures on unrelated pull requests, while ensuring that everyone is using the same versions of dependencies to perform checks.
+
 
 ## Notes
 
