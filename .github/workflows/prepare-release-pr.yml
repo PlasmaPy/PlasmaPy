@@ -48,7 +48,7 @@ jobs:
         DOI: ${{ github.event.inputs.doi }}
 
     - name: Checkout code
-      uses: actions/checkout@v6.0.2
+      uses: actions/checkout@v6.0.3
       with:
         persist-credentials: false
 
