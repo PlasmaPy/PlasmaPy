@@ -55,6 +55,7 @@ dependencies = [
   "numpy>=1.26",
   "packaging>=24",
   "pandas>=2.1.4",
+  "pytest==9.0.3",
   "requests>=2.30",
   "scipy>=1.11",
   "tqdm>=4.65",
