@@ -4,13 +4,13 @@
 name: comprehensive tests
 
 on:
-  schedule:
-  - cron: 37 7 * * 5
-  workflow_dispatch:
   pull_request:
     types: [labeled, opened, synchronize, reopened]
     branches:
     - main
+  schedule:
+  - cron: 53 11 * * 1  # run shortly after uv.lock update
+  workflow_dispatch:
 
 permissions: {}
 
@@ -101,7 +101,7 @@ jobs:
     steps:
 
     - name: Checkout code
-      uses: actions/checkout@v6.0.2
+      uses: actions/checkout@v6.0.3
       with:
         persist-credentials: false
 
@@ -128,7 +128,7 @@ jobs:
 
     - name: Upload coverage reports to Codecov
       if: ${{ contains(matrix.nox_session, 'cov') }}
-      uses: codecov/codecov-action@v6
+      uses: codecov/codecov-action@v6.0.1
       with:
         files: ./coverage.xml
         fail_ci_if_error: false

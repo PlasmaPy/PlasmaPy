@@ -593,7 +593,7 @@ def run_test_equivalent_calls(  # noqa: C901
                 test_case["args"],
                 test_case["kwargs"],
             )
-            test_case["result"] = f(*args, **kwargs)
+            test_case["result"] = f(*args, **kwargs)  # ty:ignore[call-non-callable, invalid-argument-type]
             test_case["type"] = type(test_case["result"])
         except Exception as exc:
             raise UnexpectedExceptionFail(
