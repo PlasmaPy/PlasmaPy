@@ -67,7 +67,7 @@ def test_rrf_full_reduces_to_discussion_synchrotron_drag(gamma) -> None:
 
 
 @pytest.mark.parametrize(
-    "gamma, q, m",
+    "gamma,q,m",
     [
         (2.0, -_e, _m_e),  # relativistic electron
         (10.0, -_e, _m_e),  # ultra-relativistic electron
