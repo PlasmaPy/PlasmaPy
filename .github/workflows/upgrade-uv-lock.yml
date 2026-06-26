@@ -7,7 +7,7 @@ name: Upgrade uv.lock
 
 on:
   schedule:
-  - cron: 37 10 * * 1
+  - cron: 37 11 * * 1
   workflow_dispatch:
 
 jobs:
@@ -19,12 +19,12 @@ jobs:
     steps:
 
     - name: Checkout code
-      uses: actions/checkout@v6.0.2
+      uses: actions/checkout@v6.0.3
       with:
         persist-credentials: false
 
     - name: Install uv
-      uses: astral-sh/setup-uv@v8.1.0
+      uses: astral-sh/setup-uv@v8.2.0
       with:
         enable-cache: true
 
