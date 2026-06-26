@@ -34,8 +34,8 @@ _m_p = const.m_p.si.value
 @pytest.mark.parametrize(
     "gamma",
     [
-        2.0,    # mildly relativistic
-        10.0,   # relativistic
+        2.0,  # mildly relativistic
+        10.0,  # relativistic
         100.0,  # ultra-relativistic (checks the gamma**2 scaling at high gamma)
     ],
 )
@@ -48,11 +48,11 @@ def test_rrf_full_reduces_to_discussion_synchrotron_drag(gamma) -> None:
     """
     # --- Arrange: an electron moving perpendicular to B at this Lorentz factor
     q, m = -_e, _m_e
-    speed = _c * np.sqrt(1 - 1 / gamma**2)       # speed corresponding to gamma
+    speed = _c * np.sqrt(1 - 1 / gamma**2)  # speed corresponding to gamma
     B_magnitude = 1.0
-    v = np.array([[speed, 0.0, 0.0]])            # velocity along x
-    B = np.array([[0.0, 0.0, B_magnitude]])      # B along z  =>  v perpendicular to B
-    E = np.zeros((1, 3))                          # no electric field
+    v = np.array([[speed, 0.0, 0.0]])  # velocity along x
+    B = np.array([[0.0, 0.0, B_magnitude]])  # B along z  =>  v perpendicular to B
+    E = np.zeros((1, 3))  # no electric field
 
     # --- Act: evaluate the radiation-reaction force
     f_R = RelativisticBorisIntegrator.rrf_full(v, B, E, q, m)
@@ -69,9 +69,9 @@ def test_rrf_full_reduces_to_discussion_synchrotron_drag(gamma) -> None:
 @pytest.mark.parametrize(
     "gamma, q, m",
     [
-        (2.0, -_e, _m_e),    # relativistic electron
-        (10.0, -_e, _m_e),   # ultra-relativistic electron
-        (5.0, _e, _m_p),     # relativistic proton (different charge and mass)
+        (2.0, -_e, _m_e),  # relativistic electron
+        (10.0, -_e, _m_e),  # ultra-relativistic electron
+        (5.0, _e, _m_p),  # relativistic proton (different charge and mass)
     ],
 )
 def test_push_reduces_to_relativistic_boris_when_v_parallel_B(gamma, q, m) -> None:
@@ -83,9 +83,9 @@ def test_push_reduces_to_relativistic_boris_when_v_parallel_B(gamma, q, m) -> No
     # --- Arrange: a particle moving ALONG B (so v x B = 0), no electric field
     speed = _c * np.sqrt(1 - 1 / gamma**2)
     x = np.array([[0.0, 0.0, 0.0]])
-    v = np.array([[0.0, 0.0, speed]])     # velocity along z
-    B = np.array([[0.0, 0.0, 2.0]])       # B along z  =>  v parallel to B
-    E = np.zeros((1, 3))                   # no electric field
+    v = np.array([[0.0, 0.0, speed]])  # velocity along z
+    B = np.array([[0.0, 0.0, 2.0]])  # B along z  =>  v parallel to B
+    E = np.zeros((1, 3))  # no electric field
     dt = 1.0e-11
 
     # --- Act: one step with radiation reaction, one plain relativistic step
