@@ -270,7 +270,6 @@ class RelativisticBorisIntegrator(AbstractIntegrator):
     def rrf_full(v, B, E, q, m):
         r"""
         Radiation-reaction force from the Landau-Lifshitz approximation.
-        
         (Tamburini et al. 2010, Eq. 6)
 
         Examples
@@ -291,13 +290,9 @@ class RelativisticBorisIntegrator(AbstractIntegrator):
         k = q**4 / (
             6 * np.pi * const.eps0.si.value * m**2 * c**3
         )  # constant out front [[C^2 s / kg]]
-        f_L = -(E + np.cross(v, B))  # Lorentz Force  f_L ≡ −(E+v×B) [[V/m]] ==> [[N/C]]
-        f_L_squared = (f_L * f_L).sum(
-            axis=1, keepdims=True
-        )  # Lorentz Force squared [[V^2/m^2]]
-        v_dotproduct_E = (v * E).sum(
-            axis=1, keepdims=True
-        )  # (v dot E), seen twice in eqn 6 here for simplicity [[V/s]]
+        f_L = -(E + np.cross(v, B))  # Lorentz Force  f_L ≡ -(E+v×B) [[V/m]] ==> [[N/C]]
+        f_L_squared = (f_L * f_L).sum(axis=1, keepdims=True)  # Lorentz Force squared [[V^2/m^2]]
+        v_dotproduct_E = (v * E).sum(axis=1, keepdims=True)  # (v dot E), seen twice in eqn 6 here for simplicity [[V/s]]
         rrf_term1 = (
             np.cross(f_L, B) - (v_dotproduct_E / c**2) * E
         )  # term 1 eqn (6) [[kg^2 m / (s^3 C^2)]]
