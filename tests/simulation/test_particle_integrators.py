@@ -17,7 +17,8 @@ import astropy.constants as const
 import numpy as np
 import pytest
 
-from plasmapy.simulation.particle_integrators import RelativisticBorisIntegrator
+from plasmapy.simulation.particle_integrators import RelativisticBorisIntegratorRRF, RelativisticBorisIntegrator
+
 
 # Physical constants as raw SI floats (the integrator methods take SI floats,
 # not astropy Quantity objects).
@@ -50,7 +51,7 @@ def test_rrf_full_reduces_to_discussion_synchrotron_drag(gamma) -> None:
     E = np.zeros((1, 3))  # no electric field
 
     # evaluate the radiation-reaction force from established conditions 
-    f_R = RelativisticBorisIntegrator.rrf_full(v, B, E, q, m)
+    f_R = RelativisticBorisIntegratorRRF.rrf_full(v, B, E, q, m)
 
     # it equals the expected force proposed in discussion #3306
     f0 = _mu0 * q**4 * B_magnitude**2 / (6 * np.pi * m**3 * _c)
@@ -82,7 +83,7 @@ def test_push_reduces_to_relativistic_boris_when_v_parallel_B(gamma, q, m) -> No
     dt = 1.0e-11
 
     # finding velocity and position push with rrf and without
-    x_rr, v_rr = RelativisticBorisIntegrator.push_including_rrf(x, v, B, E, q, m, dt)
+    x_rr, v_rr = RelativisticBorisIntegratorRRF.push(x, v, B, E, q, m, dt)
     x_boris, v_boris = RelativisticBorisIntegrator.push(x, v, B, E, q, m, dt)
 
     # the radiation-reaction kick is zero, each particle pusher should equate
