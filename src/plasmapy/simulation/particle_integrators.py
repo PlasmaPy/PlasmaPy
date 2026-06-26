@@ -73,7 +73,7 @@ class BorisIntegrator(AbstractIntegrator):
             Particle charge, in SI (coulomb) units.
 
         m : `float`
-            Particle mass, in SI (kg)  units.
+            Particle mass, in SI (kg) units.
 
         dt : `float`
             Timestep, in SI (second) units.
