@@ -659,9 +659,9 @@ def manifest(session: nox.Session) -> None:
 
 @nox_uv.session(python=MAXPYTHON, uv_only_groups=["lint"], uv_no_install_project=True)
 def lint(session: nox.Session) -> None:
-    """Run all pre-commit hooks defined in .pre-commit-config.yaml."""
+    """Run all hooks defined in .pre-commit-config.yaml with prek."""
     session.run(
-        "pre-commit",
+        "prek",
         "run",
         "--all-files",
         *session.posargs,
