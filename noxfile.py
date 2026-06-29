@@ -660,12 +660,10 @@ def manifest(session: nox.Session) -> None:
 @nox_uv.session(python=MAXPYTHON, uv_only_groups=["lint"], uv_no_install_project=True)
 def lint(session: nox.Session) -> None:
     """Run all hooks defined in .pre-commit-config.yaml with prek."""
-    session.run(
-        "prek",
-        "run",
-        "--all-files",
-        *session.posargs,
-    )
+    command = ["prek", "run", "--all-files"]
+    if not RUNNING_ON_CI:
+        command.append("--quiet")
+    session.run(*command, *session.posargs)
 
 
 ZIZMOR_TROUBLESHOOTING_MESSAGE = """
