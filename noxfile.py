@@ -472,19 +472,20 @@ def linkcheck(session: nox.Session) -> None:
 
 TY_TROUBLESHOOTING = (
     "\n\n"
-    "For more details about specific static type checking errors, go to: "
-    "🔗 https://docs.astral.sh/ty/reference/rules"
-    "\n\n"
-    "🛡 For an introduction to type annotations, check out: "
-    "https://mypy.readthedocs.io/en/stable/cheat_sheet_py3.html"
-    "\n\n"
-    "🛠 Automatically add type annotations for common patterns with: "
-    "nox -s 'autotyping(safe)'"
-    "\n\n"
-    "🪧 Particularly tricky errors can be ignored with an inline comment of "
-    "the form: `# ty:ignore[error]`, where `error` is replaced with the "
-    "ty error code. Please use sparingly!"
-    "\n"
+    "🛡 Type hint annotations indicate the expected types of arguments, "
+    "variables, and return values:\n\n"
+    "    def greeting(name: str) -> str:\n"
+    "        message: str = 'Hello ' + name\n"
+    "        return message\n\n"
+    "🏫 Learn about type hints at: "
+    "https://mypy.readthedocs.io/en/stable/cheat_sheet_py3.html\n\n"
+    "🦺 Static type checkers like ty (https://docs.astral.sh/ty) check that variables and functions "
+    "are used correctly.\n\n"
+    "📜 Learn about ty's rules at: https://docs.astral.sh/ty/reference/rules\n\n"
+    "💻 Autofixes can be applied locally by running `nox -s ty`.\n\n"
+    "🧹 As a last resort, ignore all ty errors with "
+    "`nox -s ty -- --add-ignore`. "
+    "Because this can make it harder for others in the future, please use sparingly!\n"
 )
 
 
@@ -495,7 +496,7 @@ def ty(session: nox.Session) -> None:
 
     Notes
     -----
-    To skip autofixes and add ignore flags, run:
+    To add `# ty:ignore` comments for all ty errors, run:
 
       nox --session ty -- --add-ignore
     """
