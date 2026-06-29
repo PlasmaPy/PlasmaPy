@@ -132,6 +132,7 @@ changelog = [
 lint = [
   "pre-commit>=4.5.1",
   # Include ruff to make it available for IDEs in virtual environments
+  "prek>=0.4.5",
   "ruff>=0.14.11",
 ]
 manifest = [
@@ -142,7 +143,7 @@ nox = [
   "nox-uv>=0.7",
 ]
 type_check = [
-  "ty>=0.0.35",
+  "ty>=0.0.54",
   { include-group = "docs" },
   { include-group = "test" },
 ]

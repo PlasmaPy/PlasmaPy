@@ -665,7 +665,7 @@ class Exponential(AbstractFitFunction):
         """LaTeX friendly representation of the fit function."""
         return r"a \, \exp(\alpha x)"
 
-    def func(self, x: float, a: float, alpha: float):  # ty:ignore[invalid-method-override]  # noqa: ANN201
+    def func(self, x: float, a: float, alpha: float):  # noqa: ANN201  # ty:ignore[invalid-method-override]
         """
         The fit function, a exponential function.
 
@@ -822,7 +822,7 @@ class ExponentialPlusLinear(AbstractFitFunction):
         )
         self._linear.param_errors = (self.param_errors.m, self.param_errors.b)
 
-    def func(self, x: float, a: float, alpha: float, m: float, b: float):  # ty:ignore[invalid-method-override]  # noqa: ANN201
+    def func(self, x: float, a: float, alpha: float, m: float, b: float):  # noqa: ANN201  # ty:ignore[invalid-method-override]
         """
         The fit function, an exponential with a linear offset.
 
@@ -960,7 +960,7 @@ class ExponentialPlusOffset(AbstractFitFunction):
             self.param_errors.b,
         )
 
-    def func(self, x: float, a: float, alpha: float, b: float):  # ty:ignore[invalid-method-override]  # noqa: ANN201
+    def func(self, x: float, a: float, alpha: float, b: float):  # noqa: ANN201  # ty:ignore[invalid-method-override]
         """
         The fit function, an exponential with a constant offset.
 

@@ -221,7 +221,7 @@ class TestIonizationStateCollection:
             input_keys = sorted(input_keys, key=sort_key)
 
             for element, input_key in zip(elements_actual, input_keys, strict=False):
-                expected = tests[test_name]["inputs"][input_key]  # ty:ignore[not-subscriptable, invalid-argument-type]
+                expected = tests[test_name]["inputs"][input_key]  # ty:ignore[invalid-argument-type, not-subscriptable]
 
                 if isinstance(expected, u.Quantity):
                     expected = np.array(expected.value / np.sum(expected.value))
@@ -392,7 +392,7 @@ class TestIonizationStateCollectionItemAssignment:
                 np.allclose(resulting_states, new_states),
                 np.all(np.isnan(resulting_states)) and np.all(np.isnan(new_states)),
             ],
-        )  # ty:ignore[no-matching-overload]
+        )
 
     @pytest.mark.parametrize(
         ("base_particle", "new_states", "expected_exception"),
