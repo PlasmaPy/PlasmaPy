@@ -443,7 +443,7 @@ class Tracker(ParticleTracker):
         elif len(extent) == 2:
             radius = None
             width = extent[0].si.value
-            height = extent[1].si.value  # ty:ignore[index-out-of-bounds]
+            height = extent[1].si.value
         else:
             raise ValueError(
                 "extent must be a tuple of 1 or 2 elements, but "
@@ -508,8 +508,8 @@ class Tracker(ParticleTracker):
         x = self._coast_to_plane(location, mesh_hdir, mesh_vdir)
 
         # Particle positions in 2D on the mesh plane
-        xloc = np.dot(x - location, mesh_hdir)  # ty:ignore[invalid-argument-type, no-matching-overload]
-        yloc = np.dot(x - location, mesh_vdir)  # ty:ignore[invalid-argument-type, no-matching-overload]
+        xloc = np.dot(x - location, mesh_hdir)  # ty:ignore[no-matching-overload]
+        yloc = np.dot(x - location, mesh_vdir)  # ty:ignore[no-matching-overload]
 
         # Create an array in which True indicates that a particle has hit
         # a wire and False indicates that it has not

@@ -498,7 +498,7 @@ def spectral_density(  # noqa: C901, PLR0912, PLR0915
         for ii, ion in enumerate(ions):
             if isinstance(ion, Particle):
                 continue
-            ions[ii] = Particle(ion)  # ty:ignore[invalid-assignment, invalid-argument-type]
+            ions[ii] = Particle(ion)  # ty:ignore[invalid-argument-type, invalid-assignment]
         ions = ParticleList(ions)  # ty:ignore[invalid-assignment]
     else:
         raise TypeError(
