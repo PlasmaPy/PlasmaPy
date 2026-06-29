@@ -490,10 +490,19 @@ TY_TROUBLESHOOTING = (
 
 @nox_uv.session(python=MAXPYTHON, uv_groups=["type_check"])
 def ty(session: nox.Session) -> None:
-    """Perform static type checking with ty."""
+    """
+    Perform static type checking with ty, with autofixes.
+
+    Notes
+    -----
+    To skip autofixes and add ignore flags, run:
+
+      nox --session ty -- --add-ignore
+    """
     if RUNNING_ON_CI:
         session.log(TY_TROUBLESHOOTING)
-    session.run("ty", "check", *session.posargs)
+    args: list[str] = session.posargs or ["--fix"]
+    session.run("ty", "check", *args)
 
 
 @nox.session(name="import")
