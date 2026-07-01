@@ -1,24 +1,25 @@
 """
-Tests for the radiation-reaction methods of ``RelativisticBorisIntegrator`` in
-``particle_integrators.py`` (issue #3310).
+Tests for the radiation-reaction methods of RelativisticBorisIntegrator in
+particle_integrators.py (issue #3306).
 
 Two parametrized tests, each verifying a known limiting case:
 
-1. ``E = 0`` with ``v`` perpendicular to ``B`` -- ``rrf_full`` reduces to the
-   synchrotron-drag force proposed in PlasmaPy discussion #3306, checked across
-   several Lorentz factors.
-2. ``E = 0`` with ``v`` parallel to ``B`` -- nothing radiates, so
-   ``push_including_rrf`` reduces to the plain relativistic ``push``, checked
-   for several particles and speeds.
-
+1. E = 0 with v perpendicular to B ==> rrf_full reduces to the
+synchrotron-drag force proposed in PlasmaPy discussion #3306, checked across
+several Lorentz factors.
+2. E = 0 with v parallel to B ==> No change in acceleration ==>
+nothing radiates ==> RelativisticBorisIntegratorRRF.push() reduces to 
+the regular RelativisticBorisIntegrator.push() for different particles and speeds.
 """
 
 import astropy.constants as const
 import numpy as np
 import pytest
 
-from plasmapy.simulation.particle_integrators import RelativisticBorisIntegratorRRF, RelativisticBorisIntegrator
-
+from plasmapy.simulation.particle_integrators import (
+    RelativisticBorisIntegrator,
+    RelativisticBorisIntegratorRRF,
+)
 
 # Physical constants as raw SI floats (the integrator methods take SI floats,
 # not astropy Quantity objects).
@@ -34,7 +35,7 @@ _m_p = const.m_p.si.value
     [
         2.0,  # mildly relativistic
         10.0,  # relativistic
-        100.0,  # ultra-relativistic (checks the gamma**2 scaling at high gamma)
+        100.0,  # ultra-relativistic 
     ],
 )
 def test_rrf_full_reduces_to_discussion_synchrotron_drag(gamma) -> None:
@@ -50,10 +51,10 @@ def test_rrf_full_reduces_to_discussion_synchrotron_drag(gamma) -> None:
     B = np.array([[0.0, 0.0, B_magnitude]])  # B along z  =>  v perpendicular to B
     E = np.zeros((1, 3))  # no electric field
 
-    # evaluate the radiation-reaction force from established conditions 
+    # evaluate the radiation-reaction force from established conditions
     f_R = RelativisticBorisIntegratorRRF.rrf_full(v, B, E, q, m)
 
-    # it equals the expected force proposed in discussion #3306
+    # establish theoretically predicted eqn for RRF force proposed in discussion #3306
     f0 = _mu0 * q**4 * B_magnitude**2 / (6 * np.pi * m**3 * _c)
     p_perp = gamma * m * v
     expected = -f0 * gamma * p_perp
@@ -70,11 +71,11 @@ def test_rrf_full_reduces_to_discussion_synchrotron_drag(gamma) -> None:
 )
 def test_push_reduces_to_relativistic_boris_when_v_parallel_B(gamma, q, m) -> None:
     """
-    With E = 0 and v parallel to B, v x B = 0 so the particle is unaccelerated
-    and nothing radiates. ``push_including_rrf`` must therefore reproduce the
-    plain relativistic ``push`` exactly, for any particle moving along B.
+    With E = 0 and v parallel to B, v x B = 0 so the particle is unaccelerated.
+    Should reproduce RelativisticBorisIntegrator.push() for range of particles 
+    and velocities
     """
-    # establish a particle moving ALONG B (so v x B = 0), no electric field
+    # establish a particle moving ALONG B (so v x B = 0), and no electric field
     speed = _c * np.sqrt(1 - 1 / gamma**2)
     x = np.array([[0.0, 0.0, 0.0]])
     v = np.array([[0.0, 0.0, speed]])  # velocity along z

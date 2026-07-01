@@ -8,7 +8,12 @@ They act in-place on position and velocity arrays to reduce
 memory allocation.
 """
 
-__all__ = ["AbstractIntegrator", "BorisIntegrator", "RelativisticBorisIntegrator"]
+__all__ = [
+    "AbstractIntegrator",
+    "BorisIntegrator",
+    "RelativisticBorisIntegrator",
+    "RelativisticBorisIntegratorRRF",
+]
 
 from abc import ABC, abstractmethod
 
@@ -265,7 +270,10 @@ class RelativisticBorisIntegrator(AbstractIntegrator):
 
         return x + v * dt, v
 
+
 class RelativisticBorisIntegratorRRF(RelativisticBorisIntegrator):
+    """Relativistic Boris Pusher with Tamburini Radiation Reaction Force Implementation"""
+
     @staticmethod
     def push(x, v, B, E, q, m, dt):
         r"""
@@ -308,45 +316,34 @@ class RelativisticBorisIntegratorRRF(RelativisticBorisIntegrator):
         3. This RRF is then applied as a momentum kick with the following equation serving
         as the basis: p{n+1/2} = p_L{n+1/2} + f_R{n} * dt.
 
-        This RRF implementation follows the post-Boris scheme of:
-
-        <https://arxiv.org/pdf/1008.1685>  [1]
+        This RRF implementation follows the post-Boris scheme of
+        :cite:t:`tamburini:2010`.
 
         This paper includes many important stipulations and utilizes the
-        Landau-Lifshitz radiation reaction approximatoin model. The LL model
-        simplifies the Abraham-Lorentz-Dirac (ALD) equation, which contains a
-        third-order time derivative (da/dt, or a jerk term) that produces clearly unphysical solutions
-        such as runaway (infinitely accelerating), and pre-acceleration solutions.
-        This LL model eliminates the jerk term by substituting the instantaneous
-        acceleration due to the Lorentz Force. However, this simplification comes
-        with various important constraints listed below:
+        Landau-Lifshitz radiation reaction approximation model. :cite:t:`landau:1975`
+        The LL model simplifies the Abraham-Lorentz-Dirac (ALD) equation, which contains a
+        third-order time derivative (da/dt, or a jerk term) that produces clearly
+        unphysical solutions such as runaway (infinitely accelerating), and
+        pre-acceleration solutions. This LL model eliminates the jerk term by
+        substituting the instantaneous acceleration due to the Lorentz Force,
+        which can only be approximated under certain conditions.
 
-        Landau-Lifshitz link:
-        <https://haidinh89.wordpress.com/wp-content/uploads/2015/08/landau-l-d-lifshitz-e-m-course-of-theoretical-physics-vol-02-the-classical-theory-of-fields-3305.pdf> [2]
-
-        Constraints
-        -----------
         1. "The acceleration of particles is dominated by the Lorentz force, with
-        the RR force giving a smaller, albeit non negligible contribution." - Tamburini et al. [1]
+        the RR force giving a smaller, albeit non negligible contribution."
         F_L >> F_R
+
+        :cite:p:`tamburini:2010`
 
         2. The rest-frame field must stay well below the
         Schwinger critical field (E_cr ~ 1.3e18 V/m, B_cr ~ 4.4e9 T)
 
-        3. Slowly-varying fields: the field-gradient term of the LL
-        equation is neglected, so the fields should change little over one
-        gyro-orbit. [1]
+        :cite:p:`tamburini:2010`
+        :cite:p:`landau:1975`
 
-        4. Neglected f_R terms (Tamburini Eq. 6): the field-derivative
+        3. Neglected f_R terms (Tamburini Eq. 6): the field-derivative
         term is dropped and the electron spin force is likewise neglected.
 
-        References
-        ----------
-        [1] M. Tamburini et al., "Radiation reaction effects on radiation
-        pressure acceleration," *New Journal of Physics*, vol. 12,
-        p. 123005, 2010. :doi:`10.1088/1367-2630/12/12/123005`
-        [2] L. D. Landau and E. M. Lifshitz, *Classical Theory of Fields*,
-        4th ed. Oxford: Butterworth-Heinemann, 1994, §76.
+        :cite:p:`tamburini:2010`
 
         Examples
         --------
@@ -354,90 +351,95 @@ class RelativisticBorisIntegratorRRF(RelativisticBorisIntegrator):
         >>> v = np.array([[1.0e8, 0.0, 0.0]])
         >>> B = np.array([[0.0, 0.0, 1.0e3]])
         >>> E = np.zeros((1, 3))
-        >>> x_new, v_new = RelativisticBorisIntegrator.push_including_rrf(
+        >>> x_new, v_new = RelativisticBorisIntegratorRRF.push(
         ...     x, v, B, E, q=-1.6e-19, m=9.1e-31, dt=1.0e-13
         ... )
         >>> bool(np.linalg.norm(v_new) <= np.linalg.norm(v))  # radiation can't add velo
         True
         """
+        # need float value for c
+        c = _c.si.value
         # original relativistic boris push method to determine Lorentz momentum boost p_L{n+1/2}
         # step 1: find total momentum @ n - 1/2:    p{n-1/2}
-        c = _c.si.value  # c = 3E8 m/s
-        γ = 1 / np.sqrt(1 - (np.linalg.norm(v, axis=1, keepdims=True) / c) ** 2,) 
-         # gamma calculation
+        # gamma calculation
+
+        γ = 1 / np.sqrt(
+            1 - (np.linalg.norm(v, axis=1, keepdims=True) / c) ** 2,
+        )
         uvel = v * γ  # p{n-1/2}/m
-        # step 2: find momentum boost from Lorentz Force @ n + 1/2: p_L{n+1/2}
-        # next steps identical to relativistic push method
-
         uvel_minus = uvel + q * E * dt / (2 * m)
-
-        γ1 = np.sqrt(1 + (np.linalg.norm(uvel_minus, axis=1, keepdims=True) / c) ** 2,)  
-
+        # step 2: find momentum boost from Lorentz Force @ n + 1/2: p_L{n+1/2}
+        # same steps as RelativisitcBorisIntegrator.push()
+        γ1 = np.sqrt(
+            1 + (np.linalg.norm(uvel_minus, axis=1, keepdims=True) / c) ** 2,
+        )
         t = q * B * dt / (2 * γ1 * m)
         s = 2 * t / (1 + (t * t).sum(axis=1, keepdims=True))
-
         uvel_prime = uvel_minus + np.cross(uvel_minus, t)
         uvel_plus = uvel_minus + np.cross(uvel_prime, s)
-        uvel_L = uvel_plus + q * E * dt / (2 * m)  
+        uvel_L = uvel_plus + q * E * dt / (2 * m)
         # proper velocity obtained w/ out RR
-        # same result as push(), just storing value with new variable name and noting: uvel_L = p_L{n+1/2}/m
-
+        # same result as RelativisticBorisIntegrator.push(), just storing value with new variable name and noting: uvel_L = p_L{n+1/2}/m
         # use this stored p_L{n+1/2}/m value to estimate total momentum & velocity p{n} and v{n}
         # at the integer step n (from eqn --> [12])
-        u_n = 1 / 2 * (uvel_L + uvel)  
         # p{n} =~ .5(p_L{n+1/2} + p{n-1/2})  [12]
-        γn = np.sqrt(1 + (np.linalg.norm(u_n, axis=1, keepdims=True) / c) ** 2,)  
-        v_n = u_n / γn  
-
+        u_n = 1 / 2 * (uvel_L + uvel)
+        # gamma calculation
+        γn = np.sqrt(
+            1 + (np.linalg.norm(u_n, axis=1, keepdims=True) / c) ** 2,
+        )
         # integer step approximate velocity: v{n} =~ p{n}/γ{n} [12]
-        # take your p{n} and subsequently v{n} value e to calculate RRF @ integer step n
-
-        f_R = RelativisticBorisIntegratorRRF.rrf_full(v_n, B, E, q, m)  
-        # use integer step approximate velocity v{n} to compute RRF @ n
-
+        v_n = u_n / γn
+        # take your p{n} and subsequently v{n} value to calculate RRF @ integer step n
+        f_R = RelativisticBorisIntegratorRRF.rrf_full(v_n, B, E, q, m)
         # finally utilizing this new calculated RRF, can apply post-boris kick like described in eqn [7-11]
         # (p{n+1/2} - p{n-1/2}) / dt  = f{n} = f_L{n} + f_R{n} --> p{n+1/2} = p_L{n+1/2} + f_R{n} * dt
-
         uvel_final = uvel_L + f_R * dt / m
-
+        # gamma calculation
+        γ2 = np.sqrt(
+            1 + (np.linalg.norm(uvel_final, axis=1, keepdims=True) / c) ** 2,
+        )
         # convert to velo and advance position from this value as described in final eqn above
-        γ2 = np.sqrt(1 + (np.linalg.norm(uvel_final, axis=1, keepdims=True) / c) ** 2,)
         v_final = uvel_final / γ2
         return x + v_final * dt, v_final
-    
+
     @staticmethod
     # radiation force from LL approximation
     def rrf_full(v, B, E, q, m):
         r"""
         Radiation-reaction force from the Landau-Lifshitz approximation.
-        (Tamburini et al. 2010, Eq. 6).
+        :cite:p:`tamburini:2010`
 
         Examples
         --------
         >>> v = np.array([[1.0e7, 0.0, 0.0]])
         >>> B = np.array([[0.0, 0.0, 1.0]])
         >>> E = np.zeros((1, 3))
-        >>> f_R = RelativisticBorisIntegrator.rrf_full(v, B, E, q=-1.6e-19, m=9.1e-31)
+        >>> f_R = RelativisticBorisIntegratorRRF.rrf_full(
+        ...     v, B, E, q=-1.6e-19, m=9.1e-31
+        ... )
         >>> f_R.shape
         (1, 3)
         >>> bool(np.dot(f_R[0], v[0]) < 0)  # the force opposes the velocity (a drag)
         True
         """
-        c = _c.si.value  
-        # c = 3E8 [[m/s]]
-        γ = 1 / np.sqrt(1 - (np.linalg.norm(v, axis=1, keepdims=True) / c) ** 2,)  
+        # need float value for c
+        c = _c.si.value
         # gamma calculation [[1]]
-        k = q**4 / (6 * np.pi * const.eps0.si.value * m**2 * c**3)  
+        γ = 1 / np.sqrt(
+            1 - (np.linalg.norm(v, axis=1, keepdims=True) / c) ** 2,
+        )
         # constant out front [[C^2 s / kg]]
-        f_L = -(E + np.cross(v, B))  
+        k = q**4 / (6 * np.pi * const.eps0.si.value * m**2 * c**3)
         # Lorentz Force  f_L ≡ -(E+v×B) [[V/m]] ==> [[N/C]]
-        f_L_squared = (f_L * f_L).sum(axis=1, keepdims=True)  
-        # Lorentz Force squared [[V^2/m^2]]
-        v_dotproduct_E = (v * E).sum(axis=1, keepdims=True) 
-         # (v dot E), seen twice in eqn 6 here for simplicity [[V/s]]
-        rrf_term1 = (np.cross(f_L, B) - (v_dotproduct_E / c**2) * E)  
+        f_L = -(E + np.cross(v, B))
+        # Lorentz Force squared (helpful quantity from Tamburini et al.) [[V^2/m^2]]
+        f_L_squared = (f_L * f_L).sum(axis=1, keepdims=True)
+        # (v dot E) (another helpful quantity from Tamburini et al.) [[V/s]]
+        v_dotproduct_E = (v * E).sum(axis=1, keepdims=True)
         # term 1 eqn (6) [[kg^2 m / (s^3 C^2)]]
-        rrf_term2 = ((γ**2 / c**2) * (f_L_squared - v_dotproduct_E**2 / c**2) * v)  
+        rrf_term1 = np.cross(f_L, B) - (v_dotproduct_E / c**2) * E
         # term 2 eqn (6) [[kg^2 m / (s^3 C^2)]]
-        return -k * (rrf_term1 + rrf_term2)  
+        rrf_term2 = (γ**2 / c**2) * (f_L_squared - v_dotproduct_E**2 / c**2) * v
         # final f_R [[C^2/kg]][[kg^2 m / (s^3 C^2)]] --> [[N]]
+        return -k * (rrf_term1 + rrf_term2)
