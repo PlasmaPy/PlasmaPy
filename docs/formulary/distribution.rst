@@ -8,11 +8,10 @@ Distribution functions (`plasmapy.formulary.distribution`)
 
 .. automodapi:: plasmapy.formulary.distribution
 
-Examples
-========
+Example notebooks
+-----------------
 
 .. nbgallery::
-    :caption: Examples
 
-    /notebooks/formulary/distribution
-    /notebooks/formulary/thermal_speed
+   /notebooks/formulary/distribution
+   /notebooks/formulary/thermal_speed

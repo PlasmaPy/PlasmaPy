@@ -11,39 +11,40 @@
 PlasmaPy Documentation
 ######################
 
-PlasmaPy_ is an open source community-developed Python_ |minpython|\ +
+|PlasmaPy| is an open source community-developed |Python| |minpython|\ +
 package for plasma research and education. PlasmaPy is a platform by
 which the plasma community can share code and collaboratively develop
-new software tools for plasma research.
+new software tools for plasma research. |:sparkles:|
 
-If you are new to PlasmaPy, please check out our `getting started
-notebooks <getting-started-notebooks>`_ and our :ref:`example gallery
-<examples>`. We invite you to share ideas and ask questions in our
-`Matrix chat room`_ or during our weekly virtual `office hours`_.
+If you are new to PlasmaPy, please check out our
+:ref:`getting started notebooks <getting-started-notebooks>` and our
+:ref:`example gallery <examples>`.
 
-PlasmaPy is developed openly `on GitHub <PlasmaPy's GitHub
-repository>`_, where you can `request a new feature`_ or `report a
-bug`_.
+PlasmaPy is developed openly `on GitHub`_, where you can
+`request a new feature`_ or `report a bug`_. We invite you to share
+ideas and ask questions as `GitHub discussions`_ or during our
+|community meetings|.
 
 .. important::
 
    If you use PlasmaPy for work presented in a publication or talk,
-   please help the project by following these instructions to
-   :ref:`cite or acknowledge <citation>` PlasmaPy.
+   please support the project by following these instructions to
+   :ref:`cite or acknowledge <citation>` PlasmaPy. We really appreciate
+   it!
 
 .. toctree::
-   :caption: First Steps
+   :caption: First steps
    :maxdepth: 1
 
-   Installing <install>
-   getting_started
+   Installation <install>
+   Getting Started <getting_started>
    examples
    COMMUNICATION
    Code of Conduct <CODE_OF_CONDUCT.rst>
    about/citation
 
-Example highlights
-------------------
+Example notebooks
+-----------------
 
 .. nbgallery::
    :hidden:
@@ -70,30 +71,34 @@ Example highlights
 
 .. toctree::
    :maxdepth: 1
-   :caption: Contributor Guide
-
-   Overview <contributing/index>
-   contributing/getting_ready
-   contributing/workflow
-   contributing/coding_guide
-   contributing/changelog_guide
-   contributing/doc_guide
-   contributing/testing_guide
-   contributing/release_guide
-
-.. toctree::
-   :maxdepth: 1
-   :caption: All the Rest
+   :caption: Project details
 
    changelog/index
    about/credits
    bibliography
    glossary
    performance_tips
+   about/policies
    PlasmaPy Enhancement Proposals <https://github.com/PlasmaPy/PlasmaPy-PLEPs>
-   PlasmaPy.org <https://www.plasmapy.org>
+   PlasmaPy Project <https://www.plasmapy.org>
    GitHub Repository <https://github.com/PlasmaPy/PlasmaPy>
 
+.. toctree::
+   :maxdepth: 1
+   :caption: Contributing
+
+   Contributor Guide <contributing/index>
+   contributing/many_ways
+   Getting Ready to Contribute <contributing/getting_ready>
+   contributing/workflow
+   Coding Guide <contributing/coding_guide>
+   contributing/testing_guide
+   contributing/pre-commit
+   contributing/doc_guide
+   contributing/changelog_guide
+
+.. _GitHub discussions: https://github.com/PlasmaPy/PlasmaPy/discussions
 .. _new discussion on GitHub: https://github.com/PlasmaPy/PlasmaPy/discussions/new/choose
+.. _on GitHub: https://github.com/PlasmaPy/PlasmaPy
 .. _report a bug: https://github.com/PlasmaPy/PlasmaPy/issues/new?assignees=&labels=Bug&template=bug_report.yml
 .. _request a new feature: https://github.com/PlasmaPy/PlasmaPy/issues/new?assignees=&labels=Feature+request&template=feature_request.yml

@@ -30,12 +30,15 @@ Creating Plasma Objects
 -----------------------
 
 Plasma objects are constructed using the special factory class
-`~plasmapy.plasma.plasma_factory.Plasma`: ::
+`~plasmapy.plasma.plasma_factory.Plasma`:
 
-    >>> x = plasmapy.plasma.Plasma(T_e=T_e,
-    ...                            n_e=n_e,
-    ...                            Z=Z,
-    ...                            particle=particle)  # doctest: +SKIP
+.. autolink-skip::
+
+.. code-block:: python
+
+    from plasmapy.plasma.plasma_factory import Plasma
+
+    Plasma(T_e=T_e, n_e=n_e, Z=Z, particle=particle)  # doctest: +SKIP
 
 The result of a call to `~plasmapy.plasma.plasma_factory.Plasma` will be
 either a `~plasmapy.plasma.plasma_base.GenericPlasma` object, or a
@@ -88,7 +91,7 @@ a Plasma3D system, first create an instance of the
 the :attr:`~plasmapy.plasma.sources.plasma3d.Plasma3D.density`,
 :attr:`~plasmapy.plasma.sources.plasma3d.Plasma3D.momentum`,
 :attr:`~plasmapy.plasma.sources.plasma3d.Plasma3D.pressure` and
-attr:`~plasmapy.plasma.sources.plasma3d.Plasma3D.magnetic_field`.
+:attr:`~plasmapy.plasma.sources.plasma3d.Plasma3D.magnetic_field`.
 
 .. note::
 

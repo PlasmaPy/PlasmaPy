@@ -8,7 +8,7 @@
 
 .. toctree::
    :maxdepth: 1
-   :caption: Sub-Packages & Modules
+   :caption: Subpackages & Modules
 
    detector_stacks
    synthetic_radiography

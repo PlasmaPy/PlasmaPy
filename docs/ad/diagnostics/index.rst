@@ -8,7 +8,7 @@
 
 .. toctree::
    :maxdepth: 1
-   :caption: Sub-Packages & Modules
+   :caption: Subpackages & Modules
 
    Charged particle radiography <charged_particle_radiography/index>
    Swept Langmuir (will be deprecated) <langmuir>

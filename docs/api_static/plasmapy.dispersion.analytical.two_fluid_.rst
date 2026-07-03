@@ -7,9 +7,9 @@
 
 .. automodapi:: plasmapy.dispersion.analytical.two_fluid_
 
-Example Notebooks
+Example notebooks
 -----------------
 
 .. nbgallery::
 
-    /notebooks/dispersion/two_fluid_dispersion
+   /notebooks/dispersion/two_fluid_dispersion

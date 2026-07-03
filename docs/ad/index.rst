@@ -7,7 +7,7 @@ Analysis & Diagnostic Toolkits
 ==============================
 
 Analyses and diagnostics go hand-in-hand, but have subtle differences.
-Thus, PlasmaPy gives each their own sub-packages, `plasmapy.analysis`
+Thus, PlasmaPy gives each their own subpackages, `plasmapy.analysis`
 and
 `plasmapy.diagnostics` respectively.
 
@@ -30,10 +30,10 @@ analyzing data. Diagnostics try to enhance the analysis workflow by
 focusing on some of following key areas...
 
 #. A more human-friendly way of managing data by building an interface around
-   |xarray|_ arrays and datasets via custom diagnostic accessors.
+   |xarray| arrays and datasets via custom diagnostic accessors.
 
-   - |xarray|_ provides labeled multi-dimensional arrays and datasets.
-   - Diagnostics self-manage the computed analysis data within a |xarray|_
+   - |xarray| provides labeled multi-dimensional arrays and datasets.
+   - Diagnostics self-manage the computed analysis data within a |xarray|
      dataset while maintaining the computed data's relation to the original
      data.
 
@@ -42,8 +42,6 @@ focusing on some of following key areas...
    designed ``Probe`` classes that are integrated into the analysis workflow.
 #. Adding graphical user interfaces (GUIs) to the analysis workflow via notebook
    widgets.
-
-----
 
 .. toctree::
    :maxdepth: 2

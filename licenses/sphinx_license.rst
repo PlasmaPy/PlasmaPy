@@ -1,7 +1,7 @@
 License for Sphinx
 ==================
 
-Copyright (c) 2007-2021 by the Sphinx team (see AUTHORS file).
+Copyright (c) 2007-2024 by the Sphinx team (see AUTHORS file).
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -177,7 +177,7 @@ met:
     the documentation and/or other materials provided with the
     distribution.
 
-THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+THIS SOFTWARE IS PROVIDED BY THE AUTHOR "AS IS" AND ANY EXPRESS OR
 IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
 DISCLAIMED. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT,

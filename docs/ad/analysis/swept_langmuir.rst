@@ -7,12 +7,11 @@ Swept Langmuir Analysis Module
 
 .. automodule:: plasmapy.analysis.swept_langmuir
 
-Example Notebooks
+Example notebooks
 -----------------
 
 .. nbgallery::
    :glob:
-   :reversed:
 
    /notebooks/analysis/swept_langmuir/*
 

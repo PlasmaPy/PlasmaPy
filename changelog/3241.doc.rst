@@ -1,0 +1,1 @@
+Renamed the ``trivial`` changelog category to ``misc`` to represent miscellaneous changes.

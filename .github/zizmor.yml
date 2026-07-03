@@ -1,0 +1,36 @@
+# zizmor finds potential security vulnerabilities in GitHub workflow
+# files. Documentation: https://woodruffw.github.io/zizmor
+
+rules:
+  unpinned-uses:
+    config:
+      policies:
+        actions/*: ref-pin
+        astral-sh/setup-uv: ref-pin
+        codecov/codecov-action: ref-pin
+        conda-incubator/setup-miniconda: ref-pin
+        mamba-org/setup-micromamba: ref-pin
+        heliophysicsPy/pyhc-actions/*: ref-pin
+        pypa/*: ref-pin
+        scientific-python/*: ref-pin
+        ts-graphviz/setup-graphviz: ref-pin
+
+# Put settings that we intend to fix later on below this line. If we
+# decide that a potential security vulnerability does not necessitate a
+# fix, append a comment like `# zizmor: ignore[unpinned-uses]` to the
+# line or set the appropriate configuration options above.
+
+  excessive-permissions:
+    ignore:
+    - create-release-issue.yml:16:3
+    - comment-on-pr.yml:10:3
+    - prepare-release-pr.yml:26:3
+    - unlabel-pr-after-merge.yml:10:3
+    - upgrade-uv-lock.yml:14:3
+  template-injection:
+    ignore:
+    - create-release-issue.yml:30:42
+    - create-release-issue.yml:31:46
+  use-trusted-publishing:
+    ignore:
+    - publish-to-pypi.yml:37:7

@@ -1,0 +1,41 @@
+# Publish a GitHub release to the Python Package Index (PyPI).
+#
+# This workflow is triggered automatically after a release is performed
+# on GitHub.
+
+name: Publish to PyPI
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+jobs:
+
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: Checkout code
+      uses: actions/checkout@v7.0.0
+      with:
+        persist-credentials: false
+
+    - name: Install uv
+      uses: astral-sh/setup-uv@v8.2.0
+      with:
+        python-version: 3.14
+        enable-cache: false  # protect against cache poisoning when publishing a package
+
+    - name: Build package
+      run: uv run noxfile.py -s build
+
+    - name: Upload package to Python Package Index
+      uses: pypa/gh-action-pypi-publish@v1.14.0
+      with:
+        # TODO: set up trusted publishing https://docs.pypi.org/trusted-publishers/
+        user: __token__
+        password: ${{ secrets.PYPI_API_TOKEN }}

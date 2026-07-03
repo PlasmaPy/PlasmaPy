@@ -1,99 +1,201 @@
+# pre-commit is a framework for running code quality checks and making
+# automated fixes. These checks are defined below as "hooks", which each
+# run a specific tool or perform a specific check.
+#
+# All of these hooks are run on every pull request via pre-commit.ci. To
+# apply all pre-commit autofixes on a pull request, add the following
+# comment to the conversation tab:
+#
+#     pre-commit.ci autofix
+#
+# To perform all checks and apply all autofixes, run:
+#
+#     pre-commit run --all-files
+#
+# For more information, please refer to the following resources.
+#
+# PlasmaPy Contributor Guide: https://docs.plasmapy.org/en/latest/contributing/pre-commit.html
+# pre-commit.ci configuration: https://pre-commit.ci/#configuration
+# pre-commit docs: https://pre-commit.com/#adding-pre-commit-plugins-to-your-project
+
 ci:
   autofix_prs: false
-  autoupdate_schedule: weekly
+  autoupdate_schedule: monthly
+  # skip hooks that require network access, which pre-commit.ci forbids
+  skip: [uv-lock]
 
 repos:
 
 - repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v4.4.0
+  rev: v6.0.0
   hooks:
   - id: check-ast
+    name: validate Python code
   - id: trailing-whitespace
+    exclude: .*\.py  # use ruff format instead
   - id: end-of-file-fixer
+    exclude: .*\.py
   - id: check-merge-conflict
     exclude: .*\.rst
-  - id: requirements-txt-fixer
-  - id: check-symlinks
   - id: check-case-conflict
+  - id: check-illegal-windows-names
+  - id: name-tests-test
+    args: [--pytest-test-first]
+    exclude: src/plasmapy/tests/_helpers/.*
+  - id: detect-private-key
+  - id: fix-byte-order-marker
+  - id: mixed-line-ending
+    args: [--fix=lf]
+  - id: forbid-submodules
   - id: check-json
   - id: check-toml
   - id: check-yaml
 
 - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
-  rev: v2.9.0
+  rev: v2.16.0
   hooks:
-  - id: pretty-format-ini
-    args: [--autofix]
   - id: pretty-format-yaml
     args: [--autofix]
-    # For the labeler GitHub Action, labels with spaces in them must
-    # be put in quotes. However, the pretty-format-yaml hook will
-    # remove the quotes which will break that action, so we should not
-    # run this hook on `labeler.yml`.
+    # Labels with spaces must be put in quotes in `labeler.yml`.
+    # pretty-format-yaml removes those quotes and breaks the action.
     exclude: .github/labeler.yml
 
-- repo: https://github.com/pre-commit/mirrors-csslint
-  rev: v1.0.5
+- repo: https://github.com/python-jsonschema/check-jsonschema
+  rev: 0.37.2
   hooks:
-  - id: csslint
+  - id: check-github-workflows
 
-- repo: https://github.com/MarcoGorelli/absolufy-imports
-  rev: v0.3.1
+- repo: https://github.com/sirosen/texthooks
+  rev: 0.7.1
   hooks:
-  - id: absolufy-imports
-    exclude: docs/plasmapy_sphinx
+  - id: fix-smartquotes
+  - id: fix-spaces
+  - id: fix-ligatures
+  - id: forbid-bidi-controls
 
 - repo: https://github.com/pre-commit/pygrep-hooks
   rev: v1.10.0
+  # skip the hooks in this repo covered by ruff rules
   hooks:
   - id: rst-directive-colons
   - id: rst-inline-touching-normal
+  - id: text-unicode-replacement-char
 
 - repo: https://github.com/codespell-project/codespell
-  rev: v2.2.5
+  rev: v2.4.2
   hooks:
   - id: codespell
+    name: codespell (add false positives to pyproject.toml)
     args: [--write-changes]
-    additional_dependencies:
-    - tomli
+    exclude: CITATION.cff
 
-- repo: https://github.com/charliermarsh/ruff-pre-commit
-  rev: v0.0.275
+- repo: https://github.com/adhtruong/mirrors-typos
+  # use mirrors-typos because `pre-commit autoupdate` drops the version
+  # of the primary typos repo from v1.x.y to v1
+  rev: v1.47.0
   hooks:
-  - id: ruff
+  - id: typos
+    name: typos (add false positives to _typos.toml)
+    exclude: CITATION.cff|docs/notebooks/dispersion/stix_dispersion.ipynb
+
+- repo: https://github.com/astral-sh/ruff-pre-commit
+  rev: v0.15.15
+  hooks:
+  - id: ruff-check
+    name: ruff-check (see https://docs.astral.sh/ruff/rules)
     args: [--fix]
-
-- repo: https://github.com/PyCQA/isort
-  rev: 5.12.0
-  hooks:
-  - id: isort
-    name: isort
-    entry: isort
-    require_serial: true
-    language: python
-    types:
-    - python
-
-- repo: https://github.com/psf/black
-  rev: 23.3.0
-  hooks:
-  - id: black
+  - id: ruff-format
 
 - repo: https://github.com/asottile/blacken-docs
-  rev: 1.14.0
+  rev: 1.20.0
   hooks:
   - id: blacken-docs
-    additional_dependencies: [black==23.3.0]
-    exclude: docs/contributing/coding_guide.rst
+    name: autoformat code blocks in docs
+    # docstrings are formatted using the ruff-format hook
+    exclude: docs/contributing/coding_guide.rst|.*\.py
+    additional_dependencies:
+    - black==26.5.1
 
-- repo: https://github.com/nbQA-dev/nbQA
-  rev: 1.7.0
+- repo: https://github.com/sphinx-contrib/sphinx-lint
+  rev: v1.0.2
   hooks:
-  - id: nbqa-black
+  - id: sphinx-lint
+
+- repo: https://github.com/abravalheri/validate-pyproject
+  rev: v0.25
+  hooks:
+  - id: validate-pyproject
+    name: validate pyproject.toml
+    # This hook may fail when we start using a new configuration option
+    # for a tool that has not yet been added to any of the schemas
+    # being compared against. If this becomes a recurring problem, we
+    # can drop this from pre-commit, and consider adding it as a Nox
+    # session run separately as part of the comprehensive tests on
+    # GitHub.
     additional_dependencies:
-    - black==23.3.0
-  - id: nbqa-isort
+    - validate-pyproject[all,store]
+
+- repo: https://github.com/tox-dev/pyproject-fmt
+  rev: v2.23.0
+  hooks:
+  - id: pyproject-fmt
+    name: format pyproject.toml
+
+- repo: https://github.com/astral-sh/uv-pre-commit
+  rev: 0.11.17
+  hooks:
+    # running uv lock requires network access or a warm cache, so it
+    # cannot be run via pre-commit.ci, even with the `--offline`,
+    # `--no-index`, and/or `--check` flags
+  - id: uv-lock
+    name: uv-lock (skipped in CI; use `nox -s lock` for problems)
+
+- repo: https://github.com/hukkin/mdformat
+  rev: 1.0.0
+  hooks:
+  - id: mdformat
+    name: format .md files
+    # skip wrapping line length to preserve semantic line breaks and
+    # avoid messing up GitHub formatting of files in .github/content
+    exclude: licenses/.*|LICENSE.md|PATENT.md
     additional_dependencies:
-    - isort==5.12.0
-    args:
-    - --nbqa-mutate
+    - mdformat-beautysh
+    - mdformat-footnote
+    - mdformat-gfm
+    - mdformat-gfm-alerts
+    - mdformat-ruff
+
+- repo: https://github.com/citation-file-format/cffconvert
+  rev: 054bda51dbe278b3e86f27c890e3f3ac877d616c
+  hooks:
+  - id: validate-cff
+    name: validate CITATION.cff
+
+- repo: local
+  hooks:
+  - id: bibtex-tidy
+    # The official pre-commit hook for bibtex-tidy did not install its
+    # Node.js requirement, so this is a workaround.
+    name: autoformat bibliography file
+    entry: bibtex-tidy
+    language: node
+    additional_dependencies: [bibtex-tidy@1.14.0]
+    files: docs/bibliography.bib
+    args: # https://github.com/FlamingTempura/bibtex-tidy#cli
+    - --modify
+    - --omit=abstract,month,address,adsurl,adsnote
+    - --curly
+    - --numeric
+    - --no-align
+    - --blank-lines
+    - --sort
+    - --duplicates
+    - --no-strip-comments
+    - --trailing-commas
+    - --encode-urls
+    - --drop-all-caps
+    - --no-escape
+    - --sort-fields
+    - --remove-empty-fields
+    - --no-wrap
+    - --tidy-comments

@@ -1,0 +1,99 @@
+PlasmaPy v2024.10.0 (2024-10-30)
+================================
+
+New Features
+------------
+
+- Added the option to pass |inf| to the
+  `~plasmapy.particles.particle_class.Particle.ionize` method of |Particle| to
+  return the nucleus of the particle. (:pr:`2800`)
+- Implemented
+  `~plasmapy.simulation.resolution_constraints.CFL_limit_electromagnetic_yee`
+  to calculate the CFL condition for electromagnetic simulations. (:pr:`2832`)
+-
+  `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography.synthetic_radiograph`
+  now accepts a file path to an
+  HDF5 file saved by
+  `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography.Tracker`
+  as input to create
+  a synthetic radiograph. (:pr:`2868`)
+- Save routines in `~plasmapy.simulation.particle_tracker.save_routines` now
+  take an optional keyword argument ``output_basename``
+  that sets the basename of the saved file(s).
+  `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography.Tracker`
+  now
+  also accepts an ``output_basename`` keyword, which is passed to the save
+  routine. (:pr:`2868`)
+
+
+Documentation Improvements
+--------------------------
+
+- Updated the docstring of `~plasmapy.formulary.dimensionless.beta` to
+  explicitly
+  use definitions of :math:`p_{th}` and :math:`p_{mag}`, and added links
+  to `~plasmapy.formulary.misc.thermal_pressure`
+  and `~plasmapy.formulary.misc.magnetic_pressure`. (:pr:`2822`)
+- Restructured sections in the `~plasmapy.formulary.mathematics.rot_a_to_b`
+  docstring to be consistent with other docstrings, and added 'Raises' and
+  'Examples' sections. (:pr:`2824`)
+- Added the :term:`force-free` definition to the |glossary|. (:pr:`2830`)
+- Updated docstrings in `plasmapy.formulary` to follow the numpydoc standard.
+  (:pr:`2831`)
+- Added examples to the |ParticleTracker| docstring. (:pr:`2833`)
+- Added a section in the installation instructions for installing PlasmaPy with
+  |uv|. (:pr:`2861`)
+
+
+Backwards Incompatible Changes
+------------------------------
+
+- Removed the ``optical_density`` keyword argument in
+  `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography`.
+  (:pr:`2843`)
+- The property `~plasmapy.plasma.grids.AbstractGrid.recognized_quantities` of
+  `~plasmapy.plasma.grids.AbstractGrid` is now a class method
+  instead of a class property, as using `classmethod` and `property` decorators
+  together is no longer
+  allowed in Python 3.13. The syntax for accessing this dictionary has
+  therefore changed
+  from :py:`AbstractGrid.recognized_quantities` to
+  :py:`AbstractGrid.recognized_quantities()`. (:pr:`2871`)
+
+
+Bug Fixes
+---------
+
+- Patched a bug in
+  `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography` in
+  which particles stopped
+  before the detector were still included in synthetic radiographs.
+  (:pr:`2843`)
+
+
+Internal Changes and Refactorings
+---------------------------------
+
+- Updated the release checklist. (:pr:`2784`)
+- Added a |Nox| session to verify that the pinned requirements files used in
+  continuous integration tests are consistent with the requirements in
+  :file:`pyproject.toml`. (:pr:`2794`)
+- Fixed a bug in the |Nox| session for running tests that prevented
+  doctests from being run, and fixed doctest errors that were introduced
+  while doctests were not enabled. (:pr:`2834`)
+- Removed Numba as a project dependency. Consequently,
+  `~plasmapy.formulary.frequencies.plasma_frequency_lite` and
+  `~plasmapy.formulary.speeds.thermal_speed_lite` are no longer just-in-time
+  compiled by Numba. (:pr:`2841`)
+- Adjusted the Sphinx configuration to account for recent deprecations in Read
+  the Docs. (:pr:`2857`)
+- Added testing support for Python 3.13. (:pr:`2869`)
+- Updated the versions of Python used in continuous integration workflows.
+  (:pr:`2879`)
+
+
+Additional Changes
+------------------
+
+- Tentatively reverted :pr:`2715` because it introduced doctest errors during a
+  time when doctests were not enabled. (:pr:`2834`)

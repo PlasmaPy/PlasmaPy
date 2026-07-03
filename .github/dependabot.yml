@@ -1,11 +1,23 @@
+# Dependabot creates pull requests to update versions of dependencies,
+# including in the GitHub Actions ecosystem.
+
+# Documentation: https://docs.github.com/en/code-security/dependabot
+
+# Updates to uv.lock are handled via `nox -s lock` which is run
+# in a separate GitHub workflow to upgrade uv.lock.
+
 version: 2
 
 updates:
 
 - package-ecosystem: github-actions
-  directory: /
-  schedule:
-    interval: daily
+  directory: /.github/workflows
   labels:
-  - No changelog entry needed
   - GitHub Actions
+  - no changelog entry needed
+  reviewers:
+  - namurphy
+  schedule:
+    interval: weekly
+  cooldown:
+    default-days: 7

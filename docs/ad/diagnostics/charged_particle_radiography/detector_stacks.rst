@@ -8,7 +8,9 @@ Charged Particle Detector Stacks
 
 .. automodapi:: plasmapy.diagnostics.charged_particle_radiography.detector_stacks
 
+Example notebooks
+-----------------
+
 .. nbgallery::
-    :caption: Examples
 
     /notebooks/diagnostics/charged_particle_radiography_film_stacks

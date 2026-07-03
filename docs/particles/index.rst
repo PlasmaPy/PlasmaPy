@@ -11,7 +11,7 @@ Introduction
 ============
 
 The `~plasmapy.particles` subpackage provides access to information
-about atoms, ions, isotopes, and other particles.
+about atoms, ions, isotopes, and other particles. |:atom:|
 
 Submodules
 ==========
@@ -25,12 +25,14 @@ Submodules
    ionization_states
    decorators
 
-Examples
-========
+Example notebooks
+-----------------
 
 .. nbgallery::
+    :glob:
 
     /notebooks/getting_started/particles
+    /notebooks/particles/*
 
 See Also
 ========

@@ -30,13 +30,13 @@ New Features
   automated code style checks with ``pep8speaks``.
 
 * Developed `online documentation for PlasmaPy
-  <https://docs.plasmapy.org>`_ that is hosted by `Read the Docs`_.
+  <https://docs.plasmapy.org>`_ that is hosted by |Read the Docs|.
 
-  - Automated documentation builds with Sphinx_.
+  - Automated documentation builds with |Sphinx|.
 
   - Wrote narrative documentation for each subpackage.
 
-* Adopted use of `~astropy.units` as a units package.
+* Adopted use of `astropy.units` as a units package.
 
 * Created the ``plasmapy.atomic`` subpackage to provide easy access to
   commonly used atomic data.
@@ -79,8 +79,7 @@ New Features
 * Created a repository for `PlasmaPy Enhancement Proposals
   <https://github.com/PlasmaPy/PlasmaPy-PLEPs>`_.
 
-* Began using `type hint annotations
-  <https://docs.python.org/3/library/typing.html>`_.
+* Began using type annotations.
 
 * Set up architecture to incorporate `Cython <https://cython.org/>`_ into
   performance-critical sections of code.
@@ -96,14 +95,3 @@ Changes to API
 --------------
 
 - PlasmaPy now has an API.
-
-.. _change-log-0.1.0-bugfix:
-
-Bug Fixes
----------
-
-- Fixed bug in universe that cause solar neutrinos to oscillate
-  between different flavors.
-
-.. I went to a talk on neutrinos once, but it all just went in one ear
-   and out the other.
