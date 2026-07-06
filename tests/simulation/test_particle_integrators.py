@@ -8,7 +8,7 @@ Two parametrized tests, each verifying a known limiting case:
 synchrotron-drag force proposed in PlasmaPy discussion #3306, checked across
 several Lorentz factors.
 2. E = 0 with v parallel to B ==> No change in acceleration ==>
-nothing radiates ==> RelativisticBorisIntegratorRRF.push() reduces to 
+nothing radiates ==> RelativisticBorisIntegratorRRF.push() reduces to
 the regular RelativisticBorisIntegrator.push() for different particles and speeds.
 """
 
@@ -35,7 +35,7 @@ _m_p = const.m_p.si.value
     [
         2.0,  # mildly relativistic
         10.0,  # relativistic
-        100.0,  # ultra-relativistic 
+        100.0,  # ultra-relativistic
     ],
 )
 def test_rrf_full_reduces_to_discussion_synchrotron_drag(gamma) -> None:
@@ -62,7 +62,7 @@ def test_rrf_full_reduces_to_discussion_synchrotron_drag(gamma) -> None:
 
 
 @pytest.mark.parametrize(
-    "gamma,q,m",
+    ("gamma", "q", "m"),
     [
         (2.0, -_e, _m_e),  # relativistic electron
         (10.0, -_e, _m_e),  # ultra-relativistic electron
@@ -72,7 +72,7 @@ def test_rrf_full_reduces_to_discussion_synchrotron_drag(gamma) -> None:
 def test_push_reduces_to_relativistic_boris_when_v_parallel_B(gamma, q, m) -> None:
     """
     With E = 0 and v parallel to B, v x B = 0 so the particle is unaccelerated.
-    Should reproduce RelativisticBorisIntegrator.push() for range of particles 
+    Should reproduce RelativisticBorisIntegrator.push() for range of particles
     and velocities
     """
     # establish a particle moving ALONG B (so v x B = 0), and no electric field

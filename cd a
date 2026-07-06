@@ -1,0 +1,279 @@
+[1mdiff --git a/src/plasmapy/simulation/particle_integrators.py b/src/plasmapy/simulation/particle_integrators.py[m
+[1mindex 3dc7987f..c6fd2542 100644[m
+[1m--- a/src/plasmapy/simulation/particle_integrators.py[m
+[1m+++ b/src/plasmapy/simulation/particle_integrators.py[m
+[36m@@ -200,6 +200,57 @@[m [mdef is_relativistic(self) -> bool:[m
+         """[m
+         return True[m
+ [m
+[32m+[m[32m    @staticmethod[m
+[32m+[m[32m    def _boris_lorentz_push(v, B, E, q, m, dt):[m
+[32m+[m[32m        r"""[m
+[32m+[m[32m        Helper method applying the relativistic Boris push to the proper velocity.[m
+[32m+[m
+[32m+[m[32m        This method carries out the Lorentz-force part of the Boris push. It does not convert[m
+[32m+[m[32m        back to a coordinate velocity or advance position, each push() method completes this[m
+[32m+[m[32m        function. Both proper velocities are returned so the RRF pusher can estimate total[m
+[32m+[m[32m        momentum & velocity p{n} and v{n} and apply the additional momentum corrections. The[m
+[32m+[m[32m        regular relativistic boris pusher can be called to complete the timestep from uvel_L[m
+[32m+[m[32m        alone, and discards the pre Lorentz proper velocity (uvel)[m
+[32m+[m
+[32m+[m[32m        Parameters[m
+[32m+[m[32m        ----------[m
+[32m+[m[32m        v : `~numpy.ndarray`[m
+[32m+[m[32m            particle velocity at half timestep, in SI (meter/second) units.[m
+[32m+[m[32m        B : `~numpy.ndarray`[m
+[32m+[m[32m            magnetic field at full timestep, in SI (tesla) units.[m
+[32m+[m[32m        E : float[m
+[32m+[m[32m            electric field at full timestep, in SI (V/m) units.[m
+[32m+[m[32m        q : float[m
+[32m+[m[32m            particle charge, in SI (Coulomb) units.[m
+[32m+[m[32m        m : float[m
+[32m+[m[32m            particle mass, in SI (kg) units.[m
+[32m+[m[32m        dt : float[m
+[32m+[m[32m            timestep, in SI (second) units.[m
+[32m+[m
+[32m+[m[32m        Returns[m
+[32m+[m[32m        -------[m
+[32m+[m[32m        uvel : `~numpy.ndarray`[m
+[32m+[m[32m            proper velocity before the push, p{n-1/2}/m, in SI (meter/second)[m
+[32m+[m[32m            units.[m
+[32m+[m[32m        uvel_L : `~numpy.ndarray`[m
+[32m+[m[32m            proper velocity after the Lorentz-force push, p_L{n+1/2}/m, in SI[m
+[32m+[m[32m            (meter/second) units.[m
+[32m+[m[32m        """[m
+[32m+[m[32m        # need float value for c[m
+[32m+[m[32m        c = _c.si.value[m
+[32m+[m[32m        γ = 1 / np.sqrt(1 - (np.linalg.norm(v, axis=1, keepdims=True) / c) ** 2)[m
+[32m+[m[32m        uvel = v * γ[m
+[32m+[m[32m        uvel_minus = uvel + q * E * dt / (2 * m)[m
+[32m+[m[32m        γ1 = np.sqrt(1 + (np.linalg.norm(uvel_minus, axis=1, keepdims=True) / c) ** 2)[m
+[32m+[m[32m        t = q * B * dt / (2 * γ1 * m)[m
+[32m+[m[32m        s = 2 * t / (1 + (t * t).sum(axis=1, keepdims=True))[m
+[32m+[m[32m        uvel_prime = uvel_minus + np.cross(uvel_minus, t)[m
+[32m+[m[32m        uvel_plus = uvel_minus + np.cross(uvel_prime, s)[m
+[32m+[m[32m        uvel_L = uvel_plus + q * E * dt / (2 * m)[m
+[32m+[m[32m        # uvel = p{n-1/2}/m is returned with uvel_L = p_L{n+1/2}/m so the RRF[m
+[32m+[m[32m        # pusher can estimate integer-step quantities[m
+[32m+[m[32m        return uvel, uvel_L[m
+[32m+[m
+     @staticmethod[m
+     def push(x, v, B, E, q, m, dt):[m
+         r"""[m
+[36m@@ -242,37 +293,21 @@[m [mdef push(x, v, B, E, q, m, dt):[m
+         .. [1] C. K. Birdsall, A. B. Langdon, "Plasma Physics via Computer[m
+                Simulation", 2004, p. 58-63[m
+         """[m
+[31m-        γ = 1 / np.sqrt([m
+[31m-            1 - (np.linalg.norm(v, axis=1, keepdims=True) / _c.si.value) ** 2,[m
+[31m-        )[m
+[31m-        uvel = v * γ[m
+[31m-[m
+[31m-        uvel_minus = uvel + q * E * dt / (2 * m)[m
+[31m-[m
+[31m-        γ1 = np.sqrt([m
+[31m-            1 + (np.linalg.norm(uvel_minus, axis=1, keepdims=True) / _c.si.value) ** 2,[m
+[31m-        )[m
+[31m-[m
+[31m-        t = q * B * dt / (2 * γ1 * m)[m
+[31m-        s = 2 * t / (1 + (t * t).sum(axis=1, keepdims=True))[m
+[31m-[m
+[31m-        uvel_prime = uvel_minus + np.cross(uvel_minus, t)[m
+[31m-        uvel_plus = uvel_minus + np.cross(uvel_prime, s)[m
+[31m-        uvel_new = uvel_plus + q * E * dt / (2 * m)[m
+[31m-[m
+[32m+[m[32m        # discard uvel with _ pre-push proper velocity is only needed by the RRF pusher[m
+[32m+[m[32m        _, uvel_L = RelativisticBorisIntegrator._boris_lorentz_push(v, B, E, q, m, dt)[m
+         # You can show that this expression is equivalent to calculating[m
+         # v_new  then calculating γnew using the usual formula[m
+         γ2 = np.sqrt([m
+[31m-            1 + (np.linalg.norm(uvel_new, axis=1, keepdims=True) / _c.si.value) ** 2,[m
+[32m+[m[32m            1 + (np.linalg.norm(uvel_L, axis=1, keepdims=True) / _c.si.value) ** 2,[m
+         )[m
+ [m
+[31m-        v = uvel_new / γ2[m
+[32m+[m[32m        v = uvel_L / γ2[m
+ [m
+         return x + v * dt, v[m
+ [m
+ [m
+ class RelativisticBorisIntegratorRRF(RelativisticBorisIntegrator):[m
+[31m-    """Relativistic Boris Pusher with Tamburini Radiation Reaction Force Implementation"""[m
+[32m+[m[32m    """Relativistic Boris Pusher with Tamburini Radiation Reaction Force Implementation."""[m
+ [m
+     @staticmethod[m
+     def push(x, v, B, E, q, m, dt):[m
+[36m@@ -303,18 +338,19 @@[m [mdef push(x, v, B, E, q, m, dt):[m
+ [m
+         Notes[m
+         -----[m
+[31m-        This method is an added method to the Relativistic Boris Integrator Class, which[m
+[31m-        takes into account a radiation reaction force under various important[m
+[31m-        assumptions. The process of including this radiative dampening force[m
+[31m-        leaves the standard Boris algorithm unchanged and works in the following[m
+[31m-        steps.[m
+[31m-[m
+[31m-        1. Original Boris push algorithm is executed and Lorentz momentum boost is[m
+[31m-        evaluated and stored[m
+[31m-        2. The Radiation Reaction Force is then estimated at the n integer step state[m
+[31m-        utilizing this value and various assumptions[m
+[31m-        3. This RRF is then applied as a momentum kick with the following equation serving[m
+[31m-        as the basis: p{n+1/2} = p_L{n+1/2} + f_R{n} * dt.[m
+[32m+[m[32m        This method is the specific push including a RRF damping effect within the[m
+[32m+[m[32m        RelativisticBorisIntegratorRRF Class. This method takes into account a[m
+[32m+[m[32m        radiation reaction force under various important assumptions. The process of[m
+[32m+[m[32m        including this radiative damping force leaves the standard Boris algorithm[m
+[32m+[m[32m        unchanged and works in the following steps.[m
+[32m+[m
+[32m+[m[32m        1. The ``_boris_lorentz_push`` helper is executed; the Lorentz-pushed[m
+[32m+[m[32m           momentum p_L{n+1/2} and the initial momentum p{n-1/2} are evaluated[m
+[32m+[m[32m           and stored.[m
+[32m+[m[32m        2. The radiation reaction force is then estimated at the n integer[m
+[32m+[m[32m           step state utilizing these values and various assumptions.[m
+[32m+[m[32m        3. This RRF is then applied as a momentum kick with the following[m
+[32m+[m[32m           equation serving as the basis: p{n+1/2} = p_L{n+1/2} + f_R{n} * dt.[m
+ [m
+         This RRF implementation follows the post-Boris scheme of[m
+         :cite:t:`tamburini:2010`.[m
+[36m@@ -328,22 +364,17 @@[m [mdef push(x, v, B, E, q, m, dt):[m
+         substituting the instantaneous acceleration due to the Lorentz Force,[m
+         which can only be approximated under certain conditions.[m
+ [m
+[31m-        1. "The acceleration of particles is dominated by the Lorentz force, with[m
+[31m-        the RR force giving a smaller, albeit non negligible contribution."[m
+[31m-        F_L >> F_R[m
+[31m-[m
+[31m-        :cite:p:`tamburini:2010`[m
+[31m-[m
+[31m-        2. The rest-frame field must stay well below the[m
+[31m-        Schwinger critical field (E_cr ~ 1.3e18 V/m, B_cr ~ 4.4e9 T)[m
+[32m+[m[32m        1. "The acceleration of particles is dominated by the Lorentz force,[m
+[32m+[m[32m           with the RR force giving a smaller, albeit non negligible[m
+[32m+[m[32m           contribution." F_L >> F_R :cite:p:`tamburini:2010`[m
+ [m
+[31m-        :cite:p:`tamburini:2010`[m
+[31m-        :cite:p:`landau:1975`[m
+[32m+[m[32m        2. The rest-frame field must stay well below the Schwinger critical[m
+[32m+[m[32m           field (E_cr ~ 1.3e18 V/m, B_cr ~ 4.4e9 T)[m
+[32m+[m[32m           :cite:p:`tamburini:2010` :cite:p:`landau:1975`[m
+ [m
+[31m-        3. Neglected f_R terms (Tamburini Eq. 6): the field-derivative[m
+[31m-        term is dropped and the electron spin force is likewise neglected.[m
+[31m-[m
+[31m-        :cite:p:`tamburini:2010`[m
+[32m+[m[32m        3. Neglected f_R terms (Tamburini Eq. 6): the field-derivative term[m
+[32m+[m[32m           is dropped and the electron spin force is likewise neglected.[m
+[32m+[m[32m           :cite:p:`tamburini:2010`[m
+ [m
+         Examples[m
+         --------[m
+[36m@@ -359,29 +390,16 @@[m [mdef push(x, v, B, E, q, m, dt):[m
+         """[m
+         # need float value for c[m
+         c = _c.si.value[m
+[31m-        # original relativistic boris push method to determine Lorentz momentum boost p_L{n+1/2}[m
+[31m-        # step 1: find total momentum @ n - 1/2:    p{n-1/2}[m
+[31m-        # gamma calculation[m
+[31m-[m
+[31m-        γ = 1 / np.sqrt([m
+[31m-            1 - (np.linalg.norm(v, axis=1, keepdims=True) / c) ** 2,[m
+[32m+[m[32m        # relativistic boris push method to determine Lorentz momentum boost p_L{n+1/2}[m
+[32m+[m[32m        # and total momentum @ n - 1/2:    p{n-1/2}[m
+[32m+[m[32m        uvel, uvel_L = RelativisticBorisIntegratorRRF._boris_lorentz_push([m
+[32m+[m[32m            v, B, E, q, m, dt[m
+         )[m
+[31m-        uvel = v * γ  # p{n-1/2}/m[m
+[31m-        uvel_minus = uvel + q * E * dt / (2 * m)[m
+[31m-        # step 2: find momentum boost from Lorentz Force @ n + 1/2: p_L{n+1/2}[m
+[31m-        # same steps as RelativisitcBorisIntegrator.push()[m
+[31m-        γ1 = np.sqrt([m
+[31m-            1 + (np.linalg.norm(uvel_minus, axis=1, keepdims=True) / c) ** 2,[m
+[31m-        )[m
+[31m-        t = q * B * dt / (2 * γ1 * m)[m
+[31m-        s = 2 * t / (1 + (t * t).sum(axis=1, keepdims=True))[m
+[31m-        uvel_prime = uvel_minus + np.cross(uvel_minus, t)[m
+[31m-        uvel_plus = uvel_minus + np.cross(uvel_prime, s)[m
+[31m-        uvel_L = uvel_plus + q * E * dt / (2 * m)[m
+         # proper velocity obtained w/ out RR[m
+[31m-        # same result as RelativisticBorisIntegrator.push(), just storing value with new variable name and noting: uvel_L = p_L{n+1/2}/m[m
+[31m-        # use this stored p_L{n+1/2}/m value to estimate total momentum & velocity p{n} and v{n}[m
+[31m-        # at the integer step n (from eqn --> [12])[m
+[32m+[m[32m        # at this point we have same result as RelativisticBorisIntegrator.push(),[m
+[32m+[m[32m        # just storing value and noting: uvel = p{n-1/2}/m  ;  uvel_L = p_L{n+1/2}/m[m
+[32m+[m[32m        # use these stored p{n-1/2}/m and p_L{n+1/2}/m values to estimate total[m
+[32m+[m[32m        # momentum & velocity p{n} and v{n} at the integer step n (from eqn --> [12])[m
+         # p{n} =~ .5(p_L{n+1/2} + p{n-1/2})  [12][m
+         u_n = 1 / 2 * (uvel_L + uvel)[m
+         # gamma calculation[m
+[36m@@ -404,11 +422,30 @@[m [mdef push(x, v, B, E, q, m, dt):[m
+         return x + v_final * dt, v_final[m
+ [m
+     @staticmethod[m
+[31m-    # radiation force from LL approximation[m
+     def rrf_full(v, B, E, q, m):[m
+         r"""[m
+[31m-        Radiation-reaction force from the Landau-Lifshitz approximation.[m
+[31m-        :cite:p:`tamburini:2010`[m
+[32m+[m[32m        Radiation-reaction force from the Landau-Lifshitz approximation,[m
+[32m+[m[32m        following :cite:t:`tamburini:2010`.[m
+[32m+[m
+[32m+[m[32m        Parameters[m
+[32m+[m[32m        ----------[m
+[32m+[m[32m        v : `~numpy.ndarray`[m
+[32m+[m[32m            particle velocity at the integer timestep, in SI (meter/second)[m
+[32m+[m[32m            units.[m
+[32m+[m[32m        B : `~numpy.ndarray`[m
+[32m+[m[32m            magnetic field at full timestep, in SI (tesla) units.[m
+[32m+[m[32m        E : float[m
+[32m+[m[32m            electric field at full timestep, in SI (V/m) units.[m
+[32m+[m[32m        q : float[m
+[32m+[m[32m            particle charge, in SI (Coulomb) units.[m
+[32m+[m[32m        m : float[m
+[32m+[m[32m            particle mass, in SI (kg) units.[m
+[32m+[m
+[32m+[m[32m        Returns[m
+[32m+[m[32m        -------[m
+[32m+[m[32m        f_R : `~numpy.ndarray`[m
+[32m+[m[32m            radiation-reaction force at the integer timestep, in SI (newton)[m
+[32m+[m[32m            units.[m
+ [m
+         Examples[m
+         --------[m
+[36m@@ -441,5 +478,5 @@[m [mdef rrf_full(v, B, E, q, m):[m
+         rrf_term1 = np.cross(f_L, B) - (v_dotproduct_E / c**2) * E[m
+         # term 2 eqn (6) [[kg^2 m / (s^3 C^2)]][m
+         rrf_term2 = (γ**2 / c**2) * (f_L_squared - v_dotproduct_E**2 / c**2) * v[m
+[31m-        # final f_R [[C^2/kg]][[kg^2 m / (s^3 C^2)]] --> [[N]][m
+[32m+[m[32m        # final f_R [[C^2 s/kg]][[kg^2 m / (s^3 C^2)]] --> [[N]][m
+         return -k * (rrf_term1 + rrf_term2)[m
+[1mdiff --git a/tests/simulation/test_particle_integrators.py b/tests/simulation/test_particle_integrators.py[m
+[1mindex 25e0a525..54bab928 100644[m
+[1m--- a/tests/simulation/test_particle_integrators.py[m
+[1m+++ b/tests/simulation/test_particle_integrators.py[m
+[36m@@ -8,7 +8,7 @@[m
+ synchrotron-drag force proposed in PlasmaPy discussion #3306, checked across[m
+ several Lorentz factors.[m
+ 2. E = 0 with v parallel to B ==> No change in acceleration ==>[m
+[31m-nothing radiates ==> RelativisticBorisIntegratorRRF.push() reduces to [m
+[32m+[m[32mnothing radiates ==> RelativisticBorisIntegratorRRF.push() reduces to[m
+ the regular RelativisticBorisIntegrator.push() for different particles and speeds.[m
+ """[m
+ [m
+[36m@@ -35,7 +35,7 @@[m
+     [[m
+         2.0,  # mildly relativistic[m
+         10.0,  # relativistic[m
+[31m-        100.0,  # ultra-relativistic [m
+[32m+[m[32m        100.0,  # ultra-relativistic[m
+     ],[m
+ )[m
+ def test_rrf_full_reduces_to_discussion_synchrotron_drag(gamma) -> None:[m
+[36m@@ -72,7 +72,7 @@[m [mdef test_rrf_full_reduces_to_discussion_synchrotron_drag(gamma) -> None:[m
+ def test_push_reduces_to_relativistic_boris_when_v_parallel_B(gamma, q, m) -> None:[m
+     """[m
+     With E = 0 and v parallel to B, v x B = 0 so the particle is unaccelerated.[m
+[31m-    Should reproduce RelativisticBorisIntegrator.push() for range of particles [m
+[32m+[m[32m    Should reproduce RelativisticBorisIntegrator.push() for range of particles[m
+     and velocities[m
+     """[m
+     # establish a particle moving ALONG B (so v x B = 0), and no electric field[m
