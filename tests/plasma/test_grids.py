@@ -258,9 +258,7 @@ def test_AbstractGrid_uniform_attributes(
 
     # If an expected value is given, verify the attribute matches
     if value is not None:
-        if isinstance(value, np.ndarray):
-            np.testing.assert_allclose(attr, value, rtol=0.1, atol=1e-8)
-        elif isinstance(value, float | int):
+        if isinstance(value, np.ndarray | float | int):
             np.testing.assert_allclose(attr, value, rtol=0.1, atol=1e-8)
         else:
             assert attr == value
@@ -298,9 +296,7 @@ def test_AbstractGrid_nonuniform_attributes(
 
     # If an expected value is given, verify the attribute matches
     if value is not None:
-        if isinstance(value, np.ndarray):
-            np.testing.assert_allclose(attr, value, rtol=0.1, atol=1e-8)
-        elif isinstance(value, float | int):
+        if isinstance(value, np.ndarray | float | int):
             np.testing.assert_allclose(attr, value, rtol=0.1, atol=1e-8)
         else:
             assert attr == value
@@ -555,7 +551,9 @@ def test_soften_edges(uniform_cartesian_grid, width) -> None:
     assert_quantity_allclose(grid["rho"][:, :, -1], 0 * u.kg / u.m**3)
 
     # Assert center value is nearly unchanged
-    np.testing.assert_allclose(grid["rho"][xi, yi, zi], center_value, rtol=1e-5, atol=1e-8)
+    np.testing.assert_allclose(
+        grid["rho"][xi, yi, zi], center_value, rtol=1e-5, atol=1e-8
+    )
 
 
 create_args_uniform_cartesian = [
@@ -614,7 +612,13 @@ def test_uniform_cartesian_NN_interp(
     pout = uniform_cartesian_grid.nearest_neighbor_interpolator(pos, *quantities)
 
     # Should be correct to within dx/2, so 0.6 leaves some room
-    np.testing.assert_allclose(np.asarray(pout), np.asarray(expected), atol=(0.6 * uniform_cartesian_grid.dax0).value, equal_nan=True, rtol=1e-5)
+    np.testing.assert_allclose(
+        np.asarray(pout),
+        np.asarray(expected),
+        atol=(0.6 * uniform_cartesian_grid.dax0).value,
+        equal_nan=True,
+        rtol=1e-5,
+    )
 
 
 @pytest.mark.parametrize(
@@ -657,7 +661,12 @@ def test_uniform_cartesian_NN_interp_persistence(uniform_cartesian_grid) -> None
 
     # Transpose of pos is required because pout is ordered first by quantity
     # (axis in this case) while pos is [N,3]
-    np.testing.assert_allclose(np.asarray(pout), np.asarray(pos[:, [0, 1]].T), atol=(0.6 * uniform_cartesian_grid.dax0).value, rtol=1e-5)
+    np.testing.assert_allclose(
+        np.asarray(pout),
+        np.asarray(pos[:, [0, 1]].T),
+        atol=(0.6 * uniform_cartesian_grid.dax0).value,
+        rtol=1e-5,
+    )
 
     # Change quantities with persistent still True
     # Code should detect this and automatically run as
@@ -670,7 +679,12 @@ def test_uniform_cartesian_NN_interp_persistence(uniform_cartesian_grid) -> None
         persistent=True,
     )
 
-    np.testing.assert_allclose(np.asarray(pout), np.asarray(pos[:, [0, 2]].T), atol=(0.6 * uniform_cartesian_grid.dax0).value, rtol=1e-5)
+    np.testing.assert_allclose(
+        np.asarray(pout),
+        np.asarray(pos[:, [0, 2]].T),
+        atol=(0.6 * uniform_cartesian_grid.dax0).value,
+        rtol=1e-5,
+    )
 
 
 # **********************************************************************
@@ -780,7 +794,13 @@ def test_nonuniform_cartesian_NN_interp(
     # for this test
     dx_max = np.max(np.gradient(nonuniform_cartesian_grid.grid[:, 0]))
 
-    np.testing.assert_allclose(np.asarray(pout), np.asarray(expected), atol=np.asarray(dx_max), equal_nan=True, rtol=1e-5)
+    np.testing.assert_allclose(
+        np.asarray(pout),
+        np.asarray(expected),
+        atol=np.asarray(dx_max),
+        equal_nan=True,
+        rtol=1e-5,
+    )
 
 
 @pytest.mark.filterwarnings(
@@ -951,7 +971,13 @@ def test_volume_averaged_interpolator_known_solutions() -> None:
 
     pts = grid.volume_averaged_interpolator(pos, "B_z", persistent=True)
 
-    np.testing.assert_allclose(pts.value, np.array([np.nan, 0, 0.5, 1, 1.5, 2, 2.5, 3, np.nan]), equal_nan=True, rtol=1e-5, atol=1e-8)
+    np.testing.assert_allclose(
+        pts.value,
+        np.array([np.nan, 0, 0.5, 1, 1.5, 2, 2.5, 3, np.nan]),
+        equal_nan=True,
+        rtol=1e-5,
+        atol=1e-8,
+    )
 
 
 def test_volume_averaged_interpolator_compare_NN_1D(uniform_cartesian_grid) -> None:
