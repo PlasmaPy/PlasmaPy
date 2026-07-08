@@ -99,8 +99,8 @@ class TestMHDWave:
         for mode in range(3):
             omega = waves[mode].angular_frequency(**kwargs_wave_limits)
             v_ph = waves[mode].phase_velocity(**kwargs_wave_limits)
-            assert np.allclose(omega / kwargs_wave_limits["k"], expected[mode])
-            assert np.allclose(omega / kwargs_wave_limits["k"], v_ph)
+            np.testing.assert_allclose(omega / kwargs_wave_limits["k"], u.Quantity(expected[mode]), rtol=1e-5, atol=1e-8)
+            np.testing.assert_allclose(omega / kwargs_wave_limits["k"], v_ph, rtol=1e-5, atol=1e-8)
 
     @pytest.mark.parametrize(
         ("kwargs", "expected"),
@@ -150,5 +150,5 @@ class TestMHDWave:
             # symmetric difference quotient
             dv_dtheta = (phase_velocity_p - phase_velocity_m) / (2 * dt / u.rad)
 
-            assert np.allclose(group_velocity_k, phase_velocity)
-            assert np.allclose(group_velocity_theta, dv_dtheta)
+            np.testing.assert_allclose(group_velocity_k, phase_velocity, rtol=1e-5, atol=1e-8)
+            np.testing.assert_allclose(group_velocity_theta.flatten(), dv_dtheta.flatten(), rtol=1e-5, atol=1e-8)

@@ -256,12 +256,12 @@ def test_1D_deflections() -> None:
     # Check B-deflection
     hax, lineout = run_1D_example("constant_bz")
     loc = hax[np.argmax(lineout)]
-    assert np.isclose(loc.si.value, 0.0165, 0.005)
+    np.testing.assert_allclose(loc.si.value, 0.0165, 0.005, atol=1e-8)
 
     # Check E-deflection
     hax, lineout = run_1D_example("constant_ex")
     loc = hax[np.argmax(lineout)]
-    assert np.isclose(loc.si.value, 0.0335, 0.005)
+    np.testing.assert_allclose(loc.si.value, 0.0335, 0.005, atol=1e-8)
 
 
 @pytest.mark.slow
@@ -287,10 +287,10 @@ def test_coordinate_systems() -> None:
     detector = (0.1 * u.m, 90 * u.deg, 45 * u.deg)
     sim3 = cpr.Tracker(grid, source, detector, verbose=False)
 
-    assert np.allclose(sim1.source, sim2.source, atol=1e-2)
-    assert np.allclose(sim2.source, sim3.source, atol=1e-2)
-    assert np.allclose(sim1.detector, sim2.detector, atol=1e-2)
-    assert np.allclose(sim2.detector, sim3.detector, atol=1e-2)
+    np.testing.assert_allclose(sim1.source, sim2.source, atol=1e-2, rtol=1e-5)
+    np.testing.assert_allclose(sim2.source, sim3.source, atol=1e-2, rtol=1e-5)
+    np.testing.assert_allclose(sim1.detector, sim2.detector, atol=1e-2, rtol=1e-5)
+    np.testing.assert_allclose(sim2.detector, sim3.detector, atol=1e-2, rtol=1e-5)
 
 
 @pytest.mark.slow
@@ -464,7 +464,7 @@ def test_create_particles() -> None:
     # Assert particle velocities are actually in that direction
     vdir = np.mean(sim.v, axis=0)
     vdir /= np.linalg.norm(vdir)
-    assert np.allclose(vdir, src_vdir, atol=0.05)
+    np.testing.assert_allclose(vdir, src_vdir, atol=0.05, rtol=1e-5)
 
 
 @pytest.mark.slow
@@ -699,15 +699,15 @@ class TestSyntheticRadiograph:
         assert isinstance(x, u.Quantity)
         assert x.unit == u.m
         assert x.shape == (expected["bins"][0],)
-        assert np.isclose(np.min(x), expected["xrange"][0], rtol=1e4)
-        assert np.isclose(np.max(x), expected["xrange"][1], rtol=1e4)
+        np.testing.assert_allclose(np.min(x), expected["xrange"][0], rtol=1e4, atol=1e-8)
+        np.testing.assert_allclose(np.max(x), expected["xrange"][1], rtol=1e4, atol=1e-8)
 
         y = results[1]
         assert isinstance(y, u.Quantity)
         assert y.unit == u.m
         assert y.shape == (expected["bins"][1],)
-        assert np.isclose(np.min(y), expected["yrange"][0], rtol=1e4)
-        assert np.isclose(np.max(y), expected["yrange"][1], rtol=1e4)
+        np.testing.assert_allclose(np.min(y), expected["yrange"][0], rtol=1e4, atol=1e-8)
+        np.testing.assert_allclose(np.max(y), expected["yrange"][1], rtol=1e4, atol=1e-8)
 
         histogram = results[2]
         assert isinstance(histogram, np.ndarray)
@@ -843,7 +843,7 @@ def test_gaussian_sphere_analytical_comparison() -> None:
     ax.plot(h, theory_deflect)
     """
 
-    assert np.isclose(max_deflection, sim.max_deflection.to(u.rad).value, atol=1e-3)
+    np.testing.assert_allclose(max_deflection, sim.max_deflection.to(u.rad).value, atol=1e-3, rtol=1e-5)
 
 
 @pytest.mark.parametrize(
@@ -961,10 +961,10 @@ def test_add_wire_mesh_accuracy() -> None:
     """
 
     # Verify that the edges of the mesh are imaged correctly
-    assert np.isclose(measured_width, true_width, 1)
+    np.testing.assert_allclose(measured_width, true_width, 1, atol=1e-8)
 
     # Verify that the spacing is correct by checking the FFT
-    assert np.isclose(measured_spacing, true_spacing, 0.5)
+    np.testing.assert_allclose(measured_spacing, true_spacing, 0.5, atol=1e-8)
 
 
 def test_radiography_disk_save_routine(tmp_path) -> None:
@@ -996,7 +996,7 @@ def test_radiography_disk_save_routine(tmp_path) -> None:
     _h, _v, i2 = cpr.synthetic_radiograph(path)
 
     # The two synthetic radiographs should be identical
-    assert np.allclose(i1, i2)
+    np.testing.assert_allclose(i1, i2, rtol=1e-5, atol=1e-8)
 
 
 def test_radiography_memory_save_routine() -> None:
@@ -1120,4 +1120,4 @@ def test_NIST_particle_stopping(
         np.reshape(sim.x[:, 1], (energies.shape[0], PARTICLES_PER_CONFIGURATION)) * u.m
     )
 
-    assert np.isclose(np.median(x_final, axis=-1), projected_ranges, rtol=0.05).all()
+    np.testing.assert_allclose(np.median(x_final, axis=-1), projected_ranges, rtol=0.05, atol=1e-8)

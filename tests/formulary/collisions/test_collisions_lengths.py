@@ -67,10 +67,7 @@ class Test_impact_parameter_perp:
             {},
         )
 
-    assert np.isclose(
-        coulomb.Coulomb_logarithm(1 * u.eV, 5 * u.m**-3, ("e", "e")),
-        coulomb.Coulomb_logarithm(11604.5220 * u.K, 5 * u.m**-3, ("e", "e")),
-    )
+    np.testing.assert_allclose(coulomb.Coulomb_logarithm(1 * u.eV, 5 * u.m**-3, ("e", "e")), coulomb.Coulomb_logarithm(11604.5220 * u.K, 5 * u.m**-3, ("e", "e")), rtol=1e-5, atol=1e-8)
 
 
 class Test_impact_parameter:

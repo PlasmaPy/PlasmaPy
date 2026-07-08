@@ -59,9 +59,9 @@ class Test_ColdPlasmaPermittivity:
         assert tuple_result.plasma is P
         assert isinstance(tuple_result, StixTensorElements)
 
-        assert np.isclose(S, S_analytical)
-        assert np.isclose(D, D_analytical)
-        assert np.isclose(P, P_analytical)
+        np.testing.assert_allclose(S, S_analytical, rtol=1e-5, atol=1e-8)
+        np.testing.assert_allclose(D, D_analytical, rtol=1e-5, atol=1e-8)
+        np.testing.assert_allclose(P, P_analytical, rtol=1e-5, atol=1e-8)
 
         L, R, P = rotating_tuple_result = cold_plasma_permittivity_LRP(
             B,
@@ -80,9 +80,9 @@ class Test_ColdPlasmaPermittivity:
         """
         n_3 = np.array([1, 1, 5 / 100]) * 1e19 / u.m**3
         S, D, P = cold_plasma_permittivity_SDP(B, three_species, n_3, omega)
-        assert np.isclose(S, -11753.3)
-        assert np.isclose(D, 13408.99181054283)
-        assert np.isclose(P, -10524167.9)
+        np.testing.assert_allclose(S, -11753.3, rtol=1e-5, atol=1e-8)
+        np.testing.assert_allclose(D, 13408.99181054283, rtol=1e-5, atol=1e-8)
+        np.testing.assert_allclose(P, -10524167.9, rtol=1e-5, atol=1e-8)
 
     def test_SD_to_LR_relationships(self) -> None:
         """
@@ -96,10 +96,10 @@ class Test_ColdPlasmaPermittivity:
         S, D, _ = cold_plasma_permittivity_SDP(B, single_species, n, omega)
         L, R, _ = cold_plasma_permittivity_LRP(B, single_species, n, omega)
 
-        assert np.isclose(R, S + D)
-        assert np.isclose(L, S - D)
-        assert np.isclose(S, (R + L) / 2)
-        assert np.isclose(D, (R - L) / 2)
+        np.testing.assert_allclose(R, S + D, rtol=1e-5, atol=1e-8)
+        np.testing.assert_allclose(L, S - D, rtol=1e-5, atol=1e-8)
+        np.testing.assert_allclose(S, (R + L) / 2, rtol=1e-5, atol=1e-8)
+        np.testing.assert_allclose(D, (R - L) / 2, rtol=1e-5, atol=1e-8)
 
     def test_numpy_array_workflow(self) -> None:
         """

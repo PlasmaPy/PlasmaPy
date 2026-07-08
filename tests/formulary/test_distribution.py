@@ -47,7 +47,7 @@ class Test_Maxwellian_1D:
             particle=self.particle,
             v_drift=0 * u.m / u.s,
         ).argmax()
-        assert np.isclose(self.v_vect[max_index].value, 0.0)
+        np.testing.assert_allclose(self.v_vect[max_index].value, 0.0, rtol=1e-5, atol=1e-8)
 
     def test_max_drift(self) -> None:
         """
@@ -60,7 +60,7 @@ class Test_Maxwellian_1D:
             particle=self.particle,
             v_drift=self.v_drift,
         ).argmax()
-        assert np.isclose(self.v_vect[max_index].value, self.v_drift.value)
+        np.testing.assert_allclose(self.v_vect[max_index].value, self.v_drift.value, rtol=1e-5, atol=1e-8)
 
     def test_norm(self) -> None:
         """
@@ -96,7 +96,7 @@ class Test_Maxwellian_1D:
         ).sum()
         std = np.sqrt(std)
         T_distri = (std**2 / k_B * m_e).to(u.K)
-        assert np.isclose(T_distri.value, self.T_e.value)
+        np.testing.assert_allclose(T_distri.value, self.T_e.value, rtol=1e-5, atol=1e-8)
 
     def test_units_no_vTh(self) -> None:
         """
@@ -1063,7 +1063,7 @@ class Test_kappa_velocity_1D:
             particle=self.particle,
             v_drift=0 * u.m / u.s,
         ).argmax()
-        assert np.isclose(self.v_vect[max_index].value, 0.0)
+        np.testing.assert_allclose(self.v_vect[max_index].value, 0.0, rtol=1e-5, atol=1e-8)
 
     def test_max_drift(self) -> None:
         """
@@ -1077,7 +1077,7 @@ class Test_kappa_velocity_1D:
             particle=self.particle,
             v_drift=self.v_drift,
         ).argmax()
-        assert np.isclose(self.v_vect[max_index].value, self.v_drift.value)
+        np.testing.assert_allclose(self.v_vect[max_index].value, self.v_drift.value, rtol=1e-5, atol=1e-8)
 
     # TODO: Need to add a test to see if the kappa distribution goes to a  # noqa: FIX002
     # Maxwellian in the limit of large κ
@@ -1121,7 +1121,7 @@ class Test_kappa_velocity_1D:
         ).sum()
         std = np.sqrt(std)
         T_distri = (std**2 / k_B * m_e).to(u.K)
-        assert np.isclose(T_distri.value, self.T_e.value)
+        np.testing.assert_allclose(T_distri.value, self.T_e.value, rtol=1e-5, atol=1e-8)
 
     def test_units_no_vTh(self) -> None:
         """

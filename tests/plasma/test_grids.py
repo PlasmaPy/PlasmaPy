@@ -259,9 +259,9 @@ def test_AbstractGrid_uniform_attributes(
     # If an expected value is given, verify the attribute matches
     if value is not None:
         if isinstance(value, np.ndarray):
-            assert np.allclose(attr, value, rtol=0.1)
+            np.testing.assert_allclose(attr, value, rtol=0.1, atol=1e-8)
         elif isinstance(value, float | int):
-            assert np.isclose(attr, value, rtol=0.1)
+            np.testing.assert_allclose(attr, value, rtol=0.1, atol=1e-8)
         else:
             assert attr == value
 
@@ -299,9 +299,9 @@ def test_AbstractGrid_nonuniform_attributes(
     # If an expected value is given, verify the attribute matches
     if value is not None:
         if isinstance(value, np.ndarray):
-            assert np.allclose(attr, value, rtol=0.1)
+            np.testing.assert_allclose(attr, value, rtol=0.1, atol=1e-8)
         elif isinstance(value, float | int):
-            assert np.isclose(attr, value, rtol=0.1)
+            np.testing.assert_allclose(attr, value, rtol=0.1, atol=1e-8)
         else:
             assert attr == value
 
@@ -555,7 +555,7 @@ def test_soften_edges(uniform_cartesian_grid, width) -> None:
     assert_quantity_allclose(grid["rho"][:, :, -1], 0 * u.kg / u.m**3)
 
     # Assert center value is nearly unchanged
-    assert np.isclose(grid["rho"][xi, yi, zi], center_value)
+    np.testing.assert_allclose(grid["rho"][xi, yi, zi], center_value, rtol=1e-5, atol=1e-8)
 
 
 create_args_uniform_cartesian = [
@@ -614,12 +614,7 @@ def test_uniform_cartesian_NN_interp(
     pout = uniform_cartesian_grid.nearest_neighbor_interpolator(pos, *quantities)
 
     # Should be correct to within dx/2, so 0.6 leaves some room
-    assert np.allclose(
-        pout,
-        expected,
-        atol=0.6 * uniform_cartesian_grid.dax0,
-        equal_nan=True,
-    )
+    np.testing.assert_allclose(np.asarray(pout), np.asarray(expected), atol=(0.6 * uniform_cartesian_grid.dax0).value, equal_nan=True, rtol=1e-5)
 
 
 @pytest.mark.parametrize(
@@ -662,7 +657,7 @@ def test_uniform_cartesian_NN_interp_persistence(uniform_cartesian_grid) -> None
 
     # Transpose of pos is required because pout is ordered first by quantity
     # (axis in this case) while pos is [N,3]
-    assert np.allclose(pout, pos[:, [0, 1]].T, atol=0.6 * uniform_cartesian_grid.dax0)
+    np.testing.assert_allclose(np.asarray(pout), np.asarray(pos[:, [0, 1]].T), atol=(0.6 * uniform_cartesian_grid.dax0).value, rtol=1e-5)
 
     # Change quantities with persistent still True
     # Code should detect this and automatically run as
@@ -675,7 +670,7 @@ def test_uniform_cartesian_NN_interp_persistence(uniform_cartesian_grid) -> None
         persistent=True,
     )
 
-    assert np.allclose(pout, pos[:, [0, 2]].T, atol=0.6 * uniform_cartesian_grid.dax0)
+    np.testing.assert_allclose(np.asarray(pout), np.asarray(pos[:, [0, 2]].T), atol=(0.6 * uniform_cartesian_grid.dax0).value, rtol=1e-5)
 
 
 # **********************************************************************
@@ -785,7 +780,7 @@ def test_nonuniform_cartesian_NN_interp(
     # for this test
     dx_max = np.max(np.gradient(nonuniform_cartesian_grid.grid[:, 0]))
 
-    assert np.allclose(pout, expected, atol=dx_max, equal_nan=True)
+    np.testing.assert_allclose(np.asarray(pout), np.asarray(expected), atol=np.asarray(dx_max), equal_nan=True, rtol=1e-5)
 
 
 @pytest.mark.filterwarnings(
@@ -806,7 +801,7 @@ def test_nonuniform_cartesian_nearest_neighbor_interpolator() -> None:
     # One position
     pos = np.array([0.1, -0.3, 0]) * u.cm
     pout = grid.nearest_neighbor_interpolator(pos, "x", persistent=True)
-    assert np.allclose(pos[0], pout, atol=0.5)
+    np.testing.assert_allclose(pos[0], pout, atol=0.5, rtol=1e-5)
 
     # Test out of bounds
     pos = np.array([-2, -0.3, 0]) * u.cm
@@ -817,7 +812,7 @@ def test_nonuniform_cartesian_nearest_neighbor_interpolator() -> None:
     pos = np.array([[0.1, -0.3, 0], [0.1, -0.3, 0]]) * u.cm
     pout1 = grid.nearest_neighbor_interpolator(pos, "x", "y", persistent=False)
     pout2 = grid.nearest_neighbor_interpolator(pos, "x", "y", persistent=True)
-    assert np.allclose(pout1, pout2)
+    np.testing.assert_allclose(pout1, pout2, rtol=1e-5, atol=1e-8)
 
 
 @pytest.mark.parametrize(
@@ -864,12 +859,12 @@ def test_volume_averaged_interpolator_at_several_positions(
 ) -> None:
     pout = uniform_cartesian_grid.volume_averaged_interpolator(pos, *what)
     if len(what) == 1:
-        assert np.allclose(pout, expected)
+        np.testing.assert_allclose(pout, expected, rtol=1e-5, atol=1e-8)
     else:
         assert isinstance(pout, tuple)
         assert len(pout) == len(what)
         for ii in range(len(what)):
-            assert np.allclose(pout[ii], expected[ii])
+            np.testing.assert_allclose(pout[ii], expected[ii], rtol=1e-5, atol=1e-8)
 
 
 def test_volume_averaged_interpolator_missing_key(uniform_cartesian_grid) -> None:
@@ -956,11 +951,7 @@ def test_volume_averaged_interpolator_known_solutions() -> None:
 
     pts = grid.volume_averaged_interpolator(pos, "B_z", persistent=True)
 
-    assert np.allclose(
-        pts.value,
-        np.array([np.nan, 0, 0.5, 1, 1.5, 2, 2.5, 3, np.nan]),
-        equal_nan=True,
-    )
+    np.testing.assert_allclose(pts.value, np.array([np.nan, 0, 0.5, 1, 1.5, 2, 2.5, 3, np.nan]), equal_nan=True, rtol=1e-5, atol=1e-8)
 
 
 def test_volume_averaged_interpolator_compare_NN_1D(uniform_cartesian_grid) -> None:
@@ -1124,4 +1115,4 @@ def test_fast_nearest_neighbor_interpolate() -> None:
 
     result = grids._fast_nearest_neighbor_interpolate(pos, ax)
 
-    assert np.allclose(expected, result)
+    np.testing.assert_allclose(expected, result, rtol=1e-5, atol=1e-8)

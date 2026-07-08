@@ -49,4 +49,4 @@ class TestCFL_limit_electromagnetic_yee:
             atol = 1e-8
 
         rc = CFL_limit_electromagnetic_yee(*args, **kwargs)
-        assert np.allclose(rc, expected, atol=atol)
+        np.testing.assert_allclose(rc, expected, atol=atol, rtol=1e-5)

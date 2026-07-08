@@ -22,7 +22,7 @@ from plasmapy.utils.exceptions import RelativityError
 
 def test_deBroglie_wavelength() -> None:
     dbwavelength1 = deBroglie_wavelength(2e7 * u.cm / u.s, "e")
-    assert np.isclose(dbwavelength1.value, 3.628845222852886e-11)
+    np.testing.assert_allclose(dbwavelength1.value, 3.628845222852886e-11, rtol=1e-5, atol=1e-8)
     assert dbwavelength1.unit == u.m
 
     dbwavelength2 = deBroglie_wavelength(0 * u.m / u.s, "e")
@@ -31,15 +31,15 @@ def test_deBroglie_wavelength() -> None:
     V_array = np.array([2e5, 0]) * u.m / u.s
     dbwavelength_arr = deBroglie_wavelength(V_array, "e")
 
-    assert np.isclose(dbwavelength_arr.value[0], 3.628845222852886e-11)
+    np.testing.assert_allclose(dbwavelength_arr.value[0], 3.628845222852886e-11, rtol=1e-5, atol=1e-8)
     assert dbwavelength_arr.value[1] == np.inf
     assert dbwavelength_arr.unit == u.m
 
     V_array = np.array([2e5, 2e5]) * u.m / u.s
     dbwavelength_arr = deBroglie_wavelength(V_array, "e")
 
-    assert np.isclose(dbwavelength_arr.value[0], 3.628845222852886e-11)
-    assert np.isclose(dbwavelength_arr.value[1], 3.628845222852886e-11)
+    np.testing.assert_allclose(dbwavelength_arr.value[0], 3.628845222852886e-11, rtol=1e-5, atol=1e-8)
+    np.testing.assert_allclose(dbwavelength_arr.value[1], 3.628845222852886e-11, rtol=1e-5, atol=1e-8)
     assert dbwavelength_arr.unit == u.m
 
     assert deBroglie_wavelength(-5e5 * u.m / u.s, "p") == deBroglie_wavelength(
@@ -262,4 +262,4 @@ class TestQuantumTheta:
         """Compare the calculated theta with the expected value."""
         theta = quantum_theta(T, n_e)
 
-        assert np.isclose(theta.value, expected_theta)
+        np.testing.assert_allclose(theta.value, expected_theta, rtol=1e-5, atol=1e-8)
