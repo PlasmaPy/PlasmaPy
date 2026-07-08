@@ -132,7 +132,9 @@ def test_trilinear_approx() -> None:
     # Testing Trilinear Approx function on a midpoint
     approx = tlApprox(mid[0], mid[1], mid[2])
     approx = approx.flatten()
-    np.testing.assert_allclose(approx, [-5.39130435, -21.5652174, 23.68667299], atol=_EQUALITY_ATOL, rtol=1e-5)
+    np.testing.assert_allclose(
+        approx, [-5.39130435, -21.5652174, 23.68667299], atol=_EQUALITY_ATOL, rtol=1e-5
+    )
 
 
 class Test_reduction:
@@ -231,7 +233,12 @@ class Test_locate_null_point:
     @pytest.mark.parametrize(("kwargs", "expected"), test_locate_null_point_values)
     def test_locate_null_point_vals(self, kwargs, expected) -> None:
         r"""Test expected values."""
-        np.testing.assert_allclose(_locate_null_point(**kwargs).flatten(), expected, atol=_EQUALITY_ATOL, rtol=1e-5)
+        np.testing.assert_allclose(
+            _locate_null_point(**kwargs).flatten(),
+            expected,
+            atol=_EQUALITY_ATOL,
+            rtol=1e-5,
+        )
 
 
 @pytest.mark.slow
@@ -300,8 +307,12 @@ def test_null_point_find4() -> None:
     first_loc4 = npoints4[0].loc.flatten()
     second_loc4 = npoints4[1].loc.flatten()
     assert len(npoints4) == 2
-    np.testing.assert_allclose(first_loc4, [5.5, 5.3, 5.5], atol=_EQUALITY_ATOL, rtol=1e-5)
-    np.testing.assert_allclose(second_loc4, [5.5, 5.5, 5.5], atol=_EQUALITY_ATOL, rtol=1e-5)
+    np.testing.assert_allclose(
+        first_loc4, [5.5, 5.3, 5.5], atol=_EQUALITY_ATOL, rtol=1e-5
+    )
+    np.testing.assert_allclose(
+        second_loc4, [5.5, 5.5, 5.5], atol=_EQUALITY_ATOL, rtol=1e-5
+    )
 
 
 @pytest.mark.slow

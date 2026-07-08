@@ -59,7 +59,9 @@ def test_magnetic_pressure() -> None:
 
     assert magnetic_pressure(B) == magnetic_energy_density(B.to(u.G))
 
-    np.testing.assert_allclose(magnetic_pressure(B).value, 397887.35772973835, rtol=1e-5, atol=1e-8)
+    np.testing.assert_allclose(
+        magnetic_pressure(B).value, 397887.35772973835, rtol=1e-5, atol=1e-8
+    )
 
     with pytest.warns(u.UnitsWarning):
         magnetic_pressure(5)

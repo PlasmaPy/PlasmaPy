@@ -331,7 +331,9 @@ class BaseFFTests(ABC):
             np.testing.assert_allclose(y_err, y_err_expected, rtol=1e-5, atol=1e-8)
 
             if y is not None:
-                np.testing.assert_allclose(y, self.func(x, *params), rtol=1e-5, atol=1e-8)  # ty:ignore[not-iterable]
+                np.testing.assert_allclose(
+                    y, self.func(x, *params), rtol=1e-5, atol=1e-8
+                )  # ty:ignore[not-iterable]
 
     @pytest.mark.parametrize(
         ("x", "kwargs", "with_condition"),
@@ -392,8 +394,15 @@ class BaseFFTests(ABC):
 
         assert ff_obj.curve_fit_results is not None
         np.testing.assert_allclose(ff_obj.rsq, 1.0, rtol=1e-5, atol=1e-8)
-        np.testing.assert_allclose(ff_obj.param_errors, tuple([0] * len(ff_obj.param_names)), atol=1.5e-8, rtol=1e-5)
-        np.testing.assert_allclose(ff_obj.params, self._test_params, rtol=1e-5, atol=1e-8)
+        np.testing.assert_allclose(
+            ff_obj.param_errors,
+            tuple([0] * len(ff_obj.param_names)),
+            atol=1.5e-8,
+            rtol=1e-5,
+        )
+        np.testing.assert_allclose(
+            ff_obj.params, self._test_params, rtol=1e-5, atol=1e-8
+        )
 
 
 class TestFFExponential(BaseFFTests):
@@ -594,4 +603,6 @@ class TestFFLinear(BaseFFTests):
                 np.testing.assert_allclose(results[0], root, rtol=1e-5, atol=1e-8)
                 assert np.isnan(results[1])
             else:
-                np.testing.assert_allclose(results, [root, root_err], rtol=1e-5, atol=1e-8)
+                np.testing.assert_allclose(
+                    results, [root, root_err], rtol=1e-5, atol=1e-8
+                )

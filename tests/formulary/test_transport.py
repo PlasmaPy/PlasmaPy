@@ -823,14 +823,18 @@ class Test__nondim_tc_e_braginskii:
     def test_known_values_perp(self, Z, field_orientation, expected) -> None:
         """Check some known values"""
         kappa_e_hat = _nondim_tc_e_braginskii(self.big_hall, Z, field_orientation)
-        np.testing.assert_allclose(kappa_e_hat * self.big_hall**2, expected, atol=1e-1, rtol=1e-5)
+        np.testing.assert_allclose(
+            kappa_e_hat * self.big_hall**2, expected, atol=1e-1, rtol=1e-5
+        )
 
     @pytest.mark.parametrize("Z", [1, 2, 3, 4, np.inf])
     def test_unmagnetized(self, Z) -> None:
         """Confirm perp -> par as B -> 0"""
         kappa_e_hat_par = _nondim_tc_e_braginskii(self.small_hall, Z, "par")
         kappa_e_hat_perp = _nondim_tc_e_braginskii(self.small_hall, Z, "perp")
-        np.testing.assert_allclose(kappa_e_hat_par, kappa_e_hat_perp, rtol=1e-3, atol=1e-8)
+        np.testing.assert_allclose(
+            kappa_e_hat_par, kappa_e_hat_perp, rtol=1e-3, atol=1e-8
+        )
 
     @pytest.mark.parametrize("Z", [1, 4])
     def test_cross_vs_ji_held(self, Z) -> None:
@@ -863,19 +867,25 @@ class Test__nondim_tc_i_braginskii:
         """Check some known values"""
         kappa_i_hat = _nondim_tc_i_braginskii(self.big_hall, field_orientation="perp")
         expected = 2.0  # Braginskii '65 eq (2.16)
-        np.testing.assert_allclose(kappa_i_hat * self.big_hall**2, expected, atol=1e-1, rtol=1e-5)
+        np.testing.assert_allclose(
+            kappa_i_hat * self.big_hall**2, expected, atol=1e-1, rtol=1e-5
+        )
 
     def test_unmagnetized(self) -> None:
         """Confirm perp -> par as B -> 0"""
         kappa_i_hat_par = _nondim_tc_i_braginskii(self.small_hall, "par")
         kappa_i_hat_perp = _nondim_tc_i_braginskii(self.small_hall, "perp")
-        np.testing.assert_allclose(kappa_i_hat_par, kappa_i_hat_perp, rtol=1e-3, atol=1e-8)
+        np.testing.assert_allclose(
+            kappa_i_hat_par, kappa_i_hat_perp, rtol=1e-3, atol=1e-8
+        )
 
     def test_cross_vs_ji_held_K2(self) -> None:
         """Confirm cross agrees with ji-held model when K=2"""
         kappa_i_hat_brag = _nondim_tc_i_braginskii(self.big_hall, "cross")
         kappa_i_hat_jh = _nondim_tc_i_ji_held(self.big_hall, 1, 0, 100, "cross", K=2)
-        np.testing.assert_allclose(kappa_i_hat_brag, kappa_i_hat_jh, rtol=2e-2, atol=1e-8)
+        np.testing.assert_allclose(
+            kappa_i_hat_brag, kappa_i_hat_jh, rtol=2e-2, atol=1e-8
+        )
 
 
 # test class for _nondim_tec_braginskii function:
@@ -914,7 +924,9 @@ class Test__nondim_tec_braginskii:
         """Cross should roughly agree with ji-held"""
         beta_hat_cross_brag = _nondim_tec_braginskii(self.big_hall, Z, "cross")
         beta_hat_cross_jh = _nondim_tec_ji_held(self.big_hall, Z, "cross")
-        np.testing.assert_allclose(beta_hat_cross_brag, beta_hat_cross_jh, rtol=3e-2, atol=1e-8)
+        np.testing.assert_allclose(
+            beta_hat_cross_brag, beta_hat_cross_jh, rtol=3e-2, atol=1e-8
+        )
 
 
 # test class for _nondim_resist_braginskii function:
@@ -953,7 +965,9 @@ class Test__nondim_resist_braginskii:
         """Cross should roughly agree with ji-held at hall 0.1"""
         alpha_hat_cross_brag = _nondim_resist_braginskii(0.1, Z, "cross")
         alpha_hat_cross_jh = _nondim_resist_ji_held(0.1, Z, "cross")
-        np.testing.assert_allclose(alpha_hat_cross_brag, alpha_hat_cross_jh, rtol=5e-2, atol=1e-8)
+        np.testing.assert_allclose(
+            alpha_hat_cross_brag, alpha_hat_cross_jh, rtol=5e-2, atol=1e-8
+        )
 
 
 # test class for _nondim_visc_i_braginskii function:
@@ -973,14 +987,18 @@ class Test__nondim_visc_i_braginskii:
         """Check some known values"""
         eta_i_hat = _nondim_visc_i_braginskii(self.big_hall)
         eta_i_hat_with_powers = eta_i_hat * self.big_hall**power
-        np.testing.assert_allclose(eta_i_hat_with_powers, expected, atol=1e-2, rtol=1e-5)
+        np.testing.assert_allclose(
+            eta_i_hat_with_powers, expected, atol=1e-2, rtol=1e-5
+        )
 
     def test_vs_ji_held_K2(self) -> None:
         """Confirm agreement with ji-held model when K=2"""
         eta_i_hat_brag = _nondim_visc_i_braginskii(self.big_hall)
         eta_i_hat_jh = _nondim_visc_i_ji_held(self.big_hall, 1, 0, 100, K=2)
         for idx in (0, 1, 2, 3, 4):
-            np.testing.assert_allclose(eta_i_hat_brag[idx], eta_i_hat_jh[idx], rtol=2e-2, atol=1e-8)
+            np.testing.assert_allclose(
+                eta_i_hat_brag[idx], eta_i_hat_jh[idx], rtol=2e-2, atol=1e-8
+            )
 
 
 # test class for _nondim_visc_e_braginskii function:
@@ -1008,9 +1026,13 @@ class Test__nondim_visc_e_braginskii:
         if idx == 0:
             np.testing.assert_allclose(beta_hat[idx], expected, atol=1e-2, rtol=1e-5)
         elif idx in {1, 2}:
-            np.testing.assert_allclose(beta_hat[idx] * self.big_hall**2, expected, atol=1e-2, rtol=1e-5)
+            np.testing.assert_allclose(
+                beta_hat[idx] * self.big_hall**2, expected, atol=1e-2, rtol=1e-5
+            )
         elif idx in {3, 4}:
-            np.testing.assert_allclose(beta_hat[idx] * self.big_hall, expected, atol=1e-1, rtol=1e-5)
+            np.testing.assert_allclose(
+                beta_hat[idx] * self.big_hall, expected, atol=1e-1, rtol=1e-5
+            )
 
 
 def test_fail__check_Z_nan() -> None:

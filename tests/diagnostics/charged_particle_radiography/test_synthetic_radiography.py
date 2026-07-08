@@ -699,15 +699,23 @@ class TestSyntheticRadiograph:
         assert isinstance(x, u.Quantity)
         assert x.unit == u.m
         assert x.shape == (expected["bins"][0],)
-        np.testing.assert_allclose(np.min(x), expected["xrange"][0], rtol=1e4, atol=1e-8)
-        np.testing.assert_allclose(np.max(x), expected["xrange"][1], rtol=1e4, atol=1e-8)
+        np.testing.assert_allclose(
+            np.min(x), expected["xrange"][0], rtol=1e4, atol=1e-8
+        )
+        np.testing.assert_allclose(
+            np.max(x), expected["xrange"][1], rtol=1e4, atol=1e-8
+        )
 
         y = results[1]
         assert isinstance(y, u.Quantity)
         assert y.unit == u.m
         assert y.shape == (expected["bins"][1],)
-        np.testing.assert_allclose(np.min(y), expected["yrange"][0], rtol=1e4, atol=1e-8)
-        np.testing.assert_allclose(np.max(y), expected["yrange"][1], rtol=1e4, atol=1e-8)
+        np.testing.assert_allclose(
+            np.min(y), expected["yrange"][0], rtol=1e4, atol=1e-8
+        )
+        np.testing.assert_allclose(
+            np.max(y), expected["yrange"][1], rtol=1e4, atol=1e-8
+        )
 
         histogram = results[2]
         assert isinstance(histogram, np.ndarray)
@@ -843,7 +851,9 @@ def test_gaussian_sphere_analytical_comparison() -> None:
     ax.plot(h, theory_deflect)
     """
 
-    np.testing.assert_allclose(max_deflection, sim.max_deflection.to(u.rad).value, atol=1e-3, rtol=1e-5)
+    np.testing.assert_allclose(
+        max_deflection, sim.max_deflection.to(u.rad).value, atol=1e-3, rtol=1e-5
+    )
 
 
 @pytest.mark.parametrize(
@@ -1120,4 +1130,6 @@ def test_NIST_particle_stopping(
         np.reshape(sim.x[:, 1], (energies.shape[0], PARTICLES_PER_CONFIGURATION)) * u.m
     )
 
-    np.testing.assert_allclose(np.median(x_final, axis=-1), projected_ranges, rtol=0.05, atol=1e-8)
+    np.testing.assert_allclose(
+        np.median(x_final, axis=-1), projected_ranges, rtol=0.05, atol=1e-8
+    )

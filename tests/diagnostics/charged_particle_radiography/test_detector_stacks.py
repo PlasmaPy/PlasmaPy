@@ -119,7 +119,9 @@ def test_film_stack_num_active(hdv2_stack) -> None:
 @check_database_connection
 def test_film_stack_thickness(hdv2_stack) -> None:
     # Test thickness property
-    np.testing.assert_allclose(hdv2_stack.thickness.to(u.mm).value, 1.19, rtol=1e-5, atol=1e-8)
+    np.testing.assert_allclose(
+        hdv2_stack.thickness.to(u.mm).value, 1.19, rtol=1e-5, atol=1e-8
+    )
 
 
 @check_database_connection
@@ -141,7 +143,9 @@ def test_film_stack_energy_bands_active(hdv2_stack) -> None:
     # Expected energy bands, in MeV (only in active layers)
     expected = np.array([[3.5, 3.8], [4.6, 4.9], [5.6, 5.7], [6.4, 6.5], [7.1, 7.2]])
 
-    np.testing.assert_allclose(ebands.to(u.MeV).value[:5, :], expected, atol=0.15, rtol=1e-5)
+    np.testing.assert_allclose(
+        ebands.to(u.MeV).value[:5, :], expected, atol=0.15, rtol=1e-5
+    )
 
 
 @check_database_connection
@@ -155,4 +159,6 @@ def test_film_stack_energy_bands_inum_active(hdv2_stack) -> None:
     )
     # Expected first 5 energy bands
     expected = np.array([[0.1, 4.2], [3.5, 3.8], [3.9, 5.1], [4.6, 4.9], [4.9, 6]])
-    np.testing.assert_allclose(ebands.to(u.MeV).value[0:5, :], expected, atol=0.15, rtol=1e-5)
+    np.testing.assert_allclose(
+        ebands.to(u.MeV).value[0:5, :], expected, atol=0.15, rtol=1e-5
+    )

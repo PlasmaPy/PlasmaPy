@@ -366,7 +366,12 @@ def test_inertial_length() -> None:
     r"""Test the inertial_length function in lengths.py."""
     assert inertial_length(n_i, particle="p+").unit.is_equivalent(u.m)
 
-    np.testing.assert_allclose(inertial_length(mu * u.cm**-3, particle="p+").cgs.value, 2.28e7, rtol=0.01, atol=1e-8)
+    np.testing.assert_allclose(
+        inertial_length(mu * u.cm**-3, particle="p+").cgs.value,
+        2.28e7,
+        rtol=0.01,
+        atol=1e-8,
+    )
 
     inertial_length_electron_plus = inertial_length(5.351 * u.m**-3, particle="e+")
     assert inertial_length_electron_plus == inertial_length(
@@ -394,7 +399,9 @@ def test_inertial_length() -> None:
 
     assert inertial_length(n_e, "e-").unit.is_equivalent(u.m)
 
-    np.testing.assert_allclose(inertial_length(1 * u.cm**-3, "e-").cgs.value, 5.31e5, rtol=1e-3, atol=1e-8)
+    np.testing.assert_allclose(
+        inertial_length(1 * u.cm**-3, "e-").cgs.value, 5.31e5, rtol=1e-3, atol=1e-8
+    )
 
     with pytest.warns(u.UnitsWarning):
         inertial_length(5, "e-")

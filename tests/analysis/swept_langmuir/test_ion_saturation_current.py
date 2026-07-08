@@ -264,12 +264,19 @@ class TestFindIonSaturationCurrent:
 
         # assertions on isat
         assert isinstance(isat, type(expected[0]))
-        np.testing.assert_allclose(isat.params, expected[0].params, rtol=1e-5, atol=1e-8)
+        np.testing.assert_allclose(
+            isat.params, expected[0].params, rtol=1e-5, atol=1e-8
+        )
 
         # assertions on extras
         assert isinstance(extras, ISatExtras)
         assert isinstance(extras.fitted_func, type(expected[1].fitted_func))
-        np.testing.assert_allclose(extras.fitted_func.params, expected[1].fitted_func.params, rtol=1e-5, atol=1e-8)
+        np.testing.assert_allclose(
+            extras.fitted_func.params,
+            expected[1].fitted_func.params,
+            rtol=1e-5,
+            atol=1e-8,
+        )
         np.testing.assert_allclose(extras.rsq, 1.0, rtol=1e-5, atol=1e-8)  # ty:ignore[no-matching-overload]
         assert extras.fitted_indices == expected[1].fitted_indices
 
@@ -297,4 +304,6 @@ class TestFindIonSaturationCurrent:
         np.testing.assert_allclose(isat.params.m, 3.81079e-6, rtol=1e-3, atol=0)
         np.testing.assert_allclose(isat.params.b, 0.000110422, rtol=2e-3, atol=0)
         np.testing.assert_allclose(extras.rsq, 0.982, rtol=0, atol=0.002)  # ty:ignore[no-matching-overload]
-        np.testing.assert_allclose(np.min(isat(voltage)), -0.00014275, rtol=2e-3, atol=0)
+        np.testing.assert_allclose(
+            np.min(isat(voltage)), -0.00014275, rtol=2e-3, atol=0
+        )

@@ -327,7 +327,9 @@ class TestHollweg:
         ws_expected = hollweg(**expected)
 
         for mode in ws:
-            np.testing.assert_allclose(ws[mode], ws_expected[mode], atol=1e-5, rtol=1.7e-4)
+            np.testing.assert_allclose(
+                ws[mode], ws_expected[mode], atol=1e-5, rtol=1.7e-4
+            )
 
     @pytest.mark.filterwarnings("ignore::plasmapy.utils.exceptions.PhysicsWarning")
     @pytest.mark.parametrize(

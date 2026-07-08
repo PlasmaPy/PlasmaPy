@@ -48,15 +48,31 @@ def test_gyrofrequency() -> None:
 
     assert gyrofrequency(B, "e-", to_hz=True).unit.is_equivalent(u.Hz)
 
-    np.testing.assert_allclose(gyrofrequency(1 * u.T, "e-").value, 175882008784.72018, rtol=1e-5, atol=1e-8)
+    np.testing.assert_allclose(
+        gyrofrequency(1 * u.T, "e-").value, 175882008784.72018, rtol=1e-5, atol=1e-8
+    )
 
-    np.testing.assert_allclose(gyrofrequency(2.4 * u.T, "e-").value, 422116821083.3284, rtol=1e-5, atol=1e-8)
+    np.testing.assert_allclose(
+        gyrofrequency(2.4 * u.T, "e-").value, 422116821083.3284, rtol=1e-5, atol=1e-8
+    )
 
-    np.testing.assert_allclose(gyrofrequency(1 * u.T, "e-", to_hz=True).value, 27992490076.528206, rtol=1e-5, atol=1e-8)
+    np.testing.assert_allclose(
+        gyrofrequency(1 * u.T, "e-", to_hz=True).value,
+        27992490076.528206,
+        rtol=1e-5,
+        atol=1e-8,
+    )
 
-    np.testing.assert_allclose(gyrofrequency(2.4 * u.T, "e-", signed=True).value, -422116821083.3284, rtol=1e-5, atol=1e-8)
+    np.testing.assert_allclose(
+        gyrofrequency(2.4 * u.T, "e-", signed=True).value,
+        -422116821083.3284,
+        rtol=1e-5,
+        atol=1e-8,
+    )
 
-    np.testing.assert_allclose(gyrofrequency(1 * u.G, "e-").cgs.value, 1.76e7, rtol=1e-3, atol=1e-8)
+    np.testing.assert_allclose(
+        gyrofrequency(1 * u.G, "e-").cgs.value, 1.76e7, rtol=1e-3, atol=1e-8
+    )
 
     with pytest.raises(TypeError), pytest.warns(u.UnitsWarning):
         gyrofrequency(u.m, "e-")
@@ -78,11 +94,23 @@ def test_gyrofrequency() -> None:
 
     assert gyrofrequency(B, particle=ion).unit.is_equivalent(u.rad / u.s)
 
-    np.testing.assert_allclose(gyrofrequency(1 * u.T, particle="p+").value, 95788335.834874, rtol=1e-5, atol=1e-8)
+    np.testing.assert_allclose(
+        gyrofrequency(1 * u.T, particle="p+").value,
+        95788335.834874,
+        rtol=1e-5,
+        atol=1e-8,
+    )
 
-    np.testing.assert_allclose(gyrofrequency(2.4 * u.T, particle="p+").value, 229892006.00369796, rtol=1e-5, atol=1e-8)
+    np.testing.assert_allclose(
+        gyrofrequency(2.4 * u.T, particle="p+").value,
+        229892006.00369796,
+        rtol=1e-5,
+        atol=1e-8,
+    )
 
-    np.testing.assert_allclose(gyrofrequency(1 * u.G, particle="p+").cgs.value, 9.58e3, rtol=2e-3, atol=1e-8)
+    np.testing.assert_allclose(
+        gyrofrequency(1 * u.G, particle="p+").cgs.value, 9.58e3, rtol=2e-3, atol=1e-8
+    )
 
     assert gyrofrequency(-5 * u.T, "p") == gyrofrequency(5 * u.T, "p")
 
@@ -130,9 +158,13 @@ def test_lower_hybrid_frequency() -> None:
     assert omega_lh.unit.is_equivalent(u.rad / u.s)
     left_hand_side = omega_lh**-2
     right_hand_side = 1 / (omega_ci**2 + omega_pi**2) + omega_ci**-1 * omega_ce**-1
-    np.testing.assert_allclose(left_hand_side.value, right_hand_side.value, rtol=1e-5, atol=1e-8)
+    np.testing.assert_allclose(
+        left_hand_side.value, right_hand_side.value, rtol=1e-5, atol=1e-8
+    )
 
-    np.testing.assert_allclose(omega_lh_hz.value, 299878691.3223296, rtol=1e-5, atol=1e-8)
+    np.testing.assert_allclose(
+        omega_lh_hz.value, 299878691.3223296, rtol=1e-5, atol=1e-8
+    )
 
     with pytest.raises(ValueError):
         lower_hybrid_frequency(0.2 * u.T, n_i=5e19 * u.m**-3, ion="asdfasd")
@@ -164,9 +196,13 @@ def test_upper_hybrid_frequency() -> None:
     assert omega_uh_hz.unit.is_equivalent(u.Hz)
     left_hand_side = omega_uh**2
     right_hand_side = omega_ce**2 + omega_pe**2
-    np.testing.assert_allclose(left_hand_side.value, right_hand_side.value, rtol=1e-5, atol=1e-8)
+    np.testing.assert_allclose(
+        left_hand_side.value, right_hand_side.value, rtol=1e-5, atol=1e-8
+    )
 
-    np.testing.assert_allclose(omega_uh_hz.value, 69385868857.90918, rtol=1e-5, atol=1e-8)
+    np.testing.assert_allclose(
+        omega_uh_hz.value, 69385868857.90918, rtol=1e-5, atol=1e-8
+    )
 
     with pytest.raises(ValueError):
         upper_hybrid_frequency(5 * u.T, n_e=-1 * u.m**-3)
@@ -206,10 +242,15 @@ def test_Buchsbaum_frequency() -> None:
             "venezuelan beaver cheese",
         )
 
-    np.testing.assert_allclose(Buchsbaum_frequency(
+    np.testing.assert_allclose(
+        Buchsbaum_frequency(
             B=0.1 * u.T,
             n1=1e18 * u.m**-3,
             n2=1e18 * u.m**-3,
             ion1="proton",
             ion2="He-4 +1",
-        ).value, 4805575.93140432, rtol=1e-5, atol=1e-8)
+        ).value,
+        4805575.93140432,
+        rtol=1e-5,
+        atol=1e-8,
+    )

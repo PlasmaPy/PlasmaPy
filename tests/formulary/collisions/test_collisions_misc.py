@@ -58,7 +58,9 @@ def test_Bethe_stopping(material, rho, I, n_e, T2) -> None:  # noqa: E741
     )
     NIST_stopping_space = NIST_stopping_space_density * rho
 
-    np.testing.assert_allclose(Bethe_stopping_space, NIST_stopping_space, rtol=1e-5, atol=1e-8)
+    np.testing.assert_allclose(
+        Bethe_stopping_space, NIST_stopping_space, rtol=1e-5, atol=1e-8
+    )
 
 
 class Test_Spitzer_resistivity:

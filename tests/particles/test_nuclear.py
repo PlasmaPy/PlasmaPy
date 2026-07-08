@@ -32,7 +32,9 @@ def test_nuclear_reaction_energy() -> None:
     reaction2 = "T + D -> n + alpha"
     released_energy1 = nuclear_reaction_energy(reaction1)
     released_energy2 = nuclear_reaction_energy(reaction2)
-    np.testing.assert_allclose((released_energy1.to(u.MeV)).value, 17.58, rtol=0.01, atol=1e-8)
+    np.testing.assert_allclose(
+        (released_energy1.to(u.MeV)).value, 17.58, rtol=0.01, atol=1e-8
+    )
     assert released_energy1 == released_energy2
     assert nuclear_reaction_energy(
         "n + p+ --> n + p+ + p- + p+",
@@ -45,8 +47,12 @@ def test_nuclear_reaction_energy_triple_alpha() -> None:
     triple_alpha2 = "Be-8 + alpha --> carbon-12"
     energy_triplealpha1 = nuclear_reaction_energy(triple_alpha1)
     energy_triplealpha2 = nuclear_reaction_energy(triple_alpha2)
-    np.testing.assert_allclose(energy_triplealpha1.to(u.keV).value, -91.8, atol=0.1, rtol=1e-5)
-    np.testing.assert_allclose(energy_triplealpha2.to(u.MeV).value, 7.367, atol=0.1, rtol=1e-5)
+    np.testing.assert_allclose(
+        energy_triplealpha1.to(u.keV).value, -91.8, atol=0.1, rtol=1e-5
+    )
+    np.testing.assert_allclose(
+        energy_triplealpha2.to(u.MeV).value, 7.367, atol=0.1, rtol=1e-5
+    )
     reactants = ["He-4", "alpha"]
     products = ["Be-8"]
     energy = nuclear_reaction_energy(reactants=reactants, products=products)
@@ -56,13 +62,17 @@ def test_nuclear_reaction_energy_triple_alpha() -> None:
 def test_nuclear_reaction_energy_alpha_decay() -> None:
     alpha_decay_example = "U-238 --> Th-234 + alpha"
     energy_alpha_decay = nuclear_reaction_energy(alpha_decay_example)
-    np.testing.assert_allclose(energy_alpha_decay.to(u.MeV).value, 4.26975, atol=1e-5, rtol=1e-5)
+    np.testing.assert_allclose(
+        energy_alpha_decay.to(u.MeV).value, 4.26975, atol=1e-5, rtol=1e-5
+    )
 
 
 def test_nuclear_reaction_energy_triple_alpha_r() -> None:
     triple_alpha1_r = "4*He-4 --> 2*Be-8"
     energy_triplealpha1_r = nuclear_reaction_energy(triple_alpha1_r)
-    np.testing.assert_allclose(energy_triplealpha1_r.to(u.keV).value, -91.8 * 2, atol=0.1, rtol=1e-5)
+    np.testing.assert_allclose(
+        energy_triplealpha1_r.to(u.keV).value, -91.8 * 2, atol=0.1, rtol=1e-5
+    )
 
 
 def test_nuclear_reaction_energy_beta() -> None:

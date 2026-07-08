@@ -314,7 +314,9 @@ def test_particle_tracker_potential_difference(
     final_expected_energy = (E_strength * L * point_particle.charge).to(u.J)
     final_simulated_energy = (0.5 * point_particle.mass * speeds[-1] ** 2).to(u.J)
 
-    np.testing.assert_allclose(final_expected_energy, final_simulated_energy, atol=0.5, rtol=5e-2)
+    np.testing.assert_allclose(
+        final_expected_energy, final_simulated_energy, atol=0.5, rtol=5e-2
+    )
 
 
 def test_asynchronous_time_step(no_particles_on_grids_instantiated) -> None:
@@ -877,7 +879,13 @@ class TestParticleTrajectory:
         )
 
         # Discard the first five points due to large relative error.
-        np.testing.assert_allclose(relativistic_theory_x[5:], save_routine.results["x"][5:, 0, 0], equal_nan=True, rtol=0.05, atol=1e-8)
+        np.testing.assert_allclose(
+            relativistic_theory_x[5:],
+            save_routine.results["x"][5:, 0, 0],
+            equal_nan=True,
+            rtol=0.05,
+            atol=1e-8,
+        )
 
         # Ensure that a non-relativistic analytic solution does not appear to fit
         # the relativistic trajectory within the defined tolerance parameters.
@@ -1000,7 +1008,13 @@ class TestParticleTrajectory:
         )
 
         # Discard the first five points due to large relative error.
-        np.testing.assert_allclose(classical_theory_x[5:], save_routine.results["x"][5:, 0, 0], equal_nan=True, rtol=0.05, atol=1e-8)
+        np.testing.assert_allclose(
+            classical_theory_x[5:],
+            save_routine.results["x"][5:, 0, 0],
+            equal_nan=True,
+            rtol=0.05,
+            atol=1e-8,
+        )
 
     @classmethod
     @pytest.mark.parametrize(

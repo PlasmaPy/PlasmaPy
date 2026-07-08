@@ -102,9 +102,19 @@ def test_Debye_number() -> None:
     assert Debye_number(T_e, n_e).unit.is_equivalent(u.dimensionless_unscaled)
 
     T_e_eV = T_e.to(u.eV, equivalencies=u.temperature_energy())
-    np.testing.assert_allclose(Debye_number(T_e, n_e).value, Debye_number(T_e_eV, n_e).value, rtol=1e-5, atol=1e-8)
+    np.testing.assert_allclose(
+        Debye_number(T_e, n_e).value,
+        Debye_number(T_e_eV, n_e).value,
+        rtol=1e-5,
+        atol=1e-8,
+    )
 
-    np.testing.assert_allclose(Debye_number(1 * u.eV, 1 * u.cm**-3).value, 1720862385.43342, rtol=1e-5, atol=1e-8)
+    np.testing.assert_allclose(
+        Debye_number(1 * u.eV, 1 * u.cm**-3).value,
+        1720862385.43342,
+        rtol=1e-5,
+        atol=1e-8,
+    )
 
     with pytest.warns(u.UnitsWarning):
         Debye_number(T_e, 4)
@@ -149,7 +159,12 @@ def test_Hall_parameter() -> None:
         u.dimensionless_unscaled,
     )
 
-    np.testing.assert_allclose(Hall_parameter(n, T, B, ion, particle).value, 70461.38821149625, rtol=1e-5, atol=1e-8)
+    np.testing.assert_allclose(
+        Hall_parameter(n, T, B, ion, particle).value,
+        70461.38821149625,
+        rtol=1e-5,
+        atol=1e-8,
+    )
 
     with pytest.warns(u.UnitsWarning):
         Hall_parameter(n, T, 1.0, ion, particle)

@@ -82,7 +82,9 @@ class Test_mass_density:
         ],
     )
     def test_values(self, args, kwargs, expected) -> None:
-        np.testing.assert_allclose(mass_density(*args, **kwargs), expected, rtol=1e-5, atol=1e-8)
+        np.testing.assert_allclose(
+            mass_density(*args, **kwargs), expected, rtol=1e-5, atol=1e-8
+        )
 
     def test_handle_nparrays(self) -> None:
         """Test for ability to handle numpy array quantities"""

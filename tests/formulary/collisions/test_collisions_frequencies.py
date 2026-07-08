@@ -421,7 +421,9 @@ class TestSingleParticleCollisionFrequencies:
                     coulomb_density_constant * charge_constant
                 )
 
-            np.testing.assert_allclose(calculated_limit_value, expected_limit_value, rtol=0.05, atol=0)
+            np.testing.assert_allclose(
+                calculated_limit_value, expected_limit_value, rtol=0.05, atol=0
+            )
 
     @pytest.mark.parametrize(
         ("expected_error", "constructor_arguments", "constructor_keyword_arguments"),

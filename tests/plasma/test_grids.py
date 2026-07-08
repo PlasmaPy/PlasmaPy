@@ -797,7 +797,7 @@ def test_nonuniform_cartesian_NN_interp(
     np.testing.assert_allclose(
         np.asarray(pout),
         np.asarray(expected),
-        atol=np.asarray(dx_max),
+        atol=float(np.asarray(dx_max)),
         equal_nan=True,
         rtol=1e-5,
     )
