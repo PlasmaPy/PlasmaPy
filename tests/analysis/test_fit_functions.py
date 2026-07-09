@@ -333,9 +333,9 @@ class BaseFFTests(ABC):
             if y is not None:
                 np.testing.assert_allclose(
                     y,
-                    self.func(x, *params),
+                    self.func(x, *params),  # ty:ignore[not-iterable]
                     rtol=1e-5,
-                    atol=1e-8,  # ty:ignore[not-iterable]
+                    atol=1e-8,
                 )
 
     @pytest.mark.parametrize(
