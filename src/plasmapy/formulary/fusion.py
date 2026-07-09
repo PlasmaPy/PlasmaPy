@@ -1,4 +1,4 @@
-from plasmapy.utils import data 
+from plasmapy.utils import data
 import astropy.units as u
 import numpy as np
 from scipy.interpolate import CubicSpline
@@ -24,33 +24,10 @@ with open(DATA_DIR / "bosch_hale_table_vii.json") as f:
 with open(DATA_DIR / "bosch_hale_table_viii.json") as f:
     table_viii = json.load(f)
 
-E_tab = np.array([row[0] for row in table_v["data"]]) * u.keV
-sigma_tab = {
-    name: np.array([row[i+1] for row in table_v["data"]]) * u.mbarn
-    for i, name in enumerate(table_v["columns"][1:])
-}
-
-T_tab = np.array([row[0] for row in table_viii["data"]]) *u.keV
-sv_tab = {
-    name: np.array([row[i+1] for row in table_viii["data"]]) * (u.cm**3/ u.s)
-    for i, name in enumerate(table_viii["columns"][1:])
-}
-
-available_reactions = [
-    'D(t,n)A', 
-    '3He(d,p)A', 
-    'D(d,p)T', 
-    'D(d,n)3He', 
-    '3He(3He,2p)A', 
-    '3He(t,n+p)A', 
-    '3He(t,d)A', 
-    'T(t,2n)A', 
-    '11B(p,a)2A'
-]
-
 def cross_section(energy:u.Quantity, reaction:str, source:str):
     r"""
-    Fusion cross-section :math:`\sigma(E)` from either the Bosch-Hale fit or ENDF data.
+    Fusion cross-section :math:`\sigma(E)` from either the Bosch-Hale fit 
+    or ENDF data.
 
     Parameters
     ----------
@@ -88,21 +65,21 @@ def cross_section(energy:u.Quantity, reaction:str, source:str):
     >>> cross_section(100 * u.keV, "D-T", "ENDF")  # doctest: +SKIP
     <Quantity [4.96e-28] m2>
     """
-    if reaction not in available_reactions:
-        raise ValueError(f"{reaction!r} is not in the available reactions allowed")
-    if source not in ("BH", "ENDF"):
-        raise ValueError(f"Unknown source {source!r}; expected 'BH' or 'ENDF'.")
-
     if source == "ENDF":
+        if reaction not in ENDF_rxns:
+            raise ValueError("Reaction in supported ENDF reactions")
+        
         return _ENDF_cross_section(energy, reaction)
 
-    # BH
     if source == "BH":
         if reaction not in xs_coeffs:
             raise ValueError("does not have available Bosch and Hale coefficients")
-        if not ((0 * u.keV < energy) & (energy < 4900 * u.keV)).all():
+        if not _in_BH_rxn_energy_range(energy, reaction):
             raise ValueError(f"{energy!r} is not in Bosch and Hale Cross Sectional energy range of 0 to 4900 keV")
+        
         return _BH_cross_section(energy, reaction)
+    
+    raise ValueError(f"Unknown source {source!r}; expected 'BH' or 'ENDF'.")
 
 def reactivity(ion_temp:u.Quantity, reaction:str, source:str):
     r"""
@@ -149,38 +126,50 @@ def reactivity(ion_temp:u.Quantity, reaction:str, source:str):
     >>> reactivity(10 * u.keV, "D-T", "ENDF")  # doctest: +SKIP
     <Quantity [1.13e-16] cm3 / s>
     """
-
-    if reaction not in available_reactions:
-        raise ValueError(f"{reaction} is not in the available reactions allowed")
-    if source not in ("BH", "ENDF"):
-        raise ValueError(f"Unknown source {source!r}; expected 'BH' or 'ENDF'.")
-    
     if source == "ENDF":
+        if reaction not in ENDF_rxns:
+            raise ValueError("Reaction in supported ENDF reactions")
+        
         return _ENDF_reactivity(ion_temp, reaction)
     
-    if not ((0 * u.keV < ion_temp) & (ion_temp < 190 * u.keV)).all():
-        raise ValueError(f"{ion_temp!r} is not in Bosch and Hale Reactivity energy range of 0 to 190 keV")
-    return _BH_reactivity(ion_temp, reaction)
 
+    if source == "BH":
+        if reaction not in rxty_coeffs:    
+            raise ValueError("does not have available Bosch and Hale coefficients")
+        if not _in_BH_rxn_ion_temp_range(ion_temp, reaction):
+            raise ValueError(f"{ion_temp!r} is not in Bosch and Hale Reactivity energy range of 0 to 190 keV")
+        
+        return _BH_reactivity(ion_temp, reaction)
+    
+    raise ValueError(f"Unknown source {source!r}; expected 'BH' or 'ENDF'.")
 
-mbarn = u.def_unit("mbarn", 1e-3 * u.barn)
+def _in_BH_rxn_energy_range(E, reaction):
+    rxn = _xs_coeff(reaction)
+    in_range = (rxn["E_min_keV"] * u.keV <= E) & (E <= rxn["E_max_keV"] * u.keV)
+    return bool(np.all(in_range))
+
+def _in_BH_rxn_ion_temp_range(T, reaction):
+    rxn = _rxty_coeff(reaction)
+    in_range = (rxn["T_min_keV"] * u.keV <= T) & (T <= rxn["T_max_keV"] * u.keV)
+    return bool(np.all(in_range))
 
 """
 Cross Section Function and its Helper Functions
 """
 
-def _get_xs_co(r):
+def _xs_coeff(r):
     return xs_coeffs[r]
 
-def _get_rxty(r):
+def _rxty_coeff(r):
     return rxty_coeffs[r]
 
-def _pade_polynomial(rxn, e):
+def _pade_polynomial(rxn, E):
     r"""
     Evaluate the Bosch-Hale Padé approximant for the S-function.
     """
-    S_vals = rxn["A1"] + e*(rxn["A2"] + e*(rxn["A3"] + e*(rxn["A4"] + e*rxn["A5"])))
-    S_vals /= 1 + e*(rxn["B1"] + e*(rxn["B2"] + e*(rxn["B3"] + e*rxn["B4"])))
+    S_vals = rxn["A1"] + E*(rxn["A2"] + 
+                            E*(rxn["A3"] + E*(rxn["A4"] + E*rxn["A5"])))
+    S_vals /= 1 + E*(rxn["B1"] + E*(rxn["B2"] + E*(rxn["B3"] + E*rxn["B4"])))
     return S_vals
 
 def _parametrization_formula(S_Vals, energy, rxn): #B&H Eq (8)
@@ -195,7 +184,7 @@ def _BH_cross_section(energy:u.Quantity, reaction:str):
     r"""
     Compute the fusion cross-section using the Bosch-Hale Padé parametrization.
     """
-    rxn = _get_xs_co(reaction)
+    rxn = _xs_coeff(reaction)
     E_keV = energy.to(u.keV).value
     S = _pade_polynomial(rxn, E_keV)
     sigma = _parametrization_formula(S, E_keV, rxn)
@@ -205,9 +194,10 @@ def _BH_cross_section(energy:u.Quantity, reaction:str):
 Reactivity Functions and its helpers
 """
 
-def _get_polynomial(T, r):
+def _rxty_polynomial(T, r):
     r"""
-    Evaluate the :math:`\theta(T)` Padé approximant for the Bosch-Hale reactivity.
+    Evaluate the :math:`\theta(T)` Padé approximant for the Bosch-Hale 
+    reactivity.
     """
     theta = T*(r["C2"] + T*(r["C4"] + T*r["C6"]))
     theta /= 1 + T*(r["C3"] + T*(r["C5"] + T*r["C7"]))
@@ -215,7 +205,7 @@ def _get_polynomial(T, r):
     theta = T/theta
     return theta
 
-def _get_xi(Theta, r):
+def _find_xi(Theta, r):
     r"""
     Compute the :math:`\xi` factor for the Bosch-Hale reactivity formula.
     """
@@ -224,7 +214,7 @@ def _get_xi(Theta, r):
     xi = (xi)**(1/3)
     return xi
 
-def _get_reactivity(T, r, theta, xi):
+def _find_reactivity(T, r, theta, xi):
     r"""
     Assemble the Bosch-Hale reactivity from its precomputed pieces.
     """
@@ -235,13 +225,14 @@ def _get_reactivity(T, r, theta, xi):
 @u.quantity_input
 def _BH_reactivity(ion_temp:u.Quantity, reaction:str):
     r"""
-    Compute the Maxwellian fusion reactivity using the Bosch-Hale parametrization.
+    Compute the Maxwellian fusion reactivity using the Bosch-Hale 
+    parametrization.
     """
-    rxn = _get_rxty(reaction)
+    rxn = _rxty_coeff(reaction)
     T_keV = ion_temp.to(u.keV).value
-    Theta = _get_polynomial(T_keV, rxn)
-    xi = _get_xi(Theta, rxn)
-    sv = _get_reactivity(T_keV, rxn, Theta, xi)
+    Theta = _rxty_polynomial(T_keV, rxn)
+    xi = _find_xi(Theta, rxn)
+    sv = _find_reactivity(T_keV, rxn, Theta, xi)
     return sv * (u.cm**3 / u.s)
 
 amu = 1.66053906660e-27           # atomic mass unit [kg]
@@ -259,7 +250,7 @@ h5_files = {
     '11B(p,a)2A': 'B-11(p,He-4)2He-4.h5'
 }
 
-new_rxns = list(h5_files)
+ENDF_rxns = list(h5_files)
 
 def _load_h5(path):
      
@@ -271,7 +262,6 @@ def _load_h5(path):
 def _load_reaction(rxn_key):
     E, sigma = _load_h5(DATA_DIR / h5_files[rxn_key])
     return E * 1e-3, sigma
-
 
 def _build_Xsec_interpolation(rxn_key):
     r"""
@@ -320,7 +310,8 @@ def _find_mu(rxn):
 @u.quantity_input(T=u.keV)
 def _ENDF_reactivity(T, rxn_key):
     r"""
-    Compute the Maxwellian fusion reactivity by integrating ENDF :math:`\sigma(E)`.
+    Compute the Maxwellian fusion reactivity by integrating ENDF:
+    math:`\sigma(E)`.
     """
     T_keV = np.atleast_1d(T.to(u.keV).value)
     mu = _find_mu(rxn_key)
