@@ -262,6 +262,24 @@ class Tracker(ParticleTracker):
         self._log(f"Source: {self.source} m")
         self._log(f"Detector: {self.detector} m")
 
+        # The source and detector planes are defined by their normal vectors,
+        # which point from each plane towards the grid origin. If either the
+        # source or the detector is located at the origin, that normal (and, for
+        # the source, the magnification) is undefined, so reject it with a clear
+        # error instead of silently producing NaN/inf geometry.
+        if np.linalg.norm(self.source) == 0:
+            raise ValueError(
+                "The source cannot be located at the grid origin "
+                f"(source = {source}). Place the source outside the grid, on "
+                "the opposite side of the origin from the detector.",
+            )
+        if np.linalg.norm(self.detector) == 0:
+            raise ValueError(
+                "The detector cannot be located at the grid origin "
+                f"(detector = {detector}). Place the detector outside the "
+                "grid, on the opposite side of the origin from the source.",
+            )
+
         # Calculate normal vectors (facing towards the grid origin) for both
         # the source and detector planes
         self.src_n = -self.source / np.linalg.norm(self.source)
