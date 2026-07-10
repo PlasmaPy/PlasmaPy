@@ -3,6 +3,7 @@
 import json
 from pathlib import Path
 
+import astropy.constants as const
 import astropy.units as u
 import h5py
 import numpy as np
@@ -341,8 +342,8 @@ def _BH_reactivity(ion_temp: u.Quantity, reaction: str) -> float:
     return sv * (u.cm**3 / u.s)
 
 
-amu = 1.66053906660e-27  # atomic mass unit [kg]
-e = 1.602176634e-19  # elementary charge [C]
+amu = const.u.si.value  # atomic mass unit [kg]
+e = const.e.si.value  # elementary charge [C]
 
 h5_files = {
     "D(t,n)A": "T(D,n)A.h5",
@@ -409,7 +410,7 @@ masses = {
     "T": 3.016,
     "3He": 3.016,
     "11B": 11.009305167,
-    "p": 1.007276466620409,
+    "p": const.m_p.to_value(u.u),
 }
 
 
