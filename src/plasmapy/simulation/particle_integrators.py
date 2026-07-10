@@ -14,13 +14,16 @@ __all__ = [
     "RelativisticBorisIntegrator",
     "RelativisticBorisIntegratorRRF",
 ]
-
+import warnings
 from abc import ABC, abstractmethod
 
 import astropy.constants as const
 import numpy as np
 
+from plasmapy.utils.exceptions import PhysicsWarning
+
 _c = const.c
+_hbar = const.hbar.si.value
 
 
 class AbstractIntegrator(ABC):
@@ -205,11 +208,12 @@ class RelativisticBorisIntegrator(AbstractIntegrator):
         r"""
         Helper method applying the relativistic Boris push to the proper velocity.
 
-        This method carries out the Lorentz-force part of the Boris push. It does not convert
-        back to a coordinate velocity or advance position, each push() method completes this
-        function. Both proper velocities are returned so the RRF pusher can estimate total
-        momentum & velocity p{n} and v{n} and apply the additional momentum corrections. The
-        regular relativistic boris pusher can be called to complete the timestep from uvel_L
+        This method carries out the Lorentz-force part of the Boris push. It
+        does not convert back to a coordinate velocity or advance position,
+        each push() method completes this function. Both proper velocities
+        are returned so the RRF pusher can estimate total momentum & velocity p{n}
+        and v{n} and apply the additional momentum corrections. The regular
+        relativistic boris pusher can be called to complete the timestep from uvel_L
         alone, and discards the pre Lorentz proper velocity (uvel)
 
         Parameters
@@ -218,13 +222,13 @@ class RelativisticBorisIntegrator(AbstractIntegrator):
             particle velocity at half timestep, in SI (meter/second) units.
         B : `~numpy.ndarray`
             magnetic field at full timestep, in SI (tesla) units.
-        E : float
+        E : `float`
             electric field at full timestep, in SI (V/m) units.
-        q : float
-            particle charge, in SI (Coulomb) units.
-        m : float
+        q : `float`
+            particle charge, in SI (coulomb) units.
+        m : `float`
             particle mass, in SI (kg) units.
-        dt : float
+        dt : `float`
             timestep, in SI (second) units.
 
         Returns
@@ -293,7 +297,7 @@ class RelativisticBorisIntegrator(AbstractIntegrator):
         .. [1] C. K. Birdsall, A. B. Langdon, "Plasma Physics via Computer
                Simulation", 2004, p. 58-63
         """
-        # discard uvel with _ pre-push proper velocity is only needed by the RRF pusher
+        # discard uvel, pre-push proper velocity is only needed by the RRF pusher
         _, uvel_L = RelativisticBorisIntegrator._boris_lorentz_push(v, B, E, q, m, dt)
         # You can show that this expression is equivalent to calculating
         # v_new  then calculating γnew using the usual formula
@@ -307,7 +311,9 @@ class RelativisticBorisIntegrator(AbstractIntegrator):
 
 
 class RelativisticBorisIntegratorRRF(RelativisticBorisIntegrator):
-    """Relativistic Boris Pusher with Tamburini Radiation Reaction Force Implementation."""
+    """Explicit relativistic Boris pusher, with radiation-reaction force
+    implementation.
+    """
 
     @staticmethod
     def push(x, v, B, E, q, m, dt):
@@ -336,10 +342,20 @@ class RelativisticBorisIntegratorRRF(RelativisticBorisIntegrator):
         v : `~numpy.ndarray`
             Particle velocity after Boris push algorithm, in SI (meter/second) units.
 
+        Warns
+        -----
+        : `~plasmapy.utils.exceptions.PhysicsWarning`
+            When :math:`F_R / F_L > 0.1` for any particle, violation of the
+            :math:`F_L \gg F_R` assumption of the post-Boris scheme.
+
+        : `~plasmapy.utils.exceptions.PhysicsWarning`
+            When the quantum parameter :math:`\chi > 0.1` for any particle,
+            violation of the classical-regime assumption.
+
         Notes
         -----
         This method is the specific push including a RRF damping effect within the
-        RelativisticBorisIntegratorRRF Class. This method takes into account a
+        `RelativisticBorisIntegratorRRF` class. This method takes into account a
         radiation reaction force under various important assumptions. The process of
         including this radiative damping force leaves the standard Boris algorithm
         unchanged and works in the following steps.
@@ -348,7 +364,7 @@ class RelativisticBorisIntegratorRRF(RelativisticBorisIntegrator):
            momentum p_L{n+1/2} and the initial momentum p{n-1/2} are evaluated
            and stored.
         2. The radiation reaction force is then estimated at the n integer
-           step state utilizing these values and various assumptions.
+           step state utilizing these values.
         3. This RRF is then applied as a momentum kick with the following
            equation serving as the basis: p{n+1/2} = p_L{n+1/2} + f_R{n} * dt.
 
@@ -356,7 +372,7 @@ class RelativisticBorisIntegratorRRF(RelativisticBorisIntegrator):
         :cite:t:`tamburini:2010`.
 
         This paper includes many important stipulations and utilizes the
-        Landau-Lifshitz radiation reaction approximation model. :cite:t:`landau:1975`
+        Landau-Lifshitz radiation-reaction approximation model :cite:p:`landau:1975`.
         The LL model simplifies the Abraham-Lorentz-Dirac (ALD) equation, which contains a
         third-order time derivative (da/dt, or a jerk term) that produces clearly
         unphysical solutions such as runaway (infinitely accelerating), and
@@ -366,10 +382,30 @@ class RelativisticBorisIntegratorRRF(RelativisticBorisIntegrator):
 
         1. "The acceleration of particles is dominated by the Lorentz force,
            with the RR force giving a smaller, albeit non negligible
-           contribution." F_L >> F_R :cite:p:`tamburini:2010`
+           contribution." :cite:p:`tamburini:2010` (:math:`F_L \gg F_R`) This
+           assumption actually arises as a requirement of the numerical scheme
+           rather than of the physics. Since the approximate integer-step velocity
+           v{n} is computed from Lorentz push alone (Eq. 12 of :cite:t:`tamburini:2010`),
+           the RR momentum kick must stay a small per-step correction. However, the actual
+           Landau-Lifshitz equation itself remains valid when :math:`F_R \sim F_L`
+           for ultrarelativistic particles. :cite:p:`landau:1975`  If :math:`F_R`
+           exceeds ~0.1 of the Lorentz force for any particle, a
+           `~plasmapy.utils.exceptions.PhysicsWarning` is issued.
 
-        2. The rest-frame field must stay well below the Schwinger critical
-           field (E_cr ~ 1.3e18 V/m, B_cr ~ 4.4e9 T)
+        2. "The momentum of the photons emitted or absorbed by the electron is
+           negligible". :cite:p:`tamburini:2010` This is a necessary assumption
+           to ensure that our model remains within the classical regime and
+           quantum electrodynamics can be neglected. A quantum parameter
+           :math:`\chi \equiv` (rest-frame accelerating field)/(Schwinger field)
+           = (typical emitted photon energy)/(particle energy) is calculated
+           from the rest-frame field squared, a value already stored by
+           ``rrf_full``, and the Schwinger critical field of quantum
+           electrodynamics (E_cr ~ 1.3e18 V/m, B_cr ~ 4.4e9 T). Without this
+           assumption, the classical model overestimates the radiated energy
+           by not including the effects of quantum electrodynamics. If
+           :math:`\chi` exceeds ~0.1, the radiated energy can be assumed
+           overestimated and a
+           `~plasmapy.utils.exceptions.PhysicsWarning` is issued.
            :cite:p:`tamburini:2010` :cite:p:`landau:1975`
 
         3. Neglected f_R terms (Tamburini Eq. 6): the field-derivative term
@@ -385,7 +421,8 @@ class RelativisticBorisIntegratorRRF(RelativisticBorisIntegrator):
         >>> x_new, v_new = RelativisticBorisIntegratorRRF.push(
         ...     x, v, B, E, q=-1.6e-19, m=9.1e-31, dt=1.0e-13
         ... )
-        >>> bool(np.linalg.norm(v_new) <= np.linalg.norm(v))  # radiation can't add velo
+        >>> # radiation can't add velo
+        >>> bool(np.linalg.norm(v_new) <= np.linalg.norm(v))
         True
         """
         # need float value for c
@@ -401,7 +438,7 @@ class RelativisticBorisIntegratorRRF(RelativisticBorisIntegrator):
         # use these stored p{n-1/2}/m and p_L{n+1/2}/m values to estimate total
         # momentum & velocity p{n} and v{n} at the integer step n (from eqn --> [12])
         # p{n} =~ .5(p_L{n+1/2} + p{n-1/2})  [12]
-        u_n = 1 / 2 * (uvel_L + uvel)
+        u_n = 0.5 * (uvel_L + uvel)
         # gamma calculation
         γn = np.sqrt(
             1 + (np.linalg.norm(u_n, axis=1, keepdims=True) / c) ** 2,
@@ -410,14 +447,15 @@ class RelativisticBorisIntegratorRRF(RelativisticBorisIntegrator):
         v_n = u_n / γn
         # take your p{n} and subsequently v{n} value to calculate RRF @ integer step n
         f_R = RelativisticBorisIntegratorRRF.rrf_full(v_n, B, E, q, m)
-        # finally utilizing this new calculated RRF, can apply post-boris kick like described in eqn [7-11]
+        # finally, utilizing this new calculated RRF, apply post-boris momentum kick
+        # as described in eqn [7-11]
         # (p{n+1/2} - p{n-1/2}) / dt  = f{n} = f_L{n} + f_R{n} --> p{n+1/2} = p_L{n+1/2} + f_R{n} * dt
         uvel_final = uvel_L + f_R * dt / m
         # gamma calculation
         γ2 = np.sqrt(
             1 + (np.linalg.norm(uvel_final, axis=1, keepdims=True) / c) ** 2,
         )
-        # convert to velo and advance position from this value as described in final eqn above
+        # convert to velocity and advance position from this value as described in final eqn above
         v_final = uvel_final / γ2
         return x + v_final * dt, v_final
 
@@ -446,6 +484,16 @@ class RelativisticBorisIntegratorRRF(RelativisticBorisIntegrator):
         f_R : `~numpy.ndarray`
             radiation-reaction force at the integer timestep, in SI (newton)
             units.
+
+        Warns
+        -----
+        : `~plasmapy.utils.exceptions.PhysicsWarning`
+            When :math:`F_R / F_L > 0.1` for any particle, violation of the
+            :math:`F_L \gg F_R` assumption of the post-Boris scheme.
+
+        : `~plasmapy.utils.exceptions.PhysicsWarning`
+            When the quantum parameter :math:`\chi > 0.1` for any particle,
+            violation of the classical-regime assumption.
 
         Examples
         --------
@@ -479,4 +527,23 @@ class RelativisticBorisIntegratorRRF(RelativisticBorisIntegrator):
         # term 2 eqn (6) [[kg^2 m / (s^3 C^2)]]
         rrf_term2 = (γ**2 / c**2) * (f_L_squared - v_dotproduct_E**2 / c**2) * v
         # final f_R [[C^2 s/kg]][[kg^2 m / (s^3 C^2)]] --> [[N]]
-        return -k * (rrf_term1 + rrf_term2)
+        f_R = -k * (rrf_term1 + rrf_term2)
+        # Post-Boris scheme is only valid when f_R << f_L ==> F_R/F_L << 1
+        # Utilize magnitude for simplicity
+        f_R_squared = (f_R * f_R).sum(axis=1, keepdims=True)
+        if np.any(f_R_squared > (f_L_squared * q**2) * (0.01)):
+            errmsg = "The post-Boris scheme only valid in regime where f_R << f_L "
+            warnings.warn(errmsg, PhysicsWarning, stacklevel=2)
+        # Our model is only valid in classical regime. To verify this use χ << 1, where
+        # χ^2 = γ^2 (f_L^2 - (v*E)^2/c^2) / E_cr^2
+        # where E_cr is the Schwinger critical field
+        E_cr = m**2 * c**3 / (abs(q) * _hbar)
+        χ_sq = γ**2 * (f_L_squared - v_dotproduct_E**2 / c**2) / E_cr**2
+        if np.any(χ_sq > 0.1**2):
+            errmsg = (
+                "The Landau-Lifshitz model is valid only in the "
+                "classical regime, and breaks down due to quantum electrodynamics "
+                "when this quantum parameter exceeds 0.1"
+            )
+            warnings.warn(errmsg, PhysicsWarning, stacklevel=2)
+        return f_R
