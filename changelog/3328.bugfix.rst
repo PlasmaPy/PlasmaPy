@@ -1,5 +1,1 @@
-Made the charged-particle-radiography
-`~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography.Tracker`
-raise a clear `ValueError` when the source or detector is located at the grid
-origin, instead of silently constructing the simulation with undefined
-(``NaN``/``inf``) plane-normal and magnification geometry (see :issue:`2077`).
+The charged-particle-radiography `~plasmapy.diagnostics.charged_particle_radiography.synthetic_radiography.Tracker` now raises a clear `ValueError` when the source or detector is located at the grid origin, instead of silently constructing the simulation with undefined (``NaN``/``inf``) plane-normal and magnification geometry (see :issue:`2077`).
