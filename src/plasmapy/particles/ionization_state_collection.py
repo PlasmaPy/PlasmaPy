@@ -378,7 +378,7 @@ class IonizationStateCollection:  # noqa: PLW1641
                         np.all(np.isnan(this)) and np.all(np.isnan(that)),
                         u.quantity.allclose(this, that, rtol=min_tol),
                     ],
-                )  # ty:ignore[no-matching-overload]
+                )
 
                 if not this_equals_that:
                     return False

@@ -731,14 +731,14 @@ class AbstractGrid(ABC):
         for event in ("start", "stop"):
             # Convert tuple to list
             if isinstance(event_values[event], tuple):
-                event_values[event] = list(event_values[event])  # ty:ignore[invalid-argument-type, invalid-assignment]
+                event_values[event] = list(event_values[event])
 
             if isinstance(event_values[event], list):
-                if len(event_values[event]) == 1:  # ty:ignore[invalid-argument-type]
+                if len(event_values[event]) == 1:
                     event_values[event] = event_values[event] * 3
 
                 # Make sure it's a list of quantities
-                if not all(isinstance(v, u.Quantity) for v in event_values[event]):  # ty:ignore[not-iterable]
+                if not all(isinstance(v, u.Quantity) for v in event_values[event]):
                     raise TypeError(
                         f"The argument `{event}` must be an "
                         "`astropy.units.Quantity` or a list of same, "
@@ -750,7 +750,7 @@ class AbstractGrid(ABC):
                 event_values[event] = (
                     [event_values[event]] * 3
                     if event_values[event].size == 1
-                    else list(event_values[event])  # ty:ignore[invalid-argument-type, invalid-assignment]
+                    else list(event_values[event])
                 )
             else:
                 raise TypeError(
@@ -761,13 +761,13 @@ class AbstractGrid(ABC):
 
         # Convert tuple to list
         if isinstance(event_values["num"], tuple):
-            event_values["num"] = list(event_values["num"])  # ty:ignore[invalid-assignment]
+            event_values["num"] = list(event_values["num"])
 
         if isinstance(event_values["num"], list):
             if len(event_values["num"]) == 1:
                 event_values["num"] = event_values["num"] * 3
         elif isinstance(event_values["num"], int):
-            event_values["num"] = [event_values["num"]] * 3  # ty:ignore[invalid-assignment]
+            event_values["num"] = [event_values["num"]] * 3
         else:
             raise TypeError(
                 f"The argument `num` must be an int or list of "
@@ -777,11 +777,11 @@ class AbstractGrid(ABC):
         # Check to make sure all lists now contain three values
         # (throws exception if user supplies a list of two, say)
         for event, event_value in event_values.items():
-            if len(event_value) != 3:  # ty:ignore[invalid-argument-type]
+            if len(event_value) != 3:
                 raise TypeError(
                     f"{event} must be either a single value or a "
                     "list of three values, but "
-                    f"({len(event_value)} values were given).",  # ty:ignore[invalid-argument-type]
+                    f"({len(event_value)} values were given).",
                 )
 
         # Take variables back out of dict
