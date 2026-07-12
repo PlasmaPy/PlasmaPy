@@ -1,1 +1,2 @@
-Used :external+sphinx-toolbox:rst:dir:`rest-example` directive to de-duplicate reST examples in the documentation guide.
+Used the ``rest-example`` directive from ``sphinx-toolbox`` to
+de-duplicate reST examples in the documentation guide.
