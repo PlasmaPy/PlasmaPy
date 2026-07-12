@@ -645,12 +645,18 @@ class MaxwellianCollisionFrequencies:
         --------
         >>> import astropy.units as u
         >>> v_drift = 1 * u.m / u.s
-        >>> n = 1e27 * u.m ** -3
+        >>> n = 1e27 * u.m**-3
         >>> T = 1e4 * u.K
         >>> Coulomb_log = 10 * u.dimensionless_unscaled
         >>> collisions = MaxwellianCollisionFrequencies(
-        ...     "e-", "Na+", v_drift=v_drift, T_a=T, T_b=T,
-        ...     n_a=n, n_b=n, Coulomb_log=Coulomb_log,
+        ...     "e-",
+        ...     "Na+",
+        ...     v_drift=v_drift,
+        ...     T_a=T,
+        ...     T_b=T,
+        ...     n_a=n,
+        ...     n_b=n,
+        ...     Coulomb_log=Coulomb_log,
         ... )
         >>> collisions.thermal_equilibration_rate
         <Quantity 9.65881...e+16 Hz>
@@ -694,23 +700,27 @@ class MaxwellianCollisionFrequencies:
         --------
         >>> import astropy.units as u
         >>> v_drift = 1 * u.m / u.s
-        >>> n = 1e27 * u.m ** -3
+        >>> n = 1e27 * u.m**-3
         >>> T = 1e4 * u.K
         >>> T_para = 1.0 * T
         >>> Tperp = 1.1 * T
         >>> Coulomb_log = 10 * u.dimensionless_unscaled
         >>> collisions = MaxwellianCollisionFrequencies(
-        ...     "e-", "Na+", v_drift=v_drift, T_a=T, T_b=T,
-        ...     n_a=n, n_b=n, Coulomb_log=Coulomb_log,
-        ...     T_parallel=T_para, T_perp=Tperp,
+        ...     "e-",
+        ...     "Na+",
+        ...     v_drift=v_drift,
+        ...     T_a=T,
+        ...     T_b=T,
+        ...     n_a=n,
+        ...     n_b=n,
+        ...     Coulomb_log=Coulomb_log,
+        ...     T_parallel=T_para,
+        ...     T_perp=Tperp,
         ... )
         >>> collisions.temperature_isotropization_rate
         <Quantity 8.78926...e+16 Hz>
         """
-        if not all(
-            isinstance(T, u.Quantity)
-            for T in (self.T_parallel, self.T_perp)
-        ):
+        if not all(isinstance(T, u.Quantity) for T in (self.T_parallel, self.T_perp)):
             raise TypeError(
                 "T_parallel and T_perp must be Quantities. "
                 "Did you forget to pass them as keyword arguments?"
@@ -732,15 +742,12 @@ class MaxwellianCollisionFrequencies:
             return phi_val * 2
         elif A_val > 0:
             sqrt_A = np.sqrt(A)
-            b_coeff = 1 - sqrt_A * (
-                np.arctan(sqrt_A).value / (2 * sqrt_A)
-            )
+            b_coeff = 1 - sqrt_A * (np.arctan(sqrt_A).value / (2 * sqrt_A))
         else:
             sqrt_A = np.sqrt(-A)
-            b_coeff = 1 - sqrt_A * (
-                np.arctanh(sqrt_A).value / (2 * sqrt_A)
-            )
+            b_coeff = 1 - sqrt_A * (np.arctanh(sqrt_A).value / (2 * sqrt_A))
         return phi_val * (2 + C * (1 - b_coeff))
+
 
 @validate_quantities(
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
