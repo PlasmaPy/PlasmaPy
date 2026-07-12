@@ -384,11 +384,13 @@ class MaxwellianCollisionFrequencies:
             "can_be_negative": False,
             "equivalencies": u.temperature_energy(),
             "none_shall_pass": True,
+            "units": u.K,
         },
         T_perp={
             "can_be_negative": False,
             "equivalencies": u.temperature_energy(),
             "none_shall_pass": True,
+            "units": u.K,
         },
     )
     def __init__(
