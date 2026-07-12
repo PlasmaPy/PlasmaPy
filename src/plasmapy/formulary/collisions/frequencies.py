@@ -402,8 +402,8 @@ class MaxwellianCollisionFrequencies:
         T_b: u.Quantity[u.K],
         n_b: u.Quantity[u.m**-3],
         Coulomb_log: u.Quantity[u.dimensionless_unscaled],
-        T_parallel: u.Quantity[u.K] | None = None,
-        T_perp: u.Quantity[u.K] | None = None,
+        T_parallel: u.Quantity[u.K] = None,
+        T_perp: u.Quantity[u.K] = None,
     ) -> None:
         if (
             isinstance(v_drift, np.ndarray)
@@ -717,12 +717,12 @@ class MaxwellianCollisionFrequencies:
         T_perp = self.T_perp
         mass_a = self.test_particle.mass
         mass_b = self.field_particle.mass
-        A = 1 - T_perp / T_parallel
+        A = 1 - T_perp / T_parallel  # ty: ignore[unsupported-operator]
         phi_val = self.Lorentz_collision_frequency
-        Tp_over_Tpar = T_perp / T_parallel
+        Tp_over_Tpar = T_perp / T_parallel  # ty: ignore[unsupported-operator]
         C = (
             -(Tp_over_Tpar)
-            + (mass_a * (T_perp - T_parallel))
+            + (mass_a * (T_perp - T_parallel))  # ty: ignore[unsupported-operator]
             / (2 * (mass_a + mass_b) * T_parallel)
         )
         A_val = A.value
