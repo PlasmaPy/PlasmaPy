@@ -767,7 +767,7 @@ class TestMaxwellianCollisionFrequencies:
         assert np.isfinite(rate).all()
 
     @pytest.mark.filterwarnings("ignore::plasmapy.utils.exceptions.RelativityWarning")
-    def test_temperature_isotropization_rate_A_negative(self) -> None:
+    def test_temperature_isotropization_rate_A_positive(self) -> None:
         v_drift = 1 * u.m / u.s
         n = 1e27 * u.m ** -3
         T = 1e4 * u.K

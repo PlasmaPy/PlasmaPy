@@ -402,8 +402,8 @@ class MaxwellianCollisionFrequencies:
         T_b: u.Quantity[u.K],
         n_b: u.Quantity[u.m**-3],
         Coulomb_log: u.Quantity[u.dimensionless_unscaled],
-        T_parallel: u.Quantity[u.K] = None,
-        T_perp: u.Quantity[u.K] = None,
+        T_parallel: u.Quantity[u.K] | None = None,
+        T_perp: u.Quantity[u.K] | None = None,
     ) -> None:
         if (
             isinstance(v_drift, np.ndarray)
@@ -630,11 +630,6 @@ class MaxwellianCollisionFrequencies:
         `~astropy.units.Quantity`
             Thermal equilibration rate in Hz.
 
-        Raises
-        ------
-        `TypeError`
-            If ``T_a`` or ``T_b`` is not a `~astropy.units.Quantity`.
-
         Notes
         -----
         :math:`\nu_{\text{eq}} = \frac{2 m_b}{m_a + m_b}
@@ -658,11 +653,6 @@ class MaxwellianCollisionFrequencies:
         >>> collisions.thermal_equilibration_rate
         <Quantity 1.12617...e+13 Hz>
         """
-        if not all(
-            isinstance(T, u.Quantity)
-            for T in (self.T_a, self.T_b)
-        ):
-            raise TypeError("Self.T_a and self.T_b must be Quantities")
         mass_a = self.test_particle.mass
         mass_b = self.field_particle.mass
         eq_coeff = (2 * mass_b) / (mass_a + mass_b)
@@ -729,40 +719,26 @@ class MaxwellianCollisionFrequencies:
         mass_b = self.field_particle.mass
         A = 1 - T_perp / T_parallel
         phi_val = self.Lorentz_collision_frequency
-        A_val = A.value
         Tp_over_Tpar = T_perp / T_parallel
-        if A_val >= 0:
-            b_coeff = 1 - np.sqrt(A_val) * (
-                np.arctan(np.sqrt(A_val)).value / (2 * np.sqrt(A_val))
-            )
-            return (
-                phi_val
-                * (
-                    2
-                    + (
-                        -(Tp_over_Tpar)
-                        + (mass_a * (T_perp - T_parallel))
-                        / (2 * (mass_a + mass_b) * T_parallel)
-                    )
-                    * (1 - b_coeff)
-                )
+        C = (
+            -(Tp_over_Tpar)
+            + (mass_a * (T_perp - T_parallel))
+            / (2 * (mass_a + mass_b) * T_parallel)
+        )
+        A_val = A.value
+        if A_val == 0:
+            return phi_val * 2
+        elif A_val > 0:
+            sqrt_A = np.sqrt(A)
+            b_coeff = 1 - sqrt_A * (
+                np.arctan(sqrt_A).value / (2 * sqrt_A)
             )
         else:
-            b_coeff = 1 - np.sqrt(-A_val) * (
-                np.arctanh(np.sqrt(-A_val)).value / (2 * np.sqrt(-A_val))
+            sqrt_A = np.sqrt(-A)
+            b_coeff = 1 - sqrt_A * (
+                np.arctanh(sqrt_A).value / (2 * sqrt_A)
             )
-            return (
-                phi_val
-                * (
-                    2
-                    + (
-                        -(Tp_over_Tpar)
-                        + (mass_a * (T_perp - T_parallel))
-                        / (2 * (mass_a + mass_b) * T_parallel)
-                    )
-                    * (1 - b_coeff)
-                )
-            )
+        return phi_val * (2 + C * (1 - b_coeff))
 
 @validate_quantities(
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
