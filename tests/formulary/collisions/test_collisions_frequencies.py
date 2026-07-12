@@ -1,7 +1,7 @@
 import astropy.units as u
 import numpy as np
 import pytest
-from astropy.constants import k_B, m_p
+from astropy.constants import k_B, m_e, m_p
 
 from plasmapy.formulary.collisions.frequencies import (
     MaxwellianCollisionFrequencies,
@@ -733,7 +733,7 @@ class TestMaxwellianCollisionFrequencies:
         rate = collisions.thermal_equilibration_rate
         expected_rate = (
             2 * 22.989769 * u.Da
-            / (u.me + 22.989769 * u.Da)
+            / (m_e + 22.989769 * u.Da)
             * collisions.Lorentz_collision_frequency
         )
         assert np.allclose(rate, expected_rate, rtol=5e-3, atol=0)
