@@ -19,11 +19,7 @@ from plasmapy import particles
 from plasmapy.formulary.collisions import coulomb, lengths, misc
 from plasmapy.formulary.speeds import thermal_speed
 from plasmapy.particles.particle_class import ParticleLike
-from plasmapy.utils.decorators import (
-    deprecated,
-    validate_class_attributes,
-    validate_quantities,
-)
+from plasmapy.utils.decorators import deprecated, validate_quantities
 from plasmapy.utils.exceptions import PhysicsError, PlasmaPyFutureWarning
 
 
@@ -621,7 +617,7 @@ class MaxwellianCollisionFrequencies:
 
         return coeff * self.Lorentz_collision_frequency
 
-    @validate_class_attributes
+    @cached_property
     def thermal_equilibration_rate(self) -> u.Quantity[u.Hz]:
         r"""Thermal equilibration rate between test and field particles.
 
@@ -672,7 +668,7 @@ class MaxwellianCollisionFrequencies:
         eq_coeff = (2 * mass_b) / (mass_a + mass_b)
         return eq_coeff * self.Lorentz_collision_frequency
 
-    @validate_class_attributes
+    @cached_property
     def temperature_isotropization_rate(self) -> u.Quantity[u.Hz]:
         r"""Temperature isotropization rate for the test particle.
 
