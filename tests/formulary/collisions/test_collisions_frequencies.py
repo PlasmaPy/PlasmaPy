@@ -782,6 +782,33 @@ class TestMaxwellianCollisionFrequencies:
         rate = collisions.temperature_isotropization_rate
         assert np.isfinite(rate).all()
 
+    @pytest.mark.filterwarnings("ignore::plasmapy.utils.exceptions.RelativityWarning")
+    def test_temperature_isotropization_rate_isotropic(self) -> None:
+        v_drift = 1 * u.m / u.s
+        n = 1e27 * u.m ** -3
+        T = 1e4 * u.K
+        T_para = 1.0 * T
+        Coulomb_log = 10 * u.dimensionless_unscaled
+        collisions = MaxwellianCollisionFrequencies(
+            "e-", "Na+", v_drift=v_drift, T_a=T, T_b=T,
+            n_a=n, n_b=n, Coulomb_log=Coulomb_log,
+            T_parallel=T_para, T_perp=T_para,
+        )
+        rate = collisions.temperature_isotropization_rate
+        assert np.allclose(rate, 2 * collisions.Lorentz_collision_frequency)
+
+    def test_temperature_isotropization_rate_no_params(self) -> None:
+        v_drift = 1 * u.m / u.s
+        n = 1e27 * u.m ** -3
+        T = 1e4 * u.K
+        Coulomb_log = 10 * u.dimensionless_unscaled
+        collisions = MaxwellianCollisionFrequencies(
+            "e-", "Na+", v_drift=v_drift, T_a=T, T_b=T,
+            n_a=n, n_b=n, Coulomb_log=Coulomb_log,
+        )
+        with pytest.raises(TypeError, match="T_parallel and T_perp"):
+            _ = collisions.temperature_isotropization_rate
+
 class Test_collision_frequency:
     @classmethod
     def setup_class(cls) -> None:
