@@ -625,7 +625,7 @@ class MaxwellianCollisionFrequencies:
 
         The rate at which :math:`T_a` and :math:`T_b` relax toward
         each other in a Maxwellian plasma, Eq. (5.31) in
-        :cite:t:`huba:2007` (NRL Formulary, p. 33).
+        :cite:t:`nrlformulary:2019` (NRL Formulary, p. 33).
 
         Returns
         -------
@@ -638,7 +638,7 @@ class MaxwellianCollisionFrequencies:
         \nu_{\perp}^{\text{ei}}`, where
         :math:`\nu_{\perp}^{\text{ei}}` is
         `Lorentz_collision_frequency`.
-        See :cite:t:`huba:2007` (NRL Formulary, pp. 33–34) or
+        See :cite:t:`nrlformulary:2019` (NRL Formulary, pp. 33–34) or
         :cite:t:`callen:unpublished` for the full expression.
 
         Examples
@@ -653,7 +653,7 @@ class MaxwellianCollisionFrequencies:
         ...     n_a=n, n_b=n, Coulomb_log=Coulomb_log,
         ... )
         >>> collisions.thermal_equilibration_rate
-        <Quantity 1.12617...e+13 Hz>
+        <Quantity 9.65881...e+16 Hz>
         """
         mass_a = self.test_particle.mass
         mass_b = self.field_particle.mass
@@ -666,7 +666,7 @@ class MaxwellianCollisionFrequencies:
 
         The rate at which :math:`T_{\perp}` and :math:`T_{\parallel}`
         relax toward each other for a bi-Maxwellian test particle,
-        Eq. (5.35a) in :cite:t:`huba:2007` (NRL Formulary, p. 34).
+        Eq. (5.35a) in :cite:t:`nrlformulary:2019` (NRL Formulary, p. 34).
 
         Returns
         -------
@@ -687,7 +687,7 @@ class MaxwellianCollisionFrequencies:
         {2 (m_a + m_b) T_{\parallel}} + \dots \right)`,
         where the branch taken depends on the sign of
         :math:`A = 1 - T_{\perp} / T_{\parallel}`.
-        See :cite:t:`huba:2007` (NRL Formulary, pp. 33–34) or
+        See :cite:t:`nrlformulary:2019` (NRL Formulary, pp. 33–34) or
         :cite:t:`callen:unpublished` for the full expression.
 
         Examples
@@ -705,7 +705,7 @@ class MaxwellianCollisionFrequencies:
         ...     T_parallel=T_para, T_perp=Tperp,
         ... )
         >>> collisions.temperature_isotropization_rate
-        <Quantity 1.06443...e+11 Hz>
+        <Quantity 8.78926...e+16 Hz>
         """
         if not all(
             isinstance(T, u.Quantity)
