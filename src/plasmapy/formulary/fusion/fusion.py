@@ -452,7 +452,7 @@ def fusion_reaction_rate(
     ...     1e20 * u.m**-3,
     ...     1e20 * u.m**-3,
     ... )
-    <Quantity 5.249...e+14 m-3 / s>
+    <Quantity 5.249...e+14 1 / (s m3)>
     """
     params = _lookup_reaction(reaction)
     sigma_v = reactivity(reaction, T)
@@ -509,7 +509,7 @@ def fusion_power_density(
     ...     1e20 * u.m**-3,
     ...     1e20 * u.m**-3,
     ... )
-    <Quantity 1.480...e+03 W / m3>
+    <Quantity 1480.24... W / m3>
     """
     params = _lookup_reaction(reaction)
     rate = fusion_reaction_rate(reaction, T, n1, n2)

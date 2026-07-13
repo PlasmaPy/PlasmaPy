@@ -1,7 +1,7 @@
-Added :func:`~plasmapy.formulary.fusion.fusion_cross_section`,
-:func:`~plasmapy.formulary.fusion.reactivity`,
-:func:`~plasmapy.formulary.fusion.fusion_reaction_rate`, and
-:func:`~plasmapy.formulary.fusion.fusion_power_density`
+Added :func:`~plasmapy.formulary.fusion.fusion.fusion_cross_section`,
+:func:`~plasmapy.formulary.fusion.fusion.reactivity`,
+:func:`~plasmapy.formulary.fusion.fusion.fusion_reaction_rate`, and
+:func:`~plasmapy.formulary.fusion.fusion.fusion_power_density`
 to a new `plasmapy.formulary.fusion` module for calculating
 nuclear fusion cross-sections, Maxwellian-averaged reactivities,
 reaction rates, and power densities.  Supports D-T, D-D (both
