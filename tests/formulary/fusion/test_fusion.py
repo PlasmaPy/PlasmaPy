@@ -16,6 +16,7 @@ from plasmapy.formulary.fusion.parameters import (
     DDp,
     DHe3,
     DT,
+    pB11,
     _lookup_reaction,
 )
 
@@ -279,3 +280,94 @@ def test_lookup_reactants_dd_raises() -> None:
     r"""Lookup D-D via tuple should raise."""
     with pytest.raises(ValueError, match="two reaction branches"):
         _lookup_reaction(("D", "D"))
+
+
+def test_pb11_cross_section() -> None:
+    r"""p-B11 cross-section should be finite at 600 keV."""
+    sigma = fusion_cross_section(
+        "p + B-11 --> He-4 + He-4 + He-4", 600 * u.keV
+    )
+    assert sigma.unit == u.m**2
+    assert np.isfinite(sigma.value)
+    assert sigma.value > 0
+
+
+def test_pb11_cross_section_mid_energy() -> None:
+    r"""p-B11 cross-section at 500 keV (mid-energy regime)."""
+    sigma = fusion_cross_section(
+        "p + B-11 --> He-4 + He-4 + He-4", 500 * u.keV
+    )
+    assert np.isfinite(sigma.value)
+    assert sigma.value > 0
+
+
+def test_pb11_cross_section_high_energy() -> None:
+    r"""p-B11 cross-section at 3 MeV (high-energy regime)."""
+    sigma = fusion_cross_section(
+        "p + B-11 --> He-4 + He-4 + He-4", 3000 * u.keV
+    )
+    assert np.isfinite(sigma.value)
+    assert sigma.value > 0
+
+
+def test_pb11_cross_section_out_of_range_low() -> None:
+    r"""p-B11 cross-section with energy below range should raise."""
+    with pytest.raises(ValueError, match="outside the valid range"):
+        fusion_cross_section(
+            "p + B-11 --> He-4 + He-4 + He-4", 0.001 * u.keV
+        )
+
+
+def test_dt_cross_section_high_energy() -> None:
+    r"""D-T cross-section at 1 MeV (high-energy regime, ~530+ keV)."""
+    sigma = fusion_cross_section("D + T --> He-4 + n", 1000 * u.keV)
+    assert sigma.unit == u.m**2
+    assert np.isfinite(sigma.value)
+    assert sigma.value > 0
+
+
+def test_dd_neutron_reactivity() -> None:
+    r"""D-D neutron branch reactivity at 50 keV."""
+    sv = reactivity("D(d,n)3He", 50 * u.keV)
+    assert sv.unit.is_equivalent(u.m**3 / u.s)
+    assert np.isfinite(sv.value)
+    assert sv.value > 0
+
+
+def test_dd_neutron_reaction_rate() -> None:
+    r"""D-D neutron branch reaction rate with identical particles factor."""
+    n = 1e20 * u.m**-3
+    rate = fusion_reaction_rate("D(d,n)3He", 50 * u.keV, n, n)
+    sv = reactivity("D(d,n)3He", 50 * u.keV)
+    expected = 0.5 * n * n * sv
+    assert_quantity_allclose(rate, expected, rtol=1e-6)
+
+
+def test_lookup_type_error() -> None:
+    r"""Lookup with non-string, non-tuple should raise TypeError."""
+    with pytest.raises(TypeError, match="must be a string or a tuple"):
+        _lookup_reaction(42)
+
+
+def test_lookup_unknown_tuple() -> None:
+    r"""Lookup with unknown reactant pair should raise."""
+    with pytest.raises(ValueError, match="Unknown reaction"):
+        _lookup_reaction(("H", "H"))
+
+
+def test_reaction_parameter_fields() -> None:
+    r"""All reaction parameter fields should be accessible and finite."""
+    for params in (DT, DDp, DDn, DHe3, pB11):
+        assert isinstance(params.name, str)
+        assert isinstance(params.reactant1, str)
+        assert isinstance(params.reactant2, str)
+        assert len(params.products) >= 2
+        assert np.isfinite(params.Q_keV)
+        assert params.Q_keV > 0
+        assert np.isfinite(params.fraction_charged)
+        assert 0 <= params.fraction_charged <= 1
+        assert isinstance(params.identical_particles, bool)
+        assert isinstance(params.Z1, int)
+        assert isinstance(params.Z2, int)
+        assert params.Z1 > 0
+        assert params.Z2 > 0
