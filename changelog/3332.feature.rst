@@ -1,0 +1,10 @@
+Added :func:`~plasmapy.formulary.fusion.fusion_cross_section`,
+:func:`~plasmapy.formulary.fusion.reactivity`,
+:func:`~plasmapy.formulary.fusion.fusion_reaction_rate`, and
+:func:`~plasmapy.formulary.fusion.fusion_power_density`
+to a new `plasmapy.formulary.fusion` module for calculating
+nuclear fusion cross-sections, Maxwellian-averaged reactivities,
+reaction rates, and power densities.  Supports D-T, D-D (both
+branches), D-He3, and p-B11 reactions using the Bosch-Hale
+(:cite:p:`bosch-hale:1992`) and Nevins-Swain (:cite:p:`nevins-swain:2000`)
+parameterizations.
