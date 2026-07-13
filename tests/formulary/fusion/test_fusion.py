@@ -346,13 +346,25 @@ def test_dd_neutron_reaction_rate() -> None:
 def test_lookup_type_error() -> None:
     r"""Lookup with non-string, non-tuple should raise TypeError."""
     with pytest.raises(TypeError, match="must be a string or a tuple"):
-        _lookup_reaction(42)
+        _lookup_reaction(42)  # ty: ignore[invalid-argument-type]
 
 
 def test_lookup_unknown_tuple() -> None:
     r"""Lookup with unknown reactant pair should raise."""
     with pytest.raises(ValueError, match="Unknown reaction"):
         _lookup_reaction(("H", "H"))
+
+
+def test_lookup_pb11_tuple() -> None:
+    r"""Lookup p-B11 via sorted tuple."""
+    params = _lookup_reaction(("B-11", "p"))
+    assert params.name == "11B(p,4He)4He4He"
+
+
+def test_lookup_pb11_alias() -> None:
+    r"""Lookup p-B11 via 3 alpha alias."""
+    params = _lookup_reaction("p + B-11 --> 3 alpha")
+    assert params.name == "11B(p,4He)4He4He"
 
 
 def test_reaction_parameter_fields() -> None:
@@ -371,3 +383,14 @@ def test_reaction_parameter_fields() -> None:
         assert isinstance(params.Z2, int)
         assert params.Z1 > 0
         assert params.Z2 > 0
+        assert np.isfinite(params.BG)
+        assert params.BG >= 0
+        assert np.isfinite(params.m1c2_keV)
+        assert np.isfinite(params.m2c2_keV)
+        assert params.m1c2_keV > 0
+        assert params.m2c2_keV > 0
+        assert np.isfinite(params.A1)
+        assert np.isfinite(params.min_E_keV)
+        assert np.isfinite(params.max_E_keV)
+        assert np.isfinite(params.min_T_keV)
+        assert np.isfinite(params.max_T_keV)
