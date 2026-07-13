@@ -9,11 +9,13 @@ W. M. Nevins and R. Swain, "The thermonuclear fusion rate coefficient for
 p-11B reactions," Nuclear Fusion, vol. 40, no. 4, pp. 865-872, 2000.
 """
 
+# ruff: noqa: N815
+
 from dataclasses import dataclass
 
 
 @dataclass(frozen=True)
-class _ReactionParameters:  # noqa: N815
+class _ReactionParameters:
     """Parameters for a single fusion reaction channel."""
 
     name: str
