@@ -12,12 +12,12 @@ from plasmapy.formulary.fusion.fusion import (
     reactivity,
 )
 from plasmapy.formulary.fusion.parameters import (
+    DT,
     DDn,
     DDp,
     DHe3,
-    DT,
-    pB11,
     _lookup_reaction,
+    pB11,
 )
 
 # Bosch-Hale reference values computed from the parameterization
@@ -284,9 +284,7 @@ def test_lookup_reactants_dd_raises() -> None:
 
 def test_pb11_cross_section() -> None:
     r"""p-B11 cross-section should be finite at 600 keV."""
-    sigma = fusion_cross_section(
-        "p + B-11 --> He-4 + He-4 + He-4", 600 * u.keV
-    )
+    sigma = fusion_cross_section("p + B-11 --> He-4 + He-4 + He-4", 600 * u.keV)
     assert sigma.unit == u.m**2
     assert np.isfinite(sigma.value)
     assert sigma.value > 0
@@ -294,18 +292,14 @@ def test_pb11_cross_section() -> None:
 
 def test_pb11_cross_section_mid_energy() -> None:
     r"""p-B11 cross-section at 500 keV (mid-energy regime)."""
-    sigma = fusion_cross_section(
-        "p + B-11 --> He-4 + He-4 + He-4", 500 * u.keV
-    )
+    sigma = fusion_cross_section("p + B-11 --> He-4 + He-4 + He-4", 500 * u.keV)
     assert np.isfinite(sigma.value)
     assert sigma.value > 0
 
 
 def test_pb11_cross_section_high_energy() -> None:
     r"""p-B11 cross-section at 3 MeV (high-energy regime)."""
-    sigma = fusion_cross_section(
-        "p + B-11 --> He-4 + He-4 + He-4", 3000 * u.keV
-    )
+    sigma = fusion_cross_section("p + B-11 --> He-4 + He-4 + He-4", 3000 * u.keV)
     assert np.isfinite(sigma.value)
     assert sigma.value > 0
 
@@ -313,9 +307,7 @@ def test_pb11_cross_section_high_energy() -> None:
 def test_pb11_cross_section_out_of_range_low() -> None:
     r"""p-B11 cross-section with energy below range should raise."""
     with pytest.raises(ValueError, match="outside the valid range"):
-        fusion_cross_section(
-            "p + B-11 --> He-4 + He-4 + He-4", 0.001 * u.keV
-        )
+        fusion_cross_section("p + B-11 --> He-4 + He-4 + He-4", 0.001 * u.keV)
 
 
 def test_dt_cross_section_high_energy() -> None:

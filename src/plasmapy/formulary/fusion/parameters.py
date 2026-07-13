@@ -327,6 +327,4 @@ def _lookup_reaction(reaction: str | tuple[str, str]) -> _ReactionParameters:
             f"Unknown reaction: {r1} + {r2}. "
             f"Supported: D + T, D + He-3, D + D, p + B-11."
         )
-    raise TypeError(
-        "Reaction must be a string or a tuple of two reactant strings."
-    )
+    raise TypeError("Reaction must be a string or a tuple of two reactant strings.")
