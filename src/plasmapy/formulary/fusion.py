@@ -10,6 +10,7 @@ import numpy as np
 from scipy.interpolate import CubicSpline
 
 from plasmapy.utils import data
+from plasmapy.utils.decorators import validate_quantities
 
 """
 Opening Bosch and Hale Tables IV and Json Files
@@ -30,7 +31,7 @@ with Path.open(DATA_DIR / "bosch_hale_table_viii.json") as f:
     table_viii = json.load(f)
 
 
-@u.quantity_input(energy=u.keV)
+@validate_quantities
 def cross_section(energy: u.Quantity[u.keV], reaction: str, source: str) -> float:
     r"""
     Calculate the fusion cross section :math:`σ(E)` for a two-body fusion
@@ -138,7 +139,7 @@ def cross_section(energy: u.Quantity[u.keV], reaction: str, source: str) -> floa
     raise ValueError(f"Unknown source {source!r}; expected 'BH' or 'ENDF'.")
 
 
-@u.quantity_input(energy=u.keV)
+@validate_quantities
 def reactivity(ion_temp: u.Quantity[u.keV], reaction: str, source: str) -> float:
     r"""
     Calculate the Maxwellian-averaged fusion reactivity :math:`⟨σv⟩(T)`
