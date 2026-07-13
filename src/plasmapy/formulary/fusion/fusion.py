@@ -95,9 +95,7 @@ def _fusion_cross_section_bosch_hale(
         + E * (A2 + E * (A3 + E * (A4 + E * A5)))
     ) / (1 + E * (B1 + E * (B2 + E * (B3 + E * B4))))
 
-    sigma_mb = (1.0 / E) * S * math.exp(-params.BG / math.sqrt(E))
-    sigma_m2 = sigma_mb * 1e-31
-    return sigma_m2
+    return (1.0 / E) * S * math.exp(-params.BG / math.sqrt(E)) * 1e-31
 
 
 def _cross_section_pb11(E_keV: float, params: _ReactionParameters) -> float:
@@ -147,9 +145,7 @@ def _cross_section_pb11(E_keV: float, params: _ReactionParameters) -> float:
             + B
         )
 
-    sigma_b = (S * 1000 / E_keV) * math.exp(-math.sqrt(EG * 1000 / E_keV))
-    sigma_m2 = sigma_b * 1e-28
-    return sigma_m2
+    return (S * 1000 / E_keV) * math.exp(-math.sqrt(EG * 1000 / E_keV)) * 1e-28
 
 
 def _reactivity_bosch_hale(T_keV: float, params: _ReactionParameters) -> float:

@@ -13,7 +13,7 @@ from dataclasses import dataclass
 
 
 @dataclass(frozen=True)
-class _ReactionParameters:
+class _ReactionParameters:  # noqa: N815
     """Parameters for a single fusion reaction channel."""
 
     name: str
@@ -278,7 +278,7 @@ _REACTION_STRING_MAP: dict[str, _ReactionParameters] = {
 }
 
 
-def _lookup_reaction(reaction: str | tuple[str, str]):
+def _lookup_reaction(reaction: str | tuple[str, str]) -> _ReactionParameters:
     """Look up reaction parameters.
 
     Parameters
