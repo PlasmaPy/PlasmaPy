@@ -349,7 +349,7 @@ def reactivity(
     ----------
     reaction : `str` or `tuple` of `str`
         The fusion reaction. See
-        `~plasmapy.formulary.fusion.fusion_cross_section` for details.
+        `~plasmapy.formulary.fusion.fusion.fusion_cross_section` for details.
 
     T : `~astropy.units.Quantity`
         Ion temperature in units convertible to keV.
@@ -425,7 +425,7 @@ def fusion_reaction_rate(
     ----------
     reaction : `str` or `tuple` of `str`
         The fusion reaction. See
-        `~plasmapy.formulary.fusion.fusion_cross_section` for details.
+        `~plasmapy.formulary.fusion.fusion.fusion_cross_section` for details.
 
     T : `~astropy.units.Quantity`
         Ion temperature in units convertible to keV.
@@ -488,7 +488,7 @@ def fusion_power_density(
     ----------
     reaction : `str` or `tuple` of `str`
         The fusion reaction. See
-        `~plasmapy.formulary.fusion.fusion_cross_section` for details.
+        `~plasmapy.formulary.fusion.fusion.fusion_cross_section` for details.
 
     T : `~astropy.units.Quantity`
         Ion temperature in units convertible to keV.
