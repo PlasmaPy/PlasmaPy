@@ -54,13 +54,13 @@ def _fusion_cross_section_bosch_hale(
         Cross-section in m^2.
     """
     E = E_keV
-    if E < params.min_E_keV or E > params.high_energy_max_keV:
-        return 0.0
-
     use_high = (
         params.high_energy_cutoff_keV > 0
         and E >= params.high_energy_cutoff_keV
     )
+    max_E = params.high_energy_max_keV if use_high else params.max_E_keV
+    if E < params.min_E_keV or E > max_E:
+        return 0.0
     if use_high:
         A1, A2, A3, A4, A5 = (
             params.high_energy_A1,
@@ -520,5 +520,5 @@ def fusion_power_density(
     """
     params = _lookup_reaction(reaction)
     rate = fusion_reaction_rate(reaction, T, n1, n2)
-    Q_J = params.Q_keV * u.keV.to(u.J)
-    return rate * Q_J
+    Q_energy = params.Q_keV * u.keV
+    return (rate * Q_energy).to(u.W / u.m**3)
