@@ -30,7 +30,8 @@ with Path.open(DATA_DIR / "bosch_hale_table_viii.json") as f:
     table_viii = json.load(f)
 
 
-def cross_section(energy: u.Quantity, reaction: str, source: str) -> float:
+@u.quantity_input(energy=u.keV)
+def cross_section(energy: u.Quantity[u.keV], reaction: str, source: str) -> float:
     r"""
     Calculate the fusion cross section :math:`σ(E)` for a two-body fusion
     reaction.
@@ -137,7 +138,8 @@ def cross_section(energy: u.Quantity, reaction: str, source: str) -> float:
     raise ValueError(f"Unknown source {source!r}; expected 'BH' or 'ENDF'.")
 
 
-def reactivity(ion_temp: u.Quantity, reaction: str, source: str) -> float:
+@u.quantity_input(energy=u.keV)
+def reactivity(ion_temp: u.Quantity[u.keV], reaction: str, source: str) -> float:
     r"""
     Calculate the Maxwellian-averaged fusion reactivity :math:`⟨σv⟩(T)`
     for a two-body fusion reaction.
