@@ -297,8 +297,8 @@ def fusion_cross_section(
     Examples
     --------
     >>> import astropy.units as u
-    >>> fusion_cross_section("D + T --> He-4 + n", 10 * u.keV)  # doctest: +SKIP
-    <Quantity ... m^2>
+    >>> fusion_cross_section("D + T --> He-4 + n", 10 * u.keV)
+    <Quantity 2.702...e-30 m2>
     """
     params = _lookup_reaction(reaction)
     E_keV = E.to(u.keV).value
@@ -375,9 +375,8 @@ def reactivity(
     Examples
     --------
     >>> import astropy.units as u
-    >>> sigma_v = reactivity("D + T --> He-4 + n", 10 * u.keV)
-    >>> sigma_v  # doctest: +SKIP
-    <Quantity ... m^3 / s>
+    >>> reactivity("D + T --> He-4 + n", 10 * u.keV)
+    <Quantity 5.249...e-26 m3 / s>
     """
     params = _lookup_reaction(reaction)
     T_keV = T.to(u.keV).value
@@ -447,14 +446,13 @@ def fusion_reaction_rate(
     Examples
     --------
     >>> import astropy.units as u
-    >>> rate = fusion_reaction_rate(
+    >>> fusion_reaction_rate(
     ...     "D + T --> He-4 + n",
     ...     10 * u.keV,
     ...     1e20 * u.m**-3,
     ...     1e20 * u.m**-3,
     ... )
-    >>> rate  # doctest: +SKIP
-    <Quantity ... m^{-3} / s>
+    <Quantity 5.249...e+14 m-3 / s>
     """
     params = _lookup_reaction(reaction)
     sigma_v = reactivity(reaction, T)
@@ -505,14 +503,13 @@ def fusion_power_density(
     Examples
     --------
     >>> import astropy.units as u
-    >>> P = fusion_power_density(
+    >>> fusion_power_density(
     ...     "D + T --> He-4 + n",
     ...     10 * u.keV,
     ...     1e20 * u.m**-3,
     ...     1e20 * u.m**-3,
     ... )
-    >>> P  # doctest: +SKIP
-    <Quantity ... W / m^3>
+    <Quantity 1.480...e+03 W / m3>
     """
     params = _lookup_reaction(reaction)
     rate = fusion_reaction_rate(reaction, T, n1, n2)
