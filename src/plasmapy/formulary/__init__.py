@@ -11,13 +11,13 @@ __lite_funcs__: list[str] = []
 
 from plasmapy.formulary.braginskii import *
 from plasmapy.formulary.collisions import *
-from plasmapy.formulary.fusion import *
 from plasmapy.formulary.densities import *
 from plasmapy.formulary.dielectric import *
 from plasmapy.formulary.dimensionless import *
 from plasmapy.formulary.distribution import *
 from plasmapy.formulary.drifts import *
 from plasmapy.formulary.frequencies import *
+from plasmapy.formulary.fusion import *
 from plasmapy.formulary.ionization import *
 from plasmapy.formulary.laser import *
 from plasmapy.formulary.lengths import *

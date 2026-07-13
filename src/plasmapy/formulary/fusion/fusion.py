@@ -23,7 +23,6 @@ __all__ = [
 import math
 
 import astropy.units as u
-import numpy as np
 
 from plasmapy.formulary.fusion.parameters import (
     _ReactionParameters,
