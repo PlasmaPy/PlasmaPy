@@ -1,6 +1,7 @@
 """Cross sections and Maxwellian reactivities for nuclear fusion reactions."""
 
 import json
+from importlib.resources import files
 from pathlib import Path
 
 import astropy.constants as const
@@ -9,14 +10,13 @@ import h5py
 import numpy as np
 from scipy.interpolate import CubicSpline
 
-from plasmapy.utils import data
 from plasmapy.utils.decorators import validate_quantities
 
 """
 Opening Bosch and Hale Tables IV and Json Files
 """
 
-DATA_DIR = Path(data.__file__)
+DATA_DIR = files("plasmapy.utils.data").joinpath("config.json")
 
 with Path.open(DATA_DIR / "bosch_hale_table_iv.json") as f:
     xs_coeffs = json.load(f)["reactions"]
