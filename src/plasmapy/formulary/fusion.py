@@ -19,16 +19,16 @@ Opening Bosch and Hale Tables IV and Json Files
 DATA_DIR = files("plasmapy.utils.data").joinpath("config.json")
 
 with as_file(DATA_DIR) as physical_path:
-    with Path.open(DATA_DIR / "bosch_hale_table_iv.json") as f:
+    with Path.open(physical_path / "bosch_hale_table_iv.json") as f:
         xs_coeffs = json.load(f)["reactions"]
 
-    with Path.open(DATA_DIR / "bosch_hale_table_v.json") as f:
+    with Path.open(physical_path / "bosch_hale_table_v.json") as f:
         table_v = json.load(f)
 
-    with Path.open(DATA_DIR / "bosch_hale_table_vii.json") as f:
+    with Path.open(physical_path / "bosch_hale_table_vii.json") as f:
         rxty_coeffs = json.load(f)["reactions"]
 
-    with Path.open(DATA_DIR / "bosch_hale_table_viii.json") as f:
+    with Path.open(physical_path / "bosch_hale_table_viii.json") as f:
         table_viii = json.load(f)
 
 
