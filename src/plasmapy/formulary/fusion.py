@@ -16,7 +16,7 @@ from plasmapy.utils.decorators import validate_quantities
 Opening Bosch and Hale Tables IV and Json Files
 """
 
-DATA_DIR = files("plasmapy.utils.data").joinpath("config.json")
+DATA_DIR = files("plasmapy.utils.data")
 
 with as_file(DATA_DIR) as physical_path:
     with Path.open(physical_path / "bosch_hale_table_iv.json") as f:
