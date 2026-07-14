@@ -1,3 +1,0 @@
-Added a fusion module in the src/formulary that calculates
-fusion cross sections and reactivities for 9 common fusion
-reactions.
