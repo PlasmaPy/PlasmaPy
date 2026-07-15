@@ -820,14 +820,10 @@ class TestMaxwellianCollisionFrequencies:
         A = 1 - Tperp / T_para
         sqrt_A = np.sqrt(A)
         b_coeff = 1 - sqrt_A * (np.arctan(sqrt_A.value) / (2 * sqrt_A))
-        C = (
-            -(Tperp / T_para)
-            + mass_a * (Tperp - T_para)
-            / (2 * (mass_a + mass_b) * T_para)
+        C = -(Tperp / T_para) + mass_a * (Tperp - T_para) / (
+            2 * (mass_a + mass_b) * T_para
         )
-        expected = collisions.Lorentz_collision_frequency * (
-            2 + C * (1 - b_coeff)
-        )
+        expected = collisions.Lorentz_collision_frequency * (2 + C * (1 - b_coeff))
         np.testing.assert_allclose(rate, expected, rtol=5e-3, atol=0)
 
     @pytest.mark.filterwarnings("ignore::plasmapy.utils.exceptions.RelativityWarning")
