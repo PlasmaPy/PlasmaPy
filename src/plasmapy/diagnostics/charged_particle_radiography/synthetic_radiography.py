@@ -443,7 +443,7 @@ class Tracker(ParticleTracker):
         elif len(extent) == 2:
             radius = None
             width = extent[0].si.value
-            height = extent[1].si.value  # ty:ignore[index-out-of-bounds]
+            height = extent[1].si.value
         else:
             raise ValueError(
                 "extent must be a tuple of 1 or 2 elements, but "

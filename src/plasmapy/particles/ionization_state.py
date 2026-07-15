@@ -448,7 +448,7 @@ class IonizationState:
                 np.all(np.isnan(self.ionic_fractions))
                 and np.all(np.isnan(other.ionic_fractions)),
             ],
-        )  # ty:ignore[no-matching-overload]
+        )
 
         return np.all(
             [same_element, same_isotope, same_T_e, same_n_elem, same_fractions],

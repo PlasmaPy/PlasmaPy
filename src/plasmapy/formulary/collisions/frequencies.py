@@ -380,6 +380,18 @@ class MaxwellianCollisionFrequencies:
             "equivalencies": u.temperature_energy(),
         },
         n_b={"can_be_negative": False},
+        T_parallel={
+            "can_be_negative": False,
+            "equivalencies": u.temperature_energy(),
+            "none_shall_pass": True,
+            "units": u.K,
+        },
+        T_perp={
+            "can_be_negative": False,
+            "equivalencies": u.temperature_energy(),
+            "none_shall_pass": True,
+            "units": u.K,
+        },
     )
     def __init__(
         self,
@@ -392,6 +404,8 @@ class MaxwellianCollisionFrequencies:
         T_b: u.Quantity[u.K],
         n_b: u.Quantity[u.m**-3],
         Coulomb_log: u.Quantity[u.dimensionless_unscaled],
+        T_parallel: u.Quantity[u.K] = None,
+        T_perp: u.Quantity[u.K] = None,
     ) -> None:
         if (
             isinstance(v_drift, np.ndarray)
@@ -412,6 +426,9 @@ class MaxwellianCollisionFrequencies:
             if isinstance(Coulomb_log, u.Quantity)
             else Coulomb_log * u.dimensionless_unscaled
         )
+
+        self.T_parallel = T_parallel
+        self.T_perp = T_perp
 
         self.v_T_a = thermal_speed(self.T_a, self.test_particle)
         self.v_T_b = thermal_speed(self.T_b, self.field_particle)
@@ -601,6 +618,135 @@ class MaxwellianCollisionFrequencies:
         coeff = 4 / (3 * np.sqrt(2 * np.pi))
 
         return coeff * self.Lorentz_collision_frequency
+
+    @cached_property
+    def thermal_equilibration_rate(self) -> u.Quantity[u.Hz]:
+        r"""Thermal equilibration rate between test and field particles.
+
+        The rate at which :math:`T_a` and :math:`T_b` relax toward
+        each other in a Maxwellian plasma, Eq. (5.31) in
+        :cite:t:`nrlformulary:2019` (NRL Formulary, p. 33).
+
+        Returns
+        -------
+        `~astropy.units.Quantity`
+            Thermal equilibration rate in Hz.
+
+        Notes
+        -----
+        :math:`\nu_{\text{eq}} = \frac{2 m_b}{m_a + m_b}
+        \nu_{\perp}^{\text{ei}}`, where
+        :math:`\nu_{\perp}^{\text{ei}}` is
+        `Lorentz_collision_frequency`.
+        See :cite:t:`nrlformulary:2019` (NRL Formulary, pp. 33–34) or
+        :cite:t:`callen:unpublished` for the full expression.
+
+        Examples
+        --------
+        >>> import astropy.units as u
+        >>> v_drift = 1 * u.m / u.s
+        >>> n = 1e27 * u.m**-3
+        >>> T = 1e4 * u.K
+        >>> Coulomb_log = 10 * u.dimensionless_unscaled
+        >>> collisions = MaxwellianCollisionFrequencies(
+        ...     "e-",
+        ...     "Na+",
+        ...     v_drift=v_drift,
+        ...     T_a=T,
+        ...     T_b=T,
+        ...     n_a=n,
+        ...     n_b=n,
+        ...     Coulomb_log=Coulomb_log,
+        ... )
+        >>> collisions.thermal_equilibration_rate
+        <Quantity 9.65881...e+16 Hz>
+        """
+        mass_a = self.test_particle.mass
+        mass_b = self.field_particle.mass
+        eq_coeff = (2 * mass_b) / (mass_a + mass_b)
+        return eq_coeff * self.Lorentz_collision_frequency
+
+    @cached_property
+    def temperature_isotropization_rate(self) -> u.Quantity[u.Hz]:
+        r"""Temperature isotropization rate for the test particle.
+
+        The rate at which :math:`T_{\perp}` and :math:`T_{\parallel}`
+        relax toward each other for a bi-Maxwellian test particle,
+        Eq. (5.35a) in :cite:t:`nrlformulary:2019` (NRL Formulary, p. 34).
+
+        Returns
+        -------
+        `~astropy.units.Quantity`
+            Temperature isotropization rate in Hz.
+
+        Raises
+        ------
+        `TypeError`
+            If ``T_parallel`` or ``T_perp`` is not a
+            `~astropy.units.Quantity`.
+
+        Notes
+        -----
+        :math:`\nu_{\text{iso}} = \nu_{\parallel}
+        + \left(-\frac{T_{\perp}}{T_{\parallel}}
+        + \frac{m_a (T_{\perp} - T_{\parallel})}
+        {2 (m_a + m_b) T_{\parallel}} + \dots \right)`,
+        where the branch taken depends on the sign of
+        :math:`A = 1 - T_{\perp} / T_{\parallel}`.
+        See :cite:t:`nrlformulary:2019` (NRL Formulary, pp. 33–34) or
+        :cite:t:`callen:unpublished` for the full expression.
+
+        Examples
+        --------
+        >>> import astropy.units as u
+        >>> v_drift = 1 * u.m / u.s
+        >>> n = 1e27 * u.m**-3
+        >>> T = 1e4 * u.K
+        >>> T_para = 1.0 * T
+        >>> Tperp = 1.1 * T
+        >>> Coulomb_log = 10 * u.dimensionless_unscaled
+        >>> collisions = MaxwellianCollisionFrequencies(
+        ...     "e-",
+        ...     "Na+",
+        ...     v_drift=v_drift,
+        ...     T_a=T,
+        ...     T_b=T,
+        ...     n_a=n,
+        ...     n_b=n,
+        ...     Coulomb_log=Coulomb_log,
+        ...     T_parallel=T_para,
+        ...     T_perp=Tperp,
+        ... )
+        >>> collisions.temperature_isotropization_rate
+        <Quantity 8.78926...e+16 Hz>
+        """
+        if not all(isinstance(T, u.Quantity) for T in (self.T_parallel, self.T_perp)):
+            raise TypeError(
+                "T_parallel and T_perp must be Quantities. "
+                "Did you forget to pass them as keyword arguments?"
+            )
+        T_parallel = self.T_parallel
+        T_perp = self.T_perp
+        mass_a = self.test_particle.mass
+        mass_b = self.field_particle.mass
+        A = 1 - T_perp / T_parallel  # ty: ignore[unsupported-operator]
+        phi_val = self.Lorentz_collision_frequency
+        Tp_over_Tpar = T_perp / T_parallel  # ty: ignore[unsupported-operator]
+        C = (
+            -(Tp_over_Tpar)
+            + (mass_a * (T_perp - T_parallel))  # ty: ignore[unsupported-operator]
+            / (2 * (mass_a + mass_b) * T_parallel)
+        )
+        A_val = A.value
+        if A_val == 0:
+            return phi_val * 2
+        elif A_val > 0:
+            sqrt_A = np.sqrt(A)
+            b_coeff = 1 - sqrt_A * (np.arctan(sqrt_A).value / (2 * sqrt_A))
+        else:
+            sqrt_A = np.sqrt(-A)
+            b_coeff = 1 - sqrt_A * (np.arctanh(sqrt_A).value / (2 * sqrt_A))
+        return phi_val * (2 + C * (1 - b_coeff))
 
 
 @validate_quantities(

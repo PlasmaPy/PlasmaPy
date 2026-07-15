@@ -560,7 +560,7 @@ class TestCheckUnits:
                     "input": (None, "arg", {**check, "none_shall_pass": True}),
                     "output": (None, None, None, None),
                 },
-            ],  # ty:ignore[invalid-argument-type]
+            ],
         )
 
         # add cases for 'pass_equivalent_units' checks
@@ -592,7 +592,7 @@ class TestCheckUnits:
                     ),
                     "output": (5.0 * u.km, None, None, None),
                 },
-            ],  # ty:ignore[invalid-argument-type]
+            ],
         )
 
         # setup wrapped function

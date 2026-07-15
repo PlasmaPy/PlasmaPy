@@ -19,7 +19,7 @@
 # pre-commit docs: https://pre-commit.com/#adding-pre-commit-plugins-to-your-project
 
 ci:
-  autofix_prs: false
+  autofix_prs: true
   autoupdate_schedule: monthly
   # skip hooks that require network access, which pre-commit.ci forbids
   skip: [uv-lock]
