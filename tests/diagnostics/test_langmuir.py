@@ -244,8 +244,18 @@ class Test__Characteristic_inherited_methods:
         char = characteristic
         limits = char.get_padded_limit(0.1)
         log_limits = char.get_padded_limit(0.1, log=True)
-        assert np.allclose(limits.to(u.A).value, np.array((-0.07434804, 1.06484239)))
-        assert np.allclose(log_limits.to(u.A).value, np.array((0.014003, 1.42577333)))
+        np.testing.assert_allclose(
+            limits.to(u.A).value,
+            np.array((-0.07434804, 1.06484239)),
+            rtol=1e-5,
+            atol=1e-8,
+        )
+        np.testing.assert_allclose(
+            log_limits.to(u.A).value,
+            np.array((0.014003, 1.42577333)),
+            rtol=1e-5,
+            atol=1e-8,
+        )
 
 
 @pytest.mark.slow
@@ -302,7 +312,9 @@ def test_get_floating_potential_with_return_arg(characteristic) -> None:
             characteristic,
             return_arg=True,
         )
-    assert np.allclose((potential.to(u.V).value, arg), (0.12203823, 5))
+    np.testing.assert_allclose(
+        (potential.to(u.V).value, arg), (0.12203823, 5), rtol=1e-5, atol=1e-8
+    )
 
 
 def test_get_ion_density_OML_without_return_fit(characteristic) -> None:
@@ -314,7 +326,7 @@ def test_get_ion_density_OML_without_return_fit(characteristic) -> None:
             "p+",
             return_fit=False,
         )
-    assert np.isclose(density.value, 385344135.12064785)
+    np.testing.assert_allclose(density.value, 385344135.12064785, rtol=1e-5, atol=1e-8)
 
 
 def test_get_EEDF() -> None:
@@ -327,5 +339,9 @@ def test_get_EEDF() -> None:
     expect_energy = (0.14118696, 0.05293109, 0.00709731)
     expect_probability = (8.64838751, 8.05295503, 3.42348436)
 
-    assert np.allclose(energy.to(u.eV).value, np.array(expect_energy))
-    assert np.allclose(probability, np.array(expect_probability))
+    np.testing.assert_allclose(
+        energy.to(u.eV).value, np.array(expect_energy), rtol=1e-5, atol=1e-8
+    )
+    np.testing.assert_allclose(
+        probability, np.array(expect_probability), rtol=1e-5, atol=1e-8
+    )

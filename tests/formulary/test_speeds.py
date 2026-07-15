@@ -114,7 +114,9 @@ class TestAlfvenSpeed:
             val = Alfven_speed(*args, **kwargs)
             assert isinstance(val, u.Quantity)
             assert val.unit == u.m / u.s
-            assert np.isclose(val.value, expected, **isclose_kw)
+            np.testing.assert_allclose(
+                val.value, expected, **{"rtol": 1e-5, "atol": 1e-8, **isclose_kw}
+            )  # ty:ignore[no-matching-overload]
 
     @pytest.mark.parametrize(
         ("args", "kwargs", "expected", "isclose_kw"),
@@ -183,7 +185,11 @@ class TestAlfvenSpeed:
     )
     def test_values(self, args, kwargs, expected, isclose_kw) -> None:
         """Test expected values."""
-        assert np.allclose(Alfven_speed(*args, **kwargs), expected, **isclose_kw)
+        np.testing.assert_allclose(
+            Alfven_speed(*args, **kwargs),
+            expected,
+            **{"rtol": 1e-5, "atol": 1e-8, **isclose_kw},
+        )  # ty:ignore[no-matching-overload]
 
     @pytest.mark.parametrize(
         ("args", "kwargs", "nan_mask"),
@@ -308,7 +314,11 @@ class Test_Ion_Sound_Speed:
         ],
     )
     def test_values(self, args, kwargs, expected, isclose_kw) -> None:
-        assert np.isclose(ion_sound_speed(*args, **kwargs), expected, **isclose_kw)
+        np.testing.assert_allclose(
+            ion_sound_speed(*args, **kwargs),
+            expected,
+            **{"rtol": 1e-5, "atol": 1e-8, **isclose_kw},
+        )  # ty:ignore[no-matching-overload]
 
     # case when Z=1 is assumed
     # assert ion_sound_speed(T_i=T_i, T_e=T_e, ion='p+') == ion_sound_speed(T_i=T_i, T_e=T_e,
