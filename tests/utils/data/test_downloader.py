@@ -224,7 +224,9 @@ def test_get_file_NIST_PSTAR_datafile(downloader_validated) -> None:
     path = downloader_validated.get_file("NIST_PSTAR_aluminum.txt")
 
     arr = np.loadtxt(path, skiprows=7)
-    assert np.allclose(arr[0, :], np.array([1e-3, 1.043e2]))
+    np.testing.assert_allclose(
+        arr[0, :], np.array([1e-3, 1.043e2]), rtol=1e-5, atol=1e-8
+    )
 
 
 @pytest.mark.skip(

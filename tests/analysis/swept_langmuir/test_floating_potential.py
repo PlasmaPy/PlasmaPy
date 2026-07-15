@@ -228,7 +228,7 @@ class TestFindFloatingPotential:
                 if np.isnan(val):
                     assert np.isnan(rtn_val)
                 else:
-                    assert np.isclose(rtn_val, val)
+                    np.testing.assert_allclose(rtn_val, val, rtol=1e-5, atol=1e-8)  # ty:ignore[no-matching-overload]
             else:
                 assert rtn_val == val
 
@@ -363,7 +363,7 @@ class TestFindFloatingPotential:
                 if np.isnan(val):
                     assert np.isnan(rtn_val)
                 else:
-                    assert np.isclose(rtn_val, val, atol=1e-7)
+                    np.testing.assert_allclose(rtn_val, val, atol=1e-7, rtol=1e-5)  # ty:ignore[no-matching-overload]
             else:
                 assert rtn_val == val
 
@@ -381,12 +381,16 @@ class TestFindFloatingPotential:
         )
 
         assert isinstance(extras, VFExtras)
-        assert np.isclose(vf, -b / m)
-        assert np.isclose(extras.vf_err, 0.0)  # ty:ignore[no-matching-overload]
-        assert np.isclose(extras.rsq, 1.0)  # ty:ignore[no-matching-overload]
+        np.testing.assert_allclose(vf, -b / m, rtol=1e-5, atol=1e-8)
+        np.testing.assert_allclose(extras.vf_err, 0.0, rtol=1e-5, atol=1e-8)  # ty:ignore[no-matching-overload]
+        np.testing.assert_allclose(extras.rsq, 1.0, rtol=1e-5, atol=1e-8)  # ty:ignore[no-matching-overload]
         assert isinstance(extras.fitted_func, ffuncs.Linear)
-        assert np.allclose(extras.fitted_func.params, (m, b))  # ty:ignore[invalid-argument-type]
-        assert np.allclose(extras.fitted_func.param_errors, (0.0, 0.0), atol=2e-8)  # ty:ignore[invalid-argument-type]
+        np.testing.assert_allclose(
+            extras.fitted_func.params, (m, b), rtol=1e-5, atol=1e-8
+        )  # ty:ignore[no-matching-overload]
+        np.testing.assert_allclose(
+            extras.fitted_func.param_errors, (0.0, 0.0), atol=2e-8, rtol=1e-5
+        )  # ty:ignore[no-matching-overload]
 
     @pytest.mark.parametrize(
         ("a", "alpha", "b"),
@@ -405,9 +409,13 @@ class TestFindFloatingPotential:
         )
 
         assert isinstance(extras, VFExtras)
-        assert np.isclose(vf, np.log(-b / a) / alpha)
-        assert np.isclose(extras.vf_err, 0.0, 1e-7)  # ty:ignore[no-matching-overload]
-        assert np.isclose(extras.rsq, 1.0)  # ty:ignore[no-matching-overload]
+        np.testing.assert_allclose(vf, np.log(-b / a) / alpha, rtol=1e-5, atol=1e-8)
+        np.testing.assert_allclose(extras.vf_err, 0.0, 1e-7, atol=1e-8)  # ty:ignore[no-matching-overload]
+        np.testing.assert_allclose(extras.rsq, 1.0, rtol=1e-5, atol=1e-8)  # ty:ignore[no-matching-overload]
         assert isinstance(extras.fitted_func, ffuncs.ExponentialPlusOffset)
-        assert np.allclose(extras.fitted_func.params, (a, alpha, b))  # ty:ignore[invalid-argument-type]
-        assert np.allclose(extras.fitted_func.param_errors, (0.0, 0.0, 0.0), atol=2e-8)  # ty:ignore[invalid-argument-type]
+        np.testing.assert_allclose(
+            extras.fitted_func.params, (a, alpha, b), rtol=1e-5, atol=1e-8
+        )  # ty:ignore[no-matching-overload]
+        np.testing.assert_allclose(
+            extras.fitted_func.param_errors, (0.0, 0.0, 0.0), atol=2e-8, rtol=1e-5
+        )  # ty:ignore[no-matching-overload]

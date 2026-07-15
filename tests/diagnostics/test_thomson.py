@@ -240,18 +240,24 @@ def test_notched_spectrum(notch, notch_num, single_species_collective_args) -> N
     alpha_notched, Skw_notched = thomson.spectral_density(*args, **kwargs)
 
     # Check that notch does not affect alpha
-    assert np.isclose(alpha_notched, alpha_unnotched)
+    np.testing.assert_allclose(alpha_notched, alpha_unnotched, rtol=1e-5, atol=1e-8)
 
     if notch_num == 1:
         # Record wavelength array indices corresponding to notch
         x0 = np.argwhere(wavelengths > notch[0])[0][0]
         x1 = np.argwhere(wavelengths > notch[1])[0][0]
         # Check that regions outside the notch are the same for both Skws
-        assert np.allclose(Skw_notched[:x0], Skw_unnotched[:x0])
-        assert np.allclose(Skw_notched[x1:], Skw_unnotched[x1:])
+        np.testing.assert_allclose(
+            Skw_notched[:x0], Skw_unnotched[:x0], rtol=1e-5, atol=1e-8
+        )
+        np.testing.assert_allclose(
+            Skw_notched[x1:], Skw_unnotched[x1:], rtol=1e-5, atol=1e-8
+        )
 
         # Check that region inside the notch is 0 for notched Skw
-        assert np.allclose(Skw_notched[x0:x1], np.zeros(x1 - x0))
+        np.testing.assert_allclose(
+            Skw_notched[x0:x1], np.zeros(x1 - x0), rtol=1e-5, atol=1e-8
+        )
     elif notch_num == 2:
         x0 = np.argwhere(wavelengths > notch[0, 0])[0][0]
         x1 = np.argwhere(wavelengths > notch[0, 1])[0][0]
@@ -259,13 +265,23 @@ def test_notched_spectrum(notch, notch_num, single_species_collective_args) -> N
         x3 = np.argwhere(wavelengths > notch[1, 1])[0][0]
 
         # Check that regions outside the notches are the same for both Skws
-        assert np.allclose(Skw_notched[:x0], Skw_unnotched[:x0])
-        assert np.allclose(Skw_notched[x1:x2], Skw_unnotched[x1:x2])
-        assert np.allclose(Skw_notched[x3:], Skw_unnotched[x3:])
+        np.testing.assert_allclose(
+            Skw_notched[:x0], Skw_unnotched[:x0], rtol=1e-5, atol=1e-8
+        )
+        np.testing.assert_allclose(
+            Skw_notched[x1:x2], Skw_unnotched[x1:x2], rtol=1e-5, atol=1e-8
+        )
+        np.testing.assert_allclose(
+            Skw_notched[x3:], Skw_unnotched[x3:], rtol=1e-5, atol=1e-8
+        )
 
         # Check that region inside the notches is 0 for notched Skw
-        assert np.allclose(Skw_notched[x0:x1], np.zeros(x1 - x0))
-        assert np.allclose(Skw_notched[x2:x3], np.zeros(x3 - x2))
+        np.testing.assert_allclose(
+            Skw_notched[x0:x1], np.zeros(x1 - x0), rtol=1e-5, atol=1e-8
+        )
+        np.testing.assert_allclose(
+            Skw_notched[x2:x3], np.zeros(x3 - x2), rtol=1e-5, atol=1e-8
+        )
 
 
 @pytest.mark.parametrize(
@@ -323,9 +339,9 @@ def test_single_species_collective_lite(single_species_collective_args) -> None:
     args, kwargs = spectral_density_args_kwargs(lite_kwargs)
     alpha2, Skw2 = thomson.spectral_density.lite(*args, **kwargs)
 
-    assert np.isclose(alpha1, alpha2)
+    np.testing.assert_allclose(alpha1, alpha2, rtol=1e-5, atol=1e-8)
 
-    assert np.allclose(Skw1.to(u.s / u.rad).value, Skw2)
+    np.testing.assert_allclose(Skw1.to(u.s / u.rad).value, Skw2, rtol=1e-5, atol=1e-8)
 
 
 def test_spectral_density_lite_minimal_arguments(
