@@ -421,11 +421,8 @@ class TestSingleParticleCollisionFrequencies:
                     coulomb_density_constant * charge_constant
                 )
 
-            assert np.allclose(
-                calculated_limit_value,
-                expected_limit_value,
-                rtol=0.05,
-                atol=0,
+            np.testing.assert_allclose(
+                calculated_limit_value, expected_limit_value, rtol=0.05, atol=0
             )
 
     @pytest.mark.parametrize(
@@ -670,7 +667,7 @@ class TestMaxwellianCollisionFrequencies:
             constructor_keyword_arguments["Coulomb_log"],
         )
 
-        assert np.allclose(calculated_value, expected_value, rtol=5e-3, atol=0)
+        np.testing.assert_allclose(calculated_value, expected_value, rtol=5e-3, atol=0)
 
     @pytest.mark.parametrize(
         ("frequency_to_test", "constructor_keyword_arguments", "expected_value"),
@@ -718,7 +715,7 @@ class TestMaxwellianCollisionFrequencies:
 
         calculated_value = getattr(value_test_case, frequency_to_test)
 
-        assert np.allclose(calculated_value, expected_value, rtol=5e-3, atol=0)
+        np.testing.assert_allclose(calculated_value, expected_value, rtol=5e-3, atol=0)
 
     @pytest.mark.filterwarnings("ignore::plasmapy.utils.exceptions.RelativityWarning")
     def test_thermal_equilibration_rate(self) -> None:
