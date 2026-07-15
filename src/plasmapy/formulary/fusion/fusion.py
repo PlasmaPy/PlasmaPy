@@ -30,8 +30,8 @@ import math
 import astropy.units as u
 
 from plasmapy.formulary.fusion.parameters import (
-    _ReactionParameters,
     _lookup_reaction,
+    _ReactionParameters,
 )
 from plasmapy.utils.decorators import validate_quantities
 
@@ -58,12 +58,9 @@ def _fusion_cross_section_bosch_hale(
         Cross-section in m^2.
     """
     E = E_keV
-    use_high = (
-        params.high_energy_cutoff_keV > 0
-        and E >= params.high_energy_cutoff_keV
-    )
+    use_high = params.high_energy_cutoff_keV > 0 and params.high_energy_cutoff_keV <= E
     max_E = params.high_energy_max_keV if use_high else params.max_E_keV
-    if E < params.min_E_keV or E > max_E:
+    if params.min_E_keV > E or max_E < E:
         return 0.0
     if use_high:
         A1, A2, A3, A4, A5 = (
@@ -94,10 +91,9 @@ def _fusion_cross_section_bosch_hale(
             params.B4,
         )
 
-    S = (
-        A1
-        + E * (A2 + E * (A3 + E * (A4 + E * A5)))
-    ) / (1 + E * (B1 + E * (B2 + E * (B3 + E * B4))))
+    S = (A1 + E * (A2 + E * (A3 + E * (A4 + E * A5)))) / (
+        1 + E * (B1 + E * (B2 + E * (B3 + E * B4)))
+    )
 
     return (1.0 / E) * S * math.exp(-params.BG / math.sqrt(E)) * 1e-31
 
@@ -131,12 +127,7 @@ def _cross_section_pb11(E_keV: float, params: _ReactionParameters) -> float:
     EG = 22.589
 
     if E_keV <= 400:
-        S = (
-            C0
-            + C1 * E_keV
-            + C2 * (E_keV**2)
-            + AL / ((E_keV - EL) ** 2 + delEL**2)
-        )
+        S = C0 + C1 * E_keV + C2 * (E_keV**2) + AL / ((E_keV - EL) ** 2 + delEL**2)
     elif 400 < E_keV < 642:
         x = (E_keV - 400) / 100
         S = D0 + D1 * x + D2 * x**2 + D5 * x**5
@@ -242,12 +233,7 @@ def _reactivity_nevins_swain_pb11(T_keV: float, params: _ReactionParameters) -> 
         )
     )
     xi = (EG * 1000 / (4.0 * theta)) ** (1.0 / 3.0)
-    NR_high_T = (
-        P1
-        * theta
-        * math.sqrt(xi / (Mrc2 * T_keV**3))
-        * math.exp(-3.0 * xi)
-    )
+    NR_high_T = P1 * theta * math.sqrt(xi / (Mrc2 * T_keV**3)) * math.exp(-3.0 * xi)
 
     return NR_high_T + R
 
@@ -390,9 +376,7 @@ def reactivity(
     elif params.BG > 0:
         sigma_v = _reactivity_bosch_hale(T_keV, params)
     else:
-        raise ValueError(
-            f"Cannot compute reactivity for {params.name}."
-        )
+        raise ValueError(f"Cannot compute reactivity for {params.name}.")
 
     if sigma_v == 0.0:
         raise ValueError(
@@ -569,9 +553,7 @@ def lawson_product(
     >>> lawson_product(1e20 * u.m**-3, 10 * u.keV, 1 * u.s)
     <Quantity 1.0e+21 keV s / m3>
     """
-    return (n.to(u.m**-3) * T.to(u.keV) * tau_E.to(u.s)).to(
-        u.keV * u.s / u.m**3
-    )
+    return (n.to(u.m**-3) * T.to(u.keV) * tau_E.to(u.s)).to(u.keV * u.s / u.m**3)
 
 
 @validate_quantities(
