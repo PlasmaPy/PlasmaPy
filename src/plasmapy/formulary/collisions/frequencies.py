@@ -4,6 +4,7 @@ __all__ = [
     "SingleParticleCollisionFrequencies",
     "MaxwellianCollisionFrequencies",
     "collision_frequency",
+    "temperature_isotropization_rate",
     "fundamental_electron_collision_freq",
     "fundamental_ion_collision_freq",
 ]
@@ -380,18 +381,6 @@ class MaxwellianCollisionFrequencies:
             "equivalencies": u.temperature_energy(),
         },
         n_b={"can_be_negative": False},
-        T_parallel={
-            "can_be_negative": False,
-            "equivalencies": u.temperature_energy(),
-            "none_shall_pass": True,
-            "units": u.K,
-        },
-        T_perp={
-            "can_be_negative": False,
-            "equivalencies": u.temperature_energy(),
-            "none_shall_pass": True,
-            "units": u.K,
-        },
     )
     def __init__(
         self,
@@ -404,8 +393,6 @@ class MaxwellianCollisionFrequencies:
         T_b: u.Quantity[u.K],
         n_b: u.Quantity[u.m**-3],
         Coulomb_log: u.Quantity[u.dimensionless_unscaled],
-        T_parallel: u.Quantity[u.K] = None,
-        T_perp: u.Quantity[u.K] = None,
     ) -> None:
         if (
             isinstance(v_drift, np.ndarray)
@@ -426,9 +413,6 @@ class MaxwellianCollisionFrequencies:
             if isinstance(Coulomb_log, u.Quantity)
             else Coulomb_log * u.dimensionless_unscaled
         )
-
-        self.T_parallel = T_parallel
-        self.T_perp = T_perp
 
         self.v_T_a = thermal_speed(self.T_a, self.test_particle)
         self.v_T_b = thermal_speed(self.T_b, self.field_particle)
@@ -675,103 +659,155 @@ class MaxwellianCollisionFrequencies:
         eq_coeff = (2 * mass_b) / (mass_a + mass_b)
         return eq_coeff * self.Lorentz_collision_frequency
 
-    @cached_property
-    def temperature_isotropization_rate(self) -> u.Quantity[u.Hz]:
-        r"""Temperature isotropization rate for the test particle.
 
-        The rate at which :math:`T_⟂` and :math:`T_∥`
-        relax toward each other for a bi-Maxwellian test particle, in
-        :cite:t:`nrlformulary:2019` (NRL Formulary, pp. 33–34).
+@validate_quantities(
+    T_a={
+        "can_be_negative": False,
+        "equivalencies": u.temperature_energy(),
+    },
+    n_a={"can_be_negative": False},
+    T_b={
+        "can_be_negative": False,
+        "equivalencies": u.temperature_energy(),
+    },
+    n_b={"can_be_negative": False},
+    T_parallel={
+        "can_be_negative": False,
+        "equivalencies": u.temperature_energy(),
+    },
+    T_perp={
+        "can_be_negative": False,
+        "equivalencies": u.temperature_energy(),
+    },
+)
+@particles.particle_input
+def temperature_isotropization_rate(
+    test_particle: ParticleLike,
+    field_particle: ParticleLike,
+    *,
+    v_drift: u.Quantity[u.m / u.s] = 0 * u.m / u.s,
+    T_a: u.Quantity[u.K],
+    n_a: u.Quantity[u.m**-3],
+    T_b: u.Quantity[u.K],
+    n_b: u.Quantity[u.m**-3],
+    Coulomb_log: u.Quantity[u.dimensionless_unscaled] = 10,
+    T_parallel: u.Quantity[u.K],
+    T_perp: u.Quantity[u.K],
+) -> u.Quantity[u.Hz]:
+    r"""Temperature isotropization rate for the test particle.
 
-        Returns
-        -------
-        `~astropy.units.Quantity`
-            Temperature isotropization rate in Hz.
+    The rate at which :math:`T_⟂` and :math:`T_∥`
+    relax toward each other for a bi-Maxwellian test particle, in
+    :cite:t:`nrlformulary:2019` (NRL Formulary, pp. 33–34).
 
-        Raises
-        ------
-        `TypeError`
-            If ``T_parallel`` or ``T_perp`` is not a
-            `~astropy.units.Quantity`.
+    Parameters
+    ----------
+    test_particle : |particle-like|
+        The test particle in a bi-Maxwellian distribution.
 
-        Notes
-        -----
-        This rate appears in
-        :math:`dT_⟂/dt = -\nu_{\text{iso}} (T_⟂ - T_∥)` for a
-        bi-Maxwellian test particle.
+    field_particle : |particle-like|
+        The background field particle.
 
-        Defining :math:`A = 1 - T_⟂ / T_∥` and
-        :math:`C = -T_⟂/T_∥ + m_a (T_⟂ - T_∥) / (2 (m_a + m_b) T_∥)`,
-        the isotropization rate is
+    v_drift : `~astropy.units.Quantity`, |keyword-only|
+        The relative drift between the test and field particles.
 
-        .. math::
+    T_a : `~astropy.units.Quantity`
+        Temperature of the test particles.
 
-            \nu_{\text{iso}} = \begin{cases}
-                2 \nu_{\perp}, & A = 0, \\
-                \nu_{\perp} \left[ 2 + C \left(1 -
-                \frac{\arctan\sqrt{A}}{\sqrt{A}} \right) \right],
-                & A > 0, \\
-                \nu_{\perp} \left[ 2 + C \left(1 -
-                \frac{\operatorname{arctanh}\sqrt{-A}}{\sqrt{-A}}
-                \right) \right], & A < 0,
-            \end{cases}
+    n_a : `~astropy.units.Quantity`
+        Number density of the test particles.
 
-        where :math:`\nu_{\perp}` is
-        `Lorentz_collision_frequency`.
-        See :cite:t:`nrlformulary:2019` (NRL Formulary, pp. 33–34) for
-        the full expression.
+    T_b : `~astropy.units.Quantity`
+        Temperature of the field particles.
 
-        Examples
-        --------
-        >>> import astropy.units as u
-        >>> v_drift = 1 * u.m / u.s
-        >>> n = 1e27 * u.m**-3
-        >>> T = 1e4 * u.K
-        >>> T_para = 1.0 * T
-        >>> Tperp = 1.1 * T
-        >>> Coulomb_log = 10 * u.dimensionless_unscaled
-        >>> collisions = MaxwellianCollisionFrequencies(
-        ...     "e-",
-        ...     "Na+",
-        ...     v_drift=v_drift,
-        ...     T_a=T,
-        ...     T_b=T,
-        ...     n_a=n,
-        ...     n_b=n,
-        ...     Coulomb_log=Coulomb_log,
-        ...     T_parallel=T_para,
-        ...     T_perp=Tperp,
-        ... )
-        >>> collisions.temperature_isotropization_rate
-        <Quantity 8.78926...e+16 Hz>
-        """
-        if not all(isinstance(T, u.Quantity) for T in (self.T_parallel, self.T_perp)):
-            raise TypeError(
-                "T_parallel and T_perp must be Quantities. "
-                "Did you forget to pass them as keyword arguments?"
-            )
-        T_parallel = self.T_parallel
-        T_perp = self.T_perp
-        mass_a = self.test_particle.mass
-        mass_b = self.field_particle.mass
-        A = 1 - T_perp / T_parallel  # ty: ignore[unsupported-operator]
-        phi_val = self.Lorentz_collision_frequency
-        Tp_over_Tpar = T_perp / T_parallel  # ty: ignore[unsupported-operator]
-        C = (
-            -(Tp_over_Tpar)
-            + (mass_a * (T_perp - T_parallel))  # ty: ignore[unsupported-operator]
-            / (2 * (mass_a + mass_b) * T_parallel)
-        )
-        A_val = A.value
-        if A_val == 0:
-            return phi_val * 2
-        elif A_val > 0:
-            sqrt_A = np.sqrt(A)
-            b_coeff = 1 - sqrt_A * (np.arctan(sqrt_A).value / (2 * sqrt_A))
-        else:
-            sqrt_A = np.sqrt(-A)
-            b_coeff = 1 - sqrt_A * (np.arctanh(sqrt_A).value / (2 * sqrt_A))
-        return phi_val * (2 + C * (1 - b_coeff))
+    n_b : `~astropy.units.Quantity`
+        Number density of the field particles.
+
+    Coulomb_log : `~astropy.units.Quantity`, |keyword-only|
+        The value of the Coulomb logarithm for the interaction.
+
+    T_parallel : `~astropy.units.Quantity`, |keyword-only|
+        Parallel temperature of the test particle.
+
+    T_perp : `~astropy.units.Quantity`, |keyword-only|
+        Perpendicular temperature of the test particle.
+
+    Returns
+    -------
+    `~astropy.units.Quantity`
+        Temperature isotropization rate in Hz.
+
+    Notes
+    -----
+    This rate appears in
+    :math:`dT_⟂/dt = -\nu_{\text{iso}} (T_⟂ - T_∥)` for a
+    bi-Maxwellian test particle.
+
+    Defining :math:`A = 1 - T_⟂ / T_∥` and
+    :math:`C = -T_⟂/T_∥ + m_a (T_⟂ - T_∥) / (2 (m_a + m_b) T_∥)`,
+    the isotropization rate is
+
+    .. math::
+
+        \nu_{\text{iso}} = \begin{cases}
+            2 \nu_{\perp}, & A = 0, \\
+            \nu_{\perp} \left[ 2 + C \left(1 -
+            \frac{\arctan\sqrt{A}}{\sqrt{A}} \right) \right],
+            & A > 0, \\
+            \nu_{\perp} \left[ 2 + C \left(1 -
+            \frac{\operatorname{arctanh}\sqrt{-A}}{\sqrt{-A}}
+            \right) \right], & A < 0,
+        \end{cases}
+
+    where :math:`\nu_{\perp}` is the Lorentz collision frequency.
+    See :cite:t:`nrlformulary:2019` (NRL Formulary, pp. 33–34) for
+    the full expression.
+
+    Examples
+    --------
+    >>> import astropy.units as u
+    >>> v_drift = 1 * u.m / u.s
+    >>> n = 1e27 * u.m**-3
+    >>> T = 1e4 * u.K
+    >>> temperature_isotropization_rate(
+    ...     "e-", "Na+",
+    ...     v_drift=v_drift,
+    ...     T_a=T, n_a=n,
+    ...     T_b=T, n_b=n,
+    ...     Coulomb_log=10,
+    ...     T_parallel=1.0 * T,
+    ...     T_perp=1.1 * T,
+    ... )
+    <Quantity 8.78926...e+16 Hz>
+    """
+    collisions = MaxwellianCollisionFrequencies(
+        test_particle,
+        field_particle,
+        v_drift=v_drift,
+        T_a=T_a,
+        n_a=n_a,
+        T_b=T_b,
+        n_b=n_b,
+        Coulomb_log=Coulomb_log,
+    )
+    mass_a = test_particle.mass
+    mass_b = field_particle.mass
+    A = 1 - T_perp / T_parallel
+    phi_val = collisions.Lorentz_collision_frequency
+    Tp_over_Tpar = T_perp / T_parallel
+    C = -(Tp_over_Tpar) + (mass_a * (T_perp - T_parallel)) / (
+        2 * (mass_a + mass_b) * T_parallel
+    )
+    A_val = A.value
+    if A_val == 0:
+        return phi_val * 2
+    elif A_val > 0:
+        sqrt_A = np.sqrt(A)
+        b_coeff = 1 - sqrt_A * (np.arctan(sqrt_A).value / (2 * sqrt_A))
+    else:
+        sqrt_A = np.sqrt(-A)
+        b_coeff = 1 - sqrt_A * (np.arctanh(sqrt_A).value / (2 * sqrt_A))
+    return phi_val * (2 + C * (1 - b_coeff))
 
 
 @validate_quantities(

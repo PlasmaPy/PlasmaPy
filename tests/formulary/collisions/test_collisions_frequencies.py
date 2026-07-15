@@ -7,6 +7,7 @@ from plasmapy.formulary.collisions.frequencies import (
     MaxwellianCollisionFrequencies,
     SingleParticleCollisionFrequencies,
     collision_frequency,
+    temperature_isotropization_rate,
     fundamental_electron_collision_freq,
     fundamental_ion_collision_freq,
 )
@@ -776,19 +777,18 @@ class TestMaxwellianCollisionFrequencies:
         T_para = 1.0 * T
         Tperp = 1.1 * T
         Coulomb_log = 10 * u.dimensionless_unscaled
-        collisions = MaxwellianCollisionFrequencies(
+        rate = temperature_isotropization_rate(
             "e-",
             "Na+",
             v_drift=v_drift,
             T_a=T,
-            T_b=T,
             n_a=n,
+            T_b=T,
             n_b=n,
             Coulomb_log=Coulomb_log,
             T_parallel=T_para,
             T_perp=Tperp,
         )
-        rate = collisions.temperature_isotropization_rate
         expected = 8.78926e16 * u.Hz
         np.testing.assert_allclose(rate, expected, rtol=5e-3, atol=0)
 
@@ -800,6 +800,18 @@ class TestMaxwellianCollisionFrequencies:
         T_para = 1.1 * T
         Tperp = 1.0 * T
         Coulomb_log = 10 * u.dimensionless_unscaled
+        rate = temperature_isotropization_rate(
+            "e-",
+            "Na+",
+            v_drift=v_drift,
+            T_a=T,
+            n_a=n,
+            T_b=T,
+            n_b=n,
+            Coulomb_log=Coulomb_log,
+            T_parallel=T_para,
+            T_perp=Tperp,
+        )
         collisions = MaxwellianCollisionFrequencies(
             "e-",
             "Na+",
@@ -809,14 +821,9 @@ class TestMaxwellianCollisionFrequencies:
             n_a=n,
             n_b=n,
             Coulomb_log=Coulomb_log,
-            T_parallel=T_para,
-            T_perp=Tperp,
         )
-        rate = collisions.temperature_isotropization_rate
         mass_a = collisions.test_particle.mass
         mass_b = collisions.field_particle.mass
-        Tperp = 1.0 * T
-        T_para = 1.1 * T
         A = 1 - Tperp / T_para
         sqrt_A = np.sqrt(A)
         b_coeff = 1 - sqrt_A * (np.arctan(sqrt_A.value) / (2 * sqrt_A))
@@ -833,26 +840,18 @@ class TestMaxwellianCollisionFrequencies:
         T = 1e4 * u.K
         T_para = 1.0 * T
         Coulomb_log = 10 * u.dimensionless_unscaled
-        collisions = MaxwellianCollisionFrequencies(
+        rate = temperature_isotropization_rate(
             "e-",
             "Na+",
             v_drift=v_drift,
             T_a=T,
-            T_b=T,
             n_a=n,
+            T_b=T,
             n_b=n,
             Coulomb_log=Coulomb_log,
             T_parallel=T_para,
             T_perp=T_para,
         )
-        rate = collisions.temperature_isotropization_rate
-        assert np.allclose(rate, 2 * collisions.Lorentz_collision_frequency)
-
-    def test_temperature_isotropization_rate_no_params(self) -> None:
-        v_drift = 1 * u.m / u.s
-        n = 1e27 * u.m**-3
-        T = 1e4 * u.K
-        Coulomb_log = 10 * u.dimensionless_unscaled
         collisions = MaxwellianCollisionFrequencies(
             "e-",
             "Na+",
@@ -863,8 +862,9 @@ class TestMaxwellianCollisionFrequencies:
             n_b=n,
             Coulomb_log=Coulomb_log,
         )
-        with pytest.raises(TypeError, match="T_parallel and T_perp"):
-            _ = collisions.temperature_isotropization_rate
+        np.testing.assert_allclose(
+            rate, 2 * collisions.Lorentz_collision_frequency, rtol=5e-3, atol=0
+        )
 
 
 class Test_collision_frequency:
