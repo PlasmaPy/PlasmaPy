@@ -759,7 +759,14 @@ class TestMaxwellianCollisionFrequencies:
             Coulomb_log=Coulomb_log,
         )
         rate = collisions.thermal_equilibration_rate
-        assert np.isfinite(rate).all()
+        expected_rate = (
+            2
+            * 22.989769
+            * u.Da
+            / (m_e + 22.989769 * u.Da)
+            * collisions.Lorentz_collision_frequency
+        )
+        np.testing.assert_allclose(rate, expected_rate, rtol=5e-3, atol=0)
 
     @pytest.mark.filterwarnings("ignore::plasmapy.utils.exceptions.RelativityWarning")
     def test_temperature_isotropization_rate(self) -> None:
@@ -782,7 +789,8 @@ class TestMaxwellianCollisionFrequencies:
             T_perp=Tperp,
         )
         rate = collisions.temperature_isotropization_rate
-        assert np.isfinite(rate).all()
+        expected = 8.78926e16 * u.Hz
+        np.testing.assert_allclose(rate, expected, rtol=5e-3, atol=0)
 
     @pytest.mark.filterwarnings("ignore::plasmapy.utils.exceptions.RelativityWarning")
     def test_temperature_isotropization_rate_A_positive(self) -> None:
@@ -805,7 +813,22 @@ class TestMaxwellianCollisionFrequencies:
             T_perp=Tperp,
         )
         rate = collisions.temperature_isotropization_rate
-        assert np.isfinite(rate).all()
+        mass_a = collisions.test_particle.mass
+        mass_b = collisions.field_particle.mass
+        Tperp = 1.0 * T
+        T_para = 1.1 * T
+        A = 1 - Tperp / T_para
+        sqrt_A = np.sqrt(A)
+        b_coeff = 1 - sqrt_A * (np.arctan(sqrt_A.value) / (2 * sqrt_A))
+        C = (
+            -(Tperp / T_para)
+            + mass_a * (Tperp - T_para)
+            / (2 * (mass_a + mass_b) * T_para)
+        )
+        expected = collisions.Lorentz_collision_frequency * (
+            2 + C * (1 - b_coeff)
+        )
+        np.testing.assert_allclose(rate, expected, rtol=5e-3, atol=0)
 
     @pytest.mark.filterwarnings("ignore::plasmapy.utils.exceptions.RelativityWarning")
     def test_temperature_isotropization_rate_isotropic(self) -> None:

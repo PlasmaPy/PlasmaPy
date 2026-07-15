@@ -237,10 +237,9 @@ class SingleParticleCollisionFrequencies:
         velocity, and :math:`\ln{Λ}` is the Coulomb logarithm
         accounting for small angle collisions.
 
-        See equation 2.86 in :cite:t:`callen:unpublished`.
-
-        The Lorentz collision frequency is equivalent to the variable
-        :math:`ν_0^{α/β}` on page 31 of :cite:t:`nrlformulary:2019`.
+        See equation 2.86 in :cite:t:`callen:unpublished` (the Lorentz
+        collision frequency is equivalent to :math:`ν_0^{α/β}` on
+        pp. 31–33 of :cite:t:`nrlformulary:2019`).
 
         This form of the Lorentz collision frequency differs from the
         form found in
@@ -314,7 +313,8 @@ class MaxwellianCollisionFrequencies:
     populations.
 
     The condition of "slowly flowing", outlined by Eq. 2.133 in
-    :cite:t:`callen:unpublished` requires that
+    :cite:t:`callen:unpublished` (see also
+    :issue:`3192`) requires that
 
     .. math::
 
@@ -438,7 +438,8 @@ class MaxwellianCollisionFrequencies:
         """
         Parameter used in enforcing the definition of "slowly flowing"
         Maxwellian particles. See Eq. 2.133 in
-        :cite:t:`callen:unpublished`.
+        :cite:t:`callen:unpublished` (see also
+        :issue:`3192`).
         """
         return (self.v_T_a**2 + self.v_T_b**2) ** 0.5
 
@@ -467,10 +468,12 @@ class MaxwellianCollisionFrequencies:
         where :math:`n` is the particle number density, :math:`σ` is the
         collisional cross-section, :math:`v` is the mean thermal
         velocity between particle species (see Eq. 2.133 in
-        :cite:t:`callen:unpublished`), and :math:`\ln{Λ}` is the Coulomb
+        :cite:t:`callen:unpublished`, and also
+        :issue:`3192`), and :math:`\ln{Λ}` is the Coulomb
         logarithm accounting for small angle collisions.
 
-        See Eq. 2.86 in :cite:t:`callen:unpublished`.
+        See Eq. 2.86 in :cite:t:`callen:unpublished` (or
+        :cite:t:`nrlformulary:2019`, pp. 31–33).
 
         This form of the Lorentz collision frequency differs from the
         form found in |SingleParticleCollisionFrequencies| in that
@@ -502,7 +505,8 @@ class MaxwellianCollisionFrequencies:
 
         :cite:t:`callen:unpublished` provides a derivation of this as an
         average collision frequency between electrons and ions for a
-        Maxwellian distribution. It is thus a special case of the
+        Maxwellian distribution (see also :issue:`3192`).
+        It is thus a special case of the
         collision frequency with an averaging factor, and is on many
         occasions in transport theory the most relevant collision
         frequency that has to be considered. It commonly occurs in
@@ -568,7 +572,8 @@ class MaxwellianCollisionFrequencies:
 
         :cite:t:`callen:unpublished` provides a derivation of this as an
         average collision frequency between ions and ions for a
-        Maxwellian distribution. It is thus a special case of the
+        Maxwellian distribution (see also :issue:`3192`).
+        It is thus a special case of the
         collision frequency with an averaging factor.
 
         Raises
@@ -624,8 +629,8 @@ class MaxwellianCollisionFrequencies:
         r"""Thermal equilibration rate between test and field particles.
 
         The rate at which :math:`T_a` and :math:`T_b` relax toward
-        each other in a Maxwellian plasma, Eq. (5.31) in
-        :cite:t:`nrlformulary:2019` (NRL Formulary, p. 33).
+        each other in a Maxwellian plasma, in
+        :cite:t:`nrlformulary:2019` (NRL Formulary, pp. 33–34).
 
         Returns
         -------
@@ -634,12 +639,16 @@ class MaxwellianCollisionFrequencies:
 
         Notes
         -----
+        This rate appears in the temperature relaxation equation
+        :math:`dT_a/dt = -\nu_{\text{eq}} (T_a - T_b)` for
+        Maxwellian species :math:`a` and :math:`b`.
+
         :math:`\nu_{\text{eq}} = \frac{2 m_b}{m_a + m_b}
         \nu_{\perp}^{\text{ei}}`, where
         :math:`\nu_{\perp}^{\text{ei}}` is
         `Lorentz_collision_frequency`.
-        See :cite:t:`nrlformulary:2019` (NRL Formulary, pp. 33–34) or
-        :cite:t:`callen:unpublished` for the full expression.
+        See :cite:t:`nrlformulary:2019` (NRL Formulary, pp. 33–34) for
+        the full expression.
 
         Examples
         --------
@@ -670,9 +679,9 @@ class MaxwellianCollisionFrequencies:
     def temperature_isotropization_rate(self) -> u.Quantity[u.Hz]:
         r"""Temperature isotropization rate for the test particle.
 
-        The rate at which :math:`T_{\perp}` and :math:`T_{\parallel}`
-        relax toward each other for a bi-Maxwellian test particle,
-        Eq. (5.35a) in :cite:t:`nrlformulary:2019` (NRL Formulary, p. 34).
+        The rate at which :math:`T_⟂` and :math:`T_∥`
+        relax toward each other for a bi-Maxwellian test particle, in
+        :cite:t:`nrlformulary:2019` (NRL Formulary, pp. 33–34).
 
         Returns
         -------
@@ -687,14 +696,30 @@ class MaxwellianCollisionFrequencies:
 
         Notes
         -----
-        :math:`\nu_{\text{iso}} = \nu_{\parallel}
-        + \left(-\frac{T_{\perp}}{T_{\parallel}}
-        + \frac{m_a (T_{\perp} - T_{\parallel})}
-        {2 (m_a + m_b) T_{\parallel}} + \dots \right)`,
-        where the branch taken depends on the sign of
-        :math:`A = 1 - T_{\perp} / T_{\parallel}`.
-        See :cite:t:`nrlformulary:2019` (NRL Formulary, pp. 33–34) or
-        :cite:t:`callen:unpublished` for the full expression.
+        This rate appears in
+        :math:`dT_⟂/dt = -\nu_{\text{iso}} (T_⟂ - T_∥)` for a
+        bi-Maxwellian test particle.
+
+        Defining :math:`A = 1 - T_⟂ / T_∥` and
+        :math:`C = -T_⟂/T_∥ + m_a (T_⟂ - T_∥) / (2 (m_a + m_b) T_∥)`,
+        the isotropization rate is
+
+        .. math::
+
+            \nu_{\text{iso}} = \begin{cases}
+                2 \nu_{\perp}, & A = 0, \\
+                \nu_{\perp} \left[ 2 + C \left(1 -
+                \frac{\arctan\sqrt{A}}{\sqrt{A}} \right) \right],
+                & A > 0, \\
+                \nu_{\perp} \left[ 2 + C \left(1 -
+                \frac{\operatorname{arctanh}\sqrt{-A}}{\sqrt{-A}}
+                \right) \right], & A < 0,
+            \end{cases}
+
+        where :math:`\nu_{\perp}` is
+        `Lorentz_collision_frequency`.
+        See :cite:t:`nrlformulary:2019` (NRL Formulary, pp. 33–34) for
+        the full expression.
 
         Examples
         --------

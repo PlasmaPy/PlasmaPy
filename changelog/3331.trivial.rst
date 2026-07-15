@@ -1,0 +1,3 @@
+Addressed reviewer feedback on collision frequency docstrings: removed equation
+numbers, added physical context, updated references, and replaced placeholder
+equations and tests.
