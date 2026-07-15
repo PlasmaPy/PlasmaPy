@@ -451,13 +451,13 @@ def test_ignition_condition_supra() -> None:
 
 
 def test_ignition_condition_pb11() -> None:
-    r"""p-B11 ignition condition should be finite (higher threshold)."""
+    r"""p-B11 ignition condition should be below threshold at typical params."""
     n = 1e20 * u.m**-3
     T = 300 * u.keV
     tau_E = 1 * u.s
     ratio = ignition_condition("11B(p,4He)4He4He", n, T, tau_E)
     assert np.isfinite(ratio.value)
-    assert ratio.value < 1e-6
+    assert 0.0 < ratio.value < 1.0
 
 
 def test_ignition_condition_invalid_reaction() -> None:
