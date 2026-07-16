@@ -7,9 +7,9 @@ from plasmapy.formulary.collisions.frequencies import (
     MaxwellianCollisionFrequencies,
     SingleParticleCollisionFrequencies,
     collision_frequency,
-    temperature_isotropization_rate,
     fundamental_electron_collision_freq,
     fundamental_ion_collision_freq,
+    temperature_isotropization_rate,
 )
 from plasmapy.particles import Particle
 from plasmapy.utils._pytest_helpers import assert_can_handle_nparray

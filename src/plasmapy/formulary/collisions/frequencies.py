@@ -660,6 +660,7 @@ class MaxwellianCollisionFrequencies:
         return eq_coeff * self.Lorentz_collision_frequency
 
 
+@particles.particle_input
 @validate_quantities(
     T_a={
         "can_be_negative": False,
@@ -680,7 +681,6 @@ class MaxwellianCollisionFrequencies:
         "equivalencies": u.temperature_energy(),
     },
 )
-@particles.particle_input
 def temperature_isotropization_rate(
     test_particle: ParticleLike,
     field_particle: ParticleLike,
