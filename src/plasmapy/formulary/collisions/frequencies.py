@@ -774,7 +774,7 @@ def temperature_isotropization_rate(
     ...     v_drift=v_drift,
     ...     T_a=T, n_a=n,
     ...     T_b=T, n_b=n,
-    ...     Coulomb_log=10,
+    ...     Coulomb_log=10 * u.dimensionless_unscaled,
     ...     T_parallel=1.0 * T,
     ...     T_perp=1.1 * T,
     ... )
