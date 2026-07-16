@@ -12,7 +12,17 @@ from plasmapy.formulary import fusion
 BH_REACTIONS = ("D(t,n)A", "3He(d,p)A", "D(d,p)T", "D(d,n)3He")
 
 #: All reactions with tabulated ENDF cross-sections.
-ENDF_REACTIONS = tuple(fusion.ENDF_rxns)
+ENDF_REACTIONS = (
+    "D(t,n)A",
+    "3He(d,p)A",
+    "D(d,p)T",
+    "D(d,n)3He",
+    "3He(3He,2p)A",
+    "3He(t,n+p)A",
+    "3He(t,d)A",
+    "T(t,2n)A",
+    "11B(p,a)2A",
+)
 
 #: Reactions supported by both backends, so the two can be compared.
 SHARED_REACTIONS = BH_REACTIONS

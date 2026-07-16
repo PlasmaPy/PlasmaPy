@@ -4,11 +4,8 @@ import json
 from importlib.resources import as_file, files
 from pathlib import Path
 
-import astropy.constants as const
 import astropy.units as u
-import h5py
 import numpy as np
-from scipy.interpolate import CubicSpline
 
 from plasmapy.utils.decorators import validate_quantities
 
@@ -33,7 +30,7 @@ with as_file(DATA_DIR) as physical_path:
 
 
 @validate_quantities
-def cross_section(energy: u.Quantity[u.keV], reaction: str, source: str) -> float:
+def cross_section(energy: u.Quantity[u.keV], reaction: str) -> float:
     r"""
     Calculate the fusion cross section :math:`σ(E)` for a two-body fusion
     reaction.
@@ -62,7 +59,7 @@ def cross_section(energy: u.Quantity[u.keV], reaction: str, source: str) -> floa
     source : {``"BH"``, ``"ENDF"``}
         The data source used to evaluate the cross section:
 
-        - ``"BH"`` — the Padé parametrization of :cite:t:`bosch:1992`,
+        - ``"BH"`` — the Padé parametrization of bosch 1992,
           valid for the four reactions in their Table IV over the energy
           range given for each reaction (at most :math:`0` - :math:`4900`
           keV).
@@ -121,27 +118,18 @@ def cross_section(energy: u.Quantity[u.keV], reaction: str, source: str) -> floa
     >>> cross_section(100 * u.keV, "D(t,n)A", "ENDF")  # doctest: +SKIP
     <Quantity [4.96e-28] m2>
     """
-    if source == "ENDF":
-        if reaction not in ENDF_rxns:
-            raise ValueError("Reaction in supported ENDF reactions")
+    if reaction not in xs_coeffs:
+        raise ValueError("does not have available Bosch and Hale coefficients")
+    if not _in_BH_rxn_energy_range(energy, reaction):
+        raise ValueError(
+            f"{energy!r} is not in Bosch and Hale Cross Sectional energy range of 0 to 4900 keV"
+        )
 
-        return _ENDF_cross_section(energy, reaction)
-
-    if source == "BH":
-        if reaction not in xs_coeffs:
-            raise ValueError("does not have available Bosch and Hale coefficients")
-        if not _in_BH_rxn_energy_range(energy, reaction):
-            raise ValueError(
-                f"{energy!r} is not in Bosch and Hale Cross Sectional energy range of 0 to 4900 keV"
-            )
-
-        return _BH_cross_section(energy, reaction)
-
-    raise ValueError(f"Unknown source {source!r}; expected 'BH' or 'ENDF'.")
+    return _BH_cross_section(energy, reaction)
 
 
 @validate_quantities
-def reactivity(ion_temp: u.Quantity[u.keV], reaction: str, source: str) -> float:
+def reactivity(ion_temp: u.Quantity[u.keV], reaction: str) -> float:
     r"""
     Calculate the Maxwellian-averaged fusion reactivity :math:`⟨σv⟩(T)`
     for a two-body fusion reaction.
@@ -224,23 +212,14 @@ def reactivity(ion_temp: u.Quantity[u.keV], reaction: str, source: str) -> float
     >>> reactivity(10 * u.keV, "D(t,n)A", "ENDF")  # doctest: +SKIP
     <Quantity [1.13e-22] m3 / s>
     """
-    if source == "ENDF":
-        if reaction not in ENDF_rxns:
-            raise ValueError("Reaction in supported ENDF reactions")
+    if reaction not in rxty_coeffs:
+        raise ValueError("does not have available Bosch and Hale coefficients")
+    if not _in_BH_rxn_ion_temp_range(ion_temp, reaction):
+        raise ValueError(
+            f"{ion_temp!r} is not in Bosch and Hale Reactivity energy range of 0 to 190 keV"
+        )
 
-        return _ENDF_reactivity(ion_temp, reaction)
-
-    if source == "BH":
-        if reaction not in rxty_coeffs:
-            raise ValueError("does not have available Bosch and Hale coefficients")
-        if not _in_BH_rxn_ion_temp_range(ion_temp, reaction):
-            raise ValueError(
-                f"{ion_temp!r} is not in Bosch and Hale Reactivity energy range of 0 to 190 keV"
-            )
-
-        return _BH_reactivity(ion_temp, reaction)
-
-    raise ValueError(f"Unknown source {source!r}; expected 'BH' or 'ENDF'.")
+    return _BH_reactivity(ion_temp, reaction)
 
 
 def _in_BH_rxn_energy_range(E, reaction):
@@ -344,111 +323,3 @@ def _BH_reactivity(ion_temp: u.Quantity, reaction: str) -> float:
     xi = _find_xi(Theta, rxn)
     sv = _find_reactivity(T_keV, rxn, Theta, xi)
     return sv * (u.cm**3 / u.s)
-
-
-amu = const.u.si.value  # atomic mass unit [kg]
-e = const.e.si.value  # elementary charge [C]
-
-h5_files = {
-    "D(t,n)A": "T(D,n)A.h5",
-    "3He(d,p)A": "He-3(D,p)A.h5",
-    "D(d,p)T": "D(D,p)T.h5",
-    "D(d,n)3He": "D(D,n)He-3.h5",
-    "3He(3He,2p)A": "He-3(He-3,2p)A.h5",
-    "3He(t,n+p)A": "He-3(T,n+p)A.h5",
-    "3He(t,d)A": "He-3(T,D)A.h5",
-    "T(t,2n)A": "T(T,2n)A.h5",
-    "11B(p,a)2A": "B-11(p,He-4)2He-4.h5",
-}
-
-ENDF_rxns = list(h5_files)
-
-
-def _load_h5(path):
-
-    with h5py.File(path, "r") as f:
-        sigma = f["SIG"][:]  # units = m^2
-        E = f["energy"][:]  # units = eV, CoM reference frame
-    return E, sigma
-
-
-def _load_reaction(rxn_key):
-    E, sigma = _load_h5(DATA_DIR / h5_files[rxn_key])
-    return E * 1e-3, sigma
-
-
-def _build_Xsec_interpolation(rxn_key):
-    r"""
-    Build a log-log cubic spline interpolant of the ENDF cross-section data.
-    """
-    E_kev, sigma = _load_reaction(rxn_key)
-
-    E_unique, idx = np.unique(
-        E_kev, return_index=True
-    )  # raise an exception non unique values
-    sigma_unique = sigma[idx]
-
-    mask = sigma_unique > 0
-    E_pos = E_unique[mask]
-    sigma_pos = sigma_unique[mask]
-
-    return CubicSpline(np.log(E_pos), np.log(sigma_pos), extrapolate=False)
-
-
-@u.quantity_input(energy=u.keV)
-def _ENDF_cross_section(energy, rxn_key):
-    r"""
-    Compute the fusion cross-section by interpolating tabulated ENDF data.
-    """
-    E_keV = np.atleast_1d(energy.to(u.keV).value)
-    cs = _build_Xsec_interpolation(rxn_key)
-    sigma = np.exp(cs(np.log(E_keV)))
-    sigma = np.nan_to_num(sigma, nan=0.0)
-    return sigma * u.m**2
-
-
-_Egrid_keV = np.logspace(0, 5, 1000)  # internal, plain floats
-Egrid = _Egrid_keV * u.keV  # for the API/plotting
-masses = {
-    "D": 2.014,
-    "T": 3.016,
-    "3He": 3.016,
-    "11B": 11.009305167,
-    "p": const.m_p.to_value(u.u),
-}
-
-
-def _find_mu(rxn):
-    r"""
-    Compute the reduced mass of the two reactants in a reaction key.
-    """
-    target, rest = rxn.split("(", 1)
-    beam = rest.split(",", 1)[0]
-    alias = {"d": "D", "t": "T", "p": "p", "3He": "3He"}
-    beam = alias.get(beam, beam)
-    m1 = masses[target] * amu
-    m2 = masses[beam] * amu
-    return m1 * m2 / (m1 + m2)
-
-
-@u.quantity_input(T=u.keV)
-def _ENDF_reactivity(T, rxn_key):
-    r"""
-    Compute the Maxwellian fusion reactivity by integrating ENDF:
-    math:`\sigma(E)`.
-    """
-    T_keV = np.atleast_1d(T.to(u.keV).value)
-    mu = _find_mu(rxn_key)
-
-    cs = _build_Xsec_interpolation(rxn_key)
-    sigma = np.nan_to_num(np.exp(cs(np.log(_Egrid_keV))), nan=0.0)
-
-    E_col = _Egrid_keV[:, None]
-    T_row = T_keV[None, :]
-    integrand = sigma[:, None] * E_col * np.exp(-E_col / T_row)
-    Integration = np.trapezoid(integrand, _Egrid_keV, axis=0)
-
-    fac = 4.0 / np.sqrt(2.0 * np.pi * mu)
-    fac = fac * (1000.0 * e) ** 2 / (1000.0 * e * T_keV) ** 1.5
-
-    return (fac * Integration) * (u.m**3 / u.s)
