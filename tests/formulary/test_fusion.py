@@ -113,7 +113,6 @@ class TestBoschHaleCrossSection:
         sigma = fusion._BH_cross_section(energy, reaction)
         assert sigma.shape == energy.shape
 
-    @pytest.mark.parametrize("reaction", ENDF_REACTIONS)
     def test_dt_resonance_position(self):
         """
         The D(t,n)α cross-section peaks at the 3/2+ resonance of 5-He, near a
