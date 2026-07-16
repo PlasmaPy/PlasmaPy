@@ -1,5 +1,7 @@
 """Cross sections and Maxwellian reactivities for nuclear fusion reactions."""
 
+__all__ = ["cross_section", "reactivity"]
+
 import json
 from importlib.resources import as_file, files
 from pathlib import Path
