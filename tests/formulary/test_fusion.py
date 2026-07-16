@@ -288,9 +288,10 @@ class TestCrossSectionDispatch:
         with pytest.raises(ValueError, match="energy range"):
             fusion.cross_section(energy, "D(t,n)A")
 
-    def test_bare_number_raises(self):
-        with pytest.raises((TypeError, u.UnitsError)):
-            fusion.cross_section(100, "D(t,n)A")
+    def test_bare_number_warns_and_assumes_keV(self):
+        with pytest.warns(u.UnitsWarning):
+            sigma = fusion.cross_section(300, "D(t,n)A")  # in-window value
+        assert_quantity_allclose(sigma, fusion.cross_section(300 * u.keV, "D(t,n)A"))
 
     def test_wrong_units_raise(self):
         with pytest.raises(u.UnitsError):
@@ -330,7 +331,7 @@ class TestReactivityDispatch:
             ("3He(3He,2p)A", 0.1 * u.keV),  # below T_min = 8.27 keV
             ("3He(t,n+p)A", 110 * u.keV),  # above T_max = 100 keV
             ("3He(t,n+p)A", 0.1 * u.keV),  # below T_min = 1 keV
-            ("3He(t,d)A", 110 * u.keV),  # above T_maxx = 100 keV
+            ("3He(t,d)A", 110 * u.keV),  # above T_max = 100 keV
             ("3He(t,d)A", 0.1 * u.keV),  # below T_min = 1 keV
             ("T(t,2n)A", 110 * u.keV),  # above T_max = 100 keV
             ("T(t,2n)A", 0.1 * u.keV),  # below T_min = 1 keV
@@ -351,9 +352,10 @@ class TestReactivityDispatch:
         with pytest.raises(ValueError):
             fusion.reactivity(0.3 * u.keV, "3He(d,p)A")
 
-    def test_bare_number_raises(self):
-        with pytest.raises((TypeError, u.UnitsError)):
-            fusion.reactivity(10, "D(t,n)A")
+    def test_bare_number_warns_and_assumes_keV(self):
+        with pytest.warns(u.UnitsWarning):
+            sigma = fusion.reactivity(60, "D(t,n)A")  # in-window value
+        assert_quantity_allclose(sigma, fusion.reactivity(60 * u.keV, "D(t,n)A"))
 
     def test_wrong_units_raise(self):
         with pytest.raises(u.UnitsError):
