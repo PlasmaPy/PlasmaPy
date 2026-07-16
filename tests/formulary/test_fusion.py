@@ -340,7 +340,7 @@ class TestReactivityDispatch:
         ],
     )
     def test_temperature_outside_bh_validity_range_raises(self, reaction, ion_temp):
-        with pytest.raises(ValueError, match="energy range"):
+        with pytest.raises(ValueError, match="ion temp range"):
             fusion.reactivity(ion_temp, reaction)
 
     def test_validity_range_is_per_reaction(self):
