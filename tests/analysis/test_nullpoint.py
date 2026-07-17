@@ -95,7 +95,7 @@ def test_trilinear_jacobian() -> None:
     jcb = _trilinear_jacobian(vspace, [0, 0, 0])
     mtrx = jcb(0.5, 0.5, 0.5)
     exact_mtrx = np.array([[0, 1, 0], [0, 0, 1], [1, 0, 0]])
-    assert np.allclose(mtrx, exact_mtrx, atol=_EQUALITY_ATOL)
+    np.testing.assert_allclose(mtrx, exact_mtrx, atol=_EQUALITY_ATOL, rtol=1e-5)
 
 
 def test_trilinear_approx() -> None:
@@ -127,15 +127,13 @@ def test_trilinear_approx() -> None:
     for p in corners:
         approx = tlApprox(p[0], p[1], p[2])
         exact = vspace_func_2(p[0], p[1], p[2])
-        approx = approx.reshape(1, 3)
-        assert np.allclose(approx, exact, atol=_EQUALITY_ATOL)
+        approx = approx.flatten()
+        np.testing.assert_allclose(approx, exact, atol=_EQUALITY_ATOL, rtol=1e-5)
     # Testing Trilinear Approx function on a midpoint
     approx = tlApprox(mid[0], mid[1], mid[2])
-    approx = approx.reshape(1, 3)
-    assert np.allclose(
-        approx,
-        [-5.39130435, -21.5652174, 23.68667299],
-        atol=_EQUALITY_ATOL,
+    approx = approx.flatten()
+    np.testing.assert_allclose(
+        approx, [-5.39130435, -21.5652174, 23.68667299], atol=_EQUALITY_ATOL, rtol=1e-5
     )
 
 
@@ -207,10 +205,10 @@ class Test_bilinear_root:
         r"""Test expected values."""
         x1, y1 = _bilinear_root(**kwargs)[0]
         x2, y2 = _bilinear_root(**kwargs)[1]
-        assert np.isclose(x1, expected[0], atol=_EQUALITY_ATOL)
-        assert np.isclose(y1, expected[1], atol=_EQUALITY_ATOL)
-        assert np.isclose(x2, expected[2], atol=_EQUALITY_ATOL)
-        assert np.isclose(y2, expected[3], atol=_EQUALITY_ATOL)
+        np.testing.assert_allclose(x1, expected[0], atol=_EQUALITY_ATOL, rtol=1e-5)
+        np.testing.assert_allclose(y1, expected[1], atol=_EQUALITY_ATOL, rtol=1e-5)
+        np.testing.assert_allclose(x2, expected[2], atol=_EQUALITY_ATOL, rtol=1e-5)
+        np.testing.assert_allclose(y2, expected[3], atol=_EQUALITY_ATOL, rtol=1e-5)
 
 
 class Test_locate_null_point:
@@ -235,11 +233,12 @@ class Test_locate_null_point:
     @pytest.mark.parametrize(("kwargs", "expected"), test_locate_null_point_values)
     def test_locate_null_point_vals(self, kwargs, expected) -> None:
         r"""Test expected values."""
-        assert np.isclose(
-            _locate_null_point(**kwargs).reshape(1, 3),
+        np.testing.assert_allclose(
+            _locate_null_point(**kwargs).flatten(),
             expected,
             atol=_EQUALITY_ATOL,
-        ).all()
+            rtol=1e-5,
+        )
 
 
 @pytest.mark.slow
@@ -254,9 +253,9 @@ def test_null_point_find1() -> None:
         "func": vspace_func_1,
     }
     npoints = uniform_null_point_find(**nullpoint_args)  # ty:ignore[invalid-argument-type]
-    loc = npoints[0].loc.reshape(1, 3)
+    loc = npoints[0].loc.flatten()
     assert len(npoints) == 1
-    assert np.isclose(loc, [5.5, 5.5, 5.5], atol=_EQUALITY_ATOL).all()
+    np.testing.assert_allclose(loc, [5.5, 5.5, 5.5], atol=_EQUALITY_ATOL, rtol=1e-5)
 
 
 @pytest.mark.slow
@@ -271,9 +270,9 @@ def test_null_point_find2() -> None:
     }
     vspace = _vector_space(**vspace_args)
     npoints2 = _vspace_iterator(vspace)
-    loc2 = npoints2[0].loc.reshape(1, 3)
+    loc2 = npoints2[0].loc.flatten()
     assert len(npoints2) == 1
-    assert np.isclose(loc2, [5.5, 5.5, 5.5], atol=_EQUALITY_ATOL).all()
+    np.testing.assert_allclose(loc2, [5.5, 5.5, 5.5], atol=_EQUALITY_ATOL, rtol=1e-5)
 
 
 def test_null_point_find3() -> None:
@@ -288,9 +287,9 @@ def test_null_point_find3() -> None:
         "w_arr": np.array([[[-0.5, -0.5], [-0.5, -0.5]], [[0.5, 0.5], [0.5, 0.5]]]),
     }
     npoints3 = null_point_find(**nullpoint3_args)  # ty:ignore[invalid-argument-type]
-    loc3 = npoints3[0].loc.reshape(1, 3)
+    loc3 = npoints3[0].loc.flatten()
     assert len(npoints3) == 1
-    assert np.isclose(loc3, [5.5, 5.5, 5.5], atol=_EQUALITY_ATOL).all()
+    np.testing.assert_allclose(loc3, [5.5, 5.5, 5.5], atol=_EQUALITY_ATOL, rtol=1e-5)
 
 
 @pytest.mark.slow
@@ -305,11 +304,15 @@ def test_null_point_find4() -> None:
         "func": vspace_func_3,
     }
     npoints4 = uniform_null_point_find(**nullpoint4_args)  # ty:ignore[invalid-argument-type]
-    first_loc4 = npoints4[0].loc.reshape(1, 3)
-    second_loc4 = npoints4[1].loc.reshape(1, 3)
+    first_loc4 = npoints4[0].loc.flatten()
+    second_loc4 = npoints4[1].loc.flatten()
     assert len(npoints4) == 2
-    assert np.isclose(first_loc4, [5.5, 5.3, 5.5], atol=_EQUALITY_ATOL).all()
-    assert np.isclose(second_loc4, [5.5, 5.5, 5.5], atol=_EQUALITY_ATOL).all()
+    np.testing.assert_allclose(
+        first_loc4, [5.5, 5.3, 5.5], atol=_EQUALITY_ATOL, rtol=1e-5
+    )
+    np.testing.assert_allclose(
+        second_loc4, [5.5, 5.5, 5.5], atol=_EQUALITY_ATOL, rtol=1e-5
+    )
 
 
 @pytest.mark.slow
@@ -392,10 +395,10 @@ def test_null_point_find8() -> None:
     }
     npoints8 = uniform_null_point_find(**nullpoint8_args)  # ty:ignore[invalid-argument-type]
     assert len(npoints8) == 2
-    loc1 = npoints8[0].loc.reshape(1, 3)
-    loc2 = npoints8[1].loc.reshape(1, 3)
-    assert np.allclose(loc1, [5.5, -5.5, 5.5], atol=_TESTING_ATOL)
-    assert np.allclose(loc2, [5.5, 5.5, 5.5], atol=_TESTING_ATOL)
+    loc1 = npoints8[0].loc.flatten()
+    loc2 = npoints8[1].loc.flatten()
+    np.testing.assert_allclose(loc1, [5.5, -5.5, 5.5], atol=_TESTING_ATOL, rtol=1e-5)
+    np.testing.assert_allclose(loc2, [5.5, 5.5, 5.5], atol=_TESTING_ATOL, rtol=1e-5)
 
 
 @pytest.mark.slow
