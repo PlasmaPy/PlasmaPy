@@ -1,4 +1,5 @@
 import json
+from importlib.resources import as_file, files
 from pathlib import Path
 
 import astropy.units as u
@@ -29,9 +30,11 @@ CM3_PER_S = u.cm**3 / u.s
 #: The published tables are quoted to four significant figures.
 TABLE_RTOL = 1e-3
 
+_DATA_DIR = files("plasmapy.utils.data")
+
 
 def _load_table(name):
-    with Path.open(fusion.DATA_DIR / name) as f:
+    with as_file(_DATA_DIR) as physical_path, Path.open(physical_path / name) as f:
         return json.load(f)
 
 

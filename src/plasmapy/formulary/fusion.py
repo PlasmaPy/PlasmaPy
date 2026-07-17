@@ -19,20 +19,16 @@ from plasmapy.utils.decorators import validate_quantities
 Opening Bosch and Hale Tables IV and Json Files
 """
 
-DATA_DIR = files("plasmapy.utils.data")
+_DATA_DIR = files("plasmapy.utils.data")
 
-with as_file(DATA_DIR) as physical_path:
-    with Path.open(physical_path / "bosch_hale_ENDF_xs_table.json") as f:
-        xs_coeffs = json.load(f)["reactions"]
 
-    with Path.open(physical_path / "bosch_hale_table_v.json") as f:
-        table_v = json.load(f)
+def _load_reactions(name):
+    with as_file(_DATA_DIR) as physical_path, Path.open(physical_path / name) as f:
+        return json.load(f)["reactions"]
 
-    with Path.open(physical_path / "bosch_hale_ENDF_rxty_table.json") as f:
-        rxty_coeffs = json.load(f)["reactions"]
 
-    with Path.open(physical_path / "bosch_hale_table_viii.json") as f:
-        table_viii = json.load(f)
+_XS_COEFFS = _load_reactions("bosch_hale_ENDF_xs_table.json")
+_RXTY_COEFFS = _load_reactions("bosch_hale_ENDF_rxty_table.json")
 
 
 @validate_quantities
@@ -175,10 +171,10 @@ def fusion_cross_section(
     >>> fusion_cross_section(100 * u.keV, "D(t,n)A")  # doctest: +SKIP
     <Quantity 3427.245 mbarn>
     """
-    if reaction not in xs_coeffs:
+    if reaction not in _XS_COEFFS:
         raise ValueError(
             f"{reaction!r} is not one of the available reactions: "
-            f"{', '.join(xs_coeffs)}"
+            f"{', '.join(_XS_COEFFS)}"
         )
     if not _in_BH_rxn_energy_range(energy, reaction):
         rxn = _xs_coeff(reaction)
@@ -323,10 +319,10 @@ def fusion_reactivity(
     >>> fusion_reactivity(10 * u.keV, "D(t,n)A")  # doctest: +SKIP
     <Quantity 1.13616547e-16 cm3 / s>
     """
-    if reaction not in rxty_coeffs:
+    if reaction not in _RXTY_COEFFS:
         raise ValueError(
             f"{reaction!r} is not one of the available reactions: "
-            f"{', '.join(rxty_coeffs)}"
+            f"{', '.join(_RXTY_COEFFS)}"
         )
     if not _in_BH_rxn_ion_temp_range(ion_temp, reaction):
         rxn = _rxty_coeff(reaction)
@@ -353,12 +349,12 @@ def _in_BH_rxn_ion_temp_range(T, reaction):
 
 def _xs_coeff(r):
     r"""Return the cross-section coefficient block for reaction ``r``."""
-    return xs_coeffs[r]
+    return _XS_COEFFS[r]
 
 
 def _rxty_coeff(r):
     r"""Return the reactivity coefficient block for reaction ``r``."""
-    return rxty_coeffs[r]
+    return _RXTY_COEFFS[r]
 
 
 def _pade_polynomial(rxn, E):
