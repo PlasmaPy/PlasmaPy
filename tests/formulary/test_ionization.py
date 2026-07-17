@@ -11,7 +11,7 @@ def test_ionization_balance() -> None:
 
     val = ionization_balance(n, T_e)
     assert val.unit == u.dimensionless_unscaled
-    assert np.isclose(val.value, 0.27478417234035346)
+    np.testing.assert_allclose(val.value, 0.27478417234035346, rtol=1e-5, atol=1e-8)
 
     # aliases must be the same function
     assert Z_bal_ is ionization_balance
@@ -32,7 +32,7 @@ def test_Saha() -> None:
 
     val = Saha(g_j, g_k, n_e, E_jk, T_e)
     assert val.unit == u.dimensionless_unscaled
-    assert np.isclose(val.value, 2.4775608756800435e-129)
+    np.testing.assert_allclose(val.value, 2.4775608756800435e-129, rtol=1e-5, atol=1e-8)
 
     with pytest.warns(u.UnitsWarning):
         Saha(g_j, g_k, 1e19, E_jk, T_e)

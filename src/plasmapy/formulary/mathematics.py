@@ -122,7 +122,7 @@ def rot_a_to_b(a: np.ndarray, b: np.ndarray) -> np.ndarray:
     :math:`\vec b` is
 
     .. math::
-        c = \vec a · \vec b \cos{θ}
+        c = \vec a · \vec b
 
     Then the rotation matrix :math:`R` is
 

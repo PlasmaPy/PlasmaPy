@@ -1,0 +1,4 @@
+Replaced bare ``assert np.isclose(...)`` and ``assert np.allclose(...)``
+calls across 41 test files with ``np.testing.assert_allclose(...)``, which
+produces informative failure messages showing actual vs. desired values and
+the tolerance used instead of a bare `AssertionError`.

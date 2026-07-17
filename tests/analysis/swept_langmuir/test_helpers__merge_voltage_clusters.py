@@ -189,11 +189,11 @@ def test_merge_voltage_clusters(
         )
 
         if expected is not None:
-            assert np.allclose(rtn_voltage, expected[0])
-            assert np.allclose(rtn_current, expected[1])
+            np.testing.assert_allclose(rtn_voltage, expected[0], rtol=1e-5, atol=1e-8)
+            np.testing.assert_allclose(rtn_current, expected[1], rtol=1e-5, atol=1e-8)
         else:
-            assert np.allclose(rtn_voltage, voltage)
-            assert np.allclose(rtn_current, current)
+            np.testing.assert_allclose(rtn_voltage, voltage, rtol=1e-5, atol=1e-8)
+            np.testing.assert_allclose(rtn_current, current, rtol=1e-5, atol=1e-8)
 
         # ensure check_sweep() is called...then we do not have to
         # explicitly add test cases covered by check_sweep()

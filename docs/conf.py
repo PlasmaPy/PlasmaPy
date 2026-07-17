@@ -104,6 +104,7 @@ extensions = [
     "sphinx_reredirects",
     "sphinx_tabs.tabs",
     "sphinx_toolbox.collapse",
+    "sphinx_toolbox.rest_example",
     "sphinxcontrib.bibtex",
     "sphinxemoji.sphinxemoji",
     "sphinxcontrib.globalsubs",
