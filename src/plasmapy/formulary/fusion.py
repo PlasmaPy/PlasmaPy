@@ -2,6 +2,10 @@
 
 __all__ = ["fusion_cross_section", "fusion_reactivity"]
 
+# The overall approach for evaluating the fusion cross
+# sections was informed in part by this scipython.com notebook:
+# https://scipython.com/blog/nuclear-fusion-cross-sections/
+
 import json
 from importlib.resources import as_file, files
 from pathlib import Path
