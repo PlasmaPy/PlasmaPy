@@ -1,6 +1,6 @@
 """Cross sections and Maxwellian reactivities for nuclear fusion reactions."""
 
-__all__ = ["cross_section", "reactivity"]
+__all__ = ["fusion_cross_section", "fusion_reactivity"]
 
 import json
 from importlib.resources import as_file, files
@@ -32,7 +32,9 @@ with as_file(DATA_DIR) as physical_path:
 
 
 @validate_quantities
-def cross_section(energy: u.Quantity[u.keV], reaction: str) -> u.Quantity:
+def fusion_cross_section(
+    energy: u.Quantity[u.keV], reaction: str
+) -> u.Quantity[u.m**2]:
     r"""
     Calculate the fusion cross section :math:`σ(E)` for a two reactant fusion
     reaction.
@@ -185,7 +187,9 @@ def cross_section(energy: u.Quantity[u.keV], reaction: str) -> u.Quantity:
 
 
 @validate_quantities
-def reactivity(ion_temp: u.Quantity[u.keV], reaction: str) -> u.Quantity:
+def fusion_reactivity(
+    ion_temp: u.Quantity[u.keV], reaction: str
+) -> u.Quantity[u.m**3 / u.s]:
     r"""
     Calculate the Maxwellian-averaged fusion reactivity :math:`⟨σv⟩(T)`
     for a two-body fusion reaction.

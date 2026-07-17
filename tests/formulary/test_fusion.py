@@ -249,13 +249,13 @@ class TestCrossSectionDispatch:
     @pytest.mark.parametrize("reaction", ENDF_REACTIONS)
     def test_matches_backend(self, reaction):
         assert_quantity_allclose(
-            fusion.cross_section(300 * u.keV, reaction),
+            fusion.fusion_cross_section(300 * u.keV, reaction),
             fusion._BH_cross_section(300 * u.keV, reaction),
         )
 
     def test_unknown_reaction_raises(self):
         with pytest.raises(ValueError):
-            fusion.cross_section(100 * u.keV, "Fe(p,gamma)Co")
+            fusion.fusion_cross_section(100 * u.keV, "Fe(p,gamma)Co")
 
     @pytest.mark.parametrize(
         ("reaction", "energy"),
@@ -280,26 +280,28 @@ class TestCrossSectionDispatch:
     )
     def test_energy_outside_validity_range_raises(self, reaction, energy):
         with pytest.raises(ValueError, match="energy range"):
-            fusion.cross_section(energy, reaction)
+            fusion.fusion_cross_section(energy, reaction)
 
     def test_partially_out_of_range_array_raises(self):
         """The range check is all or nothing: one bad element rejects the array."""
         energy = np.array([10.0, 100.0, 10_000.0]) * u.keV
         with pytest.raises(ValueError, match="energy range"):
-            fusion.cross_section(energy, "D(t,n)A")
+            fusion.fusion_cross_section(energy, "D(t,n)A")
 
     def test_bare_number_warns_and_assumes_keV(self):
         with pytest.warns(u.UnitsWarning):
-            sigma = fusion.cross_section(300, "D(t,n)A")  # in-window value
-        assert_quantity_allclose(sigma, fusion.cross_section(300 * u.keV, "D(t,n)A"))
+            sigma = fusion.fusion_cross_section(300, "D(t,n)A")  # in-window value
+        assert_quantity_allclose(
+            sigma, fusion.fusion_cross_section(300 * u.keV, "D(t,n)A")
+        )
 
     def test_wrong_units_raise(self):
         with pytest.raises(u.UnitsError):
-            fusion.cross_section(100 * u.s, "D(t,n)A")
+            fusion.fusion_cross_section(100 * u.s, "D(t,n)A")
 
     @pytest.mark.parametrize("reaction", ENDF_REACTIONS)
     def test_public_cross_section_is_finite_and_positive(self, reaction):
-        sigma = fusion.cross_section(300 * u.keV, reaction)
+        sigma = fusion.fusion_cross_section(300 * u.keV, reaction)
         assert np.isfinite(sigma.value)
         assert sigma.value > 0
 
@@ -310,13 +312,13 @@ class TestReactivityDispatch:
     @pytest.mark.parametrize("reaction", ENDF_REACTIONS)
     def test_bh_source_matches_backend(self, reaction):
         assert_quantity_allclose(
-            fusion.reactivity(60 * u.keV, reaction),
+            fusion.fusion_reactivity(60 * u.keV, reaction),
             fusion._BH_reactivity(60 * u.keV, reaction),
         )
 
     def test_unknown_reaction_raises(self):
         with pytest.raises(ValueError):
-            fusion.reactivity(10 * u.keV, "Fe(p,gamma)Co")
+            fusion.fusion_reactivity(10 * u.keV, "Fe(p,gamma)Co")
 
     @pytest.mark.parametrize(
         ("reaction", "ion_temp"),
@@ -341,22 +343,22 @@ class TestReactivityDispatch:
     )
     def test_temperature_outside_bh_validity_range_raises(self, reaction, ion_temp):
         with pytest.raises(ValueError, match="ion temp range"):
-            fusion.reactivity(ion_temp, reaction)
+            fusion.fusion_reactivity(ion_temp, reaction)
 
     def test_validity_range_is_per_reaction(self):
         """
         0.3 keV is inside the D(t,n)α window but below the 3He(d,p)α floor.
         This is why the Table VIII regression tests call ``_BH_reactivity``.
         """
-        assert fusion.reactivity(0.3 * u.keV, "D(t,n)A").value > 0
+        assert fusion.fusion_reactivity(0.3 * u.keV, "D(t,n)A").value > 0
         with pytest.raises(ValueError):
-            fusion.reactivity(0.3 * u.keV, "3He(d,p)A")
+            fusion.fusion_reactivity(0.3 * u.keV, "3He(d,p)A")
 
     def test_bare_number_warns_and_assumes_keV(self):
         with pytest.warns(u.UnitsWarning):
-            sigma = fusion.reactivity(60, "D(t,n)A")  # in-window value
-        assert_quantity_allclose(sigma, fusion.reactivity(60 * u.keV, "D(t,n)A"))
+            sigma = fusion.fusion_reactivity(60, "D(t,n)A")  # in-window value
+        assert_quantity_allclose(sigma, fusion.fusion_reactivity(60 * u.keV, "D(t,n)A"))
 
     def test_wrong_units_raise(self):
         with pytest.raises(u.UnitsError):
-            fusion.reactivity(10 * u.s, "D(t,n)A")
+            fusion.fusion_reactivity(10 * u.s, "D(t,n)A")
