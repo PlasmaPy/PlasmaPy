@@ -53,15 +53,24 @@ def cross_section(energy: u.Quantity[u.keV], reaction: str) -> u.Quantity:
         The fusion reaction to evaluate, given as one of the following
         keys:
 
-        - ``"D(t,n)A"`` — :math:`D + T → n + α`
-        - ``"3He(d,p)A"`` — :math:`^3He + D → p + α`
-        - ``"D(d,p)T"`` — :math:`D + D → p + T`
-        - ``"D(d,n)3He"`` — :math:`D + D → n + ^3He`
-        - ``"3He(3He,2p)A"`` — :math:`^3He + ^3He → 2p + α`
-        - ``"3He(t,n+p)A"`` — :math:`^3He + T → n + p + α`
-        - ``"3He(t,d)A"`` — :math:`^3He + T → D + α`
-        - ``"T(t,2n)A"`` — :math:`T + T → 2n + α`
-        - ``"11B(p,a)2A"`` — :math:`^{11}B + p → 3α`
+        - ``"D(t,n)A"`` — :math:`D + T → n + α` (Bosch and Hale fit)
+                          :energy range: 0.5keV to 550keV
+        - ``"3He(d,p)A"`` — :math:`^3He + D → p + α` (Bosch and Hale fit)
+                            :energy range: 0.3keV to 900keV
+        - ``"D(d,p)T"`` — :math:`D + D → p + T` (Bosch and Hale fit)
+                          :energy range: 0.5keV to 5000keV
+        - ``"D(d,n)3He"`` — :math:`D + D → n + ^3He` (Bosch and Hale fit)
+                            :energy range: 0.5keV to 4900keV
+        - ``"3He(3He,2p)A"`` — :math:`^3He + ^3He → 2p + α` (ENDF data fit)
+                               :energy range: 1.0keV to 10000keV
+        - ``"3He(t,n+p)A"`` — :math:`^3He + T → n + p + α` (ENDF data fit)
+                              :energy range: 1.0keV to 10000keV
+        - ``"3He(t,d)A"`` — :math:`^3He + T → D + α` (ENDF data fit)
+                            :energy range: 1.0keV to 10000keV
+        - ``"T(t,2n)A"`` — :math:`T + T → 2n + α` (ENDF data fit)
+                           :energy range: 0.5keV to 9000keV
+        - ``"11B(p,a)2A"`` — :math:`^{11}B + p → 3α` (ENDF data fit)
+                             :energy range: 200keV to 5000keV
 
         The first four use the coefficients published in Table IV of
         :cite:t:`bosch:1992`\ ; the remainder use coefficients obtained

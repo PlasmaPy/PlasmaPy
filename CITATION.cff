@@ -200,6 +200,11 @@ authors:
   family-names: Choubey
   alias: apooravc
 
+- given-names: Sean
+  family-names: Clark
+  orcid: https://orcid.org/0009-0004-5738-5359
+  alias: seanclark-cell
+
 - given-names: Clément
   family-names: Robert
   orcid: https://orcid.org/0000-0001-8629-7068
