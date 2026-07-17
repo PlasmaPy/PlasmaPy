@@ -1,4 +1,5 @@
 import json
+from functools import cache
 from importlib.resources import as_file, files
 from pathlib import Path
 
@@ -33,6 +34,7 @@ TABLE_RTOL = 1e-3
 _DATA_DIR = files("plasmapy.utils.data")
 
 
+@cache
 def _load_table(name):
     with as_file(_DATA_DIR) as physical_path, Path.open(physical_path / name) as f:
         return json.load(f)

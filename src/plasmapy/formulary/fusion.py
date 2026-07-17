@@ -7,6 +7,7 @@ __all__ = ["fusion_cross_section", "fusion_reactivity"]
 # https://scipython.com/blog/nuclear-fusion-cross-sections/
 
 import json
+from functools import cache
 from importlib.resources import as_file, files
 from pathlib import Path
 
@@ -22,13 +23,10 @@ Opening Bosch and Hale Tables IV and Json Files
 _DATA_DIR = files("plasmapy.utils.data")
 
 
+@cache
 def _load_reactions(name):
     with as_file(_DATA_DIR) as physical_path, Path.open(physical_path / name) as f:
         return json.load(f)["reactions"]
-
-
-_XS_COEFFS = _load_reactions("bosch_hale_ENDF_xs_table.json")
-_RXTY_COEFFS = _load_reactions("bosch_hale_ENDF_rxty_table.json")
 
 
 @validate_quantities
@@ -171,19 +169,29 @@ def fusion_cross_section(
     >>> fusion_cross_section(100 * u.keV, "D(t,n)A")  # doctest: +SKIP
     <Quantity 3427.245 mbarn>
     """
-    if reaction not in _XS_COEFFS:
+    xs_coeff = _load_reactions("bosch_hale_ENDF_xs_table.json")
+    if reaction not in xs_coeff:
         raise ValueError(
-            f"{reaction!r} is not one of the available reactions: "
-            f"{', '.join(_XS_COEFFS)}"
+            f"{reaction!r} is not one of the available reactions: {', '.join(xs_coeff)}"
         )
-    if not _in_BH_rxn_energy_range(energy, reaction):
-        rxn = _xs_coeff(reaction)
+    rxn = xs_coeff[reaction]
+
+    E_keV = energy.to(u.keV).value
+    in_range = bool(
+        np.all(
+            (rxn["E_min_keV"] * u.keV <= energy) & (rxn["E_max_keV"] * u.keV >= energy)
+        )
+    )
+    if not in_range:
         raise ValueError(
             f"{energy!r} is not in the {reaction!r} energy range "
             f"of {rxn['E_min_keV']} to {rxn['E_max_keV']} keV"
         )
 
-    return _BH_cross_section(energy, reaction)
+    sigma = _xs_pade_polynomial(rxn, E_keV) / (
+        E_keV * np.exp(rxn["B_G"] / np.sqrt(E_keV))
+    )
+    return sigma * u.mbarn
 
 
 @validate_quantities
@@ -319,45 +327,36 @@ def fusion_reactivity(
     >>> fusion_reactivity(10 * u.keV, "D(t,n)A")  # doctest: +SKIP
     <Quantity 1.13616547e-16 cm3 / s>
     """
-    if reaction not in _RXTY_COEFFS:
+    rxty_coeff = _load_reactions("bosch_hale_ENDF_rxty_table.json")
+    if reaction not in rxty_coeff:
         raise ValueError(
             f"{reaction!r} is not one of the available reactions: "
-            f"{', '.join(_RXTY_COEFFS)}"
+            f"{', '.join(rxty_coeff)}"
         )
-    if not _in_BH_rxn_ion_temp_range(ion_temp, reaction):
-        rxn = _rxty_coeff(reaction)
+    rxn = rxty_coeff[reaction]
+
+    T_keV = ion_temp.to(u.keV).value
+    in_range = bool(
+        np.all(
+            (rxn["T_min_keV"] * u.keV <= ion_temp)
+            & (rxn["T_max_keV"] * u.keV >= ion_temp)
+        )
+    )
+    if not in_range:
         raise ValueError(
             f"{ion_temp!r} is not in the {reaction!r} ion temp range "
             f"of {rxn['T_min_keV']} to {rxn['T_max_keV']} keV"
         )
-    return _BH_reactivity(ion_temp, reaction)
+
+    Theta = _rxty_polynomial(rxn, T_keV)
+    xi = ((rxn["B_G"] ** 2) / (4 * Theta)) ** (1 / 3)
+
+    rcty = np.sqrt(xi / (rxn["m_r_c2"] * T_keV**3))
+    rcty *= rxn["C1"] * Theta * (np.exp(-3 * xi))
+    return rcty * (u.cm**3 / u.s)
 
 
-def _in_BH_rxn_energy_range(E, reaction):
-    r"""Return whether ``E`` lies within the cross-section validity range."""
-    rxn = _xs_coeff(reaction)
-    in_range = (rxn["E_min_keV"] * u.keV <= E) & (rxn["E_max_keV"] * u.keV >= E)
-    return bool(np.all(in_range))
-
-
-def _in_BH_rxn_ion_temp_range(T, reaction):
-    r"""Return whether ``T`` lies within the reactivity validity range."""
-    rxn = _rxty_coeff(reaction)
-    in_range = (rxn["T_min_keV"] * u.keV <= T) & (rxn["T_max_keV"] * u.keV >= T)
-    return bool(np.all(in_range))
-
-
-def _xs_coeff(r):
-    r"""Return the cross-section coefficient block for reaction ``r``."""
-    return _XS_COEFFS[r]
-
-
-def _rxty_coeff(r):
-    r"""Return the reactivity coefficient block for reaction ``r``."""
-    return _RXTY_COEFFS[r]
-
-
-def _pade_polynomial(rxn, E):
+def _xs_pade_polynomial(rxn, E):
     r"""
     Evaluate the Bosch-Hale Padé approximant for the S-function.
     """
@@ -368,63 +367,12 @@ def _pade_polynomial(rxn, E):
     return S_vals
 
 
-def _parametrization_formula(S_Vals, energy, rxn):  # B&H Eq (8)
-    r"""
-    Combine the S-function with the Gamow penetrability to get a cross-section.
-    """
-    return S_Vals / (energy * np.exp(rxn["B_G"] / np.sqrt(energy)))
-
-
-@u.quantity_input
-def _BH_cross_section(energy: u.Quantity, reaction: str) -> float:
-    r"""
-    Compute the fusion cross-section using the Bosch-Hale Padé parametrization.
-    """
-    rxn = _xs_coeff(reaction)
-    E_keV = energy.to(u.keV).value
-    S = _pade_polynomial(rxn, E_keV)
-    sigma = _parametrization_formula(S, E_keV, rxn)
-    return sigma * u.mbarn
-
-
-def _rxty_polynomial(T, r):
+def _rxty_polynomial(rxn, T):
     r"""
     Evaluate the :math:`\theta(T)` Padé approximant for the Bosch-Hale
     reactivity.
     """
-    theta = T * (r["C2"] + T * (r["C4"] + T * r["C6"]))
-    theta /= 1 + T * (r["C3"] + T * (r["C5"] + T * r["C7"]))
+    theta = T * (rxn["C2"] + T * (rxn["C4"] + T * rxn["C6"]))
+    theta /= 1 + T * (rxn["C3"] + T * (rxn["C5"] + T * rxn["C7"]))
     theta = 1 - theta
     return T / theta
-
-
-def _find_xi(Theta, r):
-    r"""
-    Compute the :math:`\xi` factor for the Bosch-Hale reactivity formula.
-    """
-    xi = (r["B_G"]) ** 2
-    xi /= 4 * Theta
-    return (xi) ** (1 / 3)
-
-
-def _find_reactivity(T, r, theta, xi):
-    r"""
-    Assemble the Bosch-Hale reactivity from its precomputed pieces.
-    """
-    rcty = np.sqrt(xi / (r["m_r_c2"] * T**3))
-    rcty *= r["C1"] * theta * (np.exp(-3 * xi))
-    return rcty
-
-
-@u.quantity_input
-def _BH_reactivity(ion_temp: u.Quantity, reaction: str) -> float:
-    r"""
-    Compute the Maxwellian fusion reactivity using the Bosch-Hale
-    parametrization.
-    """
-    rxn = _rxty_coeff(reaction)
-    T_keV = ion_temp.to(u.keV).value
-    Theta = _rxty_polynomial(T_keV, rxn)
-    xi = _find_xi(Theta, rxn)
-    sv = _find_reactivity(T_keV, rxn, Theta, xi)
-    return sv * (u.cm**3 / u.s)
