@@ -1,5 +1,5 @@
 {
-  "source": "Bosch-Hale-style Padé coefficients. Four reactions from Bosch & Hale (1992); remaining reactions fit to ENDF/B-VIII.1 evaluated cross sections.",
+  "source": "Bosch-Hale-style Padé coefficients. Four reactions from Bosch & Hale (1992) table V; remaining reactions fit to ENDF/B-VIII.1 evaluated cross sections.",
   "description": "Pade polynomial fit coefficients for fusion cross-sections. Cross-section sigma (mb) = S(E) / (E * exp(B_G / sqrt(E))) where S(E) = (A1 + E*(A2 + E*(A3 + E*(A4 + E*A5)))) / (1 + E*(B1 + E*(B2 + E*(B3 + E*B4)))). E is CM energy in keV.",
   "units": {
     "E": "keV (center-of-mass)",
