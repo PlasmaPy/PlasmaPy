@@ -96,7 +96,7 @@ def fusion_cross_section(
 
     See Also
     --------
-    reactivity
+    fusion_reactivity
 
     Notes
     -----
