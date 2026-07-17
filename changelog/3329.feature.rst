@@ -1,6 +1,6 @@
 Added the `plasmapy.formulary.fusion` module, which provides
-`~plasmapy.formulary.fusion.cross_section` and
-`~plasmapy.formulary.fusion.reactivity` for evaluating fusion cross
+`~plasmapy.formulary.fusion.fusion_cross_section` and
+`~plasmapy.formulary.fusion.fusion_reactivity` for evaluating fusion cross
 sections and Maxwellian-averaged reactivities for nine common fusion
 reactions, including deuterium–tritium, deuterium–deuterium, and
 deuterium–helium-3. Both quantities are computed from the Bosch–Hale
