@@ -1,5 +1,5 @@
 {
-  "source": "Bosch & Hale, Nucl. Fusion 32 (1992) 611, Table IV",
+  "source": "Bosch-Hale-style Padé coefficients. Four reactions from Bosch & Hale (1992); remaining reactions fit to ENDF/B-VIII.1 evaluated cross sections.",
   "description": "Pade polynomial fit coefficients for fusion cross-sections. Cross-section sigma (mb) = S(E) / (E * exp(B_G / sqrt(E))) where S(E) = (A1 + E*(A2 + E*(A3 + E*(A4 + E*A5)))) / (1 + E*(B1 + E*(B2 + E*(B3 + E*B4)))). E is CM energy in keV.",
   "units": {
     "E": "keV (center-of-mass)",
@@ -20,7 +20,8 @@
       "B4": 1.728e-4,
       "E_min_keV": 0.5,
       "E_max_keV": 550,
-      "max_deviation_percent": 1.9
+      "max_deviation_percent": 1.9,
+      "fit": "Bosch and Hale: 1992"
     },
     "3He(d,p)A": {
       "B_G": 68.7508,
@@ -35,7 +36,8 @@
       "B4": 0.0,
       "E_min_keV": 0.3,
       "E_max_keV": 900,
-      "max_deviation_percent": 2.2
+      "max_deviation_percent": 2.2,
+      "fit": "Bosch and Hale: 1992"
     },
     "D(d,p)T": {
       "B_G": 31.3970,
@@ -50,7 +52,8 @@
       "B4": 0.0,
       "E_min_keV": 0.5,
       "E_max_keV": 5000,
-      "max_deviation_percent": 2.0
+      "max_deviation_percent": 2.0,
+      "fit": "Bosch and Hale: 1992"
     },
     "D(d,n)3He": {
       "B_G": 31.3970,
@@ -65,7 +68,8 @@
       "B4": 0.0,
       "E_min_keV": 0.5,
       "E_max_keV": 4900,
-      "max_deviation_percent": 2.5
+      "max_deviation_percent": 2.5,
+      "fit": "Bosch and Hale: 1992"
     },
     "3He(3He,2p)A": {
       "B_G": 153.6753,
@@ -80,7 +84,8 @@
       "B4":  6.97974662e-10,
       "E_min_keV": 1,
       "E_max_keV": 10000,
-      "max_deviation_percent": 2.0
+      "max_deviation_percent": 2.0,
+      "fit": "ENDF/B data fit"
     },
     "3He(t,n+p)A": {
       "B_G": 76.8413,
@@ -95,7 +100,8 @@
       "B4":  6.02535651e-03,
       "E_min_keV": 1,
       "E_max_keV": 10000,
-      "max_deviation_percent": 2.0
+      "max_deviation_percent": 2.0,
+      "fit": "ENDF/B data fit"
     },
     "3He(t,d)A": {
       "B_G": 76.8413,
@@ -110,7 +116,8 @@
       "B4":  5.49334834e+00,
       "E_min_keV": 1,
       "E_max_keV": 10000,
-      "max_deviation_percent": 2.0
+      "max_deviation_percent": 2.0,
+      "fit": "ENDF/B data fit"
     },
     "T(t,2n)A": {
       "B_G": 38.4224,
@@ -125,7 +132,8 @@
       "B4":  2.19481475e-06,
       "E_min_keV": 0.5,
       "E_max_keV": 9000,
-      "max_deviation_percent": 2.0
+      "max_deviation_percent": 2.0,
+      "fit": "ENDF/B data fit"
     },
     "11B(p,a)2A": {
       "B_G": 150.2967,
@@ -140,7 +148,8 @@
       "B4":  3.55045910e-05,
       "E_min_keV": 200,
       "E_max_keV": 5000,
-      "max_deviation_percent": 2.0
+      "max_deviation_percent": 2.0,
+      "fit": "ENDF/B data fit"
     }
   }
 }
