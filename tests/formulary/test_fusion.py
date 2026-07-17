@@ -141,7 +141,7 @@ class TestBoschHaleCrossSection:
 
 
 class TestBoschHaleReactivity:
-    """Closed-form Maxwellian <sv>(T), Bosch & Hale Eqs. (12)-(14)."""
+    """Closed-form Maxwellian <sv>(T), Bosch & Hale Eqs. (12)-(14) corrected table VIII values."""
 
     @pytest.mark.parametrize(
         ("ion_temp", "reaction", "expected_cm3_per_s"), TABLE_VIII_PARAMS
