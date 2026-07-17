@@ -1,3 +1,11 @@
-Added a fusion module in the src/formulary that calculates
-fusion cross sections and reactivities for 9 common fusion
-reactions.
+Added the `plasmapy.formulary.fusion` module, which provides
+`~plasmapy.formulary.fusion.cross_section` and
+`~plasmapy.formulary.fusion.reactivity` for evaluating fusion cross
+sections and Maxwellian-averaged reactivities for nine common fusion
+reactions, including deuterium–tritium, deuterium–deuterium, and
+deuterium–helium-3. Both quantities are computed from the Bosch–Hale
+Padé (rational-function) parametrization of the astrophysical
+S-function. For the reactions tabulated by Bosch and Hale (1992) the
+published coefficients are used, while for the remaining reactions the
+same functional form is fit to evaluated cross sections from the ENDF/B
+library.
