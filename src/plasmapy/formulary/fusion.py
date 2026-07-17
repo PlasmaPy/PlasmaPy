@@ -108,7 +108,7 @@ def fusion_cross_section(
 
         σ(E) = \frac{S(E)}{E \exp\left(B_G / \sqrt{E}\right)},
 
-    where :math:`B_G` is the Gamow constant of the reaction and
+    where :math:`B_G` is the :wikipedia:`Gamow factor` for the reaction and
     :math:`S(E)` is the slowly varying astrophysical :math:`S`\ -function,
     represented by the Padé approximant
 
@@ -296,8 +296,8 @@ def fusion_reactivity(
         \left[⟨σv⟩_{\mathrm{model}}(T_k; C_1, \ldots, C_7)
         - ⟨σv⟩(T_k)\right]^2 ,
 
-    with the reduced-mass energy :math:`m_r c^2` and the Gamow constant
-    :math:`B_G` held at their known physical values, and with the same
+    with the reduced-mass energy :math:`m_r c^2` and the :wikipedia:`Gamow
+    factor` :math:`B_G` held at their known physical values, and with the same
     seeding and coefficient-scaling safeguards used for the cross-section
     fit. The resulting :math:`C_i` are stored in the same format as the
     published coefficients and evaluated through exactly the same code
