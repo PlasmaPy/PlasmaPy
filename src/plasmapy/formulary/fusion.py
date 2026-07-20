@@ -348,7 +348,7 @@ def fusion_reactivity(
             f"of {rxn['T_min_keV']} to {rxn['T_max_keV']} keV"
         )
 
-    Theta = _rxty_polynomial(rxn, T_keV)
+    Theta = _rxty_pade_polynomial(rxn, T_keV)
     xi = ((rxn["B_G"] ** 2) / (4 * Theta)) ** (1 / 3)
 
     rcty = np.sqrt(xi / (rxn["m_r_c2"] * T_keV**3))
@@ -367,7 +367,7 @@ def _xs_pade_polynomial(rxn, E):
     return S_vals
 
 
-def _rxty_polynomial(rxn, T):
+def _rxty_pade_polynomial(rxn, T):
     r"""
     Evaluate the :math:`\theta(T)` Padé approximant for the Bosch-Hale
     reactivity.

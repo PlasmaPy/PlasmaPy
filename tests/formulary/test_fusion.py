@@ -42,6 +42,28 @@ def _load_table(name):
 
 TABLE_V = _load_table("bosch_hale_table_v.json")
 TABLE_VIII = _load_table("bosch_hale_table_viii.json")
+XS_COEFF = fusion._load_reactions("bosch_hale_ENDF_xs_table.json")
+RXTY_COEFF = fusion._load_reactions("bosch_hale_ENDF_rxty_table.json")
+
+
+def _raw_cross_section(energy, reaction):
+    """Unvalidated sigma(E) — the body of ``fusion_cross_section`` sans range check."""
+    rxn = XS_COEFF[reaction]
+    E_keV = energy.to(u.keV).value
+    sigma = fusion._xs_pade_polynomial(rxn, E_keV) / (
+        E_keV * np.exp(rxn["B_G"] / np.sqrt(E_keV))
+    )
+    return sigma * u.mbarn
+
+
+def _raw_reactivity(ion_temp, reaction):
+    """Unvalidated <sigma v>(T) — the body of ``fusion_reactivity`` sans range check."""
+    rxn = RXTY_COEFF[reaction]
+    T_keV = ion_temp.to(u.keV).value
+    theta = fusion._rxty_pade_polynomial(rxn, T_keV)
+    xi = ((rxn["B_G"] ** 2) / (4 * theta)) ** (1 / 3)
+    sv = np.sqrt(xi / (rxn["m_r_c2"] * T_keV**3)) * rxn["C1"] * theta * np.exp(-3 * xi)
+    return sv * (u.cm**3 / u.s)
 
 
 def _table_params(table, x_unit):
@@ -95,19 +117,19 @@ class TestBoschHaleCrossSection:
     @pytest.mark.parametrize("reaction", ENDF_REACTIONS)
     def test_energy_unit_independence(self, reaction):
         """A CM energy of 300 keV is a CM energy of 0.3 MeV."""
-        in_keV = fusion._BH_cross_section(300 * u.keV, reaction)
-        in_MeV = fusion._BH_cross_section(0.3 * u.MeV, reaction)
+        in_keV = fusion.fusion_cross_section(300 * u.keV, reaction)
+        in_MeV = fusion.fusion_cross_section(0.3 * u.MeV, reaction)
         assert_quantity_allclose(in_keV, in_MeV, rtol=1e-12)
 
     @pytest.mark.parametrize("reaction", ENDF_REACTIONS)
     def test_scalar_input_gives_scalar_output(self, reaction):
-        sigma = fusion._BH_cross_section(300 * u.keV, reaction)
+        sigma = fusion.fusion_cross_section(300 * u.keV, reaction)
         assert sigma.isscalar
 
     @pytest.mark.parametrize("reaction", ENDF_REACTIONS)
     def test_array_input_preserves_shape(self, reaction):
         energy = np.array([300, 350, 400]) * u.keV
-        sigma = fusion._BH_cross_section(energy, reaction)
+        sigma = fusion.fusion_cross_section(energy, reaction)
         assert sigma.shape == energy.shape
 
     def test_dt_resonance_position(self):
@@ -117,7 +139,7 @@ class TestBoschHaleCrossSection:
         and catches sign or ordering errors in the Padé coefficients.
         """
         energy = np.linspace(40, 90, 2001) * u.keV
-        sigma = fusion._BH_cross_section(energy, "D(t,n)A")
+        sigma = fusion.fusion_cross_section(energy, "D(t,n)A")
         peak = energy[np.argmax(sigma)]
         assert_quantity_allclose(peak, 64.7 * u.keV, atol=1.0 * u.keV)
 
@@ -127,7 +149,7 @@ class TestBoschHaleCrossSection:
         Comparing against the polynomial written out by hand checks the Horner
         nesting in ``_pade_polynomial``.
         """
-        rxn = fusion._xs_coeff("D(d,p)T")
+        rxn = XS_COEFF("D(d,p)T")
         E = np.array([1.0, 10.0, 100.0, 1000.0])
         expected = (
             rxn["A1"]
@@ -136,12 +158,12 @@ class TestBoschHaleCrossSection:
             + rxn["A4"] * E**3
             + rxn["A5"] * E**4
         )
-        assert np.allclose(fusion._pade_polynomial(rxn, E), expected, rtol=1e-12)
+        assert np.allclose(fusion._xs_pade_polynomial(rxn, E), expected, rtol=1e-12)
 
     def test_gamow_factor_suppresses_low_energy(self):
         """Sigma ∝ exp(-B_G/√E)/E, so sigma must fall by orders of magnitude as E → 0."""
-        low = fusion._BH_cross_section(1 * u.keV, "D(t,n)A")
-        high = fusion._BH_cross_section(10 * u.keV, "D(t,n)A")
+        low = fusion.fusion_cross_section(1 * u.keV, "D(t,n)A")
+        high = fusion.fusion_cross_section(10 * u.keV, "D(t,n)A")
         assert low < 1e-3 * high
 
 
@@ -153,7 +175,7 @@ class TestBoschHaleReactivity:
     )
     def test_reproduces_table_viii(self, ion_temp, reaction, expected_cm3_per_s):
         """Every verified cell of Table VIII is reproduced to its precision."""
-        sv = fusion._BH_reactivity(ion_temp, reaction)
+        sv = _raw_reactivity(ion_temp, reaction)
         assert_quantity_allclose(
             sv,
             expected_cm3_per_s * u.cm**3 / u.s,
@@ -163,23 +185,23 @@ class TestBoschHaleReactivity:
 
     @pytest.mark.parametrize("reaction", BH_REACTIONS)
     def test_returns_volumetric_rate(self, reaction):
-        sv = fusion._BH_reactivity(60 * u.keV, reaction)
+        sv = fusion.fusion_reactivity(60 * u.keV, reaction)
         assert sv.unit.is_equivalent(CM3_PER_S)
 
     @pytest.mark.parametrize("reaction", BH_REACTIONS)
     def test_temperature_unit_independence(self, reaction):
-        in_keV = fusion._BH_reactivity(60 * u.keV, reaction)
-        in_MeV = fusion._BH_reactivity(0.06 * u.MeV, reaction)
+        in_keV = fusion.fusion_reactivity(60 * u.keV, reaction)
+        in_MeV = fusion.fusion_reactivity(0.06 * u.MeV, reaction)
         assert_quantity_allclose(in_keV, in_MeV, rtol=1e-12)
 
     @pytest.mark.parametrize("reaction", BH_REACTIONS)
     def test_scalar_input_gives_scalar_output(self, reaction):
-        assert fusion._BH_reactivity(60 * u.keV, reaction).isscalar
+        assert fusion.fusion_reactivity(60 * u.keV, reaction).isscalar
 
     @pytest.mark.parametrize("reaction", BH_REACTIONS)
     def test_array_input_preserves_shape(self, reaction):
         ion_temp = np.array([60, 70, 80]) * u.keV
-        assert fusion._BH_reactivity(ion_temp, reaction).shape == ion_temp.shape
+        assert fusion.fusion_reactivity(ion_temp, reaction).shape == ion_temp.shape
 
     @pytest.mark.parametrize("reaction", BH_REACTIONS)
     def test_monotonic_below_the_peak(self, reaction):
@@ -188,13 +210,13 @@ class TestBoschHaleReactivity:
         D(t,n)α turns over near 64 keV, so the check stops at 50 keV.
         """
         ion_temp = np.logspace(np.log10(0.5), np.log10(50), 200) * u.keV
-        sv = fusion._BH_reactivity(ion_temp, reaction).value
+        sv = _raw_reactivity(ion_temp, reaction).value
         assert np.all(np.diff(sv) > 0), f"{reaction} <sigmav> is not increasing in T"
 
     def test_dt_dominates_dd_at_ignition_temperatures(self):
         """D-T is the easy reaction: ~200x the D(d,p)T rate at 10 keV."""
-        dt = fusion._BH_reactivity(10 * u.keV, "D(t,n)A")
-        dd = fusion._BH_reactivity(10 * u.keV, "D(d,p)T")
+        dt = fusion.fusion_reactivity(10 * u.keV, "D(t,n)A")
+        dd = fusion.fusion_reactivity(10 * u.keV, "D(d,p)T")
         assert dt / dd > 100
 
     def test_dd_branches_are_nearly_equal(self):
@@ -203,8 +225,8 @@ class TestBoschHaleReactivity:
         percent in <σv> at fusion-relevant temperatures.
         """
         ion_temp = np.array([2.0, 10.0, 50.0]) * u.keV
-        p_branch = fusion._BH_reactivity(ion_temp, "D(d,p)T")
-        n_branch = fusion._BH_reactivity(ion_temp, "D(d,n)3He")
+        p_branch = fusion.fusion_reactivity(ion_temp, "D(d,p)T")
+        n_branch = fusion.fusion_reactivity(ion_temp, "D(d,n)3He")
         assert_quantity_allclose(p_branch, n_branch, rtol=0.15)
 
 
@@ -213,39 +235,40 @@ class TestEnergyRangePredicate:
 
     @pytest.mark.parametrize("reaction", ENDF_REACTIONS)
     def test_midpoint_is_in_range(self, reaction):
-        c = fusion._xs_coeff(reaction)
+        c = XS_COEFF(reaction)
         mid = 0.5 * (c["E_min_keV"] + c["E_max_keV"]) * u.keV
-        assert fusion._in_BH_rxn_energy_range(mid, reaction) is True
+        sigma = fusion.fusion_cross_section(mid, reaction)
+        assert np.isfinite(sigma.value)
+        assert sigma > 0
 
     @pytest.mark.parametrize("reaction", ENDF_REACTIONS)
     def test_endpoints_are_inclusive(self, reaction):
         """The check is <= / >=, so both bounds must count as in-range."""
-        c = fusion._xs_coeff(reaction)
-        assert fusion._in_BH_rxn_energy_range(c["E_min_keV"] * u.keV, reaction) is True
-        assert fusion._in_BH_rxn_energy_range(c["E_max_keV"] * u.keV, reaction) is True
+        c = XS_COEFF(reaction)
+        assert fusion.fusion_cross_section(c["E_min_keV"] * u.keV, reaction) > 0
+        assert fusion.fusion_cross_section(c["E_max_keV"] * u.keV, reaction) > 0
 
     @pytest.mark.parametrize("reaction", ENDF_REACTIONS)
     def test_out_of_range_is_false(self, reaction):
-        c = fusion._xs_coeff(reaction)
-        assert (
-            fusion._in_BH_rxn_energy_range(0.5 * c["E_min_keV"] * u.keV, reaction)
-            is False
-        )
-        assert (
-            fusion._in_BH_rxn_energy_range(2.0 * c["E_max_keV"] * u.keV, reaction)
-            is False
-        )
+        c = XS_COEFF(reaction)
+        with pytest.raises(ValueError, match="energy range"):
+            fusion.fusion_cross_section(0.5 * c["E_min_keV"] * u.keV, reaction)
+        with pytest.raises(ValueError, match="energy range"):
+            fusion.fusion_cross_section(2.0 * c["E_max_keV"] * u.keV, reaction)
 
     def test_array_all_in_range_is_true(self):
-        c = fusion._xs_coeff("D(t,n)A")
+        c = XS_COEFF("D(t,n)A")
         E = np.linspace(c["E_min_keV"], c["E_max_keV"], 5) * u.keV
-        assert fusion._in_BH_rxn_energy_range(E, "D(t,n)A") is True
+        sigma = fusion.fusion_cross_section(E, "D(t,n)A")
+        assert sigma.shape == E.shape
+        assert np.all(sigma.value > 0)
 
     def test_array_one_bad_element_is_false(self):
         """All-or-nothing: one out-of-range element flips the whole array False."""
-        c = fusion._xs_coeff("D(t,n)A")
+        c = XS_COEFF("D(t,n)A")
         E = np.array([c["E_min_keV"], 2.0 * c["E_max_keV"]]) * u.keV
-        assert fusion._in_BH_rxn_energy_range(E, "D(t,n)A") is False
+        with pytest.raises(ValueError, match="energy range"):
+            fusion.fusion_cross_section(E, "D(t,n)A")
 
 
 class TestCrossSectionDispatch:
@@ -255,7 +278,7 @@ class TestCrossSectionDispatch:
     def test_matches_backend(self, reaction):
         assert_quantity_allclose(
             fusion.fusion_cross_section(300 * u.keV, reaction),
-            fusion._BH_cross_section(300 * u.keV, reaction),
+            _raw_cross_section(300 * u.keV, reaction),
         )
 
     def test_unknown_reaction_raises(self):
@@ -318,7 +341,7 @@ class TestReactivityDispatch:
     def test_bh_source_matches_backend(self, reaction):
         assert_quantity_allclose(
             fusion.fusion_reactivity(60 * u.keV, reaction),
-            fusion._BH_reactivity(60 * u.keV, reaction),
+            _raw_reactivity(60 * u.keV, reaction),
         )
 
     def test_unknown_reaction_raises(self):
