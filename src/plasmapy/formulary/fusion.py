@@ -50,33 +50,8 @@ def fusion_cross_section(
         convertible to keV.
 
     reaction : `str`
-        The fusion reaction to evaluate, given as one of the following
-        keys:
-
-        - ``"D(t,n)A"`` — :math:`D + T → n + α` (Bosch and Hale fit)
-                        — :energy range: 0.5 keV to 550 keV
-        - ``"3He(d,p)A"`` — :math:`^3He + D → p + α` (Bosch and Hale fit)
-                          — :energy range: 0.3 keV to 900 keV
-        - ``"D(d,p)T"`` — :math:`D + D → p + T` (Bosch and Hale fit)
-                        — :energy range: 0.5 keV to 5000 keV
-        - ``"D(d,n)3He"`` — :math:`D + D → n + ^3He` (Bosch and Hale fit)
-                          — :energy range: 0.5 keV to 4900 keV
-        - ``"3He(3He,2p)A"`` — :math:`^3He + ^3He → 2p + α` (ENDF data fit)
-                             — :energy range: 1.0 keV to 10000 keV
-        - ``"3He(t,n+p)A"`` — :math:`^3He + T → n + p + α` (ENDF data fit)
-                            — :energy range: 1.0 keV to 10000 keV
-        - ``"3He(t,d)A"`` — :math:`^3He + T → D + α` (ENDF data fit)
-                          — :energy range: 1.0 keV to 10000 keV
-        - ``"T(t,2n)A"`` — :math:`T + T → 2n + α` (ENDF data fit)
-                         — :energy range: 0.5 keV to 9000 keV
-        - ``"11B(p,a)2A"`` — :math:`^{11}B + p → 3α` (ENDF data fit)
-                           — :energy range: 200 keV to 5000 keV
-
-        The first four use the coefficients published in Table IV of
-        :cite:t:`bosch:1992`\ ; the remainder use coefficients obtained
-        by fitting the identical Padé form to ENDF/B data, as described
-        in the Notes. A reaction is available only if its coefficients
-        are present in the loaded table.
+        The fusion reaction to evaluate. Must be one of the reaction keys
+        listed in the table under Notes (for example, ``"D(t,n)A"``).
 
     Returns
     -------
@@ -98,6 +73,60 @@ def fusion_cross_section(
 
     Notes
     -----
+    The available reactions, the source of their coefficients, and the
+    energy range over which each fit is valid are:
+
+    .. list-table::
+       :header-rows: 1
+       :widths: 18 34 22 26
+
+       * - Key
+         - Reaction
+         - Coefficient source
+         - Valid energy range
+       * - ``"D(t,n)A"``
+         - :math:`D + T \rightarrow n + \alpha`
+         - Bosch-Hale (Table IV)
+         - 0.5 – 550 keV
+       * - ``"3He(d,p)A"``
+         - :math:`{}^{3}\mathrm{He} + D \rightarrow p + \alpha`
+         - Bosch-Hale (Table IV)
+         - 0.3 – 900 keV
+       * - ``"D(d,p)T"``
+         - :math:`D + D \rightarrow p + T`
+         - Bosch-Hale (Table IV)
+         - 0.5 – 5000 keV
+       * - ``"D(d,n)3He"``
+         - :math:`D + D \rightarrow n + {}^{3}\mathrm{He}`
+         - Bosch-Hale (Table IV)
+         - 0.5 – 4900 keV
+       * - ``"3He(3He,2p)A"``
+         - :math:`{}^{3}\mathrm{He} + {}^{3}\mathrm{He} \rightarrow 2p + \alpha`
+         - ENDF/B fit
+         - 1.0 – 10000 keV
+       * - ``"3He(t,n+p)A"``
+         - :math:`{}^{3}\mathrm{He} + T \rightarrow n + p + \alpha`
+         - ENDF/B fit
+         - 1.0 – 10000 keV
+       * - ``"3He(t,d)A"``
+         - :math:`{}^{3}\mathrm{He} + T \rightarrow D + \alpha`
+         - ENDF/B fit
+         - 1.0 – 10000 keV
+       * - ``"T(t,2n)A"``
+         - :math:`T + T \rightarrow 2n + \alpha`
+         - ENDF/B fit
+         - 0.5 – 9000 keV
+       * - ``"11B(p,a)2A"``
+         - :math:`{}^{11}\mathrm{B} + p \rightarrow 3\alpha`
+         - ENDF/B fit
+         - 200 – 5000 keV
+
+    The four Bosch-Hale reactions use the coefficients published in
+    Table IV of :cite:t:`bosch:1992`; the ENDF/B rows use coefficients
+    obtained by fitting the identical Padé form to ENDF/B data, as
+    described below. A reaction is available only if its coefficients are
+    present in the loaded table.
+
     The Bosch-Hale parametrization writes the cross section in terms of
     the astrophysical :math:`S`\ -function and the Gamow penetrability
     factor as
@@ -216,34 +245,8 @@ def fusion_reactivity(
         The ion temperature, in units convertible to keV.
 
     reaction : `str`
-        The fusion reaction to evaluate, given as one of the following
-        keys:
-
-        - ``"D(t,n)A"`` — :math:`D + T → n + α` (Bosch and Hale fit)
-                        — :ion temp range: 0.2 keV to 100 keV
-        - ``"3He(d,p)A"`` — :math:`^3He + D → p + α` (Bosch and Hale fit)
-                          — :ion temp range: 0.5 keV to 190 keV
-        - ``"D(d,p)T"`` — :math:`D + D → p + T` (Bosch and Hale fit)
-                        — :ion temp range: 0.2 keV to 100 keV
-        - ``"D(d,n)3He"`` — :math:`D + D → n + ^3He` (Bosch and Hale fit)
-                          — :ion temp range: 0.2 keV to 100 keV
-        - ``"3He(3He,2p)A"`` — :math:`^3He + ^3He → 2p + α` (ENDF data fit)
-                             — :ion temp range: 8.27 keV to 100 keV
-        - ``"3He(t,n+p)A"`` — :math:`^3He + T → n + p + α` (ENDF data fit)
-                            — :ion temp range: 1.0 keV to 100 keV
-        - ``"3He(t,d)A"`` — :math:`^3He + T → D + α` (ENDF data fit)
-                          — :ion temp range: 1.0 keV to 100 keV
-        - ``"T(t,2n)A"`` — :math:`T + T → 2n + α` (ENDF data fit)
-                         — :ion temp range: 1.0 keV to 100 keV
-        - ``"11B(p,a)2A"`` — :math:`^{11}B + p → 3α` (ENDF data fit)
-                           — :ion temp range: 50 keV to 500 keV
-
-        The first four use the reactivity coefficients published in
-        Table VII of :cite:t:`bosch:1992`\ ; the remainder use
-        coefficients obtained by fitting the identical closed form to
-        reactivities derived from ENDF/B data, as described in the Notes.
-        A reaction is available only if its coefficients are present in
-        the loaded table.
+        The fusion reaction to evaluate. Must be one of the reaction keys
+        listed in the table under Notes (for example, ``"D(t,n)A"``).
 
     Returns
     -------
@@ -267,6 +270,60 @@ def fusion_reactivity(
 
     Notes
     -----
+    The available reactions, the source of their coefficients, and the
+    ion-temperature range over which each fit is valid are:
+
+    .. list-table::
+       :header-rows: 1
+       :widths: 18 34 22 26
+
+       * - Key
+         - Reaction
+         - Coefficient source
+         - Valid ion-temperature range
+       * - ``"D(t,n)A"``
+         - :math:`D + T \rightarrow n + \alpha`
+         - Bosch-Hale (Table VII)
+         - 0.2 – 100 keV
+       * - ``"3He(d,p)A"``
+         - :math:`{}^{3}\mathrm{He} + D \rightarrow p + \alpha`
+         - Bosch-Hale (Table VII)
+         - 0.5 – 190 keV
+       * - ``"D(d,p)T"``
+         - :math:`D + D \rightarrow p + T`
+         - Bosch-Hale (Table VII)
+         - 0.2 – 100 keV
+       * - ``"D(d,n)3He"``
+         - :math:`D + D \rightarrow n + {}^{3}\mathrm{He}`
+         - Bosch-Hale (Table VII)
+         - 0.2 – 100 keV
+       * - ``"3He(3He,2p)A"``
+         - :math:`{}^{3}\mathrm{He} + {}^{3}\mathrm{He} \rightarrow 2p + \alpha`
+         - ENDF/B fit
+         - 8.27 – 100 keV
+       * - ``"3He(t,n+p)A"``
+         - :math:`{}^{3}\mathrm{He} + T \rightarrow n + p + \alpha`
+         - ENDF/B fit
+         - 1.0 – 100 keV
+       * - ``"3He(t,d)A"``
+         - :math:`{}^{3}\mathrm{He} + T \rightarrow D + \alpha`
+         - ENDF/B fit
+         - 1.0 – 100 keV
+       * - ``"T(t,2n)A"``
+         - :math:`T + T \rightarrow 2n + \alpha`
+         - ENDF/B fit
+         - 1.0 – 100 keV
+       * - ``"11B(p,a)2A"``
+         - :math:`{}^{11}\mathrm{B} + p \rightarrow 3\alpha`
+         - ENDF/B fit
+         - 50 – 500 keV
+
+    The four Bosch-Hale reactions use the reactivity coefficients
+    published in Table VII of :cite:t:`bosch:1992`; the ENDF/B rows use
+    coefficients obtained by fitting the identical closed form to
+    reactivities derived from ENDF/B data, as described below. A reaction
+    is available only if its coefficients are present in the loaded table.
+
     For a Maxwellian distribution of relative velocities, the reactivity
     is the average of :math:`σ(E) v` over the distribution,
 
