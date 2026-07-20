@@ -198,7 +198,7 @@ def fusion_cross_section(
     >>> fusion_cross_section(100 * u.keV, "D(t,n)A")  # doctest: +SKIP
     <Quantity 3427.245 mbarn>
     """
-    xs_coeff = _load_reactions("bosch_hale_ENDF_xs_table.json")
+    xs_coeff = _load_reactions("xs_pade_polynomial_coefficients.json")
     if reaction not in xs_coeff:
         raise ValueError(
             f"{reaction!r} is not one of the available reactions: {', '.join(xs_coeff)}"
@@ -383,7 +383,7 @@ def fusion_reactivity(
     >>> fusion_reactivity(10 * u.keV, "D(t,n)A")  # doctest: +SKIP
     <Quantity 1.13616547e-16 cm3 / s>
     """
-    rxty_coeff = _load_reactions("bosch_hale_ENDF_rxty_table.json")
+    rxty_coeff = _load_reactions("rxty_pade_polynomial_coefficients.json")
     if reaction not in rxty_coeff:
         raise ValueError(
             f"{reaction!r} is not one of the available reactions: "

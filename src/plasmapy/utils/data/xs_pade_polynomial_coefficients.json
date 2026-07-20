@@ -69,7 +69,7 @@
       "E_min_keV": 0.5,
       "E_max_keV": 4900,
       "max_deviation_percent": 2.5,
-      "fit": "Bosch and Hale: 1992"
+      "data source": "Bosch and Hale: 1992"
     },
     "3He(3He,2p)A": {
       "B_G": 153.6753,
@@ -85,7 +85,7 @@
       "E_min_keV": 1,
       "E_max_keV": 10000,
       "max_deviation_percent": 2.0,
-      "fit": "ENDF/B data fit"
+      "data source": "ENDF/B data fit"
     },
     "3He(t,n+p)A": {
       "B_G": 76.8413,
@@ -101,7 +101,7 @@
       "E_min_keV": 1,
       "E_max_keV": 10000,
       "max_deviation_percent": 2.0,
-      "fit": "ENDF/B data fit"
+      "data source": "ENDF/B data fit"
     },
     "3He(t,d)A": {
       "B_G": 76.8413,
@@ -117,7 +117,7 @@
       "E_min_keV": 1,
       "E_max_keV": 10000,
       "max_deviation_percent": 2.0,
-      "fit": "ENDF/B data fit"
+      "data source": "ENDF/B data fit"
     },
     "T(t,2n)A": {
       "B_G": 38.4224,
@@ -133,7 +133,7 @@
       "E_min_keV": 0.5,
       "E_max_keV": 9000,
       "max_deviation_percent": 2.0,
-      "fit": "ENDF/B data fit"
+      "data source": "ENDF/B data fit"
     },
     "11B(p,a)2A": {
       "B_G": 150.2967,
@@ -149,7 +149,7 @@
       "E_min_keV": 200,
       "E_max_keV": 5000,
       "max_deviation_percent": 2.0,
-      "fit": "ENDF/B data fit"
+      "data source": "ENDF/B data fit"
     }
   }
 }

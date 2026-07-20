@@ -42,8 +42,8 @@ def _load_table(name):
 
 TABLE_V = _load_table("bosch_hale_table_v.json")
 TABLE_VIII = _load_table("bosch_hale_table_viii.json")
-XS_COEFF = fusion._load_reactions("bosch_hale_ENDF_xs_table.json")
-RXTY_COEFF = fusion._load_reactions("bosch_hale_ENDF_rxty_table.json")
+XS_COEFF = fusion._load_reactions("xs_pade_polynomial_coefficients.json")
+RXTY_COEFF = fusion._load_reactions("rxty_pade_polynomial_coefficients.json")
 
 
 def _raw_cross_section(energy, reaction):
