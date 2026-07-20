@@ -10,11 +10,17 @@ __all__ = [
 ]
 
 from abc import ABC, abstractmethod
+from enum import StrEnum
 from pathlib import Path
 
 import astropy.units as u
 import h5py
 import numpy as np
+
+
+class _H5FieldType(StrEnum):
+    DATASET = "dataset"
+    ATTRIBUTE = "attribute"
 
 
 class AbstractSaveRoutine(ABC):
@@ -51,9 +57,9 @@ class AbstractSaveRoutine(ABC):
 
         self._results = {}
         self._quantities = {
-            "time": (u.s, "dataset"),
-            "x": (u.m, "dataset"),
-            "v": (u.m / u.s, "dataset"),
+            "time": (u.s, _H5FieldType.DATASET),
+            "x": (u.m, _H5FieldType.DATASET),
+            "v": (u.m / u.s, _H5FieldType.DATASET),
         }
 
         self._particle_tracker = None
@@ -117,9 +123,9 @@ class AbstractSaveRoutine(ABC):
         with h5py.File(path, "w") as output_file:
             for key, (_units, data_type) in self._quantities.items():
                 match data_type:
-                    case "attribute":
+                    case _H5FieldType.ATTRIBUTE:
                         output_file.attrs.create(key, self._results[key])
-                    case "dataset":
+                    case _H5FieldType.DATASET:
                         output_file.create_dataset(key, data=self._results[key])
 
     # TODO: Find a better name for this method  # noqa: FIX002
@@ -209,13 +215,13 @@ class SaveOnceOnCompletion(AbstractSaveRoutine):
 class IntervalSaveRoutine(AbstractSaveRoutine):
     """Abstract class describing a save routine that saves every given interval."""
 
-    def __init__(self, interval: u.Quantity, **kwargs) -> None:  # noqa: ANN003
+    def __init__(self, interval: u.Quantity[u.s], **kwargs) -> None:  # noqa: ANN003
         super().__init__(**kwargs)
 
         self._quantities = {
-            "time": (u.s, "dataset"),
-            "x": (u.m, "dataset"),
-            "v": (u.m / u.s, "dataset"),
+            "time": (u.s, _H5FieldType.DATASET),
+            "x": (u.m, _H5FieldType.DATASET),
+            "v": (u.m / u.s, _H5FieldType.DATASET),
         }
 
         self.save_interval: float = interval.to(u.s).value

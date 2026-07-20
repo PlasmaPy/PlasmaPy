@@ -18,6 +18,8 @@ import astropy.constants as const
 import astropy.units as u
 import numpy as np
 from numpy.typing import NDArray
+from scipy.differentiate import derivative
+from scipy.interpolate import CubicSpline  # noqa: TC002
 from tqdm import tqdm
 
 from plasmapy.formulary.collisions.misc import Bethe_stopping_lite
@@ -198,13 +200,14 @@ class ParticleTracker:
         "B_z",
     }
 
+    @validate_quantities()
     def __init__(
         self,
         grids: CartesianGrid | Iterable[CartesianGrid],
         termination_condition: AbstractTerminationCondition | None = None,
         save_routine: AbstractSaveRoutine | None = None,
         particle_integrator: type[AbstractIntegrator] | None = None,
-        dt=None,
+        dt: u.Quantity[u.s] | None = None,
         dt_range=None,
         field_weighting: str = "volume averaged",
         seed: int | None = None,
@@ -362,7 +365,9 @@ class ParticleTracker:
             or save_routine.require_synchronized_dt
         )
 
-        if isinstance(dt, u.Quantity):
+        if dt is not None:
+            if not isinstance(dt, u.Quantity):
+                raise TypeError("Please provide a quantity for the time step")
             if isinstance(dt.value, np.ndarray):
                 # If an array is specified for the time step, a synchronized time step is implied if all
                 # the entries are equal
@@ -513,6 +518,9 @@ class ParticleTracker:
         self._num_particles: int = x.shape[0]
         self._x = x.to(u.m).value
         self._v = v.to(u.m / u.s).value
+        self._stopped_particle_mask_array = np.full(
+            self.num_particles, fill_value=False
+        )
 
     def _get_grids_with_quantity(self, quantity: str) -> list[int]:
         results = []
@@ -559,7 +567,7 @@ class ParticleTracker:
                         )
 
             case "Bethe":
-                if I is None or len(materials) != self.num_grids:
+                if I is None or len(I) != self.num_grids:
                     raise ValueError(
                         "Please provide an array of length ngrids for the mean excitation energies.",
                     )
@@ -586,7 +594,7 @@ class ParticleTracker:
         self,
         method: Literal["NIST", "Bethe"],
         materials: list[str | None] | None = None,
-        I: list[u.Quantity[u.J] | None] | None = None,  # noqa: E741
+        I: u.Quantity[u.J] | None = None,  # noqa: E741
     ):
         r"""
         Enable particle stopping in cold matter using the Bethe formula or experimental stopping powers.
@@ -647,7 +655,10 @@ class ParticleTracker:
 
                 self._range_interpolators = [
                     areal_range_from_energy(
-                        self._particle, material, return_interpolator=True
+                        self._particle,
+                        material,
+                        return_interpolator=True,
+                        range_type="projected",
                     )
                     if material is not None
                     else None  # Include `None` for grids lacking excitation energy to ensure consistent grid indices
@@ -965,12 +976,15 @@ class ParticleTracker:
 
         This is represented by setting the particle's velocity to NaN.
         """
+        if np.sum(particles_to_stop_mask) == 0:
+            return
+
         if len(particles_to_stop_mask) != self.x.shape[0]:
             raise ValueError(
                 f"Expected mask of size {self.x.shape[0]}, got {len(particles_to_stop_mask)}",
             )
 
-        self._tracked_particle_mask[particles_to_stop_mask] = False
+        self._stopped_particle_mask_array = particles_to_stop_mask
 
         # Reset the cache to update the particle masks
         self._reset_cache()
@@ -981,12 +995,15 @@ class ParticleTracker:
         For the sake of keeping consistent array lengths, the position and
         velocities of the removed particles are set to NaN.
         """
+        if np.sum(particles_to_remove_mask) == 0:
+            return
+
         if len(particles_to_remove_mask) != self.x.shape[0]:
             raise ValueError(
                 f"Expected mask of size {self.x.shape[0]}, got {len(particles_to_remove_mask)}",
             )
 
-        self._tracked_particle_mask[particles_to_remove_mask] = False
+        self.x[particles_to_remove_mask, :] = np.nan
 
         # Reset the cache to update the particle masks
         self._reset_cache()
@@ -1005,7 +1022,7 @@ class ParticleTracker:
         # plus additional _dt_candidates based on the field at each particle,
         # and another based on the energy lost to stopping
         candidates = np.full(
-            (self.num_particles, self.num_grids + 2),
+            (self.num_particles, self.num_grids + 3),
             fill_value=np.inf,
         )
 
@@ -1039,14 +1056,25 @@ class ParticleTracker:
             candidates[:, self.num_grids] = gyroperiod / self._steps_per_gyroperiod
 
         # TODO: introduce a minimum time step based on electric fields too!  # noqa: FIX002
+        if self._do_stopping:
+            tracked_particles = self._tracked_particle_mask
+            current_speeds = self.speeds[tracked_particles]
 
-        # if self._do_stopping:
-        #     tracked_particles = self._tracked_particle_mask
-        #     current_speeds = self.speeds[self._tracked_particle_mask]
-        #     # can only lose 5% per timestep
-        #     max_delta_E = self._particle_kinetic_energy[tracked_particles] * self._stopping_parameter
-        #     timestep = max_delta_E / (self._stopping_power[tracked_particles] * current_speeds)
-        #     candidates[tracked_particles, self.num_grids + 1] = timestep.flatten()
+            S, dS_dx = self._stopping_power
+
+            # can only lose 5% per timestep (or 0.25 MeV)
+            max_delta_E = (
+                self._stopping_parameter
+                * S[tracked_particles]
+                / (np.abs(dS_dx[tracked_particles]))
+            )
+            # max_delta_E = np.maximum(max_delta_E, (0.05 * u.MeV).to(u.J).value)
+
+            timestep = np.nan_to_num(
+                max_delta_E / (S[tracked_particles] * current_speeds), nan=np.inf
+            )
+
+            candidates[tracked_particles, self.num_grids + 1] = timestep.flatten()
 
         # Enforce limits on dt
         candidates = np.clip(candidates, self.dt_range[0], self.dt_range[1])
@@ -1174,28 +1202,40 @@ class ParticleTracker:
         for grid_index, grid_mask in zip(
             self._stopping_grid_indices, particles_in_stopping_grids, strict=True
         ):
+            n_e = self._total_grid_values["n_e"].si.value[grid_mask, np.newaxis]
+            relevant_speeds = self.speeds[grid_mask]
+
             interpolator = self._stopping_power_interpolators[grid_index]
             interpolation_result = interpolator(
-                self.speeds[grid_mask],
-                self._total_grid_values["n_e"].si.value[grid_mask, np.newaxis],
+                relevant_speeds,
+                n_e,
             )
 
-            stopping_power[grid_mask] = interpolation_result
+            # TODO: Implement these derivatives analytically so we don't need to call  # noqa: FIX002
+            #  this expensive function
+            interpolation_derivative_result = derivative(
+                lambda x: interpolator(x, n_e).to(u.N),  # noqa: B023
+                relevant_speeds,
+                initial_step=0.01 * relevant_speeds,
+            )["df"]
 
-        if (
-            not self._raised_energy_warning
-            and np.min(stopping_power * u.J / u.m).to(u.MeV).value < 1
-        ):
-            self._raised_energy_warning = True
+            if (
+                not self._raised_energy_warning
+                and np.min(stopping_power * u.J / u.m).to(u.MeV / u.mm).value < 1
+            ):
+                self._raised_energy_warning = True
 
-            warnings.warn(
-                "The Bethe model is only valid for high energy particles. Consider using"
-                "NIST stopping if you require accurate stopping powers at lower energies.",
-                stacklevel=2,
-                category=PhysicsWarning,
-            )
+                warnings.warn(
+                    "The Bethe model is only valid for high energy particles. Consider using"
+                    "NIST stopping if you require accurate stopping powers at lower energies.",
+                    stacklevel=2,
+                    category=PhysicsWarning,
+                )
 
-        return stopping_power
+            return interpolation_result, interpolation_derivative_result
+
+        blank = np.full(shape=self._tracked_particle_mask.shape, fill_value=0)
+        return blank, blank
 
     def _NIST_energy_loss_per_length(self):
         tracked_particles = self._tracked_particle_mask
@@ -1204,44 +1244,44 @@ class ParticleTracker:
             axis=-1,
             keepdims=False,
         )
-        dx = np.multiply(current_speeds, self.dt) * u.m
-
         particles_in_stopping_grids = self.particles_on_grid[
             self._stopping_grid_indices, tracked_particles
         ]
 
-        E_before = (
-            self._particle_kinetic_energy[self._tracked_particle_mask].flatten() * u.J
-        )
-        E_after = np.copy(E_before)
-        for grid_index, grid_mask in zip(
-            self._stopping_grid_indices, particles_in_stopping_grids, strict=True
+        for grid_index, grid_mask in zip(  # noqa: B905
+            self._stopping_grid_indices, particles_in_stopping_grids
         ):
             if grid_mask.sum() == 0:
                 continue
 
-            # rho = self.grids[grid_index].ds["rho"].values[grid_mask] * self.grids[grid_index].ds["rho"].unit
-            rho = self._total_grid_values["rho"]
+            interpolator: CubicSpline = self._stopping_power_interpolators[grid_index]
 
-            energy_to_range_interpolator = self._range_interpolators[grid_index]
-            range_to_energy_interpolator = self._energy_interpolators[grid_index]
-
-            areal_range_now = energy_to_range_interpolator(
-                self._particle_kinetic_energy[grid_mask].flatten() * u.J,
+            gamma = 1 / np.sqrt(1 - (current_speeds / _c.si.value) ** 2)
+            kinetic_energy = (gamma - 1) * self.m * _c.si.value**2
+            interpolation_result = (
+                interpolator(
+                    kinetic_energy * u.J,
+                )
+                * self._total_grid_values["rho"]
             )
+            interpolation_result = interpolation_result.to(u.N).value
 
-            areal_range_after = areal_range_now - dx * rho
+            # TODO: Implement these derivatives analytically so we don't need to call  # noqa: FIX002
+            #  this expensive function
+            interpolation_derivative_result = derivative(
+                lambda x: (
+                    (interpolator(x * u.J) * self._total_grid_values["rho"])  # noqa: B023
+                    .to(u.N)
+                    .value
+                ),
+                kinetic_energy,
+                initial_step=1e-17,
+            )["df"]
 
-            raw_E_after = range_to_energy_interpolator(areal_range_after).to(u.J).value
+            return interpolation_result, interpolation_derivative_result
 
-            stop_mask = np.full(self._tracked_particle_mask.shape, False)  # noqa: FBT003
-            stop_mask[(np.isnan(raw_E_after)) | (raw_E_after <= 0)] = True
-            self._stop_particles(stop_mask)
-
-            E_after[grid_mask] = raw_E_after * u.J
-
-        # TODO: Make this less hacky  # noqa: FIX002
-        return ((E_before - E_after) / dx).to(u.J / u.m).value
+        blank = np.full(shape=self._num_particles, fill_value=0)
+        return blank, blank
 
     @property
     def _stopping_power(self):
@@ -1280,8 +1320,6 @@ class ParticleTracker:
             1 / current_speeds,
             current_velocities,
         )
-        dx = np.multiply(current_speeds, self.dt)  # ty:ignore[no-matching-overload]
-
         # shape (stopping grids, tracked particles)
         particles_in_stopping_grids = self.particles_on_grid[
             self._stopping_grid_indices, tracked_particles
@@ -1291,40 +1329,35 @@ class ParticleTracker:
         if not np.all(np.sum(particles_in_stopping_grids, axis=0) <= 1):
             raise ValueError("Stopping grids must not overlap!")
 
-        # TODO: How to do this??  # noqa: FIX002
-        # For every particle, what grid is it on (if any) that supports stopping
+        gamma = 1 / np.sqrt(1 - (current_speeds / _c.si.value) ** 2)
 
-        # Energy loss per unit length is positive by convention, therefore we have
-        # to include a minus sign here
-        dE = -np.multiply(self._stopping_power, dx)
+        p = self.m * gamma * current_speeds
 
-        # Update the velocities of the particles using the new energy values
-        # TODO: again, figure out how to differentiate relativistic and classical cases  # noqa: FIX002
-        E = self._particle_kinetic_energy[tracked_particles] + dE
+        stopping_power, _dS_dx = self._stopping_power
+        dp = -np.multiply(stopping_power, self.dt)
+        p_new = p + dp
+        p_magnitude_squared = np.sum(p_new**2, axis=1, keepdims=True)
+        gamma_new = np.sqrt(1 + p_magnitude_squared / (self.m * _c.si.value) ** 2)
+        new_speeds = p_new / (gamma_new * self.m)
+
+        tracked_particles_to_be_stopped_mask = (
+            p_new < 0
+        ).flatten()  # A subset of the tracked particles!
 
         particles_to_be_stopped_mask = np.full(
             shape=tracked_particles.shape,
             fill_value=False,
         )
-        tracked_particles_to_be_stopped_mask = (
-            E < 0
-        ).flatten()  # A subset of the tracked particles!
         # Of the tracked particles, stop the ones indicated by the subset mask
         particles_to_be_stopped_mask[tracked_particles] = (
             tracked_particles_to_be_stopped_mask
         )
 
-        # Eliminate negative energies before calculating new speeds
-        E = np.where(E < 0, 0, E)
-
-        new_speeds = np.sqrt(2 * E / self.m)
+        self._stop_particles(particles_to_be_stopped_mask)
         self.v[tracked_particles] = np.multiply(
             new_speeds,
             velocity_unit_vectors,
         )
-
-        # Stop particles, which resets the cache
-        self._stop_particles(particles_to_be_stopped_mask)
 
     def _update_velocity_scattering(self):
         speeds = np.linalg.norm(self.v[self._tracked_particle_mask], axis=-1)
@@ -1401,6 +1434,13 @@ class ParticleTracker:
         # Calculate an appropriate timestep (uniform, synchronized)
         self.dt = self._update_time()
 
+        # Update velocities to reflect stopping
+        if self._do_stopping:
+            self._update_velocity_stopping()
+
+        if self.num_particles_tracked == 0:
+            return
+
         # Update the position and velocities of the particles using timestep
         # calculations as well as the magnitude of E and B fields
         self._update_position()
@@ -1416,13 +1456,6 @@ class ParticleTracker:
                 )
 
                 self._raised_relativity_warning = True
-
-        # Update velocities to reflect stopping
-        if self._do_stopping:
-            self._update_velocity_stopping()
-
-        if self.num_particles_tracked == 0:
-            return
 
         if self._do_scattering:
             self._update_velocity_scattering()
@@ -1499,7 +1532,7 @@ class ParticleTracker:
 
     @cached_property
     def _tracked_particle_mask(self):
-        return np.full(self.x.shape[:-1], fill_value=True)
+        return ~((self._stopped_particle_mask) | (self._removed_particle_mask))
 
     @cached_property
     def num_particles_tracked(self) -> int:
@@ -1513,10 +1546,7 @@ class ParticleTracker:
         """
         Calculates a boolean mask corresponding to particles that have been stopped.
         """
-        # Calculated by taking the difference/intersection of untracked and removed particles
-        return np.logical_and(
-            ~self._tracked_particle_mask, ~self._removed_particle_mask
-        )
+        return self._stopped_particle_mask_array
 
     @cached_property
     def num_particles_stopped(self) -> int:

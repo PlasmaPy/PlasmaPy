@@ -122,6 +122,7 @@ class AbstractGrid(ABC):
         RecognizedQuantity("z", "z spatial position", u.m),
         RecognizedQuantity("A", "Atomic weight", u.kg / u.mol),
         RecognizedQuantity("rho", "Mass density", u.kg / u.m**3),
+        RecognizedQuantity("n_e", "Electron Density", 1 / u.m**3),
         RecognizedQuantity("E_x", "Electric field (x component)", u.V / u.m),
         RecognizedQuantity("E_y", "Electric field (y component)", u.V / u.m),
         RecognizedQuantity("E_z", "Electric field (z component)", u.V / u.m),

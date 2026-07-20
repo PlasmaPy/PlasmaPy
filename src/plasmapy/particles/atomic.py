@@ -1284,7 +1284,7 @@ def areal_range_from_energy(
     energies: u.Quantity[u.J] | None = None,
     *,
     return_interpolator=False,
-    range_type: Literal["CSDA", "projected"] = "projected",
+    range_type: Literal["CSDA", "projected"],
 ) -> (
     u.Quantity[u.g / u.cm**2] | Callable[[u.Quantity[u.MeV]], u.Quantity[u.g / u.cm**2]]
 ):
@@ -1451,6 +1451,12 @@ def energy_from_areal_range(
         extrapolate=False,
     )
 
+    # TODO: For all splines in this module, we should generally return NaN  # noqa: FIX002
+    #  for values that fall outside of the domain of the NIST data. When should
+    #  we raise a warning? One is already raised when this occurs when we try
+    #  to calculate ln(NaN)-- which is returned by the underlying
+    #  `CubicSpline`. What about `transmitted_energy`? Wouldn't it make sense
+    #  to just return zero for thicknesses greater than the CSDA range?
     @validate_quantities
     def cubic_spline(x: u.Quantity[u.g / u.cm**2]) -> u.Quantity[u.MeV]:
         """Handle units and sanitize IO for logarithmic spline."""
@@ -1471,6 +1477,7 @@ def transmitted_energy(
     incident_kinetic_energy: u.Quantity[u.MeV],
     material: str,
     areal_thickness: u.Quantity[u.g / u.cm**2],
+    range_type: str = "CSDA",
 ) -> u.Quantity[u.MeV] | Callable[[u.Quantity[u.g / u.cm**2]], u.Quantity[u.MeV]]:
     """
     Calculate the kinetic energy of the particles leaving the material.
@@ -1505,6 +1512,7 @@ def transmitted_energy(
         incident_particle,
         material,
         incident_kinetic_energy,
+        range_type=range_type,
     )
     residual_areal_range = incident_particle_areal_range - areal_thickness
 

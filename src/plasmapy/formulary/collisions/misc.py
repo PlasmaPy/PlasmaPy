@@ -19,7 +19,7 @@ import numpy.typing as npt
 from scipy.integrate import quad
 from scipy.interpolate import make_interp_spline
 from scipy.optimize import fsolve
-from scipy.special import factorial, jv
+from scipy.special import factorial, j0
 
 from plasmapy.formulary.collisions import frequencies
 from plasmapy.formulary.speeds import thermal_speed
@@ -175,7 +175,11 @@ _f_mol_tabulated = [
     [1e-3 * 1e-40, 1e-3 * 0.2084, 1e-3 * 0.0237],
 ]
 
-_f_mol_spline = make_interp_spline(_ϑ_tabulated, np.array(_f_mol_tabulated))
+_ϑ_tabulated = np.asarray(_ϑ_tabulated)
+_ϑ_tabulated /= np.sqrt(2)  # Bethe has root 2, Gottschalk does not
+
+_f_mol_tabulated = np.asarray(_f_mol_tabulated)
+_f_mol_spline = make_interp_spline(_ϑ_tabulated, _f_mol_tabulated)
 
 
 @validate_quantities(T={"equivalencies": u.temperature_energy()})
@@ -416,7 +420,7 @@ def Bethe_stopping_lite(
     """
     beta = v / _c.si.value
 
-    return -np.asarray(
+    return np.asarray(
         4
         * np.pi
         * n
@@ -768,7 +772,7 @@ def _calculate_characteristic_angles(
         # Eq. 6
         x_a_squared = _x_a_squared(beam, incident_energy, c_1, c_2)
 
-        return x_c_squared, x_a_squared
+        return x_c_squared.cgs, x_a_squared.cgs
 
     stopping_power = _preprocess_stopping_arguments(
         beam, target, Rho, NIST_material, stopping_power
@@ -777,7 +781,7 @@ def _calculate_characteristic_angles(
     # The bounds of the integrals are functions of the incident and
     # transmitted kinetic energies
     transmitted_energy = NIST_transmitted_energy(
-        beam, incident_energy, NIST_material, t * Rho
+        beam, incident_energy, NIST_material, t * Rho, range_type="projected"
     )
 
     def x_c_integrand(T: u.Quantity[u.MeV]):  # noqa: ANN202
@@ -823,8 +827,7 @@ def _calculate_characteristic_angles(
     ).cgs.unit
     ln_x_a_bar_squared *= cgs_integrand_units * u.MeV
     x_a_squared = np.exp(ln_x_a_bar_squared.cgs)
-
-    return x_c_squared, x_a_squared
+    return x_c_squared.cgs, x_a_squared.cgs
 
 
 def _f_n_mol_integrand(  # noqa: ANN202
@@ -833,7 +836,7 @@ def _f_n_mol_integrand(  # noqa: ANN202
     n: int,
 ):
     """Eq. 26 of Bethe."""
-    return u * jv(0, ϑ * u) * np.exp(-(u**2) / 4) * (u**2 / 4 * np.log(u**2 / 4)) ** n
+    return u * j0(ϑ * u) * np.exp(-(u**2) / 4) * (u**2 / 4 * np.log(u**2 / 4)) ** n
 
 
 def _f_mol_n(  # noqa: ANN202
@@ -855,14 +858,16 @@ def _wrapped_Moliere_angular_distribution(theta_prime_unit, B, use_f_mol_interpo
     def Moliere_angular_distribution(theta):
         # Eq. 24
         theta_prime = (theta / theta_prime_unit).cgs
-        B_coefficients = np.asarray([1 / B**i for i in range(3)]).T
+        B_coefficients = np.asarray([1 / B**i for i in range(3)])
 
         if use_f_mol_interpolator:
             f_n = _f_mol_spline(theta_prime)
         else:
             f_n = np.asarray([_f_mol_n(theta_prime, i) for i in range(3)]).T
 
-        return np.sum(B_coefficients * f_n, axis=-1)
+        B_coefficients = np.asarray(B_coefficients)
+        f_n = np.asarray(f_n)
+        return np.sum(B_coefficients * f_n.T, axis=0)
 
     return Moliere_angular_distribution
 
@@ -967,14 +972,15 @@ def Moliere_scattering(
     # The transcendental equation associated with `B` yields two solutions for
     # every `b`. We want to solve for values where B > 1, this corresponds to
     # our initial guess satisfying b > 1.
-    B = fsolve(Moliere_scattering_B_residual, x0=b, args=(b,))
+    B = fsolve(Moliere_scattering_B_residual, x0=b, args=(b,), maxfev=10)
 
     # Eq. 24 of Bethe. Characterizes the width of the Gaussian approximation
     theta_prime_unit = np.sqrt(x_c_squared * B)
-
     angular_distribution = _wrapped_Moliere_angular_distribution(
         theta_prime_unit, B, use_f_mol_interpolator
     )
+
+    theta_M = np.sqrt(x_c_squared * B / 2).cgs
 
     return_list: list
     if not return_rms:
@@ -982,26 +988,16 @@ def Moliere_scattering(
             angular_distribution,
         ]
     else:
-        # Calculate the value of theta associated with theta_prime = 2
-        # At this value, the value of the distributions have dropped to nearly 0
-        upper_bound = 2 * theta_prime_unit
-        normalization_factor = 1  # TODO: fix my laziness  # noqa: FIX002
-        mean_squared = quad(
-            lambda theta: theta**2 * angular_distribution(theta) / normalization_factor,
-            0,  # TODO: We might have to update this to the bounds for the "experimental" distribution  # noqa: FIX002
-            upper_bound,
-        )[0]
-
-        return_list = [np.sqrt(mean_squared)]
+        return np.sqrt(x_c_squared * B / 2).cgs
 
     if include_characteristic_angles:
         angles_dictionary = {
-            "theta_M": np.sqrt(x_c_squared * B / 2).cgs.value[0],
-            "x_a": np.sqrt(x_a_squared).cgs.value,
-            "x_c": np.sqrt(x_c_squared).cgs.value,
+            "theta_M": theta_M,  # Eq. 13
+            "x_a": np.sqrt(x_a_squared),
+            "x_c": np.sqrt(x_c_squared),
             "b": b,
             "B": B[0],
-            "script_theta_unit": theta_prime_unit.cgs.value[0],
+            "script_theta_unit": theta_prime_unit.cgs,
         }
 
         return_list.append(angles_dictionary)
