@@ -101,7 +101,7 @@ class TestBoschHaleCrossSection:
     @pytest.mark.parametrize(("energy", "reaction", "expected_mbarn"), TABLE_V_PARAMS)
     def test_reproduces_table_v(self, energy, reaction, expected_mbarn):
         """Every cell of Table V is reproduced to its quoted precision."""
-        sigma = fusion._BH_cross_section(energy, reaction)
+        sigma = _raw_cross_section(energy, reaction)
         assert_quantity_allclose(
             sigma,
             expected_mbarn * u.mbarn,
@@ -111,7 +111,7 @@ class TestBoschHaleCrossSection:
 
     @pytest.mark.parametrize("reaction", ENDF_REACTIONS)
     def test_returns_millibarns(self, reaction):
-        sigma = fusion._BH_cross_section(300 * u.keV, reaction)
+        sigma = _raw_cross_section(300 * u.keV, reaction)
         assert sigma.unit.physical_type == "area"
 
     @pytest.mark.parametrize("reaction", ENDF_REACTIONS)
@@ -149,7 +149,7 @@ class TestBoschHaleCrossSection:
         Comparing against the polynomial written out by hand checks the Horner
         nesting in ``_pade_polynomial``.
         """
-        rxn = XS_COEFF("D(d,p)T")
+        rxn = XS_COEFF["D(d,p)T"]
         E = np.array([1.0, 10.0, 100.0, 1000.0])
         expected = (
             rxn["A1"]
@@ -235,7 +235,7 @@ class TestEnergyRangePredicate:
 
     @pytest.mark.parametrize("reaction", ENDF_REACTIONS)
     def test_midpoint_is_in_range(self, reaction):
-        c = XS_COEFF(reaction)
+        c = XS_COEFF[reaction]
         mid = 0.5 * (c["E_min_keV"] + c["E_max_keV"]) * u.keV
         sigma = fusion.fusion_cross_section(mid, reaction)
         assert np.isfinite(sigma.value)
@@ -244,20 +244,20 @@ class TestEnergyRangePredicate:
     @pytest.mark.parametrize("reaction", ENDF_REACTIONS)
     def test_endpoints_are_inclusive(self, reaction):
         """The check is <= / >=, so both bounds must count as in-range."""
-        c = XS_COEFF(reaction)
+        c = XS_COEFF[reaction]
         assert fusion.fusion_cross_section(c["E_min_keV"] * u.keV, reaction) > 0
         assert fusion.fusion_cross_section(c["E_max_keV"] * u.keV, reaction) > 0
 
     @pytest.mark.parametrize("reaction", ENDF_REACTIONS)
     def test_out_of_range_is_false(self, reaction):
-        c = XS_COEFF(reaction)
+        c = XS_COEFF[reaction]
         with pytest.raises(ValueError, match="energy range"):
             fusion.fusion_cross_section(0.5 * c["E_min_keV"] * u.keV, reaction)
         with pytest.raises(ValueError, match="energy range"):
             fusion.fusion_cross_section(2.0 * c["E_max_keV"] * u.keV, reaction)
 
     def test_array_all_in_range_is_true(self):
-        c = XS_COEFF("D(t,n)A")
+        c = XS_COEFF["D(t,n)A"]
         E = np.linspace(c["E_min_keV"], c["E_max_keV"], 5) * u.keV
         sigma = fusion.fusion_cross_section(E, "D(t,n)A")
         assert sigma.shape == E.shape
@@ -265,7 +265,7 @@ class TestEnergyRangePredicate:
 
     def test_array_one_bad_element_is_false(self):
         """All-or-nothing: one out-of-range element flips the whole array False."""
-        c = XS_COEFF("D(t,n)A")
+        c = XS_COEFF["D(t,n)A"]
         E = np.array([c["E_min_keV"], 2.0 * c["E_max_keV"]]) * u.keV
         with pytest.raises(ValueError, match="energy range"):
             fusion.fusion_cross_section(E, "D(t,n)A")
