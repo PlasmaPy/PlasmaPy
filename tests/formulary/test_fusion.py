@@ -285,6 +285,11 @@ class TestCrossSectionDispatch:
         with pytest.raises(ValueError):
             fusion.fusion_cross_section(100 * u.keV, "Fe(p,gamma)Co")
 
+    @pytest.mark.parametrize("reaction", ENDF_REACTIONS)
+    def test_returns_square_meters(self, reaction):
+        sigma = fusion.fusion_cross_section(300 * u.keV, reaction)
+        assert sigma.unit == u.m**2
+
     @pytest.mark.parametrize(
         ("reaction", "energy"),
         [
@@ -347,6 +352,11 @@ class TestReactivityDispatch:
     def test_unknown_reaction_raises(self):
         with pytest.raises(ValueError):
             fusion.fusion_reactivity(10 * u.keV, "Fe(p,gamma)Co")
+
+    @pytest.mark.parametrize("reaction", ENDF_REACTIONS)
+    def test_returns_volumetric_rate(self, reaction):
+        sigma = fusion.fusion_reactivity(60 * u.keV, reaction)
+        assert sigma.unit == u.m**3 / u.s
 
     @pytest.mark.parametrize(
         ("reaction", "ion_temp"),

@@ -54,23 +54,23 @@ def fusion_cross_section(
         keys:
 
         - ``"D(t,n)A"`` — :math:`D + T → n + α` (Bosch and Hale fit)
-                        — :energy range: 0.5keV to 550keV
+                        — :energy range: 0.5 keV to 550 keV
         - ``"3He(d,p)A"`` — :math:`^3He + D → p + α` (Bosch and Hale fit)
-                          — :energy range: 0.3keV to 900keV
+                          — :energy range: 0.3 keV to 900 keV
         - ``"D(d,p)T"`` — :math:`D + D → p + T` (Bosch and Hale fit)
-                        — :energy range: 0.5keV to 5000keV
+                        — :energy range: 0.5 keV to 5000 keV
         - ``"D(d,n)3He"`` — :math:`D + D → n + ^3He` (Bosch and Hale fit)
-                          — :energy range: 0.5keV to 4900keV
+                          — :energy range: 0.5 keV to 4900 keV
         - ``"3He(3He,2p)A"`` — :math:`^3He + ^3He → 2p + α` (ENDF data fit)
-                             — :energy range: 1.0keV to 10000keV
+                             — :energy range: 1.0 keV to 10000 keV
         - ``"3He(t,n+p)A"`` — :math:`^3He + T → n + p + α` (ENDF data fit)
-                            — :energy range: 1.0keV to 10000keV
+                            — :energy range: 1.0 keV to 10000 keV
         - ``"3He(t,d)A"`` — :math:`^3He + T → D + α` (ENDF data fit)
-                          — :energy range: 1.0keV to 10000keV
+                          — :energy range: 1.0 keV to 10000 keV
         - ``"T(t,2n)A"`` — :math:`T + T → 2n + α` (ENDF data fit)
-                         — :energy range: 0.5keV to 9000keV
+                         — :energy range: 0.5 keV to 9000 keV
         - ``"11B(p,a)2A"`` — :math:`^{11}B + p → 3α` (ENDF data fit)
-                           — :energy range: 200keV to 5000keV
+                           — :energy range: 200 keV to 5000 keV
 
         The first four use the coefficients published in Table IV of
         :cite:t:`bosch:1992`\ ; the remainder use coefficients obtained
@@ -81,7 +81,7 @@ def fusion_cross_section(
     Returns
     -------
     sigma : `~astropy.units.Quantity`
-        The fusion cross section, in units of millibarn.
+        The fusion cross section, in SI units of square meters
 
     Raises
     ------
@@ -220,23 +220,23 @@ def fusion_reactivity(
         keys:
 
         - ``"D(t,n)A"`` — :math:`D + T → n + α` (Bosch and Hale fit)
-                        — :ion temp range: 0.2keV to 100keV
+                        — :ion temp range: 0.2 keV to 100 keV
         - ``"3He(d,p)A"`` — :math:`^3He + D → p + α` (Bosch and Hale fit)
-                          — :ion temp range: 0.5keV to 190keV
+                          — :ion temp range: 0.5 keV to 190 keV
         - ``"D(d,p)T"`` — :math:`D + D → p + T` (Bosch and Hale fit)
-                        — :ion temp range: 0.2keV to 100keV
+                        — :ion temp range: 0.2 keV to 100 keV
         - ``"D(d,n)3He"`` — :math:`D + D → n + ^3He` (Bosch and Hale fit)
-                          — :ion temp range: 0.2keV to 100keV
+                          — :ion temp range: 0.2 keV to 100 keV
         - ``"3He(3He,2p)A"`` — :math:`^3He + ^3He → 2p + α` (ENDF data fit)
-                             — :ion temp range: 8.27keV to 100keV
+                             — :ion temp range: 8.27 keV to 100 keV
         - ``"3He(t,n+p)A"`` — :math:`^3He + T → n + p + α` (ENDF data fit)
-                            — :ion temp range: 1.0keV to 100keV
+                            — :ion temp range: 1.0 keV to 100 keV
         - ``"3He(t,d)A"`` — :math:`^3He + T → D + α` (ENDF data fit)
-                          — :ion temp range: 1.0keV to 100keV
+                          — :ion temp range: 1.0 keV to 100 keV
         - ``"T(t,2n)A"`` — :math:`T + T → 2n + α` (ENDF data fit)
-                         — :ion temp range: 1.0keV to 100keV
+                         — :ion temp range: 1.0 keV to 100 keV
         - ``"11B(p,a)2A"`` — :math:`^{11}B + p → 3α` (ENDF data fit)
-                           — :ion temp range: 50keV to 500keV
+                           — :ion temp range: 50 keV to 500 keV
 
         The first four use the reactivity coefficients published in
         Table VII of :cite:t:`bosch:1992`\ ; the remainder use
@@ -248,8 +248,8 @@ def fusion_reactivity(
     Returns
     -------
     sv : `~astropy.units.Quantity`
-        The Maxwellian-averaged reactivity, in units of cm\ :sup:`3`
-        s\ :sup:`-1`\ .
+        The Maxwellian-averaged reactivity, in SI units of
+        m\ :sup:`3`\  s\ :sup:`-1`\ .
 
     Raises
     ------
