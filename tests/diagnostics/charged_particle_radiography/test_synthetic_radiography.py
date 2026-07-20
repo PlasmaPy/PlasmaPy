@@ -407,6 +407,36 @@ def test_source_or_detector_at_origin() -> None:
         cpr.Tracker(grid, source, origin, verbose=False)
 
 
+def test_source_and_detector_on_same_side() -> None:
+    """
+    The projection geometry and magnification are only well defined when the
+    grid origin lies between the source and the detector (i.e. they are on
+    opposite sides of the origin). Placing them on the same side produces a
+    meaningless magnification, so a clear ``ValueError`` should be raised rather
+    than silently building a Tracker with unphysical geometry. Regression test
+    for GH-2077.
+    """
+    grid = _test_grid("electrostatic_gaussian_sphere")
+
+    # Both on the +y side of the origin.
+    source = (0 * u.mm, 10 * u.mm, 0 * u.mm)
+    detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
+    with pytest.raises(ValueError, match="opposite sides"):
+        cpr.Tracker(grid, source, detector, verbose=False)
+
+    # Both on the -y side of the origin.
+    source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
+    detector = (0 * u.mm, -200 * u.mm, 0 * u.mm)
+    with pytest.raises(ValueError, match="opposite sides"):
+        cpr.Tracker(grid, source, detector, verbose=False)
+
+    # Perpendicular through the origin (dot == 0) is also rejected.
+    source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
+    detector = (200 * u.mm, 0 * u.mm, 0 * u.mm)
+    with pytest.raises(ValueError, match="opposite sides"):
+        cpr.Tracker(grid, source, detector, verbose=False)
+
+
 @pytest.mark.slow
 def test_init() -> None:
     grid = _test_grid("electrostatic_gaussian_sphere", num=50)
