@@ -669,7 +669,7 @@ class IonizationState:
             raise TypeError(kappa_errmsg)
         if value <= 1.5:
             raise ValueError(kappa_errmsg)
-        self._kappa: float = np.real(value)
+        self._kappa: float = np.real(value)  # ty:ignore[invalid-assignment]
 
     @property
     def element(self) -> str:
