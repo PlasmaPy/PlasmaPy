@@ -258,8 +258,7 @@ def fusion_reactivity(
     ------
     `ValueError`
         If ``reaction`` has no available reactivity coefficients, or if
-        ``ion_temp`` falls outside the validity range for ``reaction``
-        (at most :math:`0` - :math:`190` keV).
+        ``ion_temp`` falls outside the validity range for ``reaction``.
 
     `~astropy.units.UnitTypeError`
         If ``ion_temp`` does not have units convertible to keV.
