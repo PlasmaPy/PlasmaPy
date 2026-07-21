@@ -54,19 +54,42 @@ def fusion_cross_section(
         The fusion reaction to evaluate. Must be one of the reaction keys
         listed in the table under Notes (for example, ``"D(t,n)A"``).
 
+    out_of_range : `str`, optional
+        How to handle energies that fall outside the valid range for
+        ``reaction`` (the per-reaction ranges are listed under Notes).
+        Must be one of:
+
+        - ``"raise"`` (default) — raise a `ValueError` if any element of
+          ``energy`` lies outside the valid range.
+        - ``"nan"`` — evaluate the in-range energies as usual and return
+          `~numpy.nan` for the out-of-range ones instead of raising. If
+          *every* input energy is out of range the result is entirely
+          NaN and a warning is issued.
+
     Returns
     -------
     sigma : `~astropy.units.Quantity`
-        The fusion cross section, in SI units of square meters
+        The fusion cross section, in SI units of square meters. When
+        ``out_of_range="nan"``, elements corresponding to energies outside
+        the valid range for ``reaction`` are `~numpy.nan`.
 
     Raises
     ------
     `ValueError`
-        If ``reaction`` has no available coefficients, or if ``energy``
-        falls outside the validity range for ``reaction``.
+        If ``reaction`` has no available coefficients; if ``out_of_range``
+        is not ``"raise"`` or ``"nan"``; or if ``out_of_range="raise"``
+        and any element of ``energy`` falls outside the validity range for
+        ``reaction``.
 
     `~astropy.units.UnitTypeError`
         If ``energy`` does not have units convertible to keV.
+
+    Warns
+    -----
+    `UserWarning`
+        If ``out_of_range="nan"`` and every element of ``energy`` lies
+        outside the valid range for ``reaction``, so that the returned
+        cross section is entirely `~numpy.nan`.
 
     See Also
     --------
@@ -197,7 +220,7 @@ def fusion_cross_section(
     --------
     >>> import astropy.units as u
     >>> fusion_cross_section(100 * u.keV, "D(t,n)A")  # doctest: +SKIP
-    <Quantity 3427.245 mbarn>
+    <Quantity 3427.245 m**2>
     """
     xs_coeff = _load_reactions("xs_pade_polynomial_coefficients.json")
     if reaction not in xs_coeff:
@@ -261,20 +284,43 @@ def fusion_reactivity(
         The fusion reaction to evaluate. Must be one of the reaction keys
         listed in the table under Notes (for example, ``"D(t,n)A"``).
 
+    out_of_range : `str`, optional
+        How to handle ion temperatures that fall outside the valid range
+        for ``reaction`` (the per-reaction ranges are listed under Notes).
+        Must be one of:
+
+        - ``"raise"`` (default) — raise a `ValueError` if any element of
+          ``ion_temp`` lies outside the valid range.
+        - ``"nan"`` — evaluate the in-range temperatures as usual and
+          return `~numpy.nan` for the out-of-range ones instead of
+          raising. If *every* input temperature is out of range the result
+          is entirely NaN and a warning is issued.
+
     Returns
     -------
     sv : `~astropy.units.Quantity`
         The Maxwellian-averaged reactivity, in SI units of
-        m\ :sup:`3`\  s\ :sup:`-1`\ .
+        m\ :sup:`3`\  s\ :sup:`-1`\ . When ``out_of_range="nan"``, elements
+        corresponding to ion temperatures outside the valid range for
+        ``reaction`` are `~numpy.nan`.
 
     Raises
     ------
     `ValueError`
-        If ``reaction`` has no available reactivity coefficients, or if
-        ``ion_temp`` falls outside the validity range for ``reaction``.
+        If ``reaction`` has no available reactivity coefficients; if
+        ``out_of_range`` is not ``"raise"`` or ``"nan"``; or if
+        ``out_of_range="raise"`` and any element of ``ion_temp`` falls
+        outside the validity range for ``reaction``.
 
     `~astropy.units.UnitTypeError`
         If ``ion_temp`` does not have units convertible to keV.
+
+    Warns
+    -----
+    `UserWarning`
+        If ``out_of_range="nan"`` and every element of ``ion_temp`` lies
+        outside the valid range for ``reaction``, so that the returned
+        reactivity is entirely `~numpy.nan`.
 
     See Also
     --------
@@ -394,7 +440,7 @@ def fusion_reactivity(
     --------
     >>> import astropy.units as u
     >>> fusion_reactivity(10 * u.keV, "D(t,n)A")  # doctest: +SKIP
-    <Quantity 1.13616547e-16 cm3 / s>
+    <Quantity 1.13616547e-16 m3 / s>
     """
     rxty_coeff = _load_reactions("rxty_pade_polynomial_coefficients.json")
     if reaction not in rxty_coeff:
