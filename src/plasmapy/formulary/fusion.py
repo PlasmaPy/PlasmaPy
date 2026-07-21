@@ -104,7 +104,7 @@ def fusion_cross_section(
 
     Warns
     -----
-    :exc:`UserWarning`
+    `UserWarning`
         If ``out_of_range="nan"`` and every element of ``energy`` lies
         outside the valid range for ``reaction``, so that the returned
         cross section is entirely `~numpy.nan`.
@@ -359,7 +359,7 @@ def fusion_reactivity(
 
     Warns
     -----
-    :exc:`UserWarning`
+    `UserWarning`
         If ``out_of_range="nan"`` and every element of ``ion_temp`` lies
         outside the valid range for ``reaction``, so that the returned
         reactivity is entirely `~numpy.nan`.
