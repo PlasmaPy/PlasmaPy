@@ -104,7 +104,7 @@ def fusion_cross_section(
 
     Warns
     -----
-    `UserWarning`
+    :exc:`UserWarning`
         If ``out_of_range="nan"`` and every element of ``energy`` lies
         outside the valid range for ``reaction``, so that the returned
         cross section is entirely `~numpy.nan`.
@@ -202,8 +202,8 @@ def fusion_cross_section(
         S(E) = σ_{ENDF}(E)\, E \exp\left(B_G / \sqrt{E}\right),
 
     using the analytically known :math:`B_G` for that reaction. Because
-    :math:`S(E)` is smooth and slowly varying — unlike :math:`σ(E)`,
-    which spans many orders of magnitude near threshold — it is far
+    :math:`S(E)` is smooth and slowly varying (unlike :math:`σ(E)`,
+    which spans many orders of magnitude near threshold) it is far
     better conditioned for a rational-function fit. The Padé coefficients
     are then found by nonlinear least squares
     (`scipy.optimize.curve_fit`) applied to the :math:`S(E)` samples,
@@ -359,7 +359,7 @@ def fusion_reactivity(
 
     Warns
     -----
-    `UserWarning`
+    :exc:`UserWarning`
         If ``out_of_range="nan"`` and every element of ``ion_temp`` lies
         outside the valid range for ``reaction``, so that the returned
         reactivity is entirely `~numpy.nan`.
