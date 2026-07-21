@@ -16,7 +16,7 @@ import astropy.constants as const
 import astropy.units as u
 import numpy as np
 import numpy.typing as npt
-from scipy.integrate import quad
+from scipy.integrate import quad, solve_ivp
 from scipy.interpolate import make_interp_spline
 from scipy.optimize import fsolve
 from scipy.special import factorial, j0
@@ -764,6 +764,10 @@ def _calculate_characteristic_angles(
         ]
     )
 
+    # TODO: Remove this once we add support for compounds  # noqa: FIX002
+    c_1, c_2, c_3 = c_1.flatten()[0], c_2.flatten()[0], c_3.flatten()[0]
+    target = target[0]
+
     # TODO: Update this function to work with user-provided range data  # noqa: FIX002
     if use_constant_energy_approximation:
         beta, p = _beta_and_p(beam, incident_energy)
@@ -790,44 +794,72 @@ def _calculate_characteristic_angles(
 
         return 1 / (-stopping_power(T) * (p * beta * const.c) ** 2)
 
-    c_3_summed = np.sum(c_3, axis=0)
-    x_c_squared = (
-        c_3_summed
-        * quad(
-            lambda x: x_c_integrand(x * u.MeV).cgs.value,
-            incident_energy.to(u.MeV).value,
-            transmitted_energy.to(u.MeV).value,
-        )[0]
-    )
-    # Apply units associated with the integration
-    x_c_squared *= x_c_integrand(1 * u.MeV).cgs.unit * u.MeV
-    ln_x_a_bar_squared = np.sum(
-        u.Quantity(
-            [
-                c_3_i
-                / x_c_squared
-                * quad(
-                    lambda T, target_i=target_i, c_1_i=c_1_i, c_2_i=c_2_i: (
-                        _x_a_bar_integrand(
-                            beam, T * u.MeV, target_i, stopping_power, c_1_i, c_2_i
-                        ).cgs.value
-                    ),
-                    incident_energy.to(u.MeV).value,
-                    transmitted_energy.to(u.MeV).value,
-                )[0]
-                for (target_i, c_1_i, c_2_i, c_3_i) in zip(
-                    target, c_1, c_2, c_3, strict=True
-                )
-            ]
-        )
+    x_c_interpolator = solve_ivp(
+        lambda x, _y: (
+            x_c_integrand(x * u.MeV).cgs.value
+        ),  # TODO: get rid of ".cgs" in favor of ".to(units)"  # noqa: FIX002
+        t_span=[
+            np.min(transmitted_energy.to(u.MeV).value),
+            np.max(incident_energy.to(u.MeV).value),
+        ],
+        y0=[
+            0,
+        ],
+        dense_output=True,
     )
 
+    x_c_squared = []
+    for T_0, T_f in zip(
+        incident_energy,
+        transmitted_energy,
+        strict=True,
+    ):
+        integral = x_c_interpolator.sol(T_f.to(u.MeV).value) - x_c_interpolator.sol(
+            T_0.to(u.MeV).value
+        )
+        integral = integral.flatten()[0]
+        x_c_squared.append(c_3.cgs.value * integral)
+
+    # Apply units associated with the integration
+    x_c_squared *= x_c_integrand(1 * u.MeV).cgs.unit * u.MeV * c_3.cgs.unit
+    x_c_squared = x_c_squared.to(u.dimensionless_unscaled).value
+
+    ln_x_a_squared_interpolator = solve_ivp(
+        lambda T, _ln_x_a_squared: (
+            _x_a_bar_integrand(
+                beam, T * u.MeV, target, stopping_power, c_1, c_2
+            ).cgs.value
+        ),  # TODO: get rid of ".cgs" in favor of ".to(units)"  # noqa: FIX002
+        t_span=[
+            np.min(transmitted_energy.to(u.MeV).value),
+            np.max(incident_energy.to(u.MeV).value),
+        ],
+        y0=[
+            0,
+        ],
+        dense_output=True,
+    )
+
+    ln_x_a_squared = []
+    for x_c_squared_i, T_0_i, T_f_i in zip(
+        x_c_squared, incident_energy, transmitted_energy, strict=True
+    ):
+        integral = ln_x_a_squared_interpolator.sol(
+            T_f_i.to(u.MeV).value
+        ) - ln_x_a_squared_interpolator.sol(T_0_i.to(u.MeV).value)
+        integral = integral.flatten()[0]
+        ln_x_a_squared.append(c_3.cgs.value / x_c_squared_i * integral)
+
+    # Apply units associated with the integration
     cgs_integrand_units = _x_a_bar_integrand(
-        beam, 1 * u.MeV, target[0], stopping_power, c_1[0], c_2[0]
+        beam, 1 * u.MeV, target, stopping_power, c_1, c_2
     ).cgs.unit
-    ln_x_a_bar_squared *= cgs_integrand_units * u.MeV
-    x_a_squared = np.exp(ln_x_a_bar_squared.cgs)
-    return x_c_squared.cgs, x_a_squared.cgs
+
+    ln_x_a_squared *= cgs_integrand_units * c_3.cgs.unit * u.MeV
+    ln_x_a_squared = ln_x_a_squared.to(u.dimensionless_unscaled).value
+
+    x_a_squared = np.exp(ln_x_a_squared)
+    return x_c_squared, x_a_squared
 
 
 def _f_n_mol_integrand(  # noqa: ANN202
@@ -972,15 +1004,18 @@ def Moliere_scattering(
     # The transcendental equation associated with `B` yields two solutions for
     # every `b`. We want to solve for values where B > 1, this corresponds to
     # our initial guess satisfying b > 1.
-    B = fsolve(Moliere_scattering_B_residual, x0=b, args=(b,), maxfev=10)
+    B = [
+        fsolve(Moliere_scattering_B_residual, x0=b_i, args=(b_i,), maxfev=10)[0]
+        for b_i in b
+    ]
 
     # Eq. 24 of Bethe. Characterizes the width of the Gaussian approximation
-    theta_prime_unit = np.sqrt(x_c_squared * B)
+    theta_prime_unit = np.sqrt(x_c_squared.flatten() * B)
     angular_distribution = _wrapped_Moliere_angular_distribution(
         theta_prime_unit, B, use_f_mol_interpolator
     )
 
-    theta_M = np.sqrt(x_c_squared * B / 2).cgs
+    theta_M = np.sqrt(x_c_squared.flatten() * B / 2)
 
     return_list: list
     if not return_rms:
@@ -988,7 +1023,7 @@ def Moliere_scattering(
             angular_distribution,
         ]
     else:
-        return np.sqrt(x_c_squared * B / 2).cgs
+        return theta_M
 
     if include_characteristic_angles:
         angles_dictionary = {

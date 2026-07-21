@@ -22,7 +22,7 @@ from scipy.differentiate import derivative
 from scipy.interpolate import CubicSpline  # noqa: TC002
 from tqdm import tqdm
 
-from plasmapy.formulary.collisions.misc import Bethe_stopping_lite
+from plasmapy.formulary.collisions.misc import Bethe_stopping_lite, Moliere_scattering
 from plasmapy.particles import Particle, particle_input
 from plasmapy.particles.atomic import areal_range_from_energy, energy_from_areal_range
 from plasmapy.particles.atomic import (
@@ -714,7 +714,6 @@ class ParticleTracker:
         ]
         self._log(f"Stopping module activated using the {method} method")
 
-    @particle_input(require="isotope")
     @validate_quantities
     def add_scattering(
         self,
@@ -726,38 +725,29 @@ class ParticleTracker:
 
         Parameters
         ----------
-        target : `~plasmapy.particles.particle_collections.ParticleListLike`
-            A `~plasmapy.particles.particle_collections.ParticleListLike` representation of the target material(s).
-            The atomic mass of each particle must be specified (i.e. ``Al-27``).
+        target : `str`
+
+        rho : `u.Quantity[u.kg / u.m**3]`
+            The density of the underlying material in units convertible to kilograms per cubic meter.
         """
         # For scattering calculations, a multidimensional interpolator must be
         # constructed to obtain the mean-square scattering rate as a function of
         # velocity and number density.
-        if len({len(self.grids), len(target), target_rho.shape[0]}) != 1:
-            raise ValueError(
-                "Please provide an array of length ngrids for the materials and densities.",
-                stacklevel=2,
-            )
-
-        # TODO: does this method still exist?  # noqa: FIX002
-        if not self._is_quantity_defined_on_one_grid("T_i"):
-            warnings.warn(
-                "The ion temperature is not defined on any of the provided grids! "
-                "Particle scattering will not be calculated.",
-                RuntimeWarning,
-                stacklevel=2,
-            )
-
-            # Don't set `_do_scattering`. The push loop does not have to do scattering
-            # calculations
-            return
-
-        for grid in self.grids:
-            grid.require_quantities(["T_i"], replace_with_zeros=True)
-            self._required_quantities.update({"T_i"})
+        # TODO: rewrite this  # noqa: FIX002
+        # if len({len(self.grids), len(target), target_rho.shape[0]}) != 1:
+        #     raise ValueError(
+        #         "Please provide an array of length ngrids for the materials and densities.",
+        #         stacklevel=2,
+        #     )
 
         self._set_target_attributes(target, target_rho)
         self._do_scattering = True
+
+    def _set_target_attributes(
+        self, target: str, target_rho: u.Quantity[u.kg / u.m**3]
+    ) -> None:
+        self._target = target
+        self._target_rho = target_rho
 
     def _validate_grids(self) -> None:
         """Validate input grids."""
@@ -1036,7 +1026,7 @@ class ParticleTracker:
         # give it the grid step of the highest resolution grid
         for i, _grid in enumerate(self.grids):
             candidates[:, i] = np.where(
-                self.particles_on_grid[:, i] > 0,
+                self.particles_on_grid[i, :] > 0,
                 _gridstep[i],
                 _min_gridstep,
             )
@@ -1058,7 +1048,7 @@ class ParticleTracker:
         # TODO: introduce a minimum time step based on electric fields too!  # noqa: FIX002
         if self._do_stopping:
             tracked_particles = self._tracked_particle_mask
-            current_speeds = self.speeds[tracked_particles]
+            current_speeds = self.speeds[tracked_particles].flatten()
 
             S, dS_dx = self._stopping_power
 
@@ -1196,7 +1186,7 @@ class ParticleTracker:
         stopping_power = np.zeros((self.num_particles_tracked, 1))
 
         particles_in_stopping_grids = self.particles_on_grid[
-            self._stopping_grid_indices, tracked_particles
+            np.ix_(self._stopping_grid_indices, tracked_particles)
         ]
 
         for grid_index, grid_mask in zip(
@@ -1245,7 +1235,7 @@ class ParticleTracker:
             keepdims=False,
         )
         particles_in_stopping_grids = self.particles_on_grid[
-            self._stopping_grid_indices, tracked_particles
+            np.ix_(self._stopping_grid_indices, tracked_particles)
         ]
 
         for grid_index, grid_mask in zip(  # noqa: B905
@@ -1266,17 +1256,21 @@ class ParticleTracker:
             )
             interpolation_result = interpolation_result.to(u.N).value
 
+            density_units = 1 * u.kg / u.m**3
             # TODO: Implement these derivatives analytically so we don't need to call  # noqa: FIX002
             #  this expensive function
-            interpolation_derivative_result = derivative(
-                lambda x: (
-                    (interpolator(x * u.J) * self._total_grid_values["rho"])  # noqa: B023
-                    .to(u.N)
-                    .value
-                ),
-                kinetic_energy,
-                initial_step=1e-17,
-            )["df"]
+            interpolation_derivative_result = (
+                derivative(
+                    lambda x: (
+                        interpolator(x * u.J)  # noqa: B023
+                        .to(u.N / density_units)  # noqa: B023
+                        .value
+                    ),
+                    kinetic_energy,
+                    initial_step=1e-17,
+                )["df"]
+                * self._total_grid_values["rho"].to(density_units).value
+            )
 
             return interpolation_result, interpolation_derivative_result
 
@@ -1314,17 +1308,12 @@ class ParticleTracker:
         current_speeds = np.linalg.norm(
             current_velocities,
             axis=-1,
-            keepdims=True,
         )
-        velocity_unit_vectors = np.multiply(
-            1 / current_speeds,
-            current_velocities,
-        )
+        velocity_unit_vectors = current_velocities / current_speeds[:, np.newaxis]
         # shape (stopping grids, tracked particles)
         particles_in_stopping_grids = self.particles_on_grid[
-            self._stopping_grid_indices, tracked_particles
+            np.ix_(self._stopping_grid_indices, tracked_particles)
         ]
-
         # axis=0 => stopping grids. Make sure the particle is only on one grid with stopping
         if not np.all(np.sum(particles_in_stopping_grids, axis=0) <= 1):
             raise ValueError("Stopping grids must not overlap!")
@@ -1336,8 +1325,7 @@ class ParticleTracker:
         stopping_power, _dS_dx = self._stopping_power
         dp = -np.multiply(stopping_power, self.dt)
         p_new = p + dp
-        p_magnitude_squared = np.sum(p_new**2, axis=1, keepdims=True)
-        gamma_new = np.sqrt(1 + p_magnitude_squared / (self.m * _c.si.value) ** 2)
+        gamma_new = np.sqrt(1 + p_new**2 / (self.m * _c.si.value) ** 2)
         new_speeds = p_new / (gamma_new * self.m)
 
         tracked_particles_to_be_stopped_mask = (
@@ -1354,45 +1342,41 @@ class ParticleTracker:
         )
 
         self._stop_particles(particles_to_be_stopped_mask)
-        self.v[tracked_particles] = np.multiply(
-            new_speeds,
-            velocity_unit_vectors,
-        )
+        self.v[tracked_particles] = new_speeds[:, np.newaxis] * velocity_unit_vectors
 
     def _update_velocity_scattering(self):
         speeds = np.linalg.norm(self.v[self._tracked_particle_mask], axis=-1)
 
-        # Ensure there are no particles on multiple grids
-        self._multi_grid_check()
-
         mean_square_scatter_rate = np.zeros(shape=self.num_particles_tracked)
 
         for i, _grid in enumerate(self.grids):
-            particles_on_grid = self.particles_on_grid[self._tracked_particle_mask, i]
+            particles_on_grid = self.particles_on_grid[i, self._tracked_particle_mask]
 
             # Passing an empty array to the scattering routine can cause an error to
             # be emitted
             if particles_on_grid.sum() == 0:
                 continue
 
-            # TODO: figure out additivity rule for scattering  # noqa: FIX002
-            mean_square_scatter_rate[particles_on_grid] += self._scattering_routine(
-                speed=speeds[particles_on_grid],
-                beam_particle=self._particle,
-                target_particle=self._target[i],
-                T_s=self._total_grid_values["T_i"][particles_on_grid].si.value,
-                n_s=self._target_number_density[i],
+            dx = self.speeds * self.dt
+
+            mean_square_scatter_rate[particles_on_grid] = Moliere_scattering(
+                self._particle,
+                self._particle_kinetic_energy[particles_on_grid] * u.J,
+                Particle(self._target),
+                self._target_rho,
+                dx[particles_on_grid] * u.m,
+                NIST_material=self._target,
+                return_rms=True,
+                use_constant_energy_approximation=True,
             )
 
         mean_square_scatter_rate = np.reshape(
-            mean_square_scatter_rate, newshape=(self.num_particles_tracked, 1)
+            mean_square_scatter_rate, shape=(self.num_particles_tracked, 1)
         )
 
         # The (polar) angle resulting from scattering
-        theta = self._rng.normal(
-            scale=np.sqrt(
-                mean_square_scatter_rate * self.dt[self._tracked_particle_mask]
-            ),
+        theta = self._RNG.normal(
+            scale=mean_square_scatter_rate,
             size=(self.num_particles_tracked, 1),
         )
 
@@ -1415,7 +1399,7 @@ class ParticleTracker:
         v_new_unscaled = self.v[self._tracked_particle_mask] + delta_v
 
         # Normalize and rescale
-        self._v[self._tracked_particle_mask] = (
+        self.v[self._tracked_particle_mask] = (
             v_new_unscaled
             / np.linalg.norm(v_new_unscaled, axis=-1, keepdims=True)
             * speeds[:, np.newaxis]
@@ -1462,7 +1446,7 @@ class ParticleTracker:
 
         # Update this array, which will have zero elements at the end
         # only for particles that never entered any grid
-        self.ever_entered_any_grid += np.sum(self.particles_on_grid, axis=-1).astype(
+        self.ever_entered_any_grid += np.sum(self.particles_on_grid, axis=0).astype(
             np.bool_,
         )
 
@@ -1499,8 +1483,8 @@ class ParticleTracker:
         Returns a boolean mask of shape [ngrids, num_particles] corresponding to
         whether or not the particle is on the associated grid.
         """
-        all_particles = np.array([grid.on_grid(self.x * u.m) for grid in self.grids]).T
-        all_particles[~self._tracked_particle_mask] = False
+        all_particles = np.array([grid.on_grid(self.x * u.m) for grid in self.grids])
+        all_particles[:, ~self._tracked_particle_mask] = False
 
         return all_particles
 
