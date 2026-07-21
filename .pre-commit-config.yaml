@@ -82,7 +82,7 @@ repos:
   - id: text-unicode-replacement-char
 
 - repo: https://github.com/codespell-project/codespell
-  rev: v2.4.2
+  rev: v2.4.3
   hooks:
   - id: codespell
     name: codespell (add false positives to pyproject.toml)
@@ -99,7 +99,7 @@ repos:
     exclude: CITATION.cff|docs/notebooks/dispersion/stix_dispersion.ipynb
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.15.20
+  rev: v0.15.22
   hooks:
   - id: ruff-check
     name: ruff-check (see https://docs.astral.sh/ruff/rules)
@@ -136,13 +136,13 @@ repos:
     - validate-pyproject[all,store]
 
 - repo: https://github.com/tox-dev/pyproject-fmt
-  rev: v2.25.1
+  rev: v2.25.3
   hooks:
   - id: pyproject-fmt
     name: format pyproject.toml
 
 - repo: https://github.com/astral-sh/uv-pre-commit
-  rev: 0.11.26
+  rev: 0.11.30
   hooks:
     # running uv lock requires network access or a warm cache, so it
     # cannot be run via pre-commit.ci, even with the `--offline`,
