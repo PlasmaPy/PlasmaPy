@@ -265,10 +265,9 @@ def fusion_cross_section(
             "3He": "He-3 2+",
             "11B": "B-11 5+",
         }
-        target = Particle(nuclide[reaction.split("(", maxsplit=1)[0]])  # X, at rest
-        projectile = Particle(
-            nuclide[reaction.split("(")[1].split(",", maxsplit=1)[0]]
-        )  # a, the beam
+        target = Particle(nuclide[reaction.split("(", maxsplit=1)[0]])
+        projectile = Particle(nuclide[reaction.split("(")[1].split(",", maxsplit=1)[0]])
+        # Convert lab-frame projectile energy to the CM energy via the mass ratio.
         E_keV = E_keV * (target.mass / (target.mass + projectile.mass)).value
 
     scalar = E_keV.ndim == 0
@@ -283,6 +282,8 @@ def fusion_cross_section(
 
     sigma = np.full(E_arr.shape, np.nan)
     E_in = E_arr[in_range]
+    # Recover sigma from the S-function, Bosch-Hale Eqs. 8-9:
+    # sigma(E) = S(E) / (E * exp(B_G / sqrt(E))).
     sigma[in_range] = _xs_pade_polynomial(rxn, E_in) / (
         E_in * np.exp(rxn["B_G"] / np.sqrt(E_in))
     )
@@ -507,7 +508,9 @@ def fusion_reactivity(
     sv = np.full(T_arr.shape, np.nan)
     T_in = T_arr[in_range]
     Theta = _rxty_pade_polynomial(rxn, T_in)
+    # xi = (B_G^2 / 4*Theta)^(1/3) sets the Gamow-peak exponent of the rate.
     xi = ((rxn["B_G"] ** 2) / (4 * Theta)) ** (1 / 3)
+    # Bosch-Hale reactivity: <sigma v> = C1 * Theta * sqrt(xi / (m_r c^2 T^3)) * exp(-3 xi).
     sv[in_range] = (
         np.sqrt(xi / (rxn["m_r_c2"] * T_in**3)) * rxn["C1"] * Theta * np.exp(-3 * xi)
     )
