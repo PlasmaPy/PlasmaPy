@@ -400,3 +400,184 @@ class TestReactivityDispatch:
     def test_wrong_units_raise(self):
         with pytest.raises(u.UnitsError):
             fusion.fusion_reactivity(10 * u.s, "D(t,n)A")
+
+
+class TestCrossSectionOutOfRange:
+    """``out_of_range="nan"`` masks out-of-range energies instead of raising."""
+
+    def test_unknown_policy_raises(self):
+        with pytest.raises(ValueError, match="out_of_range"):
+            fusion.fusion_cross_section(300 * u.keV, "D(t,n)A", out_of_range="drop")
+
+    def test_raise_is_the_default(self):
+        """Passing the array of one bad element rejects it in either raise form."""
+        c = XS_COEFF["D(t,n)A"]
+        E = np.array([c["E_min_keV"], 2.0 * c["E_max_keV"]]) * u.keV
+        with pytest.raises(ValueError, match="energy range"):
+            fusion.fusion_cross_section(E, "D(t,n)A")
+        with pytest.raises(ValueError, match="energy range"):
+            fusion.fusion_cross_section(E, "D(t,n)A", out_of_range="raise")
+
+    @pytest.mark.parametrize("reaction", ENDF_REACTIONS)
+    def test_nan_mode_masks_out_of_range(self, reaction):
+        """Out-of-range slots become NaN; in-range ones are still evaluated."""
+        c = XS_COEFF[reaction]
+        lo, hi = c["E_min_keV"], c["E_max_keV"]
+        E = np.array([0.5 * lo, 0.5 * (lo + hi), 2.0 * hi]) * u.keV
+        sigma = fusion.fusion_cross_section(E, reaction, out_of_range="nan")
+        assert sigma.shape == (3,)
+        assert sigma.unit == u.m**2
+        v = sigma.value
+        assert np.isnan(v[0])
+        assert np.isnan(v[2])
+        assert np.isfinite(v[1])
+        assert v[1] > 0
+
+    @pytest.mark.parametrize("reaction", ENDF_REACTIONS)
+    def test_nan_mode_in_range_matches_default(self, reaction):
+        """Masking must not perturb the in-range values."""
+        c = XS_COEFF[reaction]
+        E = np.linspace(c["E_min_keV"], c["E_max_keV"], 5) * u.keV
+        masked = fusion.fusion_cross_section(E, reaction, out_of_range="nan")
+        assert np.all(np.isfinite(masked.value))
+        assert_quantity_allclose(
+            masked, fusion.fusion_cross_section(E, reaction), rtol=1e-12
+        )
+
+    @pytest.mark.parametrize("reaction", ENDF_REACTIONS)
+    def test_nan_mode_endpoints_are_in_range(self, reaction):
+        """Bounds are inclusive: E_min and E_max evaluate rather than mask."""
+        c = XS_COEFF[reaction]
+        E = np.array([c["E_min_keV"], c["E_max_keV"]]) * u.keV
+        sigma = fusion.fusion_cross_section(E, reaction, out_of_range="nan")
+        assert np.all(np.isfinite(sigma.value))
+
+    @pytest.mark.parametrize("reaction", ENDF_REACTIONS)
+    def test_nan_mode_scalar_out_of_range_returns_nan(self, reaction):
+        """A scalar out-of-range value returns a NaN scalar instead of raising."""
+        c = XS_COEFF[reaction]
+        sigma = fusion.fusion_cross_section(
+            2.0 * c["E_max_keV"] * u.keV, reaction, out_of_range="nan"
+        )
+        assert sigma.isscalar
+        assert np.isnan(sigma.value)
+        assert sigma.unit == u.m**2
+
+    @pytest.mark.parametrize("reaction", ENDF_REACTIONS)
+    def test_nan_mode_scalar_in_range_matches_default(self, reaction):
+        """A scalar in-range value stays scalar and equals the default result."""
+        c = XS_COEFF[reaction]
+        mid = 0.5 * (c["E_min_keV"] + c["E_max_keV"]) * u.keV
+        masked = fusion.fusion_cross_section(mid, reaction, out_of_range="nan")
+        assert masked.isscalar
+        assert_quantity_allclose(
+            masked, fusion.fusion_cross_section(mid, reaction), rtol=1e-12
+        )
+
+    def test_nan_mode_all_out_of_range_warns(self):
+        c = XS_COEFF["D(t,n)A"]
+        E = np.array([2.0, 4.0]) * c["E_max_keV"] * u.keV
+        with pytest.warns(UserWarning, match="all NaN"):
+            sigma = fusion.fusion_cross_section(E, "D(t,n)A", out_of_range="nan")
+        assert np.all(np.isnan(sigma.value))
+
+    def test_nan_mode_preserves_2d_shape(self):
+        """Masking is elementwise and keeps a non-1D input's shape."""
+        c = XS_COEFF["D(t,n)A"]
+        lo, hi = c["E_min_keV"], c["E_max_keV"]
+        mid = 0.5 * (lo + hi)
+        grid = np.array([[0.5 * lo, mid], [mid, 2.0 * hi]]) * u.keV
+        sigma = fusion.fusion_cross_section(grid, "D(t,n)A", out_of_range="nan")
+        assert sigma.shape == (2, 2)
+        v = sigma.value
+        assert np.isnan(v[0, 0])
+        assert np.isnan(v[1, 1])
+        assert np.isfinite(v[0, 1])
+        assert np.isfinite(v[1, 0])
+
+
+class TestReactivityOutOfRange:
+    """``out_of_range="nan"`` masks out-of-range temperatures instead of raising."""
+
+    def test_unknown_policy_raises(self):
+        with pytest.raises(ValueError, match="out_of_range"):
+            fusion.fusion_reactivity(60 * u.keV, "D(t,n)A", out_of_range="drop")
+
+    def test_raise_is_the_default(self):
+        c = RXTY_COEFF["D(t,n)A"]
+        T = np.array([c["T_min_keV"], 2.0 * c["T_max_keV"]]) * u.keV
+        with pytest.raises(ValueError, match="ion temp range"):
+            fusion.fusion_reactivity(T, "D(t,n)A")
+        with pytest.raises(ValueError, match="ion temp range"):
+            fusion.fusion_reactivity(T, "D(t,n)A", out_of_range="raise")
+
+    @pytest.mark.parametrize("reaction", ENDF_REACTIONS)
+    def test_nan_mode_masks_out_of_range(self, reaction):
+        c = RXTY_COEFF[reaction]
+        lo, hi = c["T_min_keV"], c["T_max_keV"]
+        T = np.array([0.5 * lo, 0.5 * (lo + hi), 2.0 * hi]) * u.keV
+        sv = fusion.fusion_reactivity(T, reaction, out_of_range="nan")
+        assert sv.shape == (3,)
+        assert sv.unit == u.m**3 / u.s
+        v = sv.value
+        assert np.isnan(v[0])
+        assert np.isnan(v[2])
+        assert np.isfinite(v[1])
+        assert v[1] > 0
+
+    @pytest.mark.parametrize("reaction", ENDF_REACTIONS)
+    def test_nan_mode_in_range_matches_default(self, reaction):
+        c = RXTY_COEFF[reaction]
+        T = np.linspace(c["T_min_keV"], c["T_max_keV"], 5) * u.keV
+        masked = fusion.fusion_reactivity(T, reaction, out_of_range="nan")
+        assert np.all(np.isfinite(masked.value))
+        assert_quantity_allclose(
+            masked, fusion.fusion_reactivity(T, reaction), rtol=1e-12
+        )
+
+    @pytest.mark.parametrize("reaction", ENDF_REACTIONS)
+    def test_nan_mode_endpoints_are_in_range(self, reaction):
+        c = RXTY_COEFF[reaction]
+        T = np.array([c["T_min_keV"], c["T_max_keV"]]) * u.keV
+        sv = fusion.fusion_reactivity(T, reaction, out_of_range="nan")
+        assert np.all(np.isfinite(sv.value))
+
+    @pytest.mark.parametrize("reaction", ENDF_REACTIONS)
+    def test_nan_mode_scalar_out_of_range_returns_nan(self, reaction):
+        c = RXTY_COEFF[reaction]
+        sv = fusion.fusion_reactivity(
+            2.0 * c["T_max_keV"] * u.keV, reaction, out_of_range="nan"
+        )
+        assert sv.isscalar
+        assert np.isnan(sv.value)
+        assert sv.unit == u.m**3 / u.s
+
+    @pytest.mark.parametrize("reaction", ENDF_REACTIONS)
+    def test_nan_mode_scalar_in_range_matches_default(self, reaction):
+        c = RXTY_COEFF[reaction]
+        mid = 0.5 * (c["T_min_keV"] + c["T_max_keV"]) * u.keV
+        masked = fusion.fusion_reactivity(mid, reaction, out_of_range="nan")
+        assert masked.isscalar
+        assert_quantity_allclose(
+            masked, fusion.fusion_reactivity(mid, reaction), rtol=1e-12
+        )
+
+    def test_nan_mode_all_out_of_range_warns(self):
+        c = RXTY_COEFF["D(t,n)A"]
+        T = np.array([2.0, 4.0]) * c["T_max_keV"] * u.keV
+        with pytest.warns(UserWarning, match="all NaN"):
+            sv = fusion.fusion_reactivity(T, "D(t,n)A", out_of_range="nan")
+        assert np.all(np.isnan(sv.value))
+
+    def test_nan_mode_preserves_2d_shape(self):
+        c = RXTY_COEFF["D(t,n)A"]
+        lo, hi = c["T_min_keV"], c["T_max_keV"]
+        mid = 0.5 * (lo + hi)
+        grid = np.array([[0.5 * lo, mid], [mid, 2.0 * hi]]) * u.keV
+        sv = fusion.fusion_reactivity(grid, "D(t,n)A", out_of_range="nan")
+        assert sv.shape == (2, 2)
+        v = sv.value
+        assert np.isnan(v[0, 0])
+        assert np.isnan(v[1, 1])
+        assert np.isfinite(v[0, 1])
+        assert np.isfinite(v[1, 0])

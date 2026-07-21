@@ -7,6 +7,7 @@ __all__ = ["fusion_cross_section", "fusion_reactivity"]
 # https://scipython.com/blog/nuclear-fusion-cross-sections/
 
 import json
+import warnings
 from functools import cache
 from importlib.resources import as_file, files
 from pathlib import Path
@@ -31,7 +32,7 @@ def _load_reactions(name):
 
 @validate_quantities
 def fusion_cross_section(
-    energy: u.Quantity[u.keV], reaction: str
+    energy: u.Quantity[u.keV], reaction: str, out_of_range: str = "raise"
 ) -> u.Quantity[u.m**2]:
     r"""
     Calculate the fusion cross section :math:`σ(E)` for a two reactant fusion
@@ -203,29 +204,41 @@ def fusion_cross_section(
         raise ValueError(
             f"{reaction!r} is not one of the available reactions: {', '.join(xs_coeff)}"
         )
+    if out_of_range not in ("raise", "nan"):
+        raise ValueError(f"out_of_range must be 'raise' or 'nan', got {out_of_range!r}")
     rxn = xs_coeff[reaction]
 
-    E_keV = energy.to(u.keV).value
-    in_range = bool(
-        np.all(
-            (rxn["E_min_keV"] * u.keV <= energy) & (rxn["E_max_keV"] * u.keV >= energy)
-        )
-    )
-    if not in_range:
+    E_keV = np.asarray(energy.to(u.keV).value, dtype=float)
+    scalar = E_keV.ndim == 0
+    E_arr = np.atleast_1d(E_keV)
+    in_range = (E_arr >= rxn["E_min_keV"]) & (E_arr <= rxn["E_max_keV"])
+
+    if out_of_range == "raise" and not in_range.all():
         raise ValueError(
             f"{energy!r} is not in the {reaction!r} energy range "
             f"of {rxn['E_min_keV']} to {rxn['E_max_keV']} keV"
         )
 
-    sigma = _xs_pade_polynomial(rxn, E_keV) / (
-        E_keV * np.exp(rxn["B_G"] / np.sqrt(E_keV))
+    sigma = np.full(E_arr.shape, np.nan)
+    E_in = E_arr[in_range]
+    sigma[in_range] = _xs_pade_polynomial(rxn, E_in) / (
+        E_in * np.exp(rxn["B_G"] / np.sqrt(E_in))
     )
-    return sigma * u.mbarn
+
+    if out_of_range == "nan" and E_arr.size and np.all(np.isnan(sigma)):
+        warnings.warn(
+            f"all input energies are outside the {reaction!r} range "
+            f"({rxn['E_min_keV']} to {rxn['E_max_keV']} keV); returning all NaN",
+            stacklevel=2,
+        )
+
+    result = sigma[0] if scalar else sigma
+    return result * u.mbarn
 
 
 @validate_quantities
 def fusion_reactivity(
-    ion_temp: u.Quantity[u.keV], reaction: str
+    ion_temp: u.Quantity[u.keV], reaction: str, out_of_range: str = "raise"
 ) -> u.Quantity[u.m**3 / u.s]:
     r"""
     Calculate the Maxwellian-averaged fusion reactivity :math:`⟨σv⟩(T)`
@@ -389,27 +402,38 @@ def fusion_reactivity(
             f"{reaction!r} is not one of the available reactions: "
             f"{', '.join(rxty_coeff)}"
         )
+    if out_of_range not in ("raise", "nan"):
+        raise ValueError(f"out_of_range must be 'raise' or 'nan', got {out_of_range!r}")
     rxn = rxty_coeff[reaction]
 
-    T_keV = ion_temp.to(u.keV).value
-    in_range = bool(
-        np.all(
-            (rxn["T_min_keV"] * u.keV <= ion_temp)
-            & (rxn["T_max_keV"] * u.keV >= ion_temp)
-        )
-    )
-    if not in_range:
+    T_keV = np.asarray(ion_temp.to(u.keV).value, dtype=float)
+    scalar = T_keV.ndim == 0
+    T_arr = np.atleast_1d(T_keV)
+    in_range = (T_arr >= rxn["T_min_keV"]) & (T_arr <= rxn["T_max_keV"])
+
+    if out_of_range == "raise" and not in_range.all():
         raise ValueError(
             f"{ion_temp!r} is not in the {reaction!r} ion temp range "
             f"of {rxn['T_min_keV']} to {rxn['T_max_keV']} keV"
         )
 
-    Theta = _rxty_pade_polynomial(rxn, T_keV)
+    sv = np.full(T_arr.shape, np.nan)
+    T_in = T_arr[in_range]
+    Theta = _rxty_pade_polynomial(rxn, T_in)
     xi = ((rxn["B_G"] ** 2) / (4 * Theta)) ** (1 / 3)
+    sv[in_range] = (
+        np.sqrt(xi / (rxn["m_r_c2"] * T_in**3)) * rxn["C1"] * Theta * np.exp(-3 * xi)
+    )
 
-    rcty = np.sqrt(xi / (rxn["m_r_c2"] * T_keV**3))
-    rcty *= rxn["C1"] * Theta * (np.exp(-3 * xi))
-    return rcty * (u.cm**3 / u.s)
+    if out_of_range == "nan" and T_arr.size and np.all(np.isnan(sv)):
+        warnings.warn(
+            f"all input temperatures are outside the {reaction!r} range "
+            f"({rxn['T_min_keV']} to {rxn['T_max_keV']} keV); returning all NaN",
+            stacklevel=2,
+        )
+
+    result = sv[0] if scalar else sv
+    return result * (u.cm**3 / u.s)
 
 
 def _xs_pade_polynomial(rxn, E):
