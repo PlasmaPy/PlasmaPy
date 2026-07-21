@@ -456,9 +456,10 @@ class TestCrossSectionOutOfRange:
     def test_nan_mode_scalar_out_of_range_returns_nan(self, reaction):
         """A scalar out-of-range value returns a NaN scalar instead of raising."""
         c = XS_COEFF[reaction]
-        sigma = fusion.fusion_cross_section(
-            2.0 * c["E_max_keV"] * u.keV, reaction, out_of_range="nan"
-        )
+        with pytest.warns(UserWarning, match="all NaN"):
+            sigma = fusion.fusion_cross_section(
+                2.0 * c["E_max_keV"] * u.keV, reaction, out_of_range="nan"
+            )
         assert sigma.isscalar
         assert np.isnan(sigma.value)
         assert sigma.unit == u.m**2
@@ -545,9 +546,10 @@ class TestReactivityOutOfRange:
     @pytest.mark.parametrize("reaction", ENDF_REACTIONS)
     def test_nan_mode_scalar_out_of_range_returns_nan(self, reaction):
         c = RXTY_COEFF[reaction]
-        sv = fusion.fusion_reactivity(
-            2.0 * c["T_max_keV"] * u.keV, reaction, out_of_range="nan"
-        )
+        with pytest.warns(UserWarning, match="all NaN"):
+            sv = fusion.fusion_reactivity(
+                2.0 * c["T_max_keV"] * u.keV, reaction, out_of_range="nan"
+            )
         assert sv.isscalar
         assert np.isnan(sv.value)
         assert sv.unit == u.m**3 / u.s
