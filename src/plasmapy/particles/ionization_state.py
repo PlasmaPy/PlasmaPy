@@ -448,7 +448,7 @@ class IonizationState:
                 np.all(np.isnan(self.ionic_fractions))
                 and np.all(np.isnan(other.ionic_fractions)),
             ],
-        )  # ty:ignore[no-matching-overload]
+        )
 
         return np.all(
             [same_element, same_isotope, same_T_e, same_n_elem, same_fractions],
@@ -669,7 +669,7 @@ class IonizationState:
             raise TypeError(kappa_errmsg)
         if value <= 1.5:
             raise ValueError(kappa_errmsg)
-        self._kappa: float = np.real(value)
+        self._kappa: float = np.real(value)  # ty:ignore[invalid-assignment]
 
     @property
     def element(self) -> str:
