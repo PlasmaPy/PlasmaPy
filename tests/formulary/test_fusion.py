@@ -9,6 +9,7 @@ import pytest
 from astropy.tests.helper import assert_quantity_allclose
 
 from plasmapy.formulary import fusion
+from plasmapy.particles import Particle
 
 #: Reactions with Bosch-Hale Padé coefficients (Tables IV and VII).
 BH_REACTIONS = ("D(t,n)A", "3He(d,p)A", "D(d,p)T", "D(d,n)3He")
@@ -583,3 +584,87 @@ class TestReactivityOutOfRange:
         assert np.isnan(v[1, 1])
         assert np.isfinite(v[0, 1])
         assert np.isfinite(v[1, 0])
+
+
+NUCLIDE = {
+    "p": "p+",
+    "d": "deuteron",
+    "D": "deuteron",
+    "t": "triton",
+    "T": "triton",
+    "3He": "He-3 2+",
+    "11B": "B-11 5+",
+}
+
+
+def _cm_over_lab(reaction):
+    target = Particle(NUCLIDE[reaction.split("(")[0]])
+    projectile = Particle(NUCLIDE[reaction.split("(")[1].split(",")[0]])
+    return (target.mass / (target.mass + projectile.mass)).value
+
+
+#: Reactions with identical projectile and target, so E_cm = E_lab / 2 exactly.
+SYMMETRIC_REACTIONS = ("D(d,p)T", "D(d,n)3He", "3He(3He,2p)A", "T(t,2n)A")
+
+
+class TestCrossSectionReferenceFrame:
+    """``reference_frame="lab"`` maps a lab projectile energy to the CM energy."""
+
+    def test_cm_is_the_default(self):
+        """Omitting reference_frame equals asking for the CM frame."""
+        default = fusion.fusion_cross_section(300 * u.keV, "D(t,n)A")
+        cm = fusion.fusion_cross_section(300 * u.keV, "D(t,n)A", reference_frame="CM")
+        assert_quantity_allclose(default, cm, rtol=1e-12)
+
+    def test_unknown_frame_raises(self):
+        with pytest.raises(ValueError, match="reference_frame"):
+            fusion.fusion_cross_section(300 * u.keV, "D(t,n)A", reference_frame="beam")
+
+    @pytest.mark.parametrize("reaction", ENDF_REACTIONS)
+    def test_lab_matches_hand_converted_cm(self, reaction):
+        """sigma(E_lab, lab) == sigma(E_lab * m_X/(m_X+m_a), CM)."""
+        ratio = _cm_over_lab(reaction)
+        c = XS_COEFF[reaction]
+        # a CM energy safely inside the window, and the lab energy mapping to it
+        E_cm = c["E_min_keV"] + 0.25 * (c["E_max_keV"] - c["E_min_keV"])
+        E_lab = E_cm / ratio
+        lab = fusion.fusion_cross_section(
+            E_lab * u.keV, reaction, reference_frame="lab"
+        )
+        cm = fusion.fusion_cross_section(E_lab * ratio * u.keV, reaction)
+        assert_quantity_allclose(lab, cm, rtol=1e-10)
+
+    @pytest.mark.parametrize("reaction", SYMMETRIC_REACTIONS)
+    def test_symmetric_reactions_halve_the_energy(self, reaction):
+        """Equal masses give E_cm = E_lab / 2 exactly."""
+        c = XS_COEFF[reaction]
+        E_cm = 0.5 * (c["E_min_keV"] + c["E_max_keV"]) * u.keV
+        lab = fusion.fusion_cross_section(2 * E_cm, reaction, reference_frame="lab")
+        cm = fusion.fusion_cross_section(E_cm, reaction)
+        assert_quantity_allclose(lab, cm, rtol=1e-10)
+
+    def test_lab_lands_at_lower_cm_energy(self):
+        """m_X/(m_X+m_a) < 1, so a lab energy evaluates at a lower CM energy."""
+        ratio = _cm_over_lab("D(t,n)A")
+        assert 0 < ratio < 1
+        E = 120 * u.keV
+        lab = fusion.fusion_cross_section(E, "D(t,n)A", reference_frame="lab")
+        cm_shifted = fusion.fusion_cross_section(E * ratio, "D(t,n)A")
+        assert_quantity_allclose(lab, cm_shifted, rtol=1e-10)
+
+    def test_lab_differs_from_cm_when_masses_differ(self):
+        """For unequal masses the frame choice actually changes the result."""
+        E = 100 * u.keV
+        lab = fusion.fusion_cross_section(E, "3He(d,p)A", reference_frame="lab")
+        cm = fusion.fusion_cross_section(E, "3He(d,p)A")
+        assert abs(lab - cm) > 1e-6 * cm
+
+    def test_lab_preserves_array_shape(self):
+        ratio = _cm_over_lab("D(t,n)A")
+        E_cm = np.array([10.0, 60.0, 120.0])
+        E_lab = (E_cm / ratio) * u.keV
+        lab = fusion.fusion_cross_section(E_lab, "D(t,n)A", reference_frame="lab")
+        assert lab.shape == E_lab.shape
+        assert_quantity_allclose(
+            lab, fusion.fusion_cross_section(E_cm * u.keV, "D(t,n)A"), rtol=1e-10
+        )

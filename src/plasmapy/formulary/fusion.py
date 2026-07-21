@@ -15,6 +15,7 @@ from pathlib import Path
 import astropy.units as u
 import numpy as np
 
+from plasmapy.particles import Particle
 from plasmapy.utils.decorators import validate_quantities
 
 """
@@ -32,7 +33,10 @@ def _load_reactions(name):
 
 @validate_quantities
 def fusion_cross_section(
-    energy: u.Quantity[u.keV], reaction: str, out_of_range: str = "raise"
+    energy: u.Quantity[u.keV],
+    reaction: str,
+    out_of_range: str = "raise",
+    reference_frame: str = "CM",
 ) -> u.Quantity[u.m**2]:
     r"""
     Calculate the fusion cross section :math:`σ(E)` for a two reactant fusion
@@ -47,8 +51,10 @@ def fusion_cross_section(
     Parameters
     ----------
     energy : `~astropy.units.Quantity`
-        The center-of-mass kinetic energy of the reactants, in units
-        convertible to keV.
+        The kinetic energy of the reactants, in units convertible to keV.
+        Interpreted in the frame set by ``reference_frame``: the center-of-mass
+        energy of the reactants when ``reference_frame="CM"`` (default), or the
+        lab-frame kinetic energy of the projectile when ``reference_frame="lab"``.
 
     reaction : `str`
         The fusion reaction to evaluate. Must be one of the reaction keys
@@ -66,6 +72,17 @@ def fusion_cross_section(
           *every* input energy is out of range the result is entirely
           NaN and a warning is issued.
 
+    reference_frame : `str`, optional
+        The frame in which ``energy`` is supplied, using the ``X(a,b)Y`` naming
+        of ``reaction`` (target ``X``, projectile ``a``). Must be one of:
+
+        - ``"CM"`` (default) — ``energy`` is the center-of-mass energy and is
+          used directly.
+        - ``"lab"`` — ``energy`` is the lab-frame kinetic energy of projectile
+          ``a`` on a stationary target ``X``, converted to the center-of-mass
+          energy via :math:`E_\mathrm{cm} = E_\mathrm{lab}\, m_X / (m_X + m_a)`
+          before evaluation, with nuclear masses from `plasmapy.particles`.
+
     Returns
     -------
     sigma : `~astropy.units.Quantity`
@@ -76,10 +93,11 @@ def fusion_cross_section(
     Raises
     ------
     `ValueError`
-        If ``reaction`` has no available coefficients; if ``out_of_range``
-        is not ``"raise"`` or ``"nan"``; or if ``out_of_range="raise"``
-        and any element of ``energy`` falls outside the validity range for
-        ``reaction``.
+        If ``reaction`` has no available coefficients; if ``out_of_range`` is
+        not ``"raise"`` or ``"nan"``; if ``reference_frame`` is not ``"CM"`` or
+        ``"lab"``; or if ``out_of_range="raise"`` and any element of ``energy``
+        (after conversion to the center-of-mass frame) lies outside the valid
+        range for ``reaction``.
 
     `~astropy.units.UnitTypeError`
         If ``energy`` does not have units convertible to keV.
@@ -229,9 +247,30 @@ def fusion_cross_section(
         )
     if out_of_range not in ("raise", "nan"):
         raise ValueError(f"out_of_range must be 'raise' or 'nan', got {out_of_range!r}")
+    if reference_frame not in ("CM", "lab"):
+        raise ValueError(
+            f"reference_frame must be 'CM' or 'lab', got {reference_frame!r}"
+        )
     rxn = xs_coeff[reaction]
 
     E_keV = np.asarray(energy.to(u.keV).value, dtype=float)
+
+    if reference_frame == "lab":
+        nuclide = {
+            "p": "p+",
+            "d": "deuteron",
+            "D": "deuteron",
+            "t": "triton",
+            "T": "triton",
+            "3He": "He-3 2+",
+            "11B": "B-11 5+",
+        }
+        target = Particle(nuclide[reaction.split("(", maxsplit=1)[0]])  # X, at rest
+        projectile = Particle(
+            nuclide[reaction.split("(")[1].split(",", maxsplit=1)[0]]
+        )  # a, the beam
+        E_keV = E_keV * (target.mass / (target.mass + projectile.mass)).value
+
     scalar = E_keV.ndim == 0
     E_arr = np.atleast_1d(E_keV)
     in_range = (E_arr >= rxn["E_min_keV"]) & (E_arr <= rxn["E_max_keV"])
@@ -261,7 +300,9 @@ def fusion_cross_section(
 
 @validate_quantities
 def fusion_reactivity(
-    ion_temp: u.Quantity[u.keV], reaction: str, out_of_range: str = "raise"
+    ion_temp: u.Quantity[u.keV],
+    reaction: str,
+    out_of_range: str = "raise",
 ) -> u.Quantity[u.m**3 / u.s]:
     r"""
     Calculate the Maxwellian-averaged fusion reactivity :math:`⟨σv⟩(T)`
