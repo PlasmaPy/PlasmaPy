@@ -13,22 +13,23 @@ Introduction
 ============
 
 Classical transport theory is derived by using kinetic theory to close
-the plasma two-fluid (electron and ion fluid) equations in the
+the plasma two-fluid (electrons and ions) equations in the
 collisional limit. The first complete model in this form was done by
 :cite:t:`braginskii:1965`.
 
 As described in the next section, this module uses fitting functions
 from the literature
-:cite:p:`braginskii:1965,spitzer:1953,spitzer:1962,epperlein:1986,ji:2013`
-to calculate the transport coefficients, which are the resistivity,
+:cite:p:`spitzer:1953, spitzer:1962, braginskii:1965, epperlein:1986, ji:2013`
+to calculate classical transport coefficients: the resistivity,
 thermoelectric conductivity, thermal conductivity, and viscosity.
 
-Keep in mind the following assumptions under which the transport equations
-are derived:
+The transport coefficients are derived with the following assumptions.
 
-1. The plasma is fully ionized, only consisting of ions and electrons.
+1. The plasma is fully ionized and consists only of ions and electrons.
    Neutral atoms are neglected.
-2. Turbulent transport does not dominate.
+
+2. Turbulent transport is not significant.
+
 3. The velocity distribution is close to Maxwellian. This implies:
 
     a) Collisional mean free path ≪ gradient scale length along field.
@@ -36,10 +37,12 @@ are derived:
 
 4. The plasma is highly collisional: collisional frequency ≫ gyrofrequency.
 
-When classical transport is not valid, e.g. due to the presence of strong
-gradients or turbulent transport, the transport is significantly increased
-by these other effects. Thus classical transport often serves as a lower
-bound on the losses / transport encountered in a plasma.
+When strong gradients or turbulence are present, transport is
+significantly increased over classical values. Classical transport
+often serves as a lower bound on losses/transport in a plasma.
+
+The plasma physics of classical transport theory has been reviewed by
+:cite:t:`balescu:1988` and :cite:t:`helander:2002`.
 
 Transport Variables
 ===================
@@ -54,68 +57,88 @@ the following links to documentation of methods of |ClassicalTransport|.
 * `~plasmapy.formulary.braginskii.ClassicalTransport.ion_viscosity`
 * `~plasmapy.formulary.braginskii.ClassicalTransport.electron_viscosity`
 
-Using the module
-================
+Using this module
+=================
 
-Given that many of the transport variables share a lot of the same computation
-and many are often needed to be calculated simultaneously, this module provides
-a |ClassicalTransport| class that can be initialized once with all of the
-variables necessary for calculation. It then provides all of the functionality
-as methods (please refer to its documentation).
+Given that many of the transport variables share some calculations
+and often many coefficients need to be calculated simultaneously, this
+module provides the |ClassicalTransport| class that can be initialized
+once with all the necessary variables. |ClassicalTransport| then
+provides all the transport coefficients as attributes.
 
-If you only wish to calculate a single transport variable (or if just don't
-like object-oriented interfaces), we have also provided wrapper functions in
-the main module namespace that use |ClassicalTransport| under the hood (see below,
-in the Functions section).
-
-.. warning::
-
-    The API for this package is not yet stable.
+If you only wish to calculate a single transport coefficient, this
+module provides wrapper functions that use |ClassicalTransport| under
+the hood.
 
 Classical transport models
 ==========================
 
-In this section, we present a broad overview of classical transport models
-implemented within this module.
+This section summarizes the classical transport models implemented in
+this module.
 
-Braginskii :cite:p:`braginskii:1965`
-------------------------------------
+Braginskii
+----------
 
-The original Braginskii treatment as presented in the highly cited review
-paper from 1965. Coefficients are found from expansion of the kinetic
-equation in Laguerre polynomials, truncated at the second term in their
-series expansion (\ :math:`k = 2`\ ). This theory allows for arbitrary Hall parameter
-and include results for Z = 1, 2, 3, 4, and infinity (the case of Lorentz
-gas completely stripped of electrons, and the stationary ion approximation).
+The :cite:t:`braginskii:1965` coefficients are found from expansion of
+the kinetic equation in :wikipedia:`Laguerre polynomials`, truncated at
+the second term in their series expansion (\ :math:`k = 2`\ ). This
+theory allows for arbitrary Hall parameters and include results for
+:math:`Z ∈ \{1, 2, 3, 4, ∞\}`, where :math:`Z→∞` corresponds to a
+Lorentz gas completely stripped of electrons and the stationary ion
+approximation. Inaccuracies in this model were later corrected by
+:cite:t:`epperlein:1986` and :cite:t:`ji:2013`.
 
-Spitzer-Harm :cite:p:`spitzer:1953,spitzer:1962`
-------------------------------------------------
+Spitzer-Härm
+------------
 
-These coefficients were obtained from a numerical solution of the
-Fokker-Planck equation. They give one of the earliest and most accurate
-(in the Fokker-Planck sense) results for electron transport in simple
-plasma. They principally apply in the unmagnetized / parallel field
-case, although for resistivity Spitzer also calculated a famous result
-for a strong perpendicular magnetic field. Results are for Z = 1, 2, 4,
-16, and infinity (Lorentz gas / stationary ion approximation).
+:cite:t:`spitzer:1953` and :cite:t:`spitzer:1962` find transport
+coefficients by numerically solving the
+:wikipedia:`Fokker-Planck equation`. These papers provide one of the
+earliest and most accurate Fokker-Planck results for electron transport
+in a simple plasma. These coefficients primarily apply in the
+unmagnetized and parallel magnetic field cases, while also calculating
+the resistivity for a strong perpendicular magnetic field. They provided
+results for :math:`Z ∈ \{1, 2, 4, 16, ∞\}`, where :math:`Z → ∞`
+corresponds to a Lorentz gas with stationary ions.
 
-Epperlein-Haines :cite:p:`epperlein:1986`
------------------------------------------
+Epperlein-Haines
+----------------
 
-Not yet implemented.
+:cite:t:`epperlein:1986` provides transport coefficients in a magnetized
+plasma through direct numerical solution of the Fokker-Planck equation
+in order to correct inaccuracies in the :cite:t:`braginskii:1965` model.
 
-Ji-Held :cite:p:`ji:2013`
--------------------------
+.. note::
 
-This is a modern treatment of the classical transport problem that has been
-carried out with laudable care. It allows for arbitrary hall parameter and
-arbitrary :math:`Z` for all coefficients. Similar to the Epperlein-Haines model,
-it corrects some known inaccuracies in the original Braginskii results,
-notably the asymptotic behavior of alpha-cross and beta_perp as Hall →
-+infinity. It also studies effects of electron collisions in the ion
+   The Epperlein-Haines model has not yet been implemented (see
+   :issue:`311`).
+
+Ji-Held
+-------
+
+:cite:t:`ji:2013` provide a modern careful treatment of the classical
+transport problem, allowing for arbitrary Hall parameter and arbitrary
+:math:`Z` for all coefficients. Similar to the :cite:t:`epperlein:1986`
+model, Ji & Held correct some known inaccuracies in the
+:cite:t:`braginskii:1965` results, including the asymptotic behavior of
+:math:`α_∧` and :math:`β_⟂` as the Hall parameter goes to infinity.
+This paper also studies effects of electron collisions in the ion
 terms, which all other treatments have not. To neglect electron-electron
-collisions, leave :math:`μ = 0`\ . To consider them, specify mu and theta.
+collisions, leave :math:`μ = 0`\ . To consider them, specify ``mu`` and
+``theta``.
 """
+
+# Ji & Held (2013) was followed up with by an erratum, along with another
+# paper that relaxed some artificial assumptions, that might not be
+# accounted for in the current implementation. For details, see
+# https://github.com/PlasmaPy/PlasmaPy/issues/3277
+
+# Additional classical transport models that might warrant being
+# implemented include:
+#
+# - Sadler et al. (2021): https://github.com/PlasmaPy/PlasmaPy/issues/3278
+# - Davies et al. (2021): https://doi.org/10.1063/5.0023445
+# - Simakov (2022): https://doi.org/10.1063/5.0080151
 
 __all__ = [
     "ClassicalTransport",
@@ -182,7 +205,7 @@ class ClassicalTransport:
         included.  Different theories support different values of
         ``Z``. For the original Braginskii model, ``Z`` can be any of
         [1, 2, 3, 4, infinity]. The Ji-Held model supports arbitrary
-        ``Z``. Average ionization states ``Z_mean`` can be input using
+        ``Z``. Average ionization states ``Z`` can be input using
         this input and the Ji-Held model, although doing so may neglect
         effects caused by multiple ion populations.
 
@@ -323,7 +346,7 @@ class ClassicalTransport:
         m_i: u.Quantity[u.kg] = None,
         Z=None,
         B: u.Quantity[u.T] = 0.0 * u.T,
-        model: str = "Braginskii",
+        model: str = "braginskii",
         field_orientation: str = "parallel",
         coulomb_log_ei=None,
         V_ei=None,
