@@ -52,12 +52,15 @@ Glossary
       charge. The charge number of an ion or neutral particle is usually
       denoted as ``Z``.
 
+   collective behavior
+      In |plasma| science, collective behavior refers to particles being
+      able to interact with each other from a distance.
+
    fit-function
    fit-functions
       Any instance of a subclass of
       `~plasmapy.analysis.fit_functions.AbstractFitFunction`.  Also see
       module `~plasmapy.analysis.fit_functions`.
-
 
    force-free
       In plasma physics, a **force-free magnetic field** is a magnetic
@@ -67,6 +70,24 @@ Glossary
       approximated in the Sun's corona.
 
       For more details, visit the `Wikipedia page <https://en.wikipedia.org/wiki/Force-free_magnetic_field>`_.
+
+   gas
+      A compressible fluid consisting of widely-separated particles that
+      interact with each other predominantly through short-range binary
+      collisions.
+
+      Nearly all particles in a gas have a neutral net electric charge,
+      and therefore do not exert the long-range electromagnetic forces
+      on each other necessary for the fluid to exhibit
+      |collective behavior| as in a |plasma|.
+
+      .. caution::
+
+         In astronomy, the term *gas* is commonly used to refer to
+         any astrophysical fluid, regardless of whether the fluid is in
+         the gas or plasma state of matter. The term *ionized gas* is
+         often used as a synonym for plasma despite that plasma and gas
+         are distinct states of matter.
 
    integration test
       An **integration test** verifies that multiple software
@@ -156,6 +177,43 @@ Glossary
 
       For more complete details, refer to |ParticleListLike|.
 
+   plasma
+      A fluid containing an appreciable fraction of mobile charged
+      particles. Plasma is usually |quasineutral|. In contrast to
+      :term:`gas`, plasma exhibits |collective behavior| resulting from
+      each charged particle influencing and being influenced by many
+      other charged particles.
+
+      Plasma typically contains ions and unbound electrons as the mobile
+      charged particles, and may also contain other particles. A plasma
+      containing neutrally charged atoms and/or molecules is referred to
+      as a *partially ionized plasma*. A *dusty plasma* contains charged
+      particulates with sizes ranging from roughly 1 nm to 10 μm. An
+      *electron-positron* plasma contains positrons (rather than ions)
+      as the positively charged particles. A plasma that is not
+      |quasineutral| is referred to as a *non-neutral plasma*.
+
+      More generally, *plasma* can refer to any fluid containing
+      particles that exhibits |collective behavior|, such as
+      *quark-gluon plasma*.
+
+      .. important::
+
+         Gas and plasma are distinct states of matter with qualitatively
+         different behavior. In a gas, particles interact with each
+         other via short-range binary collisions. In a plasma, charged
+         particles exert long-range forces on many other charged
+         particles, resulting in collective phenomena that do not occur
+         in a gas. Referring to a plasma as "gas" or "ionized gas"
+         provides us with a misleading mental model.
+
+   quasineutral
+      A plasma is *quasineutral* when the net charge density is
+      approximately zero due to Debye screening.
+
+      Plasma that is not quasineutral is referred to as a non-neutral
+      plasma.
+
    real number
       Any numeric type that represents a real number. This could include
       a `float`, `int`, a dimensionless |Quantity|, or any of the
@@ -196,3 +254,8 @@ Glossary
 
 .. _`keyword arguments`: https://docs.python.org/3/glossary.html#term-argument
 .. _`positional arguments`: https://docs.python.org/3/glossary.html#term-argument
+
+.. The definitions of "plasma", "gas", and "collective behavior" in this
+   file are made available under either PlasmaPy's license or the
+   CC0 1.0 Universal license, which is available on the World Wide Web
+   at: https://creativecommons.org/publicdomain/zero/1.0
