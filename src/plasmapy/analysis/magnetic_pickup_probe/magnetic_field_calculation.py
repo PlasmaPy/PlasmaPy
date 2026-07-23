@@ -17,7 +17,7 @@ def magnetic_field_calculation(
     Take the voltage output of a magnetic pickup probe (Bdot probe) and
     time base and return the associated array of the magnetic field as
     a function of time.
-
+    
     Parameters
     ----------
     bdot_voltage: `numpy.ndarray`
