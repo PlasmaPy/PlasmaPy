@@ -238,7 +238,7 @@ def fusion_cross_section(
     --------
     >>> import astropy.units as u
     >>> fusion_cross_section(100 * u.keV, "D(t,n)A")
-    <Quantity 3427.245 m2>
+    <Quantity 3.42724517e-28 m2>
     """
     xs_coeff = _load_reactions("xs_pade_polynomial_coefficients.json")
     if reaction not in xs_coeff:
@@ -270,6 +270,7 @@ def fusion_cross_section(
         # Convert lab-frame projectile energy to the CM energy via the mass ratio.
         E_keV = E_keV * (target.mass / (target.mass + projectile.mass)).value
 
+    # True if a single temperature was passed, used to return scalor instead of 1 element array.
     scalar = E_keV.ndim == 0
     E_arr = np.atleast_1d(E_keV)
     in_range = (E_arr >= rxn["E_min_keV"]) & (E_arr <= rxn["E_max_keV"])
@@ -495,6 +496,7 @@ def fusion_reactivity(
     rxn = rxty_coeff[reaction]
 
     T_keV = np.asarray(ion_temp.to(u.keV).value, dtype=float)
+    # True if a single temperature was passed, used to return scalor instead of 1 element array.
     scalar = T_keV.ndim == 0
     T_arr = np.atleast_1d(T_keV)
     in_range = (T_arr >= rxn["T_min_keV"]) & (T_arr <= rxn["T_max_keV"])
@@ -526,6 +528,7 @@ def fusion_reactivity(
     return result * (u.cm**3 / u.s)
 
 
+# Bosch and Hale equation (9)
 def _xs_pade_polynomial(rxn, E):
     r"""
     Evaluate the Bosch-Hale Padé approximant for the S-function.
@@ -537,6 +540,7 @@ def _xs_pade_polynomial(rxn, E):
     return S_vals
 
 
+# Bosch and Hale equation (13)
 def _rxty_pade_polynomial(rxn, T):
     r"""
     Evaluate the :math:`\theta(T)` Padé approximant for the Bosch-Hale
