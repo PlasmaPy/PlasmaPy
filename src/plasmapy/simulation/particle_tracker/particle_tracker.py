@@ -1323,7 +1323,8 @@ class ParticleTracker:
         p = self.m * gamma * current_speeds
 
         stopping_power, _dS_dx = self._stopping_power
-        dp = -np.multiply(stopping_power, self.dt)
+        dp = -stopping_power[tracked_particles] * self.dt
+
         p_new = p + dp
         gamma_new = np.sqrt(1 + p_new**2 / (self.m * _c.si.value) ** 2)
         new_speeds = p_new / (gamma_new * self.m)
@@ -1418,6 +1419,9 @@ class ParticleTracker:
         # Calculate an appropriate timestep (uniform, synchronized)
         self.dt = self._update_time()
 
+        if self._do_scattering:
+            self._update_velocity_scattering()
+
         # Update velocities to reflect stopping
         if self._do_stopping:
             self._update_velocity_stopping()
@@ -1440,9 +1444,6 @@ class ParticleTracker:
                 )
 
                 self._raised_relativity_warning = True
-
-        if self._do_scattering:
-            self._update_velocity_scattering()
 
         # Update this array, which will have zero elements at the end
         # only for particles that never entered any grid
@@ -1494,7 +1495,7 @@ class ParticleTracker:
         Binary array for each particle indicating whether it is currently
         on ANY grid.
         """
-        return np.sum(self.particles_on_grid, axis=-1) > 0
+        return np.sum(self.particles_on_grid, axis=0) > 0
 
     @cached_property
     def vmax(self) -> float:
