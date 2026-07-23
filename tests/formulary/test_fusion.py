@@ -588,20 +588,10 @@ class TestReactivityOutOfRange:
         assert np.isfinite(v[1, 0])
 
 
-_NUCLIDE = {
-    "p": "p+",
-    "d": "deuteron",
-    "D": "deuteron",
-    "t": "triton",
-    "T": "triton",
-    "3He": "He-3 2+",
-    "11B": "B-11 5+",
-}
-
-
 def _cm_over_lab(reaction):
-    target = Particle(_NUCLIDE[reaction.split("(")[0]])
-    projectile = Particle(_NUCLIDE[reaction.split("(")[1].split(",")[0]])
+    targ, _, rest = reaction.lower().partition("(")
+    target = Particle(fusion._NUCLIDES[targ])
+    projectile = Particle(fusion._NUCLIDES[rest.partition(",")[0]])
     return (target.mass / (target.mass + projectile.mass)).value
 
 
@@ -670,3 +660,14 @@ class TestCrossSectionReferenceFrame:
         assert_quantity_allclose(
             lab, fusion.fusion_cross_section(E_cm * u.keV, "D(t,n)A"), rtol=1e-10
         )
+
+    def test_unmapped_species_raises_value_error(self, monkeypatch):
+        """
+        A reaction present in the coefficient file but absent from the nuclide
+        map must fail the validator, not fall through to a bare ``KeyError``
+        on the dict index.
+        """
+        patched = {**_XS_COEFF, "Li(y,n)A": _XS_COEFF["D(t,n)A"]}
+        monkeypatch.setattr(fusion, "_load_reactions", lambda _name: patched)
+        with pytest.raises(ValueError, match=r"No nuclide mapping for 'li'"):
+            fusion.fusion_cross_section(300 * u.keV, "Li(y,n)A", reference_frame="lab")

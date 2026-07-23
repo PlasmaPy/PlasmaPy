@@ -24,6 +24,14 @@ Opening Bosch and Hale Tables IV and Json Files
 
 _DATA_DIR = files("plasmapy.utils.data")
 
+_NUCLIDES = {
+    "p": "p+",
+    "d": "deuteron",
+    "t": "triton",
+    "3he": "He-3 2+",
+    "11b": "B-11 5+",
+}
+
 
 @cache
 def _load_reactions(name):
@@ -100,9 +108,11 @@ def fusion_cross_section(
     `ValueError`
         If ``reaction`` has no available coefficients; if ``out_of_range`` is
         not ``"raise"`` or ``"nan"``; if ``reference_frame`` is not ``"CM"`` or
-        ``"lab"``; or if ``out_of_range="raise"`` and any element of ``energy``
-        (after conversion to the center-of-mass frame) lies outside the valid
-        range for ``reaction``.
+        ``"lab"``; if ``reference_frame="lab"`` and either reactant of
+        ``reaction`` has no entry in the internal nuclide map, so that its mass
+        cannot be looked up; or if ``out_of_range="raise"`` and any element of
+        ``energy`` (after conversion to the center-of-mass frame) lies outside
+        the valid range for ``reaction``.
 
     `~astropy.units.UnitTypeError`
         If ``energy`` does not have units convertible to keV.
@@ -261,17 +271,18 @@ def fusion_cross_section(
     E_keV = np.asarray(energy.to(u.keV).value, dtype=float)
 
     if reference_frame == "lab":
-        nuclide = {
-            "p": "p+",
-            "d": "deuteron",
-            "D": "deuteron",
-            "t": "triton",
-            "T": "triton",
-            "3He": "He-3 2+",
-            "11B": "B-11 5+",
-        }
-        target = Particle(nuclide[reaction.split("(", maxsplit=1)[0]])
-        projectile = Particle(nuclide[reaction.split("(")[1].split(",", maxsplit=1)[0]])
+        targ, _, rest = reaction.lower().partition("(")
+        proj = rest.partition(",")[0]
+
+        try:
+            target = Particle(_NUCLIDES[targ])
+            projectile = Particle(_NUCLIDES[proj])
+        except KeyError as exc:
+            raise ValueError(
+                f"No nuclide mapping for {exc.args[0]!r} in reaction {reaction!r}. "
+                f"Add it to _NUCLIDES; known species are {sorted(_NUCLIDES)}."
+            ) from exc
+
         # Convert lab-frame projectile energy to the CM energy via the mass ratio.
         E_keV = E_keV * (target.mass / (target.mass + projectile.mass)).value
 
