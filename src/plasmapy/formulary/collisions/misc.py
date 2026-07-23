@@ -175,7 +175,6 @@ _f_mol_tabulated = [
 ]
 
 _ϑ_tabulated = np.asarray(_ϑ_tabulated)
-_ϑ_tabulated /= np.sqrt(2)  # Bethe has root 2, Gottschalk does not
 
 _f_mol_tabulated = np.asarray(_f_mol_tabulated)
 _f_mol_spline = make_interp_spline(_ϑ_tabulated, _f_mol_tabulated)
@@ -809,8 +808,8 @@ def _calculate_characteristic_angles(
 
     x_c_squared = []
     for T_0, T_f in zip(
-        incident_energy,
-        transmitted_energy,
+        np.atleast_1d(incident_energy),
+        np.atleast_1d(transmitted_energy),
         strict=True,
     ):
         integral = x_c_interpolator.sol(T_f.to(u.MeV).value) - x_c_interpolator.sol(
@@ -841,7 +840,10 @@ def _calculate_characteristic_angles(
 
     ln_x_a_squared = []
     for x_c_squared_i, T_0_i, T_f_i in zip(
-        x_c_squared, incident_energy, transmitted_energy, strict=True
+        x_c_squared,
+        np.atleast_1d(incident_energy),
+        np.atleast_1d(transmitted_energy),
+        strict=True,
     ):
         integral = ln_x_a_squared_interpolator.sol(
             T_f_i.to(u.MeV).value
@@ -900,20 +902,35 @@ def _vectorized_Newton_root_finder(func, *func_args, x0, max_iters=5):
     return x_i
 
 
-def _wrapped_Moliere_angular_distribution(theta_prime_unit, B, use_f_mol_interpolator):
-    def Moliere_angular_distribution(theta):
+def _wrapped_Moliere_angular_distribution(
+    theta_prime_unit, B, use_f_mol_interpolator, default_return_polar_angle
+):
+    def Moliere_angular_distribution(
+        theta, *, return_polar_angle=default_return_polar_angle
+    ):
         # Eq. 24
-        theta_prime = (theta / theta_prime_unit).cgs
-        B_coefficients = np.asarray([1 / B**i for i in range(3)])
+        theta_prime = theta / theta_prime_unit
+
+        # The underlying distributions from the literature expect a polar angle
+        # The user has provided a projected angle, so we need to transform it
+        if not return_polar_angle:
+            theta_prime *= np.sqrt(2)
 
         if use_f_mol_interpolator:
-            f_n = _f_mol_spline(theta_prime)
+            f_n = _f_mol_spline(np.abs(theta_prime))
         else:
             f_n = np.asarray([_f_mol_n(theta_prime, i) for i in range(3)]).T
 
-        B_coefficients = np.asarray(B_coefficients)
-        f_n = np.asarray(f_n)
-        return np.sum(B_coefficients * f_n.T, axis=0)
+        B_coefficients = np.asarray([1 / B**i for i in range(3)])
+
+        # Normalization factors differ for Gaussian vs Rayleigh distributions
+        # These correspond to the projected and polar distributions, respectively
+        if return_polar_angle:
+            distribution_coefficient = theta_prime / theta_prime_unit
+        else:
+            distribution_coefficient = 1 / (np.sqrt(2 * np.pi) * theta_prime_unit)
+
+        return distribution_coefficient * np.sum(B_coefficients * f_n.T, axis=0)
 
     return Moliere_angular_distribution
 
@@ -930,6 +947,7 @@ def Moliere_scattering(
     f_i: npt.NDArray[np.float64] | None = None,
     *,
     # Miscellaneous parameters
+    return_polar_angle: bool,
     use_constant_energy_approximation=False,
     NIST_material: str | None = None,
     stopping_power: Callable[[u.Quantity[u.MeV]], u.Quantity[u.MeV / u.g]]
@@ -944,7 +962,7 @@ def Moliere_scattering(
     ]
     | u.Quantity[u.dimensionless_unscaled]
 ):
-    """Calculate the angular scattering distribution for the provided particle species.
+    """Calculate the Moliere multiple scattering distribution.
 
     Parameters
     ----------
@@ -966,6 +984,10 @@ def Moliere_scattering(
 
     f_i : array of `float`
         The fractional weight of each constituent element's atoms in the target.
+
+    return_polar_angle : bool
+        Is the user-provided angle going to be a polar angle? Or is it a projected
+        angle?
 
     use_constant_energy_approximation : bool, optional
         Whether to calculate the angular probability distribution using the
@@ -1027,28 +1049,32 @@ def Moliere_scattering(
 
     # Eq. 24 of Bethe. Characterizes the width of the Gaussian approximation
     theta_prime_unit = np.sqrt(x_c_squared.flatten() * B)
-    angular_distribution = _wrapped_Moliere_angular_distribution(
-        theta_prime_unit, B, use_f_mol_interpolator
-    )
-
     theta_M = np.sqrt(x_c_squared.flatten() * B / 2)
 
+    # TODO: Is there a better way to handle this?  # noqa: FIX002
     return_list: list
     if not return_rms:
         return_list = [
-            angular_distribution,
+            _wrapped_Moliere_angular_distribution(
+                theta_prime_unit,
+                B,
+                use_f_mol_interpolator,
+                default_return_polar_angle=return_polar_angle,
+            )
         ]
     else:
-        return theta_M
+        return_list = [theta_M]
 
     if include_characteristic_angles:
         angles_dictionary = {
-            "theta_M": theta_M,  # Eq. 13
+            # Always spatial angles
             "x_a": np.sqrt(x_a_squared),
             "x_c": np.sqrt(x_c_squared),
             "b": b,
             "B": B[0],
-            "script_theta_unit": theta_prime_unit.cgs,
+            # Definitions vary based on polar vs projected angle distributions
+            "theta_M": theta_M,  # Eq. 13
+            "script_theta_unit": theta_prime_unit,
         }
 
         return_list.append(angles_dictionary)
