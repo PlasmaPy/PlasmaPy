@@ -615,13 +615,20 @@ def test_invalid_inputs_to_ion_list2(element, min_charge, max_charge) -> None:
     ("incident_particle", "material", "kwargs", "expected_error"),
     [
         # ESTAR not implemented
-        (Particle("e-"), "OXYGEN", {}, NotImplementedError),
+        (Particle("e-"), "OXYGEN", {"energies": 10 * u.MeV}, NotImplementedError),
         # Invalid incident particle
-        (Particle("O"), "OXYGEN", {}, ValueError),
+        (Particle("O"), "OXYGEN", {"energies": 10 * u.MeV}, ValueError),
         # Invalid material
+        (Particle("H+"), "BENZENE", {"energies": 10 * u.MeV}, ValueError),
+        # Requested neither interpolator neither provided energies
         (Particle("H+"), "BENZENE", {}, ValueError),
         # Invalid component
-        (Particle("H+"), "OXYGEN", {"component": "Lorem Ipsum"}, ValueError),
+        (
+            Particle("H+"),
+            "OXYGEN",
+            {"energies": 10 * u.MeV, "component": "Lorem Ipsum"},
+            ValueError,
+        ),
     ],
 )
 def test_stopping_power_errors(
@@ -705,7 +712,7 @@ def test_stopping_power_interpolation(
     expected_stopping_power,
 ) -> None:
     """Test the interpolation functionality of the stopping power function against NIST values"""
-    _, actual_stopping_power = stopping_power(
+    actual_stopping_power = stopping_power(
         incident_particle,
         material,
         energies,
@@ -719,9 +726,9 @@ def test_stopping_power_interpolation(
 
 
 def test_stopping_power_no_interpolation() -> None:
-    result = stopping_power(Particle("H+"), "COPPER")
+    result = stopping_power(Particle("H+"), "COPPER", energies=10 * u.MeV)
 
-    assert type(result) is tuple
+    assert type(result) is u.Quantity
 
 
 def test_element_name_used_on_numpy_integer() -> None:
