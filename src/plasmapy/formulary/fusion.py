@@ -77,11 +77,16 @@ def fusion_cross_section(
         of ``reaction`` (target ``X``, projectile ``a``). Must be one of:
 
         - ``"CM"`` (default) — ``energy`` is the center-of-mass energy and is
-          used directly.
+          used directly. Which reactant is labeled the target is irrelevant
+          here, since the center-of-mass energy is symmetric in the two.
         - ``"lab"`` — ``energy`` is the lab-frame kinetic energy of projectile
           ``a`` on a stationary target ``X``, converted to the center-of-mass
           energy via :math:`E_\mathrm{cm} = E_\mathrm{lab}\, m_X / (m_X + m_a)`
           before evaluation, with nuclear masses from `plasmapy.particles`.
+          Unlike the CM case, the target/projectile assignment matters: the
+          conversion depends on the mass ratio, so ``"D(t,n)A"`` and a
+          triton-target labeling of the same reaction give different
+          center-of-mass energies for the same ``energy``.
 
     Returns
     -------
