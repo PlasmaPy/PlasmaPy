@@ -4,7 +4,8 @@
   "units": {
     "E": "keV (center-of-mass)",
     "sigma": "mb",
-    "B_G": "sqrt(keV)"
+    "B_G": "sqrt(keV)",
+    "max_deviation_percent": "100 * max over E in [E_min, E_max] of |σ_fit(E) - σ_eval(E)| / σ_eval(E)"
   },
   "reactions": {
     "D(t,n)A": {

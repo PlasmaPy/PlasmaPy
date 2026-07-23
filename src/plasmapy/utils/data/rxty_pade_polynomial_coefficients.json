@@ -5,7 +5,8 @@
     "T": "keV (ion temperature)",
     "sigma_v": "cm^3/s",
     "B_G": "sqrt(keV)",
-    "m_r_c2": "keV (reduced-mass energy)"
+    "m_r_c2": "keV (reduced-mass energy)",
+    "max_deviation_percent": "100 * max over T in [T_min, T_max] of |σv_fit(T) - σv_eval(T)| / σv_eval(T)"
   },
   "reactions": {
     "D(t,n)A": {
