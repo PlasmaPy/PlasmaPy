@@ -1,0 +1,1 @@
+Added :func:`~plasmapy.formulary.collisions.frequencies.temperature_isotropization_rate` as a standalone function, with support for bi-Maxwellian isotropization rate calculations via ``T_parallel`` and ``T_perp`` keyword arguments.
