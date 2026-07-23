@@ -18,7 +18,6 @@ import numpy as np
 import numpy.typing as npt
 from scipy.integrate import quad, solve_ivp
 from scipy.interpolate import make_interp_spline
-from scipy.optimize import fsolve
 from scipy.special import factorial, j0
 
 from plasmapy.formulary.collisions import frequencies
@@ -881,9 +880,24 @@ def _f_mol_n(  # noqa: ANN202
     return integral / factorial(n)
 
 
-def Moliere_scattering_B_residual(B, b):
+def _Moliere_scattering_B_residual(B, b):
     """Eq. 23 of Bethe."""
-    return B - np.log(B) - b
+    return B - np.log(B) - b, 1 - 1 / B
+
+
+def _vectorized_Newton_root_finder(func, *func_args, x0, max_iters=5):
+    """
+    Find the root of `func` based on the provided initial guess, `x0`.
+
+    Returns the approximate x-value of the root.
+    """
+    x_i = x0
+    for _ in range(max_iters):
+        y, y_prime = func(x_i, *func_args)
+
+        x_i -= y / y_prime
+
+    return x_i
 
 
 def _wrapped_Moliere_angular_distribution(theta_prime_unit, B, use_f_mol_interpolator):
@@ -997,6 +1011,7 @@ def Moliere_scattering(
         stopping_power=stopping_power,
         use_constant_energy_approximation=use_constant_energy_approximation,
     )
+    x_a_squared, x_c_squared = x_a_squared.flatten(), x_c_squared.flatten()
 
     # Eq. 11
     b = np.log(x_c_squared / (1.167 * x_a_squared))
@@ -1004,10 +1019,11 @@ def Moliere_scattering(
     # The transcendental equation associated with `B` yields two solutions for
     # every `b`. We want to solve for values where B > 1, this corresponds to
     # our initial guess satisfying b > 1.
-    B = [
-        fsolve(Moliere_scattering_B_residual, x0=b_i, args=(b_i,), maxfev=10)[0]
-        for b_i in b
-    ]
+    B = _vectorized_Newton_root_finder(
+        _Moliere_scattering_B_residual,
+        b,
+        x0=2,
+    )
 
     # Eq. 24 of Bethe. Characterizes the width of the Gaussian approximation
     theta_prime_unit = np.sqrt(x_c_squared.flatten() * B)
