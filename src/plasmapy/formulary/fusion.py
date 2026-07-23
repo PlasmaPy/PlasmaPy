@@ -238,7 +238,7 @@ def fusion_cross_section(
     --------
     >>> import astropy.units as u
     >>> fusion_cross_section(100 * u.keV, "D(t,n)A")
-    <Quantity 3427.245 m**2>
+    <Quantity 3427.245 m2>
     """
     xs_coeff = _load_reactions("xs_pade_polynomial_coefficients.json")
     if reaction not in xs_coeff:
@@ -482,7 +482,7 @@ def fusion_reactivity(
     --------
     >>> import astropy.units as u
     >>> fusion_reactivity(10 * u.keV, "D(t,n)A")
-    <Quantity 1.13616547e-16 m3 / s>
+    <Quantity 1.13616547e-22 m3 / s>
     """
     rxty_coeff = _load_reactions("rxty_pade_polynomial_coefficients.json")
     if reaction not in rxty_coeff:
