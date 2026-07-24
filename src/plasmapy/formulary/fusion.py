@@ -46,7 +46,7 @@ def _load_reactions(name):
 
 def available_cross_section_reactions() -> list[str]:
     r"""
-    Return the reaction keys accepted by `fusion_cross_section`.
+    Return the reaction keys accepted by `~plasmapy.formulary.fusion.fusion_cross_section`.
 
     Returns
     -------
@@ -68,7 +68,7 @@ def available_cross_section_reactions() -> list[str]:
 
 def available_reactivity_reactions() -> list[str]:
     r"""
-    Return the reaction keys accepted by `fusion_reactivity`.
+    Return the reaction keys accepted by `~plasmapy.formulary.fusion.fusion_reactivity`.
 
     Returns
     -------
