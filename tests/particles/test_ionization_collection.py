@@ -392,7 +392,7 @@ class TestIonizationStateCollectionItemAssignment:
                 np.allclose(resulting_states, new_states),
                 np.all(np.isnan(resulting_states)) and np.all(np.isnan(new_states)),
             ],
-        )  # ty:ignore[no-matching-overload]
+        )
 
     @pytest.mark.parametrize(
         ("base_particle", "new_states", "expected_exception"),
