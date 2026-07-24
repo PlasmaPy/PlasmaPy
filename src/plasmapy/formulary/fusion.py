@@ -1,6 +1,11 @@
 """Cross sections and Maxwellian reactivities for nuclear fusion reactions."""
 
-__all__ = ["fusion_cross_section", "fusion_reactivity"]
+__all__ = [
+    "available_cross_section_reactions",
+    "available_reactivity_reactions",
+    "fusion_cross_section",
+    "fusion_reactivity",
+]
 
 # The overall approach for evaluating the fusion cross
 # sections was informed in part by this scipython.com notebook:
@@ -37,6 +42,50 @@ _NUCLIDES = {
 def _load_reactions(name):
     with as_file(_DATA_DIR) as physical_path, Path.open(physical_path / name) as f:
         return json.load(f)["reactions"]
+
+
+def available_cross_section_reactions() -> list[str]:
+    r"""
+    Return the reaction keys accepted by `fusion_cross_section`.
+
+    Returns
+    -------
+    `list` of `str`
+        The available reaction keys, for example ``"D(t,n)A"``.
+
+    See Also
+    --------
+    fusion_cross_section
+    available_reactivity_reactions
+
+    Examples
+    --------
+    >>> "D(t,n)A" in available_cross_section_reactions()
+    True
+    """
+    return list(_load_reactions("xs_pade_polynomial_coefficients.json"))
+
+
+def available_reactivity_reactions() -> list[str]:
+    r"""
+    Return the reaction keys accepted by `fusion_reactivity`.
+
+    Returns
+    -------
+    `list` of `str`
+        The available reaction keys, for example ``"D(t,n)A"``.
+
+    See Also
+    --------
+    fusion_reactivity
+    available_cross_section_reactions
+
+    Examples
+    --------
+    >>> "D(t,n)A" in available_reactivity_reactions()
+    True
+    """
+    return list(_load_reactions("rxty_pade_polynomial_coefficients.json"))
 
 
 @validate_quantities

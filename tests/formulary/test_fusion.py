@@ -274,6 +274,49 @@ class TestEnergyRangePredicate:
             fusion.fusion_cross_section(E, "D(t,n)A")
 
 
+class TestAvailableReactions:
+    """The public listings mirror the loaded coefficient tables."""
+
+    def test_cross_section_listing_matches_coefficients(self):
+        assert fusion.available_cross_section_reactions() == list(_XS_COEFF)
+
+    def test_reactivity_listing_matches_coefficients(self):
+        assert fusion.available_reactivity_reactions() == list(_RXTY_COEFF)
+
+    @pytest.mark.parametrize(
+        "lister",
+        [
+            fusion.available_cross_section_reactions,
+            fusion.available_reactivity_reactions,
+        ],
+    )
+    def test_listing_covers_the_documented_reactions(self, lister):
+        assert set(lister()) == set(_ENDF_REACTIONS)
+
+    @pytest.mark.parametrize(
+        "lister",
+        [
+            fusion.available_cross_section_reactions,
+            fusion.available_reactivity_reactions,
+        ],
+    )
+    def test_returns_a_fresh_list(self, lister):
+        """Mutating the result must not corrupt the cached coefficient dict."""
+        lister().append("Fe(p,gamma)Co")
+        assert "Fe(p,gamma)Co" not in lister()
+
+    @pytest.mark.parametrize("reaction", _ENDF_REACTIONS)
+    def test_every_listed_reaction_evaluates(self, reaction):
+        """Anything advertised must actually work in both public functions."""
+        assert reaction in fusion.available_cross_section_reactions()
+        assert reaction in fusion.available_reactivity_reactions()
+        c, r = _XS_COEFF[reaction], _RXTY_COEFF[reaction]
+        E = 0.5 * (c["E_min_keV"] + c["E_max_keV"]) * u.keV
+        T = 0.5 * (r["T_min_keV"] + r["T_max_keV"]) * u.keV
+        assert fusion.fusion_cross_section(E, reaction) > 0
+        assert fusion.fusion_reactivity(T, reaction) > 0
+
+
 class TestCrossSectionDispatch:
     """``cross_section`` routes to a backend, validates inputs, or raises."""
 
