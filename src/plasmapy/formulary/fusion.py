@@ -286,7 +286,7 @@ def fusion_cross_section(
         # Convert lab-frame projectile energy to the CM energy via the mass ratio.
         E_keV = E_keV * (target.mass / (target.mass + projectile.mass)).value
 
-    # True if a single temperature was passed, used to return scalor instead of 1 element array.
+    # True if a single Energy was passed, used to return scalor instead of 1 element array.
     scalar = E_keV.ndim == 0
     E_arr = np.atleast_1d(E_keV)
     in_range = (E_arr >= rxn["E_min_keV"]) & (E_arr <= rxn["E_max_keV"])
