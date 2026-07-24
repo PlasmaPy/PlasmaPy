@@ -133,7 +133,13 @@ repos:
     # session run separately as part of the comprehensive tests on
     # GitHub.
     additional_dependencies:
-    - validate-pyproject[all,store]
+    # Temporarily pin validate-pyproject-schema-store==2026.7.8 (see
+    # https://github.com/henryiii/validate-pyproject-schema-store/issues/269)
+    # After that's addressed, we can consolidate the following two lines...
+    - validate-pyproject[all]
+    - validate-pyproject-schema-store==2026.7.8
+    # ... back into:
+    # - validate-pyproject[all,store]
 
 - repo: https://github.com/tox-dev/pyproject-fmt
   rev: v2.25.1
