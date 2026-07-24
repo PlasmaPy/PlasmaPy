@@ -2029,7 +2029,7 @@ dev = [
     { name = "ty", specifier = ">=0.0.62" },
     { name = "typing-extensions", specifier = ">=4.16" },
     { name = "unidecode", specifier = ">=1.4" },
-    { name = "zizmor", specifier = "==1.22" },
+    { name = "zizmor", specifier = "==1.22.0" },
 ]
 docs = [
     { name = "docutils", specifier = ">=0.22" },
@@ -2111,7 +2111,7 @@ type-check = [
     { name = "ty", specifier = ">=0.0.62" },
     { name = "unidecode", specifier = ">=1.4" },
 ]
-zizmor = [{ name = "zizmor", specifier = "==1.22" }]
+zizmor = [{ name = "zizmor", specifier = "==1.22.0" }]
 
 [[package]]
 name = "plasmapy-sphinx"
