@@ -354,7 +354,7 @@ def fusion_cross_section(
         # Convert lab-frame projectile energy to the CM energy via the mass ratio.
         E_keV = E_keV * (target.mass / (target.mass + projectile.mass)).value
 
-    # True if a single Energy was passed, used to return scalor instead of 1 element array.
+    # True if a single Energy was passed, used to return scalar instead of 1 element array.
     scalar = E_keV.ndim == 0
     E_arr = np.atleast_1d(E_keV)
     # Bounds are inclusive; anything outside stays NaN rather than raising.
@@ -585,7 +585,7 @@ def fusion_reactivity(
     rxn = rxty_coeff[reaction]
 
     T_keV = np.asarray(ion_temp.to(u.keV).value, dtype=float)
-    # True if a single temperature was passed, used to return scalor instead of 1 element array.
+    # True if a single temperature was passed, used to return scalar instead of 1 element array.
     scalar = T_keV.ndim == 0
     T_arr = np.atleast_1d(T_keV)
     # Bounds are inclusive; anything outside stays NaN rather than raising.
@@ -615,7 +615,7 @@ def fusion_reactivity(
 # Bosch and Hale equation (9)
 def _xs_pade_polynomial(rxn, E):
     r"""
-    Evaluate the Bosch-Hale Padé approximant for the S-function.
+    Evaluate the Bosch-Hale Padé approximation for the S-function.
     """
     S_vals = rxn["A1"] + E * (
         rxn["A2"] + E * (rxn["A3"] + E * (rxn["A4"] + E * rxn["A5"]))
@@ -627,7 +627,7 @@ def _xs_pade_polynomial(rxn, E):
 # Bosch and Hale equation (13)
 def _rxty_pade_polynomial(rxn, T):
     r"""
-    Evaluate the :math:`\theta(T)` Padé approximant for the Bosch-Hale
+    Evaluate the :math:`\theta(T)` Padé approximation for the Bosch-Hale
     reactivity.
     """
     theta = T * (rxn["C2"] + T * (rxn["C4"] + T * rxn["C6"]))
