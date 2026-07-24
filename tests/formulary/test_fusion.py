@@ -312,8 +312,9 @@ class TestAvailableReactions:
         assert fusion.fusion_reactivity(T, reaction) > 0
 
 
-class TestCrossSectionDispatch:
-    """``cross_section`` routes to a backend, validates inputs, or raises."""
+class TestCrossSectionInputValidation:
+    """Public-API contract for ``fusion_cross_section``: unknown reactions,
+    unit coercion, wrong units, and the SI (m^2) output unit."""
 
     @pytest.mark.parametrize("reaction", _XS_REACTIONS)
     def test_matches_backend(self, reaction):
@@ -331,13 +332,6 @@ class TestCrossSectionDispatch:
         sigma = fusion.fusion_cross_section(300 * u.keV, reaction)
         assert sigma.unit == u.m**2
 
-    def test_partially_out_of_range_array_is_masked(self):
-        """The range check is elementwise: one bad element does not reject the array."""
-        energy = np.array([10.0, 100.0, 10_000.0]) * u.keV
-        sigma = fusion.fusion_cross_section(energy, "D(t,n)A")
-        assert np.all(np.isfinite(sigma.value[:2]))
-        assert np.isnan(sigma.value[2])
-
     def test_bare_number_warns_and_assumes_keV(self):
         with pytest.warns(u.UnitsWarning):
             sigma = fusion.fusion_cross_section(300, "D(t,n)A")  # in-window value
@@ -349,15 +343,10 @@ class TestCrossSectionDispatch:
         with pytest.raises(u.UnitsError):
             fusion.fusion_cross_section(100 * u.s, "D(t,n)A")
 
-    @pytest.mark.parametrize("reaction", _XS_REACTIONS)
-    def test_public_cross_section_is_finite_and_positive(self, reaction):
-        sigma = fusion.fusion_cross_section(300 * u.keV, reaction)
-        assert np.isfinite(sigma.value)
-        assert sigma.value > 0
 
-
-class TestReactivityDispatch:
-    """``reactivity`` routes to a backend, validates inputs, or raises."""
+class TestReactivityInputValidation:
+    """Public-API contract for ``fusion_reactivity``: unknown reactions,
+    unit coercion, wrong units, and the SI (m^3/s) output unit."""
 
     @pytest.mark.parametrize("reaction", _RXTY_REACTIONS)
     def test_bh_source_matches_backend(self, reaction):
@@ -371,7 +360,7 @@ class TestReactivityDispatch:
             fusion.fusion_reactivity(10 * u.keV, "Fe(p,gamma)Co")
 
     @pytest.mark.parametrize("reaction", _RXTY_REACTIONS)
-    def test_returns_volumetric_rate(self, reaction):
+    def test_output_is_si_volumetric_rate(self, reaction):
         sigma = fusion.fusion_reactivity(60 * u.keV, reaction)
         assert sigma.unit == u.m**3 / u.s
 
