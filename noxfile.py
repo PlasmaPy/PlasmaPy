@@ -332,7 +332,6 @@ SPHINX_BASE_COMMAND: list[str] = [
     "docs/",
     doc_build_dir,
     "--nitpicky",
-    "--quiet",
     "--keep-going",
 ]
 
