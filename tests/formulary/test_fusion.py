@@ -102,7 +102,7 @@ class TestBoschHaleCrossSection:
     @pytest.mark.parametrize(("energy", "reaction", "expected_mbarn"), _TABLE_V_PARAMS)
     def test_reproduces_table_v(self, energy, reaction, expected_mbarn):
         """Every cell of Table V is reproduced to its quoted precision."""
-        sigma = _raw_cross_section(energy, reaction)
+        sigma = fusion.fusion_cross_section(energy, reaction)
         assert_quantity_allclose(
             sigma,
             expected_mbarn * u.mbarn,
@@ -176,7 +176,7 @@ class TestBoschHaleReactivity:
     )
     def test_reproduces_table_viii(self, ion_temp, reaction, expected_cm3_per_s):
         """Every verified cell of Table VIII is reproduced to its precision."""
-        sv = _raw_reactivity(ion_temp, reaction)
+        sv = fusion.fusion_reactivity(ion_temp, reaction)
         assert_quantity_allclose(
             sv,
             expected_cm3_per_s * u.cm**3 / u.s,
