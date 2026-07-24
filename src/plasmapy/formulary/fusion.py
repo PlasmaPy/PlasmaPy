@@ -224,7 +224,7 @@ def fusion_cross_section(
        * - ``"3He(3He,2p)A"``
          - :math:`{}^{3}\mathrm{He} + {}^{3}\mathrm{He} \rightarrow 2p + \alpha`
          - ENDF/B fit
-         - 1.0 – 10000 keV
+         - 5.0 – 10000 keV
        * - ``"3He(t,n+p)A"``
          - :math:`{}^{3}\mathrm{He} + T \rightarrow n + p + \alpha`
          - ENDF/B fit

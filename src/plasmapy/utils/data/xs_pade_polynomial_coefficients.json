@@ -83,7 +83,7 @@
       "B2": 0.00000132479792,
       "B3": -5.66381233e-10,
       "B4": 9.1176588e-14,
-      "E_min_keV": 5,
+      "E_min_keV": 5.0,
       "E_max_keV": 10000,
       "max_deviation_percent": 2.41,
       "data source": "ENDF/B data fit",
