@@ -67,7 +67,7 @@ def available_cross_section_reactions() -> list[str]:
     >>> "D(t,n)A" in available_cross_section_reactions()
     True
     """
-    return list(_load_reactions("xs_pade_polynomial_coefficients.json"))
+    return list(_load_reactions("xs_pade_polynomial_coefficients.json").keys())
 
 
 def available_reactivity_reactions() -> list[str]:
@@ -95,7 +95,7 @@ def available_reactivity_reactions() -> list[str]:
     >>> "D(t,n)A" in available_reactivity_reactions()
     True
     """
-    return list(_load_reactions("rxty_pade_polynomial_coefficients.json"))
+    return list(_load_reactions("rxty_pade_polynomial_coefficients.json").keys())
 
 
 @validate_quantities
