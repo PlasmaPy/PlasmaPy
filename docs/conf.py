@@ -202,9 +202,12 @@ nitpick_ignore_regex = [
     (python_role, "dimensionless"),
     # Warnings from update to Sphinx 9 which we should probably address
     # Issue: https://github.com/PlasmaPy/PlasmaPy/issues/3312
-    (python_role, "dict.*str.*"),
-    (python_role, "numpy._typing.DTypeLike"),
-    (python_role, "typing.Annotated.*Quantity.*"),
+#    (python_role, "dict.*str.*"),
+#    (python_role, "numpy._typing.DTypeLike"),
+#    (python_role, "numpy.typing.DTypeLike"),
+#    (python_role, "numpy._typing._array_like.NDArray"),
+#    (python_role, "numpy._typing._dtype_like.DTypeLike"),
+#    (python_role, "typing.Annotated.*Quantity.*"),
 ]
 
 # The Sphinx configuration variables rst_prolog and rst_epilog contain
