@@ -5,7 +5,10 @@ sections and Maxwellian-averaged reactivities for nine common fusion
 reactions, including deuterium–tritium, deuterium–deuterium, and
 deuterium–helium-3. Both quantities are computed from the Bosch–Hale
 Padé (rational-function) parametrization of the astrophysical
-S-function. For the reactions tabulated by Bosch and Hale (1992) the
+S-function. For the reactions tabulated by :cite:t:`bosch:1992` the
 published coefficients are used, while for the remaining reactions the
 same functional form is fit to evaluated cross sections from the ENDF/B
-library.
+library. The module also provides
+`~plasmapy.formulary.fusion.available_cross_section_reactions` and
+`~plasmapy.formulary.fusion.available_reactivity_reactions`, which return
+the reaction keys accepted by each function.
