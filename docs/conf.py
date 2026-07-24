@@ -473,11 +473,6 @@ linkcheck_ignore = [
 
 # nbsphinx
 
-# Suppress IPKernelApp warning logs during sphinx-build to avoid
-# reporting errors like "Kernel is running over TCP without encryption",
-# in particular for builds on Windows.
-logging.getLogger("IPKernelApp").setLevel(logging.ERROR)
-
 nbsphinx_thumbnails = {
     "notebooks/*": "_static/graphic-circular.png",
     "notebooks/*/*": "_static/graphic-circular.png",
