@@ -58,6 +58,12 @@ def available_cross_section_reactions() -> list[str]:
     fusion_cross_section
     available_reactivity_reactions
 
+    Notes
+    -----
+    The cross-section and reactivity coefficients live in separate data
+    files, so this listing is not guaranteed to match
+    `available_reactivity_reactions`.
+
     Examples
     --------
     >>> "D(t,n)A" in available_cross_section_reactions()
@@ -80,6 +86,12 @@ def available_reactivity_reactions() -> list[str]:
     fusion_reactivity
     available_cross_section_reactions
 
+    Notes
+    -----
+    The cross-section and reactivity coefficients live in separate data
+    files, so this listing is not guaranteed to match
+    `available_cross_section_reactions`.
+
     Examples
     --------
     >>> "D(t,n)A" in available_reactivity_reactions()
@@ -92,7 +104,6 @@ def available_reactivity_reactions() -> list[str]:
 def fusion_cross_section(
     energy: u.Quantity[u.keV],
     reaction: str,
-    out_of_range: str = "raise",
     reference_frame: str = "CM",
 ) -> u.Quantity[u.m**2]:
     r"""
@@ -105,6 +116,19 @@ def fusion_cross_section(
     reactions the same functional form is fit (Bosch and Hale eq 8 and 9)
     to ENDF/B evaluated cross sections (see Notes).
 
+    Each fit is valid only over a finite energy window, listed per reaction
+    in the table under Notes, and this function never extrapolates beyond
+    it. Every element of ``energy`` is tested against that window after
+    conversion to the center-of-mass frame, with both bounds counting as
+    in range. Elements that fall outside it are returned as `~numpy.nan`
+    while the in-range elements are evaluated as usual, so an out-of-range
+    energy is signalled in the returned array rather than by an exception,
+    and the shape of ``energy`` is always preserved. A scalar energy
+    outside the window returns a NaN scalar. If *every* element is out of
+    range the result is entirely NaN and a `UserWarning` is issued, since
+    that case usually means the energies are in the wrong units or the
+    wrong reference frame.
+
     Parameters
     ----------
     energy : `~astropy.units.Quantity`
@@ -112,22 +136,12 @@ def fusion_cross_section(
         Interpreted in the frame set by ``reference_frame``: the center-of-mass
         energy of the reactants when ``reference_frame="CM"`` (default), or the
         lab-frame kinetic energy of the projectile when ``reference_frame="lab"``.
+        Energies outside the valid range for ``reaction`` are returned as
+        `~numpy.nan`; see above and the table under Notes.
 
     reaction : `str`
         The fusion reaction to evaluate. Must be one of the reaction keys
         listed in the table under Notes (for example, ``"D(t,n)A"``).
-
-    out_of_range : `str`, optional
-        How to handle energies that fall outside the valid range for
-        ``reaction`` (the per-reaction ranges are listed under Notes).
-        Must be one of:
-
-        - ``"raise"`` (default) — raise a `ValueError` if any element of
-          ``energy`` lies outside the valid range.
-        - ``"nan"`` — evaluate the in-range energies as usual and return
-          `~numpy.nan` for the out-of-range ones instead of raising. If
-          *every* input energy is out of range the result is entirely
-          NaN and a warning is issued.
 
     reference_frame : `str`, optional
         The frame in which ``energy`` is supplied, using the ``X(a,b)Y`` naming
@@ -148,20 +162,19 @@ def fusion_cross_section(
     Returns
     -------
     sigma : `~astropy.units.Quantity`
-        The fusion cross section, in SI units of square meters. When
-        ``out_of_range="nan"``, elements corresponding to energies outside
-        the valid range for ``reaction`` are `~numpy.nan`.
+        The fusion cross section, in SI units of square meters, with the
+        same shape as ``energy``. Elements corresponding to energies
+        outside the valid range for ``reaction`` are `~numpy.nan`; a
+        scalar ``energy`` outside that range gives a NaN scalar.
 
     Raises
     ------
     `ValueError`
-        If ``reaction`` has no available coefficients; if ``out_of_range`` is
-        not ``"raise"`` or ``"nan"``; if ``reference_frame`` is not ``"CM"`` or
-        ``"lab"``; if ``reference_frame="lab"`` and either reactant of
-        ``reaction`` has no entry in the internal nuclide map, so that its mass
-        cannot be looked up; or if ``out_of_range="raise"`` and any element of
-        ``energy`` (after conversion to the center-of-mass frame) lies outside
-        the valid range for ``reaction``.
+        If ``reaction`` has no available coefficients; if ``reference_frame``
+        is not ``"CM"`` or ``"lab"``; or if ``reference_frame="lab"`` and
+        either reactant of ``reaction`` has no entry in the internal nuclide
+        map, so that its mass cannot be looked up. An out-of-range ``energy``
+        is *not* an error — it produces `~numpy.nan` instead.
 
     `~astropy.units.UnitTypeError`
         If ``energy`` does not have units convertible to keV.
@@ -169,9 +182,10 @@ def fusion_cross_section(
     Warns
     -----
     `UserWarning`
-        If ``out_of_range="nan"`` and every element of ``energy`` lies
-        outside the valid range for ``reaction``, so that the returned
-        cross section is entirely `~numpy.nan`.
+        If every element of ``energy`` lies outside the valid range for
+        ``reaction``, so that the returned cross section is entirely
+        `~numpy.nan`. A partially out-of-range input does not warn; check
+        the result with `numpy.isnan` to find the masked elements.
 
     See Also
     --------
@@ -227,6 +241,12 @@ def fusion_cross_section(
          - :math:`{}^{11}\mathrm{B} + p \rightarrow 3\alpha`
          - ENDF/B fit
          - 200 – 5000 keV
+
+    The valid energy range in the last column is inclusive of both
+    endpoints and is enforced on the center-of-mass energy, i.e. after the
+    ``reference_frame="lab"`` conversion has been applied. Energies outside
+    it evaluate to `~numpy.nan`, so the fits are never extrapolated past
+    the data they were built from.
 
     The four Bosch-Hale reactions use the coefficients published in
     Table IV of :cite:t:`bosch:1992`; the ENDF/B rows use coefficients
@@ -310,8 +330,6 @@ def fusion_cross_section(
         raise ValueError(
             f"{reaction!r} is not one of the available reactions: {', '.join(xs_coeff)}"
         )
-    if out_of_range not in ("raise", "nan"):
-        raise ValueError(f"out_of_range must be 'raise' or 'nan', got {out_of_range!r}")
     if reference_frame not in ("CM", "lab"):
         raise ValueError(
             f"reference_frame must be 'CM' or 'lab', got {reference_frame!r}"
@@ -339,13 +357,8 @@ def fusion_cross_section(
     # True if a single Energy was passed, used to return scalor instead of 1 element array.
     scalar = E_keV.ndim == 0
     E_arr = np.atleast_1d(E_keV)
+    # Bounds are inclusive; anything outside stays NaN rather than raising.
     in_range = (E_arr >= rxn["E_min_keV"]) & (E_arr <= rxn["E_max_keV"])
-
-    if out_of_range == "raise" and not in_range.all():
-        raise ValueError(
-            f"{energy!r} is not in the {reaction!r} energy range "
-            f"of {rxn['E_min_keV']} to {rxn['E_max_keV']} keV"
-        )
 
     sigma = np.full(E_arr.shape, np.nan)
     E_in = E_arr[in_range]
@@ -355,7 +368,7 @@ def fusion_cross_section(
         E_in * np.exp(rxn["B_G"] / np.sqrt(E_in))
     )
 
-    if out_of_range == "nan" and E_arr.size and np.all(np.isnan(sigma)):
+    if E_arr.size and np.all(np.isnan(sigma)):
         warnings.warn(
             f"all input energies are outside the {reaction!r} range "
             f"({rxn['E_min_keV']} to {rxn['E_max_keV']} keV); returning all NaN",
@@ -370,7 +383,6 @@ def fusion_cross_section(
 def fusion_reactivity(
     ion_temp: u.Quantity[u.keV],
     reaction: str,
-    out_of_range: str = "raise",
 ) -> u.Quantity[u.m**3 / u.s]:
     r"""
     Calculate the Maxwellian-averaged fusion reactivity :math:`⟨σv⟩(T)`
@@ -384,42 +396,44 @@ def fusion_reactivity(
     functional form is fit to reactivities derived from the ENDF/B cross
     sections (see Notes).
 
+    Each fit is valid only over a finite ion-temperature window, listed
+    per reaction in the table under Notes, and this function never
+    extrapolates beyond it. Every element of ``ion_temp`` is tested
+    against that window, with both bounds counting as in range. Elements
+    that fall outside it are returned as `~numpy.nan` while the in-range
+    elements are evaluated as usual, so an out-of-range temperature is
+    signalled in the returned array rather than by an exception, and the
+    shape of ``ion_temp`` is always preserved. A scalar temperature
+    outside the window returns a NaN scalar. If *every* element is out of
+    range the result is entirely NaN and a `UserWarning` is issued, since
+    that case usually means the temperatures are in the wrong units.
+
     Parameters
     ----------
     ion_temp : `~astropy.units.Quantity`
-        The ion temperature, in units convertible to keV.
+        The ion temperature, in units convertible to keV. Temperatures
+        outside the valid range for ``reaction`` are returned as
+        `~numpy.nan`; see above and the table under Notes.
 
     reaction : `str`
         The fusion reaction to evaluate. Must be one of the reaction keys
         listed in the table under Notes (for example, ``"D(t,n)A"``).
 
-    out_of_range : `str`, optional
-        How to handle ion temperatures that fall outside the valid range
-        for ``reaction`` (the per-reaction ranges are listed under Notes).
-        Must be one of:
-
-        - ``"raise"`` (default) — raise a `ValueError` if any element of
-          ``ion_temp`` lies outside the valid range.
-        - ``"nan"`` — evaluate the in-range temperatures as usual and
-          return `~numpy.nan` for the out-of-range ones instead of
-          raising. If *every* input temperature is out of range the result
-          is entirely NaN and a warning is issued.
-
     Returns
     -------
     sv : `~astropy.units.Quantity`
         The Maxwellian-averaged reactivity, in SI units of
-        m\ :sup:`3`\  s\ :sup:`-1`\ . When ``out_of_range="nan"``, elements
-        corresponding to ion temperatures outside the valid range for
-        ``reaction`` are `~numpy.nan`.
+        m\ :sup:`3`\  s\ :sup:`-1`\ , with the same shape as ``ion_temp``.
+        Elements corresponding to ion temperatures outside the valid range
+        for ``reaction`` are `~numpy.nan`; a scalar ``ion_temp`` outside
+        that range gives a NaN scalar
 
     Raises
     ------
     `ValueError`
-        If ``reaction`` has no available reactivity coefficients; if
-        ``out_of_range`` is not ``"raise"`` or ``"nan"``; or if
-        ``out_of_range="raise"`` and any element of ``ion_temp`` falls
-        outside the validity range for ``reaction``.
+        If ``reaction`` has no available reactivity coefficients. An
+        out-of-range ``ion_temp`` is *not* an error — it produces
+        `~numpy.nan` instead.
 
     `~astropy.units.UnitTypeError`
         If ``ion_temp`` does not have units convertible to keV.
@@ -427,9 +441,10 @@ def fusion_reactivity(
     Warns
     -----
     `UserWarning`
-        If ``out_of_range="nan"`` and every element of ``ion_temp`` lies
-        outside the valid range for ``reaction``, so that the returned
-        reactivity is entirely `~numpy.nan`.
+        If every element of ``ion_temp`` lies outside the valid range for
+        ``reaction``, so that the returned reactivity is entirely
+        `~numpy.nan`. A partially out-of-range input does not warn; check
+        the result with `numpy.isnan` to find the masked elements.
 
     See Also
     --------
@@ -485,6 +500,15 @@ def fusion_reactivity(
          - :math:`{}^{11}\mathrm{B} + p \rightarrow 3\alpha`
          - ENDF/B fit
          - 50 – 500 keV
+
+    The valid ion-temperature range in the last column is inclusive of
+    both endpoints. Temperatures outside it evaluate to `~numpy.nan`, so
+    the fits are never extrapolated past the data they were built from.
+    Note that these windows differ from the cross-section windows of
+    `fusion_cross_section`, and that the two functions draw on separate
+    coefficient files: a reaction available to one is not guaranteed to be
+    available to the other. Use `available_reactivity_reactions` rather than
+    `available_cross_section_reactions` to check what this function accepts.
 
     The four Bosch-Hale reactions use the reactivity coefficients
     published in Table VII of :cite:t:`bosch:1992`; the ENDF/B rows use
@@ -558,21 +582,14 @@ def fusion_reactivity(
             f"{reaction!r} is not one of the available reactions: "
             f"{', '.join(rxty_coeff)}"
         )
-    if out_of_range not in ("raise", "nan"):
-        raise ValueError(f"out_of_range must be 'raise' or 'nan', got {out_of_range!r}")
     rxn = rxty_coeff[reaction]
 
     T_keV = np.asarray(ion_temp.to(u.keV).value, dtype=float)
     # True if a single temperature was passed, used to return scalor instead of 1 element array.
     scalar = T_keV.ndim == 0
     T_arr = np.atleast_1d(T_keV)
+    # Bounds are inclusive; anything outside stays NaN rather than raising.
     in_range = (T_arr >= rxn["T_min_keV"]) & (T_arr <= rxn["T_max_keV"])
-
-    if out_of_range == "raise" and not in_range.all():
-        raise ValueError(
-            f"{ion_temp!r} is not in the {reaction!r} ion temp range "
-            f"of {rxn['T_min_keV']} to {rxn['T_max_keV']} keV"
-        )
 
     sv = np.full(T_arr.shape, np.nan)
     T_in = T_arr[in_range]
@@ -584,7 +601,7 @@ def fusion_reactivity(
         np.sqrt(xi / (rxn["m_r_c2"] * T_in**3)) * rxn["C1"] * Theta * np.exp(-3 * xi)
     )
 
-    if out_of_range == "nan" and T_arr.size and np.all(np.isnan(sv)):
+    if T_arr.size and np.all(np.isnan(sv)):
         warnings.warn(
             f"all input temperatures are outside the {reaction!r} range "
             f"({rxn['T_min_keV']} to {rxn['T_max_keV']} keV); returning all NaN",
