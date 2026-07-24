@@ -88,7 +88,7 @@ dev = [
 ]
 test = [
   "hypothesis>=6.161.1",
-  "pytest>=9.1.1",
+  "pytest==9.0.3",
   "pytest-cov>=7.1",
   "pytest-filter-subpackage>=0.2",
   "pytest-regressions>=2.11",
