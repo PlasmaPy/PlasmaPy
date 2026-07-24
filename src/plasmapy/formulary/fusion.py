@@ -23,9 +23,7 @@ import numpy as np
 from plasmapy.particles import Particle
 from plasmapy.utils.decorators import validate_quantities
 
-"""
-Opening Bosch and Hale Tables IV and Json Files
-"""
+# Opening Bosch and Hale Tables IV and Json Files
 
 _DATA_DIR = files("plasmapy.utils.data")
 
