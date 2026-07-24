@@ -176,6 +176,7 @@ def fusion_cross_section(
     See Also
     --------
     fusion_reactivity
+    available_cross_section_reactions
 
     Notes
     -----
@@ -433,6 +434,7 @@ def fusion_reactivity(
     See Also
     --------
     fusion_cross_section
+    available_reactivity_reactions
 
     Notes
     -----
