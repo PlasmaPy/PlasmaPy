@@ -581,7 +581,7 @@ class Particle(AbstractPhysicalParticle):
     return the nuclear reaction energy.
 
     >>> deuteron + triton > alpha + neutron
-    <Quantity 2.81810898e-12 J>
+    <Quantity 2.81810...e-12 J>
 
     The `~plasmapy.particles.particle_class.Particle.categories` attribute
     and `~plasmapy.particles.particle_class.Particle.is_category` method

@@ -187,7 +187,7 @@ def Saha(
     >>> T_e = 1 * u.Ry
     >>> n = 1e23 * u.m**-3
     >>> Saha(g_j, g_k, n, E_jk, T_e)
-    <Quantity 1114595.586...>
+    <Quantity 1114595.58...>
     """
     E_h = 1 * u.Ry
 

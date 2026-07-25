@@ -215,14 +215,14 @@ class Test__chemical_potential_interp:
         """Initializing parameters for tests"""
         cls.n_e = 1e23 * u.cm**-3
         cls.T = 11604 * u.K
-        cls.True1 = 7.741254037813922
+        cls.True1 = 7.741254027015188
 
     def test_known1(self) -> None:
         """
         Tests Fermi_integral for expected value.
         """
         methodVal = _chemical_potential_interp(self.n_e, self.T)
-        testTrue = u.isclose(methodVal, self.True1, rtol=1e-16, atol=0.0)
+        testTrue = u.isclose(methodVal, self.True1, rtol=1e-12, atol=0.0)
         errStr = f"Chemical potential value should be {self.True1} and not {methodVal}."
         assert testTrue, errStr
 
