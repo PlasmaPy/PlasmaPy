@@ -35,6 +35,11 @@ physical quantities helpful for plasma physics. |:abacus:|
    | .. toctree:: Frequencies <frequencies>                 | `plasmapy.formulary.frequencies`        |
    |    :maxdepth: 1                                        |                                         |
    +--------------------------------------------------------+-----------------------------------------+
+   | .. toctree:: Fusion <fusion>                           | `plasmapy.formulary.fusion`             |
+   |    :maxdepth: 1                                        |                                         |
+   +--------------------------------------------------------+-----------------------------------------+
+   |    :maxdepth: 1                                        |                                         |
+   +--------------------------------------------------------+-----------------------------------------+
    | .. toctree:: Ionization <ionization>                   | `plasmapy.formulary.ionization`         |
    |    :maxdepth: 1                                        |                                         |
    +--------------------------------------------------------+-----------------------------------------+

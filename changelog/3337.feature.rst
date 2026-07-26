@@ -1,0 +1,9 @@
+Added fusion reactor performance functions to `plasmapy.formulary.fusion`:
+:func:`~plasmapy.formulary.fusion.fusion.lawson_product`,
+:func:`~plasmapy.formulary.fusion.fusion.ignition_condition`, and
+:func:`~plasmapy.formulary.fusion.fusion.fusion_gain`,
+along with the initial fusion subpackage providing
+:func:`~plasmapy.formulary.fusion.fusion.fusion_cross_section`,
+:func:`~plasmapy.formulary.fusion.fusion.reactivity`,
+:func:`~plasmapy.formulary.fusion.fusion.fusion_reaction_rate`, and
+:func:`~plasmapy.formulary.fusion.fusion.fusion_power_density`.
