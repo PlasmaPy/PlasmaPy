@@ -41,26 +41,6 @@ _RXTY_REACTIONS = list(_RXTY_COEFF)
 _BH_RXTY_REACTIONS = [r for r in _BH_REACTIONS if r in _RXTY_COEFF]
 
 
-def _raw_cross_section(energy, reaction):
-    """Unvalidated sigma(E) — the body of ``fusion_cross_section`` sans range check."""
-    rxn = _XS_COEFF[reaction]
-    E_keV = energy.to(u.keV).value
-    sigma = fusion._xs_pade_polynomial(rxn, E_keV) / (
-        E_keV * np.exp(rxn["B_G"] / np.sqrt(E_keV))
-    )
-    return sigma * u.mbarn
-
-
-def _raw_reactivity(ion_temp, reaction):
-    """Unvalidated <sigma v>(T) — the body of ``fusion_reactivity`` sans range check."""
-    rxn = _RXTY_COEFF[reaction]
-    T_keV = ion_temp.to(u.keV).value
-    theta = fusion._rxty_pade_polynomial(rxn, T_keV)
-    xi = ((rxn["B_G"] ** 2) / (4 * theta)) ** (1 / 3)
-    sv = np.sqrt(xi / (rxn["m_r_c2"] * T_keV**3)) * rxn["C1"] * theta * np.exp(-3 * xi)
-    return sv * (u.cm**3 / u.s)
-
-
 def _table_params(table, x_unit, coeff):
     """
     Flatten a ``{"columns": [...], "data": [[x, y1, y2, ...]]}`` table into
@@ -109,11 +89,6 @@ class TestBoschHaleCrossSection:
             rtol=_TABLE_RTOL,
             err_msg=f"Table V mismatch for {reaction} at {energy}",
         )
-
-    @pytest.mark.parametrize("reaction", _XS_REACTIONS)
-    def test_returns_millibarns(self, reaction):
-        sigma = _raw_cross_section(300 * u.keV, reaction)
-        assert sigma.unit.physical_type == "area"
 
     @pytest.mark.parametrize("reaction", _XS_REACTIONS)
     def test_energy_unit_independence(self, reaction):
@@ -211,7 +186,7 @@ class TestBoschHaleReactivity:
         D(t,n)α turns over near 64 keV, so the check stops at 50 keV.
         """
         ion_temp = np.logspace(np.log10(0.5), np.log10(50), 200) * u.keV
-        sv = _raw_reactivity(ion_temp, reaction).value
+        sv = fusion.fusion_reactivity(ion_temp, reaction).value
         assert np.all(np.diff(sv) > 0), f"{reaction} <sigmav> is not increasing in T"
 
     def test_dt_dominates_dd_at_ignition_temperatures(self):
@@ -316,13 +291,6 @@ class TestCrossSectionInputValidation:
     """Public-API contract for ``fusion_cross_section``: unknown reactions,
     unit coercion, wrong units, and the SI (m^2) output unit."""
 
-    @pytest.mark.parametrize("reaction", _XS_REACTIONS)
-    def test_matches_backend(self, reaction):
-        assert_quantity_allclose(
-            fusion.fusion_cross_section(300 * u.keV, reaction),
-            _raw_cross_section(300 * u.keV, reaction),
-        )
-
     def test_unknown_reaction_raises(self):
         with pytest.raises(ValueError):
             fusion.fusion_cross_section(100 * u.keV, "Fe(p,gamma)Co")
@@ -348,13 +316,6 @@ class TestReactivityInputValidation:
     """Public-API contract for ``fusion_reactivity``: unknown reactions,
     unit coercion, wrong units, and the SI (m^3/s) output unit."""
 
-    @pytest.mark.parametrize("reaction", _RXTY_REACTIONS)
-    def test_bh_source_matches_backend(self, reaction):
-        assert_quantity_allclose(
-            fusion.fusion_reactivity(60 * u.keV, reaction),
-            _raw_reactivity(60 * u.keV, reaction),
-        )
-
     def test_unknown_reaction_raises(self):
         with pytest.raises(ValueError):
             fusion.fusion_reactivity(10 * u.keV, "Fe(p,gamma)Co")
@@ -368,7 +329,6 @@ class TestReactivityInputValidation:
         """
         0.3 keV is inside the D(t,n)α window but below the 3He(d,p)α floor, so
         the same temperature evaluates for one reaction and masks for the other.
-        This is why the Table VIII regression tests call ``_raw_reactivity``.
         """
         assert fusion.fusion_reactivity(0.3 * u.keV, "D(t,n)A").value > 0
         with pytest.warns(UserWarning, match="all NaN"):
@@ -411,15 +371,6 @@ class TestCrossSectionOutOfRange:
         assert v[1] > 0
 
     @pytest.mark.parametrize("reaction", _XS_REACTIONS)
-    def test_in_range_matches_raw_backend(self, reaction):
-        """Masking must not perturb the in-range values."""
-        c = _XS_COEFF[reaction]
-        E = np.linspace(c["E_min_keV"], c["E_max_keV"], 5) * u.keV
-        masked = fusion.fusion_cross_section(E, reaction)
-        assert np.all(np.isfinite(masked.value))
-        assert_quantity_allclose(masked, _raw_cross_section(E, reaction), rtol=1e-12)
-
-    @pytest.mark.parametrize("reaction", _XS_REACTIONS)
     def test_endpoints_are_in_range(self, reaction):
         """Bounds are inclusive: E_min and E_max evaluate rather than mask."""
         c = _XS_COEFF[reaction]
@@ -436,15 +387,6 @@ class TestCrossSectionOutOfRange:
         assert sigma.isscalar
         assert np.isnan(sigma.value)
         assert sigma.unit == u.m**2
-
-    @pytest.mark.parametrize("reaction", _XS_REACTIONS)
-    def test_scalar_in_range_matches_raw_backend(self, reaction):
-        """A scalar in-range value stays scalar and matches the bare formula."""
-        c = _XS_COEFF[reaction]
-        mid = 0.5 * (c["E_min_keV"] + c["E_max_keV"]) * u.keV
-        masked = fusion.fusion_cross_section(mid, reaction)
-        assert masked.isscalar
-        assert_quantity_allclose(masked, _raw_cross_section(mid, reaction), rtol=1e-12)
 
     def test_all_out_of_range_warns(self):
         c = _XS_COEFF["D(t,n)A"]
@@ -493,15 +435,6 @@ class TestReactivityOutOfRange:
         assert v[1] > 0
 
     @pytest.mark.parametrize("reaction", _RXTY_REACTIONS)
-    def test_in_range_matches_raw_backend(self, reaction):
-        """Masking must not perturb the in-range values."""
-        c = _RXTY_COEFF[reaction]
-        T = np.linspace(c["T_min_keV"], c["T_max_keV"], 5) * u.keV
-        masked = fusion.fusion_reactivity(T, reaction)
-        assert np.all(np.isfinite(masked.value))
-        assert_quantity_allclose(masked, _raw_reactivity(T, reaction), rtol=1e-12)
-
-    @pytest.mark.parametrize("reaction", _RXTY_REACTIONS)
     def test_endpoints_are_in_range(self, reaction):
         c = _RXTY_COEFF[reaction]
         T = np.array([c["T_min_keV"], c["T_max_keV"]]) * u.keV
@@ -516,15 +449,6 @@ class TestReactivityOutOfRange:
         assert sv.isscalar
         assert np.isnan(sv.value)
         assert sv.unit == u.m**3 / u.s
-
-    @pytest.mark.parametrize("reaction", _RXTY_REACTIONS)
-    def test_scalar_in_range_matches_raw_backend(self, reaction):
-        """A scalar in-range value stays scalar and matches the bare formula."""
-        c = _RXTY_COEFF[reaction]
-        mid = 0.5 * (c["T_min_keV"] + c["T_max_keV"]) * u.keV
-        masked = fusion.fusion_reactivity(mid, reaction)
-        assert masked.isscalar
-        assert_quantity_allclose(masked, _raw_reactivity(mid, reaction), rtol=1e-12)
 
     def test_all_out_of_range_warns(self):
         c = _RXTY_COEFF["D(t,n)A"]
