@@ -204,6 +204,9 @@ nitpick_ignore_regex = [
     # Issue: https://github.com/PlasmaPy/PlasmaPy/issues/3312
     (python_role, "dict.*str.*"),
     (python_role, "numpy._typing.DTypeLike"),
+    (python_role, "numpy.typing.DTypeLike"),
+    (python_role, "numpy._typing._array_like.NDArray"),
+    (python_role, "numpy._typing._dtype_like.DTypeLike"),
     (python_role, "typing.Annotated.*Quantity.*"),
 ]
 
