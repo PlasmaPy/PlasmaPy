@@ -903,13 +903,13 @@ def _vectorized_Newton_root_finder(func, *func_args, x0, max_iters=5):
 
 
 def _wrapped_Moliere_angular_distribution(
-    theta_prime_unit, B, use_f_mol_interpolator, default_return_polar_angle
+    reduced_theta_norm, B, use_f_mol_interpolator, default_return_polar_angle
 ):
     def Moliere_angular_distribution(
         theta, *, return_polar_angle=default_return_polar_angle
     ):
         # Eq. 24
-        theta_prime = theta / theta_prime_unit
+        theta_prime = theta / reduced_theta_norm
 
         # The underlying distributions from the literature expect a polar angle
         # The user has provided a projected angle, so we need to transform it
@@ -926,11 +926,11 @@ def _wrapped_Moliere_angular_distribution(
         # Normalization factors differ for Gaussian vs Rayleigh distributions
         # These correspond to the projected and polar distributions, respectively
         if return_polar_angle:
-            distribution_coefficient = theta_prime / theta_prime_unit
+            distribution_coefficient = theta_prime / reduced_theta_norm
         else:
-            distribution_coefficient = 1 / (np.sqrt(2 * np.pi) * theta_prime_unit)
+            distribution_coefficient = 1 / (np.sqrt(2 * np.pi) * reduced_theta_norm)
 
-        return distribution_coefficient * np.sum(B_coefficients * f_n.T, axis=0)
+        return distribution_coefficient * (B_coefficients.T @ f_n.T)
 
     return Moliere_angular_distribution
 
@@ -1042,28 +1042,25 @@ def Moliere_scattering(
     # every `b`. We want to solve for values where B > 1, this corresponds to
     # our initial guess satisfying b > 1.
     B = _vectorized_Newton_root_finder(
-        _Moliere_scattering_B_residual,
-        b,
-        x0=2,
+        _Moliere_scattering_B_residual, b, x0=b, max_iters=2
     )
 
     # Eq. 24 of Bethe. Characterizes the width of the Gaussian approximation
-    theta_prime_unit = np.sqrt(x_c_squared.flatten() * B)
+    reduced_theta_norm = np.sqrt(x_c_squared.flatten() * B)
     theta_M = np.sqrt(x_c_squared.flatten() * B / 2)
 
     # TODO: Is there a better way to handle this?  # noqa: FIX002
-    return_list: list
+    return_dist: list
     if not return_rms:
-        return_list = [
-            _wrapped_Moliere_angular_distribution(
-                theta_prime_unit,
-                B,
-                use_f_mol_interpolator,
-                default_return_polar_angle=return_polar_angle,
-            )
-        ]
+        return_dist = _wrapped_Moliere_angular_distribution(
+            reduced_theta_norm,
+            B,
+            use_f_mol_interpolator,
+            default_return_polar_angle=return_polar_angle,
+        )
     else:
-        return_list = [theta_M]
+        # TODO: Modify this based on the polar angle keyword argument  # noqa: FIX002
+        return_dist = theta_M
 
     if include_characteristic_angles:
         angles_dictionary = {
@@ -1071,15 +1068,15 @@ def Moliere_scattering(
             "x_a": np.sqrt(x_a_squared),
             "x_c": np.sqrt(x_c_squared),
             "b": b,
-            "B": B[0],
+            "B": B,
             # Definitions vary based on polar vs projected angle distributions
             "theta_M": theta_M,  # Eq. 13
-            "script_theta_unit": theta_prime_unit,
+            "reduced_theta_norm": reduced_theta_norm,
         }
 
-        return_list.append(angles_dictionary)
-
-    return tuple(return_list)
+        return return_dist, angles_dictionary
+    else:
+        return return_dist
 
 
 @validate_quantities(
