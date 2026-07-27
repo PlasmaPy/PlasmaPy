@@ -785,7 +785,7 @@ class Particle(AbstractPhysicalParticle):
             attributes["standard atomic weight"] = this_element.get("atomic mass")
 
         if ion in _special_particles.special_ion_masses:
-            attributes["mass"] = _special_particles.special_ion_masses[ion]
+            attributes["mass"] = _special_particles.special_ion_masses[ion]  # ty:ignore[invalid-argument-type]
 
         attributes["periodic table"] = _elements.PeriodicTable(
             group=this_element["group"],  # ty:ignore[invalid-argument-type, not-subscriptable]
