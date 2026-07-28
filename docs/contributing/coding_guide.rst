@@ -979,8 +979,6 @@ Equations and Physical Formulae
   the physical constants. For example, the following line of code
   obscures information about the physics being represented:
 
-  .. autolink-skip:: section
-
   .. code-block:: python
 
      omega_ce = 1.76e7*(B/u.G)*u.rad/u.s  # doctest: +SKIP
