@@ -68,8 +68,6 @@ urls.Documentation = "https://docs.plasmapy.org/"
 urls.Issues = "https://github.com/PlasmaPy/plasmapy/issues/"
 urls.Source = "https://github.com/PlasmaPy/plasmapy"
 urls.website = "https://www.plasmapy.org"
-# Remove references to plasma calculator after mid-2026
-scripts.plasma-calculator = "plasmapy.utils.calculator:main"
 
 [dependency-groups]
 # Define development dependencies using dependency groups (see PEP 735).
