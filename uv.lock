@@ -244,7 +244,7 @@ name = "cffi"
 version = "2.1.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "pycparser" },
+    { name = "pycparser", marker = "implementation_name != 'PyPy'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/57/5f/ff100cae70ebe9d8df1c01a00e510e45d9adb5c1fdda84791b199141de97/cffi-2.1.0.tar.gz", hash = "sha256:efc1cdd798b1aaf39b4610bba7aad28c9bea9b910f25c784ccf9ec1fa719d1f9", size = 531036, upload-time = "2026-07-06T21:34:30.382Z" }
 wheels = [
@@ -1731,7 +1731,7 @@ name = "pexpect"
 version = "4.9.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "ptyprocess" },
+    { name = "ptyprocess", marker = "sys_platform != 'emscripten' and sys_platform != 'win32'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/42/92/cc564bf6381ff43ce1f4d06852fc19a2f11d180f23dc32d9588bee2f149d/pexpect-4.9.0.tar.gz", hash = "sha256:ee7d41123f3c9911050ea2c2dac107568dc43b2d3b0c7557a33212c398ead30f", size = 166450, upload-time = "2023-11-25T09:07:26.339Z" }
 wheels = [
@@ -1862,7 +1862,6 @@ dev = [
     { name = "ruff" },
     { name = "sphinx" },
     { name = "sphinx-changelog" },
-    { name = "sphinx-codeautolink" },
     { name = "sphinx-copybutton" },
     { name = "sphinx-gallery" },
     { name = "sphinx-issues" },
@@ -1892,7 +1891,6 @@ docs = [
     { name = "pygments" },
     { name = "sphinx" },
     { name = "sphinx-changelog" },
-    { name = "sphinx-codeautolink" },
     { name = "sphinx-copybutton" },
     { name = "sphinx-gallery" },
     { name = "sphinx-issues" },
@@ -1946,7 +1944,6 @@ type-check = [
     { name = "pytest-xdist" },
     { name = "sphinx" },
     { name = "sphinx-changelog" },
-    { name = "sphinx-codeautolink" },
     { name = "sphinx-copybutton" },
     { name = "sphinx-gallery" },
     { name = "sphinx-issues" },
@@ -2015,7 +2012,6 @@ dev = [
     { name = "ruff", specifier = ">=0.14.11" },
     { name = "sphinx", specifier = ">=9.1" },
     { name = "sphinx-changelog", specifier = ">=1.6" },
-    { name = "sphinx-codeautolink", specifier = ">=0.18.1" },
     { name = "sphinx-copybutton", specifier = ">=0.5.2" },
     { name = "sphinx-gallery", specifier = ">=0.21" },
     { name = "sphinx-issues", specifier = ">=6" },
@@ -2045,7 +2041,6 @@ docs = [
     { name = "pygments", specifier = ">=2.20" },
     { name = "sphinx", specifier = ">=9.1" },
     { name = "sphinx-changelog", specifier = ">=1.6" },
-    { name = "sphinx-codeautolink", specifier = ">=0.18.1" },
     { name = "sphinx-copybutton", specifier = ">=0.5.2" },
     { name = "sphinx-gallery", specifier = ">=0.21" },
     { name = "sphinx-issues", specifier = ">=6" },
@@ -2097,7 +2092,6 @@ type-check = [
     { name = "pytest-xdist", specifier = ">=3.8" },
     { name = "sphinx", specifier = ">=9.1" },
     { name = "sphinx-changelog", specifier = ">=1.6" },
-    { name = "sphinx-codeautolink", specifier = ">=0.18.1" },
     { name = "sphinx-copybutton", specifier = ">=0.5.2" },
     { name = "sphinx-gallery", specifier = ">=0.21" },
     { name = "sphinx-issues", specifier = ">=6" },
@@ -2861,19 +2855,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/e4/25/609b92c07ad7cc415e828f6e0c7611414c37e0117c89df4e7f9fd25a7b3e/sphinx_changelog-1.6.0.tar.gz", hash = "sha256:5251941cf49496584aaeb596087e6d51458ce0e742740a384a84ff47753fb5f9", size = 13157, upload-time = "2024-08-28T09:12:53.212Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/88/8a/a11c95df73c1845e3aaff2ef0ea4be34af43221fdb20e597f0781a45f866/sphinx_changelog-1.6.0-py3-none-any.whl", hash = "sha256:68313c4d33eacfd62a1cd0d780f3f7c0ac6a8d3882eec3d928265ed9f28e7bec", size = 6809, upload-time = "2024-08-28T09:12:52.367Z" },
-]
-
-[[package]]
-name = "sphinx-codeautolink"
-version = "0.18.1"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "beautifulsoup4" },
-    { name = "sphinx" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/0b/d3/51a6f2d822621d1e4eaf575ad5139e3120db5a0f535d518c1c0c1b9fb828/sphinx_codeautolink-0.18.1.tar.gz", hash = "sha256:820b55f630298297b4f8f18d8825529f25895d3734ac7ac06584f62845c4fd4b", size = 63342, upload-time = "2026-04-30T10:22:26.433Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/d4/4a/f46a675afd0479558bcaa867060fdf5c1c4647446f77f0e8447cd36298d3/sphinx_codeautolink-0.18.1-py3-none-any.whl", hash = "sha256:59592ae4548ce49a169d1bcded5d91f9b1d3190b8125615845af9ec5cc13c808", size = 36936, upload-time = "2026-04-30T10:22:24.779Z" },
 ]
 
 [[package]]

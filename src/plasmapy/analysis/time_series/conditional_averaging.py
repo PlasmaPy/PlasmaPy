@@ -71,8 +71,6 @@ class ConditionalEvents:
 
     Examples
     --------
-    .. autolink-skip:: section
-
     >>> from plasmapy.analysis.time_series.conditional_averaging import (
     ...     ConditionalEvents,
     ... )
