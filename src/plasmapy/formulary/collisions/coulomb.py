@@ -432,9 +432,9 @@ def Coulomb_logarithm(  # noqa: ANN201
     >>> n_e = 1e19 * u.m**-3
     >>> T = 1e6 * u.K
     >>> Coulomb_logarithm(T, n_e, ('e-', 'p+'))
-    np.float64(14.545527556...)
+    np.float64(14.5455275...)
     >>> Coulomb_logarithm(T, n_e, ('e-', 'p+'), V = 1e6 * u.m / u.s)
-    np.float64(11.363478378...)
+    np.float64(11.363478...)
 
     See Also
     --------

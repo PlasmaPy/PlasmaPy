@@ -138,7 +138,7 @@ class SingleParticleCollisionFrequencies:
     ...     "e-", "e-", v_drift=v_drift, n_b=n_b, T_b=T_b, Coulomb_log=Coulomb_log
     ... )
     >>> frequencies.energy_loss
-    <Quantity -9.69828719e+15 Hz>
+    <Quantity -9.698287...e+15 Hz>
 
     See Also
     --------

@@ -581,7 +581,7 @@ class Particle(AbstractPhysicalParticle):
     return the nuclear reaction energy.
 
     >>> deuteron + triton > alpha + neutron
-    <Quantity 2.81810898e-12 J>
+    <Quantity 2.81810...e-12 J>
 
     The `~plasmapy.particles.particle_class.Particle.categories` attribute
     and `~plasmapy.particles.particle_class.Particle.is_category` method
@@ -785,7 +785,7 @@ class Particle(AbstractPhysicalParticle):
             attributes["standard atomic weight"] = this_element.get("atomic mass")
 
         if ion in _special_particles.special_ion_masses:
-            attributes["mass"] = _special_particles.special_ion_masses[ion]  # ty:ignore[invalid-argument-type]
+            attributes["mass"] = _special_particles.special_ion_masses[ion]
 
         attributes["periodic table"] = _elements.PeriodicTable(
             group=this_element["group"],  # ty:ignore[invalid-argument-type, not-subscriptable]

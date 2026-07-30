@@ -109,7 +109,7 @@ class HarrisSheet:
         >>> hs = HarrisSheet(B0, delta, P0)
         >>> y = [-2, 0, 2] * u.m
         >>> hs.current_density(y)
-        <Quantity [ -56222.14... , -795774.71...,  -56222.14... ] A / m2>
+        <Quantity [ -56222.14005193, -795774.71556455,  -56222.14005193] A / m2>
         """
         return (
             -self.B0 / (self.delta * const.mu0) * np.cosh(u.rad * y / self.delta) ** -2

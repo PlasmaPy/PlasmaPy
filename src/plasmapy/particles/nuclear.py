@@ -167,7 +167,7 @@ def nuclear_reaction_energy(*args, **kwargs) -> u.Quantity[u.J]:  # noqa: ANN002
     >>> print(energy_triplealpha1, energy_triplealpha2)
     -1.471430e-14 J 1.1802573e-12 J
     >>> energy_triplealpha2.to(u.MeV)
-    <Quantity 7.3665870 MeV>
+    <Quantity 7.366587... MeV>
     >>> nuclear_reaction_energy(reactants=["n"], products=["p+", "e-"])
     <Quantity 1.25343e-13 J>
     """

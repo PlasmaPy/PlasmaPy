@@ -132,7 +132,7 @@ def gyrofrequency(
     >>> gyrofrequency(0.01 * u.T, particle="T+", to_hz=True)
     <Quantity 50923.9... Hz>
     >>> gyrofrequency(250 * u.G, particle="Fe", mass_numb=56, Z=13)
-    <Quantity 560682.34875287 rad / s>
+    <Quantity 560682.34... rad / s>
     >>> omega_ce = gyrofrequency(0.1 * u.T, "e-")
     >>> print(omega_ce)
     1758820... rad / s
@@ -212,9 +212,9 @@ def plasma_frequency_lite(
     >>> from plasmapy.particles import Particle
     >>> mass = Particle("p+").mass.value
     >>> plasma_frequency_lite(n=1e19, mass=mass, Z=1)
-    np.float64(4163294534.0...)
+    np.float64(4163294529.7...)
     >>> plasma_frequency_lite(n=1e19, mass=mass, Z=1, to_hz=True)
-    np.float64(662608904.6...)
+    np.float64(662608903.9...)
     """
     omega_p = np.abs(Z) * e_si_unitless * np.sqrt(n / (eps0_si_unitless * mass))
 
@@ -325,9 +325,9 @@ def plasma_frequency(
     >>> from plasmapy.particles import Particle
     >>> mass = Particle("p+").mass.value
     >>> plasma_frequency.lite(n=1e19, mass=mass, Z=1)
-    np.float64(4163294534.0...)
+    np.float64(4163294529.7...)
     >>> plasma_frequency.lite(n=1e19, mass=mass, Z=1, to_hz=True)
-    np.float64(662608904.6...)
+    np.float64(662608903.9...)
     """
     return (
         plasma_frequency_lite(
@@ -621,7 +621,7 @@ def Buchsbaum_frequency(
     ...     0.1 * u.T, 1e18 * u.m**-3, 1e18 * u.m**-3, "proton", "He+", to_hz=True
     ... )
     >>> fbb
-    <Quantity 764831.28372462 Hz>
+    <Quantity 764831.28... Hz>
     >>> fc_helium = gyrofrequency(0.1 * u.T, "He+", to_hz=True)
     >>> fc_proton = gyrofrequency(0.1 * u.T, "proton", to_hz=True)
     >>> fbb / fc_helium

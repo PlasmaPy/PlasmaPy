@@ -584,7 +584,7 @@ def Lundquist_number(
     <Quantity 0.434819...>
     >>> sigma = 10**-2 * u.S / u.m
     >>> Lundquist_number(L, B, n, sigma, ion="He", z_mean=1.8)
-    <Quantity 43481.96672...>
+    <Quantity 43481.966...>
     """
     alfven = speeds.Alfven_speed(B, density, ion=ion, Z=z_mean)
     return Mag_Reynolds(alfven, L, sigma)
