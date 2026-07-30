@@ -20,12 +20,12 @@ jobs:
     steps:
 
     - name: Checkout code
-      uses: actions/checkout@v7.0.0
+      uses: actions/checkout@v7.0.1
       with:
         persist-credentials: false
 
     - name: Install uv
-      uses: astral-sh/setup-uv@v8.3.2
+      uses: astral-sh/setup-uv@v9.0.0
       with:
         python-version: 3.14
         enable-cache: false  # protect against cache poisoning when publishing a package
@@ -34,7 +34,7 @@ jobs:
       run: uv run noxfile.py -s build
 
     - name: Upload package to Python Package Index
-      uses: pypa/gh-action-pypi-publish@v1.14.0
+      uses: pypa/gh-action-pypi-publish@v1.14.1
       with:
         # TODO: set up trusted publishing https://docs.pypi.org/trusted-publishers/
         user: __token__

@@ -97,7 +97,6 @@ extensions = [
     "sphinx.ext.todo",
     "sphinx.ext.viewcode",
     "sphinx_changelog",
-    "sphinx_codeautolink",
     "sphinx_copybutton",
     "sphinx_gallery.load_style",
     "sphinx_issues",
@@ -241,12 +240,6 @@ bibtex_bibfiles = ["bibliography.bib"]
 bibtex_default_style = "plain"
 bibtex_reference_style = "author_year"
 bibtex_cite_id = "{key}"
-
-# sphinx-codeautolink
-
-codeautolink_concat_default = True
-codeautolink_warn_on_failed_resolve = False  # turn on for debugging
-codeautolink_warn_on_missing_inventory = False  # turn on for debugging
 
 # intersphinx
 
