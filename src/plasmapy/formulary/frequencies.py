@@ -537,7 +537,7 @@ wuh_ = upper_hybrid_frequency
     },
 )
 @angular_freq_to_hz
-def Buchsbaum_frequency(
+def Buchsbaum_frequency(  # noqa: PLR0917
     B: u.Quantity[u.T],
     n1: u.Quantity[u.m**-3],
     n2: u.Quantity[u.m**-3],

@@ -607,7 +607,7 @@ class MaxwellianCollisionFrequencies:
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     n={"can_be_negative": False},
 )
-def collision_frequency(
+def collision_frequency(  # noqa: PLR0917
     T: u.Quantity[u.K],
     n: u.Quantity[u.m**-3],
     species,
@@ -797,7 +797,7 @@ def collision_frequency(
     T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     n_e={"can_be_negative": False},
 )
-def fundamental_electron_collision_freq(
+def fundamental_electron_collision_freq(  # noqa: PLR0917
     T_e: u.Quantity[u.K],
     n_e: u.Quantity[u.m**-3],
     ion,
@@ -966,7 +966,7 @@ def fundamental_electron_collision_freq(
     T_i={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     n_i={"can_be_negative": False},
 )
-def fundamental_ion_collision_freq(
+def fundamental_ion_collision_freq(  # noqa: PLR0917
     T_i: u.Quantity[u.K],
     n_i: u.Quantity[u.m**-3],
     ion,

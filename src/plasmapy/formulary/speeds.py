@@ -188,7 +188,7 @@ va_ = Alfven_speed
     k={"can_be_negative": False, "none_shall_pass": True},
 )
 @particle_input
-def ion_sound_speed(
+def ion_sound_speed(  # noqa: PLR0917
     T_e: u.Quantity[u.K],
     T_i: u.Quantity[u.K],
     ion: ParticleLike,

@@ -94,7 +94,7 @@ def _replace_nan_velocity_with_thermal_velocity(
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     n_e={"can_be_negative": False},
 )
-def mobility(
+def mobility(  # noqa: PLR0917
     T: u.Quantity[u.K],
     n_e: u.Quantity[u.m**-3],
     species,
@@ -328,7 +328,7 @@ def Bethe_stopping(
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     n={"can_be_negative": False},
 )
-def Spitzer_resistivity(
+def Spitzer_resistivity(  # noqa: PLR0917
     T: u.Quantity[u.K],
     n: u.Quantity[u.m**-3],
     species,

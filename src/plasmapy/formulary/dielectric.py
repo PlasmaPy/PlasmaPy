@@ -300,7 +300,7 @@ def permittivity_1D_Maxwellian_lite(omega, kWave, vth, wp):
     kWave={"none_shall_pass": True},
     validations_on_return={"can_be_complex": True},
 )
-def permittivity_1D_Maxwellian(
+def permittivity_1D_Maxwellian(  # noqa: PLR0917
     omega: u.Quantity[u.rad / u.s],
     kWave: u.Quantity[u.rad / u.m],
     T: u.Quantity[u.K],

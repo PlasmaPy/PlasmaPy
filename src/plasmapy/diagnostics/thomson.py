@@ -48,7 +48,7 @@ m_e_si_unitless = const.m_e.si.value
 
 
 @preserve_signature
-def spectral_density_lite(
+def spectral_density_lite(  # noqa: PLR0917
     wavelengths,
     probe_wavelength: float,
     n: float,

@@ -56,11 +56,11 @@ if "dev" in version:
     git_hash = version.split("dev")[-1].split("+")[-1].split(".")[0]
     version = f"{now.year}.{now.month}.0.dev+{git_hash}"
     version_info_message = f"Setting {version = !r}"
-    logging.info(version_info_message)
+    logging.info(version_info_message)  # noqa: LOG015
 
 if version.startswith("0"):
     version_warning_message = f"Incorrect {version = !r}"
-    logging.warning(version_warning_message)
+    logging.warning(version_warning_message)  # noqa: LOG015
 
 release = version
 

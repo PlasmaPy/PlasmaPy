@@ -166,7 +166,7 @@ class ParticleTracker:
     6.2999999999... s [[-1.73302...e-08  1.31539...e-05  0.00000...e+00]] m
     """
 
-    def __init__(
+    def __init__(  # noqa: PLR0917
         self,
         grids: AbstractGrid | Iterable[AbstractGrid],
         termination_condition: AbstractTerminationCondition | None = None,

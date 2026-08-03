@@ -108,7 +108,7 @@ def impact_parameter_perp(
     n_e={"can_be_negative": False},
     V={"none_shall_pass": True},
 )
-def impact_parameter(  # noqa: ANN201, C901
+def impact_parameter(  # noqa: ANN201, C901, PLR0917
     T: u.Quantity[u.K],
     n_e: u.Quantity[u.m**-3],
     species,
@@ -332,7 +332,7 @@ def impact_parameter(  # noqa: ANN201, C901
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     n_e={"can_be_negative": False},
 )
-def mean_free_path(
+def mean_free_path(  # noqa: PLR0917
     T: u.Quantity[u.K],
     n_e: u.Quantity[u.m**-3],
     species,

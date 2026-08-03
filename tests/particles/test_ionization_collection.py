@@ -896,7 +896,7 @@ physical_properties = ["charge", "mass"]
 @pytest.mark.parametrize("use_rms_charge", [False, True])
 @pytest.mark.parametrize(("base_particle", "ionic_fractions"), example_ionic_fractions)
 @pytest.mark.parametrize("physical_type", physical_properties)
-def test_average_ion_consistency(
+def test_average_ion_consistency(  # noqa: PLR0917
     base_particle,
     ionic_fractions,
     include_neutrals,

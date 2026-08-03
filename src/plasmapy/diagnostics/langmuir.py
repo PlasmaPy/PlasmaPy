@@ -203,7 +203,7 @@ class Characteristic:
 @validate_quantities(
     probe_area={"can_be_negative": False, "can_be_inf": False, "can_be_nan": False},
 )
-def swept_probe_analysis(  # noqa: ANN201, PLR0915
+def swept_probe_analysis(  # noqa: ANN201, PLR0915, PLR0917
     probe_characteristic,
     probe_area: u.Quantity[u.m**2],
     gas_argument,

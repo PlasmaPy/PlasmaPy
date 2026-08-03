@@ -23,7 +23,7 @@ from plasmapy.utils.exceptions import PhysicsError
     T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
 )
 @particle_input
-def thermal_bremsstrahlung(
+def thermal_bremsstrahlung(  # noqa: PLR0917
     frequencies: u.Quantity[u.Hz],
     n_e: u.Quantity[u.m**-3],
     T_e: u.Quantity[u.K],

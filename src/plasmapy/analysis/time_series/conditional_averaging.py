@@ -305,7 +305,7 @@ class ConditionalEvents:
         """
         return self._number_of_events
 
-    def _check_for_value_errors(
+    def _check_for_value_errors(  # noqa: PLR0917
         self,
         distance,
         signal,
