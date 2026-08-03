@@ -43,4 +43,3 @@ again!
    We are currently unable to accept contributions with significant
    AI-generated content due to the limited time available among code
    reviewers.
-
