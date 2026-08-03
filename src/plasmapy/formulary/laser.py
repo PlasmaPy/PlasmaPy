@@ -7,15 +7,15 @@ Functions for calculating quantities associated with laser pulses.
 """
 
 __all__ = [
-    "em_angular_frequency",
-    "electric_field_amplitude",
-    "intensity",
-    "normalized_vector_potential",
+    "Gaussian_Rayleigh_length",
     "Gaussian_beam_waist_radius",
     "Gaussian_power",
-    "Gaussian_Rayleigh_length",
     "Gaussian_spot_size_FWHM",
+    "electric_field_amplitude",
+    "em_angular_frequency",
     "em_wavelength",
+    "intensity",
+    "normalized_vector_potential",
 ]
 __aliases__ = [
     "a0_",

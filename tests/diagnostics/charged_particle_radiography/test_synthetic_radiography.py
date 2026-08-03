@@ -19,7 +19,7 @@ from plasmapy.plasma.grids import CartesianGrid
 rng = np.random.default_rng()
 
 
-def _test_grid(  # noqa: ANN202, C901, PLR0912
+def _test_grid(  # noqa: ANN202, C901, PLR0912, PLR0917
     name: str,
     L: u.Quantity[u.m] = 1 * u.mm,
     num: int = 100,
@@ -208,7 +208,7 @@ def run_1D_example(name: str):  # noqa: ANN201
     return hax, values
 
 
-def run_mesh_example(
+def run_mesh_example(  # noqa: PLR0917
     location=(0, -2, 0) * u.mm,
     extent=(2 * u.mm, 1.5 * u.mm),
     nwires: int = 9,
@@ -820,7 +820,7 @@ def test_gaussian_sphere_analytical_comparison() -> None:
     phi0 = 1.4e5
     W = 15e6
 
-    l = 10  # noqa: E741
+    l = 10
     L = 200
 
     # Define and run the problem

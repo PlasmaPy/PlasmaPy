@@ -83,7 +83,7 @@ from plasmapy.analysis.time_series.excess_statistics import ExcessStatistics
         ),
     ],
 )
-def test_ExcessStatistics(signal, thresholds, time_step, pdf, bins, expected) -> None:
+def test_ExcessStatistics(signal, thresholds, time_step, pdf, bins, expected) -> None:  # noqa: PLR0917
     """Test ExcessStatistics class"""
     excess_stats = ExcessStatistics(signal, thresholds, time_step)
     assert excess_stats.total_time_above_threshold == expected[0]

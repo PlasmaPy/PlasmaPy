@@ -4,8 +4,8 @@ Module for loading isotope data from
 """
 
 __all__ = [
-    "isotope_obj_hook",
     "data_about_isotopes",
+    "isotope_obj_hook",
 ]
 
 import json

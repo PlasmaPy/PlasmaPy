@@ -2,21 +2,21 @@
 
 __all__ = [
     "Characteristic",
-    "swept_probe_analysis",
-    "get_plasma_potential",
-    "get_floating_potential",
-    "get_electron_saturation_current",
-    "get_ion_saturation_current",
-    "get_ion_density_LM",
-    "get_electron_density_LM",
     "extract_exponential_section",
     "extract_ion_section",
-    "get_electron_temperature",
     "extrapolate_electron_current",
-    "reduce_bimaxwellian_temperature",
-    "get_ion_density_OML",
     "extrapolate_ion_current_OML",
     "get_EEDF",
+    "get_electron_density_LM",
+    "get_electron_saturation_current",
+    "get_electron_temperature",
+    "get_floating_potential",
+    "get_ion_density_LM",
+    "get_ion_density_OML",
+    "get_ion_saturation_current",
+    "get_plasma_potential",
+    "reduce_bimaxwellian_temperature",
+    "swept_probe_analysis",
 ]
 
 import copy
@@ -203,7 +203,7 @@ class Characteristic:
 @validate_quantities(
     probe_area={"can_be_negative": False, "can_be_inf": False, "can_be_nan": False},
 )
-def swept_probe_analysis(  # noqa: ANN201, PLR0915
+def swept_probe_analysis(  # noqa: ANN201, PLR0915, PLR0917
     probe_characteristic,
     probe_area: u.Quantity[u.m**2],
     gas_argument,

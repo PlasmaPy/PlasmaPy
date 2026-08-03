@@ -4,8 +4,8 @@ detectors.
 """
 
 __all__ = [
-    "Stack",
     "Layer",
+    "Stack",
 ]
 
 
@@ -56,7 +56,7 @@ class Layer:
         An optional name for the layer.
     """
 
-    def __init__(
+    def __init__(  # noqa: PLR0917
         self,
         thickness: u.Quantity[u.m],
         energy_axis: u.Quantity[u.J],

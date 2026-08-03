@@ -711,7 +711,7 @@ class TestParticleTrajectory:
         )
 
     @classmethod
-    def ExB_trajectory_case_one(  # noqa: ANN206
+    def ExB_trajectory_case_one(  # noqa: ANN206, PLR0917
         cls,
         t,
         E,

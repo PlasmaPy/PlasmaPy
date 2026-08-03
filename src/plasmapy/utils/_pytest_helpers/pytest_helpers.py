@@ -367,7 +367,7 @@ def run_test(  # noqa: C901
     if expected["result"] is None:
         return
 
-    if type(result) != type(expected["result"]):  # noqa: E721
+    if type(result) != type(expected["result"]):
         raise TypeMismatchFail(
             f"The command {call_str} returned "
             f"{_object_name(result)} which has type "

@@ -119,12 +119,12 @@ collisions, leave :math:`μ = 0`\ . To consider them, specify mu and theta.
 
 __all__ = [
     "ClassicalTransport",
+    "electron_thermal_conductivity",
+    "electron_viscosity",
+    "ion_thermal_conductivity",
+    "ion_viscosity",
     "resistivity",
     "thermoelectric_conductivity",
-    "ion_thermal_conductivity",
-    "electron_thermal_conductivity",
-    "ion_viscosity",
-    "electron_viscosity",
 ]
 
 import warnings
@@ -311,7 +311,7 @@ class ClassicalTransport:
         T_i={"can_be_negative": False, "equivalencies": u.temperature_energy()},
         m_i={"can_be_negative": False},
     )
-    def __init__(  # noqa: PLR0912, PLR0915
+    def __init__(  # noqa: PLR0912, PLR0915, PLR0917
         self,
         T_e: u.Quantity[u.K],
         n_e: u.Quantity[u.m**-3],
@@ -815,7 +815,7 @@ class ClassicalTransport:
 
 
 @validate_quantities
-def resistivity(
+def resistivity(  # noqa: PLR0917
     T_e,
     n_e,
     T_i,
@@ -883,7 +883,7 @@ def resistivity(
 
 
 @validate_quantities
-def thermoelectric_conductivity(  # noqa: ANN201
+def thermoelectric_conductivity(  # noqa: ANN201, PLR0917
     T_e,
     n_e,
     T_i,
@@ -925,7 +925,7 @@ def thermoelectric_conductivity(  # noqa: ANN201
 
 
 @validate_quantities
-def ion_thermal_conductivity(
+def ion_thermal_conductivity(  # noqa: PLR0917
     T_e,
     n_e,
     T_i,
@@ -995,7 +995,7 @@ def ion_thermal_conductivity(
 
 
 @validate_quantities
-def electron_thermal_conductivity(
+def electron_thermal_conductivity(  # noqa: PLR0917
     T_e,
     n_e,
     T_i,
@@ -1077,7 +1077,7 @@ def electron_thermal_conductivity(
 
 
 @validate_quantities
-def ion_viscosity(
+def ion_viscosity(  # noqa: PLR0917
     T_e,
     n_e,
     T_i,
@@ -1133,7 +1133,7 @@ def ion_viscosity(
 
 
 @validate_quantities
-def electron_viscosity(
+def electron_viscosity(  # noqa: PLR0917
     T_e,
     n_e,
     T_i,
@@ -1188,7 +1188,7 @@ def electron_viscosity(
     return ct.electron_viscosity
 
 
-def _nondim_thermal_conductivity(  # noqa: ANN202
+def _nondim_thermal_conductivity(  # noqa: ANN202, PLR0917
     hall,
     Z,
     particle,
@@ -1231,7 +1231,7 @@ def _nondim_thermal_conductivity(  # noqa: ANN202
     return kappa_hat
 
 
-def _nondim_viscosity(  # noqa: ANN202
+def _nondim_viscosity(  # noqa: ANN202, PLR0917
     hall,
     Z,
     particle,

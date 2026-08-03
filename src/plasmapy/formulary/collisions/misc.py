@@ -1,9 +1,9 @@
 """Miscellaneous parameters related to particle collisions."""
 
 __all__ = [
-    "mobility",
     "Bethe_stopping",
     "Spitzer_resistivity",
+    "mobility",
 ]
 __lite_funcs__ = ["Bethe_stopping_lite"]
 
@@ -94,7 +94,7 @@ def _replace_nan_velocity_with_thermal_velocity(
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     n_e={"can_be_negative": False},
 )
-def mobility(
+def mobility(  # noqa: PLR0917
     T: u.Quantity[u.K],
     n_e: u.Quantity[u.m**-3],
     species,
@@ -224,7 +224,7 @@ def mobility(
 
 
 def Bethe_stopping_lite(
-    I: npt.NDArray[np.integer[Any] | np.floating[Any]],  # noqa: E741
+    I: npt.NDArray[np.integer[Any] | np.floating[Any]],
     n: npt.NDArray[np.integer[Any] | np.floating[Any]],
     v: npt.NDArray[np.integer[Any] | np.floating[Any]],
     z: int,
@@ -284,7 +284,7 @@ def Bethe_stopping_lite(
 @bind_lite_func(Bethe_stopping_lite)
 @validate_quantities()
 def Bethe_stopping(
-    I: u.Quantity[u.J],  # noqa: E741
+    I: u.Quantity[u.J],
     n: u.Quantity[1 / u.m**3],
     v: u.Quantity[u.m / u.s],
     z: int,
@@ -328,7 +328,7 @@ def Bethe_stopping(
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     n={"can_be_negative": False},
 )
-def Spitzer_resistivity(
+def Spitzer_resistivity(  # noqa: PLR0917
     T: u.Quantity[u.K],
     n: u.Quantity[u.m**-3],
     species,

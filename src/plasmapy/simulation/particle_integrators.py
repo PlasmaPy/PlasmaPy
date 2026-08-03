@@ -32,7 +32,7 @@ class AbstractIntegrator(ABC):
 
     @staticmethod
     @abstractmethod
-    def push(x, v, B, E, q, m, dt):
+    def push(x, v, B, E, q, m, dt):  # noqa: PLR0917
         r"""
         The method for applying a push to the specified ensemble of particles.
 
@@ -53,7 +53,7 @@ class BorisIntegrator(AbstractIntegrator):
         return False
 
     @staticmethod
-    def push(x, v, B, E, q, m, dt):
+    def push(x, v, B, E, q, m, dt):  # noqa: PLR0917
         r"""
         Parameters
         ----------
@@ -196,7 +196,7 @@ class RelativisticBorisIntegrator(AbstractIntegrator):
         return True
 
     @staticmethod
-    def push(x, v, B, E, q, m, dt):
+    def push(x, v, B, E, q, m, dt):  # noqa: PLR0917
         r"""
         Parameters
         ----------

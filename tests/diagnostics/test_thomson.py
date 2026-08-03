@@ -756,7 +756,7 @@ def test_param_to_array_fcns() -> None:
     assert np.mean(arr) == 2
 
 
-def run_fit(  # noqa: C901
+def run_fit(  # noqa: C901, PLR0917
     wavelengths,
     params,
     settings,

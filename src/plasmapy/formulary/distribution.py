@@ -2,11 +2,11 @@
 
 __all__ = [
     "Maxwellian_1D",
-    "Maxwellian_velocity_2D",
-    "Maxwellian_velocity_3D",
     "Maxwellian_speed_1D",
     "Maxwellian_speed_2D",
     "Maxwellian_speed_3D",
+    "Maxwellian_velocity_2D",
+    "Maxwellian_velocity_3D",
     "kappa_velocity_1D",
     "kappa_velocity_3D",
 ]
@@ -33,7 +33,7 @@ def _v_drift_conversion(v_drift: float | u.Quantity[u.m / u.s]):  # noqa: ANN202
 
 
 @particle_input
-def Maxwellian_1D(  # noqa: ANN201
+def Maxwellian_1D(  # noqa: ANN201, PLR0917
     v,
     T,
     particle: ParticleLike = "e-",
@@ -160,7 +160,7 @@ def Maxwellian_1D(  # noqa: ANN201
 
 
 @particle_input
-def Maxwellian_velocity_2D(  # noqa: ANN201
+def Maxwellian_velocity_2D(  # noqa: ANN201, PLR0917
     vx,
     vy,
     T,
@@ -312,7 +312,7 @@ def Maxwellian_velocity_2D(  # noqa: ANN201
 
 
 @particle_input
-def Maxwellian_velocity_3D(  # noqa: ANN201
+def Maxwellian_velocity_3D(  # noqa: ANN201, PLR0917
     vx,
     vy,
     vz,
@@ -479,7 +479,7 @@ def Maxwellian_velocity_3D(  # noqa: ANN201
 
 
 @particle_input
-def Maxwellian_speed_1D(  # noqa: ANN201
+def Maxwellian_speed_1D(  # noqa: ANN201, PLR0917
     v,
     T,
     particle: ParticleLike = "e-",
@@ -607,7 +607,7 @@ def Maxwellian_speed_1D(  # noqa: ANN201
 
 
 @particle_input
-def Maxwellian_speed_2D(  # noqa: ANN201
+def Maxwellian_speed_2D(  # noqa: ANN201, PLR0917
     v,
     T,
     particle: ParticleLike = "e-",
@@ -743,7 +743,7 @@ def Maxwellian_speed_2D(  # noqa: ANN201
 
 
 @particle_input
-def Maxwellian_speed_3D(  # noqa: ANN201
+def Maxwellian_speed_3D(  # noqa: ANN201, PLR0917
     v,
     T,
     particle: ParticleLike = "e-",
@@ -879,7 +879,7 @@ def Maxwellian_speed_3D(  # noqa: ANN201
 
 
 @particle_input
-def kappa_velocity_1D(  # noqa: ANN201
+def kappa_velocity_1D(  # noqa: ANN201, PLR0917
     v,
     T,
     kappa,
@@ -1034,7 +1034,7 @@ def kappa_velocity_1D(  # noqa: ANN201
 
 
 @particle_input
-def kappa_velocity_3D(  # noqa: ANN201
+def kappa_velocity_3D(  # noqa: ANN201, PLR0917
     vx,
     vy,
     vz,

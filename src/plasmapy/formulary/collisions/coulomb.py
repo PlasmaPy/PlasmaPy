@@ -14,8 +14,8 @@ regimes.
 """
 
 __all__ = [
-    "Coulomb_logarithm",
     "Coulomb_cross_section",
+    "Coulomb_logarithm",
 ]
 
 import warnings
@@ -35,7 +35,7 @@ from plasmapy.utils.exceptions import CouplingWarning
     V={"none_shall_pass": True},
 )
 @particles.particle_input
-def Coulomb_logarithm(  # noqa: ANN201
+def Coulomb_logarithm(  # noqa: ANN201, PLR0917
     T: u.Quantity[u.K],
     n_e: u.Quantity[u.m**-3],
     species: (particles.Particle, particles.Particle),

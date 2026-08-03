@@ -3,8 +3,8 @@
 __all__ = [
     "create_alias_dicts",
     "dealias_particle_aliases",
-    "invalid_particle_errmsg",
     "extract_charge",
+    "invalid_particle_errmsg",
     "parse_and_check_atomic_input",
     "parse_and_check_molecule_input",
 ]

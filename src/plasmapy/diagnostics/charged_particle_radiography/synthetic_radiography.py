@@ -207,7 +207,7 @@ class Tracker(ParticleTracker):
         into the standard output while running.
     """
 
-    def __init__(
+    def __init__(  # noqa: PLR0917
         self,
         grids: AbstractGrid | Iterable[AbstractGrid],
         source: u.Quantity[u.m],
@@ -393,7 +393,7 @@ class Tracker(ParticleTracker):
     # Create mesh
     # *************************************************************************
 
-    def add_wire_mesh(
+    def add_wire_mesh(  # noqa: PLR0917
         self,
         location,
         extent,
@@ -524,7 +524,7 @@ class Tracker(ParticleTracker):
 
         self.mesh_list.append(mesh_entry)
 
-    def _apply_wire_mesh(
+    def _apply_wire_mesh(  # noqa: PLR0917
         self,
         location=None,
         wire_radius=None,
@@ -652,7 +652,7 @@ class Tracker(ParticleTracker):
         return theta.flatten(), phi.flatten()
 
     @particles.particle_input
-    def create_particles(
+    def create_particles(  # noqa: PLR0917
         self,
         num_particles,
         particle_energy,
