@@ -326,41 +326,44 @@ lint.ignore = [
   "TRY003",  # enable later?
   "W191",    # handled by ruff format
 ]
-lint.per-file-ignores."**/*.ipynb" = [ "T201", "T203" ]
-lint.per-file-ignores.".github/scripts/*.py" = [ "D103", "INP001" ]
-lint.per-file-ignores."__init__.py" = [ "D104", "E402", "F401", "F402", "F403" ]  # ignore import errors
-lint.per-file-ignores."docs/conf.py" = [ "D100", "D103", "E402", "EXE001", "EXE005", "F401" ]
+lint.extend-per-file-ignores."**/*.ipynb" = [ "T201", "T203" ]
+lint.extend-per-file-ignores.".github/scripts/*.py" = [ "D103", "INP001" ]
+lint.extend-per-file-ignores."__init__.py" = [ "D104", "E402", "F401", "F402", "F403" ]  # ignore import errors
+lint.extend-per-file-ignores."docs/conf.py" = [ "D100", "D103", "E402", "EXE001", "EXE005", "F401" ]
 # Most ruff rule violations in the following files should eventually be fixed
-lint.per-file-ignores."docs/notebooks/analysis/fit_functions.ipynb" = [ "NPY002" ]
-lint.per-file-ignores."docs/notebooks/analysis/nullpoint.ipynb" = [ "D103" ]
-lint.per-file-ignores."docs/notebooks/analysis/swept_langmuir/find_floating_potential.ipynb" = [ "FBT003" ]
-lint.per-file-ignores."docs/notebooks/diagnostics/charged_particle_radiography_film_stacks.ipynb" = [ "B007", "PTH123" ]
-lint.per-file-ignores."docs/notebooks/diagnostics/charged_particle_radiography_particle_tracing.ipynb" = [
+lint.extend-per-file-ignores."docs/notebooks/analysis/fit_functions.ipynb" = [ "NPY002" ]
+lint.extend-per-file-ignores."docs/notebooks/analysis/nullpoint.ipynb" = [ "D103" ]
+lint.extend-per-file-ignores."docs/notebooks/analysis/swept_langmuir/find_floating_potential.ipynb" = [ "FBT003" ]
+lint.extend-per-file-ignores."docs/notebooks/diagnostics/charged_particle_radiography_film_stacks.ipynb" = [
+  "B007",
+  "PTH123"
+]
+lint.extend-per-file-ignores."docs/notebooks/diagnostics/charged_particle_radiography_particle_tracing.ipynb" = [
   "D103",
   "E741",
 ]
-lint.per-file-ignores."docs/notebooks/diagnostics/charged_particle_radiography_particle_tracing_custom_source.ipynb" = [
+lint.extend-per-file-ignores."docs/notebooks/diagnostics/charged_particle_radiography_particle_tracing_custom_source.ipynb" = [
   "NPY002",
 ]
-lint.per-file-ignores."docs/notebooks/diagnostics/charged_particle_radiography_particle_tracing_wire_mesh.ipynb" = [
+lint.extend-per-file-ignores."docs/notebooks/diagnostics/charged_particle_radiography_particle_tracing_wire_mesh.ipynb" = [
   "D103",
 ]
-lint.per-file-ignores."docs/notebooks/diagnostics/thomson_fitting.ipynb" = [ "NPY002", "PD011" ]
-lint.per-file-ignores."docs/notebooks/dispersion/dispersion_function.ipynb" = [ "D103" ]
-lint.per-file-ignores."docs/notebooks/dispersion/stix_dispersion.ipynb" = [ "FBT003" ]
-lint.per-file-ignores."docs/notebooks/formulary/cold_plasma_tensor_elements.ipynb" = [ "FBT003" ]
-lint.per-file-ignores."docs/notebooks/formulary/ExB_drift.ipynb" = [ "B008", "D103" ]
-lint.per-file-ignores."docs/notebooks/langmuir_samples/_generate_noisy.ipynb" = [ "ANN202", "NPY002", "PTH123" ]
-lint.per-file-ignores."docs/notebooks/plasma/grids_cartesian.ipynb" = [ "NPY002", "PLW2901" ]
-lint.per-file-ignores."docs/notebooks/plasma/grids_nonuniform.ipynb" = [ "NPY002" ]
-lint.per-file-ignores."setup.py" = [ "D100" ]
-lint.per-file-ignores."src/plasmapy/analysis/fit_functions.py" = [ "D301" ]
-lint.per-file-ignores."src/plasmapy/analysis/swept_langmuir/__init__.py" = [ "E402" ]
-lint.per-file-ignores."src/plasmapy/formulary/braginskii.py" = [ "C901", "RET503", "RET504" ]
-lint.per-file-ignores."src/plasmapy/plasma/sources/*.py" = [ "D102" ]
-lint.per-file-ignores."src/plasmapy/utils/_pytest_helpers/pytest_helpers.py" = [ "BLE001", "PLR", "SLF001" ]
-lint.per-file-ignores."tests/**/__init__.py" = [ "D104" ]
-lint.per-file-ignores."tests/**/test_*.py" = [
+lint.extend-per-file-ignores."docs/notebooks/diagnostics/thomson_fitting.ipynb" = [ "NPY002", "PD011" ]
+lint.extend-per-file-ignores."docs/notebooks/dispersion/dispersion_function.ipynb" = [ "D103" ]
+lint.extend-per-file-ignores."docs/notebooks/dispersion/stix_dispersion.ipynb" = [ "FBT003" ]
+lint.extend-per-file-ignores."docs/notebooks/formulary/cold_plasma_tensor_elements.ipynb" = [ "FBT003" ]
+lint.extend-per-file-ignores."docs/notebooks/formulary/ExB_drift.ipynb" = [ "B008", "D103" ]
+lint.extend-per-file-ignores."docs/notebooks/langmuir_samples/_generate_noisy.ipynb" = [ "ANN202", "NPY002", "PTH123" ]
+lint.extend-per-file-ignores."docs/notebooks/plasma/grids_cartesian.ipynb" = [ "NPY002", "PLW2901" ]
+lint.extend-per-file-ignores."docs/notebooks/plasma/grids_nonuniform.ipynb" = [ "NPY002" ]
+lint.extend-per-file-ignores."setup.py" = [ "D100" ]
+lint.extend-per-file-ignores."src/plasmapy/analysis/fit_functions.py" = [ "D301" ]
+lint.extend-per-file-ignores."src/plasmapy/analysis/swept_langmuir/__init__.py" = [ "E402" ]
+lint.extend-per-file-ignores."src/plasmapy/formulary/braginskii.py" = [ "C901", "RET503", "RET504" ]
+lint.extend-per-file-ignores."src/plasmapy/plasma/sources/*.py" = [ "D102" ]
+lint.extend-per-file-ignores."src/plasmapy/utils/_pytest_helpers/pytest_helpers.py" = [ "BLE001", "PLR", "SLF001" ]
+lint.extend-per-file-ignores."tests/**/__init__.py" = [ "D104" ]
+lint.extend-per-file-ignores."tests/**/test_*.py" = [
   "D100",
   "D101",
   "D102",
@@ -380,12 +383,12 @@ lint.per-file-ignores."tests/**/test_*.py" = [
   "S101",
   "SLF001",
 ]
-lint.per-file-ignores."tests/formulary/collisions/test_coulomb.py" = [ "PT031" ]
-lint.per-file-ignores."tests/formulary/test_distribution.py" = [ "ARG005" ]
-lint.per-file-ignores."tests/formulary/test_transport.py" = [ "PT031" ]
-lint.per-file-ignores."tests/particles/test_decorators.py" = [ "ARG001", "ARG002" ]
-lint.per-file-ignores."tests/utils/_pytest_helpers/test_pytest_helpers.py" = [ "BLE001", "TRY002" ]
-lint.per-file-ignores."tests/utils/decorators/test_converters.py" = [ "ARG001", "ARG005" ]
+lint.extend-per-file-ignores."tests/formulary/collisions/test_coulomb.py" = [ "PT031" ]
+lint.extend-per-file-ignores."tests/formulary/test_distribution.py" = [ "ARG005" ]
+lint.extend-per-file-ignores."tests/formulary/test_transport.py" = [ "PT031" ]
+lint.extend-per-file-ignores."tests/particles/test_decorators.py" = [ "ARG001", "ARG002" ]
+lint.extend-per-file-ignores."tests/utils/_pytest_helpers/test_pytest_helpers.py" = [ "BLE001", "TRY002" ]
+lint.extend-per-file-ignores."tests/utils/decorators/test_converters.py" = [ "ARG001", "ARG005" ]
 # Allow potentially ambiguous Unicode characters with valid uses in plasma science
 lint.allowed-confusables = [
   "×",
