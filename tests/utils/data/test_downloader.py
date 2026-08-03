@@ -72,7 +72,7 @@ test_urls = [
 def test_http_request(
     downloader_validated: Downloader,
     url: str,
-    expected: None | Exception,
+    expected: Exception | None,
 ) -> None:
     """
     Test exceptions from http downloader
