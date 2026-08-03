@@ -31,6 +31,10 @@ jobs:
     - name: Run Nox session to upgrade uv.lock
       run: uvx nox --session lock
 
+    - name: Perform static type checking autofixes with ty (continue on failure)
+      run: uvx nox --session ty -- --fix
+      continue-on-error: true
+
     - name: Add ignore flags for ty (continue on failure)
       run: uvx nox --session ty -- --add-ignore
       continue-on-error: true
@@ -56,7 +60,7 @@ jobs:
     - name: Create pull request
       uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
       with:
-        title: Automatically upgrade locked Python environment used in CI
+        title: '[plasmapy-requirements-bot] Upgrade uv lockfile'
         commit-message: Upgrade uv.lock with 'nox --session lock'
         # The PR body message is generated dynamically via `nox --session lock` in CI
         body-path: .github/content/upgrade-uv-lock-pr-body.md
