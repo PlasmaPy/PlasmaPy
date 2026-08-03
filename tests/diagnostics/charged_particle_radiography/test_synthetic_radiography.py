@@ -820,7 +820,7 @@ def test_gaussian_sphere_analytical_comparison() -> None:
     phi0 = 1.4e5
     W = 15e6
 
-    l = 10
+    l = 10  # noqa: E741
     L = 200
 
     # Define and run the problem
