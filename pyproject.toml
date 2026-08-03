@@ -198,7 +198,7 @@ lint.extend-select = [
   "DTZ",
   "EM",
   "EXE",
-  "future-required-type-annotation",
+  "FA102",
   "FBT",
   "FIX",
   "FLY",
@@ -225,54 +225,53 @@ lint.extend-select = [
   "Q",
   "RET",
   "RSE",
-  "ambiguous-unicode-character-string",
-  "ambiguous-unicode-character-docstring",
-  "ambiguous-unicode-character-comment",
-  "collection-literal-concatenation",
-  "asyncio-dangling-task",
-  "zip-instead-of-pairwise",
-  "mutable-dataclass-default",
-  "function-call-in-dataclass-default-argument",
-  "explicit-f-string-type-conversion",
-  "mutable-class-default",
-  "implicit-optional",
-  "unnecessary-iterable-allocation-for-first-element",
-  "invalid-index-type",
-  "quadratic-list-summation",
-  "assignment-in-assert",
-  "unnecessary-key-check",
-  "never-union",
-  "parenthesize-chained-operators",
-  "unsorted-dunder-slots",
-  "mutable-fromkeys-value",
-  "default-factory-kwarg",
-  "invalid-formatter-suppression-comment",
-  "assert-with-print-message",
-  "decimal-from-float-literal",
-  "post-init-default",
-  "useless-if-else",
-  "unnecessary-empty-iterable-within-deque-call",
-  "invalid-assert-message-literal-argument",
-  "unnecessary-nested-literal",
-  "pytest-raises-ambiguous-pattern",
-  "unnecessary-cast-to-int",
-  "map-int-version-parsing",
-  "dataclass-enum",
-  "if-key-in-dict-del",
-  "class-with-mixed-type-vars",
-  "unnecessary-round",
-  "starmap-zip",
-  "unused-unpacked-variable",
-  "in-empty-collection",
-  "legacy-form-pytest-raises",
-  "non-octal-permissions",
-  "unused-noqa",
-  "redirected-noqa",
-  "invalid-rule-code",
-  "invalid-suppression-comment",
-  "unmatched-suppression-comment",
-  "invalid-pyproject-toml",
-  "rule-codes-in-selectors",
+  "RUF001",
+  "RUF002",
+  "RUF003",
+  "RUF005",
+  "RUF006",
+  "RUF007",
+  "RUF008",
+  "RUF009",
+  "RUF010",
+  "RUF012",
+  "RUF013",
+  "RUF015",
+  "RUF016",
+  "RUF017",
+  "RUF018",
+  "RUF019",
+  "RUF020",
+  "RUF021",
+  "RUF023",
+  "RUF024",
+  "RUF026",
+  "RUF028",
+  "RUF030",
+  "RUF032",
+  "RUF033",
+  "RUF034",
+  "RUF037",
+  "RUF040",
+  "RUF041",
+  "RUF043",
+  "RUF046",
+  "RUF048",
+  "RUF049",
+  "RUF051",
+  "RUF053",
+  "RUF057",
+  "RUF058",
+  "RUF059",
+  "RUF060",
+  "RUF061",
+  "RUF064",
+  "RUF100",
+  "RUF101",
+  "RUF102",
+  "RUF103",
+  "RUF104",
+  "RUF200",
   "S",
   "SIM",
   "SLF",
@@ -288,105 +287,105 @@ lint.extend-select = [
   "YTT",
 ]
 lint.ignore = [
-  "missing-type-function-argument",  # add file-wide ignore comments?
-  "missing-trailing-comma",  # handled by ruff format
-  "prohibited-trailing-comma",  # adding trailing commas leads to simpler diffs
-  "unnecessary-multiline-docstring",    # incompatible with multiline short summaries
-  "incorrect-blank-line-before-class",    # handled by ruff format
-  "missing-blank-line-after-summary",    # incompatible with multiline short summaries
-  "docstring-tab-indentation",    # handled by ruff format
-  "triple-single-quotes",    # handled by ruff format
-  "non-imperative-mood",    # enable later?
-  "indentation-with-invalid-multiple",    # handled by ruff format
-  "indentation-with-invalid-multiple-comment",    # handled by ruff format
-  "over-indented",    # handled by ruff format
-  "line-too-long",    # handled by ruff format
-  "raw-string-in-exception",   # enable later in focused PR
-  "f-string-in-exception",   # enable later in focused PR
-  "invalid-function-name",    # inconsistent with capitalization from physics notation
-  "invalid-argument-name",    # inconsistent with capitalization from physics notation
-  "non-lowercase-variable-in-function",    # inconsistent with capitalization from physics notation
-  "mixed-case-variable-in-global-scope",    # inconsistent with capitalization from physics notation
-  "non-ascii-name", # flags variables used as mathematical symbols
-  "non-ascii-import-name", # flags variables used as mathematical symbols
-  "invalid-all-format", # flags `__all__ += __lite_funcs`
-  "too-many-arguments", # too many situations where lots of arguments are justified
-  "magic-value-comparison", # would need case-by-case evaluations
-  "pytest-raises-too-broad",   # would require using match keyword argument
-  "pytest-raises-with-multiple-statements",   # enable later?
-  "pytest-fixture-param-without-value",   # enable later?
-  "collections-named-tuple",  # enable later?
-  "bad-quotes-multiline-string",    # handled by ruff format
-  "bad-quotes-docstring",    # handled by ruff format
-  "avoidable-escaped-quote",    # handled by ruff format
-  "unnecessary-escaped-quote",    # handled by ruff format
-  "superfluous-else-return",  # enable later?
-  "superfluous-else-raise",  # enable later?
-  "missing-todo-author",   # enable later?
-  "missing-todo-link",   # enable later?
-  "raise-vanilla-args",  # enable later?
-  "tab-indentation",    # handled by ruff format
+  "ANN001",  # add file-wide ignore comments?
+  "COM812",  # handled by ruff format
+  "COM819",  # adding trailing commas leads to simpler diffs
+  "D200",    # incompatible with multiline short summaries
+  "D203",    # handled by ruff format
+  "D205",    # incompatible with multiline short summaries
+  "D206",    # handled by ruff format
+  "D300",    # handled by ruff format
+  "D401",    # enable later?
+  "E111",    # handled by ruff format
+  "E114",    # handled by ruff format
+  "E117",    # handled by ruff format
+  "E501",    # handled by ruff format
+  "EM101",   # enable later in focused PR
+  "EM102",   # enable later in focused PR
+  "N802",    # inconsistent with capitalization from physics notation
+  "N803",    # inconsistent with capitalization from physics notation
+  "N806",    # inconsistent with capitalization from physics notation
+  "N816",    # inconsistent with capitalization from physics notation
+  "PLC2401", # flags variables used as mathematical symbols
+  "PLC2403", # flags variables used as mathematical symbols
+  "PLE0605", # flags `__all__ += __lite_funcs`
+  "PLR0913", # too many situations where lots of arguments are justified
+  "PLR2004", # would need case-by-case evaluations
+  "PT011",   # would require using match keyword argument
+  "PT012",   # enable later?
+  "PT019",   # enable later?
+  "PYI024",  # enable later?
+  "Q001",    # handled by ruff format
+  "Q002",    # handled by ruff format
+  "Q003",    # handled by ruff format
+  "Q004",    # handled by ruff format
+  "RET505",  # enable later?
+  "RET506",  # enable later?
+  "TD002",   # enable later?
+  "TD003",   # enable later?
+  "TRY003",  # enable later?
+  "W191",    # handled by ruff format
 ]
-lint.per-file-ignores."**/*.ipynb" = [ "print", "p-print" ]
-lint.per-file-ignores.".github/scripts/*.py" = [ "undocumented-public-function", "implicit-namespace-package" ]
-lint.per-file-ignores."__init__.py" = [ "undocumented-public-package", "module-import-not-at-top-of-file", "unused-import", "import-shadowed-by-loop-var", "undefined-local-with-import-star" ]  # ignore import errors
-lint.per-file-ignores."docs/conf.py" = [ "undocumented-public-module", "undocumented-public-function", "module-import-not-at-top-of-file", "shebang-not-executable", "shebang-not-first-line", "unused-import" ]
+lint.per-file-ignores."**/*.ipynb" = [ "T201", "T203" ]
+lint.per-file-ignores.".github/scripts/*.py" = [ "D103", "INP001" ]
+lint.per-file-ignores."__init__.py" = [ "D104", "E402", "F401", "F402", "F403" ]  # ignore import errors
+lint.per-file-ignores."docs/conf.py" = [ "D100", "D103", "E402", "EXE001", "EXE005", "F401" ]
 # Most ruff rule violations in the following files should eventually be fixed
-lint.per-file-ignores."docs/notebooks/analysis/fit_functions.ipynb" = [ "numpy-legacy-random" ]
-lint.per-file-ignores."docs/notebooks/analysis/nullpoint.ipynb" = [ "undocumented-public-function" ]
-lint.per-file-ignores."docs/notebooks/analysis/swept_langmuir/find_floating_potential.ipynb" = [ "boolean-positional-value-in-call" ]
-lint.per-file-ignores."docs/notebooks/diagnostics/charged_particle_radiography_film_stacks.ipynb" = [ "unused-loop-control-variable", "builtin-open" ]
+lint.per-file-ignores."docs/notebooks/analysis/fit_functions.ipynb" = [ "NPY002" ]
+lint.per-file-ignores."docs/notebooks/analysis/nullpoint.ipynb" = [ "D103" ]
+lint.per-file-ignores."docs/notebooks/analysis/swept_langmuir/find_floating_potential.ipynb" = [ "FBT003" ]
+lint.per-file-ignores."docs/notebooks/diagnostics/charged_particle_radiography_film_stacks.ipynb" = [ "B007", "PTH123" ]
 lint.per-file-ignores."docs/notebooks/diagnostics/charged_particle_radiography_particle_tracing.ipynb" = [
-  "undocumented-public-function",
-  "ambiguous-variable-name",
+  "D103",
+  "E741",
 ]
 lint.per-file-ignores."docs/notebooks/diagnostics/charged_particle_radiography_particle_tracing_custom_source.ipynb" = [
-  "numpy-legacy-random",
+  "NPY002",
 ]
 lint.per-file-ignores."docs/notebooks/diagnostics/charged_particle_radiography_particle_tracing_wire_mesh.ipynb" = [
-  "undocumented-public-function",
+  "D103",
 ]
-lint.per-file-ignores."docs/notebooks/diagnostics/thomson_fitting.ipynb" = [ "numpy-legacy-random", "pandas-use-of-dot-values" ]
-lint.per-file-ignores."docs/notebooks/dispersion/dispersion_function.ipynb" = [ "undocumented-public-function" ]
-lint.per-file-ignores."docs/notebooks/dispersion/stix_dispersion.ipynb" = [ "boolean-positional-value-in-call" ]
-lint.per-file-ignores."docs/notebooks/formulary/cold_plasma_tensor_elements.ipynb" = [ "boolean-positional-value-in-call" ]
-lint.per-file-ignores."docs/notebooks/formulary/ExB_drift.ipynb" = [ "function-call-in-default-argument", "undocumented-public-function" ]
-lint.per-file-ignores."docs/notebooks/langmuir_samples/_generate_noisy.ipynb" = [ "missing-return-type-private-function", "numpy-legacy-random", "builtin-open" ]
-lint.per-file-ignores."docs/notebooks/plasma/grids_cartesian.ipynb" = [ "numpy-legacy-random", "redefined-loop-name" ]
-lint.per-file-ignores."docs/notebooks/plasma/grids_nonuniform.ipynb" = [ "numpy-legacy-random" ]
-lint.per-file-ignores."setup.py" = [ "undocumented-public-module" ]
-lint.per-file-ignores."src/plasmapy/analysis/fit_functions.py" = [ "escape-sequence-in-docstring" ]
-lint.per-file-ignores."src/plasmapy/analysis/swept_langmuir/__init__.py" = [ "module-import-not-at-top-of-file" ]
-lint.per-file-ignores."src/plasmapy/formulary/braginskii.py" = [ "complex-structure", "implicit-return", "unnecessary-assign" ]
-lint.per-file-ignores."src/plasmapy/plasma/sources/*.py" = [ "undocumented-public-method" ]
-lint.per-file-ignores."src/plasmapy/utils/_pytest_helpers/pytest_helpers.py" = [ "blind-except", "PLR", "private-member-access" ]
-lint.per-file-ignores."tests/**/__init__.py" = [ "undocumented-public-package" ]
+lint.per-file-ignores."docs/notebooks/diagnostics/thomson_fitting.ipynb" = [ "NPY002", "PD011" ]
+lint.per-file-ignores."docs/notebooks/dispersion/dispersion_function.ipynb" = [ "D103" ]
+lint.per-file-ignores."docs/notebooks/dispersion/stix_dispersion.ipynb" = [ "FBT003" ]
+lint.per-file-ignores."docs/notebooks/formulary/cold_plasma_tensor_elements.ipynb" = [ "FBT003" ]
+lint.per-file-ignores."docs/notebooks/formulary/ExB_drift.ipynb" = [ "B008", "D103" ]
+lint.per-file-ignores."docs/notebooks/langmuir_samples/_generate_noisy.ipynb" = [ "ANN202", "NPY002", "PTH123" ]
+lint.per-file-ignores."docs/notebooks/plasma/grids_cartesian.ipynb" = [ "NPY002", "PLW2901" ]
+lint.per-file-ignores."docs/notebooks/plasma/grids_nonuniform.ipynb" = [ "NPY002" ]
+lint.per-file-ignores."setup.py" = [ "D100" ]
+lint.per-file-ignores."src/plasmapy/analysis/fit_functions.py" = [ "D301" ]
+lint.per-file-ignores."src/plasmapy/analysis/swept_langmuir/__init__.py" = [ "E402" ]
+lint.per-file-ignores."src/plasmapy/formulary/braginskii.py" = [ "C901", "RET503", "RET504" ]
+lint.per-file-ignores."src/plasmapy/plasma/sources/*.py" = [ "D102" ]
+lint.per-file-ignores."src/plasmapy/utils/_pytest_helpers/pytest_helpers.py" = [ "BLE001", "PLR", "SLF001" ]
+lint.per-file-ignores."tests/**/__init__.py" = [ "D104" ]
 lint.per-file-ignores."tests/**/test_*.py" = [
-  "undocumented-public-module",
-  "undocumented-public-class",
-  "undocumented-public-method",
-  "undocumented-public-function",
-  "undocumented-public-package",
-  "new-line-after-last-paragraph",
-  "missing-trailing-period",
-  "non-imperative-mood",
-  "docstring-missing-returns",
-  "docstring-missing-exception",
-  "implicit-namespace-package",
-  "invalid-class-name",
-  "invalid-function-name",
-  "import-private-name",
-  "no-self-use",
-  "mutable-class-default",
-  "assert",
-  "private-member-access",
+  "D100",
+  "D101",
+  "D102",
+  "D103",
+  "D104",
+  "D209",
+  "D400",
+  "D401",
+  "DOC201",
+  "DOC501",
+  "INP001",
+  "N801",
+  "N802",
+  "PLC2701",
+  "PLR6301",
+  "RUF012",
+  "S101",
+  "SLF001",
 ]
-lint.per-file-ignores."tests/formulary/collisions/test_coulomb.py" = [ "pytest-warns-with-multiple-statements" ]
-lint.per-file-ignores."tests/formulary/test_distribution.py" = [ "unused-lambda-argument" ]
-lint.per-file-ignores."tests/formulary/test_transport.py" = [ "pytest-warns-with-multiple-statements" ]
-lint.per-file-ignores."tests/particles/test_decorators.py" = [ "unused-function-argument", "unused-method-argument" ]
-lint.per-file-ignores."tests/utils/_pytest_helpers/test_pytest_helpers.py" = [ "blind-except", "raise-vanilla-class" ]
-lint.per-file-ignores."tests/utils/decorators/test_converters.py" = [ "unused-function-argument", "unused-lambda-argument" ]
+lint.per-file-ignores."tests/formulary/collisions/test_coulomb.py" = [ "PT031" ]
+lint.per-file-ignores."tests/formulary/test_distribution.py" = [ "ARG005" ]
+lint.per-file-ignores."tests/formulary/test_transport.py" = [ "PT031" ]
+lint.per-file-ignores."tests/particles/test_decorators.py" = [ "ARG001", "ARG002" ]
+lint.per-file-ignores."tests/utils/_pytest_helpers/test_pytest_helpers.py" = [ "BLE001", "TRY002" ]
+lint.per-file-ignores."tests/utils/decorators/test_converters.py" = [ "ARG001", "ARG005" ]
 # Allow potentially ambiguous Unicode characters with valid uses in plasma science
 lint.allowed-confusables = [
   "×",
