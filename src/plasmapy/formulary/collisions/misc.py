@@ -224,7 +224,7 @@ def mobility(  # noqa: PLR0917
 
 
 def Bethe_stopping_lite(
-    I: npt.NDArray[np.integer[Any] | np.floating[Any]],
+    I: npt.NDArray[np.integer[Any] | np.floating[Any]],  # noqa: E741
     n: npt.NDArray[np.integer[Any] | np.floating[Any]],
     v: npt.NDArray[np.integer[Any] | np.floating[Any]],
     z: int,
@@ -284,7 +284,7 @@ def Bethe_stopping_lite(
 @bind_lite_func(Bethe_stopping_lite)
 @validate_quantities()
 def Bethe_stopping(
-    I: u.Quantity[u.J],
+    I: u.Quantity[u.J],  # noqa: E741
     n: u.Quantity[1 / u.m**3],
     v: u.Quantity[u.m / u.s],
     z: int,
