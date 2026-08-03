@@ -1,10 +1,15 @@
 ## Instructions
 
-**If all checks pass ✅, please merge this pull request.** If any checks fail due to a breaking change in a dependency 🚨, please address the problems before merging. Thank you!
+**If all checks pass ✅, please merge this pull request.** If any checks fail due to a breaking change in a dependency 🚨, please address the problems before merging.
 
 ## Description
 
 This pull request upgrades [`uv.lock`]: the cross-platform lockfile that specifies the Python environments used when running tests, building documentation, and performing continuous integration (CI) checks. Locking and periodically updating the Python environment lets us quarantine breaking changes before they start causing spontaneous failures on unrelated pull requests, while ensuring that everyone is using the same versions of dependencies to perform checks.
+
+The lockfile was upgraded via `nox --session lock` (see the `lock` function in [`noxfile.py`]), which uses [`uv lock --upgrade`] to upgrade `uv.lock` with a [dependency cooldown]. This workflow runs the [ty] static type checker to update `# ty:ignore` comments and perform autofixes, following by any autofixes made when running [pre-commit].
+
+> [!NOTE]
+> If it is necessary to temporarily place an upper limit on a dependency in [`pyproject.toml`], please [create an issue] to remove this upper limit before the next release.
 
 ## CI snapshot
 
@@ -15,18 +20,11 @@ This pull request upgrades [`uv.lock`]: the cross-platform lockfile that specifi
 [![PyHC Actions](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/pyhc-actions.yml/badge.svg)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/pyhc-actions.yml)
 [![upgrade uv.lock](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/upgrade-uv-lock.yml/badge.svg)](https://github.com/PlasmaPy/PlasmaPy/actions/workflows/upgrade-uv-lock.yml)
 
-## Notes
-
-- This upgrade was performed via `nox --session lock` (see [`noxfile.py`]), which uses [`uv lock --upgrade`] to upgrade `uv.lock` with a [dependency cooldown].
-
-- Because the [ty] static type checker rule set is still evolving, this workflow adds `# ty: ignore` comments when new errors arise.
-
-- If it is necessary to temporarily place an upper limit on a dependency in [`pyproject.toml`], please [create an issue] to remove this upper limit before the next release.
-
-## Updated dependencies
+## Dependencies upgraded by workflow
 
 [create an issue]: https://github.com/PlasmaPy/PlasmaPy/issues/new?title=Remove+upper+limit+on+version+of
 [dependency cooldown]: https://blog.yossarian.net/2025/11/21/We-should-all-be-using-dependency-cooldowns
+[pre-commit]: https://pre-commit.com
 [ty]: https://docs.astral.sh/ty
 [`noxfile.py`]: https://github.com/PlasmaPy/PlasmaPy/blob/main/noxfile.py#:~:text=def%20lock
 [`pyproject.toml`]: https://github.com/PlasmaPy/PlasmaPy/blob/main/pyproject.toml
