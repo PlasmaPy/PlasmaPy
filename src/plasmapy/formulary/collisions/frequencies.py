@@ -1,8 +1,8 @@
 """Frequencies related to particle collisions."""
 
 __all__ = [
-    "SingleParticleCollisionFrequencies",
     "MaxwellianCollisionFrequencies",
+    "SingleParticleCollisionFrequencies",
     "collision_frequency",
     "fundamental_electron_collision_freq",
     "fundamental_ion_collision_freq",

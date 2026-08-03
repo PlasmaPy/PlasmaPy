@@ -2,21 +2,21 @@
 
 __all__ = [
     "Characteristic",
-    "swept_probe_analysis",
-    "get_plasma_potential",
-    "get_floating_potential",
-    "get_electron_saturation_current",
-    "get_ion_saturation_current",
-    "get_ion_density_LM",
-    "get_electron_density_LM",
     "extract_exponential_section",
     "extract_ion_section",
-    "get_electron_temperature",
     "extrapolate_electron_current",
-    "reduce_bimaxwellian_temperature",
-    "get_ion_density_OML",
     "extrapolate_ion_current_OML",
     "get_EEDF",
+    "get_electron_density_LM",
+    "get_electron_saturation_current",
+    "get_electron_temperature",
+    "get_floating_potential",
+    "get_ion_density_LM",
+    "get_ion_density_OML",
+    "get_ion_saturation_current",
+    "get_plasma_potential",
+    "reduce_bimaxwellian_temperature",
+    "swept_probe_analysis",
 ]
 
 import copy

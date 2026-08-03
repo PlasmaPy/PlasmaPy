@@ -14,8 +14,8 @@ regimes.
 """
 
 __all__ = [
-    "Coulomb_logarithm",
     "Coulomb_cross_section",
+    "Coulomb_logarithm",
 ]
 
 import warnings

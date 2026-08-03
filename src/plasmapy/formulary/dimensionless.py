@@ -10,13 +10,13 @@ pressure.
 """
 
 __all__ = [
-    "beta",
     "Debye_number",
     "Hall_parameter",
-    "Mag_Reynolds",
-    "quantum_theta",
-    "Reynolds_number",
     "Lundquist_number",
+    "Mag_Reynolds",
+    "Reynolds_number",
+    "beta",
+    "quantum_theta",
 ]
 __aliases__ = ["betaH_", "nD_", "Re_", "Rm_"]
 

@@ -1,11 +1,11 @@
 """Fundamental frequencies for a plasma."""
 
 __all__ = [
+    "Buchsbaum_frequency",
     "gyrofrequency",
     "lower_hybrid_frequency",
     "plasma_frequency",
     "upper_hybrid_frequency",
-    "Buchsbaum_frequency",
 ]
 __aliases__ = ["oc_", "wc_", "wlh_", "wp_", "wuh_"]
 __lite_funcs__ = ["plasma_frequency_lite"]

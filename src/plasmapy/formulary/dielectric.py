@@ -1,11 +1,11 @@
 """Plasma dielectric parameters."""
 
 __all__ = [
-    "cold_plasma_permittivity_SDP",
-    "cold_plasma_permittivity_LRP",
-    "permittivity_1D_Maxwellian",
     "RotatingTensorElements",
     "StixTensorElements",
+    "cold_plasma_permittivity_LRP",
+    "cold_plasma_permittivity_SDP",
+    "permittivity_1D_Maxwellian",
 ]
 __lite_funcs__ = ["permittivity_1D_Maxwellian_lite"]
 

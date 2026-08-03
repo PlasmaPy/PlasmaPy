@@ -1,6 +1,6 @@
 """Lengths related to particle collisions."""
 
-__all__ = ["impact_parameter_perp", "impact_parameter", "mean_free_path"]
+__all__ = ["impact_parameter", "impact_parameter_perp", "mean_free_path"]
 
 
 import astropy.units as u

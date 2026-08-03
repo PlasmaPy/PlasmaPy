@@ -13,9 +13,9 @@ https://www.python.org/download/releases/2.1.1/license/
 """
 
 __all__ = [
-    "to_roman",
     "from_roman",
     "is_roman_numeral",
+    "to_roman",
 ]
 
 import re

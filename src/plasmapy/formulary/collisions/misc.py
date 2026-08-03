@@ -1,9 +1,9 @@
 """Miscellaneous parameters related to particle collisions."""
 
 __all__ = [
-    "mobility",
     "Bethe_stopping",
     "Spitzer_resistivity",
+    "mobility",
 ]
 __lite_funcs__ = ["Bethe_stopping_lite"]
 
@@ -224,7 +224,7 @@ def mobility(
 
 
 def Bethe_stopping_lite(
-    I: npt.NDArray[np.integer[Any] | np.floating[Any]],  # noqa: E741
+    I: npt.NDArray[np.integer[Any] | np.floating[Any]],
     n: npt.NDArray[np.integer[Any] | np.floating[Any]],
     v: npt.NDArray[np.integer[Any] | np.floating[Any]],
     z: int,
@@ -284,7 +284,7 @@ def Bethe_stopping_lite(
 @bind_lite_func(Bethe_stopping_lite)
 @validate_quantities()
 def Bethe_stopping(
-    I: u.Quantity[u.J],  # noqa: E741
+    I: u.Quantity[u.J],
     n: u.Quantity[1 / u.m**3],
     v: u.Quantity[u.m / u.s],
     z: int,

@@ -119,12 +119,12 @@ collisions, leave :math:`μ = 0`\ . To consider them, specify mu and theta.
 
 __all__ = [
     "ClassicalTransport",
+    "electron_thermal_conductivity",
+    "electron_viscosity",
+    "ion_thermal_conductivity",
+    "ion_viscosity",
     "resistivity",
     "thermoelectric_conductivity",
-    "ion_thermal_conductivity",
-    "electron_thermal_conductivity",
-    "ion_viscosity",
-    "electron_viscosity",
 ]
 
 import warnings

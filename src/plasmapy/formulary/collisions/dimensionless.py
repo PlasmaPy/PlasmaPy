@@ -1,8 +1,8 @@
 """Dimensionless numbers related to particle collisions."""
 
 __all__ = [
-    "coupling_parameter",
     "Knudsen_number",
+    "coupling_parameter",
 ]
 
 from typing import Literal

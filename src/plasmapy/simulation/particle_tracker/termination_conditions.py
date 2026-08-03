@@ -4,9 +4,9 @@ Module containing termination conditions for the particle tracker.
 
 __all__ = [
     "AbstractTerminationCondition",
-    "TimeElapsedTerminationCondition",
-    "NoParticlesOnGridsTerminationCondition",
     "AllParticlesOffGridTerminationCondition",
+    "NoParticlesOnGridsTerminationCondition",
+    "TimeElapsedTerminationCondition",
 ]
 
 from abc import ABC, abstractmethod
@@ -134,7 +134,7 @@ class NoParticlesOnGridsTerminationCondition(AbstractTerminationCondition):
     @property
     def is_finished(self) -> bool:
         """The simulation is finished when no more particles are on any grids."""
-        is_not_on_grid = self.tracker.on_any_grid == False  # noqa: E712
+        is_not_on_grid = self.tracker.on_any_grid == False
 
         return is_not_on_grid.all() and self.tracker.iteration_number > 0
 

@@ -1,9 +1,9 @@
 """Functionality for JSON deserialization of particle objects."""
 
 __all__ = [
+    "ParticleJSONDecoder",
     "json_load_particle",
     "json_loads_particle",
-    "ParticleJSONDecoder",
 ]
 
 import json

@@ -2,8 +2,8 @@
 
 __all__ = [
     "Alfven_speed",
-    "kappa_thermal_speed",
     "ion_sound_speed",
+    "kappa_thermal_speed",
     "thermal_speed",
     "thermal_speed_coefficients",
     "thermal_speed_lite",

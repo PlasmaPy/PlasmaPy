@@ -4,8 +4,8 @@ detectors.
 """
 
 __all__ = [
-    "Stack",
     "Layer",
+    "Stack",
 ]
 
 

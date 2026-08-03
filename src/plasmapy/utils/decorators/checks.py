@@ -3,12 +3,12 @@ Decorator for checking input/output arguments of functions.
 """
 
 __all__ = [
-    "check_values",
-    "check_units",
-    "check_relativistic",
     "CheckBase",
     "CheckUnits",
     "CheckValues",
+    "check_relativistic",
+    "check_units",
+    "check_values",
 ]
 
 import collections

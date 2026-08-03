@@ -1,8 +1,8 @@
 """Particle drift velocities."""
 
 __all__ = [
-    "diamagnetic_drift",
     "ExB_drift",
+    "diamagnetic_drift",
     "force_drift",
     "vd_",
     "veb_",
