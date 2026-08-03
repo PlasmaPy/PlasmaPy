@@ -18,4 +18,7 @@ which has information on:
 
 You can also find us during our [**community meetings**](https://www.plasmapy.org/meetings/weekly).
 
+> [!NOTE]
+> We are currently unable to accept contributions with significant AI-generated content due to the limited time available among code reviewers.
+
 We thank you once again!

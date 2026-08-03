@@ -81,6 +81,9 @@ If you are interested in contributing, please check out our [contributor guide] 
 There are a number of [good first issues] in our GitHub repository.
 New contributors are very welcome!
 
+> [!NOTE]
+> We are currently unable to accept contributions with significant AI-generated content due to the limited time available among code reviewers.
+
 ## Events
 
 PlasmaPy [meetings] that are listed on our [calendar].
