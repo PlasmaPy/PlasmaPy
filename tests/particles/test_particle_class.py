@@ -1164,12 +1164,14 @@ custom_particles_from_json_tests = [
     (
         CustomParticle,
         {"mass": 5.12 * u.kg, "charge": 6.2 * u.C, "symbol": "ξ"},
-        '{"plasmapy_particle": {"type": "CustomParticle", \
+        (
+            '{"plasmapy_particle": {"type": "CustomParticle", \
         "module": "plasmapy.particles.particle_class", \
         "date_created": "...", "__init__": { \
             "args": [], \
             "kwargs": {"mass": "5.12 kg", "charge": "6.2 C", '
-        '"symbol": "ξ"}}}}',
+            '"symbol": "ξ"}}}}'
+        ),
         None,
     ),
     (
