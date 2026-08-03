@@ -20,6 +20,9 @@ __all__ = [
     "stable_isotopes",
     "standard_atomic_weight",
     "stopping_power",
+    "areal_range_from_energy",
+    "energy_from_areal_range",
+    "transmitted_energy",
 ]
 
 from collections.abc import Callable
@@ -1133,6 +1136,47 @@ def _is_electron(arg: Any) -> bool:  # noqa: ANN401
     )
 
 
+def _get_NIST_category_name(incident_particle: ParticleLike) -> str:
+    if incident_particle == Particle("He-4"):
+        return "helium_ions"
+    elif incident_particle == Particle("e-"):
+        raise NotImplementedError(
+            "Stopping calculations for electrons have not been implemented yet!"
+        )
+    elif incident_particle in {Particle("H+"), Particle("p+")}:
+        return "protons"
+    else:
+        raise ValueError(
+            "Please pass a valid particle type for stopping power calculations."
+        )
+
+
+def _read_NIST_stopping_data(incident_particle, material):
+    """
+    Retrieve data from the NIST database on the provided material.
+
+    The relevant database is determined by the provided incident particle.
+    """
+    group_name = _get_NIST_category_name(incident_particle)
+    # TODO: figure out a better way of handling the Downloader() here (i.e. singleton?)  # noqa: FIX002
+    nist_data_path = Downloader().get_file("NIST_STAR.hdf5")
+
+    # Validate particle input. Currently, the only supported particles are protons and electrons.
+    with h5py.File(nist_data_path, "r") as nist_data:
+        group_data = nist_data[group_name]
+        if material not in group_data:
+            raise ValueError(
+                f"Please pass a valid material string! Material {material} not found in {group_name}."
+            )
+
+        # Energies are not included in the material data. They must be loaded from a separate data set.
+        # To differentiate from "energies" which refers to the user provided energies, we use "baseline_energies"
+        baseline_energies_data = np.copy(group_data["energy"])
+        material_data = np.copy(group_data[material])
+
+    return baseline_energies_data, material_data
+
+
 @particle_input
 @validate_quantities(energies=u.MeV)
 def stopping_power(
@@ -1142,7 +1186,7 @@ def stopping_power(
     return_interpolator: bool = False,  # noqa: FBT001, FBT002
     component: Literal["total", "electronic", "nuclear"] = "total",
 ) -> (
-    tuple[u.Quantity, u.Quantity]
+    u.Quantity[u.MeV * u.cm**2 / u.g]
     | Callable[[u.Quantity[u.J]], u.Quantity[u.MeV * u.cm**2 / u.g]]
 ):
     """
@@ -1159,7 +1203,7 @@ def stopping_power(
         The material the particle is being stopped in. See notes for
         details on supported materials.
 
-    energies : `~astropy.units.Quantity`, default: See notes.
+    energies : `~astropy.units.Quantity`, default: `None`
         The particle kinetic energies for which the stopping power is
         calculated.
 
@@ -1167,8 +1211,7 @@ def stopping_power(
         The function will by default return a tuple of energies and their
         associated stopping power. By setting this argument to `True`, the
         function will instead return a `Callable`, which takes in energies and
-        will return the associated stopping energies. Under the hood, this is
-        just a wrapped instance of `~scipy.interpolate.CubicSpline` with units.
+        will return the associated stopping power.
 
     component : {"total", "electronic", "nuclear"}, default: ``total``
         The component of the stopping power to be calculated. Supported
@@ -1177,81 +1220,300 @@ def stopping_power(
 
     Returns
     -------
-    ``Tuple[u.Quantity, u.Quantity[u.MeV * u.cm**2 / u.g]]``
-        A two-tuple where the first element represents the energy values. The
-        second element is an array of the associated stopping powers.
+    ``u.Quantity[u.MeV * u.cm**2 / u.g]``
+        An array of stopping powers for the given incident kinetic energies.
 
     Notes
     -----
-    The data for stopping power is taken from the National Institute of
+    The data for this method is taken from the National Institute of
     Standards and Technology's Stopping-Power and Range Tables :cite:p:`niststar:2005`.
-    Valid materials can be found on the NIST STAR website. The default energies
-    are taken from the data points in the STAR database.
+    Valid materials can be found on the NIST STAR website.
+
+    Stopping powers are interpolated using `~scipy.interpolate.CubicSpline`.
     """
-    # TODO: figure out a better way of handling the Downloader() here  # noqa: FIX002
-    nist_data_path = Downloader().get_file("NIST_STAR.hdf5")
-
-    # Validate particle input. Currently, the only supported particles are protons and electrons.
-    with h5py.File(nist_data_path, "r") as nist_data:
-        if incident_particle == Particle("He-4"):
-            group_name = "helium_ions"
-        elif incident_particle == Particle("e-"):
-            raise NotImplementedError(
-                "Stopping calculations for electrons have not been implemented yet!",
-            )
-        elif incident_particle in {Particle("H+"), Particle("p+")}:
-            group_name = "protons"
-        else:
-            raise ValueError(
-                "Please pass a valid particle type for stopping power calculations.",
-            )
-
-        group_data = nist_data[group_name]
-
-        if material not in group_data:
-            raise ValueError(
-                f"Please pass a valid material string! Material {material} not found in {group_name}.",
-            )
-
-        # Energies are not included in the material data. They must be loaded from a separate data set.
-        # To differentiate from "energies" which refers to the user provided energies, we use "baseline_energies"
-        baseline_energies_data = group_data["energy"]
-        material_data = group_data[material]
-
-        if component == "total":
-            relevant_stopping_data = (
-                material_data["electronic_stopping_power"]
-                + material_data["nuclear_stopping_power"]
-            )
-        elif component == "electronic":
-            relevant_stopping_data = material_data["electronic_stopping_power"]
-        elif component == "nuclear":
-            relevant_stopping_data = material_data["nuclear_stopping_power"]
-        else:
-            raise ValueError(
-                f"Please specify one of: total, electronic, or nuclear for component! (Got {component}.)",
-            )
-
-        if energies is None and not return_interpolator:
-            return (
-                baseline_energies_data * u.MeV,
-                relevant_stopping_data * u.MeV * u.cm**2 / u.g,
-            )
-
-        # Interpolate NIST data to the user-provided energy values. Uses log-log scale fed into a cubic spline.
-        cs = CubicSpline(
-            x=np.log(baseline_energies_data),
-            y=np.log(relevant_stopping_data),
+    if energies is None and not return_interpolator:
+        raise ValueError(
+            "Please provide an array of `energies` or set the `return_interpolator` flag to `True`."
         )
 
-        # If it has been indicated that the user wants the interpolator, construct
-        # an anonymous function to handle units and sanitize IO
-        if return_interpolator:
-            return lambda x: (
-                np.exp(cs(np.log(x.to(u.MeV).value))) * u.MeV * u.cm**2 / u.g
-            )
+    baseline_energies_data, material_data = _read_NIST_stopping_data(
+        incident_particle, material
+    )
 
-        return (
-            energies,
-            np.exp(cs(np.log(energies.to("MeV").value))) * u.MeV * u.cm**2 / u.g,
-        )  # ty:ignore[invalid-return-type]
+    if component == "total":
+        relevant_stopping_data = (
+            material_data["electronic_stopping_power"]
+            + material_data["nuclear_stopping_power"]
+        )
+    elif component == "electronic":
+        relevant_stopping_data = material_data["electronic_stopping_power"]
+    elif component == "nuclear":
+        relevant_stopping_data = material_data["nuclear_stopping_power"]
+    else:
+        raise ValueError(
+            f"Please specify one of: total, electronic, or nuclear for component! (Got {component}.)"
+        )
+
+    relevant_stopping_data = np.copy(relevant_stopping_data)
+
+    # Interpolate NIST data to the user-provided energy values. Uses log-log scale fed into a cubic spline.
+    log_cs = CubicSpline(
+        x=np.log(baseline_energies_data),
+        y=np.log(relevant_stopping_data),
+        extrapolate=False,
+    )
+
+    @validate_quantities(x=u.MeV)
+    def cubic_spline(x: u.Quantity[u.MeV]) -> u.Quantity[u.MeV * u.cm**2 / u.g]:
+        """Handle units and sanitize IO for logarithmic spline."""
+        return np.exp(log_cs(np.log(x.to(u.MeV).value))) * u.MeV * u.cm**2 / u.g
+
+    # If the user wants the interpolator, return it
+    if return_interpolator:
+        return cubic_spline
+    # Otherwise, interpolate using the passed energies
+    else:
+        return cubic_spline(energies)
+
+
+@particle_input
+@validate_quantities
+def areal_range_from_energy(
+    incident_particle: ParticleLike,
+    material: str,
+    energies: u.Quantity[u.J] | None = None,
+    *,
+    return_interpolator=False,
+    range_type: Literal["CSDA", "projected"],
+) -> (
+    u.Quantity[u.g / u.cm**2] | Callable[[u.Quantity[u.MeV]], u.Quantity[u.g / u.cm**2]]
+):
+    """
+    Calculate the stopping range for a particle of specified kinetic
+    energy in a material.
+
+    Parameters
+    ----------
+    incident_particle : |particle-like|
+        The incident particle. Only protons and alpha particles are
+        currently supported.
+
+    material : `str`
+        The material the particle is being stopped in. See notes for
+        details on supported materials.
+
+    energies : `~astropy.units.Quantity`, default: See ``return_interpolator``.
+        The particle kinetic energies for which the range is calculated.
+
+    return_interpolator : `bool`, default: `False`
+        The function will by default attempt to interpolate the provided kinetic
+        energies to calculate the transmitted energy. By setting this argument
+        to `True`, the function will instead return the interpolator used for
+        these calculations.
+
+    range_type : {"CSDA", "projected"}, default: ``projected``
+        The type of particle range to be calculated. Supported values are
+        ``CSDA``, and ``projected``. The ``CSDA`` value refers to the
+        continuous slowing down approximation, which assumes that the incident
+        particles do not scatter.
+
+    Returns
+    -------
+    ``u.Quantity[u.MeV * u.cm**2 / u.g]``
+        The areal stopping ranges of particles at the specified kinetic
+        energies.
+
+    Notes
+    -----
+    The data for this method is taken from the National Institute of
+    Standards and Technology's Stopping-Power and Range Tables :cite:p:`niststar:2005`.
+    Valid materials can be found on the NIST STAR website.
+
+    Stopping ranges are interpolated using `~scipy.interpolate.CubicSpline`.
+    """
+    if energies is None and not return_interpolator:
+        raise ValueError(
+            "Please provide an array of `energies` or set the `return_interpolator` flag to `True`."
+        )
+
+    baseline_energies_data, material_data = _read_NIST_stopping_data(
+        incident_particle, material
+    )
+
+    if range_type == "CSDA":
+        range_data = material_data["csda_range"]
+    elif range_type == "projected":
+        # TODO: Update our dataset so we don't have to use this trick  # noqa: FIX002
+        range_data = material_data["csda_range"] * material_data["detour_factor"]
+    else:
+        raise ValueError(
+            f"Please specify one of: CSDA or projected for `range_type`! (Got {range_type}.)"
+        )
+
+    # Interpolate NIST data to the user-provided energy values. Uses log-log scale fed into a cubic spline.
+    log_cs = CubicSpline(
+        x=np.log(baseline_energies_data), y=np.log(range_data), extrapolate=False
+    )
+
+    @validate_quantities(x=u.MeV)
+    def cubic_spline(x: u.Quantity[u.MeV]) -> u.Quantity[u.g / u.cm**2]:
+        """Handle units and sanitize IO for logarithmic spline."""
+        return np.exp(log_cs(np.log(x.to(u.MeV).value))) * u.g / u.cm**2
+
+    # If the user wants the interpolator, return it
+    if return_interpolator:
+        return cubic_spline
+    # Otherwise, interpolate using the passed energies
+    else:
+        return cubic_spline(energies)
+
+
+@particle_input
+@validate_quantities
+def energy_from_areal_range(
+    incident_particle: ParticleLike,
+    material: str,
+    areal_range: u.Quantity[u.g / u.cm**2] | None = None,
+    *,
+    return_interpolator=False,
+    range_type: Literal["CSDA", "projected"] = "projected",
+) -> (
+    u.Quantity[u.g / u.cm**2] | Callable[[u.Quantity[u.MeV]], u.Quantity[u.g / u.cm**2]]
+):
+    """
+    Calculate the kinetic energy needed for a particle to travel a defined
+    stopping range in the material.
+
+    Parameters
+    ----------
+    incident_particle : |particle-like|
+        The incident particle. Only protons and alpha particles are
+        currently supported.
+
+    material : `str`
+        The material the particle is being stopped in. See notes for
+        details on supported materials.
+
+    areal_range : `~astropy.units.Quantity`, default: See ``return_interpolator``.
+        The areal ranges for which the kinetic energy is calculated.
+
+    return_interpolator : `bool`, default: `False`
+        The function will by default attempt to interpolate the provided kinetic
+        energies to calculate the transmitted energy. By setting this argument
+        to `True`, the function will instead return the interpolator used for
+        these calculations.
+
+    range_type : {"CSDA", "projected"}, default: ``projected``
+        The type of particle range to be calculated. Supported values are
+        ``CSDA``, and ``projected``. The ``CSDA`` value refers to the
+        continuous slowing down approximation, which assumes that the incident
+        particles do not scatter.
+
+    Returns
+    -------
+    ``u.Quantity[u.MeV * u.cm**2 / u.g]``
+        The areal stopping ranges of particles at the specified kinetic
+        energies.
+
+    Notes
+    -----
+    The data for this method is taken from the National Institute of
+    Standards and Technology's Stopping-Power and Range Tables :cite:p:`niststar:2005`.
+    Valid materials can be found on the NIST STAR website.
+
+    Kinetic energies are interpolated using `~scipy.interpolate.CubicSpline`.
+    """
+    if areal_range is None and not return_interpolator:
+        raise ValueError(
+            "Please provide an array of `areal_range` or set the `return_interpolator` flag to `True`."
+        )
+
+    kinetic_energies_data, material_data = _read_NIST_stopping_data(
+        incident_particle, material
+    )
+
+    if range_type == "CSDA":
+        baseline_range_data = material_data["csda_range"]
+    elif range_type == "projected":
+        # TODO: Update our dataset so we don't have to use this trick  # noqa: FIX002
+        baseline_range_data = (
+            material_data["csda_range"] * material_data["detour_factor"]
+        )
+    else:
+        raise ValueError(
+            f"Please specify one of: CSDA or projected for `range_type`! (Got {range_type}.)"
+        )
+
+    # Interpolate NIST data to the user-provided energy values. Uses log-log scale fed into a cubic spline.
+    log_cs = CubicSpline(
+        x=np.log(baseline_range_data),
+        y=np.log(kinetic_energies_data),
+        extrapolate=False,
+    )
+
+    # TODO: For all splines in this module, we should generally return NaN  # noqa: FIX002
+    #  for values that fall outside of the domain of the NIST data. When should
+    #  we raise a warning? One is already raised when this occurs when we try
+    #  to calculate ln(NaN)-- which is returned by the underlying
+    #  `CubicSpline`. What about `transmitted_energy`? Wouldn't it make sense
+    #  to just return zero for thicknesses greater than the CSDA range?
+    @validate_quantities
+    def cubic_spline(x: u.Quantity[u.g / u.cm**2]) -> u.Quantity[u.MeV]:
+        """Handle units and sanitize IO for logarithmic spline."""
+        return np.exp(log_cs(np.log(x.to(u.g / u.cm**2).value))) * u.MeV
+
+    # If the user wants the interpolator, return it
+    if return_interpolator:
+        return cubic_spline
+    # Otherwise, interpolate using the passed energies
+    else:
+        return cubic_spline(areal_range)
+
+
+@particle_input
+@validate_quantities
+def transmitted_energy(
+    incident_particle: ParticleLike,
+    incident_kinetic_energy: u.Quantity[u.MeV],
+    material: str,
+    areal_thickness: u.Quantity[u.g / u.cm**2],
+    range_type: str = "CSDA",
+) -> u.Quantity[u.MeV] | Callable[[u.Quantity[u.g / u.cm**2]], u.Quantity[u.MeV]]:
+    """
+    Calculate the kinetic energy of the particles leaving the material.
+
+    Parameters
+    ----------
+    incident_particle : |particle-like|
+        The incident particle. Only protons and alpha particles are
+        currently supported.
+
+    material : `str`
+        The material the particle is being stopped in. See notes for
+        details on supported materials.
+
+    areal_thickness : ``u.Quantity[u.kg / u.cm**2]``
+        The areal thickness of the material in units convertible to kilograms
+        per square centimeter. Calculated by taking the product of length and
+        density of the material.
+
+    Returns
+    -------
+    ``u.Quantity[u.MeV]``
+        The kinetic energies of the particles leaving the material.
+
+    Notes
+    -----
+    The data for this method is taken from the National Institute of
+    Standards and Technology's Stopping-Power and Range Tables :cite:p:`niststar:2005`.
+    Valid materials can be found on the NIST STAR website.
+    """
+    incident_particle_areal_range = areal_range_from_energy(
+        incident_particle,
+        material,
+        incident_kinetic_energy,
+        range_type=range_type,
+    )
+    residual_areal_range = incident_particle_areal_range - areal_thickness
+
+    return energy_from_areal_range(incident_particle, material, residual_areal_range)
