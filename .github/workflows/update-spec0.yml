@@ -1,8 +1,14 @@
+# Create a quarterly pull request to update the minimum allowed versions
+# of dependencies, dropping minor versions released more than 24 months
+# ago as per the schedule defined in the SPEC 0 community standard.
+#
+# SPEC 0: https://scientific-python.org/specs/spec-0000
+
 name: Perform SPEC 0 updates
 
 on:
   schedule:
-  - cron: 41 0 5 1,4,7,10 *
+  - cron: 41 0 3 1,4,7,10 *
   workflow_dispatch:
 
 permissions:
@@ -19,4 +25,4 @@ jobs:
     steps:
     - uses: scientific-python/spec0-action@8b8b76f254aecce36e6f07de7dde174cb3cafa81   # v1.3
       with:
-        update_all: 2   # also bump non-SPEC0 deps older than 2 years
+        update_all: 2  # use the SPEC 0 drop schedule of 2 years for all packages
