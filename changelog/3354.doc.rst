@@ -1,0 +1,2 @@
+Fixes thermal pressure equation and docstring section
+ordering in `~plasmapy.formulary.misc`.

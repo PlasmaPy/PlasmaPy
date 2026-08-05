@@ -75,10 +75,10 @@ def Bohm_diffusion(
     B : `~astropy.units.Quantity`
         The magnitude of the magnetic field in the plasma.
 
-    Warns
-    -----
-    : `~astropy.units.UnitsWarning`
-        If units are not provided, SI units are assumed.
+    Returns
+    -------
+    D_B : `~astropy.units.Quantity`
+        The Bohm diffusion coefficient in meters squared per second.
 
     Raises
     ------
@@ -88,6 +88,11 @@ def Bohm_diffusion(
 
     `~astropy.units.UnitConversionError`
         If ``T_e`` is not in appropriate units.
+
+    Warns
+    -----
+    : `~astropy.units.UnitsWarning`
+        If units are not provided, SI units are assumed.
 
     Examples
     --------
@@ -100,11 +105,6 @@ def Bohm_diffusion(
     >>> B = 10 * u.T
     >>> Bohm_diffusion(T_e, B)
     <Quantity 0.3125 m2 / s>
-
-    Returns
-    -------
-    D_B : `~astropy.units.Quantity`
-        The Bohm diffusion coefficient in meters squared per second.
     """
     return k_B * T_e / (16 * e * B)
 
@@ -273,12 +273,21 @@ def thermal_pressure(T: u.Quantity[u.K], n: u.Quantity[u.m**-3]) -> u.Quantity[u
         If the particle temperature is not in units of temperature or
         energy per particle.
 
+    Warns
+    -----
+    : `~astropy.units.UnitsWarning`
+        If units are not provided, SI units are assumed.
+
+    See Also
+    --------
+    ~plasmapy.formulary.dimensionless.beta : The ratio of thermal pressure to magnetic pressure.
+
     Notes
     -----
     The thermal pressure is given by:
 
     .. math::
-        T_{th} = n k_B T
+        p_{th} = n k_B T
 
     Examples
     --------
