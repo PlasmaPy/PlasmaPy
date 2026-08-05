@@ -1,4 +1,4 @@
-name: Update minimum allowed versions of dependencies
+name: Perform SPEC 0 updates
 
 on:
   schedule:
@@ -15,7 +15,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  update:
+  bump-minimum-versions:
     runs-on: ubuntu-latest
     steps:
       - uses: scientific-python/spec0-action@8b8b76f254aecce36e6f07de7dde174cb3cafa81 # v1.3
