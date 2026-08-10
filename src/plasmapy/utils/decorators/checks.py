@@ -1341,7 +1341,7 @@ def check_relativistic(func=None, betafrac: float = 0.05):  # noqa: ANN201
 
 
 def _check_relativistic(
-    V: u.Quantity[u.m / u.s],
+    V: u.Quantity[u.m / u.s],  # ty: ignore[not-subscriptable]
     funcname: str,
     betafrac: float = 0.05,
 ) -> None:

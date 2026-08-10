@@ -287,17 +287,17 @@ def spectral_density_lite(  # noqa: PLR0917
 )
 @bind_lite_func(spectral_density_lite)
 def spectral_density(  # noqa: C901, PLR0912, PLR0915
-    wavelengths: u.Quantity[u.nm],
-    probe_wavelength: u.Quantity[u.nm],
-    n: u.Quantity[u.m**-3],
+    wavelengths: u.Quantity[u.nm],  # ty: ignore[not-subscriptable]
+    probe_wavelength: u.Quantity[u.nm],  # ty: ignore[not-subscriptable]
+    n: u.Quantity[u.m**-3],  # ty: ignore[not-subscriptable]
     *,
-    T_e: u.Quantity[u.K],
-    T_i: u.Quantity[u.K],
+    T_e: u.Quantity[u.K],  # ty: ignore[not-subscriptable]
+    T_i: u.Quantity[u.K],  # ty: ignore[not-subscriptable]
     efract=None,
     ifract=None,
     ions: ParticleLike = "p+",
-    electron_vel: u.Quantity[u.m / u.s] = None,
-    ion_vel: u.Quantity[u.m / u.s] = None,
+    electron_vel: u.Quantity[u.m / u.s] = None,  # ty: ignore[not-subscriptable]
+    ion_vel: u.Quantity[u.m / u.s] = None,  # ty: ignore[not-subscriptable]
     probe_vec=None,
     scatter_vec=None,
     instr_func: Callable | None = None,
@@ -498,7 +498,7 @@ def spectral_density(  # noqa: C901, PLR0912, PLR0915
         for ii, ion in enumerate(ions):
             if isinstance(ion, Particle):
                 continue
-            ions[ii] = Particle(ion)  # ty:ignore[invalid-assignment, invalid-argument-type]
+            ions[ii] = Particle(ion)
         ions = ParticleList(ions)  # ty:ignore[invalid-assignment]
     else:
         raise TypeError(

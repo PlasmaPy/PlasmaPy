@@ -20,10 +20,10 @@ from plasmapy.utils.decorators import validate_quantities
 )
 @particle_input
 def impact_parameter_perp(
-    T: u.Quantity[u.K],
+    T: u.Quantity[u.K],  # ty: ignore[not-subscriptable]
     species: (Particle, Particle),
-    V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
-) -> u.Quantity[u.m]:
+    V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,  # ty: ignore[not-subscriptable]
+) -> u.Quantity[u.m]:  # ty: ignore[not-subscriptable]
     r"""
     Distance of the closest approach for a 90° Coulomb collision.
 
@@ -109,11 +109,11 @@ def impact_parameter_perp(
     V={"none_shall_pass": True},
 )
 def impact_parameter(  # noqa: ANN201, C901, PLR0917
-    T: u.Quantity[u.K],
-    n_e: u.Quantity[u.m**-3],
+    T: u.Quantity[u.K],  # ty: ignore[not-subscriptable]
+    n_e: u.Quantity[u.m**-3],  # ty: ignore[not-subscriptable]
     species,
     z_mean: float = np.nan,
-    V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
+    V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,  # ty: ignore[not-subscriptable]
     method: str = "classical",
 ):
     r"""
@@ -333,13 +333,13 @@ def impact_parameter(  # noqa: ANN201, C901, PLR0917
     n_e={"can_be_negative": False},
 )
 def mean_free_path(  # noqa: PLR0917
-    T: u.Quantity[u.K],
-    n_e: u.Quantity[u.m**-3],
+    T: u.Quantity[u.K],  # ty: ignore[not-subscriptable]
+    n_e: u.Quantity[u.m**-3],  # ty: ignore[not-subscriptable]
     species,
     z_mean: float = np.nan,
-    V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
+    V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,  # ty: ignore[not-subscriptable]
     method: str = "classical",
-) -> u.Quantity[u.m]:
+) -> u.Quantity[u.m]:  # ty: ignore[not-subscriptable]
     r"""
     Collisional mean free path (m).
 

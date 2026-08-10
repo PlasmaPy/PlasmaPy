@@ -821,7 +821,7 @@ class TestCheckValues:
             ("can_be_zero", True),
         ]
         for key, val in _defaults:
-            assert cv._CheckValues__check_defaults[key] == val  # ty:ignore[invalid-argument-type]
+            assert cv._CheckValues__check_defaults[key] == val
 
     def test_cv_method__get_value_checks(self) -> None:
         """
