@@ -36,11 +36,11 @@ from plasmapy.utils.exceptions import CouplingWarning
 )
 @particles.particle_input
 def Coulomb_logarithm(  # noqa: ANN201, PLR0917
-    T: u.Quantity[u.K],
-    n_e: u.Quantity[u.m**-3],
+    T: u.Quantity[u.K],  # ty: ignore[not-subscriptable]
+    n_e: u.Quantity[u.m**-3],  # ty: ignore[not-subscriptable]
     species: (particles.Particle, particles.Particle),
     z_mean: float = np.nan,
-    V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
+    V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,  # ty: ignore[not-subscriptable]
     method: Literal[
         "classical",
         "GMS-1",
@@ -518,7 +518,7 @@ def Coulomb_logarithm(  # noqa: ANN201, PLR0917
 
 
 @validate_quantities(impact_param={"can_be_negative": False})
-def Coulomb_cross_section(impact_param: u.Quantity[u.m]) -> u.Quantity[u.m**2]:
+def Coulomb_cross_section(impact_param: u.Quantity[u.m]) -> u.Quantity[u.m**2]:  # ty: ignore[not-subscriptable]
     r"""
     Cross-section for a large angle Coulomb collision.
 

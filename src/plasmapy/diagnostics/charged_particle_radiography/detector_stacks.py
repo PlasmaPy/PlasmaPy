@@ -58,10 +58,10 @@ class Layer:
 
     def __init__(  # noqa: PLR0917
         self,
-        thickness: u.Quantity[u.m],
-        energy_axis: u.Quantity[u.J],
-        stopping_power: u.Quantity[u.J / u.m, u.J * u.m**2 / u.kg],
-        mass_density: u.Quantity[u.kg / u.m**3] | None = None,
+        thickness: u.Quantity[u.m],  # ty: ignore[not-subscriptable]
+        energy_axis: u.Quantity[u.J],  # ty: ignore[not-subscriptable]
+        stopping_power: u.Quantity[u.J / u.m, u.J * u.m**2 / u.kg],  # ty: ignore[not-subscriptable]
+        mass_density: u.Quantity[u.kg / u.m**3] | None = None,  # ty: ignore[not-subscriptable]
         active: bool = True,  # noqa: FBT001, FBT002
         name: str = "",
     ) -> None:
@@ -138,7 +138,7 @@ class Stack:
 
     def deposition_curves(  # noqa: ANN201
         self,
-        energies: u.Quantity[u.J],
+        energies: u.Quantity[u.J],  # ty: ignore[not-subscriptable]
         dx=1 * u.um,
         return_only_active: bool = True,  # noqa: FBT001, FBT002
     ):
@@ -220,8 +220,8 @@ class Stack:
 
     def energy_bands(  # noqa: ANN201
         self,
-        energy_range: u.Quantity[u.J],
-        dE: u.Quantity[u.J],
+        energy_range: u.Quantity[u.J],  # ty: ignore[not-subscriptable]
+        dE: u.Quantity[u.J],  # ty: ignore[not-subscriptable]
         dx=1e-6 * u.m,  # noqa: ARG002
         return_only_active: bool = True,  # noqa: FBT001, FBT002
     ):

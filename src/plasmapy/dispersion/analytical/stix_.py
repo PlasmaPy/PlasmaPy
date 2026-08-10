@@ -22,11 +22,11 @@ c_si_unitless = c.value
     w={"can_be_negative": False, "can_be_zero": False},
 )
 def stix(  # noqa: ANN201, C901, PLR0912, PLR0915
-    B: u.Quantity[u.T],
-    w: u.Quantity[u.rad / u.s],
+    B: u.Quantity[u.T],  # ty: ignore[not-subscriptable]
+    w: u.Quantity[u.rad / u.s],  # ty: ignore[not-subscriptable]
     ions: Particle,
-    n_i: u.Quantity[u.m**-3],
-    theta: u.Quantity[u.rad],
+    n_i: u.Quantity[u.m**-3],  # ty: ignore[not-subscriptable]
+    theta: u.Quantity[u.rad],  # ty: ignore[not-subscriptable]
 ):
     r"""
     Calculate the cold plasma dispersion function presented by
@@ -184,7 +184,7 @@ def stix(  # noqa: ANN201, C901, PLR0912, PLR0915
         raise ValueError(
             "Particle(s) passed to 'ions' must be a positively charged"
             " ion. The following particle(s) is(are) not allowed "
-            f"{[ion for ion, fail in zip(ions, failed, strict=False) if not fail]}",  # ty:ignore[invalid-argument-type, not-iterable]
+            f"{[ion for ion, fail in zip(ions, failed, strict=False) if not fail]}",  # ty:ignore[invalid-argument-type]
         )
 
     # Validate n_i argument

@@ -49,7 +49,7 @@ def element_obj_hook(obj):
 #    json.dump(_Elements, f, default=plasma_default, indent=2)
 
 
-data_about_elements: dict[str, str | int | u.Quantity[u.u]] = json.loads(
+data_about_elements: dict[str, str | int | u.Quantity[u.u]] = json.loads(  # ty: ignore[not-subscriptable]
     pkgutil.get_data("plasmapy", "particles/data/elements.json"),  # ty:ignore[invalid-argument-type]
     object_hook=element_obj_hook,
 )

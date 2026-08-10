@@ -12,8 +12,8 @@ from scipy.special import wofz as faddeeva_function
 
 
 def plasma_dispersion_func(
-    zeta: complex | np.ndarray | u.Quantity[u.dimensionless_unscaled],
-) -> complex | np.ndarray | u.Quantity[u.dimensionless_unscaled]:
+    zeta: complex | np.ndarray | u.Quantity[u.dimensionless_unscaled],  # ty: ignore[not-subscriptable]
+) -> complex | np.ndarray | u.Quantity[u.dimensionless_unscaled]:  # ty: ignore[not-subscriptable]
     r"""
     Calculate the plasma dispersion function.
 
@@ -78,8 +78,8 @@ def plasma_dispersion_func(
 
 
 def plasma_dispersion_func_deriv(
-    zeta: complex | np.ndarray | u.Quantity[u.dimensionless_unscaled],
-) -> complex | np.ndarray | u.Quantity[u.dimensionless_unscaled]:
+    zeta: complex | np.ndarray | u.Quantity[u.dimensionless_unscaled],  # ty: ignore[not-subscriptable]
+) -> complex | np.ndarray | u.Quantity[u.dimensionless_unscaled]:  # ty: ignore[not-subscriptable]
     r"""
     Calculate the derivative of the plasma dispersion function.
 

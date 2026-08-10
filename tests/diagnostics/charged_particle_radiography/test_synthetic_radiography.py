@@ -21,13 +21,13 @@ rng = np.random.default_rng()
 
 def _test_grid(  # noqa: ANN202, C901, PLR0912, PLR0917
     name: str,
-    L: u.Quantity[u.m] = 1 * u.mm,
+    L: u.Quantity[u.m] = 1 * u.mm,  # ty: ignore[not-subscriptable]
     num: int = 100,
-    B0: u.Quantity[u.T] = 10 * u.T,
-    E0: u.Quantity[u.V / u.m] = 5e8 * u.V / u.m,
-    phi0: u.Quantity[u.V] = 1.4e5 * u.V,
-    a: u.Quantity[u.m] | None = None,
-    b: u.Quantity[u.m] | None = None,
+    B0: u.Quantity[u.T] = 10 * u.T,  # ty: ignore[not-subscriptable]
+    E0: u.Quantity[u.V / u.m] = 5e8 * u.V / u.m,  # ty: ignore[not-subscriptable]
+    phi0: u.Quantity[u.V] = 1.4e5 * u.V,  # ty: ignore[not-subscriptable]
+    a: u.Quantity[u.m] | None = None,  # ty: ignore[not-subscriptable]
+    b: u.Quantity[u.m] | None = None,  # ty: ignore[not-subscriptable]
 ):
     r"""
     Generates grids representing some common physical scenarios for testing
@@ -1100,8 +1100,8 @@ PARTICLES_PER_CONFIGURATION = 100
 @pytest.mark.slow
 def test_NIST_particle_stopping(
     material: str,
-    density: u.Quantity[u.kg / u.m**3],
-    energy_projected_range_list: list[tuple[u.Quantity[u.J], u.Quantity[u.m]]],
+    density: u.Quantity[u.kg / u.m**3],  # ty: ignore[not-subscriptable]
+    energy_projected_range_list: list[tuple[u.Quantity[u.J], u.Quantity[u.m]]],  # ty: ignore[not-subscriptable]
 ) -> None:
     r"""
     Test to ensure that the simulated stopping range matches the SRIM output
