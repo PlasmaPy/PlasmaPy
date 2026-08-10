@@ -8,7 +8,7 @@ import functools
 import inspect
 
 
-def modify_docstring(func=None, prepend: str | None = None, append: str | None = None):
+def modify_docstring(func=None, prepend: str | None = None, append: str | None = None):  # noqa: ANN201
     r"""
     A decorator which programmatically prepends and/or appends the docstring
     of the decorated method/function.  The unmodified/original docstring is
@@ -58,7 +58,7 @@ def modify_docstring(func=None, prepend: str | None = None, append: str | None =
         if prepend is append is None:
             raise TypeError(
                 "Decorator @modify_docstring() missing argument 'prepend' and/or"
-                " 'append', at least one argument is required."
+                " 'append', at least one argument is required.",
             )
 
         # save the original docstring
@@ -73,7 +73,7 @@ def modify_docstring(func=None, prepend: str | None = None, append: str | None =
             prependlines = []
         else:
             raise TypeError(
-                f"Expected type str for argument 'prepend', got {type(prepend)}."
+                f"Expected type str for argument 'prepend', got {type(prepend)}.",
             )
 
         # append docstring lines
@@ -84,7 +84,7 @@ def modify_docstring(func=None, prepend: str | None = None, append: str | None =
             appendlines = []
         else:
             raise TypeError(
-                f"Expected type str for argument 'append', got {type(append)}."
+                f"Expected type str for argument 'append', got {type(append)}.",
             )
 
         # define new docstring

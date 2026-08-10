@@ -19,15 +19,15 @@ from plasmapy.plasma.grids import CartesianGrid
 rng = np.random.default_rng()
 
 
-def _test_grid(  # noqa: C901, PLR0912
+def _test_grid(  # noqa: ANN202, C901, PLR0912, PLR0917
     name: str,
-    L: u.Quantity[u.m] = 1 * u.mm,
+    L: u.Quantity[u.m] = 1 * u.mm,  # ty: ignore[not-subscriptable]
     num: int = 100,
-    B0: u.Quantity[u.T] = 10 * u.T,
-    E0: u.Quantity[u.V / u.m] = 5e8 * u.V / u.m,
-    phi0: u.Quantity[u.V] = 1.4e5 * u.V,
-    a: u.Quantity[u.m] | None = None,
-    b: u.Quantity[u.m] | None = None,
+    B0: u.Quantity[u.T] = 10 * u.T,  # ty: ignore[not-subscriptable]
+    E0: u.Quantity[u.V / u.m] = 5e8 * u.V / u.m,  # ty: ignore[not-subscriptable]
+    phi0: u.Quantity[u.V] = 1.4e5 * u.V,  # ty: ignore[not-subscriptable]
+    a: u.Quantity[u.m] | None = None,  # ty: ignore[not-subscriptable]
+    b: u.Quantity[u.m] | None = None,  # ty: ignore[not-subscriptable]
 ):
     r"""
     Generates grids representing some common physical scenarios for testing
@@ -64,7 +64,6 @@ def _test_grid(  # noqa: C901, PLR0912
         A CartesianGrid object containing quantity arrays representing
         the chosen example.
     """
-
     grid = CartesianGrid(-L, L, num=num)
 
     # If an array was provided to the constructor, reduce to a single
@@ -119,11 +118,11 @@ def _test_grid(  # noqa: C901, PLR0912
         Ey = np.where(radius < b, Ey, 0)
         Ez = np.where(radius < b, Ez, 0)
 
-        grid.add_quantities(E_x=-Ex, E_y=-Ey, E_z=-Ez, phi=potential)
+        grid.add_quantities(E_x=-Ex, E_y=-Ey, E_z=-Ez, phi=potential)  # ty:ignore[invalid-argument-type]
 
     else:
         raise ValueError(
-            f"No example corresponding to the provided name ({name}) exists."
+            f"No example corresponding to the provided name ({name}) exists.",
         )
 
     # If any of the following quantities are missing, add them as empty arrays
@@ -147,7 +146,6 @@ def test_multiple_grids() -> None:
     TODO: automate test by including two fields with some obvious analytical
     solution??
     """
-
     grid1 = _test_grid("constant_bz", L=3 * u.cm, num=20, B0=0.7 * u.T)
     grid2 = _test_grid("electrostatic_gaussian_sphere", L=1 * u.mm, num=20)
     grids = [grid1, grid2]
@@ -156,7 +154,11 @@ def test_multiple_grids() -> None:
     detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
 
     sim = cpr.Tracker(
-        grids, source, detector, field_weighting="nearest neighbor", verbose=True
+        grids,
+        source,
+        detector,
+        field_weighting="nearest neighbor",
+        verbose=True,
     )
 
     sim.create_particles(1e2, 15 * u.MeV, max_theta=8 * u.deg, random_seed=42)
@@ -168,7 +170,7 @@ def test_multiple_grids() -> None:
     _hax, _vax, _values = cpr.synthetic_radiograph(sim, size=size, bins=bins)
 
 
-def run_1D_example(name: str):
+def run_1D_example(name: str):  # noqa: ANN201
     """
     Run a simulation through an example with parameters optimized to
     sum up to a lineout along x. The goal is to run a relatively fast
@@ -183,10 +185,15 @@ def run_1D_example(name: str):
 
     # Expect warnings because these fields aren't well-behaved at the edges
     with pytest.warns(
-        RuntimeWarning, match="Quantities should go to zero at edges of grid"
+        RuntimeWarning,
+        match="Quantities should go to zero at edges of grid",
     ):
         sim = cpr.Tracker(
-            grid, source, detector, verbose=False, field_weighting="nearest neighbor"
+            grid,
+            source,
+            detector,
+            verbose=False,
+            field_weighting="nearest neighbor",
         )
     sim.create_particles(1e4, 3 * u.MeV, max_theta=0.1 * u.deg, random_seed=42)
 
@@ -201,7 +208,7 @@ def run_1D_example(name: str):
     return hax, values
 
 
-def run_mesh_example(
+def run_mesh_example(  # noqa: PLR0917
     location=(0, -2, 0) * u.mm,
     extent=(2 * u.mm, 1.5 * u.mm),
     nwires: int = 9,
@@ -217,7 +224,6 @@ def run_mesh_example(
 
     Returns the sim object for use in additional tests
     """
-
     grid = _test_grid(problem, num=100)
     source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
     detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
@@ -250,12 +256,12 @@ def test_1D_deflections() -> None:
     # Check B-deflection
     hax, lineout = run_1D_example("constant_bz")
     loc = hax[np.argmax(lineout)]
-    assert np.isclose(loc.si.value, 0.0165, 0.005)
+    np.testing.assert_allclose(loc.si.value, 0.0165, 0.005, atol=1e-8)
 
     # Check E-deflection
     hax, lineout = run_1D_example("constant_ex")
     loc = hax[np.argmax(lineout)]
-    assert np.isclose(loc.si.value, 0.0335, 0.005)
+    np.testing.assert_allclose(loc.si.value, 0.0335, 0.005, atol=1e-8)
 
 
 @pytest.mark.slow
@@ -264,7 +270,6 @@ def test_coordinate_systems() -> None:
     Check that specifying the same point in different coordinate systems
     ends up with identical source and detector vectors.
     """
-
     grid = _test_grid("empty")
 
     # Cartesian
@@ -282,10 +287,10 @@ def test_coordinate_systems() -> None:
     detector = (0.1 * u.m, 90 * u.deg, 45 * u.deg)
     sim3 = cpr.Tracker(grid, source, detector, verbose=False)
 
-    assert np.allclose(sim1.source, sim2.source, atol=1e-2)
-    assert np.allclose(sim2.source, sim3.source, atol=1e-2)
-    assert np.allclose(sim1.detector, sim2.detector, atol=1e-2)
-    assert np.allclose(sim2.detector, sim3.detector, atol=1e-2)
+    np.testing.assert_allclose(sim1.source, sim2.source, atol=1e-2, rtol=1e-5)
+    np.testing.assert_allclose(sim2.source, sim3.source, atol=1e-2, rtol=1e-5)
+    np.testing.assert_allclose(sim1.detector, sim2.detector, atol=1e-2, rtol=1e-5)
+    np.testing.assert_allclose(sim2.detector, sim3.detector, atol=1e-2, rtol=1e-5)
 
 
 @pytest.mark.slow
@@ -293,7 +298,6 @@ def test_input_validation() -> None:
     """
     Intentionally raise a number of errors.
     """
-
     # ************************************************************************
     # During initialization
     # ************************************************************************
@@ -337,7 +341,10 @@ def test_input_validation() -> None:
     # ************************************************************************
     sim = cpr.Tracker(grid, source, detector, verbose=False)
     sim.create_particles(
-        1e3, 15 * u.MeV, max_theta=0.99 * np.pi / 2 * u.rad, random_seed=42
+        1e3,
+        15 * u.MeV,
+        max_theta=0.99 * np.pi / 2 * u.rad,
+        random_seed=42,
     )
 
     # ************************************************************************
@@ -350,7 +357,7 @@ def test_input_validation() -> None:
             grid,
             source,
             detector,
-            field_weighting="not a valid field weighting",  # type: ignore[arg-type]
+            field_weighting="not a valid field weighting",  # ty:ignore[invalid-argument-type]
             verbose=False,
         )
 
@@ -358,7 +365,11 @@ def test_input_validation() -> None:
     # During runtime
     # ************************************************************************
     sim = cpr.Tracker(
-        grid, source, detector, verbose=False, field_weighting="nearest neighbor"
+        grid,
+        source,
+        detector,
+        verbose=False,
+        field_weighting="nearest neighbor",
     )
     sim.create_particles(1e3, 15 * u.MeV)
 
@@ -370,9 +381,60 @@ def test_input_validation() -> None:
     size = np.array([[-1, 1], [-1, 1]]) * 1 * u.mm
 
     with pytest.warns(
-        RuntimeWarning, match="of the particles are shown on this synthetic radiograph."
+        RuntimeWarning,
+        match="of the particles are shown on this synthetic radiograph.",
     ):
         _hax, _vax, _values = cpr.synthetic_radiograph(sim, size=size)
+
+
+def test_source_or_detector_at_origin() -> None:
+    """
+    The source and detector planes are defined by normal vectors pointing
+    towards the grid origin, so placing either at the origin makes that normal
+    (and, for the source, the magnification) undefined. Rather than silently
+    building a Tracker with NaN/inf geometry, a clear ``ValueError`` should be
+    raised. Regression test for GH-2077.
+    """
+    grid = _test_grid("electrostatic_gaussian_sphere")
+    origin = (0 * u.mm, 0 * u.mm, 0 * u.mm)
+    source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
+    detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
+
+    with pytest.raises(ValueError, match="source cannot be located"):
+        cpr.Tracker(grid, origin, detector, verbose=False)
+
+    with pytest.raises(ValueError, match="detector cannot be located"):
+        cpr.Tracker(grid, source, origin, verbose=False)
+
+
+def test_source_and_detector_on_same_side() -> None:
+    """
+    The projection geometry and magnification are only well defined when the
+    grid origin lies between the source and the detector (i.e. they are on
+    opposite sides of the origin). Placing them on the same side produces a
+    meaningless magnification, so a clear ``ValueError`` should be raised rather
+    than silently building a Tracker with unphysical geometry. Regression test
+    for GH-2077.
+    """
+    grid = _test_grid("electrostatic_gaussian_sphere")
+
+    # Both on the +y side of the origin.
+    source = (0 * u.mm, 10 * u.mm, 0 * u.mm)
+    detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
+    with pytest.raises(ValueError, match="opposite sides"):
+        cpr.Tracker(grid, source, detector, verbose=False)
+
+    # Both on the -y side of the origin.
+    source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
+    detector = (0 * u.mm, -200 * u.mm, 0 * u.mm)
+    with pytest.raises(ValueError, match="opposite sides"):
+        cpr.Tracker(grid, source, detector, verbose=False)
+
+    # Perpendicular through the origin (dot == 0) is also rejected.
+    source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
+    detector = (200 * u.mm, 0 * u.mm, 0 * u.mm)
+    with pytest.raises(ValueError, match="opposite sides"):
+        cpr.Tracker(grid, source, detector, verbose=False)
 
 
 @pytest.mark.slow
@@ -389,7 +451,12 @@ def test_init() -> None:
     hdir = np.array([1, 0, 0])
     vdir = np.array([0, 0, 1])
     sim = cpr.Tracker(
-        grid, source, detector, verbose=False, detector_hdir=hdir, detector_vdir=vdir
+        grid,
+        source,
+        detector,
+        verbose=False,
+        detector_hdir=hdir,
+        detector_vdir=vdir,
     )
 
     # Test special case hdir == [0,0,1]
@@ -424,7 +491,11 @@ def test_create_particles() -> None:
     )
 
     sim.create_particles(
-        1e3, 15 * u.MeV, max_theta=0.1 * u.rad, distribution="uniform", random_seed=42
+        1e3,
+        15 * u.MeV,
+        max_theta=0.1 * u.rad,
+        distribution="uniform",
+        random_seed=42,
     )
 
     # Test specifying particle
@@ -434,12 +505,16 @@ def test_create_particles() -> None:
     src_vdir = np.array([0.1, 1, 0])
     src_vdir /= np.linalg.norm(src_vdir)
     sim.create_particles(
-        1e3, 15 * u.MeV, particle="p+", random_seed=42, source_vdir=src_vdir
+        1e3,
+        15 * u.MeV,
+        particle="p+",
+        random_seed=42,
+        source_vdir=src_vdir,
     )
     # Assert particle velocities are actually in that direction
     vdir = np.mean(sim.v, axis=0)
     vdir /= np.linalg.norm(vdir)
-    assert np.allclose(vdir, src_vdir, atol=0.05)
+    np.testing.assert_allclose(vdir, src_vdir, atol=0.05, rtol=1e-5)
 
 
 @pytest.mark.slow
@@ -451,10 +526,18 @@ def test_load_particles() -> None:
     detector = (0 * u.mm, 200 * u.mm, 0 * u.mm)
 
     sim = cpr.Tracker(
-        grid, source, detector, field_weighting="nearest neighbor", verbose=False
+        grid,
+        source,
+        detector,
+        field_weighting="nearest neighbor",
+        verbose=False,
     )
     sim.create_particles(
-        1e3, 15 * u.MeV, max_theta=0.1 * u.rad, distribution="uniform", random_seed=42
+        1e3,
+        15 * u.MeV,
+        max_theta=0.1 * u.rad,
+        distribution="uniform",
+        random_seed=42,
     )
 
     # Test adding unequal numbers of particles
@@ -501,7 +584,11 @@ def test_run_options() -> None:
         sim.run()
 
     sim = cpr.Tracker(
-        grid, source, detector, verbose=True, field_weighting="nearest neighbor"
+        grid,
+        source,
+        detector,
+        verbose=True,
+        field_weighting="nearest neighbor",
     )
     sim.create_particles(1e4, 3 * u.MeV, max_theta=10 * u.deg, random_seed=42)
 
@@ -553,7 +640,7 @@ def test_run_options() -> None:
     assert 0 < sim.max_deflection.to(u.rad).value < np.pi / 2
 
 
-def create_tracker_obj(**kwargs) -> cpr.Tracker:
+def create_tracker_obj(**kwargs) -> cpr.Tracker:  # noqa: ANN003
     # CREATE A RADIOGRAPH OBJECT
     grid = _test_grid("electrostatic_gaussian_sphere", num=50)
     source = (0 * u.mm, -10 * u.mm, 0 * u.mm)
@@ -662,15 +749,23 @@ class TestSyntheticRadiograph:
         assert isinstance(x, u.Quantity)
         assert x.unit == u.m
         assert x.shape == (expected["bins"][0],)
-        assert np.isclose(np.min(x), expected["xrange"][0], rtol=1e4)
-        assert np.isclose(np.max(x), expected["xrange"][1], rtol=1e4)
+        np.testing.assert_allclose(
+            np.min(x), expected["xrange"][0], rtol=1e4, atol=1e-8
+        )
+        np.testing.assert_allclose(
+            np.max(x), expected["xrange"][1], rtol=1e4, atol=1e-8
+        )
 
         y = results[1]
         assert isinstance(y, u.Quantity)
         assert y.unit == u.m
         assert y.shape == (expected["bins"][1],)
-        assert np.isclose(np.min(y), expected["yrange"][0], rtol=1e4)
-        assert np.isclose(np.max(y), expected["yrange"][1], rtol=1e4)
+        np.testing.assert_allclose(
+            np.min(y), expected["yrange"][0], rtol=1e4, atol=1e-8
+        )
+        np.testing.assert_allclose(
+            np.max(y), expected["yrange"][1], rtol=1e4, atol=1e-8
+        )
 
         histogram = results[2]
         assert isinstance(histogram, np.ndarray)
@@ -687,7 +782,6 @@ def test_cannot_modify_simulation_after_running(case) -> None:
     Test that a Tracker objection can not be modified after it is
     run (Tracker.run).
     """
-
     sim = create_tracker_obj(field_weighting="nearest neighbor")
     sim.run()
 
@@ -717,7 +811,6 @@ def test_gaussian_sphere_analytical_comparison() -> None:
     Still under construction (comparing the actual form of the radiograph
     is possible but tricky to implement).
     """
-
     # The Gaussian sphere problem for small deflection potentials
     # is solved in Kugland2012relation, and the equations referenced
     # below are from that paper.
@@ -745,10 +838,15 @@ def test_gaussian_sphere_analytical_comparison() -> None:
     detector = (0 * u.mm, L * u.mm, 0 * u.mm)
 
     with pytest.warns(
-        RuntimeWarning, match="Quantities should go to zero at edges of grid to avoid "
+        RuntimeWarning,
+        match="Quantities should go to zero at edges of grid to avoid ",
     ):
         sim = cpr.Tracker(
-            grid, source, detector, verbose=False, field_weighting="nearest neighbor"
+            grid,
+            source,
+            detector,
+            verbose=False,
+            field_weighting="nearest neighbor",
         )
 
     sim.create_particles(1e3, W * u.eV, max_theta=12 * u.deg, random_seed=42)
@@ -803,7 +901,9 @@ def test_gaussian_sphere_analytical_comparison() -> None:
     ax.plot(h, theory_deflect)
     """
 
-    assert np.isclose(max_deflection, sim.max_deflection.to(u.rad).value, atol=1e-3)
+    np.testing.assert_allclose(
+        max_deflection, sim.max_deflection.to(u.rad).value, atol=1e-3, rtol=1e-5
+    )
 
 
 @pytest.mark.parametrize(
@@ -921,10 +1021,10 @@ def test_add_wire_mesh_accuracy() -> None:
     """
 
     # Verify that the edges of the mesh are imaged correctly
-    assert np.isclose(measured_width, true_width, 1)
+    np.testing.assert_allclose(measured_width, true_width, 1, atol=1e-8)
 
     # Verify that the spacing is correct by checking the FFT
-    assert np.isclose(measured_spacing, true_spacing, 0.5)
+    np.testing.assert_allclose(measured_spacing, true_spacing, 0.5, atol=1e-8)
 
 
 def test_radiography_disk_save_routine(tmp_path) -> None:
@@ -956,7 +1056,7 @@ def test_radiography_disk_save_routine(tmp_path) -> None:
     _h, _v, i2 = cpr.synthetic_radiograph(path)
 
     # The two synthetic radiographs should be identical
-    assert np.allclose(i1, i2)
+    np.testing.assert_allclose(i1, i2, rtol=1e-5, atol=1e-8)
 
 
 def test_radiography_memory_save_routine() -> None:
@@ -1000,14 +1100,13 @@ PARTICLES_PER_CONFIGURATION = 100
 @pytest.mark.slow
 def test_NIST_particle_stopping(
     material: str,
-    density: u.Quantity[u.kg / u.m**3],
-    energy_projected_range_list: list[tuple[u.Quantity[u.J], u.Quantity[u.m]]],
+    density: u.Quantity[u.kg / u.m**3],  # ty: ignore[not-subscriptable]
+    energy_projected_range_list: list[tuple[u.Quantity[u.J], u.Quantity[u.m]]],  # ty: ignore[not-subscriptable]
 ) -> None:
     r"""
     Test to ensure that the simulated stopping range matches the SRIM output
     for various proton energies.
     """
-
     # Apply uniform units and cast to quantity array
     energies: u.Quantity = [v[0].si.value for v in energy_projected_range_list] * u.J
     projected_ranges = [v[1].si.value for v in energy_projected_range_list] * u.m
@@ -1015,12 +1114,14 @@ def test_NIST_particle_stopping(
     # Calculate the relativistic speed of the particles as a function of their
     # kinetic energy
     speeds = const.c * np.sqrt(
-        1 - (const.m_p * const.c**2 / (energies + const.m_p * const.c**2)) ** 2
+        1 - (const.m_p * const.c**2 / (energies + const.m_p * const.c**2)) ** 2,
     )
 
     width = np.max(projected_ranges) * 1.1
     stopping_grid = CartesianGrid(
-        [-0.2, 0.0, -0.2] * u.cm, [0.2, width.to(u.cm).value, 0.2] * u.cm, num=100
+        [-0.2, 0.0, -0.2] * u.cm,
+        [0.2, width.to(u.cm).value, 0.2] * u.cm,
+        num=100,
     )
 
     rho = np.ones(stopping_grid.shape) * density
@@ -1079,4 +1180,6 @@ def test_NIST_particle_stopping(
         np.reshape(sim.x[:, 1], (energies.shape[0], PARTICLES_PER_CONFIGURATION)) * u.m
     )
 
-    assert np.isclose(np.median(x_final, axis=-1), projected_ranges, rtol=0.05).all()
+    np.testing.assert_allclose(
+        np.median(x_final, axis=-1), projected_ranges, rtol=0.05, atol=1e-8
+    )

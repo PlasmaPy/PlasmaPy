@@ -1,6 +1,6 @@
 """Lengths related to particle collisions."""
 
-__all__ = ["impact_parameter_perp", "impact_parameter", "mean_free_path"]
+__all__ = ["impact_parameter", "impact_parameter_perp", "mean_free_path"]
 
 
 import astropy.units as u
@@ -16,14 +16,14 @@ from plasmapy.utils.decorators import validate_quantities
 
 
 @validate_quantities(
-    T={"can_be_negative": False, "equivalencies": u.temperature_energy()}
+    T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
 )
 @particle_input
 def impact_parameter_perp(
-    T: u.Quantity[u.K],
+    T: u.Quantity[u.K],  # ty: ignore[not-subscriptable]
     species: (Particle, Particle),
-    V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
-) -> u.Quantity[u.m]:
+    V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,  # ty: ignore[not-subscriptable]
+) -> u.Quantity[u.m]:  # ty: ignore[not-subscriptable]
     r"""
     Distance of the closest approach for a 90° Coulomb collision.
 
@@ -92,10 +92,12 @@ def impact_parameter_perp(
     # Note: This formulation corresponds to collisions that result in a
     #       deflection of 90°s, which is valid when classical effects
     #       dominate.
-    # TODO: need to incorporate an average ionization parameter
+    # TODO: need to incorporate an average ionization parameter  # noqa: FIX002
 
     T, _masses, charges, reduced_mass, V = misc._process_inputs(  # noqa: SLF001
-        T=T, species=species, V=V
+        T=T,
+        species=species,
+        V=V,
     )
 
     return charges[0] * charges[1] / (4 * np.pi * eps0 * reduced_mass * V**2)
@@ -106,12 +108,12 @@ def impact_parameter_perp(
     n_e={"can_be_negative": False},
     V={"none_shall_pass": True},
 )
-def impact_parameter(  # noqa: C901
-    T: u.Quantity[u.K],
-    n_e: u.Quantity[u.m**-3],
+def impact_parameter(  # noqa: ANN201, C901, PLR0917
+    T: u.Quantity[u.K],  # ty: ignore[not-subscriptable]
+    n_e: u.Quantity[u.m**-3],  # ty: ignore[not-subscriptable]
     species,
     z_mean: float = np.nan,
-    V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
+    V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,  # ty: ignore[not-subscriptable]
     method: str = "classical",
 ):
     r"""
@@ -224,7 +226,9 @@ def impact_parameter(  # noqa: C901
     (<Quantity 2.534...e-10 m>, <Quantity 2.182...e-05 m>)
     """
     T, _masses, _charges, reduced_mass, V = misc._process_inputs(  # noqa: SLF001
-        T=T, species=species, V=V
+        T=T,
+        species=species,
+        V=V,
     )
     # catching error where mean charge state is not given for non-classical
     # methods that require the ion density
@@ -238,7 +242,7 @@ def impact_parameter(  # noqa: C901
     } and np.isnan(z_mean):
         raise ValueError(
             'Must provide a z_mean for "ls_full_interp", '
-            '"hls_max_interp", and "hls_full_interp" methods.'
+            '"hls_max_interp", and "hls_full_interp" methods.',
         )
     # Debye length
     lambdaDe = Debye_length(T, n_e)
@@ -328,14 +332,14 @@ def impact_parameter(  # noqa: C901
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     n_e={"can_be_negative": False},
 )
-def mean_free_path(
-    T: u.Quantity[u.K],
-    n_e: u.Quantity[u.m**-3],
+def mean_free_path(  # noqa: PLR0917
+    T: u.Quantity[u.K],  # ty: ignore[not-subscriptable]
+    n_e: u.Quantity[u.m**-3],  # ty: ignore[not-subscriptable]
     species,
     z_mean: float = np.nan,
-    V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
+    V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,  # ty: ignore[not-subscriptable]
     method: str = "classical",
-) -> u.Quantity[u.m]:
+) -> u.Quantity[u.m]:  # ty: ignore[not-subscriptable]
     r"""
     Collisional mean free path (m).
 
@@ -432,7 +436,12 @@ def mean_free_path(
     """
     # collisional frequency
     freq = frequencies.collision_frequency(
-        T=T, n=n_e, species=species, z_mean=z_mean, V=V, method=method
+        T=T,
+        n=n_e,
+        species=species,
+        z_mean=z_mean,
+        V=V,
+        method=method,
     )
     # boiler plate to fetch velocity
     # this has been moved to after collision_frequency to avoid use of
@@ -440,6 +449,8 @@ def mean_free_path(
     # Should be fine since collision_frequency has its own _process_inputs
     # check, and we are only using this here to get the velocity.
     T, _masses, _charges, _reduced_mass, V = misc._process_inputs(  # noqa: SLF001
-        T=T, species=species, V=V
+        T=T,
+        species=species,
+        V=V,
     )
     return V / freq

@@ -78,7 +78,7 @@ class TestThermalSpeedCoefficients:
     def test_values(self, ndim, method, expected) -> None:
         """Test that the correct values are returned."""
         val = thermal_speed_coefficients(ndim=ndim, method=method)
-        assert np.isclose(val, expected)
+        np.testing.assert_allclose(val, expected, rtol=1e-5, atol=1e-8)
 
 
 class TestThermalSpeed:
@@ -234,7 +234,7 @@ class TestThermalSpeed:
     def test_values(self, args, kwargs, expected) -> None:
         """Test scenarios with known calculated values."""
         vth = thermal_speed(*args, **kwargs)
-        assert np.allclose(vth.value, expected)
+        np.testing.assert_allclose(vth.value, expected, rtol=1e-5, atol=1e-8)
         assert vth.unit == u.m / u.s
 
     @pytest.mark.parametrize(
@@ -324,7 +324,7 @@ class TestThermalSpeedLite:
         lite = thermal_speed_lite(T=T_unitless, mass=m_unitless, coeff=coeff)
 
         normal = thermal_speed(**inputs)
-        assert np.isclose(normal.value, lite)
+        np.testing.assert_allclose(normal.value, lite, rtol=1e-5, atol=1e-8)
 
 
 # test class for kappa_thermal_speed() function:
@@ -355,7 +355,10 @@ class Test_kappa_thermal_speed:
         """
         with pytest.raises(ValueError):
             kappa_thermal_speed(
-                self.T_e, self.kappa, particle=self.particle, method="invalid"
+                self.T_e,
+                self.kappa,
+                particle=self.particle,
+                method="invalid",
             )
 
     def test_probable1(self) -> None:
@@ -363,7 +366,10 @@ class Test_kappa_thermal_speed:
         Tests if expected value is returned for a set of regular inputs.
         """
         known1 = kappa_thermal_speed(
-            self.T_e, self.kappa, particle=self.particle, method="most_probable"
+            self.T_e,
+            self.kappa,
+            particle=self.particle,
+            method="most_probable",
         )
         errstr = (
             f"Kappa thermal velocity should be {self.probable1True} "
@@ -376,7 +382,10 @@ class Test_kappa_thermal_speed:
         Tests if expected value is returned for a set of regular inputs.
         """
         known1 = kappa_thermal_speed(
-            self.T_e, self.kappa, particle=self.particle, method="rms"
+            self.T_e,
+            self.kappa,
+            particle=self.particle,
+            method="rms",
         )
         errstr = (
             f"Kappa thermal velocity should be {self.rms1True} "
@@ -389,7 +398,10 @@ class Test_kappa_thermal_speed:
         Tests if expected value is returned for a set of regular inputs.
         """
         known1 = kappa_thermal_speed(
-            self.T_e, self.kappa, particle=self.particle, method="mean_magnitude"
+            self.T_e,
+            self.kappa,
+            particle=self.particle,
+            method="mean_magnitude",
         )
         errstr = (
             f"Kappa thermal velocity should be {self.mean1True} "

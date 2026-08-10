@@ -71,8 +71,6 @@ class ConditionalEvents:
 
     Examples
     --------
-    .. autolink-skip:: section
-
     >>> from plasmapy.analysis.time_series.conditional_averaging import (
     ...     ConditionalEvents,
     ... )
@@ -121,7 +119,7 @@ class ConditionalEvents:
 
         if reference_signal is not None:
             self._check_units_consistency(
-                [reference_signal, lower_threshold, upper_threshold]
+                [reference_signal, lower_threshold, upper_threshold],
             )
         else:
             self._check_units_consistency([signal, lower_threshold, upper_threshold])
@@ -158,7 +156,9 @@ class ConditionalEvents:
         )
 
         conditional_events_indices = self._separate_events(
-            reference_signal, lower_threshold, upper_threshold
+            reference_signal,
+            lower_threshold,
+            upper_threshold,
         )
 
         peak_indices = self._choose_largest_peak_per_event(
@@ -183,7 +183,8 @@ class ConditionalEvents:
         if remove_non_max_peaks:
             if self._reference_signal_provided:
                 conditional_events_reference_signal = self._calculate_all_events(
-                    reference_signal, peak_indices
+                    reference_signal,
+                    peak_indices,
                 )
 
                 conditional_events, peak_indices = self._check_if_largest_value_is_peak(
@@ -193,13 +194,15 @@ class ConditionalEvents:
                 )
             else:
                 conditional_events, peak_indices = self._check_if_largest_value_is_peak(
-                    conditional_events, peak_indices, None
+                    conditional_events,
+                    peak_indices,
+                    None,
                 )
 
         self._conditional_average = np.mean(conditional_events, axis=0)
 
         self._conditional_variance = self._calculate_conditional_variance(
-            conditional_events
+            conditional_events,
         )
 
         self._peaks = signal[peak_indices]
@@ -302,7 +305,7 @@ class ConditionalEvents:
         """
         return self._number_of_events
 
-    def _check_for_value_errors(
+    def _check_for_value_errors(  # noqa: PLR0917
         self,
         distance,
         signal,
@@ -324,14 +327,14 @@ class ConditionalEvents:
         if length_of_return is not None:
             if length_of_return > time[-1] - time[0]:
                 raise ValueError(
-                    "Choose length_of_return shorter or equal to time length"
+                    "Choose length_of_return shorter or equal to time length",
                 )
             if length_of_return < 0:
                 raise ValueError("The length_of_return parameter must be bigger than 0")
 
         if upper_threshold and upper_threshold <= lower_threshold:
             raise ValueError(
-                "The upper_threshold is higher than the lower_threshold, no events will be found"
+                "The upper_threshold is higher than the lower_threshold, no events will be found",
             )
 
     def _separate_unit_from_variable(self, variable):
@@ -344,7 +347,8 @@ class ConditionalEvents:
         first_variable_has_unit = isinstance(variables[0], u.Quantity)
         for variable in variables:
             if variable is not None and first_variable_has_unit != isinstance(
-                variable, u.Quantity
+                variable,
+                u.Quantity,
             ):
                 raise u.UnitsError(f"Units do not match: {variable} and {variables[0]}")
 
@@ -354,7 +358,7 @@ class ConditionalEvents:
             for variable in variables:
                 if variable is not None and first_unit != variable.unit:
                     raise u.UnitsError(
-                        f"Units do not match: {variable} and {variables[0]}"
+                        f"Units do not match: {variable} and {variables[0]}",
                     )
 
     def _ensure_numpy_array(self, variable):
@@ -386,7 +390,8 @@ class ConditionalEvents:
                 highest_local_peak = reference_signal[peak_ind].argmax()
                 not_highest_local_peaks = np.delete(peak_ind, highest_local_peak)
                 peak_indices = np.delete(
-                    peak_indices, np.isin(peak_indices, not_highest_local_peaks)
+                    peak_indices,
+                    np.isin(peak_indices, not_highest_local_peaks),
                 )
 
         return peak_indices
@@ -401,7 +406,8 @@ class ConditionalEvents:
             single_event = signal[low_ind:high_ind]
             if low_ind == 0:
                 single_event = np.append(
-                    np.zeros(-global_peak_loc + t_half_len), single_event
+                    np.zeros(-global_peak_loc + t_half_len),
+                    single_event,
                 )
             if high_ind == len(signal):
                 single_event = np.append(
@@ -414,7 +420,10 @@ class ConditionalEvents:
         return conditional_events
 
     def _check_if_largest_value_is_peak(
-        self, conditional_events, peak_indices, conditional_events_reference_signal
+        self,
+        conditional_events,
+        peak_indices,
+        conditional_events_reference_signal,
     ):
         def is_middle_value_highest(sequence):
             middle_index = len(sequence) // 2

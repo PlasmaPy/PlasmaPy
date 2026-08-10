@@ -14,10 +14,10 @@ from collections import namedtuple
 
 import numpy as np
 
-_run_moment_tuple = namedtuple("Running_Moment", ["run_moment", "time"])
+_run_moment_tuple = namedtuple("Running_Moment", ["run_moment", "time"])  # ty:ignore[mismatched-type-name]
 
 
-def running_mean(signal, radius: int):
+def running_mean(signal, radius: int):  # noqa: ANN201
     """
     Calculate the running mean of a sequence.
 
@@ -62,7 +62,7 @@ def running_mean(signal, radius: int):
     return run_mean[window - 1 :] / window
 
 
-def running_moment(signal, radius: int, moment: int = 1, time=None):
+def running_moment(signal, radius: int, moment: int = 1, time=None):  # noqa: ANN201
     """
     Calculate either the running mean, standard deviation, skewness or
     excess kurtosis of a sequence.

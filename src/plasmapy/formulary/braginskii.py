@@ -119,12 +119,12 @@ collisions, leave :math:`μ = 0`\ . To consider them, specify mu and theta.
 
 __all__ = [
     "ClassicalTransport",
+    "electron_thermal_conductivity",
+    "electron_viscosity",
+    "ion_thermal_conductivity",
+    "ion_viscosity",
     "resistivity",
     "thermoelectric_conductivity",
-    "ion_thermal_conductivity",
-    "electron_thermal_conductivity",
-    "ion_viscosity",
-    "electron_viscosity",
 ]
 
 import warnings
@@ -288,8 +288,6 @@ class ClassicalTransport:
 
     Examples
     --------
-    .. autolink-skip:: section
-
     >>> import astropy.units as u
     >>> t = ClassicalTransport(1 * u.eV, 1e20 / u.m**3, 1 * u.eV, 1e20 / u.m**3, "p")
     >>> t.resistivity  # doctest: +SKIP
@@ -313,16 +311,16 @@ class ClassicalTransport:
         T_i={"can_be_negative": False, "equivalencies": u.temperature_energy()},
         m_i={"can_be_negative": False},
     )
-    def __init__(  # noqa: PLR0912, PLR0915
+    def __init__(  # noqa: PLR0912, PLR0915, PLR0917
         self,
-        T_e: u.Quantity[u.K],
-        n_e: u.Quantity[u.m**-3],
-        T_i: u.Quantity[u.K],
-        n_i: u.Quantity[u.m**-3],
+        T_e: u.Quantity[u.K],  # ty: ignore[not-subscriptable]
+        n_e: u.Quantity[u.m**-3],  # ty: ignore[not-subscriptable]
+        T_i: u.Quantity[u.K],  # ty: ignore[not-subscriptable]
+        n_i: u.Quantity[u.m**-3],  # ty: ignore[not-subscriptable]
         ion,
-        m_i: u.Quantity[u.kg] = None,
+        m_i: u.Quantity[u.kg] = None,  # ty: ignore[not-subscriptable]
         Z=None,
-        B: u.Quantity[u.T] = 0.0 * u.T,
+        B: u.Quantity[u.T] = 0.0 * u.T,  # ty: ignore[not-subscriptable]
         model: str = "Braginskii",
         field_orientation: str = "parallel",
         coulomb_log_ei=None,
@@ -360,13 +358,15 @@ class ClassicalTransport:
                 self.m_i = particles.particle_mass(ion)
             except InvalidParticleError as ex:
                 raise ValueError(
-                    f"Unable to find mass of particle: {ion} in ClassicalTransport"
+                    f"Unable to find mass of particle: {ion} in ClassicalTransport",
                 ) from ex
         else:
             self.m_i = m_i
         self.Z = _grab_charge(ion, Z) * u.dimensionless_unscaled
         if self.Z < 0:
-            raise ValueError("Z is not allowed to be negative!")  # TODO: remove?
+            raise ValueError(
+                "Z is not allowed to be negative!"
+            )  # TODO: remove?  # noqa: FIX002
 
         # decide on the particle string for the electrons
         self.e_particle = "e-"
@@ -382,20 +382,25 @@ class ClassicalTransport:
             self.coulomb_log_ei = coulomb_log_ei
         else:
             self.coulomb_log_ei = Coulomb_logarithm(
-                T_e, n_e, (self.e_particle, self.ion), V_ei, method=coulomb_log_method
+                T_e,
+                n_e,
+                (self.e_particle, self.ion),
+                V_ei,
+                method=coulomb_log_method,
             )
 
         if self.coulomb_log_ei < 1:
-            # TODO: discuss whether this is not too strict
+            # TODO: discuss whether this is not too strict  # noqa: FIX002
             raise PhysicsError(
                 f"Coulomb logarithm is {coulomb_log_ei} (below 1),"
-                "this is probably not physical!"
+                "this is probably not physical!",
             )
         elif self.coulomb_log_ei < 4:
             warnings.warn(
                 f"Coulomb logarithm is {coulomb_log_ei},"
                 f" you might have strong coupling effects",
                 CouplingWarning,
+                stacklevel=2,
             )
 
         if coulomb_log_ii is not None:
@@ -410,16 +415,17 @@ class ClassicalTransport:
             )
 
         if self.coulomb_log_ii < 1:
-            # TODO: discuss whether this is not too strict
+            # TODO: discuss whether this is not too strict  # noqa: FIX002
             raise PhysicsError(
                 f"Coulomb logarithm is {coulomb_log_ii} (below 1),"
-                "this is probably not physical!"
+                "this is probably not physical!",
             )
         elif self.coulomb_log_ii < 4:
             warnings.warn(
                 f"Coulomb logarithm is {coulomb_log_ii},"
                 f" you might have strong coupling effects",
                 CouplingWarning,
+                stacklevel=2,
             )
 
         # calculate Hall parameters if not forced in input
@@ -456,7 +462,7 @@ class ClassicalTransport:
 
     @property
     @validate_quantities
-    def resistivity(self) -> u.Quantity[u.Ohm * u.m]:
+    def resistivity(self) -> u.Quantity[u.Ohm * u.m]:  # ty: ignore[not-subscriptable]
         r"""
         Calculate the resistivity.
 
@@ -473,7 +479,7 @@ class ClassicalTransport:
 
         Returns
         -------
-        `~astropy.units.quantity.Quantity`
+        `~astropy.units.Quantity`
 
         Notes
         -----
@@ -491,10 +497,18 @@ class ClassicalTransport:
         satisfying the classical assumptions.
         """
         alpha_hat = _nondim_resistivity(
-            self.hall_e, self.Z, self.e_particle, self.model, self.field_orientation
+            self.hall_e,
+            self.Z,
+            self.e_particle,
+            self.model,
+            self.field_orientation,
         )
         tau_e = 1 / fundamental_electron_collision_freq(
-            self.T_e, self.n_e, self.ion, self.coulomb_log_ei, self.V_ei
+            self.T_e,
+            self.n_e,
+            self.ion,
+            self.coulomb_log_ei,
+            self.V_ei,
         )
 
         alpha = alpha_hat / (self.n_e * e**2 * tau_e / m_e)
@@ -511,20 +525,24 @@ class ClassicalTransport:
 
         Returns
         -------
-        `~astropy.units.quantity.Quantity`
+        `~astropy.units.Quantity`
 
         Notes
         -----
         To be improved.
         """
         beta_hat = _nondim_te_conductivity(
-            self.hall_e, self.Z, self.e_particle, self.model, self.field_orientation
+            self.hall_e,
+            self.Z,
+            self.e_particle,
+            self.model,
+            self.field_orientation,
         )
         return u.Quantity(beta_hat)
 
     @property
     @validate_quantities
-    def ion_thermal_conductivity(self) -> u.Quantity[u.W / u.m / u.K]:
+    def ion_thermal_conductivity(self) -> u.Quantity[u.W / u.m / u.K]:  # ty: ignore[not-subscriptable]
         r"""
         Calculate the thermal conductivity for ions.
 
@@ -543,7 +561,7 @@ class ClassicalTransport:
 
         Returns
         -------
-        `~astropy.units.quantity.Quantity`
+        `~astropy.units.Quantity`
 
         See Also
         --------
@@ -570,14 +588,18 @@ class ClassicalTransport:
             self.theta,
         )
         tau_i = 1 / fundamental_ion_collision_freq(
-            self.T_i, self.n_i, self.ion, self.coulomb_log_ii, self.V_ii
+            self.T_i,
+            self.n_i,
+            self.ion,
+            self.coulomb_log_ii,
+            self.V_ii,
         )
         kappa = kappa_hat * (self.n_i * k_B**2 * self.T_i * tau_i / self.m_i)
         return kappa
 
     @property
     @validate_quantities
-    def electron_thermal_conductivity(self) -> u.Quantity[u.W / u.m / u.K]:
+    def electron_thermal_conductivity(self) -> u.Quantity[u.W / u.m / u.K]:  # ty: ignore[not-subscriptable]
         r"""
         Calculate the thermal conductivity for electrons.
 
@@ -596,7 +618,7 @@ class ClassicalTransport:
 
         Returns
         -------
-        `~astropy.units.quantity.Quantity`
+        `~astropy.units.Quantity`
 
         See Also
         --------
@@ -635,14 +657,18 @@ class ClassicalTransport:
             self.theta,
         )
         tau_e = 1 / fundamental_electron_collision_freq(
-            self.T_e, self.n_e, self.ion, self.coulomb_log_ei, self.V_ei
+            self.T_e,
+            self.n_e,
+            self.ion,
+            self.coulomb_log_ei,
+            self.V_ei,
         )
         kappa = kappa_hat * (self.n_e * k_B**2 * self.T_e * tau_e / m_e)
         return kappa
 
     @property
     @validate_quantities
-    def ion_viscosity(self) -> u.Quantity[u.Pa * u.s]:
+    def ion_viscosity(self) -> u.Quantity[u.Pa * u.s]:  # ty: ignore[not-subscriptable]
         r"""
         Calculate the ion viscosity.
 
@@ -651,7 +677,7 @@ class ClassicalTransport:
 
         Returns
         -------
-        `~astropy.units.quantity.Quantity`
+        `~astropy.units.Quantity`
 
         See Also
         --------
@@ -675,7 +701,11 @@ class ClassicalTransport:
             self.theta,
         )
         tau_i = 1 / fundamental_ion_collision_freq(
-            self.T_i, self.n_i, self.ion, self.coulomb_log_ii, self.V_ii
+            self.T_i,
+            self.n_i,
+            self.ion,
+            self.coulomb_log_ii,
+            self.V_ii,
         )
         common_factor = self.n_i * k_B * self.T_i * tau_i
         eta1 = np.array(eta_hat) * common_factor
@@ -689,7 +719,7 @@ class ClassicalTransport:
 
     @property
     @validate_quantities
-    def electron_viscosity(self) -> u.Quantity[u.Pa * u.s]:
+    def electron_viscosity(self) -> u.Quantity[u.Pa * u.s]:  # ty: ignore[not-subscriptable]
         r"""
         Calculate the electron viscosity.
 
@@ -698,7 +728,7 @@ class ClassicalTransport:
 
         Returns
         -------
-        `~astropy.units.quantity.Quantity`
+        `~astropy.units.Quantity`
 
         See Also
         --------
@@ -722,7 +752,11 @@ class ClassicalTransport:
             self.theta,
         )
         tau_e = 1 / fundamental_electron_collision_freq(
-            self.T_e, self.n_e, self.ion, self.coulomb_log_ei, self.V_ei
+            self.T_e,
+            self.n_e,
+            self.ion,
+            self.coulomb_log_ei,
+            self.V_ei,
         )
         common_factor = self.n_e * k_B * self.T_e * tau_e
         if np.isclose(self.hall_e, 0, rtol=1e-8):
@@ -751,7 +785,7 @@ class ClassicalTransport:
                         eta1[2].value,
                         eta1[3].value,
                         eta1[4].value,
-                    )
+                    ),
                 )
                 * unit_val
             )
@@ -781,7 +815,7 @@ class ClassicalTransport:
 
 
 @validate_quantities
-def resistivity(
+def resistivity(  # noqa: PLR0917
     T_e,
     n_e,
     T_i,
@@ -789,13 +823,13 @@ def resistivity(
     ion,
     m_i=None,
     Z=None,
-    B: u.Quantity[u.T] = 0.0 * u.T,
+    B: u.Quantity[u.T] = 0.0 * u.T,  # ty: ignore[not-subscriptable]
     model: str = "Braginskii",
     field_orientation: str = "parallel",
     mu=None,
     theta: float | None = None,
     coulomb_log_method: str = "classical",
-) -> u.Quantity[u.Ohm * u.m]:
+) -> u.Quantity[u.Ohm * u.m]:  # ty: ignore[not-subscriptable]
     r"""
     Calculate the resistivity.
 
@@ -813,7 +847,7 @@ def resistivity(
 
     Returns
     -------
-    `~astropy.units.quantity.Quantity`
+    `~astropy.units.Quantity`
 
     Notes
     -----
@@ -849,7 +883,7 @@ def resistivity(
 
 
 @validate_quantities
-def thermoelectric_conductivity(
+def thermoelectric_conductivity(  # noqa: ANN201, PLR0917
     T_e,
     n_e,
     T_i,
@@ -857,7 +891,7 @@ def thermoelectric_conductivity(
     ion,
     m_i=None,
     Z=None,
-    B: u.Quantity[u.T] = 0.0 * u.T,
+    B: u.Quantity[u.T] = 0.0 * u.T,  # ty: ignore[not-subscriptable]
     model: str = "Braginskii",
     field_orientation: str = "parallel",
     mu=None,
@@ -891,7 +925,7 @@ def thermoelectric_conductivity(
 
 
 @validate_quantities
-def ion_thermal_conductivity(
+def ion_thermal_conductivity(  # noqa: PLR0917
     T_e,
     n_e,
     T_i,
@@ -899,13 +933,13 @@ def ion_thermal_conductivity(
     ion,
     m_i=None,
     Z=None,
-    B: u.Quantity[u.T] = 0.0 * u.T,
+    B: u.Quantity[u.T] = 0.0 * u.T,  # ty: ignore[not-subscriptable]
     model: str = "Braginskii",
     field_orientation: str = "parallel",
     mu=None,
     theta: float | None = None,
     coulomb_log_method: str = "classical",
-) -> u.Quantity[u.W / u.m / u.K]:
+) -> u.Quantity[u.W / u.m / u.K]:  # ty: ignore[not-subscriptable]
     r"""
     Calculate the thermal conductivity for ions.
 
@@ -925,7 +959,7 @@ def ion_thermal_conductivity(
 
     Returns
     -------
-    `~astropy.units.quantity.Quantity`
+    `~astropy.units.Quantity`
 
     See Also
     --------
@@ -961,7 +995,7 @@ def ion_thermal_conductivity(
 
 
 @validate_quantities
-def electron_thermal_conductivity(
+def electron_thermal_conductivity(  # noqa: PLR0917
     T_e,
     n_e,
     T_i,
@@ -969,13 +1003,13 @@ def electron_thermal_conductivity(
     ion,
     m_i=None,
     Z=None,
-    B: u.Quantity[u.T] = 0.0 * u.T,
+    B: u.Quantity[u.T] = 0.0 * u.T,  # ty: ignore[not-subscriptable]
     model: str = "Braginskii",
     field_orientation: str = "parallel",
     mu=None,
     theta: float | None = None,
     coulomb_log_method: str = "classical",
-) -> u.Quantity[u.W / u.m / u.K]:
+) -> u.Quantity[u.W / u.m / u.K]:  # ty: ignore[not-subscriptable]
     r"""
     Calculate the thermal conductivity for electrons.
 
@@ -995,7 +1029,7 @@ def electron_thermal_conductivity(
 
     Returns
     -------
-    `~astropy.units.quantity.Quantity`
+    `~astropy.units.Quantity`
 
     See Also
     --------
@@ -1043,7 +1077,7 @@ def electron_thermal_conductivity(
 
 
 @validate_quantities
-def ion_viscosity(
+def ion_viscosity(  # noqa: PLR0917
     T_e,
     n_e,
     T_i,
@@ -1051,13 +1085,13 @@ def ion_viscosity(
     ion,
     m_i=None,
     Z=None,
-    B: u.Quantity[u.T] = 0.0 * u.T,
+    B: u.Quantity[u.T] = 0.0 * u.T,  # ty: ignore[not-subscriptable]
     model: str = "Braginskii",
     field_orientation: str = "parallel",
     mu=None,
     theta: float | None = None,
     coulomb_log_method: str = "classical",
-) -> u.Quantity[u.Pa * u.s]:
+) -> u.Quantity[u.Pa * u.s]:  # ty: ignore[not-subscriptable]
     r"""
     Calculate the ion viscosity.
 
@@ -1066,7 +1100,7 @@ def ion_viscosity(
 
     Returns
     -------
-    `~astropy.units.quantity.Quantity`
+    `~astropy.units.Quantity`
 
     See Also
     --------
@@ -1099,7 +1133,7 @@ def ion_viscosity(
 
 
 @validate_quantities
-def electron_viscosity(
+def electron_viscosity(  # noqa: PLR0917
     T_e,
     n_e,
     T_i,
@@ -1107,13 +1141,13 @@ def electron_viscosity(
     ion,
     m_i=None,
     Z=None,
-    B: u.Quantity[u.T] = 0.0 * u.T,
+    B: u.Quantity[u.T] = 0.0 * u.T,  # ty: ignore[not-subscriptable]
     model: str = "Braginskii",
     field_orientation: str = "parallel",
     mu=None,
     theta: float | None = None,
     coulomb_log_method: str = "classical",
-) -> u.Quantity[u.Pa * u.s]:
+) -> u.Quantity[u.Pa * u.s]:  # ty: ignore[not-subscriptable]
     r"""
     Calculate the electron viscosity.
 
@@ -1122,7 +1156,7 @@ def electron_viscosity(
 
     Returns
     -------
-    `~astropy.units.quantity.Quantity`
+    `~astropy.units.Quantity`
 
     See Also
     --------
@@ -1154,8 +1188,14 @@ def electron_viscosity(
     return ct.electron_viscosity
 
 
-def _nondim_thermal_conductivity(
-    hall, Z, particle, model, field_orientation, mu=None, theta: float | None = None
+def _nondim_thermal_conductivity(  # noqa: ANN202, PLR0917
+    hall,
+    Z,
+    particle,
+    model,
+    field_orientation,
+    mu=None,
+    theta: float | None = None,
 ):
     """
     Calculate dimensionless classical thermal conductivity coefficients.
@@ -1174,24 +1214,24 @@ def _nondim_thermal_conductivity(
             kappa_hat = _nondim_tc_e_ji_held(hall, Z, field_orientation)
         else:
             raise ValueError(
-                f"Unrecognized model '{model}' in _nondim_thermal_conductivity"
+                f"Unrecognized model '{model}' in _nondim_thermal_conductivity",
             )
     elif model == "braginskii":
         kappa_hat = _nondim_tc_i_braginskii(hall, field_orientation)
     elif model == "ji-held":
-        kappa_hat = _nondim_tc_i_ji_held(hall, Z, mu, theta, field_orientation)
+        kappa_hat = _nondim_tc_i_ji_held(hall, Z, mu, theta, field_orientation)  # ty:ignore[invalid-argument-type]
     elif model in {"spitzer-harm", "spitzer"}:
         raise NotImplementedError(
-            "Ion thermal conductivity is not implemented in the Spitzer model."
+            "Ion thermal conductivity is not implemented in the Spitzer model.",
         )
     else:
         raise ValueError(
-            f"Unrecognized model '{model}' in _nondim_thermal_conductivity"
+            f"Unrecognized model '{model}' in _nondim_thermal_conductivity",
         )
     return kappa_hat
 
 
-def _nondim_viscosity(
+def _nondim_viscosity(  # noqa: ANN202, PLR0917
     hall,
     Z,
     particle,
@@ -1218,10 +1258,10 @@ def _nondim_viscosity(
     elif model == "braginskii":
         eta_hat = _nondim_visc_i_braginskii(hall)
     elif model == "ji-held":
-        eta_hat = _nondim_visc_i_ji_held(hall, Z, mu, theta)
+        eta_hat = _nondim_visc_i_ji_held(hall, Z, mu, theta)  # ty:ignore[invalid-argument-type]
     elif model in {"spitzer-harm", "spitzer"}:
         raise NotImplementedError(
-            "Ion viscosity is not implemented in the Spitzer model."
+            "Ion viscosity is not implemented in the Spitzer model.",
         )
     else:
         raise ValueError(f"Unrecognized model '{model}' in _nondim_viscosity")
@@ -1282,7 +1322,7 @@ def _check_Z(allowed_Z, Z):
     # next, search the allowed_Z for a match to the current Z
     Z_idx = np.nan
     for idx, allowed_Z_val in enumerate(allowed_Z):
-        if Z == allowed_Z_val:
+        if allowed_Z_val == Z:
             Z_idx = idx
     # at this point we have looped through allowed_Z and either found a match
     # or not. If we haven't found a match and arbitrary Z aren't allowed, break
@@ -2062,7 +2102,7 @@ def _nondim_visc_e_ji_held(hall, Z):
     return np.array((eta_0, eta_1, eta_2, eta_3, eta_4))
 
 
-def _nondim_tc_i_ji_held(hall, Z, mu, theta: float, field_orientation, K: int = 3):
+def _nondim_tc_i_ji_held(hall, Z, mu, theta: float, field_orientation, K: int = 3):  # noqa: ANN202
     """
     Dimensionless ion thermal conductivity — Ji-Held.
 
@@ -2139,11 +2179,11 @@ def _nondim_tc_i_ji_held(hall, Z, mu, theta: float, field_orientation, K: int = 
                 kappa_par_i / np.sqrt(2),
                 kappa_perp_i / np.sqrt(2),
                 kappa_cross_i / np.sqrt(2),
-            )
+            ),
         )
 
 
-def _nondim_visc_i_ji_held(hall, Z, mu, theta: float, K: int = 3):
+def _nondim_visc_i_ji_held(hall, Z, mu, theta: float, K: int = 3):  # noqa: ANN202
     """
     Dimensionless ion viscosity — Ji-Held.
 
@@ -2254,5 +2294,5 @@ def _nondim_visc_i_ji_held(hall, Z, mu, theta: float, K: int = 3):
             eta_2_i / np.sqrt(2),
             eta_3_i / np.sqrt(2),
             eta_4_i / np.sqrt(2),
-        )
+        ),
     )

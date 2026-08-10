@@ -1,0 +1,1 @@
+Enabled more |ruff| rules, including most of the ``ANN`` rule set.

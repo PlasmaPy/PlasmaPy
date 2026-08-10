@@ -61,7 +61,7 @@ class IonicLevel:
     0.31
     """
 
-    def __eq__(self, other):
+    def __eq__(self, other):  # noqa: D105
         if not isinstance(other, IonicLevel):
             return False
 
@@ -86,7 +86,11 @@ class IonicLevel:
 
     @particle_input
     def __init__(
-        self, ion: Particle, ionic_fraction=None, number_density=None, T_i=None
+        self,
+        ion: Particle,
+        ionic_fraction=None,
+        number_density=None,
+        T_i=None,
     ) -> None:
         try:
             self.ion = ion
@@ -96,18 +100,18 @@ class IonicLevel:
         except (ValueError, TypeError) as exc:
             raise ParticleError("Unable to create IonicLevel object") from exc
 
-    def __repr__(self) -> str:
+    def __repr__(self) -> str:  # noqa: D105
         return (
             f"IonicLevel({self.ionic_symbol!r}, ionic_fraction={self.ionic_fraction})"
         )
 
-    def __hash__(self) -> int:
+    def __hash__(self) -> int:  # noqa: D105
         return hash(repr(self))
 
     @property
     def ionic_symbol(self) -> str:
         """The symbol of the ion."""
-        return self.ion.ionic_symbol
+        return self.ion.ionic_symbol  # ty:ignore[invalid-return-type]
 
     @property
     def charge_number(self) -> int:
@@ -145,7 +149,7 @@ class IonicLevel:
                     self._ionic_fraction = ionfrac
 
     @property
-    def number_density(self) -> u.Quantity[u.m**-3]:
+    def number_density(self) -> u.Quantity[u.m**-3]:  # ty: ignore[not-subscriptable]
         """The number density of the ion."""
         return self._number_density
 
@@ -153,11 +157,11 @@ class IonicLevel:
     @validate_quantities(
         n={"can_be_negative": False, "can_be_inf": False, "none_shall_pass": True},
     )
-    def number_density(self, n: u.Quantity[u.m**-3]) -> None:
+    def number_density(self, n: u.Quantity[u.m**-3]) -> None:  # ty: ignore[not-subscriptable]
         self._number_density = np.nan * u.m**-3 if n is None else n
 
     @property
-    def T_i(self) -> u.Quantity[u.K]:
+    def T_i(self) -> u.Quantity[u.K]:  # ty: ignore[not-subscriptable]
         """The ion temperature of this particular charge state."""
         return self._T_i
 
@@ -165,7 +169,7 @@ class IonicLevel:
     @validate_quantities(
         T={"can_be_negative": False, "can_be_inf": False, "none_shall_pass": True},
     )
-    def T_i(self, T: u.Quantity[u.K]) -> None:
+    def T_i(self, T: u.Quantity[u.K]) -> None:  # ty: ignore[not-subscriptable]
         self._T_i = np.nan * u.K if T is None else T
 
 
@@ -242,9 +246,9 @@ class IonizationState:
     array([0., 0., 1.])
     """
 
-    # TODO: Allow this class to handle negatively charged
+    # TODO: Allow this class to handle negatively charged  # noqa: FIX002
 
-    # TODO: Add in functionality to find equilibrium ionization states.
+    # TODO: Add in functionality to find equilibrium ionization states.  # noqa: FIX002
 
     @particle_input(require="element")
     @validate_quantities(
@@ -260,10 +264,10 @@ class IonizationState:
         particle: Particle,
         ionic_fractions=None,
         *,
-        T_e: u.Quantity[u.K] = np.nan * u.K,
-        T_i: u.Quantity[u.K] = None,
+        T_e: u.Quantity[u.K] = np.nan * u.K,  # ty: ignore[not-subscriptable]
+        T_i: u.Quantity[u.K] = None,  # ty: ignore[not-subscriptable]
         kappa: float = np.inf,
-        n_elem: u.Quantity[u.m**-3] = np.nan * u.m**-3,
+        n_elem: u.Quantity[u.m**-3] = np.nan * u.m**-3,  # ty: ignore[not-subscriptable]
         tol: float = 1e-15,
     ) -> None:
         self._number_of_particles = particle.atomic_number + 1
@@ -272,12 +276,12 @@ class IonizationState:
             if ionic_fractions is not None:
                 raise ParticleError(
                     "The ionic fractions must not be specified when "
-                    "the input particle to IonizationState is an ion."
+                    "the input particle to IonizationState is an ion.",
                 )
 
             ionic_fractions = np.zeros(self._number_of_particles)
             ionic_fractions[particle.charge_number] = 1.0
-            particle = Particle(particle.isotope or particle.element)
+            particle = Particle(particle.isotope or particle.element)  # ty:ignore[invalid-argument-type]
         self._particle = particle
 
         try:
@@ -290,7 +294,7 @@ class IonizationState:
 
         except TypeError as exc:
             raise ParticleError(
-                f"Unable to create IonizationState object for {particle.symbol}."
+                f"Unable to create IonizationState object for {particle.symbol}.",
             ) from exc
         else:
             if (
@@ -300,20 +304,21 @@ class IonizationState:
             ):
                 raise ParticleError(
                     "Cannot simultaneously provide number density "
-                    "through both n_elem and ionic_fractions."
+                    "through both n_elem and ionic_fractions.",
                 )
 
             if ionic_fractions is None and not np.isnan(self.T_e):
                 warnings.warn(
                     "Collisional ionization equilibration has not yet "
                     "been implemented in IonizationState; cannot set "
-                    "ionic fractions."
+                    "ionic fractions.",
+                    stacklevel=2,
                 )
 
-    def __str__(self) -> str:
+    def __str__(self) -> str:  # noqa: D105
         return f"<IonizationState instance for {self.base_particle}>"
 
-    def __repr__(self) -> str:
+    def __repr__(self) -> str:  # noqa: D105
         return self.__str__()
 
     def __getitem__(self, value) -> list[IonicLevel]:
@@ -342,7 +347,7 @@ class IonizationState:
                     value = Particle(value)
                 except InvalidParticleError as exc:
                     raise InvalidParticleError(
-                        f"{value} is not a valid charge number or particle."
+                        f"{value} is not a valid charge number or particle.",
                     ) from exc
 
             same_element = value.element == self.element
@@ -362,17 +367,17 @@ class IonizationState:
             else:
                 raise ChargeError("No charge number provided.")
 
-        return result
+        return result  # ty:ignore[invalid-return-type]
 
-    def __setitem__(self, key, value) -> None:
+    def __setitem__(self, key, value) -> None:  # noqa: D105
         raise NotImplementedError(
             "Item assignment of an IonizationState instance is not "
             "allowed because the ionic fractions for different "
             "ionization levels must be set simultaneously due to the "
-            "normalization constraint."
+            "normalization constraint.",
         )
 
-    def __iter__(self) -> Iterator:
+    def __iter__(self) -> Iterator:  # noqa: D105
         yield from [self[i] for i in range(self.atomic_number + 1)]
 
     def __eq__(self, other):
@@ -417,11 +422,17 @@ class IonizationState:
         min_tol = np.min([self.tol, other.tol])
 
         same_T_e = (np.isnan(self.T_e) and np.isnan(other.T_e)) or u.allclose(
-            self.T_e, other.T_e, rtol=min_tol, atol=0 * u.K
+            self.T_e,
+            other.T_e,
+            rtol=min_tol,
+            atol=0 * u.K,
         )
 
         same_n_elem = (np.isnan(self.n_elem) and np.isnan(other.n_elem)) or u.allclose(
-            self.n_elem, other.n_elem, rtol=min_tol, atol=0 * u.m**-3
+            self.n_elem,
+            other.n_elem,
+            rtol=min_tol,
+            atol=0 * u.m**-3,
         )
 
         # For the next line, recall that np.nan == np.nan is False
@@ -429,15 +440,18 @@ class IonizationState:
         same_fractions = np.any(
             [
                 np.allclose(
-                    self.ionic_fractions, other.ionic_fractions, rtol=0, atol=min_tol
+                    self.ionic_fractions,
+                    other.ionic_fractions,
+                    rtol=0,
+                    atol=min_tol,
                 ),
                 np.all(np.isnan(self.ionic_fractions))
                 and np.all(np.isnan(other.ionic_fractions)),
-            ]
+            ],
         )
 
         return np.all(
-            [same_element, same_isotope, same_T_e, same_n_elem, same_fractions]
+            [same_element, same_isotope, same_T_e, same_n_elem, same_fractions],
         )
 
     @property
@@ -463,17 +477,19 @@ class IonizationState:
         """
         if fractions is None or np.all(np.isnan(fractions)):
             self._ionic_fractions = np.full(
-                self.atomic_number + 1, np.nan, dtype=np.float64
+                self.atomic_number + 1,
+                np.nan,
+                dtype=np.float64,
             )
             return
 
         try:
             if np.min(fractions) < 0:
-                raise ParticleError("Cannot have negative ionic fractions.")
+                raise ParticleError("Cannot have negative ionic fractions.")  # noqa: TRY301
 
             if len(fractions) != self.atomic_number + 1:
-                raise ParticleError(
-                    f"The length of ionic_fractions must be {self.atomic_number + 1}."
+                raise ParticleError(  # noqa: TRY301
+                    f"The length of ionic_fractions must be {self.atomic_number + 1}.",
                 )
 
             if isinstance(fractions, u.Quantity):
@@ -487,16 +503,16 @@ class IonizationState:
 
                 if not all_nans:
                     if np.any(fractions < 0) or np.any(fractions > 1):
-                        raise ParticleError("Ionic fractions must be between 0 and 1.")
+                        raise ParticleError("Ionic fractions must be between 0 and 1.")  # noqa: TRY301
 
                     if not np.isclose(sum_of_fractions, 1, rtol=0, atol=self.tol):
-                        raise ParticleError("Ionic fractions must sum to one.")
+                        raise ParticleError("Ionic fractions must sum to one.")  # noqa: TRY301
 
                 self._ionic_fractions = fractions
 
         except ParticleError as exc:
             raise ParticleError(
-                f"Unable to set ionic fractions of {self.element} to {fractions}."
+                f"Unable to set ionic fractions of {self.element} to {fractions}.",
             ) from exc
 
     def _is_normalized(self, tol: float | None = None) -> bool:
@@ -524,7 +540,7 @@ class IonizationState:
 
     @property
     @validate_quantities
-    def n_e(self) -> u.Quantity[u.m**-3]:
+    def n_e(self) -> u.Quantity[u.m**-3]:  # ty: ignore[not-subscriptable]
         """
         The electron number density assuming a single species plasma.
         """
@@ -532,13 +548,13 @@ class IonizationState:
 
     @property
     @validate_quantities
-    def n_elem(self) -> u.Quantity[u.m**-3]:
+    def n_elem(self) -> u.Quantity[u.m**-3]:  # ty: ignore[not-subscriptable]
         """The total number density of neutrals and all ions."""
         return self._n_elem.to(u.m**-3)
 
     @n_elem.setter
     @validate_quantities
-    def n_elem(self, value: u.Quantity[u.m**-3]):
+    def n_elem(self, value: u.Quantity[u.m**-3]):  # ty: ignore[not-subscriptable]
         """Set the number density of neutrals and all ions."""
         if value < 0 * u.m**-3:
             raise ParticleError
@@ -549,7 +565,7 @@ class IonizationState:
 
     @property
     @validate_quantities
-    def number_densities(self) -> u.Quantity[u.m**-3]:
+    def number_densities(self) -> u.Quantity[u.m**-3]:  # ty: ignore[not-subscriptable]
         """The number densities for each state."""
         try:
             return (self.n_elem * self.ionic_fractions).to(u.m**-3)
@@ -558,13 +574,13 @@ class IonizationState:
 
     @number_densities.setter
     @validate_quantities
-    def number_densities(self, value: u.Quantity[u.m**-3]):
+    def number_densities(self, value: u.Quantity[u.m**-3]):  # ty: ignore[not-subscriptable]
         """Set the number densities for each state."""
         if np.any(value.value < 0):
             raise ParticleError("Number densities cannot be negative.")
         if len(value) != self.atomic_number + 1:
             raise ParticleError(
-                f"Incorrect number of charge states for {self.base_particle}"
+                f"Incorrect number of charge states for {self.base_particle}",
             )
         value = value.to(u.m**-3)
 
@@ -572,7 +588,7 @@ class IonizationState:
         self._ionic_fractions = value / self._n_elem
 
     @property
-    def T_e(self) -> u.Quantity[u.K]:
+    def T_e(self) -> u.Quantity[u.K]:  # ty: ignore[not-subscriptable]
         """The electron temperature."""
         if self._T_e is None:
             raise ParticleError("No electron temperature has been specified.")
@@ -580,7 +596,7 @@ class IonizationState:
 
     @T_e.setter
     @validate_quantities(value={"equivalencies": u.temperature_energy()})
-    def T_e(self, value: u.Quantity[u.K]):
+    def T_e(self, value: u.Quantity[u.K]):  # ty: ignore[not-subscriptable]
         """Set the electron temperature."""
         try:
             value = value.to(u.K, equivalencies=u.temperature_energy())
@@ -593,9 +609,9 @@ class IonizationState:
 
     @property
     @validate_quantities(
-        validations_on_return={"equivalencies": u.temperature_energy()}
+        validations_on_return={"equivalencies": u.temperature_energy()},
     )
-    def T_i(self) -> u.Quantity[u.K]:
+    def T_i(self) -> u.Quantity[u.K]:  # ty: ignore[not-subscriptable]
         """
         The ion temperature. If the ion temperature has not been provided,
         then this attribute will provide the electron temperature.
@@ -608,9 +624,9 @@ class IonizationState:
             "equivalencies": u.temperature_energy(),
             "none_shall_pass": True,
             "can_be_negative": False,
-        }
+        },
     )
-    def T_i(self, value: u.Quantity[u.K]):
+    def T_i(self, value: u.Quantity[u.K]):  # ty: ignore[not-subscriptable]
         """Set the ion temperature."""
         if value is None:
             self._T_i = np.repeat(self._T_e, self._number_of_particles)
@@ -653,12 +669,12 @@ class IonizationState:
             raise TypeError(kappa_errmsg)
         if value <= 1.5:
             raise ValueError(kappa_errmsg)
-        self._kappa: float = np.real(value)
+        self._kappa: float = np.real(value)  # ty:ignore[invalid-assignment]
 
     @property
     def element(self) -> str:
         """The atomic symbol of the element."""
-        return self._particle.element
+        return self._particle.element  # ty:ignore[invalid-return-type]
 
     @property
     def isotope(self) -> str | None:
@@ -685,7 +701,7 @@ class IonizationState:
         """The atomic number of the element."""
         return self._particle.atomic_number
 
-    def __len__(self) -> int:
+    def __len__(self) -> int:  # noqa: D105
         return self._number_of_particles
 
     @property
@@ -704,7 +720,7 @@ class IonizationState:
         if np.nan in self.ionic_fractions:  # noqa: PLW0177
             raise ChargeError(
                 "Z_mean cannot be found because no ionic fraction "
-                f"information is available for {self.base_particle}."
+                f"information is available for {self.base_particle}.",
             )
         return np.sum(self.ionic_fractions * self.charge_numbers)
 
@@ -730,11 +746,11 @@ class IonizationState:
         if np.any(np.isnan(self.ionic_fractions)):
             raise ParticleError(
                 f"Cannot find most abundant ion of {self.base_particle} "
-                f"because the ionic fractions have not been defined."
+                f"because the ionic fractions have not been defined.",
             )
 
         return np.flatnonzero(
-            self.ionic_fractions == self.ionic_fractions.max()
+            self.ionic_fractions == self.ionic_fractions.max(),
         ).tolist()
 
     @property
@@ -769,7 +785,6 @@ class IonizationState:
         minimum_ionic_fraction
             The minimum ionic fraction to return state information for.
         """
-
         states_info = []
 
         for state in self:
@@ -847,10 +862,11 @@ class IonizationState:
             abundances=abundances,
             use_rms_charge=use_rms_charge,
             use_rms_mass=use_rms_mass,
-        )
+        )  # ty:ignore[invalid-return-type]
 
     def summarize(
-        self, minimum_ionic_fraction: float = 0.01
+        self,
+        minimum_ionic_fraction: float = 0.01,
     ) -> None:  # coverage: ignore
         """
         Print quicklook information.
@@ -888,7 +904,7 @@ class IonizationState:
         separator_line = [64 * "-"]
 
         output = [
-            f"IonizationState instance for {self.base_particle} with Z_mean = {self.Z_mean:.2f}"
+            f"IonizationState instance for {self.base_particle} with Z_mean = {self.Z_mean:.2f}",
         ]
         attributes = []
 
@@ -896,14 +912,14 @@ class IonizationState:
             output += separator_line
             output += self._get_states_info(minimum_ionic_fraction)
             output += separator_line
-            # TODO: add T_i somewhere around here, probably
+            # TODO: add T_i somewhere around here, probably  # noqa: FIX002
 
         if not np.isnan(self.n_elem):
             attributes.extend(
                 [
                     f"n_elem = {self.n_elem.value:.2e} m**-3",
                     f"n_e = {self.n_e.value:.2e} m**-3",
-                ]
+                ],
             )
 
         if not np.isnan(self.T_e):
@@ -918,5 +934,5 @@ class IonizationState:
         for line in output:
             print(line)  # noqa: T201
 
-    def __hash__(self) -> int:
+    def __hash__(self) -> int:  # noqa: D105
         return hash(repr(self))

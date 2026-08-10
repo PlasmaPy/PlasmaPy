@@ -14,8 +14,8 @@ regimes.
 """
 
 __all__ = [
-    "Coulomb_logarithm",
     "Coulomb_cross_section",
+    "Coulomb_logarithm",
 ]
 
 import warnings
@@ -35,12 +35,12 @@ from plasmapy.utils.exceptions import CouplingWarning
     V={"none_shall_pass": True},
 )
 @particles.particle_input
-def Coulomb_logarithm(
-    T: u.Quantity[u.K],
-    n_e: u.Quantity[u.m**-3],
+def Coulomb_logarithm(  # noqa: ANN201, PLR0917
+    T: u.Quantity[u.K],  # ty: ignore[not-subscriptable]
+    n_e: u.Quantity[u.m**-3],  # ty: ignore[not-subscriptable]
     species: (particles.Particle, particles.Particle),
     z_mean: float = np.nan,
-    V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
+    V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,  # ty: ignore[not-subscriptable]
     method: Literal[
         "classical",
         "GMS-1",
@@ -443,7 +443,12 @@ def Coulomb_logarithm(
     """
     # fetching impact min and max impact parameters
     bmin, bmax = lengths.impact_parameter(
-        T=T, n_e=n_e, species=species, z_mean=z_mean, V=V, method=method
+        T=T,
+        n_e=n_e,
+        species=species,
+        z_mean=z_mean,
+        V=V,
+        method=method,
     )
 
     if method in {
@@ -477,7 +482,7 @@ def Coulomb_logarithm(
             '"ls_full_interp", "ls_clamp_mininterp", "hls_min_interp", '
             '"hls_max_interp", "hls_full_interp", and their aliases. '
             "Please refer to the documentation of this function for "
-            "more information."
+            "more information.",
         )
 
     ln_Lambda = ln_Lambda.to(u.dimensionless_unscaled).value
@@ -498,6 +503,7 @@ def Coulomb_logarithm(
             f"due to strong coupling effects, in particular because "
             f"{method = } assumes weak coupling.",
             CouplingWarning,
+            stacklevel=2,
         )
     elif min_ln_Lambda < 4:
         warnings.warn(
@@ -505,13 +511,14 @@ def Coulomb_logarithm(
             f"min(ln Λ) = {min_ln_Lambda:.4f}. Coulomb logarithms of ≲ 4 may "
             f"have increased uncertainty due to strong coupling effects.",
             CouplingWarning,
+            stacklevel=2,
         )
 
     return ln_Lambda
 
 
 @validate_quantities(impact_param={"can_be_negative": False})
-def Coulomb_cross_section(impact_param: u.Quantity[u.m]) -> u.Quantity[u.m**2]:
+def Coulomb_cross_section(impact_param: u.Quantity[u.m]) -> u.Quantity[u.m**2]:  # ty: ignore[not-subscriptable]
     r"""
     Cross-section for a large angle Coulomb collision.
 

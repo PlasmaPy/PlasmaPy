@@ -68,7 +68,6 @@ alias_dictionaries = [case_sensitive_aliases, case_insensitive_aliases]
 @pytest.mark.parametrize("alias_dict", alias_dictionaries)
 def test_alias_dict_properties(alias_dict) -> None:
     """Test properties of the alias dictionaries."""
-
     for key in alias_dict:
         assert isinstance(key, str), (
             f"The following key should be a string, but isn't: {key}\n\n"
@@ -326,7 +325,7 @@ def test_parse_InvalidParticleErrors(arg, kwargs) -> None:
         pytest.fail(
             "An InvalidParticleError was expected to be raised by "
             f"{call_string(parse_and_check_atomic_input, arg, kwargs)}, "
-            f"but no exception was raised."
+            f"but no exception was raised.",
         )
 
 
@@ -341,7 +340,7 @@ def test_parse_InvalidElementErrors(particle) -> None:
         pytest.fail(
             "An InvalidElementError was expected to be raised by "
             f"{call_string(parse_and_check_atomic_input, particle)}, "
-            f"but no exception was raised."
+            f"but no exception was raised.",
         )
 
 
@@ -359,14 +358,13 @@ atomic_warnings_table = [
 def test_parse_ParticleWarnings(arg, kwargs, num_warnings: int) -> None:
     r"""Tests that _parse_and_check_atomic_input issues a ParticleWarning
     under the required conditions."""
-
     with pytest.warns(ParticleWarning) as record:  # noqa: PT031
         parse_and_check_atomic_input(arg, **kwargs)
         if not record:
             pytest.fail(
                 f"No AtomicWarning was issued by "
                 f"{call_string(parse_and_check_atomic_input, arg, kwargs)} but the expected number "
-                f"of warnings was {num_warnings}"
+                f"of warnings was {num_warnings}",
             )
 
     assert len(record) == num_warnings, (

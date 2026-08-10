@@ -1,6 +1,6 @@
 """Calculation of quantities related to relativity."""
 
-__all__ = ["Lorentz_factor", "relativistic_energy", "RelativisticBody"]
+__all__ = ["Lorentz_factor", "RelativisticBody", "relativistic_energy"]
 
 from numbers import Real
 
@@ -17,7 +17,7 @@ from plasmapy.utils.exceptions import RelativityError
 
 
 @validate_quantities(V={"can_be_negative": True})
-def Lorentz_factor(V: u.Quantity[u.m / u.s]):
+def Lorentz_factor(V: u.Quantity[u.m / u.s]):  # noqa: ANN201  # ty: ignore[not-subscriptable]
     r"""
     Return the Lorentz factor.
 
@@ -68,11 +68,10 @@ def Lorentz_factor(V: u.Quantity[u.m / u.s]):
     >>> Lorentz_factor(299792458 * u.m / u.s)
     inf
     """
-
     if not np.all((np.abs(V) <= c) | (np.isnan(V))):
         raise RelativityError(
             "The Lorentz factor cannot be calculated for "
-            "speeds faster than the speed of light."
+            "speeds faster than the speed of light.",
         )
 
     if V.size > 1:
@@ -93,13 +92,13 @@ def Lorentz_factor(V: u.Quantity[u.m / u.s]):
 @particle_input
 def relativistic_energy(
     particle: ParticleLike,
-    V: u.Quantity[u.m / u.s],
+    V: u.Quantity[u.m / u.s],  # ty: ignore[not-subscriptable]
     *,
     mass_numb: int | None = None,
     Z: int | None = None,
     m=None,
     v=None,
-) -> u.Quantity[u.J]:
+) -> u.Quantity[u.J]:  # ty: ignore[not-subscriptable]
     """
     Calculate the sum of the mass energy and kinetic energy of a
     relativistic body.
@@ -172,14 +171,14 @@ def relativistic_energy(
     >>> relativistic_energy(1 * u.mg, 1.4e8 * u.m / u.s)
     <Quantity 1.01638929e+11 J>
     """
-    # TODO: Remove references to the parameters ``m`` and ``v`` in the
+    # TODO: Remove references to the parameters ``m`` and ``v`` in the  # noqa: FIX002
     # docstring and below no sooner than 2024.
 
     if m is not None or v is not None:
         raise TypeError(
             "The parameters 'm' and 'v' to relativistic_energy have "
             " been removed. Use 'particle' instead of 'm' and 'V' "
-            "instead of 'v'."
+            "instead of 'v'.",
         )
 
     γ = Lorentz_factor(V)
@@ -287,13 +286,14 @@ class RelativisticBody:
             raise ValueError(
                 "RelativisticBody can accept no more than one of the following "
                 "arguments: V, v_over_c, momentum, total_energy, kinetic_energy, "
-                "and lorentz_factor."
+                "and lorentz_factor.",
             )
 
         return not_none_arguments or {"velocity": np.nan * u.m / u.s}
 
     def _store_velocity_like_argument(
-        self, speed_like_input: dict[str, u.Quantity | float]
+        self,
+        speed_like_input: dict[str, u.Quantity | float],
     ) -> None:
         """
         Take the velocity-like argument and store it via the setter for
@@ -315,11 +315,11 @@ class RelativisticBody:
     def __init__(
         self,
         particle: ParticleLike,
-        V: u.Quantity[u.m / u.s] = None,
-        momentum: u.Quantity[u.kg * u.m / u.s] = None,
+        V: u.Quantity[u.m / u.s] = None,  # ty: ignore[not-subscriptable]
+        momentum: u.Quantity[u.kg * u.m / u.s] = None,  # ty: ignore[not-subscriptable]
         *,
-        total_energy: u.Quantity[u.J] = None,
-        kinetic_energy: u.Quantity[u.J] = None,
+        total_energy: u.Quantity[u.J] = None,  # ty: ignore[not-subscriptable]
+        kinetic_energy: u.Quantity[u.J] = None,  # ty: ignore[not-subscriptable]
         v_over_c: float | None = None,
         lorentz_factor: float | None = None,
         Z: int | None = None,
@@ -339,10 +339,10 @@ class RelativisticBody:
             "lorentz_factor": lorentz_factor,
         }
 
-        speed_like_input = self._get_speed_like_input(velocity_like_inputs)
+        speed_like_input = self._get_speed_like_input(velocity_like_inputs)  # ty:ignore[invalid-argument-type]
         self._store_velocity_like_argument(speed_like_input)
 
-    def __repr__(self) -> str:
+    def __repr__(self) -> str:  # noqa: D105
         return f"RelativisticBody({self.particle}, {self.velocity})"
 
     @property
@@ -354,11 +354,11 @@ class RelativisticBody:
         -------
         |Particle|, |CustomParticle|, or |ParticleList|
         """
-        return self._particle
+        return self._particle  # ty:ignore[invalid-return-type]
 
     @property
     @validate_quantities
-    def mass(self) -> u.Quantity[u.kg]:
+    def mass(self) -> u.Quantity[u.kg]:  # ty: ignore[not-subscriptable]
         r"""
         The rest mass of the body, :math:`m_0`\ .
 
@@ -370,7 +370,7 @@ class RelativisticBody:
 
     @property
     @validate_quantities
-    def mass_energy(self) -> u.Quantity[u.J]:
+    def mass_energy(self) -> u.Quantity[u.J]:  # ty: ignore[not-subscriptable]
         r"""
         The rest mass energy of the body, :math:`m_0 c^2`\ .
 
@@ -382,7 +382,7 @@ class RelativisticBody:
 
     @property
     @validate_quantities
-    def total_energy(self) -> u.Quantity[u.J]:
+    def total_energy(self) -> u.Quantity[u.J]:  # ty: ignore[not-subscriptable]
         r"""
         The sum of the rest mass energy and the kinetic energy of the
         body.
@@ -399,7 +399,7 @@ class RelativisticBody:
 
     @property
     @validate_quantities
-    def kinetic_energy(self) -> u.Quantity[u.J]:
+    def kinetic_energy(self) -> u.Quantity[u.J]:  # ty: ignore[not-subscriptable]
         """
         The kinetic energy of the body.
 
@@ -428,7 +428,7 @@ class RelativisticBody:
 
     @property
     @validate_quantities
-    def velocity(self) -> u.Quantity[u.m / u.s]:
+    def velocity(self) -> u.Quantity[u.m / u.s]:  # ty: ignore[not-subscriptable]
         r"""
         The velocity of the body, :math:`V`\ .
 
@@ -457,7 +457,7 @@ class RelativisticBody:
 
     @property
     @validate_quantities
-    def momentum(self) -> u.Quantity[u.kg * u.m / u.s]:
+    def momentum(self) -> u.Quantity[u.kg * u.m / u.s]:  # ty: ignore[not-subscriptable]
         r"""
         The magnitude of the momentum of the body.
 
@@ -473,12 +473,12 @@ class RelativisticBody:
 
     @kinetic_energy.setter
     @validate_quantities(E_K={"can_be_negative": False})
-    def kinetic_energy(self, E_K: u.Quantity[u.J]) -> None:
+    def kinetic_energy(self, E_K: u.Quantity[u.J]) -> None:  # ty: ignore[not-subscriptable]
         self.total_energy = E_K + self.mass_energy
 
     @total_energy.setter
     @validate_quantities(E_tot={"can_be_negative": False})
-    def total_energy(self, E_tot: u.Quantity[u.J]) -> None:
+    def total_energy(self, E_tot: u.Quantity[u.J]) -> None:  # ty: ignore[not-subscriptable]
         self._momentum = np.sqrt(E_tot**2 - self.mass_energy**2) / c
 
     @v_over_c.setter
@@ -487,7 +487,7 @@ class RelativisticBody:
 
     @velocity.setter
     @validate_quantities
-    def velocity(self, V: u.Quantity[u.m / u.s]) -> None:
+    def velocity(self, V: u.Quantity[u.m / u.s]) -> None:  # ty: ignore[not-subscriptable]
         self._momentum = (Lorentz_factor(V) * self.mass * V).to(u.kg * u.m / u.s)
 
     @lorentz_factor.setter
@@ -500,20 +500,20 @@ class RelativisticBody:
                 γ = γ.to(u.dimensionless_unscaled).value
             except u.UnitConversionError as exc:
                 raise u.UnitConversionError(
-                    "The Lorentz factor must be dimensionless."
+                    "The Lorentz factor must be dimensionless.",
                 ) from exc
 
         if γ < 1:
             raise ValueError("The Lorentz factor must be ≥ 1")
 
-        self.velocity = c * np.sqrt(1 - γ**-2)  # type: ignore[operator]
+        self.velocity = c * np.sqrt(1 - γ**-2)
 
     @momentum.setter
     @validate_quantities
-    def momentum(self, p: u.Quantity[u.kg * u.m / u.s]) -> None:
+    def momentum(self, p: u.Quantity[u.kg * u.m / u.s]) -> None:  # ty: ignore[not-subscriptable]
         self._momentum = p.to(u.kg * u.m / u.s)
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other) -> bool:  # noqa: D105
         _attributes_to_compare = (
             "particle",
             "kinetic_energy",
@@ -532,5 +532,5 @@ class RelativisticBody:
                 return False
         return True
 
-    def __hash__(self) -> int:
+    def __hash__(self) -> int:  # noqa: D105
         return hash(repr(self))

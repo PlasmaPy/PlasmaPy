@@ -7,15 +7,15 @@ Functions for calculating quantities associated with laser pulses.
 """
 
 __all__ = [
-    "em_angular_frequency",
-    "electric_field_amplitude",
-    "intensity",
-    "normalized_vector_potential",
+    "Gaussian_Rayleigh_length",
     "Gaussian_beam_waist_radius",
     "Gaussian_power",
-    "Gaussian_Rayleigh_length",
     "Gaussian_spot_size_FWHM",
+    "electric_field_amplitude",
+    "em_angular_frequency",
     "em_wavelength",
+    "intensity",
+    "normalized_vector_potential",
 ]
 __aliases__ = [
     "a0_",
@@ -38,8 +38,8 @@ __all__ += __aliases__
     intensity={"can_be_negative": False},
 )
 def electric_field_amplitude(
-    intensity: u.Quantity[u.watt / u.m**2],
-) -> u.Quantity[u.V / u.m]:
+    intensity: u.Quantity[u.watt / u.m**2],  # ty: ignore[not-subscriptable]
+) -> u.Quantity[u.V / u.m]:  # ty: ignore[not-subscriptable]
     r"""
     Calculate the electric field amplitude :math:`E_0` from the intensity :math:`I`
     of a laser.
@@ -75,7 +75,6 @@ def electric_field_amplitude(
     >>> electric_field_amplitude(1e-3 * u.watt / u.m**2)  # Electric Field Amplitude
     <Quantity 0.8680211 V / m>
     """
-
     E = np.sqrt((2 * intensity) / (c * eps0))
     return E.to(u.V / u.m)
 
@@ -88,8 +87,8 @@ E0_ = electric_field_amplitude
     electric_field_amplitude={"can_be_negative": False},
 )
 def intensity(
-    electric_field_amplitude: u.Quantity[u.V / u.m],
-) -> u.Quantity[u.watt / u.m**2]:
+    electric_field_amplitude: u.Quantity[u.V / u.m],  # ty: ignore[not-subscriptable]
+) -> u.Quantity[u.watt / u.m**2]:  # ty: ignore[not-subscriptable]
     r"""
     Calculate the intensity :math:`I` of a laser from the
     electric field amplitude :math:`E_0`.
@@ -126,7 +125,6 @@ def intensity(
     >>> intensity(0.8680211 * u.V / u.m)
     <Quantity 0.001 W / m2>
     """
-
     return (1 / 2) * c * eps0 * electric_field_amplitude**2
 
 
@@ -137,7 +135,7 @@ I_ = intensity
 @validate_quantities(
     angular_frequency={"can_be_negative": False},
 )
-def em_wavelength(angular_frequency: u.Quantity[u.rad / u.s]) -> u.Quantity[u.m]:
+def em_wavelength(angular_frequency: u.Quantity[u.rad / u.s]) -> u.Quantity[u.m]:  # ty: ignore[not-subscriptable]
     r"""
     Calculate the wavelength of a laser :math:`\lambda` given the
     angular frequency :math:`\omega`.
@@ -171,14 +169,15 @@ def em_wavelength(angular_frequency: u.Quantity[u.rad / u.s]) -> u.Quantity[u.m]
     <Quantity 8e-07 m>
     """
     return (2 * np.pi * c / angular_frequency).to(
-        u.m, equivalencies=u.dimensionless_angles()
+        u.m,
+        equivalencies=u.dimensionless_angles(),
     )
 
 
 @validate_quantities(
     wavelength={"can_be_negative": False},
 )
-def em_angular_frequency(wavelength: u.Quantity[u.m]) -> u.Quantity[u.rad / u.s]:
+def em_angular_frequency(wavelength: u.Quantity[u.m]) -> u.Quantity[u.rad / u.s]:  # ty: ignore[not-subscriptable]
     r"""
     Calculate the angular frequency :math:`\omega` of a laser given the
     the wavelength of the beam :math:`\lambda`.
@@ -214,7 +213,8 @@ def em_angular_frequency(wavelength: u.Quantity[u.m]) -> u.Quantity[u.rad / u.s]
     <Quantity 2.35456446e+15 rad / s>
     """
     return ((c / wavelength) * 2 * np.pi).to(
-        u.rad / u.s, equivalencies=u.dimensionless_angles()
+        u.rad / u.s,
+        equivalencies=u.dimensionless_angles(),
     )
 
 
@@ -227,8 +227,8 @@ omega_ = em_angular_frequency
     wavelength={"can_be_negative": False},
 )
 def normalized_vector_potential(
-    intensity: u.Quantity[u.watt / u.m**2],
-    wavelength: u.Quantity[u.m],
+    intensity: u.Quantity[u.watt / u.m**2],  # ty: ignore[not-subscriptable]
+    wavelength: u.Quantity[u.m],  # ty: ignore[not-subscriptable]
 ) -> float | np.ndarray:
     r"""
     Calculate the normalized vector potential :math:`a_0` from the intensity :math:`I`
@@ -278,9 +278,8 @@ def normalized_vector_potential(
     >>> normalized_vector_potential(1e18 * u.watt / u.cm**2, 1 * u.um)
     np.float64(0.8549297...)
     """
-
     a0 = (e * wavelength * np.sqrt(intensity / (2 * eps0 * c**5))) / (m_e * np.pi)
-    return a0.to(u.dimensionless_unscaled).value  # type: ignore[no-any-return]
+    return a0.to(u.dimensionless_unscaled).value
 
 
 a0_ = normalized_vector_potential
@@ -292,9 +291,9 @@ a0_ = normalized_vector_potential
     beam_waist_radius={"can_be_negative": False},
 )
 def Gaussian_power(
-    intensity: u.Quantity[u.watt / u.m**2],
-    beam_waist_radius: u.Quantity[u.m],
-) -> u.Quantity[u.Watt]:
+    intensity: u.Quantity[u.watt / u.m**2],  # ty: ignore[not-subscriptable]
+    beam_waist_radius: u.Quantity[u.m],  # ty: ignore[not-subscriptable]
+) -> u.Quantity[u.Watt]:  # ty: ignore[not-subscriptable]
     r"""
     Calculate the total power of a Gaussian beam :math:`P_0` from the intensity :math:`I`
     and the beam waist radius :math:`w_0`.
@@ -331,14 +330,13 @@ def Gaussian_power(
     >>> Gaussian_power(1e18 * u.watt / u.cm**2, 1 * u.um)  # Total beam power
     <Quantity 1.57079633e+10 W>
     """
-
     return (1 / 2) * intensity * np.pi * beam_waist_radius**2
 
 
 @validate_quantities(
     spot_size_FWHM={"can_be_negative": False},
 )
-def Gaussian_beam_waist_radius(spot_size_FWHM: u.Quantity[u.m]) -> u.Quantity[u.m]:
+def Gaussian_beam_waist_radius(spot_size_FWHM: u.Quantity[u.m]) -> u.Quantity[u.m]:  # ty: ignore[not-subscriptable]
     r"""
     Calculate the beam waist radius :math:`w_0` for the intensity profile
     of a Gaussian beam given the Full Width at Half Maximum spot size :math:`FWHM`.
@@ -390,7 +388,7 @@ w0_ = Gaussian_beam_waist_radius
 @validate_quantities(
     beam_waist_radius={"can_be_negative": False},
 )
-def Gaussian_spot_size_FWHM(beam_waist_radius: u.Quantity[u.m]) -> u.Quantity[u.m]:
+def Gaussian_spot_size_FWHM(beam_waist_radius: u.Quantity[u.m]) -> u.Quantity[u.m]:  # ty: ignore[not-subscriptable]
     r"""
     Calculate the Full Width at Half Maximum spot size :math:`FWHM` at focus given the
     beam waist radius of a Gaussian beam :math:`w_0`.
@@ -436,9 +434,9 @@ def Gaussian_spot_size_FWHM(beam_waist_radius: u.Quantity[u.m]) -> u.Quantity[u.
     beam_waist_radius={"can_be_negative": False},
 )
 def Gaussian_Rayleigh_length(
-    wavelength: u.Quantity[u.m],
-    beam_waist_radius: u.Quantity[u.m],
-) -> u.Quantity[u.m]:
+    wavelength: u.Quantity[u.m],  # ty: ignore[not-subscriptable]
+    beam_waist_radius: u.Quantity[u.m],  # ty: ignore[not-subscriptable]
+) -> u.Quantity[u.m]:  # ty: ignore[not-subscriptable]
     r"""
     Calculate the Rayleigh length :math:`z_R` from the beam waist radius :math:`w_0`
     and the wavelength :math:`\lambda`.
@@ -480,5 +478,4 @@ def Gaussian_Rayleigh_length(
     >>> Gaussian_Rayleigh_length(800 * u.nm, 1 * u.um)
     <Quantity 3.927e-06 m>
     """
-
     return (np.pi * beam_waist_radius**2) / wavelength

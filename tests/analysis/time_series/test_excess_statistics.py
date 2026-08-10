@@ -83,7 +83,7 @@ from plasmapy.analysis.time_series.excess_statistics import ExcessStatistics
         ),
     ],
 )
-def test_ExcessStatistics(signal, thresholds, time_step, pdf, bins, expected) -> None:
+def test_ExcessStatistics(signal, thresholds, time_step, pdf, bins, expected) -> None:  # noqa: PLR0917
     """Test ExcessStatistics class"""
     excess_stats = ExcessStatistics(signal, thresholds, time_step)
     assert excess_stats.total_time_above_threshold == expected[0]
@@ -92,8 +92,8 @@ def test_ExcessStatistics(signal, thresholds, time_step, pdf, bins, expected) ->
     assert excess_stats.rms_times == expected[3]
     if pdf:
         hist, bin_centers = excess_stats.hist(bins)
-        assert np.allclose(hist, expected[4])
-        assert np.allclose(bin_centers, expected[5])
+        np.testing.assert_allclose(hist, expected[4], rtol=1e-5, atol=1e-8)
+        np.testing.assert_allclose(bin_centers, expected[5], rtol=1e-5, atol=1e-8)
 
 
 @pytest.mark.parametrize(
@@ -101,7 +101,11 @@ def test_ExcessStatistics(signal, thresholds, time_step, pdf, bins, expected) ->
     [([1, 2], 1, -1, 32, ValueError), ([1, 2], 1, 1, 1.5, TypeError)],
 )
 def test_ExcessStatistics_exception(
-    signal, thresholds, time_step, bins, exception
+    signal,
+    thresholds,
+    time_step,
+    bins,
+    exception,
 ) -> None:
     """Test whether exception is risen"""
     with pytest.raises(exception):

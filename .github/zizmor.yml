@@ -23,14 +23,14 @@ rules:
   excessive-permissions:
     ignore:
     - create-release-issue.yml:16:3
-    - comment-on-pr.yml:8:3
-    - prepare-release-pr.yml:16:3
-    - unlabel-pr-after-merge.yml:8:3
-    - upgrade-uv-lock.yml:9:3
+    - comment-on-pr.yml:10:3
+    - prepare-release-pr.yml:26:3
+    - unlabel-pr-after-merge.yml:10:3
+    - upgrade-uv-lock.yml:14:3
   template-injection:
     ignore:
     - create-release-issue.yml:30:42
     - create-release-issue.yml:31:46
   use-trusted-publishing:
     ignore:
-    - publish-to-pypi.yml:32:7
+    - publish-to-pypi.yml:37:7

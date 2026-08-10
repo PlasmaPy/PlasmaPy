@@ -80,7 +80,6 @@ def test_Reynolds_number() -> None:
 
 def test_Mag_Reynolds() -> None:
     r"""Test Mag_Reynolds in dimensionless.py"""
-
     sigma = 1e8 * u.S / u.m
     U = 0.1 * u.m / u.s
     L = 0.05 * u.m
@@ -98,15 +97,24 @@ def test_Mag_Reynolds() -> None:
 
 def test_Debye_number() -> None:
     r"""Test the Debye_number function in dimensionless.py."""
-
-    # TODO: parametrize tests
+    # TODO: parametrize tests  # noqa: FIX002
 
     assert Debye_number(T_e, n_e).unit.is_equivalent(u.dimensionless_unscaled)
 
     T_e_eV = T_e.to(u.eV, equivalencies=u.temperature_energy())
-    assert np.isclose(Debye_number(T_e, n_e).value, Debye_number(T_e_eV, n_e).value)
+    np.testing.assert_allclose(
+        Debye_number(T_e, n_e).value,
+        Debye_number(T_e_eV, n_e).value,
+        rtol=1e-5,
+        atol=1e-8,
+    )
 
-    assert np.isclose(Debye_number(1 * u.eV, 1 * u.cm**-3).value, 1720862385.43342)
+    np.testing.assert_allclose(
+        Debye_number(1 * u.eV, 1 * u.cm**-3).value,
+        1720862385.43342,
+        rtol=1e-5,
+        atol=1e-8,
+    )
 
     with pytest.warns(u.UnitsWarning):
         Debye_number(T_e, 4)
@@ -138,21 +146,25 @@ def test_Debye_number() -> None:
 
 
 @pytest.mark.filterwarnings(
-    "ignore:.*strong coupling effects.*:plasmapy.utils.exceptions.CouplingWarning"
+    "ignore:.*strong coupling effects.*:plasmapy.utils.exceptions.CouplingWarning",
 )
 def test_Hall_parameter() -> None:
     r"""Test Hall_parameter in dimensionless.py"""
-
-    # TODO: parametrize tests
+    # TODO: parametrize tests  # noqa: FIX002
 
     ion = Particle("He-4 +1")
     particle = Particle("e-")
 
     assert Hall_parameter(n, T, B, ion, particle).unit.is_equivalent(
-        u.dimensionless_unscaled
+        u.dimensionless_unscaled,
     )
 
-    assert np.isclose(Hall_parameter(n, T, B, ion, particle).value, 70461.38821149625)
+    np.testing.assert_allclose(
+        Hall_parameter(n, T, B, ion, particle).value,
+        70461.38821149625,
+        rtol=1e-5,
+        atol=1e-8,
+    )
 
     with pytest.warns(u.UnitsWarning):
         Hall_parameter(n, T, 1.0, ion, particle)

@@ -1,0 +1,1 @@
+Updated the GitHub workflow that validates changelog entries to provide more diagnostic information.

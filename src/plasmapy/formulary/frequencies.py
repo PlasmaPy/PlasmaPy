@@ -1,11 +1,11 @@
 """Fundamental frequencies for a plasma."""
 
 __all__ = [
+    "Buchsbaum_frequency",
     "gyrofrequency",
     "lower_hybrid_frequency",
     "plasma_frequency",
     "upper_hybrid_frequency",
-    "Buchsbaum_frequency",
 ]
 __aliases__ = ["oc_", "wc_", "wlh_", "wp_", "wuh_"]
 __lite_funcs__ = ["plasma_frequency_lite"]
@@ -37,16 +37,16 @@ eps0_si_unitless = eps0.value
     validations_on_return={
         "units": [u.rad / u.s, u.Hz],
         "equivalencies": [(u.cy / u.s, u.Hz)],
-    }
+    },
 )
 @angular_freq_to_hz
 def gyrofrequency(
-    B: u.Quantity[u.T],
+    B: u.Quantity[u.T],  # ty: ignore[not-subscriptable]
     particle: ParticleLike,
-    signed: bool = False,
+    signed: bool = False,  # noqa: FBT001, FBT002
     Z: float | None = None,
     mass_numb: int | None = None,
-) -> u.Quantity[u.rad / u.s]:
+) -> u.Quantity[u.rad / u.s]:  # ty: ignore[not-subscriptable]
     r"""
     Calculate the particle gyrofrequency in units of radians per second.
 
@@ -159,7 +159,7 @@ def plasma_frequency_lite(
     n: float,
     mass: float,
     Z: float,
-    to_hz: bool = False,
+    to_hz: bool = False,  # noqa: FBT001, FBT002
 ) -> float:
     r"""
     The :term:`lite-function` for
@@ -232,13 +232,16 @@ def plasma_frequency_lite(
 )
 @angular_freq_to_hz
 def plasma_frequency(
-    n: u.Quantity[u.m**-3],
+    n: u.Quantity[u.m**-3],  # ty: ignore[not-subscriptable]
     particle: ParticleLike,
     *,
     mass_numb: int | None = None,
     Z: float | None = None,
-) -> u.Quantity[u.rad / u.s]:
+) -> u.Quantity[u.rad / u.s]:  # ty: ignore[not-subscriptable]
     r"""Calculate the particle plasma frequency.
+
+    This frequency is the natural rate at which electrons in plasma oscillate due to
+    electrostatic forces from ions.
 
     **Aliases:** `wp_`
 
@@ -350,8 +353,10 @@ wp_ = plasma_frequency
 )
 @angular_freq_to_hz
 def lower_hybrid_frequency(
-    B: u.Quantity[u.T], n_i: u.Quantity[u.m**-3], ion: ParticleLike
-) -> u.Quantity[u.rad / u.s]:
+    B: u.Quantity[u.T],  # ty: ignore[not-subscriptable]
+    n_i: u.Quantity[u.m**-3],  # ty: ignore[not-subscriptable]
+    ion: ParticleLike,
+) -> u.Quantity[u.rad / u.s]:  # ty: ignore[not-subscriptable]
     r"""
     Return the lower hybrid frequency.
 
@@ -450,8 +455,9 @@ wlh_ = lower_hybrid_frequency
 )
 @angular_freq_to_hz
 def upper_hybrid_frequency(
-    B: u.Quantity[u.T], n_e: u.Quantity[u.m**-3]
-) -> u.Quantity[u.rad / u.s]:
+    B: u.Quantity[u.T],  # ty: ignore[not-subscriptable]
+    n_e: u.Quantity[u.m**-3],  # ty: ignore[not-subscriptable]
+) -> u.Quantity[u.rad / u.s]:  # ty: ignore[not-subscriptable]
     r"""
     Return the upper hybrid frequency.
 
@@ -528,18 +534,18 @@ wuh_ = upper_hybrid_frequency
     validations_on_return={
         "units": [u.rad / u.s, u.Hz],
         "equivalencies": [(u.cy / u.s, u.Hz)],
-    }
+    },
 )
 @angular_freq_to_hz
-def Buchsbaum_frequency(
-    B: u.Quantity[u.T],
-    n1: u.Quantity[u.m**-3],
-    n2: u.Quantity[u.m**-3],
+def Buchsbaum_frequency(  # noqa: PLR0917
+    B: u.Quantity[u.T],  # ty: ignore[not-subscriptable]
+    n1: u.Quantity[u.m**-3],  # ty: ignore[not-subscriptable]
+    n2: u.Quantity[u.m**-3],  # ty: ignore[not-subscriptable]
     ion1: ParticleLike,
     ion2: ParticleLike,
     Z1: float | None = None,
     Z2: float | None = None,
-) -> u.Quantity[u.rad / u.s]:
+) -> u.Quantity[u.rad / u.s]:  # ty: ignore[not-subscriptable]
     r"""
     Return the Buchsbaum frequency for a two-ion-species plasma.
 
@@ -630,5 +636,5 @@ def Buchsbaum_frequency(
 
     return np.sqrt(
         (omega_p1_squared * omega_c2_squared + omega_p2_squared * omega_c1_squared)
-        / (omega_p1_squared + omega_p2_squared)
+        / (omega_p1_squared + omega_p2_squared),
     )

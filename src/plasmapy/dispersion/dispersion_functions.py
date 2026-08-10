@@ -12,8 +12,8 @@ from scipy.special import wofz as faddeeva_function
 
 
 def plasma_dispersion_func(
-    zeta: complex | np.ndarray | u.Quantity[u.dimensionless_unscaled],
-) -> complex | np.ndarray | u.Quantity[u.dimensionless_unscaled]:
+    zeta: complex | np.ndarray | u.Quantity[u.dimensionless_unscaled],  # ty: ignore[not-subscriptable]
+) -> complex | np.ndarray | u.Quantity[u.dimensionless_unscaled]:  # ty: ignore[not-subscriptable]
     r"""
     Calculate the plasma dispersion function.
 
@@ -68,18 +68,18 @@ def plasma_dispersion_func(
     except u.UnitTypeError as wrong_units:
         raise u.UnitsError(
             "The argument to plasma_dispersion_func "
-            "must be dimensionless if it is a Quantity."
+            "must be dimensionless if it is a Quantity.",
         ) from wrong_units
     except TypeError as wrong_type:
         raise TypeError(
             "The argument to plasma_dispersion_func should be a real or "
-            "complex number or array, or a dimensionless Quantity."
+            "complex number or array, or a dimensionless Quantity.",
         ) from wrong_type
 
 
 def plasma_dispersion_func_deriv(
-    zeta: complex | np.ndarray | u.Quantity[u.dimensionless_unscaled],
-) -> complex | np.ndarray | u.Quantity[u.dimensionless_unscaled]:
+    zeta: complex | np.ndarray | u.Quantity[u.dimensionless_unscaled],  # ty: ignore[not-subscriptable]
+) -> complex | np.ndarray | u.Quantity[u.dimensionless_unscaled]:  # ty: ignore[not-subscriptable]
     r"""
     Calculate the derivative of the plasma dispersion function.
 
@@ -125,11 +125,11 @@ def plasma_dispersion_func_deriv(
     except u.UnitsError as wrong_units:
         raise u.UnitsError(
             "The argument to plasma_dispersion_func_deriv "
-            "must be dimensionless if it is a Quantity."
+            "must be dimensionless if it is a Quantity.",
         ) from wrong_units
     except TypeError as wrong_type:
         raise TypeError(
             "The argument to plasma_dispersion_func_deriv "
             "must be one of the following types: complex, float, "
-            "int, ndarray, or a dimensionless Quantity."
+            "int, ndarray, or a dimensionless Quantity.",
         ) from wrong_type

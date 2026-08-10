@@ -5,6 +5,9 @@
   "D": {
     "ionization energy": 13.602134636569
   },
+  "T": {
+    "ionization energy": 13.603365719
+  },
   "He": {
     "ionization energy": 24.587389011
   },
@@ -363,7 +366,7 @@
     "ionization energy": 3069.842145
   },
   "S": {
-    "ionization energy": 10.36001
+    "ionization energy": 10.3600167
   },
   "S 1+": {
     "ionization energy": 23.33788
@@ -573,7 +576,7 @@
     "ionization energy": 4934.04979
   },
   "Ca": {
-    "ionization energy": 6.11315547
+    "ionization energy": 6.113154921
   },
   "Ca 1+": {
     "ionization energy": 11.871719
@@ -5313,7 +5316,7 @@
     "ionization energy": 49722.44
   },
   "Nd": {
-    "ionization energy": 5.525
+    "ionization energy": 5.52475
   },
   "Nd 1+": {
     "ionization energy": 10.783
@@ -12837,7 +12840,7 @@
     "ionization energy": 131816.2
   },
   "Np": {
-    "ionization energy": 6.26554
+    "ionization energy": 6.265608
   },
   "Np 1+": {
     "ionization energy": 11.5

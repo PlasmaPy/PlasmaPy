@@ -21,7 +21,6 @@ class TestCFL_limit_electromagnetic_yee:
     )
     def test_raises(self, args, kwargs, _error) -> None:
         """Test scenarios that raise an exception."""
-
         with warnings.catch_warnings(), pytest.raises(_error):
             # we don't care about warnings for these tests
             warnings.simplefilter("ignore")
@@ -50,4 +49,4 @@ class TestCFL_limit_electromagnetic_yee:
             atol = 1e-8
 
         rc = CFL_limit_electromagnetic_yee(*args, **kwargs)
-        assert np.allclose(rc, expected, atol=atol)
+        np.testing.assert_allclose(rc, expected, atol=atol, rtol=1e-5)

@@ -6,10 +6,10 @@ The periodic tabla data is from: https://periodic.lanl.gov/index.shtml
 """
 
 __all__ = [
-    "element_obj_hook",
-    "data_about_elements",
     "atomic_numbers_to_symbols",
+    "data_about_elements",
     "element_names_to_symbols",
+    "element_obj_hook",
 ]
 
 import json
@@ -49,18 +49,18 @@ def element_obj_hook(obj):
 #    json.dump(_Elements, f, default=plasma_default, indent=2)
 
 
-data_about_elements: dict[str, str | int | u.Quantity[u.u]] = json.loads(
-    pkgutil.get_data("plasmapy", "particles/data/elements.json"),
+data_about_elements: dict[str, str | int | u.Quantity[u.u]] = json.loads(  # ty: ignore[not-subscriptable]
+    pkgutil.get_data("plasmapy", "particles/data/elements.json"),  # ty:ignore[invalid-argument-type]
     object_hook=element_obj_hook,
 )
 
 
 atomic_numbers_to_symbols: dict[int, str] = {
-    elemdict["atomic number"]: symb  # type: ignore[misc]
+    elemdict["atomic number"]: symb  # ty:ignore[invalid-argument-type, not-subscriptable]
     for (symb, elemdict) in data_about_elements.items()
 }
 
 element_names_to_symbols: dict[str, int] = {
-    elemdict["element name"]: symb  # type: ignore[misc]
+    elemdict["element name"]: symb  # ty:ignore[invalid-argument-type, not-subscriptable]
     for (symb, elemdict) in data_about_elements.items()
-}
+}  # ty:ignore[invalid-assignment]

@@ -100,5 +100,5 @@ def test_get_physical_type_dict_exceptions(
     kwargs: dict[str, Any],
     expected: type,
 ) -> None:
-    with pytest.raises(expected):
+    with pytest.raises(expected):  # ty:ignore[invalid-argument-type]
         _get_physical_type_dict(collection, **kwargs)

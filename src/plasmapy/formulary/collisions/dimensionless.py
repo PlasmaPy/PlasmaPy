@@ -1,8 +1,8 @@
 """Dimensionless numbers related to particle collisions."""
 
 __all__ = [
-    "coupling_parameter",
     "Knudsen_number",
+    "coupling_parameter",
 ]
 
 from typing import Literal
@@ -26,14 +26,14 @@ from plasmapy.utils.decorators import validate_quantities
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     n_e={"can_be_negative": False},
 )
-def coupling_parameter(
-    T: u.Quantity[u.K],
-    n_e: u.Quantity[u.m**-3],
+def coupling_parameter(  # noqa: PLR0917
+    T: u.Quantity[u.K],  # ty: ignore[not-subscriptable]
+    n_e: u.Quantity[u.m**-3],  # ty: ignore[not-subscriptable]
     species,
     z_mean: float = np.nan,
-    V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
+    V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,  # ty: ignore[not-subscriptable]
     method: Literal["classical", "quantum"] = "classical",
-) -> u.Quantity[u.dimensionless_unscaled]:
+) -> u.Quantity[u.dimensionless_unscaled]:  # ty: ignore[not-subscriptable]
     r"""
     Ratio of the Coulomb energy to the kinetic (usually thermal) energy.
 
@@ -168,7 +168,9 @@ def coupling_parameter(
     <Quantity 5.8033...e-05>
     """
     T, _masses, charges, _reduced_mass, V = misc._process_inputs(  # noqa: SLF001
-        T=T, species=species, V=V
+        T=T,
+        species=species,
+        V=V,
     )
 
     if np.isnan(z_mean):
@@ -205,12 +207,12 @@ def coupling_parameter(
             kinetic_energy = np.real(kinetic_energy)
         else:
             raise ValueError(
-                "Kinetic energy should not be imaginary.Something went horribly wrong."
+                "Kinetic energy should not be imaginary.Something went horribly wrong.",
             )
     else:
         raise ValueError(
             f"Keyword 'method' must be either 'classical' or "
-            f"'quantum', instead of '{method}'."
+            f"'quantum', instead of '{method}'.",
         )
 
     return coulomb_energy / kinetic_energy
@@ -220,15 +222,15 @@ def coupling_parameter(
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     n_e={"can_be_negative": False},
 )
-def Knudsen_number(
+def Knudsen_number(  # noqa: PLR0917
     characteristic_length,
-    T: u.Quantity[u.K],
-    n_e: u.Quantity[u.m**-3],
+    T: u.Quantity[u.K],  # ty: ignore[not-subscriptable]
+    n_e: u.Quantity[u.m**-3],  # ty: ignore[not-subscriptable]
     species,
     z_mean: float = np.nan,
-    V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
+    V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,  # ty: ignore[not-subscriptable]
     method: str = "classical",
-) -> u.Quantity[u.dimensionless_unscaled]:
+) -> u.Quantity[u.dimensionless_unscaled]:  # ty: ignore[not-subscriptable]
     r"""
     Knudsen number (dimensionless).
 
@@ -336,6 +338,11 @@ def Knudsen_number(
     <Quantity 10.91773...>
     """
     path_length = lengths.mean_free_path(
-        T=T, n_e=n_e, species=species, z_mean=z_mean, V=V, method=method
+        T=T,
+        n_e=n_e,
+        species=species,
+        z_mean=z_mean,
+        V=V,
+        method=method,
     )
     return path_length / characteristic_length

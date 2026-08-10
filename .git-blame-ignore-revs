@@ -2,6 +2,21 @@
 # from the blame view; see
 # https://docs.github.com/en/repositories/working-with-files/using-files/viewing-a-file#ignore-commits-in-the-blame-view
 
+# Enable additional ruff rules and update `.git-blame-ignore-revs` (#3295)
+dfbe28e665b2c071b3169e8b576208190c9d0beb
+
+# Update ruff rules including for annotations (#3292)
+d046ed10b96d3bdc95d10cd4efdcfcbe38785ac2
+
+# Perform static type checking with ty instead of mypy (#3240)
+96f507844dfb0f5c4bf0c083d8012343f9abf6e7
+
+# Update to newest version of ruff (#2942)
+8910b5d8d9e5a887b71e2a732c42b3ce9ed99699
+
+# Update ruff configuration and pre-commit hooks (#2854)
+25d7428ebad001552dce01bc168aa31fc00d092c
+
 # Switch to `src` layout with separate `tests` directory (#2598)
 2a6cf7fc923724316fe45e6433d181637d63416e
 
@@ -25,6 +40,9 @@ b25e083a03a4396e73676d7d62329385fcfe2c0f
 
 # Replace `black` with `ruff` in pre-commit config (#2394)
 d13e52b151696d29c42b7b654e9b15242410fd5f
+
+# Make imports from `astropy.units` and `astropy.constants` more consistent (#2282)
+c4311118ce6727389f9939662b1904700882d69f
 
 # Update ruff rules (#2213)
 5cfd6f45bbbdba9e725b87fc1d06b973a9078092

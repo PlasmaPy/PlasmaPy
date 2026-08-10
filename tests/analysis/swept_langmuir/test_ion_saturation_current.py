@@ -21,7 +21,6 @@ def test_ion_saturation_current_namedtuple() -> None:
     Test structure of the namedtuple used to return the computed ion saturation
     current data.
     """
-
     assert issubclass(ISatExtras, tuple)
     assert hasattr(ISatExtras, "_fields")
     assert ISatExtras._fields == (
@@ -49,10 +48,10 @@ class TestFindIonSaturationCurrent:
         {
             "current_linear": analytical_funcs["linear"](analytical_data["voltage"]),
             "current_exp_offset": analytical_funcs["exp_offset"](
-                analytical_data["voltage"]
+                analytical_data["voltage"],
             ),
             "current_exp_linear": analytical_funcs["exp_linear"](
-                analytical_data["voltage"]
+                analytical_data["voltage"],
             ),
         },
     )
@@ -188,7 +187,7 @@ class TestFindIonSaturationCurrent:
                 },
                 (
                     ffuncs.Linear(
-                        params=(0.0, analytical_funcs["exp_offset"].params.b)
+                        params=(0.0, analytical_funcs["exp_offset"].params.b),
                     ),
                     ISatExtras(
                         fitted_func=analytical_funcs["exp_offset"],
@@ -206,7 +205,7 @@ class TestFindIonSaturationCurrent:
                 },
                 (
                     ffuncs.Linear(
-                        params=(0.0, analytical_funcs["exp_offset"].params.b)
+                        params=(0.0, analytical_funcs["exp_offset"].params.b),
                     ),
                     ISatExtras(
                         fitted_func=analytical_funcs["exp_offset"],
@@ -227,7 +226,7 @@ class TestFindIonSaturationCurrent:
                         params=(
                             analytical_funcs["exp_linear"].params.m,
                             analytical_funcs["exp_linear"].params.b,
-                        )
+                        ),
                     ),
                     ISatExtras(
                         fitted_func=analytical_funcs["exp_linear"],
@@ -248,7 +247,7 @@ class TestFindIonSaturationCurrent:
                         params=(
                             analytical_funcs["exp_linear"].params.m,
                             analytical_funcs["exp_linear"].params.b,
-                        )
+                        ),
                     ),
                     ISatExtras(
                         fitted_func=analytical_funcs["exp_linear"],
@@ -265,13 +264,20 @@ class TestFindIonSaturationCurrent:
 
         # assertions on isat
         assert isinstance(isat, type(expected[0]))
-        assert np.allclose(isat.params, expected[0].params)
+        np.testing.assert_allclose(
+            isat.params, expected[0].params, rtol=1e-5, atol=1e-8
+        )
 
         # assertions on extras
         assert isinstance(extras, ISatExtras)
         assert isinstance(extras.fitted_func, type(expected[1].fitted_func))
-        assert np.allclose(extras.fitted_func.params, expected[1].fitted_func.params)
-        assert np.isclose(extras.rsq, 1.0)
+        np.testing.assert_allclose(
+            extras.fitted_func.params,
+            expected[1].fitted_func.params,
+            rtol=1e-5,
+            atol=1e-8,
+        )
+        np.testing.assert_allclose(extras.rsq, 1.0, rtol=1e-5, atol=1e-8)  # ty:ignore[no-matching-overload]
         assert extras.fitted_indices == expected[1].fitted_indices
 
     @pytest.mark.filterwarnings("ignore::RuntimeWarning")
@@ -289,10 +295,15 @@ class TestFindIonSaturationCurrent:
         current = current[isort]
 
         isat, extras = find_ion_saturation_current(
-            voltage, current, fit_type="exp_plus_linear", current_bound=3.6
+            voltage,
+            current,
+            fit_type="exp_plus_linear",
+            current_bound=3.6,
         )
 
-        assert np.isclose(isat.params.m, 3.81079e-6, rtol=1e-3, atol=0)
-        assert np.isclose(isat.params.b, 0.000110422, rtol=2e-3, atol=0)
-        assert np.isclose(extras.rsq, 0.982, rtol=0, atol=0.002)
-        assert np.isclose(np.min(isat(voltage)), -0.00014275, rtol=2e-3, atol=0)
+        np.testing.assert_allclose(isat.params.m, 3.81079e-6, rtol=1e-3, atol=0)
+        np.testing.assert_allclose(isat.params.b, 0.000110422, rtol=2e-3, atol=0)
+        np.testing.assert_allclose(extras.rsq, 0.982, rtol=0, atol=0.002)  # ty:ignore[no-matching-overload]
+        np.testing.assert_allclose(
+            np.min(isat(voltage)), -0.00014275, rtol=2e-3, atol=0
+        )

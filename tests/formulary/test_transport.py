@@ -130,7 +130,9 @@ class Test_classical_transport:
                 * u.m
             )
             testTrue = np.isclose(
-                ct2.resistivity.value, alpha_spitzer_perp_NRL.value, rtol=2e-2
+                ct2.resistivity.value,
+                alpha_spitzer_perp_NRL.value,
+                rtol=2e-2,
             )
             errStr = (
                 f"Resistivity should be close to "
@@ -284,10 +286,17 @@ class Test_classical_transport:
         """If no coulomb logs are input, they should be calculated"""
         with pytest.warns(RelativityWarning):
             ct2 = ClassicalTransport(
-                T_e=self.T_e, n_e=self.n_e, T_i=self.T_i, n_i=self.n_i, ion=self.ion
+                T_e=self.T_e,
+                n_e=self.n_e,
+                T_i=self.T_i,
+                n_i=self.n_i,
+                ion=self.ion,
             )
             cl_ii = Coulomb_logarithm(
-                self.T_i, self.n_e, [self.ion, self.ion], self.V_ii
+                self.T_i,
+                self.n_e,
+                [self.ion, self.ion],
+                self.V_ii,
             )
             cl_ei = Coulomb_logarithm(self.T_e, self.n_e, ["e", self.ion], self.V_ei)
             testTrue = cl_ii == ct2.coulomb_log_ii
@@ -307,10 +316,20 @@ class Test_classical_transport:
         """If no hall parameters are input, they should be calculated"""
         with pytest.warns(RelativityWarning):
             ct2 = ClassicalTransport(
-                T_e=self.T_e, n_e=self.n_e, T_i=self.T_i, n_i=self.n_i, ion=self.ion
+                T_e=self.T_e,
+                n_e=self.n_e,
+                T_i=self.T_i,
+                n_i=self.n_i,
+                ion=self.ion,
             )
             hall_i = Hall_parameter(
-                ct2.n_i, ct2.T_i, ct2.B, ct2.ion, ct2.ion, ct2.coulomb_log_ii, ct2.V_ii
+                ct2.n_i,
+                ct2.T_i,
+                ct2.B,
+                ct2.ion,
+                ct2.ion,
+                ct2.coulomb_log_ii,
+                ct2.V_ii,
             )
             hall_e = Hall_parameter(
                 ct2.n_e,
@@ -362,7 +381,9 @@ class Test_classical_transport:
                 hall_e=0,
             )
             testTrue = np.isclose(
-                ct2.resistivity, 2.8184954e-8 * u.Ohm * u.m, atol=1e-6 * u.Ohm * u.m
+                ct2.resistivity,
+                2.8184954e-8 * u.Ohm * u.m,
+                atol=1e-6 * u.Ohm * u.m,
             )
             errStr = (
                 f"Resistivity should be close to "
@@ -381,7 +402,11 @@ class Test_classical_transport:
         ],
     )
     def test_number_of_returns(
-        self, model, attr_name: str, field_orientation, expected
+        self,
+        model,
+        attr_name: str,
+        field_orientation,
+        expected,
     ) -> None:
         with pytest.warns(RelativityWarning):
             ct2 = ClassicalTransport(
@@ -446,7 +471,9 @@ class Test_classical_transport:
                 model=model,
             )
             testTrue = np.isclose(
-                ct2.thermoelectric_conductivity, expected, atol=1e-6 * u.s / u.s
+                ct2.thermoelectric_conductivity,
+                expected,
+                atol=1e-6 * u.s / u.s,
             )
             errStr = (
                 f"Thermoelectric conductivity in {model} model "
@@ -479,7 +506,9 @@ class Test_classical_transport:
                 model=model,
             )
             testTrue = np.allclose(
-                ct2.electron_viscosity, expected, atol=1e-6 * u.Pa * u.s
+                ct2.electron_viscosity,
+                expected,
+                atol=1e-6 * u.Pa * u.s,
             )
             errStr = (
                 f"Electron viscosity in {model} model should be close to "
@@ -565,7 +594,9 @@ class Test_classical_transport:
                 model=model,
             )
             testTrue = np.allclose(
-                ct2.ion_thermal_conductivity, expected, atol=1e-6 * u.W / (u.K * u.m)
+                ct2.ion_thermal_conductivity,
+                expected,
+                atol=1e-6 * u.W / (u.K * u.m),
             )
             errStr = (
                 f"Ion thermal conductivity in {model} model "
@@ -683,7 +714,8 @@ class Test_classical_transport:
                 theta=self.theta,
             )
             assert_quantity_allclose(
-                wrapped, self.ct_wrapper.electron_thermal_conductivity
+                wrapped,
+                self.ct_wrapper.electron_thermal_conductivity,
             )
 
     def test_ion_viscosity_wrapper(self) -> None:
@@ -729,7 +761,11 @@ class Test_classical_transport:
 def test_nondim_thermal_conductivity_unrecognized_model(particle) -> None:
     with pytest.raises(ValueError):
         _nondim_thermal_conductivity(
-            1, 1, particle, "standard model is best model", "parallel"
+            1,
+            1,
+            particle,
+            "standard model is best model",
+            "parallel",
         )
 
 
@@ -771,7 +807,7 @@ class Test__nondim_tc_e_braginskii:
     def test_known_values_par(self, Z, field_orientation, expected) -> None:
         """Check some known values"""
         kappa_e_hat = _nondim_tc_e_braginskii(self.big_hall, Z, field_orientation)
-        assert np.isclose(kappa_e_hat, expected, atol=1e-1)
+        np.testing.assert_allclose(kappa_e_hat, expected, atol=1e-1, rtol=1e-5)
 
     # values from Braginskii '65
     @pytest.mark.parametrize(
@@ -787,14 +823,18 @@ class Test__nondim_tc_e_braginskii:
     def test_known_values_perp(self, Z, field_orientation, expected) -> None:
         """Check some known values"""
         kappa_e_hat = _nondim_tc_e_braginskii(self.big_hall, Z, field_orientation)
-        assert np.isclose(kappa_e_hat * self.big_hall**2, expected, atol=1e-1)
+        np.testing.assert_allclose(
+            kappa_e_hat * self.big_hall**2, expected, atol=1e-1, rtol=1e-5
+        )
 
     @pytest.mark.parametrize("Z", [1, 2, 3, 4, np.inf])
     def test_unmagnetized(self, Z) -> None:
         """Confirm perp -> par as B -> 0"""
         kappa_e_hat_par = _nondim_tc_e_braginskii(self.small_hall, Z, "par")
         kappa_e_hat_perp = _nondim_tc_e_braginskii(self.small_hall, Z, "perp")
-        assert np.isclose(kappa_e_hat_par, kappa_e_hat_perp, rtol=1e-3)
+        np.testing.assert_allclose(
+            kappa_e_hat_par, kappa_e_hat_perp, rtol=1e-3, atol=1e-8
+        )
 
     @pytest.mark.parametrize("Z", [1, 4])
     def test_cross_vs_ji_held(self, Z) -> None:
@@ -821,25 +861,31 @@ class Test__nondim_tc_i_braginskii:
         """Check some known values"""
         kappa_i_hat = _nondim_tc_i_braginskii(self.big_hall, field_orientation="par")
         expected = 3.9  # Braginskii '65 eq (2.15)
-        assert np.isclose(kappa_i_hat, expected, atol=1e-1)
+        np.testing.assert_allclose(kappa_i_hat, expected, atol=1e-1, rtol=1e-5)
 
     def test_known_values_perp(self) -> None:
         """Check some known values"""
         kappa_i_hat = _nondim_tc_i_braginskii(self.big_hall, field_orientation="perp")
         expected = 2.0  # Braginskii '65 eq (2.16)
-        assert np.isclose(kappa_i_hat * self.big_hall**2, expected, atol=1e-1)
+        np.testing.assert_allclose(
+            kappa_i_hat * self.big_hall**2, expected, atol=1e-1, rtol=1e-5
+        )
 
     def test_unmagnetized(self) -> None:
         """Confirm perp -> par as B -> 0"""
         kappa_i_hat_par = _nondim_tc_i_braginskii(self.small_hall, "par")
         kappa_i_hat_perp = _nondim_tc_i_braginskii(self.small_hall, "perp")
-        assert np.isclose(kappa_i_hat_par, kappa_i_hat_perp, rtol=1e-3)
+        np.testing.assert_allclose(
+            kappa_i_hat_par, kappa_i_hat_perp, rtol=1e-3, atol=1e-8
+        )
 
     def test_cross_vs_ji_held_K2(self) -> None:
         """Confirm cross agrees with ji-held model when K=2"""
         kappa_i_hat_brag = _nondim_tc_i_braginskii(self.big_hall, "cross")
         kappa_i_hat_jh = _nondim_tc_i_ji_held(self.big_hall, 1, 0, 100, "cross", K=2)
-        assert np.isclose(kappa_i_hat_brag, kappa_i_hat_jh, rtol=2e-2)
+        np.testing.assert_allclose(
+            kappa_i_hat_brag, kappa_i_hat_jh, rtol=2e-2, atol=1e-8
+        )
 
 
 # test class for _nondim_tec_braginskii function:
@@ -864,21 +910,23 @@ class Test__nondim_tec_braginskii:
     def test_known_values_par(self, Z, field_orientation, expected) -> None:
         """Check some known values"""
         beta_hat = _nondim_tec_braginskii(self.big_hall, Z, field_orientation)
-        assert np.isclose(beta_hat, expected, atol=1e-1)
+        np.testing.assert_allclose(beta_hat, expected, atol=1e-1, rtol=1e-5)
 
     @pytest.mark.parametrize("Z", [1, 2, 3, 4, np.inf])
     def test_unmagnetized(self, Z) -> None:
         """Confirm perp -> par as B -> 0"""
         beta_hat_par = _nondim_tec_braginskii(self.small_hall, Z, "par")
         beta_hat_perp = _nondim_tec_braginskii(self.small_hall, Z, "perp")
-        assert np.isclose(beta_hat_par, beta_hat_perp, rtol=1e-3)
+        np.testing.assert_allclose(beta_hat_par, beta_hat_perp, rtol=1e-3, atol=1e-8)
 
     @pytest.mark.parametrize("Z", [1, 4])
     def test_cross_vs_ji_held(self, Z) -> None:
         """Cross should roughly agree with ji-held"""
         beta_hat_cross_brag = _nondim_tec_braginskii(self.big_hall, Z, "cross")
         beta_hat_cross_jh = _nondim_tec_ji_held(self.big_hall, Z, "cross")
-        assert np.isclose(beta_hat_cross_brag, beta_hat_cross_jh, rtol=3e-2)
+        np.testing.assert_allclose(
+            beta_hat_cross_brag, beta_hat_cross_jh, rtol=3e-2, atol=1e-8
+        )
 
 
 # test class for _nondim_resist_braginskii function:
@@ -903,21 +951,23 @@ class Test__nondim_resist_braginskii:
     def test_known_values_par(self, Z, field_orientation, expected) -> None:
         """Check some known values"""
         beta_hat = _nondim_resist_braginskii(self.big_hall, Z, field_orientation)
-        assert np.isclose(beta_hat, expected, atol=1e-2)
+        np.testing.assert_allclose(beta_hat, expected, atol=1e-2, rtol=1e-5)
 
     @pytest.mark.parametrize("Z", [1, 2, 3, 4, np.inf])
     def test_unmagnetized(self, Z) -> None:
         """Confirm perp -> par as B -> 0"""
         alpha_hat_par = _nondim_resist_braginskii(self.small_hall, Z, "par")
         alpha_hat_perp = _nondim_resist_braginskii(self.small_hall, Z, "perp")
-        assert np.isclose(alpha_hat_par, alpha_hat_perp, rtol=1e-3)
+        np.testing.assert_allclose(alpha_hat_par, alpha_hat_perp, rtol=1e-3, atol=1e-8)
 
     @pytest.mark.parametrize("Z", [1, 4])
     def test_cross_vs_ji_held(self, Z) -> None:
         """Cross should roughly agree with ji-held at hall 0.1"""
         alpha_hat_cross_brag = _nondim_resist_braginskii(0.1, Z, "cross")
         alpha_hat_cross_jh = _nondim_resist_ji_held(0.1, Z, "cross")
-        assert np.isclose(alpha_hat_cross_brag, alpha_hat_cross_jh, rtol=5e-2)
+        np.testing.assert_allclose(
+            alpha_hat_cross_brag, alpha_hat_cross_jh, rtol=5e-2, atol=1e-8
+        )
 
 
 # test class for _nondim_visc_i_braginskii function:
@@ -937,14 +987,18 @@ class Test__nondim_visc_i_braginskii:
         """Check some known values"""
         eta_i_hat = _nondim_visc_i_braginskii(self.big_hall)
         eta_i_hat_with_powers = eta_i_hat * self.big_hall**power
-        assert np.allclose(eta_i_hat_with_powers, expected, atol=1e-2)
+        np.testing.assert_allclose(
+            eta_i_hat_with_powers, expected, atol=1e-2, rtol=1e-5
+        )
 
     def test_vs_ji_held_K2(self) -> None:
         """Confirm agreement with ji-held model when K=2"""
         eta_i_hat_brag = _nondim_visc_i_braginskii(self.big_hall)
         eta_i_hat_jh = _nondim_visc_i_ji_held(self.big_hall, 1, 0, 100, K=2)
         for idx in (0, 1, 2, 3, 4):
-            assert np.isclose(eta_i_hat_brag[idx], eta_i_hat_jh[idx], rtol=2e-2)
+            np.testing.assert_allclose(
+                eta_i_hat_brag[idx], eta_i_hat_jh[idx], rtol=2e-2, atol=1e-8
+            )
 
 
 # test class for _nondim_visc_e_braginskii function:
@@ -970,11 +1024,15 @@ class Test__nondim_visc_e_braginskii:
         """Check some known values"""
         beta_hat = _nondim_visc_e_braginskii(self.big_hall, Z)
         if idx == 0:
-            assert np.isclose(beta_hat[idx], expected, atol=1e-2)
+            np.testing.assert_allclose(beta_hat[idx], expected, atol=1e-2, rtol=1e-5)
         elif idx in {1, 2}:
-            assert np.isclose(beta_hat[idx] * self.big_hall**2, expected, atol=1e-2)
+            np.testing.assert_allclose(
+                beta_hat[idx] * self.big_hall**2, expected, atol=1e-2, rtol=1e-5
+            )
         elif idx in {3, 4}:
-            assert np.isclose(beta_hat[idx] * self.big_hall, expected, atol=1e-1)
+            np.testing.assert_allclose(
+                beta_hat[idx] * self.big_hall, expected, atol=1e-1, rtol=1e-5
+            )
 
 
 def test_fail__check_Z_nan() -> None:
@@ -995,10 +1053,10 @@ def test__nondim_tc_e_spitzer(Z) -> None:
     elif Z == 16:
         kappa_check = _nondim_tc_e_ji_held(0, Z, "par")
         rtol = 2e-2
-    elif Z == np.inf:
+    elif np.inf == Z:
         kappa_check = _nondim_tc_e_ji_held(0, 1e6, "par")
         rtol = 2e-2
-    assert np.isclose(kappa, kappa_check, rtol=rtol)
+    np.testing.assert_allclose(kappa, kappa_check, rtol=rtol, atol=1e-8)
 
 
 @pytest.mark.parametrize("Z", [1, 2, 4, 16, np.inf])
@@ -1014,7 +1072,7 @@ def test__nondim_resist_spitzer(Z) -> None:
     elif Z == 16:
         alpha_check = _nondim_resist_ji_held(0, Z, "par")
         rtol = 2e-2
-    assert np.isclose(alpha, alpha_check, rtol=rtol)
+    np.testing.assert_allclose(alpha, alpha_check, rtol=rtol, atol=1e-8)
 
 
 @pytest.mark.parametrize("Z", [1, 2, 4, 16, np.inf])
@@ -1030,7 +1088,7 @@ def test__nondim_tec_spitzer(Z) -> None:
     elif Z == 16:
         beta_check = _nondim_tec_ji_held(0, Z, "par")
         rtol = 2e-2
-    assert np.isclose(beta, beta_check, rtol=rtol)
+    np.testing.assert_allclose(beta, beta_check, rtol=rtol, atol=1e-8)
 
 
 # approximated from Ji-Held '13 figures 1 and 2 (black circles)
@@ -1135,7 +1193,7 @@ def test__nondim_tec_ji_held(hall, Z, field_orientation, expected) -> None:
     """Test _nondim_tec_ji_held function"""
     beta_hat = _nondim_tec_ji_held(hall, Z, field_orientation)
     beta_check = expected
-    assert np.isclose(beta_hat, beta_check, rtol=2e-2)
+    np.testing.assert_allclose(beta_hat, beta_check, rtol=2e-2, atol=1e-8)
 
 
 # approximated from Ji-Held '13 figures 1 and 2 (black circles)
@@ -1186,7 +1244,7 @@ def test__nondim_resist_ji_held(hall, Z, field_orientation, expected) -> None:
     """Test _nondim_resist_ji_held function"""
     alpha_hat = _nondim_resist_ji_held(hall, Z, field_orientation)
     alpha_check = expected
-    assert np.isclose(alpha_hat, alpha_check, rtol=2e-2)
+    np.testing.assert_allclose(alpha_hat, alpha_check, rtol=2e-2, atol=1e-8)
 
 
 # approximated from Ji-Held '13 figure 3 (K = 80)
@@ -1217,7 +1275,7 @@ def test__nondim_visc_e_ji_held(hall, Z, index, expected) -> None:
     """Test _nondim_visc_e_ji_held function"""
     alpha_hat = _nondim_visc_e_ji_held(hall, Z)
     alpha_check = expected
-    assert np.isclose(alpha_hat[index], alpha_check, rtol=2e-2)
+    np.testing.assert_allclose(alpha_hat[index], alpha_check, rtol=2e-2, atol=1e-8)
 
 
 # approximated from Ji-Held '13 figure 7
@@ -1246,12 +1304,17 @@ def test__nondim_visc_e_ji_held(hall, Z, index, expected) -> None:
     ],
 )
 def test__nondim_tc_i_ji_held(
-    hall, Z, mu, theta: float, field_orientation, expected
+    hall,
+    Z,
+    mu,
+    theta: float,
+    field_orientation,
+    expected,
 ) -> None:
     """Test _nondim_tc_i_ji_held function"""
     kappa_hat = _nondim_tc_i_ji_held(hall, Z, mu, theta, field_orientation)
     kappa_check = expected
-    assert np.isclose(kappa_hat, kappa_check, rtol=2e-2)
+    np.testing.assert_allclose(kappa_hat, kappa_check, rtol=2e-2, atol=1e-8)
 
 
 # approximated from Ji-Held '13 figure 7
@@ -1279,4 +1342,4 @@ def test__nondim_visc_i_ji_held(hall, Z, mu, theta: float, index, expected) -> N
     """Test _nondim_visc_i_ji_held function"""
     kappa_hat = _nondim_visc_i_ji_held(hall, Z, mu, theta)
     kappa_check = expected
-    assert np.isclose(kappa_hat[index], kappa_check, rtol=2e-2)
+    np.testing.assert_allclose(kappa_hat[index], kappa_check, rtol=2e-2, atol=1e-8)

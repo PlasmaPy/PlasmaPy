@@ -18,7 +18,7 @@ from plasmapy.utils.decorators import validate_quantities
 __all__ += __aliases__
 
 
-def _grab_charge(ion: ParticleLike, z_mean=None):
+def _grab_charge(ion: ParticleLike, z_mean=None):  # noqa: ANN202
     """
     Merge two possible inputs for particle charge.
 
@@ -45,8 +45,9 @@ def _grab_charge(ion: ParticleLike, z_mean=None):
     B={"can_be_negative": False},
 )
 def Bohm_diffusion(
-    T_e: u.Quantity[u.K], B: u.Quantity[u.T]
-) -> u.Quantity[u.m**2 / u.s]:
+    T_e: u.Quantity[u.K],  # ty: ignore[not-subscriptable]
+    B: u.Quantity[u.T],  # ty: ignore[not-subscriptable]
+) -> u.Quantity[u.m**2 / u.s]:  # ty: ignore[not-subscriptable]
     r"""
     Return the Bohm diffusion coefficient.
 
@@ -59,10 +60,10 @@ def Bohm_diffusion(
 
     .. math::
 
-        D_B = \frac{1}{16} \frac{k_B T}{e B}
+        D_B = \frac{1}{16} \frac{k_B T_e}{e B}
 
-    where :math:`k_B` is the Boltzmann constant
-    and :math:`e` is the fundamental charge.
+    where :math:`k_B` is the Boltzmann constant, :math:`T_e` is the
+    electron temperature, and :math:`e` is the fundamental charge.
 
     **Aliases:** `DB_`
 
@@ -104,7 +105,6 @@ def Bohm_diffusion(
     -------
     D_B : `~astropy.units.Quantity`
         The Bohm diffusion coefficient in meters squared per second.
-
     """
     return k_B * T_e / (16 * e * B)
 
@@ -114,7 +114,7 @@ DB_ = Bohm_diffusion
 
 
 @validate_quantities
-def magnetic_energy_density(B: u.Quantity[u.T]) -> u.Quantity[u.J / u.m**3]:
+def magnetic_energy_density(B: u.Quantity[u.T]) -> u.Quantity[u.J / u.m**3]:  # ty: ignore[not-subscriptable]
     r"""
     Calculate the magnetic energy density.
 
@@ -178,7 +178,7 @@ ub_ = magnetic_energy_density
 
 
 @validate_quantities
-def magnetic_pressure(B: u.Quantity[u.T]) -> u.Quantity[u.Pa]:
+def magnetic_pressure(B: u.Quantity[u.T]) -> u.Quantity[u.Pa]:  # ty: ignore[not-subscriptable]
     r"""
     Calculate the magnetic pressure.
 
@@ -245,7 +245,7 @@ pmag_ = magnetic_pressure
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     n={"can_be_negative": False},
 )
-def thermal_pressure(T: u.Quantity[u.K], n: u.Quantity[u.m**-3]) -> u.Quantity[u.Pa]:
+def thermal_pressure(T: u.Quantity[u.K], n: u.Quantity[u.m**-3]) -> u.Quantity[u.Pa]:  # ty: ignore[not-subscriptable]
     r"""
     Return the thermal pressure for a Maxwellian distribution.
 

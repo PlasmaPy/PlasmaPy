@@ -173,7 +173,7 @@ class TestStix:
                     "beta": 1.1,
                     "mu": 1836,
                     "ns": np.array(
-                        [22.39535727, -22.39535727, 6934.82540607, -6934.82540607]
+                        [22.39535727, -22.39535727, 6934.82540607, -6934.82540607],
                     ),
                 },
             ),
@@ -192,7 +192,7 @@ class TestStix:
                     "beta": 1 / 400,
                     "mu": 1836,
                     "ns": np.array(
-                        [0.0 + 1.36982834j, 0.0 - 1.36982834j, 2.23009361, -2.23009361]
+                        [0.0 + 1.36982834j, 0.0 - 1.36982834j, 2.23009361, -2.23009361],
                     ),
                 },
             ),
@@ -240,7 +240,7 @@ class TestStix:
             pytest.fail(
                 "Test setup failure. Check 'kwarg' parameters, given"
                 f" values produces a mu of {mu:.2f} but expected "
-                f"{expected['mu']:.2f}."
+                f"{expected['mu']:.2f}.",
             )
 
         wpi = plasma_frequency(n=kwargs["n_i"], particle=ion).value
@@ -250,7 +250,7 @@ class TestStix:
             pytest.fail(
                 "Test setup failure. Check 'kwarg' parameters, given"
                 f" values produces a gamma of {gamma:.2f} but expected "
-                f"{expected['gamma']:.2f}."
+                f"{expected['gamma']:.2f}.",
             )
 
         beta = wci / kwargs["w"].value
@@ -258,13 +258,13 @@ class TestStix:
             pytest.fail(
                 "Test setup failure. Check 'kwarg' parameters, given"
                 f" values produces a beta of {beta:.3f} but expected "
-                f"{expected['beta']:.3f}."
+                f"{expected['beta']:.3f}.",
             )
 
         ks = stix(**kwargs)
         ns = ks.value * c_si_unitless / kwargs["w"].value
 
-        assert np.allclose(ns, expected["ns"])
+        np.testing.assert_allclose(ns, expected["ns"], rtol=1e-5, atol=1e-8)
 
     @pytest.mark.parametrize(
         "kwargs",
@@ -314,10 +314,10 @@ class TestStix:
         n_soln1 = np.emath.sqrt(0.5 * (R + L - np.abs(R - L)))  # n^2 = L
         n_soln2 = np.emath.sqrt(0.5 * (R + L + np.abs(R - L)))  # n^2 = R
 
-        assert np.allclose(ns[..., 0], n_soln1)
-        assert np.allclose(ns[..., 1], -n_soln1)
-        assert np.allclose(ns[..., 2], n_soln2)
-        assert np.allclose(ns[..., 3], -n_soln2)
+        np.testing.assert_allclose(ns[..., 0], n_soln1, rtol=1e-5, atol=1e-8)
+        np.testing.assert_allclose(ns[..., 1], -n_soln1, rtol=1e-5, atol=1e-8)
+        np.testing.assert_allclose(ns[..., 2], n_soln2, rtol=1e-5, atol=1e-8)
+        np.testing.assert_allclose(ns[..., 3], -n_soln2, rtol=1e-5, atol=1e-8)
 
     @pytest.mark.parametrize(
         "kwargs",
@@ -365,13 +365,13 @@ class TestStix:
         ns = ks.value * c_si_unitless / np.tile(kwargs["w"].value, (4, 1)).transpose()
 
         n_soln1 = np.emath.sqrt(
-            (R * L + P * S + np.abs(R * L - P * S)) / (2 * S)
+            (R * L + P * S + np.abs(R * L - P * S)) / (2 * S),
         )  # n^2 = RL / S
         n_soln2 = np.emath.sqrt(
-            (R * L + P * S - np.abs(R * L - P * S)) / (2 * S)
+            (R * L + P * S - np.abs(R * L - P * S)) / (2 * S),
         )  # n^2 = P
 
-        assert np.allclose(ns[..., 0], n_soln1)
-        assert np.allclose(ns[..., 1], -n_soln1)
-        assert np.allclose(ns[..., 2], n_soln2)
-        assert np.allclose(ns[..., 3], -n_soln2)
+        np.testing.assert_allclose(ns[..., 0], n_soln1, rtol=1e-5, atol=1e-8)
+        np.testing.assert_allclose(ns[..., 1], -n_soln1, rtol=1e-5, atol=1e-8)
+        np.testing.assert_allclose(ns[..., 2], n_soln2, rtol=1e-5, atol=1e-8)
+        np.testing.assert_allclose(ns[..., 3], -n_soln2, rtol=1e-5, atol=1e-8)

@@ -187,7 +187,7 @@ class TestHollweg:
         """Test scenarios involving k and theta arrays."""
         ws = hollweg(**kwargs)
         for mode, val in ws.items():
-            assert np.allclose(val.value, expected[mode])
+            np.testing.assert_allclose(val.value, expected[mode], rtol=1e-5, atol=1e-8)
 
     @pytest.mark.parametrize(
         ("kwargs", "expected", "desired_beta"),
@@ -282,7 +282,7 @@ class TestHollweg:
         if not np.isclose(beta, desired_beta, atol=2e-4):
             pytest.fail(
                 f"The Holweg 1999 paper requires a 'beta' value of {desired_beta:0.5f} "
-                f"and the test parameters yielded {beta:.6f}."
+                f"and the test parameters yielded {beta:.6f}.",
             )
 
         kz = (np.cos(kwargs["theta"]) * kwargs["k"]).value
@@ -290,7 +290,7 @@ class TestHollweg:
         w_alfven = (hollweg(**kwargs)["alfven_mode"]).value
         big_omega = np.abs(w_alfven / (kz * va))
 
-        assert np.allclose(big_omega, expected, atol=1e-2)
+        np.testing.assert_allclose(big_omega, expected, atol=1e-2, rtol=1e-5)
 
     @pytest.mark.xfail(
         reason=(
@@ -327,7 +327,9 @@ class TestHollweg:
         ws_expected = hollweg(**expected)
 
         for mode in ws:
-            assert np.isclose(ws[mode], ws_expected[mode], atol=1e-5, rtol=1.7e-4)
+            np.testing.assert_allclose(
+                ws[mode], ws_expected[mode], atol=1e-5, rtol=1.7e-4
+            )
 
     @pytest.mark.filterwarnings("ignore::plasmapy.utils.exceptions.PhysicsWarning")
     @pytest.mark.parametrize(

@@ -4,8 +4,8 @@ Module for loading isotope data from
 """
 
 __all__ = [
-    "isotope_obj_hook",
     "data_about_isotopes",
+    "isotope_obj_hook",
 ]
 
 import json
@@ -34,6 +34,6 @@ def isotope_obj_hook(obj):
 
 #: Dictionary of isotope data.
 data_about_isotopes = json.loads(
-    pkgutil.get_data("plasmapy", "particles/data/isotopes.json"),
+    pkgutil.get_data("plasmapy", "particles/data/isotopes.json"),  # ty:ignore[invalid-argument-type]
     object_hook=isotope_obj_hook,
 )

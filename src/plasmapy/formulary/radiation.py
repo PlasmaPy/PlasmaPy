@@ -23,14 +23,14 @@ from plasmapy.utils.exceptions import PhysicsError
     T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
 )
 @particle_input
-def thermal_bremsstrahlung(
-    frequencies: u.Quantity[u.Hz],
-    n_e: u.Quantity[u.m**-3],
-    T_e: u.Quantity[u.K],
-    n_i: u.Quantity[u.m**-3] = None,
+def thermal_bremsstrahlung(  # noqa: PLR0917
+    frequencies: u.Quantity[u.Hz],  # ty: ignore[not-subscriptable]
+    n_e: u.Quantity[u.m**-3],  # ty: ignore[not-subscriptable]
+    T_e: u.Quantity[u.K],  # ty: ignore[not-subscriptable]
+    n_i: u.Quantity[u.m**-3] = None,  # ty: ignore[not-subscriptable]
     ion: ParticleLike = "p+",
-    kmax: u.Quantity[u.m] = None,
-) -> u.Quantity[u.kg * u.m**-1 * u.s**-2]:
+    kmax: u.Quantity[u.m] = None,  # ty: ignore[not-subscriptable]
+) -> u.Quantity[u.kg * u.m**-1 * u.s**-2]:  # ty: ignore[not-subscriptable]
     r"""
     Calculate the bremsstrahlung emission spectrum for a Maxwellian
     plasma in the Rayleigh-Jeans limit :math:`ℏ ω ≪ k_B T_e`.
@@ -109,7 +109,6 @@ def thermal_bremsstrahlung(
     ... )
     <Quantity 2.16932808e-10 kg / (m s2)>
     """
-
     if n_i is None:  # default is quasineutrality
         n_i = n_e / ion.charge_number
 
@@ -124,7 +123,7 @@ def thermal_bremsstrahlung(
     if np.min(ω) < np.max(ω_pe):
         raise PhysicsError(
             "Lowest frequency must be larger than the electron "
-            f"plasma frequency {ω_pe:.1e}, but min(ω) = {np.min(ω):.1e}"
+            f"plasma frequency {ω_pe:.1e}, but min(ω) = {np.min(ω):.1e}",
         )
 
     # Check that the parameters given fall within the Rayleigh-Jeans limit
@@ -136,7 +135,7 @@ def thermal_bremsstrahlung(
         raise PhysicsError(
             "Rayleigh-Jeans limit not satisfied: "
             f"ℏω/kT_e = {rj_const.value:.2e} > 0.1. "
-            "Try lower ω or higher T_e."
+            "Try lower ω or higher T_e.",
         )
 
     # Calculate the bremsstrahlung power spectral density in several steps

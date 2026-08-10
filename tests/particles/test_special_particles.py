@@ -59,7 +59,6 @@ required_keys = [
 
 def test_Particles_required_keys(particle):
     r"""Test that required keys are present for all particles."""
-
     missing_keys = []
 
     for key in required_keys:
@@ -70,5 +69,5 @@ def test_Particles_required_keys(particle):
 
     if missing_keys:
         raise KeyError(
-            f"_Particles[{particle!r}] is missing the following keys: {missing_keys}"
+            f"_Particles[{particle!r}] is missing the following keys: {missing_keys}",
         )

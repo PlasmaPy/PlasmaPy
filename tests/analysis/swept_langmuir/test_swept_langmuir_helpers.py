@@ -184,11 +184,11 @@ def test_check_sweep(voltage, current, kwargs, with_context, expected) -> None:
         )
 
         if expected == "expected same as inputs":
-            assert np.allclose(rtn_voltage, voltage)
-            assert np.allclose(rtn_current, current)
+            np.testing.assert_allclose(rtn_voltage, voltage, rtol=1e-5, atol=1e-8)
+            np.testing.assert_allclose(rtn_current, current, rtol=1e-5, atol=1e-8)
         else:
-            assert np.allclose(rtn_voltage, expected[0])
-            assert np.allclose(rtn_current, expected[1])
+            np.testing.assert_allclose(rtn_voltage, expected[0], rtol=1e-5, atol=1e-8)
+            np.testing.assert_allclose(rtn_current, expected[1], rtol=1e-5, atol=1e-8)
 
 
 @pytest.mark.parametrize(
@@ -269,11 +269,11 @@ def test_sort_sweep_arrays(voltage, current, kwargs, with_context, expected) -> 
         )
 
         if expected is not None:
-            assert np.allclose(rtn_voltage, expected[0])
-            assert np.allclose(rtn_current, expected[1])
+            np.testing.assert_allclose(rtn_voltage, expected[0], rtol=1e-5, atol=1e-8)
+            np.testing.assert_allclose(rtn_current, expected[1], rtol=1e-5, atol=1e-8)
         else:
-            assert np.allclose(rtn_voltage, voltage)
-            assert np.allclose(rtn_current, current)
+            np.testing.assert_allclose(rtn_voltage, voltage, rtol=1e-5, atol=1e-8)
+            np.testing.assert_allclose(rtn_current, current, rtol=1e-5, atol=1e-8)
 
         mock_check_sweep.assert_called_once()
         mock_check_sweep.reset_mock()

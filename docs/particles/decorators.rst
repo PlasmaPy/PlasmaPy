@@ -53,7 +53,7 @@ the decorated function is called.
   def charge_number(particle: Particle, Z: int = None, mass_numb: int = None) -> int:
       return particle.charge_number
 
-The above example includes optional type hint annotations for ``Z`` and
+The above example includes optional type annotations for ``Z`` and
 ``mass_numb`` and the returned value. The |particle_input| decorator
 may be used in methods in classes as well:
 

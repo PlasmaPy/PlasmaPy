@@ -44,24 +44,35 @@ def test_aliases(alias, parent) -> None:
 
 def test_gyrofrequency() -> None:
     r"""Test the gyrofrequency function in frequencies.py."""
-
     assert gyrofrequency(B, "e-").unit.is_equivalent(u.rad / u.s)
 
     assert gyrofrequency(B, "e-", to_hz=True).unit.is_equivalent(u.Hz)
 
-    assert np.isclose(gyrofrequency(1 * u.T, "e-").value, 175882008784.72018)
-
-    assert np.isclose(gyrofrequency(2.4 * u.T, "e-").value, 422116821083.3284)
-
-    assert np.isclose(
-        gyrofrequency(1 * u.T, "e-", to_hz=True).value, 27992490076.528206
+    np.testing.assert_allclose(
+        gyrofrequency(1 * u.T, "e-").value, 175882008784.72018, rtol=1e-5, atol=1e-8
     )
 
-    assert np.isclose(
-        gyrofrequency(2.4 * u.T, "e-", signed=True).value, -422116821083.3284
+    np.testing.assert_allclose(
+        gyrofrequency(2.4 * u.T, "e-").value, 422116821083.3284, rtol=1e-5, atol=1e-8
     )
 
-    assert np.isclose(gyrofrequency(1 * u.G, "e-").cgs.value, 1.76e7, rtol=1e-3)
+    np.testing.assert_allclose(
+        gyrofrequency(1 * u.T, "e-", to_hz=True).value,
+        27992490076.528206,
+        rtol=1e-5,
+        atol=1e-8,
+    )
+
+    np.testing.assert_allclose(
+        gyrofrequency(2.4 * u.T, "e-", signed=True).value,
+        -422116821083.3284,
+        rtol=1e-5,
+        atol=1e-8,
+    )
+
+    np.testing.assert_allclose(
+        gyrofrequency(1 * u.G, "e-").cgs.value, 1.76e7, rtol=1e-3, atol=1e-8
+    )
 
     with pytest.raises(TypeError), pytest.warns(u.UnitsWarning):
         gyrofrequency(u.m, "e-")
@@ -76,19 +87,29 @@ def test_gyrofrequency() -> None:
     omega_ce = gyrofrequency(2.2 * u.T, "e-")
     f_ce = (omega_ce / (2 * np.pi)) / u.rad
     f_ce_use_equiv = omega_ce.to(u.Hz, equivalencies=[(u.cy / u.s, u.Hz)])
-    assert np.isclose(f_ce.value, f_ce_use_equiv.value)
+    np.testing.assert_allclose(f_ce.value, f_ce_use_equiv.value, rtol=1e-5, atol=1e-8)
 
     with pytest.warns(u.UnitsWarning):
         assert gyrofrequency(5.0, "e-") == gyrofrequency(5.0 * u.T, "e-")
 
     assert gyrofrequency(B, particle=ion).unit.is_equivalent(u.rad / u.s)
 
-    assert np.isclose(gyrofrequency(1 * u.T, particle="p+").value, 95788335.834874)
+    np.testing.assert_allclose(
+        gyrofrequency(1 * u.T, particle="p+").value,
+        95788335.834874,
+        rtol=1e-5,
+        atol=1e-8,
+    )
 
-    assert np.isclose(gyrofrequency(2.4 * u.T, particle="p+").value, 229892006.00369796)
+    np.testing.assert_allclose(
+        gyrofrequency(2.4 * u.T, particle="p+").value,
+        229892006.00369796,
+        rtol=1e-5,
+        atol=1e-8,
+    )
 
-    assert np.isclose(
-        gyrofrequency(1 * u.G, particle="p+").cgs.value, 9.58e3, rtol=2e-3
+    np.testing.assert_allclose(
+        gyrofrequency(1 * u.G, particle="p+").cgs.value, 9.58e3, rtol=2e-3, atol=1e-8
     )
 
     assert gyrofrequency(-5 * u.T, "p") == gyrofrequency(5 * u.T, "p")
@@ -108,7 +129,7 @@ def test_gyrofrequency() -> None:
         gyrofrequency(8 * u.T, particle="asdfasd")
 
     with pytest.warns(u.UnitsWarning):
-        # TODO: this should be WARNS, not RAISES. and it's probably still raised
+        # TODO: this should be WARNS, not RAISES. and it's probably still raised  # noqa: FIX002
         assert gyrofrequency(5.0, "p") == gyrofrequency(5.0 * u.T, "p")
 
     gyrofrequency(1 * u.T, particle="p+")
@@ -125,7 +146,6 @@ def test_gyrofrequency() -> None:
 
 def test_lower_hybrid_frequency() -> None:
     r"""Test the lower_hybrid_frequency function in frequencies.py."""
-
     ion = "He-4 1+"
     omega_ci = gyrofrequency(B, particle=ion)
     omega_pi = plasma_frequency(n=n_i, particle=ion)
@@ -138,9 +158,13 @@ def test_lower_hybrid_frequency() -> None:
     assert omega_lh.unit.is_equivalent(u.rad / u.s)
     left_hand_side = omega_lh**-2
     right_hand_side = 1 / (omega_ci**2 + omega_pi**2) + omega_ci**-1 * omega_ce**-1
-    assert np.isclose(left_hand_side.value, right_hand_side.value)
+    np.testing.assert_allclose(
+        left_hand_side.value, right_hand_side.value, rtol=1e-5, atol=1e-8
+    )
 
-    assert np.isclose(omega_lh_hz.value, 299878691.3223296)
+    np.testing.assert_allclose(
+        omega_lh_hz.value, 299878691.3223296, rtol=1e-5, atol=1e-8
+    )
 
     with pytest.raises(ValueError):
         lower_hybrid_frequency(0.2 * u.T, n_i=5e19 * u.m**-3, ion="asdfasd")
@@ -153,14 +177,15 @@ def test_lower_hybrid_frequency() -> None:
 
     with pytest.warns(u.UnitsWarning):
         assert lower_hybrid_frequency(1.3, 1e19, "p+") == lower_hybrid_frequency(
-            1.3 * u.T, 1e19 * u.m**-3, "p+"
+            1.3 * u.T,
+            1e19 * u.m**-3,
+            "p+",
         )
     assert_can_handle_nparray(lower_hybrid_frequency)
 
 
 def test_upper_hybrid_frequency() -> None:
     r"""Test the upper_hybrid_frequency function in frequencies.py."""
-
     omega_uh = upper_hybrid_frequency(B, n_e=n_e)
     omega_uh_hz = upper_hybrid_frequency(B, n_e=n_e, to_hz=True)
     omega_ce = gyrofrequency(B, "e-")
@@ -171,21 +196,27 @@ def test_upper_hybrid_frequency() -> None:
     assert omega_uh_hz.unit.is_equivalent(u.Hz)
     left_hand_side = omega_uh**2
     right_hand_side = omega_ce**2 + omega_pe**2
-    assert np.isclose(left_hand_side.value, right_hand_side.value)
+    np.testing.assert_allclose(
+        left_hand_side.value, right_hand_side.value, rtol=1e-5, atol=1e-8
+    )
 
-    assert np.isclose(omega_uh_hz.value, 69385868857.90918)
+    np.testing.assert_allclose(
+        omega_uh_hz.value, 69385868857.90918, rtol=1e-5, atol=1e-8
+    )
 
     with pytest.raises(ValueError):
         upper_hybrid_frequency(5 * u.T, n_e=-1 * u.m**-3)
 
     with pytest.warns(u.UnitsWarning):
         assert upper_hybrid_frequency(1.2, 1.3) == upper_hybrid_frequency(
-            1.2 * u.T, 1.3 * u.m**-3
+            1.2 * u.T,
+            1.3 * u.m**-3,
         )
 
     with pytest.warns(u.UnitsWarning):
         assert upper_hybrid_frequency(1.4 * u.T, 1.3) == upper_hybrid_frequency(
-            1.4, 1.3 * u.m**-3
+            1.4,
+            1.3 * u.m**-3,
         )
 
     assert_can_handle_nparray(upper_hybrid_frequency)
@@ -193,7 +224,6 @@ def test_upper_hybrid_frequency() -> None:
 
 def test_Buchsbaum_frequency() -> None:
     r"""Test the Buchsbaum_frequency function in frequencies.py."""
-
     with pytest.raises(InvalidParticleError):
         Buchsbaum_frequency(
             1.0 * u.T,
@@ -212,7 +242,7 @@ def test_Buchsbaum_frequency() -> None:
             "venezuelan beaver cheese",
         )
 
-    assert np.isclose(
+    np.testing.assert_allclose(
         Buchsbaum_frequency(
             B=0.1 * u.T,
             n1=1e18 * u.m**-3,
@@ -221,4 +251,6 @@ def test_Buchsbaum_frequency() -> None:
             ion2="He-4 +1",
         ).value,
         4805575.93140432,
+        rtol=1e-5,
+        atol=1e-8,
     )

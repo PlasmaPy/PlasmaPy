@@ -56,7 +56,9 @@ class TestModifyDocstring:
     def test_raises(self, prepend, append, expected) -> None:
         with pytest.raises(expected):
             modify_docstring(
-                prepend=prepend, append=append, func=self.func_simple_docstring
+                prepend=prepend,
+                append=append,
+                func=self.func_simple_docstring,
             )
 
     def test_preserve_signature(self) -> None:
@@ -99,7 +101,7 @@ class TestModifyDocstring:
         func = getattr(self, func_name)
 
         expected = "\n".join(
-            additions[0] + inspect.cleandoc(func.__doc__).splitlines() + additions[1]
+            additions[0] + inspect.cleandoc(func.__doc__).splitlines() + additions[1],
         )
 
         wfunc = modify_docstring(prepend=prepend, append=append)(func)

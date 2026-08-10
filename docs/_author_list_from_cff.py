@@ -81,7 +81,6 @@ def get_author_name(author: dict[str, str]) -> str:
     str
         The author name (if available) or the author alias.
     """
-
     given_names = author.get("given-names", "")
     family_names = author.get("family-names", "")
     alias = author.get("alias", "")
@@ -170,7 +169,9 @@ def generate_rst_author_list(authors: list[dict[str, str]]) -> str:
 
 
 def generate_rst_file(
-    cff_file="../CITATION.cff", rst_file="about/_authors.rst", verbose=False
+    cff_file="../CITATION.cff",
+    rst_file="about/_authors.rst",
+    verbose=False,  # noqa: FBT002
 ):
     """
     Parse :file:`CITATION.cff` file and generate a reStructuredText
@@ -185,7 +186,7 @@ def generate_rst_file(
         The path to the output :file:`.rst` file.
     """
     cff_data = parse_cff(cff_file)
-    authors_rst = generate_rst_author_list(cff_data["authors"])
+    authors_rst = generate_rst_author_list(cff_data["authors"])  # ty:ignore[invalid-argument-type]
 
     if verbose:
         print(authors_rst)  # noqa: T201

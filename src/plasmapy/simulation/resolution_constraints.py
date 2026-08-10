@@ -26,7 +26,7 @@ from plasmapy.utils.decorators import validate_quantities
         "can_be_zero": False,
     },
 )
-def CFL_limit_electromagnetic_yee(dx: u.Quantity[u.m]) -> u.Quantity[u.s]:
+def CFL_limit_electromagnetic_yee(dx: u.Quantity[u.m]) -> u.Quantity[u.s]:  # ty: ignore[not-subscriptable]
     r"""
     Calculates the limiting time-step for a finite difference time-domain
     electromagnetic Yee solver which uses a Cartesian grid.
@@ -67,5 +67,4 @@ def CFL_limit_electromagnetic_yee(dx: u.Quantity[u.m]) -> u.Quantity[u.s]:
     >>> CFL_limit_electromagnetic_yee(np.array([5, 10, 15]) * u.nm)
     <Quantity 1.42956...e-17 s>
     """
-
     return 1 / (c * np.sqrt(np.sum(1 / (dx**2))))

@@ -117,20 +117,20 @@ class TestTwoFluid:
         if not np.isclose(beta, 0.4, atol=1e-4):
             pytest.fail(
                 f"The Bellan 2012 paper requires a 'beta' value of 0.4 and the test "
-                f"parameters yielded {beta:.6f}."
+                f"parameters yielded {beta:.6f}.",
             )
 
         Lambda = (kwargs["k"] * va / wci).value ** 2
         if not np.isclose(Lambda, 0.4, atol=1e-4):
             pytest.fail(
                 f"The Bellan 2012 paper requires a 'Lambda' value of 0.4 and the test "
-                f"parameters yielded {Lambda:.6f}."
+                f"parameters yielded {Lambda:.6f}.",
             )
 
         ws = two_fluid(**kwargs)
         for mode, val in ws.items():
             norm = (np.absolute(val) / (kwargs["k"] * va)).value ** 2
-            assert np.isclose(norm, expected[mode])
+            np.testing.assert_allclose(norm, expected[mode], rtol=1e-5, atol=1e-8)
 
     @pytest.mark.parametrize(
         ("kwargs", "expected"),

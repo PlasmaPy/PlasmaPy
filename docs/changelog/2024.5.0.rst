@@ -83,12 +83,12 @@ Bug Fixes
 Internal Changes and Refactorings
 ---------------------------------
 
-- Changed type hint annotations to be consistent with :pep:`604`. Most
+- Changed type annotations to be consistent with :pep:`604`. Most
   type unions are now made using the ``|`` operator rather than with
   `typing.Union`. (:pr:`2504`)
 - Refactored, parametrized, and expanded the tests for
   `~plasmapy.formulary.lengths.Debye_length`. (:pr:`2509`)
-- Changed type hint annotations that used `numbers.Integral`,
+- Changed type annotations that used `numbers.Integral`,
   `numbers.Real`, or `numbers.Complex` to instead use `int`, `float`,
   or `complex`, respectively. (:pr:`2520`)
 - Created a tox environment for regenerating requirements files used
@@ -101,7 +101,7 @@ Internal Changes and Refactorings
   (:pr:`2523`)
 - Reduced the :wikipedia:`cognitive complexity` of
   `~plasmapy.formulary.lengths.gyroradius`. (:pr:`2542`)
-- Added and updated type hint annotations within `plasmapy.formulary`.
+- Added and updated type annotations within `plasmapy.formulary`.
   (:pr:`2543`)
 - Applied caching through |GitHub Actions| to speed up continuous
   integration tests and documentation builds. Because the Python
@@ -137,7 +137,7 @@ Internal Changes and Refactorings
   corresponding documentation.  (:pr:`2650`)
 - Added :file:`noxfile.py` as a configuration file for |Nox|. This
   file initially contains environments for building documentation,
-  checking hyperlinks, and performing static type checking with |mypy|
+  checking hyperlinks, and performing static type checking with mypy
   (:pr:`2654`)
 - Began using |Nox| for some testing environments in |GitHub Actions|,
   including for the documentation build and static type
@@ -147,7 +147,7 @@ Internal Changes and Refactorings
 Additional Changes
 ------------------
 
-- Updated type hint annotations in `plasmapy.particles`. (:pr:`2458`)
+- Updated type annotations in `plasmapy.particles`. (:pr:`2458`)
 - Added ``pytest-rerunfailures`` to the ``tests`` set of dependencies
   defined in :file:`pyproject.toml`, and applied it to a test that
   experiences intermittent failures. (:pr:`2483`)

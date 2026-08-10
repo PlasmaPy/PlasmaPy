@@ -22,7 +22,7 @@ __all__ += __aliases__
     T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     n_e={"can_be_negative": False},
 )
-def Debye_length(T_e: u.Quantity[u.K], n_e: u.Quantity[u.m**-3]) -> u.Quantity[u.m]:
+def Debye_length(T_e: u.Quantity[u.K], n_e: u.Quantity[u.m**-3]) -> u.Quantity[u.m]:  # ty: ignore[not-subscriptable]
     r"""
     Calculate the exponential scale length for charge screening in an
     electron plasma with stationary ions.
@@ -105,16 +105,16 @@ lambdaD_ = Debye_length
 )
 @particle_input(any_of={"charged", "uncharged"})
 def gyroradius(
-    B: u.Quantity[u.T],
+    B: u.Quantity[u.T],  # ty: ignore[not-subscriptable]
     particle: ParticleLike,
     *,
-    Vperp: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
-    T: u.Quantity[u.K] = None,
+    Vperp: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,  # ty: ignore[not-subscriptable]
+    T: u.Quantity[u.K] = None,  # ty: ignore[not-subscriptable]
     lorentzfactor=np.nan,
     relativistic: bool = True,
     mass_numb: int | None = None,
     Z: float | None = None,
-) -> u.Quantity[u.m]:
+) -> u.Quantity[u.m]:  # ty: ignore[not-subscriptable]
     r"""
     Calculate the radius of circular motion for a charged particle in a
     uniform magnetic field (including relativistic effects by default).
@@ -248,12 +248,11 @@ def gyroradius(
     >>> gyroradius(B=10 * u.uG, particle="p+", lorentzfactor=3e6).to("pc")
     <Quantity 0.30428378 pc>
     """
-
     if T is None:
         T = np.nan * u.K
 
     # Determine output shape and broadcast inputs accordingly
-    target_shape = np.broadcast(T, Vperp, lorentzfactor, particle).shape  # type: ignore[arg-type]
+    target_shape = np.broadcast(T, Vperp, lorentzfactor, particle).shape  # ty:ignore[invalid-argument-type]
     lorentzfactor_in = lorentzfactor
     lorentzfactor = np.array(np.broadcast_to(lorentzfactor, target_shape))
     Vperp = np.array(np.broadcast_to(Vperp, target_shape, subok=True), subok=True)
@@ -270,21 +269,22 @@ def gyroradius(
     # Check if V and T are both given at the same time at any position
     if np.any(isfinite_Vperp & isfinite_T):
         raise ValueError(
-            "Must give Vperp or T, but not both, as arguments to gyroradius"
+            "Must give Vperp or T, but not both, as arguments to gyroradius",
         )
 
     # Check if V or T and lorentzfactor are both given at the same time at any position
     if np.any(isfinite_lorentzfactor & (isfinite_Vperp | isfinite_T)):
         warnings.warn(
             "lorentzfactor is given along with Vperp or T, will lead "
-            "to inaccurate predictions unless they correspond"
+            "to inaccurate predictions unless they correspond",
+            stacklevel=2,
         )
 
     # Check if V and T are both missing at any position but lorentzfactor is not scalar
     if np.any(~isfinite_Vperp & ~isfinite_T) and not np.isscalar(lorentzfactor_in):
         raise ValueError(
             "Inferring velocity(s) from more than one Lorentz "
-            "factor is not currently supported"
+            "factor is not currently supported",
         )
 
     # In the positions where Vperp is missing but T is given, calculate the thermal speed
@@ -295,14 +295,16 @@ def gyroradius(
     # In the positions where Vperp is still missing, calculate Vperp from lorentzfactor
     if np.any(~isfinite_Vperp):
         Vperp[~isfinite_Vperp] = RelativisticBody(
-            particle, lorentz_factor=lorentzfactor_in
+            particle,
+            lorentz_factor=lorentzfactor_in,
         ).velocity
 
     # Calculate the final lorentzfactor
     if relativistic:
         # Fill in missing entries of lorentzfactor by calculating it using Vperp
         lorentzfactor[~isfinite_lorentzfactor] = RelativisticBody(
-            particle, V=Vperp
+            particle,
+            V=Vperp,
         ).lorentz_factor[~isfinite_lorentzfactor]
     else:
         lorentzfactor = 1.0
@@ -325,12 +327,12 @@ rhoc_ = gyroradius
 )
 @particle_input(require="charged")
 def inertial_length(
-    n: u.Quantity[u.m**-3],
+    n: u.Quantity[u.m**-3],  # ty: ignore[not-subscriptable]
     particle: ParticleLike,
     *,
     mass_numb: int | None = None,
     Z: float | None = None,
-) -> u.Quantity[u.m]:
+) -> u.Quantity[u.m]:  # ty: ignore[not-subscriptable]
     r"""
     Calculate a charged particle's inertial length.
 

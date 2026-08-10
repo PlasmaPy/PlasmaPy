@@ -4,8 +4,8 @@ Module for loading ionization energy data from
 """
 
 __all__ = [
-    "ionization_energy_obj_hook",
     "data_about_ionization_energy",
+    "ionization_energy_obj_hook",
 ]
 
 import json
@@ -23,6 +23,6 @@ def ionization_energy_obj_hook(obj):
 
 #: Dictionary of ionization energy data.
 data_about_ionization_energy = json.loads(
-    pkgutil.get_data("plasmapy", "particles/data/ionization_energy.json"),
+    pkgutil.get_data("plasmapy", "particles/data/ionization_energy.json"),  # ty:ignore[invalid-argument-type]
     object_hook=ionization_energy_obj_hook,
 )

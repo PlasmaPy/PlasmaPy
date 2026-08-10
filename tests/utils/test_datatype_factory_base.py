@@ -41,7 +41,7 @@ from plasmapy.utils.datatype_factory_base import (
 
 
 class BaseWidget:
-    def __init__(self, *args, **kwargs) -> None:
+    def __init__(self, *args, **kwargs) -> None:  # noqa: ANN002, ANN003
         pass
 
 
@@ -105,7 +105,8 @@ class TestBasicRegistrationFactory:
         DefaultFactory.register(StandardWidget)
         DefaultFactory.register(FancyWidget)
         DefaultFactory.register(
-            ExternallyValidatedWidget, validation_function=external_validation_function
+            ExternallyValidatedWidget,
+            validation_function=external_validation_function,
         )
 
         assert type(DefaultFactory()) is DefaultWidget
@@ -150,7 +151,7 @@ class TestBasicRegistrationFactory:
         external_registry = {}
 
         FactoryWithExternalRegistry = BasicRegistrationFactory(
-            registry=external_registry
+            registry=external_registry,
         )
 
         assert not external_registry
@@ -172,7 +173,7 @@ class TestBasicRegistrationFactory:
 
     def test_extra_validation_factory(self) -> None:
         ExtraValidationFactory = BasicRegistrationFactory(
-            additional_validation_functions=["different_validation_function"]
+            additional_validation_functions=["different_validation_function"],
         )
 
         ExtraValidationFactory.register(DifferentValidationWidget)

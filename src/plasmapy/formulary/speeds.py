@@ -2,8 +2,8 @@
 
 __all__ = [
     "Alfven_speed",
-    "kappa_thermal_speed",
     "ion_sound_speed",
+    "kappa_thermal_speed",
     "thermal_speed",
     "thermal_speed_coefficients",
     "thermal_speed_lite",
@@ -41,13 +41,13 @@ k_B_si_unitless = k_B.value
 @check_relativistic
 @validate_quantities(density={"can_be_negative": False})
 def Alfven_speed(
-    B: u.Quantity[u.T],
+    B: u.Quantity[u.T],  # ty: ignore[not-subscriptable]
     density: (u.m**-3, u.kg / u.m**3),
     ion: ParticleLike | None = None,
     *,
     mass_numb: int | None = None,
     Z: float | None = None,
-) -> u.Quantity[u.m / u.s]:
+) -> u.Quantity[u.m / u.s]:  # ty: ignore[not-subscriptable]
     r"""Calculate the Alfvén speed 🏎️💨.
 
     The Alfvén speed :math:`V_A` is the typical propagation speed of
@@ -155,18 +155,17 @@ def Alfven_speed(
     >>> Alfven_speed(B=B, density=n, ion="He", Z=1.8)
     <Quantity 21664.18... m / s>
     """
-
     if density.unit.physical_type == u.physical.mass_density and ion is not None:
         raise ValueError(
             "When calculating the Alfvén speed, an ion cannot be specified "
             "when the 'density' parameter is provided an argument with a "
-            "physical type of mass density."
+            "physical type of mass density.",
         )
 
     if density.unit.physical_type == u.physical.number_density and ion is None:
         raise ValueError(
             "When calculating the Alfvén speed, the ion must be specified "
-            "when 'density' has a physical type of number density."
+            "when 'density' has a physical type of number density.",
         )
 
     if density.unit.physical_type == u.physical.mass_density:
@@ -189,16 +188,16 @@ va_ = Alfven_speed
     k={"can_be_negative": False, "none_shall_pass": True},
 )
 @particle_input
-def ion_sound_speed(
-    T_e: u.Quantity[u.K],
-    T_i: u.Quantity[u.K],
+def ion_sound_speed(  # noqa: PLR0917
+    T_e: u.Quantity[u.K],  # ty: ignore[not-subscriptable]
+    T_i: u.Quantity[u.K],  # ty: ignore[not-subscriptable]
     ion: ParticleLike,
-    n_e: u.Quantity[u.m**-3] = None,
-    k: u.Quantity[u.m**-1] = None,
+    n_e: u.Quantity[u.m**-3] = None,  # ty: ignore[not-subscriptable]
+    k: u.Quantity[u.m**-1] = None,  # ty: ignore[not-subscriptable]
     gamma_e: float = 1,
     gamma_i: float = 3,
     Z=None,
-) -> u.Quantity[u.m / u.s]:
+) -> u.Quantity[u.m / u.s]:  # ty: ignore[not-subscriptable]
     r"""
     Return the ion sound speed for an electron-ion plasma.
 
@@ -354,12 +353,12 @@ def ion_sound_speed(
         if not isinstance(gamma, Real):
             raise TypeError(
                 f"The adiabatic index gamma for {species} must be a positive "
-                f"number greater than one."
+                f"number greater than one.",
             )
         if gamma < 1:
             raise PhysicsError(
                 f"The adiabatic index for {species} must be a positive "
-                f"number greater than one."
+                f"number greater than one.",
             )
 
     # Assume non-dispersive limit if values for n_e (or k) are not specified
@@ -370,6 +369,7 @@ def ion_sound_speed(
             "ion_sound_speed. To prevent this, values must "
             "be specified for both n_e and k.",
             PhysicsWarning,
+            stacklevel=2,
         )
     elif n_e is not None and k is not None:
         lambda_D = lengths.Debye_length(T_e, n_e)
@@ -467,7 +467,7 @@ def thermal_speed_coefficients(method: str, ndim: int) -> float:
         coeff = _coefficients[(ndim, method)]
     except KeyError as ex:
         raise ValueError(
-            f"Value for (ndim, method) pair not valid, got '({ndim}, {method})'."
+            f"Value for (ndim, method) pair not valid, got '({ndim}, {method})'.",
         ) from ex
 
     return coeff
@@ -534,12 +534,12 @@ def thermal_speed_lite(T: float, mass: float, coeff: float) -> float:
 )
 @particle_input
 def thermal_speed(
-    T: u.Quantity[u.K],
+    T: u.Quantity[u.K],  # ty: ignore[not-subscriptable]
     particle: ParticleLike,
     method: Literal["most_probable", "rms", "mean_magnitude", "nrl"] = "most_probable",
-    mass: u.Quantity[u.kg] = None,
+    mass: u.Quantity[u.kg] = None,  # ty: ignore[not-subscriptable]
     ndim: int = 3,
-) -> u.Quantity[u.m / u.s]:
+) -> u.Quantity[u.m / u.s]:  # ty: ignore[not-subscriptable]
     r"""
     Calculate the speed of thermal motion for particles with a Maxwellian
     distribution.  (See the :ref:`Notes <thermal-speed-notes>` section for
@@ -734,18 +734,18 @@ vth_ = thermal_speed
 
 @check_relativistic
 @validate_quantities(
-    T={"can_be_negative": False, "equivalencies": u.temperature_energy()}
+    T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
 )
 @particle_input
 def kappa_thermal_speed(
-    T: u.Quantity[u.K],
+    T: u.Quantity[u.K],  # ty: ignore[not-subscriptable]
     kappa,
     particle: ParticleLike,
     method: Literal["most_probable", "rms", "mean_magnitude"] = "most_probable",
     *,
     mass_numb: int | None = None,
     Z: float | None = None,
-) -> u.Quantity[u.m / u.s]:
+) -> u.Quantity[u.m / u.s]:  # ty: ignore[not-subscriptable]
     r"""
     Return the most probable speed for a particle within a kappa
     distribution.
@@ -833,7 +833,7 @@ def kappa_thermal_speed(
     if kappa <= 3 / 2:
         raise ValueError(
             f"Must have kappa > 3/2, instead of {kappa}, for "
-            "kappa distribution function to be valid."
+            "kappa distribution function to be valid.",
         )
     # different methods, as per https://en.wikipedia.org/wiki/Thermal_velocity
     vth = thermal_speed(T=T, particle=particle, method=method)

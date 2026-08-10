@@ -7,7 +7,7 @@ from numpy.typing import NDArray
 from plasmapy.formulary import mathematics
 from plasmapy.formulary.mathematics import rot_a_to_b
 
-# TODO: Move the Fermi integral tests over to this file?
+# TODO: Move the Fermi integral tests over to this file?  # noqa: FIX002
 
 
 @pytest.mark.parametrize(

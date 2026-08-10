@@ -1,0 +1,1 @@
+Added a pre-commit hook for ``bibtex-tidy`` to autoformat :file:`docs/bibliography.bib`.

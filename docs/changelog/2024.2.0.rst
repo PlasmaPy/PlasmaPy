@@ -25,8 +25,7 @@ Features
   measured Thomson scattering spectra. Changed the
   `~plasmapy.diagnostics.thomson.spectral_density_model` function to
   allow ``notch`` to be applied during fitting. (:pr:`2058`)
-- Changed unit annotations to |Quantity| type hint
-  annotations. (:pr:`2421`)
+- Changed unit annotations to |Quantity| type annotations. (:pr:`2421`)
 - Enabled |particle_input| to decorate functions which have variadic
   positional arguments followed by keyword arguments. (:pr:`2428`; see
   also :issue:`2150`)
@@ -50,7 +49,7 @@ Improved Documentation
 
 - Switched from ``sphinx_toolbox.collapse`` to ``sphinx_collapse`` for
   including collapsible content in our documentation. (:pr:`2387`)
-- Added a discussion of |type hint annotations| in the |testing guide|
+- Added a discussion of |type annotations| in the |testing guide|
   within the |contributor guide|. (:pr:`2440`)
 
 
@@ -68,25 +67,25 @@ Trivial/Internal Changes
   configuration. (:pr:`2394`)
 - Modified the ``__exit__`` method of ``HDF5Reader`` for context
   management.  (:pr:`2402`)
-- Added an initial configuration for |mypy| that temporarily ignores
+- Added an initial configuration for mypy that temporarily ignores
   existing errors. (:pr:`2424`)
-- Added a tox environment for running |mypy|. (:pr:`2431`)
-- Added |mypy| to the suite of continuous integration
+- Added a tox environment for running mypy. (:pr:`2431`)
+- Added mypy to the suite of continuous integration
   checks. (:pr:`2432`)
-- Used ``autotyping`` to implement |type hint annotations| for special
+- Used ``autotyping`` to implement |type annotations| for special
   methods like ``__init__`` and ``__str__``, and changed
   :py:`-> typing.NoReturn` annotations to :py:`-> None`. (:pr:`2437`)
 - Used ``autotyping`` to add :py:`-> None` return annotations to
   functions and methods with no :py:`return` statement. (:pr:`2439`)
-- Added a stub file containing |type hint annotations| for
+- Added a stub file containing |type annotations| for
   ``@wrapt.decorator``. (:pr:`2442`)
-- Improved |type hint annotations| for
+- Improved |type annotations| for
   `plasmapy.particles.decorators`, which includes |particle_input|,
   and the corresponding tests. (:pr:`2443`)
 - Dropped the |pre-commit| hook for ``isort`` and enabled all
   ``isort`` rules in |ruff|. (:pr:`2453`)
 - Added a :file:`py.typed` marker file to indicate that PlasmaPy
-  contains type hint annotations as per :pep:`561`. (:pr:`2473`)
+  contains type annotations as per :pep:`561`. (:pr:`2473`)
 - Changed ``_nearest_neighbor_interpolator`` method in
   `~plasmapy.plasma.grids` to interpolate quantities array instead of
   producing an intermediate index.  (:pr:`2475`)
