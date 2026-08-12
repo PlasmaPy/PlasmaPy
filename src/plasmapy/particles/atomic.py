@@ -1178,16 +1178,15 @@ def _read_NIST_stopping_data(incident_particle, material):
 
 
 @particle_input
-@validate_quantities(energies=u.MeV)
-def stopping_power(
+@validate_quantities(energies={"units": u.MeV, "none_shall_pass": True})
+def stopping_power(  # noqa: ANN201
     incident_particle: ParticleLike,
     material: str,
+    *,
     energies: u.Quantity[u.MeV] | None = None,
-    return_interpolator: bool = False,  # noqa: FBT001, FBT002
+    return_interpolator: bool = False,
+    return_derivative: bool = False,
     component: Literal["total", "electronic", "nuclear"] = "total",
-) -> (
-    u.Quantity[u.MeV * u.cm**2 / u.g]
-    | Callable[[u.Quantity[u.J]], u.Quantity[u.MeV * u.cm**2 / u.g]]
 ):
     """
     Calculate stopping powers for a provided particle in a provided
@@ -1263,17 +1262,36 @@ def stopping_power(
         extrapolate=False,
     )
 
-    @validate_quantities(x=u.MeV)
-    def cubic_spline(x: u.Quantity[u.MeV]) -> u.Quantity[u.MeV * u.cm**2 / u.g]:
+    df_deps = log_cs.derivative(nu=1)
+
+    @validate_quantities(T=u.MeV)
+    def cubic_spline(T: u.Quantity[u.MeV]) -> u.Quantity[u.MeV * u.cm**2 / u.g]:
         """Handle units and sanitize IO for logarithmic spline."""
-        return np.exp(log_cs(np.log(x.to(u.MeV).value))) * u.MeV * u.cm**2 / u.g
+        return np.exp(log_cs(np.log(T.to(u.MeV).value))) * u.MeV * u.cm**2 / u.g
+
+    @validate_quantities(T=u.MeV)
+    def cubic_spline_derivative(T: u.Quantity[u.MeV]) -> u.Quantity[u.cm**2 / u.g]:
+        T = T.to_value(u.MeV)
+        eps = np.log(T)
+        f_eps = log_cs(eps)
+
+        return f_eps * np.exp(f_eps) / T * df_deps(eps) * u.cm**2 / u.g
 
     # If the user wants the interpolator, return it
     if return_interpolator:
-        return cubic_spline
+        return (
+            (cubic_spline, cubic_spline_derivative)
+            if return_derivative
+            else cubic_spline
+        )
     # Otherwise, interpolate using the passed energies
     else:
-        return cubic_spline(energies)
+        spline_eval = cubic_spline(energies)
+        return (
+            (spline_eval, cubic_spline_derivative(energies))
+            if return_derivative
+            else spline_eval
+        )
 
 
 @particle_input
