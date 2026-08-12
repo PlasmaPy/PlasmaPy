@@ -222,6 +222,7 @@ class IntervalSaveRoutine(AbstractSaveRoutine):
             "time": (u.s, _H5FieldType.DATASET),
             "x": (u.m, _H5FieldType.DATASET),
             "v": (u.m / u.s, _H5FieldType.DATASET),
+            "_stopping_power": (u.J / u.m, _H5FieldType.DATASET),
         }
 
         self.save_interval: float = interval.to(u.s).value
@@ -235,7 +236,9 @@ class IntervalSaveRoutine(AbstractSaveRoutine):
     @property
     def save_now(self) -> bool:
         """Save at every interval given in instantiation."""
-        return bool(self.tracker.time - self.time_of_last_save >= self.save_interval)
+        return bool(
+            self.tracker.time.flatten() - self.time_of_last_save >= self.save_interval
+        )
 
     def save(self) -> None:
         """Save the current state of the simulation.
@@ -243,4 +246,4 @@ class IntervalSaveRoutine(AbstractSaveRoutine):
         """
         super().save()
 
-        self.time_of_last_save = self.tracker.time
+        self.time_of_last_save = self.tracker.time.flatten()

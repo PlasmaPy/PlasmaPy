@@ -134,7 +134,7 @@ class NoParticlesOnGridsTerminationCondition(AbstractTerminationCondition):
     @property
     def is_finished(self) -> bool:
         """The simulation is finished when no more particles are on any grids."""
-        is_not_on_grid = self.tracker.on_any_grid == False  # noqa: E712
+        is_not_on_grid = ~self.tracker.on_any_grid
 
         return is_not_on_grid.all() and self.tracker.iteration_number > 0
 
@@ -190,18 +190,17 @@ class AllParticlesOffGridTerminationCondition(AbstractTerminationCondition):
         r"""
         Check to see if the proportion of particles that have entered and exited the grid meet thresholds.
         """
+        if self._particle_tracker.num_entered == 0:
+            return False
+
         # Of the particles that have entered the grid, how many are currently
         # on the grid?
         # if/else avoids dividing by zero
-        if self._particle_tracker.num_entered > 0:
-            # Normalize to the number that have entered a grid
-            still_on = (
-                np.sum(self._particle_tracker.on_any_grid)
-                / self._particle_tracker.num_entered
-            )
-        else:
-            still_on = 0.0
-
+        # Normalize to the number that have entered a grid
+        still_on = (
+            np.sum(self._particle_tracker.on_any_grid)
+            / self._particle_tracker.num_entered
+        )
         proportion_exited = 1 - still_on
 
         return (
