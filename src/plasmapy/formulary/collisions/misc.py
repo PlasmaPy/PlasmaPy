@@ -3,6 +3,8 @@
 __all__ = [
     "mobility",
     "Bethe_stopping",
+    "Lindhard_Sorensen_energy_straggling",
+    "Urban",
     "Moliere_scattering",
     "Highland_scattering",
     "Spitzer_resistivity",
@@ -432,6 +434,27 @@ def Bethe_stopping_lite(
     )
 
 
+def Bethe_stopping_derivative_lite(
+    I: np.ndarray,  # noqa: E741
+    n: np.ndarray,
+    v: np.ndarray,
+    z: int,
+) -> float:
+    A = (
+        4
+        * np.pi
+        * n
+        * z**2
+        / (_m_e.si.value * _c.si.value**2)
+        * (_e.si.value**2 / (4 * np.pi * _eps0.si.value)) ** 2
+    )
+    C = 2 * _m_e.si.value * _c.si.value**2 / I
+
+    beta = v / _c.si.value
+    gamma_squared = 1 / (1 - beta**2)
+    return 2 * A / beta**3 * (gamma_squared - np.log(C * beta**2 * gamma_squared))
+
+
 @bind_lite_func(Bethe_stopping_lite)
 @validate_quantities()
 def Bethe_stopping(
@@ -439,7 +462,9 @@ def Bethe_stopping(
     n: u.Quantity[1 / u.m**3],
     v: u.Quantity[u.m / u.s],
     z: int,
-) -> u.Quantity[u.J / u.m]:
+    *,
+    include_speed_derivative=False,
+) -> u.Quantity[u.J / u.m] | tuple[u.Quantity[u.J / u.m], u.Quantity[1 / u.m]]:
     r"""
     The theoretical electronic stopping power for swift charged particles
     calculated from the Bethe formula.
@@ -472,7 +497,132 @@ def Bethe_stopping(
         The stopping power of the material given the particle's energy.
 
     """
-    return Bethe_stopping_lite(I.si.value, n.si.value, v.si.value, z) * u.J / u.m
+    S = Bethe_stopping_lite(I.si.value, n.si.value, v.si.value, z) * u.J / u.m
+
+    if include_speed_derivative:
+        dS_dbeta = (
+            Bethe_stopping_derivative_lite(I.si.value, n.si.value, v.si.value, z)
+            * u.J
+            / u.m
+        )
+        return S, dS_dbeta
+    else:
+        return S
+
+
+def Lindhard_Sorensen_energy_straggling(
+    Z: int, n_e: u.Quantity[1 / u.m**3], v: u.Quantity[u.m / u.s]
+) -> u.Quantity[u.MeV**2 / u.cm]:
+    # TODO: Finish docstring  # noqa: FIX002
+    """Eq. 5 of Lindhard & Sorensen (1995)."""
+    beta = v / _c
+    gamma = 1 / np.sqrt(1 - beta**2)
+
+    # TODO: In what regimes is this approximation valid?  # noqa: FIX002
+    #  Should we raise a warning when it's not valid?
+    X = 1 - beta**2 / 2
+
+    return 4 * np.pi * Z**2 * const.e.esu**4 * n_e * gamma**2 * X
+
+
+def Urban(
+    beam: Particle,
+    target: Particle,
+    I: u.Quantity[u.J],  # noqa: E741
+    dx: u.Quantity[u.m],
+    v: u.Quantity[u.m / u.s],
+    stopping_power: u.Quantity[
+        u.J / u.m
+    ],  # TODO: Maybe just use NIST by default here?  # noqa: FIX002
+    *,
+    generator: np.random.Generator | None = None,
+    return_cross_sections=False,
+) -> u.Quantity[u.MeV]:
+    """GEANT4 Urban straggling model."""
+    if generator is None:
+        generator = np.random.default_rng()
+
+    beta = v / const.c
+    gamma = 1 / np.sqrt(1 - beta**2)
+
+    # Eq 2
+    eps_max = (
+        2
+        * const.m_e
+        * const.c**2
+        * beta**2
+        * gamma**2
+        / (1 + 2 * gamma * const.m_e / beam.mass)
+    )
+    Z = target.atomic_number
+    f_2 = 2 / Z if Z > 1 else 0
+    f_1 = 1 - f_2  # By Eq 42
+    E_0 = 10 * u.eV
+    E_2 = 10 * u.eV * Z**2
+    E_1 = (
+        np.exp((np.log(I.to_value(u.eV)) - f_2 * np.log(E_2.to_value(u.eV))) / f_1)
+        * u.eV
+    )  # By Eq 43
+    r = np.maximum(np.nan_to_num(0.03 + 0.23 * np.log(np.log(eps_max / I)), nan=0), 0)
+    argument_numerator = 2 * beam.mass * const.c**2 * (beta * gamma) ** 2
+
+    def get_excitation_cross_section(f_i, E_i):
+        return (
+            stopping_power
+            * f_i
+            / E_i
+            * (np.log(argument_numerator / E_i) - beta**2)
+            / (np.log(argument_numerator / I) - beta**2)
+            * (1 - r)
+        )
+
+    sigma_1 = get_excitation_cross_section(f_1, E_1)
+    sigma_2 = get_excitation_cross_section(f_2, E_2)
+    sigma_ionization = (
+        stopping_power * (eps_max - E_0) / (E_0 * eps_max * np.log(eps_max / E_0)) * r
+    )
+
+    n_1 = generator.poisson((sigma_1 * dx).to(u.dimensionless_unscaled))
+    n_2 = generator.poisson((sigma_2 * dx).to(u.dimensionless_unscaled))
+    delta_E_exc = n_1 * E_1 + n_2 * E_2
+
+    n_ionized = generator.poisson((sigma_ionization * dx).to(u.dimensionless_unscaled))
+    # Generate all rng values we need to calculate the energy lost to ionization
+    u_ion_unravelled = generator.uniform(size=np.sum(n_ionized))
+    n_i_indices = [0, *np.cumsum(n_ionized)]
+    delta_E_ion = np.zeros(shape=dx.shape)
+    for i, (beginning, end, T_max_i) in enumerate(
+        zip(n_i_indices[:-1], n_i_indices[1:], eps_max, strict=True)
+    ):
+        u_i = u_ion_unravelled[beginning:end]
+
+        delta_E_ion[i] = (np.sum(E_0 / (1 - u_i * (T_max_i - E_0) / T_max_i))).to_value(
+            u.MeV
+        )
+
+    delta_E_ion *= u.MeV
+    delta_E = delta_E_exc + delta_E_ion
+    if return_cross_sections:
+        mean_delta_E_exc = (sigma_1 * E_1 + sigma_2 * E_2) * dx
+        mean_delta_E_ion = (
+            sigma_ionization
+            * dx
+            * E_0
+            * eps_max
+            / (eps_max - E_0)
+            * np.log(eps_max / E_0)
+        )
+
+        return (
+            delta_E,
+            sigma_1,
+            sigma_2,
+            sigma_ionization,
+            mean_delta_E_exc,
+            mean_delta_E_ion,
+        )
+    else:
+        return delta_E
 
 
 def _Highland_thickness_integrand(T, beam, L_R, stopping_interpolator):
