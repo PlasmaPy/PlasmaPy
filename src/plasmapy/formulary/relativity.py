@@ -1,6 +1,6 @@
 """Calculation of quantities related to relativity."""
 
-__all__ = ["Lorentz_factor", "relativistic_energy", "RelativisticBody"]
+__all__ = ["Lorentz_factor", "RelativisticBody", "relativistic_energy"]
 
 from numbers import Real
 
@@ -17,7 +17,7 @@ from plasmapy.utils.exceptions import RelativityError
 
 
 @validate_quantities(V={"can_be_negative": True})
-def Lorentz_factor(V: u.Quantity[u.m / u.s]):  # noqa: ANN201
+def Lorentz_factor(V: u.Quantity[u.m / u.s]):  # noqa: ANN201  # ty: ignore[not-subscriptable]
     r"""
     Return the Lorentz factor.
 
@@ -92,13 +92,13 @@ def Lorentz_factor(V: u.Quantity[u.m / u.s]):  # noqa: ANN201
 @particle_input
 def relativistic_energy(
     particle: ParticleLike,
-    V: u.Quantity[u.m / u.s],
+    V: u.Quantity[u.m / u.s],  # ty: ignore[not-subscriptable]
     *,
     mass_numb: int | None = None,
     Z: int | None = None,
     m=None,
     v=None,
-) -> u.Quantity[u.J]:
+) -> u.Quantity[u.J]:  # ty: ignore[not-subscriptable]
     """
     Calculate the sum of the mass energy and kinetic energy of a
     relativistic body.
@@ -315,11 +315,11 @@ class RelativisticBody:
     def __init__(
         self,
         particle: ParticleLike,
-        V: u.Quantity[u.m / u.s] = None,
-        momentum: u.Quantity[u.kg * u.m / u.s] = None,
+        V: u.Quantity[u.m / u.s] = None,  # ty: ignore[not-subscriptable]
+        momentum: u.Quantity[u.kg * u.m / u.s] = None,  # ty: ignore[not-subscriptable]
         *,
-        total_energy: u.Quantity[u.J] = None,
-        kinetic_energy: u.Quantity[u.J] = None,
+        total_energy: u.Quantity[u.J] = None,  # ty: ignore[not-subscriptable]
+        kinetic_energy: u.Quantity[u.J] = None,  # ty: ignore[not-subscriptable]
         v_over_c: float | None = None,
         lorentz_factor: float | None = None,
         Z: int | None = None,
@@ -358,7 +358,7 @@ class RelativisticBody:
 
     @property
     @validate_quantities
-    def mass(self) -> u.Quantity[u.kg]:
+    def mass(self) -> u.Quantity[u.kg]:  # ty: ignore[not-subscriptable]
         r"""
         The rest mass of the body, :math:`m_0`\ .
 
@@ -370,7 +370,7 @@ class RelativisticBody:
 
     @property
     @validate_quantities
-    def mass_energy(self) -> u.Quantity[u.J]:
+    def mass_energy(self) -> u.Quantity[u.J]:  # ty: ignore[not-subscriptable]
         r"""
         The rest mass energy of the body, :math:`m_0 c^2`\ .
 
@@ -382,7 +382,7 @@ class RelativisticBody:
 
     @property
     @validate_quantities
-    def total_energy(self) -> u.Quantity[u.J]:
+    def total_energy(self) -> u.Quantity[u.J]:  # ty: ignore[not-subscriptable]
         r"""
         The sum of the rest mass energy and the kinetic energy of the
         body.
@@ -399,7 +399,7 @@ class RelativisticBody:
 
     @property
     @validate_quantities
-    def kinetic_energy(self) -> u.Quantity[u.J]:
+    def kinetic_energy(self) -> u.Quantity[u.J]:  # ty: ignore[not-subscriptable]
         """
         The kinetic energy of the body.
 
@@ -428,7 +428,7 @@ class RelativisticBody:
 
     @property
     @validate_quantities
-    def velocity(self) -> u.Quantity[u.m / u.s]:
+    def velocity(self) -> u.Quantity[u.m / u.s]:  # ty: ignore[not-subscriptable]
         r"""
         The velocity of the body, :math:`V`\ .
 
@@ -457,7 +457,7 @@ class RelativisticBody:
 
     @property
     @validate_quantities
-    def momentum(self) -> u.Quantity[u.kg * u.m / u.s]:
+    def momentum(self) -> u.Quantity[u.kg * u.m / u.s]:  # ty: ignore[not-subscriptable]
         r"""
         The magnitude of the momentum of the body.
 
@@ -473,12 +473,12 @@ class RelativisticBody:
 
     @kinetic_energy.setter
     @validate_quantities(E_K={"can_be_negative": False})
-    def kinetic_energy(self, E_K: u.Quantity[u.J]) -> None:
+    def kinetic_energy(self, E_K: u.Quantity[u.J]) -> None:  # ty: ignore[not-subscriptable]
         self.total_energy = E_K + self.mass_energy
 
     @total_energy.setter
     @validate_quantities(E_tot={"can_be_negative": False})
-    def total_energy(self, E_tot: u.Quantity[u.J]) -> None:
+    def total_energy(self, E_tot: u.Quantity[u.J]) -> None:  # ty: ignore[not-subscriptable]
         self._momentum = np.sqrt(E_tot**2 - self.mass_energy**2) / c
 
     @v_over_c.setter
@@ -487,7 +487,7 @@ class RelativisticBody:
 
     @velocity.setter
     @validate_quantities
-    def velocity(self, V: u.Quantity[u.m / u.s]) -> None:
+    def velocity(self, V: u.Quantity[u.m / u.s]) -> None:  # ty: ignore[not-subscriptable]
         self._momentum = (Lorentz_factor(V) * self.mass * V).to(u.kg * u.m / u.s)
 
     @lorentz_factor.setter
@@ -510,7 +510,7 @@ class RelativisticBody:
 
     @momentum.setter
     @validate_quantities
-    def momentum(self, p: u.Quantity[u.kg * u.m / u.s]) -> None:
+    def momentum(self, p: u.Quantity[u.kg * u.m / u.s]) -> None:  # ty: ignore[not-subscriptable]
         self._momentum = p.to(u.kg * u.m / u.s)
 
     def __eq__(self, other) -> bool:  # noqa: D105

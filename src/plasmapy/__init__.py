@@ -11,17 +11,17 @@ For more information about the PlasmaPy community, please check out
 """
 
 __all__ = [
-    "online_help",
+    "__citation__",
+    "__version__",
     "analysis",
     "diagnostics",
     "dispersion",
     "formulary",
+    "online_help",
     "particles",
     "plasma",
     "simulation",
     "utils",
-    "__version__",
-    "__citation__",
 ]
 
 import sys

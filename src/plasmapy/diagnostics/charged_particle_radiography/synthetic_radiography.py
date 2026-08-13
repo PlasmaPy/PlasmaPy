@@ -208,11 +208,11 @@ class Tracker(ParticleTracker):
         into the standard output while running.
     """
 
-    def __init__(
+    def __init__(  # noqa: PLR0917
         self,
         grids: AbstractGrid | Iterable[AbstractGrid],
-        source: u.Quantity[u.m],
-        detector: u.Quantity[u.m],
+        source: u.Quantity[u.m],  # ty: ignore[not-subscriptable]
+        detector: u.Quantity[u.m],  # ty: ignore[not-subscriptable]
         dt=None,
         dt_range=None,
         field_weighting: Literal[
@@ -262,6 +262,39 @@ class Tracker(ParticleTracker):
         self.detector = _coerce_to_cartesian_si(detector)
         self._log(f"Source: {self.source} m")
         self._log(f"Detector: {self.detector} m")
+
+        # The source and detector planes are defined by their normal vectors,
+        # which point from each plane towards the grid origin. If either the
+        # source or the detector is located at the origin, that normal (and, for
+        # the source, the magnification) is undefined, so reject it with a clear
+        # error instead of silently producing NaN/inf geometry.
+        if np.linalg.norm(self.source) == 0:
+            raise ValueError(
+                "The source cannot be located at the grid origin "
+                f"(source = {source}). Place the source outside the grid, on "
+                "the opposite side of the origin from the detector.",
+            )
+        if np.linalg.norm(self.detector) == 0:
+            raise ValueError(
+                "The detector cannot be located at the grid origin "
+                f"(detector = {detector}). Place the detector outside the "
+                "grid, on the opposite side of the origin from the source.",
+            )
+
+        # The point-projection geometry (and the magnification below) is only
+        # well defined when the grid origin lies between the source and the
+        # detector, i.e. they sit on opposite sides of the origin. If the source
+        # and detector are on the same side (or exactly perpendicular through
+        # the origin), the origin-to-source and origin-to-detector vectors are
+        # not anti-parallel and the resulting magnification is meaningless, so
+        # reject that configuration with a clear error.
+        if np.dot(self.source, self.detector) >= 0:
+            raise ValueError(
+                "The source and detector must be placed on opposite sides of "
+                f"the grid origin (source = {source}, detector = {detector}). "
+                "The origin must lie between them so that the projection "
+                "geometry and magnification are well defined.",
+            )
 
         # Calculate normal vectors (facing towards the grid origin) for both
         # the source and detector planes
@@ -361,7 +394,7 @@ class Tracker(ParticleTracker):
     # Create mesh
     # *************************************************************************
 
-    def add_wire_mesh(
+    def add_wire_mesh(  # noqa: PLR0917
         self,
         location,
         extent,
@@ -444,7 +477,7 @@ class Tracker(ParticleTracker):
         elif len(extent) == 2:
             radius = None
             width = extent[0].si.value
-            height = extent[1].si.value  # ty:ignore[index-out-of-bounds]
+            height = extent[1].si.value
         else:
             raise ValueError(
                 "extent must be a tuple of 1 or 2 elements, but "
@@ -492,7 +525,7 @@ class Tracker(ParticleTracker):
 
         self.mesh_list.append(mesh_entry)
 
-    def _apply_wire_mesh(
+    def _apply_wire_mesh(  # noqa: PLR0917
         self,
         location=None,
         wire_radius=None,
@@ -509,8 +542,8 @@ class Tracker(ParticleTracker):
         x = self._coast_to_plane(location, mesh_hdir, mesh_vdir)
 
         # Particle positions in 2D on the mesh plane
-        xloc = np.dot(x - location, mesh_hdir)  # ty:ignore[invalid-argument-type]
-        yloc = np.dot(x - location, mesh_vdir)  # ty:ignore[invalid-argument-type]
+        xloc = np.dot(x - location, mesh_hdir)  # ty:ignore[no-matching-overload]
+        yloc = np.dot(x - location, mesh_vdir)  # ty:ignore[no-matching-overload]
 
         # Create an array in which True indicates that a particle has hit
         # a wire and False indicates that it has not
@@ -621,7 +654,7 @@ class Tracker(ParticleTracker):
 
     @particles.particle_input
     @validate_quantities
-    def create_particles(
+    def create_particles(  # noqa: PLR0917
         self,
         num_particles,
         particle_energy,

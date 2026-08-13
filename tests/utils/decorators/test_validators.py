@@ -651,7 +651,7 @@ def test_validate_quantities_argument_type_annotation() -> None:
     """
 
     @validate_quantities
-    def f(x: u.Quantity[u.m]):  # noqa: ANN202
+    def f(x: u.Quantity[u.m]):  # noqa: ANN202  # ty: ignore[not-subscriptable]
         return x
 
     argument = 100 * u.cm
@@ -669,7 +669,7 @@ def test_validate_quantities_return_type_annotation() -> None:
     """
 
     @validate_quantities
-    def f(x) -> u.Quantity[u.m]:
+    def f(x) -> u.Quantity[u.m]:  # ty: ignore[not-subscriptable]
         return x
 
     argument = 100 * u.cm

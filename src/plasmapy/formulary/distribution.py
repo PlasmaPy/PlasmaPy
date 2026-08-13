@@ -2,11 +2,11 @@
 
 __all__ = [
     "Maxwellian_1D",
-    "Maxwellian_velocity_2D",
-    "Maxwellian_velocity_3D",
     "Maxwellian_speed_1D",
     "Maxwellian_speed_2D",
     "Maxwellian_speed_3D",
+    "Maxwellian_velocity_2D",
+    "Maxwellian_velocity_3D",
     "kappa_velocity_1D",
     "kappa_velocity_3D",
 ]
@@ -25,7 +25,7 @@ from plasmapy.utils._units_definitions import (
 )
 
 
-def _v_drift_conversion(v_drift: float | u.Quantity[u.m / u.s]):  # noqa: ANN202
+def _v_drift_conversion(v_drift: float | u.Quantity[u.m / u.s]):  # noqa: ANN202  # ty: ignore[not-subscriptable]
     # Helper method to assign equivalent value in SPEED_UNITS and/or remove units
     if isinstance(v_drift, u.Quantity):
         v_drift = v_drift.to_value(SPEED_UNITS)
@@ -33,11 +33,11 @@ def _v_drift_conversion(v_drift: float | u.Quantity[u.m / u.s]):  # noqa: ANN202
 
 
 @particle_input
-def Maxwellian_1D(  # noqa: ANN201
+def Maxwellian_1D(  # noqa: ANN201, PLR0917
     v,
     T,
     particle: ParticleLike = "e-",
-    v_drift: float | u.Quantity[u.m / u.s] = 0,
+    v_drift: float | u.Quantity[u.m / u.s] = 0,  # ty: ignore[not-subscriptable]
     vTh=np.nan,
     units: str = "units",
     *,
@@ -160,13 +160,13 @@ def Maxwellian_1D(  # noqa: ANN201
 
 
 @particle_input
-def Maxwellian_velocity_2D(  # noqa: ANN201
+def Maxwellian_velocity_2D(  # noqa: ANN201, PLR0917
     vx,
     vy,
     T,
     particle: ParticleLike = "e-",
-    vx_drift: float | u.Quantity[u.m / u.s] = 0,
-    vy_drift: float | u.Quantity[u.m / u.s] = 0,
+    vx_drift: float | u.Quantity[u.m / u.s] = 0,  # ty: ignore[not-subscriptable]
+    vy_drift: float | u.Quantity[u.m / u.s] = 0,  # ty: ignore[not-subscriptable]
     vTh=np.nan,
     units: str = "units",
     *,
@@ -312,15 +312,15 @@ def Maxwellian_velocity_2D(  # noqa: ANN201
 
 
 @particle_input
-def Maxwellian_velocity_3D(  # noqa: ANN201
+def Maxwellian_velocity_3D(  # noqa: ANN201, PLR0917
     vx,
     vy,
     vz,
     T,
     particle: ParticleLike = "e-",
-    vx_drift: float | u.Quantity[u.m / u.s] = 0,
-    vy_drift: float | u.Quantity[u.m / u.s] = 0,
-    vz_drift: float | u.Quantity[u.m / u.s] = 0,
+    vx_drift: float | u.Quantity[u.m / u.s] = 0,  # ty: ignore[not-subscriptable]
+    vy_drift: float | u.Quantity[u.m / u.s] = 0,  # ty: ignore[not-subscriptable]
+    vz_drift: float | u.Quantity[u.m / u.s] = 0,  # ty: ignore[not-subscriptable]
     vTh=np.nan,
     units: str = "units",
     *,
@@ -479,11 +479,11 @@ def Maxwellian_velocity_3D(  # noqa: ANN201
 
 
 @particle_input
-def Maxwellian_speed_1D(  # noqa: ANN201
+def Maxwellian_speed_1D(  # noqa: ANN201, PLR0917
     v,
     T,
     particle: ParticleLike = "e-",
-    v_drift: float | u.Quantity[u.m / u.s] = 0,
+    v_drift: float | u.Quantity[u.m / u.s] = 0,  # ty: ignore[not-subscriptable]
     vTh=np.nan,
     units: str = "units",
     *,
@@ -607,11 +607,11 @@ def Maxwellian_speed_1D(  # noqa: ANN201
 
 
 @particle_input
-def Maxwellian_speed_2D(  # noqa: ANN201
+def Maxwellian_speed_2D(  # noqa: ANN201, PLR0917
     v,
     T,
     particle: ParticleLike = "e-",
-    v_drift: float | u.Quantity[u.m / u.s] = 0,
+    v_drift: float | u.Quantity[u.m / u.s] = 0,  # ty: ignore[not-subscriptable]
     vTh=np.nan,
     units: str = "units",
     *,
@@ -743,11 +743,11 @@ def Maxwellian_speed_2D(  # noqa: ANN201
 
 
 @particle_input
-def Maxwellian_speed_3D(  # noqa: ANN201
+def Maxwellian_speed_3D(  # noqa: ANN201, PLR0917
     v,
     T,
     particle: ParticleLike = "e-",
-    v_drift: float | u.Quantity[u.m / u.s] = 0,
+    v_drift: float | u.Quantity[u.m / u.s] = 0,  # ty: ignore[not-subscriptable]
     vTh=np.nan,
     units: str = "units",
     *,
@@ -879,12 +879,12 @@ def Maxwellian_speed_3D(  # noqa: ANN201
 
 
 @particle_input
-def kappa_velocity_1D(  # noqa: ANN201
+def kappa_velocity_1D(  # noqa: ANN201, PLR0917
     v,
     T,
     kappa,
     particle: ParticleLike = "e-",
-    v_drift: float | u.Quantity[u.m / u.s] = 0,
+    v_drift: float | u.Quantity[u.m / u.s] = 0,  # ty: ignore[not-subscriptable]
     vTh=np.nan,
     units: str = "units",
     *,
@@ -1034,16 +1034,16 @@ def kappa_velocity_1D(  # noqa: ANN201
 
 
 @particle_input
-def kappa_velocity_3D(  # noqa: ANN201
+def kappa_velocity_3D(  # noqa: ANN201, PLR0917
     vx,
     vy,
     vz,
     T,
     kappa,
     particle: ParticleLike = "e-",
-    vx_drift: float | u.Quantity[u.m / u.s] = 0,
-    vy_drift: float | u.Quantity[u.m / u.s] = 0,
-    vz_drift: float | u.Quantity[u.m / u.s] = 0,
+    vx_drift: float | u.Quantity[u.m / u.s] = 0,  # ty: ignore[not-subscriptable]
+    vy_drift: float | u.Quantity[u.m / u.s] = 0,  # ty: ignore[not-subscriptable]
+    vz_drift: float | u.Quantity[u.m / u.s] = 0,  # ty: ignore[not-subscriptable]
     vTh=np.nan,
     units: str = "units",
     *,

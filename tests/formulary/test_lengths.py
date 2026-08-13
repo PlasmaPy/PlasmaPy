@@ -310,7 +310,7 @@ class TestGyroradius:
             atol = 1e-8
 
         rc = gyroradius(*args, **kwargs)
-        assert np.allclose(rc, expected, atol=atol)
+        np.testing.assert_allclose(rc, expected, atol=atol, rtol=1e-5)
         assert rc.unit == u.m
 
     @pytest.mark.parametrize(
@@ -333,7 +333,7 @@ class TestGyroradius:
         with pytest.warns(_warns):
             rc = gyroradius(*args, **kwargs)
         if expected is not None:
-            assert np.allclose(rc, expected)
+            np.testing.assert_allclose(rc, expected, rtol=1e-5, atol=1e-8)
 
     def test_keeps_arguments_unchanged(self) -> None:
         Vperp1 = u.Quantity([np.nan, 1], unit=u.m / u.s)
@@ -366,10 +366,11 @@ def test_inertial_length() -> None:
     r"""Test the inertial_length function in lengths.py."""
     assert inertial_length(n_i, particle="p+").unit.is_equivalent(u.m)
 
-    assert np.isclose(
+    np.testing.assert_allclose(
         inertial_length(mu * u.cm**-3, particle="p+").cgs.value,
         2.28e7,
         rtol=0.01,
+        atol=1e-8,
     )
 
     inertial_length_electron_plus = inertial_length(5.351 * u.m**-3, particle="e+")
@@ -398,7 +399,9 @@ def test_inertial_length() -> None:
 
     assert inertial_length(n_e, "e-").unit.is_equivalent(u.m)
 
-    assert np.isclose(inertial_length(1 * u.cm**-3, "e-").cgs.value, 5.31e5, rtol=1e-3)
+    np.testing.assert_allclose(
+        inertial_length(1 * u.cm**-3, "e-").cgs.value, 5.31e5, rtol=1e-3, atol=1e-8
+    )
 
     with pytest.warns(u.UnitsWarning):
         inertial_length(5, "e-")

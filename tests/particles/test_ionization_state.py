@@ -151,7 +151,12 @@ def test_charge_numbers(test_ionization_state) -> None:
     numbers.
     """
     expected_charge_numbers = np.arange(test_ionization_state.atomic_number + 1)
-    assert np.allclose(test_ionization_state.charge_numbers, expected_charge_numbers)
+    np.testing.assert_allclose(
+        test_ionization_state.charge_numbers,
+        expected_charge_numbers,
+        rtol=1e-5,
+        atol=1e-8,
+    )
 
 
 def test_equal_to_itself(He_ionization_state) -> None:
@@ -464,7 +469,7 @@ def test_IonizationState_attributes(instance, key) -> None:
         try:
             assert expected == actual
         except ValueError:
-            assert np.allclose(expected, actual)
+            np.testing.assert_allclose(expected, actual, rtol=1e-5, atol=1e-8)  # ty:ignore[no-matching-overload]
 
 
 def test_IonizationState_methods(instance) -> None:
@@ -560,7 +565,9 @@ def test_setting_ionic_fractions() -> None:
     instance = IonizationState("He")
     new_ionic_fractions = [0.2, 0.5, 0.3]
     instance.ionic_fractions = new_ionic_fractions
-    assert np.allclose(instance.ionic_fractions, new_ionic_fractions)
+    np.testing.assert_allclose(
+        instance.ionic_fractions, new_ionic_fractions, rtol=1e-5, atol=1e-8
+    )
 
 
 class Test_IonizationStateNumberDensitiesSetter:

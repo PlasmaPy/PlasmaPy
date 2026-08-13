@@ -1,13 +1,13 @@
 """Miscellaneous parameters related to particle collisions."""
 
 __all__ = [
-    "mobility",
     "Bethe_stopping",
     "Lindhard_Sorensen_energy_straggling",
     "Urban",
     "Moliere_scattering",
     "Highland_scattering",
     "Spitzer_resistivity",
+    "mobility",
 ]
 __lite_funcs__ = ["Bethe_stopping_lite"]
 
@@ -184,7 +184,7 @@ _f_mol_spline = make_interp_spline(_ϑ_tabulated, _f_mol_tabulated)
 
 @validate_quantities(T={"equivalencies": u.temperature_energy()})
 @particle_input
-def _process_inputs(T: u.Quantity[u.K], species: (Particle, Particle), V):  # noqa: ANN202
+def _process_inputs(T: u.Quantity[u.K], species: (Particle, Particle), V):  # noqa: ANN202  # ty: ignore[not-subscriptable]
     """
     Helper function for processing inputs to functionality contained
     in `plasmapy.formulary.collisions`.
@@ -245,14 +245,14 @@ def _replace_nan_velocity_with_thermal_velocity(
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     n_e={"can_be_negative": False},
 )
-def mobility(
-    T: u.Quantity[u.K],
-    n_e: u.Quantity[u.m**-3],
+def mobility(  # noqa: PLR0917
+    T: u.Quantity[u.K],  # ty: ignore[not-subscriptable]
+    n_e: u.Quantity[u.m**-3],  # ty: ignore[not-subscriptable]
     species,
     z_mean: float = np.nan,
-    V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
+    V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,  # ty: ignore[not-subscriptable]
     method: str = "classical",
-) -> u.Quantity[u.m**2 / (u.V * u.s)]:
+) -> u.Quantity[u.m**2 / (u.V * u.s)]:  # ty: ignore[not-subscriptable]
     r"""
     Return the electrical mobility.
 
@@ -349,8 +349,6 @@ def mobility(
 
     Examples
     --------
-    .. autolink-skip:: section
-
     >>> import astropy.units as u
     >>> n = 1e19 * u.m**-3
     >>> T = 1e6 * u.K
@@ -458,13 +456,13 @@ def Bethe_stopping_derivative_lite(
 @bind_lite_func(Bethe_stopping_lite)
 @validate_quantities()
 def Bethe_stopping(
-    I: u.Quantity[u.J],  # noqa: E741
-    n: u.Quantity[1 / u.m**3],
-    v: u.Quantity[u.m / u.s],
+    I: u.Quantity[u.J],  # noqa: E741  # ty: ignore[not-subscriptable]
+    n: u.Quantity[1 / u.m**3],  # ty: ignore[not-subscriptable]
+    v: u.Quantity[u.m / u.s],  # ty: ignore[not-subscriptable]
     z: int,
     *,
     include_speed_derivative=False,
-) -> u.Quantity[u.J / u.m] | tuple[u.Quantity[u.J / u.m], u.Quantity[1 / u.m]]:
+) -> u.Quantity[u.J / u.m] | tuple[u.Quantity[u.J / u.m], u.Quantity[1 / u.m]]:  # ty: ignore[not-subscriptable]
     r"""
     The theoretical electronic stopping power for swift charged particles
     calculated from the Bethe formula.
@@ -1233,14 +1231,14 @@ def Moliere_scattering(
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     n={"can_be_negative": False},
 )
-def Spitzer_resistivity(
-    T: u.Quantity[u.K],
-    n: u.Quantity[u.m**-3],
+def Spitzer_resistivity(  # noqa: PLR0917
+    T: u.Quantity[u.K],  # ty: ignore[not-subscriptable]
+    n: u.Quantity[u.m**-3],  # ty: ignore[not-subscriptable]
     species,
     z_mean: float = np.nan,
-    V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
+    V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,  # ty: ignore[not-subscriptable]
     method: str = "classical",
-) -> u.Quantity[u.Ohm * u.m]:
+) -> u.Quantity[u.Ohm * u.m]:  # ty: ignore[not-subscriptable]
     r"""
     Spitzer resistivity of a plasma.
 
@@ -1336,8 +1334,6 @@ def Spitzer_resistivity(
 
     Examples
     --------
-    .. autolink-skip:: section
-
     >>> import astropy.units as u
     >>> n = 1e19 * u.m**-3
     >>> T = 1e6 * u.K

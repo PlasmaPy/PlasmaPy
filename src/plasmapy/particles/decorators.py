@@ -144,8 +144,17 @@ def _bind_arguments(
 
     bound_arguments.apply_defaults()
 
-    bound_arguments.arguments.pop("self", None)
-    bound_arguments.arguments.pop("cls", None)
+    # When ``instance`` is provided, then wrapt has already separated
+    # ``self``/``cls`` out of ``args``/``kwargs`` and bound it above, so
+    # it must be removed before calling the wrapped callable. But when
+    # ``instance`` is `None` — as happens when |particle_input| is the
+    # *inner* decorator on an instance method and the outer decorator
+    # (e.g. |validate_quantities|) calls it directly with ``self`` among
+    # the arguments — the ``self``/``cls`` argument came from the actual
+    # call and must be preserved so it can be forwarded. See #2035.
+    if instance is not None:
+        bound_arguments.arguments.pop("self", None)
+        bound_arguments.arguments.pop("cls", None)
 
     return bound_arguments
 
@@ -742,11 +751,8 @@ def particle_input(
     .. note::
 
        When both |particle_input| and |validate_quantities| are used to
-       decorate a :term:`function`, they may be used in either order.
-       When using both |particle_input| and |validate_quantities| to
-       decorate an instance :term:`method`, |particle_input| should be
-       the outer decorator and |validate_quantities| should be the inner
-       decorator (see :issue:`2035`).
+       decorate a :term:`function` or an instance :term:`method`, they
+       may be used in either order (see :issue:`2035`).
 
        .. code-block:: python
 
@@ -863,10 +869,6 @@ def particle_input(
     - |particle_input| has limited compatibility with positional-only,
       variadic positional, and variadic keyword arguments (see
       :issue:`2150`).
-
-    - When |particle_input| and |validate_quantities| are both
-      used to decorate an instance method on a class, |particle_input|
-      must be the outside decorator (see :issue:`2035`).
 
     - Because it dynamically changes arguments, functions decorated with
       |particle_input| often do not work well with static type checkers

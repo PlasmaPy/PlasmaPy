@@ -1,11 +1,11 @@
 """Plasma dielectric parameters."""
 
 __all__ = [
-    "cold_plasma_permittivity_SDP",
-    "cold_plasma_permittivity_LRP",
-    "permittivity_1D_Maxwellian",
     "RotatingTensorElements",
     "StixTensorElements",
+    "cold_plasma_permittivity_LRP",
+    "cold_plasma_permittivity_SDP",
+    "permittivity_1D_Maxwellian",
 ]
 __lite_funcs__ = ["permittivity_1D_Maxwellian_lite"]
 
@@ -45,10 +45,10 @@ RotatingTensorElements = namedtuple(
 
 @validate_quantities(B={"can_be_negative": False}, omega={"can_be_negative": False})
 def cold_plasma_permittivity_SDP(
-    B: u.Quantity[u.T],
+    B: u.Quantity[u.T],  # ty: ignore[not-subscriptable]
     species: ParticleListLike,
-    n: Sequence[u.Quantity[u.m**-3]] | u.Quantity[u.m**-3],
-    omega: u.Quantity[u.rad / u.s],
+    n: Sequence[u.Quantity[u.m**-3]] | u.Quantity[u.m**-3],  # ty: ignore[not-subscriptable]
+    omega: u.Quantity[u.rad / u.s],  # ty: ignore[not-subscriptable]
 ) -> StixTensorElements:
     r"""
     Magnetized cold plasma dielectric permittivity tensor elements.
@@ -143,10 +143,10 @@ def cold_plasma_permittivity_SDP(
 
 @validate_quantities(B={"can_be_negative": False}, omega={"can_be_negative": False})
 def cold_plasma_permittivity_LRP(
-    B: u.Quantity[u.T],
+    B: u.Quantity[u.T],  # ty: ignore[not-subscriptable]
     species: ParticleListLike,
-    n: list[u.Quantity[u.m**-3]] | u.Quantity[u.m**-3],
-    omega: u.Quantity[u.rad / u.s],
+    n: list[u.Quantity[u.m**-3]] | u.Quantity[u.m**-3],  # ty: ignore[not-subscriptable]
+    omega: u.Quantity[u.rad / u.s],  # ty: ignore[not-subscriptable]
 ) -> RotatingTensorElements:
     r"""
     Magnetized cold plasma dielectric permittivity tensor elements.
@@ -300,14 +300,14 @@ def permittivity_1D_Maxwellian_lite(omega, kWave, vth, wp):
     kWave={"none_shall_pass": True},
     validations_on_return={"can_be_complex": True},
 )
-def permittivity_1D_Maxwellian(
-    omega: u.Quantity[u.rad / u.s],
-    kWave: u.Quantity[u.rad / u.m],
-    T: u.Quantity[u.K],
-    n: u.Quantity[u.m**-3],
+def permittivity_1D_Maxwellian(  # noqa: PLR0917
+    omega: u.Quantity[u.rad / u.s],  # ty: ignore[not-subscriptable]
+    kWave: u.Quantity[u.rad / u.m],  # ty: ignore[not-subscriptable]
+    T: u.Quantity[u.K],  # ty: ignore[not-subscriptable]
+    n: u.Quantity[u.m**-3],  # ty: ignore[not-subscriptable]
     particle: ParticleLike,
     z_mean: float | None = None,
-) -> u.Quantity[u.dimensionless_unscaled]:
+) -> u.Quantity[u.dimensionless_unscaled]:  # ty: ignore[not-subscriptable]
     r"""
     Compute the classical dielectric permittivity for a 1D Maxwellian
     plasma.

@@ -201,7 +201,7 @@ class ParticleTracker:
     }
 
     @validate_quantities()
-    def __init__(
+    def __init__(  # noqa: PLR0917
         self,
         grids: CartesianGrid | Iterable[CartesianGrid],
         termination_condition: AbstractTerminationCondition | None = None,
@@ -541,7 +541,7 @@ class ParticleTracker:
         self,
         method: Literal["NIST", "Bethe"],
         materials: list[str | None] | None = None,
-        I: list[u.Quantity[u.J] | None] | None = None,  # noqa: E741
+        I: list[u.Quantity[u.J] | None] | None = None,  # noqa: E741  # ty: ignore[not-subscriptable]
     ) -> bool:
         r"""
         Validate inputs to the `add_stopping` method. Raises errors if the
@@ -594,7 +594,7 @@ class ParticleTracker:
         self,
         method: Literal["NIST", "Bethe"],
         materials: list[str | None] | None = None,
-        I: u.Quantity[u.J] | None = None,  # noqa: E741
+        I: u.Quantity[u.J] | None = None,  # noqa: E741  # ty: ignore[not-subscriptable]
     ):
         r"""
         Enable particle stopping in cold matter using the Bethe formula or experimental stopping powers.
@@ -1149,7 +1149,7 @@ class ParticleTracker:
 
         # Make sure the time step can be multiplied by a [num_particles, 3] shape field array
         if isinstance(dt, np.ndarray) and dt.size > 1:
-            dt = dt[self._tracked_particle_mask, np.newaxis]  # ty:ignore[invalid-argument-type]
+            dt = dt[self._tracked_particle_mask, np.newaxis]
             self.time[self._tracked_particle_mask] += dt
         else:
             self.time += dt  # ty:ignore[unsupported-operator]

@@ -1,0 +1,1 @@
+Updated the script to export ionization energies from NIST by including inline script metadata (see :pep:`723`) and writing the resulting data file to its final location.

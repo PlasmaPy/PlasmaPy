@@ -1,0 +1,1 @@
+Noted that contributions made with significant AI-generated content are currently unable to be accepted due to time constraints among code reviewers.

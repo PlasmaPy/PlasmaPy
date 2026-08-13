@@ -1,8 +1,8 @@
 """Frequencies related to particle collisions."""
 
 __all__ = [
-    "SingleParticleCollisionFrequencies",
     "MaxwellianCollisionFrequencies",
+    "SingleParticleCollisionFrequencies",
     "collision_frequency",
     "fundamental_electron_collision_freq",
     "fundamental_ion_collision_freq",
@@ -159,9 +159,9 @@ class SingleParticleCollisionFrequencies:
         test_particle: ParticleLike,
         field_particle: ParticleLike,
         *,
-        v_drift: u.Quantity[u.m / u.s],
-        T_b: u.Quantity[u.K],
-        n_b: u.Quantity[u.m**-3],
+        v_drift: u.Quantity[u.m / u.s],  # ty: ignore[not-subscriptable]
+        T_b: u.Quantity[u.K],  # ty: ignore[not-subscriptable]
+        n_b: u.Quantity[u.m**-3],  # ty: ignore[not-subscriptable]
         Coulomb_log,
     ) -> None:
         # Note: This class uses CGS units internally to coincide
@@ -259,7 +259,7 @@ class SingleParticleCollisionFrequencies:
         ).to(u.Hz)
 
     @cached_property
-    def x(self) -> u.Quantity[u.dimensionless_unscaled]:
+    def x(self) -> u.Quantity[u.dimensionless_unscaled]:  # ty: ignore[not-subscriptable]
         """
         The ratio of kinetic energy in the test particle to the thermal
         energy of the field particle.
@@ -275,7 +275,7 @@ class SingleParticleCollisionFrequencies:
         return x.to(u.dimensionless_unscaled)
 
     @staticmethod
-    def _phi_integrand(t: u.Quantity[u.dimensionless_unscaled]):  # noqa: ANN205
+    def _phi_integrand(t: u.Quantity[u.dimensionless_unscaled]):  # noqa: ANN205  # ty: ignore[not-subscriptable]
         """
         The phi integrand used in calculating phi.
         """
@@ -386,12 +386,12 @@ class MaxwellianCollisionFrequencies:
         test_particle: ParticleLike,
         field_particle: ParticleLike,
         *,
-        v_drift: u.Quantity[u.m / u.s] = 0 * u.m / u.s,
-        T_a: u.Quantity[u.K],
-        n_a: u.Quantity[u.m**-3],
-        T_b: u.Quantity[u.K],
-        n_b: u.Quantity[u.m**-3],
-        Coulomb_log: u.Quantity[u.dimensionless_unscaled],
+        v_drift: u.Quantity[u.m / u.s] = 0 * u.m / u.s,  # ty: ignore[not-subscriptable]
+        T_a: u.Quantity[u.K],  # ty: ignore[not-subscriptable]
+        n_a: u.Quantity[u.m**-3],  # ty: ignore[not-subscriptable]
+        T_b: u.Quantity[u.K],  # ty: ignore[not-subscriptable]
+        n_b: u.Quantity[u.m**-3],  # ty: ignore[not-subscriptable]
+        Coulomb_log: u.Quantity[u.dimensionless_unscaled],  # ty: ignore[not-subscriptable]
     ) -> None:
         if (
             isinstance(v_drift, np.ndarray)
@@ -607,14 +607,14 @@ class MaxwellianCollisionFrequencies:
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     n={"can_be_negative": False},
 )
-def collision_frequency(
-    T: u.Quantity[u.K],
-    n: u.Quantity[u.m**-3],
+def collision_frequency(  # noqa: PLR0917
+    T: u.Quantity[u.K],  # ty: ignore[not-subscriptable]
+    n: u.Quantity[u.m**-3],  # ty: ignore[not-subscriptable]
     species,
     z_mean: float = np.nan,
-    V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
+    V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,  # ty: ignore[not-subscriptable]
     method: str = "classical",
-) -> u.Quantity[u.Hz]:
+) -> u.Quantity[u.Hz]:  # ty: ignore[not-subscriptable]
     r"""
     Collision frequency of particles in a plasma.
 
@@ -797,14 +797,14 @@ def collision_frequency(
     T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     n_e={"can_be_negative": False},
 )
-def fundamental_electron_collision_freq(
-    T_e: u.Quantity[u.K],
-    n_e: u.Quantity[u.m**-3],
+def fundamental_electron_collision_freq(  # noqa: PLR0917
+    T_e: u.Quantity[u.K],  # ty: ignore[not-subscriptable]
+    n_e: u.Quantity[u.m**-3],  # ty: ignore[not-subscriptable]
     ion,
     coulomb_log=None,
     V=None,
     coulomb_log_method: str = "classical",
-) -> u.Quantity[u.s**-1]:
+) -> u.Quantity[u.s**-1]:  # ty: ignore[not-subscriptable]
     r"""
     Average momentum relaxation rate for a slowly flowing Maxwellian
     distribution of electrons.
@@ -966,14 +966,14 @@ def fundamental_electron_collision_freq(
     T_i={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     n_i={"can_be_negative": False},
 )
-def fundamental_ion_collision_freq(
-    T_i: u.Quantity[u.K],
-    n_i: u.Quantity[u.m**-3],
+def fundamental_ion_collision_freq(  # noqa: PLR0917
+    T_i: u.Quantity[u.K],  # ty: ignore[not-subscriptable]
+    n_i: u.Quantity[u.m**-3],  # ty: ignore[not-subscriptable]
     ion,
     coulomb_log=None,
     V=None,
     coulomb_log_method: str = "classical",
-) -> u.Quantity[u.s**-1]:
+) -> u.Quantity[u.s**-1]:  # ty: ignore[not-subscriptable]
     r"""
     Average momentum relaxation rate for a slowly flowing Maxwellian
     distribution of ions.

@@ -194,9 +194,11 @@ class TestCheckUnits:
         ("description", "setup", "expected", "warn_context", "raise_context"),
         [
             (
-                "x units are defined via decorator kwarg of CheckUnits "
-                "y units are defined via decorator annotations, additional "
-                "checks thru CheckUnits kwarg",
+                (
+                    "x units are defined via decorator kwarg of CheckUnits "
+                    "y units are defined via decorator annotations, additional "
+                    "checks thru CheckUnits kwarg"
+                ),
                 {
                     "function": foo_partial_anno,
                     "args": (2 * u.cm, 3 * u.cm),
@@ -216,9 +218,11 @@ class TestCheckUnits:
                 does_not_raise(),
             ),
             (
-                "x units are defined via decorator kwarg of CheckUnits "
-                "y units are defined via function annotations, additional "
-                "checks thru CheckUnits kwarg",
+                (
+                    "x units are defined via decorator kwarg of CheckUnits "
+                    "y units are defined via function annotations, additional "
+                    "checks thru CheckUnits kwarg"
+                ),
                 {
                     "function": foo_partial_anno,
                     "args": (2 * u.cm, 3 * u.cm),
@@ -370,8 +374,10 @@ class TestCheckUnits:
                 does_not_raise(),
             ),
             (
-                "return units are assigned via annotations and checks arg, but "
-                "are not consistent",
+                (
+                    "return units are assigned via annotations and checks arg, but "
+                    "are not consistent"
+                ),
                 {
                     "function": foo_return_anno,
                     "args": (2 * u.cm, 3 * u.cm),
@@ -395,8 +401,10 @@ class TestCheckUnits:
                 pytest.raises(ValueError),
             ),
             (
-                "no parameter checks for x are defined, but a non-unit annotation "
-                "is used",
+                (
+                    "no parameter checks for x are defined, but a non-unit annotation "
+                    "is used"
+                ),
                 {
                     "function": foo_partial_anno,
                     "args": (2 * u.cm, 3 * u.cm),
@@ -408,9 +416,11 @@ class TestCheckUnits:
                 does_not_raise(),
             ),
             (
-                "parameter checks defined for x but unit checks calculated from "
-                "function annotations. Function annotations do NOT define "
-                "a proper unit type.",
+                (
+                    "parameter checks defined for x but unit checks calculated from "
+                    "function annotations. Function annotations do NOT define "
+                    "a proper unit type."
+                ),
                 {
                     "function": foo_partial_anno,
                     "args": (2 * u.cm, 3 * u.cm),
@@ -422,9 +432,11 @@ class TestCheckUnits:
                 pytest.raises(ValueError),
             ),
             (
-                "parameter checks defined for return argument but unit checks "
-                "calculated from function annotations. Function annotations do "
-                "NOT define a proper unit type.",
+                (
+                    "parameter checks defined for return argument but unit checks "
+                    "calculated from function annotations. Function annotations do "
+                    "NOT define a proper unit type."
+                ),
                 {
                     "function": foo_partial_anno,
                     "args": (2 * u.cm, 3 * u.cm),
@@ -560,7 +572,7 @@ class TestCheckUnits:
                     "input": (None, "arg", {**check, "none_shall_pass": True}),
                     "output": (None, None, None, None),
                 },
-            ],  # ty:ignore[invalid-argument-type]
+            ],
         )
 
         # add cases for 'pass_equivalent_units' checks
@@ -592,7 +604,7 @@ class TestCheckUnits:
                     ),
                     "output": (5.0 * u.km, None, None, None),
                 },
-            ],  # ty:ignore[invalid-argument-type]
+            ],
         )
 
         # setup wrapped function
@@ -809,7 +821,7 @@ class TestCheckValues:
             ("can_be_zero", True),
         ]
         for key, val in _defaults:
-            assert cv._CheckValues__check_defaults[key] == val  # ty:ignore[invalid-argument-type]
+            assert cv._CheckValues__check_defaults[key] == val
 
     def test_cv_method__get_value_checks(self) -> None:
         """

@@ -119,12 +119,12 @@ collisions, leave :math:`μ = 0`\ . To consider them, specify mu and theta.
 
 __all__ = [
     "ClassicalTransport",
+    "electron_thermal_conductivity",
+    "electron_viscosity",
+    "ion_thermal_conductivity",
+    "ion_viscosity",
     "resistivity",
     "thermoelectric_conductivity",
-    "ion_thermal_conductivity",
-    "electron_thermal_conductivity",
-    "ion_viscosity",
-    "electron_viscosity",
 ]
 
 import warnings
@@ -288,8 +288,6 @@ class ClassicalTransport:
 
     Examples
     --------
-    .. autolink-skip:: section
-
     >>> import astropy.units as u
     >>> t = ClassicalTransport(1 * u.eV, 1e20 / u.m**3, 1 * u.eV, 1e20 / u.m**3, "p")
     >>> t.resistivity  # doctest: +SKIP
@@ -313,16 +311,16 @@ class ClassicalTransport:
         T_i={"can_be_negative": False, "equivalencies": u.temperature_energy()},
         m_i={"can_be_negative": False},
     )
-    def __init__(  # noqa: PLR0912, PLR0915
+    def __init__(  # noqa: PLR0912, PLR0915, PLR0917
         self,
-        T_e: u.Quantity[u.K],
-        n_e: u.Quantity[u.m**-3],
-        T_i: u.Quantity[u.K],
-        n_i: u.Quantity[u.m**-3],
+        T_e: u.Quantity[u.K],  # ty: ignore[not-subscriptable]
+        n_e: u.Quantity[u.m**-3],  # ty: ignore[not-subscriptable]
+        T_i: u.Quantity[u.K],  # ty: ignore[not-subscriptable]
+        n_i: u.Quantity[u.m**-3],  # ty: ignore[not-subscriptable]
         ion,
-        m_i: u.Quantity[u.kg] = None,
+        m_i: u.Quantity[u.kg] = None,  # ty: ignore[not-subscriptable]
         Z=None,
-        B: u.Quantity[u.T] = 0.0 * u.T,
+        B: u.Quantity[u.T] = 0.0 * u.T,  # ty: ignore[not-subscriptable]
         model: str = "Braginskii",
         field_orientation: str = "parallel",
         coulomb_log_ei=None,
@@ -464,7 +462,7 @@ class ClassicalTransport:
 
     @property
     @validate_quantities
-    def resistivity(self) -> u.Quantity[u.Ohm * u.m]:
+    def resistivity(self) -> u.Quantity[u.Ohm * u.m]:  # ty: ignore[not-subscriptable]
         r"""
         Calculate the resistivity.
 
@@ -481,7 +479,7 @@ class ClassicalTransport:
 
         Returns
         -------
-        `~astropy.units.quantity.Quantity`
+        `~astropy.units.Quantity`
 
         Notes
         -----
@@ -527,7 +525,7 @@ class ClassicalTransport:
 
         Returns
         -------
-        `~astropy.units.quantity.Quantity`
+        `~astropy.units.Quantity`
 
         Notes
         -----
@@ -544,7 +542,7 @@ class ClassicalTransport:
 
     @property
     @validate_quantities
-    def ion_thermal_conductivity(self) -> u.Quantity[u.W / u.m / u.K]:
+    def ion_thermal_conductivity(self) -> u.Quantity[u.W / u.m / u.K]:  # ty: ignore[not-subscriptable]
         r"""
         Calculate the thermal conductivity for ions.
 
@@ -563,7 +561,7 @@ class ClassicalTransport:
 
         Returns
         -------
-        `~astropy.units.quantity.Quantity`
+        `~astropy.units.Quantity`
 
         See Also
         --------
@@ -601,7 +599,7 @@ class ClassicalTransport:
 
     @property
     @validate_quantities
-    def electron_thermal_conductivity(self) -> u.Quantity[u.W / u.m / u.K]:
+    def electron_thermal_conductivity(self) -> u.Quantity[u.W / u.m / u.K]:  # ty: ignore[not-subscriptable]
         r"""
         Calculate the thermal conductivity for electrons.
 
@@ -620,7 +618,7 @@ class ClassicalTransport:
 
         Returns
         -------
-        `~astropy.units.quantity.Quantity`
+        `~astropy.units.Quantity`
 
         See Also
         --------
@@ -670,7 +668,7 @@ class ClassicalTransport:
 
     @property
     @validate_quantities
-    def ion_viscosity(self) -> u.Quantity[u.Pa * u.s]:
+    def ion_viscosity(self) -> u.Quantity[u.Pa * u.s]:  # ty: ignore[not-subscriptable]
         r"""
         Calculate the ion viscosity.
 
@@ -679,7 +677,7 @@ class ClassicalTransport:
 
         Returns
         -------
-        `~astropy.units.quantity.Quantity`
+        `~astropy.units.Quantity`
 
         See Also
         --------
@@ -721,7 +719,7 @@ class ClassicalTransport:
 
     @property
     @validate_quantities
-    def electron_viscosity(self) -> u.Quantity[u.Pa * u.s]:
+    def electron_viscosity(self) -> u.Quantity[u.Pa * u.s]:  # ty: ignore[not-subscriptable]
         r"""
         Calculate the electron viscosity.
 
@@ -730,7 +728,7 @@ class ClassicalTransport:
 
         Returns
         -------
-        `~astropy.units.quantity.Quantity`
+        `~astropy.units.Quantity`
 
         See Also
         --------
@@ -817,7 +815,7 @@ class ClassicalTransport:
 
 
 @validate_quantities
-def resistivity(
+def resistivity(  # noqa: PLR0917
     T_e,
     n_e,
     T_i,
@@ -825,13 +823,13 @@ def resistivity(
     ion,
     m_i=None,
     Z=None,
-    B: u.Quantity[u.T] = 0.0 * u.T,
+    B: u.Quantity[u.T] = 0.0 * u.T,  # ty: ignore[not-subscriptable]
     model: str = "Braginskii",
     field_orientation: str = "parallel",
     mu=None,
     theta: float | None = None,
     coulomb_log_method: str = "classical",
-) -> u.Quantity[u.Ohm * u.m]:
+) -> u.Quantity[u.Ohm * u.m]:  # ty: ignore[not-subscriptable]
     r"""
     Calculate the resistivity.
 
@@ -849,7 +847,7 @@ def resistivity(
 
     Returns
     -------
-    `~astropy.units.quantity.Quantity`
+    `~astropy.units.Quantity`
 
     Notes
     -----
@@ -885,7 +883,7 @@ def resistivity(
 
 
 @validate_quantities
-def thermoelectric_conductivity(  # noqa: ANN201
+def thermoelectric_conductivity(  # noqa: ANN201, PLR0917
     T_e,
     n_e,
     T_i,
@@ -893,7 +891,7 @@ def thermoelectric_conductivity(  # noqa: ANN201
     ion,
     m_i=None,
     Z=None,
-    B: u.Quantity[u.T] = 0.0 * u.T,
+    B: u.Quantity[u.T] = 0.0 * u.T,  # ty: ignore[not-subscriptable]
     model: str = "Braginskii",
     field_orientation: str = "parallel",
     mu=None,
@@ -927,7 +925,7 @@ def thermoelectric_conductivity(  # noqa: ANN201
 
 
 @validate_quantities
-def ion_thermal_conductivity(
+def ion_thermal_conductivity(  # noqa: PLR0917
     T_e,
     n_e,
     T_i,
@@ -935,13 +933,13 @@ def ion_thermal_conductivity(
     ion,
     m_i=None,
     Z=None,
-    B: u.Quantity[u.T] = 0.0 * u.T,
+    B: u.Quantity[u.T] = 0.0 * u.T,  # ty: ignore[not-subscriptable]
     model: str = "Braginskii",
     field_orientation: str = "parallel",
     mu=None,
     theta: float | None = None,
     coulomb_log_method: str = "classical",
-) -> u.Quantity[u.W / u.m / u.K]:
+) -> u.Quantity[u.W / u.m / u.K]:  # ty: ignore[not-subscriptable]
     r"""
     Calculate the thermal conductivity for ions.
 
@@ -961,7 +959,7 @@ def ion_thermal_conductivity(
 
     Returns
     -------
-    `~astropy.units.quantity.Quantity`
+    `~astropy.units.Quantity`
 
     See Also
     --------
@@ -997,7 +995,7 @@ def ion_thermal_conductivity(
 
 
 @validate_quantities
-def electron_thermal_conductivity(
+def electron_thermal_conductivity(  # noqa: PLR0917
     T_e,
     n_e,
     T_i,
@@ -1005,13 +1003,13 @@ def electron_thermal_conductivity(
     ion,
     m_i=None,
     Z=None,
-    B: u.Quantity[u.T] = 0.0 * u.T,
+    B: u.Quantity[u.T] = 0.0 * u.T,  # ty: ignore[not-subscriptable]
     model: str = "Braginskii",
     field_orientation: str = "parallel",
     mu=None,
     theta: float | None = None,
     coulomb_log_method: str = "classical",
-) -> u.Quantity[u.W / u.m / u.K]:
+) -> u.Quantity[u.W / u.m / u.K]:  # ty: ignore[not-subscriptable]
     r"""
     Calculate the thermal conductivity for electrons.
 
@@ -1031,7 +1029,7 @@ def electron_thermal_conductivity(
 
     Returns
     -------
-    `~astropy.units.quantity.Quantity`
+    `~astropy.units.Quantity`
 
     See Also
     --------
@@ -1079,7 +1077,7 @@ def electron_thermal_conductivity(
 
 
 @validate_quantities
-def ion_viscosity(
+def ion_viscosity(  # noqa: PLR0917
     T_e,
     n_e,
     T_i,
@@ -1087,13 +1085,13 @@ def ion_viscosity(
     ion,
     m_i=None,
     Z=None,
-    B: u.Quantity[u.T] = 0.0 * u.T,
+    B: u.Quantity[u.T] = 0.0 * u.T,  # ty: ignore[not-subscriptable]
     model: str = "Braginskii",
     field_orientation: str = "parallel",
     mu=None,
     theta: float | None = None,
     coulomb_log_method: str = "classical",
-) -> u.Quantity[u.Pa * u.s]:
+) -> u.Quantity[u.Pa * u.s]:  # ty: ignore[not-subscriptable]
     r"""
     Calculate the ion viscosity.
 
@@ -1102,7 +1100,7 @@ def ion_viscosity(
 
     Returns
     -------
-    `~astropy.units.quantity.Quantity`
+    `~astropy.units.Quantity`
 
     See Also
     --------
@@ -1135,7 +1133,7 @@ def ion_viscosity(
 
 
 @validate_quantities
-def electron_viscosity(
+def electron_viscosity(  # noqa: PLR0917
     T_e,
     n_e,
     T_i,
@@ -1143,13 +1141,13 @@ def electron_viscosity(
     ion,
     m_i=None,
     Z=None,
-    B: u.Quantity[u.T] = 0.0 * u.T,
+    B: u.Quantity[u.T] = 0.0 * u.T,  # ty: ignore[not-subscriptable]
     model: str = "Braginskii",
     field_orientation: str = "parallel",
     mu=None,
     theta: float | None = None,
     coulomb_log_method: str = "classical",
-) -> u.Quantity[u.Pa * u.s]:
+) -> u.Quantity[u.Pa * u.s]:  # ty: ignore[not-subscriptable]
     r"""
     Calculate the electron viscosity.
 
@@ -1158,7 +1156,7 @@ def electron_viscosity(
 
     Returns
     -------
-    `~astropy.units.quantity.Quantity`
+    `~astropy.units.Quantity`
 
     See Also
     --------
@@ -1190,7 +1188,7 @@ def electron_viscosity(
     return ct.electron_viscosity
 
 
-def _nondim_thermal_conductivity(  # noqa: ANN202
+def _nondim_thermal_conductivity(  # noqa: ANN202, PLR0917
     hall,
     Z,
     particle,
@@ -1233,7 +1231,7 @@ def _nondim_thermal_conductivity(  # noqa: ANN202
     return kappa_hat
 
 
-def _nondim_viscosity(  # noqa: ANN202
+def _nondim_viscosity(  # noqa: ANN202, PLR0917
     hall,
     Z,
     particle,

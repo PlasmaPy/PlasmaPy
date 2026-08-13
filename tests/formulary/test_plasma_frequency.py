@@ -99,7 +99,7 @@ class TestPlasmaFrequency:
         assert wp.unit == u.rad / u.s
 
         if expected is not None:
-            assert np.allclose(wp, expected)
+            np.testing.assert_allclose(wp, expected, rtol=1e-5, atol=1e-8)
 
     @pytest.mark.parametrize(
         ("args", "kwargs", "expected", "rtol"),
@@ -124,7 +124,7 @@ class TestPlasmaFrequency:
 
         assert isinstance(wp, u.Quantity)
         assert wp.unit == u.rad / u.s
-        assert np.allclose(wp.value, expected, rtol=rtol)
+        np.testing.assert_allclose(wp.value, expected, rtol=rtol, atol=1e-8)
 
     @pytest.mark.parametrize(
         ("args", "kwargs"),
@@ -178,4 +178,4 @@ class TestPlasmaFrequencyLite:
         lite = plasma_frequency_lite(**inputs_unitless)
 
         normal = plasma_frequency(**inputs)
-        assert np.allclose(normal.value, lite)
+        np.testing.assert_allclose(normal.value, lite, rtol=1e-5, atol=1e-8)

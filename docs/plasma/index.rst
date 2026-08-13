@@ -32,8 +32,6 @@ Creating Plasma Objects
 Plasma objects are constructed using the special factory class
 `~plasmapy.plasma.plasma_factory.Plasma`:
 
-.. autolink-skip::
-
 .. code-block:: python
 
     from plasmapy.plasma.plasma_factory import Plasma

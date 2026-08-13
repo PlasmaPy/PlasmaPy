@@ -8,13 +8,13 @@ associated with analytical dispersion solutions.
 """
 
 __all__ = [
-    "two_fluid",
-    "stix",
     "AbstractMHDWave",
     "AlfvenWave",
     "FastMagnetosonicWave",
     "SlowMagnetosonicWave",
     "mhd_waves",
+    "stix",
+    "two_fluid",
 ]
 
 from plasmapy.dispersion.analytical.mhd_waves_ import (

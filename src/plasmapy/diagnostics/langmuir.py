@@ -2,21 +2,21 @@
 
 __all__ = [
     "Characteristic",
-    "swept_probe_analysis",
-    "get_plasma_potential",
-    "get_floating_potential",
-    "get_electron_saturation_current",
-    "get_ion_saturation_current",
-    "get_ion_density_LM",
-    "get_electron_density_LM",
     "extract_exponential_section",
     "extract_ion_section",
-    "get_electron_temperature",
     "extrapolate_electron_current",
-    "reduce_bimaxwellian_temperature",
-    "get_ion_density_OML",
     "extrapolate_ion_current_OML",
     "get_EEDF",
+    "get_electron_density_LM",
+    "get_electron_saturation_current",
+    "get_electron_temperature",
+    "get_floating_potential",
+    "get_ion_density_LM",
+    "get_ion_density_OML",
+    "get_ion_saturation_current",
+    "get_plasma_potential",
+    "reduce_bimaxwellian_temperature",
+    "swept_probe_analysis",
 ]
 
 import copy
@@ -87,7 +87,7 @@ class Characteristic:
     """
 
     @validate_quantities(bias={"can_be_inf": False}, current={"can_be_inf": False})
-    def __init__(self, bias: u.Quantity[u.V], current: u.Quantity[u.A]) -> None:
+    def __init__(self, bias: u.Quantity[u.V], current: u.Quantity[u.A]) -> None:  # ty: ignore[not-subscriptable]
         _langmuir_futurewarning()
 
         self.bias = bias
@@ -203,9 +203,9 @@ class Characteristic:
 @validate_quantities(
     probe_area={"can_be_negative": False, "can_be_inf": False, "can_be_nan": False},
 )
-def swept_probe_analysis(  # noqa: ANN201, PLR0915
+def swept_probe_analysis(  # noqa: ANN201, PLR0915, PLR0917
     probe_characteristic,
-    probe_area: u.Quantity[u.m**2],
+    probe_area: u.Quantity[u.m**2],  # ty: ignore[not-subscriptable]
     gas_argument,
     bimaxwellian: bool = False,  # noqa: FBT001, FBT002
     visualize: bool = False,  # noqa: FBT001, FBT002
@@ -634,11 +634,11 @@ def get_ion_saturation_current(probe_characteristic):
     validations_on_return={"can_be_negative": False},
 )
 def get_ion_density_LM(
-    ion_saturation_current: u.Quantity[u.A],
-    T_e: u.Quantity[u.eV],
-    probe_area: u.Quantity[u.m**2],
+    ion_saturation_current: u.Quantity[u.A],  # ty: ignore[not-subscriptable]
+    T_e: u.Quantity[u.eV],  # ty: ignore[not-subscriptable]
+    probe_area: u.Quantity[u.m**2],  # ty: ignore[not-subscriptable]
     gas,
-) -> u.Quantity[u.m**-3]:
+) -> u.Quantity[u.m**-3]:  # ty: ignore[not-subscriptable]
     r"""
     Implement the Langmuir-Mottley (LM) method of obtaining the ion
     density.
@@ -699,10 +699,10 @@ def get_ion_density_LM(
     validations_on_return={"can_be_negative": False},
 )
 def get_electron_density_LM(
-    electron_saturation_current: u.Quantity[u.A],
-    T_e: u.Quantity[u.eV],
-    probe_area: u.Quantity[u.m**2],
-) -> u.Quantity[u.m**-3]:
+    electron_saturation_current: u.Quantity[u.A],  # ty: ignore[not-subscriptable]
+    T_e: u.Quantity[u.eV],  # ty: ignore[not-subscriptable]
+    probe_area: u.Quantity[u.m**2],  # ty: ignore[not-subscriptable]
+) -> u.Quantity[u.m**-3]:  # ty: ignore[not-subscriptable]
     r"""Implement the Langmuir-Mottley (LM) method of obtaining the electron
     density.
 
@@ -1111,9 +1111,9 @@ def extrapolate_electron_current(  # noqa: ANN201
     validations_on_return={"equivalencies": u.temperature_energy()},
 )
 def reduce_bimaxwellian_temperature(
-    T_e: u.Quantity[u.eV],
+    T_e: u.Quantity[u.eV],  # ty: ignore[not-subscriptable]
     hot_fraction: float,
-) -> u.Quantity[u.eV]:
+) -> u.Quantity[u.eV]:  # ty: ignore[not-subscriptable]
     r"""Reduce a bi-Maxwellian (dual) temperature to a single mean temperature
     for a given fraction.
 
@@ -1157,7 +1157,7 @@ def reduce_bimaxwellian_temperature(
 )
 def get_ion_density_OML(  # noqa: ANN201
     probe_characteristic: Characteristic,
-    probe_area: u.Quantity[u.m**2],
+    probe_area: u.Quantity[u.m**2],  # ty: ignore[not-subscriptable]
     gas,
     visualize: bool = False,  # noqa: FBT001, FBT002
     return_fit: bool = False,  # noqa: FBT001, FBT002

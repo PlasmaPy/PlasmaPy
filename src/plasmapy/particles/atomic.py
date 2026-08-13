@@ -7,8 +7,8 @@ __all__ = [
     "electric_charge",
     "half_life",
     "ionic_levels",
-    "isotopic_abundance",
     "is_stable",
+    "isotopic_abundance",
     "known_isotopes",
     "mass_number",
     "particle_mass",
@@ -136,7 +136,7 @@ def mass_number(isotope: ParticleLike) -> int:
 
 
 @particle_input(exclude={"isotope", "ion"})
-def standard_atomic_weight(element: ParticleLike) -> u.Quantity[u.kg]:
+def standard_atomic_weight(element: ParticleLike) -> u.Quantity[u.kg]:  # ty: ignore[not-subscriptable]
     """Return the standard (conventional) atomic weight of an element
     based on the relative abundances of isotopes in terrestrial
     environments.
@@ -198,7 +198,7 @@ def particle_mass(
     *,
     mass_numb: int | None = None,
     Z: float | None = None,
-) -> u.Quantity[u.kg]:
+) -> u.Quantity[u.kg]:  # ty: ignore[not-subscriptable]
     """
     Return the mass of a particle.
 
@@ -348,7 +348,7 @@ def charge_number(particle: ParticleLike) -> int:
 
 
 @particle_input(any_of={"charged", "uncharged"})
-def electric_charge(particle: ParticleLike) -> u.Quantity[u.C]:
+def electric_charge(particle: ParticleLike) -> u.Quantity[u.C]:  # ty: ignore[not-subscriptable]
     """
     Return the electric charge (in coulombs) of a particle.
 
@@ -452,7 +452,7 @@ def is_stable(particle: ParticleLike, mass_numb: int | None = None) -> bool:
 
 
 @particle_input(any_of={"stable", "unstable", "isotope"})
-def half_life(particle: ParticleLike, mass_numb: int | None = None) -> u.Quantity[u.s]:
+def half_life(particle: ParticleLike, mass_numb: int | None = None) -> u.Quantity[u.s]:  # ty: ignore[not-subscriptable]
     """
     Return the half-life in seconds for unstable isotopes and particles,
     and |inf| seconds for stable isotopes and particles.
@@ -819,7 +819,7 @@ def stable_isotopes(
 def reduced_mass(
     test_particle: ParticleLike,
     target_particle: ParticleLike,
-) -> u.Quantity[u.kg]:
+) -> u.Quantity[u.kg]:  # ty: ignore[not-subscriptable]
     r"""
     Find the :wikipedia:`reduced mass` between two particles.
 
@@ -1183,10 +1183,13 @@ def stopping_power(  # noqa: ANN201
     incident_particle: ParticleLike,
     material: str,
     *,
-    energies: u.Quantity[u.MeV] | None = None,
+    energies: u.Quantity[u.MeV] | None = None,  # ty: ignore[not-subscriptable]
     return_interpolator: bool = False,
     return_derivative: bool = False,
     component: Literal["total", "electronic", "nuclear"] = "total",
+) -> (
+    tuple[u.Quantity, u.Quantity]
+    | Callable[[u.Quantity[u.J]], u.Quantity[u.MeV * u.cm**2 / u.g]]  # ty: ignore[not-subscriptable]
 ):
     """
     Calculate stopping powers for a provided particle in a provided

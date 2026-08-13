@@ -71,8 +71,6 @@ class ConditionalEvents:
 
     Examples
     --------
-    .. autolink-skip:: section
-
     >>> from plasmapy.analysis.time_series.conditional_averaging import (
     ...     ConditionalEvents,
     ... )
@@ -307,7 +305,7 @@ class ConditionalEvents:
         """
         return self._number_of_events
 
-    def _check_for_value_errors(
+    def _check_for_value_errors(  # noqa: PLR0917
         self,
         distance,
         signal,

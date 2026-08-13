@@ -8,7 +8,7 @@ from plasmapy.utils.decorators.validators import validate_quantities
 
 
 @validate_quantities
-def annotated_function(mass: u.Quantity[u.g]) -> u.Quantity[u.kg]:
+def annotated_function(mass: u.Quantity[u.g]) -> u.Quantity[u.kg]:  # ty: ignore[not-subscriptable]
     return mass
 
 

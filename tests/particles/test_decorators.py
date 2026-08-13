@@ -341,8 +341,8 @@ def test_optional_particle_annotation_parameter() -> None:
 
 def undecorated_function(
     particle: ParticleLike,
-    distance: u.Quantity[u.m],
-) -> tuple[ParticleLike, u.Quantity[u.m]]:
+    distance: u.Quantity[u.m],  # ty: ignore[not-subscriptable]
+) -> tuple[ParticleLike, u.Quantity[u.m]]:  # ty: ignore[not-subscriptable]
     return particle, distance
 
 
@@ -478,22 +478,8 @@ def test_annotated_init() -> None:
     [
         (particle_input, validate_quantities_),
         (particle_input(), validate_quantities_),
-        pytest.param(
-            validate_quantities_,
-            particle_input,
-            marks=pytest.mark.xfail(
-                reason="For instance methods, particle_input must currently "
-                "be the outer decorator. See #2035.",
-            ),
-        ),
-        pytest.param(
-            validate_quantities_,
-            particle_input(),
-            marks=pytest.mark.xfail(
-                reason="For instance methods, particle_input must currently "
-                "be the outer decorator. See #2035.",
-            ),
-        ),
+        (validate_quantities_, particle_input),
+        (validate_quantities_, particle_input()),
     ],
 )
 def test_particle_input_with_validate_quantities(
@@ -508,7 +494,7 @@ def test_particle_input_with_validate_quantities(
         def __init__(
             self,
             particle: ParticleLike,
-            T_e: u.Quantity[u.K] = None,
+            T_e: u.Quantity[u.K] = None,  # ty: ignore[not-subscriptable]
         ) -> None:
             self.particle = particle
             self.T_e = T_e

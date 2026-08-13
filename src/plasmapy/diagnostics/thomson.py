@@ -48,7 +48,7 @@ m_e_si_unitless = const.m_e.si.value
 
 
 @preserve_signature
-def spectral_density_lite(
+def spectral_density_lite(  # noqa: PLR0917
     wavelengths,
     probe_wavelength: float,
     n: float,
@@ -119,7 +119,7 @@ def spectral_density_lite(
         Defaults to a stationary plasma ``[0, 0, 0]`` m/s.
 
     ion_vel : (Ni, 3) `~numpy.ndarray`
-        Velocity vectors for each electron population in the rest frame
+        Velocity vectors for each ion population in the rest frame
         (in  m/s). If set, overrides ``ion_vdir`` and ``ion_speed``.
         Defaults to zero drift for all specified ion species.
 
@@ -287,17 +287,17 @@ def spectral_density_lite(
 )
 @bind_lite_func(spectral_density_lite)
 def spectral_density(  # noqa: C901, PLR0912, PLR0915
-    wavelengths: u.Quantity[u.nm],
-    probe_wavelength: u.Quantity[u.nm],
-    n: u.Quantity[u.m**-3],
+    wavelengths: u.Quantity[u.nm],  # ty: ignore[not-subscriptable]
+    probe_wavelength: u.Quantity[u.nm],  # ty: ignore[not-subscriptable]
+    n: u.Quantity[u.m**-3],  # ty: ignore[not-subscriptable]
     *,
-    T_e: u.Quantity[u.K],
-    T_i: u.Quantity[u.K],
+    T_e: u.Quantity[u.K],  # ty: ignore[not-subscriptable]
+    T_i: u.Quantity[u.K],  # ty: ignore[not-subscriptable]
     efract=None,
     ifract=None,
     ions: ParticleLike = "p+",
-    electron_vel: u.Quantity[u.m / u.s] = None,
-    ion_vel: u.Quantity[u.m / u.s] = None,
+    electron_vel: u.Quantity[u.m / u.s] = None,  # ty: ignore[not-subscriptable]
+    ion_vel: u.Quantity[u.m / u.s] = None,  # ty: ignore[not-subscriptable]
     probe_vec=None,
     scatter_vec=None,
     instr_func: Callable | None = None,
@@ -498,7 +498,7 @@ def spectral_density(  # noqa: C901, PLR0912, PLR0915
         for ii, ion in enumerate(ions):
             if isinstance(ion, Particle):
                 continue
-            ions[ii] = Particle(ion)  # ty:ignore[invalid-assignment, invalid-argument-type]
+            ions[ii] = Particle(ion)
         ions = ParticleList(ions)  # ty:ignore[invalid-assignment]
     else:
         raise TypeError(

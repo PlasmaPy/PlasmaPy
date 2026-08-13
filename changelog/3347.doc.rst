@@ -1,0 +1,3 @@
+Added an example Jupyter notebook to the documentation gallery demonstrating
+how to compute fusion cross sections and reactivities with
+`~plasmapy.formulary.fusion`.

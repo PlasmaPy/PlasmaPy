@@ -18,13 +18,13 @@ from plasmapy.utils.decorators import validate_quantities
 )
 def temp_ratio(  # noqa: ANN201, C901
     *,
-    r_0: u.Quantity[u.au],
-    r_n: u.Quantity[u.au],
-    n_1: u.Quantity[u.cm**-3],
-    n_2: u.Quantity[u.cm**-3],
-    v_1: u.Quantity[u.km / u.s],
-    T_1: u.Quantity[u.K],
-    T_2: u.Quantity[u.K],
+    r_0: u.Quantity[u.au],  # ty: ignore[not-subscriptable]
+    r_n: u.Quantity[u.au],  # ty: ignore[not-subscriptable]
+    n_1: u.Quantity[u.cm**-3],  # ty: ignore[not-subscriptable]
+    n_2: u.Quantity[u.cm**-3],  # ty: ignore[not-subscriptable]
+    v_1: u.Quantity[u.km / u.s],  # ty: ignore[not-subscriptable]
+    T_1: u.Quantity[u.K],  # ty: ignore[not-subscriptable]
+    T_2: u.Quantity[u.K],  # ty: ignore[not-subscriptable]
     ions: ParticleLike = ("p+", "He-4++"),  # ty:ignore[invalid-parameter-default]
     n_step: int = 100,
     density_scale: float = -1.8,
@@ -162,7 +162,7 @@ def temp_ratio(  # noqa: ANN201, C901
 
     The thermalization is from Coulomb collisions, which assumes
     "soft", small-angle deflections mediated by the electrostatic
-    force :cite:p:`baumjohann:1997`. It is assumed that there is no
+    force :cite:p:`baumjohann:2022`. It is assumed that there is no
     relative drift between the ion species and that it is a mixed ion
     collision, and the Coulomb logarithm for a mixed ion collision is
     given by :cite:t:`nrlformulary:2019`.
@@ -232,7 +232,7 @@ def temp_ratio(  # noqa: ANN201, C901
             )
 
     # Define differential equation function
-    def df_eq(  # noqa: ANN202
+    def df_eq(  # noqa: ANN202, PLR0917
         r_0,
         r_n,
         n_1_0,
@@ -261,7 +261,7 @@ def temp_ratio(  # noqa: ANN201, C901
         B = 1 / (u.cm * u.K) ** 1.5
 
         # Define Coulomb log for mixed ion collisions, see docstring
-        def lambda_ba(  # noqa: ANN202
+        def lambda_ba(  # noqa: ANN202, PLR0917
             theta: float,
             T_1,
             n_1,
@@ -345,7 +345,7 @@ def temp_ratio(  # noqa: ANN201, C901
                 ),
             )
             if verbose:
-                logging.info(f"\r {(i / len(variables[0])) * 100:.2f} %")  # noqa: G004
+                logging.info(f"\r {(i / len(variables[0])) * 100:.2f} %")  # noqa: G004, LOG015
 
         return res  # noqa: TRY300
 
