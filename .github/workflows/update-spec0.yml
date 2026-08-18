@@ -23,6 +23,6 @@ jobs:
   bump-minimum-versions:
     runs-on: ubuntu-latest
     steps:
-    - uses: scientific-python/spec0-action@8b8b76f254aecce36e6f07de7dde174cb3cafa81   # v1.3
+    - uses: scientific-python/spec0-action@1dd0542907c81856ac19ff52fa715db1850797cf   # v1.5
       with:
         update_all: 2  # use the SPEC 0 drop schedule of 2 years for all packages
