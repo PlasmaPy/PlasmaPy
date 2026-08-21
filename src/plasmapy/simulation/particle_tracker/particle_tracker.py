@@ -927,7 +927,7 @@ class ParticleTracker:
         # Make sure the time step can be multiplied by a [num_particles, 3] shape field array
         if isinstance(dt, np.ndarray) and dt.size > 1:
             dt = dt[self._tracked_particle_mask, np.newaxis]
-            self.time[self._tracked_particle_mask] += dt
+            self.time[self._tracked_particle_mask] += dt  # ty: ignore[not-subscriptable]
         else:
             self.time += dt  # ty:ignore[unsupported-operator]
 
