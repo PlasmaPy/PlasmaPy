@@ -26,6 +26,7 @@ from plasmapy.simulation.particle_tracker.save_routines import SaveOnceOnComplet
 from plasmapy.simulation.particle_tracker.termination_conditions import (
     AllParticlesOffGridTerminationCondition,
 )
+from plasmapy.utils.decorators import validate_quantities
 
 
 def _coerce_to_cartesian_si(pos):
@@ -652,11 +653,12 @@ class Tracker(ParticleTracker):
         return theta.flatten(), phi.flatten()
 
     @particles.particle_input
+    @validate_quantities
     def create_particles(  # noqa: PLR0917
         self,
         num_particles,
         particle_energy,
-        max_theta=None,
+        max_theta: u.Quantity[u.rad] | None = None,
         particle: Particle = Particle("p+"),  # noqa: B008
         distribution: Literal["monte-carlo", "uniform"] = "monte-carlo",
         source_vdir=None,
@@ -843,9 +845,10 @@ class Tracker(ParticleTracker):
         t = dist / vmax
 
         # Coast the particles to the advanced position
-        self.x[tracked_mask] = (
+        self._x[tracked_mask] = (
             self.x[tracked_mask] + self.v[tracked_mask] * t[:, np.newaxis]
         )
+        self._reset_cache()
 
     def _coast_to_plane(self, center, hdir, vdir, x=None, mask=None):
         """
@@ -961,7 +964,7 @@ class Tracker(ParticleTracker):
         -------
         None
         """
-        self._enforce_particle_creation()
+        self._enforce_particle_creation("running the simulation")
 
         # If meshes have been added, apply them now
         for mesh in self.mesh_list:
@@ -973,17 +976,17 @@ class Tracker(ParticleTracker):
         # but instead will be automatically advanced
         # to the detector plane
         theta_mask = self.theta >= self.max_theta_hit_grid
-
+        coast_mask = theta_mask & self._tracked_particle_mask
         # Take the intersection of the theta mask and the tracked particle mask
         # This must be done because some particles could have already been stopped
         # by _apply_wire_mesh
-        self.x = self._coast_to_plane(
+        self._x = self._coast_to_plane(
             self.detector,
             self.det_hdir,
             self.det_vdir,
-            mask=theta_mask & self._tracked_particle_mask,
+            mask=coast_mask,
         )
-        self._stop_particles(theta_mask)
+        self._stop_particles(coast_mask)
         self.fract_tracked = self.num_particles_tracked / self.num_particles
 
         self._log("Generating null distribution in detector plane")
@@ -996,7 +999,7 @@ class Tracker(ParticleTracker):
 
         self._log("Advancing tracked particles to the start of the grid")
         # Advance the tracked particles to the near the start of the grid
-        self._coast_to_grid()
+        # self._coast_to_grid()
         self.coasted_particles = np.copy(self.x)
 
         super().run()

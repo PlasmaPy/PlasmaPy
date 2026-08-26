@@ -2,33 +2,184 @@
 
 __all__ = [
     "Bethe_stopping",
+    "Lindhard_Sorensen_energy_straggling",
+    "Urban",
+    "Moliere_scattering",
+    "Highland_scattering",
     "Spitzer_resistivity",
     "mobility",
 ]
 __lite_funcs__ = ["Bethe_stopping_lite"]
 
+from collections.abc import Callable
 from typing import Any
 
 import astropy.constants as const
 import astropy.units as u
 import numpy as np
 import numpy.typing as npt
+from scipy.integrate import quad, solve_ivp
+from scipy.interpolate import make_interp_spline
+from scipy.special import factorial, j0
 
 from plasmapy.formulary.collisions import frequencies
 from plasmapy.formulary.speeds import thermal_speed
 from plasmapy.particles.atomic import reduced_mass
+from plasmapy.particles.atomic import (
+    stopping_power as NIST_stopping_power,  # noqa: N812
+)
+from plasmapy.particles.atomic import (
+    transmitted_energy as NIST_transmitted_energy,  # noqa: N812
+)
 from plasmapy.particles.decorators import particle_input
 from plasmapy.particles.particle_class import Particle
+from plasmapy.particles.particle_collections import ParticleListLike
 from plasmapy.utils.decorators import bind_lite_func, validate_quantities
 from plasmapy.utils.decorators.checks import _check_relativistic
 from plasmapy.utils.exceptions import PhysicsError
 
 __all__ += __lite_funcs__
 
+_a0 = const.a0
+_alpha = const.alpha
 _c = const.c
 _e = const.e.si
 _eps0 = const.eps0
+_hbar = const.hbar
 _m_e = const.m_e
+_N_A = const.N_A
+
+_ϑ_tabulated = [
+    0.0,
+    0.2,
+    0.4,
+    0.6,
+    0.8,
+    1.0,
+    1.2,
+    1.4,
+    1.6,
+    1.8,
+    2.0,
+    2.2,
+    2.4,
+    2.6,
+    2.8,
+    3.0,
+    3.2,
+    3.4,
+    3.6,
+    3.8,
+    4.0,
+    4.5,
+    5.0,
+    5.5,
+    6.0,
+    7.0,
+    8.0,
+    9.0,
+    10.0,
+]
+
+# TODO: Validate the values here by comparing with actual integration  # noqa: FIX002
+_f_mol_tabulated = [
+    [
+        +2.0000,
+        +0.8456,
+        +2.4929,
+    ],
+    [
+        +1.9216,
+        +0.7038,
+        +2.0694,
+    ],
+    [
+        +1.7043,  # Corrected, old value +1.7214
+        +0.3437,
+        +1.0488,
+    ],
+    [
+        +1.3954,  # Corrected, old value +1.4094
+        -0.0777,
+        -0.0044,
+    ],
+    [
+        +1.0546,
+        -0.3981,
+        -0.6068,
+    ],
+    [
+        +0.7338,
+        -0.5285,
+        -0.6359,
+    ],
+    [
+        +0.4738,
+        -0.4770,
+        -0.3086,
+    ],
+    [
+        +0.2817,
+        -0.3183,
+        +0.0525,
+    ],
+    [
+        +0.1546,
+        -0.1396,
+        +0.2423,
+    ],
+    [
+        +0.0783,
+        -6.1e-4,  # Corrected, old value -6e-4
+        +0.2386,
+    ],
+    [
+        +0.03660,
+        +0.07820,
+        +0.1316,
+    ],
+    [
+        +0.01581,
+        +0.10540,
+        +0.0196,
+    ],
+    [
+        +0.00630,
+        +0.10080,
+        -0.0467,
+    ],
+    [
+        +0.00232,
+        +0.08262,
+        -0.0649,
+    ],
+    [
+        +0.00079,
+        +0.06247,
+        -0.0546,
+    ],
+    [+0.000247, +0.04550, -0.03568],  # Corrected f0, old value +0.000250
+    [+7.1e-5, +0.03288, -0.01923],  # Corrected f0, old value +7.3e-5
+    [+1.9e-5, +0.02402, -0.00847],
+    [+4.7e-6, +0.01791, -0.00264],
+    [+1.07e-6, +0.01366, +4.6e-5],  # Corrected f0 and f2, old values +1.1e-6 and +5e-5
+    # 4
+    [1e-3 * 2.3e-4, 1e-3 * 10.638, 1e-3 * 1.0741],
+    [1e-3 * 3e-6, 1e-3 * 6.140, 1e-3 * 1.2294],
+    # 5
+    [1e-3 * 2e-8, 1e-3 * 3.831, 1e-3 * 0.8326],
+    [1e-3 * 2e-10, 1e-3 * 2.527, 1e-3 * 0.5368],
+    [1e-3 * 5e-13, 1e-3 * 1.739, 1e-3 * 0.3495],
+    [1e-3 * 1e-18, 1e-3 * 0.9080, 1e-3 * 0.1584],
+    [1e-3 * 3e-25, 1e-3 * 0.5211, 1e-3 * 0.0783],
+    [1e-3 * 1e-32, 1e-3 * 0.3208, 1e-3 * 0.0417],
+    [1e-3 * 1e-40, 1e-3 * 0.2084, 1e-3 * 0.0237],
+]
+
+_ϑ_tabulated = np.asarray(_ϑ_tabulated)
+
+_f_mol_tabulated = np.asarray(_f_mol_tabulated)
+_f_mol_spline = make_interp_spline(_ϑ_tabulated, _f_mol_tabulated)
 
 
 @validate_quantities(T={"equivalencies": u.temperature_energy()})
@@ -241,7 +392,7 @@ def Bethe_stopping_lite(
     higher order corrections become non-negligible for smaller energies.
 
     By convention, this function returns a positive value for the stopping
-    energy.
+    power.
 
     Parameters
     ----------
@@ -281,6 +432,27 @@ def Bethe_stopping_lite(
     )
 
 
+def Bethe_stopping_derivative_lite(
+    I: np.ndarray,  # noqa: E741
+    n: np.ndarray,
+    v: np.ndarray,
+    z: int,
+) -> float:
+    A = (
+        4
+        * np.pi
+        * n
+        * z**2
+        / (_m_e.si.value * _c.si.value**2)
+        * (_e.si.value**2 / (4 * np.pi * _eps0.si.value)) ** 2
+    )
+    C = 2 * _m_e.si.value * _c.si.value**2 / I
+
+    beta = v / _c.si.value
+    gamma_squared = 1 / (1 - beta**2)
+    return 2 * A / beta**3 * (gamma_squared - np.log(C * beta**2 * gamma_squared))
+
+
 @bind_lite_func(Bethe_stopping_lite)
 @validate_quantities()
 def Bethe_stopping(
@@ -288,7 +460,9 @@ def Bethe_stopping(
     n: u.Quantity[1 / u.m**3],  # ty: ignore[not-subscriptable]
     v: u.Quantity[u.m / u.s],  # ty: ignore[not-subscriptable]
     z: int,
-) -> u.Quantity[u.J / u.m]:  # ty: ignore[not-subscriptable]
+    *,
+    include_speed_derivative=False,
+) -> u.Quantity[u.J / u.m] | tuple[u.Quantity[u.J / u.m], u.Quantity[1 / u.m]]:  # ty: ignore[not-subscriptable]
     r"""
     The theoretical electronic stopping power for swift charged particles
     calculated from the Bethe formula.
@@ -297,7 +471,7 @@ def Bethe_stopping(
     higher order corrections become non-negligible for smaller energies.
 
     By convention, this function returns a positive value for the stopping
-    energy.
+    power.
 
     Parameters
     ----------
@@ -321,7 +495,736 @@ def Bethe_stopping(
         The stopping power of the material given the particle's energy.
 
     """
-    return Bethe_stopping_lite(I.si.value, n.si.value, v.si.value, z) * u.J / u.m
+    S = Bethe_stopping_lite(I.si.value, n.si.value, v.si.value, z) * u.J / u.m
+
+    if include_speed_derivative:
+        dS_dbeta = (
+            Bethe_stopping_derivative_lite(I.si.value, n.si.value, v.si.value, z)
+            * u.J
+            / u.m
+        )
+        return S, dS_dbeta
+    else:
+        return S
+
+
+def Lindhard_Sorensen_energy_straggling(
+    Z: int, n_e: u.Quantity[1 / u.m**3], v: u.Quantity[u.m / u.s]
+) -> u.Quantity[u.MeV**2 / u.cm]:
+    # TODO: Finish docstring  # noqa: FIX002
+    """Eq. 5 of Lindhard & Sorensen (1995)."""
+    beta = v / _c
+    gamma = 1 / np.sqrt(1 - beta**2)
+
+    # TODO: In what regimes is this approximation valid?  # noqa: FIX002
+    #  Should we raise a warning when it's not valid?
+    X = 1 - beta**2 / 2
+
+    return 4 * np.pi * Z**2 * const.e.esu**4 * n_e * gamma**2 * X
+
+
+def Urban(
+    beam: Particle,
+    target: Particle,
+    I: u.Quantity[u.J],  # noqa: E741
+    dx: u.Quantity[u.m],
+    v: u.Quantity[u.m / u.s],
+    stopping_power: u.Quantity[
+        u.J / u.m
+    ],  # TODO: Maybe just use NIST by default here?  # noqa: FIX002
+    *,
+    generator: np.random.Generator | None = None,
+    return_cross_sections=False,
+) -> u.Quantity[u.MeV]:
+    """GEANT4 Urban straggling model."""
+    if generator is None:
+        generator = np.random.default_rng()
+
+    beta = v / const.c
+    gamma = 1 / np.sqrt(1 - beta**2)
+
+    # Eq 2
+    eps_max = (
+        2
+        * const.m_e
+        * const.c**2
+        * beta**2
+        * gamma**2
+        / (1 + 2 * gamma * const.m_e / beam.mass)
+    )
+    Z = target.atomic_number
+    f_2 = 2 / Z if Z > 1 else 0
+    f_1 = 1 - f_2  # By Eq 42
+    E_0 = 10 * u.eV
+    E_2 = 10 * u.eV * Z**2
+    E_1 = (
+        np.exp((np.log(I.to_value(u.eV)) - f_2 * np.log(E_2.to_value(u.eV))) / f_1)
+        * u.eV
+    )  # By Eq 43
+    r = np.maximum(np.nan_to_num(0.03 + 0.23 * np.log(np.log(eps_max / I)), nan=0), 0)
+    argument_numerator = 2 * beam.mass * const.c**2 * (beta * gamma) ** 2
+
+    def get_excitation_cross_section(f_i, E_i):
+        return (
+            stopping_power
+            * f_i
+            / E_i
+            * (np.log(argument_numerator / E_i) - beta**2)
+            / (np.log(argument_numerator / I) - beta**2)
+            * (1 - r)
+        )
+
+    sigma_1 = get_excitation_cross_section(f_1, E_1)
+    sigma_2 = get_excitation_cross_section(f_2, E_2)
+    sigma_ionization = (
+        stopping_power * (eps_max - E_0) / (E_0 * eps_max * np.log(eps_max / E_0)) * r
+    )
+
+    n_1 = generator.poisson((sigma_1 * dx).to(u.dimensionless_unscaled))
+    n_2 = generator.poisson((sigma_2 * dx).to(u.dimensionless_unscaled))
+    delta_E_exc = n_1 * E_1 + n_2 * E_2
+
+    n_ionized = generator.poisson((sigma_ionization * dx).to(u.dimensionless_unscaled))
+    # Generate all rng values we need to calculate the energy lost to ionization
+    u_ion_unravelled = generator.uniform(size=np.sum(n_ionized))
+    n_i_indices = [0, *np.cumsum(n_ionized)]
+    delta_E_ion = np.zeros(shape=dx.shape)
+    for i, (beginning, end, T_max_i) in enumerate(
+        zip(n_i_indices[:-1], n_i_indices[1:], eps_max, strict=True)
+    ):
+        u_i = u_ion_unravelled[beginning:end]
+
+        delta_E_ion[i] = (np.sum(E_0 / (1 - u_i * (T_max_i - E_0) / T_max_i))).to_value(
+            u.MeV
+        )
+
+    delta_E_ion *= u.MeV
+    delta_E = delta_E_exc + delta_E_ion
+    if return_cross_sections:
+        mean_delta_E_exc = (sigma_1 * E_1 + sigma_2 * E_2) * dx
+        mean_delta_E_ion = (
+            sigma_ionization
+            * dx
+            * E_0
+            * eps_max
+            / (eps_max - E_0)
+            * np.log(eps_max / E_0)
+        )
+
+        return (
+            delta_E,
+            sigma_1,
+            sigma_2,
+            sigma_ionization,
+            mean_delta_E_exc,
+            mean_delta_E_ion,
+        )
+    else:
+        return delta_E
+
+
+def _Highland_thickness_integrand(T, beam, L_R, stopping_interpolator):
+    dE_dx = stopping_interpolator(T)
+
+    beta, p = _beta_and_p(beam, T)
+    v = const.c * beta
+
+    f1 = 1 / (p * v) ** 2
+    f2 = 1 / (L_R * -dE_dx)
+
+    return f1 * f2
+
+
+# TODO: Uncomment the below  # noqa: FIX002
+# @particle_input
+@validate_quantities
+def Highland_scattering(
+    beam: Particle,
+    incident_energy: u.Quantity[u.J],
+    t: u.Quantity[u.m],
+    L_rad: u.Quantity[u.m],
+    *,
+    use_thickness_correction=True,
+    # If using NIST:
+    NIST_material: str | None = None,
+    rho: u.Quantity[u.kg / u.m**3] | None = None,
+    # Otherwise, we need these:
+    stopping_power: Callable[[u.Quantity[u.J]], [u.J * u.m**2 / u.kg]] | None = None,
+    transmitted_energy: u.Quantity[u.J] | None = None,
+) -> u.Quantity[u.dimensionless_unscaled]:
+    r"""Calculate the rms scattering angle using the Highland formula.
+
+    Parameters
+    ----------
+    beam : |ParticleLike|
+        A |ParticleLike| representation of the target.
+    incident_energy : `~astropy.units.Quantity`
+        The kinetic energy of the particles hitting the target.
+    t : `~astropy.units.Quantity`
+        The thickness of the target in units of length.
+    L_rad : `~astropy.units.Quantity`
+        The radiation length of the target material in units of length.
+        See notes for more details.
+    use_thickness_correction : `bool`, default `True`
+        ?
+    NIST_material : `str | None`, default `None`
+        The name of the material in the NIST database. See notes for acceptable
+        materials. Not necessary if providing a custom stopping profile. See
+        documentation for the ``stopping_power`` keyword.
+    rho : `~astropy.units.Quantity | None`, default `None`
+        The mass density of the target. Not necessary if providing a custom
+        stopping profile. See documentation for the ``stopping_power`` keyword.
+    stopping_power : ``Callable[[u.J], [u.J * u.m**2 / u.kg]]``, default `None`
+        The stopping power interpolator for a custom target material. The
+        interpolator must take in an energy value and return an areal stopping
+        power. Not necessary if providing a NIST material.
+    transmitted_energy : `~astropy.units.Quantity | None`, default `None`
+        The energy of the particles leaving the target. Not necessary if
+        providing a NIST material.
+
+    Returns
+    -------
+    theta_rms : `~astropy.units.Quantity`
+        The rms scattering angle in radians.
+
+    Notes
+    -----
+    The root-mean-square (rms) scattering angle is given in :cite:t:`highland:1975` as:
+
+    .. math::
+        \theta_{1/e} = \frac{17.5 \; \text{MeV}}{p\beta c}\sqrt{\frac{L}{L_R}}
+        \left(1 + 0.125\log_{10}\left(\frac{L}{0.1L_R}\right)\right)
+
+    where :math:`p` is the momentum of the projectile particles,
+    :math:`\beta` is the relativistic beta, :math:`L` is the thickness
+    of the target, and :math:`L_R` is the radiation length--a characteristic
+    distance scale over which energy loss to bremsstrahlung radiation is
+    relevant.
+
+    The Highland formula is an approximation that works best for high Z targets.
+    For low Z targets, the number of scattering events may be underestimated
+    by the Highland formula, and a different model should be used.
+    """
+    beta, _p = _beta_and_p(beam, incident_energy)
+    v = beta * const.c
+
+    if not use_thickness_correction:
+        # Fitting constant, value provided by Highland
+        E_s = 17.5 * u.MeV
+
+        # Eq (2) in Highland
+        epsilon = 0.125 * np.log10(10 * t / L_rad)
+
+        # Eq (4) in Highland
+        return E_s / (beam.mass * v**2) * np.sqrt(t / L_rad) * (1 + epsilon)
+
+    if NIST_material is None:
+        if stopping_power is None:
+            raise ValueError(
+                "A `stopping_power` interpolator is required to calculate a thickness correction"
+            )
+
+        if transmitted_energy is None:
+            raise ValueError(
+                "The `transmitted_energy` parameter is required to calculate a thickness correction"
+            )
+
+    if NIST_material is not None:
+        if rho is None:
+            raise ValueError(
+                "The density of the target must be provided to use NIST stopping data"
+            )
+
+        # Construct the stopping interpolators using NIST data
+        areal_stopping_power = NIST_stopping_power(
+            beam, NIST_material, return_interpolator=True
+        )
+
+        def stopping_power(x):
+            return rho * areal_stopping_power(x)
+
+        # ...and pull the final kinetic energy
+        transmitted_energy = NIST_transmitted_energy(
+            beam, incident_energy, NIST_material, t * rho
+        )
+
+    # Eq. 29
+    prefactor = 14.1 * u.MeV * beam.charge_number * (1 + 1 / 9 * np.log10(t / L_rad))
+
+    integral_result_units = (
+        _Highland_thickness_integrand(1 * u.MeV, beam, L_rad, stopping_power).unit
+        * u.MeV
+    )
+    integral = (
+        quad(
+            lambda T: (
+                _Highland_thickness_integrand(
+                    T * u.MeV, beam, L_rad, stopping_power
+                ).value
+            ),
+            incident_energy.to(u.MeV).value,
+            transmitted_energy.to(u.MeV).value,
+        )[0]
+        * integral_result_units
+    )
+
+    result = prefactor * np.sqrt(integral)
+
+    return result.cgs
+
+
+# Moliere scattering utility functions
+def _preprocess_stopping_arguments(
+    beam,
+    target,
+    Rho,
+    NIST_material,
+    stopping_power,
+):
+    """
+    Validate the arguments passed into `Moliere_scattering`. If the user has
+    provided sufficient arguments, return the stopping interpolator.
+
+    The stopping interpolator can be either user-provided or loaded from PSTAR.
+    """
+    if stopping_power:
+        # Convert output of provided interpolator to areal length units
+        _stopping_power = stopping_power
+
+        def stopping_power(x):
+            return _stopping_power(x) / Rho
+
+        return stopping_power
+
+    # Interpolate PSTAR (or equivalent) NIST data if no stopping power curve
+    # is provided
+    if not NIST_material:
+        # If we're working with an elemental target, take the name of the element
+        # in all uppercase
+        if len(target) == 1:
+            NIST_material = target[0].element_name.upper()
+        else:
+            raise ValueError("Please provide one of ")
+
+    # TODO: Add error handling to handle the case we can't find the material  # noqa: FIX002
+    #  the user is looking for.
+    return NIST_stopping_power(beam, NIST_material, return_interpolator=True)
+
+
+def _beta_and_p(
+    beam: Particle, T: u.Quantity[u.MeV]
+) -> tuple[float, u.Quantity[u.kg * u.m / u.s]]:
+    beta = np.sqrt(1 - 1 / (T / (beam.mass * const.c**2) + 1) ** 2)
+    p = beam.mass * beta * const.c / np.sqrt(1 - beta**2)
+
+    return beta, p
+
+
+def _x_a_squared(beam, T, c_1, c_2):
+    """Eq. 6."""
+    beta, p = _beta_and_p(beam, T)
+
+    # Eq. 7
+    x_0_squared = c_2 / (p * const.c) ** 2
+
+    # Eq. 8
+    alpha_squared = c_1 / beta**2
+
+    return x_0_squared * (1.13 + 3.76 * alpha_squared)
+
+
+def _x_a_bar_integrand(beam, T: u.MeV, target, stopping_power, c_1, c_2):  # noqa: ANN202
+    """
+    Eq 20, for a single value of `i`.
+    That is, the provided `target` must be of a pure element.
+    """
+    beta, p = _beta_and_p(beam, T)
+    x_a_squared = _x_a_squared(beam, T, c_1, c_2)
+    # Eq. 22, Fano's correction
+    # TODO: Do we need this if it's for "scattering by atomic electrons"?  # noqa: FIX002
+    D = (
+        np.log(1130 / (target.atomic_number ** (4 / 3) * (1 / beta**2 - 1)))
+        + 5
+        - 1 / 2 * beta**2
+    )
+
+    return (np.log(x_a_squared) - D / target.atomic_number) / (
+        -stopping_power(T) * (p * beta * const.c) ** 2
+    )
+
+
+def _calculate_characteristic_angles(
+    beam,
+    incident_energy,
+    target,
+    Rho,
+    f_i,
+    t,
+    *,
+    NIST_material=None,
+    stopping_power=None,
+    use_constant_energy_approximation=False,
+):
+    """
+    Calculate the characteristic angles x_a and x_c.
+    """
+    # In the case that we are dealing with a compound target, iterate over the constituent atoms
+    c_1 = u.Quantity(
+        [
+            (
+                const.e.esu**2
+                / (const.hbar * const.c)
+                * beam.atomic_number
+                * element.atomic_number
+            )
+            ** 2
+            for element in target
+        ]
+    )
+    c_2 = u.Quantity(
+        [
+            (
+                1
+                / 0.885
+                * (const.e.esu**2 / (const.hbar * const.c))
+                * (const.m_e * const.c**2)
+                * element.atomic_number ** (1 / 3)
+            )
+            ** 2
+            for element in target
+        ]
+    )
+    c_3 = u.Quantity(
+        [
+            (
+                4
+                * np.pi
+                * const.N_A
+                * const.e.esu**4
+                * beam.atomic_number**2
+                * element.atomic_number**2
+                * f
+                / (element.mass * const.N_A)
+            ).cgs
+            for (element, f) in zip(target, f_i, strict=True)
+        ]
+    )
+
+    # TODO: Remove this once we add support for compounds  # noqa: FIX002
+    c_1, c_2, c_3 = c_1.flatten()[0], c_2.flatten()[0], c_3.flatten()[0]
+    target = target[0]
+
+    # TODO: Update this function to work with user-provided range data  # noqa: FIX002
+    if use_constant_energy_approximation:
+        beta, p = _beta_and_p(beam, incident_energy)
+        # Eq. 3
+        x_c_squared = c_3 * Rho * t / (p * beta * const.c) ** 2
+        # Eq. 6
+        x_a_squared = _x_a_squared(beam, incident_energy, c_1, c_2)
+
+        return x_c_squared.cgs, x_a_squared.cgs
+
+    stopping_power = _preprocess_stopping_arguments(
+        beam, target, Rho, NIST_material, stopping_power
+    )
+
+    # The bounds of the integrals are functions of the incident and
+    # transmitted kinetic energies
+    transmitted_energy = NIST_transmitted_energy(
+        beam, incident_energy, NIST_material, t * Rho, range_type="projected"
+    )
+
+    def x_c_integrand(T: u.Quantity[u.MeV]):  # noqa: ANN202
+        """Eq. 18."""
+        beta, p = _beta_and_p(beam, T)
+
+        return 1 / (-stopping_power(T) * (p * beta * const.c) ** 2)
+
+    x_c_interpolator = solve_ivp(
+        lambda x, _y: (
+            x_c_integrand(x * u.MeV).cgs.value
+        ),  # TODO: get rid of ".cgs" in favor of ".to(units)"  # noqa: FIX002
+        t_span=[
+            np.min(transmitted_energy.to(u.MeV).value),
+            np.max(incident_energy.to(u.MeV).value),
+        ],
+        y0=[
+            0,
+        ],
+        dense_output=True,
+    )
+
+    x_c_squared = []
+    for T_0, T_f in zip(
+        np.atleast_1d(incident_energy),
+        np.atleast_1d(transmitted_energy),
+        strict=True,
+    ):
+        integral = x_c_interpolator.sol(T_f.to(u.MeV).value) - x_c_interpolator.sol(
+            T_0.to(u.MeV).value
+        )
+        integral = integral.flatten()[0]
+        x_c_squared.append(c_3.cgs.value * integral)
+
+    # Apply units associated with the integration
+    x_c_squared *= x_c_integrand(1 * u.MeV).cgs.unit * u.MeV * c_3.cgs.unit
+    x_c_squared = x_c_squared.to(u.dimensionless_unscaled).value
+
+    ln_x_a_squared_interpolator = solve_ivp(
+        lambda T, _ln_x_a_squared: (
+            _x_a_bar_integrand(
+                beam, T * u.MeV, target, stopping_power, c_1, c_2
+            ).cgs.value
+        ),  # TODO: get rid of ".cgs" in favor of ".to(units)"  # noqa: FIX002
+        t_span=[
+            np.min(transmitted_energy.to(u.MeV).value),
+            np.max(incident_energy.to(u.MeV).value),
+        ],
+        y0=[
+            0,
+        ],
+        dense_output=True,
+    )
+
+    ln_x_a_squared = []
+    for x_c_squared_i, T_0_i, T_f_i in zip(
+        x_c_squared,
+        np.atleast_1d(incident_energy),
+        np.atleast_1d(transmitted_energy),
+        strict=True,
+    ):
+        integral = ln_x_a_squared_interpolator.sol(
+            T_f_i.to(u.MeV).value
+        ) - ln_x_a_squared_interpolator.sol(T_0_i.to(u.MeV).value)
+        integral = integral.flatten()[0]
+        ln_x_a_squared.append(c_3.cgs.value / x_c_squared_i * integral)
+
+    # Apply units associated with the integration
+    cgs_integrand_units = _x_a_bar_integrand(
+        beam, 1 * u.MeV, target, stopping_power, c_1, c_2
+    ).cgs.unit
+
+    ln_x_a_squared *= cgs_integrand_units * c_3.cgs.unit * u.MeV
+    ln_x_a_squared = ln_x_a_squared.to(u.dimensionless_unscaled).value
+
+    x_a_squared = np.exp(ln_x_a_squared)
+    return x_c_squared, x_a_squared
+
+
+def _f_n_mol_integrand(  # noqa: ANN202
+    u: float,
+    ϑ: float,
+    n: int,
+):
+    """Eq. 26 of Bethe."""
+    return u * j0(ϑ * u) * np.exp(-(u**2) / 4) * (u**2 / 4 * np.log(u**2 / 4)) ** n
+
+
+def _f_mol_n(  # noqa: ANN202
+    ϑ: u.Quantity[u.dimensionless_unscaled],
+    n: int,
+):
+    integral = [quad(_f_n_mol_integrand, 0, 10, args=(ϑ_i, n))[0] for ϑ_i in ϑ]
+    integral = np.asarray(integral)
+
+    return integral / factorial(n)
+
+
+def _Moliere_scattering_B_residual(B, b):
+    """Eq. 23 of Bethe."""
+    return B - np.log(B) - b, 1 - 1 / B
+
+
+def _vectorized_Newton_root_finder(func, *func_args, x0, max_iters=5):
+    """
+    Find the root of `func` based on the provided initial guess, `x0`.
+
+    Returns the approximate x-value of the root.
+    """
+    x_i = x0
+    for _ in range(max_iters):
+        y, y_prime = func(x_i, *func_args)
+
+        x_i -= y / y_prime
+
+    return x_i
+
+
+def _wrapped_Moliere_angular_distribution(
+    reduced_theta_norm, B, use_f_mol_interpolator, default_return_polar_angle
+):
+    def Moliere_angular_distribution(
+        theta, *, return_polar_angle=default_return_polar_angle
+    ):
+        # Eq. 24
+        theta_prime = theta / reduced_theta_norm
+
+        # The underlying distributions from the literature expect a polar angle
+        # The user has provided a projected angle, so we need to transform it
+        if not return_polar_angle:
+            theta_prime *= np.sqrt(2)
+
+        if use_f_mol_interpolator:
+            f_n = _f_mol_spline(np.abs(theta_prime))
+        else:
+            f_n = np.asarray([_f_mol_n(theta_prime, i) for i in range(3)]).T
+
+        B_coefficients = np.asarray([1 / B**i for i in range(3)])
+
+        # Normalization factors differ for Gaussian vs Rayleigh distributions
+        # These correspond to the projected and polar distributions, respectively
+        if return_polar_angle:
+            distribution_coefficient = theta_prime / reduced_theta_norm
+        else:
+            distribution_coefficient = 1 / (np.sqrt(2 * np.pi) * reduced_theta_norm)
+
+        return distribution_coefficient * (B_coefficients.T @ f_n.T)
+
+    return Moliere_angular_distribution
+
+
+@particle_input
+def Moliere_scattering(
+    # Projectile parameters
+    beam: Particle,
+    incident_energy: u.Quantity[u.MeV],
+    # Target parameters
+    target: ParticleListLike,
+    Rho: u.Quantity[u.g / u.cm**3],
+    t: u.Quantity[u.m],
+    f_i: npt.NDArray[np.float64] | None = None,
+    *,
+    # Miscellaneous parameters
+    return_polar_angle: bool,
+    use_constant_energy_approximation=False,
+    NIST_material: str | None = None,
+    stopping_power: Callable[[u.Quantity[u.MeV]], u.Quantity[u.MeV / u.g]]
+    | None = None,
+    use_f_mol_interpolator: bool = True,
+    include_characteristic_angles: bool = False,
+    return_rms: bool = False,
+) -> (
+    Callable[
+        [u.Quantity[u.dimensionless_unscaled]],
+        u.Quantity[u.dimensionless_unscaled],
+    ]
+    | u.Quantity[u.dimensionless_unscaled]
+):
+    """Calculate the Moliere multiple scattering distribution.
+
+    Parameters
+    ----------
+    beam : `~plasmapy.particles.particle_class.Particle`
+        The particle specie that is incident upon the target.
+
+    incident_energy : `~astropy.units.Quantity`
+        The kinetic energy of the beam particles in units convertible to MeV.
+
+    target : `~plasmapy.particles.particle_collections.ParticleListLike`
+        A |Particle| representation of the element(s) in the target.
+
+    Rho : `~astropy.units.Quantity`
+        The mass density of the target element(s) in units convertible to grams
+        per cubic centimeter.
+
+    t : `~astropy.units.Quantity`
+        The thickness of the target in units convertible to centimeters.
+
+    f_i : array of `float`
+        The fractional weight of each constituent element's atoms in the target.
+
+    return_polar_angle : bool
+        Is the user-provided angle going to be a polar angle? Or is it a projected
+        angle?
+
+    use_constant_energy_approximation : bool, optional
+        Whether to calculate the angular probability distribution using the
+        approximation that the beam particles do not lose energy to the
+        material. Defaults to `False`.
+
+    NIST_material : str, optional
+        The name of the material in the NIST PSTAR database. Providing this
+        argument is only necessary if `stopping_power` is `None`.
+
+    stopping_power : `Callable[[u.Quantity[u.MeV]], u.MeV / u.g]`
+        Function used to calculate the stopping power. Takes in kinetic energy
+        and returns the stopping power in units of energy per
+        unit length.
+
+    use_f_mol_interpolator : `bool`
+        Whether the integrals involved in the calculation of the angular
+        distribution should be estimated using interpolation or numerical
+        integration using `~scipy.integration.quad`. Defaults to `True`.
+
+    include_characteristic_angles : `bool`
+        Whether to return the characteristic angles defined by Moliere. These
+        angles are included as a dictionary as the third entry in the tuple.
+
+    return_rms : `bool`
+        Whether to return the rms scattering angle in radians, or return the
+        distribution function. Defaults to `False`.
+
+    """
+    # TODO: Include a returns section in the above docstring  # noqa: FIX002
+    # Treat mono-atomic targets as a target with 100% of one element
+    if not f_i:
+        f_i = np.asarray([1])
+
+    x_c_squared, x_a_squared = _calculate_characteristic_angles(
+        beam,
+        incident_energy,
+        target,
+        Rho,
+        f_i,
+        t,
+        NIST_material=NIST_material,
+        stopping_power=stopping_power,
+        use_constant_energy_approximation=use_constant_energy_approximation,
+    )
+    x_a_squared, x_c_squared = x_a_squared.flatten(), x_c_squared.flatten()
+
+    # Eq. 11
+    b = np.log(x_c_squared / (1.167 * x_a_squared))
+
+    # The transcendental equation associated with `B` yields two solutions for
+    # every `b`. We want to solve for values where B > 1, this corresponds to
+    # our initial guess satisfying b > 1.
+    B = _vectorized_Newton_root_finder(
+        _Moliere_scattering_B_residual, b, x0=b, max_iters=2
+    )
+
+    # Eq. 24 of Bethe. Characterizes the width of the Gaussian approximation
+    reduced_theta_norm = np.sqrt(x_c_squared.flatten() * B)
+    theta_M = np.sqrt(x_c_squared.flatten() * B / 2)
+
+    # TODO: Is there a better way to handle this?  # noqa: FIX002
+    return_dist: list
+    if not return_rms:
+        return_dist = _wrapped_Moliere_angular_distribution(
+            reduced_theta_norm,
+            B,
+            use_f_mol_interpolator,
+            default_return_polar_angle=return_polar_angle,
+        )
+    else:
+        # TODO: Modify this based on the polar angle keyword argument  # noqa: FIX002
+        return_dist = theta_M
+
+    if include_characteristic_angles:
+        angles_dictionary = {
+            # Always spatial angles
+            "x_a": np.sqrt(x_a_squared),
+            "x_c": np.sqrt(x_c_squared),
+            "b": b,
+            "B": B,
+            # Definitions vary based on polar vs projected angle distributions
+            "theta_M": theta_M,  # Eq. 13
+            "reduced_theta_norm": reduced_theta_norm,
+        }
+
+        return return_dist, angles_dictionary
+    else:
+        return return_dist
 
 
 @validate_quantities(
