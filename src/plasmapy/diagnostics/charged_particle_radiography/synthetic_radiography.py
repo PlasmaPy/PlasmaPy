@@ -210,8 +210,8 @@ class Tracker(ParticleTracker):
     def __init__(  # noqa: PLR0917
         self,
         grids: AbstractGrid | Iterable[AbstractGrid],
-        source: u.Quantity[u.m],  # ty: ignore[not-subscriptable]
-        detector: u.Quantity[u.m],  # ty: ignore[not-subscriptable]
+        source: u.Quantity[u.m],
+        detector: u.Quantity[u.m],
         dt=None,
         dt_range=None,
         field_weighting: Literal[

@@ -22,7 +22,7 @@ __all__ += __aliases__
     T_e={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     n_e={"can_be_negative": False},
 )
-def Debye_length(T_e: u.Quantity[u.K], n_e: u.Quantity[u.m**-3]) -> u.Quantity[u.m]:  # ty: ignore[not-subscriptable]
+def Debye_length(T_e: u.Quantity[u.K], n_e: u.Quantity[u.m**-3]) -> u.Quantity[u.m]:
     r"""
     Calculate the exponential scale length for charge screening in an
     electron plasma with stationary ions.
@@ -105,16 +105,16 @@ lambdaD_ = Debye_length
 )
 @particle_input(any_of={"charged", "uncharged"})
 def gyroradius(
-    B: u.Quantity[u.T],  # ty: ignore[not-subscriptable]
+    B: u.Quantity[u.T],
     particle: ParticleLike,
     *,
-    Vperp: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,  # ty: ignore[not-subscriptable]
-    T: u.Quantity[u.K] = None,  # ty: ignore[not-subscriptable]
+    Vperp: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
+    T: u.Quantity[u.K] = None,
     lorentzfactor=np.nan,
     relativistic: bool = True,
     mass_numb: int | None = None,
     Z: float | None = None,
-) -> u.Quantity[u.m]:  # ty: ignore[not-subscriptable]
+) -> u.Quantity[u.m]:
     r"""
     Calculate the radius of circular motion for a charged particle in a
     uniform magnetic field (including relativistic effects by default).
@@ -327,12 +327,12 @@ rhoc_ = gyroradius
 )
 @particle_input(require="charged")
 def inertial_length(
-    n: u.Quantity[u.m**-3],  # ty: ignore[not-subscriptable]
+    n: u.Quantity[u.m**-3],
     particle: ParticleLike,
     *,
     mass_numb: int | None = None,
     Z: float | None = None,
-) -> u.Quantity[u.m]:  # ty: ignore[not-subscriptable]
+) -> u.Quantity[u.m]:
     r"""
     Calculate a charged particle's inertial length.
 
