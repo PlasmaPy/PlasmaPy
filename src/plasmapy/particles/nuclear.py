@@ -15,7 +15,7 @@ from plasmapy.particles.particle_class import Particle
 def nuclear_binding_energy(
     particle: Particle,
     mass_numb: int | None = None,
-) -> u.Quantity[u.J]:  # ty: ignore[not-subscriptable]
+) -> u.Quantity[u.J]:
     """
     Return the nuclear binding energy associated with an isotope.
 
@@ -70,7 +70,7 @@ def nuclear_binding_energy(
 
 
 @particle_input
-def mass_energy(particle: Particle, mass_numb: int | None = None) -> u.Quantity[u.J]:  # ty: ignore[not-subscriptable]
+def mass_energy(particle: Particle, mass_numb: int | None = None) -> u.Quantity[u.J]:
     """
     Return a particle's mass energy.  If the particle is an isotope or
     nuclide, return the nuclear mass energy only.
@@ -108,7 +108,7 @@ def mass_energy(particle: Particle, mass_numb: int | None = None) -> u.Quantity[
     return particle.mass_energy
 
 
-def nuclear_reaction_energy(*args, **kwargs) -> u.Quantity[u.J]:  # noqa: ANN002, ANN003, C901, PLR0915  # ty: ignore[not-subscriptable]
+def nuclear_reaction_energy(*args, **kwargs) -> u.Quantity[u.J]:  # noqa: ANN002, ANN003, C901, PLR0915
     """
     Return the released energy from a nuclear reaction.
 
@@ -249,7 +249,7 @@ def nuclear_reaction_energy(*args, **kwargs) -> u.Quantity[u.J]:  # noqa: ANN002
                 total_charge += particle.charge_number
         return total_charge
 
-    def add_mass_energy(particles: list[Particle]) -> u.Quantity[u.J]:  # ty: ignore[not-subscriptable]
+    def add_mass_energy(particles: list[Particle]) -> u.Quantity[u.J]:
         """
         Find the total mass energy from a list of particles, while
         taking the masses of the fully ionized isotopes.

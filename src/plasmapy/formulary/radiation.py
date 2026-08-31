@@ -24,13 +24,13 @@ from plasmapy.utils.exceptions import PhysicsError
 )
 @particle_input
 def thermal_bremsstrahlung(  # noqa: PLR0917
-    frequencies: u.Quantity[u.Hz],  # ty: ignore[not-subscriptable]
-    n_e: u.Quantity[u.m**-3],  # ty: ignore[not-subscriptable]
-    T_e: u.Quantity[u.K],  # ty: ignore[not-subscriptable]
-    n_i: u.Quantity[u.m**-3] = None,  # ty: ignore[not-subscriptable]
+    frequencies: u.Quantity[u.Hz],
+    n_e: u.Quantity[u.m**-3],
+    T_e: u.Quantity[u.K],
+    n_i: u.Quantity[u.m**-3] = None,
     ion: ParticleLike = "p+",
-    kmax: u.Quantity[u.m] = None,  # ty: ignore[not-subscriptable]
-) -> u.Quantity[u.kg * u.m**-1 * u.s**-2]:  # ty: ignore[not-subscriptable]
+    kmax: u.Quantity[u.m] = None,
+) -> u.Quantity[u.kg * u.m**-1 * u.s**-2]:
     r"""
     Calculate the bremsstrahlung emission spectrum for a Maxwellian
     plasma in the Rayleigh-Jeans limit :math:`ℏ ω ≪ k_B T_e`.

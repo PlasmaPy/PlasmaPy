@@ -123,13 +123,13 @@ class AbstractParticle(ABC):
 
     @property
     @abstractmethod
-    def mass(self) -> u.Quantity[u.kg] | float:  # ty: ignore[not-subscriptable]
+    def mass(self) -> u.Quantity[u.kg] | float:
         """Provide the particle's mass."""
         raise NotImplementedError
 
     @property
     @abstractmethod
-    def charge(self) -> u.Quantity[u.C] | float:  # ty: ignore[not-subscriptable]
+    def charge(self) -> u.Quantity[u.C] | float:
         """Provide the particle's electric charge."""
         raise NotImplementedError
 
@@ -1234,7 +1234,7 @@ class Particle(AbstractPhysicalParticle):
         return self._attributes["charge number"]
 
     @property
-    def charge(self) -> u.Quantity[u.C]:  # ty: ignore[not-subscriptable]
+    def charge(self) -> u.Quantity[u.C]:
         """
         The particle's electrical charge in coulombs.
 
@@ -1256,7 +1256,7 @@ class Particle(AbstractPhysicalParticle):
         return self._attributes["charge"]
 
     @property
-    def standard_atomic_weight(self) -> u.Quantity[u.kg]:  # ty: ignore[not-subscriptable]
+    def standard_atomic_weight(self) -> u.Quantity[u.kg]:
         """
         The element's standard atomic weight in kg.
 
@@ -1282,7 +1282,7 @@ class Particle(AbstractPhysicalParticle):
         return self._attributes["standard atomic weight"].to(u.kg)
 
     @property
-    def mass(self) -> u.Quantity[u.kg]:  # ty: ignore[not-subscriptable]
+    def mass(self) -> u.Quantity[u.kg]:
         """
         The mass of the particle in kilograms.
 
@@ -1343,7 +1343,7 @@ class Particle(AbstractPhysicalParticle):
         return np.nan * u.kg
 
     @property
-    def nuclide_mass(self) -> u.Quantity[u.kg]:  # ty: ignore[not-subscriptable]
+    def nuclide_mass(self) -> u.Quantity[u.kg]:
         """
         The mass of the bare nucleus of an isotope or a neutron.
 
@@ -1386,7 +1386,7 @@ class Particle(AbstractPhysicalParticle):
         return _nuclide_mass.to(u.kg)
 
     @property
-    def mass_energy(self) -> u.Quantity[u.J]:  # ty: ignore[not-subscriptable]
+    def mass_energy(self) -> u.Quantity[u.J]:
         """
         The mass energy of the particle in joules.
 
@@ -1419,7 +1419,7 @@ class Particle(AbstractPhysicalParticle):
             return energy.to(u.J)
 
     @property
-    def nuclear_binding_energy(self) -> u.Quantity[u.J]:  # ty: ignore[not-subscriptable]
+    def nuclear_binding_energy(self) -> u.Quantity[u.J]:
         """
         The particle's nuclear binding energy.
 
@@ -2190,7 +2190,7 @@ class DimensionlessParticle(AbstractParticle):
         return self._charge
 
     @mass.setter
-    def mass(self, m: float | u.Quantity[u.kg] | None):  # ty: ignore[not-subscriptable]
+    def mass(self, m: float | u.Quantity[u.kg] | None):
         try:
             self._mass = self._validate_parameter(m, can_be_negative=False)
         except (TypeError, ValueError):
@@ -2200,7 +2200,7 @@ class DimensionlessParticle(AbstractParticle):
             ) from None
 
     @charge.setter
-    def charge(self, q: float | u.Quantity[u.C] | None):  # ty: ignore[not-subscriptable]
+    def charge(self, q: float | u.Quantity[u.C] | None):
         try:
             self._charge = self._validate_parameter(q, can_be_negative=True)
         except (TypeError, ValueError):
@@ -2296,8 +2296,8 @@ class CustomParticle(AbstractPhysicalParticle):
 
     def __init__(
         self,
-        mass: u.Quantity[u.kg] = None,  # ty: ignore[not-subscriptable]
-        charge: u.Quantity[u.C] = None,  # ty: ignore[not-subscriptable]
+        mass: u.Quantity[u.kg] = None,
+        charge: u.Quantity[u.C] = None,
         symbol: str | None = None,
         *,
         Z: float | None = None,
@@ -2468,7 +2468,7 @@ class CustomParticle(AbstractPhysicalParticle):
         return particle_dictionary
 
     @property
-    def charge(self) -> u.Quantity[u.C]:  # ty: ignore[not-subscriptable]
+    def charge(self) -> u.Quantity[u.C]:
         """The electric charge of the |CustomParticle| in coulombs."""
         return self._charge
 
@@ -2519,12 +2519,12 @@ class CustomParticle(AbstractPhysicalParticle):
         self._charge = Z * const.e.si
 
     @property
-    def mass(self) -> u.Quantity[u.kg]:  # ty: ignore[not-subscriptable]
+    def mass(self) -> u.Quantity[u.kg]:
         """The mass of the |CustomParticle|."""
         return self._mass
 
     @mass.setter
-    def mass(self, m: u.Quantity[u.kg]) -> None:  # ty: ignore[not-subscriptable]
+    def mass(self, m: u.Quantity[u.kg]) -> None:
         if m is None:
             m = np.nan * u.kg
         elif isinstance(m, str):
@@ -2553,7 +2553,7 @@ class CustomParticle(AbstractPhysicalParticle):
                     raise ValueError("The mass of a particle must be nonnegative.")
 
     @property
-    def mass_energy(self) -> u.Quantity[u.J]:  # ty: ignore[not-subscriptable]
+    def mass_energy(self) -> u.Quantity[u.J]:
         """
         The mass energy of the |CustomParticle|.
 
