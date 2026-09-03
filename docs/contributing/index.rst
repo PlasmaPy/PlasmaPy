@@ -62,7 +62,7 @@ Policy Details
 --------------
 
 What is Allowed
----------------
+~~~~~~~~~~~~~~~
 
 - **AI-assisted code** with full human review and testing
 - **AI for grammar/documentation improvement** (especially for non-native English speakers)
