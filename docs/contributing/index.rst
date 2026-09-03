@@ -108,7 +108,7 @@ This helps project maintainers:
 - Prioritize based on complexity of the PR
 
 Review Expectations
--------------------
+~~~~~~~~~~~~~~~~~~~
 
 - **AI-assisted PRs may likely face delayed code reviews**
 
