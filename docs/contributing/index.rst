@@ -79,7 +79,7 @@ Requirements for AI-Assisted Contributions
 ------------------------------------------
 
 Mandatory Disclosures
----------------------
+~~~~~~~~~~~~~~~~~~~~~
 
 You **must** include in your PR description:
 
