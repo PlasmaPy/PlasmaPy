@@ -115,4 +115,4 @@ Review Expectations
 Questions?
 ----------
 
-If you have any questions/doubts around this, feel free to reach out to the project maintainers.
+If you have any questions or feedback about this policy, feel free to `create a discussion <https://github.com/PlasmaPy/PlasmaPy/discussions/new/choose>`__.
