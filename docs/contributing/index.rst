@@ -69,7 +69,7 @@ What is Allowed
 - **AI for code refactoring or optimization** (with human validation)
 
 What is Not Allowed
--------------------
+~~~~~~~~~~~~~~~~~~~
 
 - **Fully automated contributions**: PRs that are generated entirely by AI without any sort of human involvement
 - **Unreviewed AI code**: Submitting AI-generated code without manually understanding it
@@ -88,17 +88,17 @@ You **must** include in your PR description:
 3. **A brief description of how AI was used** (e.g., "Used ChatGPT to generate initial algorithm structure, then rewrote and tested thoroughly")
 
 Testing Requirements
---------------------
+~~~~~~~~~~~~~~~~~~~~
 
 - AI-generated code must pass all existing tests
-- New tests should be written (can be AI-assisted, but must be manually reviewed)
+- New tests should be written (can be AI-assisted, but must be manually and carefully reviewed)
 - Do not rely solely on AI-generated tests to validate AI-generated code
 
 Labeling and Review Process
 ---------------------------
 
 PR Labels
----------
+~~~~~~~~~
 
 Contributors are advised to add the **``AI assisted``** label if their PR uses AI assistance.
 This helps project maintainers:
@@ -112,7 +112,7 @@ Review Expectations
 
 - **AI-assisted PRs may likely face delayed code reviews**
 
-Questions?
-----------
+Questions and feedback
+----------------------
 
 If you have any questions or feedback about this policy, feel free to `create a discussion <https://github.com/PlasmaPy/PlasmaPy/discussions/new/choose>`__.
