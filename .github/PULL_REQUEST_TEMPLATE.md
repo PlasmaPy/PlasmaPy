@@ -18,7 +18,7 @@ Have you used any AI tools (e.g., ChatGPT, GitHub Copilot, Claude, etc.) to gene
 
 ---
 
-## Contribution Checklist
+#### Contribution Checklist
 
 - [ ] I have personally reviewed code/documentation changes
 - [ ] I understand every change and can explain it
