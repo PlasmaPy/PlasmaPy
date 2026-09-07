@@ -61,7 +61,7 @@ repos:
     exclude: .github/labeler.yml
 
 - repo: https://github.com/python-jsonschema/check-jsonschema
-  rev: 0.37.4
+  rev: 0.38.0
   hooks:
   - id: check-github-workflows
 
@@ -92,14 +92,14 @@ repos:
 - repo: https://github.com/adhtruong/mirrors-typos
   # use mirrors-typos because `pre-commit autoupdate` drops the version
   # of the primary typos repo from v1.x.y to v1
-  rev: v1.48.0
+  rev: v1.50.1
   hooks:
   - id: typos
     name: typos (add false positives to _typos.toml)
     exclude: CITATION.cff|docs/notebooks/dispersion/stix_dispersion.ipynb
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.16.1
+  rev: v0.16.6
   hooks:
   - id: ruff-check
     name: ruff-check (see https://docs.astral.sh/ruff/rules)
@@ -122,7 +122,7 @@ repos:
   - id: sphinx-lint
 
 - repo: https://github.com/abravalheri/validate-pyproject
-  rev: v0.25
+  rev: '0.26'
   hooks:
   - id: validate-pyproject
     name: validate pyproject.toml
@@ -142,13 +142,13 @@ repos:
     # - validate-pyproject[all,store]
 
 - repo: https://github.com/tox-dev/pyproject-fmt
-  rev: v2.26.0
+  rev: v2.29.3
   hooks:
   - id: pyproject-fmt
     name: format pyproject.toml
 
 - repo: https://github.com/astral-sh/uv-pre-commit
-  rev: 0.12.1
+  rev: 0.12.10
   hooks:
     # running uv lock requires network access or a warm cache, so it
     # cannot be run via pre-commit.ci, even with the `--offline`,
