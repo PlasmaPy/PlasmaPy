@@ -1,0 +1,1 @@
+Adds Other Useful Projects section related to PlasmaPy.
