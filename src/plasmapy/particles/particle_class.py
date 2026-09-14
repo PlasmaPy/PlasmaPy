@@ -749,11 +749,11 @@ class Particle(AbstractPhysicalParticle):
         isotope = attributes["isotope"]
         ion = attributes["ion"]
 
-        if element:
+        if element:  # ty: ignore[redundant-condition]
             categories.add("element")
-        if isotope:
+        if isotope:  # ty: ignore[redundant-condition]
             categories.add("isotope")
-        if self.element and self._attributes["charge number"]:
+        if self.element and self._attributes["charge number"]:  # ty: ignore[redundant-condition]
             categories.add("ion")
 
         # Element properties
@@ -769,7 +769,7 @@ class Particle(AbstractPhysicalParticle):
 
         attributes["lepton number"] = 0  # ty:ignore[invalid-assignment]
 
-        if isotope:
+        if isotope:  # ty: ignore[redundant-condition]
             this_isotope = _isotopes.data_about_isotopes[isotope]
 
             attributes["baryon number"] = this_isotope["mass number"]
@@ -781,7 +781,7 @@ class Particle(AbstractPhysicalParticle):
             else:
                 attributes["half-life"] = this_isotope.get("half-life")
 
-        if element and not isotope:
+        if element and not isotope:  # ty: ignore[redundant-condition]
             attributes["standard atomic weight"] = this_element.get("atomic mass")
 
         if ion in _special_particles.special_ion_masses:
@@ -870,7 +870,7 @@ class Particle(AbstractPhysicalParticle):
         elif self._attributes["charge number"] is not None:
             self._attributes["charge"] = self._attributes["charge number"] * const.e.si
 
-        if self._attributes["charge number"]:
+        if self._attributes["charge number"]:  # ty: ignore[redundant-condition]
             self._categories.add("charged")
         elif self._attributes["charge number"] == 0:
             self._categories.add("uncharged")
@@ -1146,7 +1146,7 @@ class Particle(AbstractPhysicalParticle):
         >>> hydrogen_atom.roman_symbol
         'H I'
         """
-        if not self._attributes["element"]:
+        if not self._attributes["element"]:  # ty: ignore[redundant-condition]
             return None
         if self._attributes["charge number"] is None:
             raise ChargeError(f"The charge of particle {self} has not been specified.")
