@@ -356,7 +356,7 @@ def docs(session: nox.Session) -> None:
     """
     Build documentation with Sphinx.
 
-    This session may require installation of pandoc and graphviz.
+    This session requires external installations of Pandoc and Graphviz.
 
     Configuration file: docs/conf.py
     """
