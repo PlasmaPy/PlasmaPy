@@ -43,7 +43,7 @@ This file provides context, rules, and guidelines for AI coding assistants worki
 
 - Tests are located in the `tests/` directory.
 - Find the CI plan in `.github/workflows/`, with Nox sessions defined in `noxfile.py`. The list of Nox sessions can be found by running `nox --list`.
-- The full test suite is run with `uvx nox --session 'tests-3.14(all)'` in the top-level directory, which invokes the `tests` session defined in `noxfile.py`.
+- The full test suite is run with `uvx nox --session 'tests-3.15(all)'` in the top-level directory, which invokes the `tests` session defined in `noxfile.py`.
 - Use pytest to run small numbers of tests when trying to fix failing tests. For example, use `pytest tests/particles/test_atomic.py::test_half_life` to run the test named `test_half_life` in `tests/particles/test_atomic.py`, or use `pytest tests/formulary/test_lengths.py` to run all tests in `tests/formulary/test_lengths.py`.
 - Fix any test errors until all tests are passing.
 
