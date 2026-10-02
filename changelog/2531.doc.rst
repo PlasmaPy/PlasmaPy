@@ -1,0 +1,1 @@
+Added docstring examples to `~plasmapy.plasma.cylindrical_equilibria.ForceFreeFluxRope` demonstrating how to instantiate the class and call `B_z`, `B_theta`, and `B_magnitude`.
