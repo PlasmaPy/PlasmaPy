@@ -24,7 +24,7 @@ license-files = [ "LICENSE.md" ]
 # SPEC 0 recommends that projects drop support for Python versions 3
 # years after their initial release. See:
 # https://scientific-python.org/specs/spec-0000
-requires-python = ">=3.12"
+requires-python = ">=3.13"
 # Add classifiers from https://pypi.org/classifiers
 classifiers = [
   "Intended Audience :: Education",
@@ -47,20 +47,20 @@ dynamic = [ "version" ]
 # When updating dependencies, run `nox -s lock` to upgrade the
 # pinned environments in `uv.lock`.
 dependencies = [
-  "astropy>=6.1.3,<8",
-  "h5py>=3.11",
-  "lmfit>=1.3",
-  "matplotlib>=3.8",
-  "mpmath>=1.3",
-  "numpy>=1.26",
-  "packaging>=24",
-  "pandas>=2.1.4",
+  "astropy>=6.1.5,<8",
+  "h5py>=3.13.0",
+  "lmfit>=1.3.3",
+  "matplotlib>=3.11.0",
+  "mpmath>=1.4.0",
+  "numpy>=2.3.0",
+  "packaging>=24.2",
+  "pandas>=2.3.0",
   "pytest==9.0.3",
-  "requests>=2.30",
-  "scipy>=1.11",
-  "tqdm>=4.65",
+  "requests>=2.32.4",
+  "scipy>=1.15.0",
+  "tqdm>=4.66.6",
   "wrapt>=1.15",
-  "xarray>=2024.5",
+  "xarray>=2025.1.0",
 ]
 urls.Changelog = "https://docs.plasmapy.org/en/stable/whatsnew/index.html"
 urls.Chat = "https://plasmapy.org/chat"
@@ -126,7 +126,7 @@ autotyping = [
   "typing-extensions>=4.15",
 ]
 changelog = [
-  "towncrier>=24.8",
+  "towncrier>=25.8.0",
 ]
 lint = [
   "pre-commit>=4.5.1",
