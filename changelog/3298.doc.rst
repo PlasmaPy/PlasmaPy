@@ -1,0 +1,3 @@
+Added a notebook on cylindrical transverse magnetic mode dispersion in a
+magnetized plasma column, including cold-plasma, warm-fluid, numerical
+residual, and kinetic residual formulations.
