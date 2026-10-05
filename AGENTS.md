@@ -39,8 +39,7 @@ This file provides context, rules, and guidelines for AI coding assistants worki
   `@validate_quantities`, e.g., `T={"equivalencies": u.temperature_energy()}`.
 - Use `Particle` for known species and `CustomParticle` for species with
   specified mass or charge (e.g., an average ion). Use `ParticleList` to
-  collect particles; annotate scalar inputs with `ParticleLike` and
-  sequence inputs with `ParticleListLike`.
+  collect particles.
 - Use `@particle_input` when a function should accept particle-like
   values and convert them to particle objects. Annotate each relevant
   parameter with `ParticleLike` or `ParticleListLike`; use `require`,
