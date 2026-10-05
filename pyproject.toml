@@ -459,7 +459,9 @@ lint.flake8-tidy-imports.banned-api."typing.Iterable".msg = "Deprecated alias. C
 lint.flake8-tidy-imports.banned-api."typing.Iterator".msg = "Deprecated alias. Change to collections.abc.Iterator"
 lint.flake8-tidy-imports.banned-api."typing.List".msg = "Deprecated alias. Change to list"
 lint.flake8-tidy-imports.banned-api."typing.Mapping".msg = "Deprecated alias. Change to collections.abc.mapping"
-lint.flake8-tidy-imports.banned-api."typing.MutableMapping".msg = "Deprecated alias. Change to collections.abc.MutableMapping"
+lint.flake8-tidy-imports.banned-api."typing.MutableMapping".msg = """\
+  Deprecated alias. Change to collections.abc.MutableMapping\
+  """
 lint.flake8-tidy-imports.banned-api."typing.Sequence".msg = "Deprecated alias. Change to collections.abc.Sequence"
 lint.flake8-tidy-imports.banned-api."typing.Set".msg = "Deprecated alias. Change to set"
 lint.flake8-tidy-imports.banned-api."typing.Tuple".msg = "Deprecated alias. Change to tuple"
@@ -585,13 +587,13 @@ strict = true
 testpaths = [ "tests", "src/plasmapy" ]
 
 [tool.coverage]
-run.branch = true
+run.source = [ "src" ]
 run.omit = [
   "*/plasmapy/*version.py",
   "*/plasmapy/_dev/*",
   "*/plasmapy/tests/*",
 ]
-run.source = [ "src" ]
+run.branch = true
 report.exclude_lines = [
   "@abstractmethod",
   "coverage: ignore",

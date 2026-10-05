@@ -323,7 +323,7 @@ def test_unit_attribute_error_case() -> None:
         [-1 * u.cm, 0 * u.rad, -2 * u.cm],
         [1 * u.cm, 2 * np.pi * u.rad, 2 * u.cm],
         num=5,
-    )
+    )  # ty: ignore[call-non-callable]
 
     with pytest.raises(ValueError):
         grid.unit  # noqa: B018

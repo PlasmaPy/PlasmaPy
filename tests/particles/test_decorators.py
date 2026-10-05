@@ -341,8 +341,8 @@ def test_optional_particle_annotation_parameter() -> None:
 
 def undecorated_function(
     particle: ParticleLike,
-    distance: u.Quantity[u.m],  # ty: ignore[not-subscriptable]
-) -> tuple[ParticleLike, u.Quantity[u.m]]:  # ty: ignore[not-subscriptable]
+    distance: u.Quantity[u.m],
+) -> tuple[ParticleLike, u.Quantity[u.m]]:
     return particle, distance
 
 
@@ -494,7 +494,7 @@ def test_particle_input_with_validate_quantities(
         def __init__(
             self,
             particle: ParticleLike,
-            T_e: u.Quantity[u.K] = None,  # ty: ignore[not-subscriptable]
+            T_e: u.Quantity[u.K] = None,
         ) -> None:
             self.particle = particle
             self.T_e = T_e

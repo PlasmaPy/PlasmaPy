@@ -27,14 +27,14 @@ from plasmapy.utils.exceptions import PhysicsWarning
     T_i={"can_be_negative": False, "equivalencies": u.temperature_energy()},
 )
 def two_fluid(  # noqa: ANN201
-    B: u.Quantity[u.T],  # ty: ignore[not-subscriptable]
+    B: u.Quantity[u.T],
     ion: ParticleLike,
-    k: u.Quantity[u.rad / u.m],  # ty: ignore[not-subscriptable]
-    n_i: u.Quantity[u.m**-3],  # ty: ignore[not-subscriptable]
-    theta: u.Quantity[u.rad],  # ty: ignore[not-subscriptable]
+    k: u.Quantity[u.rad / u.m],
+    n_i: u.Quantity[u.m**-3],
+    theta: u.Quantity[u.rad],
     *,
-    T_e: u.Quantity[u.K],  # ty: ignore[not-subscriptable]
-    T_i: u.Quantity[u.K],  # ty: ignore[not-subscriptable]
+    T_e: u.Quantity[u.K],
+    T_i: u.Quantity[u.K],
     gamma_e: float = 1,
     gamma_i: float = 3,
     mass_numb: int | None = None,

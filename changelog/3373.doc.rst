@@ -1,0 +1,1 @@
+Added a policy for AI based contributions and a pull request template.

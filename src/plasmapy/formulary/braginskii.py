@@ -313,14 +313,14 @@ class ClassicalTransport:
     )
     def __init__(  # noqa: PLR0912, PLR0915, PLR0917
         self,
-        T_e: u.Quantity[u.K],  # ty: ignore[not-subscriptable]
-        n_e: u.Quantity[u.m**-3],  # ty: ignore[not-subscriptable]
-        T_i: u.Quantity[u.K],  # ty: ignore[not-subscriptable]
-        n_i: u.Quantity[u.m**-3],  # ty: ignore[not-subscriptable]
+        T_e: u.Quantity[u.K],
+        n_e: u.Quantity[u.m**-3],
+        T_i: u.Quantity[u.K],
+        n_i: u.Quantity[u.m**-3],
         ion,
-        m_i: u.Quantity[u.kg] = None,  # ty: ignore[not-subscriptable]
+        m_i: u.Quantity[u.kg] = None,
         Z=None,
-        B: u.Quantity[u.T] = 0.0 * u.T,  # ty: ignore[not-subscriptable]
+        B: u.Quantity[u.T] = 0.0 * u.T,
         model: str = "Braginskii",
         field_orientation: str = "parallel",
         coulomb_log_ei=None,
@@ -462,7 +462,7 @@ class ClassicalTransport:
 
     @property
     @validate_quantities
-    def resistivity(self) -> u.Quantity[u.Ohm * u.m]:  # ty: ignore[not-subscriptable]
+    def resistivity(self) -> u.Quantity[u.Ohm * u.m]:
         r"""
         Calculate the resistivity.
 
@@ -542,7 +542,7 @@ class ClassicalTransport:
 
     @property
     @validate_quantities
-    def ion_thermal_conductivity(self) -> u.Quantity[u.W / u.m / u.K]:  # ty: ignore[not-subscriptable]
+    def ion_thermal_conductivity(self) -> u.Quantity[u.W / u.m / u.K]:
         r"""
         Calculate the thermal conductivity for ions.
 
@@ -599,7 +599,7 @@ class ClassicalTransport:
 
     @property
     @validate_quantities
-    def electron_thermal_conductivity(self) -> u.Quantity[u.W / u.m / u.K]:  # ty: ignore[not-subscriptable]
+    def electron_thermal_conductivity(self) -> u.Quantity[u.W / u.m / u.K]:
         r"""
         Calculate the thermal conductivity for electrons.
 
@@ -668,7 +668,7 @@ class ClassicalTransport:
 
     @property
     @validate_quantities
-    def ion_viscosity(self) -> u.Quantity[u.Pa * u.s]:  # ty: ignore[not-subscriptable]
+    def ion_viscosity(self) -> u.Quantity[u.Pa * u.s]:
         r"""
         Calculate the ion viscosity.
 
@@ -719,7 +719,7 @@ class ClassicalTransport:
 
     @property
     @validate_quantities
-    def electron_viscosity(self) -> u.Quantity[u.Pa * u.s]:  # ty: ignore[not-subscriptable]
+    def electron_viscosity(self) -> u.Quantity[u.Pa * u.s]:
         r"""
         Calculate the electron viscosity.
 
@@ -823,13 +823,13 @@ def resistivity(  # noqa: PLR0917
     ion,
     m_i=None,
     Z=None,
-    B: u.Quantity[u.T] = 0.0 * u.T,  # ty: ignore[not-subscriptable]
+    B: u.Quantity[u.T] = 0.0 * u.T,
     model: str = "Braginskii",
     field_orientation: str = "parallel",
     mu=None,
     theta: float | None = None,
     coulomb_log_method: str = "classical",
-) -> u.Quantity[u.Ohm * u.m]:  # ty: ignore[not-subscriptable]
+) -> u.Quantity[u.Ohm * u.m]:
     r"""
     Calculate the resistivity.
 
@@ -891,7 +891,7 @@ def thermoelectric_conductivity(  # noqa: ANN201, PLR0917
     ion,
     m_i=None,
     Z=None,
-    B: u.Quantity[u.T] = 0.0 * u.T,  # ty: ignore[not-subscriptable]
+    B: u.Quantity[u.T] = 0.0 * u.T,
     model: str = "Braginskii",
     field_orientation: str = "parallel",
     mu=None,
@@ -933,13 +933,13 @@ def ion_thermal_conductivity(  # noqa: PLR0917
     ion,
     m_i=None,
     Z=None,
-    B: u.Quantity[u.T] = 0.0 * u.T,  # ty: ignore[not-subscriptable]
+    B: u.Quantity[u.T] = 0.0 * u.T,
     model: str = "Braginskii",
     field_orientation: str = "parallel",
     mu=None,
     theta: float | None = None,
     coulomb_log_method: str = "classical",
-) -> u.Quantity[u.W / u.m / u.K]:  # ty: ignore[not-subscriptable]
+) -> u.Quantity[u.W / u.m / u.K]:
     r"""
     Calculate the thermal conductivity for ions.
 
@@ -1003,13 +1003,13 @@ def electron_thermal_conductivity(  # noqa: PLR0917
     ion,
     m_i=None,
     Z=None,
-    B: u.Quantity[u.T] = 0.0 * u.T,  # ty: ignore[not-subscriptable]
+    B: u.Quantity[u.T] = 0.0 * u.T,
     model: str = "Braginskii",
     field_orientation: str = "parallel",
     mu=None,
     theta: float | None = None,
     coulomb_log_method: str = "classical",
-) -> u.Quantity[u.W / u.m / u.K]:  # ty: ignore[not-subscriptable]
+) -> u.Quantity[u.W / u.m / u.K]:
     r"""
     Calculate the thermal conductivity for electrons.
 
@@ -1085,13 +1085,13 @@ def ion_viscosity(  # noqa: PLR0917
     ion,
     m_i=None,
     Z=None,
-    B: u.Quantity[u.T] = 0.0 * u.T,  # ty: ignore[not-subscriptable]
+    B: u.Quantity[u.T] = 0.0 * u.T,
     model: str = "Braginskii",
     field_orientation: str = "parallel",
     mu=None,
     theta: float | None = None,
     coulomb_log_method: str = "classical",
-) -> u.Quantity[u.Pa * u.s]:  # ty: ignore[not-subscriptable]
+) -> u.Quantity[u.Pa * u.s]:
     r"""
     Calculate the ion viscosity.
 
@@ -1141,13 +1141,13 @@ def electron_viscosity(  # noqa: PLR0917
     ion,
     m_i=None,
     Z=None,
-    B: u.Quantity[u.T] = 0.0 * u.T,  # ty: ignore[not-subscriptable]
+    B: u.Quantity[u.T] = 0.0 * u.T,
     model: str = "Braginskii",
     field_orientation: str = "parallel",
     mu=None,
     theta: float | None = None,
     coulomb_log_method: str = "classical",
-) -> u.Quantity[u.Pa * u.s]:  # ty: ignore[not-subscriptable]
+) -> u.Quantity[u.Pa * u.s]:
     r"""
     Calculate the electron viscosity.
 

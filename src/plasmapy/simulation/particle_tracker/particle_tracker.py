@@ -431,7 +431,7 @@ class ParticleTracker:
         self,
         method: Literal["NIST", "Bethe"],
         materials: list[str | None] | None = None,
-        I: list[u.Quantity[u.J] | None] | None = None,  # noqa: E741  # ty: ignore[not-subscriptable]
+        I: list[u.Quantity[u.J] | None] | None = None,  # noqa: E741
     ) -> bool:
         r"""
         Validate inputs to the `add_stopping` method. Raises errors if the
@@ -470,7 +470,7 @@ class ParticleTracker:
         self,
         method: Literal["NIST", "Bethe"],
         materials: list[str | None] | None = None,
-        I: list[u.Quantity[u.J] | None] | None = None,  # noqa: E741  # ty: ignore[not-subscriptable]
+        I: list[u.Quantity[u.J] | None] | None = None,  # noqa: E741
     ):
         r"""
         Enable particle stopping using experimental stopping powers.

@@ -56,7 +56,7 @@ class HarrisSheet:
         self.P0 = P0
 
     @validate_quantities
-    def magnetic_field(self, y: u.Quantity[u.m]) -> u.Quantity[u.T]:  # ty: ignore[not-subscriptable]
+    def magnetic_field(self, y: u.Quantity[u.m]) -> u.Quantity[u.T]:
         r"""
         Compute the magnetic field.
 
@@ -87,7 +87,7 @@ class HarrisSheet:
         return self.B0 * np.tanh(u.rad * y / self.delta)
 
     @validate_quantities
-    def current_density(self, y: u.Quantity[u.m]) -> u.Quantity[u.A / u.m**2]:  # ty: ignore[not-subscriptable]
+    def current_density(self, y: u.Quantity[u.m]) -> u.Quantity[u.A / u.m**2]:
         r"""
         Compute the current density.
 
@@ -116,7 +116,7 @@ class HarrisSheet:
         )
 
     @validate_quantities
-    def plasma_pressure(self, y: u.Quantity[u.m]) -> u.Quantity[u.Pa]:  # ty: ignore[not-subscriptable]
+    def plasma_pressure(self, y: u.Quantity[u.m]) -> u.Quantity[u.Pa]:
         r"""
         Compute plasma pressure.
 

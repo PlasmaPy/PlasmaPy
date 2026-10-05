@@ -100,10 +100,10 @@ def available_reactivity_reactions() -> list[str]:
 
 @validate_quantities
 def fusion_cross_section(
-    energy: u.Quantity[u.keV],  # ty: ignore[not-subscriptable]
+    energy: u.Quantity[u.keV],
     reaction: str,
     reference_frame: str = "CM",
-) -> u.Quantity[u.m**2]:  # ty: ignore[not-subscriptable]
+) -> u.Quantity[u.m**2]:
     r"""
     Calculate the fusion cross section :math:`σ(E)` for a two reactant fusion
     reaction.
@@ -379,9 +379,9 @@ def fusion_cross_section(
 
 @validate_quantities
 def fusion_reactivity(
-    ion_temp: u.Quantity[u.keV],  # ty: ignore[not-subscriptable]
+    ion_temp: u.Quantity[u.keV],
     reaction: str,
-) -> u.Quantity[u.m**3 / u.s]:  # ty: ignore[not-subscriptable]
+) -> u.Quantity[u.m**3 / u.s]:
     r"""
     Calculate the Maxwellian-averaged fusion reactivity :math:`⟨σv⟩(T)`
     for a two-body fusion reaction.

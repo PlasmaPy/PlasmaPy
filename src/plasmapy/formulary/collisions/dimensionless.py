@@ -27,13 +27,13 @@ from plasmapy.utils.decorators import validate_quantities
     n_e={"can_be_negative": False},
 )
 def coupling_parameter(  # noqa: PLR0917
-    T: u.Quantity[u.K],  # ty: ignore[not-subscriptable]
-    n_e: u.Quantity[u.m**-3],  # ty: ignore[not-subscriptable]
+    T: u.Quantity[u.K],
+    n_e: u.Quantity[u.m**-3],
     species,
     z_mean: float = np.nan,
-    V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,  # ty: ignore[not-subscriptable]
+    V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
     method: Literal["classical", "quantum"] = "classical",
-) -> u.Quantity[u.dimensionless_unscaled]:  # ty: ignore[not-subscriptable]
+) -> u.Quantity[u.dimensionless_unscaled]:
     r"""
     Ratio of the Coulomb energy to the kinetic (usually thermal) energy.
 
@@ -224,13 +224,13 @@ def coupling_parameter(  # noqa: PLR0917
 )
 def Knudsen_number(  # noqa: PLR0917
     characteristic_length,
-    T: u.Quantity[u.K],  # ty: ignore[not-subscriptable]
-    n_e: u.Quantity[u.m**-3],  # ty: ignore[not-subscriptable]
+    T: u.Quantity[u.K],
+    n_e: u.Quantity[u.m**-3],
     species,
     z_mean: float = np.nan,
-    V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,  # ty: ignore[not-subscriptable]
+    V: u.Quantity[u.m / u.s] = np.nan * u.m / u.s,
     method: str = "classical",
-) -> u.Quantity[u.dimensionless_unscaled]:  # ty: ignore[not-subscriptable]
+) -> u.Quantity[u.dimensionless_unscaled]:
     r"""
     Knudsen number (dimensionless).
 
