@@ -6,10 +6,10 @@ The periodic tabla data is from: https://periodic.lanl.gov/index.shtml
 """
 
 __all__ = [
-    "element_obj_hook",
-    "data_about_elements",
     "atomic_numbers_to_symbols",
+    "data_about_elements",
     "element_names_to_symbols",
+    "element_obj_hook",
 ]
 
 import json

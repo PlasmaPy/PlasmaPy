@@ -5,8 +5,8 @@ Module containing save routines for the particle tracker.
 __all__ = [
     "AbstractSaveRoutine",
     "DoNotSaveSaveRoutine",
-    "SaveOnceOnCompletion",
     "IntervalSaveRoutine",
+    "SaveOnceOnCompletion",
 ]
 
 from abc import ABC, abstractmethod

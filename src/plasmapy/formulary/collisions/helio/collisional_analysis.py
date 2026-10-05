@@ -232,7 +232,7 @@ def temp_ratio(  # noqa: ANN201, C901
             )
 
     # Define differential equation function
-    def df_eq(  # noqa: ANN202
+    def df_eq(  # noqa: ANN202, PLR0917
         r_0,
         r_n,
         n_1_0,
@@ -261,7 +261,7 @@ def temp_ratio(  # noqa: ANN201, C901
         B = 1 / (u.cm * u.K) ** 1.5
 
         # Define Coulomb log for mixed ion collisions, see docstring
-        def lambda_ba(  # noqa: ANN202
+        def lambda_ba(  # noqa: ANN202, PLR0917
             theta: float,
             T_1,
             n_1,
@@ -345,7 +345,7 @@ def temp_ratio(  # noqa: ANN201, C901
                 ),
             )
             if verbose:
-                logging.info(f"\r {(i / len(variables[0])) * 100:.2f} %")  # noqa: G004
+                logging.info(f"\r {(i / len(variables[0])) * 100:.2f} %")  # noqa: G004, LOG015
 
         return res  # noqa: TRY300
 

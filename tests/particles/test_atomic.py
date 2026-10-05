@@ -469,7 +469,7 @@ def test_isotopic_abundance() -> None:
     """Test that `isotopic_abundance` returns the appropriate values or
     raises appropriate errors for various isotopes."""
     assert isotopic_abundance("H", 1) == isotopic_abundance("protium")
-    assert np.isclose(isotopic_abundance("D"), 0.000115)
+    np.testing.assert_allclose(isotopic_abundance("D"), 0.000115, rtol=1e-5, atol=1e-8)
     assert isotopic_abundance("Be-8") == 0.0, "Be-8"
     assert isotopic_abundance("Li-8") == 0.0, "Li-8"
 
@@ -713,7 +713,9 @@ def test_stopping_power_interpolation(
     )
 
     # NIST data is given to four significant figures: use a tolerance of 1 part in 1000
-    assert np.isclose(actual_stopping_power, expected_stopping_power, rtol=0.001).all()
+    np.testing.assert_allclose(
+        actual_stopping_power, expected_stopping_power, rtol=0.001, atol=1e-8
+    )
 
 
 def test_stopping_power_no_interpolation() -> None:

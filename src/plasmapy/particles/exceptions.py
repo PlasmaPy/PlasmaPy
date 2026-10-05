@@ -1,8 +1,6 @@
 """Collection of exceptions and warnings for `plasmapy.particles`."""
 
 __all__ = [
-    "ParticleError",
-    "ParticleWarning",
     "ChargeError",
     "InvalidElementError",
     "InvalidIonError",
@@ -10,6 +8,8 @@ __all__ = [
     "InvalidParticleError",
     "MissingParticleDataError",
     "MissingParticleDataWarning",
+    "ParticleError",
+    "ParticleWarning",
     "UnexpectedParticleError",
 ]
 

@@ -10,13 +10,13 @@ pressure.
 """
 
 __all__ = [
-    "beta",
     "Debye_number",
     "Hall_parameter",
-    "Mag_Reynolds",
-    "quantum_theta",
-    "Reynolds_number",
     "Lundquist_number",
+    "Mag_Reynolds",
+    "Reynolds_number",
+    "beta",
+    "quantum_theta",
 ]
 __aliases__ = ["betaH_", "nD_", "Re_", "Rm_"]
 
@@ -113,7 +113,7 @@ nD_ = Debye_number
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
 )
 @particle_input
-def Hall_parameter(  # noqa: ANN201
+def Hall_parameter(  # noqa: ANN201, PLR0917
     n: u.Quantity[u.m**-3],
     T: u.Quantity[u.K],
     B: u.Quantity[u.T],
@@ -448,7 +448,7 @@ Rm_ = Mag_Reynolds
 """Alias to `~plasmapy.formulary.dimensionless.Mag_Reynolds`."""
 
 
-def Lundquist_number(
+def Lundquist_number(  # noqa: PLR0917
     L: u.Quantity[u.m],
     B: u.Quantity[u.T],
     density: u.Quantity[u.m**-3, u.kg / u.m**3],

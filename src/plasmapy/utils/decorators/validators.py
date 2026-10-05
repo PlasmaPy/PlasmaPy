@@ -2,7 +2,7 @@
 Various decorators to validate input/output arguments to functions.
 """
 
-__all__ = ["validate_class_attributes", "validate_quantities", "ValidateQuantities"]
+__all__ = ["ValidateQuantities", "validate_class_attributes", "validate_quantities"]
 
 import functools
 import inspect

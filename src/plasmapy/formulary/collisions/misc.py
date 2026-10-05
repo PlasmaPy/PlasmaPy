@@ -1,9 +1,9 @@
 """Miscellaneous parameters related to particle collisions."""
 
 __all__ = [
-    "mobility",
     "Bethe_stopping",
     "Spitzer_resistivity",
+    "mobility",
 ]
 __lite_funcs__ = ["Bethe_stopping_lite"]
 
@@ -94,7 +94,7 @@ def _replace_nan_velocity_with_thermal_velocity(
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     n_e={"can_be_negative": False},
 )
-def mobility(
+def mobility(  # noqa: PLR0917
     T: u.Quantity[u.K],
     n_e: u.Quantity[u.m**-3],
     species,
@@ -198,8 +198,6 @@ def mobility(
 
     Examples
     --------
-    .. autolink-skip:: section
-
     >>> import astropy.units as u
     >>> n = 1e19 * u.m**-3
     >>> T = 1e6 * u.K
@@ -330,7 +328,7 @@ def Bethe_stopping(
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     n={"can_be_negative": False},
 )
-def Spitzer_resistivity(
+def Spitzer_resistivity(  # noqa: PLR0917
     T: u.Quantity[u.K],
     n: u.Quantity[u.m**-3],
     species,
@@ -433,8 +431,6 @@ def Spitzer_resistivity(
 
     Examples
     --------
-    .. autolink-skip:: section
-
     >>> import astropy.units as u
     >>> n = 1e19 * u.m**-3
     >>> T = 1e6 * u.K

@@ -17,6 +17,7 @@ from plasmapy.formulary.dimensionless import *
 from plasmapy.formulary.distribution import *
 from plasmapy.formulary.drifts import *
 from plasmapy.formulary.frequencies import *
+from plasmapy.formulary.fusion import *
 from plasmapy.formulary.ionization import *
 from plasmapy.formulary.laser import *
 from plasmapy.formulary.lengths import *
@@ -46,6 +47,7 @@ import contextlib  # isort: skip
 for modname in (
     "braginskii",
     "collisions",
+    "fusion",
     "densities",
     "dielectric",
     "dimensionless",

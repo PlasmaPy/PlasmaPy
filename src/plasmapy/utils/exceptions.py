@@ -1,18 +1,18 @@
 """Exceptions and warnings specific to PlasmaPy."""
 
 __all__ = [
-    "PlasmaPyError",
-    "PhysicsError",
+    "CouplingWarning",
     "InvalidRomanNumeralError",
     "OutOfRangeError",
-    "RelativityError",
-    "RomanError",
-    "PlasmaPyWarning",
-    "CouplingWarning",
+    "PhysicsError",
     "PhysicsWarning",
     "PlasmaPyDeprecationWarning",
+    "PlasmaPyError",
     "PlasmaPyFutureWarning",
+    "PlasmaPyWarning",
+    "RelativityError",
     "RelativityWarning",
+    "RomanError",
 ]
 
 # ------------------------------------------------------------------------------

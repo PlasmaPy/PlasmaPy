@@ -1,6 +1,6 @@
 """Tools for formatting strings, including for error messages."""
 
-__all__ = ["call_string", "attribute_call_string", "method_call_string"]
+__all__ = ["attribute_call_string", "call_string", "method_call_string"]
 
 import inspect
 from collections.abc import Callable

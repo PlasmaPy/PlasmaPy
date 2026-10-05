@@ -4,11 +4,11 @@ for special particles.
 """
 
 __all__ = [
+    "ParticleZoo",
     "antiparticles",
     "create_particles_dict",
     "data_about_special_particles",
     "particle_zoo",
-    "ParticleZoo",
     "special_ion_masses",
 ]
 

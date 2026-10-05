@@ -1,0 +1,1 @@
+Removed ``sphinx-codeautolink`` as an extension to the documentation build.

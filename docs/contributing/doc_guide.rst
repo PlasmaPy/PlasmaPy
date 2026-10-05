@@ -110,22 +110,7 @@ section on :ref:`external-references`. In-line code samples are
 typically enclosed in double backticks. To get inline code highlighting,
 use the :rest:`:py:` role for Python code.
 
-.. code-block:: rst
-
-   Here `plasmapy.particles` provides a linked reference to the
-   module's documentation.
-
-   Adding a tilde at the beginning `~plasmapy.particles` still
-   provides a linked reference to the associated documentation
-   but shortens the display so only "particles" is displayed.
-
-   Double backticks are used to show inline code that is not
-   cross-referenced: ``plasmapy.particles``.
-
-   The ``:py:`` role can be used for inline code highlighting:
-   :py:`import astropy.units as u`.
-
-This |reStructuredText| block renders as:
+.. rest-example::
 
    Here `plasmapy.particles` provides a linked reference to the
    module's documentation.
@@ -143,7 +128,7 @@ This |reStructuredText| block renders as:
 |Sphinx| can format code blocks for |Python| and the |Python| console
 using the :rst:dir:`code-block` :term:`directive`.
 
-   .. code-block:: rst
+   .. rest-example::
 
       .. code-block:: python
 
@@ -155,21 +140,9 @@ using the :rst:dir:`code-block` :term:`directive`.
          >>> print(6 * 9)
          54
 
-This |reStructuredText| block renders as:
-
-   .. code-block:: python
-
-      def sample_function():
-          return 42
-
-   .. code-block:: pycon
-
-      >>> print(6 * 9)
-      54
-
 Here are some examples for linking to websites.
 
-.. code-block:: rst
+.. rest-example::
 
    `PlasmaPy Enhancement Proposals <https://github.com/PlasmaPy/PlasmaPy-PLEPs>`_
    are used to propose major changes to PlasmaPy.
@@ -179,26 +152,10 @@ Here are some examples for linking to websites.
    .. _`Write the Docs`: https://www.writethedocs.org
    .. _guide: https://www.writethedocs.org/
 
-This |reStructuredText| block renders as:
-
-   `PlasmaPy Enhancement Proposals <https://github.com/PlasmaPy/PlasmaPy-PLEPs>`_
-   are used to propose major changes to PlasmaPy.
-
-   `Write the Docs`_ has a guide_ on writing software documentation.
-
-   .. _`Write the Docs`: https://www.writethedocs.org/
-   .. _guide: https://www.writethedocs.org/
-
 Displayed math may be created using the :rst:dir:`math`
 :term:`directive` using LaTeX_ syntax.
 
-.. code-block:: rst
-
-   .. math::
-
-      \alpha = \beta + \gamma
-
-This |reStructuredText| block renders as:
+.. rest-example::
 
    .. math::
 
@@ -206,12 +163,7 @@ This |reStructuredText| block renders as:
 
 Math can be in-line using the :rst:role:`math` |role|.
 
-.. code-block:: rst
-
-   An example of in-line math is :math:`x`. Using Unicode characters
-   like :math:`α + β + γ` makes math easier to read in the source code.
-
-This |reStructuredText| block renders as:
+.. rest-example::
 
    An example of in-line math is :math:`x`. Using Unicode characters
    like :math:`α + β + γ` makes math easier to read in the source code.
@@ -664,15 +616,7 @@ documentation for PlasmaPy and affiliated packages.
   example below. The backslash followed by a space is needed to have a
   space between the number and the units.
 
-  .. code-block:: rst
-
-     The speed of light is approximately :math:`3 × 10^8` m/s or
-
-     .. math::
-
-        3 × 10^{10}\ \text{cm/s}
-
-  This |reStructuredText| block renders as:
+  .. rest-example::
 
      The speed of light is approximately :math:`3 × 10^8` m/s or
 
@@ -692,15 +636,7 @@ documentation for PlasmaPy and affiliated packages.
   text to show up immediately next to the regular text. This is not
   necessary before a period or comma.
 
-  .. code-block:: rst
-
-     The symbol for helium is He.
-
-     The symbol for an electron is e\ :sup:`-`.
-
-     An alpha particle may be represented as :sup:`4`\ He\ :sup:`1+`.
-
-  This |reStructuredText| block renders as:
+  .. rest-example::
 
      The symbol for helium is He.
 

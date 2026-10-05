@@ -478,22 +478,8 @@ def test_annotated_init() -> None:
     [
         (particle_input, validate_quantities_),
         (particle_input(), validate_quantities_),
-        pytest.param(
-            validate_quantities_,
-            particle_input,
-            marks=pytest.mark.xfail(
-                reason="For instance methods, particle_input must currently "
-                "be the outer decorator. See #2035.",
-            ),
-        ),
-        pytest.param(
-            validate_quantities_,
-            particle_input(),
-            marks=pytest.mark.xfail(
-                reason="For instance methods, particle_input must currently "
-                "be the outer decorator. See #2035.",
-            ),
-        ),
+        (validate_quantities_, particle_input),
+        (validate_quantities_, particle_input()),
     ],
 )
 def test_particle_input_with_validate_quantities(

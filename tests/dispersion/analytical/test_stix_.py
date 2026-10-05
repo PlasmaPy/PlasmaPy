@@ -264,7 +264,7 @@ class TestStix:
         ks = stix(**kwargs)
         ns = ks.value * c_si_unitless / kwargs["w"].value
 
-        assert np.allclose(ns, expected["ns"])
+        np.testing.assert_allclose(ns, expected["ns"], rtol=1e-5, atol=1e-8)
 
     @pytest.mark.parametrize(
         "kwargs",
@@ -314,10 +314,10 @@ class TestStix:
         n_soln1 = np.emath.sqrt(0.5 * (R + L - np.abs(R - L)))  # n^2 = L
         n_soln2 = np.emath.sqrt(0.5 * (R + L + np.abs(R - L)))  # n^2 = R
 
-        assert np.allclose(ns[..., 0], n_soln1)
-        assert np.allclose(ns[..., 1], -n_soln1)
-        assert np.allclose(ns[..., 2], n_soln2)
-        assert np.allclose(ns[..., 3], -n_soln2)
+        np.testing.assert_allclose(ns[..., 0], n_soln1, rtol=1e-5, atol=1e-8)
+        np.testing.assert_allclose(ns[..., 1], -n_soln1, rtol=1e-5, atol=1e-8)
+        np.testing.assert_allclose(ns[..., 2], n_soln2, rtol=1e-5, atol=1e-8)
+        np.testing.assert_allclose(ns[..., 3], -n_soln2, rtol=1e-5, atol=1e-8)
 
     @pytest.mark.parametrize(
         "kwargs",
@@ -371,7 +371,7 @@ class TestStix:
             (R * L + P * S - np.abs(R * L - P * S)) / (2 * S),
         )  # n^2 = P
 
-        assert np.allclose(ns[..., 0], n_soln1)
-        assert np.allclose(ns[..., 1], -n_soln1)
-        assert np.allclose(ns[..., 2], n_soln2)
-        assert np.allclose(ns[..., 3], -n_soln2)
+        np.testing.assert_allclose(ns[..., 0], n_soln1, rtol=1e-5, atol=1e-8)
+        np.testing.assert_allclose(ns[..., 1], -n_soln1, rtol=1e-5, atol=1e-8)
+        np.testing.assert_allclose(ns[..., 2], n_soln2, rtol=1e-5, atol=1e-8)
+        np.testing.assert_allclose(ns[..., 3], -n_soln2, rtol=1e-5, atol=1e-8)

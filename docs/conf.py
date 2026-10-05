@@ -56,11 +56,11 @@ if "dev" in version:
     git_hash = version.split("dev")[-1].split("+")[-1].split(".")[0]
     version = f"{now.year}.{now.month}.0.dev+{git_hash}"
     version_info_message = f"Setting {version = !r}"
-    logging.info(version_info_message)
+    logging.info(version_info_message)  # noqa: LOG015
 
 if version.startswith("0"):
     version_warning_message = f"Incorrect {version = !r}"
-    logging.warning(version_warning_message)
+    logging.warning(version_warning_message)  # noqa: LOG015
 
 release = version
 
@@ -97,13 +97,13 @@ extensions = [
     "sphinx.ext.todo",
     "sphinx.ext.viewcode",
     "sphinx_changelog",
-    "sphinx_codeautolink",
     "sphinx_copybutton",
     "sphinx_gallery.load_style",
     "sphinx_issues",
     "sphinx_reredirects",
     "sphinx_tabs.tabs",
     "sphinx_toolbox.collapse",
+    "sphinx_toolbox.rest_example",
     "sphinxcontrib.bibtex",
     "sphinxemoji.sphinxemoji",
     "sphinxcontrib.globalsubs",
@@ -203,6 +203,9 @@ nitpick_ignore_regex = [
     # Issue: https://github.com/PlasmaPy/PlasmaPy/issues/3312
     (python_role, "dict.*str.*"),
     (python_role, "numpy._typing.DTypeLike"),
+    (python_role, "numpy.typing.DTypeLike"),
+    (python_role, "numpy._typing._array_like.NDArray"),
+    (python_role, "numpy._typing._dtype_like.DTypeLike"),
     (python_role, "typing.Annotated.*Quantity.*"),
 ]
 
@@ -237,12 +240,6 @@ bibtex_bibfiles = ["bibliography.bib"]
 bibtex_default_style = "plain"
 bibtex_reference_style = "author_year"
 bibtex_cite_id = "{key}"
-
-# sphinx-codeautolink
-
-codeautolink_concat_default = True
-codeautolink_warn_on_failed_resolve = False  # turn on for debugging
-codeautolink_warn_on_missing_inventory = False  # turn on for debugging
 
 # intersphinx
 

@@ -1,0 +1,2 @@
+Used the ``rest-example`` directive from ``sphinx-toolbox`` to
+de-duplicate reST examples in the documentation guide.

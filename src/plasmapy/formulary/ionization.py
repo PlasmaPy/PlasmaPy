@@ -1,6 +1,6 @@
 """Calculation of ionization equilibria."""
 
-__all__ = ["ionization_balance", "Saha", "Z_bal_"]
+__all__ = ["Saha", "Z_bal_", "ionization_balance"]
 __aliases__ = ["Z_bal_"]
 
 import astropy.units as u

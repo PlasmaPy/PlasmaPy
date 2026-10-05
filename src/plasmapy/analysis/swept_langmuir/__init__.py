@@ -4,13 +4,13 @@ traces.
 """
 
 __all__ = [
+    "ISatExtras",
+    "VFExtras",
     "check_sweep",
     "find_floating_potential",
     "find_ion_saturation_current",
     "merge_voltage_clusters",
     "sort_sweep_arrays",
-    "ISatExtras",
-    "VFExtras",
 ]
 __aliases__ = ["find_isat_", "find_vf_"]
 __all__ += __aliases__

@@ -57,7 +57,7 @@ def main() -> None:
             f"{', '.join(sorted(authors))}. All authors are included "
             "in CITATION.cff. ✅️"
         )
-        logging.info(msg)
+        logging.info(msg)  # noqa: LOG015
         sys.exit(0)
 
     branch = os.getenv("GITHUB_HEAD_REF")
@@ -89,7 +89,7 @@ contributors. Sign up at: https://orcid.org/register
 Thank you for contributing! 🌱️
 """
 
-    logging.info(instructions_to_add_author)
+    logging.info(instructions_to_add_author)  # noqa: LOG015
     sys.exit(1)
 
 

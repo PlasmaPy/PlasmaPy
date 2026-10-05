@@ -4,9 +4,9 @@ Module containing termination conditions for the particle tracker.
 
 __all__ = [
     "AbstractTerminationCondition",
-    "TimeElapsedTerminationCondition",
-    "NoParticlesOnGridsTerminationCondition",
     "AllParticlesOffGridTerminationCondition",
+    "NoParticlesOnGridsTerminationCondition",
+    "TimeElapsedTerminationCondition",
 ]
 
 from abc import ABC, abstractmethod

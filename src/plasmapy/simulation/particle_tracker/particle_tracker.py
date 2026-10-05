@@ -166,7 +166,7 @@ class ParticleTracker:
     6.2999999999... s [[-1.73302...e-08  1.31539...e-05  0.00000...e+00]] m
     """
 
-    def __init__(
+    def __init__(  # noqa: PLR0917
         self,
         grids: AbstractGrid | Iterable[AbstractGrid],
         termination_condition: AbstractTerminationCondition | None = None,
@@ -926,8 +926,8 @@ class ParticleTracker:
 
         # Make sure the time step can be multiplied by a [num_particles, 3] shape field array
         if isinstance(dt, np.ndarray) and dt.size > 1:
-            dt = dt[self._tracked_particle_mask, np.newaxis]  # ty:ignore[invalid-argument-type]
-            self.time[self._tracked_particle_mask] += dt
+            dt = dt[self._tracked_particle_mask, np.newaxis]
+            self.time[self._tracked_particle_mask] += dt  # ty: ignore[not-subscriptable]
         else:
             self.time += dt  # ty:ignore[unsupported-operator]
 

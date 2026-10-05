@@ -2,7 +2,7 @@
 Functionality for determining the ion-saturation current of a Langmuir sweep.
 """
 
-__all__ = ["find_ion_saturation_current", "ISatExtras"]
+__all__ = ["ISatExtras", "find_ion_saturation_current"]
 __aliases__ = ["find_isat_"]
 
 import numbers

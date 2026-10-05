@@ -11,17 +11,17 @@ For more information about the PlasmaPy community, please check out
 """
 
 __all__ = [
-    "online_help",
+    "__citation__",
+    "__version__",
     "analysis",
     "diagnostics",
     "dispersion",
     "formulary",
+    "online_help",
     "particles",
     "plasma",
     "simulation",
     "utils",
-    "__version__",
-    "__citation__",
 ]
 
 import sys
@@ -45,9 +45,7 @@ try:
             version as __version__,
         )
 except Exception:  # coverage: ignore  # noqa: BLE001
-    __version__ = (  # ty:ignore[conflicting-declarations]
-        "0.0.0"  # package is not installed
-    )
+    __version__ = "0.0.0"  # package is not installed
 
     import warnings
 

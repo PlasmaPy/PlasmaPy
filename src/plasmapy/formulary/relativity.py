@@ -1,6 +1,6 @@
 """Calculation of quantities related to relativity."""
 
-__all__ = ["Lorentz_factor", "relativistic_energy", "RelativisticBody"]
+__all__ = ["Lorentz_factor", "RelativisticBody", "relativistic_energy"]
 
 from numbers import Real
 

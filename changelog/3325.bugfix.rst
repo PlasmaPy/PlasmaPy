@@ -1,0 +1,4 @@
+Enabled |particle_input| and |validate_quantities| to be used in
+either order when decorating an instance method. Previously,
+|particle_input| had to be the outer decorator for instance methods
+(see :issue:`2035`).

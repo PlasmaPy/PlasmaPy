@@ -1,6 +1,6 @@
 """Functions that are related to nuclear reactions."""
 
-__all__ = ["nuclear_binding_energy", "nuclear_reaction_energy", "mass_energy"]
+__all__ = ["mass_energy", "nuclear_binding_energy", "nuclear_reaction_energy"]
 
 import re
 

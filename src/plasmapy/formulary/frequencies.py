@@ -1,11 +1,11 @@
 """Fundamental frequencies for a plasma."""
 
 __all__ = [
+    "Buchsbaum_frequency",
     "gyrofrequency",
     "lower_hybrid_frequency",
     "plasma_frequency",
     "upper_hybrid_frequency",
-    "Buchsbaum_frequency",
 ]
 __aliases__ = ["oc_", "wc_", "wlh_", "wp_", "wuh_"]
 __lite_funcs__ = ["plasma_frequency_lite"]
@@ -537,7 +537,7 @@ wuh_ = upper_hybrid_frequency
     },
 )
 @angular_freq_to_hz
-def Buchsbaum_frequency(
+def Buchsbaum_frequency(  # noqa: PLR0917
     B: u.Quantity[u.T],
     n1: u.Quantity[u.m**-3],
     n2: u.Quantity[u.m**-3],

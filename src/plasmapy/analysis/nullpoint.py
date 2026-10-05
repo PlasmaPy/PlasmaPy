@@ -140,7 +140,7 @@ class NullPoint(Point):  # noqa: PLW1641
     classification = property(get_classification)
 
 
-def _vector_space(
+def _vector_space(  # noqa: PLR0917
     x_arr=None,
     y_arr=None,
     z_arr=None,
@@ -567,7 +567,7 @@ def _reduction(vspace, cell):
     return passX and passY and passZ
 
 
-def _bilinear_root(a1, b1, c1, d1, a2, b2, c2, d2):  # noqa: C901, PLR0911, PLR0912
+def _bilinear_root(a1, b1, c1, d1, a2, b2, c2, d2):  # noqa: C901, PLR0911, PLR0912, PLR0917
     r"""
     Return the roots of a pair of bilinear equations of the following
     format.
@@ -1472,7 +1472,7 @@ def _vspace_iterator(vspace, maxiter: int = 500, err: float = 1e-10):  # noqa: A
     return nullpoints
 
 
-def null_point_find(  # noqa: ANN201
+def null_point_find(  # noqa: ANN201, PLR0917
     x_arr=None,
     y_arr=None,
     z_arr=None,
@@ -1557,7 +1557,7 @@ def null_point_find(  # noqa: ANN201
     return _vspace_iterator(vspace, maxiter, err)
 
 
-def uniform_null_point_find(  # noqa: ANN201
+def uniform_null_point_find(  # noqa: ANN201, PLR0917
     x_range,
     y_range,
     z_range,

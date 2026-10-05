@@ -1,8 +1,8 @@
 """Dimensionless numbers related to particle collisions."""
 
 __all__ = [
-    "coupling_parameter",
     "Knudsen_number",
+    "coupling_parameter",
 ]
 
 from typing import Literal
@@ -26,7 +26,7 @@ from plasmapy.utils.decorators import validate_quantities
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     n_e={"can_be_negative": False},
 )
-def coupling_parameter(
+def coupling_parameter(  # noqa: PLR0917
     T: u.Quantity[u.K],
     n_e: u.Quantity[u.m**-3],
     species,
@@ -222,7 +222,7 @@ def coupling_parameter(
     T={"can_be_negative": False, "equivalencies": u.temperature_energy()},
     n_e={"can_be_negative": False},
 )
-def Knudsen_number(
+def Knudsen_number(  # noqa: PLR0917
     characteristic_length,
     T: u.Quantity[u.K],
     n_e: u.Quantity[u.m**-3],

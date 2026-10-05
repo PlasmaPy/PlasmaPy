@@ -979,8 +979,6 @@ Equations and Physical Formulae
   the physical constants. For example, the following line of code
   obscures information about the physics being represented:
 
-  .. autolink-skip:: section
-
   .. code-block:: python
 
      omega_ce = 1.76e7*(B/u.G)*u.rad/u.s  # doctest: +SKIP
@@ -1092,8 +1090,6 @@ The overall process of performing a release is:
 
 .. _`astropy.units`: https://docs.astropy.org/en/stable/units/index.html
 .. |astropy.units| replace:: `astropy.units`
-
-
 
 .. _`noxfile.py`: https://github.com/PlasmaPy/PlasmaPy/blob/main/noxfile.py
 .. |noxfile.py| replace:: :file:`noxfile.py`

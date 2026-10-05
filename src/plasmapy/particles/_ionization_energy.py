@@ -4,8 +4,8 @@ Module for loading ionization energy data from
 """
 
 __all__ = [
-    "ionization_energy_obj_hook",
     "data_about_ionization_energy",
+    "ionization_energy_obj_hook",
 ]
 
 import json

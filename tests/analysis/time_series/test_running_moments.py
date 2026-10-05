@@ -19,7 +19,7 @@ from plasmapy.analysis.time_series.running_moments import running_mean, running_
 def test_running_mean(signal, radius: int, expected) -> None:
     """Test running_mean function"""
     result = running_mean(signal=signal, radius=radius)
-    assert np.allclose(result, expected)
+    np.testing.assert_allclose(result, expected, rtol=1e-5, atol=1e-8)
 
 
 @pytest.mark.parametrize(("signal", "radius"), [([1, 2], 1), ([1, 2, 3, 4], 1.2)])
@@ -49,7 +49,7 @@ def test_running_mean_exception(signal, radius: int) -> None:
 def test_running_moment(signal, radius: int, moment, time, expected) -> None:
     """Test running_moment_function"""
     result = running_moment(signal, radius, moment, time)
-    assert np.allclose(result, expected)
+    np.testing.assert_allclose(result, expected, rtol=1e-5, atol=1e-8)
 
 
 @pytest.mark.parametrize(

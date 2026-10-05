@@ -36,7 +36,7 @@ from plasmapy.analysis.time_series.conditional_averaging import ConditionalEvent
         ([1, 2], [1, 2], 1.5, 1, None, None, 0, ValueError),
     ],
 )
-def test_ConditionalEvents_Errors(
+def test_ConditionalEvents_Errors(  # noqa: PLR0917
     signal,
     time,
     lower_threshold,
@@ -217,7 +217,7 @@ def test_ConditionalEvents_Errors(
         ),
     ],
 )
-def test_ConditionalEvents_class(
+def test_ConditionalEvents_class(  # noqa: PLR0917
     signal,
     time,
     lower_threshold,
@@ -299,7 +299,7 @@ def test_ConditionalEvents_class(
         ),
     ],
 )
-def test_peak_not_max_value(
+def test_peak_not_max_value(  # noqa: PLR0917
     signal,
     time,
     lower_threshold,

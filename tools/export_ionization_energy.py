@@ -261,7 +261,7 @@ for element_or_isotope in elements_and_isotopes:
         logger = logging.warning if atomic_numb >= 111 else logging.error
         logger(f"Failed to parse data for {element_or_isotope} ({atomic_numb})")
     except requests.exceptions.RequestException:
-        logging.exception("Failed to retrieve data for %s", element_or_isotope)
+        logging.exception("Failed to retrieve data for %s", element_or_isotope)  # noqa: LOG015
 
     # Delay to avoid hitting rate limits or putting too much load on NIST
     time.sleep(0.05)

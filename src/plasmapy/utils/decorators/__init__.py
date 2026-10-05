@@ -3,20 +3,20 @@ A module to contain various decorators used to build readable and useful code.
 """
 
 __all__ = [
-    "angular_freq_to_hz",
-    "check_relativistic",
-    "check_values",
-    "check_units",
-    "deprecated",
-    "bind_lite_func",
-    "modify_docstring",
-    "preserve_signature",
-    "validate_class_attributes",
-    "validate_quantities",
     "CheckBase",
     "CheckUnits",
     "CheckValues",
     "ValidateQuantities",
+    "angular_freq_to_hz",
+    "bind_lite_func",
+    "check_relativistic",
+    "check_units",
+    "check_values",
+    "deprecated",
+    "modify_docstring",
+    "preserve_signature",
+    "validate_class_attributes",
+    "validate_quantities",
 ]
 
 from plasmapy.utils.decorators.checks import (
