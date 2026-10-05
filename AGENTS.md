@@ -29,6 +29,27 @@ This file provides context, rules, and guidelines for AI coding assistants worki
 - Lint files with `uvx pre-commit`.
 - Use SI units.
 
+## Units and particles
+
+- Represent physical quantities with `astropy.units` (usually imported as
+  `u`; e.g., `5 * u.m`). Keep operations unit-aware and convert with
+  `.to(...)`.
+- Treat eV as energy. For temperature arguments that accept energy units,
+  add a temperature-energy equivalency to that parameter in
+  `@validate_quantities`, e.g., `T={"equivalencies": u.temperature_energy()}`.
+- Use `Particle` for known species and `CustomParticle` for species with
+  specified mass or charge (e.g., an average ion). Use `ParticleList` to
+  collect particles.
+- Use `@particle_input` when a function should accept particle-like
+  values and convert them to particle objects. Annotate each relevant
+  parameter with `ParticleLike` or `ParticleListLike`; use `require`,
+  `any_of`, or `exclude` for category constraints. Avoid implicit
+  default particle assumptions.
+- Use `@validate_quantities` to validate units and value constraints and
+  convert `Quantity` arguments or configured return values to requested
+  units. Prefer type annotations for expected units, and use decorator
+  options for additional value constraints or equivalencies.
+
 ## Documentation
 
 - The documentation is written in reStructuredText, built with Sphinx, and hosted on Read the Docs.

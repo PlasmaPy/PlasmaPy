@@ -1,0 +1,1 @@
+Expanded :file:`AGENTS.md` with guidance on units, particles, and their decorators.
