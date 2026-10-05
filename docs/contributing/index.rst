@@ -100,17 +100,17 @@ Labeling and Review Process
 PR Labels
 ~~~~~~~~~
 
-Contributors are advised to add the **``AI assisted``** label if their PR uses AI assistance.
+Maintainers are advised to add the **``AI assisted``** label if their PR uses AI assistance.
 This helps project maintainers:
 
-- Plan review capacity (AI-assisted PRs may face longer review times)
+- Plan review capacity
 - Understand how AI is being used in the project
 - Prioritize based on complexity of the PR
 
 Review Expectations
 ~~~~~~~~~~~~~~~~~~~
 
-- **AI-assisted PRs may likely face delayed code reviews**
+- **AI-assisted PRs may face delayed code reviews**
 
 Questions and feedback
 ----------------------
