@@ -24,11 +24,14 @@ jobs:
   phep3-compliance:
     name: PHEP 3 Compliance
     runs-on: ubuntu-latest
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'run comprehensive tests')) ||
+      (github.event_name == 'schedule' && github.repository == 'PlasmaPy/PlasmaPy' && github.ref == 'refs/heads/main')
     steps:
     - uses: actions/checkout@v7.0.1
       with:
         persist-credentials: false
-
     - name: Check PHEP 3 Compliance
       uses: heliophysicsPy/pyhc-actions/phep3-compliance@v1.1.2
       # Use `ignore-errors-for` to allow exceptions to PHEP 3 policy
@@ -36,10 +39,13 @@ jobs:
   pyhc-env-compat:
     name: PyHC Environment Compatibility
     runs-on: ubuntu-latest
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'run comprehensive tests')) ||
+      (github.event_name == 'schedule' && github.repository == 'PlasmaPy/PlasmaPy' && github.ref == 'refs/heads/main')
     steps:
     - uses: actions/checkout@v7.0.1
       with:
         persist-credentials: false
-
     - name: Check PyHC Environment Compatibility
       uses: heliophysicsPy/pyhc-actions/pyhc-env-compat@v1.1.2
