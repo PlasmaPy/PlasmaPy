@@ -72,22 +72,27 @@ Glossary
       For more details, visit the `Wikipedia page <https://en.wikipedia.org/wiki/Force-free_magnetic_field>`_.
 
    gas
-      A compressible fluid consisting of widely-separated particles that
+      :wikipedia:`Gas` is a state of matter with neither fixed volume
+      nor fixed shape that consists of widely-separated particles that
       interact with each other predominantly through short-range binary
       collisions.
 
-      Nearly all particles in a gas have a neutral net electric charge,
-      and therefore do not exert the long-range electromagnetic forces
-      on each other necessary for the fluid to exhibit
-      |collective behavior| as in a |plasma|.
+      The vast majority of particles in a gas have a neutral net
+      electric charge. Consequently, gas does not exhibit the
+      |collective behavior| resulting from the interactions of ensembles
+      of charged particles that is characteristic of a |plasma|.
 
       .. caution::
 
-         In astronomy, the term *gas* is commonly used to refer to
-         any astrophysical fluid, regardless of whether the fluid is in
-         the gas or plasma state of matter. The term *ionized gas* is
-         often used as a synonym for plasma despite that plasma and gas
-         are distinct states of matter.
+         In astronomy, the term "gas" is commonly used to refer to any
+         astrophysical fluid, regardless of whether the fluid is in the
+         gas or plasma state of matter. For example, a fully ionized
+         plasma is often incorrectly referred to as "ionized gas." As
+         distinct states of matter, gas and plasma exhibit qualitatively
+         and quantitatively different behavior on both small and large
+         scales. Using the term "gas" to refer to a plasma can provide a
+         misleading mental model for how the fluid behaved. A plasma is
+         not a gas.
 
    integration test
       An **integration test** verifies that multiple software
