@@ -33,7 +33,7 @@ jobs:
       with:
         persist-credentials: false
     - name: Check PHEP 3 Compliance
-      uses: heliophysicsPy/pyhc-actions/phep3-compliance@v1.1.2
+      uses: heliophysicsPy/pyhc-actions/phep3-compliance@v1.1.3
       # Use `ignore-errors-for` to allow exceptions to PHEP 3 policy
 
   pyhc-env-compat:
@@ -48,4 +48,4 @@ jobs:
       with:
         persist-credentials: false
     - name: Check PyHC Environment Compatibility
-      uses: heliophysicsPy/pyhc-actions/pyhc-env-compat@v1.1.2
+      uses: heliophysicsPy/pyhc-actions/pyhc-env-compat@v1.1.3
