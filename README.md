@@ -79,7 +79,7 @@ There are a number of [good first issues] in our GitHub repository.
 New contributors are very welcome!
 
 > [!NOTE]
-> We are currently unable to accept contributions with significant AI-generated content due to the limited time available among code reviewers.
+> Due to the limited availability of code reviewers, pull requests are likely to experience delayed code reviews.
 
 ## Events
 

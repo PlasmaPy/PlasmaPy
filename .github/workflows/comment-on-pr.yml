@@ -31,7 +31,7 @@ jobs:
              - [Getting ready to contribute](https://docs.plasmapy.org/en/latest/contributing/getting_ready.html#getting-ready-to-contribute) 🌱
              - [Code contribution workflow](https://docs.plasmapy.org/en/latest/contributing/workflow.html#code-contribution-workflow) 🔧
              - [Changelog entries](https://docs.plasmapy.org/en/latest/contributing/changelog_guide.html#adding-a-changelog-entry) 📜
-             - [Coding tips and guidelines](https://docs.plasmapy.org/en/latest/contributing/coding_guide.html#coding-guide) 💻
+             - [Coding guidelines](https://docs.plasmapy.org/en/latest/contributing/coding_guide.html#coding-guide) 💻
              - [Documentation](https://docs.plasmapy.org/en/latest/contributing/doc_guide.html#writing-documentation) 📚
              - [Tests](https://docs.plasmapy.org/en/latest/contributing/testing_guide.html#testing-guide) 🧪
 
@@ -40,6 +40,9 @@ jobs:
 
             > [!TIP]
             > Automatically fix most **pre-commit.ci** failures by commenting \`pre-commit.ci autofix\` below. For other failures, please see the [pre-commit troubleshooting guide](https://docs.plasmapy.org/en/stable/contributing/pre-commit.html#troubleshooting-pre-commit-failures). 🧹
+
+            > [!NOTE]
+            > Due to the limited availability of code reviewers, pull requests are likely to experience delayed code reviews.
 
             We thank you once again! 🌌`
           })

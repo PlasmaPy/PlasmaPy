@@ -97,6 +97,12 @@ Example notebooks
    contributing/doc_guide
    contributing/changelog_guide
 
+.. toctree::
+   :maxdepth: 1
+   :caption: Other Useful Projects
+
+   Other Useful Projects <other_projects>
+
 .. _GitHub discussions: https://github.com/PlasmaPy/PlasmaPy/discussions
 .. _new discussion on GitHub: https://github.com/PlasmaPy/PlasmaPy/discussions/new/choose
 .. _on GitHub: https://github.com/PlasmaPy/PlasmaPy
