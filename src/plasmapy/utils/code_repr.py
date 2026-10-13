@@ -36,7 +36,7 @@ def _code_repr_of_ndarray(array: np.ndarray, max_items=np.inf) -> str:
         closing = f", ...{closing_brackets})"
         return to_comma_before_ellipsis + closing
 
-    s = np.array_repr(array, max_line_width=np.inf, suppress_small=False)  # ty:ignore[invalid-argument-type]
+    s = np.array_repr(array, max_line_width=np.inf, suppress_small=False)
     s = remove_excess_spaces(s)
     s = put_np_before_infs_and_nans(s)
 

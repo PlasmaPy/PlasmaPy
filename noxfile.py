@@ -37,8 +37,8 @@ import re
 import shutil
 import sys
 
-import nox  # ty:ignore[unresolved-import]
-import nox_uv  # ty:ignore[unresolved-import]
+import nox
+import nox_uv
 
 # SPEC 0 indicates that scientific Python packages should support
 # versions of Python that have been released in the last 3 years, or
