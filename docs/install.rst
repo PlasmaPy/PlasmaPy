@@ -67,11 +67,11 @@ installed into |uv|-managed
 `virtual environments <virtual environment_>`_ without installing |pip|.
 
 After |installing uv|, a `virtual environment`_ with |Python| version
-3.14 can be created by opening a terminal and running:
+3.15 can be created by opening a terminal and running:
 
 .. code-block:: bash
 
-   uv venv --python 3.14
+   uv venv --python 3.15
 
 |uv| will automatically download |Python| and link it to
 the `virtual environment`_'s directory at (by default) :file:`.venv`. The

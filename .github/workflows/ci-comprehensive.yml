@@ -48,6 +48,11 @@ jobs:
           python: '3.12'
           nox_session: tests-3.12(all)
 
+        - name: Tests, Python 3.15, lowest direct dependencies, Windows
+          os: windows-latest
+          python: '3.15'
+          nox_session: tests-3.15(lowest-direct)
+
         - name: Tests, Python 3.14, lowest direct dependencies, Windows
           os: windows-latest
           python: '3.14'
@@ -85,12 +90,12 @@ jobs:
 
         - name: Check MANIFEST.in
           os: ubuntu-latest
-          python: '3.14'
+          python: '3.15'
           nox_session: manifest
 
         - name: Lint
           os: ubuntu-latest
-          python: '3.14'
+          python: '3.15'
           nox_session: lint
 
         - name: Documentation, Python 3.14, Windows
