@@ -259,7 +259,7 @@ class Stack:
             np.arange(
                 *energy_range.to(u.J).value,
                 dE.to(u.J).value,
-            )  # ty:ignore[no-matching-overload]
+            )
             * u.J
         )
 

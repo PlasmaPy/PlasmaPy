@@ -228,7 +228,7 @@ class TestFindFloatingPotential:
                 if np.isnan(val):
                     assert np.isnan(rtn_val)
                 else:
-                    np.testing.assert_allclose(rtn_val, val, rtol=1e-5, atol=1e-8)  # ty:ignore[no-matching-overload]
+                    np.testing.assert_allclose(rtn_val, val, rtol=1e-5, atol=1e-8)
             else:
                 assert rtn_val == val
 
@@ -363,7 +363,7 @@ class TestFindFloatingPotential:
                 if np.isnan(val):
                     assert np.isnan(rtn_val)
                 else:
-                    np.testing.assert_allclose(rtn_val, val, atol=1e-7, rtol=1e-5)  # ty:ignore[no-matching-overload]
+                    np.testing.assert_allclose(rtn_val, val, atol=1e-7, rtol=1e-5)
             else:
                 assert rtn_val == val
 

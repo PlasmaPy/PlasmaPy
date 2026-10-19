@@ -266,7 +266,7 @@ class ParticleList(collections.UserList):
         return self._get_particle_attribute("charge", unit=u.C, default=np.nan * u.C)
 
     @property
-    def data(self) -> list[Particle | CustomParticle]:
+    def data(self) -> list[Particle | CustomParticle]:  # ty: ignore[invalid-property-type-override]
         """
         A `list` containing the particles contained in the
         |ParticleList| instance.
