@@ -37,8 +37,8 @@ import re
 import shutil
 import sys
 
-import nox  # ty:ignore[unresolved-import]
-import nox_uv  # ty:ignore[unresolved-import]
+import nox
+import nox_uv
 
 # SPEC 0 indicates that scientific Python packages should support
 # versions of Python that have been released in the last 3 years, or
@@ -46,7 +46,7 @@ import nox_uv  # ty:ignore[unresolved-import]
 # The minimum version of Python should be incremented immediately
 # following the first release after October of each year.
 
-SUPPORTED_PYTHON_VERSIONS: tuple[str, ...] = ("3.12", "3.13", "3.14")
+SUPPORTED_PYTHON_VERSIONS: tuple[str, ...] = ("3.12", "3.13", "3.14", "3.15")
 SUPPORTED_OPERATING_SYSTEMS: tuple[str, ...] = ("linux", "macos", "windows")
 
 MAXPYTHON = max(SUPPORTED_PYTHON_VERSIONS)
