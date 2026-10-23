@@ -44,7 +44,7 @@ jobs:
       matrix:
         include:
 
-        - name: Tests, Python 3.14, skip slow tests, doctests, Ubuntu
+        - name: Tests, Python 3.15, skip slow tests, doctests, Ubuntu
           # Doctests are run only for most recent Python (see noxfile.py)
           os: ubuntu-latest
           python: '3.15'
