@@ -1246,10 +1246,10 @@ running:
 
     pip install -e .[docs,tests]
 
-The documentation build also requires the following external software:
+It may also be necessary to install the following software:
 
-* `Graphviz <https://graphviz.org/download>`__
-* `Pandoc <https://pandoc.org/installing.html>`__
+* `graphviz <https://graphviz.org/download>`__
+* `pandoc <https://pandoc.org/installing.html>`__
 * make_ (not necessary for building the documentation with |Nox| or
   sphinx_build)
 

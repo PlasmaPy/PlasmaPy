@@ -32,8 +32,7 @@ python -m pip install nox uv
 ```
 
 > [!NOTE]
-> Building the documentation locally also requires [Graphviz][install graphviz]
-> and [Pandoc][install pandoc].
+> It may also be necessary to [install graphviz] and [install pandoc].
 
 The documentation can be built by going to the top-level directory of
 your clone of PlasmaPy and running:
