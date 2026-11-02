@@ -122,7 +122,7 @@ repos:
   - id: sphinx-lint
 
 - repo: https://github.com/abravalheri/validate-pyproject
-  rev: 'v0.27'
+  rev: v0.27
   hooks:
   - id: validate-pyproject
     name: validate pyproject.toml
