@@ -3,7 +3,7 @@
 import os.path as pth
 
 try:
-    from setuptools_scm import get_version  # ty:ignore[unresolved-import]
+    from setuptools_scm import get_version  # ty:ignore[import-not-found]
 
     version = get_version(root=pth.join("..", "..", ".."), relative_to=__file__)
 except Exception as e:
