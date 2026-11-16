@@ -7,7 +7,7 @@ name: Upgrade uv.lock
 
 on:
   schedule:
-  - cron: 37 6 * * 1
+  - cron: 0 23 * * 0
   workflow_dispatch:
 
 jobs:
