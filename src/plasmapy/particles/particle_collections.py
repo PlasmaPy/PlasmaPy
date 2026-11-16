@@ -246,7 +246,7 @@ class ParticleList(collections.UserList):
             values = u.Quantity(values)  # ty:ignore[invalid-argument-type]
         return values
 
-    def append(self, particle: ParticleLike) -> None:  # ty:ignore[invalid-method-override]
+    def append(self, particle: ParticleLike) -> None:  # ty: ignore[lost-keyword-for-regular-parameter]
         """Append a particle to the end of the |ParticleList|."""
         if isinstance(particle, u.Quantity):
             particle = _turn_quantity_into_custom_particle(particle)
@@ -266,7 +266,7 @@ class ParticleList(collections.UserList):
         return self._get_particle_attribute("charge", unit=u.C, default=np.nan * u.C)
 
     @property
-    def data(self) -> list[Particle | CustomParticle]:  # ty: ignore[invalid-property-type-override]
+    def data(self) -> list[Particle | CustomParticle]:  # ty: ignore[incompatible-property-override]
         """
         A `list` containing the particles contained in the
         |ParticleList| instance.
@@ -281,7 +281,7 @@ class ParticleList(collections.UserList):
         """
         return self._data
 
-    def extend(self, iterable: Iterable[ParticleLike]) -> None:  # ty:ignore[invalid-method-override]
+    def extend(self, iterable: Iterable[ParticleLike]) -> None:  # ty: ignore[lost-keyword-for-regular-parameter]
         """
         Extend the sequence by appending |particle-like| elements from
         ``iterable``.
@@ -307,7 +307,7 @@ class ParticleList(collections.UserList):
         """
         return self._get_particle_attribute("half_life", unit=u.s, default=np.nan * u.s)
 
-    def insert(self, index, particle: ParticleLike) -> None:  # ty:ignore[invalid-method-override]
+    def insert(self, index, particle: ParticleLike) -> None:  # ty: ignore[lost-keyword-for-regular-parameter]
         """Insert a particle before an index."""
         if isinstance(particle, u.Quantity):
             particle = _turn_quantity_into_custom_particle(particle)

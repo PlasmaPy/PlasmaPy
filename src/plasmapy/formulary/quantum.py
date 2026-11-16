@@ -117,13 +117,13 @@ def deBroglie_wavelength(
         lambda_dBr = np.ones(V.shape) * np.inf * u.m
         indices = V.value != 0
         lambda_dBr[indices] = h / (
-            particle.mass * V[indices] * Lorentz_factor(V[indices])
+            particle.mass * V[indices] * Lorentz_factor(V[indices])  # ty: ignore[missing-union-attribute]
         )
 
     elif 0 * u.m / u.s == V:
         lambda_dBr = np.inf * u.m
     else:
-        lambda_dBr = h / (Lorentz_factor(V) * particle.mass * V)
+        lambda_dBr = h / (Lorentz_factor(V) * particle.mass * V)  # ty: ignore[missing-union-attribute]
 
     return lambda_dBr
 

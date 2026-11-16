@@ -182,7 +182,7 @@ def relativistic_energy(
         )
 
     γ = Lorentz_factor(V)
-    return γ * particle.mass * c**2
+    return γ * particle.mass * c**2  # ty: ignore[missing-union-attribute]
 
 
 class RelativisticBody:
@@ -354,7 +354,7 @@ class RelativisticBody:
         -------
         |Particle|, |CustomParticle|, or |ParticleList|
         """
-        return self._particle  # ty:ignore[invalid-return-type]
+        return self._particle  # ty:ignore[invalid-explicit-return]
 
     @property
     @validate_quantities

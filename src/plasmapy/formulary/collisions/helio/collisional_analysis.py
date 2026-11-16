@@ -208,7 +208,7 @@ def temp_ratio(  # noqa: ANN201, C901
             f"Instead received {len(ions)} input values.",  # ty:ignore[invalid-argument-type]
         )
 
-    if not ions.is_category("ion"):
+    if not ions.is_category("ion"):  # ty: ignore[missing-union-attribute]
         raise ValueError(
             f"Particle(s) in 'ions' must be ions, received {ions=} "
             "instead. Please renter the 'ions' input parameter.",

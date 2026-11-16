@@ -164,14 +164,14 @@ class ClassWithDecoratedMethods:
         # Because run-time logic is needed, mypy is unable to infer
         # that @particle_input is doing a type conversion here. We
         # would need a dynamic type checker to address this case.
-        return particle  # ty:ignore[invalid-return-type]
+        return particle  # ty:ignore[invalid-explicit-return]
 
     @particle_input()
     def method_decorated_with_parentheses(
         self,
         particle: ParticleLike,
     ) -> Particle | CustomParticle | ParticleList:
-        return particle  # ty:ignore[invalid-return-type]
+        return particle  # ty:ignore[invalid-explicit-return]
 
 
 @pytest.mark.parametrize("symbol", ["muon", "He 2+"])
@@ -242,7 +242,7 @@ def test_optional_particle() -> None:
     def has_default_particle(
         particle: ParticleLike = particle,
     ) -> Particle | CustomParticle | ParticleList:
-        return particle  # ty:ignore[invalid-return-type]
+        return particle  # ty:ignore[invalid-explicit-return]
 
     assert has_default_particle() == Particle(particle)
     assert has_default_particle("Ne") == Particle("Ne")
@@ -308,7 +308,7 @@ def test_decorator_categories(
     def decorated_function(
         argument: ParticleLike,
     ) -> Particle | CustomParticle | ParticleList:
-        return argument  # ty:ignore[invalid-return-type]
+        return argument  # ty:ignore[invalid-explicit-return]
 
     if exception:
         with pytest.raises(exception):  # ty:ignore[invalid-argument-type]
@@ -330,7 +330,7 @@ def test_optional_particle_annotation_parameter() -> None:
 
     @particle_input
     def func_optional_particle(particle: ParticleLike | None) -> Particle | None:
-        return particle  # ty:ignore[invalid-return-type]
+        return particle  # ty:ignore[invalid-explicit-return]
 
     assert func_optional_particle(None) is None, (
         "The particle keyword in the particle_input decorator is set "
@@ -410,7 +410,7 @@ def test_annotated_classmethod() -> None:
         @classmethod
         @particle_input
         def f(cls, particle: ParticleLike) -> Particle | CustomParticle | ParticleList:
-            return particle  # ty:ignore[invalid-return-type]
+            return particle  # ty:ignore[invalid-explicit-return]
 
     has_annotated_classmethod = HasAnnotatedClassMethod()
     assert has_annotated_classmethod.f("p+") == Particle("p+")
@@ -427,7 +427,7 @@ def test_self_stacked_decorator(
     @outer_decorator
     @inner_decorator
     def f(x: Any, particle: ParticleLike) -> Particle | CustomParticle | ParticleList:  # noqa: ANN401
-        return particle  # ty:ignore[invalid-return-type]
+        return particle  # ty:ignore[invalid-explicit-return]
 
     result = f(1, "p+")
     assert result == "p+"
@@ -529,7 +529,7 @@ def test_particle_input_verification(
 
     @particle_input(**kwargs_to_particle_input)
     def f(particle: ParticleLike) -> Particle | CustomParticle | ParticleList:
-        return particle  # ty:ignore[invalid-return-type]
+        return particle  # ty:ignore[invalid-explicit-return]
 
     with pytest.raises(ParticleError):
         f(arg)
@@ -561,12 +561,12 @@ class ParameterNamesCase:
 
 @particle_input
 def get_element(element: ParticleLike) -> Particle | CustomParticle | ParticleList:
-    return element  # ty:ignore[invalid-return-type]
+    return element  # ty:ignore[invalid-explicit-return]
 
 
 @particle_input
 def get_isotope(isotope: ParticleLike) -> Particle | CustomParticle | ParticleList:
-    return isotope  # ty:ignore[invalid-return-type]
+    return isotope  # ty:ignore[invalid-explicit-return]
 
 
 @particle_input
@@ -574,7 +574,7 @@ def get_ion(
     ion: ParticleLike,
     Z: float | None = None,
 ) -> Particle | CustomParticle | ParticleList:
-    return ion  # ty:ignore[invalid-return-type]
+    return ion  # ty:ignore[invalid-explicit-return]
 
 
 cases = [
@@ -693,7 +693,7 @@ def return_particle(
     mass_numb: int | None = None,
 ) -> Particle | CustomParticle | ParticleList:
     """A simple function that is decorated by particle_input."""
-    return particle  # ty:ignore[invalid-return-type]
+    return particle  # ty:ignore[invalid-explicit-return]
 
 
 def test_particle_input_warning_for_integer_z_mean() -> None:
@@ -734,7 +734,7 @@ def test_particle_input_with_var_positional_arguments() -> None:
         *args: Any,
         particle: ParticleLike = None,  # ty:ignore[invalid-parameter-default]
     ) -> tuple[tuple[Any], Particle]:
-        return args, particle  # ty:ignore[invalid-return-type]
+        return args, particle  # ty:ignore[invalid-explicit-return]
 
     args = (5, 6, 7)
     particle = "p+"
@@ -758,7 +758,7 @@ def test_particle_input_with_pos_and_var_positional_arguments() -> None:
         *args: Any,
         particle: ParticleLike = None,  # ty:ignore[invalid-parameter-default]
     ) -> tuple[tuple[Any, ...], Particle]:
-        return args, particle  # ty:ignore[invalid-return-type]
+        return args, particle  # ty:ignore[invalid-explicit-return]
 
     a = 1
     args = (5, 6, 7)
@@ -790,7 +790,7 @@ def test_particle_categorization_of_particle_lists(
     def get_particle(
         particle: ParticleLike,
     ) -> Particle | ParticleList | CustomParticle:
-        return particle  # ty:ignore[invalid-return-type]
+        return particle  # ty:ignore[invalid-explicit-return]
 
     with pytest.raises(exception):  # ty:ignore[invalid-argument-type]
         get_particle(**kwargs)

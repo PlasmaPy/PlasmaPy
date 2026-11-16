@@ -260,7 +260,7 @@ def hollweg(  # noqa: ANN201, C901, PLR0912, PLR0915
     # Calc needed plasma parameters
     with warnings.catch_warnings():
         warnings.simplefilter("ignore", category=PhysicsWarning)
-        n_e = ion.charge_number * n_i
+        n_e = ion.charge_number * n_i  # ty: ignore[missing-union-attribute]
         c_s = ion_sound_speed(
             T_e=T_e,
             T_i=T_i,

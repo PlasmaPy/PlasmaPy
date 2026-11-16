@@ -774,10 +774,10 @@ class TestCheckUnits:
 
                 assert mock_cu_class.call_args[0] == ()
                 assert sorted(mock_cu_class.call_args[1].keys()) == sorted(
-                    case["setup"]["checks"].keys(),
+                    case["setup"]["checks"].keys(),  # ty: ignore[missing-union-attribute]
                 )
 
-                for arg_name, checks in case["setup"]["checks"].items():
+                for arg_name, checks in case["setup"]["checks"].items():  # ty: ignore[missing-union-attribute]
                     assert mock_cu_class.call_args[1][arg_name] == checks
 
                 # reset
@@ -916,7 +916,7 @@ class TestCheckValues:
                 checks = cv._get_value_checks(bound_args)
 
             # only expected keys exist
-            assert sorted(checks.keys()) == sorted(case["output"].keys())
+            assert sorted(checks.keys()) == sorted(case["output"].keys())  # ty: ignore[missing-union-attribute]
 
             # if check key-value not specified then default is assumed
             for arg_name in case["output"]:  # ty:ignore[not-iterable]
@@ -1279,10 +1279,10 @@ class TestCheckValues:
 
                 assert mock_cv_class.call_args[0] == ()
                 assert sorted(mock_cv_class.call_args[1].keys()) == sorted(
-                    case["setup"]["checks"].keys(),  # ty:ignore[not-subscriptable]
+                    case["setup"]["checks"].keys(),  # ty:ignore[not-subscriptable, missing-union-attribute]
                 )
 
-                for arg_name, checks in case["setup"]["checks"].items():  # ty:ignore[not-subscriptable]
+                for arg_name, checks in case["setup"]["checks"].items():  # ty:ignore[not-subscriptable, missing-union-attribute]
                     assert mock_cv_class.call_args[1][arg_name] == checks
 
                 # reset

@@ -119,7 +119,7 @@ class Test__characteristic_errors:
         ab_sum = a + b
 
         errStr = "Addition of characteristic objects is not behaving as it should."
-        assert (a.current + b.current == ab_sum.current).all(), errStr
+        assert (a.current + b.current == ab_sum.current).all(), errStr  # ty: ignore[missing-union-attribute]
 
     def test_subtraction(self) -> None:
         r"""Test addition of characteristic objects"""

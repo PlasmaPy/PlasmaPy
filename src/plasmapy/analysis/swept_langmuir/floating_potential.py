@@ -196,7 +196,7 @@ def find_floating_potential(  # noqa: C901, PLR0912, PLR0915
     }
     try:
         min_point_factor = _settings[fit_type]["min_point_factor"]
-        fit_func = _settings[fit_type]["func"]()  # ty:ignore[call-non-callable]
+        fit_func = _settings[fit_type]["func"]()  # ty:ignore[not-callable]
         rtn_extras["fitted_func"] = fit_func
     except KeyError as ex:
         raise ValueError(
@@ -290,7 +290,7 @@ def find_floating_potential(  # noqa: C901, PLR0912, PLR0915
                 stacklevel=2,
             )
 
-            return np.nan, VFExtras(**rtn_extras)  # ty:ignore[invalid-return-type]
+            return np.nan, VFExtras(**rtn_extras)  # ty:ignore[invalid-explicit-return]
 
     # Construct crossing-island (pad if needed)
     if np.isinf(min_points):
