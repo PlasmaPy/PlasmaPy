@@ -133,7 +133,7 @@ def Maxwellian_1D(  # noqa: ANN201, PLR0917
         T = T.to_value(u.K, equivalencies=u.temperature_energy())
         if not np.isnan(vTh):
             # check units of thermal velocity
-            vTh = vTh.to_value(SPEED_UNITS)
+            vTh = vTh.to_value(SPEED_UNITS)  # ty: ignore[missing-union-attribute]
 
     if np.isnan(vTh):
         # get thermal speed
@@ -285,7 +285,7 @@ def Maxwellian_velocity_2D(  # noqa: ANN201, PLR0917
         T = T.to_value(u.K, equivalencies=u.temperature_energy())
         if not np.isnan(vTh):
             # check units of thermal velocity
-            vTh = vTh.to_value(SPEED_UNITS)
+            vTh = vTh.to_value(SPEED_UNITS)  # ty: ignore[missing-union-attribute]
 
     if np.isnan(vTh):
         # get thermal speed
@@ -452,7 +452,7 @@ def Maxwellian_velocity_3D(  # noqa: ANN201, PLR0917
         T = T.to_value(u.K, equivalencies=u.temperature_energy())
         if not np.isnan(vTh):
             # check units of thermal velocity
-            vTh = vTh.to_value(SPEED_UNITS)
+            vTh = vTh.to_value(SPEED_UNITS)  # ty: ignore[missing-union-attribute]
 
     if np.isnan(vTh):
         # get thermal velocity and thermal velocity squared
@@ -580,7 +580,7 @@ def Maxwellian_speed_1D(  # noqa: ANN201, PLR0917
         T = T.to_value(u.K, equivalencies=u.temperature_energy())
         if not np.isnan(vTh):
             # check units of thermal velocity
-            vTh = vTh.to_value(SPEED_UNITS)
+            vTh = vTh.to_value(SPEED_UNITS)  # ty: ignore[missing-union-attribute]
 
     if np.isnan(vTh):
         # get thermal velocity and thermal velocity squared
@@ -715,7 +715,7 @@ def Maxwellian_speed_2D(  # noqa: ANN201, PLR0917
         T = T.to_value(u.K, equivalencies=u.temperature_energy())
         if not np.isnan(vTh):
             # check units of thermal velocity
-            vTh = vTh.to_value(SPEED_UNITS)
+            vTh = vTh.to_value(SPEED_UNITS)  # ty: ignore[missing-union-attribute]
 
     if np.isnan(vTh):
         # get thermal velocity and thermal velocity squared
@@ -851,7 +851,7 @@ def Maxwellian_speed_3D(  # noqa: ANN201, PLR0917
         T = T.to_value(u.K, equivalencies=u.temperature_energy())
         if not np.isnan(vTh):
             # check units of thermal velocity
-            vTh = vTh.to_value(SPEED_UNITS)
+            vTh = vTh.to_value(SPEED_UNITS)  # ty: ignore[missing-union-attribute]
 
     if np.isnan(vTh):
         # get thermal velocity and thermal velocity squared
@@ -1008,7 +1008,7 @@ def kappa_velocity_1D(  # noqa: ANN201, PLR0917
         T = T.to_value(u.K, equivalencies=u.temperature_energy())
         if not np.isnan(vTh):
             # check units of thermal velocity
-            vTh = vTh.to_value(SPEED_UNITS)
+            vTh = vTh.to_value(SPEED_UNITS)  # ty: ignore[missing-union-attribute]
 
     if np.isnan(vTh):
         # get thermal velocity and thermal velocity squared
@@ -1189,7 +1189,7 @@ def kappa_velocity_3D(  # noqa: ANN201, PLR0917
         T = T.to_value(u.K, equivalencies=u.temperature_energy())
         if not np.isnan(vTh):
             # check units of thermal velocity
-            vTh = vTh.to_value(SPEED_UNITS)
+            vTh = vTh.to_value(SPEED_UNITS)  # ty: ignore[missing-union-attribute]
 
     if np.isnan(vTh):
         # get thermal velocity and thermal velocity squared

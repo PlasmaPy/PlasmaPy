@@ -26,7 +26,7 @@ from plasmapy.utils.decorators import validate_quantities
 
 
 def _atomic_number_and_mass_number(p: ParticleLike):  # noqa: ANN202
-    return p.atomic_number, p.mass_number if p.isotope else 0
+    return p.atomic_number, p.mass_number if p.isotope else 0  # ty: ignore[missing-union-attribute]
 
 
 class IonizationStateCollection:  # noqa: PLW1641
@@ -276,7 +276,7 @@ class IonizationStateCollection:  # noqa: PLW1641
             # much) information to do so.
 
             abundance_is_undefined = np.isnan(self.abundances[particle])  # ty:ignore[not-subscriptable]
-            isnan_of_abundance_values = np.isnan(list(self.abundances.values()))
+            isnan_of_abundance_values = np.isnan(list(self.abundances.values()))  # ty: ignore[missing-union-attribute]
             all_abundances_are_nan = np.all(isnan_of_abundance_values)
             n_is_defined = not np.isnan(self.n0)
 
@@ -748,8 +748,9 @@ class IonizationStateCollection:  # noqa: PLW1641
         logarithms of the relative abundances as the corresponding values.
         """
         return {
-            atom: np.log10(abundance) for atom, abundance in self.abundances.items()
-        }  # ty:ignore[invalid-return-type]
+            atom: np.log10(abundance)
+            for atom, abundance in self.abundances.items()  # ty: ignore[missing-union-attribute]
+        }  # ty:ignore[invalid-explicit-return]
 
     @log_abundances.setter
     def log_abundances(self, value: dict[str, float] | None):
@@ -899,7 +900,7 @@ class IonizationStateCollection:  # noqa: PLW1641
 
         for base_particle in self.base_particles:
             ionization_state = self[base_particle]
-            ionic_levels = ionization_state.to_list()[min_charge:]
+            ionic_levels = ionization_state.to_list()[min_charge:]  # ty: ignore[missing-union-attribute]
             all_particles.extend(ionic_levels)
 
             base_particle_abundance = self.abundances[base_particle]  # ty:ignore[not-subscriptable]
@@ -912,7 +913,7 @@ class IonizationStateCollection:  # noqa: PLW1641
                         "Unable to provide an average particle without abundances.",
                     )
 
-            ionic_fractions = ionization_state.ionic_fractions[min_charge:]
+            ionic_fractions = ionization_state.ionic_fractions[min_charge:]  # ty: ignore[missing-union-attribute]
             ionic_abundances = base_particle_abundance * ionic_fractions
             all_abundances.extend(ionic_abundances)
 
@@ -920,7 +921,7 @@ class IonizationStateCollection:  # noqa: PLW1641
             use_rms_charge=use_rms_charge,
             use_rms_mass=use_rms_mass,
             abundances=all_abundances,
-        )  # ty:ignore[invalid-return-type]
+        )  # ty:ignore[invalid-explicit-return]
 
     def summarize(
         self,

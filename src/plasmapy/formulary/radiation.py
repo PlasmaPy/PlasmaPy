@@ -110,7 +110,7 @@ def thermal_bremsstrahlung(  # noqa: PLR0917
     <Quantity 2.16932808e-10 kg / (m s2)>
     """
     if n_i is None:  # default is quasineutrality
-        n_i = n_e / ion.charge_number
+        n_i = n_e / ion.charge_number  # ty: ignore[missing-union-attribute]
 
     # Default value of kmax is the electron thermal de Broglie wavelength
     if kmax is None:
@@ -147,7 +147,7 @@ def thermal_bremsstrahlung(  # noqa: PLR0917
         / (const.m_e.si * const.c.si**2) ** 1.5
     )
 
-    Zi = ion.charge_number
+    Zi = ion.charge_number  # ty: ignore[missing-union-attribute]
     c2 = np.sqrt(1 - ω_pe**2 / ω**2) * Zi**2 * n_i * n_e / np.sqrt(const.k_B.si * T_e)
 
     # Dimensionless argument for exponential integral

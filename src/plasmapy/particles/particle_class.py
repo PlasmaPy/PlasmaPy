@@ -1027,7 +1027,7 @@ class Particle(AbstractPhysicalParticle):
         >>> deuteron.symbol
         'D 1+'
         """
-        return self._attributes["symbol"]  # ty:ignore[invalid-return-type]
+        return self._attributes["symbol"]  # ty:ignore[invalid-explicit-return]
 
     @property
     def antiparticle(self) -> Self:
@@ -1054,7 +1054,7 @@ class Particle(AbstractPhysicalParticle):
         Particle("n")
         """
         if self.symbol in _special_particles.antiparticles:
-            return Particle(_special_particles.antiparticles[self.symbol])  # ty:ignore[invalid-return-type]
+            return Particle(_special_particles.antiparticles[self.symbol])  # ty:ignore[invalid-explicit-return]
         else:
             raise ParticleError(
                 "The unary operator can only be used for elementary "
@@ -1105,7 +1105,7 @@ class Particle(AbstractPhysicalParticle):
                 "it is not an element or isotope."
             )
             raise InvalidElementError(errmsg)
-        return Particle(self.isotope or self.element, Z=self.atomic_number)  # ty:ignore[invalid-return-type]
+        return Particle(self.isotope or self.element, Z=self.atomic_number)  # ty:ignore[invalid-explicit-return]
 
     @property
     def ionic_symbol(self) -> str | None:
@@ -1176,7 +1176,7 @@ class Particle(AbstractPhysicalParticle):
         """
         if not self.element:
             raise InvalidElementError(_category_errmsg(self, "element"))
-        return self._attributes["element name"]  # ty:ignore[invalid-return-type]
+        return self._attributes["element name"]  # ty:ignore[invalid-explicit-return]
 
     @property
     def isotope_name(self) -> str | None:
@@ -1488,7 +1488,7 @@ class Particle(AbstractPhysicalParticle):
         """
         if not self.element:
             raise InvalidElementError(_category_errmsg(self, "element"))
-        return self._attributes["atomic number"]  # ty:ignore[invalid-return-type]
+        return self._attributes["atomic number"]  # ty:ignore[invalid-explicit-return]
 
     @property
     def mass_number(self) -> int:
@@ -1508,7 +1508,7 @@ class Particle(AbstractPhysicalParticle):
         """
         if not self.isotope:
             raise InvalidIsotopeError(_category_errmsg(self, "isotope"))
-        return self._attributes["mass number"]  # ty:ignore[invalid-return-type]
+        return self._attributes["mass number"]  # ty:ignore[invalid-explicit-return]
 
     @property
     def neutron_number(self) -> int:
@@ -1598,7 +1598,7 @@ class Particle(AbstractPhysicalParticle):
                 stacklevel=2,
             )
 
-        return abundance  # ty:ignore[invalid-return-type]
+        return abundance  # ty:ignore[invalid-explicit-return]
 
     @property
     def baryon_number(self) -> int:
@@ -1879,7 +1879,7 @@ class Particle(AbstractPhysicalParticle):
             self.__init__(base_particle, Z=new_charge_number)
             return None
         else:
-            return Particle(base_particle, Z=new_charge_number)  # ty:ignore[invalid-return-type]
+            return Particle(base_particle, Z=new_charge_number)  # ty:ignore[invalid-explicit-return]
 
     def recombine(self, n: int = 1, inplace: bool = False) -> Self | None:  # noqa: FBT001, FBT002
         """
@@ -1952,7 +1952,7 @@ class Particle(AbstractPhysicalParticle):
             self.__init__(base_particle, Z=new_charge_number)
             return None
         else:
-            return Particle(base_particle, Z=new_charge_number)  # ty:ignore[invalid-return-type]
+            return Particle(base_particle, Z=new_charge_number)  # ty:ignore[invalid-explicit-return]
 
     @property
     def ionization_energy(self) -> u.Quantity:
@@ -2123,7 +2123,7 @@ class DimensionlessParticle(AbstractParticle):
         # coulombs and reals
 
         if obj is None or np.isnan(obj):
-            return np.nan  # ty:ignore[invalid-return-type]
+            return np.nan  # ty:ignore[invalid-explicit-return]
         elif np.isinf(obj):
             return obj
         elif isinstance(obj, bool):
@@ -2348,7 +2348,7 @@ class CustomParticle(AbstractPhysicalParticle):
             The |charge number|, if not provided in ``quantities``.
         """
         if not quantities:
-            return CustomParticle(symbol=symbol, Z=Z)  # ty:ignore[invalid-return-type]
+            return CustomParticle(symbol=symbol, Z=Z)  # ty:ignore[invalid-explicit-return]
 
         if isinstance(quantities[0], str):
             raise TypeError("Unable to create CustomParticle from a string.")
@@ -2374,7 +2374,7 @@ class CustomParticle(AbstractPhysicalParticle):
         if u.physical.electrical_charge in physical_type_dict:
             new_kwargs["charge"] = physical_type_dict[u.physical.electrical_charge]
 
-        return CustomParticle(**new_kwargs)  # ty:ignore[invalid-return-type]
+        return CustomParticle(**new_kwargs)  # ty:ignore[invalid-explicit-return]
 
     def __repr__(self) -> str:
         """

@@ -511,7 +511,7 @@ def spectral_density(  # noqa: C901, PLR0912, PLR0915
         raise ValueError("At least one ion species needs to be defined.")
 
     try:
-        if sum(ion.charge_number <= 0 for ion in ions):  # ty:ignore[not-iterable]
+        if sum(ion.charge_number <= 0 for ion in ions):  # ty:ignore[not-iterable, missing-union-attribute]
             raise ValueError("All ions must be positively charged.")
     # Catch error if charge information is missing
     except ChargeError as ex:
@@ -604,8 +604,8 @@ def spectral_density(  # noqa: C901, PLR0912, PLR0915
         T_i.to(u.K).value,
         efract=efract,
         ifract=ifract,
-        ion_z=ions.charge_number,
-        ion_mass=ions.mass.to(u.kg).value,
+        ion_z=ions.charge_number,  # ty: ignore[missing-union-attribute]
+        ion_mass=ions.mass.to(u.kg).value,  # ty: ignore[missing-union-attribute]
         ion_vel=ion_vel.to(u.m / u.s).value,
         electron_vel=electron_vel.to(u.m / u.s).value,
         probe_vec=probe_vec,

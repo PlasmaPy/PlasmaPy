@@ -271,7 +271,7 @@ def two_fluid(  # noqa: ANN201
         )
 
     # Calc needed plasma parameters
-    n_e = n_i * ion.charge_number
+    n_e = n_i * ion.charge_number  # ty: ignore[missing-union-attribute]
     with warnings.catch_warnings():
         warnings.simplefilter("ignore", category=PhysicsWarning)
         c_s = ion_sound_speed(

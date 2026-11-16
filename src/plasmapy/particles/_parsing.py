@@ -123,7 +123,7 @@ def dealias_particle_aliases(alias: str | int) -> str:
     elif isinstance(alias, str) and alias.lower() in case_insensitive_aliases:
         return case_insensitive_aliases[alias.lower()]
 
-    return alias  # ty:ignore[invalid-return-type]
+    return alias  # ty:ignore[invalid-explicit-return]
 
 
 def invalid_particle_errmsg(  # noqa: ANN202
@@ -208,8 +208,8 @@ def extract_charge(arg: str):  # noqa: ANN202, C901
             r"\s*(?P<isotope>\w+(-[0-9]+)?)(?P<charge>[-+]+)\s*",
             isotope_info,
         )
-        isotope_info = match.groupdict()["isotope"]
-        charge_info = match.groupdict()["charge"]
+        isotope_info = match.groupdict()["isotope"]  # ty: ignore[missing-union-attribute]
+        charge_info = match.groupdict()["charge"]  # ty: ignore[missing-union-attribute]
 
         if len(set(charge_info)) != 1:
             raise InvalidParticleError(invalid_charge_errmsg) from None
@@ -326,7 +326,7 @@ def parse_and_check_atomic_input(  # noqa: ANN202, C901, PLR0912, PLR0915
             raise InvalidParticleError(
                 f"The string '{element_info}' does not correspond to a valid element.",
             )
-        return element  # ty:ignore[invalid-return-type]
+        return element  # ty:ignore[invalid-explicit-return]
 
     def reconstruct_isotope_symbol(element: str, mass_numb: int) -> str:
         """

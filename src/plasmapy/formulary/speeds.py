@@ -171,7 +171,7 @@ def Alfven_speed(
     if density.unit.physical_type == u.physical.mass_density:
         rho = density
     else:
-        rho = (ion.mass + ion.charge_number * electron.mass) * density
+        rho = (ion.mass + ion.charge_number * electron.mass) * density  # ty: ignore[missing-union-attribute]
 
     return np.abs(B) / np.sqrt(mu0 * rho)
 
@@ -377,8 +377,8 @@ def ion_sound_speed(  # noqa: PLR0917
 
     try:
         V_S_squared = (
-            gamma_e * ion.charge_number * k_B * T_e + gamma_i * k_B * T_i
-        ) / (ion.mass * (1 + klD2))
+            gamma_e * ion.charge_number * k_B * T_e + gamma_i * k_B * T_i  # ty: ignore[missing-union-attribute]
+        ) / (ion.mass * (1 + klD2))  # ty: ignore[missing-union-attribute]
         V_S = np.sqrt(V_S_squared).to(u.m / u.s)
     except ValueError as ex:
         raise ValueError("Unable to find ion sound speed.") from ex

@@ -696,10 +696,10 @@ class ParticleTracker:
         # Setting sys.stdout lets this play nicely with regular print()
         pbar = tqdm(
             initial=0,
-            total=self.termination_condition.total,
+            total=self.termination_condition.total,  # ty: ignore[missing-union-attribute]
             disable=not self.verbose,
-            desc=self.termination_condition.progress_description,
-            unit=self.termination_condition.units_string,
+            desc=self.termination_condition.progress_description,  # ty: ignore[missing-union-attribute]
+            unit=self.termination_condition.units_string,  # ty: ignore[missing-union-attribute]
             bar_format="{l_bar}{bar}{n:.1e}/{total:.1e} {unit}",
             file=sys.stdout,
         )
@@ -708,10 +708,10 @@ class ParticleTracker:
         # or the number of particles being evolved is zero
         is_finished = False
         while not (is_finished or self.num_particles_tracked == 0):
-            is_finished = self.termination_condition.is_finished
+            is_finished = self.termination_condition.is_finished  # ty: ignore[missing-union-attribute]
             progress = min(
-                self.termination_condition.progress,
-                self.termination_condition.total,
+                self.termination_condition.progress,  # ty: ignore[missing-union-attribute]
+                self.termination_condition.total,  # ty: ignore[missing-union-attribute]
             )
 
             pbar.n = progress
@@ -726,7 +726,7 @@ class ParticleTracker:
                     f"Avg. Pos.=({np.nanmean(self.x[:, 0]):.1e},{np.nanmean(self.x[:, 1]):.1e},{np.nanmean(self.x[:, 2]):.1e}) m, "
                     f"Avg. Vel.=({np.nanmean(self.v[:, 0]):.1e},{np.nanmean(self.v[:, 1]):.1e},{np.nanmean(self.v[:, 2]):.1e}) m/s, "
                     f"dt range = ({np.min(self.dt):.1e},{np.max(self.dt):.1e}) s, "  # ty:ignore[no-matching-overload]
-                    f"{self.termination_condition.progress_description}"
+                    f"{self.termination_condition.progress_description}"  # ty: ignore[missing-union-attribute]
                 )
                 pbar.set_description(desc)
 
