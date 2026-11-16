@@ -610,7 +610,7 @@ class TestIonizationStateCollectionAttributes:
         try:
             self.instance.abundances = new_abundances  # ty:ignore[invalid-assignment]
         except Exception:  # noqa: BLE001
-            pytest(f"Could not set abundances to {new_abundances}.")  # ty:ignore[not-callable]
+            pytest.fail(f"Could not set abundances to {new_abundances}.")
         else:
             check_abundances_consistency(
                 self.instance.abundances,  # ty:ignore[invalid-argument-type]
