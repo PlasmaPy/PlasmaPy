@@ -1,6 +1,10 @@
 """
 Prototype functionality to find and analyze 3D magnetic null points in a grid.
 
+This is meant for gridded data, like the output of a simulation. For
+spacecraft data (e.g., MMS or Cluster), use
+`pyspedas.find_magnetic_nulls_fote` instead.
+
 .. attention::
 
    |expect-api-changes|
