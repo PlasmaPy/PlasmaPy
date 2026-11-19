@@ -250,6 +250,7 @@ intersphinx_mapping = {
     "numpy": ("https://numpy.org/doc/stable/", None),
     "pandas": ("https://pandas.pydata.org/pandas-docs/stable/", None),
     "plasmapy_sphinx": ("https://plasmapy-sphinx.readthedocs.io/en/latest/", None),
+    "pyspedas": ("https://pyspedas.readthedocs.io/en/stable/", None),
     "pytest": ("https://docs.pytest.org/en/stable/", None),
     "python": ("https://docs.python.org/3/", None),
     "readthedocs": ("https://docs.readthedocs.io/en/stable/", None),
