@@ -1,0 +1,1 @@
+Added a link to the PySPEDAS null point finder in the ``plasmapy.analysis.nullpoint`` docs and notebook.
