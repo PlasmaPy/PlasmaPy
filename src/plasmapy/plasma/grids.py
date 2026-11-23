@@ -673,10 +673,10 @@ class AbstractGrid(ABC):
             # `quantity.value` instead of `quantity` in the creation of
             # this DataArray.
             data = xr.DataArray(
-                quantity.value,
+                quantity.value,  # ty: ignore[missing-union-attribute]
                 dims=dims,
                 coords=coords,
-                attrs={"unit": quantity.unit},
+                attrs={"unit": quantity.unit},  # ty: ignore[missing-union-attribute]
             )
 
             self.ds[key] = data

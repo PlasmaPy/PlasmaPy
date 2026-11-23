@@ -421,7 +421,7 @@ class TestFFExponential(BaseFFTests):
     _test__str__ = "f(x) = a exp(alpha x)"
 
     @staticmethod
-    def func(x, a, alpha):  # ty:ignore[invalid-method-override]
+    def func(x, a, alpha):  # ty:ignore[incompatible-method-override]
         return a * np.exp(alpha * x)
 
     def func_err(self, x, params, param_errors, x_err=None):
@@ -461,7 +461,7 @@ class TestFFExponentialPlusLinear(BaseFFTests):
     _test__str__ = "f(x) = a exp(alpha x) + m x + b"
 
     @staticmethod
-    def func(x: float, a: float, alpha: float, m: float, b: float) -> float:  # ty:ignore[invalid-method-override]
+    def func(x: float, a: float, alpha: float, m: float, b: float) -> float:  # ty:ignore[incompatible-method-override]
         return a * np.exp(alpha * x) + m * x + b
 
     def func_err(self, x, params, param_errors, x_err=None):
@@ -507,7 +507,7 @@ class TestFFExponentialPlusOffset(BaseFFTests):
     _test__str__ = "f(x) = a exp(alpha x) + b"
 
     @staticmethod
-    def func(x: float, a: float, alpha: float, b: float) -> float:  # ty:ignore[invalid-method-override]
+    def func(x: float, a: float, alpha: float, b: float) -> float:  # ty:ignore[incompatible-method-override]
         return a * np.exp(alpha * x) + b
 
     def func_err(self, x, params, param_errors, x_err=None):
@@ -554,7 +554,7 @@ class TestFFLinear(BaseFFTests):
     _test__str__ = "f(x) = m x + b"
 
     @staticmethod
-    def func(x, m, b):  # ty:ignore[invalid-method-override]
+    def func(x, m, b):  # ty:ignore[incompatible-method-override]
         return m * x + b
 
     def func_err(self, x, params, param_errors, x_err=None):
@@ -592,7 +592,7 @@ class TestFFLinear(BaseFFTests):
         root,
         root_err,
         conditional,
-    ) -> None:  # ty:ignore[invalid-method-override]
+    ) -> None:  # ty:ignore[incompatible-method-override]
         with conditional:
             ff_obj = self.ff_class(params=params, param_errors=param_errors)
             results = ff_obj.root_solve()

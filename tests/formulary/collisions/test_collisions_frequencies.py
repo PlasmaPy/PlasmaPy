@@ -44,7 +44,7 @@ class TestSingleParticleCollisionFrequencies:
 
     for argument_to_convert in arguments_to_convert:
         CGS_unit_conversion_test_constructor_arguments[argument_to_convert] = (
-            CGS_unit_conversion_test_constructor_arguments[argument_to_convert].cgs
+            CGS_unit_conversion_test_constructor_arguments[argument_to_convert].cgs  # ty: ignore[missing-union-attribute]
         )
 
     MKS_test_case = SingleParticleCollisionFrequencies(
@@ -399,13 +399,13 @@ class TestSingleParticleCollisionFrequencies:
         if interaction_type == "e|e":
             charge_constant = 1
         elif interaction_type == "e|i":
-            charge_constant = value_test_case.field_particle.charge_number**2
+            charge_constant = value_test_case.field_particle.charge_number**2  # ty: ignore[missing-union-attribute]
         elif interaction_type == "i|e":
-            charge_constant = value_test_case.test_particle.charge_number**2
+            charge_constant = value_test_case.test_particle.charge_number**2  # ty: ignore[missing-union-attribute]
         elif interaction_type == "i|i":
             charge_constant = (
-                value_test_case.test_particle.charge_number
-                * value_test_case.field_particle.charge_number
+                value_test_case.test_particle.charge_number  # ty: ignore[missing-union-attribute]
+                * value_test_case.field_particle.charge_number  # ty: ignore[missing-union-attribute]
             ) ** 2
 
         for attribute_name, expected_limit_value in zip(

@@ -63,14 +63,14 @@ class AbstractMHDWave(ABC):
             )
 
         if density.unit.physical_type == u.physical.mass_density:
-            _n = density / (ion.mass + ion.charge_number * electron.mass)
+            _n = density / (ion.mass + ion.charge_number * electron.mass)  # ty: ignore[missing-union-attribute]
             _rho = density
         else:
             _n = density
-            _rho = (ion.mass + ion.charge_number * electron.mass) * density
+            _rho = (ion.mass + ion.charge_number * electron.mass) * density  # ty: ignore[missing-union-attribute]
 
         self._Alfven_speed = Alfven_speed(B, _rho)
-        self._sound_speed = np.sqrt(gamma * k_B * T / ion.mass).to(u.m / u.s)
+        self._sound_speed = np.sqrt(gamma * k_B * T / ion.mass).to(u.m / u.s)  # ty: ignore[missing-union-attribute]
         self._magnetosonic_speed = np.sqrt(self._Alfven_speed**2 + self._sound_speed**2)
         self._beta = beta(T, _n, B)
         self._gyrofrequency = gyrofrequency(B, ion)

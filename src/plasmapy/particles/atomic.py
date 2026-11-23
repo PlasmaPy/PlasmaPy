@@ -87,7 +87,7 @@ def atomic_number(element: ParticleLike) -> int:
     >>> atomic_number("oganesson")
     118
     """
-    return element.atomic_number
+    return element.atomic_number  # ty: ignore[missing-union-attribute]
 
 
 @particle_input
@@ -129,7 +129,7 @@ def mass_number(isotope: ParticleLike) -> int:
     >>> mass_number("alpha")
     4
     """
-    return isotope.mass_number
+    return isotope.mass_number  # ty: ignore[missing-union-attribute]
 
 
 @particle_input(exclude={"isotope", "ion"})
@@ -186,7 +186,7 @@ def standard_atomic_weight(element: ParticleLike) -> u.Quantity[u.kg]:
     <Quantity 3.440636e-25 kg>
     """
     # TODO: Put in ReST links into above docstring  # noqa: FIX002
-    return element.standard_atomic_weight
+    return element.standard_atomic_weight  # ty: ignore[missing-union-attribute]
 
 
 @particle_input(exclude={"neutrino", "antineutrino"})
@@ -240,7 +240,7 @@ def particle_mass(
     The masses of neutrinos are not available because primarily upper
     limits are presently known.
     """
-    return particle.mass
+    return particle.mass  # ty: ignore[missing-union-attribute]
 
 
 @particle_input
@@ -287,7 +287,7 @@ def isotopic_abundance(isotope: ParticleLike, mass_numb: int | None = None) -> f
     >>> isotopic_abundance("hydrogen", 1)
     0.999885
     """
-    return isotope.isotopic_abundance
+    return isotope.isotopic_abundance  # ty: ignore[missing-union-attribute]
 
 
 @particle_input(any_of={"charged", "uncharged"})
@@ -341,7 +341,7 @@ def charge_number(particle: ParticleLike) -> int:
     >>> charge_number("N-14++")
     2
     """
-    return particle.charge_number  # ty:ignore[invalid-return-type]
+    return particle.charge_number  # ty:ignore[invalid-explicit-return, missing-union-attribute]
 
 
 @particle_input(any_of={"charged", "uncharged"})
@@ -395,7 +395,7 @@ def electric_charge(particle: ParticleLike) -> u.Quantity[u.C]:
     >>> electric_charge("H-")
     <Quantity -1.60217662e-19 C>
     """
-    return particle.charge
+    return particle.charge  # ty: ignore[missing-union-attribute]
 
 
 @particle_input
@@ -441,11 +441,11 @@ def is_stable(particle: ParticleLike, mass_numb: int | None = None) -> bool:
     >>> is_stable("tau+")
     False
     """
-    if particle.element and not particle.isotope:
+    if particle.element and not particle.isotope:  # ty: ignore[missing-union-attribute]
         raise InvalidIsotopeError(
             "The input to is_stable must be either an isotope or a special particle.",
         )
-    return particle.is_category("stable")
+    return particle.is_category("stable")  # ty: ignore[missing-union-attribute]
 
 
 @particle_input(any_of={"stable", "unstable", "isotope"})
@@ -496,7 +496,7 @@ def half_life(particle: ParticleLike, mass_numb: int | None = None) -> u.Quantit
     >>> half_life("H-1")
     <Quantity inf s>
     """
-    return particle.half_life
+    return particle.half_life  # ty: ignore[missing-union-attribute]
 
 
 def known_isotopes(argument: ParticleLike | None = None) -> ParticleList:
@@ -873,8 +873,8 @@ def reduced_mass(
     >>> reduced_mass(5.4e-27 * u.kg, 8.6e-27 * u.kg)
     <Quantity 3.31714...e-27 kg>
     """
-    return (test_particle.mass * target_particle.mass) / (
-        test_particle.mass + target_particle.mass
+    return (test_particle.mass * target_particle.mass) / (  # ty: ignore[missing-union-attribute]
+        test_particle.mass + target_particle.mass  # ty: ignore[missing-union-attribute]
     )
 
 
@@ -1102,12 +1102,12 @@ def ionic_levels(
     >>> ionic_levels("Fe-56", min_charge=13, max_charge=15)
     ParticleList(['Fe-56 13+', 'Fe-56 14+', 'Fe-56 15+'])
     """
-    base_particle = Particle(particle.isotope or particle.element)  # ty:ignore[invalid-argument-type]
+    base_particle = Particle(particle.isotope or particle.element)  # ty:ignore[invalid-argument-type, missing-union-attribute]
 
     if max_charge is None:
-        max_charge = particle.atomic_number
+        max_charge = particle.atomic_number  # ty: ignore[missing-union-attribute]
 
-    if not min_charge <= max_charge <= particle.atomic_number:
+    if not min_charge <= max_charge <= particle.atomic_number:  # ty: ignore[missing-union-attribute]
         raise ChargeError(
             f"Need min_charge ({min_charge}) "
             f"≤ max_charge ({max_charge}) "
@@ -1253,5 +1253,5 @@ def stopping_power(
 
         return (
             energies,
-            np.exp(cs(np.log(energies.to("MeV").value))) * u.MeV * u.cm**2 / u.g,
-        )  # ty:ignore[invalid-return-type]
+            np.exp(cs(np.log(energies.to("MeV").value))) * u.MeV * u.cm**2 / u.g,  # ty: ignore[missing-union-attribute]
+        )  # ty:ignore[invalid-explicit-return]

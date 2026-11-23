@@ -140,8 +140,8 @@ def gyrofrequency(
     >>> print(f_ce)
     279924... Hz
     """
-    q = particle.charge if signed else abs(particle.charge)
-    return u.rad * (q * np.abs(B) / particle.mass).to(1 / u.s)
+    q = particle.charge if signed else abs(particle.charge)  # ty: ignore[missing-union-attribute]
+    return u.rad * (q * np.abs(B) / particle.mass).to(1 / u.s)  # ty: ignore[missing-union-attribute]
 
 
 oc_ = gyrofrequency
@@ -332,8 +332,8 @@ def plasma_frequency(
     return (
         plasma_frequency_lite(
             n=n.value,
-            mass=particle.mass.value,
-            Z=particle.charge_number,
+            mass=particle.mass.value,  # ty: ignore[missing-union-attribute]
+            Z=particle.charge_number,  # ty: ignore[missing-union-attribute]
         )
         * u.rad
         / u.s

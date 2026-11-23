@@ -150,7 +150,7 @@ class Characteristic:
         if len(self.bias.shape) != 1:
             raise ValueError("Non-1D array for voltage!")
 
-        if len(self.current.shape) != 1:
+        if len(self.current.shape) != 1:  # ty: ignore[missing-union-attribute]
             raise ValueError("Non-1D array for current!")
 
         if len(self.bias) != len(self.current):
@@ -196,7 +196,7 @@ class Characteristic:
         r"""Plot the characteristic in matplotlib."""
         with quantity_support():
             plt.figure()
-            plt.scatter(self.bias.to(u.V), self.current.to(u.mA), marker=".", color="k")
+            plt.scatter(self.bias.to(u.V), self.current.to(u.mA), marker=".", color="k")  # ty: ignore[missing-union-attribute]
             plt.title("Probe characteristic")
 
 
@@ -1093,7 +1093,7 @@ def extrapolate_electron_current(  # noqa: ANN201
             )
             plt.plot(
                 electron_characteristic.bias,
-                electron_characteristic.current.to(u.mA),
+                electron_characteristic.current.to(u.mA),  # ty: ignore[missing-union-attribute]
                 label="Estimated electron characteristic",
             )
             plt.legend()
@@ -1310,7 +1310,7 @@ def extrapolate_ion_current_OML(probe_characteristic, fit, visualize: bool = Fal
             )
             plt.plot(
                 probe_characteristic.bias,
-                ion_characteristic.current.to(u.mA),
+                ion_characteristic.current.to(u.mA),  # ty: ignore[missing-union-attribute]
                 c="y",
             )
 

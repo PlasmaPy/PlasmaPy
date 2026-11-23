@@ -203,7 +203,7 @@ def nuclear_reaction_energy(*args, **kwargs) -> u.Quantity[u.J]:  # noqa: ANN002
 
         for original_item in unformatted_particles_list:
             try:
-                item = original_item.strip()
+                item = original_item.strip()  # ty: ignore[missing-union-attribute]
 
                 if item.count("*") == 1 and item[0].isdigit():
                     multiplier_str, item = item.split("*")

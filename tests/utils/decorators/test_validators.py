@@ -182,7 +182,7 @@ class TestValidateQuantities:
                 validations = vq._get_validations(bound_args)
 
             # only expected argument validations exist
-            assert sorted(validations.keys()) == sorted(case["output"].keys())
+            assert sorted(validations.keys()) == sorted(case["output"].keys())  # ty: ignore[missing-union-attribute]
 
             # if validation key-value not specified then default is assumed
             for arg_name in case["output"]:  # ty:ignore[not-iterable]
@@ -434,7 +434,7 @@ class TestValidateQuantities:
             _result = wfoo(*args, **kwargs)  # ty:ignore[invalid-argument-type, not-iterable]
             assert _result == case["output"]
             if "extra assert" in case:
-                assert case["extra assert"](_result)  # ty:ignore[call-non-callable]
+                assert case["extra assert"](_result)  # ty:ignore[not-callable]
 
         # __call__ calls methods `_get_validations` and `_validate_quantity`
         #
@@ -556,10 +556,10 @@ class TestValidateQuantities:
 
                 assert mock_vq_class.call_args[0] == ()
                 assert sorted(mock_vq_class.call_args[1].keys()) == sorted(
-                    case["setup"]["validations"].keys(),
+                    case["setup"]["validations"].keys(),  # ty: ignore[missing-union-attribute]
                 )
 
-                for arg_name, validations in case["setup"]["validations"].items():
+                for arg_name, validations in case["setup"]["validations"].items():  # ty: ignore[missing-union-attribute]
                     assert mock_vq_class.call_args[1][arg_name] == validations
 
                 mock_vq_class.reset_mock()

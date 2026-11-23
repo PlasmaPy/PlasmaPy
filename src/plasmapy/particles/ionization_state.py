@@ -111,7 +111,7 @@ class IonicLevel:
     @property
     def ionic_symbol(self) -> str:
         """The symbol of the ion."""
-        return self.ion.ionic_symbol  # ty:ignore[invalid-return-type]
+        return self.ion.ionic_symbol  # ty:ignore[invalid-explicit-return]
 
     @property
     def charge_number(self) -> int:
@@ -367,7 +367,7 @@ class IonizationState:
             else:
                 raise ChargeError("No charge number provided.")
 
-        return result  # ty:ignore[invalid-return-type]
+        return result  # ty:ignore[invalid-explicit-return]
 
     def __setitem__(self, key, value) -> None:  # noqa: D105
         raise NotImplementedError(
@@ -674,7 +674,7 @@ class IonizationState:
     @property
     def element(self) -> str:
         """The atomic symbol of the element."""
-        return self._particle.element  # ty:ignore[invalid-return-type]
+        return self._particle.element  # ty:ignore[invalid-explicit-return]
 
     @property
     def isotope(self) -> str | None:
@@ -862,7 +862,7 @@ class IonizationState:
             abundances=abundances,
             use_rms_charge=use_rms_charge,
             use_rms_mass=use_rms_mass,
-        )  # ty:ignore[invalid-return-type]
+        )  # ty:ignore[invalid-explicit-return]
 
     def summarize(
         self,

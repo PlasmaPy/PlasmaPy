@@ -100,7 +100,7 @@ class _SyntheticRadiographySaveRoutine(SaveOnceOnCompletion):
         }
 
     def save(self) -> None:
-        result_dictionary = self._particle_tracker.results_dict
+        result_dictionary = self._particle_tracker.results_dict  # ty: ignore[missing-union-attribute]
 
         if self.output_directory is None:
             return
