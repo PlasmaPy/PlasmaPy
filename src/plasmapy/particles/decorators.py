@@ -252,7 +252,7 @@ class _ParticleInput:
         -------
         `dict` of `str` to `object`
         """
-        return self._data.get("annotations")  # ty:ignore[invalid-return-type]
+        return self._data.get("annotations")  # ty:ignore[invalid-explicit-return]
 
     @property
     def require(self) -> Iterable[str] | None:

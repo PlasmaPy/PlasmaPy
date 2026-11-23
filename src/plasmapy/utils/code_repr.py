@@ -165,7 +165,7 @@ def _object_name(obj: Any, showmodule: bool = False) -> str:  # noqa: ANN401, FB
         return module_name
 
     obj_name = obj.__name__ if hasattr(obj, "__name__") else repr(obj)
-    module_name = inspect.getmodule(obj).__name__ if showmodule else ""
+    module_name = inspect.getmodule(obj).__name__ if showmodule else ""  # ty: ignore[missing-union-attribute]
     module_name = substitute_module_shortcuts(module_name)
     if module_name:
         obj_name = f"{module_name}.{obj_name}"

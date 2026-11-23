@@ -188,7 +188,7 @@ class SingleParticleCollisionFrequencies:
 
     @cached_property
     def _mass_ratio(self):
-        return self.test_particle.mass / self.field_particle.mass
+        return self.test_particle.mass / self.field_particle.mass  # ty: ignore[missing-union-attribute]
 
     @cached_property
     def momentum_loss(self):
@@ -251,11 +251,11 @@ class SingleParticleCollisionFrequencies:
         return (
             4
             * np.pi
-            * (self.test_particle.charge_number * e.esu) ** 2
-            * (self.field_particle.charge_number * e.esu) ** 2
+            * (self.test_particle.charge_number * e.esu) ** 2  # ty: ignore[missing-union-attribute]
+            * (self.field_particle.charge_number * e.esu) ** 2  # ty: ignore[missing-union-attribute]
             * self.Coulomb_log
             * self.n_b
-            / (self.test_particle.mass**2 * self.v_drift**3)
+            / (self.test_particle.mass**2 * self.v_drift**3)  # ty: ignore[missing-union-attribute]
         ).to(u.Hz)
 
     @cached_property
@@ -271,7 +271,7 @@ class SingleParticleCollisionFrequencies:
         --------
         |SingleParticleCollisionFrequencies|
         """
-        x = self.field_particle.mass * self.v_drift**2 / (2 * k_B.cgs * self.T_b)
+        x = self.field_particle.mass * self.v_drift**2 / (2 * k_B.cgs * self.T_b)  # ty: ignore[missing-union-attribute]
         return x.to(u.dimensionless_unscaled)
 
     @staticmethod
@@ -466,11 +466,11 @@ class MaxwellianCollisionFrequencies:
         return (
             4
             * np.pi
-            * (self.test_particle.charge_number * e.esu) ** 2
-            * (self.field_particle.charge_number * e.esu) ** 2
+            * (self.test_particle.charge_number * e.esu) ** 2  # ty: ignore[missing-union-attribute]
+            * (self.field_particle.charge_number * e.esu) ** 2  # ty: ignore[missing-union-attribute]
             * self.Coulomb_log
             * self.n_b
-            / (self.test_particle.mass**2 * self._mean_thermal_velocity**3)
+            / (self.test_particle.mass**2 * self._mean_thermal_velocity**3)  # ty: ignore[missing-union-attribute]
         ).to(u.Hz)
 
     @cached_property
@@ -522,7 +522,7 @@ class MaxwellianCollisionFrequencies:
         >>> electron_ion_collisions.Maxwellian_avg_ei_collision_freq
         <Quantity 2.8053078...e+15 Hz>
         """
-        if not self.test_particle.is_electron or not self.field_particle.is_ion:
+        if not self.test_particle.is_electron or not self.field_particle.is_ion:  # ty: ignore[missing-union-attribute]
             raise ValueError(
                 "Please specify an electron-ion interaction to use the "
                 "Maxwellian_avg_ei_collision_freq attribute.",
@@ -585,7 +585,7 @@ class MaxwellianCollisionFrequencies:
         >>> ion_ion_collisions.Maxwellian_avg_ii_collision_freq
         <Quantity 1.1223822...e+08 Hz>
         """
-        if not self.test_particle.is_ion or not self.field_particle.is_ion:
+        if not self.test_particle.is_ion or not self.field_particle.is_ion:  # ty: ignore[missing-union-attribute]
             raise ValueError(
                 "Please specify an ion-ion interaction to use the "
                 "Maxwellian_avg_ii_collision_freq attribute",

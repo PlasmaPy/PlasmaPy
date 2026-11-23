@@ -744,7 +744,7 @@ class CheckUnits(CheckBase):
 
             # -- Determine if equivalent units pass --
             try:
-                peu = param_checks.get(
+                peu = param_checks.get(  # ty: ignore[missing-union-attribute]
                     "pass_equivalent_units",
                     self.__check_defaults["pass_equivalent_units"],
                 )

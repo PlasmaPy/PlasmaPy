@@ -156,7 +156,7 @@ class TestIonizationStateCollection:
         ],
     )
     def test_that_particles_were_set_correctly(self, test_name: str) -> None:
-        input_particles = tests[test_name]["inputs"].keys()
+        input_particles = tests[test_name]["inputs"].keys()  # ty: ignore[missing-union-attribute]
         particles = [Particle(input_particle) for input_particle in input_particles]
         expected_particles = {p.symbol for p in particles}
         actual_particles = set(self.instances[test_name].ionic_fractions)
@@ -213,7 +213,7 @@ class TestIonizationStateCollection:
         inputs = tests[test_name]["inputs"]
 
         if isinstance(inputs, dict):
-            input_keys = list(tests[test_name]["inputs"].keys())
+            input_keys = list(tests[test_name]["inputs"].keys())  # ty: ignore[missing-union-attribute]
 
             def sort_key(k):
                 return atomic_number(k), mass_number(k) if Particle(k).isotope else 0
@@ -385,7 +385,7 @@ class TestIonizationStateCollectionItemAssignment:
             pytest.fail(
                 "Unable to change ionic fractions for an IonizationStateCollection instance.",
             )
-        resulting_states = self.states[element].ionic_fractions
+        resulting_states = self.states[element].ionic_fractions  # ty: ignore[missing-union-attribute]
 
         assert np.any(
             [
@@ -610,7 +610,7 @@ class TestIonizationStateCollectionAttributes:
         try:
             self.instance.abundances = new_abundances  # ty:ignore[invalid-assignment]
         except Exception:  # noqa: BLE001
-            pytest(f"Could not set abundances to {new_abundances}.")  # ty:ignore[call-non-callable]
+            pytest(f"Could not set abundances to {new_abundances}.")  # ty:ignore[not-callable]
         else:
             check_abundances_consistency(
                 self.instance.abundances,  # ty:ignore[invalid-argument-type]

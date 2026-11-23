@@ -212,7 +212,7 @@ def kinetic_alfven(  # noqa: ANN201, C901, PLR0912
     elif np.isscalar(theta):
         theta = np.array([theta])
 
-    Z = ion.charge_number
+    Z = ion.charge_number  # ty: ignore[missing-union-attribute]
     n_e = Z * n_i
     v_A = speed.Alfven_speed(B=B, density=n_i, ion=ion)
     omega_ci = pfp.gyrofrequency(B=B, particle=ion, signed=False)

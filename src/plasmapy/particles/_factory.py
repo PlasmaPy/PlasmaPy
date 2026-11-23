@@ -192,14 +192,14 @@ def _physical_particle_factory(
             kwargs.pop(parameter)
 
     if len(args) == 1 and not kwargs and isinstance(args[0], _particle_types):
-        return args[0]  # ty:ignore[invalid-return-type]
+        return args[0]  # ty:ignore[invalid-explicit-return]
 
     if not args and not kwargs:
         raise TypeError("Particle information has not been provided.")
 
     for constructor in _particle_constructors:
         with contextlib.suppress(ChargeError, InvalidParticleError, TypeError):
-            return constructor(*args, **kwargs)  # ty:ignore[invalid-return-type]
+            return constructor(*args, **kwargs)  # ty:ignore[invalid-explicit-return]
 
     if args and not isinstance(args[0], str | Integral | u.Quantity):
         raise TypeError(
