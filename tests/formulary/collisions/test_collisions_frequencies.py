@@ -1,7 +1,7 @@
 import astropy.units as u
 import numpy as np
 import pytest
-from astropy.constants import k_B, m_p
+from astropy.constants import k_B, m_e, m_p
 
 from plasmapy.formulary.collisions.frequencies import (
     MaxwellianCollisionFrequencies,
@@ -9,6 +9,7 @@ from plasmapy.formulary.collisions.frequencies import (
     collision_frequency,
     fundamental_electron_collision_freq,
     fundamental_ion_collision_freq,
+    temperature_isotropization_rate,
 )
 from plasmapy.particles import Particle
 from plasmapy.utils._pytest_helpers import assert_can_handle_nparray
@@ -716,6 +717,154 @@ class TestMaxwellianCollisionFrequencies:
         calculated_value = getattr(value_test_case, frequency_to_test)
 
         np.testing.assert_allclose(calculated_value, expected_value, rtol=5e-3, atol=0)
+
+    @pytest.mark.filterwarnings("ignore::plasmapy.utils.exceptions.RelativityWarning")
+    def test_thermal_equilibration_rate(self) -> None:
+        v_drift = 1 * u.m / u.s
+        n = 1e27 * u.m**-3
+        T = 1e4 * u.K
+        Coulomb_log = 10 * u.dimensionless_unscaled
+        collisions = MaxwellianCollisionFrequencies(
+            "e-",
+            "Na+",
+            v_drift=v_drift,
+            T_a=T,
+            T_b=T,
+            n_a=n,
+            n_b=n,
+            Coulomb_log=Coulomb_log,
+        )
+        rate = collisions.thermal_equilibration_rate
+        expected_rate = (
+            2
+            * 22.989769
+            * u.Da
+            / (m_e + 22.989769 * u.Da)
+            * collisions.Lorentz_collision_frequency
+        )
+        assert np.allclose(rate, expected_rate, rtol=5e-3, atol=0)
+
+    @pytest.mark.filterwarnings("ignore::plasmapy.utils.exceptions.RelativityWarning")
+    def test_thermal_equilibration_rate_zero_drift(self) -> None:
+        n = 1e27 * u.m**-3
+        T = 1e4 * u.K
+        Coulomb_log = 10 * u.dimensionless_unscaled
+        collisions = MaxwellianCollisionFrequencies(
+            "e-",
+            "Na+",
+            v_drift=0 * u.m / u.s,
+            T_a=T,
+            T_b=T,
+            n_a=n,
+            n_b=n,
+            Coulomb_log=Coulomb_log,
+        )
+        rate = collisions.thermal_equilibration_rate
+        expected_rate = (
+            2
+            * 22.989769
+            * u.Da
+            / (m_e + 22.989769 * u.Da)
+            * collisions.Lorentz_collision_frequency
+        )
+        np.testing.assert_allclose(rate, expected_rate, rtol=5e-3, atol=0)
+
+    @pytest.mark.filterwarnings("ignore::plasmapy.utils.exceptions.RelativityWarning")
+    def test_temperature_isotropization_rate(self) -> None:
+        v_drift = 1 * u.m / u.s
+        n = 1e27 * u.m**-3
+        T = 1e4 * u.K
+        T_para = 1.0 * T
+        Tperp = 1.1 * T
+        Coulomb_log = 10 * u.dimensionless_unscaled
+        rate = temperature_isotropization_rate(
+            "e-",
+            "Na+",
+            v_drift=v_drift,
+            T_a=T,
+            n_a=n,
+            T_b=T,
+            n_b=n,
+            Coulomb_log=Coulomb_log,
+            T_parallel=T_para,
+            T_perp=Tperp,
+        )
+        expected = 8.78926e16 * u.Hz
+        np.testing.assert_allclose(rate, expected, rtol=5e-3, atol=0)
+
+    @pytest.mark.filterwarnings("ignore::plasmapy.utils.exceptions.RelativityWarning")
+    def test_temperature_isotropization_rate_A_positive(self) -> None:
+        v_drift = 1 * u.m / u.s
+        n = 1e27 * u.m**-3
+        T = 1e4 * u.K
+        T_para = 1.1 * T
+        Tperp = 1.0 * T
+        Coulomb_log = 10 * u.dimensionless_unscaled
+        rate = temperature_isotropization_rate(
+            "e-",
+            "Na+",
+            v_drift=v_drift,
+            T_a=T,
+            n_a=n,
+            T_b=T,
+            n_b=n,
+            Coulomb_log=Coulomb_log,
+            T_parallel=T_para,
+            T_perp=Tperp,
+        )
+        collisions = MaxwellianCollisionFrequencies(
+            "e-",
+            "Na+",
+            v_drift=v_drift,
+            T_a=T,
+            T_b=T,
+            n_a=n,
+            n_b=n,
+            Coulomb_log=Coulomb_log,
+        )
+        mass_a = collisions.test_particle.mass
+        mass_b = collisions.field_particle.mass
+        A = 1 - Tperp / T_para
+        sqrt_A = np.sqrt(A)
+        b_coeff = 1 - sqrt_A * (np.arctan(sqrt_A.value) / (2 * sqrt_A))
+        C = -(Tperp / T_para) + mass_a * (Tperp - T_para) / (
+            2 * (mass_a + mass_b) * T_para
+        )
+        expected = collisions.Lorentz_collision_frequency * (2 + C * (1 - b_coeff))
+        np.testing.assert_allclose(rate, expected, rtol=5e-3, atol=0)
+
+    @pytest.mark.filterwarnings("ignore::plasmapy.utils.exceptions.RelativityWarning")
+    def test_temperature_isotropization_rate_isotropic(self) -> None:
+        v_drift = 1 * u.m / u.s
+        n = 1e27 * u.m**-3
+        T = 1e4 * u.K
+        T_para = 1.0 * T
+        Coulomb_log = 10 * u.dimensionless_unscaled
+        rate = temperature_isotropization_rate(
+            "e-",
+            "Na+",
+            v_drift=v_drift,
+            T_a=T,
+            n_a=n,
+            T_b=T,
+            n_b=n,
+            Coulomb_log=Coulomb_log,
+            T_parallel=T_para,
+            T_perp=T_para,
+        )
+        collisions = MaxwellianCollisionFrequencies(
+            "e-",
+            "Na+",
+            v_drift=v_drift,
+            T_a=T,
+            T_b=T,
+            n_a=n,
+            n_b=n,
+            Coulomb_log=Coulomb_log,
+        )
+        np.testing.assert_allclose(
+            rate, 2 * collisions.Lorentz_collision_frequency, rtol=5e-3, atol=0
+        )
 
 
 class Test_collision_frequency:
