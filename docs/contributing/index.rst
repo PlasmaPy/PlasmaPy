@@ -32,6 +32,7 @@ suggest checking out:
    coding_guide
    testing_guide
    doc_guide
+   notebook_guide
    changelog_guide
    pre-commit
 
